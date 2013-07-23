@@ -1,27 +1,30 @@
 #ifndef QJAWEBVIEW_H
 #define QJAWEBVIEW_H
 
-#include <QWebView>
+#include <QtWebKit/QtWebKit>
+#include "IActiveFrame.h"
+#include "qpreviewactivity.h"
 
 class QJaWebView : public QWebView
 {
     Q_OBJECT
 public:
     explicit QJaWebView(QWidget *parent = 0);
-    void aTest();
+	virtual ~QJaWebView();
 
 private:
     QString m_sApplicationPath;
+	QPreviewActivity m_Activities;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
-    virtual bool eventFilter(QObject *, QEvent *);
 
 signals:
     
 public slots:
-    void OnLoadFinished(bool bOk);
-    
+    void OnLoad(bool bOk);
+
+
 };
 
 #endif // QJAWEBVIEW_H

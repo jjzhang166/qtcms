@@ -14,10 +14,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    qjawebview.cpp
+    qjawebview.cpp \
+    IActiveFrame.cpp \
+    qpreviewactivity.cpp
 
 HEADERS  += \
-    qjawebview.h
+    qjawebview.h \
+    IActiveFrame.h \
+    qpreviewactivity.h
 
 FORMS    +=
 
