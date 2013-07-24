@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root ver="1.0">
+    <CLSID>
+        <item clsid="0052DFC7-3EEA-4b58-BA1D-41658C818078" name="cms.preview" file="japreview.dll"/>
+    </CLSID>
+</root>
