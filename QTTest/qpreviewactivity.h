@@ -5,7 +5,7 @@
 #include <QWebFrame>
 #include "IActiveFrame.h"
 
-class QPreviewActivity : public QObject,
+class QPreviewActivity : public  QObject,
         public IActiveFrame
 {
     Q_OBJECT
@@ -19,6 +19,7 @@ signals:
 public slots:
 	void OnJavaScriptWindowObjectCleared();
 	void OnTopActDbClick();
+    void OnWindowClose();
 
 private:
 	QWebFrame * m_Frame;

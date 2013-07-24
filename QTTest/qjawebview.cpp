@@ -9,6 +9,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
     QWebView(parent)
 {
 	// initialize activities
+    CreatInstance(AI_PREVIEW,(void **)&m_Activities[AI_PREVIEW]);
 
     setWindowFlags(Qt::FramelessWindowHint);
 
@@ -52,6 +53,6 @@ void QJaWebView::OnLoad( bool bOk )
 	MainFrame = page()->mainFrame();
 	if (MainFrame->title() == "preview")
 	{
-		m_Activities.Active(MainFrame);
+        m_Activities[AI_PREVIEW]->Active(MainFrame);
 	}
 }

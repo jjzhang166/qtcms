@@ -14,7 +14,7 @@ public:
 
 private:
     QString m_sApplicationPath;
-	QPreviewActivity m_Activities;
+    IActiveFrame * m_Activities[AI_CNT];
 
 protected:
     virtual void keyPressEvent(QKeyEvent *ev);
