@@ -4,6 +4,8 @@
 #include "libpcom_global.h"
 
 // GUID
+#ifndef GUID_DEFINED
+#define GUID_DEFINED
 typedef struct _tagGUID
 {
     unsigned long Data1;
@@ -11,6 +13,7 @@ typedef struct _tagGUID
     unsigned short Data3;
     unsigned char Data4[8];
 } GUID;
+#endif
 typedef GUID CLSID;
 typedef GUID IID;
 typedef GUID UUID;
