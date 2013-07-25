@@ -12,6 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QTTest
 TEMPLATE = app
 
+LIBS += F:\QTs\privatefolder\QTTest\libpcom.lib
 
 SOURCES += main.cpp \
     qjawebview.cpp \
@@ -21,7 +22,9 @@ SOURCES += main.cpp \
 HEADERS  += \
     qjawebview.h \
     IActiveFrame.h \
-    qpreviewactivity.h
+    qpreviewactivity.h \
+    libpcom.h \
+    libpcom_global.h
 
 FORMS    +=
 

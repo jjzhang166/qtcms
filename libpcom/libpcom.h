@@ -18,21 +18,21 @@ typedef GUID CLSID;
 typedef GUID IID;
 typedef GUID UUID;
 
-// HRESULT
-typedef unsigned long HRESULT;
-
-// integer
-typedef unsigned long ULONG;
-
 #define interface struct
 
 interface IPcomBase{
-    virtual HRESULT __stdcall QueryInterface(const IID & iid,void **ppv) = 0;
-    virtual ULONG __stdcall AddRef() = 0;
-    virtual ULONG __stdcall Release() = 0;
+    virtual long __stdcall QueryInterface(const IID & iid,void **ppv) = 0;
+    virtual unsigned long __stdcall AddRef() = 0;
+    virtual unsigned long __stdcall Release() = 0;
 };
 
 typedef interface IPcomBase IPcomBase,*pIPcomBase;
+
+// Error code
+#define MAKE_ERROR(x)   (0x80000000 | x)
+#define S_OK 0
+#define E_NOINTERFACE MAKE_ERROR(1)
+
 
 // operators
 LIBPCOMSHARED_EXPORT bool operator==(const GUID &guid1,const GUID &guid2);
@@ -42,7 +42,9 @@ extern "C"{
 #endif
 
 // functions
-LIBPCOMSHARED_EXPORT HRESULT pcomCreateInstance(const CLSID &clsid,IPcomBase *pBase,const IID &iid,void ** ppv);
+LIBPCOMSHARED_EXPORT char *pcomGUID2String(const GUID &guid);
+
+LIBPCOMSHARED_EXPORT long pcomCreateInstance(const CLSID &clsid,IPcomBase *pBase,const IID &iid,void ** ppv);
 
 #ifdef __cplusplus
 };

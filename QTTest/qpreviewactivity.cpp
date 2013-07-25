@@ -20,7 +20,6 @@ void QPreviewActivity::Active( QWebFrame *Frame )
 	connect(m_Frame,SIGNAL(javaScriptWindowObjectCleared),this,SLOT(OnJavaScriptWindowObjectCleared));
 	m_Frame->addToJavaScriptWindowObject(QString("qob"),this);
 
-	//×¢²áÏûÏ¢º¯Êý
     MessageEvent(m_Frame,"top_act","dblclick","OnTopActDbClick");
     MessageEvent(m_Frame,"WindowClose","click","OnWindowClose");
 }
