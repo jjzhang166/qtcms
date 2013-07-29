@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>preview</title>
+<link rel="stylesheet" type="text/css" href="css/play_back.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<script src="treeview/jquery.treeview.js" type="text/javascript"></script>
+<script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
+<script src="js/qframework.js" type="text/javascript"></script>
+<script type="text/javascript">
+var oLeft,oBottom,oView;
+var	nViewNum = 0;
+	$(function(){
+		oLeft = $('#search_device');
+		oBottom = $('#operating');
+		oView = $('#playback_view')
+		ViewMax('preview');
+		var oAs = $('ul.dev_list_btn a');
+		var oDiv = $('div.dev_list');
+	    
+		$(window).off();
+
+	    $('ul.filetree').treeview();		
+		oDiv.eq(1).hide();
+		
+		$('div.select').each(function(){ 
+			imitate_select($(this));
+		})
+		
+		$('.hover').each(function(){
+			var action = $(this).attr('class').split(' ')[0];
+			addMouseStyle($(this),action);
+		})
+		
+		oAs.each(function(index){
+			$(this).click(function(){
+				$(window).off();
+				oAs.removeClass('active');
+				oDiv.hide();
+				$(this).addClass('active');
+				oDiv.eq(index).show();
+			})
+		})
+		
+		$('span.file').click(function(){
+			$(this).toggleClass('file_1')
+		})
+		$(window).resize(function(){
+			ViewMax('preview');	
+		})
+
+		$('#PTZ_control .ope_list li').each(function(index){
+			var key = index;
+			$(this).click(function(){
+				$('#PTZ_control .Control').hide();
+				$('#PTZ_control .Control').eq(key).show();	
+			})
+		})
+	})
+</script>
+</head>
+
+<body>
+	<div id="top">
+		<div class="top_act" id="top_act">
+			<h4>DVR Client</h4>
+			<div id="top_window_act">
+				<ul>
+					<li id="WindowClose"><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<li><a class="toggle hover" href="javascript:;"></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="top_nav">
+			<ul>
+				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
+				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
+				<li><a class="hover" style="background-position: 0 -104px;" href="javascript:;">backup</a></li>
+				<li><a class="hover" style="background-position: 0 -156px;" href="javascript:;">Device</a></li>
+				<li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
+				<li><a class="hover" style="background-position: 0 -260px;" href="javascript:;">Log</a></li>
+			</ul>
+			<div>
+				<a href="javascript:;"></a>				
+				<p>Login User:eddy</p>
+			</div>
+		</div>
+	</div>
+	<div id="playback_view"></div>
+	<div id="search_device">
+		<ul class="dev_list_btn">
+			<li><a class="active" href="javascript:;">Area</a></li>
+			<li><a class=""href="javascript:;">Group</a></li>
+		</ul>
+		<div class="dev_list">
+			<ul id="area" class="filetree">
+				<li><span class="area" ></span>Area
+					<ul>
+						<li><span class="folder" ></span>device
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li><span class="area">Area</span>
+					<ul>
+						<li><span class="folder" ></span>device
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+								<li><span class="file">Channel05</span></li>
+								<li><span class="file">Channel06</span></li>
+								<li><span class="file">Channel07</span></li>
+								<li><span class="file">Channel08</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="dev_list">
+			<ul id="group" class="filetree">
+				<li><span class="group" ></span>Group
+					<ul>
+						<li><span class="folder" ></span>device
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li><span class="group">Group</span>
+					<ul>
+						<li><span class="folder" ></span>device
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+								<li><span class="file">Channel05</span></li>
+								<li><span class="file">Channel06</span></li>
+								<li><span class="file">Channel07</span></li>
+								<li><span class="file">Channel08</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>	
+		</div>
+		<div id="PTZ_control"> 
+			<div class="ope_list">
+				<ul>
+					<li class="hover" style="background-position:0 -16px;">PTZTrack</li>
+					<li class="hover" style="margin:1px 5px;">PicAdjust</li>
+					<li>Cruise</li>
+					<li class="hover" style="width:110px;">PTZCtrl</li>
+					<li class="hover" style="width:110px;">PreSet</li>
+				</ul>
+			</div>
+			<div class="Control" style="display:block">
+				<div id="Dire_Control">
+					<div class="hover" style="height:11px; width:18px; top:8px; left:55px; background-position: 0 -66px;"></div>
+					<div class="hover" style="height:11px; width:18px; top:110px; left:55px; background-position: -72px -66px;"></div>
+					<div class="hover" style="height:18px; width:11px; top:55px; left:8px; background-position: -144px -66px;"></div>
+					<div class="hover" style="height:18px; width:11px; top:55px; left:108px; background-position: -188px -66px;"></div>
+					<div class="hover small" style="top:26px; left:26px; background-position: -64px -77px;"></div>
+					<div class="hover small" style="top:26px; left:94px; background-position: 0 -77px;"></div>
+					<div class="hover small" style="top:94px; left:26px; background-position: -96px -77px;"></div>
+					<div class="hover small" style="top:94px; left:94px; background-position: -32px  -77px;"></div>
+					<div class="hover" style="top:30px; left:32px;"></div>
+				</div>			
+				<ul class="para_Control">
+					<li class="hover" style="background-position: 0 -128px;"></li>
+					<li class="hover" style="background-position: 0 -150px;"></li>
+					<li class="hover" style="background-position: -128px 0;"></li>
+					<li class="hover" style="background-position: -128px -22px;"></li>
+					<li class="hover" style="background-position: -128px -44px;"></li>
+					<li class="hover" style="background-position: -128px -66px;"></li>
+				</ul>
+				<div class="speed">
+					<span></span>
+				</div>
+				<div class="others">
+					<ul>
+						<li class="hover" style="background-position: -128px -88px;"></li>
+						<li class="hover" style="background-position: -128px -110px;"></li>
+					</ul>
+					<div class="select">
+						<span>1</span>
+					</div>
+					<ul class="option" style="display:none;">
+						<li><a href="javascript:;">4</a></li>
+						<li><a href="javascript:;">3</a></li>
+						<li><a href="javascript:;">2</a></li>
+						<li><a href="javascript:;">1</a></li>
+					</ul>
+					<h3 style="font-weight:100; color:#fff; float:right; height:20px;">AUX<h3>
+				</div>
+			</div>
+			<div class="Control">PicAdjust</div>
+			<div class="Control">Cruise</div>
+			<div class="Control">PTZCtrl</div>
+			<div class="Control">PreSet</div>
+		</div>
+	</div>
+	<div id="operating">
+		<div class="play_time">
+			<p></p>
+			<p class="now"></p>
+			<span></span>
+		</div>
+		<div class="operat preview">
+			<ul>
+				<li class="1_setViewNum hover" style="background-position: 0 0;"></li>
+				<li class="2_setViewNum hover" style="background-position: -30px -36px;"></li>
+				<li class="3_setViewNum hover" style="background-position: 0 -72px;"></li>
+				<li class="4_setViewNum hover" style="background-position: 0 -108px;"></li>
+				<li class="5_setViewNum hover" style="background-position: 0 -144px;"></li>
+				<li class="6_setViewNum hover" style="background-position: 0 -180px;"></li>
+				<li class="7_setViewNum hover" style="background-position: 0 -216px;"></li>
+				<li class="8_setViewNum hover" style="background-position: 0 -252px;"></li>
+				<li class="9_setViewNum hover" style="background-position: 0 -288px;"></li>
+				<li class="11_setViewNum hover" style="background-position: 0 -324px;"></li>
+				<li class="12_setViewNum hover" style="background-position: 0 -360px;"></li>
+				<li style="1_setViewNum width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1/8</li>
+				<li class="hover" style="background-position: -120px -324px;"></li>
+				<li class="hover" style="background-position: -120px -360px"></li>
+				<li class="hover" style="background-position: -120px -72px;"></li>
+				<li class="hover" style="background-position: -120px -108px;"></li>
+				<li class="hover" style="background-position: -120px -144px;"></li>
+				<li class="hover" style="background-position: -120px -180px;"></li>
+				<li class="hover" style="background-position: -120px -216px;"></li>
+				<li class="hover" style="background-position: -120px -252px;"></li>
+				<li class="hover" style="background-position: -120px -288px;"></li>
+				<li class="toggle hover" style="background-position: -120px 0"></li>
+				<li class="hover" style="background:0; width:70px; margin-right:30px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
+			</ul>
+		</div>
+		<ul class="table">
+			<li style="height:26px;"><div class="thead">Time</div><div class="thead">Info</div><div class="thead"></div>
+			</li>
+			<li><div><input type="checkbox"><span>window 01</span></div><div></div><div></div>
+			</li>
+			<li><div><input type="checkbox"><span>window 02</span></div><div></div><div></div></li>
+			<li><div><input type="checkbox"><span>window 03</span></div><div></div><div></div></li>
+			<li><div><input type="checkbox"><span>window 04</span></div><div></div><div></div></li>
+		</ul>
+	</div>
+	<div id="foot">
+
+	</div>
+</body>
+</html>

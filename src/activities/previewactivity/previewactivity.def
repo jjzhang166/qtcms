@@ -1,0 +1,3 @@
+LIBRARY previewactivity.dll
+EXPORTS
+	CreateInstance @1
