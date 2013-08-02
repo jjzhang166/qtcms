@@ -79,7 +79,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>previewactivity.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
@@ -87,10 +87,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\guid.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="previewactivity.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\guid.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="previewactivity.h" />
     <ClInclude Include="previewactivity_global.h" />

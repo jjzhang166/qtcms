@@ -12,7 +12,7 @@ public:
     virtual unsigned long __stdcall AddRef();
     virtual unsigned long __stdcall Release();
 
-	virtual void Active();
+	virtual void Active( QWebFrame * );
 private:
 
 };
