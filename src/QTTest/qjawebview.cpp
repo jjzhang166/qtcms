@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QKeyEvent>
+#include <QtXml/QtXml>
 
 
 QJaWebView::QJaWebView(QWidget *parent) :
@@ -49,6 +50,39 @@ void QJaWebView::OnLoad( bool bOk )
     {
         QWebFrame * MainFrame;
         MainFrame = page()->mainFrame();
-    }
 
+		// Load configure file pcom_config.xml
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QFile * file = new QFile(sAppPath + "/pcom_config.xml");
+
+		// use QDomDocument to analyse it
+		QDomDocument ConfFile;
+		ConfFile.setContent(file);
+
+		// Get CLSID node,all object descripte under this node
+		QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+		QDomNodeList itemList = clsidNode.childNodes();
+		int n;
+		for (n = 0;n < itemList.count();n ++)
+		{
+			QDomNode item;
+			item = itemList.at(n);
+			QString sItemName = item.toElement().attribute("name");
+			// Get the node named like "activity."
+			if (sItemName.left(strlen("activity.")) == QString("activity."))
+			{
+				// To fix the title
+				QString sItemTitle = item.toElement().attribute("title");
+				if (sItemTitle == MainFrame->title())
+				{
+					// find the activity and the make it work
+					QString sItemClsid = item.toElement().attribute("clsid");
+				}
+			}
+		}
+
+		file->close();
+		delete file;
+
+    }
 }

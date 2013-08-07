@@ -20,8 +20,6 @@ signals:
     
 public slots:
     void OnLoad(bool bOk);
-
-
 };
 
 #endif // QJAWEBVIEW_H
