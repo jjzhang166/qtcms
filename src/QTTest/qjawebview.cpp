@@ -1,8 +1,10 @@
 #include "qjawebview.h"
+#include <libpcom.h>
 #include <QCoreApplication>
 #include <QSettings>
 #include <QKeyEvent>
 #include <QtXml/QtXml>
+#include "previewactivity.h"
 
 
 QJaWebView::QJaWebView(QWidget *parent) :
@@ -77,6 +79,11 @@ void QJaWebView::OnLoad( bool bOk )
 				{
 					// find the activity and the make it work
 					QString sItemClsid = item.toElement().attribute("clsid");
+					GUID guidTemp = pcomString2GUID(sItemClsid);
+
+					IActivities * IActivity;
+					pcomCreateInstance(guidTemp,NULL,IID_IActivities,(void **)&IActivity);
+
 				}
 			}
 		}

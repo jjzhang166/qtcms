@@ -46,6 +46,8 @@ LIBPCOMSHARED_EXPORT char *pcomGUID2String(const GUID &guid);
 
 LIBPCOMSHARED_EXPORT long pcomCreateInstance(const CLSID &clsid,IPcomBase *pBase,const IID &iid,void ** ppv);
 
+LIBPCOMSHARED_EXPORT GUID pcomString2GUID(const QString &sGuid);
+
 #ifdef __cplusplus
 };
 #endif

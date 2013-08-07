@@ -58,13 +58,26 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
 char *pcomGUID2String(const GUID &guid)
 {
     QString sGuid;
-    sGuid.sprintf("%08X-%04X-%04X-%04X-%04X08X",
+    sGuid.sprintf("%08X-%04X-%04X-%04X-%04X%08X",
                   guid.Data1,
                   guid.Data2,
                   guid.Data3,
                   *((unsigned short *)guid.Data4),
                   *((unsigned short *)(guid.Data4 + 2)),
-                  *((unsigned short *)(guid.Data4 + 4))
+                  *((unsigned long *)(guid.Data4 + 4))
                   );
     return sGuid.toAscii().data();
+}
+
+GUID pcomString2GUID(const QString &sGuid)
+{
+	GUID ret;
+	QStringList guidData = sGuid.split(QChar('-'));
+	ret.Data1 = guidData.at(0).toULong((bool *)0,16);
+	ret.Data2 = guidData.at(1).toUShort((bool *)0,16);
+	ret.Data3 = guidData.at(2).toUShort((bool *)0,16);
+	*((unsigned short *)(ret.Data4)) = guidData.at(3).toUShort((bool *)0,16);
+	*((unsigned short *)(ret.Data4 + 2)) = guidData.at(4).left(4).toUShort((bool *)0,16);
+	*((unsigned short *)(ret.Data4 + 4)) = guidData.at(4).right(8).toULong((bool *)0,16);
+	return ret;
 }
