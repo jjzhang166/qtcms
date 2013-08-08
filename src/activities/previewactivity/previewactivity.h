@@ -17,7 +17,14 @@ public:
 	virtual void Active( QWebFrame * frame);
 private:
 	QWebFrame * m_MainFrame;
-	QWebView * m_MainView;
+	QWidget * m_MainView;
+
+signals:
+
+public slots:
+	void OnJavaScriptWindowObjectCleared();
+	void OnTopActDbClick();
+
 
 };
 
