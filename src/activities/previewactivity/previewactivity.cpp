@@ -33,7 +33,6 @@ unsigned long __stdcall previewactivity::Release()
 	return 0;
 }
 
-void previewactivity::Active( QWebFrame * )
+void previewactivity::Active( QWebFrame * frame)
 {
-	
 }

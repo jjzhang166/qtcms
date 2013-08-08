@@ -6,7 +6,7 @@
 // GUID
 #ifndef GUID_DEFINED
 #define GUID_DEFINED
-typedef struct _tagGUID
+typedef struct _GUID
 {
     unsigned long Data1;
     unsigned short Data2;
@@ -42,7 +42,7 @@ extern "C"{
 #endif
 
 // functions
-LIBPCOMSHARED_EXPORT char *pcomGUID2String(const GUID &guid);
+LIBPCOMSHARED_EXPORT char * pcomGUID2String(const GUID &guid);
 
 LIBPCOMSHARED_EXPORT long pcomCreateInstance(const CLSID &clsid,IPcomBase *pBase,const IID &iid,void ** ppv);
 

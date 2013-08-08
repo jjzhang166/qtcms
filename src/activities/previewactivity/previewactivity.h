@@ -14,8 +14,10 @@ public:
     virtual unsigned long __stdcall AddRef();
     virtual unsigned long __stdcall Release();
 
-	virtual void Active( QWebFrame * );
+	virtual void Active( QWebFrame * frame);
 private:
+	QWebFrame * m_MainFrame;
+	QWebView * m_MainView;
 
 };
 

@@ -3,14 +3,15 @@
 
 bool operator==(const GUID &guid1,const GUID &guid2)
 {
-    return !memcpy((void*)&guid1,(void*)&guid2,sizeof(GUID));
+    return !memcmp((void*)&guid1,(void*)&guid2,sizeof(GUID));
 }
 
 
 long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, void **ppv)
 {
     long lRet = S_OK;
-    QString sReqClsid = pcomGUID2String(clsid);
+    QString sReqClsid;
+	sReqClsid.append(QString(pcomGUID2String(clsid)));
     QString sAppPath = QCoreApplication::applicationDirPath();
     QDomDocument ConfFile;
     QFile *file = new QFile(sAppPath + "/pcom_config.xml");
@@ -27,7 +28,7 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
         QString sClsid = item.toElement().attribute("clsid");
         if(sReqClsid == sClsid){
             QString sFileName =item.toElement().attribute("file");
-            QString sModulePath = sAppPath + sFileName;
+            QString sModulePath = sAppPath + QString("/") + sFileName;
             QLibrary Module(sModulePath);
 
             typedef IPcomBase * (*lpCreateInstance)();
@@ -55,8 +56,9 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
 }
 
 
-char *pcomGUID2String(const GUID &guid)
+char * pcomGUID2String(const GUID &guid)
 {
+	static char sRet[64] = {0};
     QString sGuid;
     sGuid.sprintf("%08X-%04X-%04X-%04X-%04X%08X",
                   guid.Data1,
@@ -66,7 +68,8 @@ char *pcomGUID2String(const GUID &guid)
                   *((unsigned short *)(guid.Data4 + 2)),
                   *((unsigned long *)(guid.Data4 + 4))
                   );
-    return sGuid.toAscii().data();
+	strcpy(sRet,sGuid.toAscii().data());
+    return sRet;
 }
 
 GUID pcomString2GUID(const QString &sGuid)
@@ -78,6 +81,6 @@ GUID pcomString2GUID(const QString &sGuid)
 	ret.Data3 = guidData.at(2).toUShort((bool *)0,16);
 	*((unsigned short *)(ret.Data4)) = guidData.at(3).toUShort((bool *)0,16);
 	*((unsigned short *)(ret.Data4 + 2)) = guidData.at(4).left(4).toUShort((bool *)0,16);
-	*((unsigned short *)(ret.Data4 + 4)) = guidData.at(4).right(8).toULong((bool *)0,16);
+	*((unsigned long *)(ret.Data4 + 4)) = guidData.at(4).right(8).toULong((bool *)0,16);
 	return ret;
 }

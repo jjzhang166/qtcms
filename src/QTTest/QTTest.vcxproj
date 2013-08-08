@@ -42,8 +42,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\output\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Platform)\$(PrimaryOutput)\$(Configuration)</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">QTTest</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\output\$(Configuration)\</OutDir>
@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>"$(QTDIR)\include\QtCore";"$(QTDIR)\include\QtGui";"$(QTDIR)\include\QtWebKit";"$(QTDIR)\include";"..\include";"$(QTDIR)\include\ActiveQt";"debug";$(QTDIR)\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWebKit;$(QTDIR)\include;..\include;$(QTDIR)\include\ActiveQt;debug;$(QTDIR)\mkspecs\default;$(SolutionDir)..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -72,7 +72,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;./libpcom.lib;$(QTDIR)\lib\QtWebKitd4.lib;$(QTDIR)\lib\QtGuid4.lib;$(QTDIR)\lib\QtCored4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;$(QTDIR)\lib\QtWebKitd4.lib;$(QTDIR)\lib\QtGuid4.lib;$(QTDIR)\lib\QtCored4.lib;$(QTDIR)\lib\QtXml4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -133,6 +133,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\guid.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_qjawebview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -145,7 +146,7 @@
   <ItemGroup>
     <CustomBuild Include="qjawebview.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include" "-I.\..\include" "-I$(QTDIR)\include\ActiveQt" "-I.\debug" "-I$(QTDIR)\mkspecs\default"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include" "-I.\..\include" "-I$(QTDIR)\include\ActiveQt" "-I.\debug" "-I$(QTDIR)\mkspecs\default" "-I$(SolutionDir)..\include"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing qjawebview.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>

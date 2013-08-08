@@ -4,7 +4,8 @@
 #include <QSettings>
 #include <QKeyEvent>
 #include <QtXml/QtXml>
-#include "previewactivity.h"
+#include <IActivities.h>
+#include <guid.h>
 
 
 QJaWebView::QJaWebView(QWidget *parent) :
@@ -55,7 +56,7 @@ void QJaWebView::OnLoad( bool bOk )
 
 		// Load configure file pcom_config.xml
 		QString sAppPath = QCoreApplication::applicationDirPath();
-		QFile * file = new QFile(sAppPath + "/pcom_config.xml");
+		QFile *file = new QFile(sAppPath + "/pcom_config.xml");
 
 		// use QDomDocument to analyse it
 		QDomDocument ConfFile;
@@ -64,6 +65,7 @@ void QJaWebView::OnLoad( bool bOk )
 		// Get CLSID node,all object descripte under this node
 		QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
 		QDomNodeList itemList = clsidNode.childNodes();
+		qDebug("item count:%d",itemList.count());
 		int n;
 		for (n = 0;n < itemList.count();n ++)
 		{
@@ -81,15 +83,15 @@ void QJaWebView::OnLoad( bool bOk )
 					QString sItemClsid = item.toElement().attribute("clsid");
 					GUID guidTemp = pcomString2GUID(sItemClsid);
 
-					IActivities * IActivity;
+					IActivities * IActivity = NULL;
 					pcomCreateInstance(guidTemp,NULL,IID_IActivities,(void **)&IActivity);
-
+					if (NULL != IActivity)
+					{
+						IActivity->Active(MainFrame);
+					}
 				}
 			}
 		}
-
 		file->close();
-		delete file;
-
     }
 }

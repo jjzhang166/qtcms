@@ -49,6 +49,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qjawebview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\guid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qjawebview.h">
