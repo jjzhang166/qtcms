@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\guid.h" />
+    <ClInclude Include="..\..\..\include\qwfw.h" />
     <ClInclude Include="dllmain.h" />
     <CustomBuild Include="previewactivity.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>

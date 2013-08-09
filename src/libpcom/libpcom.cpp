@@ -36,9 +36,10 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
             IPcomBase * pInstance = pCreateInstance();
             if (NULL != pBase)
             {
-                *pBase = *pInstance;
+                pBase = pInstance = pCreateInstance();
             }
             lRet = pInstance->QueryInterface(iid,ppv);
+			pInstance->Release();
 
             bFound = true;
             break;

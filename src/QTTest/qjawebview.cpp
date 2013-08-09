@@ -4,12 +4,12 @@
 #include <QSettings>
 #include <QKeyEvent>
 #include <QtXml/QtXml>
-#include <IActivities.h>
 #include <guid.h>
 
 
 QJaWebView::QJaWebView(QWidget *parent) :
-    QWebView(parent)
+    QWebView(parent),
+	m_Activity(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
 
@@ -83,11 +83,15 @@ void QJaWebView::OnLoad( bool bOk )
 					QString sItemClsid = item.toElement().attribute("clsid");
 					GUID guidTemp = pcomString2GUID(sItemClsid);
 
-					IActivities * IActivity = NULL;
-					pcomCreateInstance(guidTemp,NULL,IID_IActivities,(void **)&IActivity);
-					if (NULL != IActivity)
+					if (NULL != m_Activity)
 					{
-						IActivity->Active(MainFrame);
+						m_Activity->Release();
+						m_Activity = NULL;
+					}
+					pcomCreateInstance(guidTemp,NULL,IID_IActivities,(void **)&m_Activity);
+					if (NULL != m_Activity)
+					{
+						m_Activity->Active(MainFrame);
 					}
 				}
 			}

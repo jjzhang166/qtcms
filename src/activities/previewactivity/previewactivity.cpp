@@ -2,6 +2,12 @@
 #include <guid.h>
 #include <QtWebKit/QWebPage>
 
+previewactivity::previewactivity():
+m_nRef(0)
+{
+
+}
+
 long __stdcall previewactivity::QueryInterface( const IID & iid,void **ppv )
 {
 	if (IID_IPcomBase == iid)
@@ -17,38 +23,49 @@ long __stdcall previewactivity::QueryInterface( const IID & iid,void **ppv )
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
-	reinterpret_cast<IPcomBase *>(this)->AddRef();
+	static_cast<IPcomBase *>(this)->AddRef();
 
 	return S_OK;
 }
 
 unsigned long __stdcall previewactivity::AddRef()
 {
-
-	return 0;
+	m_csRef.lock();
+	m_nRef ++;
+	m_csRef.unlock();
+	qDebug("Addref:%d",m_nRef);
+	return m_nRef;
 }
 
 unsigned long __stdcall previewactivity::Release()
 {
-
-	return 0;
+	int nRet = 0;
+	m_csRef.lock();
+	m_nRef -- ;
+	nRet = m_nRef;
+	m_csRef.unlock();
+	if (0 == nRet)
+	{
+		qDebug("delete this;");
+		delete this;
+	}
+	return nRet;
 }
 
 void previewactivity::Active( QWebFrame * frame)
 {
-	m_MainFrame = frame;
-	m_MainView = (m_MainFrame->page())->view();
-
-
-	m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this);
-
-	connect(m_MainFrame,SIGNAL(javaScriptWindowObjectCleared),this,SLOT(OnJavaScriptWindowObjectCleared));
-	m_MainFrame->evaluateJavaScript(QString("connectEvent('top_act','dblclick',function a(){qob.OnTopActDbClick();});"));
+	m_MainView = (frame->page())->view();
+	QWFW_MSGMAP_BEGIN(frame);
+	QWFW_MSGMAP("top_act","dblclick","OnTopActDbClick()");
+	QWFW_MSGMAP("top_act","mousedown","OnTopActMouseDown()");
+	QWFW_MSGMAP("top_act","mouseup","OnTopActMouseUp()");
+	QWFW_MSGMAP("top_act","mousemove","OnTopActMouseMove(event.clientX,event.clientY)");
+	QWFW_MSGMAP_END;
 }
 
 void previewactivity::OnJavaScriptWindowObjectCleared()
 {
-	m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this);
+	QWFW_MSGRESET;
 }
 
 void previewactivity::OnTopActDbClick()
@@ -61,4 +78,19 @@ void previewactivity::OnTopActDbClick()
 	{
 		m_MainView->showMaximized();
 	}
+}
+
+void previewactivity::OnTopActMouseDown()
+{
+	qDebug("mouse down");
+}
+
+void previewactivity::OnTopActMouseUp()
+{
+	qDebug("mouse up");
+}
+
+void previewactivity::OnTopActMouseMove( int x,int y )
+{
+	qDebug("mouse move %d,%d",x,y);
 }

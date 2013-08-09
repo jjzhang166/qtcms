@@ -2,6 +2,7 @@
 #define QJAWEBVIEW_H
 
 #include <QtWebKit/QtWebKit>
+#include <IActivities.h>
 
 class QJaWebView : public QWebView
 {
@@ -20,6 +21,8 @@ signals:
     
 public slots:
     void OnLoad(bool bOk);
+private:
+	IActivities * m_Activity;
 };
 
 #endif // QJAWEBVIEW_H
