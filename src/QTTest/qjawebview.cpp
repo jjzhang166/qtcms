@@ -11,7 +11,12 @@ QJaWebView::QJaWebView(QWidget *parent) :
     QWebView(parent),
 	m_Activity(NULL)
 {
+	// Window styles
     setWindowFlags(Qt::FramelessWindowHint);
+
+	// Enable Javascript and plugins
+	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
+	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
 
     // Get Application Path
     QString temp = QCoreApplication::applicationDirPath();

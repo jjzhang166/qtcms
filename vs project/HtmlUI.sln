@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QTTest", "..\src\QTTest\QTT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "previewactivity", "..\src\activities\previewactivity\previewactivity.vcxproj", "{1415218C-3267-465D-9F01-D12038BDB8A1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViewWndPlugin", "..\src\plugins\ViewWndPlugin\ViewWndPlugin.vcxproj", "{96B79E57-8900-4809-BD02-B51B2B11EEA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +30,10 @@ Global
 		{1415218C-3267-465D-9F01-D12038BDB8A1}.Debug|Win32.Build.0 = Debug|Win32
 		{1415218C-3267-465D-9F01-D12038BDB8A1}.Release|Win32.ActiveCfg = Release|Win32
 		{1415218C-3267-465D-9F01-D12038BDB8A1}.Release|Win32.Build.0 = Release|Win32
+		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Debug|Win32.Build.0 = Debug|Win32
+		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.ActiveCfg = Release|Win32
+		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
