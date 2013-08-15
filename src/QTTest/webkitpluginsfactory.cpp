@@ -53,7 +53,7 @@ QList<QWebPluginFactory::Plugin> WebkitPluginsFactory::plugins() const
 		if (sItemName.left(strlen("plugin.")) == QString("plugin."))
 		{
 			// Get item classID
-			QString sItemClsid = itemElement.attribute("CLSID");
+			QString sItemClsid = itemElement.attribute("clsid");
 			GUID guidTemp = pcomString2GUID(sItemClsid);
 
 			// append plugins
@@ -97,7 +97,7 @@ QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url
 			if (sMime == mimeType)
 			{
 				// Get item classID
-				QString sItemClsid = itemElement.attribute("CLSID");
+				QString sItemClsid = itemElement.attribute("clsid");
 				GUID guidTemp = pcomString2GUID(sItemClsid);
 
 				// append plugins
@@ -110,9 +110,7 @@ QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url
 					return retObj;
 				}
 			}
-			
 		}
 	}
-
 	return NULL;
 }

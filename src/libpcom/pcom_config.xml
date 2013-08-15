@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root ver="1.0">
     <CLSID>
-        <item clsid="0052DFC7-3EEA-4b58-BA1D-41658C818078" name="cms.preview" file="japreview.dll" tilte="preview"/>
+        <item clsid="6C997D3A-503C-4BD6-88D8-B3ABDA5A2AC9" name="activity.preview" file="previewactivity.dll" title="preview"/>
+        <item clsid="C53FEEB7-69AD-4EF4-9426-031714380480" name="plugin.viewwndplugin" file="plugins/viewwndplugin.dll" mimetype="application/cms-preview-window"/>
     </CLSID>
 </root>

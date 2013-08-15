@@ -1,0 +1,3 @@
+LIBRARY viewwndplugin.dll
+EXPORTS
+	CreateInstance @1
