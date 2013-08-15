@@ -44,6 +44,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_viewwndplugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\guid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="viewwndplugin_global.h">

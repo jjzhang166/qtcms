@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QtXml/QtXml>
 #include <guid.h>
+#include <webkitpluginsfactory.h>
 
 
 QJaWebView::QJaWebView(QWidget *parent) :
@@ -17,6 +18,9 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	// Enable Javascript and plugins
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
+
+	// Set web plugin factory
+	page()->setPluginFactory(new WebkitPluginsFactory(this));
 
     // Get Application Path
     QString temp = QCoreApplication::applicationDirPath();

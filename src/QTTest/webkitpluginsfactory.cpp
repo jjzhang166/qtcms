@@ -1,6 +1,10 @@
 #include "webkitpluginsfactory.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <QtXml/QtXml>
+#include <libpcom.h>
+#include <IWebPluginBase.h>
+#include <guid.h>
 
 WebkitPluginsFactory::WebkitPluginsFactory(QObject *parent)
 	: QWebPluginFactory(parent)
@@ -15,67 +19,100 @@ WebkitPluginsFactory::~WebkitPluginsFactory()
 
 QList<QWebPluginFactory::Plugin> WebkitPluginsFactory::plugins() const
 {
-	// plugin directory ${ApplicationPath}/plugins
-	QString sAppPath = QCoreApplication::applicationDirPath();
-	QString sPluginPath = sAppPath + "/plugins";
-
-	// Check if the first time
-	static bool isFirst=true;
+	static bool bFirst = true;
 	static QList<QWebPluginFactory::Plugin> plugins;
-	if(!isFirst)
+	if (!bFirst)
 	{
 		return plugins;
 	}
-	isFirst=false;
+	bFirst = false;
 
-	// Clear at first
+	// clear list first
 	plugins.clear();
+	
+	// Load configure file pcom_config.xml
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QFile *file = new QFile(sAppPath + "/pcom_config.xml");
 
+	// use QDomDocument to analyse it
+	QDomDocument ConfFile;
+	ConfFile.setContent(file);
 
-	QDir dir(sPluginPath);
-	QStringList filters;
-	QString abspath=dir.absolutePath();
-	//获取指定目录下的所有插件，linux下是插件库的后缀为so，windows下则是dll，
-	filters<<"lib*.so";
-	QStringList files=dir.entryList(filters);
-	foreach(QString file,files)
+	// Get CLSID node,all object descripte under this node
+	QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	int n;
+	for (n = 0;n < itemList.count(); n ++)
 	{
+		QDomNode item;
+		item = itemList.at(n);
+		QDomElement itemElement = item.toElement();
+		QString sItemName = itemElement.attribute("name");
 
-		file=dir.filePath(file);
-
-		QPluginLoader loader(file);
-		QObject * obj= loader.instance();
-
-		//下面是载入自定义的接口，只有这样才能支持动态插件创建，如果固定死了，将不利于扩展
-		WebKitPluginInterface * interface= qobject_cast<WebKitPluginInterface*> (obj);
-		if(interface==0)
+		// Get the node named as "plugin."
+		if (sItemName.left(strlen("plugin.")) == QString("plugin."))
 		{
+			// Get item classID
+			QString sItemClsid = itemElement.attribute("CLSID");
+			GUID guidTemp = pcomString2GUID(sItemClsid);
 
-			continue;
-		}
-		plugins.append(interface->plugins());
-		pluginslist.append(interface->plugins());
-		interfaces.append(interface);
-	}
-	if(plugins.isEmpty())
-	{
-		qDebug()<<"no plugins is loaded!";
-	}
-	return plugins;
-}
-
-QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
-{
-	for(int i=0;i<pluginslist.size();i++)
-	{
-		for( int j=0;j< pluginslist[i].size();j++)
-		{
-			foreach(QWebPluginFactory::MimeType mt, pluginslist[i][j].mimeTypes)
+			// append plugins
+			IWebPluginBase * webPluginBase = NULL;
+			pcomCreateInstance(guidTemp,NULL,IID_IWebPluginBase,(void **)&webPluginBase);
+			if (NULL != webPluginBase)
 			{
-				if(mt.name == mimeType) //更具MIME类型，创建相应的插件实例
-					return interfaces[i]-> create( mimeType, url, argumentNames, argumentValues);
+				plugins.append(webPluginBase->plugins());
+				webPluginBase->Release();
 			}
 		}
 	}
-	return NULL; //如果没有，直接返回NULL，webkit会进行处理的
+
+	return plugins;
+}
+
+QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url, const QStringList& argumentNames, const QStringList& argumentValues ) const
+{
+	// Load configure file pcom_config.xml
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QFile *file = new QFile(sAppPath + "/pcom_config.xml");
+
+	// use QDomDocument to analyse it
+	QDomDocument ConfFile;
+	ConfFile.setContent(file);
+
+	// Get CLSID node,all object descripte under this node
+	QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	int n;
+	for (n = 0; n < itemList.count();n++)
+	{
+		QDomNode item = itemList.at(n);
+		QDomElement itemElement = item.toElement();
+		QString sItemName = itemElement.attribute("name");
+
+		// Get the node named as "plugin."
+		if (sItemName.left(strlen("plugin.")) == QString("plugin."))
+		{
+			QString sMime = itemElement.attribute("mimetype");
+			if (sMime == mimeType)
+			{
+				// Get item classID
+				QString sItemClsid = itemElement.attribute("CLSID");
+				GUID guidTemp = pcomString2GUID(sItemClsid);
+
+				// append plugins
+				IWebPluginBase * webPluginBase = NULL;
+				pcomCreateInstance(guidTemp,NULL,IID_IWebPluginBase,(void **)&webPluginBase);
+				if (NULL != webPluginBase)
+				{
+					QObject * retObj = webPluginBase->create(mimeType,url,argumentNames,argumentValues);
+					webPluginBase->Release();
+					return retObj;
+				}
+			}
+			
+		}
+	}
+
+	return NULL;
 }

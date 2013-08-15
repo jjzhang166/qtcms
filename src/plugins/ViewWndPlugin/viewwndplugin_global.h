@@ -3,10 +3,4 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef VIEWWNDPLUGIN_LIB
-# define VIEWWNDPLUGIN_EXPORT Q_DECL_EXPORT
-#else
-# define VIEWWNDPLUGIN_EXPORT Q_DECL_IMPORT
-#endif
-
 #endif // VIEWWNDPLUGIN_GLOBAL_H
