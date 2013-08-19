@@ -1,3 +1,8 @@
+从svn上checkout下来后，需要先做以下工作
+将web目录下的内容，拷贝到output/Debug和output/Release下
+将src/libpcom下的pcom_config.xml文件，拷贝到output/Debug和output/Release下
+
+
 库的配置
 1.配置属性->常规:
     1.1输出目录:$(SolutionDir)..\libs\
