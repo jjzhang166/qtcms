@@ -49,7 +49,7 @@
 				QWFW_MSGMAP_END;
 			2.3.3.4实现OnJavaScriptWindowObjectCleared，只需要在函数中添加
 				QWFW_MSGRESET;
-			2.3.3.5消息响应，参照第5章的“如何实现消息响应”
+			2.3.3.5消息响应，参照第4章的“如何实现消息响应”
 	2.4CreateInstance的实现和导出
 		项目中需要实现 IPcomBase * CreateInstance(); 函数，并将该函数导出，导出时需要注意添加extern "C"
 		具体方式可以参照previewactivity中的dllmain.h，dllmain.cpp和previewactivity.def三个文件
@@ -66,3 +66,94 @@
 		2.6.4 title的值为该activity所对应的html文件的标题
 
 3.创建Plugin
+	3.1在解决方案内添加一个新项目，项目类型为Qt Library，选择在src/plugins下存放项目
+	3.2项目配置
+		3.2.1配置属性->常规:
+			3.2.1.1输出目录:$(SolutionDir)..\libs\
+			3.2.1.2中间目录:$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)
+		3.2.2配置属性->C/C++->常规:
+			附加包含目录中添加：$(SolutionDir)..\include\
+		3.2.3配置属性->链接器->输入
+			附加依赖项中添加:$(SolutionDir)..\libs\libpcom.lib
+		3.2.4配置属性->生成事件->后期生成事件
+			命令行:copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\plugins"
+	3.3修改项目向导生成的文件
+		3.3.1删除xxxxxx_global.h内的导出符号定义代码
+		3.3.2修改xxxxxx.h文件
+			3.3.2.1删除xxxxxx_EXPORT导出符号
+			3.3.2.2包含头文件IWebPluginBase.h
+			3.3.2.3类增加继承父类和接口，依次为 QObject、IWebPluginBase
+			3.3.2.4添加以下几个从父类继承来的虚函数
+				virtual long __stdcall QueryInterface( const IID & iid,void **ppv );
+				virtual unsigned long __stdcall AddRef();
+				virtual unsigned long __stdcall Release();
+				virtual QList<QWebPluginFactory::Plugin> plugins() const;
+				virtual QObject * create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const;
+		3.3.3修改xxxxxx.cpp文件
+			3.3.3.1实现QueryInterface函数，根据传进来的iid，返回对应的接口指针，具体可以参照previewactivity.cpp中代码
+			3.3.3.2实现Add和Release函数，实现实例的自释放，具体参照previewactivity.cpp中代码
+			3.3.3.3实现plugins和create函数，在函数中添加以下代码
+				plugins函数返回一个列表，该列表描述了该库内所支持的插件的信息，具体实现可以参考viewwndplugin.cpp
+				create函数根据mimeType，创建相应的插件对象并返回，具体实现可以参考viewwndplugin.cpp
+			3.3.3.4添加宏Q_EXPORT_PLUGIN2(PLUGIN,PLUGINCLS),该宏用于导出插件的相关函数，PLUGIN为一个字符串，即生成的插件的文件名，PLUGINCLS为插件的类名
+	3.4CreateInstance的实现和导出
+		项目中需要实现 IPcomBase * CreateInstance(); 函数，并将该函数导出，导出时需要注意添加extern "C"
+		具体方式可以参照previewactivity中的dllmain.h，dllmain.cpp和previewactivity.def三个文件
+		添加.def文件时需要修改项目属性:
+		配置属性->链接器->输入:
+			模块定义文件:添加到项目中的.def文件名
+	3.5将src/common下的guid.cpp文件添加到项目中
+		2.5.1在guid.cpp中添加一个CLSID，可以使用vs2010工具中的"创建 GUID"生成，具体格式可以参照其他CLSID
+		2.5.2在guid.h中添加新生成的CLSID的声明，具体格式可以参照其他CLSID
+	3.6修改src/libpcom下的pcom_config.xml文件,在文件的CLSID节点下新增一个item节点,节点中添加clsid,name,file及mimetype属性
+		3.6.1 clsid的值为3.5中新添加的CLSID的值
+		3.6.2 name的值为开头必须以"plugin."，分隔符"."后可以使用自己命名的名称
+		3.6.3 file的值为生成的动态库dll相对QtTest.exe的路径，最前端不需要加"./"
+		3.6.4 mimetype的值为该plugin所对应的mimetype
+		
+4.如何实现消息响应
+    项目中采用一个html页面对应一个Activity的方式来实现UI的模块化和动态插入，实现
+  html上相关元素的一些UI交互操作除了采用Javascript之外，还可以由Activity来实现。
+  以下步骤实现html上的消息，映射到Activity中的代码。
+  4.1将src/QTTest下的qframework.js文件拷贝到输出目录
+  4.2在需要做消息映射的html内，包含文件qframework.js
+  4.3为html内需要映射消息的元素添加一个id，该id必须在页面内唯一
+  4.4在Activity的Active函数中插入宏QWFW_MSGMAP(id,msg,proc)，id,msg和proc都是
+     用引号"包裹起来的字符串:
+     4.4.1 id为在4.3中定义的id
+     4.4.2 msg为id所对应的元素的消息类型，如mousedown,dblclick等，具体的消息类
+           型可以查阅html的相关文档
+     4.4.3 proc为Activity内的函数名，该函数必须声明为slots
+  4.5声明并实现4.4中引用的proc函数，proc函数即为响应html元素id的msg消息的消息函数
+  4.6同一id的同一个消息可以映射到多个消息函数，消息函数的调用顺序为QWFW_MSGMAP声明
+     时的顺序,例如:
+			void previewactivity::Active( QWebFrame * frame)
+			{
+				QWFW_MSGMAP_BEGIN(frame);
+				QWFW_MSGMAP("top_act","dblclick","OnTopActDbClick2(event.clientX,event.clientY)");
+				QWFW_MSGMAP("top_act","dblclick","OnTopActDbClick()");
+				QWFW_MSGMAP_END;
+			}
+			
+			void previewactivity::OnTopActDbClick()
+			{
+				qDebug("OnTopActDbClick");
+			}
+
+			void previewactivity::OnTopActDbClick2( int x,int y )
+			{
+				qDebug("OnTopActDbClick2:%d,%d",x,y);
+			}
+			以上代码，OnTopActDbClick和OnTopActDbClick2都将被执行，并且将先执行OnTopActDbClick2，
+			然后再执行OnTopActDbClick,当双击top_act时，执行结果如下:
+			OnTopActDbClick2:526,18
+			OnTopActDbClick
+			 
+  4.7消息函数没有固定的参数，但是消息函数的名称、类型必须和QWFW_MSGMAP中声明的一直，
+     比如html中一个id为btn的按钮元素
+     QWFW_MSGMAP("btn","mousedown","OnBtnMouseDown()");
+     QWFW_MSGMAP("btn","mousedown","OnBtnMouseDown(event.clientX,event.clientY)");
+     两种QWFW_MSGMAP声明都是被允许的，第一种声明必须对应实现函数
+     void OnBtnMouseDown();
+     而第二种声明必须对应实现函数
+     void OnBtnMouseDown(int x,int y);
