@@ -1,28 +1,68 @@
-从svn上checkout下来后，需要先做以下工作
-将web目录下的内容，拷贝到output/Debug和output/Release下
-将src/libpcom下的pcom_config.xml文件，拷贝到output/Debug和output/Release下
+文件夹结构
+-|-include                             公共文件夹
+ |-libs                                Activity和plugin的生成目录
+ |-output                              工程的发布目录
+ |-src
+  |-activities                         放置各个Activity
+  |-common                             公共文件
+  |-libpcom                            pcom源文件
+  |-plugins                            放置各个plugin
+  |-QTTest                             可执行主程序
+ |-vs project                          vs2010工程文件
+ |-web                                 web ui 文件
+ 
+1.output目录的配置
+	1.1将web目录下的内容，拷贝到output/Debug和output/Release下
+	1.2将src/libpcom下的pcom_config.xml文件，拷贝到output/Debug和output/Release下
 
+2.创建Activity
+	2.1在解决方案内添加一个新项目，项目类型为Qt Library，选择在src/activities下存放项目
+	2.2项目配置
+		2.2.1配置属性->常规:
+			2.2.1.1输出目录:$(SolutionDir)..\libs\
+			2.2.1.2中间目录:$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)
+		2.2.2配置属性->C/C++->常规:
+			附加包含目录中添加：$(SolutionDir)..\include\
+		2.2.3配置属性->链接器->输入
+			附加依赖项中添加:$(SolutionDir)..\libs\libpcom.lib
+		2.2.4配置属性->生成事件->后期生成事件
+			命令行:copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"
+	2.3修改项目向导生成的文件
+		2.3.1删除xxxxxx_global.h内的导出符号定义代码
+		2.3.2修改xxxxxx.h文件
+			2.3.2.1删除xxxxxx_EXPORT导出符号
+			2.3.2.2包含头文件IActivities.h和qwfw.h
+			2.3.2.3类增加继承父类和接口，依次为 QObject、IActivities、QWebUiFWBase
+			2.3.2.4添加以下几个从父类继承来的虚函数
+				virtual long __stdcall QueryInterface(const IID & iid,void **ppv);
+    		virtual unsigned long __stdcall AddRef();
+    		virtual unsigned long __stdcall Release();
+				virtual void Active( QWebFrame * frame);
+			2.3.2.5添加一个slot
+				void OnJavaScriptWindowObjectCleared();
+		2.3.3修改xxxxxx.cpp文件
+			2.3.3.1实现QueryInterface函数，根据传进来的iid，返回对应的接口指针，具体可以参照previewactivity.cpp中代码
+			2.3.3.2实现Add和Release函数，实现实例的自释放，具体参照previewactivity.cpp中代码
+			2.3.3.3实现Active函数，在函数中添加以下代码
+				QWFW_MSGMAP_BEGIN(frame);
+				// Todo: Add your message map here
+				QWFW_MSGMAP_END;
+			2.3.3.4实现OnJavaScriptWindowObjectCleared，只需要在函数中添加
+				QWFW_MSGRESET;
+			2.3.3.5消息响应，参照第5章的“如何实现消息响应”
+	2.4CreateInstance的实现和导出
+		项目中需要实现 IPcomBase * CreateInstance(); 函数，并将该函数导出，导出时需要注意添加extern "C"
+		具体方式可以参照previewactivity中的dllmain.h，dllmain.cpp和previewactivity.def三个文件
+		添加.def文件时需要修改项目属性:
+		配置属性->链接器->输入:
+			模块定义文件:添加到项目中的.def文件名
+	2.5将src/common下的guid.cpp文件添加到项目中
+		2.5.1在guid.cpp中添加一个CLSID，可以使用vs2010工具中的"创建 GUID"生成，具体格式可以参照其他CLSID
+		2.5.2在guid.h中添加新生成的CLSID的声明，具体格式可以参照其他CLSID
+	2.6修改src/libpcom下的pcom_config.xml文件,在文件的CLSID节点下新增一个item节点,节点中添加clsid,name,file及title属性
+		2.6.1 clsid的值为2.5中新添加的CLSID的值
+		2.6.2 name的值为开头必须以"activity."，分隔符"."后可以使用自己命名的名称
+		2.6.3 file的值为生成的动态库dll相对QtTest.exe的路径，最前端不需要加"./"
+		2.6.4 title的值为该activity所对应的html文件的标题
 
-库的配置
-1.配置属性->常规:
-    1.1输出目录:$(SolutionDir)..\libs\
-    1.2中间目录:$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)
-
-2.配置属性->C/C++->常规:
-    2.1附加包含目录中添加：$(SolutionDir)..\include\
-
-3.配置属性->生成时间->后期生成时间
-    3.1命令行:copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"
-
-app的配置
-1.配置属性->常规:
-    1.1输出目录:$(SolutionDir)..\output\$(Configuration)\
-    1.2中间目录:$(SolutionDir)$(Platform)\$(PrimaryOutput)\$(Configuration)
-
-2.配置属性->C/C++->常规:
-    2.1附加包含目录中添加：$(SolutionDir)..\include\
-
-其他
-1.libpcom配置
-    1.1配置属性->连接器->输入
-        1.1.1附加依赖项中添加:$(SolutionDir)..\libs\libpcom.lib
+3.创建Plugin
