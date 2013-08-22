@@ -1,0 +1,1415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>预览</title>
+<link rel="stylesheet" type="text/css" href="css/play_back.css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<script src="treeview/jquery.treeview.js" type="text/javascript"></script>
+<script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function(){
+		document.oncontextmenu = function(e){
+			var e = e || window.event;
+			if(e.target.tagName != 'BODY'){
+				return false;
+			}	
+		}
+		
+		$('span.file').mouseup(function(e){ 
+			var e = e || window.event;
+			if(e.which == '3'){
+				$('#menu2').css({
+					top:e.clientY,
+					left:e.clientX,					
+				}).show(10,function(e){
+					$(document).bind('click',function(e){
+						var e = e || window.event;
+						if(e.which == 1){
+							$('#menu2').hide();
+							$(document).off();
+						};
+					})
+				});
+			}
+		})
+		
+		$('#menu2 li').click(function(){
+			$('#iframe').show();
+			$('#menu').css({
+				top:($(window).height() - $('#menu').height())/2,
+				left:($(window).width() - $('#menu').width())/2
+			})
+			$('#menu').show();	
+		})
+		
+		$('ul.filetree').treeview();		
+			
+		$('.hover').each(function(){
+			var action = $(this).attr('class').split(' ')[0];
+			addMouseStyle($(this),action);
+		})
+
+		set_contentMax();
+
+		$('#set_content div.left li').each(function(index){
+			$(this).click(function(){
+				$('#set_content div.right div').filter(function(){
+					return $(this).parent().is('#set_content div.right');
+				}).hide().eq(index).show();
+			})
+		})
+		
+		$('div.action li').slice(1,4).click(function(){ 
+			$('#iframe').show();
+			$('#menu').css({
+				top:($(window).height() - $('#menu').height())/2,
+				left:($(window).width() - $('#menu').width())/2
+			})
+			$('#menu').show();
+		})
+	})
+	function set_contentMax(){
+		var W = $(window).width();
+		var H = $(window).height();
+		$('#set_content .right').width(W - 250);
+		$('#set_content .right').height(H - 106);
+		$('#set_content .left').height(H - 106);
+		$('#foot').css({
+			top:H - 28
+		})
+	}
+</script>
+<style type="text/css">
+	#set_content .left { background: #1E1E1E; width: 250px; float: left;}
+	#set_content .right { background: #323232; float: left;}
+	#set_content .left li{
+		display: block;
+		height: 50px;
+		width: 250px;
+		text-align: left;
+		line-height: 50px;
+		text-indent: 70px;
+	}
+	#set_content .left li:hover{
+		background: #393D40;
+	}
+	/*#set_content .right li{
+		float: left;
+		height: auto;
+	}
+	#set_content .right li div{
+		float: left;
+		height: 602px;
+		width: 312px;
+		background: #E4EBF5;
+	}
+	#set_content .right li span{
+		display: block;
+		height: 22px;
+		width: 66px;
+		background: #fff;
+		margin:20px 60px;
+	}*/
+	table{background: #fff; border-collapse: collapse;}
+	table .select1{ width: 130px;}
+	tr{ background: #282828; height: auto; text-align: left;}
+	td{ width: 168px; font-size: 14px; padding-left:4px; height: 28px; }
+	table input{ height: 16px; margin-right:6px; border: 0; background: url(images/top_icon.png) no-repeat -440px 0;}
+	table .td1{ width: 110px;}
+	table .td2{ width: 228px;}
+	table .td4{ width: auto;}
+	table .td4 div{ width: 34px; float: left; margin: 0 4px; height: 16px;}
+	table .td4 input{margin:0; float: left;}
+	table .td4 span{margin-left: 2px; float: left; display: block; width: 16px; height: 16px; text-indent: 0px; }
+	table .tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px;}
+	table .chk{margin:0 4px;}
+	table .chk1{margin:0 52px 0 14px;}
+	table .iput{float: right; margin-right: 6px;}
+	table .iput1{float: left; width:78px;}
+	.title{ text-indent: 12px; color: #FF6400;}
+	.tb1 td,tb2,td{width:auto;}
+	.tb1 {padding:0 20px; display: block; background: #282828; float: left;}
+	.tb1 tr{background: #323232;}
+	.tb2 tbody td{border:1px solid #ccc;}
+	.tb2 thead td{ text-align:center; background:#282828;}
+	.nav1 li{width: auto; padding: 0 4px; height: auto;}
+	.switch{padding: 0 10px;}
+	table h5{ display: inline;}
+	#set_content .action{ width:100px;margin:10px; height:450px;}
+	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat; font-size:14px; line-height:22px; text-align:center;}
+	#iframe{
+		overflow: hidden; 
+		position: absolute; 
+		background: none repeat scroll 0% 0% rgb(0, 0, 0); 
+		z-index: 999;
+		width: 100%; 
+		left: 0px; 
+		top: 0px; 
+		height: 100%; 
+		opacity: 0.5; 
+		filter:alpha(opacity=50);
+	}
+	#menu{ display:none; height:400px; width:600px; position:absolute; border:1px solid red; z-index:1000;}
+	#menu2{ background:#9FF; position:absolute; display:none; width:60px;}
+	#menu2 li:hover{ background:#93F;}
+</style>
+</head>
+
+<body>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
+<div id="menu"></div>
+<div id="menu2">
+	<ul>
+		<li>添加</li>
+		<li>修改</li>
+		<li>删除</li>				
+	</ul>
+</div>
+	<div id="top">
+		<div class="top_act">
+			<h4>DVR Client</h4>
+			<div id="top_window_act">
+				<ul>
+					<li><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<li><a class="toggle hover" href="javascript:;"></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="top_nav">
+			<ul>
+				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
+				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
+				<li><a class="hover" style="background-position: 0 -104px;" href="backup.html">backup</a></li>
+				<li><a class="hover" style="background-position: 0 -156px;" href="device.html">Device</a></li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
+				<li><a class="hover" style="background-position: 0 -260px;" href="log.html">Log</a></li>
+			</ul>
+			<div>
+				<a href="javascript:;"></a>				
+				<p style="color:#000;">Login User:eddy</p>
+			</div>
+		</div></div>
+	<div id="set_content">
+		<div class="left">
+			<ul>
+				<li>Device Manage</li>
+				<li>Server Setting</li>
+				<li>Client Setting</li>
+				<li>User Manage</li>
+			</ul>
+		</div>
+		<div class="right">
+			<div>
+			<div style="float:left;">
+				<table class="tb1 tb2" cellpadding="0" style=" height:500px; width:468px; overflow:auto; float:left;">
+					<thead>
+						<tr>
+							<td style="width:80px;">设备</td>
+							<td style="width:140px;">ID</td>
+							<td style="width:110px;">IP</td>
+							<td style="width:80px;">通道数</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
+						
+																														
+					</tbody>
+				</table>
+				<div class="action" style="float:left;">
+					<ul>
+						<li>添加</li>
+						<li>添加区域</li>
+						<li>修改设备</li>
+						<li>添加分组</li>
+						<li>设备搜索</li>
+					</ul>
+				</div>
+				<table class="tb1 tb2" cellpadding="0" style=" clear:both;height:146px; width:468px;">
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" />全选</td></tr></thead>
+					<tbody>
+						<tr>
+							<td>设备IP</td>
+							<td><input type="text" /></td>
+							<td>子网掩码</td>
+							<td><input type="text" /></td>																					
+						</tr>
+						<tr>
+							<td>网关</td>
+							<td><input type="text" /></td>
+							<td>MAC地址</td>
+							<td><input type="text" /></td>																					
+						</tr>
+						<tr>
+							<td>端口</td>
+							<td colspan="3"><input type="text" style="width:60px;" /><input style="margin-left:30px; width:60px;" type="button" value="设置"/></td>																					
+						</tr>
+						<tr>
+							<td colspan="4"><input type="button" value="批量分配IP"/></td>																					
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div style="float:left;">
+				<div class="dev_list" style="height:300px;">
+					<ul id="area" class="filetree">
+						<li><span class="area">Area</span>
+							<ul>
+								<li><span class="folder" >device</span>
+									<ul>
+										<li><span class="file">Channel01</span></li>
+										<li><span class="file">Channel02</span></li>
+										<li><span class="file">Channel03</span></li>
+										<li><span class="file">Channel04</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><span class="area">Area</span>
+							<ul>
+								<li><span class="folder" >device</span>
+									<ul>
+										<li><span class="file">Channel01</span></li>
+										<li><span class="file">Channel02</span></li>
+										<li><span class="file">Channel03</span></li>
+										<li><span class="file">Channel04</span></li>
+										<li><span class="file">Channel05</span></li>
+										<li><span class="file">Channel06</span></li>
+										<li><span class="file">Channel07</span></li>
+										<li><span class="file">Channel08</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="action" style="height:22px;"><ul><li>添加至分组</li></ul></div>
+				<div class="dev_list" style="height:300px;">
+					<ul id="group" class="filetree">
+						<li><span class="group">Group</span>
+							<ul>
+								<li><span class="folder">device</span>
+									<ul>
+										<li><span class="file">Channel01</span></li>
+										<li><span class="file">Channel02</span></li>
+										<li><span class="file">Channel03</span></li>
+										<li><span class="file">Channel04</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><span class="group">Group</span>
+							<ul>
+								<li><span class="folder" >device</span>
+									<ul>
+										<li><span class="file">Channel01</span></li>
+										<li><span class="file">Channel02</span></li>
+										<li><span class="file">Channel03</span></li>
+										<li><span class="file">Channel04</span></li>
+										<li><span class="file">Channel05</span></li>
+										<li><span class="file">Channel06</span></li>
+										<li><span class="file">Channel07</span></li>
+										<li><span class="file">Channel08</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>	
+				</div>
+				</div>
+			</div>
+			<div  style="display:none;">
+				<ul class="ope_list nav1">
+					<li class="act">DeviceInfo</li>
+					<li>CommonSettings</li>
+					<li>NetworkSettings</li>
+					<li>EncodingSettings</li>
+					<li>VideoSettings</li>
+					<li>ScreenSettings</li>
+					<li>VideoDetectSetting</li>
+					<li>PTZ Settings</li>
+					<li>Alarm Settings</li>
+				</ul>
+				<div class="switch"  style="display:block;">
+					<table>
+						<tr><td>Device Name</td><td><input type="text" /></td></tr>
+						<tr><td>Device Model</td><td><input type="text" /></td></tr>
+						<tr><td>Hardware version</td><td><input type="text" /></td></tr>
+						<tr><td>Software Version</td><td><input type="text" /></td></tr>
+						<tr><td>Build time</td><td><input type="text" /></td></tr>
+						<tr><td>Sum of Channels</td><td><input type="text" /></td></tr>
+						<tr><td>Audio of channels</td><td><input type="text" /></td></tr>
+						<tr><td>Alarm Inputs</td><td><input type="text" /></td></tr>
+						<tr><td>Alarm Outputs</td><td><input type="text" /></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr>
+							<td>Date Format</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td><input type="checkbox" />Keypad lock</td><td><input type="checkbox" />Key sound</td></tr>
+						<tr>
+							<td>Video System</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul></td>
+						</tr>
+						<tr>
+							<td>Remote Control No.</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>overwrites hard disk</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>OSD transparency</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="2"><input type="checkbox" />Auto Round Robin</td></tr>
+						<tr>
+							<td>Auto Round Robin interval</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>Auto Round Robin type</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr><td>MAC Addr</td><td><input type="text" /></td><td></td><td></td></tr>
+						<tr class="title"><td colspan="2"><h5>IP</h5></td><td colspan="2"><h5>DDSN</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+							 		<tr><td colspan="2"><input type="checkbox" />OpenDH</td></tr>
+							 		<tr><td >IP Addr</td><td><input type="text"/></td></tr>
+							 		<tr><td>Subnet Mask</td><td><input type="text"/></td></tr>
+							 		<tr><td>Network Addr</td><td><input type="text"/></td></tr>
+							 		<tr><td>DNS Addr</td><td><input type="text"/></td></tr>
+								</table>
+							</td>
+							<td colspan="2">
+								<table class="tb1">
+						 			<tr><td colspan="2"><input type="checkbox" />OpenDD</td></tr>
+						 			<tr><td>Supplier</td><td><input type="text"/></td></tr>
+						 			<tr><td>Domain</td><td><input type="text"/></td></tr>
+						 			<tr><td>User</td><td><input type="text"/></td></tr>
+						 			<tr><td>Password</td><td><input type="text"/></td></tr>
+							 	</table>	
+							</td>
+						</tr>
+						<tr class="title"><td colspan="2" ><h5>Port</h5></td><td colspan="2"><h5>PPPOE</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+									<tr><td>Web Port</td><td><input type="text" /></td></tr>
+									<tr><td>Client Port</td><td><input type="text" /></td></tr>
+									<tr><td>Phone Port</td><td><input type="text" /></td></tr>
+								</table>		
+							</td>
+							<td colspan="2">
+								<table class="tb1">
+									<tr><td colspan="2"><input type="checkbox" />Open PPPOE</td></tr>
+									<tr><td>User</td><td><input type="text" /></td></tr>
+									<tr><td>Password</td><td><input type="text" /></td></tr>
+								</table>	
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+									<tr style="background:#282828;"><td>EseeID</td><td><input type="text" /></tr>		
+								</table>
+							</td>
+							<td colspan="2"></td>
+						</tr>		
+						<tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr>
+							<td>channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="title"><td colspan="2"><h5>Main Stream</h5></td><td colspan="2"><h5>Sub-stream</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+								<tr>
+									<td>Coding mode</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Encoding format</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Image Quality</td>
+									<td>
+										<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream Control</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream bit rate</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream framerate</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								</table>
+							</td>
+							<td colspan="2">
+								<table class="tb1">
+									<tr>
+										<td>Coding mode</td>
+										<td>
+											<div class="select" style="width:133px;">
+												<span></span>
+												<a class="hover" href="javascript:;"></a>
+											</div>
+											<ul class="option">
+												<li><a href="javascript:;"></a></li>
+												<li><a href="javascript:;"></a></li>
+												<li><a href="javascript:;"></a></li>
+											</ul>
+										</td>
+									</tr>
+									<tr><td>Encoding format</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Image Quality</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream Control</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream bit rate</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>Stream framerate</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+								</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
+						<tr>
+						<td colspan="4">
+							<table class="tb1" style="padding:10px 50px;">
+								<tr>
+									<td colspan="4" class="td4">
+									<div><input type="checkbox" /><span>1</span></div>
+									<div><input type="checkbox" /><span>2</span></div>
+									<div><input type="checkbox" /><span>3</span></div>
+									<div><input type="checkbox" /><span>4</span></div>
+									<div><input type="checkbox" /><span>5</span></div>
+									<div><input type="checkbox" /><span>6</span></div>
+									<div><input type="checkbox" /><span>7</span></div>
+									<div><input type="checkbox" /><span>8</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4">
+									<div><input type="checkbox" /><span>9</span></div>
+									<div><input type="checkbox" /><span>10</span></div>
+									<div><input type="checkbox" /><span>11</span></div>
+									<div><input type="checkbox" /><span>12</span></div>
+									<div><input type="checkbox" /><span>13</span></div>
+									<div><input type="checkbox" /><span>14</span></div>
+									<div><input type="checkbox" /><span>15</span></div>
+									<div><input type="checkbox" /><span>16</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4">
+									<div><input type="checkbox" /><span>17</span></div>
+									<div><input type="checkbox" /><span>18</span></div>
+									<div><input type="checkbox" /><span>19</span></div>
+									<div><input type="checkbox" /><span>20</span></div>
+									<div><input type="checkbox" /><span>21</span></div>
+									<div><input type="checkbox" /><span>22</span></div>
+									<div><input type="checkbox" /><span>23</span></div>
+									<div><input type="checkbox" /><span>24</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4">
+									<div><input type="checkbox" /><span>25</span></div>
+									<div><input type="checkbox" /><span>26</span></div>
+									<div><input type="checkbox" /><span>27</span></div>
+									<div><input type="checkbox" /><span>28</span></div>
+									<div><input type="checkbox" /><span>29</span></div>
+									<div><input type="checkbox" /><span>30</span></div>
+									<div><input type="checkbox" /><span>31</span></div>
+									<div><input type="checkbox" /><span>32</span></div>
+									</td>
+								</tr>
+								<tr><td colspan="3"><input style="margin:0 4px;" type="checkbox" />All<td class="tdBtn"><div class="hover">Copy to All</div></td></tr>
+							</table>
+						</td>
+						</tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td><td></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+				<table>
+					<tr class="title"><td><h5>Common settings</h5></td><td></td><td></td><td></td></tr>
+					<tr><td colspan="4">
+					<table class="tb1">
+						<tr>
+							<td class="td1">channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<td class="td1">Week</td>
+							<td style="width:244px;">
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td class="td1"></td><td style="width:200px;">Start Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Time</td><td colspan="2">Timing<span style="margin-left:40px;">Mobile</span><span style="margin-left:40px;">Alarm</span></td></tr>
+						<tr><td class="td1">Time period 1</td><td><input type="text" class="iput1" /><input type="text" class="iput1" /></td><td colspan="2"><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/></td></tr>
+						<tr><td class="td1">Time period 2</td><td><input type="text" style="float: left;width:78px;" /><input type="text" class="iput1" /></td><td colspan="2"><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/></td></tr>
+						<tr><td class="td1">Time period 3</td><td><input type="text" style="float: left;width:78px;" /><input type="text" class="iput1" /></td><td colspan="2"><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/></td></tr>
+						<tr><td class="td1">Time period 4</td><td><input type="text" style="float: left;width:78px;" /><input type="text" class="iput1" /></td><td colspan="2"><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/><input class="chk1" type="checkbox"/></table>
+						</td></tr>
+						<tr class="title"><td colspan="4"><h5>Copy to</h5></td></tr>
+						<tr><td colspan="4">
+						<table class="tb1">
+						<tr><td style="width:644px;" colspan="4"><input class="chk" type="checkbox"/>Sunday<input class="chk" type="checkbox" />Monday<input class="chk" type="checkbox" />Tuesday<input class="chk" type="checkbox" />Wednesday<input class="chk" type="checkbox" />Thursday<input class="chk" type="checkbox" />Friday<input class="chk" type="checkbox" />Saturday</td></tr>
+						<tr>
+							<td colspan="4" class="td4">
+							<div><input type="checkbox" /><span>1</span></div>
+							<div><input type="checkbox" /><span>2</span></div>
+							<div><input type="checkbox" /><span>3</span></div>
+							<div><input type="checkbox" /><span>4</span></div>
+							<div><input type="checkbox" /><span>5</span></div>
+							<div><input type="checkbox" /><span>6</span></div>
+							<div><input type="checkbox" /><span>7</span></div>
+							<div><input type="checkbox" /><span>8</span></div>
+							<div style="margin-left:40px; width:auto"><input type="checkbox" /><span>All</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4">
+							<div><input type="checkbox" /><span>9</span></div>
+							<div><input type="checkbox" /><span>10</span></div>
+							<div><input type="checkbox" /><span>11</span></div>
+							<div><input type="checkbox" /><span>12</span></div>
+							<div><input type="checkbox" /><span>13</span></div>
+							<div><input type="checkbox" /><span>14</span></div>
+							<div><input type="checkbox" /><span>15</span></div>
+							<div><input type="checkbox" /><span>16</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4">
+							<div><input type="checkbox" /><span>17</span></div>
+							<div><input type="checkbox" /><span>18</span></div>
+							<div><input type="checkbox" /><span>19</span></div>
+							<div><input type="checkbox" /><span>20</span></div>
+							<div><input type="checkbox" /><span>21</span></div>
+							<div><input type="checkbox" /><span>22</span></div>
+							<div><input type="checkbox" /><span>23</span></div>
+							<div><input type="checkbox" /><span>24</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4">
+							<div><input type="checkbox" /><span>25</span></div>
+							<div><input type="checkbox" /><span>26</span></div>
+							<div><input type="checkbox" /><span>27</span></div>
+							<div><input type="checkbox" /><span>28</span></div>
+							<div><input type="checkbox" /><span>29</span></div>
+							<div><input type="checkbox" /><span>30</span></div>
+							<div><input type="checkbox" /><span>31</span></div>
+							<div><input type="checkbox" /><span>32</span></div>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover">save</div></td></tr> 
+					</table>
+					</td></tr>
+
+				</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr>
+							<td>Channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>	
+							</td>
+						</tr>
+						<tr><td>Name</td><td><input type="text" style="width:133px;" /></td></tr>
+						<tr><td colspan="2" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr>
+							<td class="td1">channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="td1">Sensitivity</td>
+							<td><input type="text" style="width:134px;" /></td>
+							<td></td>
+						</tr>
+						<tr class="title"><td colspan="3"><h5>Motion Detection</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1">Duration</td>
+									<td>
+										<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+									<td></td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input type="checkbox" />Alarm<input type="checkbox" style="margin-left:20px;" />Buzzer<input style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="title"><h5>Video loss</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1" style="text-indent:16px;">Duration</td>
+									<td>
+										<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+											<li><a href="javascript:;"></a></li>
+										</ul>
+									</td>
+									<td></td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input type="checkbox" />Alarm<input type="checkbox" style="margin-left:20px;" />Buzzer<input style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
+							</table>
+						</td></tr>
+						<tr class="title"><td colspan="4"><h5>Copied to other</h5></td></tr>
+						<tr><td style="padding:10px" colspan="3">
+								<table class="tb1">
+								<tr>
+									<td colspan="3" class="td4">
+									<div><input type="checkbox" /><span>1</span></div>
+									<div><input type="checkbox" /><span>2</span></div>
+									<div><input type="checkbox" /><span>3</span></div>
+									<div><input type="checkbox" /><span>4</span></div>
+									<div><input type="checkbox" /><span>5</span></div>
+									<div><input type="checkbox" /><span>6</span></div>
+									<div><input type="checkbox" /><span>7</span></div>
+									<div><input type="checkbox" /><span>8</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4">
+									<div><input type="checkbox" /><span>9</span></div>
+									<div><input type="checkbox" /><span>10</span></div>
+									<div><input type="checkbox" /><span>11</span></div>
+									<div><input type="checkbox" /><span>12</span></div>
+									<div><input type="checkbox" /><span>13</span></div>
+									<div><input type="checkbox" /><span>14</span></div>
+									<div><input type="checkbox" /><span>15</span></div>
+									<div><input type="checkbox" /><span>16</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4">
+									<div><input type="checkbox" /><span>17</span></div>
+									<div><input type="checkbox" /><span>18</span></div>
+									<div><input type="checkbox" /><span>19</span></div>
+									<div><input type="checkbox" /><span>20</span></div>
+									<div><input type="checkbox" /><span>21</span></div>
+									<div><input type="checkbox" /><span>22</span></div>
+									<div><input type="checkbox" /><span>23</span></div>
+									<div><input type="checkbox" /><span>24</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4">
+									<div><input type="checkbox" /><span>25</span></div>
+									<div><input type="checkbox" /><span>26</span></div>
+									<div><input type="checkbox" /><span>27</span></div>
+									<div><input type="checkbox" /><span>28</span></div>
+									<div><input type="checkbox" /><span>29</span></div>
+									<div><input type="checkbox" /><span>30</span></div>
+									<div><input type="checkbox" /><span>31</span></div>
+									<div><input type="checkbox" /><span>32</span></div>
+									</td>
+								</tr>
+								<tr><td><input style="margin:0 4px;" type="checkbox" />All<td></td><td class="tdBtn"><div class="hover">Copy to All</div></td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr>
+							<td>channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td>Device Addr</td><td colspan="2"><input type="text"  style="width:133px;"/></td></tr>
+						<tr>
+							<td>Agreement</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>Baud Rate</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
+						<tr>
+							<td colspan="4">
+								<table class="tb1" style="padding:10px 50px;">
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>1</span></div>
+										<div><input type="checkbox" /><span>2</span></div>
+										<div><input type="checkbox" /><span>3</span></div>
+										<div><input type="checkbox" /><span>4</span></div>
+										<div><input type="checkbox" /><span>5</span></div>
+										<div><input type="checkbox" /><span>6</span></div>
+										<div><input type="checkbox" /><span>7</span></div>
+										<div><input type="checkbox" /><span>8</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>9</span></div>
+										<div><input type="checkbox" /><span>10</span></div>
+										<div><input type="checkbox" /><span>11</span></div>
+										<div><input type="checkbox" /><span>12</span></div>
+										<div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+										</td>
+									</tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" />All<td></td><td class="tdBtn"><div class="hover">Copy to All</div></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>Data bits</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>Stop Bit</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>Parity check</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table>
+						<tr><td><input type="checkbox" />Alarm</td><td colspan="2"><input type="checkbox"/>Buzzer</td></tr>
+						<tr>
+							<td>channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Operating Mode</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>Alarm duration</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td><input type="checkbox" />Sod</td><td colspan="2"><input type="checkbox"/>E-mail alerts</td></tr>
+						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
+						<tr>
+							<td colspan="4">
+								<table class="tb1" style="padding:10px 50px;">
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>1</span></div>
+										<div><input type="checkbox" /><span>2</span></div>
+										<div><input type="checkbox" /><span>3</span></div>
+										<div><input type="checkbox" /><span>4</span></div>
+										<div><input type="checkbox" /><span>5</span></div>
+										<div><input type="checkbox" /><span>6</span></div>
+										<div><input type="checkbox" /><span>7</span></div>
+										<div><input type="checkbox" /><span>8</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>9</span></div>
+										<div><input type="checkbox" /><span>10</span></div>
+										<div><input type="checkbox" /><span>11</span></div>
+										<div><input type="checkbox" /><span>12</span></div>
+										<div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+										</td>
+									</tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" />All<td></td><td class="tdBtn"><div class="hover">Copy to All</div></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+			</div>
+			<div style="display:none;">
+				<ul class="ope_list nav1">
+					<li class="act">Local Setting</li>
+					<li>Record Setting</li>
+					<li>Warming Linkage</li>
+				</ul>
+				<div class="switch"  style="display:block;">
+					<table>
+						<tr><td></td><td></td><td></td></tr>
+						<tr>
+							<td>Language</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td>Auto polling time</td><td colspan="2"><input type="text" style="width:133px;"/></td></tr>
+						<tr><td>Screenshot save location</td><td colspan="2"><input type="file" style="height:23px; background:0;" /> </td></tr>
+						<tr>
+							<td>default split-screen mode</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="3"><input type="checkbox">Auto Login</td></tr>
+						<tr><td colspan="3"><input type="checkbox">Auto sync time</td></tr>
+						<tr><td colspan="3"><input type="checkbox">Auto connect devices</td></tr>
+						<tr><td colspan="3"><input type="checkbox">Auto switch to fullscreen</td></tr>
+						<tr><td colspan="3"><input type="checkbox">Boot from the start</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<div style="height:400px; width:230px; overflow: auto; background:#CCC; float:left; margin-right:20px;"></div>
+					<table style="float:left">
+						<tr>
+							<td class="td1">Week</td>
+							<td class="td2">
+								<div class="select" style="width:60px;">
+									<span></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;" style="width:60px"></a></li>
+									<li><a href="javascript:;" style="width:60px"></a></li>
+									<li><a href="javascript:;" style="width:60px"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td class="td1">Time1</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr>
+						<tr><td class="td1">Time2</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr><tr><td class="td1">Time3</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr><tr><td class="td1">Time4</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr>
+						<tr>
+							<td class="td1">Copy To</td>
+							<td class="td2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+				<div class="switch">
+					<table><tr><td class="td1">Disk drive</td><td style="width:450px;"><table class="tb1" style="padding:10px">
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>D</span></div>
+										<div><input type="checkbox" /><span>E</span></div>
+										<div><input type="checkbox" /><span>F</span></div>
+										<div><input type="checkbox" /><span>G</span></div>
+										<div><input type="checkbox" /><span>H</span></div>
+										<div><input type="checkbox" /><span>I</span></div>
+										<div><input type="checkbox" /><span>J</span></div>
+										<div><input type="checkbox" /><span>K</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>L</span></div>
+										<div><input type="checkbox" /><span>M</span></div>
+										<div><input type="checkbox" /><span>N</span></div>
+										<div><input type="checkbox" /><span>O</span></div>
+										<div><input type="checkbox" /><span>P</span></div>
+										<div><input type="checkbox" /><span>Q</span></div>
+										<div><input type="checkbox" /><span>R</span></div>
+										<div><input type="checkbox" /><span>S</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" /><span>T</span></div>
+										<div><input type="checkbox" /><span>U</span></div>
+										<div><input type="checkbox" /><span>V</span></div>
+										<div><input type="checkbox" /><span>X</span></div>
+										<div><input type="checkbox" /><span>Y</span></div>
+										<div><input type="checkbox" /><span>Z</span></div>
+										</td>
+									</tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" />All<td></td><td></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr><td>File package size</td><td><input type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td>Loop recording</td><td><input type="checkbox"  style="margin-left:10px" /></td></tr>
+						<tr><td>Disk space reserved</td><td><input type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">save</div></td></tr>
+					</table>
+				</div>
+			</div>
+			<div style="display:none;">
+				<table class="tb1 tb2" style="padding:10px;">
+					<thead><tr><td>User</td><td>User ID</td><td>User rights</td></tr></thead>
+					<tbody>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>	
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr><td></td><td></td><td></td></tr>
+						<tr class="tdBtn"><td style="border: 0; background: #282828;"><div class="hover">Add User</div></td><td style="border: 0; background: #282828;"><div class="hover">Del User</div></td><td style="border: 0; background: #282828;"><div class="hover">Mod User</div></td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="foot"></div>
+</body>
+</html>

@@ -6,12 +6,15 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/calendar.js"></script>
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script type="text/javascript">
 var oLeft,oBottom,oView;
 var	nViewNum = 0;
+var NowMonth = 0;
+var num = 0;
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -23,11 +26,8 @@ var	nViewNum = 0;
 	    $('ul.filetree').treeview();		
 		oDiv.eq(1).hide();
 
-		$('div.select').each(function(){ 
-			imitate_select($(this));
-		})
-
-		set_drag($('div.play_time span'))
+		set_drag($('div.play_time span'),$('div.play_time span').offset().left,$('div.play_time p').first().width()+12);
+		set_drag($('div.bg_center'),$('div.Schedule').offset().left,$('span.Dir').eq(0).offset().left-34);
 		
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
@@ -59,28 +59,12 @@ var	nViewNum = 0;
 			mouseleave:function(){
 				$(this).removeClass('view_hover');
 			}
-		},'div')
-	})
-function set_drag(oDrag){
-	var disX = 0;
-	oDrag.mousedown(function(event){
-		var event = event || window.event;
-		disX = event.clientX - oDrag.offset().left;
+		},'div');
 
-		$(document).mousemove(function(event){
-			var event = event || window.event;
-				var left = event.clientX - disX; 
-			    left = left < 16 ? 16 : left;
-				left = left > $('div.play_time p').first().width()+12 ? $('div.play_time p').first().width()+12 : left;
-			oDrag.css('left',left+'px');
-			$('p.now').width(left-16);
-		});
-		$(document).mouseup(function(){
-			$(document).off();
-		})
-		return false;
+		$('div.calendar').initCalendar();
+		
+
 	})
-}
 </script>
 </head>
 
@@ -101,14 +85,14 @@ function set_drag(oDrag){
 			<ul>
 				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
 				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
-				<li><a class="hover" style="background-position: 0 -104px;" href="javascript:;">backup</a></li>
-				<li><a class="hover" style="background-position: 0 -156px;" href="javascript:;">Device</a></li>
-				<li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
-				<li><a class="hover" style="background-position: 0 -260px;" href="javascript:;">Log</a></li>
+				<li><a class="hover" style="background-position: 0 -104px;" href="backup.html">backup</a></li>
+				<li><a class="hover" style="background-position: 0 -156px;" href="device.html">Device</a></li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
+				<li><a class="hover" style="background-position: 0 -260px;" href="log.html">Log</a></li>
 			</ul>
 			<div>
 				<a href="javascript:;"></a>				
-				<p>Login User:eddy</p>
+				<p style="color:#000;">Login User:eddy</p>
 			</div>
 		</div>
 	</div>
@@ -187,8 +171,8 @@ function set_drag(oDrag){
 				<tr>
 					<td style="text-align:right">File Type:</td>
 					<td>
-						<div class="select"><span>All</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option">
+						<div class="select" style="width:133px;"><span>All</span><a class="hover" href="javascript:;"></a></div>
+						<ul class="option" style="top:4px;position:absolute;">
 							<li><a href="javascript:;">All</a></li>
 							<li><a href="javascript:;">123</a></li>
 							<li><a href="javascript:;">123</a></li>
@@ -199,7 +183,7 @@ function set_drag(oDrag){
 					<td style="text-align:right">Start Time:</td>
 					<td>
 						<div class="select" style="top:26px;"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option" style="top:26px;">
+						<ul class="option" style="top:26px; position:absolute;">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
@@ -210,7 +194,7 @@ function set_drag(oDrag){
 					<td style="text-align:right">End Time:</td>
 					<td>
 						<div class="select" style="top:48px;"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option" style="top:48px;">
+						<ul class="option" style="top:48px;position:absolute;">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
@@ -223,11 +207,26 @@ function set_drag(oDrag){
 			<div class="calendar_top">
 				<a class="hover" style="background-position: -240px -31px;" href="javascript:;"></a>
 				<a class="hover" style="background-position: -160px -31px;" href="javascript:;"></a>
-				<p>2013-07-15</p>
+				<span class="nowDate"></span>
 				<a class="hover" style="background-position: -0px -31px;" href="javascript:;"></a>
 				<a class="hover" style="background-position: -80px -31px;" href="javascript:;"></a>
 			</div>
-			<div class="seek hover">Search</div>
+			<div class="calendar_days">
+				<table>
+					<thead>
+						<tr><td style="color:red;">日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td style="color:red;">六</td></tr>
+					</thead>
+					<tbody>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="hover seek">Search</div>
 		</div>
 	</div>
 	<div id="operating">
@@ -285,7 +284,7 @@ function set_drag(oDrag){
 				<div class="no_border"><input type="checkbox"><span>window 04</span></div>
 				<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
 			</li>
-			<li><div class="no_border"></div><span class="hover Dir" style="background-position: -390px -38px; margin-right:2px;"></span><div class="Schedule"></div><span class="hover Dir"></span></li>
+			<li><div class="no_border bg_center" style="height:10px;"><strong class="bg_left" ><span class="bg_right"></span></strong></div><span class="hover Dir" style="background-position: -390px -38px; margin-right:2px;"></span><div class="Schedule"></div><span class="hover Dir"></span></li>
 		</ul>
 	</div>
 	<div id="foot">

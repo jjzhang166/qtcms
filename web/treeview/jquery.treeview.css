@@ -69,7 +69,7 @@
 	display: block;
 }
 
-.filetree li{padding: 3px 0 2px 16px;}
+.filetree li{padding: 3px 0 2px 16px; color: #000;}
 .filetree span.folder, .filetree span.file, .filetree span.area, .filetree span.group, .filetree a.file { padding: 1px 0 1px 16px;}
 .filetree span.folder { background: url(images/dev_01.png) 0 no-repeat;}
 .filetree li.expandable span.folder,a.folder { background: url(images/dev_02.png) 0 no-repeat;}

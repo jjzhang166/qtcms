@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+body,ul,li{
+	margin:0;
+	padding:0;
+	
+	}
+	hmtl{
+		height:auto;
+	}
+div{    
+		display:none;
+		width:500px;
+		height:300px;
+		border:red 1px solid;
+		position:relative;
+		z-index:1000;
+	}	
+	iframe{
+		overflow: hidden; 
+		position: absolute; 
+		background: none repeat scroll 0% 0% rgb(0, 0, 0); 
+		z-index: 999;
+		width: 1423px; 
+		left: 0px; 
+		top: 0px; 
+		height: 2523px; 
+		opacity: 0.5; 
+		display:none;
+		filter:alpha(opacity=50);
+	}	
+div input{
+	position:absolute;
+	top:130px;
+	left:220px;
+	z-index:1000;
+	}
+</style>
+<script language="javascript">
+var oTest,oIframe,oClose,oContent,bIframe,oIframesrc;
+window.onload=function(){	
+	 oTest = document.getElementById('test');
+	 oIframe = document.getElementById('iframe');
+	 oClose = document.getElementById('close');
+	 oContent = document.getElementById('content');
+	 oIframesrc = document.getElementById('iframe').contentWindow;
+	 if(oIframesrc.attachEvent){
+		 oIframesrc.document.attachEvent('onclick',function(){
+			  hide();
+			 })
+		 }else{
+		 oIframesrc.document.onclick=function(){
+			 hide();
+			 }
+		} 
+	oTest.onclick=function(event){
+		var oEvent = event || window.event;
+		oIframe.style.display='block';
+		oContent.style.display='block';
+		oEvent.cancelBubble=true;
+	}
+	oClose.onclick=function(event){
+		var oEvent = event || window.event;
+		oEvent.cancelBubble=true;
+		hide();
+		}		
+	}
+function hide(){
+		oIframe.style.display='none';
+		oContent.style.display='none';
+	}
+	
+</script>
+</head>
+<body>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
+
+<input type="button" value="test" id="test">
+<div id="content">
+<input type="button" value="close" id="close">
+</div>
+</body>
+</html>
