@@ -22,8 +22,12 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
 
+	// Disable context menu
+	setContextMenuPolicy(Qt::NoContextMenu);
+
 	// Set web plugin factory
 	page()->setPluginFactory(new WebkitPluginsFactory(this));
+
 
     // Get Application Path
     QString temp = QCoreApplication::applicationDirPath();
@@ -103,6 +107,8 @@ void QJaWebView::OnLoad( bool bOk )
 					pcomCreateInstance(guidTemp,NULL,IID_IActivities,(void **)&m_Activity);
 					if (NULL != m_Activity)
 					{
+						MainFrame->setScrollBarPolicy(Qt::Horizontal,Qt::ScrollBarAlwaysOff);
+						MainFrame->setScrollBarPolicy(Qt::Vertical,Qt::ScrollBarAlwaysOff);
 						m_Activity->Active(MainFrame);
 					}
 				}
