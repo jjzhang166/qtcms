@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+		<script type="text/javascript">
+		$(function(){
+			$.ajax({
+				type:'POST',
+				url:'http://192.168.2.29/test.php',
+				data:{data:'123'},
+				dataType:'jsonp',
+				jsonp:'callback',
+				//timeout:10000,
+				beforeSend: function(){
+					$('body').html('正在请求');	
+				},
+				success: function(data){ 
+					alert(data);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					alert(textStatus);
+				}
+			})
+		/*	window.onload=function(){
+			var xmlhttp;
+			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			  xmlhttp=new XMLHttpRequest();
+			}else{// code for IE6, IE5
+			  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function()
+			  {
+			  if (xmlhttp.readyState==4 && xmlhttp.status==0){
+					alert(xmlhttp.responseText);
+				//document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+				}
+			  }
+			
+			xmlhttp.open("PUT","http://192.168.2.45/netsdk/vin/0/stream/0",true);
+			//xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send('text=123');
+			}*/
+		})
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

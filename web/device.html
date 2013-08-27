@@ -11,13 +11,43 @@
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(function(){
+		var oTreeWarp = $('div.dev_list').slice(2);
+		$('ul.filetree').treeview().find('span.file').click(function(){
+			$(this).toggleClass('file_1')
+		});
+		oTreeWarp.hide();
+		$('#iframe').hide();
+
+		$('#menu a,.hover').click(function(){
+			$('#iframe').hide();
+			$('#menu').hide();
+		})
+
+
 		document.oncontextmenu = function(e){
 			var e = e || window.event;
 			if(e.target.tagName != 'BODY'){
 				return false;
 			}	
 		}
+
+		$('#menu input:radio').each(function(index){
+			$(this).click(function(){
+				var oSwitch = $('#menu tr').slice(2,6);
+				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
+				if(index == 0){
+					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
+				}else{
+					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
+				}
+			})
+		})
 		
+		$('ul.filetree span.areaName').click(function(){
+			$('ul.filetree span.areaName').css('background','0');
+			$(this).css('background','#ccc');
+		})
+
 		$('span.file').mouseup(function(e){ 
 			var e = e || window.event;
 			if(e.which == '3'){
@@ -43,9 +73,7 @@
 				left:($(window).width() - $('#menu').width())/2
 			})
 			$('#menu').show();	
-		})
-		
-		$('ul.filetree').treeview();		
+		})	
 			
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
@@ -59,6 +87,7 @@
 				$('#set_content div.right div').filter(function(){
 					return $(this).parent().is('#set_content div.right');
 				}).hide().eq(index).show();
+				oTreeWarp.show();
 			})
 		})
 		
@@ -84,7 +113,7 @@
 </script>
 <style type="text/css">
 	#set_content .left { background: #1E1E1E; width: 250px; float: left;}
-	#set_content .right { background: #323232; float: left;}
+	#set_content .right { background: #282828; float: left;}
 	#set_content .left li{
 		display: block;
 		height: 50px;
@@ -92,9 +121,8 @@
 		text-align: left;
 		line-height: 50px;
 		text-indent: 70px;
-	}
-	#set_content .left li:hover{
-		background: #393D40;
+		background: url(images/device_set_nav.png) no-repeat;
+		background-position: 0 0;
 	}
 	/*#set_content .right li{
 		float: left;
@@ -124,22 +152,24 @@
 	table .td4 div{ width: 34px; float: left; margin: 0 4px; height: 16px;}
 	table .td4 input{margin:0; float: left;}
 	table .td4 span{margin-left: 2px; float: left; display: block; width: 16px; height: 16px; text-indent: 0px; }
-	table .tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px;}
+	table .tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}
 	table .chk{margin:0 4px;}
 	table .chk1{margin:0 52px 0 14px;}
 	table .iput{float: right; margin-right: 6px;}
 	table .iput1{float: left; width:78px;}
-	.title{ text-indent: 12px; color: #FF6400;}
-	.tb1 td,tb2,td{width:auto;}
-	.tb1 {padding:0 20px; display: block; background: #282828; float: left;}
+	table .iput2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0;}
+	.title{color: #FF6400;}
+	.tb1 td,.tb2,td{width:auto;}
+	.tb1 {display: block; background: #282828; float: left;}
 	.tb1 tr{background: #323232;}
-	.tb2 tbody td{border:1px solid #ccc;}
+	.tb2 tbody td{border:1px solid #3C3C3C;}
+	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
 	.tb2 thead td{ text-align:center; background:#282828;}
-	.nav1 li{width: auto; padding: 0 4px; height: auto;}
+	.nav1 li{width: auto; padding: 0 4px; height: auto; margin:0;}
 	.switch{padding: 0 10px;}
 	table h5{ display: inline;}
-	#set_content .action{ width:100px;margin:10px; height:450px;}
-	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat; font-size:14px; line-height:22px; text-align:center;}
+	#set_content .action{ width:100px;margin:0 40px; height:450px;}
+	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
 	#iframe{
 		overflow: hidden; 
 		position: absolute; 
@@ -152,15 +182,56 @@
 		opacity: 0.5; 
 		filter:alpha(opacity=50);
 	}
-	#menu{ display:none; height:400px; width:600px; position:absolute; border:1px solid red; z-index:1000;}
-	#menu2{ background:#9FF; position:absolute; display:none; width:60px;}
-	#menu2 li:hover{ background:#93F;}
+	#menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
+	#menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
+	#menu p a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
+	#menu table{ margin:40px 80px;}
+	#menu table .td1{width: 120px;}
+	#menu table tr{background: #B4B4B4; color: #000;}
+	#menu table input{height: 19px; width: 155px;}
+	#menu table .tr1{ background: #ccc; color: #B4B4B4;}
+	#menu table .tr1 input{background: 0;}
+	#menu2{ background:#282828; position:absolute; display:none; width:60px;}
+	#menu2 li:hover{ background:#C25451;}
+
+	.userManagement{ display: block; color: #000; position: absolute; top: 0; width: 800px; right: 100px; height: 600px; overflow: auto;}
+	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
 </style>
 </head>
 
 <body>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
-<div id="menu"></div>
+<div id="menu">
+		<p>Add Device<a class="hover" href="javascript:;"></a></p>
+		<table>
+			<tr><td colspan="2">设备连接方式</td></tr>
+			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" type="radio" name="Connection" checked="checked" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" />易视网链接</td></tr>
+			<tr><td class="td1">设备地址</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">设备端口</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">Http端口</td><td><input type="text" /></td></tr>
+			<tr class="tr1"><td class="td1">易视网ID</td><td><input type="text" disabled="disabled" /></td></tr>
+			<tr><td class="td1">用户名</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">密码</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">设备名</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">通道数</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">所在区域</td><td><input type="text" /></td></tr>
+			<tr>
+				<td class="td1">设备类型</td>
+				<td>
+					<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
+						<span></span>
+						<a class="hover" href="javascript:;"></a>
+					</div>
+					<ul class="option" style="border:1px solid #646465;">
+						<li><a style="width:154px;" href="javascript:;"></a></li>
+						<li><a style="width:154px;" href="javascript:;"></a></li>
+						<li><a style="width:154px;" href="javascript:;"></a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr><td colspan="2" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div><div class="hover">test</div></td></tr>
+		</table>
+</div>
 <div id="menu2">
 	<ul>
 		<li>添加</li>
@@ -172,7 +243,7 @@
 		<div class="top_act">
 			<h4>DVR Client</h4>
 			<div id="top_window_act">
-				<ul>
+				<ul>	
 					<li><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
 					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
 					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
@@ -182,12 +253,12 @@
 		</div>
 		<div class="top_nav">
 			<ul>
-				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
-				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
-				<li><a class="hover" style="background-position: 0 -104px;" href="backup.html">backup</a></li>
-				<li><a class="hover" style="background-position: 0 -156px;" href="device.html">Device</a></li>
+				<li onclick="location.href='index.html'"><a href="index.html" style="width:36px;"></a>Preview</li>
+				<li onclick="location.href='play_back.html'"><a style="background-position: -36px 0;" href="play_back.html"></a>Playback</li>
+				<li onclick="location.href='backup.html'"><a style="background-position: -62px 0;" href="backup.html"></a>backup</li>
+				<li class="active" onclick="location.href='device.html'"><a style="background-position: -88px 0; width:36px;" href="device.html"></a>Device</li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
-				<li><a class="hover" style="background-position: 0 -260px;" href="log.html">Log</a></li>
+				<li onclick="location.href='log.html'"><a style="background-position: -124px 0;" href="log.html"></a>Log</li>
 			</ul>
 			<div>
 				<a href="javascript:;"></a>				
@@ -197,22 +268,22 @@
 	<div id="set_content">
 		<div class="left">
 			<ul>
-				<li>Device Manage</li>
-				<li>Server Setting</li>
-				<li>Client Setting</li>
-				<li>User Manage</li>
+				<li class="setViewNum hover" style="background-position:-250px 0;">Device Manage</li>
+				<li class="setViewNum hover" style="background-position:0 -50px;">Server Setting</li>
+				<li class="setViewNum hover" style="background-position:0 -100px;">Client Setting</li>
+				<li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li>
 			</ul>
 		</div>
 		<div class="right">
 			<div>
 			<div style="float:left;">
-				<table class="tb1 tb2" cellpadding="0" style=" height:500px; width:468px; overflow:auto; float:left;">
-					<thead>
+				<table class="tb1 tb2" cellpadding="0" style=" margin:10px; height:auto; width:auto; overflow:auto; float:left; border-left:1px solid #3C3C3C;">
+					<thead class="thead">
 						<tr>
-							<td style="width:80px;">设备</td>
-							<td style="width:140px;">ID</td>
-							<td style="width:110px;">IP</td>
-							<td style="width:80px;">通道数</td>
+							<td style="width:100px;">设备</td>
+							<td style="width:260px;">ID</td>
+							<td style="width:260px;">IP</td>
+							<td style="width:100px;">通道数</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -238,21 +309,21 @@
 				</table>
 				<div class="action" style="float:left;">
 					<ul>
-						<li>添加</li>
-						<li>添加区域</li>
-						<li>修改设备</li>
-						<li>添加分组</li>
-						<li>设备搜索</li>
+						<li class="hover">添加</li>
+						<li class="hover">添加区域</li>
+						<li class="hover">修改设备</li>
+						<li class="hover">添加分组</li>
+						<li class="hover">设备搜索</li>
 					</ul>
 				</div>
-				<table class="tb1 tb2" cellpadding="0" style=" clear:both;height:146px; width:468px;">
+				<table class="tb1 tb2" cellpadding="0" style="margin:0 10px; clear:both;height:146px; width:auto;">
 					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" />全选</td></tr></thead>
 					<tbody>
 						<tr>
-							<td>设备IP</td>
-							<td><input type="text" /></td>
-							<td>子网掩码</td>
-							<td><input type="text" /></td>																					
+							<td style="width:100px;">设备IP</td>
+							<td style="width:260px;"><input type="text" /></td>
+							<td style="width:100px;">子网掩码</td>
+							<td style="width:260px;"><input type="text" /></td>																					
 						</tr>
 						<tr>
 							<td>网关</td>
@@ -262,84 +333,84 @@
 						</tr>
 						<tr>
 							<td>端口</td>
-							<td colspan="3"><input type="text" style="width:60px;" /><input style="margin-left:30px; width:60px;" type="button" value="设置"/></td>																					
+							<td colspan="3"><input type="text" style="width:60px;" /><input style="color:#ccc;" class="hover iput2" type="button" value="设置"/></td>																					
 						</tr>
 						<tr>
-							<td colspan="4"><input type="button" value="批量分配IP"/></td>																					
+							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP"/></td>																					
 						</tr>
 					</tbody>
 				</table>
 				</div>
 				<div style="float:left;">
-				<div class="dev_list" style="height:300px;">
-					<ul id="area" class="filetree">
-						<li><span class="area">Area</span>
-							<ul>
-								<li><span class="folder" >device</span>
-									<ul>
-										<li><span class="file">Channel01</span></li>
-										<li><span class="file">Channel02</span></li>
-										<li><span class="file">Channel03</span></li>
-										<li><span class="file">Channel04</span></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li><span class="area">Area</span>
-							<ul>
-								<li><span class="folder" >device</span>
-									<ul>
-										<li><span class="file">Channel01</span></li>
-										<li><span class="file">Channel02</span></li>
-										<li><span class="file">Channel03</span></li>
-										<li><span class="file">Channel04</span></li>
-										<li><span class="file">Channel05</span></li>
-										<li><span class="file">Channel06</span></li>
-										<li><span class="file">Channel07</span></li>
-										<li><span class="file">Channel08</span></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<div class="action" style="height:22px;"><ul><li>添加至分组</li></ul></div>
-				<div class="dev_list" style="height:300px;">
-					<ul id="group" class="filetree">
-						<li><span class="group">Group</span>
-							<ul>
-								<li><span class="folder">device</span>
-									<ul>
-										<li><span class="file">Channel01</span></li>
-										<li><span class="file">Channel02</span></li>
-										<li><span class="file">Channel03</span></li>
-										<li><span class="file">Channel04</span></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li><span class="group">Group</span>
-							<ul>
-								<li><span class="folder" >device</span>
-									<ul>
-										<li><span class="file">Channel01</span></li>
-										<li><span class="file">Channel02</span></li>
-										<li><span class="file">Channel03</span></li>
-										<li><span class="file">Channel04</span></li>
-										<li><span class="file">Channel05</span></li>
-										<li><span class="file">Channel06</span></li>
-										<li><span class="file">Channel07</span></li>
-										<li><span class="file">Channel08</span></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>	
-				</div>
+					<div class="dev_list" style="height:300px;">
+						<ul class="filetree">
+							<li><span class="area"></span><span>Area</span>
+								<ul>
+									<li><span class="folder" >device</span>
+										<ul>
+											<li><span class="file">Channel01</span></li>
+											<li><span class="file">Channel02</span></li>
+											<li><span class="file">Channel03</span></li>
+											<li><span class="file">Channel04</span></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li><span class="area"></span><span>Area</span>
+								<ul>
+									<li><span class="folder" >device</span>
+										<ul>
+											<li><span class="file">Channel01</span></li>
+											<li><span class="file">Channel02</span></li>
+											<li><span class="file">Channel03</span></li>
+											<li><span class="file">Channel04</span></li>
+											<li><span class="file">Channel05</span></li>
+											<li><span class="file">Channel06</span></li>
+											<li><span class="file">Channel07</span></li>
+											<li><span class="file">Channel08</span></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+					<div class="action" style="height:22px; margin:10px;"><ul><li class="hover">添加至分组</li></ul></div>
+					<div class="dev_list" style="height:300px;">
+						<ul class="filetree">
+							<li><span class="group">Group</span>
+								<ul>
+									<li><span class="folder">device</span>
+										<ul>
+											<li><span class="file">Channel01</span></li>
+											<li><span class="file">Channel02</span></li>
+											<li><span class="file">Channel03</span></li>
+											<li><span class="file">Channel04</span></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li><span class="group">Group</span>
+								<ul>
+									<li><span class="folder" >device</span>
+										<ul>
+											<li><span class="file">Channel01</span></li>
+											<li><span class="file">Channel02</span></li>
+											<li><span class="file">Channel03</span></li>
+											<li><span class="file">Channel04</span></li>
+											<li><span class="file">Channel05</span></li>
+											<li><span class="file">Channel06</span></li>
+											<li><span class="file">Channel07</span></li>
+											<li><span class="file">Channel08</span></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>	
+					</div>
 				</div>
 			</div>
 			<div  style="display:none;">
-				<ul class="ope_list nav1">
+				<ul class="ope_list nav1" style="margin-right:300px;">
 					<li class="act">DeviceInfo</li>
 					<li>CommonSettings</li>
 					<li>NetworkSettings</li>
@@ -350,6 +421,30 @@
 					<li>PTZ Settings</li>
 					<li>Alarm Settings</li>
 				</ul>
+				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
+					<ul class="filetree">
+						<li><span class="folder" >device</span>
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+							</ul>
+						</li>
+						<li><span class="folder" >device</span>
+							<ul>
+								<li><span class="file">Channel01</span></li>
+								<li><span class="file">Channel02</span></li>
+								<li><span class="file">Channel03</span></li>
+								<li><span class="file">Channel04</span></li>
+								<li><span class="file">Channel05</span></li>
+								<li><span class="file">Channel06</span></li>
+								<li><span class="file">Channel07</span></li>
+								<li><span class="file">Channel08</span></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 				<div class="switch"  style="display:block;">
 					<table>
 						<tr><td>Device Name</td><td><input type="text" /></td></tr>
@@ -470,7 +565,7 @@
 				<div class="switch">
 					<table>
 						<tr><td>MAC Addr</td><td><input type="text" /></td><td></td><td></td></tr>
-						<tr class="title"><td colspan="2"><h5>IP</h5></td><td colspan="2"><h5>DDSN</h5></td></tr>
+						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
@@ -481,7 +576,7 @@
 							 		<tr><td>DNS Addr</td><td><input type="text"/></td></tr>
 								</table>
 							</td>
-							<td colspan="2">
+							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
 						 			<tr><td colspan="2"><input type="checkbox" />OpenDD</td></tr>
 						 			<tr><td>Supplier</td><td><input type="text"/></td></tr>
@@ -491,16 +586,16 @@
 							 	</table>	
 							</td>
 						</tr>
-						<tr class="title"><td colspan="2" ><h5>Port</h5></td><td colspan="2"><h5>PPPOE</h5></td></tr>
+						<tr class="title"><td colspan="2" ><h5>Port</h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr><td>Web Port</td><td><input type="text" /></td></tr>
-									<tr><td>Client Port</td><td><input type="text" /></td></tr>
-									<tr><td>Phone Port</td><td><input type="text" /></td></tr>
+									<tr><td style="width:84px;">Web Port</td><td><input type="text" /></td></tr>
+									<tr><td style="width:84px;">Client Port</td><td><input type="text" /></td></tr>
+									<tr><td style="width:84px;">Phone Port</td><td><input type="text" /></td></tr>
 								</table>		
 							</td>
-							<td colspan="2">
+							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
 									<tr><td colspan="2"><input type="checkbox" />Open PPPOE</td></tr>
 									<tr><td>User</td><td><input type="text" /></td></tr>
@@ -537,7 +632,7 @@
 							<td></td>
 							<td></td>
 						</tr>
-						<tr class="title"><td colspan="2"><h5>Main Stream</h5></td><td colspan="2"><h5>Sub-stream</h5></td></tr>
+						<tr class="title"><td colspan="2"><h5>Main Stream</h5></td><td style="padding-left:40px;" colspan="2"><h5>Sub-stream</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
@@ -626,7 +721,7 @@
 								</tr>
 								</table>
 							</td>
-							<td colspan="2">
+							<td colspan="2" style="padding-left:40px;">
 								<table class="tb1">
 									<tr>
 										<td>Coding mode</td>
@@ -718,7 +813,7 @@
 						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
 						<tr>
 						<td colspan="4">
-							<table class="tb1" style="padding:10px 50px;">
+							<table class="tb1">
 								<tr>
 									<td colspan="4" class="td4">
 									<div><input type="checkbox" /><span>1</span></div>
@@ -729,42 +824,39 @@
 									<div><input type="checkbox" /><span>6</span></div>
 									<div><input type="checkbox" /><span>7</span></div>
 									<div><input type="checkbox" /><span>8</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="4" class="td4">
 									<div><input type="checkbox" /><span>9</span></div>
 									<div><input type="checkbox" /><span>10</span></div>
 									<div><input type="checkbox" /><span>11</span></div>
 									<div><input type="checkbox" /><span>12</span></div>
 									<div><input type="checkbox" /><span>13</span></div>
-									<div><input type="checkbox" /><span>14</span></div>
-									<div><input type="checkbox" /><span>15</span></div>
-									<div><input type="checkbox" /><span>16</span></div>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4" class="td4">
-									<div><input type="checkbox" /><span>17</span></div>
-									<div><input type="checkbox" /><span>18</span></div>
-									<div><input type="checkbox" /><span>19</span></div>
-									<div><input type="checkbox" /><span>20</span></div>
-									<div><input type="checkbox" /><span>21</span></div>
-									<div><input type="checkbox" /><span>22</span></div>
-									<div><input type="checkbox" /><span>23</span></div>
-									<div><input type="checkbox" /><span>24</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4" class="td4">
-									<div><input type="checkbox" /><span>25</span></div>
-									<div><input type="checkbox" /><span>26</span></div>
-									<div><input type="checkbox" /><span>27</span></div>
-									<div><input type="checkbox" /><span>28</span></div>
-									<div><input type="checkbox" /><span>29</span></div>
-									<div><input type="checkbox" /><span>30</span></div>
-									<div><input type="checkbox" /><span>31</span></div>
-									<div><input type="checkbox" /><span>32</span></div>
+
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
 									</td>
 								</tr>
 								<tr><td colspan="3"><input style="margin:0 4px;" type="checkbox" />All<td class="tdBtn"><div class="hover">Copy to All</div></td></tr>
@@ -813,7 +905,7 @@
 						<tr class="title"><td colspan="4"><h5>Copy to</h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
-						<tr><td style="width:644px;" colspan="4"><input class="chk" type="checkbox"/>Sunday<input class="chk" type="checkbox" />Monday<input class="chk" type="checkbox" />Tuesday<input class="chk" type="checkbox" />Wednesday<input class="chk" type="checkbox" />Thursday<input class="chk" type="checkbox" />Friday<input class="chk" type="checkbox" />Saturday</td></tr>
+						<tr><td style="width:582px;" colspan="4"><input class="chk" type="checkbox"/>Sunday<input class="chk" type="checkbox" />Monday<input class="chk" type="checkbox" />Tuesday<input class="chk" type="checkbox" />Wednesday<input class="chk" type="checkbox" />Thursday<input class="chk" type="checkbox" />Friday<input class="chk" type="checkbox" />Saturday</td></tr>
 						<tr>
 							<td colspan="4" class="td4">
 							<div><input type="checkbox" /><span>1</span></div>
@@ -914,7 +1006,7 @@
 							<table class="tb1">
 								<tr>
 									<td class="td1">Duration</td>
-									<td>
+									<td style="width:278px;">
 										<div class="select" style="width:133px;">
 										<span></span>
 										<a class="hover" href="javascript:;"></a></div>
@@ -924,7 +1016,6 @@
 											<li><a href="javascript:;"></a></li>
 										</ul>
 									</td>
-									<td></td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;"><input type="checkbox" />Alarm<input type="checkbox" style="margin-left:20px;" />Buzzer<input style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
 							</table>
@@ -934,7 +1025,7 @@
 							<table class="tb1">
 								<tr>
 									<td class="td1" style="text-indent:16px;">Duration</td>
-									<td>
+									<td style="width:262px;">
 										<div class="select" style="width:133px;">
 										<span></span>
 										<a class="hover" href="javascript:;"></a></div>
@@ -944,13 +1035,12 @@
 											<li><a href="javascript:;"></a></li>
 										</ul>
 									</td>
-									<td></td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;"><input type="checkbox" />Alarm<input type="checkbox" style="margin-left:20px;" />Buzzer<input style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
 							</table>
 						</td></tr>
 						<tr class="title"><td colspan="4"><h5>Copied to other</h5></td></tr>
-						<tr><td style="padding:10px" colspan="3">
+						<tr><td colspan="3">
 								<table class="tb1">
 								<tr>
 									<td colspan="3" class="td4">
@@ -1007,7 +1097,7 @@
 					</table>
 				</div>
 				<div class="switch">
-					<table>
+					<table class="tb1">
 						<tr>
 							<td>channel</td>
 							<td>
@@ -1052,10 +1142,11 @@
 								</ul>
 							</td>
 						</tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
 						<tr>
 							<td colspan="4">
-								<table class="tb1" style="padding:10px 50px;">
+								<table class="tb1">
 									<tr>
 										<td colspan="4" class="td4">
 										<div><input type="checkbox" /><span>1</span></div>
@@ -1122,6 +1213,7 @@
 								</ul>
 							</td>
 						</tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr>
 							<td>Stop Bit</td>
 							<td colspan="2">
@@ -1154,7 +1246,7 @@
 					</table>
 				</div>
 				<div class="switch">
-					<table>
+					<table class="tb1">
 						<tr><td><input type="checkbox" />Alarm</td><td colspan="2"><input type="checkbox"/>Buzzer</td></tr>
 						<tr>
 							<td>channel</td>
@@ -1200,10 +1292,11 @@
 							</td>
 						</tr>
 						<tr><td><input type="checkbox" />Sod</td><td colspan="2"><input type="checkbox"/>E-mail alerts</td></tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr class="title"><td colspan="4"><h5>Copied to other channels</h5></td></tr>
 						<tr>
 							<td colspan="4">
-								<table class="tb1" style="padding:10px 50px;">
+								<table class="tb1">
 									<tr>
 										<td colspan="4" class="td4">
 										<div><input type="checkbox" /><span>1</span></div>
@@ -1390,23 +1483,23 @@
 					</table>
 				</div>
 			</div>
-			<div style="display:none;">
-				<table class="tb1 tb2" style="padding:10px;">
-					<thead><tr><td>User</td><td>User ID</td><td>User rights</td></tr></thead>
-					<tbody>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>	
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr><td></td><td></td><td></td></tr>
-						<tr class="tdBtn"><td style="border: 0; background: #282828;"><div class="hover">Add User</div></td><td style="border: 0; background: #282828;"><div class="hover">Del User</div></td><td style="border: 0; background: #282828;"><div class="hover">Mod User</div></td></tr>
-					</tbody>
-				</table>
+			<div style="display:none;position: relative;">
+				<ul class="ope_list nav1" style="margin-right:300px;">
+					<li class="act">AddUser</li>
+					<li>ModifyUser</li>
+					<li>DeleteUser</li>
+				</ul>
+				<div class="switch dev_list userManagement">
+					<ul>
+						<li>NetMonitor</li>
+						<li>PTZcontrol</li>
+						<li>videoePlayBack</li>
+						<li>LocalRecord</li>
+						<li>LogSearch</li>
+						<li>VOIP</li>
+						<li>RemoteParam</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -83,12 +83,12 @@ var num = 0;
 		</div>
 		<div class="top_nav">
 			<ul>
-				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
-				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
-				<li><a class="hover" style="background-position: 0 -104px;" href="backup.html">backup</a></li>
-				<li><a class="hover" style="background-position: 0 -156px;" href="device.html">Device</a></li>
+				<li onclick="location.href='index.html'"><a href="index.html" style="width:36px;"></a>Preview</li>
+				<li class="active" onclick="location.href='play_back.html'"><a style="background-position: -36px 0;" href="play_back.html"></a>Playback</li>
+				<li onclick="location.href='backup.html'"><a style="background-position: -62px 0;" href="backup.html"></a>backup</li>
+				<li onclick="location.href='device.html'"><a style="background-position: -88px 0; width:36px;" href="device.html"></a>Device</li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
-				<li><a class="hover" style="background-position: 0 -260px;" href="log.html">Log</a></li>
+				<li onclick="location.href='log.html'"><a style="background-position: -124px 0;" href="log.html"></a>Log</li>
 			</ul>
 			<div>
 				<a href="javascript:;"></a>				
@@ -182,8 +182,8 @@ var num = 0;
 				<tr>
 					<td style="text-align:right">Start Time:</td>
 					<td>
-						<div class="select" style="top:26px;"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option" style="top:26px; position:absolute;">
+						<div class="select"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
+						<ul class="option">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
@@ -193,8 +193,8 @@ var num = 0;
 				<tr>
 					<td style="text-align:right">End Time:</td>
 					<td>
-						<div class="select" style="top:48px;"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option" style="top:48px;position:absolute;">
+						<div class="select"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
+						<ul class="option">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
@@ -253,13 +253,13 @@ var num = 0;
 				<li class="warn"><div style="background:#F00"></div>Sensor</li>
 				<li class="hover" style="background-position: -120px -216px;"></li>
 				<li class="hover" style="background-position: 0 -180px"></li>
-				<li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li>
+				<li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li>
 				<li class="toggle hover" style="background-position: -120px 0;"></li>
 				<li class="hover" style="background:0; width:70px; margin-right:30px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
 				<li class="hover" style="background-position: -120px -252px;"></li>
-				<li class="1_setViewNum hover" style="background-position: 0 -252px;"></li>
-				<li class="2_setViewNum hover" style="background-position: -30px -216px;"></li>
-				<li class="3_setViewNum hover" style="background-position: 0 -288px;"></li>
+				<li class="setViewNum hover" style="background-position: 0 -252px;"></li>
+				<li class="setViewNum hover" style="background-position: -30px -216px;"></li>
+				<li class="setViewNum hover" style="background-position: 0 -288px;"></li>
 				<li class="hover" style="background-position: -120px -288px;"></li>
 				<li class="hover" style="background-position: 0 -324px;"></li>
 			</ul>

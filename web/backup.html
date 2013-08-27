@@ -77,12 +77,12 @@ var num = 0;
 		</div>
 		<div class="top_nav">
 			<ul>
-				<li><a class="hover" style="background-position: 0 0;"href="index.html">Preview</a></li>
-				<li><a class="hover" style="background-position: 0 -52px;" href="play_back.html">Playback</a></li>
-				<li><a class="hover" style="background-position: 0 -104px;" href="backup.html">backup</a></li>
-				<li><a class="hover" style="background-position: 0 -156px;" href="device.html">Device</a></li>
+				<li onclick="location.href='index.html'"><a href="index.html" style="width:36px;"></a>Preview</li>
+				<li onclick="location.href='play_back.html'"><a style="background-position: -36px 0;" href="play_back.html"></a>Playback</li>
+				<li class="active" onclick="location.href='backup.html'"><a style="background-position: -62px 0;" href="backup.html"></a>backup</li>
+				<li onclick="location.href='device.html'"><a style="background-position: -88px 0; width:36px;" href="device.html"></a>Device</li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
-				<li><a class="hover" style="background-position: 0 -260px;" href="log.html">Log</a></li>
+				<li onclick="location.href='log.html'"><a style="background-position: -124px 0;" href="log.html"></a>Log</li>
 			</ul>
 			<div>
 				<a href="javascript:;"></a>				
@@ -189,7 +189,7 @@ var num = 0;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px; background-position: -100px 0; color:#000;" class="switch hover" href="javascript:;">All</a><a class="switch hover" href="javascript:;">Inverse</a><a class="switch hover" href="javascript:;">Backup</a>
+		<a style="margin-left:30px; background-position: -100px 0; color:#000;" class="setViewNum hover" href="javascript:;">All</a><a class="setViewNum hover" href="javascript:;">Inverse</a><a class="setViewNum hover" href="javascript:;">Backup</a>
 	</div>
 	<div id="foot"></div>
 </body>

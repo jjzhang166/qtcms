@@ -17,7 +17,7 @@ function addMouseStyle(obj,action){
 		}else{
 			obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
 		}
-	}).mouseup(function(){
+	}).mouseup(function(ev){
 		if(action == 'toggle'){
 			var H = obj.height();
 			if(top == 0){
@@ -33,14 +33,17 @@ function addMouseStyle(obj,action){
 				var oSwitch = $('a.switch');
 
 			}else{
-				var oSwitch = $('#operating li[class*="_setViewNum"]');
-				var key = obj.attr('class').split('_')[0]
-				autoImages(key,oView);	
-			}
-			oSwitch.each(function(){
+				var ev = ev || window.event;
+				var oSwitch = $('div .setViewNum');	
+				oSwitch.each(function(){
 				var T = document.all ? parseInt($(this).css('backgroundPositionY')) : parseInt($(this).css('background-position').split('px')[1]);
 				$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
-			})		
+				var oView = $('#playback_view');
+				if(oView.length != 0){
+					autoImages(oSwitch.index(ev.target)+1,oView);
+				}
+			})
+			}		
 			obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
 			obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
 			left=-width;
@@ -149,20 +152,18 @@ function set_drag(oDrag,X1,X2){
 		},
 		'toSelect':function(){
 			var This = this;
-			This.click(function(){
-				This.next('ul.option').toggle();
-			}).mouseleave(function(){
-				This.next('ul.option').hide();
+			var option = this.next('ul.option');
+			this.click(function(){
+				option.toggle(1,function(){ 
+					if(option.is(':visible')){ 
+						$(document).one('click',function(){ 
+							option.hide();
+						})
+					}
+				});
 			})
-			This.next('ul.option')/*.click(function(){ 
-					$(this).hide();
-				})*/.mouseleave(function(){ 
-					$(this).hide();
-				})
-			This.next('ul.option').mouseenter(function(){
-				$(this).show();
-			}).find('li').click(function(){
-				$(this).parent('ul.option').hide();
+			option.find('li').click(function(){
+				This.next('ul.option').hide();
 				This.find('span').html($(this).find('a').html());
 			})
 		}
@@ -175,4 +176,10 @@ $(function(){
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
+
+	$('#top div.top_nav li').mousedown(function(){ 
+		$(this).css('background-position','0 -52px');
+	}).mouseup(function(){ 
+			$(this).css('background-position','0 0');
+	})
 })
