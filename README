@@ -157,3 +157,37 @@
      void OnBtnMouseDown();
      而第二种声明必须对应实现函数
      void OnBtnMouseDown(int x,int y);
+     
+5.Plugin与页面的交互
+	5.1提供函数给页面调用
+	  插件的实际工作实例是由Create返回的实例，该实例的类必须直接或者间接继承至QObject类，
+	  并且加上Q_OBJECT宏。只需要将函数定义为public slots，外部的页面就可以直接调用该插件
+	  函数，具体实例请参考ViewWndPlugin及plugintest.html。
+	5.2反馈给页面事件
+		事件是插件主动通知页面的一种方式。本项目中的事件，都不带参数。
+		5.2.1如何在插件中加入事件(可参考ViewWndPlugin的qfviewedit类)
+			5.2.1.1在插件的实例类中，包含头文件qwfw.h，为实例类添加public父类QWebPluginFWBase
+			5.2.1.2在插件的实例类中，声明以下的slots函数:
+				void AddEventProc( const QString sEvent,QString sProc );
+			5.2.1.3AddEventProc函数的实现
+				void xxxPluginInstance::void AddEventProc( const QString sEvent,QString sProc )
+				{
+					m_mapEventProc.insertMulti(sEvent,sProc);
+				}
+			5.2.1.4事件的调用
+				在需要抛出事件的地方，调用函数void EventProcCall(QString sEvent),其中参数sEvent为
+				事件名称。
+		5.2.2页面中如何定义事件响应(可参考web/plugintest.html)
+			5.2.2.1在页面中插入插件
+				页面中通过插入<object>标签来插入插件。需要注意的是<object>标签必须以标签对的方式出
+				现，即<object></object>的方式；而以<object />方式插入的标签，则不支持。
+				标签中必须加入属性type，该属性的值即插件的mimetype。另外如果需要在javascripte脚本中
+				调用的话，需要加入id属性。
+			5.2.2.2在页面中定义事件响应
+				插件提供了以下函数，用于定义事件响应
+				AddEventProc(event,proc);
+				event:事件类型，参数类型为字符串
+				proc:响应事件，可以是一段JavaScripte脚本，需要用单引号或双引号包裹
+				同一个事件可以添加多个事件响应处理，事件响应处理的调用顺序和AddEventProc的调用顺序有关
+			
+			

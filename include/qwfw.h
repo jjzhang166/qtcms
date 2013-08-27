@@ -1,6 +1,33 @@
 #ifndef __QWFW_HEAD_FILESA8D90123__
 #define __QWFW_HEAD_FILESA8D90123__
 #include <QtWebKit/QWebFrame>
+#include <QtGui/QWidget>
+#include <QtWebKit/QWebView>
+
+class QWebPluginFWBase
+{
+public:
+	QWebPluginFWBase(QWidget * widget){m_widget = widget;};
+
+protected:
+	void EventProcCall(QString sEvent){
+		QList<QString> sProcs = m_mapEventProc.values(sEvent);
+		int n = sProcs.count();
+		for (int i = n ; i > 0 ;i --)
+		{
+			QString sItem = sProcs.at(i - 1);
+			QWidget *pa = m_widget->parentWidget();
+			if ("QtWebKitFW" == pa->objectName())
+			{
+				((QWebView *)pa)->page()->mainFrame()->evaluateJavaScript(sItem);
+			}
+		}
+	};
+
+	QMap<QString,QString> m_mapEventProc;
+	QWidget * m_widget;
+};
+
 
 class QWebUiFWBase
 {

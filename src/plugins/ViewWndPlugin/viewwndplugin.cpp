@@ -1,5 +1,5 @@
 #include "viewwndplugin.h"
-#include <QtGui/QTextEdit>
+#include "qfviewedit.h"
 #include <QtPlugin>
 #include <guid.h>
 
@@ -34,9 +34,8 @@ QList<QWebPluginFactory::Plugin> ViewWndPlugin::plugins() const
 
 QObject * ViewWndPlugin::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
-	QTextEdit * edit= new QTextEdit();
-	edit->setObjectName(QString("a new plugin for test"));
-	edit->setPlainText(QString("hello plugins"));
+	
+	qfviewedit * edit= new qfviewedit();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);
 	return edit;

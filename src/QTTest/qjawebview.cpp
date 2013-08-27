@@ -15,6 +15,9 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	// Window styles
     setWindowFlags(Qt::FramelessWindowHint);
 
+	// Set object name
+	setObjectName("QtWebKitFW");
+
 	// Enable Javascript and plugins
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);

@@ -61,9 +61,6 @@
     <ClInclude Include="..\..\..\include\guid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\qwfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="previewactivity.def">
@@ -72,6 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="previewactivity.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\include\qwfw.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
