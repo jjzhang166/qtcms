@@ -4,7 +4,7 @@
 #include "libpcom.h"
 #include <QtWebKit/QWebFrame>
 
-interface IActivities : public IPcomBase
+interface IActivities : public IPComBase
 {
     virtual void Active(QWebFrame *) = 0;
 };

@@ -166,7 +166,8 @@
 	5.2反馈给页面事件
 		事件是插件主动通知页面的一种方式。本项目中的事件，都不带参数。
 		5.2.1如何在插件中加入事件(可参考ViewWndPlugin的qfviewedit类)
-			5.2.1.1在插件的实例类中，包含头文件qwfw.h，为实例类添加public父类QWebPluginFWBase
+			5.2.1.1在插件的实例类中，包含头文件qwfw.h，为实例类添加public父类QWebPluginFWBase，
+			  实例需要直接或者间接继承于QWidget
 			5.2.1.2在插件的实例类中，声明以下的slots函数:
 				void AddEventProc( const QString sEvent,QString sProc );
 			5.2.1.3AddEventProc函数的实现

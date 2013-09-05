@@ -1,0 +1,29 @@
+@charset "utf-8";
+.div_body {
+	width: 1024px;
+}
+.top {
+}
+.code {
+	border-color: #090;
+	background-color: #CCC;
+	border-width: 2px;
+}
+.interface_des {
+}
+.interface {
+}
+.desc {
+}
+.type {
+	color: #06F;
+}
+.key {
+	color: #06F;
+}
+.functionname {
+	color: #900;
+}
+.value {
+	color: #96C;
+}

@@ -28,6 +28,8 @@ interface IPcomBase{
 
 typedef interface IPcomBase IPcomBase,*pIPcomBase;
 
+#define IPComBase virtual IPcomBase
+
 // Error code
 #define MAKE_ERROR(x)   (0x80000000 | x)
 #define S_OK 0

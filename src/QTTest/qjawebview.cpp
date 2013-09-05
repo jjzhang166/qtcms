@@ -81,7 +81,6 @@ void QJaWebView::OnLoad( bool bOk )
 		// Get CLSID node,all object descripte under this node
 		QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
 		QDomNodeList itemList = clsidNode.childNodes();
-		qDebug("item count:%d",itemList.count());
 		int n;
 		for (n = 0;n < itemList.count();n ++)
 		{

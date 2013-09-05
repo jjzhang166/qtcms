@@ -2,9 +2,9 @@
 #define QFVIEWEDIT_H
 
 #include <QtGui/QTextEdit>
-#include "ui_qfviewedit.h"
 #include <QtWebKit/QWebElement>
 #include <qwfw.h>
+#include <QtCore/QStringList>
 
 class qfviewedit : public QTextEdit,
 	public QWebPluginFWBase
@@ -15,12 +15,11 @@ public:
 	qfviewedit(QWidget *parent = 0);
 	~qfviewedit();
 
-private:
- 	Ui::qfviewedit ui;
-
 public slots:
 	void PrintText(const QString & sText);
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
+	QStringList TestStringList();
+
 
 
 };

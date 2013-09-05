@@ -3,7 +3,8 @@
 #include <QtPlugin>
 #include <guid.h>
 
-ViewWndPlugin::ViewWndPlugin()
+ViewWndPlugin::ViewWndPlugin() :
+m_nRef(0)
 {
 
 }
@@ -78,7 +79,6 @@ unsigned long __stdcall ViewWndPlugin::Release()
 	m_csRef.unlock();
 	if (0 == nRet)
 	{
-		qDebug("delete this;");
 		delete this;
 	}
 	return nRet;

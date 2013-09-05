@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IUserManager.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="interface_des">
+    	<p>
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">AddUser</span>(<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sUsername</span>,<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sPassword</span>,<span class="top"><span class="top"><span class="type">int</span></span></span> <span class="value">nLevel</span>,<span class="type">int</span> <span class="value">nAuthorityMask1</span>,<span class="type">int</span> <span class="value">nAuthorityMask2</span>) = 0;</div>
+   	  <div class="desc"> 向系统中添加名称为<span class="value">sUsername</span>的用户，该用户密码为<span class="value">sPassword</span>。<span class="value">nLevel</span>指明了用户的权限等级，当<span class="value">nLevel</span>为0时，为高级管理员；当<span class="value">nLevel</span>为1时为管理员；当<span class="value">nLevel</span>为2是为普通用户；当<span class="value">nLevel</span>为3时为游客。<span class="value">nAuthorityMask1</span>和<span class="value">nAuthorityMask2</span>指明了用户的详细权限，当前保留未使用，在传入时请填0xFFFFFFFF。<br />
+   	  当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
+    	</p>
+    	<div class="code"><span class="key">virtual</span> <span class="value">int</span> <span class="functionname">RemoveUser</span>(<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sUsername</span>) = 0;</div>
+   	  <div class="desc">在系统中删除用户名为<span class="value">sUsername</span>的用户</div>
+    	</p>
+   	  <div class="code">virtual int ModifyUserPassword(const QString &amp; sUsername,const QString &amp; sNewPassword) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual int ModifyUserLevel(const QString &amp; sUsername,int nLevel) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual int ModifyUserAuthorityMask(const QString &amp; sUsername,int nAuthorityMask1,int nAuthorityMask2) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual bool IsUserExists(const QString &amp; sUsername) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual bool CheckUser(const QString &amp; sUsername,const QString &amp; sPassword) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual int GetUserLevel(const QString &amp; sUsername,int &amp; nLevel) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual int GetUserAuthorityMask(const QString &amp; sUsername,int &amp; nAuthorityMask1, int &amp; nAuthorityMask2) = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual int GetUserCount() = 0;</div>
+   	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+   	  <div class="code">virtual QStringList GetUserList() = 0;</div>
+       	  <div class="desc">此处显示  class "desc" 的内容</div>
+    	</p>
+    </div>
+    <p>&nbsp;</p>
+  </div>
+  <p>&nbsp;</p>
+</div>
+</body>
+</html>

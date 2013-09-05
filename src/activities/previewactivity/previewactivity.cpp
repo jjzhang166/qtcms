@@ -46,7 +46,6 @@ unsigned long __stdcall previewactivity::Release()
 	m_csRef.unlock();
 	if (0 == nRet)
 	{
-		qDebug("delete this;");
 		delete this;
 	}
 	return nRet;

@@ -24,44 +24,41 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{51c3dd4e-8eab-4064-ad20-67f9c02f7e15}</UniqueIdentifier>
+      <UniqueIdentifier>{f24c903a-0600-4374-877f-69d6af27ce2a}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{2d18caf0-c874-4433-ac23-2ff5fc81a4d0}</UniqueIdentifier>
+      <UniqueIdentifier>{80014ae5-237f-469d-935c-36ae71b9297a}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="viewwndplugin.cpp">
+    <ClCompile Include="ccommonlib.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_viewwndplugin.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_viewwndplugin.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qcommonplugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qcommonplugin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qcommonplugin.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qfviewedit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qfviewedit.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qfviewedit.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="viewwndplugin_global.h">
+    <ClInclude Include="ccommonlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="commonlib_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dllmain.h">
@@ -69,15 +66,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="viewwndplugin.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qfviewedit.h">
+    <CustomBuild Include="qcommonplugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="viewwndplugin.def">
+    <None Include="commonlib.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
