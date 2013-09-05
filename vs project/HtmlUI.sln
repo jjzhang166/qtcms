@@ -12,8 +12,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "previewactivity", "..\src\a
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViewWndPlugin", "..\src\plugins\ViewWndPlugin\ViewWndPlugin.vcxproj", "{96B79E57-8900-4809-BD02-B51B2B11EEA4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PreviewWnd", "..\src\plugins\PreviewWnd\PreviewWnd.vcxproj", "{D6B53CEA-F4CD-4239-B012-3355AF0BE7ED}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\src\plugins\commonlib\commonlib.vcxproj", "{4B75D5BE-42C9-4575-B118-75D9B975A61A}"
 EndProject
 Global
@@ -38,10 +36,6 @@ Global
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Debug|Win32.Build.0 = Debug|Win32
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.ActiveCfg = Release|Win32
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.Build.0 = Release|Win32
-		{D6B53CEA-F4CD-4239-B012-3355AF0BE7ED}.Debug|Win32.ActiveCfg = Debug|Win32
-		{D6B53CEA-F4CD-4239-B012-3355AF0BE7ED}.Debug|Win32.Build.0 = Debug|Win32
-		{D6B53CEA-F4CD-4239-B012-3355AF0BE7ED}.Release|Win32.ActiveCfg = Release|Win32
-		{D6B53CEA-F4CD-4239-B012-3355AF0BE7ED}.Release|Win32.Build.0 = Release|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Debug|Win32.Build.0 = Debug|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Release|Win32.ActiveCfg = Release|Win32
