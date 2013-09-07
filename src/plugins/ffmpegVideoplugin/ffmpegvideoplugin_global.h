@@ -1,0 +1,6 @@
+#ifndef FFMPEGVIDEOPLUGIN_GLOBAL_H
+#define FFMPEGVIDEOPLUGIN_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#endif // FFMPEGVIDEOPLUGIN_GLOBAL_H

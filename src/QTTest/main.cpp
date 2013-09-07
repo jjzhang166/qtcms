@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "qjawebview.h"
 #include "libpcom.h"
+#include "../src/plugins/ffmpegVideoplugin/AvLibDll.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,9 +12,8 @@ int main(int argc, char *argv[])
 	// extern libraries path
 	QString sExternLib(sTemp + "/exlibs");
 	QApplication::addLibraryPath(sExternLib);
-
-    QJaWebView view;
+    
+	QJaWebView view;
     view.showMaximized();
-
     return a.exec();
 }

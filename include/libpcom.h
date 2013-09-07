@@ -2,7 +2,6 @@
 #define LIBPCOM_H
 
 #include "libpcom_global.h"
-
 // GUID
 #ifndef GUID_DEFINED
 #define GUID_DEFINED

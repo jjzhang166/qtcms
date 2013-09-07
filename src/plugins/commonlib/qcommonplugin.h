@@ -14,6 +14,11 @@ public:
 	QCommonPlugin(QWidget *parent = 0);
 	~QCommonPlugin();
 
+public:
+	int GetUserLevel( const QString & sUsername,int & nLevel );
+
+	int GetUserAuthorityMask( const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2 );
+
 public slots:
 	// Event proc
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
@@ -35,11 +40,7 @@ public slots:
 
 	int GetUserLevel( const QString & sUsername );
 
-	int GetUserLevel( const QString & sUsername,int & nLevel );
-
 	QStringList GetUserAuthorityMask( const QString & sUsername );
-
-	int GetUserAuthorityMask( const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2 );
 
 	int GetUserCount();
 

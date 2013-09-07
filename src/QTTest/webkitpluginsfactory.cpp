@@ -94,7 +94,7 @@ QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url
 		if (sItemName.left(strlen("plugin.")) == QString("plugin."))
 		{
 			QString sMime = itemElement.attribute("mimetype");
-			if (sMime == mimeType)
+			if (sMime.toLower() == mimeType)
 			{
 				// Get item classID
 				QString sItemClsid = itemElement.attribute("clsid");

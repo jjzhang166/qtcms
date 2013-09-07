@@ -1,23 +1,21 @@
-#include "viewwndplugin.h"
-#include "qfviewedit.h"
+#include "ffmpegvideoplugin.h"
+#include "qffmpeg.h"
 #include <QtPlugin>
 #include <guid.h>
-
-ViewWndPlugin::ViewWndPlugin() :
-m_nRef(0)
+ffmpegVideoplugin::ffmpegVideoplugin()
 {
 
 }
 
-ViewWndPlugin::~ViewWndPlugin()
+ffmpegVideoplugin::~ffmpegVideoplugin()
 {
 
 }
 
-QList<QWebPluginFactory::Plugin> ViewWndPlugin::plugins() const
+QList<QWebPluginFactory::Plugin> ffmpegVideoplugin::plugins() const
 {
 	QWebPluginFactory::MimeType mimeType;
-	mimeType.name = QString("application/cms-preview-window");
+	mimeType.name = QString("application/cms-ffmpeg-video");
 	mimeType.description=QString("cms preview window");
 
 	QList<QWebPluginFactory::MimeType> mimeTypes;
@@ -33,15 +31,15 @@ QList<QWebPluginFactory::Plugin> ViewWndPlugin::plugins() const
 	return plugins;
 }
 
-QObject * ViewWndPlugin::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
+QObject * ffmpegVideoplugin::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
-	qfviewedit * edit= new qfviewedit();
+	qffmpeg * box= new qffmpeg();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);
-	return edit;
+	return box;
 }
 
-long __stdcall ViewWndPlugin::QueryInterface( const IID & iid,void **ppv )
+long _stdcall ffmpegVideoplugin::QueryInterface( const IID & iid,void **ppv )
 {
 	if (IID_IWebPluginBase == iid)
 	{
@@ -61,7 +59,7 @@ long __stdcall ViewWndPlugin::QueryInterface( const IID & iid,void **ppv )
 	return S_OK;
 }
 
-unsigned long __stdcall ViewWndPlugin::AddRef()
+unsigned long __stdcall ffmpegVideoplugin::AddRef()
 {
 	m_csRef.lock();
 	m_nRef ++;
@@ -69,7 +67,7 @@ unsigned long __stdcall ViewWndPlugin::AddRef()
 	return m_nRef;
 }
 
-unsigned long __stdcall ViewWndPlugin::Release()
+unsigned long __stdcall ffmpegVideoplugin::Release()
 {
 	int nRet = 0;
 	m_csRef.lock();
@@ -78,9 +76,10 @@ unsigned long __stdcall ViewWndPlugin::Release()
 	m_csRef.unlock();
 	if (0 == nRet)
 	{
+		qDebug("delete this;");
 		delete this;
 	}
 	return nRet;
 }
 
-Q_EXPORT_PLUGIN2("ViewWndPlugin.dll",ViewWndPlugin)
+Q_EXPORT_PLUGIN2("ffmpegVideoplugin.dll",ffmpegVideoplugin)

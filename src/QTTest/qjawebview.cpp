@@ -46,7 +46,6 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 }
 
-
 QJaWebView::~QJaWebView()
 {
 }
@@ -73,7 +72,7 @@ void QJaWebView::OnLoad( bool bOk )
 		// Load configure file pcom_config.xml
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QFile *file = new QFile(sAppPath + "/pcom_config.xml");
-
+		
 		// use QDomDocument to analyse it
 		QDomDocument ConfFile;
 		ConfFile.setContent(file);
