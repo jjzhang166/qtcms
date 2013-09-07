@@ -133,12 +133,12 @@ int Ccommonlib::GetUserAuthorityMask( const QString & sUsername,int & nAuthority
 
 int Ccommonlib::GetUserCount()
 {
-	throw std::exception("The method or operation is not implemented.");
+	return m_pluginObj.GetUserCount();
 }
 
 QStringList Ccommonlib::GetUserList()
 {
-	throw std::exception("The method or operation is not implemented.");
+	return m_pluginObj.GetUserList();
 }
 
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

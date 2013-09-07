@@ -7,7 +7,8 @@
 .code {
 	border-color: #090;
 	background-color: #CCC;
-	border-width: 2px;
+	border-width: 1px;
+	border-style: solid;
 }
 .interface_des {
 }
@@ -26,4 +27,8 @@
 }
 .value {
 	color: #96C;
+}
+.remark {
+	background-color: #CCC;
+
 }

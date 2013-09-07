@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <p>用户信息存储位置：<br />
+  system.db</p>
+  <p>用户表<br />
+    user_infomation
+  </p>
+  <table width="100%" border="1">
+    <tr>
+      <td>id</td>
+      <td>integer primary key autoincrement</td>
+    </tr>
+    <tr>
+      <td>username</td>
+      <td>text</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>text</td>
+    </tr>
+    <tr>
+      <td>level</td>
+      <td>integer</td>
+    </tr>
+    <tr>
+      <td>mask1</td>
+      <td>integer</td>
+    </tr>
+    <tr>
+      <td>mask2</td>
+      <td>integer</td>
+    </tr>
+  </table>
+  <p>password存储的是经过MD5编码的文本</p>
+</div>
+</body>
+</html>

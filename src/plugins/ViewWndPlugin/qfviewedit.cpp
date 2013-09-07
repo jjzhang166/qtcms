@@ -1,6 +1,7 @@
 #include "qfviewedit.h"
 #include <QtWebKit/QWebView>
 #include <QtWebKit/QWebFrame>
+#include <QtCore/QCryptographicHash>
 
 qfviewedit::qfviewedit(QWidget *parent)
 	: QTextEdit(parent),
@@ -19,7 +20,7 @@ void qfviewedit::PrintText( const QString & sText )
 	EventProcCall("Passed");
 }
 
-QStringList qfviewedit::TestStringList()
+QStringList qfviewedit::TestStringList(const QString & sTest)
 {
 	QStringList ret;
 	ret.insert(0,QString("This is a string list,it's the 1st line"));
@@ -30,4 +31,19 @@ QStringList qfviewedit::TestStringList()
 	ret.insert(5,QString("Thank you for your test"));
 
 	return ret;
+}
+
+void qfviewedit::RefTest( int & nTest )
+{
+	nTest = 10;
+}
+
+QStringList qfviewedit::PointReturnTest()
+{
+	QStringList a;
+	a.insert(0,"1");
+	a.insert(1,"3");
+	QByteArray s = QCryptographicHash::hash(QByteArray("hello"),QCryptographicHash::Md5);
+	a.insert(2,QString(s.toHex().toLower()));
+	return a;
 }

@@ -17,6 +17,13 @@ interface IUserManager : public IPComBase
 	virtual int GetUserAuthorityMask(const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2) = 0;
 	virtual int GetUserCount() = 0;
 	virtual QStringList GetUserList() = 0;
+
+	enum _emError{
+		OK,
+		E_USER_NOT_FOUND,
+		E_PASSWORD,
+		E_SYSTEM_FAILED,
+	};
 };
 
 #endif

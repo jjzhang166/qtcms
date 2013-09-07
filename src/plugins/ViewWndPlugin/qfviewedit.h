@@ -18,7 +18,9 @@ public:
 public slots:
 	void PrintText(const QString & sText);
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
-	QStringList TestStringList();
+	QStringList TestStringList( const QString & nTest);
+	void RefTest(int & nTest);
+	QStringList PointReturnTest();
 
 
 

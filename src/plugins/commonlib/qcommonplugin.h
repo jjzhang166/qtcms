@@ -33,9 +33,17 @@ public slots:
 
 	bool CheckUser( const QString & sUsername,const QString & sPassword );
 
+	int GetUserLevel( const QString & sUsername );
+
 	int GetUserLevel( const QString & sUsername,int & nLevel );
 
+	QStringList GetUserAuthorityMask( const QString & sUsername );
+
 	int GetUserAuthorityMask( const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2 );
+
+	int GetUserCount();
+
+	QStringList GetUserList();
 
 };
 
