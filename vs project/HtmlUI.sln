@@ -12,11 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "previewactivity", "..\src\a
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViewWndPlugin", "..\src\plugins\ViewWndPlugin\ViewWndPlugin.vcxproj", "{96B79E57-8900-4809-BD02-B51B2B11EEA4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffmpegVideoplugin", "..\src\plugins\ffmpegVideoplugin\ffmpegVideoplugin.vcxproj", "{8276E5F8-D9CE-4215-90E4-5EF42F1B279C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\src\plugins\commonlib\commonlib.vcxproj", "{4B75D5BE-42C9-4575-B118-75D9B975A61A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SqlTest", "..\src\SqlTest\SqlTest.vcxproj", "{6FC117A3-4D14-4256-9CD1-8AEBE2F07B59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,18 +36,10 @@ Global
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Debug|Win32.Build.0 = Debug|Win32
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.ActiveCfg = Release|Win32
 		{96B79E57-8900-4809-BD02-B51B2B11EEA4}.Release|Win32.Build.0 = Release|Win32
-		{8276E5F8-D9CE-4215-90E4-5EF42F1B279C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8276E5F8-D9CE-4215-90E4-5EF42F1B279C}.Debug|Win32.Build.0 = Debug|Win32
-		{8276E5F8-D9CE-4215-90E4-5EF42F1B279C}.Release|Win32.ActiveCfg = Release|Win32
-		{8276E5F8-D9CE-4215-90E4-5EF42F1B279C}.Release|Win32.Build.0 = Release|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Debug|Win32.Build.0 = Debug|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Release|Win32.ActiveCfg = Release|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Release|Win32.Build.0 = Release|Win32
-		{6FC117A3-4D14-4256-9CD1-8AEBE2F07B59}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6FC117A3-4D14-4256-9CD1-8AEBE2F07B59}.Debug|Win32.Build.0 = Debug|Win32
-		{6FC117A3-4D14-4256-9CD1-8AEBE2F07B59}.Release|Win32.ActiveCfg = Release|Win32
-		{6FC117A3-4D14-4256-9CD1-8AEBE2F07B59}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
