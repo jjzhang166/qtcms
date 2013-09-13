@@ -4,7 +4,7 @@
 #include <QObject>
 #include <qwfw.h>
 #include <QtGui/QWidget>
-
+#include <QtSql>
 class QCommonPlugin : public QWidget,
 	public QWebPluginFWBase
 {
@@ -13,6 +13,10 @@ class QCommonPlugin : public QWidget,
 public:
 	QCommonPlugin(QWidget *parent = 0);
 	~QCommonPlugin();
+
+private:
+	QSqlDatabase m_db;
+
 
 public:
 	int GetUserLevel( const QString & sUsername,int & nLevel );
