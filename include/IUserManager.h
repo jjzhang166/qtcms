@@ -23,6 +23,7 @@ interface IUserManager : public IPComBase
 		E_USER_NOT_FOUND,
 		E_PASSWORD,
 		E_SYSTEM_FAILED,
+		E_USER_EXISTS,
 	};
 };
 
