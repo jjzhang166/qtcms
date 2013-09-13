@@ -5,6 +5,7 @@
 #include <QtWebKit/QWebElement>
 #include <qwfw.h>
 #include <QtCore/QStringList>
+#include <QtCore/QVariantList>
 
 class qfviewedit : public QTextEdit,
 	public QWebPluginFWBase
@@ -15,12 +16,19 @@ public:
 	qfviewedit(QWidget *parent = 0);
 	~qfviewedit();
 
+	typedef struct _tagValRet{
+		int na;
+		int nb;
+	}ValRet;
+
 public slots:
-	void PrintText(const QString & sText);
+	void PrintText(QString sText);
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 	QStringList TestStringList( const QString & nTest);
 	void RefTest(int & nTest);
 	QStringList PointReturnTest();
+	QVariantMap RetTest();
+	
 
 
 

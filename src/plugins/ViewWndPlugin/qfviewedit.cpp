@@ -14,7 +14,7 @@ qfviewedit::~qfviewedit()
 	m_mapEventProc.clear();
 }
 
-void qfviewedit::PrintText( const QString & sText )
+void qfviewedit::PrintText( QString sText )
 {
 	qDebug("%s",sText.toAscii().data());
 	EventProcCall("Passed");
@@ -46,4 +46,15 @@ QStringList qfviewedit::PointReturnTest()
 	QByteArray s = QCryptographicHash::hash(QByteArray("hello"),QCryptographicHash::Md5);
 	a.insert(2,QString(s.toHex().toLower()));
 	return a;
+}
+
+QVariantMap qfviewedit::RetTest()
+{
+	QVariantMap ret;
+	ret.insert("name",QVariant("admin"));
+	ret.insert("password",QVariant("abc"));
+	ret.insert("address",QVariant("192.168.2.12"));
+	ret.insert("port",QVariant(80));
+
+	return ret;
 }
