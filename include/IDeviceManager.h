@@ -17,7 +17,7 @@ interface IDeviceManager : public IPComBase
 	virtual int ModifyDeviceChannelCount(int dev_id,int chlCount) = 0;
 	virtual int ModifyDeviceConnectMethod(int dev_id,int connectMethod) = 0;
 	virtual int ModifyDeviceVendor(int dev_id,QString sVendor) = 0;
-	virtual int GetDeviceCount() = 0;
+	virtual int GetDeviceCount(int area_id) = 0;
 	virtual QStringList GetDeviceList(int area_id) = 0;
 	virtual int GetDeviceName(int dev_id,QString & sName) = 0;
 	virtual int GetDeviceHost(int dev_id,QString & sAddress,int & nPort,int &http) = 0;
@@ -27,6 +27,13 @@ interface IDeviceManager : public IPComBase
 	virtual int GetDevicdVendor(int dev_id,QString & sVendor);
 	virtual int GetDeviceInfo(int dev_id,QString & sDeviceName, QString & sAddress, int & port, int & http, QString & sEseeid, QString & sUsername,QString &sPassword, int & connectMethod, QString & sVendor) = 0;
 	virtual QVariantMap GetDeviceInfo(int dev_id) = 0;
+
+	enum _emError{
+		OK,
+		E_DEVICE_NOT_FOUND,
+		E_AREA_NOT_FOUND,
+		E_SYSTEM_FAILED,
+	};
 };
 
 #endif

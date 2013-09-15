@@ -12,6 +12,7 @@ qfviewedit::qfviewedit(QWidget *parent)
 qfviewedit::~qfviewedit()
 {
 	m_mapEventProc.clear();
+	QVariantMap mml;
 }
 
 void qfviewedit::PrintText( QString sText )

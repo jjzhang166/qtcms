@@ -25,11 +25,11 @@
     	<div class="code"><span class="key">virtual</span> <span class="value"><span class="type">int</span></span> <span class="functionname">RemoveUser</span>(<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sUsername</span>) = 0;</div>
    	  <div class="desc">在系统中删除用户名为<span class="value">sUsername</span>的用户。<br />
    	  当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
-    	</p>
+    	<br/>
    	  <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyUserPassword</span>(<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sUsername</span>,<span class="key">const</span> <span class="type">QString</span> &amp; <span class="value">sNewPassword</span>) = 0;</div>
    	  <div class="desc">将用户<span class="value">sUsername</span>的密码修改为<span class="value">sNewPassword</span>。<br />
    	  当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
-    	</p>
+    	<br/>
    	  <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyUserLevel</span>(<span class="key">const</span> <span class="type"><span class="value"><span class="type">QString</span></span></span> &amp; <span class="value">sUsername</span>,<span class="type">int</span> <span class="value">nLevel</span>) = 0;</div>
    	  <div class="desc">将用户<span class="value">sUsername</span>的权限等级设置为<span class="value">nLevel</span>。<br />
       当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。   	  </div>

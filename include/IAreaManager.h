@@ -20,6 +20,13 @@ interface IAreaManager : public IPComBase
 	virtual QString GetAreaName(int id) = 0;
 	virtual int GetAreaInfo(int nId,int &nPid,QString &sName) = 0;
 	virtual QVariantMap GetAreaInfo(int nId) = 0;
+
+	enum _emError{
+		OK,
+		E_AREA_NOT_FOUND,
+		E_AREA_NAME_EXISTS,
+		E_SYSTEM_FAILED,
+	};
 };
 
 #endif
