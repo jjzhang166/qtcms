@@ -1,3 +1,12 @@
+create table user_infomation(
+id integer primary key autoincrement,
+username text,
+password text,
+level integer,
+mask1 integer,
+mask2 integer
+);
+
 create table area
 (
 id integer primary key autoincrement,
