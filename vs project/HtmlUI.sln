@@ -14,7 +14,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViewWndPlugin", "..\src\plu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\src\plugins\commonlib\commonlib.vcxproj", "{4B75D5BE-42C9-4575-B118-75D9B975A61A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "..\src\UnitTest\UnitTest.vcxproj", "{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}"
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HtmlUI.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
@@ -40,6 +45,10 @@ Global
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Debug|Win32.Build.0 = Debug|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Release|Win32.ActiveCfg = Release|Win32
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A}.Release|Win32.Build.0 = Release|Win32
+		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Debug|Win32.Build.0 = Debug|Win32
+		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Release|Win32.ActiveCfg = Release|Win32
+		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
