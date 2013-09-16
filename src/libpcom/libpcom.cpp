@@ -61,13 +61,18 @@ char * pcomGUID2String(const GUID &guid)
 {
 	static char sRet[64] = {0};
     QString sGuid;
-    sGuid.sprintf("%08X-%04X-%04X-%04X-%04X%08X",
+    sGuid.sprintf("%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
                   guid.Data1,
                   guid.Data2,
                   guid.Data3,
-                  *((unsigned short *)guid.Data4),
-                  *((unsigned short *)(guid.Data4 + 2)),
-                  *((unsigned long *)(guid.Data4 + 4))
+                  *((unsigned char *)guid.Data4),
+				  *((unsigned char *)(guid.Data4 + 1)),
+                  *((unsigned char *)(guid.Data4 + 2)),
+				  *((unsigned char *)(guid.Data4 + 3)),
+                  *((unsigned char *)(guid.Data4 + 4)),
+				  *((unsigned char *)(guid.Data4 + 5)),
+				  *((unsigned char *)(guid.Data4 + 6)),
+				  *((unsigned char *)(guid.Data4 + 7))
                   );
 	strcpy(sRet,sGuid.toAscii().data());
     return sRet;
@@ -80,8 +85,13 @@ GUID pcomString2GUID(const QString &sGuid)
 	ret.Data1 = guidData.at(0).toULong((bool *)0,16);
 	ret.Data2 = guidData.at(1).toUShort((bool *)0,16);
 	ret.Data3 = guidData.at(2).toUShort((bool *)0,16);
-	*((unsigned short *)(ret.Data4)) = guidData.at(3).toUShort((bool *)0,16);
-	*((unsigned short *)(ret.Data4 + 2)) = guidData.at(4).left(4).toUShort((bool *)0,16);
-	*((unsigned long *)(ret.Data4 + 4)) = guidData.at(4).right(8).toULong((bool *)0,16);
+	*((unsigned char *)(ret.Data4)) = guidData.at(3).left(2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 1)) = guidData.at(3).right(2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 2)) = guidData.at(4).left(2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 3)) = guidData.at(4).mid(2,2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 4)) = guidData.at(4).mid(4,2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 5)) = guidData.at(4).mid(6,2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 6)) = guidData.at(4).mid(8,2).toUShort(NULL,16);
+	*((unsigned char *)(ret.Data4 + 7)) = guidData.at(4).mid(10,2).toUShort(NULL,16);
 	return ret;
 }
