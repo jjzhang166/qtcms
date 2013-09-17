@@ -3,6 +3,8 @@
 #include <QtWebKit/QWebFrame>
 #include <QtGui/QWidget>
 #include <QtWebKit/QWebView>
+#include <QtCore/QString>
+#include <QtWebKit/QWebElement>
 
 class QWebPluginFWBase
 {
@@ -32,6 +34,10 @@ protected:
 class QWebUiFWBase
 {
 public:
+	QString QueryValue(QString sElementId){
+		QWebElement elementTemp = m_MainFrame->findFirstElement(QString("#") + sElementId);
+		return elementTemp.attribute("value");
+	}
 protected:
 	QWebFrame * m_MainFrame;
 private:
