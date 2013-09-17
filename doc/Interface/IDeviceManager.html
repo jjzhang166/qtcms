@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IDeviceManager.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="interface_des">
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">AddDevice</span>(<span class="type">int</span> <span class="value">area_id</span>,<span class="type">QString</span> <span class="value">sDeviceName</span>,<span class="type">QString</span> <span class="value">sAddress</span>,<span class="type">int</span> <span class="value">port</span>,<span class="type">int</span> <span class="value">http</span>,<span class="type">QString</span> <span class="value">sEseeid</span>,<span class="type">QString</span> <span class="value">sUsername</span>,<span class="type">QString</span> <span class="value">sPassword</span>,<span class="type">int</span> <span class="value">chlCount</span>,<span class="type">int</span> <span class="value">connectMethod</span>,<span class="type">QString</span> <span class="value">sVendor</span>) = 0;</div>
+      <div class="desc">向区域<span class="value">area_id</span>添加设备，设备名称为<span class="value">sDeviceName</span>；设备地址为<span class="value">sAddress</span>，其中<span class="value">port</span>和<span class="value">http</span>分别表示设备的数据端口和<span class="value">http</span>端口；<span class="value">sEseeid</span>为设备的易视网ID号；<span class="value">sUsername</span>和<span class="value">sPassword</span>分别为登录该设备所使用的用户名和密码；<span class="value">chlCount</span>为设备下的最大通道数；<span class="value">connectMethod</span>表示连接设备的方式，为0时表示使用ip的方式连接，为1时表示使用易视网id进行连接，<span class="value">sVendor</span>表明了该设备的厂商类型，根据该类型，应用将采用不同的协议访问该设备。<br />
+      当函数运行成功时，返回新设备的ID号，否则返回-1。</div><br />
+
+      <div class="code"> <span class="key">virtual</span> <span class="type">int</span> <span class="functionname">RemoveDevice</span>(<span class="type">int</span> <span class="value">dev_id</span>) = 0;</div>
+      <div class="desc">删除ID号为<span class="value">dev_id</span>的设备，删除的同时将会删除该设备下的所有通道信息，以及通道的组信息。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceName</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> <span class="value">sDeviceName</span>) = 0;</div>
+      <div class="desc">修改设备<span class="value">dev_id</span>的别名为<span class="value">sDeviceName</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceHost</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> <span class="value">sAddress</span>, <span class="type">int</span> <span class="value">port</span>, <span class="type">int</span> <span class="value">http</span>) = 0;</div>
+      <div class="desc">修改设备<span class="value">dev_id</span>的IP信息，地址更新为<span class="value">sAddress</span>，数据端口和<span class="value">http</span>端口分别更新为<span class="value">port</span>和<span class="value">http</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。</div><br />
+
+      <div class="code">
+        <div class="desc"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceEseeId</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> <span class="value">sEseeId</span>) = 0;</div>
+      </div>
+      <div class="desc">修改设备<span class="value">dev_id</span>的易视网信息，易视网ID更新为<span class="value">sEseeId</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceAuthority</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> <span class="value">sUsername</span>,<span class="type">QString</span> <span class="value">sPassword</span>) = 0;</div>
+      <div class="desc">修改设备<span class="value">dev_id</span>的登录用户信息，用户名更新为<span class="value">sUsername</span>,密码更新为<span class="value">sPassword</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceChannelCount</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">int</span> <span class="value">chlCount</span>) = 0;</div>
+      <div class="desc">将设备<span class="value">dev_id</span>的最大通道数更新为<span class="value">chlCount</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceConnectMethod</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">int</span> <span class="value">connectMethod</span>) = 0;</div>
+      <div class="desc">将设备<span class="value">dev_id</span>的连接方式修改为<span class="value">connectMethod</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyDeviceVendor</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> <span class="value">sVendor</span>) = 0;</div>
+      <div class="desc">将设备<span class="value">dev_id</span>的厂商信息修改为<span class="value">sVendor</span>。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceCount</span>(<span class="type">int</span> <span class="value">area_id</span>) = 0;</div>
+      <div class="desc">获取区域<span class="value">area_id</span>下的设备总数。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">QStringList</span> <span class="functionname">GetDeviceList</span>(<span class="type">int</span> <span class="value">area_id</span>) = 0;</div>
+      <div class="desc">获取区域<span class="value">area_id</span>下的设备列表。</div>
+      <br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceName</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp; <span class="value">sName</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的设备名称，在<span class="value">sName</span>中返回。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div>
+      <div class="remark">
+        备注：<br />
+      插件不支持该接口。</div>
+      <br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceHost</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp; <span class="value">sAddress</span>,<span class="type">int</span> &amp; <span class="value">nPort</span>,<span class="type">int</span> &amp;<span class="value">http</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的IP信息，地址在<span class="value">sAddress</span>中返回，数据端口在<span class="value">nPort</span>中返回，<span class="desc">http</span>端口在<span class="value">http</span>中返回。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div>
+      <div class="remark">备注：<br />
+      插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceEseeId</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp; <span class="value">sEseeid</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的易视网信息，易视网ID在<span class="value">sEseeid</span>中返回。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div>
+      <div class="remark">备注：<br />
+      插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceLoginInfo</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp;<span class="value">sUsername</span>,<span class="type">QString</span> &amp; <span class="value">sPassword</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的登录信息，用户名在<span class="value">sUsername</span>中返回，密码在<span class="value">sPassword</span>中返回。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div>
+      <div class="remark">备注：<br />
+      插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceConnectMethod</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">int</span> &amp; <span class="value">connectMethod</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的连接方式，在<span class="value">connectMethod</span>中返回。<br />
+      当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。      </div>
+      <div class="remark">备注：<br />
+插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDevicdVendor</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp; <span class="value">sVendor</span>);</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的厂商信息，在<span class="value">sVendor</span>中返回。<br />
+        当函数运行成功时，返回0，否则返回错误号，具体错误请查看“错误号定义”。 <br />
+      </div>
+      <div class="remark">备注：<br />
+插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetDeviceInfo</span>(<span class="type">int</span> <span class="value">dev_id</span>,<span class="type">QString</span> &amp; <span class="value">sDeviceName</span>, <span class="type">QString</span> &amp; <span class="value">sAddress</span>, <span class="type">int</span> &amp; <span class="value">port</span>, <span class="type">int</span> &amp; <span class="value">http</span>, <span class="type">QString</span> &amp; <span class="value">sEseeid</span>, <span class="type">QString</span> &amp; <span class="value">sUsername</span>,<span class="type">QString</span> &amp;<span class="value">sPassword</span>, <span class="type">int</span> &amp; <span class="value">connectMethod</span>, <span class="type">QString</span> &amp; <span class="value">sVendor</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的完整信息，其中<span class="value">sDeviceName</span>为设备名称，<span class="value">sAddress</span>为设备IP地址，<span class="value">port</span>和<span class="value">http</span>分别为数据端口和http端口，<span class="value">sEseeid</span>为易视网ID，<span class="value">sUsername</span>和<span class="value">sPassword</span>分别为登录设备的用户名和密码，<span class="value">connectMethdo</span>为连接设备的方式，<span class="value">sVendor</span>为厂商信息。</div>
+      <div class="remark">备注：<br />
+插件不支持该接口。</div><br />
+
+      <div class="code"><span class="key">virtual</span> <span class="type">QVariantMap</span> <span class="functionname">GetDeviceInfo</span>(<span class="type">int</span> <span class="value">dev_id</span>) = 0;</div>
+      <div class="desc">获取设备<span class="value">dev_id</span>的完整信息，其中设备名称使用键值&quot;name&quot;来访问，IP地址使用键值&quot;address&quot;来访问，数据端口使用键值&quot;port&quot;来访问，http端口使用键值&quot;http&quot;来访问，易视网ID使用键值&quot;eseeid&quot;来访问，登录用户名使用键值&quot;username&quot;来访问,登录密码使用键值&quot;password&quot;来访问，登录方式使用键值&quot;method&quot;来访问，厂商信息使用键值&quot;vendor&quot;来访问。</div>
+      <p>&nbsp;</p>
+    </div>
+  </div>
+  <div>
+    <p>错误号定义</p>
+    <table width="100%" border="1" cellpadding="1" cellspacing="0">
+      <tr>
+        <td width="17%">&nbsp;</td>
+        <td width="27%">&nbsp;</td>
+        <td width="56%">&nbsp;</td>
+      </tr>
+      <tr>
+        <td>S_OK</td>
+        <td>0</td>
+        <td>成功</td>
+      </tr>
+      <tr>
+        <td>E_DEVICE_NOT_FOUND</td>
+        <td>1</td>
+        <td>所请求的区域不存在</td>
+      </tr>
+      <tr>
+        <td>E_AREA_NOT_FOUND</td>
+        <td>2</td>
+        <td>区域名已经存在</td>
+      </tr>
+      <tr>
+        <td>E_SYSTEM_FAILED</td>
+        <td>3</td>
+        <td>系统错误</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
