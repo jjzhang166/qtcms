@@ -90,12 +90,13 @@
 				virtual QList<QWebPluginFactory::Plugin> plugins() const;
 				virtual QObject * create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const;
 		3.3.3修改xxxxxx.cpp文件
-			3.3.3.1实现QueryInterface函数，根据传进来的iid，返回对应的接口指针，具体可以参照previewactivity.cpp中代码
-			3.3.3.2实现Add和Release函数，实现实例的自释放，具体参照previewactivity.cpp中代码
-			3.3.3.3实现plugins和create函数，在函数中添加以下代码
+			3.3.3.1添加头文件QtPlugin.h
+			3.3.3.2实现QueryInterface函数，根据传进来的iid，返回对应的接口指针，具体可以参照previewactivity.cpp中代码
+			3.3.3.3实现Add和Release函数，实现实例的自释放，具体参照previewactivity.cpp中代码
+			3.3.3.4实现plugins和create函数，在函数中添加以下代码
 				plugins函数返回一个列表，该列表描述了该库内所支持的插件的信息，具体实现可以参考viewwndplugin.cpp
 				create函数根据mimeType，创建相应的插件对象并返回，具体实现可以参考viewwndplugin.cpp
-			3.3.3.4添加宏Q_EXPORT_PLUGIN2(PLUGIN,PLUGINCLS),该宏用于导出插件的相关函数，PLUGIN为一个字符串，即生成的插件的文件名，PLUGINCLS为插件的类名
+			3.3.3.5添加宏Q_EXPORT_PLUGIN2(PLUGIN,PLUGINCLS),该宏用于导出插件的相关函数，PLUGIN为一个字符串，即生成的插件的文件名，PLUGINCLS为插件的类名
 	3.4CreateInstance的实现和导出
 		项目中需要实现 IPcomBase * CreateInstance(); 函数，并将该函数导出，导出时需要注意添加extern "C"
 		具体方式可以参照previewactivity中的dllmain.h，dllmain.cpp和previewactivity.def三个文件

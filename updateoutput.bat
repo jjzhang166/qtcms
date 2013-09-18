@@ -13,12 +13,15 @@ if %updateDir% == 3 (goto :all) else (goto :errorend)
 
 :copyfile
 xcopy web\*.* %desDir%\skins\default\ /Y/S/E
+copy src\libpcom\pcom_config.xml %desDir%
 goto :end
 
 
 :all
 xcopy web\*.* .\output\Debug\skins\default\ /Y/S/E
+copy src\libpcom\pcom_config.xml .\output\Debug\ /Y/S/E
 xcopy web\*.* .\output\Release\skins\default\ /Y/S/E
+copy src\libpcom\pcom_config.xml .\output\Release\ /Y/S/E
 
 :end
 pause
