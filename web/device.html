@@ -18,22 +18,21 @@
 		oTreeWarp.hide();
 		$('#iframe').hide();
 
-		$('#menu a,.hover').click(function(){
-			$('#iframe').hide();
-			$('#menu').hide();
-		})
-
-
-		document.oncontextmenu = function(e){
+		document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
 			var e = e || window.event;
 			if(e.target.tagName != 'BODY'){
 				return false;
 			}	
 		}
 
-		$('#menu input:radio').each(function(index){
+		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
+			$('#iframe').hide();
+			$(this).parentsUntil('div.menu').parent('div.menu').hide();
+		})
+
+		$('#menu1 input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
-				var oSwitch = $('#menu tr').slice(2,6);
+				var oSwitch = $('#menu1 tr').slice(2,6);
 				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
 				if(index == 0){
 					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
@@ -48,17 +47,17 @@
 			$(this).css('background','#ccc');
 		})
 
-		$('span.file').mouseup(function(e){ 
+		$('span.file').mouseup(function(e){   // 设备下通道右键菜单
 			var e = e || window.event;
 			if(e.which == '3'){
-				$('#menu2').css({
+				$('#menu0').css({
 					top:e.clientY,
 					left:e.clientX,					
 				}).show(10,function(e){
 					$(document).bind('click',function(e){
 						var e = e || window.event;
 						if(e.which == 1){
-							$('#menu2').hide();
+							$('#menu0').hide();
 							$(document).off();
 						};
 					})
@@ -66,16 +65,13 @@
 			}
 		})
 		
-		$('#menu2 li').click(function(){
+		$('#menu0 li').click(function(){  //右键菜单下选项弹出操作框
 			$('#iframe').show();
-			$('#menu').css({
-				top:($(window).height() - $('#menu').height())/2,
-				left:($(window).width() - $('#menu').width())/2
-			})
-			$('#menu').show();	
+			objShowCenter($('#menu1'))
+			$('#menu1').show();	
 		})	
 			
-		$('.hover').each(function(){
+		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
 		})
@@ -91,15 +87,33 @@
 			})
 		})
 		
-		$('div.action li').slice(1,4).click(function(){ 
+		$('div.action li').slice(1,4).click(function(){   //设备相关操作按钮添加弹出层事件
 			$('#iframe').show();
-			$('#menu').css({
-				top:($(window).height() - $('#menu').height())/2,
-				left:($(window).width() - $('#menu').width())/2
-			})
-			$('#menu').show();
+			objShowCenter($('#menu1'));
+			$('#menu1').show();
 		})
-	})
+
+		var oSelected = [];
+		$('table.UserMan tr').click(function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
+			//整理选中的用户ID数组
+			var iId = $(this).find('td:first').html();
+			if($(this).attr('class') == null || $(this).attr('class') ==''){
+				oSelected.push(iId);
+			}else{
+				for(i in oSelected){ 
+					if(oSelected[i] == iId){ 
+						oSelected.splice(i,1);
+					}
+				}
+			}
+			$(this).toggleClass('selected');  // tr toggle样式
+			$(this).nextAll('tr:last').find('input:hidden').val(oSelected.join());
+		})
+
+		$('#UserMan .hover').bind('click',function(){  //用户操作按钮绑定弹出层背景事件
+			$('#iframe').show();
+		})
+	})///
 	function set_contentMax(){
 		var W = $(window).width();
 		var H = $(window).height();
@@ -108,6 +122,19 @@
 		$('#set_content .left').height(H - 106);
 		$('#foot').css({
 			top:H - 28
+		})
+	}
+
+	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
+		var obj = $('#'+obj+'');
+		objShowCenter(obj)
+		$(obj).show();
+	}
+
+	function objShowCenter(obj){ //调整弹出框定位 居中
+		obj.css({
+				top:($(window).height() - obj.height())/2,
+				left:($(window).width() - obj.width())/2
 		})
 	}
 </script>
@@ -124,23 +151,6 @@
 		background: url(images/device_set_nav.png) no-repeat;
 		background-position: 0 0;
 	}
-	/*#set_content .right li{
-		float: left;
-		height: auto;
-	}
-	#set_content .right li div{
-		float: left;
-		height: 602px;
-		width: 312px;
-		background: #E4EBF5;
-	}
-	#set_content .right li span{
-		display: block;
-		height: 22px;
-		width: 66px;
-		background: #fff;
-		margin:20px 60px;
-	}*/
 	table{background: #fff; border-collapse: collapse;}
 	table .select1{ width: 130px;}
 	tr{ background: #282828; height: auto; text-align: left;}
@@ -152,7 +162,7 @@
 	table .td4 div{ width: 34px; float: left; margin: 0 4px; height: 16px;}
 	table .td4 input{margin:0; float: left;}
 	table .td4 span{margin-left: 2px; float: left; display: block; width: 16px; height: 16px; text-indent: 0px; }
-	table .tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}
+	.tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}
 	table .chk{margin:0 4px;}
 	table .chk1{margin:0 52px 0 14px;}
 	table .iput{float: right; margin-right: 6px;}
@@ -162,7 +172,7 @@
 	.tb1 td,.tb2,td{width:auto;}
 	.tb1 {display: block; background: #282828; float: left;}
 	.tb1 tr{background: #323232;}
-	.tb2 tbody td{border:1px solid #3C3C3C;}
+	.tb2 tbody td{border:1px solid #EDF1F7;}
 	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
 	.tb2 thead td{ text-align:center; background:#282828;}
 	.nav1 li{width: auto; padding: 0 4px; height: auto; margin:0;}
@@ -182,27 +192,36 @@
 		opacity: 0.5; 
 		filter:alpha(opacity=50);
 	}
-	#menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
-	#menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
-	#menu p a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
-	#menu table{ margin:40px 80px;}
-	#menu table .td1{width: 120px;}
-	#menu table tr{background: #B4B4B4; color: #000;}
-	#menu table input{height: 19px; width: 155px;}
-	#menu table .tr1{ background: #ccc; color: #B4B4B4;}
-	#menu table .tr1 input{background: 0;}
-	#menu2{ background:#282828; position:absolute; display:none; width:60px;}
-	#menu2 li:hover{ background:#C25451;}
+	.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
+	.menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
+	.menu p a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
+	.menu table{ margin:0 20px 20px;}
+	.menu table .td1{width: 120px;}
+	.menu table tr{background: #B4B4B4; color: #000;}
+	.menu table input{height: 19px; width: 155px;}
+	.menu table .tr1{ background: #ccc; color: #B4B4B4;}
+	.menu table .tr1 input{background: 0;}
+	.menu0{ background:#282828; position:absolute; display:none; width:60px;}
+	.menu0 li:hover{ background:#C25451;}
 
-	.userManagement{ display: block; color: #000; position: absolute; top: 0; width: 800px; right: 100px; height: 600px; overflow: auto;}
+	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
 	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
+	.user div{ float: left;}
+	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
 </style>
 </head>
 
 <body>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
-<div id="menu">
-		<p>Add Device<a class="hover" href="javascript:;"></a></p>
+<div id="menu0" class="menu0">
+	<ul>
+		<li>添加</li>
+		<li>修改</li>
+		<li>删除</li>
+	</ul>
+</div>
+<div id="menu1" class="menu">
+		<p>Add Device<a class="hover close" href="javascript:;"></a></p>
 		<table>
 			<tr><td colspan="2">设备连接方式</td></tr>
 			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" type="radio" name="Connection" checked="checked" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" />易视网链接</td></tr>
@@ -222,22 +241,70 @@
 						<span></span>
 						<a class="hover" href="javascript:;"></a>
 					</div>
-					<ul class="option" style="border:1px solid #646465;">
+					<ul class="option">
 						<li><a style="width:154px;" href="javascript:;"></a></li>
 						<li><a style="width:154px;" href="javascript:;"></a></li>
 						<li><a style="width:154px;" href="javascript:;"></a></li>
 					</ul>
 				</td>
 			</tr>
-			<tr><td colspan="2" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div><div class="hover">test</div></td></tr>
+			<tr><td colspan="2" class="tdBtn"><div class="hover close">cancel</div><div class="hover close">save</div><div class="hover close">test</div></td></tr>
 		</table>
 </div>
-<div id="menu2">
-	<ul>
-		<li>添加</li>
-		<li>修改</li>
-		<li>删除</li>				
-	</ul>
+<div id="menu2" class="menu">
+	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
+	<table>
+		<tr><td>用户名</td><td><input type="text" /></td></tr>
+		<tr><td>密码</td><td><input type="text" /></td></tr>
+		<tr><td>确认密码</td><td><input type="text" /></td></tr>
+		<tr>
+			<td>用户权限等级</td>
+			<td>
+				<div class="select" style="width:60px;">
+					<span>管理员</span>
+					<a class="hover" href="javascript:;"></a>
+					<input type="hidden" value="" />
+				</div>
+				<ul class="option">
+					<li><a href="javascript:;" style="width:59px;" key="3">游客</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="2">用户</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="1">管理员</a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
+</div>
+<div id="menu3" class="menu">
+	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
+	<table>
+		<tr><td>用户名</td><td><input type="text" disabled="disabled" /></td></tr>
+		<tr><td>旧密码</td><td><input type="text" /></td></tr>
+		<tr><td>新密码</td><td><input type="text" /></td></tr>
+		<tr><td>确认密码</td><td><input type="text" /></td></tr>
+		<tr>
+			<td>用户权限等级</td>
+			<td>
+				<div class="select" style="width:60px;">
+				<span>管理员</span>
+				<a class="hover" href="javascript:;"></a>
+				<input type="hidden" value="" />
+				</div>
+				<ul class="option">
+					<li><a href="javascript:;" style="width:59px;" key="3">游客</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="2">用户</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="1">管理员</a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
+</div>
+<div id="menu4" class="menu">
+	<p>删除用户<a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:20px;">
+		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
 </div>
 	<div id="top">
 		<div class="top_act">
@@ -1411,9 +1478,9 @@
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;" style="width:60px"></a></li>
-									<li><a href="javascript:;" style="width:60px"></a></li>
-									<li><a href="javascript:;" style="width:60px"></a></li>
+									<li><a href="javascript:;" style="width:59px"></a></li>
+									<li><a href="javascript:;" style="width:59px"></a></li>
+									<li><a href="javascript:;" style="width:59px"></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1483,23 +1550,48 @@
 					</table>
 				</div>
 			</div>
-			<div style="display:none;position: relative;">
-				<ul class="ope_list nav1" style="margin-right:300px;">
-					<li class="act">AddUser</li>
-					<li>ModifyUser</li>
-					<li>DeleteUser</li>
-				</ul>
-				<div class="switch dev_list userManagement">
-					<ul>
-						<li>NetMonitor</li>
-						<li>PTZcontrol</li>
-						<li>videoePlayBack</li>
-						<li>LocalRecord</li>
-						<li>LogSearch</li>
-						<li>VOIP</li>
-						<li>RemoteParam</li>
-					</ul>
-				</div>
+			<div style="position: relative; display:none;">
+			<table id="UserMan">
+				<tr>
+					<td style="width:300px;">
+						<table class="tb2 UserMan" style="position: absolute; top:0; left:0; margin:6px;">
+							<thead>
+								<tr><td style="width:30px;">序号</td><td style="width:110px;">用户名</td><td style="width:144px;">权限等级</td></tr>
+							</thead>
+							<tbody>
+								<tr><td>1</td><td>admin</td><td>超级管理员</td></tr>
+								<tr><td>2</td><td>98qwdsa</td><td>管理员</td></tr>
+								<tr><td>3</td><td>test</td><td>普通用户</td></tr>
+								<tr><td>4</td><td>test1</td><td>游客</td></tr>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" /></tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<div class="userManagement">
+							<ul>
+								<li>NetMonitor</li>
+								<li>PTZcontrol</li>
+								<li>videoePlayBack</li>
+								<li>LocalRecord</li>
+								<li>LogSearch</li>
+								<li>VOIP</li>
+								<li>RemoteParam</li>
+							</ul>
+						</div>
+					</td>
+					</tr>
+				<tr>
+					<td></td>
+					<td>
+						<ul class="tdBtn user">
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')">AddUser</div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')">ModifyUser</div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu4')">DeleteUser</div></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
 			</div>
 		</div>
 	</div>

@@ -55,12 +55,13 @@ function addMouseStyle(obj,action){
 function ViewMax(type){
 	var WinW = $(window).width();
 	var WinH = $(window).height();
+
 	oView.css({
 		width:WinW-oLeft.width()+4,
 		height:WinH-oBottom.height()-110
 	});
-	if(oView.width()<830){
-		oView.width(830);
+	if(oView.width()<680){
+		oView.width(680);
 	}
 	if(oView.height()<450){
 		oView.height(450);
@@ -70,10 +71,10 @@ function ViewMax(type){
 		left:oView.width(),
 		height:oView.height()+ l
 	});
-	$('div.dev_list').height(oLeft.height()-258);
+	$('div.dev_list').height(oLeft.height()-282);
 	oBottom.width(oView.width()-4);
 	$('#foot').css({
-		top:oView.height()+236,
+		top:oView.height()+212,
 		width:oView.width()+238
 	})
 	$('#top').width(oView.width()+238);
@@ -162,9 +163,10 @@ function set_drag(oDrag,X1,X2){
 					}
 				});
 			})
-			option.find('li').click(function(){
+			option.find('a').click(function(){
 				This.next('ul.option').hide();
 				This.find('span').html($(this).find('a').html());
+				This.find('input:hidden').val($(this).attr('key'));
 			})
 		}
 	})

@@ -1,5 +1,5 @@
-body,h3,h4,h5,li,ul,p,a,input{margin: 0; padding: 0; list-style: none;text-decoration: none;-webkit-user-select:none;}
-body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4; }
+body,h3,h4,h5,li,ul,p,a,input{margin: 0; padding: 0; list-style: none;text-decoration: none;}
+body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4;}
 #top{
 	height: 78px;
 }
@@ -43,7 +43,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 .top_nav li:hover{background:url(../images/top_btn_bg.png) repeat-x; background-position: 0 0;}
 .top_nav ul{margin-left: 30px;}
 .top_nav ul a{
-	margin:4px auto;
+	margin:4px auto 0;
 	display: block;
 	height: 26px;
 	width: 26px;
@@ -126,6 +126,8 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	height: 74px;
 } 
 .select{
+	border: 1px solid #646465;
+	border-right:0;
 	font-size: 12px;
 	color: #585858; 
 	height: 16px;
@@ -140,13 +142,14 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	float: right;
 }
 .option a{
+	border: 1px solid #646465;
 	font-size:14px;
 	color: #585858; 
 	height: 16px; 
 	line-height: 16px; 
 	text-align: left; 
 	display: block; 
-	width: 133px; 
+	width: 132px; 
 	background: url(../images/playback/select_bg.png) repeat-x; 
 	float: left;
 }
@@ -303,11 +306,9 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	width: 228px;
 	height: 30px;
 	background: url(../images/playback/calender_icon.png) no-repeat 0 0;
-	position: absolute;
-	bottom: 0;
 }
 #operating{
-	height: 154px; 
+	height: 130px; 
 	background: #1E1E1E;
 	position: absolute;
 	left: 0;
@@ -344,13 +345,13 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	background: #fff;
 	height: 36px;
 	position: absolute;
-	top: 24px;
-	left: 0;
-	right: 0;
+	top: 0;
+	width:100%;
 	background:url(../images/cutting_bg.png) repeat-x 0 -26px;
+	text-align: center;
 }
 .operat ul{
-	width: 1100px;
+	width: 670px;
 	height: 36px;
 	margin: 0 auto;
 }
@@ -394,7 +395,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 #operating .table{
 	display: block;
 	position:absolute;
-	top:62px;
+	top:38px;
 	width: 100%;
 	bottom: 0px;
 }

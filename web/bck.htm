@@ -10,9 +10,17 @@
 	<script>
 		window.onload=function(){
 			window.top.document.getElementById('iframe').style.display='none';
-			document.onclick=function(){ 
-				window.top.document.getElementById('iframe').style.display='none';
-				window.top.document.getElementById('menu').style.display='none';
+			document.onclick=function(){
+				hide('iframe')
+				for(var i=1;i<5;i++){ 
+					 hide('menu'+i);
+				}
+			}
+		}
+		function hide(obj){
+			var node = window.top.document.getElementById(obj)
+			if(node){ 
+				node.style.display='none';
 			}
 		}
 	</script>
