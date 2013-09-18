@@ -17,7 +17,7 @@ ViewWndPlugin::~ViewWndPlugin()
 QList<QWebPluginFactory::Plugin> ViewWndPlugin::plugins() const
 {
 	QWebPluginFactory::MimeType mimeType;
-	mimeType.name = QString("application/cms-preview-window");
+	mimeType.name = QString("application/cms-preview-window-test");
 	mimeType.description=QString("cms preview window");
 
 	QList<QWebPluginFactory::MimeType> mimeTypes;
