@@ -26,9 +26,9 @@ signals:
 public slots:
 	void OnJavaScriptWindowObjectCleared();
 	void OnTopActDbClick();
-	void OnTopActMouseDown();
-	void OnTopActMouseUp();
-	void OnTopActMouseMove(int x,int y);
+	void OnCloseWindow();
+	void OnMaxsizeWindow();
+	void OnMinsizeWindow();
 
 private:
 	QWidget * m_MainView;

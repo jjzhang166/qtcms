@@ -1,6 +1,10 @@
 #include "previewactivity.h"
 #include <guid.h>
-#include <QtWebKit/QWebPage>
+#include <QtWebKit/QtWebKit>
+#include <QtWebKit/QWebElementCollection>
+#include <QtCore/QSize>
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QApplication>
 
 previewactivity::previewactivity():
 m_nRef(0)
@@ -55,10 +59,10 @@ void previewactivity::Active( QWebFrame * frame)
 {
 	m_MainView = (frame->page())->view();
 	QWFW_MSGMAP_BEGIN(frame);
-	QWFW_MSGMAP("top_act","dblclick","OnTopActDbClick()");
-	QWFW_MSGMAP("top_act","mousedown","OnTopActMouseDown()");
-	QWFW_MSGMAP("top_act","mouseup","OnTopActMouseUp()");
-	QWFW_MSGMAP("top_act","mousemove","OnTopActMouseMove(event.clientX,event.clientY)");
+	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
+	QWFW_MSGMAP("app_close_window","click","OnCloseWindow()");
+	QWFW_MSGMAP("app_maxsize","click","OnMaxsizeWindow()");
+	QWFW_MSGMAP("app_minsize","click","OnMinsizeWindow()");
 	QWFW_MSGMAP_END;
 }
 
@@ -71,7 +75,36 @@ void previewactivity::OnTopActDbClick()
 {
 	if (m_MainView->isMaximized())
 	{
+		// set to normal size
 		m_MainView->showNormal();
+
+		// get screen size
+		QRect rcScreen = QApplication::desktop()->screenGeometry();
+
+		// get current size
+		QSize currentSize = m_MainView->size();
+		if (currentSize.width() < 1072)
+		{
+			currentSize.setWidth(1072);
+		}
+		if (currentSize.height() < 714)
+		{
+			currentSize.setHeight(714);
+		}
+		m_MainView->resize(currentSize);
+
+		// reset x coordinate
+		int nX = rcScreen.width() - currentSize.width();
+		nX = nX > 0 ? nX : 0;
+		nX /= 2;
+
+		// reset y coordinate
+		int nY = rcScreen.height() - currentSize.height();
+		nY = nY > 0 ? nY : 0;
+		nY /= 2;
+
+		// apply the 
+		m_MainView->move(nX,nY);
 	}
 	else
 	{
@@ -79,17 +112,23 @@ void previewactivity::OnTopActDbClick()
 	}
 }
 
-void previewactivity::OnTopActMouseDown()
+void previewactivity::OnCloseWindow()
 {
-	qDebug("mouse down");
+	m_MainView->close();
 }
 
-void previewactivity::OnTopActMouseUp()
+void previewactivity::OnMaxsizeWindow()
 {
-	qDebug("mouse up");
+	if (!m_MainView->isMaximized())
+	{
+		m_MainView->showMaximized();
+	}
 }
 
-void previewactivity::OnTopActMouseMove( int x,int y )
+void previewactivity::OnMinsizeWindow()
 {
-	qDebug("mouse move %d,%d",x,y);
+	if (!m_MainView->isMinimized())
+	{
+		m_MainView->showMinimized();
+	}
 }
