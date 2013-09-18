@@ -96,7 +96,7 @@
 		var oSelected = [];
 		$('table.UserMan tr').click(function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
-			var iId = $(this).find('td:first').html();
+			var iId = $(this).find('td').eq(1).html();
 			if($(this).attr('class') == null || $(this).attr('class') ==''){
 				oSelected.push(iId);
 			}else{
@@ -126,9 +126,13 @@
 	}
 
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
-		var obj = $('#'+obj+'');
-		objShowCenter(obj)
-		$(obj).show();
+		var node = $('#'+obj+'');
+		if(obj == 'menu3'){ 
+			var str = $('table.UserMan input:hidden').val().split(',');
+			node.find('input:first').val(str[0]);
+		}
+		objShowCenter(node)
+		$(node).show();
 	}
 
 	function objShowCenter(obj){ //调整弹出框定位 居中
