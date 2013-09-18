@@ -60,6 +60,7 @@ void QJaWebView::keyPressEvent(QKeyEvent *ev)
         }
         break;
     }
+    QWebView::keyPressEvent(ev);
 }
 
 void QJaWebView::OnLoad( bool bOk )
