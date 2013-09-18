@@ -8,3 +8,4 @@ extern const IID IID_IWebPluginBase;
 extern const CLSID CLSID_FfmpegVideoPlugin;
 extern const IID IID_IUserManager;
 extern const CLSID CLSID_CommonLibPlugin;
+extern const CLSID CLSID_PreviewWindowsPlugin;
