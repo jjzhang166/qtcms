@@ -2,11 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>预览</title>
+<title>settings</title>
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<script src="js/qframework.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -258,9 +259,9 @@
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" /></td></tr>
-		<tr><td>密码</td><td><input type="text" /></td></tr>
-		<tr><td>确认密码</td><td><input type="text" /></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="add_username"/></td></tr>
+		<tr><td>密码</td><td><input type="text" id="add_passwd"/></td></tr>
+		<tr><td>确认密码</td><td><input type="text" id="add_again_passwd"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -270,22 +271,22 @@
 					<input type="hidden" value="" />
 				</div>
 				<ul class="option">
-					<li><a href="javascript:;" style="width:59px;" key="3">游客</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="2">用户</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="1">管理员</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="3" id="combox_tourist">游客</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="2" id="combox_user">用户</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="1" id="combox_admin">管理员</a></li>
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="add_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu3" class="menu">
 	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
 		<tr><td>用户名</td><td><input type="text" disabled="disabled" /></td></tr>
-		<tr><td>旧密码</td><td><input type="text" /></td></tr>
-		<tr><td>新密码</td><td><input type="text" /></td></tr>
-		<tr><td>确认密码</td><td><input type="text" /></td></tr>
+		<tr><td>旧密码</td><td><input type="text" id="modify_oldpasswd"/></td></tr>
+		<tr><td>新密码</td><td><input type="text" id="modify_newpasswd"/></td></tr>
+		<tr><td>确认密码</td><td><input type="text" id="modify_again_passwd"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -301,23 +302,23 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="modify_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu4" class="menu">
 	<p>删除用户<a class="hover close" href="javascript:;"></a></p>
 	<table style="margin-top:20px;">
-		<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="delete_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 	<div id="top">
-		<div class="top_act">
+		<div class="top_act" id="top_act">
 			<h4>DVR Client</h4>
 			<div id="top_window_act">
 				<ul>	
-					<li><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
-					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
-					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<li><a class="hover" style="background-position: -336px -104px;" href="javascript:;" id="close"></a></li>
+					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;" id="max"></a></li>
+					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;" id="min"></a></li>
 					<li><a class="toggle hover" href="javascript:;"></a></li>
 				</ul>
 			</div>
@@ -1567,7 +1568,7 @@
 								<tr><td>2</td><td>98qwdsa</td><td>管理员</td></tr>
 								<tr><td>3</td><td>test</td><td>普通用户</td></tr>
 								<tr><td>4</td><td>test1</td><td>游客</td></tr>
-								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" /></tr>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" id="user"/></tr>
 							</tbody>
 						</table>
 					</td>
