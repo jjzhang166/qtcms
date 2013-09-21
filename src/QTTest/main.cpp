@@ -1,7 +1,6 @@
 #include <QApplication>
 #include "qjawebview.h"
 #include "libpcom.h"
-#include "../src/plugins/ffmpegVideoplugin/AvLibDll.h"
 
 int main(int argc, char *argv[])
 {
