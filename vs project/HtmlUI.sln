@@ -16,6 +16,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\src\plugins
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "..\src\UnitTest\UnitTest.vcxproj", "{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testactivity", "..\src\activities\testactivity\testactivity.vcxproj", "{08D82582-CD77-4ABF-A000-8D27A870CA8F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PreviewWindows", "..\src\plugins\PreviewWindows\PreviewWindows.vcxproj", "{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}"
 EndProject
 Global
@@ -51,6 +56,10 @@ Global
 		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Debug|Win32.Build.0 = Debug|Win32
 		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Release|Win32.ActiveCfg = Release|Win32
 		{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}.Release|Win32.Build.0 = Release|Win32
+		{08D82582-CD77-4ABF-A000-8D27A870CA8F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{08D82582-CD77-4ABF-A000-8D27A870CA8F}.Debug|Win32.Build.0 = Debug|Win32
+		{08D82582-CD77-4ABF-A000-8D27A870CA8F}.Release|Win32.ActiveCfg = Release|Win32
+		{08D82582-CD77-4ABF-A000-8D27A870CA8F}.Release|Win32.Build.0 = Release|Win32
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Debug|Win32.ActiveCfg = Debug|Win32
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Debug|Win32.Build.0 = Debug|Win32
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Release|Win32.ActiveCfg = Release|Win32
