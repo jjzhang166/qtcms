@@ -1,0 +1,3 @@
+LIBRARY testactivity.dll
+EXPORTS
+	CreateInstance @1
