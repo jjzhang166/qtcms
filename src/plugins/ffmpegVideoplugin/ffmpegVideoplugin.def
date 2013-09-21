@@ -1,0 +1,3 @@
+LIBRARY ffmpegVideoplugin.dll
+EXPORTS
+	CreateInstance @1
