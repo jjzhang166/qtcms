@@ -9,9 +9,8 @@
 #include <QObject>
 #include <QPoint>
 #include <QtGui/QMessageBox>
-class settingsActivity : public QObject,
-	public IActivities,
-	public QWebUiFWBase
+class settingsActivity : public QWebUiFWBase,
+	public IActivities
 {
 	Q_OBJECT
 public:
@@ -25,7 +24,6 @@ public:
 	virtual void Active( QWebFrame * frame);
 
 public slots:
-	void OnJavaScriptWindowObjectCleared();
 	void OnTopActDbClick();
 	void OnMouseDown();
 	void OnMouseUp();

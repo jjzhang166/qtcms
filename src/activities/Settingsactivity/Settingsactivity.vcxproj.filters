@@ -50,6 +50,12 @@
     <ClCompile Include="settingsactivity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qwfw.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qwfw.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\guid.h">
@@ -58,20 +64,20 @@
     <ClInclude Include="..\previewactivity\dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\qwfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="settingsactivity_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="testactivity.def">
+    <None Include="Settingsactivity.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="settingsactivity.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\include\qwfw.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

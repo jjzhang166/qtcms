@@ -70,11 +70,6 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP_END;
 }
 
-void settingsActivity::OnJavaScriptWindowObjectCleared()
-{
-	QWFW_MSGRESET;
-}
-
 void settingsActivity::OnTopActDbClick()
 {
 	if (m_MainView->isMaximized())
@@ -148,63 +143,77 @@ void settingsActivity::OnMouseMove()
 
 void settingsActivity::OnAddUserOk()
 {
-	qDebug("add_user");
-	QString sUserName = QueryValue("add_username");
-	QString sPassWd = QueryValue("add_passwd");
-	QString sPassWd2 = QueryValue("add_again_passwd");
-	//	QString sLevel = QueryValue();
+	IUserManager *Iuser = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+	if (NULL == Iuser)
+	{
+		return;
+	}
+	QVariant sUserName = QueryValue("add_username");
+	QVariant sPassWd = QueryValue("add_passwd");
+	QVariant sPassWd2 = QueryValue("add_again_passwd");
+	QVariant sLevel = QueryValue("add_level");
+	int nLevel = sLevel.toInt();
+	int nMask1 = 0xFFFFFFFF;
+	int nMask2 = 0xFFFFFFFF;
+	Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1,nMask2);
+	
+	Iuser->Release();
 }
 
 void settingsActivity::OnModifyUserOk()
 {
-	qDebug("modify_user");
-	IUserManager *ltest = NULL;
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&ltest);
-	QString sUserName = QueryValue("user");
-	if(sUserName.isEmpty())
+	IUserManager *Iuser = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+	if (NULL == Iuser)
 	{
-
+		return;
 	}
-	QString sOldPassWd = QueryValue("modify_oldpasswd");
-	if (ltest->CheckUser(sUserName,sOldPassWd))
+	QVariant sUserName = QueryValue("user");
+	QVariant sOldPassWd = QueryValue("modify_oldpasswd");
+	//检查输入密码是否正确
+	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
 	{
-		QString sNewPassWd = QueryValue("modify_newpasswd");
-		QString sNewPassWd2 = QueryValue("modify_again_passwd");
-		if (!QString::compare(sNewPassWd,sNewPassWd2))
-		{
+		QVariant sNewPassWd = QueryValue("modify_newpasswd");
+		QVariant sNewPassWd2 = QueryValue("modify_again_passwd");
 
-		}else
-		{
-
-		}
+		//获取combox里的权限值，修改权限
+		QVariant sLevel = QueryValue("modify_level");
+		int nLevel = sLevel.toInt();
+		Iuser->ModifyUserLevel(sUserName.toString(),nLevel);
+		Iuser->ModifyUserPassword(sUserName.toString(),sNewPassWd.toString());	
 	}
 	else
 	{
-
+		QMessageBox::warning(m_MainView,"warning","passwd error!!!","Ok","Cancel");
+		//event
 	}
+	Iuser->Release();
 }
 
 void settingsActivity::OnDeleteUserOk()
 {
-	IUserManager *ltest = NULL;
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&ltest);
-	QString sUser = QueryValue("user");
-	QStringList user_list = sUser.split(",");
-	qDebug()<<user_list;
-	if (sUser.isEmpty())
+	IUserManager *Iuser = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+	//获取用户列表
+	QVariant sUser = QueryValue("user");
+	if (sUser.toString().isEmpty())
 	{
-		QMessageBox::warning((QWidget*)this,"warning","please select user!!!","Ok","Cancel");
+		QMessageBox::warning(m_MainView,"warning","please select user!!!","Ok","Cancel");
+		return;
 	}
+	QStringList user_list = sUser.toString().split(",");
 	for (int i = 0;i<user_list.size();i++)
 	{
 		sUser = user_list.at(i).toLatin1().data();
-		if (ltest->IsUserExists(sUser))
+		if (Iuser->IsUserExists(sUser.toString()))
 		{
-			qDebug("deleteing..........................");
-			ltest->RemoveUser(sUser);
+			Iuser->RemoveUser(sUser.toString());
 		}else
 		{
 			qDebug("not user.....................");
+			//event
 		}
 	}
+	Iuser->Release();
 }
