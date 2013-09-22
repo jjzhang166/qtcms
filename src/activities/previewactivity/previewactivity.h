@@ -7,9 +7,8 @@
 #include <QMutex>
 #include <qwfw.h>
 
-class previewactivity : public QObject,
-	public IActivities,
-	public QWebUiFWBase
+class previewactivity : public QWebUiFWBase,
+	public IActivities
 {
 	Q_OBJECT
 public:
@@ -24,7 +23,6 @@ public:
 signals:
 
 public slots:
-	void OnJavaScriptWindowObjectCleared();
 	void OnTopActDbClick();
 	void OnCloseWindow();
 	void OnMaxsizeWindow();

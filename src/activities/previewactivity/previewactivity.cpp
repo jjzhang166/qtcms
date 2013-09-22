@@ -66,11 +66,6 @@ void previewactivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP_END;
 }
 
-void previewactivity::OnJavaScriptWindowObjectCleared()
-{
-	QWFW_MSGRESET;
-}
-
 void previewactivity::OnTopActDbClick()
 {
 	if (m_MainView->isMaximized())
