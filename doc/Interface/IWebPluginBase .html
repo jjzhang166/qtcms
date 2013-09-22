@@ -3,8 +3,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IActivities.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="code"><span class="key">virtual</span> <span class="type">QList</span>&lt;<span class="type">QWebPluginFactory</span>::<span class="type">Plugin</span>&gt; <span class="functionname">plugins</span>() <span class="key">const</span> = 0;</div>
+    <div class="desc">将可用的插件信息，保存在<span class="type">QList</span>&lt;<span class="type">QWebPluginFactory</span>::<span class="type">Plugin</span>&gt;中返回。</div><br />
+
+	<div class="code"><span class="key">virtual</span> <span class="type">QObject</span> * <span class="functionname">create</span>( <span class="key">const</span> <span class="type">QString</span>& <span class="value">mimeType</span>, <span class="key">const</span> <span class="type">QUrl</span>&<span class="value">Url</span>, <span class="key">const</span> <span class="type">QStringList</span>& <span class="value">argumentNames</span>, <span class="key">const</span> <span class="type">QStringList</span>& <span class="value">argumentValues</span> ) <span class="key">const</span> = 0;</div>
+    <div class="desc">根据<span class="value">mimeType</span>创建对应的插件对象，并将插件对象并返回。<span class="value">Url</span>为请求插件的URL，<span class="value">argumentNames</span>和<span class="value">argumentValues</span>内保存了传入的参数名称和参数值，参数名和参数值按下标对应。</div>
+    
+	
+    <p>&nbsp;</p>
+  </div>
+</div>
 </body>
 </html>

@@ -3,8 +3,56 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;libpcom.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="code"><span class="key">virtual</span> <span class="type">long</span> <span class="key">__stdcall</span> <span class="functionname">QueryInterface</span>(<span class="key">const</span> <span class="type">IID</span> & <span class="value">iid</span>,<span class="type">void</span> **<span class="value">ppv</span>) = 0;</div>
+    <div class="desc">向组件请求一个接口，<span class="value">iid</span>为接口的IID，接口在<span class="value">ppv</span>内返回。<br />
+    当函数运行成功时，返回0，否则返回错误号E_NOINTERFACE。</div>
+    <br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="key">__stdcall</span> <span class="functionname">AddRef</span>() = 0;</div>
+    <div class="desc">组件的引用数加1。<br />
+    返回组件当前的引用数，注意编码中不可以依赖该返回值来判定组件是否被释放。</div>
+    <br />
+
+    <div class="code"> <span class="key">virtual</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="key">__stdcall</span> <span class="functionname">Release</span>() = 0;</div>
+    <div class="desc">组件的引用数减1，当组件的引用数减到0时，该组件会自释放。<br />
+返回组件当前的引用数，注意编码中不可以依赖该返回值来判定组件是否被释放。</div><br />
+
+
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>错误号定义</p>
+    <table width="100%" border="1" cellpadding="1" cellspacing="0">
+      <tr>
+        <td width="17%">&nbsp;</td>
+        <td width="27%">&nbsp;</td>
+        <td width="56%">&nbsp;</td>
+      </tr>
+      <tr>
+        <td>OK</td>
+        <td>0</td>
+        <td>成功</td>
+      </tr>
+      <tr>
+        <td>E_NOINTERFACE</td>
+        <td>0x80000001</td>
+        <td>不支持的接口</td>
+      </tr>
+    </table>
+  </div>
+</div>
 </body>
 </html>

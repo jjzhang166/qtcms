@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IChannelManager.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyChannelName</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">QString</span> <span class="value">sName</span>) = 0;</div>
+    <div class="desc">修改通道<span class="value">chl_id</span>的名称为<span class="value">sName</span>。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyChannelStream</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">int</span> <span class="value">nStream</span>) = 0;</div>
+    <div class="desc">修改通道<span class="value">chl_id</span>的码流为<span class="value">nStream</span>。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。    </div>
+    <br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelCount</span>(<span class="type">int</span> <span class="value">dev_id</span>) = 0;</div>
+    <div class="desc">获取设备<span class="value">dev_id</span>下的通道数。<br />
+    </div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QStringList</span> <span class="functionname">GetChannelList</span>(<span class="type">int</span> <span class="value">dev_id</span>) = 0;</div>
+    <div class="desc">获取设备<span class="value">dev_id</span>下的通道列表。    </div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelName</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">QString</span> &amp; <span class="value">sName</span>) = 0;</div>
+    <div class="desc">获取通道<span class="value">chl_id</span>的名称，在<span class="value">sName</span>中返回。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。    </div>
+    <div class="remark">备注：<br />
+    插件不支持该接口。</div>
+    <br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelStream</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">int</span> &amp; <span class="value">nStream</span>) = 0;</div>
+    <div class="desc">获取通道<span class="value">chl_id</span>当前的码流信息，在<span class="value">nStream</span>中返回。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。    </div>
+    <div class="remark">备注：<br />
+    插件不支持该接口。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelNumber</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">int</span> &amp; <span class="value">nChannelNum</span>) = 0;</div>
+    <div class="desc">获取通道<span class="value">chl_id</span>的通道号，在<span class="value">nChannelNum</span>中返回。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。    </div>
+    <div class="remark">备注：<br />
+    插件不支持该接口。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelInfo</span>(<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">QString</span> &amp;<span class="value">sName</span>,<span class="type">int</span> &amp;<span class="value">nStream</span>,<span class="type">int</span> &amp;<span class="value">nChannelNum</span>) = 0;</div>
+    <div class="desc">获取通道<span class="value">chl_id</span>的相关信息，通道名称在<span class="value">sName</span>中返回，通道码流在<span class="value">nStream</span>中返回，通道号在<span class="value">nChannelNum</span>中返回。<br />
+    当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。    </div>
+    <div class="remark">备注：<br />
+    插件不支持该接口。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QVariantMap</span> <span class="functionname">GetChannelInfo</span>(<span class="type">int</span> <span class="value">chl_id</span>) = 0;</div>
+    <div class="desc">获取通道<span class="value">chl_id</span>的相关信息，通道名称通过键值&quot;name&quot;访问，通道码流通过键值&quot;stream&quot;访问，通道号通过键值&quot;number&quot;访问。</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>错误号定义</p>
+    <table width="100%" border="1" cellpadding="1" cellspacing="0">
+      <tr>
+        <td width="17%">&nbsp;</td>
+        <td width="27%">&nbsp;</td>
+        <td width="56%">&nbsp;</td>
+      </tr>
+      <tr>
+        <td>OK</td>
+        <td>0</td>
+        <td>成功</td>
+      </tr>
+      <tr>
+        <td>E_CHANNEL_NOT_FOUND</td>
+        <td>1</td>
+        <td>所请求的通道不存在</td>
+      </tr>
+      <tr>
+        <td>E_SYSTEM_FAILED</td>
+        <td>2</td>
+        <td>系统错误</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

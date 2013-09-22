@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IGroupManager.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">AddGroup</span>(<span class="type">QString</span> <span class="value">sName</span>) = 0;</div>
+    <div class="desc">添加一个组，组名为<span class="value">sName</span>。<br />
+    函数运行成功时，返回组id，否则返回-1。</div>
+    <br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">RemoveGroup</span>(<span class="type">int</span> <span class="value">group_id</span>) = 0;</div>
+    <div class="desc">删除组<span class="value">group_id</span>。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyGroupName</span>(<span class="type">int</span> <span class="value">group_id</span>,<span class="type">QString</span> <span class="value">sName</span>) = 0;</div>
+    <div class="desc">将组<span class="value">group_id</span>的名称修改为<span class="value">sName</span>。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetGroupCount</span>() = 0;</div>
+    <div class="desc">获取系统中组的个数。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QStringList</span> <span class="functionname">GetGroupList</span>() = 0;</div>
+    <div class="desc">获取系统中的组列表，列表内为组id。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetGroupName</span>(<span class="type">int</span> <span class="value">group_id</span>,<span class="type">QString</span> & <span class="value">sName</span>) = 0;</div>
+    <div class="desc">获取组<span class="value">group_id</span>的名称，在<span class="value">sName</span>中返回。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
+    <div class="remark">备注：<br />
+	插件不支持此方法。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QString</span> <span class="functionname">GetGroupName</span>(<span class="type">int</span> <span class="value">group_id</span>) = 0;</div>
+    <div class="desc">获取组<span class="value">group_id</span>的名称。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">AddChannelInGroup</span>(<span class="type">int</span> <span class="value">group_id</span>,<span class="type">int</span> <span class="value">chl_id</span>,<span class="type">QString</span> <span class="value">sName</span>) = 0;</div>
+    <div class="desc">向组<span class="value">group_id</span>添加通道<span class="value">chl_id</span>，该组-通道名称为<span class="value">sName</span>。<br />
+	当函数运行成功时，返回组-通道id，即rgc_id，否则返回-1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">RemoveChannelFromGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>) = 0;</div>
+    <div class="desc">移除组-通道<span class="value">rgc_id</span>。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">ModifyGroupChannelName</span>(<span class="type">int</span> <span class="value">rgc_id</span>,<span class="type">QString</span> <span class="value">sName</span>) = 0;</div>
+    <div class="desc">修改组-通道<span class="value">rgc_id</span>的名称为<span class="value">sName</span>。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">MoveChannelToGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>,<span class="type">int</span> <span class="value">group_id</span>) = 0;</div>
+    <div class="desc">将组-通道移动到组<span class="value">group_id</span>内。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetGroupChannelCount</span>(<span class="type">int</span> <span class="value">group_id</span>) = 0;</div>
+    <div class="desc">获取组<span class="value">group_id</span>下组-通道的总个数。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QStringList</span> <span class="functionname">GetGroupChannelList</span>(<span class="type">int</span> <span class="value">group_id</span>) = 0;</div>
+    <div class="desc">获取组<span class="value">group_id</span>下组-通道id列表。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetGroupChannelName</span>(<span class="type">int</span> <span class="value">rgc_id</span>,<span class="type">QString</span> & <span class="value">sName</span>) = 0;</div>
+    <div class="desc">获取组-通道<span class="value">rgc_id</span>的名称,名称在sName中返回。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
+    <div class="remark">备注：<br />
+	插件不支持该方法。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QString</span> <span class="functionname">GetGroupChannelName</span>(<span class="type">int</span> <span class="value">rgc_id</span>) = 0;</div>
+    <div class="desc">获取组-通道<span class="value">rgc_id</span>的名称。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelIdFromGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>,<span class="type">int</span> & <span class="value">chl_id</span>) = 0;</div>
+    <div class="desc">通过组-通道ID <span class="value">rgc_id</span>获取对应的通道ID，通道ID在<span class="value">chl_id</span>内返回。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
+    <div class="remark">备注：<br />
+	插件不支持该方法。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelIdFromGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>) = 0;</div>
+    <div class="desc">通过组-通道ID <span class="value">rgc_id</span>获取对应的通道ID。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetChannelInfoFromGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>,<span class="type">int</span> & <span class="value">chl_id</span>, <span class="type">int</span> & <span class="value">group_id</span>, <span class="type">QString</span> & <span class="value">sName</span>) = 0;</div>
+    <div class="desc">获取组-通道<span class="value">rgc_id</span>的相关信息，所在组在<span class="value">group_id</span>内返回，对应的通道ID在<span class="value">chl_id</span>内返回，组-通道名称在<span class="value">sName</span>内返回。<br />
+	当函数运行成功时，返回0，否则返回错误号，具体错误号参考“错误号定义”。</div>
+    <div class="remark">备注：<br />
+	插件不支持该方法。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">QVariantMap</span> <span class="functionname">GetChannelInfoFromGroup</span>(<span class="type">int</span> <span class="value">rgc_id</span>) = 0;</div>
+    <div class="desc">获取组-通道<span class="value">rgc_id</span>的相关信息，所在组通过键值"group"访问，其对应的通道通过键值"channel"访问，组-通道名称通过键值"name"访问。</div>
+
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>错误号定义</p>
+    <table width="100%" border="1" cellpadding="1" cellspacing="0">
+      <tr>
+        <td width="17%">&nbsp;</td>
+        <td width="27%">&nbsp;</td>
+        <td width="56%">&nbsp;</td>
+      </tr>
+      <tr>
+        <td>OK</td>
+        <td>0</td>
+        <td>成功</td>
+      </tr>
+      <tr>
+        <td>E_GROUP_NOT_FOUND</td>
+        <td>1</td>
+        <td>所请求的组不存在</td>
+      </tr>
+      <tr>
+        <td>E_CHANNEL_NOT_FOUND</td>
+        <td>2</td>
+        <td>未找到对应的通道</td>
+      </tr>
+      <tr>
+        <td>E_CHANNEL_NOT_IN_GROUP</td>
+        <td>3</td>
+        <td>组内找不到相关通道，或者组-通道关系不存在。</td>
+      </tr>
+      <tr>
+        <td>E_SYSTEM_FAILED</td>
+        <td>4</td>
+        <td>系统错误</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
