@@ -32,7 +32,7 @@
 		2.3.2修改xxxxxx.h文件
 			2.3.2.1删除xxxxxx_EXPORT导出符号
 			2.3.2.2包含头文件IActivities.h和qwfw.h
-			2.3.2.3类增加继承父类和接口，依次为 QWebUiFWBase、IActivities
+			2.3.2.3类增加继承父类和接口，依次为 QWebUiFWBase、IActivities,并在类声明内添加Q_OBJECT宏
 			2.3.2.4添加以下几个从父类继承来的虚函数
 				virtual long __stdcall QueryInterface(const IID & iid,void **ppv);
     		virtual unsigned long __stdcall AddRef();
