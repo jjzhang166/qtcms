@@ -5,6 +5,7 @@
 #include <QtWebKit/QWebView>
 #include <QtCore/QString>
 #include <QtWebKit/QWebElement>
+#include <QtCore/QObject>
 
 class QWebPluginFWBase
 {
@@ -28,26 +29,14 @@ protected:
 
 	QMap<QString,QString> m_mapEventProc;
 	QWidget * m_widget;
-};
 
-
-class QWebUiFWBase
-{
-public:
-	QVariant QueryValue(QString sElementId){
-		QWebElement elementTemp = m_MainFrame->findFirstElement(QString("#") + sElementId);
-		return elementTemp.evaluateJavaScript("document.getElementById('" + sElementId + "').value");
-	}
-protected:
-	QWebFrame * m_MainFrame;
-private:
 };
 
 #define QWFW_MSGMAP_BEGIN(x)  \
 { \
 	m_MainFrame = x; \
 	m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this); \
-	connect(m_MainFrame,SIGNAL(javaScriptWindowObjectCleared),this,SLOT(OnJavaScriptWindowObjectCleared)); \
+	connect(m_MainFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(OnJavaScriptWindowObjectCleared())); \
 }
 
 #define QWFW_MSGMAP(id,msg,proc) { \
@@ -58,6 +47,22 @@ private:
 #define QWFW_MSGMAP_END
 
 #define QWFW_MSGRESET	{m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this);}
+
+class QWebUiFWBase : public QObject
+{
+	Q_OBJECT
+public:
+	QVariant QueryValue(QString sElementId){
+		QWebElement elementTemp = m_MainFrame->findFirstElement(QString("#") + sElementId);
+		return elementTemp.evaluateJavaScript("document.getElementById('" + sElementId + "').value");
+	}
+protected:
+	QWebFrame * m_MainFrame;
+private:
+public slots:
+	void OnJavaScriptWindowObjectCleared(){QWFW_MSGRESET;};
+};
+
 
 
 #endif
