@@ -34,9 +34,9 @@ protected:
 class QWebUiFWBase
 {
 public:
-	QString QueryValue(QString sElementId){
+	QVariant QueryValue(QString sElementId){
 		QWebElement elementTemp = m_MainFrame->findFirstElement(QString("#") + sElementId);
-		return elementTemp.attribute("value");
+		return elementTemp.evaluateJavaScript("document.getElementById('" + sElementId + "').value");
 	}
 protected:
 	QWebFrame * m_MainFrame;
