@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+    <p>设备信息存储位置：<br />
+    system.db</p>
+        <p>区域表<br />
+        area</p>
+        <table width="100%" border="1">
+          <tr>
+            <td width="24%">id</td>
+            <td width="76%">integer primary key autoincrement</td>
+          </tr>
+          <tr>
+            <td>pid</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>char(64)</td>
+          </tr>
+          <tr>
+            <td>path</td>
+            <td>text</td>
+          </tr>
+        </table>
+        <p>pid为父区域的id号<br />
+          path为从根区域到本区域的路径，如本区域节点id为5路径经过了0-1-3-4
+        这几个节点，则path为0|1|3|4|5|</p>
+        <p>表创建代码<br />
+        </p>
+        <div class="code">create table area<br />
+          (<br />
+          id integer primary key autoincrement,<br />
+          pid integer ,<br />
+          name char(64),<br />
+          path text default ''<br />
+        );</div>
+        <p>设备表<br />
+        dev</p>
+        <table width="100%" border="1">
+          <tr>
+            <td width="24%">id</td>
+            <td width="74%">integer primary key autoincrement</td>
+          </tr>
+          <tr>
+            <td>area_id</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>address</td>
+            <td>char(64)</td>
+          </tr>
+          <tr>
+            <td>port</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>http</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>eseeid</td>
+            <td>char(32)</td>
+          </tr>
+          <tr>
+            <td>username</td>
+            <td>char(32)</td>
+          </tr>
+          <tr>
+            <td>password</td>
+            <td>char(32)</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>char(64)</td>
+          </tr>
+          <tr>
+            <td>channel_count</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>connect_method</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>vendor</td>
+            <td>text</td>
+          </tr>
+        </table>
+        <p>area_id为设备所在区域的id，与表area的id关联<br />
+        vendor为设备厂商信息，该信息与设备最终使用的协议相关，当前vendor取值为&quot;JUAN IPC&quot;、&quot;JUAN DVR&quot;、&quot;ONVIF&quot;三种</p>
+        <p>表创建代码<br />
+        </p>
+        <div class="code">create table dev<br />
+          (<br />
+          id integer primary key autoincrement,<br />
+          area_id integer,<br />
+          address char(64),<br />
+          port integer,<br />
+          http integer,<br />
+          eseeid char(32),<br />
+          username char(32),<br />
+          password char(32),<br />
+          name char(64),<br />
+          channel_count integer,<br />
+          connect_method integer,<br />
+          vendor text<br />
+        );</div>
+        <p>通道表<br />
+        chl</p>
+        <table width="100%" border="1">
+          <tr>
+            <td width="24%">id</td>
+            <td>integer primary key autoincrement</td>
+          </tr>
+          <tr>
+            <td>dev_id</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>channel_number</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>char(64)</td>
+          </tr>
+          <tr>
+            <td>stream_id</td>
+            <td>integer</td>
+          </tr>
+        </table>
+        <p>dev_id为通道所属设备，与表dev的id关联        </p>
+        <p>表创建代码<br />
+        </p>
+        <div class="code">create table chl<br />
+          (<br />
+          id integer primary key autoincrement,<br />
+          dev_id integer,<br />
+          channel_number integer,<br />
+          name char(64),<br />
+          stream_id integer<br />
+        );</div>
+        <p>分组表<br />
+        dev_group</p>
+        <table width="100%" border="1">
+          <tr>
+            <td width="24%">id</td>
+            <td>integer primary key autoincrement</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>char(64)</td>
+          </tr>
+        </table>
+        <p>表创建代码<br />
+        </p>
+        <div class="code">create table dev_group<br />
+          (<br />
+          id integer primary key autoincrement,<br />
+          name char(64)<br />
+        );</div>
+        <p>组-通道关系表<br />
+        r_chl_group</p>
+        <table width="100%" border="1">
+          <tr>
+            <td width="24%">id</td>
+            <td>integer primary key autoincrement</td>
+          </tr>
+          <tr>
+            <td>chl_id</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>group_id</td>
+            <td>integer</td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>char(64)</td>
+          </tr>
+        </table>
+        <p>chl_id为该关系中相关通道，与表chl的id关联。<br />
+        group_id为该关系中相关组，与表dev_group的id关联。</p>
+        <p>表创建代码<br />
+        </p>
+        <div class="code">create table r_chl_group<br />
+          (<br />
+          id integer primary key autoincrement,<br />
+          chl_id integer,<br />
+          group_id integer,<br />
+          name char(64)<br />
+        );</div>
+        <p>&nbsp;</p>
+        <p>设备信息ER图如下所示<br />
+        <img src="../image/database_device.jpg" width="286" height="293" />        </p>
+</div>
+</body>
+</html>
