@@ -16,8 +16,8 @@
   </p>
   <table width="100%" border="1">
     <tr>
-      <td>id</td>
-      <td>integer primary key autoincrement</td>
+      <td width="24%">id</td>
+      <td width="76%">integer primary key autoincrement</td>
     </tr>
     <tr>
       <td>username</td>
@@ -40,7 +40,19 @@
       <td>integer</td>
     </tr>
   </table>
-  <p>password存储的是经过MD5编码的文本</p>
+  <p>  password存储的是经过MD5编码的文本  <br />
+  level是用户权限等级，取值范围为0~3，分别为超级管理员、管理员、用户和游客四个等级。系统中仅存在一个超级管理员，即admin用户<br />
+  mask1,maks2为用户详细权限，现阶段该值保留，统一区0xFFFFFFFF</p>
+  <p>表创建代码：<br />
+  <div class="code">
+    create table user_infomation(<br />
+    id integer primary key autoincrement,<br />
+    username text,<br />
+    password text,<br />
+    level integer,<br />
+    mask1 integer,<br />
+    mask2 integer<br />
+  );</div>  </p>
 </div>
 </body>
 </html>
