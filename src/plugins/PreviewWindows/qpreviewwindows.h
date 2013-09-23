@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include "qsubview.h"
+#include "qwfw.h"
 
-class QPreviewWindows : public QWidget
+class QPreviewWindows : public QWidget,
+	public QWebPluginFWBase
 {
 	Q_OBJECT
 
@@ -13,6 +15,9 @@ public:
 	~QPreviewWindows();
 
 	virtual void resizeEvent( QResizeEvent * );
+
+public slots:
+	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 private:
 	QSubView * m_PreviewWnd[4];
 };

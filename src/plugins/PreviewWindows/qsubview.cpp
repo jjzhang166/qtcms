@@ -4,7 +4,7 @@
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent)
 {
-	ui.setupUi(this);
+
 }
 
 QSubView::~QSubView()

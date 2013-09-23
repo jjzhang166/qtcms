@@ -76,9 +76,6 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_qsubview.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="previewwindows.h">
@@ -89,9 +86,6 @@
     </CustomBuild>
     <CustomBuild Include="qsubview.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qsubview.ui">
-      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

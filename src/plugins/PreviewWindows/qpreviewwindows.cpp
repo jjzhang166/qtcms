@@ -3,7 +3,8 @@
 #include <QtGui/QResizeEvent>
 
 QPreviewWindows::QPreviewWindows(QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent),
+	QWebPluginFWBase(this)
 {
 	for (int i = 0; i < 4; i ++ )
 	{

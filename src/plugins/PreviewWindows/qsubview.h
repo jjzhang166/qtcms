@@ -2,7 +2,6 @@
 #define QSUBVIEW_H
 
 #include <QWidget>
-#include "ui_qsubview.h"
 
 class QSubView : public QWidget
 {
@@ -14,7 +13,7 @@ public:
 
 	virtual void paintEvent( QPaintEvent * );
 private:
-	Ui::QSubView ui;
+
 };
 
 #endif // QSUBVIEW_H
