@@ -2,6 +2,9 @@
 #define __IGROUPMANAGER_HEAD_FILE__0NSDVP9QUA9FNB89A__
 
 #include "libpcom.h"
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QVariantMap>
 
 interface IGroupManager : public IPComBase
 {
@@ -25,6 +28,14 @@ interface IGroupManager : public IPComBase
 	virtual int GetChannelIdFromGroup(int rgc_id) = 0;
 	virtual int GetChannelInfoFromGroup(int rgc_id,int & chl_id, int & group_id, QString & sName) = 0;
 	virtual QVariantMap GetChannelInfoFromGroup(int rgc_id) = 0;
+
+	enum _enError{
+		OK,
+		E_GROUP_NOT_FOUND,
+		E_CHANNEL_NOT_FOUND,
+		E_CHANNEL_NOT_IN_GROUP,
+		E_SYSTEM_FAILED,
+	};
 };
 
 
