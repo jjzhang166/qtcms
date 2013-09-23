@@ -35,6 +35,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 	// Connect Signals
     connect(this,SIGNAL(loadFinished(bool)),this,SLOT(OnLoad(bool)));
+	connect(this,SIGNAL(urlChanged(const QUrl &)),this,SLOT(OnurlChanged(const QUrl &)));
 
     // Read Main ini file
     QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
@@ -48,6 +49,10 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 QJaWebView::~QJaWebView()
 {
+	if (NULL != m_Activity)
+	{
+		m_Activity->Release();
+	}
 }
 
 void QJaWebView::keyPressEvent(QKeyEvent *ev)
@@ -115,4 +120,13 @@ void QJaWebView::OnLoad( bool bOk )
 		}
 		file->close();
     }
+}
+
+void QJaWebView::OnurlChanged( const QUrl & url )
+{
+	if (NULL != m_Activity)
+	{
+		m_Activity->Release();
+		m_Activity = NULL;
+	}
 }

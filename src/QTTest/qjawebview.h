@@ -21,6 +21,7 @@ signals:
     
 public slots:
     void OnLoad(bool bOk);
+	void OnurlChanged(const QUrl & url);
 private:
 	IActivities * m_Activity;
 };

@@ -15,5 +15,6 @@ int main(int argc, char *argv[])
     
 	QJaWebView view;
     view.showMaximized();
+
     return a.exec();
 }
