@@ -168,7 +168,9 @@ int QCommonPlugin::GetUserLevel( const QString & sUsername,int & nLevel )
 	{
 		level = _query.value(0).toInt();
 	}
-	return level;
+	nLevel = level;
+
+	return IUserManager::OK;
 }
 
 //获取用户详细权限
@@ -222,8 +224,19 @@ QStringList QCommonPlugin::GetUserList()
 {
 	QStringList listRet;
 	QSqlQuery _query(m_db);
-	QString command = QString("select * from user_infomation");
+	QString command = QString("select username from user_infomation");
 	_query.exec(command);
+
+	QSqlRecord rec = _query.record();
+	int nCol = rec.indexOf("username");
+
+	int index = 0;
+	while (_query.next())
+	{
+		listRet.insert(index ++,_query.value(nCol).toString());
+	}
+
+	qDebug("%d",listRet.count());
 
 	return listRet;
 }
