@@ -46,4 +46,16 @@ void UnitTest::testCase1_z()
 	QVERIFY2(1 == isTrue,"CheckUser");
 	nRet = ltest->GetUserCount();
 	QVERIFY2(4 == nRet,"GetUserCount");
+	int mask1;
+	int mask2;
+	nRet = ltest->GetUserAuthorityMask("abc",mask1,mask2);
+	QVERIFY2(0 == nRet,"GetUserAuthorityMask");
+	int level;
+	nRet = ltest->GetUserLevel("abc",level);
+	QVERIFY2(0 == nRet,"GetUserLevel");
+	QStringList list = ltest->GetUserList();
+	for (int i = 0;i<list.size();i++)
+	{
+		qDebug("%s",list.at(i).toLatin1().data());
+	}
 }

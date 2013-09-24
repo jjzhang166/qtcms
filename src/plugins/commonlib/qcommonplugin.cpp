@@ -138,6 +138,7 @@ bool QCommonPlugin::CheckUser( const QString & sUsername,const QString & sPasswo
 		else
 			return false;
 	}
+	return false;
 }
 
 //获取用户权限值
@@ -201,7 +202,11 @@ int QCommonPlugin::GetUserAuthorityMask( const QString & sUsername,int & nAuthor
 	QSqlQuery _query(m_db);
 	QString command = QString("select mask1,mask2 from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
-	
+	while(_query.next())
+	{
+		nAuthorityMask1 = _query.value(0).toInt();
+		nAuthorityMask2 = _query.value(1).toInt();
+	}
 	return IUserManager::OK;
 }
 
