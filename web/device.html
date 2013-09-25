@@ -111,8 +111,10 @@
 			$(this).nextAll('tr:last').find('input:hidden').val(oSelected.join());
 		})
 
-		$('#UserMan .hover').bind('click',function(){  //用户操作按钮绑定弹出层背景事件
-			$('#iframe').show();
+		//控件事件
+		$('#set_content div.left li').eq(3).bind('click',function(){
+			var oAtciv = $('#userManObj')[0];
+			alert(oAtciv.GetUserList());
 		})
 	})///
 	function set_contentMax(){
@@ -128,19 +130,22 @@
 
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
 		var node = $('#'+obj+'');
-		if(obj == 'menu3'){ 
+		if(obj == 'menu3'){
 			var str = $('table.UserMan input:hidden').val().split(',');
+			if(str == ''){ 
+				return false;
+			}
 			node.find('input:first').val(str[0]);
 		}
+		$('#iframe').show();
 		objShowCenter(node)
-		$(node).show();
 	}
 
 	function objShowCenter(obj){ //调整弹出框定位 居中
 		obj.css({
 				top:($(window).height() - obj.height())/2,
 				left:($(window).width() - obj.width())/2
-		})
+		}).show();
 	}
 </script>
 <style type="text/css">
@@ -259,7 +264,7 @@
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" id="add_username"/></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="add_username" /></td></tr>
 		<tr><td>密码</td><td><input type="text" id="add_passwd"/></td></tr>
 		<tr><td>确认密码</td><td><input type="text" id="add_again_passwd"/></td></tr>
 		<tr>
@@ -1556,6 +1561,7 @@
 				</div>
 			</div>
 			<div style="position: relative; display:none;">
+			<object classid="138D54FD-0E51-4B32-848B-9D32220BC01E" id="userManObj"></object>
 			<table id="UserMan">
 				<tr>
 					<td style="width:300px;">

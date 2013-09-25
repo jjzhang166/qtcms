@@ -157,16 +157,22 @@ function set_drag(oDrag,X1,X2){
 			this.click(function(){
 				option.toggle(1,function(){ 
 					if(option.is(':visible')){ 
-						$(document).one('click',function(){ 
-							option.hide();
+						$(document).bind('click',function(e){
+							if($(e.target).attr('class') == 'hover'){ 
+								return false;
+							}
+							option.hide();	
+							$(document).off();						
 						})
 					}
 				});
 			})
 			option.find('a').click(function(){
-				This.next('ul.option').hide();
-				This.find('span').html($(this).find('a').html());
-				This.find('input:hidden').val($(this).attr('key'));
+				if($(this).attr('class') != 'hover'){
+					This.next('ul.option').hide();
+					This.find('span').html($(this).html());
+					This.find('input:hidden').val($(this).attr('key'));
+				}
 			})
 		}
 	})
