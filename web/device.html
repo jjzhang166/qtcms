@@ -111,11 +111,10 @@
 			$(this).toggleClass('selected');  // tr toggle样式
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
-
-	})///
-// 控件响应事件
-	function showUsrToTable(){ 
-		$('#UserMan table.UserMan tbody input:hidden').val('');
+	
+		
+		$('li.setViewNum:last').click(function(){ 
+			$('#UserMan table.UserMan tbody input:hidden').val('');
 			$('#UserMan table.UserMan tbody tr').not(':first').remove();
 			var oAtciv = $('#userManObj')[0];
 			var userList = oAtciv.GetUserList();//['test','test1','test2','test3']
@@ -131,7 +130,8 @@
 				}
 				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
 			}
-	}
+		})
+	})///
 	function AddSuccess(ev){
 		var name = document.getElementById('add_username').value;
 		var usrLev= $('#menu2 div.select span').html();
@@ -142,6 +142,7 @@
 		alert('添加失败!')
 	}
 	function DeleteSuccess(ev){
+		$('#UserMan table.UserMan tbody tr input:hidden').val('');
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
 			return $(this).attr('class') == 'selected';
 		}).remove();
@@ -155,26 +156,20 @@
 		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
 	}
 	function ModifyUserLevelFaild(){ 
-		alert('修改失败;')
+		alert('修改失败');
 	}
 	function ModifyUserPasswdSuccess(){
-		//alert
+		alert('密码修改');
 	} 
 
 	function ModifyUserPasswdFaild(){ 
 		alert('密码修改失败');
 	}
 	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd'];
-	/*for (i in oActiveEvents){
-		AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(ev)')
-		AddActivityEvent(oActiveEvents[i]+'Faild',oActiveEvents[i]+'Faild(ev)')
-	}*/
-	/*AddActivityEvent('AddSuccess','AddSuccess(ev)');
-	AddActivityEvent('AddFaild','AddFaild(ev)');
-	AddActivityEvent('DeleteSuccess','DeleteSuccess(ev)');
-	AddActivityEvent('DeleteFaild','DeleteFaild(ev)');
-	AddActivityEvent('ModifyUserLevelSuccess','ModifyUserLevelSuccess(ev)');
-	AddActivityEvent('ModifyUserLevelFaild','ModifyUserLevelFaild(ev)');*/
+	for (i in oActiveEvents){
+		AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(ev)');
+		AddActivityEvent(oActiveEvents[i]+'Faild',oActiveEvents[i]+'Faild(ev)');
+	}
 	function set_contentMax(){
 		var W = $(window).width();
 		var H = $(window).height();
@@ -192,6 +187,7 @@
 		if(obj == 'menu3' || obj == 'menu4'){
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
+				alert('please select user!!!');
 				return false;
 			}
 			if(obj == 'menu3'){
@@ -210,7 +206,7 @@
 	}
 	function pwdTest(obj){
 		var str = obj.val();
-		if(str == '' || !/[\d\w_]{6,}$/.test(str)){
+		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
 			alert('请用下划线"_"数字字母组合且长度大于6位');
 		}else{
 			obj.attr('enable','1');
@@ -353,9 +349,9 @@
 			<td>用户权限等级</td>
 			<td>
 				<div class="select" style="width:60px;">
-					<span>管理员</span>
+					<span>游客</span>
 					<a class="hover" href="javascript:;"></a>
-					<input type="hidden" value="" id="add_level"/>
+					<input type="hidden" value="3" id="add_level"/>
 				</div>
 				<ul class="option">
 					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
@@ -378,9 +374,9 @@
 			<td>用户权限等级</td>
 			<td>
 				<div class="select" style="width:60px;">
-				<span>管理员</span>
+				<span>游客</span>
 				<a class="hover" href="javascript:;"></a>
-				<input type="hidden" value="" id="modify_level"/>
+				<input type="hidden" value="3" id="modify_level"/>
 				</div>
 				<ul class="option">
 					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
