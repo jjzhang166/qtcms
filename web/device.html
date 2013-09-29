@@ -94,8 +94,9 @@
 			$('#menu1').show();
 		})
 
+		//用户table下 tr委托部分事件
 		var oSelected = [];
-		$('table.UserMan tr').click(function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
+		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
 			var iId = $(this).find('td').eq(1).html();
 			if($(this).attr('class') == null || $(this).attr('class') ==''){
@@ -108,15 +109,72 @@
 				}
 			}
 			$(this).toggleClass('selected');  // tr toggle样式
-			$(this).nextAll('tr:last').find('input:hidden').val(oSelected.join());
+			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
 
-		//控件事件
-		$('#set_content div.left li').eq(3).bind('click',function(){
-			var oAtciv = $('#userManObj')[0];
-			alert(oAtciv.GetUserList());
-		})
 	})///
+// 控件响应事件
+	function showUsrToTable(){ 
+		$('#UserMan table.UserMan tbody input:hidden').val('');
+			$('#UserMan table.UserMan tbody tr').not(':first').remove();
+			var oAtciv = $('#userManObj')[0];
+			var userList = oAtciv.GetUserList();//['test','test1','test2','test3']
+			for(i in userList){ 
+				var userlv = oAtciv.GetUserAuthorityMask(userList[i]);
+				var userCom;
+				switch(userlv){
+					case 0 : userCom = '超级管理员';	break;
+					case 1 : userCom = '管理员';	break;	
+					case 2 : userCom = '普通用户'; break;
+					case 3 : userCom = '游客'; break;
+					default: userCom = '游客'; break;
+				}
+				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
+			}
+	}
+	function AddSuccess(ev){
+		var name = document.getElementById('add_username').value;
+		var usrLev= $('#menu2 div.select span').html();
+		var No = $('#UserMan table.UserMan tbody tr').length - 1;
+		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');		
+	}
+	function AddFaild(ev){
+		alert('添加失败!')
+	}
+	function DeleteSuccess(ev){
+		$('#UserMan table.UserMan tbody tr').filter(function(){ 
+			return $(this).attr('class') == 'selected';
+		}).remove();
+	}
+	function DeleteFaild(ev){ 
+		alert('删除失败');
+	}
+	function ModifyUserLevelSuccess(ev){
+		$('#UserMan table.UserMan tbody tr').filter(function(){ 
+			return $(this).attr('class') == 'selected';
+		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
+	}
+	function ModifyUserLevelFaild(){ 
+		alert('修改失败;')
+	}
+	function ModifyUserPasswdSuccess(){
+		//alert
+	} 
+
+	function ModifyUserPasswdFaild(){ 
+		alert('密码修改失败');
+	}
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd'];
+	/*for (i in oActiveEvents){
+		AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(ev)')
+		AddActivityEvent(oActiveEvents[i]+'Faild',oActiveEvents[i]+'Faild(ev)')
+	}*/
+	/*AddActivityEvent('AddSuccess','AddSuccess(ev)');
+	AddActivityEvent('AddFaild','AddFaild(ev)');
+	AddActivityEvent('DeleteSuccess','DeleteSuccess(ev)');
+	AddActivityEvent('DeleteFaild','DeleteFaild(ev)');
+	AddActivityEvent('ModifyUserLevelSuccess','ModifyUserLevelSuccess(ev)');
+	AddActivityEvent('ModifyUserLevelFaild','ModifyUserLevelFaild(ev)');*/
 	function set_contentMax(){
 		var W = $(window).width();
 		var H = $(window).height();
@@ -130,15 +188,18 @@
 
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
 		var node = $('#'+obj+'');
-		if(obj == 'menu3'){
+		node.find('input:text,:password').val('');
+		if(obj == 'menu3' || obj == 'menu4'){
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
 				return false;
 			}
-			node.find('input:first').val(str[0]);
+			if(obj == 'menu3'){
+				node.find('input:first').val(str[0]);
+			}
 		}
 		$('#iframe').show();
-		objShowCenter(node)
+		objShowCenter(node);
 	}
 
 	function objShowCenter(obj){ //调整弹出框定位 居中
@@ -146,6 +207,27 @@
 				top:($(window).height() - obj.height())/2,
 				left:($(window).width() - obj.width())/2
 		}).show();
+	}
+	function pwdTest(obj){
+		var str = obj.val();
+		if(str == '' || !/[\d\w_]{6,}$/.test(str)){
+			alert('请用下划线"_"数字字母组合且长度大于6位');
+		}else{
+			obj.attr('enable','1');
+			valueIsSame($('#add_again_passwd'),$('#add_passwd'));
+			valueIsSame($('#modify_again_passwd'),$('#modify_newpasswd'));
+		}
+	}
+	function valueIsSame(obj,obj2){ 
+		if(obj.val() && obj2.val() && obj.val() != obj2.val()){ 
+			obj.attr('enable','0');
+			obj2.attr('enable','0');
+			alert('2次密码不一样');
+			return;
+		}else{ 
+			obj.attr('enable','1')
+			obj2.attr('enable','1')
+		}
 	}
 </script>
 <style type="text/css">
@@ -264,9 +346,9 @@
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" id="add_username" /></td></tr>
-		<tr><td>密码</td><td><input type="text" id="add_passwd"/></td></tr>
-		<tr><td>确认密码</td><td><input type="text" id="add_again_passwd"/></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="add_username" enable="1" onblur="pwdTest($(this));" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="add_passwd" onblur="pwdTest($(this));" enable="0"/></td></tr>
+		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="add_again_passwd" onblur="pwdTest($(this));" enable="0"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -276,9 +358,9 @@
 					<input type="hidden" value="" id="add_level"/>
 				</div>
 				<ul class="option">
-					<li><a href="javascript:;" style="width:59px;" key="3">游客</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="2">用户</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="1">管理员</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="1">用户</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="0">管理员</a></li>
 				</ul>
 			</td>
 		</tr>
@@ -288,10 +370,10 @@
 <div id="menu3" class="menu">
 	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" disabled="disabled" /></td></tr>
-		<tr><td>旧密码</td><td><input type="text" id="modify_oldpasswd"/></td></tr>
-		<tr><td>新密码</td><td><input type="text" id="modify_newpasswd"/></td></tr>
-		<tr><td>确认密码</td><td><input type="text" id="modify_again_passwd"/></td></tr>
+		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" /></td></tr>
+		<tr><td>旧密码</td><td><input enable="1" type="password" id="modify_oldpasswd"/></td></tr>
+		<tr><td>新密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_newpasswd"/></td></tr>
+		<tr><td>确认密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_again_passwd"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -301,13 +383,13 @@
 				<input type="hidden" value="" id="modify_level"/>
 				</div>
 				<ul class="option">
-					<li><a href="javascript:;" style="width:59px;" key="3">游客</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="2">用户</a></li>
-					<li><a href="javascript:;" style="width:59px;" key="1">管理员</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="1">用户</a></li>
+					<li><a href="javascript:;" style="width:59px;" key="0">管理员</a></li>
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close" id="modify_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="modify_ok" onclick="modifyCallBack();">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu4" class="menu">
@@ -348,7 +430,7 @@
 				<li class="setViewNum hover" style="background-position:-250px 0;">Device Manage</li>
 				<li class="setViewNum hover" style="background-position:0 -50px;">Server Setting</li>
 				<li class="setViewNum hover" style="background-position:0 -100px;">Client Setting</li>
-				<li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li>
+				<li class="setViewNum hover" style="background-position:0 -150px;" onclick="showUsrToTable();">User Manage</li>
 			</ul>
 		</div>
 		<div class="right">
@@ -1561,7 +1643,7 @@
 				</div>
 			</div>
 			<div style="position: relative; display:none;">
-			<object classid="138D54FD-0E51-4B32-848B-9D32220BC01E" id="userManObj"></object>
+			<object type="application/cms-common-library" id="userManObj" width="0" height="0"></object>
 			<table id="UserMan">
 				<tr>
 					<td style="width:300px;">
@@ -1570,11 +1652,11 @@
 								<tr><td style="width:30px;">序号</td><td style="width:110px;">用户名</td><td style="width:144px;">权限等级</td></tr>
 							</thead>
 							<tbody>
-								<tr><td>1</td><td>admin</td><td>超级管理员</td></tr>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" id="user"/></tr>
+								<!-- <tr><td>1</td><td>admin</td><td>超级管理员</td></tr>
 								<tr><td>2</td><td>98qwdsa</td><td>管理员</td></tr>
 								<tr><td>3</td><td>test</td><td>普通用户</td></tr>
-								<tr><td>4</td><td>test1</td><td>游客</td></tr>
-								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" id="user"/></tr>
+								<tr><td>4</td><td>test1</td><td>游客</td></tr> -->
 							</tbody>
 						</table>
 					</td>
