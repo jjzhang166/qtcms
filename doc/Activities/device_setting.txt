@@ -30,5 +30,3 @@ username：用户名
 "DeleteFaild"["username"]
 username：用户名
 
-"UserIsNotExist"["username"]
-username：用户名

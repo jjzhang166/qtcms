@@ -150,6 +150,14 @@ void settingsActivity::OnAddUserOk()
 		return;
 	}
 	QVariant sUserName = QueryValue("add_username");
+	if (Iuser->IsUserExists(sUserName.toString()))
+	{
+		DEF_EVENT_PARAM(arg);
+		EP_ADD_PARAM(arg,"username",sUserName.toString());
+		EventProcCall("AddFaild",arg);
+		return;
+	}
+
 	QVariant sPassWd = QueryValue("add_passwd");
 	QVariant sPassWd2 = QueryValue("add_again_passwd");
 	QVariant sLevel = QueryValue("add_level");
@@ -157,7 +165,8 @@ void settingsActivity::OnAddUserOk()
 	int nMask1 = 0xFFFFFFFF;
 	int nMask2 = 0xFFFFFFFF;
 	bool bRes = Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1,nMask2);
-	if (bRes)
+	
+	if (!bRes)
 	{
 		DEF_EVENT_PARAM(arg);
 		EP_ADD_PARAM(arg,"username",sUserName.toString());
@@ -171,6 +180,7 @@ void settingsActivity::OnAddUserOk()
 		EP_ADD_PARAM(arg,"level",nLevel);
 		EventProcCall("AddFaild",arg);
 	}
+	
 	Iuser->Release();
 }
 
@@ -185,16 +195,30 @@ void settingsActivity::OnModifyUserOk()
 	QVariant sUserName = QueryValue("user");
 	QVariant sOldPassWd = QueryValue("modify_oldpasswd");
 	//检查输入密码是否正确
-	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
-	{
+ 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
+ 	{
 		QVariant sNewPassWd = QueryValue("modify_newpasswd");
 		QVariant sNewPassWd2 = QueryValue("modify_again_passwd");
-
 		//获取combox里的权限值，修改权限
 		QVariant sLevel = QueryValue("modify_level");
 		int nLevel = sLevel.toInt();
+		if (!(sNewPassWd.toString().isEmpty() || sNewPassWd2.toString().isEmpty()))
+		{
+			bool bRes2 = Iuser->ModifyUserPassword(sUserName.toString(),sNewPassWd.toString());	
+			if (!bRes2)
+			{
+				DEF_EVENT_PARAM(arg);
+				EP_ADD_PARAM(arg,"username",sUserName.toString());
+				EventProcCall("ModifyUserPasswdSuccess",arg);
+			}else
+			{
+				DEF_EVENT_PARAM(arg);
+				EP_ADD_PARAM(arg,"username",sUserName.toString());
+				EventProcCall("ModifyUserPasswdFaild",arg);
+			}
+		}
 		bool bRes = Iuser->ModifyUserLevel(sUserName.toString(),nLevel);
-		if (bRes)
+		if (!bRes)
 		{
 			DEF_EVENT_PARAM(arg);
 			EP_ADD_PARAM(arg,"username",sUserName.toString());
@@ -206,19 +230,7 @@ void settingsActivity::OnModifyUserOk()
 			EP_ADD_PARAM(arg,"username",sUserName.toString());
 			EP_ADD_PARAM(arg,"level",nLevel);
 			EventProcCall("ModifyUserLevelFaild",arg);
-		}
-		bool bRes2 = Iuser->ModifyUserPassword(sUserName.toString(),sNewPassWd.toString());	
-		if (bRes2)
-		{
-			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"username",sUserName.toString());
-			EventProcCall("ModifyUserPasswdSuccess",arg);
-		}else
-		{
-			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"username",sUserName.toString());
-			EventProcCall("ModifyUserPasswdFaild",arg);
-		}
+		}	
 	}
 	else
 	{
@@ -241,26 +253,17 @@ void settingsActivity::OnDeleteUserOk()
 	for (int i = 0;i<user_list.size();i++)
 	{
 		sUser = user_list.at(i).toLatin1().data();
-		if (Iuser->IsUserExists(sUser.toString()))
+		bool bRes = Iuser->RemoveUser(sUser.toString());
+		if (!bRes)
 		{
-			bool bRes = Iuser->RemoveUser(sUser.toString());
-			if (bRes)
-			{
-				DEF_EVENT_PARAM(arg);
-				EP_ADD_PARAM(arg,"username",sUser.toString());
-				EventProcCall("DeleteSuccess",arg);
-			}else
-			{
-				DEF_EVENT_PARAM(arg);
-				EP_ADD_PARAM(arg,"username",sUser.toString());
-				EventProcCall("DeleteFaild",arg);
-			}
+			DEF_EVENT_PARAM(arg);
+			EP_ADD_PARAM(arg,"username",sUser.toString());
+			EventProcCall("DeleteSuccess",arg);
 		}else
 		{
-			//event
 			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"username",sUser);
-			EventProcCall("UserIsNotExist",arg);
+			EP_ADD_PARAM(arg,"username",sUser.toString());
+			EventProcCall("DeleteFaild",arg);
 		}
 	}
 	Iuser->Release();

@@ -84,6 +84,10 @@ int QCommonPlugin::ModifyUserLevel( const QString & sUsername,int nLevel )
 
 	QSqlQuery _query(m_db);
 	QString command = QString("update user_infomation set level='%1' where username='%2'").arg(nLevel).arg(sUsername);
+	if (nLevel < 0 || nLevel > 3)
+	{
+		return IUserManager::E_SYSTEM_FAILED;
+	}
 	_query.exec(command);
 
 	return IUserManager::OK;
@@ -112,10 +116,7 @@ bool QCommonPlugin::IsUserExists( const QString & sUsername )
 	QString command = QString("select * from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
 
-	if (!_query.next())
-		return false;
-	else
-		return true;
+	return _query.next();
 }
 
 //检查用户名和密码是否正确
@@ -164,12 +165,10 @@ int QCommonPlugin::GetUserLevel( const QString & sUsername,int & nLevel )
 	QSqlQuery _query(m_db);
 	QString command = QString("select level from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
-	int level;
 	while(_query.next())
 	{
-		level = _query.value(0).toInt();
+		nLevel = _query.value(0).toInt();
 	}
-	nLevel = level;
 
 	return IUserManager::OK;
 }
