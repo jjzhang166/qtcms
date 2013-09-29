@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "qsubview.h"
 #include "qwfw.h"
+#include "IWindowDivMode.h"
 
 class QPreviewWindows : public QWidget,
 	public QWebPluginFWBase
@@ -18,8 +19,20 @@ public:
 
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
+
+	virtual void nextPage();
+
+	virtual void prePage();
+
+	virtual int getCurrentPage();
+
+	virtual int getPages();
+
+	virtual int setDivMode( QString divModeName );
 private:
 	QSubView m_PreviewWnd[64];
+	IWindowDivMode * m_DivMode;
+
 };
 
 #endif // QPREVIEWWINDOWS_H

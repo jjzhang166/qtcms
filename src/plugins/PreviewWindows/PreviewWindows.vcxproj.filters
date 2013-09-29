@@ -79,7 +79,7 @@
     <ClInclude Include="..\..\..\include\qwfw_tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\IDisplayWindowsManager.h">
+    <ClInclude Include="..\..\..\include\IWindowDivMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
