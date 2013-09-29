@@ -1,14 +1,16 @@
 #include "qpreviewwindows.h"
 #include "qsubview.h"
 #include <QtGui/QResizeEvent>
+#include <qwfw_tools.h>
 
 QPreviewWindows::QPreviewWindows(QWidget *parent)
 	: QWidget(parent),
 	QWebPluginFWBase(this)
 {
-	for (int i = 0; i < 4; i ++ )
+	int i;
+	for (i = 0; i < ARRAY_SIZE(m_PreviewWnd); i ++)
 	{
-		m_PreviewWnd[i] = new QSubView(this);
+		m_PreviewWnd[i].setParent(this);
 	}
 }
 
@@ -19,12 +21,4 @@ QPreviewWindows::~QPreviewWindows()
 
 void QPreviewWindows::resizeEvent( QResizeEvent * ev)
 {
-	QSize curSize = ev->size();
-	QRect rcClient = contentsRect();
-	rcClient.setSize(curSize);
-	for (int i = 0; i < 4; i++)
-	{
-		m_PreviewWnd[i]->move((i % 2) * (rcClient.width() / 2),(i / 2) * (rcClient.height() / 2));
-		m_PreviewWnd[i]->resize(rcClient.width() / 2,rcClient.height() / 2);
-	}
 }

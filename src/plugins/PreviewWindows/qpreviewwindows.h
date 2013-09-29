@@ -19,7 +19,7 @@ public:
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 private:
-	QSubView * m_PreviewWnd[4];
+	QSubView m_PreviewWnd[64];
 };
 
 #endif // QPREVIEWWINDOWS_H

@@ -85,4 +85,29 @@ unsigned long __stdcall PreviewWindows::Release()
 	return nRet;
 }
 
+void PreviewWindows::nextPage()
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+void PreviewWindows::prePage()
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+int PreviewWindows::getCurrentPage()
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+int PreviewWindows::getPages()
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+int PreviewWindows::setDivMode( QString divModeName )
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
 Q_EXPORT_PLUGIN2("PreviewWindows.dll",PreviewWindows)
