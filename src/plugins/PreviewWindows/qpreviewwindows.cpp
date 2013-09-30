@@ -8,7 +8,7 @@
 QPreviewWindows::QPreviewWindows(QWidget *parent)
 	: QWidget(parent),
 	QWebPluginFWBase(this),
-	m_DivMode(NULL);
+	m_DivMode(NULL)
 {
 	int i;
 	for (i = 0; i < ARRAY_SIZE(m_PreviewWnd); i ++)
@@ -37,7 +37,6 @@ void QPreviewWindows::prePage()
 
 int QPreviewWindows::getCurrentPage()
 {
-
 }
 
 int QPreviewWindows::getPages()

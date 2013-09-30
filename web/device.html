@@ -6,11 +6,12 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
-<link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />
 <script src="js/qframework.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script type="text/javascript">
+var oSelected = [];
 	$(function(){
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.file').click(function(){
@@ -23,7 +24,7 @@
 			var e = e || window.event;
 			if(e.target.tagName != 'BODY'){
 				return false;
-			}	
+			}
 		}
 
 		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
@@ -42,7 +43,7 @@
 				}
 			})
 		})
-		
+
 		$('ul.filetree span.areaName').click(function(){
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
@@ -53,7 +54,7 @@
 			if(e.which == '3'){
 				$('#menu0').css({
 					top:e.clientY,
-					left:e.clientX,					
+					left:e.clientX,
 				}).show(10,function(e){
 					$(document).bind('click',function(e){
 						var e = e || window.event;
@@ -65,13 +66,13 @@
 				});
 			}
 		})
-		
+
 		$('#menu0 li').click(function(){  //右键菜单下选项弹出操作框
 			$('#iframe').show();
 			objShowCenter($('#menu1'))
-			$('#menu1').show();	
-		})	
-			
+			$('#menu1').show();
+		})
+
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
@@ -87,7 +88,7 @@
 				oTreeWarp.show();
 			})
 		})
-		
+
 		$('div.action li').slice(1,4).click(function(){   //设备相关操作按钮添加弹出层事件
 			$('#iframe').show();
 			objShowCenter($('#menu1'));
@@ -95,15 +96,14 @@
 		})
 
 		//用户table下 tr委托部分事件
-		var oSelected = [];
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
 			var iId = $(this).find('td').eq(1).html();
 			if($(this).attr('class') == null || $(this).attr('class') ==''){
 				oSelected.push(iId);
 			}else{
-				for(i in oSelected){ 
-					if(oSelected[i] == iId){ 
+				for(i in oSelected){
+					if(oSelected[i] == iId){
 						oSelected.splice(i,1);
 					}
 				}
@@ -111,19 +111,19 @@
 			$(this).toggleClass('selected');  // tr toggle样式
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
-	
-		
-		$('li.setViewNum:last').click(function(){ 
+
+
+		$('li.setViewNum:last').click(function(){
 			$('#UserMan table.UserMan tbody input:hidden').val('');
 			$('#UserMan table.UserMan tbody tr').not(':first').remove();
 			var oAtciv = $('#userManObj')[0];
 			var userList = oAtciv.GetUserList();//['test','test1','test2','test3']
-			for(i in userList){ 
+			for(i in userList){
 				var userlv = oAtciv.GetUserAuthorityMask(userList[i]);
 				var userCom;
 				switch(userlv){
 					case 0 : userCom = '超级管理员';	break;
-					case 1 : userCom = '管理员';	break;	
+					case 1 : userCom = '管理员';	break;
 					case 2 : userCom = '普通用户'; break;
 					case 3 : userCom = '游客'; break;
 					default: userCom = '游客'; break;
@@ -136,33 +136,34 @@
 		var name = document.getElementById('add_username').value;
 		var usrLev= $('#menu2 div.select span').html();
 		var No = $('#UserMan table.UserMan tbody tr').length - 1;
-		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');		
+		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');
 	}
 	function AddFaild(ev){
 		alert('添加失败!')
 	}
 	function DeleteSuccess(ev){
-		$('#UserMan table.UserMan tbody tr input:hidden').val('');
-		$('#UserMan table.UserMan tbody tr').filter(function(){ 
+		oSelected = [];
+		$('#UserMan table.UserMan tbody input:hidden').val('');
+		$('#UserMan table.UserMan tbody tr').filter(function(){
 			return $(this).attr('class') == 'selected';
 		}).remove();
 	}
-	function DeleteFaild(ev){ 
+	function DeleteFaild(ev){
 		alert('删除失败');
 	}
 	function ModifyUserLevelSuccess(ev){
-		$('#UserMan table.UserMan tbody tr').filter(function(){ 
+		$('#UserMan table.UserMan tbody tr').filter(function(){
 			return $(this).attr('class') == 'selected';
 		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
 	}
-	function ModifyUserLevelFaild(){ 
+	function ModifyUserLevelFaild(){
 		alert('修改失败');
 	}
 	function ModifyUserPasswdSuccess(){
 		alert('密码修改');
-	} 
+	}
 
-	function ModifyUserPasswdFaild(){ 
+	function ModifyUserPasswdFaild(){
 		alert('密码修改失败');
 	}
 	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd'];
@@ -186,7 +187,7 @@
 		node.find('input:text,:password').val('');
 		if(obj == 'menu3' || obj == 'menu4'){
 			var str = $('table.UserMan input:hidden').val().split(',');
-			if(str == ''){ 
+			if(str == ''){
 				alert('please select user!!!');
 				return false;
 			}
@@ -214,13 +215,13 @@
 			valueIsSame($('#modify_again_passwd'),$('#modify_newpasswd'));
 		}
 	}
-	function valueIsSame(obj,obj2){ 
-		if(obj.val() && obj2.val() && obj.val() != obj2.val()){ 
+	function valueIsSame(obj,obj2){
+		if(obj.val() && obj2.val() && obj.val() != obj2.val()){
 			obj.attr('enable','0');
 			obj2.attr('enable','0');
 			alert('2次密码不一样');
 			return;
-		}else{ 
+		}else{
 			obj.attr('enable','1')
 			obj2.attr('enable','1')
 		}
@@ -269,15 +270,15 @@
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
 	#iframe{
-		overflow: hidden; 
-		position: absolute; 
-		background: none repeat scroll 0% 0% rgb(0, 0, 0); 
+		overflow: hidden;
+		position: absolute;
+		background: none repeat scroll 0% 0% rgb(0, 0, 0);
 		z-index: 999;
-		width: 100%; 
-		left: 0px; 
-		top: 0px; 
-		height: 100%; 
-		opacity: 0.5; 
+		width: 100%;
+		left: 0px;
+		top: 0px;
+		height: 100%;
+		opacity: 0.5;
 		filter:alpha(opacity=50);
 	}
 	.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
@@ -300,6 +301,7 @@
 </head>
 
 <body>
+<object type="application/cms-common-library" id="userManObj" width="0" height="0"></object>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 <div id="menu0" class="menu0">
 	<ul>
@@ -398,7 +400,7 @@
 		<div class="top_act" id="top_act">
 			<h4>DVR Client</h4>
 			<div id="top_window_act">
-				<ul>	
+				<ul>
 					<li><a class="hover" style="background-position: -336px -104px;" href="javascript:;" id="close"></a></li>
 					<li><a class="hover" style="background-position: -336px -78px;" href="javascript:;" id="max"></a></li>
 					<li><a class="hover" style="background-position: -336px -52px;" href="javascript:;" id="min"></a></li>
@@ -416,7 +418,7 @@
 				<li onclick="location.href='log.html'"><a style="background-position: -124px 0;" href="log.html"></a>Log</li>
 			</ul>
 			<div>
-				<a href="javascript:;"></a>				
+				<a href="javascript:;"></a>
 				<p style="color:#000;">Login User:eddy</p>
 			</div>
 		</div></div>
@@ -458,8 +460,8 @@
 						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
 						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
 						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						
-																														
+
+
 					</tbody>
 				</table>
 				<div class="action" style="float:left;">
@@ -478,20 +480,20 @@
 							<td style="width:100px;">设备IP</td>
 							<td style="width:260px;"><input type="text" /></td>
 							<td style="width:100px;">子网掩码</td>
-							<td style="width:260px;"><input type="text" /></td>																					
+							<td style="width:260px;"><input type="text" /></td>
 						</tr>
 						<tr>
 							<td>网关</td>
 							<td><input type="text" /></td>
 							<td>MAC地址</td>
-							<td><input type="text" /></td>																					
+							<td><input type="text" /></td>
 						</tr>
 						<tr>
 							<td>端口</td>
-							<td colspan="3"><input type="text" style="width:60px;" /><input style="color:#ccc;" class="hover iput2" type="button" value="设置"/></td>																					
+							<td colspan="3"><input type="text" style="width:60px;" /><input style="color:#ccc;" class="hover iput2" type="button" value="设置"/></td>
 						</tr>
 						<tr>
-							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP"/></td>																					
+							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP"/></td>
 						</tr>
 					</tbody>
 				</table>
@@ -560,7 +562,7 @@
 									</li>
 								</ul>
 							</li>
-						</ul>	
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -738,7 +740,7 @@
 						 			<tr><td>Domain</td><td><input type="text"/></td></tr>
 						 			<tr><td>User</td><td><input type="text"/></td></tr>
 						 			<tr><td>Password</td><td><input type="text"/></td></tr>
-							 	</table>	
+							 	</table>
 							</td>
 						</tr>
 						<tr class="title"><td colspan="2" ><h5>Port</h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
@@ -748,24 +750,24 @@
 									<tr><td style="width:84px;">Web Port</td><td><input type="text" /></td></tr>
 									<tr><td style="width:84px;">Client Port</td><td><input type="text" /></td></tr>
 									<tr><td style="width:84px;">Phone Port</td><td><input type="text" /></td></tr>
-								</table>		
+								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
 									<tr><td colspan="2"><input type="checkbox" />Open PPPOE</td></tr>
 									<tr><td>User</td><td><input type="text" /></td></tr>
 									<tr><td>Password</td><td><input type="text" /></td></tr>
-								</table>	
+								</table>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr style="background:#282828;"><td>EseeID</td><td><input type="text" /></tr>		
+									<tr style="background:#282828;"><td>EseeID</td><td><input type="text" /></tr>
 								</table>
 							</td>
 							<td colspan="2"></td>
-						</tr>		
+						</tr>
 						<tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
 					</table>
 				</div>
@@ -1110,7 +1112,7 @@
 							<div><input type="checkbox" /><span>32</span></div>
 							</td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover">save</div></td></tr> 
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
 					</table>
 					</td></tr>
 
@@ -1128,7 +1130,7 @@
 									<li><a href="javascript:;"></a></li>
 									<li><a href="javascript:;"></a></li>
 									<li><a href="javascript:;"></a></li>
-								</ul>	
+								</ul>
 							</td>
 						</tr>
 						<tr><td>Name</td><td><input type="text" style="width:133px;" /></td></tr>
@@ -1639,7 +1641,6 @@
 				</div>
 			</div>
 			<div style="position: relative; display:none;">
-			<object type="application/cms-common-library" id="userManObj" width="0" height="0"></object>
 			<table id="UserMan">
 				<tr>
 					<td style="width:300px;">
@@ -1648,7 +1649,7 @@
 								<tr><td style="width:30px;">序号</td><td style="width:110px;">用户名</td><td style="width:144px;">权限等级</td></tr>
 							</thead>
 							<tbody>
-								<tr><td style="height:0; padding:0; border:0;" colspan="3"></td><input type="hidden" value="" id="user"/></tr>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="user"/></td></tr>
 								<!-- <tr><td>1</td><td>admin</td><td>超级管理员</td></tr>
 								<tr><td>2</td><td>98qwdsa</td><td>管理员</td></tr>
 								<tr><td>3</td><td>test</td><td>普通用户</td></tr>

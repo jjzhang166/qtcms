@@ -2,11 +2,19 @@
 #include <IUserManager.h>
 #include <QtGui/QMessageBox>
 
+int QCommonPlugin::m_randSeed = 0;
+QMutex QCommonPlugin::m_csRandSeed;
+
 QCommonPlugin::QCommonPlugin(QWidget *parent)
 	: QWidget(parent),
 	QWebPluginFWBase(this)
 {
-	m_db = QSqlDatabase::addDatabase("QSQLITE");
+	m_csRandSeed.lock();
+	int nConnectionSerialId = m_randSeed ++;
+	m_csRandSeed.unlock();
+
+	m_sDbConnectionName = QString("jacms") + QString::number(nConnectionSerialId);
+	m_db = QSqlDatabase::addDatabase("QSQLITE",m_sDbConnectionName);
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString sDatabasePath = sAppPath + "/system.db";
 	m_db.setDatabaseName(sDatabasePath);
@@ -19,6 +27,7 @@ QCommonPlugin::QCommonPlugin(QWidget *parent)
 QCommonPlugin::~QCommonPlugin()
 {
 	m_db.close();
+	QSqlDatabase::removeDatabase(m_sDbConnectionName);
 }
 
 //ÃÌº””√ªß
@@ -52,6 +61,10 @@ int QCommonPlugin::RemoveUser( const QString & sUsername )
 
 	QSqlQuery _query(m_db);
 	QString command = QString("delete from user_infomation where username='%1'").arg(sUsername);
+	if (!QString::compare(sUsername,QString("admin")))
+	{
+		return IUserManager::E_SYSTEM_FAILED;
+	}
 	_query.exec(command);
 
 	return IUserManager::OK;

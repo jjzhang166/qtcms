@@ -16,6 +16,11 @@ public:
 
 private:
 	QSqlDatabase m_db;
+	QString m_sDbConnectionName;
+
+public:
+	static int m_randSeed;
+	static QMutex m_csRandSeed;
 
 
 public:
