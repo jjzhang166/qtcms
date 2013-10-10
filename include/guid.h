@@ -11,3 +11,5 @@ extern const CLSID CLSID_CommonLibPlugin;
 extern const CLSID CLSID_SettingsActivity;
 extern const CLSID CLSID_PreviewWindowsPlugin;
 extern const IID IID_IDisplayWindowsManager;
+extern const IID IID_IWindowDivMode;
+extern const CLSID CLSID_DivMode1;

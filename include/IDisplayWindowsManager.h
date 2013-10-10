@@ -9,6 +9,12 @@ interface IDisplayWindowsManager : public IPComBase
 	virtual int getCurrentPage() = 0;
 	virtual int getPages() = 0;
 	virtual int setDivMode(QString divModeName) = 0;
+	virtual QString getCureentDivMode() = 0;
+
+	enum _Error{
+		OK,
+		E_MODE_NOT_SUPPORT,
+	};
 };
 
 
