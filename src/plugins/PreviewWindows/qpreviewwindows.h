@@ -29,6 +29,10 @@ public slots:
 	virtual int getPages();
 
 	virtual int setDivMode( QString divModeName );
+
+	virtual QString getCureentDivMode();
+
+	void OnSubWindowDblClick(QWidget *,QMouseEvent *);
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

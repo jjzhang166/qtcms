@@ -9,7 +9,7 @@
 PreviewWindows::PreviewWindows() :
 m_nRef(0)
 {
-
+	m_PreviewWindows.setParent(this);
 }
 
 PreviewWindows::~PreviewWindows()
@@ -87,27 +87,31 @@ unsigned long __stdcall PreviewWindows::Release()
 
 void PreviewWindows::nextPage()
 {
-	throw std::exception("The method or operation is not implemented.");
+	m_PreviewWindows.nextPage();
 }
 
 void PreviewWindows::prePage()
 {
-	throw std::exception("The method or operation is not implemented.");
+	m_PreviewWindows.prePage();
 }
 
 int PreviewWindows::getCurrentPage()
 {
-	throw std::exception("The method or operation is not implemented.");
+	return m_PreviewWindows.getCurrentPage();
 }
 
 int PreviewWindows::getPages()
 {
-	throw std::exception("The method or operation is not implemented.");
+	return m_PreviewWindows.getPages();
 }
 
 int PreviewWindows::setDivMode( QString divModeName )
 {
-	throw std::exception("The method or operation is not implemented.");
+	return m_PreviewWindows.setDivMode(divModeName);
 }
 
+QString PreviewWindows::getCureentDivMode()
+{
+	return m_PreviewWindows.getCureentDivMode();
+}
 Q_EXPORT_PLUGIN2("PreviewWindows.dll",PreviewWindows)

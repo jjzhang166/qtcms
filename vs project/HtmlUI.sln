@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Settingsactivity", "..\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PreviewWindows", "..\src\plugins\PreviewWindows\PreviewWindows.vcxproj", "{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "div1", "..\src\functionlibs\div1\div1.vcxproj", "{402B0B8D-B8C3-4B5B-923E-EE1D76A7DCAB}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -64,6 +66,10 @@ Global
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Debug|Win32.Build.0 = Debug|Win32
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Release|Win32.ActiveCfg = Release|Win32
 		{ED0F3C2D-77AC-4311-9177-52DA9652BCF0}.Release|Win32.Build.0 = Release|Win32
+		{402B0B8D-B8C3-4B5B-923E-EE1D76A7DCAB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{402B0B8D-B8C3-4B5B-923E-EE1D76A7DCAB}.Debug|Win32.Build.0 = Debug|Win32
+		{402B0B8D-B8C3-4B5B-923E-EE1D76A7DCAB}.Release|Win32.ActiveCfg = Release|Win32
+		{402B0B8D-B8C3-4B5B-923E-EE1D76A7DCAB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

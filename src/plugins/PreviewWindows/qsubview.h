@@ -12,8 +12,11 @@ public:
 	~QSubView();
 
 	virtual void paintEvent( QPaintEvent * );
-private:
 
+	virtual void mouseDoubleClickEvent( QMouseEvent * );
+private:
+signals:
+	void mouseDoubleClick(QWidget *,QMouseEvent *);
 };
 
 #endif // QSUBVIEW_H

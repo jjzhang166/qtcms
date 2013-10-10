@@ -6,8 +6,10 @@
 #include <QtCore/QObject>
 #include <QtCore/QMutex>
 #include "IDisplayWindowsManager.h"
+#include <QtGui/QtGui>
+#include "qpreviewwindows.h"
 
-class PreviewWindows :public QObject,
+class PreviewWindows :public QWidget,
 	public IWebPluginBase,
 	public IDisplayWindowsManager
 {
@@ -35,10 +37,12 @@ public:
 	virtual int getPages();
 
 	virtual int setDivMode( QString divModeName );
+
+	virtual QString getCureentDivMode();
 private:
 	int						m_nRef;
 	QMutex					m_csRef;
-
+	QPreviewWindows			m_PreviewWindows;
 };
 
 #endif // PREVIEWWINDOWS_H

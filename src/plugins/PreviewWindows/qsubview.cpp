@@ -20,3 +20,8 @@ void QSubView::paintEvent( QPaintEvent * e)
 	p.setPen(QColor(255,0,0));
 	p.drawRect(rcClient);
 }
+
+void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
+{
+	emit mouseDoubleClick(this,ev);
+}
