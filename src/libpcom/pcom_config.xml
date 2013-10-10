@@ -6,6 +6,6 @@
         <item clsid="B15ABB14-5545-4B14-9109-0EB573B33D64" name="plugin.commonlib" file="plugins/commonlib.dll" mimetype="application/cms-common-library"/>
         <item clsid="074814B4-91A2-4B91-8FD9-1C1316578F81" name="plugin.previewwindowsplugin" file="plugins/previewwindows.dll" mimetype="application/cms-preview-windows" />
         <item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
-        <item clsid="3C5C3FDF-F9C4-452B-A0FE-84A6280F3057" name="divmode.div1" file="plugins/div1.dll" mode="div1"/>
+        <item clsid="3C5C3FDF-F9C4-452B-A0FE-84A6280F3057" name="divmode.div1" file="div1.dll" mode="div1"/>
     </CLSID>
 </root>
