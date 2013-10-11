@@ -50,6 +50,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 				m_DivMode->setSubWindows(m_PreviewWnd,ARRAY_SIZE(m_PreviewWnd));
 				m_DivMode->flush();
 			}
+			break;
 		}
 	}
 
