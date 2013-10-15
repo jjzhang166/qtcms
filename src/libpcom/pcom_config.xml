@@ -7,5 +7,8 @@
         <item clsid="074814B4-91A2-4B91-8FD9-1C1316578F81" name="plugin.previewwindowsplugin" file="plugins/previewwindows.dll" mimetype="application/cms-preview-windows" />
         <item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
         <item clsid="3C5C3FDF-F9C4-452B-A0FE-84A6280F3057" name="divmode.div1" file="div1.dll" mode="div1"/>
+	<item clsid="A9D7E3FE-FD1A-469C-B491-994DE4C5FEDB" name="divmode.div4_4" file="div4_4.dll" mode="div4_4"/>
+	<item clsid="1711E8ED-0213-42F4-AB0C-830D9F3DC402" name="divmode.div8_1" file="div8_1.dll" mode="div8_1"/>
+	<item clsid="2E67A1E1-0BC0-41E5-BD9F-B0954FAFB0F6" name="divmode.div7_7" file="div7_7.dll" mode="div7_7"/>
     </CLSID>
 </root>
