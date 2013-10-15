@@ -16,3 +16,5 @@ extern const CLSID CLSID_DivMode1;
 extern const CLSID CLSID_DivMode4_4;
 extern const CLSID CLSID_DivMode8_1;
 extern const CLSID CLSID_DivMode7_7;
+extern const CLSID CLSID_DivMode2_2;
+extern const CLSID CLSID_DivMode5_5;
