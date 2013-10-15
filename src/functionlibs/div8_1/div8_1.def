@@ -1,0 +1,3 @@
+LIBRARY "div8_1.dll"
+EXPORTS
+	CreateInstance @1
