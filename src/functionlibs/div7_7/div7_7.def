@@ -1,0 +1,3 @@
+LIBRARY "div7_7.dll"
+EXPORTS
+	CreateInstance @1
