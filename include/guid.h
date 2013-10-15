@@ -13,3 +13,6 @@ extern const CLSID CLSID_PreviewWindowsPlugin;
 extern const IID IID_IDisplayWindowsManager;
 extern const IID IID_IWindowDivMode;
 extern const CLSID CLSID_DivMode1;
+extern const CLSID CLSID_DivMode4_4;
+extern const CLSID CLSID_DivMode8_1;
+extern const CLSID CLSID_DivMode7_7;
