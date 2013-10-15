@@ -129,7 +129,7 @@ void div8_1::setTotalDisplay()
 void div8_1::reSizeSubWindows()
 {
 	//----------------------------------
-	int pox_x=1,pox_y=1;
+	int pox_x=0,pox_y=0;
 	bool flagmap[16] ;
 	memset(flagmap,0,sizeof(bool)*16);
 	for (int i = pox_x;i<pox_x + m_column -1; i++)
