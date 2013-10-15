@@ -1,0 +1,3 @@
+LIBRARY "div5_5.dll"
+EXPORTS
+	CreateInstance @1
