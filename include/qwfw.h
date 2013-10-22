@@ -51,7 +51,7 @@ protected:
 #define QWFW_MSGRESET	{m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this);}
 
 class QWebUiFWBase : public QObject
-{
+	{
 	Q_OBJECT
 public:
 	QVariant QueryValue(QString sElementId){

@@ -8,7 +8,7 @@
 interface IEventRegister : public IPComBase
 {
 	virtual QStringList eventList() = 0;
-	virtual int queryEvent(QString eventName) = 0;
+	virtual int queryEvent(QString eventName,QStringList eventParams) = 0;
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser) = 0;
 
 	enum _enErrorCode{
