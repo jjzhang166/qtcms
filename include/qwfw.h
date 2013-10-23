@@ -14,12 +14,31 @@ public:
 	QWebPluginFWBase(QWidget * widget){m_widget = widget;};
 
 protected:
-	void EventProcCall(QString sEvent){
+	void EventProcCall(QString sEvent,QVariantMap eventParam){
 		QList<QString> sProcs = m_mapEventProc.values(sEvent);
 		int n = sProcs.count();
 		for (int i = n ; i > 0 ;i --)
 		{
 			QString sItem = sProcs.at(i - 1);
+			QString sScripte;
+			sScripte += "{var e={";
+			QVariantMap::const_iterator itParameters;
+			for (itParameters = eventParam.begin();itParameters != eventParam.end(); itParameters ++)
+			{
+				QString sKey = itParameters.key();
+				QString sValue = itParameters.value().toString();
+				sScripte += sKey;
+				sScripte += ":'";
+				sScripte += sValue;
+				sScripte += "'";
+				if (itParameters + 1 != eventParam.end())
+				{
+					sScripte += ",";
+				}
+			}
+			sScripte += "};";
+			sScripte += sItem.replace(QRegExp("\\((.*)\\)"),"(e)");
+			sScripte += ";}";
 			QWidget *pa = m_widget->parentWidget();
 			if ("QtWebKitFW" == pa->objectName())
 			{
