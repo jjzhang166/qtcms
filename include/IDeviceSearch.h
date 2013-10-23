@@ -5,9 +5,9 @@
 
 interface IDeviceSearch : public IPComBase
 {
-	virtual int start() = 0;
-	virtual int stop() = 0;
-	virtual int flush() = 0;
+	virtual int Start() = 0;
+	virtual int Stop() = 0;
+	virtual int Flush() = 0;
 	virtual int setInterval(int nInterval) = 0;
 	virtual IEventRegister * QueryEventRegister() = 0;
 
