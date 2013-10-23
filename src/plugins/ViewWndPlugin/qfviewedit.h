@@ -28,7 +28,7 @@ public slots:
 	void RefTest(int & nTest);
 	QStringList PointReturnTest();
 	QVariantMap RetTest();
-	
+	int my_test();
 
 
 

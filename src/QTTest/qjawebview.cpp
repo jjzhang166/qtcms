@@ -31,6 +31,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
     // Get Application Path
     QString temp = QCoreApplication::applicationDirPath();
+
     m_sApplicationPath.append(temp);
 
 	// Connect Signals

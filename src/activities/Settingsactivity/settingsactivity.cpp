@@ -67,6 +67,9 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
 	QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
 	QWFW_MSGMAP("delete_ok","click","OnDeleteUserOk()");
+	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
+	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
+	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
 	QWFW_MSGMAP_END;
 }
 
@@ -267,4 +270,273 @@ void settingsActivity::OnDeleteUserOk()
 		}
 	}
 	Iuser->Release();
+}
+
+/*device module*/
+void settingsActivity::OnAddDevice()
+{
+	IDeviceManager *Idevice=NULL;
+	IAreaManager *Iarea=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
+	if(NULL==Idevice||NULL==Iarea){
+		DEF_EVENT_PARAM(arg);
+		QString Content="system fail";
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+	QVariant Area_Id=QueryValue("Device_area_id");
+	QVariant sDeviceName=QueryValue("Device_sDeviceName");
+	QVariant sAddress=QueryValue("Device_sAddress");
+	QVariant port=QueryValue("Device_port");
+	QVariant http=QueryValue("Device_http");
+	QVariant sEseeId=QueryValue("Device_sEseeid");
+	QVariant sUserName=QueryValue("Device_sUsername");
+	QVariant sPassWord=QueryValue("Device_sPassword");
+	QVariant chlCount=QueryValue("Device_chlCount");
+	QVariant ConnectMethod=QueryValue("Device_connectMethod");
+	QVariant sVendor=QueryValue("Device_sVendor");
+
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+
+	bool nRet_bool=false;
+	nRet_bool=Iarea->IsAreaIdExist(Area_Id.toInt());
+	if(false==nRet_bool){
+		Content="AreaID is not exist";
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
+		Content.clear();
+		arg.clear();
+		Content.append("the params are not complete");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+	if("IP"==ConnectMethod.toString()){
+		if(sAddress.isNull()||port.isNull()||http.isNull()){
+			Content.clear();
+			arg.clear();
+			Content.append("the params are not complete");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("AddDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
+		if(0!=nRet_int){
+			Content.clear();
+			arg.clear();
+			Content.append("AddDeviceFail");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("AddDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+		goto end1;
+	}
+	else if("sEsee"==ConnectMethod.toString()){
+		if(sEseeId.isNull()){
+			Content.clear();
+			arg.clear();
+			Content.append("the params are not complete");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("AddDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
+		if(0!=nRet_int){
+			Content.clear();
+			arg.clear();
+			Content.append("AddDeviceFail");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("AddDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+		goto end1;
+	}
+
+	Content.clear();
+	arg.clear();
+	Content.append("ConnectMethod fail");
+	EP_ADD_PARAM(arg,"fail",Content);
+	Idevice->Release();
+	return;
+end1:
+	Content.clear();
+	arg.clear();
+	Content.append("add device success");
+	EP_ADD_PARAM(arg,"success",Content);
+	Idevice->Release();
+	return;
+}
+
+void settingsActivity::OnRemoveDevice()
+{
+	IDeviceManager *Idevice=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==Idevice){
+		Content.append("system");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+
+
+	QVariant Dev_Id=QueryValue("Device_id");
+	bool nRet_bool=false;
+	nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
+	if(false==nRet_bool){
+		arg.clear();
+		Content.clear();
+		Content.append("Dev_Id is not exist");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+	int nRet_int=-1;
+	nRet_int=Idevice->RemoveDevice(Dev_Id.toInt());
+	if(0!=nRet_int){
+		arg.clear();
+		Content.clear();
+		Content.append("RemoveFail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("Remove Success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("RemoveDeviceSuccess",arg);
+	Idevice->Release();
+	return;
+}
+
+void settingsActivity::OnModifyDevice()
+{
+	IDeviceManager *Idevice=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	DEF_EVENT_PARAM(arg);
+	QString Content="system fail";
+	if(NULL==Idevice){
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyDeviceFail",arg);
+		return;
+	}
+
+	QVariant Dev_Id=QueryValue("Device_id");
+	bool nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
+	if(false==nRet_bool){
+		arg.clear();
+		Content.clear();
+		Content.append("Dev_Id is not exist");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyDeviceFail",arg);
+		Idevice->Release();
+		return;
+	}
+
+	QVariant sDeviceName=QueryValue("Device_sDeviceName");
+	if(false==Dev_Id.isNull()&&false==sDeviceName.isNull()){
+		int nRet_int=Idevice->ModifyDeviceName(Dev_Id.toInt(),sDeviceName.toString());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	QVariant sUsername=QueryValue("Device_sUsername");
+	QVariant sPassword=QueryValue("Device_sPassword");
+	if(false==sUsername.isNull()){
+		int nRet_int=Idevice->ModifyDeviceAuthority(Dev_Id.toInt(),sUsername.toString(),sPassword.toString());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	QVariant chlCount=QueryValue("Device_chlCount");
+	if(false==chlCount.isNull()){
+		int nRet_int=Idevice->ModifyDeviceChannelCount(Dev_Id.toInt(),chlCount.toInt());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	QVariant sVentor=QueryValue("Device_sVendor");
+	if(false==sVentor.isNull()){
+		int nRet_int=Idevice->ModifyDeviceVendor(Dev_Id.toInt(),sVentor.toString());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	QVariant sEseeId=QueryValue("Device_sEseeid");
+	if(false==sEseeId.isNull()){
+		int nRet_int=Idevice->ModifyDeviceEseeId(Dev_Id.toInt(),sEseeId.toString());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	QVariant sAddress=QueryValue("Device_sAddress");
+	QVariant port=QueryValue("Device_port");
+	QVariant http=QueryValue(",Device_http");
+	if(false==sAddress.isNull()&&false==port.isNull()&&http.isNull()){
+		int nRet_int=Idevice->ModifyDeviceHost(Dev_Id.toInt(),sAddress.toString(),port.toInt(),http.toInt());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("modify success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("ModifyDeviceSuccess",arg);
+	Idevice->Release();
+	return;
 }

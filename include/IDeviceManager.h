@@ -8,6 +8,8 @@
 
 interface IDeviceManager : public IPComBase
 {
+	virtual bool IsDeviceExist(int dev_id)=0;
+	virtual int IsDevExistsInArea(int area_id, QString sDeviceName)=0;
 	virtual int AddDevice(int area_id,QString sDeviceName,QString sAddress,int port,int http,QString sEseeid,QString sUsername,QString sPassword,int chlCount,int connectMethod,QString sVendor) = 0;
 	virtual int RemoveDevice(int dev_id) = 0;
 	virtual int ModifyDeviceName(int dev_id,QString sDeviceName) = 0;
@@ -24,7 +26,7 @@ interface IDeviceManager : public IPComBase
 	virtual int GetDeviceEseeId(int dev_id,QString & sEseeid) = 0;
 	virtual int GetDeviceLoginInfo(int dev_id,QString &sUsername,QString & sPassword) = 0;
 	virtual int GetDeviceConnectMethod(int dev_id,int & connectMethod) = 0;
-	virtual int GetDevicdVendor(int dev_id,QString & sVendor);
+	virtual int GetDevicdVendor(int dev_id,QString & sVendor)=0;
 	virtual int GetDeviceInfo(int dev_id,QString & sDeviceName, QString & sAddress, int & port, int & http, QString & sEseeid, QString & sUsername,QString &sPassword, int & connectMethod, QString & sVendor) = 0;
 	virtual QVariantMap GetDeviceInfo(int dev_id) = 0;
 

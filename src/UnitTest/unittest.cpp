@@ -22,7 +22,7 @@ UnitTest::~UnitTest()
 
 //测试用例:
 // 前置：重置数据库，数据库中创建了user_infomation表，数据库中仅有一条记录：admin|md5('admin')|0|-1|-1
-// 1 添加重复用户|返回E_USER_EXISTS，GetUserCount返回2(admin及第一次添加的用户),GetUserList返回两个用户名(admin及第一次添加的用户)
+// 1 #008 添加重复用户|返回E_USER_EXISTS，GetUserCount返回2(admin及第一次添加的用户),GetUserList返回两个用户名(admin及第一次添加的用户)
 // 2 添加用户后删除用户两次|第一次删除返回OK，第二次删除返回E_USER_NOT_FOUND，GetUserList中无之前添加的用户
 // 3 删除不存在用户|返回E_USER_NOT_FOUND
 // 4 修改不存在用户的密码|返回E_USER_NOT_FOUND

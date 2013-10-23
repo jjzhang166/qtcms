@@ -54,6 +54,22 @@ long __stdcall Ccommonlib::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IUserManager *>(this);
 	}
+	else if (IID_IGroupManager == iid)
+	{
+		*ppv = static_cast<IGroupManager *>(this);
+	}
+	else if(IID_IAreaManager==iid)
+	{
+		*ppv = static_cast<IAreaManager *>(this);
+	}
+	else if(IID_IChannelManager==iid)
+	{
+		*ppv = static_cast<IChannelManager *>(this);
+	}
+	else if(IID_IDeviceManager==iid)
+	{
+		*ppv = static_cast<IDeviceManager *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -141,4 +157,328 @@ QStringList Ccommonlib::GetUserList()
 	return m_pluginObj.GetUserList();
 }
 
+/*igroupmaneger module*/
+int Ccommonlib::AddGroup(QString sName)
+{
+	return m_pluginObj.AddGroup(sName);
+}
+
+int Ccommonlib::RemoveGroup(int group_ip)
+{
+	return m_pluginObj.RemoveGroup(group_ip);
+}
+
+int Ccommonlib::ModifyGroupName(int group_id,QString sName)
+{
+	return m_pluginObj.ModifyGroupName(group_id,sName);
+}
+
+int Ccommonlib::GetGroupCount()
+{
+	return m_pluginObj.GetGroupCount();
+}
+
+QStringList Ccommonlib::GetGroupList()
+{
+	return m_pluginObj.GetGroupList();
+}
+
+int Ccommonlib::GetGroupName(int group_id,QString &sName)
+{
+	return m_pluginObj.GetGroupName(group_id,sName);
+}
+
+QString Ccommonlib::GetGroupName(int group_id)
+{
+	return m_pluginObj.GetGroupName(group_id);
+}
+
+bool Ccommonlib::IsGroupExists(int group_id)
+{
+	return m_pluginObj.IsGroupExists(group_id);
+}
+
+bool Ccommonlib::IsChannelExists(int chl_id)
+{
+	return m_pluginObj.IsChannelExists(chl_id);
+}
+
+bool Ccommonlib::IsR_Channel_GroupExist(int rgc_id)
+{
+	return m_pluginObj.IsR_Channel_GroupExist(rgc_id);
+}
+int Ccommonlib::AddChannelInGroup(int group_id,int chl_id,QString sName)
+{
+	return m_pluginObj.AddChannelInGroup(group_id,chl_id,sName);
+}
+
+int Ccommonlib::RemoveChannelFromGroup(int rgc_id)
+{
+	return m_pluginObj.RemoveChannelFromGroup(rgc_id);
+}
+
+int Ccommonlib:: ModifyGroupChannelName(int rgc_id,QString sName)
+{
+	return m_pluginObj.ModifyGroupChannelName(rgc_id,sName);
+}
+
+int Ccommonlib::MoveChannelToGroup(int rgc_id,int group_id)
+{
+	return m_pluginObj.MoveChannelToGroup(rgc_id,group_id);
+}
+
+int Ccommonlib::GetGroupChannelCount(int group_id)
+{
+	return m_pluginObj.GetGroupChannelCount(group_id);
+}
+
+QStringList Ccommonlib::GetGroupChannelList(int group_id)
+{
+	return m_pluginObj.GetGroupChannelList(group_id);
+}
+
+int Ccommonlib::GetGroupChannelName(int rgc_id,QString & sName)
+{
+	return m_pluginObj.GetGroupChannelName(rgc_id,sName);
+}
+
+QString Ccommonlib::GetGroupChannelName(int rgc_id)
+{
+	return m_pluginObj.GetGroupChannelName(rgc_id);
+}
+
+int Ccommonlib::GetChannelIdFromGroup(int rgc_id,int &chl_id)
+{
+	return m_pluginObj.GetChannelIdFromGroup(rgc_id,chl_id);
+}
+
+int Ccommonlib::GetChannelIdFromGroup(int rgc_id)
+{
+	return m_pluginObj.GetChannelIdFromGroup(rgc_id);
+}
+
+int Ccommonlib::GetChannelInfoFromGroup(int rgc_id,int & chl_id,int & group_id, QString & sName)
+{
+	return m_pluginObj.GetChannelInfoFromGroup(rgc_id,chl_id,group_id,sName);
+}
+
+QVariantMap Ccommonlib::GetChannelInfoFromGroup(int rgc_id)
+{
+	return m_pluginObj.GetChannelInfoFromGroup(rgc_id);
+}
+
+/*IAreaManager module*/
+int Ccommonlib::AddArea(int nPid,QString sName)
+{
+	return m_pluginObj.AddArea(nPid,sName);
+}
+
+int Ccommonlib::RemoveAreaById(int nId)
+{
+	return m_pluginObj.RemoveAreaById(nId);
+}
+
+int Ccommonlib::RemoveAreaByName(QString sName)
+{
+	return m_pluginObj.RemoveAreaByName(sName);
+}
+
+int Ccommonlib::SetAreaName(int nId,QString sName)
+{
+	return m_pluginObj.SetAreaName(nId,sName);
+}
+
+bool Ccommonlib::IsAreaNameExist(QString sName)
+{
+	return m_pluginObj.IsAreaNameExist(sName);
+}
+
+bool Ccommonlib::IsAreaIdExist(int nid)
+{
+	return m_pluginObj.IsAreaIdExist(nid);
+}
+int Ccommonlib::GetAreaCount()
+{
+	return m_pluginObj.GetAreaCount();
+}
+
+QStringList Ccommonlib::GetAreaList()
+{
+	return m_pluginObj.GetAreaList();
+}
+
+QStringList Ccommonlib::GetSubArea(int nId)
+{
+	return m_pluginObj.GetSubArea(nId);
+}
+
+int Ccommonlib::GetAreaPid(int id)
+{
+	return m_pluginObj.GetAreaPid(id);
+}
+
+QString Ccommonlib::GetAreaName(int id)
+{
+	return m_pluginObj.GetAreaName(id);
+}
+
+int Ccommonlib::GetAreaInfo(int nId,int &nPid,QString &sName)
+{
+	return m_pluginObj.GetAreaInfo(nId,nPid,sName);
+}
+
+QVariantMap Ccommonlib::GetAreaInfo(int nId)
+{
+	return m_pluginObj.GetAreaInfo(nId);
+}
+/*IDeviceManager module*/
+bool Ccommonlib::IsDeviceExist(int dev_id)
+{
+	return m_pluginObj.IsDeviceExist(dev_id);
+}
+
+int Ccommonlib::IsDevExistsInArea(int area_id, QString sDeviceName)
+{
+	return m_pluginObj.IsDevExistsInArea(area_id,sDeviceName);
+}
+
+int Ccommonlib::AddDevice(int area_id,QString sDeviceName,QString sAddress,int port,int http,QString sEseeid,QString sUsername,QString sPassword,int chlCount,int connectMethod,QString sVendor)
+{
+	return m_pluginObj.AddDevice(area_id,sDeviceName,sAddress,port,http,sEseeid,sUsername,sPassword,chlCount,connectMethod,sVendor);
+}
+
+int Ccommonlib::RemoveDevice(int dev_id)
+{
+	return m_pluginObj.RemoveDevice(dev_id);
+}
+
+int Ccommonlib::ModifyDeviceName(int dev_id,QString sDeviceName)
+{
+	return m_pluginObj.ModifyDeviceName(dev_id,sDeviceName);
+}
+
+int Ccommonlib::ModifyDeviceHost(int dev_id,QString sAddress, int port, int http)
+{
+	return m_pluginObj.ModifyDeviceHost(dev_id,sAddress,port,http);
+}
+
+int Ccommonlib::ModifyDeviceEseeId(int dev_id,QString sEseeId)
+{
+	return m_pluginObj.ModifyDeviceEseeId(dev_id,sEseeId);
+}
+
+int Ccommonlib::ModifyDeviceAuthority(int dev_id,QString sUsername,QString sPassword)
+{
+	return m_pluginObj.ModifyDeviceAuthority(dev_id,sUsername,sPassword);
+}
+
+int Ccommonlib::ModifyDeviceChannelCount(int dev_id,int chlCount)
+{
+	return m_pluginObj.ModifyDeviceChannelCount(dev_id,chlCount);
+}
+
+int Ccommonlib::ModifyDeviceConnectMethod(int dev_id,int connectMethod)
+{
+	return m_pluginObj.ModifyDeviceConnectMethod(dev_id,connectMethod);
+}
+
+int Ccommonlib::ModifyDeviceVendor(int dev_id,QString sVendor)
+{
+	return m_pluginObj.ModifyDeviceVendor(dev_id,sVendor);
+}
+
+int Ccommonlib::GetDeviceCount(int area_id)
+{
+	return m_pluginObj.GetDeviceCount(area_id);
+}
+
+QStringList Ccommonlib::GetDeviceList(int area_id)
+{
+	return m_pluginObj.GetDeviceList(area_id);
+}
+
+int Ccommonlib::GetDeviceName(int dev_id,QString & sName)
+{
+	return m_pluginObj.GetDeviceName(dev_id,sName);
+}
+
+int Ccommonlib::GetDeviceHost(int dev_id,QString & sAddress,int & nPort,int &http)
+{
+	return m_pluginObj.GetDeviceHost(dev_id,sAddress,nPort,http);
+}
+
+int Ccommonlib::GetDeviceEseeId(int dev_id,QString & sEseeid)
+{
+	return m_pluginObj.GetDeviceEseeId(dev_id,sEseeid);
+}
+
+int Ccommonlib::GetDeviceLoginInfo(int dev_id,QString &sUsername,QString & sPassword)
+{
+	return m_pluginObj.GetDeviceLoginInfo(dev_id,sUsername,sPassword);
+}
+
+int Ccommonlib::GetDeviceConnectMethod(int dev_id,int & connectMethod)
+{
+	return m_pluginObj.GetDeviceConnectMethod(dev_id,connectMethod);
+}
+
+int Ccommonlib::GetDevicdVendor(int dev_id,QString & sVendor)
+{
+	return m_pluginObj.GetDevicdVendor(dev_id,sVendor);
+}
+
+int Ccommonlib::GetDeviceInfo(int dev_id,QString & sDeviceName, QString & sAddress, int & port, int & http, QString & sEseeid, QString & sUsername,QString &sPassword, int & connectMethod, QString & sVendor)
+{
+	return m_pluginObj.GetDeviceInfo(dev_id,sDeviceName,sAddress,port,http,sEseeid,sUsername,sPassword,connectMethod,sVendor);
+}
+
+QVariantMap Ccommonlib::GetDeviceInfo(int dev_id)
+{
+	return m_pluginObj.GetDeviceInfo(dev_id);
+}
+
+int Ccommonlib::ModifyChannelName(int chl_id,QString sName)
+{
+	return m_pluginObj.ModifyChannelName(chl_id,sName);
+}
+
+int Ccommonlib::ModifyChannelStream(int chl_id,int nStream)
+{
+	return m_pluginObj.ModifyChannelStream(chl_id,nStream);
+}
+
+int Ccommonlib::GetChannelCount(int dev_id)
+{
+	return m_pluginObj.GetChannelCount(dev_id);
+}
+
+QStringList Ccommonlib::GetChannelList(int dev_id)
+{
+	return m_pluginObj.GetChannelList(dev_id);
+}
+
+int Ccommonlib::GetChannelName(int chl_id,QString & sName)
+{
+	return m_pluginObj.GetChannelName(chl_id,sName);
+}
+
+int Ccommonlib::GetChannelStream(int chl_id,int & nStream)
+{
+	return m_pluginObj.GetChannelStream(chl_id,nStream);
+}
+
+int Ccommonlib::GetChannelNumber(int chl_id,int & nChannelNum)
+{
+	return m_pluginObj.GetChannelNumber(chl_id,nChannelNum);
+}
+
+int Ccommonlib::GetChannelInfo(int chl_id,QString &sName,int &nStream,int &nChannelNum)
+{
+	return m_pluginObj.GetChannelInfo(chl_id,sName,nStream,nChannelNum);
+}
+
+QVariantMap Ccommonlib::GetChannelInfo(int chl_id)
+{
+	return m_pluginObj.GetChannelInfo(chl_id);
+}
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

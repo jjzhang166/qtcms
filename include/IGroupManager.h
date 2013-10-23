@@ -1,6 +1,7 @@
 #ifndef __IGROUPMANAGER_HEAD_FILE__0NSDVP9QUA9FNB89A__
 #define __IGROUPMANAGER_HEAD_FILE__0NSDVP9QUA9FNB89A__
 
+
 #include "libpcom.h"
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -15,7 +16,10 @@ interface IGroupManager : public IPComBase
 	virtual QStringList GetGroupList() = 0;
 	virtual int GetGroupName(int group_id,QString & sName) = 0;
 	virtual QString GetGroupName(int group_id) = 0;
+	virtual bool IsGroupExists(int group_id) = 0;
 
+	virtual bool IsChannelExists(int chl_id) = 0;
+	virtual bool IsR_Channel_GroupExist(int rgc_id)=0;
 	virtual int AddChannelInGroup(int group_id,int chl_id,QString sName) = 0;
 	virtual int RemoveChannelFromGroup(int rgc_id) = 0;
 	virtual int ModifyGroupChannelName(int rgc_id,QString sName) = 0;

@@ -13,6 +13,7 @@ interface IAreaManager : public IPComBase
 	virtual int RemoveAreaByName(QString sName) = 0;
 	virtual int SetAreaName(int nId,QString sName) = 0;
 	virtual bool IsAreaNameExist(QString sName) = 0;
+	virtual bool IsAreaIdExist(int nid)=0;
 	virtual int GetAreaCount() = 0;
 	virtual QStringList GetAreaList() = 0;
 	virtual QStringList GetSubArea(int nId) = 0;

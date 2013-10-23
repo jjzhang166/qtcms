@@ -59,7 +59,6 @@ before delete on area
 for each row
 begin
 delete from dev where area_id = old.id;
-delete from area where path like ((select path from area where id=old.id) || '|' ||	cast(old.id as text) || '%' );
 end;
 
 create trigger dev_delete
@@ -85,15 +84,15 @@ end;
 
 pragma recursive_triggers=true;
 
-insert into area (pid,path) values(0,'0');
-insert into area (pid,path) values(1,'0|1');
-insert into area (pid,path) values(1,'0|1');
-insert into area (pid,path) values(2,'0|1|2');
-insert into area (pid,path) values(3,'0|1|3');
-insert into area (pid,path) values(3,'0|1|3');
-insert into area (pid,path) values(3,'0|1|3');
-insert into area (pid,path) values(7,'0|1|3|7');
-insert into area (pid,path) values(4,'0|1|2|4');
+insert into area (pid,path) values(0,'0|1|');
+insert into area (pid,path) values(1,'0|1|2|');
+insert into area (pid,path) values(1,'0|1|3|');
+insert into area (pid,path) values(2,'0|1|2|4|');
+insert into area (pid,path) values(3,'0|1|3|5|');
+insert into area (pid,path) values(3,'0|1|3|6|');
+insert into area (pid,path) values(3,'0|1|3|7|');
+insert into area (pid,path) values(7,'0|1|3|7|8|');
+insert into area (pid,path) values(4,'0|1|2|4|9|');
 insert into dev (area_id) values(3);
 insert into dev (area_id) values(3);
 insert into dev (area_id) values(5);

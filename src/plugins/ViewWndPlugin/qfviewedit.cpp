@@ -59,3 +59,7 @@ QVariantMap qfviewedit::RetTest()
 
 	return ret;
 }
+int qfviewedit::my_test(){
+	int nRet =0;
+	return nRet;
+}

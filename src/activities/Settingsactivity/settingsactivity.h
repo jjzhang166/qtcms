@@ -5,6 +5,8 @@
 #include <IActivities.h>
 #include <qwfw.h>
 #include <IUserManager.h>
+#include <IDeviceManager.h>
+#include <IAreaManager.h>
 #include <QMutex>
 #include <QObject>
 #include <QPoint>
@@ -34,6 +36,13 @@ public slots:
 	void OnAddUserOk();
 	void OnModifyUserOk();
 	void OnDeleteUserOk();
+	
+	/*device module*/
+	void OnAddDevice();
+	void OnRemoveDevice();
+	void OnModifyDevice();
+
+
 private:
 	QWidget * m_MainView;
 	int m_nRef;

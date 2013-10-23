@@ -23,6 +23,7 @@ public:
 	virtual unsigned long __stdcall AddRef();
 
 	virtual unsigned long __stdcall Release();
+	
 public:
 
 private:
