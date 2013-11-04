@@ -42,7 +42,7 @@ protected:
 			QWidget *pa = m_widget->parentWidget();
 			if ("QtWebKitFW" == pa->objectName())
 			{
-				((QWebView *)pa)->page()->mainFrame()->evaluateJavaScript(sItem);
+				((QWebView *)pa)->page()->mainFrame()->evaluateJavaScript(sScripte);
 			}
 		}
 	};
