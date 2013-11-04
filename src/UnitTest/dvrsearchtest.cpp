@@ -29,7 +29,7 @@ int DvrSearchTest::cbDeviceFoundTest(QString evName,QVariantMap evMap,void *pUse
      {
          QString sKey = it.key();
          QString sValue = it.value().toString();
-         printf("%s\t%s\n", sKey.toLatin1().data(),sValue.toLatin1().data());
+         qDebug()<<sKey<<'\t'<<sValue;
      }
      
     return 0;
@@ -41,7 +41,7 @@ int DvrSearchTest::cbDeviceSetTest(QString evName,QVariantMap evMap,void *pUser)
     {
         QString sKey = it.key();
         QString sValue = it.value().toString();
-        printf("%s\t%s\n", sKey.toLatin1().data(),sValue.toLatin1().data());
+        qDebug()<<sKey<<'\t'<<sValue;
     }
     return 0;
 }
@@ -148,7 +148,7 @@ void DvrSearchTest::DvrSearchCase4()
     tim.start();
     while(tim.elapsed()< 15*1000);
 
-    nRet1 = dvrsearch->setInterval(5);
+    nRet1 = dvrsearch->setInterval(15);
     QVERIFY2(0 == nRet1,"Interval is not set currect");
     nRet1 = dvrsearch->Start();
     QVERIFY2(-1 == nRet1,"Start() already called");

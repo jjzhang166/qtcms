@@ -19,9 +19,9 @@ private:
 
 
 	private Q_SLOTS:
-  		void DvrSearchCase1();
-        void DvrSearchCase2();
-        void DvrSearchCase3();
+ 		 void DvrSearchCase1();
+         void DvrSearchCase2();
+         void DvrSearchCase3();
         void DvrSearchCase4();
         void DvrSearchCase5();
         void DvrSearchCase6();
