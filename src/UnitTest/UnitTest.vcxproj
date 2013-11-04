@@ -101,7 +101,6 @@
     <ClCompile Include="unittest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\guid.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_HiChipTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -115,8 +114,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HiChipTest.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="unittest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="unittest.h">
