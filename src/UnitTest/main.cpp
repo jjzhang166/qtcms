@@ -5,6 +5,7 @@
 #include "area_test.h"
 #include "Device_Test.h"
 #include "Channel_Test.h"
+#include "dvrsearchtest.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,5 +23,7 @@ int main(int argc, char *argv[])
 	//QTest::qExec(&tc, argc, argv);
 	//QTest::qExec(&my_group_test,argc,argv);
 	//QTest::qExec(&my_channel_test,argc,argv);
+	DvrSearchTest test;
+    QTest::qExec(&test,argc,argv);
 	return 0;
 }
