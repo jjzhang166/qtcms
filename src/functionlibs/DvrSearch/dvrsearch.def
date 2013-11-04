@@ -1,0 +1,3 @@
+LIBRARY dvrsearch.dll
+EXPORTS
+	CreateInstance @1
