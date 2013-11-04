@@ -6,7 +6,7 @@
 #include "Device_Test.h"
 #include "Channel_Test.h"
 #include "dvrsearchtest.h"
-
+#include "HiChipTest.h"
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -25,5 +25,7 @@ int main(int argc, char *argv[])
 	//QTest::qExec(&my_channel_test,argc,argv);
 	DvrSearchTest test;
     QTest::qExec(&test,argc,argv);
+	HiChipUnitTest test;
+	QTest::qExec(&test, argc, argv);
 	return 0;
 }

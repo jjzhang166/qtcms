@@ -42,6 +42,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "div7_7", "..\src\functionlibs\div7_7\div7_7.vcxproj", "{766A97EB-C086-4372-9832-3EB7AFCA7D11}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "div8_1", "..\src\functionlibs\div8_1\div8_1.vcxproj", "{346BDCB3-439C-44B4-A423-A494CDF2597B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HiChipSearch", "..\src\functionlibs\HiChipSearch\HiChipSearch.vcxproj", "{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -124,6 +125,10 @@ Global
 		{346BDCB3-439C-44B4-A423-A494CDF2597B}.Debug|Win32.Build.0 = Debug|Win32
 		{346BDCB3-439C-44B4-A423-A494CDF2597B}.Release|Win32.ActiveCfg = Release|Win32
 		{346BDCB3-439C-44B4-A423-A494CDF2597B}.Release|Win32.Build.0 = Release|Win32
+		{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}.Debug|Win32.Build.0 = Debug|Win32
+		{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}.Release|Win32.ActiveCfg = Release|Win32
+		{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

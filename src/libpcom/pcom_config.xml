@@ -18,6 +18,6 @@
         <item clsid="E2B5CF38-07A2-4ECF-9BFF-001082C203BF" name="divmode.div3_3" file="plugins/div3_3.dll" mode="div3_3"/> 
         <item clsid="D37D3047-D605-4116-94B2-47D964AA5809" name="divmode.div6_1" file="plugins/div6_1.dll" mode="div6_1"/> 
         <item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
-	
+        <item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.IPCSearch" file="plugins/HiChipSearch.dll" type="IPC"/> 
     </CLSID>
 </root>

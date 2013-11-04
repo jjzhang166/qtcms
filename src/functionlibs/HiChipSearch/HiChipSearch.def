@@ -1,0 +1,3 @@
+LIBRARY HiChipSearch.dll
+EXPORTS
+	CreateInstance @1
