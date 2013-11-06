@@ -133,34 +133,34 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	QString context;
 
 	getItem(buff,"Device-Name=",context);
-	itemmap.insert("Device-Name", context);
+	itemmap.insert("deviceName", context);
 
 	getItem(buff,"Device-ID=",context);
-	itemmap.insert("Device-ID", context);
+	itemmap.insert("deviceID", context);
 
 	getItem(buff,"Device-Model=",context);
-	itemmap.insert("Device-Model", context);
+	itemmap.insert("deviceModel", context);
 
 	getItem(buff,"Esee-ID=",context);
-	itemmap.insert("Esee-ID", context);
+	itemmap.insert("eseeID", context);
 
 	getItem(buff,"Channel-Cnt=",context);
-	itemmap.insert("Channel-Cnt", context);
+	itemmap.insert("channelCount", context);
 
 	getItem(buff,"IP=",context);
 	itemmap.insert("IP", context);
 
 	getItem(buff,"MASK=",context);
-	itemmap.insert("MASK", context);
+	itemmap.insert("mask", context);
 
 	getItem(buff,"MAC=",context);
-	itemmap.insert("MAC", context);
+	itemmap.insert("mac", context);
 
 	getItem(buff,"Gateway=",context);
 	itemmap.insert("Gateway", context);
 
 	getItem(buff,"Http-Port=",context);
-	itemmap.insert("Http-Port", context);
+	itemmap.insert("httpPort", context);
 }
 
 
@@ -217,7 +217,7 @@ int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 	{
 		if (it.key() == eventName)
 		{
-			eventParams<<"eseeid"<<"host"<<"http"<<"mediaport"<<"uuid"<<"channelCount"<<"type"<<"netmask"<<"gateway";
+			eventParams<<"IP"<<"deviceID"<<"eseeID"<<"deviceName"<<"deviceModel"<<"channelCount"<<"mask"<<"Gateway"<<"mac"<<"httpPort";
 		}
 	}
 
