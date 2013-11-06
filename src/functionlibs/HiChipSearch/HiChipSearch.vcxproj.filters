@@ -24,12 +24,12 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{62aa2b35-b953-4e6a-a9cd-502aba7953d0}</UniqueIdentifier>
+      <UniqueIdentifier>{42c97d69-7ac3-4f8f-8456-220a601ab04c}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{99fc0886-061a-41f4-a864-f3e39ed98127}</UniqueIdentifier>
+      <UniqueIdentifier>{f1e960a9-8fed-4726-a0b8-dc1d6708226d}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -39,15 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HiChipSearch_global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\IDeviceSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\IEventRegister.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\guid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
