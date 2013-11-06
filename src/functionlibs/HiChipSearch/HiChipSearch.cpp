@@ -70,9 +70,8 @@ void HiChipSearch::run()
 			timeStart = QDateTime::currentDateTime();
 			m_bFlush = false;
 		}
-
-		sleep(1);
 		Receive();
+		msleep(500);
 	}
 }
 
@@ -195,7 +194,10 @@ int HiChipSearch::Stop()
 
 IEventRegister* HiChipSearch::QueryEventRegister()
 {
-	return static_cast<IEventRegister*>(this);
+	IEventRegister * ret ;
+	QueryInterface(IID_IEventRegister,(void **)&ret);
+	ret->Release();
+	return ret;
 }
 
 QStringList HiChipSearch::eventList()

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	//QTest::qExec(&my_channel_test,argc,argv);
 	DvrSearchTest test;
     QTest::qExec(&test,argc,argv);
-	HiChipUnitTest test;
-	QTest::qExec(&test, argc, argv);
+	HiChipUnitTest test1;
+	QTest::qExec(&test1, argc, argv);
 	return 0;
 }
