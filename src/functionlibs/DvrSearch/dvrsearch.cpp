@@ -1,13 +1,14 @@
 #include "dvrsearch.h"
-
+#include <QElapsedTimer>
 
 
 DvrSearch::DvrSearch():
 m_nRef(0),
-m_nTimeInterval(1),
+m_nTimeInterval(5),
 m_bFlush(false),
 m_bStop(false),
 m_bStart(false),
+m_bIsRunning(false),
 m_eventCB(NULL),
 m_pEventCBParam(NULL)
 {
@@ -16,11 +17,16 @@ m_pEventCBParam(NULL)
 }
 
 DvrSearch::~DvrSearch()
-{
-    while(this->isRunning())
-    {
-        this->exit();
-    }
+{ 
+     if (m_pUdpSocket != NULL )
+     {
+         delete m_pUdpSocket;
+         m_pUdpSocket = NULL;
+     }
+     while(this->isRunning())
+     {
+         this->exit();
+     }
 }
 
 
@@ -34,6 +40,10 @@ long __stdcall DvrSearch::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDeviceSearch*>(this);
 	}
+    else if (IID_IEventRegister == iid)
+    {
+        *ppv = static_cast<IEventRegister*>(this);
+    }
 	else
 	{
 		*ppv = NULL;
@@ -72,67 +82,66 @@ int DvrSearch::Start()
     if (m_bStart )
     {
         return -1;
-    }
-    m_csRef.lock();
-        m_bStart     = true;
-        m_bStop      = false;
-    m_csRef.unlock();
+    }  
+    m_bStart     = true;
+    m_bStop      = false;
+
     start();
-    
+   
     return 0;
 }
 
 int DvrSearch::Stop()
 {
-    if (m_bStop)
+    if (!m_bStart) // start not yet
     {
         return -1;
     }
-    m_csRef.lock();
-        m_bStop      = true;
-        m_bStart     = false;
-    m_csRef.unlock();
+    m_bStop      = true;
+    m_bStart     = false;
+    while (m_bIsRunning)
+    {
+        wait();
+    }
 	return 0;
 }
 
 int DvrSearch::Flush()
 {
-	m_csRef.lock();
-	    m_bFlush = true;
-        m_bStop  = false;
-	m_csRef.unlock();
+	m_bFlush = true;
+    m_bStop  = false;
 	return 0;
 }
 
 
 void DvrSearch::run()
 {
-    while (!m_bStop || m_bFlush )
+    QElapsedTimer timer;
+    timer.start();
+    m_pUdpSocket->writeDatagram(g_cSendBuff,sizeof(g_cSendBuff),QHostAddress::Broadcast ,UDP_PORT);
+    while (!m_bStop)
 	{
-        m_pUdpSocket->writeDatagram(g_cSendBuff,sizeof(g_cSendBuff),QHostAddress::Broadcast ,UDP_PORT);
-        sleep(1);
+        m_bIsRunning = true;
+        if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
+        {
+            timer.start();
+            m_pUdpSocket->writeDatagram(g_cSendBuff,sizeof(g_cSendBuff),QHostAddress::Broadcast ,UDP_PORT);
+            m_bFlush = false;      
+        } 
         if (m_sEventCBParam == "deviceFound")
         {  
-            Recv();  
-        }
-               
-        if (!m_bFlush)
-        {
-            sleep(m_nTimeInterval); 
-        }  
-        m_csRef.lock();
-            m_bFlush = false;
-        m_csRef.unlock();
-	}        
+            Recv(); 
+            msleep(10);
+        } 
+	} 
+    m_bIsRunning = false;
 }
 
 int DvrSearch::setInterval(int nInterval)
 {
     if(nInterval > 0 && nInterval < 100)
     {
-        m_csRef.lock();
         m_nTimeInterval = nInterval;
-        m_csRef.unlock();
         return 0;
     }
     else
@@ -143,15 +152,16 @@ int DvrSearch::setInterval(int nInterval)
 
 IEventRegister * DvrSearch::QueryEventRegister() 
 {
-	return static_cast<IEventRegister*>(this);
+    IEventRegister * ret ;
+    QueryInterface(IID_IEventRegister,(void **)&ret);
+    ret->Release();
+    return ret;
 }
 
 
 QStringList DvrSearch::eventList()
 {
-    m_csRef.lock();
 	m_sEventList = EventCBMap.keys();
-    m_csRef.unlock();
 	return m_sEventList;
 }
 
@@ -159,7 +169,7 @@ int DvrSearch::queryEvent(QString eventName, QStringList &eventParamList)
 {
 	if ( "deviceFound" == eventName)
 	{
-		eventParamList<<"JAIP"<<"ID"<<"HTTP"<<"PORT"<<"CH";
+		eventParamList<<"IP"<<"ID"<<"Http"<<"Media"<<"ChannelCount";
 		return 0;
 	}
     else
@@ -187,15 +197,11 @@ int DvrSearch::registerEvent(QString eventName,EventCallBack eventCB,void *pUser
     }
     if (nRet != -1)
     {
-        m_csRef.lock();
         EventCBMap.insertMulti(eventName, eventCB);	
-        m_csRef.unlock();
     }
-    m_csRef.lock();
 	m_sEventCBParam = eventName;
 	m_eventCB       = eventCB;
 	m_pEventCBParam = pUser;
-    m_csRef.unlock();
     return nRet;
 }
 
@@ -211,23 +217,12 @@ int DvrSearch::Recv()
         
 		QString strTmp(datagram.data());
 		strTmp = strTmp.toUpper();
-
-        bool bStrExist = true;
-        bool bTmp  = strTmp.contains("JAIP");
-        bStrExist &=bTmp;
-        bTmp =  strTmp.contains("ID");
-        bStrExist &=bTmp;
-        bTmp =  strTmp.contains("PORT");
-        bStrExist &=bTmp;
-        bTmp =  strTmp.contains("HTTP");
-        bStrExist &=bTmp;
-        bTmp =  strTmp.contains("CH");
-        bStrExist &=bTmp;
-        if (! bStrExist || datagram.contains("SEARCHDEV") )
+    
+        if ( datagram.contains("SEARCHDEV") )
         {
             continue;
         }
-
+        printf("%s\n",datagram.data());
 		QByteArray     StrToOther;
         QStringList    strListInfo;
 		StrToOther = ParseSearch(strTmp, "JAIP");
@@ -245,19 +240,17 @@ int DvrSearch::Recv()
 		StrToOther = ParseSearch(strTmp, "CH");
         strListInfo.insert(4,QString(StrToOther.data()));
         
-        m_csRef.lock();
-		m_mEventCBParam.insert("JAIP  "    ,QVariant(strListInfo.at(0)));
-		m_mEventCBParam.insert("ID    "    ,QVariant(strListInfo.at(1)));
-		m_mEventCBParam.insert("HTTP  "    ,QVariant(strListInfo.at(3)));
-		m_mEventCBParam.insert("PORT  "    ,QVariant(strListInfo.at(2)));
-		m_mEventCBParam.insert("CH    "    ,QVariant(strListInfo.at(4)));
-        m_csRef.unlock();
-		
+        m_mEventCBParam.insert("IP"            ,QVariant(strListInfo.at(0)));
+        m_mEventCBParam.insert("ID"            ,QVariant(strListInfo.at(1)));
+		m_mEventCBParam.insert("Http"          ,QVariant(strListInfo.at(3)));
+		m_mEventCBParam.insert("Media"         ,QVariant(strListInfo.at(2)));
+		m_mEventCBParam.insert("ChannelCount"  ,QVariant(strListInfo.at(4)));
+ 		
 		if (m_eventCB != NULL)
 		{
 			nRet = m_eventCB(m_sEventCBParam, m_mEventCBParam, m_pEventCBParam);
 		}
-	}
+	} // end of while
 	if (nRet < 0 )
 	{
 		return nRet;
@@ -272,6 +265,10 @@ QByteArray DvrSearch::ParseSearch(const QString &content, const QString &index)
 {
 	int nTmp= 0;
     nTmp = content.indexOf(index,0);
+    if (-1 == nTmp)
+    {
+        return "0";
+    }
 	QString strTmp(content.mid(nTmp+ index.length()));
 	QByteArray QBRet( strTmp.toLatin1());
 

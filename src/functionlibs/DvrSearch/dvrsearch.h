@@ -50,6 +50,7 @@ private:
 	bool            m_bFlush;
     bool            m_bStop;
     bool            m_bStart;
+    bool            m_bIsRunning;
     QStringList     m_sEventList;
 
 	QMap<QString,   EventCallBack>EventCBMap;
