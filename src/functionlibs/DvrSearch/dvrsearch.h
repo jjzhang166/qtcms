@@ -53,7 +53,7 @@ private:
     bool            m_bIsRunning;
     QStringList     m_sEventList;
 
-	QMap<QString,   EventCallBack>EventCBMap;
+	QMap<QString,   EventCBInfo>EventCBMap;
 	EventCallBack   m_eventCB;
 	void*           m_pEventCBParam;
 	QString         m_sEventCBParam;

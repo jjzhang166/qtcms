@@ -18,7 +18,10 @@ typedef struct __tagDvrSearchInfo{
 const char g_cSendBuff[] = "SEARCHDEV" ;
 
 typedef int (__cdecl *EventCallBack)(QString,QVariantMap,void *);
-
+typedef struct __tagEventCB{
+    EventCallBack evCBName;
+    void*         pEventCBP;
+}EventCBInfo, *lpEventCBInfo;
 
 
 #endif // DVRSEARCH_GLOBAL_H

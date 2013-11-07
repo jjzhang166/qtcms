@@ -63,7 +63,7 @@
     </Link>
     <PostBuildEvent>
       <Command>copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\plugins";
-copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)"</Command>
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -154,13 +154,13 @@ IEventRegister * DvrSearch::QueryEventRegister()
 {
     IEventRegister * ret ;
     QueryInterface(IID_IEventRegister,(void **)&ret);
-    ret->Release();
-    return ret;
+    //ret->Release();
+    return ret;  
 }
 
 
 QStringList DvrSearch::eventList()
-{
+{      
 	m_sEventList = EventCBMap.keys();
 	return m_sEventList;
 }
@@ -181,23 +181,22 @@ int DvrSearch::queryEvent(QString eventName, QStringList &eventParamList)
 int DvrSearch::registerEvent(QString eventName,EventCallBack eventCB,void *pUser) 
 {
     int nRet = -2;
-    QMap<QString,   EventCallBack>::const_iterator it = EventCBMap.find(eventName);
+    QMap<QString,   EventCBInfo>::const_iterator it = EventCBMap.find(eventName);
     while(  it != EventCBMap.end()&& it.key() == eventName)
     {
-        if (it.value() == eventCB)
+        if (it.value().evCBName == eventCB && it.value().pEventCBP == pUser)
         {
             nRet = -1;
             break;
         }
-        else
-        {
-            nRet = 0;
-        }
         ++it;
     }
-    if (nRet != -1)
+    if (nRet != -1) 
     {
-        EventCBMap.insertMulti(eventName, eventCB);	
+        EventCBInfo evCBInfoTmp;
+        evCBInfoTmp.evCBName  = eventCB;
+        evCBInfoTmp.pEventCBP = pUser;
+        EventCBMap.insertMulti(eventName, evCBInfoTmp);	
     }
 	m_sEventCBParam = eventName;
 	m_eventCB       = eventCB;
@@ -267,7 +266,7 @@ QByteArray DvrSearch::ParseSearch(const QString &content, const QString &index)
     nTmp = content.indexOf(index,0);
     if (-1 == nTmp)
     {
-        return "0";
+        return "0"; //no this item
     }
 	QString strTmp(content.mid(nTmp+ index.length()));
 	QByteArray QBRet( strTmp.toLatin1());
@@ -277,7 +276,7 @@ QByteArray DvrSearch::ParseSearch(const QString &content, const QString &index)
 	{
 		QBRet.truncate(nTmp);
 	}
-    if (QBRet.isEmpty())
+    if (QBRet.isEmpty()) //this item has no value
     {
         QBRet.append("-1");
     }
