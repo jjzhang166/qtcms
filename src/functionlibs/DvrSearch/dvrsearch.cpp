@@ -4,7 +4,7 @@
 
 DvrSearch::DvrSearch():
 m_nRef(0),
-m_nTimeInterval(5),
+m_nTimeInterval(10),
 m_bFlush(false),
 m_nStopped(-1),
 m_bThreadRunning(false),
