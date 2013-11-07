@@ -50,7 +50,7 @@ private:
 private:
 	int									m_nRef;
 	QMutex								m_csRef;
-	bool								m_bRunning;
+	bool								m_bReceiving;
 	bool								m_bFlush;
 	bool								m_bEnd;
 	QUdpSocket							*Socket;

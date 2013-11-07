@@ -10,7 +10,7 @@ HiChipSearch::HiChipSearch() :
 m_nRef(0),
 m_nInterval(2)
 {
-	m_bRunning = false;
+	m_bReceiving = false;
 	m_bFlush = false;
 
 	Socket = new QUdpSocket();
@@ -20,36 +20,33 @@ m_nInterval(2)
 
 HiChipSearch::~HiChipSearch()
 {
-	if (m_bRunning)
+	if (Socket)
 	{
-		Stop();
+		Socket->close();
+		delete Socket;
 	}
-	m_bEnd = true;
-
-	Socket->close();
-	delete Socket;
 }
 
 int HiChipSearch::Start()
 {
- 	bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
- 	Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
-
-	if (!Ret)
+	if (!QThread::isRunning())
 	{
-		return -1;
-	}
+ 		bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
+ 		Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
 
-	if (m_bRunning)
-	{
+		if (!Ret)
+		{
+			return -1;
+		}
+
+		m_bEnd = false;
+
+		QThread::start();
+
 		return 0;
 	}
 
-	m_bRunning = true;
-	m_bEnd = false;
-	QThread::start();
-	
-	return 0;
+	return -1;
 
 }
 
@@ -78,12 +75,17 @@ void HiChipSearch::run()
 		Receive();
 		msleep(500);
 	}
+
+	Socket->close();
+	delete Socket;
+	Socket = NULL;
 }
 
 void HiChipSearch::Receive()
 {
 	QByteArray datagrm;
 
+	m_bReceiving = true;
 	while(Socket->hasPendingDatagrams())
 	{
 		datagrm.resize(Socket->pendingDatagramSize());
@@ -92,7 +94,7 @@ void HiChipSearch::Receive()
 		{
 			QVariantMap item;
 			parseSearchAck(datagrm,item);
-			QString evName = QString("deviceFound");
+			QString evName = QString("SearchDeviceSuccess");
 			if (eventMap.find(evName) != eventMap.end())
 			{
 				IPCSearchCB proc = eventMap.value(evName).proc;
@@ -104,7 +106,7 @@ void HiChipSearch::Receive()
 		}
 	}
 
-	m_bRunning = false;
+	m_bReceiving = false;
 }
 
 
@@ -115,20 +117,7 @@ void HiChipSearch::getItem(QByteArray buff, QByteArray source, QString& dest)
 	{
 		int length = buff.size() - buff.indexOf(source) - source.size();
 		QByteArray result = buff.right(length);
-		QString strTemp = result.left(result.indexOf("\n") - 1);
-		if (strTemp.isEmpty())
-		{
-			dest = QString("-1");
-		}
-		else
-		{
-			dest = strTemp;
-		}
-
-	}
-	else
-	{
-		dest = QString("-1");
+		dest = result.left(result.indexOf("\n") - 1);
 	}
 }
 
@@ -137,34 +126,36 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	QString context;
 
 	getItem(buff,"Device-Name=",context);
-	itemmap.insert("deviceName", context);
+	itemmap.insert("SearchDeviceName_ID", context);
 
 	getItem(buff,"Device-ID=",context);
-	itemmap.insert("deviceID", context);
+	itemmap.insert("SearchDeviceId_ID", context);
 
 	getItem(buff,"Device-Model=",context);
-	itemmap.insert("deviceModel", context);
+	itemmap.insert("SearchDeviceModelId_ID", context);
 
 	getItem(buff,"Esee-ID=",context);
-	itemmap.insert("eseeID", context);
+	itemmap.insert("SearchSeeId_ID", context);
 
 	getItem(buff,"Channel-Cnt=",context);
-	itemmap.insert("channelCount", context);
+	itemmap.insert("SearchChannelCount_ID", context);
 
 	getItem(buff,"IP=",context);
-	itemmap.insert("IP", context);
+	itemmap.insert("SearchIP_ID", context);
 
 	getItem(buff,"MASK=",context);
-	itemmap.insert("mask", context);
+	itemmap.insert("SearchMask_ID", context);
 
 	getItem(buff,"MAC=",context);
-	itemmap.insert("mac", context);
+	itemmap.insert("SearchMac_ID", context);
 
 	getItem(buff,"Gateway=",context);
-	itemmap.insert("Gateway", context);
+	itemmap.insert("SearchGateway_ID", context);
 
 	getItem(buff,"Http-Port=",context);
-	itemmap.insert("httpPort", context);
+	itemmap.insert("SearchHttpport_ID", context);
+
+	itemmap.insert("SearchMediaPort_ID", "");
 }
 
 
@@ -187,13 +178,12 @@ int HiChipSearch::Stop()
 	{
 		return -1;
 	}
-	while(m_bRunning)
+	while(m_bReceiving)
 	{
-		sleep(1);
+		msleep(500);
 	}
 
 	terminate();
-
 	m_bEnd = true;
 
 	return 0;
@@ -220,21 +210,15 @@ QStringList HiChipSearch::eventList()
 
 int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 {
-	QMultiMap<QString, ProcInfoItem_t>::iterator it;
-	for (it = eventMap.begin(); it != eventMap.end(); it++)
+	if ("SearchDeviceSuccess" == eventName)
 	{
-		if (it.key() == eventName)
-		{
-			eventParams<<"IP"<<"deviceID"<<"eseeID"<<"deviceName"<<"deviceModel"<<"channelCount"<<"mask"<<"Gateway"<<"mac"<<"httpPort";
-		}
+		eventParams<<"SearchIP_ID"<<"SearchDeviceId_ID"<<"SearchSeeId_ID"<<"SearchDeviceName_ID"<<"SearchDeviceModelId_ID"<<"SearchChannelCount_ID"<<"SearchMask_ID"<<"SearchGateway_ID"<<"SearchMac_ID"<<"SearchHttpport_ID"<<"SearchMediaPort_ID";
+		return IEventRegister::OK;
 	}
-
-	if (it == eventMap.end())
+	else
 	{
 		return IEventRegister::E_INVALID_PARAM;
 	}
-
-	return IEventRegister::OK;
 }
 
 int HiChipSearch::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
