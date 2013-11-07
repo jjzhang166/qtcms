@@ -8,12 +8,13 @@
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
-m_nInterval(5)
+m_nInterval(2)
 {
 	m_bRunning = false;
 	m_bFlush = false;
 
-	Socket = new QUdpSocket(this);
+	Socket = new QUdpSocket();
+	
 
 }
 
@@ -24,14 +25,16 @@ HiChipSearch::~HiChipSearch()
 		Stop();
 	}
 	m_bEnd = true;
+
+	Socket->close();
 	delete Socket;
 }
 
 int HiChipSearch::Start()
 {
-	bool Ret = false;
-	Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
-	Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
+ 	bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
+ 	Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
+
 	if (!Ret)
 	{
 		return -1;
@@ -47,6 +50,7 @@ int HiChipSearch::Start()
 	QThread::start();
 	
 	return 0;
+
 }
 
 void HiChipSearch::run()
@@ -59,15 +63,16 @@ void HiChipSearch::run()
 	arr += "Content-Length:0\r\n";
 	arr += "\r\n";
 
-	QDateTime timeStart =  QDateTime::currentDateTime();
+	QTime timeStart;
+	timeStart.start();
+	Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
 
 	while(!m_bEnd)
 	{
-		QDateTime timeEnd = QDateTime::currentDateTime();
-		if (timeEnd.toTime_t() - timeStart.toTime_t() >= m_nInterval || m_bFlush)
+		if (timeStart.elapsed() >= m_nInterval || m_bFlush)
 		{
-			Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
-			timeStart = QDateTime::currentDateTime();
+			qint64 bytes = Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
+			timeStart.start();
 			m_bFlush = false;
 		}
 		Receive();
@@ -83,11 +88,11 @@ void HiChipSearch::Receive()
 	{
 		datagrm.resize(Socket->pendingDatagramSize());
 		Socket->readDatagram(datagrm.data(), datagrm.size());
-		if (datagrm.contains("HDS/1.0 200 OK") && datagrm.contains("Client-ID:nvmOPxEnYfQRAeLFdsMrpBbnMDbEPiMC"))
+		if (datagrm.contains("HDS/1.0 200 OK") && datagrm.contains("nvmOPxEnYfQRAeLFdsMrpBbnMDbEPiMC"))
 		{
 			QVariantMap item;
 			parseSearchAck(datagrm,item);
-			QString evName = QString("DeviceFound");
+			QString evName = QString("deviceFound");
 			if (eventMap.find(evName) != eventMap.end())
 			{
 				IPCSearchCB proc = eventMap.value(evName).proc;
@@ -186,7 +191,9 @@ int HiChipSearch::Stop()
 	{
 		sleep(1);
 	}
+
 	terminate();
+
 	m_bEnd = true;
 
 	return 0;
@@ -196,7 +203,6 @@ IEventRegister* HiChipSearch::QueryEventRegister()
 {
 	IEventRegister * ret ;
 	QueryInterface(IID_IEventRegister,(void **)&ret);
-	ret->Release();
 	return ret;
 }
 

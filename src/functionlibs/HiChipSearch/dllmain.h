@@ -1,5 +1,5 @@
-#ifndef __DLLMAIN_HEAD_FILE__
-#define __DLLMAIN_HEAD_FILE__
+#ifndef __DLLMAINDOISDFW_HEAD_FILE__
+#define __DLLMAINDOISDFW_HEAD_FILE__
 
 #ifdef __cplusplus
 extern "C"{
