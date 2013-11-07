@@ -8,7 +8,7 @@
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
-m_nInterval(2)
+m_nInterval(10000)
 {
 	m_bReceiving = false;
 	m_bFlush = false;
@@ -73,7 +73,7 @@ void HiChipSearch::run()
 			m_bFlush = false;
 		}
 		Receive();
-		msleep(500);
+		msleep(50);
 	}
 
 	Socket->close();
