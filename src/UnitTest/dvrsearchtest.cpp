@@ -52,7 +52,10 @@ void DvrSearchTest::DvrSearchCase1()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
     //step1:
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    int nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    pRet->Release();
     QVERIFY2(-2 == nRet1,"No this Event");
     nRet1 = dvrsearch->Start();
     QVERIFY2(0 == nRet1,"Start() already called");
@@ -64,7 +67,10 @@ void DvrSearchTest::DvrSearchCase1()
     dvrsearch->Stop();
     QVERIFY2(0 == nRet1,"Stop() already called");
     //step2:
-    nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
+    pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    nRet1 = pRet->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
+    pRet->Release();
     QVERIFY2(-2 == nRet1,"No this Event");
     nRet1 = dvrsearch->Start();
     QVERIFY2(0 == nRet1,"Start() already called");
@@ -82,9 +88,11 @@ void DvrSearchTest::DvrSearchCase1()
 void DvrSearchTest::DvrSearchCase2()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
-
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    int nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
     QVERIFY2(-2 == nRet1,"deviceFound Event is not exist!");
+    pRet->Release();
     nRet1 = dvrsearch->Start();
     QVERIFY2(0 == nRet1,"Start() already called");
 
@@ -114,8 +122,11 @@ void DvrSearchTest::DvrSearchCase3()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
     //step1
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    int nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
     QVERIFY2(-2 == nRet1,"No this Event");
+    pRet->Release();
     nRet1 = dvrsearch->Start();
     QVERIFY2(0 == nRet1,"Start() already called");
 
@@ -139,7 +150,10 @@ void DvrSearchTest::DvrSearchCase3()
 void DvrSearchTest::DvrSearchCase4()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet, "No Event Register");
+    int nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    pRet->Release();
     QVERIFY2(-2 == nRet1,"This Event exist");
     nRet1 = dvrsearch->Start();
     QVERIFY2(0 == nRet1,"Start() already called");
@@ -161,13 +175,16 @@ void DvrSearchTest::DvrSearchCase4()
     END_DVRSEARCH_UNIT_TEST(dvrsearch);
 }
 
-//5 先使用事件deviceSet注册,再用deviceFound注册,使用eventList()打印事件列表 | registerEvent()均返回-2, Start()和Stop()均返回0,
+//5 先使用事件deviceSet注册,再用deviceFound注册,使用eventList()返回事件列表 | registerEvent()均返回-2, Start()和Stop()均返回0,
 void DvrSearchTest::DvrSearchCase5()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    pRet->Release();
+    int nRet1 = pRet->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
     QVERIFY2(-2 == nRet1,"Event Exists");
-    nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    nRet1 = pRet->registerEvent("deviceFound"  ,DvrSearchTest::cbDeviceFoundTest, NULL);
     QVERIFY2(-2 == nRet1,"Event Exists");
 
     nRet1 = dvrsearch->Start();
@@ -176,7 +193,7 @@ void DvrSearchTest::DvrSearchCase5()
     tim.start();
     while(tim.elapsed()< 15*1000);
 
-    QStringList strList =  (dvrsearch->QueryEventRegister())->eventList();
+    QStringList strList =  pRet->eventList();
     QStringList::const_iterator it;
     for (it = strList.begin(); it != strList.end(); it ++)
     {
@@ -187,14 +204,17 @@ void DvrSearchTest::DvrSearchCase5()
     END_DVRSEARCH_UNIT_TEST(dvrsearch);
 }
 
-//6 先使用事件deviceSet注册,,再用deviceFound注册,,使用queryEvent()进行查询      |  registerEvent()均返回-2, Start()和Stop()均返回0,
+//6 先使用事件deviceSet注册,再用deviceFound注册,使用queryEvent()进行查询      |  registerEvent()均返回-2, Start()和Stop()均返回0,
 //  "deviceSet"事件的queryEvent()返回-1, "deviceFound"事件的queryEvent()返回0
 void DvrSearchTest::DvrSearchCase6()
 {
     START_DVRSEARCH_UNIT_TEST(dvrsearch);
-    int nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    pRet->Release();
+    int nRet1 = pRet->registerEvent("deviceSet",DvrSearchTest::cbDeviceSetTest, NULL);
     QVERIFY2(-2 == nRet1, "Event Exists");
-    nRet1 =(dvrsearch->QueryEventRegister())->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
     QVERIFY2(-2 == nRet1, "Event Exists");
 
     nRet1 = dvrsearch->Start();
@@ -205,10 +225,10 @@ void DvrSearchTest::DvrSearchCase6()
     while(tim.elapsed()< 15*1000);
 
     QStringList evParamList;
-    nRet1 = (dvrsearch->QueryEventRegister())->queryEvent("deviceSet", evParamList);
+    nRet1 =  pRet->queryEvent("deviceSet", evParamList);
     QVERIFY2(-1 == nRet1,"Error");
 
-    nRet1 = (dvrsearch->QueryEventRegister())->queryEvent("deviceFound", evParamList);
+    nRet1 =  pRet->queryEvent("deviceFound", evParamList);
     QVERIFY2(0 == nRet1,"Matched Error");
 
     dvrsearch->Stop();
@@ -217,3 +237,32 @@ void DvrSearchTest::DvrSearchCase6()
     END_DVRSEARCH_UNIT_TEST(dvrsearch);
 }
 
+//7 用deviceFound连续注册2次, 观察registerEvent()的返回值, 并用eventList()列出事件列表
+// | registerEvent()第一次返回-2,第二次返回-1, eventList()返回的list只有一个"deviceFound"
+void DvrSearchTest::DvrSearchCase7()
+{
+    START_DVRSEARCH_UNIT_TEST(dvrsearch);
+    IEventRegister *pRet = dvrsearch->QueryEventRegister();
+    QVERIFY2(NULL != pRet,"No Event Register");
+    pRet->Release();
+    int nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    QVERIFY2(-2 == nRet1, "Event Exists");
+    nRet1 = pRet->registerEvent("deviceFound",DvrSearchTest::cbDeviceFoundTest, NULL);
+    QVERIFY2(-1 == nRet1, "Event Not Exists");
+
+    nRet1 = dvrsearch->Start();
+    QVERIFY2(0 == nRet1,"Start() already called");
+
+    QTime tim;
+    tim.start();
+    while(tim.elapsed()< 15*1000);
+
+    QStringList evList;
+    evList =  pRet->eventList();
+    QVERIFY2(1 == evList.count("deviceFound"),"Error");
+
+    dvrsearch->Stop();
+    QVERIFY2(0 == nRet1,"Stop() already called");
+
+    END_DVRSEARCH_UNIT_TEST(dvrsearch);
+}
