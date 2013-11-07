@@ -6,9 +6,8 @@ DvrSearch::DvrSearch():
 m_nRef(0),
 m_nTimeInterval(5),
 m_bFlush(false),
-m_bStop(false),
-m_bStart(false),
-m_bIsRunning(false),
+m_nStopped(-1),
+m_bThreadRunning(false),
 m_eventCB(NULL),
 m_pEventCBParam(NULL)
 {
@@ -79,12 +78,11 @@ unsigned long __stdcall DvrSearch::Release()
 
 int DvrSearch::Start()
 {  
-    if (m_bStart )
-    {
-        return -1;
-    }  
-    m_bStart     = true;
-    m_bStop      = false;
+     if (0 == m_nStopped )
+     {
+         return -1;
+     }  
+    m_nStopped      = 0;
 
     start();
    
@@ -93,13 +91,13 @@ int DvrSearch::Start()
 
 int DvrSearch::Stop()
 {
-    if (!m_bStart) // start not yet
-    {
-        return -1;
-    }
-    m_bStop      = true;
-    m_bStart     = false;
-    while (m_bIsRunning)
+     if (1 == m_nStopped || -1 == m_nStopped)
+     {
+         return -1;
+     }
+    m_nStopped   = 1;
+
+    while (m_bThreadRunning)
     {
         wait();
     }
@@ -108,8 +106,8 @@ int DvrSearch::Stop()
 
 int DvrSearch::Flush()
 {
-	m_bFlush = true;
-    m_bStop  = false;
+	m_bFlush    = true;
+    m_nStopped  = 2;
 	return 0;
 }
 
@@ -119,22 +117,23 @@ void DvrSearch::run()
     QElapsedTimer timer;
     timer.start();
     m_pUdpSocket->writeDatagram(g_cSendBuff,sizeof(g_cSendBuff),QHostAddress::Broadcast ,UDP_PORT);
-    while (!m_bStop)
+    while (0 == m_nStopped || 2 == m_nStopped)
 	{
-        m_bIsRunning = true;
+        m_bThreadRunning = true;
+        m_nStopped = 0;
         if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
         {
             timer.start();
             m_pUdpSocket->writeDatagram(g_cSendBuff,sizeof(g_cSendBuff),QHostAddress::Broadcast ,UDP_PORT);
             m_bFlush = false;      
         } 
-        if (m_sEventCBParam == "deviceFound")
+        if (m_sEventCBParam == "SearchDeviceSuccess")
         {  
             Recv(); 
             msleep(10);
         } 
 	} 
-    m_bIsRunning = false;
+    m_bThreadRunning = false;
 }
 
 int DvrSearch::setInterval(int nInterval)
@@ -167,9 +166,11 @@ QStringList DvrSearch::eventList()
 
 int DvrSearch::queryEvent(QString eventName, QStringList &eventParamList)
 {
-	if ( "deviceFound" == eventName)
+	if ( "SearchDeviceSuccess" == eventName)
 	{
-		eventParamList<<"IP"<<"ID"<<"Http"<<"Media"<<"ChannelCount";
+        eventParamList<<"SearchDeviceName_ID" <<"SearchDeviceId_ID"    <<"SearchDeviceModelId_ID"
+                      <<"SearchSeeId_ID"      <<"SearchChannelCount_ID"<<"SearchIP_ID"           <<"SearchMask_ID"
+                      <<"SearchMac_ID"        <<"SearchGateway_ID"     <<"SearchHttpport_ID"     <<"SearchMediaPort_ID";
 		return 0;
 	}
     else
@@ -221,7 +222,7 @@ int DvrSearch::Recv()
         {
             continue;
         }
-        printf("%s\n",datagram.data());
+        
 		QByteArray     StrToOther;
         QStringList    strListInfo;
 		StrToOther = ParseSearch(strTmp, "JAIP");
@@ -239,11 +240,17 @@ int DvrSearch::Recv()
 		StrToOther = ParseSearch(strTmp, "CH");
         strListInfo.insert(4,QString(StrToOther.data()));
         
-        m_mEventCBParam.insert("IP"            ,QVariant(strListInfo.at(0)));
-        m_mEventCBParam.insert("ID"            ,QVariant(strListInfo.at(1)));
-		m_mEventCBParam.insert("Http"          ,QVariant(strListInfo.at(3)));
-		m_mEventCBParam.insert("Media"         ,QVariant(strListInfo.at(2)));
-		m_mEventCBParam.insert("ChannelCount"  ,QVariant(strListInfo.at(4)));
+        m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
+        m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(strListInfo.at(1)));
+        m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
+        m_mEventCBParam.insert("SearchSeeId_ID"         ,QVariant(""));
+        m_mEventCBParam.insert("SearchChannelCount_ID"  ,QVariant(strListInfo.at(4)));
+        m_mEventCBParam.insert("SearchIP_ID"            ,QVariant(strListInfo.at(0)));
+        m_mEventCBParam.insert("SearchMask_ID"          ,QVariant(""));
+        m_mEventCBParam.insert("SearchMac_ID"           ,QVariant(""));
+        m_mEventCBParam.insert("SearchGateway_ID"       ,QVariant(""));     
+		m_mEventCBParam.insert("SearchHttpport_ID"      ,QVariant(strListInfo.at(3)));
+		m_mEventCBParam.insert("SearchMediaPort_ID"     ,QVariant(strListInfo.at(2)));
  		
 		if (m_eventCB != NULL)
 		{

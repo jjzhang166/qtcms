@@ -47,10 +47,10 @@ private:
 	QMutex          m_csRef;
 	QUdpSocket *    m_pUdpSocket;
 	int             m_nTimeInterval;
-	bool            m_bFlush;
-    bool            m_bStop;
-    bool            m_bStart;
-    bool            m_bIsRunning;
+	volatile  bool  m_bFlush;
+    int             m_nStopped;// -1 before start 0 already start(not stopped)
+    // 1 after stopped 2 flush 
+    volatile  bool  m_bThreadRunning;
     QStringList     m_sEventList;
 
 	QMap<QString,   EventCBInfo>EventCBMap;
