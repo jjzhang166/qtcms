@@ -168,9 +168,9 @@ int DvrSearch::queryEvent(QString eventName, QStringList &eventParamList)
 {
 	if ( "SearchDeviceSuccess" == eventName)
 	{
-        eventParamList<<"SearchDeviceName_ID" <<"SearchDeviceId_ID"    <<"SearchDeviceModelId_ID"
-                      <<"SearchSeeId_ID"      <<"SearchChannelCount_ID"<<"SearchIP_ID"           <<"SearchMask_ID"
-                      <<"SearchMac_ID"        <<"SearchGateway_ID"     <<"SearchHttpport_ID"     <<"SearchMediaPort_ID";
+        eventParamList<<"SearchVendor_ID"  <<"SearchDeviceName_ID"  <<"SearchDeviceId_ID"     <<"SearchDeviceModelId_ID"
+                      <<"SearchSeeId_ID"   <<"SearchChannelCount_ID"<<"SearchIP_ID"           <<"SearchMask_ID"
+                      <<"SearchMac_ID"     <<"SearchGateway_ID"     <<"SearchHttpport_ID"     <<"SearchMediaPort_ID";
 		return 0;
 	}
     else
@@ -240,6 +240,7 @@ int DvrSearch::Recv()
 		StrToOther = ParseSearch(strTmp, "CH");
         strListInfo.insert(4,QString(StrToOther.data()));
         
+        m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("JUAN DVR"));
         m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
         m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(strListInfo.at(1)));
         m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
