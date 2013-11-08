@@ -1,0 +1,635 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+.table_title {
+	font-size: 14px;
+	font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+<h1>Bubble</h1>
+<h2>目录</h2>
+<h2>1.概述</h2>
+<p>Bubble协议分为三部分：设备码流信息读取、实时预览的指令数据和远程回放的指令数据。</p>
+<h2>2.读取设备信息</h2>
+<h3>2.1读取设备码流信息</h3>
+<h3>2.2录像检索cgi</h3>
+<h2>3.数据格式</h2>
+<h3>3.1预览数据格式</h3>
+<p>Bubble的预览数据格式由帧头加负载组成，帧头包含了头部校验信息、帧长度、指令字节和时间戳；负载部分为动态长度，根据具体的数据及参数确定。具体的描述参见表1.</p>
+<p class="table_title">表3.1-1 预览指令的数据组成</p>
+<table width="39%" border="1">
+  <tr>
+    <td width="25%" height="30">数据段名称</td>
+    <td width="15%">Head</td>
+    <td width="15%">Length</td>
+    <td width="15%">Cmd</td>
+    <td width="15%">Ticket</td>
+    <td width="15%">Load</td>
+  </tr>
+  <tr>
+    <td height="30">占用长度</td>
+    <td>1 Byte</td>
+    <td>4 Bytes</td>
+    <td>1 Byte</td>
+    <td>4 Bytes</td>
+    <td>n Bytes</td>
+  </tr>
+</table>
+<p>各个字段的数据描述如下表：</p>
+<p class="table_title">表3.1-2 协议字段说明</p>
+<table width="62%" border="1">
+  <tr>
+    <td width="14%">名称</td>
+    <td width="11%">长度(单位为字节)</td>
+    <td width="45%">描述</td>
+    <td width="30%">备注</td>
+  </tr>
+  <tr>
+    <td>Head</td>
+    <td>1</td>
+    <td>数据帧的头部校验信息，固定为0xaa</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>整个数据帧出去Head和Length之后的长度，数据本身采用大端模式</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Cmd</td>
+    <td>1</td>
+    <td>数据帧的指令字节，根据不同的指令，还会有不同的负载内容</td>
+    <td>指令的详细说明请参考表3.1-3</td>
+  </tr>
+  <tr>
+    <td>Ticket</td>
+    <td>4</td>
+    <td>数据帧的时间戳，采用大端模式</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Load</td>
+    <td>n</td>
+    <td>数据帧的负载数据，数据内容和长度根据Cmd字段会有所不同</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-3 预览协议Cmd字段说明</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">数值</td>
+    <td width="18%">名称</td>
+    <td width="18%">发送方向</td>
+    <td width="58%">说明</td>
+  </tr>
+  <tr>
+    <td>0x00</td>
+    <td>Message</td>
+    <td><p>Client To Server<br />
+      Server To Client
+    </p></td>
+    <td>指明该帧数据内Load包含的是消息数据，Load的具体格式参考表3.1-4</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Live Stream</td>
+    <td>Server To Client</td>
+    <td>指明该帧数据内Load包含的是码流数据，Load的具体格式参考表3.1-5</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Heartbeat</td>
+    <td><p>Client To Server<br />
+      Server To Client
+    </p></td>
+    <td>心跳指令，其Load长度为一个字节，内容固定为0x02</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>Live Stream Require</td>
+    <td>Client To Server</td>
+    <td>码流数据请求指令，Load内包含了请求的参数，具体的格式参考表3.1-6</td>
+  </tr>
+  <tr>
+    <td>0x08</td>
+    <td>Connect Refuse</td>
+    <td>Server To Client</td>
+    <td>连接被拒绝，通常在服务器资源不够的情况下会收到这个包，Load中仅包含一个字节，该字节保留。</td>
+  </tr>
+  <tr>
+    <td>0x0a</td>
+    <td>Live Stream Require Extension</td>
+    <td>Client To Server</td>
+    <td>扩展的码流数据请求指令，Load内包含了请求的参数，具体的格式参考表3.1-7</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-4 Message参数说明</p>
+<table width="71%" border="1">
+  <tr>
+    <td width="8%">字段</td>
+    <td width="16%">长度（单位为字节）</td>
+    <td width="76%">说明</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>消息的长度，采用大端模式，大小为Message除去Length字段的长度。</td>
+  </tr>
+  <tr>
+    <td>Message</td>
+    <td>1</td>
+    <td><p>消息类型，其取值如下所示<br />
+      0：用户名密码校验，该消息由客户端发往设备端，用于校验用户名和密码，具体参数参考表3.1-8<br />
+      1：获取通道数，该消息由客户端发往设备端，用于获取设备端的通道个数，该消息没有参数信息<br />
+      2：云台控制
+    ，该消息用于客户端控制设备端的云台，具体参数参考表3.1-8<br />
+    3：用户名密码校验的返回，该消息由设备端发给客户端，其返回了用户名密码校验的结果，具体参数参考表3.1-8<br />
+    4：通道数返回，该消息由设备端发给客户端，其参数内包含了通道数的数据，具体参数参考表3.1-8
+    </p></td>
+  </tr>
+  <tr>
+    <td>Reverse</td>
+    <td>3</td>
+    <td>保留字节</td>
+  </tr>
+  <tr>
+    <td>Parameters</td>
+    <td>n</td>
+    <td>该字段根据不同的消息类型，有不同的长度和数据，具体可参考表3.1-8</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-5 Live Stream参数说明</p>
+<table width="71%" border="1">
+  <tr>
+    <td width="9%">字段</td>
+    <td width="15%">长度（单位为字节）</td>
+    <td width="76%">说明</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>码流数据的长度，不包括Length、Type和Channel字段，采用大端模式</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>1</td>
+    <td><p>当前帧的类型，具体类型如下：<br />
+      0：音频帧<br />
+      1：视频I帧<br />
+    2：视频P帧</p></td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>当前数据帧的通道号，从0开始计算</td>
+  </tr>
+  <tr>
+    <td>Data</td>
+    <td>n</td>
+    <td>码流数据，当前帧为视频时则为H.264裸码流，可以用各种H.264解码器解码；当前帧为音频时则包含了一个音频的描述数据和一个音频流，音频描述数据参考表3.1-9</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-6 Live Stream Require参数说明</p>
+<table width="71%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>操作的通道号，从0开始计算，最小为0，最大为设备的通道数-1</td>
+  </tr>
+  <tr>
+    <td>Operation</td>
+    <td>1</td>
+    <td>操作标志，当该字段为0时，表示关闭对应通道的实时码流；当该字段为1时，表明开启对应通道的实时码流</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-7 Live Stream Require Extention参数说明</p>
+<table width="71%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>4</td>
+    <td>操作的通道号，从0开始计算，最小为0，最大为设备的通道数-1</td>
+  </tr>
+  <tr>
+    <td>Stream</td>
+    <td>4</td>
+    <td>操作的码流编号，需要根据码流的描述来请求，最小为0，最大为设备所支持的码流数-1。码流描述的获取参考第二章内容。</td>
+  </tr>
+  <tr>
+    <td>Operation</td>
+    <td>4</td>
+    <td>操作标志，当该字段为0时，表示关闭对应通道的实时码流；当该字段为1时，表明开启对应通道的实时码流</td>
+  </tr>
+  <tr>
+    <td>Reversed</td>
+    <td>4</td>
+    <td>保留字节</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-8 消息参数说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>消息值</td>
+    <td>名称</td>
+    <td>参数</td>
+    <td>长度(单位为字节)</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0x00</td>
+    <td rowspan="2">用户名密码验证</td>
+    <td>username</td>
+    <td>20</td>
+    <td>待验证的用户名</td>
+  </tr>
+  <tr>
+    <td>password</td>
+    <td>20</td>
+    <td>待验证的用户密码</td>
+  </tr>
+  <tr>
+    <td rowspan="4">0x02</td>
+    <td rowspan="4">云台控制</td>
+    <td>Channel</td>
+    <td>1</td>
+    <td>需要控制云台的通道号</td>
+  </tr>
+  <tr>
+    <td>Action</td>
+    <td>1</td>
+    <td><p>通道指令，具体的指令和意义如下：<br />
+    0:上<br />
+    1:下<br />
+    2:左<br />
+    3:右<br />
+    4:自动<br />
+    5:远焦<br />
+    6:近焦<br />
+    7：变倍小<br />
+    8：变倍大<br />
+    9：光圈开<br />
+    10：光圈关
+    </p></td>
+  </tr>
+  <tr>
+    <td>Start</td>
+    <td>1</td>
+    <td>启动标志，当该数据为1时，云台开始执行动作；当该数据为0时，云台停止执行动作</td>
+  </tr>
+  <tr>
+    <td>Param</td>
+    <td>1</td>
+    <td>该字节为云台运动的速度，取值范围为0-7，0为最慢，7为最快</td>
+  </tr>
+  <tr>
+    <td rowspan="3">0x03</td>
+    <td rowspan="3">用户名密码校验返回</td>
+    <td>Verified</td>
+    <td>1</td>
+    <td>该字节为校验结果，当值为1时表示校验成功，否则表示校验失败</td>
+  </tr>
+  <tr>
+    <td>Reversed</td>
+    <td>3</td>
+    <td>保留字节</td>
+  </tr>
+  <tr>
+    <td>Auth</td>
+    <td>13</td>
+    <td>该用户的权限，当前该数据已经不再使用</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>设备通道数</td>
+    <td>ChannelCount</td>
+    <td>4</td>
+    <td>设备的通道数</td>
+  </tr>
+</table>
+<p class="table_title">表3.1-9 Live Stream音频帧描述数据说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>entries</td>
+    <td>4</td>
+    <td>帧内包含的音频包的个数</td>
+  </tr>
+  <tr>
+    <td>packsize</td>
+    <td>4</td>
+    <td>每个音频包的大小，整个音频裸码流的数据大小即entries*packsize</td>
+  </tr>
+  <tr>
+    <td>pts</td>
+    <td>8</td>
+    <td>64位的时间戳，精确到微秒</td>
+  </tr>
+  <tr>
+    <td>general time</td>
+    <td>4</td>
+    <td>当前音频帧产生的时间，单位为秒</td>
+  </tr>
+  <tr>
+    <td>encode</td>
+    <td>8</td>
+    <td>音频的编码格式，当前值为&quot;g711&quot;</td>
+  </tr>
+  <tr>
+    <td>samplerate</td>
+    <td>4</td>
+    <td>音频的采样率</td>
+  </tr>
+  <tr>
+    <td>samplewidth</td>
+    <td>4</td>
+    <td>音频的采样位宽</td>
+  </tr>
+</table>
+<h3>3.2回放数据格式</h3>
+<p>Bubble的回放数据结构和预览数据结构相同。具体Cmd字段的定义根据不同的发送方向会有不同的意义，具体描述在表3.2-1和3.2-2中。</p>
+<p class="table_title">表3.2-1 客户端发送给设备的回放协议Cmd字段说明</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">数值</td>
+    <td width="18%">名称</td>
+    <td width="18%">发送方向</td>
+    <td width="58%">说明</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Record Require</td>
+    <td>Client To Server</td>
+    <td>向设备请求录像，Load中包含了请求的具体参数，详细描述参考表3.2-3。该指令主要工作在1.2.0.5611B2及之前版本的设备，后续版本建议使用Record Require V2指令。</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Pause</td>
+    <td>Client To Server</td>
+    <td>暂停发送回放数据，该指令无Load数据</td>
+  </tr>
+  <tr>
+    <td>0x03</td>
+    <td>Continue</td>
+    <td>Client To Server</td>
+    <td>恢复发送回放数据，该指令无Load数据</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>Stop</td>
+    <td>Client To Server</td>
+    <td>停止发送回放数据，该指令无Load数据，并且该指令将重置回放任务</td>
+  </tr>
+  <tr>
+    <td>0x05</td>
+    <td>Record Require V2</td>
+    <td>Client To Server</td>
+    <td>想设备请求录像，Load中包含了请求的具体参数，详细描述参考表3.2-4。该指令在1.2.0.5611B2之后的版本才有效，之前的版本使用Record Require指令。</td>
+  </tr>
+  <tr>
+    <td>0x07</td>
+    <td>Heart Beat</td>
+    <td>Client To Server</td>
+    <td>心跳，Load中仅包含一个字节，固定为0x02</td>
+  </tr>
+</table>
+<p class="table_title">表3.2-2 设备端发送给客户端的回放协议Cmd字段说明</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">数值</td>
+    <td width="18%">名称</td>
+    <td width="18%">发送方向</td>
+    <td width="58%">说明</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Record Stream</td>
+    <td>Server To Client</td>
+    <td>由设备端发回的录像数据，具体的参数参考表3.2-5</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Heart Beat</td>
+    <td>Server To Client</td>
+    <td>心跳，Load中仅包含一个字节，固定为0x02</td>
+  </tr>
+</table>
+<p class="table_title">表3.2-3 Record Require字段说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>ReqListCount</td>
+    <td>4</td>
+    <td>指令内包含的请求回放列表的个数</td>
+  </tr>
+  <tr>
+    <td>Channels</td>
+    <td>4</td>
+    <td>32位数，每个位表示一个通道，当位的值为1时，表示请求位所对应的通道的录像，位从低到高排布。当第0位置1时，表示请求通道1的录像，第1位置1时，表示请求通道2的录像，依次类推。如0x03表示请求通道1和通道2的录像。</td>
+  </tr>
+  <tr>
+    <td>Reversed</td>
+    <td>4</td>
+    <td>保留字节</td>
+  </tr>
+  <tr>
+    <td>ReqList</td>
+    <td>ReqListCount*12</td>
+    <td>请求的回放列表，具体参数参考表3.2-6</td>
+  </tr>
+</table>
+<p class="table_title">表3.2-4 Record Require V2字段说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>Channels</td>
+    <td>4</td>
+    <td>32位数，每个位表示一个通道，当位的值为1时，表示请求位所对应的通道的录像，位从低到高排布。当第0位置1时，表示请求通道1的录像，第1位置1时，表示请求通道2的录像，依次类推。如0x03表示请求通道1和通道2的录像。</td>
+  </tr>
+  <tr>
+    <td>Types</td>
+    <td>4</td>
+    <td>32位数，按位来表示所请求的回放的类型。其中第0位表示定时录像，第1位表示移动录像，第2位表示报警录像，第3位表示手动录像。</td>
+  </tr>
+  <tr>
+    <td>Start</td>
+    <td>4</td>
+    <td>请求的录像的开始时间，采用的GMT时间</td>
+  </tr>
+  <tr>
+    <td>End</td>
+    <td>4</td>
+    <td>请求的录像的结束时间，采用的GMT时间</td>
+  </tr>
+</table>
+<p class="table_title">表3.2-5 Record Stream字段说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>码流数据的长度，不包括Length、Type和Channel字段，采用大端模式</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>1</td>
+    <td><p>当前帧的类型，具体类型如下：<br />
+      0：音频帧<br />
+      1：视频I帧<br />
+      2：视频P帧</p></td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>当前数据帧的通道号，从0开始计算</td>
+  </tr>
+  <tr>
+    <td>magic</td>
+    <td>4</td>
+    <td>码流校验头部</td>
+  </tr>
+  <tr>
+    <td>session_rnd</td>
+    <td>4</td>
+    <td>段随机数</td>
+  </tr>
+  <tr>
+    <td>frame_width</td>
+    <td>4</td>
+    <td>视频帧的宽，如果是音频帧则忽略该参数</td>
+  </tr>
+  <tr>
+    <td>frame_height</td>
+    <td>4</td>
+    <td>视频帧的高，如果是音频帧则忽略该参数</td>
+  </tr>
+  <tr>
+    <td>frame_rate</td>
+    <td>4</td>
+    <td>视频帧的帧率，如果是音频帧则忽略该参数</td>
+  </tr>
+  <tr>
+    <td>audio_sample_rate</td>
+    <td>4</td>
+    <td>音频帧的采样率，如果是视频帧则忽略该参数</td>
+  </tr>
+  <tr>
+    <td>audio_format</td>
+    <td>8</td>
+    <td>音频帧的编码格式，采用字符串表示，如&quot;g711&quot;等</td>
+  </tr>
+  <tr>
+    <td>audio_data_width</td>
+    <td>4</td>
+    <td>音频帧的采样位宽，如果是视频帧则忽略该参数</td>
+  </tr>
+  <tr>
+    <td>frame_type</td>
+    <td>4</td>
+    <td>帧类型，0为音频，1为视频I帧，2为视频P帧</td>
+  </tr>
+  <tr>
+    <td>session_id</td>
+    <td>4</td>
+    <td>段Id</td>
+  </tr>
+  <tr>
+    <td>channel</td>
+    <td>4</td>
+    <td>通道号，从0开始计算</td>
+  </tr>
+  <tr>
+    <td>rec_type</td>
+    <td>4</td>
+    <td>当前录像类型，按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第三位表示手动录像</td>
+  </tr>
+  <tr>
+    <td>frame_index</td>
+    <td>8</td>
+    <td>帧在段中的索引</td>
+  </tr>
+  <tr>
+    <td>nSize</td>
+    <td>4</td>
+    <td>帧大小，不包括帧头</td>
+  </tr>
+  <tr>
+    <td>u64TSP</td>
+    <td>8</td>
+    <td>64位时间戳，精确到微秒</td>
+  </tr>
+  <tr>
+    <td>nGenTime</td>
+    <td>4</td>
+    <td>帧的产生事件，单位为秒，为GMT时间</td>
+  </tr>
+  <tr>
+    <td>Reversed</td>
+    <td>x</td>
+    <td>保留字节，该字段大小保证从magic字段开始到这个字段结束，有128个字节</td>
+  </tr>
+  <tr>
+    <td>Data</td>
+    <td>n</td>
+    <td>码流数据，如果是视频则为裸码流数据，如果是音频帧则需要向后偏移4个字节</td>
+  </tr>
+</table>
+<p>ReqList各个字段内的值都是通过录像查询cgi返回的值，具体参见第二章节《读取设备信息》</p>
+<p class="table_title">表3.2-6 ReqList字段说明</p>
+<table width="72%" border="1">
+  <tr>
+    <td>字段</td>
+    <td>长度（单位为字节）</td>
+    <td>说明</td>
+  </tr>
+  <tr>
+    <td>Disk</td>
+    <td>4</td>
+    <td>录像所在的磁盘编号</td>
+  </tr>
+  <tr>
+    <td>StartNum</td>
+    <td>4</td>
+    <td>录像起始的文件编号</td>
+  </tr>
+  <tr>
+    <td>EndNum</td>
+    <td>4</td>
+    <td>录像结束的文件编号</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
