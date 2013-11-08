@@ -11,17 +11,10 @@ m_bThreadRunning(false),
 m_eventCB(NULL),
 m_pEventCBParam(NULL)
 {
-    m_pUdpSocket = new QUdpSocket(this);
-    m_pUdpSocket->bind(UDP_PORT, QUdpSocket::ShareAddress);
 }
 
 DvrSearch::~DvrSearch()
 { 
-     if (m_pUdpSocket != NULL )
-     {
-         delete m_pUdpSocket;
-         m_pUdpSocket = NULL;
-     }
      while(this->isRunning())
      {
          this->exit();
@@ -83,7 +76,8 @@ int DvrSearch::Start()
          return -1;
      }  
     m_nStopped      = 0;
-
+    m_pUdpSocket = new QUdpSocket;
+    m_pUdpSocket->bind(UDP_PORT, QUdpSocket::ShareAddress);
     start();
    
     return 0;
@@ -91,24 +85,43 @@ int DvrSearch::Start()
 
 int DvrSearch::Stop()
 {
-     if (1 == m_nStopped || -1 == m_nStopped)
-     {
-         return -1;
-     }
+    if (1 == m_nStopped || -1 == m_nStopped)
+    {
+        return -1;
+    }
     m_nStopped   = 1;
-
+    
     while (m_bThreadRunning)
     {
         wait();
     }
+    m_pUdpSocket->close();
+    m_pUdpSocket->deleteLater();
+    m_pUdpSocket = NULL;
 	return 0;
 }
 
 int DvrSearch::Flush()
 {
-	m_bFlush    = true;
-    m_nStopped  = 2;
-	return 0;
+    int nRet = 0;
+    if (2 == m_nStopped || -1 == m_nStopped)
+    {
+        nRet = -1;
+    }
+    else if (0 == m_nStopped)
+    {
+        m_bFlush    = true;
+        m_nStopped  = 2;
+        nRet = 0;
+    }
+    else if (1 == m_nStopped)
+    {
+        m_bFlush    = true;
+        m_nStopped  = 2;
+        Start();
+        nRet = 1;
+    }
+	return nRet;
 }
 
 

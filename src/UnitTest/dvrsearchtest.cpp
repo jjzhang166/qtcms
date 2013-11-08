@@ -106,7 +106,7 @@ void DvrSearchTest::DvrSearchCase2()
 
     dvrsearch->Flush();
     nRet1 =  dvrsearch->Start();
-    QVERIFY2(0 == nRet1,"Start() already called");
+    QVERIFY2(-1 == nRet1,"Start() already called");
     tim.start();
     while(tim.elapsed()< 20*1000);
 
