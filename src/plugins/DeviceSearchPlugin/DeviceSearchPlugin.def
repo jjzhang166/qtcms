@@ -1,0 +1,3 @@
+LIBRARY "DeviceSearchPlugin.dll"
+EXPORTS
+	CreateInstance @1
