@@ -156,6 +156,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchHttpport_ID", context);
 
 	itemmap.insert("SearchMediaPort_ID", "");
+	itemmap.insert("SearchVendor_ID", "JUAN IPC");
 }
 
 
@@ -212,7 +213,7 @@ int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 {
 	if ("SearchDeviceSuccess" == eventName)
 	{
-		eventParams<<"SearchIP_ID"<<"SearchDeviceId_ID"<<"SearchSeeId_ID"<<"SearchDeviceName_ID"<<"SearchDeviceModelId_ID"<<"SearchChannelCount_ID"<<"SearchMask_ID"<<"SearchGateway_ID"<<"SearchMac_ID"<<"SearchHttpport_ID"<<"SearchMediaPort_ID";
+		eventParams<<"SearchVendor_ID"<<"SearchIP_ID"<<"SearchDeviceId_ID"<<"SearchSeeId_ID"<<"SearchDeviceName_ID"<<"SearchDeviceModelId_ID"<<"SearchChannelCount_ID"<<"SearchMask_ID"<<"SearchGateway_ID"<<"SearchMac_ID"<<"SearchHttpport_ID"<<"SearchMediaPort_ID";
 		return IEventRegister::OK;
 	}
 	else
