@@ -3,8 +3,7 @@
 #include <QtNetwork/QHostAddress>
 #include <QDateTime>
 #include <QDebug>
-
-
+#include <QtNetwork>
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
@@ -27,11 +26,34 @@ HiChipSearch::~HiChipSearch()
 	}
 }
 
+QString HiChipSearch::GetHostAddress()
+{
+	QString address;
+	QList<QHostAddress> List = QNetworkInterface::allAddresses();
+	QList<QHostAddress>::iterator it;
+	for (it = List.begin(); it != List.end(); it++)
+	{
+		if (it->protocol() == QAbstractSocket::IPv4Protocol)
+		{
+			address = it->toString();
+			break;
+		}
+	}
+	return address;
+}
+
 int HiChipSearch::Start()
 {
 	if (!QThread::isRunning())
 	{
- 		bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
+		QString address = GetHostAddress();
+		if (address.isEmpty())
+		{
+			return -1;
+		}
+
+// 		bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
+		bool Ret = Socket->bind(QHostAddress(address),MCASTPORT, QUdpSocket::ShareAddress);
  		Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
 
 		if (!Ret)
@@ -75,10 +97,6 @@ void HiChipSearch::run()
 		Receive();
 		msleep(50);
 	}
-
-	Socket->close();
-	delete Socket;
-	Socket = NULL;
 }
 
 void HiChipSearch::Receive()
@@ -181,11 +199,13 @@ int HiChipSearch::Stop()
 	}
 	while(m_bReceiving)
 	{
-		msleep(500);
+		//wait for receive info
 	}
-
-	terminate();
 	m_bEnd = true;
+
+	Socket->close();
+
+	wait();
 
 	return 0;
 }

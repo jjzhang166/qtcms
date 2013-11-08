@@ -47,6 +47,7 @@ private:
 	void Receive();
 	void getItem(QByteArray, QByteArray, QString&);
 	void parseSearchAck(QByteArray, QVariantMap&);
+	QString GetHostAddress();
 private:
 	int									m_nRef;
 	QMutex								m_csRef;
