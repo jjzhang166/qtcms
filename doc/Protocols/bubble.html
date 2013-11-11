@@ -12,15 +12,23 @@
 </head>
 
 <body>
+<p><a href="../Index.html">返回</a></p>
 <h1>Bubble</h1>
 <h2>目录</h2>
-<h2>1.概述</h2>
+<p><a href="#char_1">1.概述</a><br />
+  <a href="#char_2">2.读取设备信息</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1">2.1.读取设备码流信息</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_2">2.2.录像检索cgi</a><br />
+<a href="#char_3">3.数据格式 </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_1">3.1.预览数据格式</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_2">3.2.回放数据格式</a> </p>
+<h2 id="char_1">1.概述</h2>
 <p>Bubble协议分为三部分：设备码流信息读取、实时预览的指令数据和远程回放的指令数据。</p>
-<h2>2.读取设备信息</h2>
-<h3>2.1读取设备码流信息</h3>
-<h3>2.2录像检索cgi</h3>
-<h2>3.数据格式</h2>
-<h3>3.1预览数据格式</h3>
+<h2 id="char_2">2.读取设备信息</h2>
+<h3 id="char_2_1">2.1读取设备码流信息</h3>
+<h3 id="char_2_2">2.2录像检索cgi</h3>
+<h2 id="char_3">3.数据格式</h2>
+<h3 id="char_3_1">3.1预览数据格式</h3>
 <p>Bubble的预览数据格式由帧头加负载组成，帧头包含了头部校验信息、帧长度、指令字节和时间戳；负载部分为动态长度，根据具体的数据及参数确定。具体的描述参见表1.</p>
 <p class="table_title">表3.1-1 预览指令的数据组成</p>
 <table width="39%" border="1">
@@ -365,7 +373,7 @@
     <td>音频的采样位宽</td>
   </tr>
 </table>
-<h3>3.2回放数据格式</h3>
+<h3 id="char_3_2">3.2回放数据格式</h3>
 <p>Bubble的回放数据结构和预览数据结构相同。具体Cmd字段的定义根据不同的发送方向会有不同的意义，具体描述在表3.2-1和3.2-2中。</p>
 <p class="table_title">表3.2-1 客户端发送给设备的回放协议Cmd字段说明</p>
 <table width="64%" border="1">
