@@ -8,6 +8,9 @@
 	font-size: 14px;
 	font-weight: bold;
 }
+.code {
+	color: #C00;
+}
 </style>
 </head>
 
@@ -18,15 +21,45 @@
 <p><a href="#char_1">1.概述</a><br />
   <a href="#char_2">2.读取设备信息</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1">2.1.读取设备码流信息</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_2">2.2.录像检索cgi</a><br />
-<a href="#char_3">3.数据格式 </a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_1">3.1.预览数据格式</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_2">3.2.回放数据格式</a> </p>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_1">2.1.1bubble节点</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_2">2.1.2vinX节点</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_3">2.1.3streamX节点 </a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_2">2.2.录像检索cgi</a><br />
+  <a href="#char_3">3.数据格式 </a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_1">3.1.预览数据格式</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_2">3.2.回放数据格式</a> <br />
+<a href="#char_4">4.C语言代码示例</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_4_1">4.1数据结构表达</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_4_2">4.2数组组包
+</a></p>
+<p>&nbsp;</p>
 <h2 id="char_1">1.概述</h2>
 <p>Bubble协议分为三部分：设备码流信息读取、实时预览的指令数据和远程回放的指令数据。</p>
+<p>&nbsp;</p>
 <h2 id="char_2">2.读取设备信息</h2>
 <h3 id="char_2_1">2.1读取设备码流信息</h3>
+<p>bubble协议即可以直接通过TCP来发送也可以通过Http协议来发送，当通过Http协议来交互时，可以获取当前设备所支持的码流信息。bubble协议通过Http协议来交互时，需要在发送bubble指令前加上以下的Http头：</p>
+<p class="code"><span class="code">GET /bubble/live?ch=0&amp;stream=0 HTTP/1.1</span></p>
+<p>需要注意的是，Http头是以两个回车换行作为结束符。</p>
+<p>设备端在收到以上的Http头信息之后，会根据当前状态返回不同的数据。当设备端不支持Bubble Over Http时，将返回一个Http 404错误，这类设备通常只有一个主码流，没有多码流可供选择。当设备支持Bubble Over Http时，设备将返回Http 200 OK的消息，具体的消息如下：</p>
+<p class="code">HTTP/1.1 200 OK<br />
+  Server:HiIpcam<br />
+  Content-Type:video/bubble<br />
+  Connection:keep-alive</p>
+<p class="code">&lt;bubble version=&quot;1.0&quot; vin=&quot;1&quot;&gt;&lt;vin0 stream=&quot;3&quot;&gt;&lt;stream0 name=&quot;720p.264&quot; size=&quot;1280x720&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;stream1 name=&quot;360p.264&quot; size=&quot;640x360&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;stream2 name=&quot;qvga.264&quot; size=&quot;320x240&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;vin0&gt;<br />
+  &lt;/bubble&gt;#######################################################################################</p>
+<p>其中Server字段包含了当前设备的信息，Content-Type固定为video/bubble，实体内容部分采用xml来表示，实体内容总共为1024字节，不足的部分使用“#”补齐。以下对xml的内容做详细说明：</p>
+<h4 id="char_2_1_1">2.1.1bubble节点</h4>
+<p>节点中包含两个属性：version用于描述当前bubble协议的版本号，vin表示当前设备中视频输入通道的个数。节点下包含子节点vinX，X表示视频输入通道号，取值从0到总通道数减1。当设备中有多个视频输入通道时，就会对应多个vinX。</p>
+<h4 id="char_2_1_2">2.1.2vinX节点</h4>
+<p>节点中仅包含一个属性，stream用于表示当前通道支持的码流个数。节点下包含子节点streamX，X表示该通道所支持的码流的编号，取值从0到总码流数减1。当通道支持多个码流时，会对应多个steamX节点。</p>
+<h4 id="char_2_1_3">2.1.3streamX节点</h4>
+<p>节点包含以下属性：name用于描述当前码流的名称；size则表述当前码流的分辨率。</p>
 <h3 id="char_2_2">2.2录像检索cgi</h3>
+<p>&nbsp;</p>
 <h2 id="char_3">3.数据格式</h2>
 <h3 id="char_3_1">3.1预览数据格式</h3>
 <p>Bubble的预览数据格式由帧头加负载组成，帧头包含了头部校验信息、帧长度、指令字节和时间戳；负载部分为动态长度，根据具体的数据及参数确定。具体的描述参见表1.</p>
@@ -637,7 +670,90 @@
     <td>录像结束的文件编号</td>
   </tr>
 </table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+<h2 id="char_4">4.C语言代码示例</h2>
+<h3 id="char_4_1">4.1数据结构表达</h3>
+<p class="code">struct _tagBubble{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char         cHead;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char         cCmd;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiTicket;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pLoad[1];
+<br />
+};</p>
+<p class="code">struct _tagMessage{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cMessage;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cReverse[3];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pParameters[1];
+<br />
+  };
+</p>
+<p class="code">struct _tagLiveStream{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cType;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pData[1];
+<br />
+  };</p>
+<p class="code">struct _tagLiveStreamRequire{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cOperation;
+  <br />
+  };
+</p>
+<p class="code">struct_tagLiveStreamRequireEx{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiStream;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiOperation;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiReversed;
+  <br />
+  };
+</p>
+<p class="code">struct _tagLiveStreamAudio{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiEntries;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int 
+  uiPacksize;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned long long ui64Pts;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiGtime;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char sEncode[8];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiSampleRate;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiSampleWidth;
+<br />
+};</p>
+<h3 id="char_4_2">4.2数据组包</h3>
+<p>以下代码示范了，如何组件并发送一个码流请求包。</p>
+<p><span class="code">char Data[1024];<br />
+struct _tagBubble * bubble;<br />
+struct _tagMessage *msg;<br />
+struct _tagLiveStreamRequire *msgParam;<br />
+<br />
+memset(Data,0,sizeof(Data));<br />
+<br />
+bubble = (struct _tagBubble *)Data;<br />
+bubble-&gt;cHead = 0xaa;<br />
+bubble-&gt;uiLength=;
+<br />
+bubble-&gt;cCmd = MACRO_BUBBLE_MSG;<br />
+bubble-&gt;uiTicket = GetTicket();
+<br />
+<br />
+msg = 
+(struct _tagMessage *)bubble-&gt;pLoad;<br />
+msg-&gt;uiLength=sizeof(struct _tagMessage) - STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength) - STRUCT_MEMBER_SIZE(struct _tagMessage,pParameters) + sizeof(struct _tagLiveStreamRequire);
+<br />
+msg-&gt;cMessage=MACRO_MSG_LSR;<br />
+<br />
+msgParam = (struct _tagLiveStreamRequire *)msg-&gt;pParameters;<br />
+msgParam-&gt;cChannel=nChannel;<br />
+msgParam-&gt;cOperation=cOperation;
+<br />
+<br />
+bubble-&gt;uiLength=sizeof(struct _tagBubble) - STRUCT_MEMBER_SIZE(struct _tagBubble,cHead) - STRUCT_MEMBER_SIZE(struct _tagBubble,uiLength) - STRUCT_MEMER_SIZE(struct _tagBubble,pLoad) + msg-&gt;uiLength + STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength);<br />
+<br />
+nPackSize = bubble-&gt;uiLength + STRUCT_MEMBER_SIZE(struct _tagBubble,cHead) + STRUCT_MEMBER_SIZE(struct _tagBubble,uiLength);<br />
+send(s,Data,nPackSize,0);
+</span><br />
+  <br />
+</p>
 </body>
 </html>
