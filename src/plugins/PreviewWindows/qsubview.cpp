@@ -3,11 +3,13 @@
 
 #include <QtCore>
 #include <QSettings>
+#include <QMouseEvent>
 
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent)
 {
-
+	setMouseTracking(true);
+	this->lower();
 }
 
 QSubView::~QSubView()
@@ -47,7 +49,21 @@ void QSubView::paintEvent( QPaintEvent * e)
 
 	QPen pen = QPen(LineColor, 2);
  	p.setPen(pen);
- 	p.drawRect(rcClient);
+
+	p.drawRect(rcClient);
+	if (this->hasFocus())
+	{
+		int x = 0;
+		int y = 0;
+		int width = 0;
+		int height = 0;
+		rcClient.getCoords(&x, &y, &width, &height);
+		p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+	}
+	else
+	{
+	 	p.drawRect(rcClient);
+	}
 
 	QFont font(FontFamily, FontSize, QFont::Bold);
 	
@@ -64,4 +80,21 @@ void QSubView::paintEvent( QPaintEvent * e)
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
 	emit mouseDoubleClick(this,ev);
+}
+
+void QSubView::mouseMoveEvent(QMouseEvent *ev)
+{
+	QRect rect = contentsRect();
+	int x = ev->pos().x();
+	int y = ev->pos().y();
+
+	if (rect.contains(x, y))
+	{
+		setFocus(Qt::MouseFocusReason);
+	}
+}
+
+void QSubView::mousePressEvent(QMouseEvent *ev)
+{
+	setFocus(Qt::MouseFocusReason);
 }

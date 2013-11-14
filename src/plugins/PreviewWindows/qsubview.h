@@ -14,6 +14,10 @@ public:
 	virtual void paintEvent( QPaintEvent * );
 
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
+
+	virtual void mouseMoveEvent(QMouseEvent *);
+
+	virtual void mousePressEvent(QMouseEvent *);
 private:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
