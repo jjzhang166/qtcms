@@ -801,6 +801,9 @@ int QCommonPlugin::RemoveAreaById(int nId)
 
 bool QCommonPlugin::IsAreaIdExist(int nid)
 {
+	if(0==nid){
+		return true;
+	}
 	QSqlQuery _query(m_db);
 	QString command=QString("select id from area where id=%1").arg(nid);
 	_query.exec(command);
@@ -1046,12 +1049,17 @@ int QCommonPlugin::AddDevice(int area_id,
 	_query.bindValue(":connect_method",connectMethod);
 	_query.bindValue(":vendor",sVendor);
 	_query.exec();
-
 	dev_id = this->IsDevExistsInArea(area_id,sDeviceName);
-
-	command = QString("insert into chl(dev_id) values('%1')").arg(dev_id);
-	_query.exec(command);
-
+	int nChl=0;
+	for (;nChl<chlCount;nChl++)
+	{
+		_query.prepare("insert into chl(dev_id,channel_number,name,stream_id) values(:dev_id,:channel_number,:name,:stream_id)");
+		_query.bindValue(":dev_id",dev_id);
+		_query.bindValue(":channel_number",nChl);
+		_query.bindValue(":name","chl");
+		_query.bindValue(":stream_id",0);
+		_query.exec();
+	}
 	return dev_id;
 }
 
@@ -1067,7 +1075,8 @@ int QCommonPlugin::RemoveDevice(int dev_id)
 	QString command = QString("delete from dev where id='%1'").arg(dev_id);
 
 	_query.exec(command);
-
+	QString command_chl=QString("delete from chl where id='%1'").arg(dev_id);
+	_query.exec(command_chl);
 	return IDeviceManager::OK;
 }
 
