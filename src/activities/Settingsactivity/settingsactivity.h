@@ -7,6 +7,8 @@
 #include <IUserManager.h>
 #include <IDeviceManager.h>
 #include <IAreaManager.h>
+#include <IGroupManager.h>
+#include <IChannelManager.h>
 #include <QMutex>
 #include <QObject>
 #include <QPoint>
@@ -33,6 +35,8 @@ public slots:
 	void OnMaxClick();
 	void OnMinClick();
 	void OnCloseClick();
+
+	/*user module*/
 	void OnAddUserOk();
 	void OnModifyUserOk();
 	void OnDeleteUserOk();
@@ -42,7 +46,25 @@ public slots:
 	void OnRemoveDevice();
 	void OnModifyDevice();
 
+	/*group module*/
+	void OnAddGroup();
+	void OnRemoveGroup();
+	void OnModifyGroup();
 
+	/*area module*/
+	void OnAddArea();
+	void OnRemoveArea();
+	void OnModifyArea();
+
+	/*channel module*/
+	void OnAddChannel();
+	void OnRemoveChannel();
+	void OnModifyChannel();
+
+	/*channel in group module*/
+	void OnAddChannelInGroup();
+	void OnRemoveChannelFromGroup();
+	void OnModifyGroupChannelName();
 private:
 	QWidget * m_MainView;
 	int m_nRef;

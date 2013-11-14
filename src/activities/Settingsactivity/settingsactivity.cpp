@@ -1,6 +1,7 @@
 #include "settingsactivity.h"
 #include <guid.h>
 #include <QDebug>
+#include <QString>
 
 settingsActivity::settingsActivity():
 	m_nRef(0),
@@ -67,9 +68,26 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
 	QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
 	QWFW_MSGMAP("delete_ok","click","OnDeleteUserOk()");
+
 	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
 	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
 	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
+
+	QWFW_MSGMAP("AddGroup_ok","click","OnAddGroup()");
+	QWFW_MSGMAP("RemoveGroup_ok","click","OnRemoveGroup()");
+	QWFW_MSGMAP("ModifyGroup_ok","click","OnModifyGroup()");
+
+	QWFW_MSGMAP("AddArea_ok","click","OnAddArea()");
+	QWFW_MSGMAP("RemoveArea_ok","click","OnRemoveArea()");
+	QWFW_MSGMAP("ModifyArea_ok","click","OnModifyArea()");
+
+	QWFW_MSGMAP("AddChannel_ok","click","OnAddChannel()");
+	QWFW_MSGMAP("RemoveChannel_ok","click","OnRemoveChannel()");
+	QWFW_MSGMAP("ModifyChannel_ok","click","OnModifyChannel()");
+
+	QWFW_MSGMAP("AddChannelInGroup_ok","click","OnAddChannelInGroup()");
+	QWFW_MSGMAP("RemoveChannelFromGroup_ok","click","OnRemoveChannelFromGroup()");
+	QWFW_MSGMAP("ModifyGroupChannelName_ok","click","OnModifyGroupChannelName()");
 	QWFW_MSGMAP_END;
 }
 
@@ -275,6 +293,7 @@ void settingsActivity::OnDeleteUserOk()
 /*device module*/
 void settingsActivity::OnAddDevice()
 {
+	qDebug("========OnAddDevice========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -284,7 +303,8 @@ void settingsActivity::OnAddDevice()
 		QString Content="system fail";
 		EP_ADD_PARAM(arg,"fail",Content);
 		EventProcCall("AddDeviceFail",arg);
-		Idevice->Release();
+		if(NULL!=Idevice){Idevice->Release();}
+		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
 	QVariant Area_Id=QueryValue("Device_area_id");
@@ -331,7 +351,7 @@ void settingsActivity::OnAddDevice()
 			return;
 		}
 		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-		if(0!=nRet_int){
+		if(-1==nRet_int){
 			Content.clear();
 			arg.clear();
 			Content.append("AddDeviceFail");
@@ -369,6 +389,7 @@ void settingsActivity::OnAddDevice()
 	arg.clear();
 	Content.append("ConnectMethod fail");
 	EP_ADD_PARAM(arg,"fail",Content);
+	EventProcCall("AddDeviceFail",arg);
 	Idevice->Release();
 	return;
 end1:
@@ -376,6 +397,7 @@ end1:
 	arg.clear();
 	Content.append("add device success");
 	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("AddGroupSuccess",arg);
 	Idevice->Release();
 	return;
 }
@@ -387,10 +409,9 @@ void settingsActivity::OnRemoveDevice()
 	DEF_EVENT_PARAM(arg);
 	QString Content;
 	if(NULL==Idevice){
-		Content.append("system");
+		Content.append("system fail");
 		EP_ADD_PARAM(arg,"fail",Content);
 		EventProcCall("RemoveDeviceFail",arg);
-		Idevice->Release();
 		return;
 	}
 
@@ -538,5 +559,382 @@ void settingsActivity::OnModifyDevice()
 	EP_ADD_PARAM(arg,"success",Content);
 	EventProcCall("ModifyDeviceSuccess",arg);
 	Idevice->Release();
+	return;
+}
+
+/*Group Module*/
+void settingsActivity::OnAddGroup()
+{
+	IGroupManager *Igroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==Igroup){
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddGroupFail",arg);
+		return;
+	}
+	QVariant sName_Id=QueryValue("Group_Name_ID");
+
+	if(sName_Id.isNull()){
+		Content.clear();
+		arg.clear();
+		Content.append("the params are not complete");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddGroupFail",arg);
+		Igroup->Release();
+		return;
+	}
+
+	int nRet_int=Igroup->AddGroup(sName_Id.toString());
+	if(-1==nRet_int){
+		Content.clear();
+		arg.clear();
+		Content.append("AddDeviceFail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddDeviceFail",arg);
+		Igroup->Release();
+		return;
+	}
+	Content.clear();
+	arg.clear();
+	Content.append("add group success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("AddGroupSuccess",arg);
+	Igroup->Release();
+	return;
+}
+
+void settingsActivity::OnModifyGroup()
+{
+	return;
+}
+
+void settingsActivity::OnRemoveGroup()
+{	
+	IGroupManager *Igroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content="";
+	if(NULL==Igroup){
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveGroupFail",arg);
+		return;
+	}
+
+	QVariant Group_Id=QueryValue("Group_id_ID");
+	bool nRet_bool=false;
+	nRet_bool=Igroup->IsGroupExists(Group_Id.toInt());
+	if(false==nRet_bool){
+		arg.clear();
+		Content.clear();
+		Content.append("Group_Id is not exist");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveGroupFail",arg);
+		Igroup->Release();
+		return;
+	}
+
+	int nRet_int = -1;
+	nRet_int = Igroup->RemoveGroup(Group_Id.toInt());
+	if(0!=nRet_int){
+		arg.clear();
+		Content.clear();
+		Content.append("remove fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveGroupFail",arg);
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("Remove Success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("RemoveGroupSuccess",arg);
+	Igroup->Release();
+	return;
+}
+
+/*Area Module*/
+void settingsActivity::OnAddArea()
+{
+	IAreaManager *Iarea=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==Iarea){
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddAreaFail",arg);
+		return;
+	}
+
+	QVariant nPid_Id=QueryValue("Pid_ID");
+	QVariant sName_Id=QueryValue("Area_Name_ID");
+	int nRet_int=Iarea->AddArea(nPid_Id.toInt(),sName_Id.toString());
+	if(-1==nRet_int){
+		Content.clear();
+		arg.clear();
+		Content.append("AddArea Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddAreaFail",arg);
+		Iarea->Release();
+		return;
+	}
+	Content.clear();
+	arg.clear();
+	Content.append("AddArea success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("AddAreaSuccess",arg);
+	Iarea->Release();
+	return;
+}
+
+void settingsActivity::OnRemoveArea()
+{
+	IAreaManager *Iarea=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void **)&Iarea);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==Iarea){
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveAreaFail",arg);
+		return;
+	}
+	QVariant Area_id_ID=QueryValue("Area_id_ID");
+	QVariant Area_Name_ID=QueryValue("Area_Name_ID");
+	int nRet1=Iarea->RemoveAreaById(Area_id_ID.toInt());
+	int nRet2=Iarea->RemoveAreaByName(Area_Name_ID.toString());
+	if(0==nRet1||0==nRet2){
+		arg.clear();
+		Content.clear();
+		Content.append("remove success");
+		EP_ADD_PARAM(arg,"success",Content);
+		EventProcCall("RemoveAreaSuccess",arg);
+		Iarea->Release();
+		return;
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("remove fail");
+	EP_ADD_PARAM(arg,"fail",Content);
+	EventProcCall("RemoveAreaFail",arg);
+	Iarea->Release();
+	return;
+}
+
+void settingsActivity::OnModifyArea()
+{
+	IAreaManager *IArea=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void **)&IArea);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==IArea){
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyAreaFail",arg);
+		return;
+	}
+
+	QVariant Area_id_ID=QueryValue("Area_id_ID");
+	QVariant Area_Name_ID=QueryValue("Area_Name_ID");
+
+	int nRet=-1;
+	nRet=IArea->SetAreaName(Area_id_ID.toInt(),Area_Name_ID.toString());
+	if(0==nRet){
+		arg.clear();
+		Content.clear();
+		Content.append("modify area success");
+		EP_ADD_PARAM(arg,"success",Content);
+		EventProcCall("ModifyAreaSuccess",arg);
+		IArea->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("modify area fail");
+	EP_ADD_PARAM(arg,"fail",Content);
+	EventProcCall("ModifyAreaFail",arg);
+	IArea->Release();
+	return;
+}
+
+/*Channel Module*/
+void settingsActivity::OnAddChannel()
+{
+	//useless
+	return;
+}
+
+void settingsActivity::OnModifyChannel()
+{
+	IChannelManager *IChannel=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&IChannel);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==IChannel){
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyChannelFail",arg);
+		return;
+	}
+
+	QVariant Channel_id_ID=QueryValue("Channel_id_ID");
+	QVariant Stream_id_ID=QueryValue("Stream_id_ID");
+	QVariant Channel_Name_ID=QueryValue("Channel_Name_ID");
+
+	int nRet1=-1;
+	int nRet2=-1;
+
+	nRet1=IChannel->ModifyChannelName(Channel_id_ID.toInt(),Channel_Name_ID.toString());
+	nRet2=IChannel->ModifyChannelStream(Channel_id_ID.toInt(),Stream_id_ID.toInt());
+
+	if(0!=nRet1&&0!=nRet2){
+		arg.clear();
+		Content.clear();
+		Content.append("modify channel fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyChannelFail",arg);
+		IChannel->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("modify channel success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("ModifyChannelSuccess",arg);
+	IChannel->Release();
+	return;
+}
+
+void settingsActivity::OnRemoveChannel()
+{
+	//useless
+	return;
+}
+
+void settingsActivity::OnAddChannelInGroup()
+{
+	IGroupManager *IGroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&IGroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==IGroup){
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddChannelInGroupFail",arg);
+		return;
+	}
+
+	QVariant Group_id_ID=QueryValue("Group_id_ID");
+	QVariant Channel_id_ID=QueryValue("Channel_id_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("R_Chl_Group_Name_ID");
+
+	int nRet=-1;
+	nRet=IGroup->AddChannelInGroup(Group_id_ID.toInt(),Channel_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
+	if(-1==nRet){
+		arg.clear();
+		Content.clear();
+		Content.append("AddChannelInGroup fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("AddChannelInGroupFail",arg);
+		IGroup->Release();
+		return;
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("AddChannelInGroup success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("AddChannelInGroupSuccess",arg);
+	IGroup->Release();
+	return;
+}
+
+void settingsActivity::OnRemoveChannelFromGroup()
+{
+	IGroupManager * IGroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void **)&IGroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==IGroup){
+		arg.clear();
+		Content.clear();
+		Content.append("OnRemoveChannelFromGroup fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveChannelFromFail",arg);
+		return;
+	}
+
+	QVariant R_Chl_Group_id_ID=QueryValue("R_Chl_Group_id_ID");
+	int nRet=-1;
+	nRet=IGroup->RemoveChannelFromGroup(R_Chl_Group_id_ID.toInt());
+	if(-1==nRet){
+		arg.clear();
+		Content.clear();
+		Content.append("RemoveChannelFromGroup fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("RemoveChannelFromFail",arg);
+		IGroup->Release();
+		return;
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("RemoveChannelFromGroup success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("RemoveChannelFromSuccess",arg);
+	IGroup->Release();
+	return;
+}
+
+void settingsActivity::OnModifyGroupChannelName()
+{
+	IGroupManager *IGroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void **)&IGroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if(NULL==IGroup){
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyGroupChannelNameFail",arg);
+		return;
+	}
+
+	QVariant R_Chl_Group_id_ID=QueryValue("R_Chl_Group_id_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("R_Chl_Group_Name_ID");
+
+	int nRet=-1;
+
+	nRet=IGroup->ModifyGroupChannelName(R_Chl_Group_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
+	if(-1==nRet){
+		arg.clear();
+		Content.clear();
+		Content.append("ModifyGroupChannelName fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyGroupChannelNameFail",arg);
+		IGroup->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("ModifyGroupChannelName success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("ModifyGroupChannelName",arg);
+	IGroup->Release();
 	return;
 }
