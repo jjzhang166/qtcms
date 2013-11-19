@@ -24,5 +24,11 @@ interface IDeviceConnection : public IPComBase
 	};
 };
 
+/*
+setDevicePorts:parameter
+	ports:
+	"media":码流数据端口
+*/
+
 
 #endif
