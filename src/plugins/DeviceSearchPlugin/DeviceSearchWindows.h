@@ -24,18 +24,12 @@ public slots:
 	int Stop();
 	int Flush();
 	int setInterval(int nInterval);
-	//IEventRegister * QueryEventRegister();
-	/*int setSearchMode( QString searchModeName );*/
+
 	void addItemMap(QVariantMap item);
-	
 	void sendToHtml(QVariantMap item);
 
 private:
-	//void initUI();
-	//IDeviceSearch* p_deviceSearch;
-	QMap<QString,QVariantMap> itemList;
-	QMap<QString,IDeviceSearch*> deviceList;
-	QStringList paramlist;
+	QList<IDeviceSearch *> m_deviceList;
 signals:
 	void addItemToUI(QVariantMap item);
 };
