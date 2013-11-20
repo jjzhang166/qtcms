@@ -48,6 +48,7 @@ private:
 	void getItem(QByteArray, QByteArray, QString&);
 	void parseSearchAck(QByteArray, QVariantMap&);
 	QString GetHostAddress();
+	void eventProcCall(QString sEvent,QVariantMap param);
 private:
 	int									m_nRef;
 	QMutex								m_csRef;
@@ -57,6 +58,7 @@ private:
 	QUdpSocket							*m_Socket;
 	int									m_nInterval;
 	QMultiMap<QString, ProcInfoItem_t>	m_eventMap;
+	QStringList							m_eventList;
 };
 
 

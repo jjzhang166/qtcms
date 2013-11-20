@@ -13,6 +13,8 @@ m_nInterval(10000)
 	m_bFlush = false;
 
 	m_Socket = new QUdpSocket();
+
+	m_eventList << "SearchDeviceSuccess";
 	
 
 }
@@ -112,13 +114,7 @@ void HiChipSearch::Receive()
 		{
 			QVariantMap item;
 			parseSearchAck(datagrm,item);
-			QString evName = QString("SearchDeviceSuccess");
-
-			IPCSearchCB proc = m_eventMap.value(evName).proc;
-			if ( NULL != proc )
-			{
-				proc(evName,item, m_eventMap.value(evName).puser);
-			}
+			eventProcCall(QString("SearchDeviceSuccess"),item);
 		}
 	}
 
@@ -219,41 +215,37 @@ IEventRegister* HiChipSearch::QueryEventRegister()
 
 QStringList HiChipSearch::eventList()
 {
-	QStringList evname;
-	evname<<"SearchDeviceSuccess";
-	return evname;
+	return m_eventList;
 }
 
 int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 {
+	if (m_eventList.contains(eventName))
+	{
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}
+
 	if ("SearchDeviceSuccess" == eventName)
 	{
 		eventParams<<"SearchVendor_ID"<<"SearchIP_ID"<<"SearchDeviceId_ID"<<"SearchSeeId_ID"<<"SearchDeviceName_ID"<<"SearchDeviceModelId_ID"<<"SearchChannelCount_ID"<<"SearchMask_ID"<<"SearchGateway_ID"<<"SearchMac_ID"<<"SearchHttpport_ID"<<"SearchMediaPort_ID";
-		return IEventRegister::OK;
 	}
-	else
-	{
-		return IEventRegister::E_INVALID_PARAM;
-	}
+
+	return IEventRegister::OK;
+
 }
 
 int HiChipSearch::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
 {
-	QMultiMap<QString, ProcInfoItem_t>::iterator it;
-	for (it = m_eventMap.begin(); it != m_eventMap.end(); it++)
+	if (!m_eventList.contains(eventName))
 	{
-		if (it.key() == eventName)
-		{
-			ProcInfoItem_t procInfo;
-			procInfo.proc = proc;
-			procInfo.puser = pUser;
-			m_eventMap.insert(eventName,procInfo);
-			return IEventRegister::OK;
-		}
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
 	}
 
-	return IEventRegister::E_EVENT_NOT_SUPPORT;
-
+	ProcInfoItem_t procInfo;
+	procInfo.proc = proc;
+	procInfo.puser = pUser;
+	m_eventMap.insert(eventName,procInfo);
+	return IEventRegister::OK;
 }
 
 
@@ -303,3 +295,14 @@ unsigned long __stdcall HiChipSearch::Release()
 	return nRet;
 }
 
+void HiChipSearch::eventProcCall( QString sEvent,QVariantMap param )
+{
+	if (m_eventList.contains(sEvent))
+	{
+		ProcInfoItem_t eventDes = m_eventMap.value(sEvent);
+		if (NULL != eventDes.proc)
+		{
+			eventDes.proc(sEvent,param,eventDes.puser);
+		}
+	}
+}
