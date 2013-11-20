@@ -54,9 +54,9 @@ private:
 	bool								m_bReceiving;
 	bool								m_bFlush;
 	bool								m_bEnd;
-	QUdpSocket							*Socket;
+	QUdpSocket							*m_Socket;
 	int									m_nInterval;
-	QMultiMap<QString, ProcInfoItem_t>	eventMap;
+	QMultiMap<QString, ProcInfoItem_t>	m_eventMap;
 };
 
 

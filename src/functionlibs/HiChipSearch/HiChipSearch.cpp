@@ -12,17 +12,17 @@ m_nInterval(10000)
 	m_bReceiving = false;
 	m_bFlush = false;
 
-	Socket = new QUdpSocket();
+	m_Socket = new QUdpSocket();
 	
 
 }
 
 HiChipSearch::~HiChipSearch()
 {
-	if (Socket)
+	if (m_Socket)
 	{
-		Socket->close();
-		delete Socket;
+		m_Socket->close();
+		delete m_Socket;
 	}
 }
 
@@ -52,9 +52,9 @@ int HiChipSearch::Start()
 			return -1;
 		}
 
-// 		bool Ret = Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
-		bool Ret = Socket->bind(QHostAddress(address),MCASTPORT, QUdpSocket::ShareAddress);
- 		Ret &= Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
+// 		bool Ret = m_Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
+		bool Ret = m_Socket->bind(QHostAddress(address),MCASTPORT, QUdpSocket::ShareAddress);
+ 		Ret &= m_Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
 
 		if (!Ret)
 		{
@@ -84,13 +84,13 @@ void HiChipSearch::run()
 
 	QTime timeStart;
 	timeStart.start();
-	Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
+	m_Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
 
 	while(!m_bEnd)
 	{
 		if (timeStart.elapsed() >= m_nInterval || m_bFlush)
 		{
-			qint64 bytes = Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
+			qint64 bytes = m_Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
 			timeStart.start();
 			m_bFlush = false;
 		}
@@ -104,22 +104,20 @@ void HiChipSearch::Receive()
 	QByteArray datagrm;
 
 	m_bReceiving = true;
-	while(Socket->hasPendingDatagrams())
+	while(m_Socket->hasPendingDatagrams())
 	{
-		datagrm.resize(Socket->pendingDatagramSize());
-		Socket->readDatagram(datagrm.data(), datagrm.size());
+		datagrm.resize(m_Socket->pendingDatagramSize());
+		m_Socket->readDatagram(datagrm.data(), datagrm.size());
 		if (datagrm.contains("HDS/1.0 200 OK") && datagrm.contains("nvmOPxEnYfQRAeLFdsMrpBbnMDbEPiMC"))
 		{
 			QVariantMap item;
 			parseSearchAck(datagrm,item);
 			QString evName = QString("SearchDeviceSuccess");
-			if (eventMap.find(evName) != eventMap.end())
+
+			IPCSearchCB proc = m_eventMap.value(evName).proc;
+			if ( NULL != proc )
 			{
-				IPCSearchCB proc = eventMap.value(evName).proc;
-				if ( NULL != proc )
-				{
-					proc(evName,item, eventMap.value(evName).puser);
-				}
+				proc(evName,item, m_eventMap.value(evName).puser);
 			}
 		}
 	}
@@ -205,7 +203,7 @@ int HiChipSearch::Stop()
 	}
 	m_bEnd = true;
 
-	Socket->close();
+	m_Socket->close();
 
 	wait();
 
@@ -242,14 +240,14 @@ int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 int HiChipSearch::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
 {
 	QMultiMap<QString, ProcInfoItem_t>::iterator it;
-	for (it = eventMap.begin(); it != eventMap.end(); it++)
+	for (it = m_eventMap.begin(); it != m_eventMap.end(); it++)
 	{
 		if (it.key() == eventName)
 		{
 			ProcInfoItem_t procInfo;
 			procInfo.proc = proc;
 			procInfo.puser = pUser;
-			eventMap.insert(eventName,procInfo);
+			m_eventMap.insert(eventName,procInfo);
 			return IEventRegister::OK;
 		}
 	}
