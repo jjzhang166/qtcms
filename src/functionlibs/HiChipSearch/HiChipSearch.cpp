@@ -222,12 +222,7 @@ IEventRegister* HiChipSearch::QueryEventRegister()
 QStringList HiChipSearch::eventList()
 {
 	QStringList evname;
-	QMultiMap<QString, ProcInfoItem_t>::iterator it;
-	for (it = eventMap.begin(); it != eventMap.end(); it++)
-	{
-		evname<<it.key();
-	}
-
+	evname<<"SearchDeviceSuccess";
 	return evname;
 }
 
@@ -246,18 +241,21 @@ int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 
 int HiChipSearch::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
 {
-	if (eventMap.find(eventName) == eventMap.end())
+	QMultiMap<QString, ProcInfoItem_t>::iterator it;
+	for (it = eventMap.begin(); it != eventMap.end(); it++)
 	{
-		ProcInfoItem_t procInfo;
-		procInfo.proc = proc;
-		procInfo.puser = pUser;
-		eventMap.insert(eventName,procInfo);
-		return IEventRegister::OK;
+		if (it.key() == eventName)
+		{
+			ProcInfoItem_t procInfo;
+			procInfo.proc = proc;
+			procInfo.puser = pUser;
+			eventMap.insert(eventName,procInfo);
+			return IEventRegister::OK;
+		}
 	}
-	else
-	{
-		return IEventRegister::E_INVALID_PARAM;
-	}
+
+	return IEventRegister::E_EVENT_NOT_SUPPORT;
+
 }
 
 
