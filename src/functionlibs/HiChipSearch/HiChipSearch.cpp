@@ -220,7 +220,7 @@ QStringList HiChipSearch::eventList()
 
 int HiChipSearch::queryEvent(QString eventName,QStringList& eventParams)
 {
-	if (m_eventList.contains(eventName))
+	if (!m_eventList.contains(eventName))
 	{
 		return IEventRegister::E_EVENT_NOT_SUPPORT;
 	}
