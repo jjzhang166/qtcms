@@ -32,3 +32,5 @@ extern const IID IID_IEventRegister;
 extern const CLSID CLSID_DvrSearch;
 extern const CLSID CLSID_HiChipSearch;
 extern const CLSID CLSID_DeviceSearchPlugin;
+extern const IID IID_IVideoDecoder;
+extern const IID IID_IVideoRender;
