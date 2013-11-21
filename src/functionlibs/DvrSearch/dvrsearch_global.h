@@ -14,13 +14,13 @@ typedef struct __tagDvrSearchInfo{
 	unsigned int uiChannelCount;
 }DvrSearchInfo,*lpDvrSearchInfo; 
 
-#define UDP_PORT	9013
-const char g_cSendBuff[] = "SEARCHDEV" ;
+#define UDP_PORT   9013
+#define SENDBUFF   "SEARCHDEV"
 
 typedef int (__cdecl *EventCallBack)(QString,QVariantMap,void *);
 typedef struct __tagEventCB{
     EventCallBack evCBName;
-    void*         pEventCBP;
+    void*         pUser;
 }EventCBInfo, *lpEventCBInfo;
 
 

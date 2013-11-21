@@ -38,10 +38,10 @@ public:
 protected:
 	void run();
 
-public:
+private:
 	QByteArray ParseSearch(const QString &content, const QString &str);
-	int  Recv( );
-
+	void  Recv( );
+    void eventProcCall(QString sEvent,QVariantMap param);
 private:
 	int             m_nRef;
 	QMutex          m_csRef;
@@ -53,10 +53,7 @@ private:
     volatile  bool  m_bThreadRunning;
     QStringList     m_sEventList;
 
-	QMap<QString,   EventCBInfo>EventCBMap;
-	EventCallBack   m_eventCB;
-	void*           m_pEventCBParam;
-	QString         m_sEventCBParam;
+	QMultiMap<QString,   EventCBInfo>m_mEventCBMap;
 	QVariantMap     m_mEventCBParam;   
 };
 
