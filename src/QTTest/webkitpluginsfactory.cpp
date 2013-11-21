@@ -103,6 +103,7 @@ QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url
 				// append plugins
 				IWebPluginBase * webPluginBase = NULL;
 				pcomCreateInstance(guidTemp,NULL,IID_IWebPluginBase,(void **)&webPluginBase);
+				qDebug("create plugin :%s",sItemName.toAscii().data());
 				if (NULL != webPluginBase)
 				{
 					QObject * retObj = webPluginBase->create(mimeType,url,argumentNames,argumentValues);
