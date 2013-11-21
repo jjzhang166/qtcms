@@ -26,8 +26,8 @@ var num = 0;
 	    $('ul.filetree').treeview();		
 		oDiv.eq(1).hide();
 
-		set_drag($('div.play_time span'),$('div.play_time span').offset().left,$('div.play_time p').first().width()+12);
-		set_drag($('div.bg_center'),$('div.Schedule').offset().left,$('span.Dir').eq(0).offset().left-34);
+		/*set_drag($('div.play_time span'),$('div.play_time span').offset().left,$('div.play_time p').first().width()+12);
+		set_drag($('div.bg_center'),$('div.Schedule').offset().left,$('span.Dir').eq(0).offset().left-34);*/
 		
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
@@ -264,7 +264,18 @@ var num = 0;
 				<li class="hover" style="background-position: 0 -324px;"></li>
 			</ul>
 		</div>
-		<ul class="table">
+		<table class="table" cellpadding="0" cellspacing="0">
+			<thead>
+				<tr><td class="no_border"><td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+			</thead>
+			<tbody>
+				<tr><td class="no_border"><input type="checkbox">window 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox">window 02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox">window 03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+			</tbody>
+		</table>
+		<!-- <ul class="table">
 			<li class="head">
 				<div class="no_border"></div><div>00</div><div>01</div><div>02</div><div>03</div><div>04</div><div>05</div><div>06</div><div>07</div><div>08</div><div>09</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div>
 			</li>
@@ -284,7 +295,7 @@ var num = 0;
 				<div class="no_border"><input type="checkbox"><span>window 04</span></div>
 				<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
 			</li>
-			<li><div class="no_border bg_center" style="height:10px;"><strong class="bg_left" ><span class="bg_right"></span></strong></div><span class="hover Dir" style="background-position: -390px -38px; margin-right:2px;"></span><div class="Schedule"></div><span class="hover Dir"></span></li>
+			<li><div class="no_border bg_center" style="height:10px;"><strong class="bg_left" ><span class="bg_right"></span></strong></div><span class="hover Dir" style="background-position: -390px -38px; margin-right:2px;"></span><div class="Schedule"></div><span class="hover Dir"></span></li> -->
 		</ul>
 	</div>
 	<div id="foot">

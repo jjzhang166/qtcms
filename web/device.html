@@ -10,226 +10,11 @@
 <script src="js/qframework.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
-<script type="text/javascript">
-var oSelected = [];
-	$(function(){
-		var oTreeWarp = $('div.dev_list').slice(2);
-		$('ul.filetree').treeview().find('span.file').click(function(){
-			$(this).toggleClass('file_1')
-		});
-		oTreeWarp.hide();
-		$('#iframe').hide();
-
-		document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
-			var e = e || window.event;
-			if(e.target.tagName != 'BODY'){
-				return false;
-			}
-		}
-
-		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
-			$('#iframe').hide();
-			$(this).parentsUntil('div.menu').parent('div.menu').hide();
-		})
-
-		$('#menu1 input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
-			$(this).click(function(){
-				var oSwitch = $('#menu1 tr').slice(2,6);
-				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
-				if(index == 0){
-					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
-				}else{
-					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
-				}
-			})
-		})
-
-		$('ul.filetree span.areaName').click(function(){
-			$('ul.filetree span.areaName').css('background','0');
-			$(this).css('background','#ccc');
-		})
-
-		$('span.file').mouseup(function(e){   // 设备下通道右键菜单
-			var e = e || window.event;
-			if(e.which == '3'){
-				$('#menu0').css({
-					top:e.clientY,
-					left:e.clientX,
-				}).show(10,function(e){
-					$(document).bind('click',function(e){
-						var e = e || window.event;
-						if(e.which == 1){
-							$('#menu0').hide();
-							$(document).off();
-						};
-					})
-				});
-			}
-		})
-
-		$('#menu0 li').click(function(){  //右键菜单下选项弹出操作框
-			$('#iframe').show();
-			objShowCenter($('#menu1'))
-			$('#menu1').show();
-		})
-
-		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-			var action = $(this).attr('class').split(' ')[0];
-			addMouseStyle($(this),action);
-		})
-
-		set_contentMax();
-
-		$('#set_content div.left li').each(function(index){
-			$(this).click(function(){
-				$('#set_content div.right div').filter(function(){
-					return $(this).parent().is('#set_content div.right');
-				}).hide().eq(index).show();
-				oTreeWarp.show();
-			})
-		})
-
-		$('div.action li').slice(1,4).click(function(){   //设备相关操作按钮添加弹出层事件
-			$('#iframe').show();
-			objShowCenter($('#menu1'));
-			$('#menu1').show();
-		})
-
-		//用户table下 tr委托部分事件
-		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
-			//整理选中的用户ID数组
-			var iId = $(this).find('td').eq(1).html();
-			if($(this).attr('class') == null || $(this).attr('class') ==''){
-				oSelected.push(iId);
-			}else{
-				for(i in oSelected){
-					if(oSelected[i] == iId){
-						oSelected.splice(i,1);
-					}
-				}
-			}
-			$(this).toggleClass('selected');  // tr toggle样式
-			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
-		})
-
-
-		$('li.setViewNum:last').click(function(){
-			$('#UserMan table.UserMan tbody input:hidden').val('');
-			$('#UserMan table.UserMan tbody tr').not(':first').remove();
-			var oAtciv = $('#userManObj')[0];
-			var userList = oAtciv.GetUserList();//['test','test1','test2','test3']
-			for(i in userList){
-				var userlv = oAtciv.GetUserAuthorityMask(userList[i]);
-				var userCom;
-				switch(userlv){
-					case 0 : userCom = '超级管理员';	break;
-					case 1 : userCom = '管理员';	break;
-					case 2 : userCom = '普通用户'; break;
-					case 3 : userCom = '游客'; break;
-					default: userCom = '游客'; break;
-				}
-				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
-			}
-		})
-	})///
-	function AddSuccess(ev){
-		var name = document.getElementById('add_username').value;
-		var usrLev= $('#menu2 div.select span').html();
-		var No = $('#UserMan table.UserMan tbody tr').length - 1;
-		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');
-	}
-	function AddFaild(ev){
-		alert('添加失败!')
-	}
-	function DeleteSuccess(ev){
-		oSelected = [];
-		$('#UserMan table.UserMan tbody input:hidden').val('');
-		$('#UserMan table.UserMan tbody tr').filter(function(){
-			return $(this).attr('class') == 'selected';
-		}).remove();
-	}
-	function DeleteFaild(ev){
-		alert('删除失败');
-	}
-	function ModifyUserLevelSuccess(ev){
-		$('#UserMan table.UserMan tbody tr').filter(function(){
-			return $(this).attr('class') == 'selected';
-		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
-	}
-	function ModifyUserLevelFaild(){
-		alert('修改失败');
-	}
-	function ModifyUserPasswdSuccess(){
-		alert('密码修改');
-	}
-
-	function ModifyUserPasswdFaild(){
-		alert('密码修改失败');
-	}
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd'];
-	for (i in oActiveEvents){
-		AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(ev)');
-		AddActivityEvent(oActiveEvents[i]+'Faild',oActiveEvents[i]+'Faild(ev)');
-	}
-	function set_contentMax(){
-		var W = $(window).width();
-		var H = $(window).height();
-		$('#set_content .right').width(W - 250);
-		$('#set_content .right').height(H - 106);
-		$('#set_content .left').height(H - 106);
-		$('#foot').css({
-			top:H - 28
-		})
-	}
-
-	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
-		var node = $('#'+obj+'');
-		node.find('input:text,:password').val('');
-		if(obj == 'menu3' || obj == 'menu4'){
-			var str = $('table.UserMan input:hidden').val().split(',');
-			if(str == ''){
-				alert('please select user!!!');
-				return false;
-			}
-			if(obj == 'menu3'){
-				node.find('input:first').val(str[0]);
-			}
-		}
-		$('#iframe').show();
-		objShowCenter(node);
-	}
-
-	function objShowCenter(obj){ //调整弹出框定位 居中
-		obj.css({
-				top:($(window).height() - obj.height())/2,
-				left:($(window).width() - obj.width())/2
-		}).show();
-	}
-	function pwdTest(obj){
-		var str = obj.val();
-		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
-			alert('请用下划线"_"数字字母组合且长度大于6位');
-		}else{
-			obj.attr('enable','1');
-			valueIsSame($('#add_again_passwd'),$('#add_passwd'));
-			valueIsSame($('#modify_again_passwd'),$('#modify_newpasswd'));
-		}
-	}
-	function valueIsSame(obj,obj2){
-		if(obj.val() && obj2.val() && obj.val() != obj2.val()){
-			obj.attr('enable','0');
-			obj2.attr('enable','0');
-			alert('2次密码不一样');
-			return;
-		}else{
-			obj.attr('enable','1')
-			obj2.attr('enable','1')
-		}
-	}
-</script>
+<script src="js/deviceset.js" type="text/javascript"></script>
+<script src="js/ocxfunction.js" type="text/javascript"></script>
 <style type="text/css">
 	#set_content .left { background: #1E1E1E; width: 250px; float: left;}
-	#set_content .right { background: #282828; float: left;}
+	#set_content .right { background: #282828; position:absolute;left: 250px;}
 	#set_content .left li{
 		display: block;
 		height: 50px;
@@ -274,12 +59,12 @@ var oSelected = [];
 		position: absolute;
 		background: none repeat scroll 0% 0% rgb(0, 0, 0);
 		z-index: 999;
-		width: 100%;
-		left: 0px;
-		top: 0px;
-		height: 100%;
-		opacity: 0.5;
-		filter:alpha(opacity=50);
+		width: 100%; 
+		left: 0px; 
+		top: 0px; 
+		height: 100%; 
+		opacity: 0.75;
+		filter:alpha(opacity=75);
 	}
 	.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
 	.menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
@@ -290,28 +75,31 @@ var oSelected = [];
 	.menu table input{height: 19px; width: 155px;}
 	.menu table .tr1{ background: #ccc; color: #B4B4B4;}
 	.menu table .tr1 input{background: 0;}
-	.menu0{ background:#282828; position:absolute; display:none; width:60px;}
+	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
 	.menu0 li:hover{ background:#C25451;}
 
 	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
 	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
 	.user div{ float: left;}
 	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
+	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
 </style>
 </head>
 
 <body>
-<object type="application/cms-common-library" id="userManObj" width="0" height="0"></object>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
-<div id="menu0" class="menu0">
+<div id="menusList">
+<div id="menu0" class="menu menu0">
 	<ul>
-		<li>添加</li>
+		<li onclick="initModifyDevMenu('group');showMenu('group','添加分组')">添加分组</li>
+		<li onclick="initModifyDevMenu('area');showMenu('area','添加区域')">添加区域</li>
+		<li onclick="showMenu('device','添加设备')">添加设备</li>
 		<li>修改</li>
 		<li>删除</li>
 	</ul>
 </div>
-<div id="menu1" class="menu">
-		<p>Add Device<a class="hover close" href="javascript:;"></a></p>
+<div id="device" class="menu">
+		<p><span>修改设备</span><a class="hover close" href="javascript:;"></a></p>
 		<table>
 			<tr><td colspan="2">设备连接方式</td></tr>
 			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" type="radio" name="Connection" checked="checked" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" />易视网链接</td></tr>
@@ -340,6 +128,30 @@ var oSelected = [];
 			</tr>
 			<tr><td colspan="2" class="tdBtn"><div class="hover close">cancel</div><div class="hover close">save</div><div class="hover close">test</div></td></tr>
 		</table>
+</div>
+<div id="area" class="menu">
+	<p><span>添加区域</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>区域名</td><td><input type="text" /></td></tr>
+		<tr><td>主区域</td><td><input type="text" readonly="readonly" /></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="add_area_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
+</div>
+<div id="group" class="menu">
+	<p><span>添加分组</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>分组名</td><td><input type="text" /></td></tr>
+		<tr><td>主组名</td><td><input type="text" readonly="readonly" /></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="add_group_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
+</div>
+<div id="cam" class="menu">
+	<p><span>修改通道</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>通道名:</td><td><input type="text" /></td></tr>
+		<tr><td colspan="2" style="height:10px;"></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="add_group_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+	</table>
 </div>
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
@@ -390,11 +202,12 @@ var oSelected = [];
 		<tr class="tdBtn"><td><div class="hover close" id="modify_ok" onclick="modifyCallBack();">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
-<div id="menu4" class="menu">
-	<p>删除用户<a class="hover close" href="javascript:;"></a></p>
+<div id="confirm" class="menu">
+	<p><span>删除用户</span><a class="hover close" href="javascript:;"></a></p>
 	<table style="margin-top:20px;">
-		<tr class="tdBtn"><td><div class="hover close" id="delete_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="delete_ok" onclick="DeleteSuccess()">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
+</div>
 </div>
 	<div id="top">
 		<div class="top_act" id="top_act">
@@ -428,13 +241,14 @@ var oSelected = [];
 				<li class="setViewNum hover" style="background-position:-250px 0;">Device Manage</li>
 				<li class="setViewNum hover" style="background-position:0 -50px;">Server Setting</li>
 				<li class="setViewNum hover" style="background-position:0 -100px;">Client Setting</li>
-				<li class="setViewNum hover" style="background-position:0 -150px;" onclick="showUsrToTable();">User Manage</li>
+				<li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li>
 			</ul>
 		</div>
 		<div class="right">
-			<div>
-			<div style="float:left;">
-				<table class="tb1 tb2" cellpadding="0" style=" margin:10px; height:auto; width:auto; overflow:auto; float:left; border-left:1px solid #3C3C3C;">
+			<object type="application/cms-dsview-windows" id="devSearch" width="0" height="0"></object>
+			<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
+			<div style="position:relative;">
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style=" margin:10px; height:454px; width:760px; overflow:auto; position: absolute; left:0;">
 					<thead class="thead">
 						<tr>
 							<td style="width:100px;">设备</td>
@@ -444,36 +258,19 @@ var oSelected = [];
 						</tr>
 					</thead>
 					<tbody>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-						<tr><td><input type="checkbox"/>DVR</td><td>100015283</td><td>192.168.2.29</td><td>1</td></tr>
-
-
+									
 					</tbody>
 				</table>
-				<div class="action" style="float:left;">
+				<div class="action" style="position: absolute; left:760px;">
 					<ul>
-						<li class="hover">添加</li>
-						<li class="hover">添加区域</li>
-						<li class="hover">修改设备</li>
-						<li class="hover">添加分组</li>
-						<li class="hover">设备搜索</li>
+						<li class="hover" onclick="addDev();">添加→</li>
+						<li class="hover" onclick="initModifyDevMenu('area');showMenu('area','添加区域');">添加区域</li>
+						<li class="hover" onclick="initModifyDevMenu('group');showMenu('group','添加分组');">添加分组</li>
+						<li class="hover" onclick="initModifyDevMenu('device');showMenu('device','修改设备');">修改设备</li>
+						<li class="hover" onclick="searchFlush();">设备搜索</li>
 					</ul>
 				</div>
-				<table class="tb1 tb2" cellpadding="0" style="margin:0 10px; clear:both;height:146px; width:auto;">
+				<table class="tb1 tb2" cellpadding="0" style="margin:0 10px; clear:both; height:146px; width:760px;position: absolute; top:468px;">
 					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" />全选</td></tr></thead>
 					<tbody>
 						<tr>
@@ -497,34 +294,33 @@ var oSelected = [];
 						</tr>
 					</tbody>
 				</table>
-				</div>
-				<div style="float:left;">
+					<div style="position: absolute; left:950px;">
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree">
-							<li><span class="area"></span><span>Area</span>
+							<li><span class="area">Area1</span>
 								<ul>
-									<li><span class="folder" >device</span>
+									<li><span class="device" >device</span>
 										<ul>
-											<li><span class="file">Channel01</span></li>
-											<li><span class="file">Channel02</span></li>
-											<li><span class="file">Channel03</span></li>
-											<li><span class="file">Channel04</span></li>
+											<li><span class="cam">Channel01</span></li>
+											<li><span class="cam">Channel02</span></li>
+											<li><span class="cam">Channel03</span></li>
+											<li><span class="cam">Channel04</span></li>
 										</ul>
 									</li>
-								</ul>
-							</li>
-							<li><span class="area"></span><span>Area</span>
-								<ul>
-									<li><span class="folder" >device</span>
+									<li><span class="area">Area2</span>
 										<ul>
-											<li><span class="file">Channel01</span></li>
-											<li><span class="file">Channel02</span></li>
-											<li><span class="file">Channel03</span></li>
-											<li><span class="file">Channel04</span></li>
-											<li><span class="file">Channel05</span></li>
-											<li><span class="file">Channel06</span></li>
-											<li><span class="file">Channel07</span></li>
-											<li><span class="file">Channel08</span></li>
+											<li><span class="device" >device</span>
+												<ul>
+													<li><span class="cam">Channel01</span></li>
+													<li><span class="cam">Channel02</span></li>
+													<li><span class="cam">Channel03</span></li>
+													<li><span class="cam">Channel04</span></li>
+													<li><span class="cam">Channel05</span></li>
+													<li><span class="cam">Channel06</span></li>
+													<li><span class="cam">Channel07</span></li>
+													<li><span class="cam">Channel08</span></li>
+												</ul>
+											</li>
 										</ul>
 									</li>
 								</ul>
@@ -534,32 +330,24 @@ var oSelected = [];
 					<div class="action" style="height:22px; margin:10px;"><ul><li class="hover">添加至分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree">
-							<li><span class="group">Group</span>
+							<li><span class="group">Group1</span>
 								<ul>
-									<li><span class="folder">device</span>
-										<ul>
-											<li><span class="file">Channel01</span></li>
-											<li><span class="file">Channel02</span></li>
-											<li><span class="file">Channel03</span></li>
-											<li><span class="file">Channel04</span></li>
-										</ul>
-									</li>
+									<li><span class="cam">Channel01</span></li>
+									<li><span class="cam">Channel02</span></li>
+									<li><span class="cam">Channel03</span></li>
+									<li><span class="cam">Channel04</span></li>
 								</ul>
 							</li>
-							<li><span class="group">Group</span>
+							<li><span class="group">Group2</span>
 								<ul>
-									<li><span class="folder" >device</span>
-										<ul>
-											<li><span class="file">Channel01</span></li>
-											<li><span class="file">Channel02</span></li>
-											<li><span class="file">Channel03</span></li>
-											<li><span class="file">Channel04</span></li>
-											<li><span class="file">Channel05</span></li>
-											<li><span class="file">Channel06</span></li>
-											<li><span class="file">Channel07</span></li>
-											<li><span class="file">Channel08</span></li>
-										</ul>
-									</li>
+									<li><span class="cam">Channel01</span></li>
+									<li><span class="cam">Channel02</span></li>
+									<li><span class="cam">Channel03</span></li>
+									<li><span class="cam">Channel04</span></li>
+									<li><span class="cam">Channel05</span></li>
+									<li><span class="cam">Channel06</span></li>
+									<li><span class="cam">Channel07</span></li>
+									<li><span class="cam">Channel08</span></li>
 								</ul>
 							</li>
 						</ul>
@@ -582,22 +370,22 @@ var oSelected = [];
 					<ul class="filetree">
 						<li><span class="folder" >device</span>
 							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
+								<li><span class="cam">Channel01</span></li>
+								<li><span class="cam">Channel02</span></li>
+								<li><span class="cam">Channel03</span></li>
+								<li><span class="cam">Channel04</span></li>
 							</ul>
 						</li>
 						<li><span class="folder" >device</span>
 							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-								<li><span class="file">Channel05</span></li>
-								<li><span class="file">Channel06</span></li>
-								<li><span class="file">Channel07</span></li>
-								<li><span class="file">Channel08</span></li>
+								<li><span class="cam">Channel01</span></li>
+								<li><span class="cam">Channel02</span></li>
+								<li><span class="cam">Channel03</span></li>
+								<li><span class="cam">Channel04</span></li>
+								<li><span class="cam">Channel05</span></li>
+								<li><span class="cam">Channel06</span></li>
+								<li><span class="cam">Channel07</span></li>
+								<li><span class="cam">Channel08</span></li>
 							</ul>
 						</li>
 					</ul>
@@ -1534,7 +1322,7 @@ var oSelected = [];
 							</td>
 						</tr>
 						<tr><td>Auto polling time</td><td colspan="2"><input type="text" style="width:133px;"/></td></tr>
-						<tr><td>Screenshot save location</td><td colspan="2"><input type="file" style="height:23px; background:0;" /> </td></tr>
+						<tr><td>Screenshot save location</td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr>
 						<tr>
 							<td>default split-screen mode</td>
 							<td colspan="2">
@@ -1650,10 +1438,6 @@ var oSelected = [];
 							</thead>
 							<tbody>
 								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="user"/></td></tr>
-								<!-- <tr><td>1</td><td>admin</td><td>超级管理员</td></tr>
-								<tr><td>2</td><td>98qwdsa</td><td>管理员</td></tr>
-								<tr><td>3</td><td>test</td><td>普通用户</td></tr>
-								<tr><td>4</td><td>test1</td><td>游客</td></tr> -->
 							</tbody>
 						</table>
 					</td>
@@ -1677,7 +1461,7 @@ var oSelected = [];
 						<ul class="tdBtn user">
 							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')">AddUser</div></li>
 							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')">ModifyUser</div></li>
-							<li><div class="hover" onclick="ShowUserOperateMenu('menu4')">DeleteUser</div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('confirm')">DeleteUser</div></li>
 						</ul>
 					</td>
 				</tr>
@@ -1685,6 +1469,6 @@ var oSelected = [];
 			</div>
 		</div>
 	</div>
-	<div id="foot"></div>
+	<!-- <div id="foot"></div> -->
 </body>
 </html>

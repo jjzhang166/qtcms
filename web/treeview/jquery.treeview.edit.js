@@ -18,7 +18,7 @@ $('#'+frameId+'').bind("contextmenu", function(event) {
 });			 
 }						
 //用户设备以及操作节点
-function addNode(txt_eseeid,txt_nick,txt_usr,txt_pwd,dev_id,modify,del){
+/*function addNode(txt_eseeid,txt_nick,txt_usr,txt_pwd,dev_id,modify,del){
 	var branches =$('<li id = "'+dev_id+'" class="closed"><span class="folder" ><span class = "modify" onclick="modify_device_link(this);" href="javascript:;" modify_id="'+dev_id+'"></span><span  class="del" href="javascript:;" onclick = "del_device_link('+dev_id+');"></span><a class="dev_name" onclick="javascript:;" style="line-height:20px;">'+txt_nick+'</a></span><ul class = "'+txt_eseeid+'"></ul></li>').appendTo('.ul1');
 		$('ul.filetree').treeview({add:branches});
 		var obj = [];
@@ -64,9 +64,9 @@ function addarea(name,area_id,pid){
 }
 function addareaoption(id,name,level){
 	$('<option value="'+id+'" level="'+level+'">'+name+'</option>').appendTo('select');
-}
+}*/
 /********devInarea.php*******/
-function Customdev(dev_name,dev_id,area_id){
+/*function Customdev(dev_name,dev_id,area_id){
 	if(area_id == 'dev'){
 		var target = $('#dev');
 	}else{
@@ -102,7 +102,7 @@ function group_add_cam(name,data,action){
 function group_cam_option(group_id,remarks,name,cam_info){
 	var obj = $('<option value="'+group_id+'"remark="'+remarks+'">'+name+'</option>').appendTo($('#group'));
 	obj.data('data',cam_info);	
-}			
+}*/			
 //jq treeview框架,不要动	  
 (function($) {
 	var CLASSES = $.treeview.classes;

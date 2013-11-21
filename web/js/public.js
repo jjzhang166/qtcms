@@ -35,14 +35,15 @@ function addMouseStyle(obj,action){
 			}else{
 				var ev = ev || window.event;
 				var oSwitch = $('div .setViewNum');	
-				oSwitch.each(function(){
+				oSwitch.each(function(index){
 				var T = document.all ? parseInt($(this).css('backgroundPositionY')) : parseInt($(this).css('background-position').split('px')[1]);
 				$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
-				var oView = $('#playback_view');
+				/*var oView = $('#playback_view');
 				if(oView.length != 0){
 					autoImages(oSwitch.index(ev.target)+1,oView);
-				}
+				}*/
 			})
+				//alert(oSwitch.index(ev.target);
 			}		
 			obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
 			obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
@@ -71,31 +72,27 @@ function ViewMax(type){
 		left:oView.width(),
 		height:oView.height()+ l
 	});
-	$('div.dev_list').height(oLeft.height()-282);
-	oBottom.width(oView.width()-4);
+	$('div.dev_list').height(oLeft.height()-294);
+	oBottom.width(oView.width());
 	$('#foot').css({
 		top:oView.height()+212,
 		width:oView.width()+238
 	})
 	$('#top').width(oView.width()+238);
-	$('ul.table li').each(function(index){
-			var oDivs = $(this).find('div');
+	$('table.table tr').each(function(index){
+			var oTds = $(this).find('td');
 			if(type == 'preview'){
-				var W =  $(this).width() -14;
-				oDivs.eq(0).width(W*0.19);
-				oDivs.eq(1).width(W*0.71);
-				oDivs.eq(2).width(W*0.1+8);
+				var W =  $('table.table').width() -14;
+				oTds.eq(0).width(W*0.19);
+				oTds.eq(1).width(W*0.71);
+				oTds.eq(2).width(W*0.1+8);
 			}else{
-				var W =  $(this).width() -50;
-				if(oDivs.length > 24){
-					oDivs.width((W-80)/24);
-					oDivs.eq(0).width(80);
-				}else{
-					oDivs.eq(1).width(W - 60);
-				}				
+				var W =  $('table.table').width() -50;
+				oTds.width((W-80)/24);
+				oTds.eq(0).width(80);			
 			}
 	})
-	autoImages(2,oView);
+	//autoImages(2,oView);
 }
 
 function autoImages(num,obj){
