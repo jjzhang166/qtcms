@@ -720,12 +720,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiSampleWidth;
 <br />
 };</p>
+<p class="code">struct _tagPtzCtrl{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cAction;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cStart;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cParam;
+<br />
+};</p>
 <h3 id="char_4_2">4.2数据组包</h3>
-<p>以下代码示范了，如何组件并发送一个码流请求包。</p>
+<p>以下代码示范了，如何组建并发送一个云台控制指令包。</p>
 <p><span class="code">char Data[1024];<br />
 struct _tagBubble * bubble;<br />
 struct _tagMessage *msg;<br />
-struct _tagLiveStreamRequire *msgParam;<br />
+struct _tagPtzCtrl *msgParam;<br />
 <br />
 memset(Data,0,sizeof(Data));<br />
 <br />
@@ -739,14 +746,15 @@ bubble-&gt;uiTicket = GetTicket();
 <br />
 msg = 
 (struct _tagMessage *)bubble-&gt;pLoad;<br />
-msg-&gt;uiLength=sizeof(struct _tagMessage) - STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength) - STRUCT_MEMBER_SIZE(struct _tagMessage,pParameters) + sizeof(struct _tagLiveStreamRequire);
+msg-&gt;uiLength=sizeof(struct _tagMessage) - STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength) - STRUCT_MEMBER_SIZE(struct _tagMessage,pParameters) + sizeof(struct _tagPtzCtrl);
 <br />
 msg-&gt;cMessage=MACRO_MSG_LSR;<br />
 <br />
-msgParam = (struct _tagLiveStreamRequire *)msg-&gt;pParameters;<br />
+msgParam = (struct _tagPtzCtrl *)msg-&gt;pParameters;<br />
 msgParam-&gt;cChannel=nChannel;<br />
-msgParam-&gt;cOperation=cOperation;
-<br />
+msgParam-&gt;cAction=MSG_PTZ_UP;<br />
+msgParam-&gt;cStart=TRUE;<br />
+msgParam-&gt;cParam=7;<br />
 <br />
 bubble-&gt;uiLength=sizeof(struct _tagBubble) - STRUCT_MEMBER_SIZE(struct _tagBubble,cHead) - STRUCT_MEMBER_SIZE(struct _tagBubble,uiLength) - STRUCT_MEMER_SIZE(struct _tagBubble,pLoad) + msg-&gt;uiLength + STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength);<br />
 <br />
