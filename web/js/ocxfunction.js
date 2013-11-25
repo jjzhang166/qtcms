@@ -4,19 +4,15 @@ var oSelected = [],
 	$(function(){ 
 		oCommonLibrary = document.getElementById('commonLibrary')
 		oSearchOcx = document.getElementById('devSearch');
-
-		//搜索设备;
-		$('#area_0').data('data',['0',$('#area_0').html(),'root']);// 主区数据句填充.
-		$('#group_0').data('data',['0',$('#group_0').html()]);// 主区数据句填充.
-		/*$('#area_1').data('data',['1',$('#area_1').html(),'0']);// 主区数据句填充.
-		$('#group_1').data('data',['1',$('#group_1').html(),'0']);// 主区数据句填充.*/
-
+		//搜索设备
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
 		oSearchOcx.Start();
 		setTimeout(function(){oSearchOcx.Stop()},5000);
 		//区域列表;
 		areaList2Ui();
 		groupList2Ui();
+		show(oCommonLibrary.GetChannelInfo(1));
+		//debug();
 	})
 
 	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea'];  //事件名称集合	
@@ -98,8 +94,8 @@ var oSelected = [],
 	function ModifyAreaSuccess(){
 		var oArea = $('#area_'+$('#area #Area_id_ID').val());
 		var sNewName = $('#area #Area_Name_ID').val()
-		alert($('#Area_id_ID').val()+'+'+sNewName);
-		oCommonLibrary.SetAreaName($('#Area_id_ID').val(),sNewName);
+		//alert($('#Area_id_ID').val()+'+'+sNewName);
+		//oCommonLibrary.SetAreaName($('#Area_id_ID').val(),sNewName);
 		oArea.html(sNewName);
 		oArea.data('data')[1]=sNewName;
 		closeMenu();
@@ -107,11 +103,17 @@ var oSelected = [],
 	function ModifyAreaFail(){ 
 		alert(0)
 	}
-	function areaAction(type){
+	/*function areaAction(type){
 		alert(type)
 		if(type == 'Modify'){
 			ModifyAreaSuccess();
 		}else{ 
 
 		}
+	}*/
+	function debug (){ 
+		$('#area_1').data('data',{'area_id':'1','area_name':'test1','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
+		$('#group_0').data('data',['0',$('#group_0').html()]);// 主区数据句填充.
+		$('#dev_1').data('data',{'devname':'test4','address':'123','eseeid':'10001685','username':'admin','devid':'1'});// 主区数据句填充.
+		$('.debug').show();
 	}

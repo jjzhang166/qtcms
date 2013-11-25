@@ -37,9 +37,9 @@
 			$(this).mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') )){ 
+				if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('cam') )){ 
 					alert(obj.data('data'));
-				}*/
+				}
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
 						if(obj.hasClass('cam')){
@@ -162,45 +162,69 @@
 			var id = areaList[n];
 			var name = oCommonLibrary.GetAreaName(areaList[n]);
 			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
-			areaListArrar.push([id,name,pid]);
+			var pareaname = pid == 0 ? '区域_root' : oCommonLibrary.GetAreaName(pid);
+			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
 			pidList.push(pid);
 
 		}
 		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
 		for(j in arr){
 			for(k in areaListArrar){		
-				if(areaListArrar[k]['2'] == arr[j]){		
-					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['0']+'">'+areaListArrar[k]['1']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
+				if(areaListArrar[k]['pid'] == arr[j]){		
+					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
 					add.find('span.area').data('data',areaListArrar[k]);
 					$('ul.filetree:eq(0)').treeview({add:add});
 				}
 			}
 		}
 		for(i in areaListArrar){
-			deviceList2Ui(areaListArrar[i][0])		;
+			deviceList2Ui(areaListArrar[i]['area_id']);
 		}
+	}
+	
+	function deviceList2Ui(areaid){
+		var devList = oCommonLibrary.GetDeviceList(areaid);
+		for (i in devList){
+			var id=devList[i];
+			var devData = oCommonLibrary.GetDeviceInfo(id);
+			devData['area_id'] = areaid;
+			devData['dev_id'] = id;
+			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
+			devData['devname'] = devData['name'];
+			devData['areaname'] = oCommonLibrary.GetAreaName(areaid);
+			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
+			add.find('span.device').data('data',devData);
+			$('ul.filetree:eq(1)').treeview({add:add});
+			channelList2Ui(id);
+		}
+	}
+
+	function channelList2Ui(devid){
+		var chlList = oCommonLibrary.GetChannelList(devid);
+		for(i in chlList){ 
+			var id = chlList[i]
+			var chldata = oCommonLibrary.GetChannelInfo(id);
+			var data = {};
+			data['channel_id'] = id;
+			data['dev_id'] = devid;
+			data['channel_number'] = chldata['number']
+			data['stream_id'] = chldata['stream'];
+			data['channel_name'] = chldata['name'];
+			var add = $('<li><span class="cam" id="cam_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
+			add.find('span.cam').data('data',data);
+			$('ul.filetree:eq(1)').treeview({add:add});
+
+		}
+
 	}
 	function groupList2Ui(){ 
 		var groupList = oCommonLibrary.GetGroupList();
-		//var names = ['group1','group2','group3'];
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
 			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
-			add.find('span.group').data('data',[id,name]);
+			add.find('span.group').data('data',{'id':id,'name':name});
 			$('ul.filetree:eq(1)').treeview({add:add});
-		}
-	}
-
-	function deviceList2Ui(areaid){
-		var devList = oCommonLibrary.GetDeviceList(areaid);
-		for (i in devList){ 
-			var name=devList[i];
-			//var name = oCommonLibrary.GetDeviceName(id);
-			var add = $('<li><span class="device" >'+name+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
-			//add.find('span.group').data('data',[id,name]);
-			$('ul.filetree:eq(1)').treeview({add:add});
-
 		}
 	}
 
@@ -344,21 +368,24 @@ function showObjActBox(action,objclass){
 function initActionBox(action,pObj,obox,objclass){
 	var data = pObj.data('data');
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
-	obox.find('div.confirm').attr('id',action) //action+pObjType+'_ok'
+	obox.find('div.confirm').attr('id',action+pObjType+'_ok');
 	if(action == 'Add'){
 		if(objclass == 'device'){ 
 			obox.find('div.confirm').attr('id',firstUp(action+objclass)+'_ok')
 		}
 		obox.find('input.parent'+pObjType).val(data[1]);
 	}else if(action == 'Modify'){
-		if(pObjType == 'Area' || pObjType == 'Group'){ 
-			obox.find('#'+pObjType+'_Name_ID').val(data[1]);
-			obox.find('input.parent'+pObjType).val($('#'+pObjType.toLowerCase()+'_'+data[2]).html());
-			$('<input type="hidden" id="Pid_ID" value="'+data[2]+'"/><input type="hidden" id="'+pObjType+'_id_ID" value="'+data[0]+'"/>').appendTo(obox);
-		}
-			/*obox.find('#Area_Name_ID').val(data[1]);
-			obox.find('input.parentArea').val($('#area_'+data[2]).html());
-			$('<input type="hidden" id="Pid_ID" value="'+data[2]+'"/><input type="hidden" id="Area_id_ID" value="'+data[0]+'"/>').appendTo(obox);*/
+			for(i in data){
+				var str = 'Null'
+				if(data[i] != ''){ 
+					str = data[i]
+				}
+				if($('#'+i+'_ID')[0]){ 
+					$('#'+i+'_ID').val(str);
+				}else{ 
+					$('<input type="hidden" value="'+str+'" id="'+i+'_ID"/>').appendTo(obox);
+				}
+			}
 	}
 }
 // 辅助方法.
@@ -383,4 +410,20 @@ function firstUp(str){  //字符串首字母大写
 	var a = str.split('');
 	a[0] = a[0].toUpperCase();
 	return a.join('');
+}
+function show(data){
+	var index='default'
+	var str = 'Null'
+	$('#test').html('');
+	if(typeof(data) != 'string'){
+		for(i in data){ 
+			index = i;
+			if(data[i] != ''){
+				str = data[i];
+			}
+			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
+		}
+	}else{ 
+		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
+	}
 }
