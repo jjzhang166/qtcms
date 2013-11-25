@@ -1550,26 +1550,40 @@ int QCommonPlugin::GetChannelCount(int dev_id)
 // 获取设备dev_id下的通道列表
 QStringList QCommonPlugin::GetChannelList(int dev_id) 
 {
-	QStringList listRet;
+	//QStringList listRet;
+	//QSqlQuery _query(m_db);
+	//QString command = QString("select id from chl where dev_id = '%1' group by dev_id").arg(dev_id);
+	//_query.exec(command);
+
+	//QSqlRecord rec = _query.record();
+	//int nCol = rec.indexOf("id");
+
+	//int index = 0;
+	//while (_query.next())
+	//{
+	//	listRet.insert(index ++,_query.value(nCol).toString());
+	//}
+	//if (listRet.isEmpty())
+	//{
+	//	return listRet;
+	//}
+
+	//qDebug("%d",listRet.count());
+	//return listRet;
 	QSqlQuery _query(m_db);
-	QString command = QString("select id from chl where dev_id = '%1' group by dev_id").arg(dev_id);
+	QStringList S_List;
+	S_List.clear();
+//	QString command= QString("select * from chl where dev_id = '%1' group by dev_id").arg(dev_id);
+	QString command= QString("select * from chl where dev_id = '%1'").arg(dev_id);
 	_query.exec(command);
-
-	QSqlRecord rec = _query.record();
-	int nCol = rec.indexOf("id");
-
-	int index = 0;
-	while (_query.next())
-	{
-		listRet.insert(index ++,_query.value(nCol).toString());
+	if(_query.isActive()){
+		int Id_Index=_query.record().indexOf("id");
+		while(_query.next()){
+			S_List.append(_query.value(Id_Index).toString());
+		}
+		return S_List;
 	}
-	if (listRet.isEmpty())
-	{
-		return listRet;
-	}
-
-	qDebug("%d",listRet.count());
-	return listRet;
+	return S_List;
 }
 
 // 获取通道chl_id的名称，在sName中返回。
