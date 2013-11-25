@@ -19,6 +19,9 @@
         <item clsid="D37D3047-D605-4116-94B2-47D964AA5809" name="divmode.div6_1" file="div6_1.dll" mode="div6_1"/> 
         <item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
         <item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 
-
+	<item clsid="DE91223A-0978-4CA2-9F8B-829DA0EB88E8" name="plugin.DeviceSearchPlugin" file="plugins/DeviceSearchPlugin.dll" mimetype="application/cms-dsview-windows"/>
+	<item clsid="D5BA4677-6E5D-4440-9E6C-507BA529C138" name="plugin.H264Playerplugin" file="plugins/H264Playerplugin.dll" mimetype="application/cms-h264-player"/>
+	<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
+	<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
     </CLSID>
 </root>
