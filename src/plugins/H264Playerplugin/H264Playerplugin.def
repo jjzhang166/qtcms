@@ -1,0 +1,3 @@
+LIBRARY H264Playerplugin.dll
+EXPORTS
+	CreateInstance @1
