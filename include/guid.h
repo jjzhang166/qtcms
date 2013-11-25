@@ -34,3 +34,6 @@ extern const CLSID CLSID_HiChipSearch;
 extern const CLSID CLSID_DeviceSearchPlugin;
 extern const IID IID_IVideoDecoder;
 extern const IID IID_IVideoRender;
+extern const CLSID CLSID_H264Playerplugin;
+extern const CLSID CLSID_h264Decoder;
+extern const CLSID CLSID_SDLRender;
