@@ -307,17 +307,17 @@ void settingsActivity::OnAddDevice()
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
-	QVariant Area_Id=QueryValue("Device_area_id");
-	QVariant sDeviceName=QueryValue("Device_sDeviceName");
-	QVariant sAddress=QueryValue("Device_sAddress");
-	QVariant port=QueryValue("Device_port");
-	QVariant http=QueryValue("Device_http");
-	QVariant sEseeId=QueryValue("Device_sEseeid");
-	QVariant sUserName=QueryValue("Device_sUsername");
-	QVariant sPassWord=QueryValue("Device_sPassword");
-	QVariant chlCount=QueryValue("Device_chlCount");
-	QVariant ConnectMethod=QueryValue("Device_connectMethod");
-	QVariant sVendor=QueryValue("Device_sVendor");
+	QVariant Area_Id=QueryValue("dev_id_ID");
+	QVariant sDeviceName=QueryValue("devname_ID");
+	QVariant sAddress=QueryValue("address_ID");
+	QVariant port=QueryValue("port_ID");
+	QVariant http=QueryValue("http_ID");
+	QVariant sEseeId=QueryValue("eseeid_ID");
+	QVariant sUserName=QueryValue("userName_ID");
+	QVariant sPassWord=QueryValue("password_ID");
+	QVariant chlCount=QueryValue("channel_count_ID");
+	QVariant ConnectMethod=QueryValue("connect_method_ID");
+	QVariant sVendor=QueryValue("vendor_ID");
 
 	DEF_EVENT_PARAM(arg);
 	QString Content;
@@ -328,7 +328,8 @@ void settingsActivity::OnAddDevice()
 		Content="AreaID is not exist";
 		EP_ADD_PARAM(arg,"fail",Content);
 		EventProcCall("AddDeviceFail",arg);
-		Idevice->Release();
+		if(NULL!=Idevice){Idevice->Release();}
+		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
 	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
@@ -337,7 +338,8 @@ void settingsActivity::OnAddDevice()
 		Content.append("the params are not complete");
 		EP_ADD_PARAM(arg,"fail",Content);
 		EventProcCall("AddDeviceFail",arg);
-		Idevice->Release();
+		if(NULL!=Idevice){Idevice->Release();}
+		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
 	if("IP"==ConnectMethod.toString()){
@@ -347,7 +349,8 @@ void settingsActivity::OnAddDevice()
 			Content.append("the params are not complete");
 			EP_ADD_PARAM(arg,"fail",Content);
 			EventProcCall("AddDeviceFail",arg);
-			Idevice->Release();
+			if(NULL!=Idevice){Idevice->Release();}
+			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
 		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
@@ -357,7 +360,8 @@ void settingsActivity::OnAddDevice()
 			Content.append("AddDeviceFail");
 			EP_ADD_PARAM(arg,"fail",Content);
 			EventProcCall("AddDeviceFail",arg);
-			Idevice->Release();
+			if(NULL!=Idevice){Idevice->Release();}
+			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
 		goto end1;
@@ -369,7 +373,8 @@ void settingsActivity::OnAddDevice()
 			Content.append("the params are not complete");
 			EP_ADD_PARAM(arg,"fail",Content);
 			EventProcCall("AddDeviceFail",arg);
-			Idevice->Release();
+			if(NULL!=Idevice){Idevice->Release();}
+			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
 		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
@@ -379,7 +384,8 @@ void settingsActivity::OnAddDevice()
 			Content.append("AddDeviceFail");
 			EP_ADD_PARAM(arg,"fail",Content);
 			EventProcCall("AddDeviceFail",arg);
-			Idevice->Release();
+			if(NULL!=Idevice){Idevice->Release();}
+			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
 		goto end1;
@@ -390,15 +396,17 @@ void settingsActivity::OnAddDevice()
 	Content.append("ConnectMethod fail");
 	EP_ADD_PARAM(arg,"fail",Content);
 	EventProcCall("AddDeviceFail",arg);
-	Idevice->Release();
+	if(NULL!=Idevice){Idevice->Release();}
+	if(NULL!=Iarea){Iarea->Release();}
 	return;
 end1:
 	Content.clear();
 	arg.clear();
 	Content.append("add device success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("AddGroupSuccess",arg);
-	Idevice->Release();
+	EventProcCall("AddDeviceSuccess",arg);
+	if(NULL!=Idevice){Idevice->Release();}
+	if(NULL!=Iarea){Iarea->Release();}
 	return;
 }
 
@@ -416,7 +424,7 @@ void settingsActivity::OnRemoveDevice()
 	}
 
 
-	QVariant Dev_Id=QueryValue("Device_id");
+	QVariant Dev_Id=QueryValue("dev_id_ID");
 	bool nRet_bool=false;
 	nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
 	if(false==nRet_bool){
@@ -460,7 +468,7 @@ void settingsActivity::OnModifyDevice()
 		return;
 	}
 
-	QVariant Dev_Id=QueryValue("Device_id");
+	QVariant Dev_Id=QueryValue("dev_id_ID");
 	bool nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
 	if(false==nRet_bool){
 		arg.clear();
@@ -472,7 +480,7 @@ void settingsActivity::OnModifyDevice()
 		return;
 	}
 
-	QVariant sDeviceName=QueryValue("Device_sDeviceName");
+	QVariant sDeviceName=QueryValue("devname_ID");
 	if(false==Dev_Id.isNull()&&false==sDeviceName.isNull()){
 		int nRet_int=Idevice->ModifyDeviceName(Dev_Id.toInt(),sDeviceName.toString());
 		if(0!=nRet_int){
@@ -485,8 +493,8 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant sUsername=QueryValue("Device_sUsername");
-	QVariant sPassword=QueryValue("Device_sPassword");
+	QVariant sUsername=QueryValue("userName_ID");
+	QVariant sPassword=QueryValue("password_ID");
 	if(false==sUsername.isNull()){
 		int nRet_int=Idevice->ModifyDeviceAuthority(Dev_Id.toInt(),sUsername.toString(),sPassword.toString());
 		if(0!=nRet_int){
@@ -499,7 +507,7 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant chlCount=QueryValue("Device_chlCount");
+	QVariant chlCount=QueryValue("channel_count_ID");
 	if(false==chlCount.isNull()){
 		int nRet_int=Idevice->ModifyDeviceChannelCount(Dev_Id.toInt(),chlCount.toInt());
 		if(0!=nRet_int){
@@ -512,7 +520,7 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant sVentor=QueryValue("Device_sVendor");
+	QVariant sVentor=QueryValue("vendor_ID");
 	if(false==sVentor.isNull()){
 		int nRet_int=Idevice->ModifyDeviceVendor(Dev_Id.toInt(),sVentor.toString());
 		if(0!=nRet_int){
@@ -525,7 +533,7 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant sEseeId=QueryValue("Device_sEseeid");
+	QVariant sEseeId=QueryValue("eseeid_ID");
 	if(false==sEseeId.isNull()){
 		int nRet_int=Idevice->ModifyDeviceEseeId(Dev_Id.toInt(),sEseeId.toString());
 		if(0!=nRet_int){
@@ -538,9 +546,9 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant sAddress=QueryValue("Device_sAddress");
-	QVariant port=QueryValue("Device_port");
-	QVariant http=QueryValue(",Device_http");
+	QVariant sAddress=QueryValue("address_ID");
+	QVariant port=QueryValue("port_ID");
+	QVariant http=QueryValue("http_ID");
 	if(false==sAddress.isNull()&&false==port.isNull()&&http.isNull()){
 		int nRet_int=Idevice->ModifyDeviceHost(Dev_Id.toInt(),sAddress.toString(),port.toInt(),http.toInt());
 		if(0!=nRet_int){
@@ -575,7 +583,7 @@ void settingsActivity::OnAddGroup()
 		EventProcCall("AddGroupFail",arg);
 		return;
 	}
-	QVariant sName_Id=QueryValue("Group_Name_ID");
+	QVariant sName_Id=QueryValue("group_name_ID");
 
 	if(sName_Id.isNull()){
 		Content.clear();
@@ -624,7 +632,7 @@ void settingsActivity::OnRemoveGroup()
 		return;
 	}
 
-	QVariant Group_Id=QueryValue("Group_id_ID");
+	QVariant Group_Id=QueryValue("group_id_ID");
 	bool nRet_bool=false;
 	nRet_bool=Igroup->IsGroupExists(Group_Id.toInt());
 	if(false==nRet_bool){
@@ -671,8 +679,8 @@ void settingsActivity::OnAddArea()
 		return;
 	}
 
-	QVariant nPid_Id=QueryValue("Pid_ID");
-	QVariant sName_Id=QueryValue("Area_Name_ID");
+	QVariant nPid_Id=QueryValue("pid_ID");
+	QVariant sName_Id=QueryValue("area_name_ID");
 	int nRet_int=Iarea->AddArea(nPid_Id.toInt(),sName_Id.toString());
 	if(-1==nRet_int){
 		Content.clear();
@@ -706,8 +714,8 @@ void settingsActivity::OnRemoveArea()
 		EventProcCall("RemoveAreaFail",arg);
 		return;
 	}
-	QVariant Area_id_ID=QueryValue("Area_id_ID");
-	QVariant Area_Name_ID=QueryValue("Area_Name_ID");
+	QVariant Area_id_ID=QueryValue("area_id_ID");
+	QVariant Area_Name_ID=QueryValue("area_name_ID");
 	int nRet1=Iarea->RemoveAreaById(Area_id_ID.toInt());
 	int nRet2=Iarea->RemoveAreaByName(Area_Name_ID.toString());
 	if(0==nRet1||0==nRet2){
@@ -743,8 +751,8 @@ void settingsActivity::OnModifyArea()
 		return;
 	}
 
-	QVariant Area_id_ID=QueryValue("Area_id_ID");
-	QVariant Area_Name_ID=QueryValue("Area_Name_ID");
+	QVariant Area_id_ID=QueryValue("area_id_ID");
+	QVariant Area_Name_ID=QueryValue("area_name_ID");
 
 	int nRet=-1;
 	nRet=IArea->SetAreaName(Area_id_ID.toInt(),Area_Name_ID.toString());
@@ -789,9 +797,9 @@ void settingsActivity::OnModifyChannel()
 		return;
 	}
 
-	QVariant Channel_id_ID=QueryValue("Channel_id_ID");
-	QVariant Stream_id_ID=QueryValue("Stream_id_ID");
-	QVariant Channel_Name_ID=QueryValue("Channel_Name_ID");
+	QVariant Channel_id_ID=QueryValue("channel_id_ID");
+	QVariant Stream_id_ID=QueryValue("stream_id_ID");
+	QVariant Channel_Name_ID=QueryValue("channel_name_ID");
 
 	int nRet1=-1;
 	int nRet2=-1;
@@ -839,9 +847,9 @@ void settingsActivity::OnAddChannelInGroup()
 		return;
 	}
 
-	QVariant Group_id_ID=QueryValue("Group_id_ID");
-	QVariant Channel_id_ID=QueryValue("Channel_id_ID");
-	QVariant R_Chl_Group_Name_ID=QueryValue("R_Chl_Group_Name_ID");
+	QVariant Group_id_ID=QueryValue("group_id_ID");
+	QVariant Channel_id_ID=QueryValue("channel_id_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("r_chl_group_name_ID");
 
 	int nRet=-1;
 	nRet=IGroup->AddChannelInGroup(Group_id_ID.toInt(),Channel_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
@@ -878,7 +886,7 @@ void settingsActivity::OnRemoveChannelFromGroup()
 		return;
 	}
 
-	QVariant R_Chl_Group_id_ID=QueryValue("R_Chl_Group_id_ID");
+	QVariant R_Chl_Group_id_ID=QueryValue("r_chl_group_id_ID");
 	int nRet=-1;
 	nRet=IGroup->RemoveChannelFromGroup(R_Chl_Group_id_ID.toInt());
 	if(-1==nRet){
@@ -914,8 +922,8 @@ void settingsActivity::OnModifyGroupChannelName()
 		return;
 	}
 
-	QVariant R_Chl_Group_id_ID=QueryValue("R_Chl_Group_id_ID");
-	QVariant R_Chl_Group_Name_ID=QueryValue("R_Chl_Group_Name_ID");
+	QVariant R_Chl_Group_id_ID=QueryValue("r_chl_group_id_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("r_chl_group_name_ID");
 
 	int nRet=-1;
 
