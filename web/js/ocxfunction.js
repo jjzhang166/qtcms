@@ -5,12 +5,21 @@ var oSelected = [],
 		oCommonLibrary = document.getElementById('commonLibrary')
 		oSearchOcx = document.getElementById('devSearch');
 
+		//搜索设备;
+		$('#area_0').data('data',['0',$('#area_0').html(),'root']);// 主区数据句填充.
+		$('#group_0').data('data',['0',$('#group_0').html()]);// 主区数据句填充.
+		/*$('#area_1').data('data',['1',$('#area_1').html(),'0']);// 主区数据句填充.
+		$('#group_1').data('data',['1',$('#group_1').html(),'0']);// 主区数据句填充.*/
+
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-		oSearchOcx.Stop();
 		oSearchOcx.Start();
+		setTimeout(function(){oSearchOcx.Stop()},5000);
+		//区域列表;
+		areaList2Ui();
+		groupList2Ui();
 	})
 
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd'];  //事件名称集合	
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea'];  //事件名称集合	
 
 	function AddSuccess(ev){
 		var name = document.getElementById('add_username').value;
@@ -70,8 +79,29 @@ var oSelected = [],
 		}		
 	}
 	function AddAreaSuccess(){
-		
+		alert(1)
 	} 
-	function aAddAreaFail(){ 
-
+	function AddAreaFail(){ 
+		alert(0)
+	}
+	function RemoveAreaSuccess(){
+		var id = $('#confirm input:hidden').val();
+		if(id != 0){
+			$('div.dev_list').find('#area_'+id).parent('li').remove();
+			$('ul.filetree').treeview();
+		}
+		closeMenu();
+	}
+	function RemoveAreaFail(){ 
+		alert('删除区域失败');
+	}
+	function ModifyAreaSuccess(){
+		var oArea = $('#area_'+$('#area #Area_id_ID').val());
+		var sNewName = $('#area #Area_Name_ID').val()
+		oArea.html(sNewName);
+		oArea.data('data')[1]=sNewName;
+		closeMenu();
+	} 
+	function ModifyAreaFail(){ 
+		alert(0)
 	}

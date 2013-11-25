@@ -91,9 +91,9 @@
 <div id="menusList">
 <div id="menu0" class="menu menu0">
 	<ul>
-		<li onclick="initModifyDevMenu('group');showMenu('group','添加分组')">添加分组</li>
-		<li onclick="initModifyDevMenu('area');showMenu('area','添加区域')">添加区域</li>
-		<li onclick="showMenu('device','添加设备')">添加设备</li>
+		<li onclick="showObjActBox('Add','group');">添加分组</li>
+		<li onclick="showObjActBox('Add','area');">添加区域</li>
+		<li onclick="showObjActBox('Add','device');">添加设备</li>
 		<li>修改</li>
 		<li>删除</li>
 	</ul>
@@ -111,7 +111,7 @@
 			<tr><td class="td1">密码</td><td><input type="text" /></td></tr>
 			<tr><td class="td1">设备名</td><td><input type="text" /></td></tr>
 			<tr><td class="td1">通道数</td><td><input type="text" /></td></tr>
-			<tr><td class="td1">所在区域</td><td><input type="text" /></td></tr>
+			<tr><td class="td1">所在区域</td><td><input readonly="readonly" class="parentArea" type="text" /></td></tr>
 			<tr>
 				<td class="td1">设备类型</td>
 				<td>
@@ -126,23 +126,23 @@
 					</ul>
 				</td>
 			</tr>
-			<tr><td colspan="2" class="tdBtn"><div class="hover close">cancel</div><div class="hover close">save</div><div class="hover close">test</div></td></tr>
+			<tr><td colspan="2" class="tdBtn"><div class="hover close">cancel</div><div class="hover close confirm">save</div><div class="hover close">test</div></td></tr>
 		</table>
 </div>
 <div id="area" class="menu">
 	<p><span>添加区域</span><a class="hover close" href="javascript:;"></a></p>
 	<table style="margin-top:10px;">
-		<tr><td>区域名</td><td><input type="text" /></td></tr>
-		<tr><td>主区域</td><td><input type="text" readonly="readonly" /></td></tr>
-		<tr class="tdBtn"><td><div class="hover close" id="add_area_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr><td>区域名</td><td><input type="text" id="Area_Name_ID"/></td></tr>
+		<tr><td>主区域</td><td><input type="text" readonly="readonly" class="parentArea" /></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="group" class="menu">
 	<p><span>添加分组</span><a class="hover close" href="javascript:;"></a></p>
 	<table style="margin-top:10px;">
-		<tr><td>分组名</td><td><input type="text" /></td></tr>
-		<tr><td>主组名</td><td><input type="text" readonly="readonly" /></td></tr>
-		<tr class="tdBtn"><td><div class="hover close" id="add_group_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr><td>分组名</td><td><input type="text" id="Group_Name_ID"/></td></tr>
+		<!-- <tr><td>主组名</td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
+		<tr class="tdBtn"><td><div class="hover close confirm" id="">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="cam" class="menu">
@@ -150,7 +150,7 @@
 	<table style="margin-top:10px;">
 		<tr><td>通道名:</td><td><input type="text" /></td></tr>
 		<tr><td colspan="2" style="height:10px;"></td></tr>
-		<tr class="tdBtn"><td><div class="hover close" id="add_group_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close confirm" id="">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu2" class="menu">
@@ -199,13 +199,13 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close" id="modify_ok" onclick="modifyCallBack();">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close confirm" id="modify_ok" onclick="modifyCallBack();">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="confirm" class="menu">
-	<p><span>删除用户</span><a class="hover close" href="javascript:;"></a></p>
+	<p><span></span><a class="hover close" href="javascript:;"></a></p>
 	<table style="margin-top:20px;">
-		<tr class="tdBtn"><td><div class="hover close" id="delete_ok" onclick="DeleteSuccess()">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="" >确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 </div>
@@ -296,10 +296,10 @@
 				</table>
 					<div style="position: absolute; left:950px;">
 					<div class="dev_list" style="height:300px;">
-						<ul class="filetree">
-							<li><span class="area">Area1</span>
+						<ul class="filetree" id="area_root">
+							<li><span class="area" id="area_0">区域_root</span>
 								<ul>
-									<li><span class="device" >device</span>
+									<!-- <li><span class="device" >device</span>
 										<ul>
 											<li><span class="cam">Channel01</span></li>
 											<li><span class="cam">Channel02</span></li>
@@ -307,7 +307,7 @@
 											<li><span class="cam">Channel04</span></li>
 										</ul>
 									</li>
-									<li><span class="area">Area2</span>
+									<li><span id="area_1" class="area">Area2</span>
 										<ul>
 											<li><span class="device" >device</span>
 												<ul>
@@ -322,7 +322,7 @@
 												</ul>
 											</li>
 										</ul>
-									</li>
+									</li> -->
 								</ul>
 							</li>
 						</ul>
@@ -330,26 +330,27 @@
 					<div class="action" style="height:22px; margin:10px;"><ul><li class="hover">添加至分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree">
-							<li><span class="group">Group1</span>
+							<li><span class="group" id="group_0">Group_root</span>
 								<ul>
-									<li><span class="cam">Channel01</span></li>
-									<li><span class="cam">Channel02</span></li>
-									<li><span class="cam">Channel03</span></li>
-									<li><span class="cam">Channel04</span></li>
+								<!-- <li><span class="cam">Channel01</span></li>
+								<li><span class="cam">Channel02</span></li>
+								<li><span class="cam">Channel03</span></li>
+								<li><span class="cam">Channel04</span></li>
 								</ul>
-							</li>
-							<li><span class="group">Group2</span>
-								<ul>
-									<li><span class="cam">Channel01</span></li>
-									<li><span class="cam">Channel02</span></li>
-									<li><span class="cam">Channel03</span></li>
-									<li><span class="cam">Channel04</span></li>
-									<li><span class="cam">Channel05</span></li>
-									<li><span class="cam">Channel06</span></li>
-									<li><span class="cam">Channel07</span></li>
-									<li><span class="cam">Channel08</span></li>
+								<li><span class="group" id="group_1">Group2</span>
+									<ul>
+										<li><span class="cam">Channel01</span></li>
+										<li><span class="cam">Channel02</span></li>
+										<li><span class="cam">Channel03</span></li>
+										<li><span class="cam">Channel04</span></li>
+										<li><span class="cam">Channel05</span></li>
+										<li><span class="cam">Channel06</span></li>
+										<li><span class="cam">Channel07</span></li>
+										<li><span class="cam">Channel08</span></li>
+									</ul>
+								</li> -->
 								</ul>
-							</li>
+							</li>								
 						</ul>
 					</div>
 				</div>

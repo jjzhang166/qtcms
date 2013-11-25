@@ -37,20 +37,33 @@
 			$(this).mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				if( obj[0].nodeName == 'SPAN'){
-					if(obj.hasClass('cam')){
-						$('div.dev_list span').not('span.cam').removeClass('sel');
-					}else{ 
-						$('div.dev_list span').removeClass('sel');
+				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') )){ 
+					alert(obj.data('data'));
+				}*/
+				if(event.which == 1){
+					if( obj[0].nodeName == 'SPAN'){
+						if(obj.hasClass('cam')){
+							$('div.dev_list span').not('span.cam').removeClass('sel');
+						}else{ 
+							$('div.dev_list span').removeClass('sel');
+						}
+						obj.toggleClass('sel');
 					}
-					obj.addClass('sel');		
 				}
 				if(event.which == 3){ 
+					if(obj[0].nodeName == 'SPAN'){ 
+						$('div.dev_list span').removeClass('sel');
+						obj.addClass('sel');
+					}else{ 
+						if(!$(this).find('span.sel')[0]){
+							$(this).find('span:eq(0)').addClass('sel');
+						}
+					}
 					//分组设置下的右键菜单调整
 					$('#menu0 li').show()
 					$('#menu0 li').eq(index).hide();
-					if(index == 1){ 
-						$('#menu0 li').not(':eq(0)').hide();
+					if(index == 1){
+						$('#menu0 li:eq(2)').hide();
 					}
 					showContextMenu(event.clientY,event.clientX,obj);
 				}else{ 
@@ -72,8 +85,9 @@
 					return $(this).parent().is('#set_content div.right');
 				}).hide().eq(index).show();
 				oTreeWarp.show();
-				if(index == 0){ 
+				if(index == 0){
 					searchFlush();
+					areaList2Ui();
 				}else if(index == 3){ 
 					userList2Ui();
 				}
@@ -123,18 +137,71 @@
 		$('#UserMan table.UserMan tbody input:hidden').val('');
 		$('#UserMan table.UserMan tbody tr').not(':first').remove();
 		var userList = oCommonLibrary.GetUserList();
-		for(i in userList){
-			var userlv = oCommonLibrary.GetUserLevel(userList[i]);
-			var userCom;
-			switch(userlv){
-				case 0 : userCom = '超级管理员';	break;
-				case 1 : userCom = '管理员';	break;	
-				case 2 : userCom = '普通用户'; break;
-				case 3 : userCom = '游客'; break;
-				default: userCom = '游客'; break;
+		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
+			for(i in userList){
+				var userlv = oCommonLibrary.GetUserLevel(userList[i]);
+				var userCom;
+				switch(userlv){
+					case 0 : userCom = '超级管理员';	break;
+					case 1 : userCom = '管理员';	break;	
+					case 2 : userCom = '普通用户'; break;
+					case 3 : userCom = '游客'; break;
+					default: userCom = '游客'; break;
+				}
+				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
 			}
-			$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
 		}		
+	}
+	function areaList2Ui(){
+		$('div.dev_list span.area').not('#area_0').parent('li').remove();
+		//$('ul.filetree').treeview();
+		var areaListArrar=[];
+		var pidList=[];
+		var areaList = oCommonLibrary.GetAreaList();
+		for(n in areaList){
+			var id = areaList[n];
+			var name = oCommonLibrary.GetAreaName(areaList[n]);
+			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+			areaListArrar.push([id,name,pid]);
+			pidList.push(pid);
+
+		}
+		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
+		for(j in arr){
+			for(k in areaListArrar){		
+				if(areaListArrar[k]['2'] == arr[j]){		
+					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['0']+'">'+areaListArrar[k]['1']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
+					add.find('span.area').data('data',areaListArrar[k]);
+					$('ul.filetree:eq(0)').treeview({add:add});
+				}
+			}
+		}
+		for(i in areaListArrar){
+			deviceList2Ui(areaListArrar[i][0])		;
+		}
+	}
+	function groupList2Ui(){ 
+		var groupList = oCommonLibrary.GetGroupList();
+		//var names = ['group1','group2','group3'];
+		for( i in groupList){
+			var id = groupList[i];
+			var name =oCommonLibrary.GetGroupName(id);
+			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
+			add.find('span.group').data('data',[id,name]);
+			$('ul.filetree:eq(1)').treeview({add:add});
+		}
+	}
+
+	function deviceList2Ui(areaid){
+		var devList = oCommonLibrary.GetDeviceList(areaid);
+		for (var i=0;i<devList.length;i++){ 
+			var name=devList[i];
+			//var name = oCommonLibrary.GetDeviceName(id);
+			var add = $('<li><span class="device" >'+name+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
+			//add.find('span.group').data('data',[id,name]);
+			$('ul.filetree:eq(1)').treeview({add:add});
+
+		}
 	}
 
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
@@ -196,6 +263,9 @@
 	function closeMenu(){ 
 		$('#iframe').hide();
 		$('#menusList div.menu').hide();
+		$('#menusList div.menu input.data').remove();
+		//$('#menusList div.menu input:hidden').remove();
+		$('#menusList div.menu input:text').val('');
 	}
 	function removeArry(obj,number){ 
 		for(i in obj){ 
@@ -210,19 +280,21 @@ function showContextMenu(y,x,obj){
 	var menu = $('#menu0')
 	menu.find('li').off();
 	if(obj[0].nodeName == 'SPAN'){
-		if(obj.hasClass('area') || obj.hasClass('group')){
-			menu.find('li:eq(2)').hide();
+		if(obj[0].id == 'area_0' || obj[0].id == 'group_0' ){
+			$('#menu0 li:gt(2)').hide();
+		}else if(obj.hasClass('group')){
+			menu.find('li:lt(2)').hide();
 		}else if(obj.hasClass('device')){ 
-			menu.find('li:eq(1)').hide();
+			menu.find('li:lt(3)').hide();
 		}else if(obj.hasClass('cam')){ 
 			menu.find('li').not(':eq(3)').hide();
 			menu.find('li:eq(3)').show();
-		}
+		}	
 		menu.find('li:eq(3)').one('click',function(){ 
-			contextmenue2Modify(obj);
+			showObjActBox('Modify',obj.attr('class').split(' ')[0]);
 		})
 		menu.find('li:last').one('click',function(){ 
-			contextmenue2Del(obj);
+			showObjActBox('Remove',obj.attr('class').split(' ')[0]);
 		})
 	}else{ 
 		$('#menu0 li:gt(2)').hide();
@@ -243,35 +315,71 @@ function addDev(){
 	$('ul.filetree').treeview({add:add});
 
 }
-//treeview 下右键菜单中的修改
-var trance = {'area':'区域','device':'设备','cam':'通道','group':'分组'};
-function contextmenue2Modify(obj){ 
-	var key = obj.attr('class').split(' ')[0];
-	initModifyDevMenu(key);
-	showMenu(key,'修改'+trance[key]);
-}
-function contextmenue2Del(obj){ 
-	var key = obj.attr('class').split(' ')[0];
-	showMenu('confirm','删除'+trance[key]);
-}
-function initModifyDevMenu(key){ 
-	if($('div.dev_list span.sel').length !=0){ 
-		var node = $('div.dev_list span.sel');
-		if(!node.hasClass(key)){ 
-			$('div.dev_list span').removeClass('sel');
-			var node = $('div.dev_list span.'+key+':first');
-			node.addClass('sel');
+//遮罩层和弹出框方法.
+var trance = {'area':'区域','device':'设备','cam':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
+function showObjActBox(action,objclass){
+	var pObjClass = objclass == 'group'?'group':'area';
+	var pObj = $('span.sel');
+	if(action == 'Add'){ // 调整添加的父级对象
+		if(!$('span.sel')[0] || !$('span.sel').hasClass(pObjClass)){
+			pObj = $('span.'+pObjClass+':eq(0)');
 		}
 	}else{ 
-		$('div.dev_list span').removeClass('sel');
-		var node = $('div.dev_list span.'+key+':first');
-		node.addClass('sel');
+		if(!$('span.sel')[0]){
+			$('span.'+objclass+':eq(0)').addClass('sel');
+		}
 	}
-	if(key == 'cam'){ 
-		$('#'+key).find('input').val(node.html());
-	}else if(key == 'device'){ 
-		alert('设备数据填充中');
-	}else{ 
-		$('#'+key).find('input[readonly]').val(node.html());
+	var objdata = $('span.sel').data('data');
+	if(action == 'Remove'){ 
+		var obox = $('#confirm');
+		obox.find('div.confirm').attr('id','Remove'+firstUp(objclass)+'_ok');
+		$('<input class="data" type="hidden" value="'+objdata[0]+'" />').appendTo('#confirm');
+	}else{
+		var obox = $('#'+objclass);
+		initActionBox(action,pObj,obox,objclass);
 	}
+	obox.find('p span').html(trance[action]+trance[objclass]);
+	objShowCenter(obox);
+}
+function initActionBox(action,pObj,obox,objclass){
+	var data = pObj.data('data');
+	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
+	obox.find('div.confirm').attr('id',action+pObjType+'_ok')
+	if(action == 'Add'){
+		if(objclass == 'device'){ 
+			obox.find('div.confirm').attr('id',firstUp(action+objclass)+'_ok')
+		}
+		obox.find('input.parent'+pObjType).val(data[1]);
+	}else if(action == 'Modify'){
+		if(pObjType == 'Area' || pObjType == 'Group'){ 
+			obox.find('#'+pObjType+'_Name_ID').val(data[1]);
+			obox.find('input.parent'+pObjType).val($('#'+pObjType.toLowerCase()+'_'+data[2]).html());
+			$('<input type="hidden" id="Pid_ID" value="'+data[2]+'"/><input type="hidden" id="'+pObjType+'_id_ID" value="'+data[0]+'"/>').appendTo(obox);
+		}
+			/*obox.find('#Area_Name_ID').val(data[1]);
+			obox.find('input.parentArea').val($('#area_'+data[2]).html());
+			$('<input type="hidden" id="Pid_ID" value="'+data[2]+'"/><input type="hidden" id="Area_id_ID" value="'+data[0]+'"/>').appendTo(obox);*/
+	}
+}
+function del(str) {   //数组去除重复
+	var a = {}, c = [], l = str.length; 
+	for (var i = 0; i < l; i++) { 
+	var b = str[i]; 
+	var d = (typeof b) + b; 
+	if (a[d] === undefined) { 
+	c.push(b); 
+	a[d] = 1; 
+	} 
+	} 
+	return c; 
+}
+
+function sortNumber(a,b){
+	return a-b;
+}
+
+function firstUp(str){ 
+	var a = str.split('');
+	a[0] = a[0].toUpperCase();
+	return a.join('');
 }
