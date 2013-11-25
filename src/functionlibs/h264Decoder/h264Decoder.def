@@ -1,0 +1,3 @@
+LIBRARY "h264Decoder.dll"
+EXPORTS
+	CreateInstance @1
