@@ -98,10 +98,20 @@ var oSelected = [],
 	function ModifyAreaSuccess(){
 		var oArea = $('#area_'+$('#area #Area_id_ID').val());
 		var sNewName = $('#area #Area_Name_ID').val()
+		alert($('#Area_id_ID').val()+'+'+sNewName);
+		oCommonLibrary.SetAreaName($('#Area_id_ID').val(),sNewName);
 		oArea.html(sNewName);
 		oArea.data('data')[1]=sNewName;
 		closeMenu();
 	} 
 	function ModifyAreaFail(){ 
 		alert(0)
+	}
+	function areaAction(type){
+		alert(type)
+		if(type == 'Modify'){
+			ModifyAreaSuccess();
+		}else{ 
+
+		}
 	}

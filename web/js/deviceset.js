@@ -194,7 +194,7 @@
 
 	function deviceList2Ui(areaid){
 		var devList = oCommonLibrary.GetDeviceList(areaid);
-		for (var i=0;i<devList.length;i++){ 
+		for (i in devList){ 
 			var name=devList[i];
 			//var name = oCommonLibrary.GetDeviceName(id);
 			var add = $('<li><span class="device" >'+name+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
@@ -344,7 +344,7 @@ function showObjActBox(action,objclass){
 function initActionBox(action,pObj,obox,objclass){
 	var data = pObj.data('data');
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
-	obox.find('div.confirm').attr('id',action+pObjType+'_ok')
+	obox.find('div.confirm').attr('id',action) //action+pObjType+'_ok'
 	if(action == 'Add'){
 		if(objclass == 'device'){ 
 			obox.find('div.confirm').attr('id',firstUp(action+objclass)+'_ok')
@@ -361,6 +361,7 @@ function initActionBox(action,pObj,obox,objclass){
 			$('<input type="hidden" id="Pid_ID" value="'+data[2]+'"/><input type="hidden" id="Area_id_ID" value="'+data[0]+'"/>').appendTo(obox);*/
 	}
 }
+// 辅助方法.
 function del(str) {   //数组去除重复
 	var a = {}, c = [], l = str.length; 
 	for (var i = 0; i < l; i++) { 
@@ -374,11 +375,11 @@ function del(str) {   //数组去除重复
 	return c; 
 }
 
-function sortNumber(a,b){
+function sortNumber(a,b){ //数组生序排列
 	return a-b;
 }
 
-function firstUp(str){ 
+function firstUp(str){  //字符串首字母大写
 	var a = str.split('');
 	a[0] = a[0].toUpperCase();
 	return a.join('');
