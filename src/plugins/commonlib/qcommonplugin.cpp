@@ -1237,7 +1237,7 @@ QStringList QCommonPlugin::GetDeviceList(int area_id)
 	}
 
 	QSqlQuery _query(m_db);
-	QString command = QString("select name from dev where area_id='%1'").arg(area_id);
+	QString command = QString("select id from dev where area_id='%1'").arg(area_id);
 	_query.exec(command);
 
 	int index = 0;
