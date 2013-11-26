@@ -572,7 +572,7 @@ QStringList QCommonPlugin::GetGroupChannelList(int group_id)
 		_query.exec(Command);
 		if(_query.isActive()){
 			int Id_Index=_query.record().indexOf("id");
-			if(_query.next()){
+			while(_query.next()){
 				i_result.append(_query.value(Id_Index).toString());
 			}
 			return i_result;
