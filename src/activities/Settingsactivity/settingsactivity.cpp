@@ -623,6 +623,50 @@ void settingsActivity::OnAddGroup()
 
 void settingsActivity::OnModifyGroup()
 {
+	IGroupManager *Igroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==Igroup)
+	{
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyGroupFail",arg);
+		return;
+	}
+	QVariant Group_id=QueryValue("group_id_ID");
+	QVariant Group_name=QueryValue("group_name_ID");
+	bool nRet_bool=false;
+	nRet_bool=Igroup->IsGroupExists(Group_id.toInt());
+
+	if (false==nRet_bool)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("Group_Id is not exist");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyGroupFail",arg);
+		Igroup->Release();
+		return;
+	}
+	nRet_bool=Igroup->ModifyGroupName(Group_id.toInt(),Group_name.toString());
+	if (false==nRet_bool)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("ModifyGroupFail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("ModifyGroupFail",arg);
+		Igroup->Release();
+		return;
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("ModifyGroupSuccess");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("ModifyGroupSuccess",arg);
+	Igroup->Release();
+
 	return;
 }
 
