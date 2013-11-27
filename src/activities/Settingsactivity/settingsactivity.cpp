@@ -293,6 +293,7 @@ void settingsActivity::OnDeleteUserOk()
 /*device module*/
 void settingsActivity::OnAddDevice()
 {
+	int nRet_id;
 	qDebug("========OnAddDevice========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
@@ -307,8 +308,8 @@ void settingsActivity::OnAddDevice()
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
-	QVariant Area_Id=QueryValue("dev_id_ID");
-	QVariant sDeviceName=QueryValue("devname_ID");
+	QVariant Area_Id=QueryValue("area_id_ID");
+	QVariant sDeviceName=QueryValue("device_name_ID");
 	QVariant sAddress=QueryValue("address_ID");
 	QVariant port=QueryValue("port_ID");
 	QVariant http=QueryValue("http_ID");
@@ -353,8 +354,8 @@ void settingsActivity::OnAddDevice()
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
-		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-		if(-1==nRet_int){
+		nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
+		if(-1==nRet_id){
 			Content.clear();
 			arg.clear();
 			Content.append("AddDeviceFail");
@@ -377,8 +378,8 @@ void settingsActivity::OnAddDevice()
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
-		int nRet_int=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-		if(0!=nRet_int){
+		 nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
+		if(0!=nRet_id){
 			Content.clear();
 			arg.clear();
 			Content.append("AddDeviceFail");
@@ -402,8 +403,9 @@ void settingsActivity::OnAddDevice()
 end1:
 	Content.clear();
 	arg.clear();
-	Content.append("add device success");
-	EP_ADD_PARAM(arg,"success",Content);
+	QString nSret=QString("%1").arg(nRet_id);
+	Content.append(nSret);
+	EP_ADD_PARAM(arg,"deviceid",Content);
 	EventProcCall("AddDeviceSuccess",arg);
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
@@ -480,7 +482,7 @@ void settingsActivity::OnModifyDevice()
 		return;
 	}
 
-	QVariant sDeviceName=QueryValue("devname_ID");
+	QVariant sDeviceName=QueryValue("device_name_ID");
 	if(false==Dev_Id.isNull()&&false==sDeviceName.isNull()){
 		int nRet_int=Idevice->ModifyDeviceName(Dev_Id.toInt(),sDeviceName.toString());
 		if(0!=nRet_int){
@@ -573,6 +575,7 @@ void settingsActivity::OnModifyDevice()
 /*Group Module*/
 void settingsActivity::OnAddGroup()
 {
+	int nRet_id;
 	IGroupManager *Igroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
 	DEF_EVENT_PARAM(arg);
@@ -595,8 +598,8 @@ void settingsActivity::OnAddGroup()
 		return;
 	}
 
-	int nRet_int=Igroup->AddGroup(sName_Id.toString());
-	if(-1==nRet_int){
+	nRet_id=Igroup->AddGroup(sName_Id.toString());
+	if(-1==nRet_id){
 		Content.clear();
 		arg.clear();
 		Content.append("AddDeviceFail");
@@ -607,9 +610,13 @@ void settingsActivity::OnAddGroup()
 	}
 	Content.clear();
 	arg.clear();
-	Content.append("add group success");
-	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("AddGroupSuccess",arg);
+	//Content.append("add group success");
+	//EP_ADD_PARAM(arg,"success",Content);
+	//EventProcCall("AddGroupSuccess",arg);
+	QString nSret=QString("%1").arg(nRet_id);
+	Content.append(nSret);
+	EP_ADD_PARAM(arg,"groupid",Content);
+	EventProcCall("AddDeviceSuccess",arg);
 	Igroup->Release();
 	return;
 }
@@ -668,6 +675,7 @@ void settingsActivity::OnRemoveGroup()
 /*Area Module*/
 void settingsActivity::OnAddArea()
 {
+	int nRet_id;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
 	DEF_EVENT_PARAM(arg);
@@ -681,8 +689,8 @@ void settingsActivity::OnAddArea()
 
 	QVariant nPid_Id=QueryValue("pid_ID");
 	QVariant sName_Id=QueryValue("area_name_ID");
-	int nRet_int=Iarea->AddArea(nPid_Id.toInt(),sName_Id.toString());
-	if(-1==nRet_int){
+	 nRet_id=Iarea->AddArea(nPid_Id.toInt(),sName_Id.toString());
+	if(-1==nRet_id){
 		Content.clear();
 		arg.clear();
 		Content.append("AddArea Fail");
@@ -693,9 +701,13 @@ void settingsActivity::OnAddArea()
 	}
 	Content.clear();
 	arg.clear();
-	Content.append("AddArea success");
-	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("AddAreaSuccess",arg);
+	//Content.append("AddArea success");
+	//EP_ADD_PARAM(arg,"success",Content);
+	//EventProcCall("AddAreaSuccess",arg);
+	QString nSret=QString("%1").arg(nRet_id);
+	Content.append(nSret);
+	EP_ADD_PARAM(arg,"areaid",Content);
+	EventProcCall("AddDeviceSuccess",arg);
 	Iarea->Release();
 	return;
 }
@@ -834,6 +846,7 @@ void settingsActivity::OnRemoveChannel()
 
 void settingsActivity::OnAddChannelInGroup()
 {
+	int nRet_id=-1;
 	IGroupManager *IGroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&IGroup);
 	DEF_EVENT_PARAM(arg);
@@ -851,9 +864,9 @@ void settingsActivity::OnAddChannelInGroup()
 	QVariant Channel_id_ID=QueryValue("channel_id_ID");
 	QVariant R_Chl_Group_Name_ID=QueryValue("r_chl_group_name_ID");
 
-	int nRet=-1;
-	nRet=IGroup->AddChannelInGroup(Group_id_ID.toInt(),Channel_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
-	if(-1==nRet){
+
+	nRet_id=IGroup->AddChannelInGroup(Group_id_ID.toInt(),Channel_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
+	if(-1==nRet_id){
 		arg.clear();
 		Content.clear();
 		Content.append("AddChannelInGroup fail");
@@ -864,9 +877,13 @@ void settingsActivity::OnAddChannelInGroup()
 	}
 	arg.clear();
 	Content.clear();
-	Content.append("AddChannelInGroup success");
-	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("AddChannelInGroupSuccess",arg);
+	//Content.append("AddChannelInGroup success");
+	//EP_ADD_PARAM(arg,"success",Content);
+	//EventProcCall("AddChannelInGroupSuccess",arg);
+	QString nSret=QString("%1").arg(nRet_id);
+	Content.append(nSret);
+	EP_ADD_PARAM(arg,"chlgroupid",Content);
+	EventProcCall("AddDeviceSuccess",arg);
 	IGroup->Release();
 	return;
 }
