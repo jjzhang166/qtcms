@@ -739,7 +739,7 @@ int QCommonPlugin::AddArea(int nPid,QString sName)
 				}
 			}
 			Area_lock.unlock();
-			return IAreaManager::E_SYSTEM_FAILED;
+			return -1;
 		}else if(IsAreaIdExist(nPid)){
 			_query.prepare("insert into area(pid,name) values(:nPid,:name)");
 			_query.bindValue(":pid",nPid);
@@ -772,13 +772,13 @@ int QCommonPlugin::AddArea(int nPid,QString sName)
 				}
 			}
 			Area_lock.unlock();
-			return IAreaManager::E_SYSTEM_FAILED;
+			return -1;
 		}
 		Area_lock.unlock();
-		return IAreaManager::E_AREA_NOT_FOUND;
+		return -1;
 	}
 	Area_lock.unlock();
-	return IAreaManager::E_AREA_NAME_EXISTS;
+	return -1;
 }
 
 int QCommonPlugin::RemoveAreaById(int nId)
