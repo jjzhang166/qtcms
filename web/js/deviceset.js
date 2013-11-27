@@ -1,8 +1,8 @@
 
 	$(function(){
 		var oTreeWarp = $('div.dev_list').slice(2);
-		$('ul.filetree').treeview().find('span.cam').click(function(){
-			$(this).toggleClass('cam_1')
+		$('ul.filetree').treeview().find('span.channel').click(function(){
+			$(this).toggleClass('channel_1')
 		});
 		oTreeWarp.hide();
 		$('#iframe').hide();
@@ -37,13 +37,13 @@
 			$(this).mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('cam') )){ 
-					alert(obj.data('data'));
-				}
+				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
+					show(obj.data('data'));
+				}*/
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
-						if(obj.hasClass('cam')){
-							$('div.dev_list span').not('span.cam').removeClass('sel');
+						if(obj.hasClass('channel')){
+							$('div.dev_list span').not('span.channel').removeClass('sel');
 						}else{ 
 							$('div.dev_list span').removeClass('sel');
 						}
@@ -174,11 +174,9 @@
 					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
 					add.find('span.area').data('data',areaListArrar[k]);
 					$('ul.filetree:eq(0)').treeview({add:add});
+					deviceList2Ui(areaListArrar[k]['area_id']);
 				}
 			}
-		}
-		for(i in areaListArrar){
-			deviceList2Ui(areaListArrar[i]['area_id']);
 		}
 	}
 	
@@ -190,32 +188,32 @@
 			devData['area_id'] = areaid;
 			devData['dev_id'] = id;
 			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
-			devData['devname'] = devData['name'];
-			devData['areaname'] = oCommonLibrary.GetAreaName(areaid);
+			devData['device_name'] = devData['name'];
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid);
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
-			$('ul.filetree:eq(1)').treeview({add:add});
-			channelList2Ui(id);
+			$('ul.filetree:eq(1)').treeview({add:add});	
+			devChannelList2Ui(id);
 		}
 	}
 
-	function channelList2Ui(devid){
+	function devChannelList2Ui(devid){
 		var chlList = oCommonLibrary.GetChannelList(devid);
 		for(i in chlList){ 
-			var id = chlList[i]
-			var chldata = oCommonLibrary.GetChannelInfo(id);
-			var data = {};
-			data['channel_id'] = id;
-			data['dev_id'] = devid;
-			data['channel_number'] = chldata['number']
-			data['stream_id'] = chldata['stream'];
-			data['channel_name'] = chldata['name'];
-			var add = $('<li><span class="cam" id="cam_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
-			add.find('span.cam').data('data',data);
-			$('ul.filetree:eq(1)').treeview({add:add});
-
+			var id = chlList[i];
+			if(!$('#channel_'+id)[0]){ 
+				var chldata = oCommonLibrary.GetChannelInfo(id);
+				var data = {};
+				data['channel_id'] = id;
+				data['dev_id'] = devid;
+				data['channel_number'] = chldata['number']
+				data['stream_id'] = chldata['stream'];
+				data['channel_name'] = chldata['name'];
+				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
+				add.find('span.channel').data('data',data);
+				$('ul.filetree:eq(1)').treeview({add:add});
+			}		
 		}
-
 	}
 	function groupList2Ui(){ 
 		var groupList = oCommonLibrary.GetGroupList();
@@ -223,11 +221,26 @@
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
 			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
-			add.find('span.group').data('data',{'id':id,'name':name});
+			add.find('span.group').data('data',{'group_id':id,'group_name':name});
+			$('ul.filetree:eq(1)').treeview({add:add});
+			groupChannelList2Ui(id);
+		}
+	}
+	function groupChannelList2Ui(groupId){ 
+		var chlList = oCommonLibrary.GetGroupChannelList(groupId);
+		for(i in chlList){ 
+			var id = chlList[i]
+			var chldata = oCommonLibrary.GetChannelInfoFromGroup(id);
+			var data = {};
+			data['r_chl_group_id'] = id;
+			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id)
+			data['group_id'] = chldata['group_id']
+			data['r_chl_group_name'] = chldata['name'];
+			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
+			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}
 	}
-
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
 		var node = $('#'+obj+'');
 		node.find('input:text,:password').val('');
@@ -245,7 +258,7 @@
 	}
 
 	function objShowCenter(obj){ //调整弹出框定位 居中
-		$('#iframe').show();
+		$('#iframe').hide().show();
 		obj.css({
 			top:($(window).height() - obj.height())/2,
 			left:($(window).width() - obj.width())/2
@@ -285,11 +298,11 @@
 		}).eq(0).data('data');
 	}
 	function closeMenu(){ 
-		$('#iframe').hide();
-		$('#menusList div.menu').hide();
+		$('#iframe,div.confirm,#menusList div.menu').hide();
 		$('#menusList div.menu input.data').remove();
 		//$('#menusList div.menu input:hidden').remove();
 		$('#menusList div.menu input:text').val('');
+		$('div.close').html('取消');
 	}
 	function removeArry(obj,number){ 
 		for(i in obj){ 
@@ -310,7 +323,7 @@ function showContextMenu(y,x,obj){
 			menu.find('li:lt(2)').hide();
 		}else if(obj.hasClass('device')){ 
 			menu.find('li:lt(3)').hide();
-		}else if(obj.hasClass('cam')){ 
+		}else if(obj.hasClass('channel')){ 
 			menu.find('li').not(':eq(3)').hide();
 			menu.find('li:eq(3)').show();
 		}	
@@ -340,8 +353,8 @@ function addDev(){
 
 }
 //遮罩层和弹出框方法.
-var trance = {'area':'区域','device':'设备','cam':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
-function showObjActBox(action,objclass){
+var trance = {'area':'区域','device':'设备','channel':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
+function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group'?'group':'area';
 	var pObj = $('span.sel');
 	if(action == 'Add'){ // 调整添加的父级对象
@@ -353,39 +366,46 @@ function showObjActBox(action,objclass){
 			$('span.'+objclass+':eq(0)').addClass('sel');
 		}
 	}
-	var objdata = $('span.sel').data('data');
 	if(action == 'Remove'){ 
 		var obox = $('#confirm');
-		obox.find('div.confirm').attr('id','Remove'+firstUp(objclass)+'_ok');
-		$('<input class="data" type="hidden" value="'+objdata[0]+'" />').appendTo('#confirm');
 	}else{
 		var obox = $('#'+objclass);
-		initActionBox(action,pObj,obox,objclass);
 	}
 	obox.find('p span').html(trance[action]+trance[objclass]);
+	initActionBox(action,pObj,obox,objclass);
 	objShowCenter(obox);
 }
-function initActionBox(action,pObj,obox,objclass){
+function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
-	obox.find('div.confirm').attr('id',action+pObjType+'_ok');
-	if(action == 'Add'){
-		if(objclass == 'device'){ 
-			obox.find('div.confirm').attr('id',firstUp(action+objclass)+'_ok')
+	$('#'+action+pObjType+'_ok').show();
+
+	/*if(pObj.parent('li').parent('ul').prev('span').hasClass('group')){ 
+		$('#channel input:text').attr('id','r_chl_group_name_ID');
+	}else{ 
+		$('#channel input:text').attr('id','channel_name_ID');
+	}*/
+
+	for(i in data){
+		if(i.match(objclass+'_name') && action == 'Remove'){
+			$('#confirm h4').attr('id',i+'_ID').html('删除'+data[i]);
 		}
-		obox.find('input.parent'+pObjType).val(data[1]);
-	}else if(action == 'Modify'){
-			for(i in data){
-				var str = 'Null'
-				if(data[i] != ''){ 
-					str = data[i]
-				}
-				if($('#'+i+'_ID')[0]){ 
-					$('#'+i+'_ID').val(str);
-				}else{ 
-					$('<input type="hidden" value="'+str+'" id="'+i+'_ID"/>').appendTo(obox);
-				}
-			}
+		var str = 'Null'
+		if(data[i] != ''){ 
+			str = data[i];
+		}
+		if($('#'+i+'_ID')[0]){ 
+			$('#'+i+'_ID').val(str);
+		}else{ 
+			$('<input type="hidden" class="data" value="'+str+'" id="'+i+'_ID"/>').appendTo(obox);
+		}
+	}
+	if(action == 'Add'){
+		$('#'+action+firstUp(objclass)+'_ok').show();
+		$('#'+objclass+'_name_ID').val('');
+		$('#'+objclass+'_id_ID').remove();
+		$('#pid_ID').val(data['area_id']);
+		obox.find('input.parent'+pObjType).val(data['area_name']);
 	}
 }
 // 辅助方法.
@@ -394,10 +414,10 @@ function del(str) {   //数组去除重复
 	for (var i = 0; i < l; i++) { 
 	var b = str[i]; 
 	var d = (typeof b) + b; 
-	if (a[d] === undefined) { 
-	c.push(b); 
-	a[d] = 1; 
-	} 
+	if (a[d] === undefined){ 
+		c.push(b); 
+		a[d] = 1; 
+		} 
 	} 
 	return c; 
 }
@@ -426,4 +446,12 @@ function show(data){
 	}else{ 
 		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
 	}
+}
+function showdata(id,type){ 
+	var submit = $('#'+type).find('.confirm:visible').attr('id');
+	var str =submit+'/'+id +'/';
+	$('#'+type).find('input').each(function(){ 
+		str += $(this).attr('id')+':'+$(this).val()+'/';
+	})
+	show(str);
 }

@@ -70,11 +70,11 @@
 }
 
 .filetree li{padding: 3px 0 2px 16px; color: #000;}
-.filetree span.device, .filetree span.area, .filetree span.group, .filetree span.cam { padding: 1px 0 1px 16px; cursor: pointer;}
+.filetree span.device, .filetree span.area, .filetree span.group, .filetree span.channel { padding: 1px 0 1px 16px; cursor: pointer;}
 .filetree span.device { background: url(images/dev_01.png) 0 no-repeat;}
 .filetree li.expandable span.device{ background: url(images/dev_02.png) 0 no-repeat;}
-.filetree .cam { background: url(images/cam_01.png) 0 no-repeat;}
-.filetree .cam_1 { background: url(images/cam_02.png) 0 no-repeat;}
+.filetree .channel { background: url(images/cam_01.png) 0 no-repeat;}
+.filetree .channel_1 { background: url(images/cam_02.png) 0 no-repeat;}
 
 .del,.modify{ float:right; margin: 0 2px;}	
 .filetree span.area	{ background: url(images/area_01.png) 0 no-repeat;}
