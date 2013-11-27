@@ -616,7 +616,7 @@ void settingsActivity::OnAddGroup()
 	QString nSret=QString("%1").arg(nRet_id);
 	Content.append(nSret);
 	EP_ADD_PARAM(arg,"groupid",Content);
-	EventProcCall("AddDeviceSuccess",arg);
+	EventProcCall("AddGroupSuccess",arg);
 	Igroup->Release();
 	return;
 }
@@ -707,7 +707,7 @@ void settingsActivity::OnAddArea()
 	QString nSret=QString("%1").arg(nRet_id);
 	Content.append(nSret);
 	EP_ADD_PARAM(arg,"areaid",Content);
-	EventProcCall("AddDeviceSuccess",arg);
+	EventProcCall("AddAreaSuccess",arg);
 	Iarea->Release();
 	return;
 }
@@ -883,7 +883,7 @@ void settingsActivity::OnAddChannelInGroup()
 	QString nSret=QString("%1").arg(nRet_id);
 	Content.append(nSret);
 	EP_ADD_PARAM(arg,"chlgroupid",Content);
-	EventProcCall("AddDeviceSuccess",arg);
+	EventProcCall("AddChannelInGroupSuccess",arg);
 	IGroup->Release();
 	return;
 }
