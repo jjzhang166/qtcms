@@ -649,8 +649,8 @@ void settingsActivity::OnModifyGroup()
 		Igroup->Release();
 		return;
 	}
-	nRet_bool=Igroup->ModifyGroupName(Group_id.toInt(),Group_name.toString());
-	if (false==nRet_bool)
+	int nret_0=Igroup->ModifyGroupName(Group_id.toInt(),Group_name.toString());
+	if (0!=nret_0)
 	{
 		arg.clear();
 		Content.clear();
