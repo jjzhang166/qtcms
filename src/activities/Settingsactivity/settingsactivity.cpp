@@ -303,9 +303,11 @@ void settingsActivity::OnAddDeviceDouble()
 
 	DEF_EVENT_PARAM(arg);
 	QString Content="system fail";
+	QString State_num="0";
 
 	if(NULL==Idevice||NULL==Iarea){
 		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"state",State_num);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -324,6 +326,7 @@ void settingsActivity::OnAddDeviceDouble()
 		Content.clear();
 		Content.append("please choose the device");
 		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"state",State_num);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -338,6 +341,8 @@ void settingsActivity::OnAddDeviceDouble()
 		Content.clear();
 		arg.clear();
 		Content.append("AreaID is not exist");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"state",State_num);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -389,9 +394,14 @@ void settingsActivity::OnAddDeviceDouble()
 		if(SearchIP_ID.isNull()||SearchHttpport_ID.isNull()||SearchMediaPort_ID.isNull()){
 			Content.clear();
 			arg.clear();
-			Content.append("AddDeviceFail");
+			State_num.clear();
+			QString Num=QString("%1").arg(n);
+			Content.append(Num);
+			Content.append("AddDeviceDoubleFail");
 			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("AddDeviceFail",arg);
+
+			EP_ADD_PARAM(arg,"state",State_num);
+			EventProcCall("AddDeviceDoubleFail",arg);
 			continue;
 		}
 		
@@ -401,16 +411,24 @@ void settingsActivity::OnAddDeviceDouble()
 		if(-1==nRet_id){
 			Content.clear();
 			arg.clear();
-			Content.append("AddDeviceFail");
+			State_num.clear();
+			QString Num=QString("%1").arg(n);
+			Content.append(Num);
+			Content.append("AddDeviceDoubleFail");
 			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("AddDeviceFail",arg);
+			EP_ADD_PARAM(arg,"state",State_num);
+			EventProcCall("AddDeviceDoubleFail",arg);
 			continue;
 		}
 
 		Content.clear();
 		arg.clear();
+		State_num.clear();
+		QString Num=QString("%1").arg(n);
+		Content.append(Num);
 		QString nSret=QString("%1").arg(nRet_id);
 		Content.append(nSret);
+		EP_ADD_PARAM(arg,"state",State_num);
 		EP_ADD_PARAM(arg,"deviceid",Content);
 		EventProcCall("AddDeviceSuccess",arg);
 		continue;
