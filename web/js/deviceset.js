@@ -109,13 +109,11 @@
 				for(i in data){ 
 					dataStr+=i+'="'+data[i]+'" ';
 				}
-				dataStr+=' >';
+				dataStr+=' />';
 				str+=dataStr;
 			});
 			str+=' </devListInfo>';
-
 			$('#dev_list_ID').val('').val(str);
-			alert($('#dev_list_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
