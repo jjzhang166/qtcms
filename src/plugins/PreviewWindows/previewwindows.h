@@ -9,9 +9,8 @@
 #include <QtGui/QtGui>
 #include "qpreviewwindows.h"
 
-class PreviewWindows :public QWidget,
-	public IWebPluginBase,
-	public IDisplayWindowsManager
+class PreviewWindows :public QWidget
+	,public IWebPluginBase
 {
 	Q_OBJECT
 public:

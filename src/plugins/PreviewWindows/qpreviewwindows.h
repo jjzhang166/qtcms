@@ -33,6 +33,19 @@ public slots:
 	virtual QString getCureentDivMode();
 
 	void OnSubWindowDblClick(QWidget *,QMouseEvent *);
+
+	int GetCurrentWnd(unsigned int uiWndIndex);
+
+	int OpenCameraInWnd(unsigned int uiWndIndex
+		,const QString sAddress,unsigned int uiPort,const QString & sEseeId
+		,unsigned int uiChannelId,unsigned int uiStreamId
+		,const QString & sUsername,const QString & sPassword
+		,const QString & sVendor);
+
+	int CloseWndCamera(unsigned int uiWndIndex);
+
+	int GetWindowConnectionStatus(unsigned int uiWndIndex);
+
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

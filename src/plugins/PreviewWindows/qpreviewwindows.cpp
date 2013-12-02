@@ -162,3 +162,23 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 {
 	m_DivMode->subWindowDblClick(wind,ev);
 }
+
+int QPreviewWindows::GetCurrentWnd( unsigned int uiWndIndex )
+{
+
+}
+
+int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sVendor )
+{
+
+}
+
+int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
+{
+
+}
+
+int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
+{
+
+}

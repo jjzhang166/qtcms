@@ -18,6 +18,7 @@ public:
 	virtual void mouseMoveEvent(QMouseEvent *);
 
 	virtual void mousePressEvent(QMouseEvent *);
+
 private:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
