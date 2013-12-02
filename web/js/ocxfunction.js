@@ -1,7 +1,7 @@
 var oSelected = [],
 	oSearchOcx,
 	oCommonLibrary;	
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice'];  //事件名称集合
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble'];  //事件名称集合
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root'});// 主区数据句填充.
@@ -152,6 +152,9 @@ var oSelected = [],
 	}
 	function RemoveDeviceSuccess(){ 
 
+	}
+	function AddDeviceDouble(data){ 
+		alert(data);
 	}
 	function debug (){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
