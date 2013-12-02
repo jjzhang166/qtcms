@@ -6,6 +6,7 @@
 #include <qwfw.h>
 #include <IUserManager.h>
 #include <IDeviceManager.h>
+#include <QDomDocument>
 #include <IAreaManager.h>
 #include <IGroupManager.h>
 #include <IChannelManager.h>
@@ -43,6 +44,7 @@ public slots:
 	
 	/*device module*/
 	void OnAddDevice();
+	void OnAddDeviceDouble();
 	void OnRemoveDevice();
 	void OnModifyDevice();
 
