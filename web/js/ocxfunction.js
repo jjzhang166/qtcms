@@ -151,7 +151,7 @@ var oSelected = [],
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':deviceid,'parea_name':$('#parea_name_ID').val()}
 	}
 	function RemoveDeviceSuccess(){ 
-
+		
 	}
 	function AddDeviceDouble(data){ 
 		alert(data);

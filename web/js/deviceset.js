@@ -102,10 +102,16 @@
 		$('#SerachDevList tbody').on('click','input:checkbox',function(event){
 			event.stopPropagation();
 			var devList = $('#SerachDevList tbody input:checked');
-			var str = '<devListInfo cut = "'+devList.length+'">';
+			var oArea=$('div.dev_list:eq(0)')
+			if(!oArea.find('span.sel')[0]){
+				oArea.find('span').removeClass('sel');
+				oArea.find('span.area:first').addClass('sel');
+			}
+			var areaID = oArea.find('span.sel').data('data')['area_id'];
+			var str = '<devListInfo cut = "'+devList.length+'" area_id="'+areaID+'">';
 			devList.each(function(){ 
 				var data = $(this).parent('td').parent('tr').data('data');
-				var dataStr = '<dev ';
+				var dataStr = '<dev username="admin" password="" ';
 				for(i in data){ 
 					dataStr+=i+'="'+data[i]+'" ';
 				}
@@ -113,7 +119,8 @@
 				str+=dataStr;
 			});
 			str+=' </devListInfo>';
-			$('#dev_list_ID').val('').val(str);
+			$('#adddevicedouble_ID').val('').val(str);
+			alert($('#adddevicedouble_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
