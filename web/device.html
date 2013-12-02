@@ -103,34 +103,35 @@
 	</ul>
 </div>
 <div id="device" class="menu">
-		<p><span>修改设备</span><a class="hover close" href="javascript:;"></a></p>
+		<p><span>修改设备</span><a class="hover close"></a></p>
 		<table>
 			<tr><td colspan="2">设备连接方式</td></tr>
-			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" type="radio" name="Connection" checked="checked" value="IP" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="sEsee" />易视网链接</td></tr>
-			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" /></td></tr>
-			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" /></td></tr>
-			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" /></td></tr>
-			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
-			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" /></td></tr>
-			<tr><td class="td1">密码</td><td><input type="text" id="password_ID" /></td></tr>
-			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" /></td></tr>
-			<tr><td class="td1">通道数</td><td><input  readonly="readonly" type="text" id="channel_count_ID"/></td></tr>
+			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="IP" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="sEsee" />易视网链接</td></tr>
+			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" value="192.168.2.1" /></td></tr>
+			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" value="80" /></td></tr>
+			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" value="8080" /></td></tr>
+			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" value="100015721" /></td></tr>
+			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" value="admin" /></td></tr>
+			<tr><td class="td1">密码</td><td><input type="text" id="password_ID" value="" /></td></tr>
+			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" value="test123" /></td></tr>
+			<tr><td class="td1">通道数</td><td><input   type="text" id="channel_count_ID" value="4" /></td></tr>
 			<tr><td class="td1">所在区域</td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
 			<tr>
 				<td class="td1">设备类型</td>
 				<td>
 					<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
-						<span></span>
+						<span>DVR</span>
+						<input type="hidden" id="vendor_ID" value="DVR"></input>
 						<a class="hover" href="javascript:;"></a>
 					</div>
 					<ul class="option">
-						<li><a style="width:154px;" href="javascript:;"></a></li>
-						<li><a style="width:154px;" href="javascript:;"></a></li>
-						<li><a style="width:154px;" href="javascript:;"></a></li>
+						<li><a style="width:154px;" href="javascript:;">dvr</a></li>
+						<li><a style="width:154px;" href="javascript:;">nvr</a></li>
+						<li><a style="width:154px;" href="javascript:;">ipc</a></li>
 					</ul>
 				</td>
 			</tr>
-			<tr><td colspan="2" class="tdBtn"><div class="hover close">取消</div><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td></tr>
+			<tr><td colspan="2" class="tdBtn"><div class="hover close" onclick="showdata('设备','device')">取消</div><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td></tr>
 		</table>
 </div>
 <div id="area" class="menu">
@@ -268,12 +269,13 @@
 									
 					</tbody>
 				</table>
+				<input type="hidden" id="dev_list_ID" />
 				<div class="action" style="position: absolute; left:760px;">
 					<ul>
 						<li class="hover" onclick="addDev();">添加→</li>
 						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
 						<li class="hover" onclick="showObjActBox('Add','group');">添加分组</li>
-						<li class="hover" onclick="showObjActBox('modify','device');">修改设备</li>
+						<li class="hover" onclick="showObjActBox('Modify','device');">修改设备</li>
 						<li class="hover" onclick="searchFlush();">设备搜索</li>
 					</ul>
 				</div>

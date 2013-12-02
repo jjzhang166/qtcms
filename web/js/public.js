@@ -168,6 +168,7 @@ function set_drag(oDrag,X1,X2){
 				if($(this).attr('class') != 'hover'){
 					This.next('ul.option').hide();
 					This.find('span').html($(this).html());
+					This.find('#vendor_ID').val($(this).html());
 					This.find('input:hidden').val($(this).attr('key'));
 				}
 			})

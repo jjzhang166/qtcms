@@ -17,9 +17,11 @@
 			closeMenu();
 		})
 
-		$('#modifyDevice input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
+		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
-				var oSwitch = $('#modifyDevice tr').slice(2,6);
+				$('#device input:radio').attr('id','');
+				$(this).attr('id','connect_method_ID');
+				var oSwitch = $('#device tr').slice(2,6);
 				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
 				if(index == 0){
 					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
@@ -37,9 +39,9 @@
 			$(this).mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
+				if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
 					show(obj.data('data'));
-				}*/
+				}
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
 						if(obj.hasClass('channel')){
@@ -99,6 +101,21 @@
 		})
 		$('#SerachDevList tbody').on('click','input:checkbox',function(event){
 			event.stopPropagation();
+			var devList = $('#SerachDevList tbody input:checked');
+			var str = '<devListInfo cut = "'+devList.length+'">';
+			devList.each(function(){ 
+				var data = $(this).parent('td').parent('tr').data('data');
+				var dataStr = '<dev ';
+				for(i in data){ 
+					dataStr+=i+'="'+data[i]+'" ';
+				}
+				dataStr+=' >';
+				str+=dataStr;
+			});
+			str+=' </devListInfo>';
+
+			$('#dev_list_ID').val('').val(str);
+			alert($('#dev_list_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
@@ -168,6 +185,7 @@
 
 		}
 		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
+		deviceList2Ui(0);
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		
@@ -189,10 +207,10 @@
 			devData['dev_id'] = id;
 			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
 			devData['device_name'] = devData['name'];
-			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid);
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
-			$('ul.filetree:eq(1)').treeview({add:add});	
+			$('ul.filetree:eq(0)').treeview({add:add});	
 			devChannelList2Ui(id);
 		}
 	}
@@ -300,7 +318,6 @@
 	function closeMenu(){ 
 		$('#iframe,div.confirm,#menusList div.menu').hide();
 		$('#menusList div.menu input.data').remove();
-		//$('#menusList div.menu input:hidden').remove();
 		$('#menusList div.menu input:text').val('');
 		$('div.close').html('取消');
 	}
@@ -348,6 +365,7 @@ function showContextMenu(y,x,obj){
 	});
 }
 function addDev(){
+	Confirm('测试用!')
 	var add = $('<li><span class="area">Area</span><ul><li><span class="device" >device</span><ul><li><span class="cam">Channel01</span></li><li><span class="cam">Channel02</span></li><li><span class="cam">Channel03</span></li><li><span class="cam">Channel04</span></li><li><span class="cam">Channel05</span></li><li><span class="cam">Channel06</span></li><li><span class="cam">Channel07</span></li><li><span class="cam">Channel08</span></li></ul></li></ul></li>').appendTo('div.dev_list:eq(0) ul.filetree');
 	$('ul.filetree').treeview({add:add});
 
@@ -373,19 +391,20 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	}
 	obox.find('p span').html(trance[action]+trance[objclass]);
 	initActionBox(action,pObj,obox,objclass);
-	objShowCenter(obox);
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
+	if(!data){ 
+		Confirm('请选择一台设备!');
+		return false;
+	}
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
 	$('#'+action+pObjType+'_ok').show();
-
 	/*if(pObj.parent('li').parent('ul').prev('span').hasClass('group')){ 
 		$('#channel input:text').attr('id','r_chl_group_name_ID');
 	}else{ 
 		$('#channel input:text').attr('id','channel_name_ID');
 	}*/
-
 	for(i in data){
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html('删除'+data[i]);
@@ -403,10 +422,12 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	if(action == 'Add'){
 		$('#'+action+firstUp(objclass)+'_ok').show();
 		$('#'+objclass+'_name_ID').val('');
-		$('#'+objclass+'_id_ID').remove();
+		$('#area #'+objclass+'_id_ID').remove();
+		$('#group #'+objclass+'_id_ID').remove();
 		$('#pid_ID').val(data['area_id']);
 		obox.find('input.parent'+pObjType).val(data['area_name']);
 	}
+	objShowCenter(obox);
 }
 // 辅助方法.
 function del(str) {   //数组去除重复
@@ -422,7 +443,7 @@ function del(str) {   //数组去除重复
 	return c; 
 }
 
-function sortNumber(a,b){ //数组生序排列
+function sortNumber(a,b){ //数组升序排列
 	return a-b;
 }
 
@@ -450,7 +471,7 @@ function show(data){
 function showdata(id,type){ 
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
-	$('#'+type).find('input').each(function(){ 
+	$('#'+type).find('input[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
 	show(str);

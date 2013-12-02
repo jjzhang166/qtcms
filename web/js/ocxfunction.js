@@ -1,7 +1,7 @@
 var oSelected = [],
 	oSearchOcx,
 	oCommonLibrary;	
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'];  //事件名称集合
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice'];  //事件名称集合
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root'});// 主区数据句填充.
@@ -10,7 +10,6 @@ var oSelected = [],
 		//搜索设备;
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
 		oSearchOcx.Start();
-		setTimeout(function(){oSearchOcx.Stop()},5000);
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
@@ -18,7 +17,7 @@ var oSelected = [],
 		//debug();
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
-			AddActivityEvent(oActiveEvents[i]+'Faild','Faild(ev)');
+			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
 		}
 	})	
 
@@ -41,8 +40,8 @@ var oSelected = [],
 	function DeleteFaild(ev){ 
 		Confirm('删除失败');
 	}
-	function Faild(ev){ 
-		Confirm(ev.faild);	
+	function Fail(data){
+		Confirm(data.fail);
 	}
 	function ModifyUserLevelSuccess(ev){
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
@@ -59,7 +58,7 @@ var oSelected = [],
 	function callback(oJson){
 		var bUsed = true;
 		$('#SerachDevList tbody tr').each(function(){ 
-			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchVendor_ID){
+			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchDeviceId_ID || $(this).find('td:eq(2)').html() == oJson.SearchIP_ID){
 				bUsed = false;
 			}
 		})
@@ -108,13 +107,11 @@ var oSelected = [],
 		$('ul.filetree').treeview();
 		closeMenu();
 	}
-	function ModifyGroupSuccess(data){ 
-		alert(123);
-		/*var id=$('#group_id_ID').val();
+	function ModifyGroupSuccess(data){
+		var id=$('#group_id_ID').val();
 		var name = $('#group_name_ID').val();
-		alert(id+'+'+name);
 		$('#group_'+id).html(name);
-		$('#group_'+id).data('data')['group_name'] = name;*/
+		$('#group_'+id).data('data')['group_name'] = name;
 		closeMenu();
 	}
 
@@ -125,6 +122,36 @@ var oSelected = [],
 		oChannel.html(name);
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
+	}
+	function AddDeviceSuccess(data){
+		alert(data.deviceid);
+		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':data.deviceid,'parea_name':$('#parea_name_ID').val()}
+		for(i in dataIndex){ 
+			if(dataIndex[i] == ''){ 
+				dataIndex[i] = $('#device #'+i+'_ID').val();
+			}
+		}
+		var add = $('<li><span class="device" id="dev_'+dataIndex.dev_id+'" >'+dataIndex.device_name+'</span><ul></ul></li>').appendTo('#area_'+dataIndex.area_id);
+		add.find('span.device').data('data',dataIndex);
+		$('ul.filetree:eq(0)').treeview({add:add});
+		show(dataIndex);
+		var chlList = oCommonLibrary.GetChannelList(deviceid);
+		for(i in chlList){
+		var chlNum = oCommonLibrary.GetChannelNumber(chlList[i]);
+		var chldata={'channel_id':chlList[i],'dev_id':deviceid,'channel_number':chlNum,'channel_name':n < 10 ? 'channel'+'0'+(n+1) : 'channel'+(n+1),'stream_id':'0'} 
+			var addchl = $('<li><span class="channel">'+chldata.channel_name+'</span></li>').appendTo('#dev_'+dataIndex.dev_id+
+				'+ul');
+			add.find('span.channel').data('data',chldata);
+			$('ul.filetree:eq(0)').treeview({add:addchl});
+		}
+		closeMenu();
+	}
+
+	function ModifyDeviceSuccess(){
+		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':deviceid,'parea_name':$('#parea_name_ID').val()}
+	}
+	function RemoveDeviceSuccess(){ 
+
 	}
 	function debug (){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
