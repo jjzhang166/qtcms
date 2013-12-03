@@ -304,10 +304,12 @@ void settingsActivity::OnAddDeviceDouble()
 	DEF_EVENT_PARAM(arg);
 	QString Content="system fail";
 	QString State_num="0";
+	QString sDevice_Name="0";
 
 	if(NULL==Idevice||NULL==Iarea){
 		EP_ADD_PARAM(arg,"fail",Content);
 		EP_ADD_PARAM(arg,"state",State_num);
+		EP_ADD_PARAM(arg,"name",sDevice_Name);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -327,6 +329,7 @@ void settingsActivity::OnAddDeviceDouble()
 		Content.append("please choose the device");
 		EP_ADD_PARAM(arg,"fail",Content);
 		EP_ADD_PARAM(arg,"state",State_num);
+		EP_ADD_PARAM(arg,"name",sDevice_Name);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -343,6 +346,7 @@ void settingsActivity::OnAddDeviceDouble()
 		Content.append("AreaID is not exist");
 		EP_ADD_PARAM(arg,"fail",Content);
 		EP_ADD_PARAM(arg,"state",State_num);
+		EP_ADD_PARAM(arg,"name",sDevice_Name);
 		EventProcCall("AddDeviceDoubleFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
@@ -395,11 +399,13 @@ void settingsActivity::OnAddDeviceDouble()
 			Content.clear();
 			arg.clear();
 			State_num.clear();
+			sDevice_Name.clear();
 			QString Num=QString("%1").arg(n);
+			sDevice_Name.append(SearchDeviceName_ID);
 			Content.append(Num);
 			Content.append("AddDeviceDoubleFail");
 			EP_ADD_PARAM(arg,"fail",Content);
-
+			EP_ADD_PARAM(arg,"name",sDevice_Name);
 			EP_ADD_PARAM(arg,"state",State_num);
 			EventProcCall("AddDeviceDoubleFail",arg);
 			continue;
@@ -412,10 +418,13 @@ void settingsActivity::OnAddDeviceDouble()
 			Content.clear();
 			arg.clear();
 			State_num.clear();
+			sDevice_Name.clear();
+			sDevice_Name.append(SearchDeviceName_ID);
 			QString Num=QString("%1").arg(n);
 			Content.append(Num);
 			Content.append("AddDeviceDoubleFail");
 			EP_ADD_PARAM(arg,"fail",Content);
+			EP_ADD_PARAM(arg,"name",sDevice_Name);
 			EP_ADD_PARAM(arg,"state",State_num);
 			EventProcCall("AddDeviceDoubleFail",arg);
 			continue;
@@ -423,12 +432,15 @@ void settingsActivity::OnAddDeviceDouble()
 
 		Content.clear();
 		arg.clear();
+		sDevice_Name.clear();
 		State_num.clear();
+		sDevice_Name.append(SearchDeviceName_ID);
 		QString Num=QString("%1").arg(n);
 		State_num.append(Num);
 		QString nSret=QString("%1").arg(nRet_id);
 		Content.append(nSret);
 		EP_ADD_PARAM(arg,"state",State_num);
+		EP_ADD_PARAM(arg,"name",sDevice_Name);
 		EP_ADD_PARAM(arg,"deviceid",Content);
 		EventProcCall("AddDeviceDoubleSuccess",arg);
 		continue;
