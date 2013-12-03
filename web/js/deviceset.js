@@ -165,8 +165,8 @@
 			str+=sChl
 		})
 		str+='</chlintogroup>';
-		$('#chlintogrouplist_ID').val('').val(str);
-		alert($('#chlintogrouplist_ID').val());
+		$('#addchannelingroupdouble_ID').val('').val(str);
+		alert($('#addchannelingroupdouble_ID').val());
 	}
 	function set_contentMax(){
 		var W = $(window).width();
