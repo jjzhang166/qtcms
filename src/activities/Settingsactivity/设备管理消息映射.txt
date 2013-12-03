@@ -1,0 +1,45 @@
+设备管理
+//事件
+AddDevice_ok|
+AddDeviceDouble_ok|
+RemoveDevice_ok|
+ModifyDevice_ok|
+
+AddArea_ok|
+RemoveArea_ok|
+ModifyArea_ok|
+
+AddGroup_ok|
+RemoveGroup_ok|
+ModifyGroup_ok|
+
+AddChannel_ok|不支持，已删除
+RemoveChannel_ok|不支持，已删除
+ModifyChannel_ok|
+
+AddChannelInGroup_ok|
+RemoveChannelFromGroup_ok|
+ModifyGroupChannelName_ok|
+
+//抛出事件
+AddDeviceSuccess(deviceid),AddDeviceDoubleSuccess(deviceid,state,name),AddDeviceDoubleFail(fail,state,name),AddDeviceFail(fail)，ModifyDeviceSuccess,ModifyDeviceFail，RemoveDeviceSuccess,RemoveDeviceFail
+
+AddAreaSuccess(areaid),AddAreaFail(fail)，ModifyAreaSuccess,ModifyAreaFail，RemoveAreaSuccess,RemoveAreaFail
+
+AddGroupSuccess(groupid),AddGroupFail(fail)，ModifyGroupSuccess,ModifyGroupFail，RemoveGroupSuccess,RemoveGroupFail
+
+AddChannelSuccess,AddChannelFail，ModifyChannelSuccess,ModifyChannelNameFail，ModifyGroupNameSuccess,RemoveChannelFail
+
+AddChannelInGroupSuccess(chlgroupid),AddChannelInGroupFail(fail)，ModifyGroupChannelNameSuccess,ModifyGroupChannelNameFail，RemoveChannelFromGroupSuccess,RemoveChannelFromGroupFail
+
+//参数，其中ID号相同的表示为同一个ID
+/*dev module*/
+adddevicedouble_ID(设备列表ID)|dev_id_ID|area_id_ID|address_ID|port_ID|http_ID|eseeid_ID|username_ID|password_ID|device_name_ID|channel_count_ID|connect_method_ID(可选值为：IP(0)|sEsee(1))|vendor_ID|
+/*channel module*/
+channel_id_ID|dev_id_ID|channel_number_ID|channel_name_ID|stream_id_ID|
+/*group module*/
+group_id_ID|group_name_ID
+/*area module*/
+area_id_ID|pid_ID|area_name_ID
+/*r_chl_group module*/
+r_chl_group_id_ID|channel_id_ID|group_id_ID|r_chl_group_name_ID
