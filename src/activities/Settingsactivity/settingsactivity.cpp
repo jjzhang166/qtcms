@@ -1054,13 +1054,16 @@ void settingsActivity::OnAddChannelInGroupDouble()
 	DEF_EVENT_PARAM(arg);
 	QString Content;
 	QString ChannelName;
+	QString chlid;
 	//ÉêÇë½Ó¿ÚÅÐ¶¨
 	if(NULL==IGroup){
 		arg.clear();
 		Content.clear();
 		ChannelName.clear();
+		chlid.clear();
 		Content.append("system fail");
 		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"chlid",chlid);
 		EP_ADD_PARAM(arg,"channelname",ChannelName);
 		EventProcCall("AddChannelDoubleInGroupFail",arg);
 		return;
@@ -1080,6 +1083,7 @@ void settingsActivity::OnAddChannelInGroupDouble()
 		ChannelName.clear();
 		Content.append("please choose the channel");
 		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"chlid",chlid);
 		EP_ADD_PARAM(arg,"channelname",ChannelName);
 		EventProcCall("AddChannelDoubleInGroupFail",arg);
 		if(NULL!=IGroup){IGroup->Release();}
@@ -1095,6 +1099,7 @@ void settingsActivity::OnAddChannelInGroupDouble()
 		Content.append("Group is not exist");
 		arg.clear();
 		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"chlid",chlid);
 		EP_ADD_PARAM(arg,"channelname",ChannelName);
 		EventProcCall("AddChannelDoubleInGroupFail",arg);
 		if(NULL!=IGroup){IGroup->Release();}
@@ -1115,22 +1120,27 @@ void settingsActivity::OnAddChannelInGroupDouble()
 			arg.clear();
 			Content.clear();
 			ChannelName.clear();
-
+			chlid.clear();
+			chlid.append(Channel_id_ID);
 			Content.append("AddChannelDoubleInGroupFail");
 			ChannelName.append(R_Chl_Group_Name_ID);
 			EP_ADD_PARAM(arg,"fail",Content);
+			EP_ADD_PARAM(arg,"chlid",chlid);
 			EP_ADD_PARAM(arg,"channelname",ChannelName);
 			EventProcCall("AddChannelDoubleInGroupFail",arg);
 		}
 
 		arg.clear();
 		Content.clear();
+		chlid.clear();
 		ChannelName.clear();
+		chlid.append(Channel_id_ID);
 		QString nSret=QString("%1").arg(nRet_chl_group_id);
 		Content.append(nSret);
 		ChannelName.append(R_Chl_Group_Name_ID);
 
 		EP_ADD_PARAM(arg,"chlgroupid",Content);
+		EP_ADD_PARAM(arg,"chlid",chlid);
 		EP_ADD_PARAM(arg,"channelname",ChannelName);
 		EventProcCall("AddChannelDoubleInGroupSuccess",arg);
 	}

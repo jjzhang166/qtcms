@@ -31,7 +31,7 @@ AddGroupSuccess(groupid),AddGroupFail(fail)£¬ModifyGroupSuccess,ModifyGroupFail£
 
 AddChannelSuccess,AddChannelFail£¬ModifyChannelSuccess,ModifyChannelNameFail£¬ModifyGroupNameSuccess,RemoveChannelFail
 
-AddChannelInGroupSuccess(chlgroupid),AddChannelInGroupFail(fail),AddChannelDoubleInGroupSuccess(chlgroupid,channelname),AddChannelDoubleInGroupFail(fail,channelname)£¬ModifyGroupChannelNameSuccess,ModifyGroupChannelNameFail£¬RemoveChannelFromGroupSuccess,RemoveChannelFromGroupFail
+AddChannelInGroupSuccess(chlgroupid),AddChannelInGroupFail(fail),AddChannelDoubleInGroupSuccess(chlgroupid,channelname,chlid),AddChannelDoubleInGroupFail(fail,channelname,chlid)£¬ModifyGroupChannelNameSuccess,ModifyGroupChannelNameFail£¬RemoveChannelFromGroupSuccess,RemoveChannelFromGroupFail
 
 //²ÎÊý£¬ÆäÖÐIDºÅÏàÍ¬µÄ±íÊ¾ÎªÍ¬Ò»¸öID
 /*dev module*/
