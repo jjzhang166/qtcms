@@ -11,6 +11,11 @@ interface IDeviceConnection : public IPComBase
 	virtual int setDeviceId(const QString & sAddress) = 0;
 	virtual int setDeviceAuthorityInfomation(QString username,QString password) = 0;
 	virtual int connectToDevice() = 0;
+	// 校验用户名密码
+	// 返回值:
+	//	0:校验成功
+	//	1:校验失败
+	virtual int authority() = 0;
 	virtual int disconnect() = 0;
 	virtual int getCurrentStatus() = 0;
 	virtual QString getDeviceHost() = 0;
