@@ -69,6 +69,7 @@
 	.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
 	.menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
 	.menu p a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
+	.menu h4 p{background:0;}
 	.menu table{ margin:0 20px 20px;}
 	.menu table .td1{width: 120px;}
 	.menu table tr{background: #B4B4B4; color: #000;}
@@ -106,7 +107,7 @@
 		<p><span>修改设备</span><a class="hover close"></a></p>
 		<table>
 			<tr><td colspan="2">设备连接方式</td></tr>
-			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="IP" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="sEsee" />易视网链接</td></tr>
+			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="1" />易视网链接</td></tr>
 			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" value="192.168.2.1" /></td></tr>
 			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" value="80" /></td></tr>
 			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" value="8080" /></td></tr>
@@ -212,7 +213,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td colspan="2"><div class="hover close" onclick="showdata('删除确认','confirm')">取消</div><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok" >确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div></td></tr>
+			<tr class="tdBtn"><td colspan="2"><div class="hover close">取消</div><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div></td></tr>
 		</table>
 	</div>
 </div>
@@ -272,7 +273,7 @@
 				<input type="hidden" id="adddevicedouble_ID" />
 				<div class="action" style="position: absolute; left:760px;">
 					<ul>
-						<li class="hover" id="AddDeviceDouble_ok">添加→</li>
+						<li class="hover" id="AddDeviceDouble_ok">添加→</li> <!--  onclick="AddDeviceDoubleSuccess('data');"-->
 						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
 						<li class="hover" onclick="showObjActBox('Add','group');">添加分组</li>
 						<li class="hover" onclick="showObjActBox('Modify','device');">修改设备</li>
@@ -308,26 +309,26 @@
 						<ul class="filetree" id="area_root">
 							<li><span class="area" id="area_0">区域_root</span>
 								<ul>
-									<!-- <li class="debug"><span class="device" id="dev_1" >device</span>
+									<!-- <li><span class="device" id="dev_1" >device</span>
 										<ul>
-											<li><span class="cam">Channel01</span></li>
-											<li><span class="cam">Channel02</span></li>
-											<li><span class="cam">Channel03</span></li>
-											<li><span class="cam">Channel04</span></li>
+											<li><span class="channel">Channel01</span></li>
+											<li><span class="channel">Channel02</span></li>
+											<li><span class="channel">Channel03</span></li>
+											<li><span class="channel">Channel04</span></li>
 										</ul>
 									</li>
-									<li class="debug"><span id="area_1" class="area">Area2</span>
+									<li><span id="area_1" class="area">Area2</span>
 										<ul>
 											<li><span class="device" >device</span>
 												<ul>
-													<li><span class="cam">Channel01</span></li>
-													<li><span class="cam">Channel02</span></li>
-													<li><span class="cam">Channel03</span></li>
-													<li><span class="cam">Channel04</span></li>
-													<li><span class="cam">Channel05</span></li>
-													<li><span class="cam">Channel06</span></li>
-													<li><span class="cam">Channel07</span></li>
-													<li><span class="cam">Channel08</span></li>
+													<li><span class="channel">Channel01</span></li>
+													<li><span class="channel">Channel02</span></li>
+													<li><span class="channel">Channel03</span></li>
+													<li><span class="channel">Channel04</span></li>
+													<li><span class="channel">Channel05</span></li>
+													<li><span class="channel">Channel06</span></li>
+													<li><span class="channel">Channel07</span></li>
+													<li><span class="channel">Channel08</span></li>
 												</ul>
 											</li>
 										</ul>
@@ -335,8 +336,9 @@
 								</ul>
 							</li>
 						</ul>
+						<input type="hidden" id="chlintogrouplist_ID">
 					</div>
-					<div class="action" style="height:22px; margin:10px;"><ul><li class="hover">添加至分组</li></ul></div>
+					<div class="action" style="height:22px; margin:10px;"><ul><li id="AddChannelInGroup_ok" class="hover">添加至分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree">
 							<li><span class="group" id="group_0">Group_root</span>

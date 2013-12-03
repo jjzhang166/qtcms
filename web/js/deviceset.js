@@ -36,21 +36,27 @@
 			$(this).css('background','#ccc');
 		})
 		$('div.dev_list').each(function(index){
-			$(this).mouseup(function(event){ 
+			var This = $(this);
+			This.mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
+				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
 					show(obj.data('data'));
-				}
+				}*/
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
+
 						if(obj.hasClass('channel')){
-							$('div.dev_list span').not('span.channel').removeClass('sel');
+							This.find('span').not('span.channel').removeClass('sel');
+							if(!$('div.dev_list:eq(1) span.sel.group')[0]){
+								$('div.dev_list:eq(1) span.group:first').addClass('sel');
+							}
 						}else{ 
-							$('div.dev_list span').removeClass('sel');
+							This.find('span').removeClass('sel');
 						}
 						obj.toggleClass('sel');
 					}
+					SetChannelIntoGroupData();
 				}
 				if(event.which == 3){ 
 					if(obj[0].nodeName == 'SPAN'){ 
@@ -98,6 +104,7 @@
 		//搜索结果 设备列表tr委托部分事件;
 		$('#SerachDevList tbody').on('click','tr',function(){
 			$(this).find('input:checkbox').click();
+			show($(this).attr('id'));
 		})
 		$('#SerachDevList tbody').on('click','input:checkbox',function(event){
 			event.stopPropagation();
@@ -120,7 +127,7 @@
 			});
 			str+=' </devListInfo>';
 			$('#adddevicedouble_ID').val('').val(str);
-			alert($('#adddevicedouble_ID').val());
+			//alert($('#adddevicedouble_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
@@ -143,7 +150,24 @@
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
 	})///
-	
+	function SetChannelIntoGroupData(){ 
+		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
+		var oArea = $('div.dev_list:eq(1) span.sel.group');
+		show(oArea.data('data'));
+		var str = '<chlintogroup cut="'+oChlList.length+'" group_id="'+oArea.data('data')['group_id']+'">';
+		oChlList.each(function(){ 
+			var sChl = '<chlinfo ';
+			var data = $(this).data('data')
+			for(i in data){ 
+				sChl+=i+'="'+data[i]+'" ';
+			}
+			sChl+='/>';
+			str+=sChl
+		})
+		str+='</chlintogroup>';
+		$('#chlintogrouplist_ID').val('').val(str);
+		alert($('#chlintogrouplist_ID').val());
+	}
 	function set_contentMax(){
 		var W = $(window).width();
 		var H = $(window).height();
@@ -190,7 +214,7 @@
 
 		}
 		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
-		deviceList2Ui(0);
+		deviceList2Ui('0');
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		
@@ -235,7 +259,9 @@
 				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
 				add.find('span.channel').data('data',data);
 				$('ul.filetree:eq(1)').treeview({add:add});
-			}		
+			}else{ 
+				$('#channel_'+id).data('data')['dev_id'] = devid;
+			}	
 		}
 	}
 	function groupList2Ui(){ 
@@ -256,7 +282,7 @@
 			var chldata = oCommonLibrary.GetChannelInfoFromGroup(id);
 			var data = {};
 			data['r_chl_group_id'] = id;
-			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id)
+			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id);
 			data['group_id'] = chldata['group_id']
 			data['r_chl_group_name'] = chldata['name'];
 			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
@@ -324,6 +350,7 @@
 		$('#iframe,div.confirm,#menusList div.menu').hide();
 		$('#menusList div.menu input.data').remove();
 		$('#menusList div.menu input:text').val('');
+		$('#confirm h4').html('');
 		$('div.close').html('取消');
 	}
 	function removeArry(obj,number){ 
@@ -414,7 +441,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html('删除'+data[i]);
 		}
-		var str = 'Null'
+		var str = ''
 		if(data[i] != ''){ 
 			str = data[i];
 		}

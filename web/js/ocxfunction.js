@@ -1,7 +1,7 @@
 var oSelected = [],
 	oSearchOcx,
-	oCommonLibrary;	
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble'];  //事件名称集合
+	oCommonLibrary;
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelInGroup'];  //事件名称集合
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root'});// 主区数据句填充.
@@ -41,7 +41,12 @@ var oSelected = [],
 		Confirm('删除失败');
 	}
 	function Fail(data){
-		Confirm(data.fail);
+		var str = '<p>';
+		if(data.name){
+			str +=data.name+':';
+		}
+		str+=data.fail+'</p>';
+		Confirm('<p>'+data.name+':'+data.fail+'</p>');
 	}
 	function ModifyUserLevelSuccess(ev){
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
@@ -63,7 +68,7 @@ var oSelected = [],
 			}
 		})
 		if(bUsed){
-			$('<tr><td><input type="checkbox"/>'+oJson.SearchVendor_ID+'</td><td>'+	oJson.SearchDeviceId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
+			$('<tr id="esee_'+oJson.SearchDeviceId_ID+'"><td><input type="checkbox"/>'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchDeviceId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
 		}		
 	}
 	function AddAreaSuccess(data){
@@ -79,10 +84,19 @@ var oSelected = [],
 
 	function RemoveAreaSuccess(){
 		var id = $('#confirm input:hidden').val();
+		var devList = [];
 		if(id != 0){
+			$('#area_'+id).next('ul').find('span.device').each(function(){
+				devList.push($(this).data('data')['dev_id']);
+			});
 			$('div.dev_list').find('#area_'+id).parent('li').remove();
-			$('ul.filetree').treeview();
 		}
+		for(i in devList){
+			$('ul.filetree:eq(1) span.channel').filter(function(){ 
+				return $(this).data('data')['dev_id'] == devList[i];
+			}).parent('li').remove();
+		}
+		$('ul.filetree').treeview();
 		closeMenu();
 	}
 
@@ -124,37 +138,43 @@ var oSelected = [],
 		closeMenu();
 	}
 	function AddDeviceSuccess(data){
-		alert(data.deviceid);
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':data.deviceid,'parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){ 
-			if(dataIndex[i] == ''){ 
+			if(dataIndex[i] == ''){
 				dataIndex[i] = $('#device #'+i+'_ID').val();
 			}
 		}
-		var add = $('<li><span class="device" id="dev_'+dataIndex.dev_id+'" >'+dataIndex.device_name+'</span><ul></ul></li>').appendTo('#area_'+dataIndex.area_id);
-		add.find('span.device').data('data',dataIndex);
-		$('ul.filetree:eq(0)').treeview({add:add});
-		show(dataIndex);
-		var chlList = oCommonLibrary.GetChannelList(deviceid);
-		for(i in chlList){
-		var chlNum = oCommonLibrary.GetChannelNumber(chlList[i]);
-		var chldata={'channel_id':chlList[i],'dev_id':deviceid,'channel_number':chlNum,'channel_name':n < 10 ? 'channel'+'0'+(n+1) : 'channel'+(n+1),'stream_id':'0'} 
-			var addchl = $('<li><span class="channel">'+chldata.channel_name+'</span></li>').appendTo('#dev_'+dataIndex.dev_id+
-				'+ul');
-			add.find('span.channel').data('data',chldata);
-			$('ul.filetree:eq(0)').treeview({add:addchl});
-		}
-		closeMenu();
+		adddev(dataIndex);
+		
 	}
 
 	function ModifyDeviceSuccess(){
-		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':deviceid,'parea_name':$('#parea_name_ID').val()}
+		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
+		for(i in dataIndex){ 
+			dataIndex[i] = $('#'+i+'_ID').val();
+		}
+		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);
+		closeMenu();
 	}
 	function RemoveDeviceSuccess(){ 
-		
+		var id = $('#confirm #dev_id_ID').val();
+		$('div.dev_list:eq(0) #dev_'+id).parent('li').remove();
+		$('ul.filetree:eq(1) span.channel').filter(function(){ 
+			return $(this).data('data')['dev_id'] == id;
+		}).parent('li').remove();
+		$('ul.filetree').treeview();
+		closeMenu();
 	}
-	function AddDeviceDouble(data){ 
-		alert(data);
+	function AddDeviceDoubleSuccess(data){
+		/*data = {};
+		data.name = $('#SerachDevList input:checked').parent('td').parent('tr').attr('id').split('_')[1];
+		data.deviceid = '50';*/
+		Confirm('<p>'+data.name+'AddSuccess</p>');
+		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
+		var devData = $('#esee_'+data.name).data('data');
+		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
+		adddev(devData2);
+
 	}
 	function debug (){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
@@ -163,8 +183,26 @@ var oSelected = [],
 		$('#dev_1').data('data',{'devname':'test4','address':'123','eseeid':'10001685','username':'admin','devid':'1'});// 主区数据句填充.
 		$('.debug').show();
 	}
-	function Confirm(str){ 
-		$('#confirm').find('h4').html(str).show();
+	function Confirm(str){
+		$('#confirm').find('h4').html($('#confirm').find('h4').html()+str).show();
 		$('div.close').html('确定')
 		objShowCenter($('#confirm'));
+	}
+	function adddev(data){ 
+		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
+		add.find('span.device').data('data',data);
+		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
+		for(i in chlList){
+			var chlNum = '';//oCommonLibrary.GetChannelNumber(chlList[i]);
+			var num =parseInt(i)+1;
+			var name = num < 10 ? 'channel'+'0'+num : 'channel'+num;
+			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
+			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+chldata.channel_name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
+			addchl.find('span.channel').data('data',chldata);
+			$('ul.filetree:eq(0)').treeview({add:addchl});
+		}
+		$('ul.filetree:eq(0)').treeview({add:add});
+	}
+	function AddChannelInGroupSuccess(data){
+		
 	}
