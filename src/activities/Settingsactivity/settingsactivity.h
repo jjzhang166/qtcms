@@ -65,6 +65,7 @@ public slots:
 
 	/*channel in group module*/
 	void OnAddChannelInGroup();
+	void OnAddChannelInGroupDouble();
 	void OnRemoveChannelFromGroup();
 	void OnModifyGroupChannelName();
 private:

@@ -18,6 +18,7 @@ RemoveChannel_ok|²»Ö§³Ö£¬ÒÑÉ¾³ý
 ModifyChannel_ok|
 
 AddChannelInGroup_ok|
+AddChannelInGroupDouble_ok|
 RemoveChannelFromGroup_ok|
 ModifyGroupChannelName_ok|
 
@@ -30,7 +31,7 @@ AddGroupSuccess(groupid),AddGroupFail(fail)£¬ModifyGroupSuccess,ModifyGroupFail£
 
 AddChannelSuccess,AddChannelFail£¬ModifyChannelSuccess,ModifyChannelNameFail£¬ModifyGroupNameSuccess,RemoveChannelFail
 
-AddChannelInGroupSuccess(chlgroupid),AddChannelInGroupFail(fail)£¬ModifyGroupChannelNameSuccess,ModifyGroupChannelNameFail£¬RemoveChannelFromGroupSuccess,RemoveChannelFromGroupFail
+AddChannelInGroupSuccess(chlgroupid),AddChannelInGroupFail(fail),AddChannelDoubleInGroupSuccess(chlgroupid,channelname),AddChannelDoubleInGroupFail(fail,channelname)£¬ModifyGroupChannelNameSuccess,ModifyGroupChannelNameFail£¬RemoveChannelFromGroupSuccess,RemoveChannelFromGroupFail
 
 //²ÎÊý£¬ÆäÖÐIDºÅÏàÍ¬µÄ±íÊ¾ÎªÍ¬Ò»¸öID
 /*dev module*/
@@ -42,4 +43,4 @@ group_id_ID|group_name_ID
 /*area module*/
 area_id_ID|pid_ID|area_name_ID
 /*r_chl_group module*/
-r_chl_group_id_ID|channel_id_ID|group_id_ID|r_chl_group_name_ID
+addchannelingroupdouble_ID(Í¨µÀÌí¼Óµ½×éÁÐ±íID)|r_chl_group_id_ID|channel_id_ID|group_id_ID|r_chl_group_name_ID

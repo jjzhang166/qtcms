@@ -86,6 +86,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("RemoveChannel_ok","click","OnRemoveChannel()");
 	QWFW_MSGMAP("ModifyChannel_ok","click","OnModifyChannel()");
 
+	QWFW_MSGMAP("AddChannelInGroupDouble_ok","click","OnAddChannelInGroupDouble()");
 	QWFW_MSGMAP("AddChannelInGroup_ok","click","OnAddChannelInGroup()");
 	QWFW_MSGMAP("RemoveChannelFromGroup_ok","click","OnRemoveChannelFromGroup()");
 	QWFW_MSGMAP("ModifyGroupChannelName_ok","click","OnModifyGroupChannelName()");
@@ -1045,7 +1046,97 @@ void settingsActivity::OnRemoveChannel()
 	//useless
 	return;
 }
+void settingsActivity::OnAddChannelInGroupDouble()
+{
+	int nRet_id=-1;
+	IGroupManager *IGroup=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&IGroup);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	QString ChannelName;
+	//申请接口判定
+	if(NULL==IGroup){
+		arg.clear();
+		Content.clear();
+		ChannelName.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"channelname",ChannelName);
+		EventProcCall("AddChannelDoubleInGroupFail",arg);
+		return;
+	}
 
+	QVariant ChlintoGroupFile=QueryValue("addchannelingroupdouble_ID");
+	QDomDocument ConfFile;
+	ConfFile.setContent(ChlintoGroupFile.toString());
+
+	QDomNode ChlintoGroupInfoNode=ConfFile.elementsByTagName("chlintogroup").at(0);
+	QDomNodeList itemList=ChlintoGroupInfoNode.childNodes();
+
+	//若选择的通道号 为零，返回错误提示
+	if(0==itemList.count()){
+		arg.clear();
+		Content.clear();
+		ChannelName.clear();
+		Content.append("please choose the channel");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"channelname",ChannelName);
+		EventProcCall("AddChannelDoubleInGroupFail",arg);
+		if(NULL!=IGroup){IGroup->Release();}
+		return;
+	}
+	//读取组id号
+	int Group_ID=ConfFile.firstChild().toElement().attribute("group_id").toInt(); 
+	bool nRet_bool=false;
+	nRet_bool=IGroup->IsGroupExists(Group_ID);
+	if (false==nRet_bool)
+	{
+		Content.clear();
+		Content.append("Group is not exist");
+		arg.clear();
+		EP_ADD_PARAM(arg,"fail",Content);
+		EP_ADD_PARAM(arg,"channelname",ChannelName);
+		EventProcCall("AddChannelDoubleInGroupFail",arg);
+		if(NULL!=IGroup){IGroup->Release();}
+		return;
+	}
+	//读取xml的节点，添加通道到组
+	int n=0;
+	int nRet_chl_group_id=-1;
+	for(n=0;n<itemList.count();n++){
+		QDomNode item;
+		item=itemList.at(n);
+		QString Channel_id_ID=item.toElement().attribute("channel_id_ID");
+		QString R_Chl_Group_Name_ID=item.toElement().attribute("channel_name_ID");
+
+		nRet_chl_group_id=IGroup->AddChannelInGroup(Group_ID,Channel_id_ID.toInt(),R_Chl_Group_Name_ID);
+		if (-1==nRet_chl_group_id)
+		{
+			arg.clear();
+			Content.clear();
+			ChannelName.clear();
+
+			Content.append("AddChannelDoubleInGroupFail");
+			ChannelName.append(R_Chl_Group_Name_ID);
+			EP_ADD_PARAM(arg,"fail",Content);
+			EP_ADD_PARAM(arg,"channelname",ChannelName);
+			EventProcCall("AddChannelDoubleInGroupFail",arg);
+		}
+
+		arg.clear();
+		Content.clear();
+		ChannelName.clear();
+		QString nSret=QString("%1").arg(nRet_chl_group_id);
+		Content.append(nSret);
+		ChannelName.append(R_Chl_Group_Name_ID);
+
+		EP_ADD_PARAM(arg,"chlgroupid",Content);
+		EP_ADD_PARAM(arg,"channelname",ChannelName);
+		EventProcCall("AddChannelDoubleInGroupSuccess",arg);
+	}
+	if(NULL!=IGroup){IGroup->Release();}
+	return ;
+}
 void settingsActivity::OnAddChannelInGroup()
 {
 	int nRet_id=-1;
