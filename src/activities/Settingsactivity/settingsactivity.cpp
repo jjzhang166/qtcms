@@ -501,7 +501,7 @@ void settingsActivity::OnAddDevice()
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
 	}
-	if("IP"==ConnectMethod.toString()){
+	if("0"==ConnectMethod.toString()){
 		if(sAddress.isNull()||port.isNull()||http.isNull()){
 			Content.clear();
 			arg.clear();
@@ -525,7 +525,7 @@ void settingsActivity::OnAddDevice()
 		}
 		goto end1;
 	}
-	else if("sEsee"==ConnectMethod.toString()){
+	else if("1"==ConnectMethod.toString()){
 		if(sEseeId.isNull()){
 			Content.clear();
 			arg.clear();
