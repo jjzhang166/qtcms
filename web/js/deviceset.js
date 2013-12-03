@@ -40,16 +40,15 @@
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				/*if(obj[0].nodeName == 'SPAN' && (obj.hasClass('area')|| obj.hasClass('group') ||obj.hasClass('device') ||obj.hasClass('channel') )){ 
+				/*if(obj[0].nodeName == 'SPAN'){
 					show(obj.data('data'));
 				}*/
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
-
 						if(obj.hasClass('channel')){
 							This.find('span').not('span.channel').removeClass('sel');
 							if(!$('div.dev_list:eq(1) span.sel.group')[0]){
-								$('div.dev_list:eq(1) span.group:first').addClass('sel');
+								$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
 							}
 						}else{ 
 							This.find('span').removeClass('sel');
@@ -104,7 +103,6 @@
 		//搜索结果 设备列表tr委托部分事件;
 		$('#SerachDevList tbody').on('click','tr',function(){
 			$(this).find('input:checkbox').click();
-			show($(this).attr('id'));
 		})
 		$('#SerachDevList tbody').on('click','input:checkbox',function(event){
 			event.stopPropagation();
@@ -150,23 +148,22 @@
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
 	})///
-	function SetChannelIntoGroupData(){ 
+	function SetChannelIntoGroupData(){
 		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
 		var oArea = $('div.dev_list:eq(1) span.sel.group');
-		show(oArea.data('data'));
 		var str = '<chlintogroup cut="'+oChlList.length+'" group_id="'+oArea.data('data')['group_id']+'">';
 		oChlList.each(function(){ 
 			var sChl = '<chlinfo ';
 			var data = $(this).data('data')
 			for(i in data){ 
-				sChl+=i+'="'+data[i]+'" ';
+				sChl+=i+'_ID="'+data[i]+'" ';
 			}
 			sChl+='/>';
 			str+=sChl
 		})
 		str+='</chlintogroup>';
 		$('#addchannelingroupdouble_ID').val('').val(str);
-		alert($('#addchannelingroupdouble_ID').val());
+		//alert($('#addchannelingroupdouble_ID').val());
 	}
 	function set_contentMax(){
 		var W = $(window).width();
@@ -506,5 +503,5 @@ function showdata(id,type){
 	$('#'+type).find('input[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
-	show(str);
+	//show(str);
 }

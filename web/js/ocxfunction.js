@@ -1,7 +1,7 @@
 var oSelected = [],
 	oSearchOcx,
 	oCommonLibrary;
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelInGroup'];  //事件名称集合
+	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup'];  //事件名称集合
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root'});// 主区数据句填充.
@@ -43,6 +43,8 @@ var oSelected = [],
 	function Fail(data){
 		var str = '<p>';
 		if(data.name){
+			str +=data.name+':';
+		}else if(data.channelname){ 
 			str +=data.name+':';
 		}
 		str+=data.fail+'</p>';
@@ -117,6 +119,11 @@ var oSelected = [],
 	}
 	function RemoveGroupSuccess(data){ 
 		var id=$('#group_id_ID').val();
+		$('#group_'+id).next('ul').find('span.channel').each(function(){ 
+			var devid = $(this).data('data')['dev_id'];
+			var add = $(this).parent('li').appendTo($('div.dev_list:eq(0) #dev_'+devid).next('ul'));
+			$('ul.filetree').treeview({add:add});
+		})
 		$('#group_'+id).parent('li').remove();
 		$('ul.filetree').treeview();
 		closeMenu();
@@ -203,6 +210,11 @@ var oSelected = [],
 		}
 		$('ul.filetree:eq(0)').treeview({add:add});
 	}
-	function AddChannelInGroupSuccess(data){
-		
+	function AddChannelDoubleInGroupSuccess(data){
+		Confirm('<p>'+data.channelname+'AddSuccess</p>');
+		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
+		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').appendTo(group.next('ul'));
+		$('ul.filetree').treeview({add:add});
+		$('ul.filetree').treeview();
+
 	}
