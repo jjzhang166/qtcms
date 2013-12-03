@@ -425,12 +425,12 @@ void settingsActivity::OnAddDeviceDouble()
 		arg.clear();
 		State_num.clear();
 		QString Num=QString("%1").arg(n);
-		Content.append(Num);
+		State_num.append(Num);
 		QString nSret=QString("%1").arg(nRet_id);
 		Content.append(nSret);
 		EP_ADD_PARAM(arg,"state",State_num);
 		EP_ADD_PARAM(arg,"deviceid",Content);
-		EventProcCall("AddDeviceSuccess",arg);
+		EventProcCall("AddDeviceDoubleSuccess",arg);
 		continue;
 	}
 
