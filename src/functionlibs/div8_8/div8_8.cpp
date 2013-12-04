@@ -33,8 +33,8 @@ void div8_8::setParentWindow( QWidget * parent )
 void div8_8::ChangePosition()
 {
 	int index = 0;
-	//m_nWidth = m_parentSize.width();
-	//m_nHeight = m_parentSize.height();
+ 	m_nWidth = m_parentOfSubWindows->width()/m_nCloum;
+ 	m_nHeight = m_parentOfSubWindows->height()/m_nRow;
 	while ( index < m_nSubWindowCount )
 	{
 		for (int i = 0; i < m_nRow; i++)
@@ -81,9 +81,6 @@ void div8_8::flush()
 
 void div8_8::parentWindowResize( QResizeEvent *ev )
 {
-	m_nWidth = ev->size().width()/m_nCloum;
-	m_nHeight = ev->size().height()/m_nRow;
-
 	ChangePosition();
 }
 

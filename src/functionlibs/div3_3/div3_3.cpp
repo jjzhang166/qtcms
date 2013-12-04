@@ -33,6 +33,8 @@ void div3_3::setParentWindow( QWidget * parent )
 void div3_3::ChangePosition()
 {
 	int index = 0;
+	m_nWidth = m_parentOfSubWindows->width()/m_nCloum;
+	m_nHeight = m_parentOfSubWindows->height()/m_nRow;
 	while ( index < m_nSubWindowCount )
 	{
  		if (m_bIsLastPage && index >= m_nIndexPerPage)//×îºóÒ»Ò³
@@ -91,9 +93,6 @@ void div3_3::flush()
 
 void div3_3::parentWindowResize( QResizeEvent *ev )
 {
-	m_nWidth = ev->size().width()/m_nCloum;
-	m_nHeight = ev->size().height()/m_nRow;
-
 	ChangePosition();
 }
 
