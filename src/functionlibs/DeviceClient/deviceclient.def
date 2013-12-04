@@ -1,0 +1,3 @@
+LIBRARY "deviceclient.dll"
+EXPORTS
+	CreateInstance @1
