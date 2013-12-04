@@ -19,6 +19,7 @@ var oSelected = [],
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
 		}
+		show(oCommonLibrary.GetDeviceInfo(8));
 	})	
 
 	function AddSuccess(ev){
@@ -63,14 +64,20 @@ var oSelected = [],
 	}
 	//设备搜索回调函数
 	function callback(oJson){
+		show(oJson);
 		var bUsed = true;
 		$('#SerachDevList tbody tr').each(function(){ 
-			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchDeviceId_ID || $(this).find('td:eq(2)').html() == oJson.SearchIP_ID){
+			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchSeeId_ID || $(this).find('td:eq(2)').html() == oJson.SearchIP_ID){
+				bUsed = false;
+			}
+		})
+		$('div.dev_list:eq(0) span.device').each(function(){ 
+			if( $(this).data('data')['eseeid'] == oJson.SearchSeeId_ID){ 
 				bUsed = false;
 			}
 		})
 		if(bUsed){
-			$('<tr id="esee_'+oJson.SearchDeviceId_ID+'"><td><input type="checkbox"/>'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchDeviceId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
+			$('<tr id="esee_'+oJson.SearchSeeId_ID+'"><td><input type="checkbox"/>'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
 		}		
 	}
 	function AddAreaSuccess(data){

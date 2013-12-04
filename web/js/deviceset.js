@@ -40,9 +40,9 @@
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				/*if(obj[0].nodeName == 'SPAN'){
+				if(obj[0].nodeName == 'SPAN'){
 					show(obj.data('data'));
-				}*/
+				}
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
 						if(obj.hasClass('channel')){
@@ -125,7 +125,7 @@
 			});
 			str+=' </devListInfo>';
 			$('#adddevicedouble_ID').val('').val(str);
-			//alert($('#adddevicedouble_ID').val());
+			alert($('#adddevicedouble_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
@@ -233,6 +233,7 @@
 			devData['dev_id'] = id;
 			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
 			devData['device_name'] = devData['name'];
+			devData['eseeid'] = devData['eseeid'];
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
@@ -503,5 +504,5 @@ function showdata(id,type){
 	$('#'+type).find('input[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
-	//show(str);
+	show(str);
 }
