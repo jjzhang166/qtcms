@@ -3,7 +3,6 @@
 
 div6_1::div6_1() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
@@ -20,7 +19,7 @@ div6_1::~div6_1()
 
 }
 
-void div6_1::setSubWindows( QWidget * windows,int count )
+void div6_1::setSubWindows( QList<QWidget *> windows,int count )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
@@ -46,14 +45,14 @@ void div6_1::ChangePosition()
 			{
 				if (!(index%PAGESFORWINDOW) && index/PAGESFORWINDOW < m_nSubWindowCount/PAGESFORWINDOW || m_bIsLastPage && index == m_nIndexPerPage)
 				{
-					m_subWindows[index].move(0,0);
-					m_subWindows[index++].resize(2*m_nWidth, 2*m_nHeight);
+					m_subWindows.at(index)->move(0,0);
+					m_subWindows.at(index++)->resize(2*m_nWidth, 2*m_nHeight);
 					continue;
 				}
 				if ( i >= m_nRow-1 || j >= m_nCloum-1 )
 				{
-					m_subWindows[index].move(j*m_nWidth,i*m_nHeight);
-					m_subWindows[index++].resize(m_nWidth,m_nHeight);
+					m_subWindows.at(index)->move(j*m_nWidth,i*m_nHeight);
+					m_subWindows.at(index++)->resize(m_nWidth,m_nHeight);
 				}
 				if ( index >= m_nSubWindowCount )
 				{
@@ -87,14 +86,14 @@ void div6_1::flush()
 			if (1 == m_nWindowsPerPage)
 			{
 				//放大该窗口
-				m_subWindows[m_nCurrentPage].move(0,0);
-				m_subWindows[m_nCurrentPage].resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
+				m_subWindows.at(m_nCurrentPage)->move(0,0);
+				m_subWindows.at(m_nCurrentPage)->resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
 			}
-			m_subWindows[i].show();
+			m_subWindows.at(i)->show();
 		}
 		else
 		{
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 	}
 }
@@ -116,7 +115,7 @@ void div6_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 		m_nWindowsPerPage = 1;
 		for (int i = 0; i < m_nSubWindowCount; i++)
 		{
-			if (m_subWindows + i == subWindow)
+			if (m_subWindows.at(i) == subWindow)
 			{
 				m_nCurrentPage = i;
 				break;

@@ -3,7 +3,6 @@
 
 div3_3::div3_3() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
@@ -20,7 +19,7 @@ div3_3::~div3_3()
 
 }
 
-void div3_3::setSubWindows( QWidget * windows,int count )
+void div3_3::setSubWindows( QList<QWidget *> windows,int count )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
@@ -44,8 +43,8 @@ void div3_3::ChangePosition()
 		{
 			for (int j = 0; j < m_nCloum; j++)
 			{
-				m_subWindows[index].move(j*m_nWidth,i*m_nHeight);
-				m_subWindows[index++].resize(m_nWidth,m_nHeight);
+				m_subWindows.at(index)->move(j*m_nWidth,i*m_nHeight);
+				m_subWindows.at(index++)->resize(m_nWidth,m_nHeight);
 				if ( index >= m_nSubWindowCount )
 				{
 					break;
@@ -78,14 +77,14 @@ void div3_3::flush()
 			if (1 == m_nWindowsPerPage)
 			{
 				//放大该窗口
-				m_subWindows[m_nCurrentPage].move(0,0);
-				m_subWindows[m_nCurrentPage].resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
+				m_subWindows.at(m_nCurrentPage)->move(0,0);
+				m_subWindows.at(m_nCurrentPage)->resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
 			}
-			m_subWindows[i].show();
+			m_subWindows.at(i)->show();
 		}
 		else
 		{
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 	}
 }
@@ -107,7 +106,7 @@ void div3_3::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 		m_nWindowsPerPage = 1;
 		for (int i = 0; i < m_nSubWindowCount; i++)
 		{
-			if (m_subWindows + i == subWindow)
+			if (m_subWindows.at(i)==subWindow)
 			{
 				m_nCurrentPage = i;
 				break;

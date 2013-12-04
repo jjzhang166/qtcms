@@ -3,7 +3,6 @@
 
 div8_8::div8_8() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
@@ -19,7 +18,7 @@ div8_8::~div8_8()
 
 }
 
-void div8_8::setSubWindows( QWidget * windows,int count )
+void div8_8::setSubWindows( QList<QWidget *> windows,int count )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
@@ -27,20 +26,23 @@ void div8_8::setSubWindows( QWidget * windows,int count )
 
 void div8_8::setParentWindow( QWidget * parent )
 {
+	m_parentSize = parent->size();
 	m_parentOfSubWindows = parent;
 }
 
 void div8_8::ChangePosition()
 {
 	int index = 0;
+	//m_nWidth = m_parentSize.width();
+	//m_nHeight = m_parentSize.height();
 	while ( index < m_nSubWindowCount )
 	{
 		for (int i = 0; i < m_nRow; i++)
 		{
 			for (int j = 0; j < m_nCloum; j++)
 			{
-				m_subWindows[index].move(j*m_nWidth,i*m_nHeight);
-				m_subWindows[index++].resize(m_nWidth,m_nHeight);
+				m_subWindows.at(index)->move(j*m_nWidth,i*m_nHeight);
+				m_subWindows.at(index++)->resize(m_nWidth,m_nHeight);
 				if ( index >= m_nSubWindowCount )
 				{
 					break;
@@ -65,14 +67,14 @@ void div8_8::flush()
 		{
 			if (1 == m_nWindowsPerPage)
 			{
-				m_subWindows[i].move(0,0);
-				m_subWindows[i].resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
+				m_subWindows.at(i)->move(0,0);
+				m_subWindows.at(i)->resize(m_nWidth*m_nCloum,m_nHeight*m_nRow);
 			}
-			m_subWindows[i].show();
+			m_subWindows.at(i)->show();
 		}
 		else
 		{
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 	}
 }
@@ -94,7 +96,7 @@ void div8_8::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 		m_nWindowsPerPage = 1;
 		for (int i = 0; i < m_nSubWindowCount; i++)
 		{
-			if (m_subWindows + i == subWindow)
+			if (m_subWindows.at(i)== subWindow)
 			{
 				m_nCurrentWindow = i;
 				m_nCurrentPage = m_nCurrentWindow;

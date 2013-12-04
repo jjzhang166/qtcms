@@ -16,7 +16,8 @@ public:
 	div5_5();
 	~div5_5();
 
-	virtual void setSubWindows( QWidget * windows,int count );
+	//virtual void setSubWindows( QWidget * windows,int count );
+	virtual void setSubWindows( QList<QWidget *> windows,int count );
 
 	virtual void setParentWindow( QWidget * parent );
 
@@ -46,7 +47,8 @@ public:
 private:
 	int m_nRef;
 	QMutex m_csRef;
-	QWidget * m_subWindows;         //子窗口指针
+//	QWidget * m_subWindows;         //子窗口指针
+	QList<QWidget *> m_subWindows; 
 	int m_nSubWindowCount;          //总的子窗口数目
 	QWidget * m_parentOfSubWindows; //当前大窗口的指针
 	int m_nCurrentPage;             //当前页页码值

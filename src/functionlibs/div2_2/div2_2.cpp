@@ -8,7 +8,6 @@
 
 div2_2::div2_2() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
@@ -25,7 +24,7 @@ div2_2::~div2_2()
 
 }
 
-void div2_2::setSubWindows( QWidget * windows,int count )
+void div2_2::setSubWindows(QList<QWidget *> windows,int count  )
 {
 	m_subWindows = windows;
 	m_nTotalWindowsCount = count/(m_nRow * m_nColumn);
@@ -56,39 +55,39 @@ void div2_2::flush()
 				switch(j%(m_nRow * m_nColumn ))
 				{
 				case 0:
-					m_subWindows[j].setGeometry(0,0,nWidth,nHeight);
+					m_subWindows.at(j)->setGeometry(0,0,nWidth,nHeight);
 					break;
 				case 1:
-					m_subWindows[j].setGeometry(nWidth,0,nWidth,nHeight);
+					m_subWindows.at(j)->setGeometry(nWidth,0,nWidth,nHeight);
 					break;
 				case 2:
-					m_subWindows[j].setGeometry(0 ,nHeight,nWidth,nHeight);
+					m_subWindows.at(j)->setGeometry(0 ,nHeight,nWidth,nHeight);
 					break;
 				case 3:
-					m_subWindows[j].setGeometry( nWidth, nHeight,nWidth,nHeight);
+					m_subWindows.at(j)->setGeometry( nWidth, nHeight,nWidth,nHeight);
 					break;
 				default:
 					break;
 				}
-				m_subWindows[j].show();
+				m_subWindows.at(j)->show();
 			}
 			else
-				m_subWindows[j].hide();
+				m_subWindows.at(j)->hide();
 		}  // End of  for(int j = 0;j < m_nSubWindowCount;j++) 
 	}      // End of  if(!m_bIsMax)
 	else   //当有子窗口被放大时
 	{
-		m_subWindows[m_nCurrentPage].setGeometry(0     ,
+		m_subWindows.at(m_nCurrentPage)->setGeometry(0     ,
 			                                     0     ,
 			                                     m_parentOfSubWindows->width()  ,
 												 m_parentOfSubWindows->height()
 												 );
-		m_subWindows[m_nCurrentPage].show();
+		m_subWindows.at(m_nCurrentPage)->show();
 		for (int i = 0; i < m_nSubWindowCount ; i++)
 		{
 			if (i != m_nCurrentPage)
 			{
-				m_subWindows[i].hide();
+				m_subWindows.at(i)->hide();
 			} 
 			else
 				continue;
@@ -102,14 +101,14 @@ void div2_2::parentWindowResize( QResizeEvent *ev )
 	
 	if (m_nTotalWindowsCount == m_nSubWindowCount)
 	{
-		m_subWindows[m_nCurrentPage].resize(ev->size());
-		m_subWindows[m_nCurrentPage].show();
+		m_subWindows.at(m_nCurrentPage)->resize(ev->size());
+		m_subWindows.at(m_nCurrentPage)->show();
 		
 		for (int i = 0; i < m_nSubWindowCount ; i++)
 		{
 			if (i != m_nCurrentPage)
 			{
-				m_subWindows[i].hide();
+				m_subWindows.at(i)->hide();
 			} 
 			else
 				continue;
@@ -150,11 +149,11 @@ void div2_2::parentWindowResize( QResizeEvent *ev )
 					break;
 				}  // End of switch(j%(m_nRow * m_nColumn ))
 
-				m_subWindows[j].setGeometry(nPositionX,nPositionY,nWidth,nHeight);			
-				m_subWindows[j].show();
+				m_subWindows.at(j)->setGeometry(nPositionX,nPositionY,nWidth,nHeight);			
+				m_subWindows.at(j)->show();
 			}
 			else
-				m_subWindows[j].hide();
+				m_subWindows.at(j)->hide();
 		}  // End of  for(int j = 0;j < m_nSubWindowCount;j++)
 	}
 	
@@ -166,7 +165,7 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 	int j ;
 	for ( j = 0; j < m_nSubWindowCount;j++)
 	{
-		if (&m_subWindows[j] == subWindow)
+		if (m_subWindows.at(j) == subWindow)
 		{
 			qDebug("%d window is double Clicked.",j);
 			break;
@@ -188,7 +187,7 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 		for(int i = 0; i < m_nSubWindowCount; i++)
 		{
 			
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 		m_bIsMax             = true;
 		m_nCurrentPage       = j;

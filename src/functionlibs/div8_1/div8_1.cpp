@@ -3,7 +3,6 @@
 
 div8_1::div8_1() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
@@ -22,7 +21,7 @@ div8_1::~div8_1()
 
 }
 
-void div8_1::setSubWindows( QWidget * windows,int count )
+void div8_1::setSubWindows( QList<QWidget *> windows,int count )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
@@ -42,11 +41,11 @@ void div8_1::flush()
 	{
 		if (i >= m_nCurrentPage*m_PageSubCount && i< (m_nCurrentPage+1)*m_PageSubCount)
 		{
-			m_subWindows[i].show();
+			m_subWindows.at(i)->show();
 		}
 		else
 		{
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 	}
 }
@@ -87,7 +86,7 @@ int div8_1::getSubVindowIndex(QWidget * pSubWindow)
 {
 	int index ;
 	for (index= 0;index<m_nSubWindowCount;index++)
-		if(m_subWindows+index == pSubWindow)return index;
+		if(m_subWindows.at(index) == pSubWindow)return index;
 
 	return -1;
 }
@@ -142,8 +141,8 @@ void div8_1::reSizeSubWindows()
 	{
 		subWidth=m_parentSize.width();
 		subHeight = m_parentSize.height();
-		m_subWindows[m_nCurrentPage].move(0,0);
-		m_subWindows[m_nCurrentPage].resize(subWidth-1,subHeight-1);
+		m_subWindows.at(m_nCurrentPage)->move(0,0);
+		m_subWindows.at(m_nCurrentPage)->resize(subWidth-1,subHeight-1);
 	}
 	else
 	{
@@ -156,14 +155,14 @@ void div8_1::reSizeSubWindows()
 			int ii = i-indexfirst;
 			if(ii == 0)
 			{
-				m_subWindows[i].move(pox_x*subWidth,pox_y*subHeight);
-				m_subWindows[i].resize(subWidth*(m_column-1)-1,subHeight*(m_row-1)-1);
+				m_subWindows.at(i)->move(pox_x*subWidth,pox_y*subHeight);
+				m_subWindows.at(i)->resize(subWidth*(m_column-1)-1,subHeight*(m_row-1)-1);
 			}
 			else
 			{
 				while(flagmap[j])j++;
-				m_subWindows[i].move(subWidth*(j%m_column),subHeight*(j/m_row));
-				m_subWindows[i].resize(subWidth-1,subHeight-1);
+				m_subWindows.at(i)->move(subWidth*(j%m_column),subHeight*(j/m_row));
+				m_subWindows.at(i)->resize(subWidth-1,subHeight-1);
 				j++;
 			}
 			

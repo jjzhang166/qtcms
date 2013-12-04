@@ -3,7 +3,6 @@
 
 div1::div1() :
 m_nRef(0),
-m_subWindows(NULL),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0)
@@ -16,7 +15,7 @@ div1::~div1()
 
 }
 
-void div1::setSubWindows( QWidget * windows,int count )
+void div1::setSubWindows(  QList<QWidget *> windows,int count  )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
@@ -34,23 +33,22 @@ void div1::flush()
 	{
 		if (i == m_nCurrentPage)
 		{
-			m_subWindows[i].show();
+			m_subWindows.at(i)->show();
 		}
 		else
 		{
-			m_subWindows[i].hide();
+			m_subWindows.at(i)->hide();
 		}
 	}
 }
 
 void div1::parentWindowResize( QResizeEvent *ev )
 {
-	m_subWindows[m_nCurrentPage].resize(ev->size());
+	m_subWindows.at(m_nCurrentPage)->resize(ev->size());
 }
 
 void div1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
-	qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
 	return;
 }
 

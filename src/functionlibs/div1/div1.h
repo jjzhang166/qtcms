@@ -3,6 +3,7 @@
 
 #include "div1_global.h"
 #include <QtCore/QObject>
+#include <QList>
 #include <QtCore/QMutex>
 #include <IWindowDivMode.h>
 
@@ -13,7 +14,8 @@ public:
 	div1();
 	~div1();
 
-	virtual void setSubWindows( QWidget * windows,int count );
+//	virtual void setSubWindows( QWidget * windows,int count );
+	virtual void setSubWindows( QList<QWidget *> windows,int count );
 
 	virtual void setParentWindow( QWidget * parent );
 
@@ -41,7 +43,8 @@ public:
 private:
 	int m_nRef;
 	QMutex m_csRef;
-	QWidget * m_subWindows;
+//	QWidget * m_subWindows;
+	QList<QWidget *> m_subWindows; 
 	int m_nSubWindowCount;
 	QWidget * m_parentOfSubWindows;
 	int m_nCurrentPage;
