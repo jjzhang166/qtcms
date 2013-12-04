@@ -47,3 +47,8 @@ extern const IID IID_IVideoRender;
 extern const CLSID CLSID_H264Playerplugin;
 extern const CLSID CLSID_h264Decoder;
 extern const CLSID CLSID_SDLRender;
+extern const CLSID CLSID_BubbleProtocol;
+extern const CLSID CLSID_FsmPlay;
+extern const IID IID_IFsmPlay;
+extern const CLSID CLSID_DeviceClient;
+extern const IID IID_IDeviceClient;
