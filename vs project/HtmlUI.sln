@@ -50,6 +50,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceSearchPlugin", "..\sr
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A} = {4B75D5BE-42C9-4575-B118-75D9B975A61A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemotePreview", "..\src\functionlibs\RemotePreview\RemotePreview.vcxproj", "{5A594B40-E155-46C8-946D-B03A9B0412B4}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -139,6 +141,10 @@ Global
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Debug|Win32.Build.0 = Debug|Win32
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Release|Win32.ActiveCfg = Release|Win32
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Release|Win32.Build.0 = Release|Win32
+		{5A594B40-E155-46C8-946D-B03A9B0412B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A594B40-E155-46C8-946D-B03A9B0412B4}.Debug|Win32.Build.0 = Debug|Win32
+		{5A594B40-E155-46C8-946D-B03A9B0412B4}.Release|Win32.ActiveCfg = Release|Win32
+		{5A594B40-E155-46C8-946D-B03A9B0412B4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

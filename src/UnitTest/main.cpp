@@ -7,6 +7,9 @@
 #include "Channel_Test.h"
 #include "dvrsearchtest.h"
 #include "HiChipTest.h"
+#include "RemotePreviewTest.h"
+
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
@@ -27,5 +30,7 @@ int main(int argc, char *argv[])
     QTest::qExec(&test,argc,argv);
 	HiChipUnitTest test1;
 	QTest::qExec(&test1, argc, argv);
+	RemotePreviewTest remoteViewTest;
+	QTest::qExec(&remoteViewTest, argc, argv);
 	return 0;
 }
