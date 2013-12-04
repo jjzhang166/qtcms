@@ -17,6 +17,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 	{
 		m_PreviewWnd[i].setParent(this);
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
+		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
 
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -47,7 +48,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 			if (NULL != m_DivMode)
 			{
 				m_DivMode->setParentWindow(this);
-				m_DivMode->setSubWindows(m_PreviewWnd,ARRAY_SIZE(m_PreviewWnd));
+				m_DivMode->setSubWindows(m_PreviewWndList,ARRAY_SIZE(m_PreviewWnd));
 				m_DivMode->flush();
 			}
 			break;
@@ -135,7 +136,7 @@ int QPreviewWindows::setDivMode( QString divModeName )
 				if (NULL != m_DivMode)
 				{
 					m_DivMode->setParentWindow(this);
-					m_DivMode->setSubWindows(m_PreviewWnd,ARRAY_SIZE(m_PreviewWnd));
+					m_DivMode->setSubWindows(m_PreviewWndList,ARRAY_SIZE(m_PreviewWnd));
 					m_DivMode->flush();
 				}
 			}
@@ -165,20 +166,23 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 
 int QPreviewWindows::GetCurrentWnd( unsigned int uiWndIndex )
 {
-
+	m_uiWndIndex=getCurrentPage();
+	return m_uiWndIndex;
 }
 
-int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sVendor )
+int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
-
+	m_PreviewWnd[m_uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	return 0;
 }
 
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
-
+	m_PreviewWnd[m_uiWndIndex].CloseWndCamera();
+	return 0;
 }
 
 int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 {
-
+	return m_PreviewWnd[m_uiWndIndex].GetWindowConnectionStatus();
 }

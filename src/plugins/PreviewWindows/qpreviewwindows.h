@@ -47,9 +47,13 @@ public slots:
 
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 
+
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;
+	QList<QWidget *> m_PreviewWndList;
+
+	int m_uiWndIndex;
 
 };
 
