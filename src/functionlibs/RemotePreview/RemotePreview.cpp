@@ -14,7 +14,7 @@ m_nRef(0),
 m_streanCount(0),
 m_bpaused(false)
 {
-	m_eventList<<"LiveStream";
+	m_eventList<<"LiveStream"<<"SocketError";
 	m_manager = new QNetworkAccessManager(this);
 
 	m_pStreamProcess = new StreamProcess();
@@ -441,6 +441,11 @@ int RemotePreview::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
  	{
  		eventParams<<"channel"<<"pts"<<"length"<<"data"<<"frametype"<<"width"<<"height"<<"vcodec"<<"samplerate"<<"samplewidth"<<"audiochannel"<<"acodec";
  	}
+
+	if ("SocketError" == eventName)
+	{
+		eventParams<<"errorValue"<<"errorDescription";
+	}
  
  	return IEventRegister::OK;
  }

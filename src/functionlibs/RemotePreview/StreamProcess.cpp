@@ -211,7 +211,12 @@ int StreamProcess::getVerifyResult()
 
 void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 {
-	qDebug()<<m_tcpSocket->errorString();
+	QVariantMap mStreamInfo;
+
+	mStreamInfo.insert("errorValue", m_tcpSocket->error());
+	mStreamInfo.insert("errorDescription", m_tcpSocket->errorString());
+
+	eventProcCall("SocketError", mStreamInfo);
 	m_tcpSocket->close();
 }
 
