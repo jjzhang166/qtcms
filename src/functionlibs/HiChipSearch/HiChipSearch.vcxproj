@@ -39,7 +39,7 @@
     <None Include="HiChipSearch.def" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{609FA727-730E-4B2E-9562-4723648F44DB}</ProjectGuid>
+    <ProjectGuid>{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
