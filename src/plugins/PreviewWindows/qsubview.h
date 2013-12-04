@@ -2,6 +2,15 @@
 #define QSUBVIEW_H
 
 #include <QWidget>
+#include <QString>
+#include <QDebug>
+#include <QVariantMap>
+#include <IDeviceClient.h>
+#include <IEventRegister.h>
+#include <IVideoDecoder.h>
+#include <IVideoRender.h>
+
+int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 
 class QSubView : public QWidget
 {
@@ -19,9 +28,38 @@ public:
 
 	virtual void mousePressEvent(QMouseEvent *);
 
+
+	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
+		,unsigned int uiChannelId,unsigned int uiStreamId
+		,const QString & sUsername,const QString & sPassword
+		,const QString & sCameraname,const QString & sVendor);
+	int CloseWndCamera();
+	int GetWindowConnectionStatus();
+
+	typedef struct _tagDevCliSetInfo{
+		QString m_sAddress;
+		unsigned int m_uiPort;
+		QString m_sEseeId;
+		unsigned int m_uiChannelId;
+		unsigned int m_uiStreamId;
+		QString m_sUsername;
+		QString m_sPassword;
+		QString m_sCameraname;
+		QString m_sVendor;
+	}DevCliSetInfo;
 private:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
+private:
+	DevCliSetInfo m_DevCliSetInfo;
+	IVideoRender *m_IVideoRender;
+	IVideoDecoder *m_IVideoDecoder;
+	IDeviceClient *m_IDeviceClient;
+
+private:
+	int cbInit();
+
 };
+
 
 #endif // QSUBVIEW_H
