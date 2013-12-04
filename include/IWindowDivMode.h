@@ -7,7 +7,7 @@
 
 interface IWindowDivMode : public IPComBase
 {
-	virtual void setSubWindows(QWidget * windows,int count) = 0;
+	virtual void setSubWindows(	QList<QWidget *> windows,int count) = 0;
 	virtual void setParentWindow(QWidget * parent) = 0;
 	virtual void flush() = 0;
 	virtual void parentWindowResize(QResizeEvent *ev) = 0;
