@@ -1,0 +1,53 @@
+POST /cgi-bin/gw.cgi HTTP/1.1
+Connection: keep-alive
+Content-Length: 184
+Host:210.21.39.197:8088
+
+<juan ver="" squ="0" dir="">
+    <recsearch usr="admin" pwd="" channels="1" types="15" date="2013-12-04" begin="00:00:00" end="23:59:59" session_index="0" session_count="0" />
+</juan>
+
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Connection: close
+Content-Length: 234
+
+<juan ver="" squ="0" dir="1" errno="0">
+	<recsearch errno="0" usr="admin" pwd="" channels="1" types="15" date="2013-12-04" begin="00:00:00" end="23:59:59" session_index="0" session_count="0" session_total="17"></recsearch>
+</juan>
+
+POST /cgi-bin/gw.cgi HTTP/1.1
+Connection: keep-alive
+Content-Length: 186
+Host:210.21.39.197:8088
+
+<juan ver="" squ="1" dir="">
+    <recsearch usr="admin" pwd="" channels="1" types="15" date="2013-12-04" begin="00:00:00" end="23:59:59" session_index="0" session_count="100" />
+</juan>
+
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Connection: close
+Content-Length: 987
+
+<juan ver="" squ="1" dir="1" errno="0">
+	<recsearch errno="0" usr="admin" pwd="" channels="1" types="15" date="2013-12-04" begin="00:00:00" end="23:59:59" session_index="0" session_count="100" session_total="17">
+		<s>0|13242|0|1|1386169200|1386170822</s>
+		<s>0|13234|0|1|1386165600|1386169199</s>
+		<s>0|13226|0|1|1386162000|1386165599</s>
+		<s>0|13222|0|1|1386158400|1386161999</s>
+		<s>0|13218|0|1|1386154800|1386158399</s>
+		<s>0|13214|0|1|1386151200|1386154799</s>
+		<s>0|13206|0|1|1386147600|1386151199</s>
+		<s>0|13202|0|1|1386144000|1386147599</s>
+		<s>0|13198|0|1|1386140400|1386143999</s>
+		<s>0|13194|0|1|1386136800|1386140399</s>
+		<s>0|13190|0|1|1386133200|1386136799</s>
+		<s>0|13186|0|1|1386129600|1386133199</s>
+		<s>0|13182|0|1|1386126000|1386129599</s>
+		<s>0|13178|0|1|1386122400|1386125999</s>
+		<s>0|13170|0|1|1386119955|1386122399</s>
+		<s>0|13166|0|1|1386118800|1386119954</s>
+		<s>0|13162|0|1|1386115200|1386118799</s>
+	</recsearch>
+</juan>
