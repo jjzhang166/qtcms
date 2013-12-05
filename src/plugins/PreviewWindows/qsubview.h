@@ -14,11 +14,11 @@
 
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
+int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 
 class QSubView :public QWidget
 {
 	Q_OBJECT
-		QThread MyPreviewPlay;
 
 public:
 	QSubView(QWidget *parent = 0);
@@ -51,8 +51,6 @@ public:
 		QString m_sCameraname;
 		QString m_sVendor;
 	}DevCliSetInfo;
-private:
-	PreviewPlay *LP_PreviewPlay;
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SignalPreviewPlay();
@@ -66,6 +64,7 @@ private:
 	int cbInit();
 public:
 	int PrevPlay(QVariantMap evMap);
+	int PrevRender(QVariantMap evMap);
 };
 
 
