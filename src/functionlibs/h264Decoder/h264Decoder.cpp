@@ -15,7 +15,10 @@ typedef struct _tagFrameData{
 QMutex g_csInitAvlib;
 h264Decoder::h264Decoder() :
 m_nRef(0),
-m_outbuf(NULL)
+m_outbuf(NULL),
+m_nVideoHeight(0),
+m_nVideoWidth(0),
+m_hDec(0)
 {
 
 }
