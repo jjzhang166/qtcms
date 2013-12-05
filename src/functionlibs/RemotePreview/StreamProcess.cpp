@@ -96,7 +96,7 @@ void StreamProcess::stopStream()
 
 void StreamProcess::socketWrites(QByteArray block)
 {
-	if (NULL != m_tcpSocket && CS_Connected == getCurrentStatus())
+	if (NULL != m_tcpSocket && IDeviceConnection::CS_Connected == getSocketState())
 	{
 		m_tcpSocket->write(block);  
 	}
