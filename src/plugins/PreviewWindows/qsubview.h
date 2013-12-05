@@ -28,7 +28,7 @@ public:
 
 	virtual void mousePressEvent(QMouseEvent *);
 
-
+	WId GetCurrentWnd();
 	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword

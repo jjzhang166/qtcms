@@ -9,7 +9,8 @@
 
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
-	m_IVideoRender(NULL)
+	m_IVideoRender(NULL),
+	m_IDeviceClient(NULL)
 {
 	setMouseTracking(true);
 	this->lower();
@@ -121,6 +122,11 @@ void QSubView::mousePressEvent(QMouseEvent *ev)
 	setFocus(Qt::MouseFocusReason);
 }
 
+WId QSubView::GetCurrentWnd()
+{
+	return winId();
+}
+
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
 	//注册事件，需检测是否注册成功
@@ -139,8 +145,13 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 		return 1;
 	}
 	m_IDeviceClient->setChannelName(sCameraname);
-	m_IDeviceClient->connectToDevice(sAddress,uiPort,sEseeId);
+	int nRet=1;
+	nRet=m_IDeviceClient->connectToDevice(sAddress,uiPort,sEseeId);
 	//需要等待连接成功，再发送请求，采用信号绑定的方法或者计时器
+	if (1==nRet)
+	{
+		return 1;
+	}
 	m_IDeviceClient->liveStreamRequire(uiChannelId,uiStreamId,true);
 	return 0;
 }

@@ -166,23 +166,23 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 
 int QPreviewWindows::GetCurrentWnd( unsigned int uiWndIndex )
 {
-	m_uiWndIndex=getCurrentPage();
-	return m_uiWndIndex;
+	m_CurrentWnd=m_PreviewWnd[uiWndIndex].GetCurrentWnd();
+	return 1;
 }
 
 int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
-	m_PreviewWnd[m_uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	return 0;
 }
 
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
-	m_PreviewWnd[m_uiWndIndex].CloseWndCamera();
+	m_PreviewWnd[uiWndIndex].CloseWndCamera();
 	return 0;
 }
 
 int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 {
-	return m_PreviewWnd[m_uiWndIndex].GetWindowConnectionStatus();
+	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
 }

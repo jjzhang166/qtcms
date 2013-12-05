@@ -54,6 +54,7 @@ private:
 	QList<QWidget *> m_PreviewWndList;
 
 	int m_uiWndIndex;
+	WId m_CurrentWnd;
 
 };
 
