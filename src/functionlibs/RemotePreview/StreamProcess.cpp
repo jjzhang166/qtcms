@@ -88,20 +88,24 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 void StreamProcess::stopStream()
 {
 	m_bStop = true;
-    m_tcpSocket->disconnectFromHost();
+	if (NULL != m_tcpSocket)
+	{
+	    m_tcpSocket->disconnectFromHost();
+	}
 }
 
 void StreamProcess::socketWrites(QByteArray block)
 {
-	m_tcpSocket->write(block);  	
+	if (NULL != m_tcpSocket && CS_Connected == getCurrentStatus())
+	{
+		m_tcpSocket->write(block);  
+	}
 }
 
 
 void StreamProcess::receiveStream()
 {
 	Bubble *pBubble = NULL;
-	LiveStream *pLiveStream = NULL;
-	long long times = 0;
 	Message *pMsg = NULL;
 	AuthorityBack *pAutoBack = NULL;
 
@@ -216,7 +220,7 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 	mStreamInfo.insert("errorValue", m_tcpSocket->error());
 	mStreamInfo.insert("errorDescription", m_tcpSocket->errorString());
 
-	eventProcCall("SocketError", mStreamInfo);
+	eventProcCall(QString("SocketError"), mStreamInfo);
 	m_tcpSocket->close();
 }
 
