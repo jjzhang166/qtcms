@@ -4,7 +4,8 @@
 DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnecton(NULL)
 {
-
+	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnecton);
+	m_EventList<<"LiveStream";
 }
 
 DeviceClient::~DeviceClient()
@@ -113,12 +114,25 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	n_IDeviceConnection->setDeviceHost(sAddr);
 	n_IDeviceConnection->setDeviceId(sEseeId);
 	n_IDeviceConnection->setDevicePorts(m_ports);
-	n_IDeviceConnection->connectToDevice();
 
+	//连接
+	int nRet=1;
+	nRet=n_IDeviceConnection->connectToDevice();
+	if (1==nRet)
+	{
+		return 1;
+	}
+	if (NULL!=m_DeviceConnecton)
+	{
+		m_DeviceConnecton->Release();
+		m_DeviceConnecton=NULL;
+	}
 	m_DeviceConnecton=n_IDeviceConnection;
 	m_DeviceConnecton->AddRef();
 	n_IDeviceConnection->Release();
-
+	//注册回调函数
+	
+	m_DeviceConnecton-registerEvent();
 	//fix me
 	return 0;
 }
@@ -134,6 +148,10 @@ int DeviceClient::setChannelName(const QString & sChannelName)
 int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 {
 	IRemotePreview *n_IRemotePreview=NULL;
+	if (NULL==m_DeviceConnecton)
+	{
+		return 1;
+	}
 	m_DeviceConnecton->QueryInterface(IID_IRemotePreview,(void**)&n_IRemotePreview);
 	if (NULL==n_IRemotePreview)
 	{
@@ -156,6 +174,10 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 int DeviceClient::closeAll()
 {
 	IRemotePreview *n_IRemotePreview=NULL;
+	if (NULL==m_DeviceConnecton)
+	{
+		return 1;
+	}
 	m_DeviceConnecton->QueryInterface(IID_IRemotePreview,(void**)&n_IRemotePreview);
 	if (NULL==n_IRemotePreview)
 	{
@@ -173,6 +195,10 @@ QString DeviceClient::getVendor()
 }
 int DeviceClient::getConnectStatus()
 {
+	if (NULL==m_DeviceConnecton)
+	{
+		return 1;
+	}
 	int nRet=m_DeviceConnecton->getCurrentStatus();
 	return nRet;
 }
