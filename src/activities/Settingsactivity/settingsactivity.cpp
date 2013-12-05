@@ -723,6 +723,19 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
+	QVariant connect_method=QueryValue("connect_method_ID");
+	if (0==connect_method.toInt()||1==connect_method.toInt())
+	{
+		int nRet_int=Idevice->ModifyDeviceConnectMethod(Dev_Id.toInt(),connect_method.toInt());
+		if(0!=nRet_int){
+			arg.clear();
+			Content.clear();
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("ModifyDeviceFail",arg);
+			Idevice->Release();
+			return;
+		}
+	}
 	arg.clear();
 	Content.clear();
 	Content.append("modify success");
