@@ -379,15 +379,16 @@ void settingsActivity::OnAddDeviceDouble()
 		//设置默认参数
 		QString ConnectMethod="0";
 		SearchDeviceName_ID.clear();
-			if (0==SearchDeviceId_ID.size()||SearchDeviceId_ID.isNull()||-1==SearchDeviceId_ID.toInt())
-			{
-				SearchDeviceName_ID.append(SearchIP_ID);
-			}
-			else{
-				SearchDeviceName_ID.append(SearchDeviceId_ID);
-			}
 
-
+		if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
+		{
+			SearchDeviceName_ID.append(SearchSeeId_ID);
+		}
+		else 
+		{
+			SearchDeviceName_ID.append(SearchIP_ID);
+		}
+		
 		if (0==UserName_ID.size()||UserName_ID.isNull())
 		{
 			UserName_ID.append("admin");
