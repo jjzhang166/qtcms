@@ -206,8 +206,8 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	m_IVideoRender->setRenderWnd((QWidget*)this);
-	m_IVideoRender->init(this->width(),this->height());
+	//m_IVideoRender->setRenderWnd((QWidget*)this);
+	//m_IVideoRender->init(this->width(),this->height());
 	return 0;
 }
 int QSubView::PrevPlay(QVariantMap evMap)

@@ -49,7 +49,7 @@ public slots:
 
 
 private:
-	QSubView m_PreviewWnd[1];
+	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;
 	QList<QWidget *> m_PreviewWndList;
 
