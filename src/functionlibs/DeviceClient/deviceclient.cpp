@@ -122,17 +122,33 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	{
 		return 1;
 	}
+	//注册回调函数
+	IEventRegister *IEventReg=NULL;
+	n_IDeviceConnection->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
+	if (NULL==IEventReg)
+	{
+		n_IDeviceConnection->Release();
+		n_IDeviceConnection=NULL;
+		return 1;
+	}
+	QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
+	for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
+	{
+		QString sKey=it.key();
+		DeviceClientInfoItem sValue=it.value();
+		IEventReg->registerEvent(sKey,sValue.proc,sValue.proc);
+	}
+
 	if (NULL!=m_DeviceConnecton)
 	{
 		m_DeviceConnecton->Release();
 		m_DeviceConnecton=NULL;
 	}
+
 	m_DeviceConnecton=n_IDeviceConnection;
 	m_DeviceConnecton->AddRef();
 	n_IDeviceConnection->Release();
-	//注册回调函数
-	
-	m_DeviceConnecton-registerEvent();
+
 	//fix me
 	return 0;
 }
