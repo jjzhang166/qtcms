@@ -1,5 +1,7 @@
-
+var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup'];  //事件名称集合
+var oSearchOcx;
 	$(function(){
+		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
 			$(this).toggleClass('channel_1')
@@ -40,9 +42,9 @@
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
 				var obj = $(event.target);
-				if(obj[0].nodeName == 'SPAN'){
+				/*if(obj[0].nodeName == 'SPAN'){
 					show(obj.data('data'));
-				}
+				}*/
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
 						if(obj.hasClass('channel')){
@@ -99,6 +101,13 @@
 					userList2Ui();
 				}
 			})
+			//搜索设备;
+			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+			oSearchOcx.Start();
+			for (i in oActiveEvents){
+				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
+				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
+			}
 		})
 		//搜索结果 设备列表tr委托部分事件;
 		$('#SerachDevList tbody').on('click','tr',function(){
@@ -125,7 +134,7 @@
 			});
 			str+=' </devListInfo>';
 			$('#adddevicedouble_ID').val('').val(str);
-			alert($('#adddevicedouble_ID').val());
+			//alert($('#adddevicedouble_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
@@ -148,6 +157,7 @@
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
 	})///
+	//分组区域添加到分组, 数据组织
 	function SetChannelIntoGroupData(){
 		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
 		var oArea = $('div.dev_list:eq(1) span.sel.group');
@@ -195,99 +205,7 @@
 			}
 		}		
 	}
-	function areaList2Ui(){
-		$('div.dev_list span.area').not('#area_0').parent('li').remove();
-		//$('ul.filetree').treeview();
-		var areaListArrar=[];
-		var pidList=[];
-		var areaList = oCommonLibrary.GetAreaList();
-		for(n in areaList){
-			var id = areaList[n];
-			var name = oCommonLibrary.GetAreaName(areaList[n]);
-			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
-			var pareaname = pid == 0 ? '区域_root' : oCommonLibrary.GetAreaName(pid);
-			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
-			pidList.push(pid);
-
-		}
-		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
-		deviceList2Ui('0');
-		for(j in arr){
-			for(k in areaListArrar){		
-				if(areaListArrar[k]['pid'] == arr[j]){		
-					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
-					add.find('span.area').data('data',areaListArrar[k]);
-					$('ul.filetree:eq(0)').treeview({add:add});
-					deviceList2Ui(areaListArrar[k]['area_id']);
-				}
-			}
-		}
-	}
 	
-	function deviceList2Ui(areaid){
-		var devList = oCommonLibrary.GetDeviceList(areaid);
-		for (i in devList){
-			var id=devList[i];
-			var devData = oCommonLibrary.GetDeviceInfo(id);
-			devData['area_id'] = areaid;
-			devData['dev_id'] = id;
-			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
-			devData['device_name'] = devData['name'];
-			devData['eseeid'] = devData['eseeid'];
-			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
-			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
-			add.find('span.device').data('data',devData);
-			$('ul.filetree:eq(0)').treeview({add:add});	
-			devChannelList2Ui(id);
-		}
-	}
-
-	function devChannelList2Ui(devid){
-		var chlList = oCommonLibrary.GetChannelList(devid);
-		for(i in chlList){ 
-			var id = chlList[i];
-			if(!$('#channel_'+id)[0]){ 
-				var chldata = oCommonLibrary.GetChannelInfo(id);
-				var data = {};
-				data['channel_id'] = id;
-				data['dev_id'] = devid;
-				data['channel_number'] = chldata['number']
-				data['stream_id'] = chldata['stream'];
-				data['channel_name'] = chldata['name'];
-				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
-				add.find('span.channel').data('data',data);
-				$('ul.filetree:eq(1)').treeview({add:add});
-			}else{ 
-				$('#channel_'+id).data('data')['dev_id'] = devid;
-			}	
-		}
-	}
-	function groupList2Ui(){ 
-		var groupList = oCommonLibrary.GetGroupList();
-		for( i in groupList){
-			var id = groupList[i];
-			var name =oCommonLibrary.GetGroupName(id);
-			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
-			add.find('span.group').data('data',{'group_id':id,'group_name':name});
-			$('ul.filetree:eq(1)').treeview({add:add});
-			groupChannelList2Ui(id);
-		}
-	}
-	function groupChannelList2Ui(groupId){ 
-		var chlList = oCommonLibrary.GetGroupChannelList(groupId);
-		for(i in chlList){ 
-			var id = chlList[i]
-			var chldata = oCommonLibrary.GetChannelInfoFromGroup(id);
-			var data = {};
-			data['r_chl_group_id'] = id;
-			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id);
-			data['group_id'] = chldata['group_id']
-			data['r_chl_group_name'] = chldata['name'];
-			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
-			add.find('span.channel').data('data',data);
-			$('ul.filetree:eq(1)').treeview({add:add});
-		}
-	}
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
 		var node = $('#'+obj+'');
 		node.find('input:text,:password').val('');
@@ -458,51 +376,4 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		obox.find('input.parent'+pObjType).val(data['area_name']);
 	}
 	objShowCenter(obox);
-}
-// 辅助方法.
-function del(str) {   //数组去除重复
-	var a = {}, c = [], l = str.length; 
-	for (var i = 0; i < l; i++) { 
-	var b = str[i]; 
-	var d = (typeof b) + b; 
-	if (a[d] === undefined){ 
-		c.push(b); 
-		a[d] = 1; 
-		} 
-	} 
-	return c; 
-}
-
-function sortNumber(a,b){ //数组升序排列
-	return a-b;
-}
-
-function firstUp(str){  //字符串首字母大写
-	var a = str.split('');
-	a[0] = a[0].toUpperCase();
-	return a.join('');
-}
-function show(data){
-	var index='default'
-	var str = 'Null'
-	$('#test').html('');
-	if(typeof(data) != 'string'){
-		for(i in data){ 
-			index = i;
-			if(data[i] != ''){
-				str = data[i];
-			}
-			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
-		}
-	}else{ 
-		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
-	}
-}
-function showdata(id,type){ 
-	var submit = $('#'+type).find('.confirm:visible').attr('id');
-	var str =submit+'/'+id +'/';
-	$('#'+type).find('input[id]').each(function(){ 
-		str += $(this).attr('id')+':'+$(this).val()+'/';
-	})
-	show(str);
 }

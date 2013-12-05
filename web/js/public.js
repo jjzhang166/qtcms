@@ -58,7 +58,7 @@ function ViewMax(type){
 	var WinH = $(window).height();
 
 	oView.css({
-		width:WinW-oLeft.width()+4,
+		width:WinW-oLeft.width()-8,
 		height:WinH-oBottom.height()-110
 	});
 	if(oView.width()<680){
@@ -67,18 +67,15 @@ function ViewMax(type){
 	if(oView.height()<450){
 		oView.height(450);
 	}
-	var l = type == 'preview' ? 90 : 148;
 	oLeft.css({
 		left:oView.width(),
-		height:oView.height()+ l
+		height:oView.height()+120
 	});
 	$('div.dev_list').height(oLeft.height()-294);
 	oBottom.width(oView.width());
 	$('#foot').css({
-		top:oView.height()+212,
-		width:oView.width()+238
+		top:oView.height()+212
 	})
-	$('#top').width(oView.width()+238);
 	$('table.table tr').each(function(index){
 			var oTds = $(this).find('td');
 			if(type == 'preview'){
@@ -92,26 +89,6 @@ function ViewMax(type){
 				oTds.eq(0).width(80);			
 			}
 	})
-	//autoImages(2,oView);
-}
-
-function autoImages(num,obj){
-	if(nViewNum > num){
-		$('#playback_view div').slice(num*num).remove();
-	}else if(nViewNum < num){
-		for(var i=0;i<(num*num)-(nViewNum*nViewNum);i++){
-		$('<div><p>window 0'+(i+1)+'</p><img class="view_bg" src="images/view.jpg"><img class="no_view" src="images/No_Vedio.png"></div>').appendTo(oView);
-		}	
-	}	
-	$('#playback_view img.view_bg').css({
-		width:obj.width()/num - num*2,
-		height:(obj.height()-num*14)/num -num*2
-	})
-	$('img.no_view').css({
-		left:obj.width()/(2*num)-30,
-		top:(obj.height()-num*16)/(num*2)+15
-	})
-	nViewNum = num;
 }
 
 function set_drag(oDrag,X1,X2){
@@ -189,3 +166,48 @@ $(function(){
 			$(this).css('background-position','0 0');
 	})
 })
+// 辅助方法.
+function del(str) {   //数组去除重复
+	var a = {}, c = [], l = str.length; 
+	for (var i = 0; i < l; i++) { 
+	var b = str[i]; 
+	var d = (typeof b) + b; 
+	if (a[d] === undefined){ 
+		c.push(b); 
+		a[d] = 1; 
+		} 
+	} 
+	return c; 
+}
+
+function sortNumber(a,b){ //数组升序排列
+	return a-b;
+}
+
+function firstUp(str){  //字符串首字母大写
+	var a = str.split('');
+	a[0] = a[0].toUpperCase();
+	return a.join('');
+}
+function show(data){
+	var index='default'
+	var str = 'Null'
+	$('#test').html('');
+	if(typeof(data) != 'string'){
+		for(i in data){ 
+			index = i;
+			str = data[i];
+			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
+		}
+	}else{ 
+		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
+	}
+}
+function showdata(id,type){ 
+	var submit = $('#'+type).find('.confirm:visible').attr('id');
+	var str =submit+'/'+id +'/';
+	$('#'+type).find('input[id]').each(function(){ 
+		str += $(this).attr('id')+':'+$(this).val()+'/';
+	})
+	show(str);
+}

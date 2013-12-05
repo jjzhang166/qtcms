@@ -1,25 +1,13 @@
 var oSelected = [],
-	oSearchOcx,
 	oCommonLibrary;
-	var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup'];  //事件名称集合
+	
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
-		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root'});// 主区数据句填充.
-		oCommonLibrary = document.getElementById('commonLibrary')
-		oSearchOcx = document.getElementById('devSearch');
-		//搜索设备;
-		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-		oSearchOcx.Start();
+		oCommonLibrary = document.getElementById('commonLibrary');
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
 		areaList2Ui();
-		//debug();
-		for (i in oActiveEvents){
-			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
-			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
-		}
-		show(oCommonLibrary.GetDeviceInfo(8));
 	})	
 
 	function AddSuccess(ev){
@@ -64,7 +52,6 @@ var oSelected = [],
 	}
 	//设备搜索回调函数
 	function callback(oJson){
-		show(oJson);
 		var bUsed = true;
 		$('#SerachDevList tbody tr').each(function(){ 
 			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchSeeId_ID || $(this).find('td:eq(2)').html() == oJson.SearchIP_ID){
@@ -180,15 +167,12 @@ var oSelected = [],
 		closeMenu();
 	}
 	function AddDeviceDoubleSuccess(data){
-		/*data = {};
-		data.name = $('#SerachDevList input:checked').parent('td').parent('tr').attr('id').split('_')[1];
-		data.deviceid = '50';*/
 		Confirm('<p>'+data.name+'AddSuccess</p>');
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
 		adddev(devData2);
-
+		$('#esee_'+data.name).remove();
 	}
 	function debug (){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
@@ -216,6 +200,8 @@ var oSelected = [],
 			$('ul.filetree:eq(0)').treeview({add:addchl});
 		}
 		$('ul.filetree:eq(0)').treeview({add:add});
+		closeMenu();
+
 	}
 	function AddChannelDoubleInGroupSuccess(data){
 		Confirm('<p>'+data.channelname+'AddSuccess</p>');
@@ -224,4 +210,98 @@ var oSelected = [],
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
 
+	}
+	//区域分组,属性菜单输出.
+	function areaList2Ui(){ //区域菜单输出
+		$('div.dev_list span.area').not('#area_0').parent('li').remove();
+		//$('ul.filetree').treeview();
+		var areaListArrar=[];
+		var pidList=[];
+		var areaList = oCommonLibrary.GetAreaList();
+		for(n in areaList){
+			var id = areaList[n];
+			var name = oCommonLibrary.GetAreaName(areaList[n]);
+			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+			var pareaname = pid == 0 ? '区域_root' : oCommonLibrary.GetAreaName(pid);
+			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
+			pidList.push(pid);
+
+		}
+		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
+		deviceList2Ui('0');
+		for(j in arr){
+			for(k in areaListArrar){		
+				if(areaListArrar[k]['pid'] == arr[j]){		
+					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
+					add.find('span.area').data('data',areaListArrar[k]);
+					$('ul.filetree:eq(0)').treeview({add:add});
+					deviceList2Ui(areaListArrar[k]['area_id']);
+				}
+			}
+		}
+	}
+	
+	function deviceList2Ui(areaid){ //设备菜单输出
+		var devList = oCommonLibrary.GetDeviceList(areaid);
+		for (i in devList){
+			var id=devList[i];
+			var devData = oCommonLibrary.GetDeviceInfo(id);
+			devData['area_id'] = areaid;
+			devData['dev_id'] = id;
+			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
+			devData['device_name'] = devData['name'];
+			devData['eseeid'] = devData['eseeid'];
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
+			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
+			add.find('span.device').data('data',devData);
+			$('ul.filetree:eq(0)').treeview({add:add});	
+			devChannelList2Ui(id);
+		}
+	}
+	function devChannelList2Ui(devid){ //设备下通道菜单输出
+		var chlList = oCommonLibrary.GetChannelList(devid);
+		for(i in chlList){ 
+			var id = chlList[i];
+			if(!$('#channel_'+id)[0]){ 
+				var chldata = oCommonLibrary.GetChannelInfo(id);
+				var data = {};
+				data['channel_id'] = id;
+				data['dev_id'] = devid;
+				data['channel_number'] = chldata['number']
+				data['stream_id'] = chldata['stream'];
+				data['channel_name'] = chldata['name'];
+				//show(data);
+				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
+				add.find('span.channel').data('data',data);
+				$('ul.filetree:eq(1)').treeview({add:add});
+			}else{ 
+				$('#channel_'+id).data('data')['dev_id'] = devid;
+			}	
+		}
+	}
+	function groupList2Ui(){   //分组菜单输出
+		var groupList = oCommonLibrary.GetGroupList();
+		for( i in groupList){
+			var id = groupList[i];
+			var name =oCommonLibrary.GetGroupName(id);
+			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
+			add.find('span.group').data('data',{'group_id':id,'group_name':name});
+			$('ul.filetree:eq(1)').treeview({add:add});
+			groupChannelList2Ui(id);
+		}
+	}
+	function groupChannelList2Ui(groupId){  //分组下通道菜单输出
+		var chlList = oCommonLibrary.GetGroupChannelList(groupId);
+		for(i in chlList){ 
+			var id = chlList[i]
+			var chldata = oCommonLibrary.GetChannelInfoFromGroup(id);
+			var data = {};
+			data['r_chl_group_id'] = id;
+			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id);
+			data['group_id'] = chldata['group_id']
+			data['r_chl_group_name'] = chldata['name'];
+			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
+			add.find('span.channel').data('data',data);
+			$('ul.filetree:eq(1)').treeview({add:add});
+		}
 	}

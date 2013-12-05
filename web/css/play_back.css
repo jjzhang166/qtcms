@@ -93,7 +93,6 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	padding: 4px; 
 	position: absolute;
 	background: #323232;
-	width: 226px;
 }
 .dev_list_btn li{ 
 	float: left;
@@ -162,13 +161,13 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	position: absolute;
 }
 .option li{
-	clear: both;
+	/* clear: both; */
 }
 #PTZ_control{
 	position: relative;
 	width: 228px;
 	height: 270px;
-	margin-top: 4px;
+	top: 4px;
 }
 .ope_list li{
 	cursor: pointer;
@@ -189,7 +188,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 }
 #PTZ_control .switch{
 	left: 0;
-	top: 36px;
+	top: 28px;
 	height: 236px;
 	width: 228px;
 }
