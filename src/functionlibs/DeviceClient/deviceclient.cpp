@@ -136,7 +136,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	{
 		QString sKey=it.key();
 		DeviceClientInfoItem sValue=it.value();
-		IEventReg->registerEvent(sKey,sValue.proc,sValue.proc);
+		IEventReg->registerEvent(sKey,sValue.proc,sValue.puser);
 	}
 
 	if (NULL!=m_DeviceConnecton)
