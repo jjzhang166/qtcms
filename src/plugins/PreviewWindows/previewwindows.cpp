@@ -2,6 +2,7 @@
 #include <QtCore/QList>
 #include <QtWebKit/QWebPluginFactory>
 #include <QtPlugin>
+#include <QWSWindow>
 #include <libpcom.h>
 #include <guid.h>
 #include "qpreviewwindows.h"
@@ -38,6 +39,8 @@ QList<QWebPluginFactory::Plugin> PreviewWindows::plugins() const
 
 QObject * PreviewWindows::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
+	//QWSWindow  *myQWSWindow =new QWSWindow();
+	//myQWSWindow->Lowering();
 	QPreviewWindows * previewWindows= new QPreviewWindows();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);

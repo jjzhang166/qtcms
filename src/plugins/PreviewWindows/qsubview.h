@@ -3,18 +3,22 @@
 
 #include <QWidget>
 #include <QString>
+#include <QThread>
 #include <QDebug>
 #include <QVariantMap>
 #include <IDeviceClient.h>
 #include <IEventRegister.h>
 #include <IVideoDecoder.h>
+#include "PreviewPlay.h"
 #include <IVideoRender.h>
+
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 
-class QSubView : public QWidget
+class QSubView :public QWidget
 {
 	Q_OBJECT
+		QThread MyPreviewPlay;
 
 public:
 	QSubView(QWidget *parent = 0);
@@ -48,8 +52,10 @@ public:
 		QString m_sVendor;
 	}DevCliSetInfo;
 private:
+	PreviewPlay *LP_PreviewPlay;
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
+	void SignalPreviewPlay();
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
@@ -58,7 +64,8 @@ private:
 
 private:
 	int cbInit();
-
+public:
+	int PrevPlay(QVariantMap evMap);
 };
 
 

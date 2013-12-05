@@ -68,6 +68,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qsubview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="PreviewPlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PreviewPlay.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PreviewPlay.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="previewwindows_global.h">
@@ -91,6 +100,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qsubview.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PreviewPlay.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

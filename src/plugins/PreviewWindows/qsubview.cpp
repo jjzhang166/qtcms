@@ -10,11 +10,16 @@
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
 	m_IVideoRender(NULL),
-	m_IDeviceClient(NULL)
+	m_IDeviceClient(NULL),
+	LP_PreviewPlay(NULL)
 {
 	setMouseTracking(true);
 	this->lower();
-
+	//建立previewplay线程
+	LP_PreviewPlay=new PreviewPlay;
+	LP_PreviewPlay->moveToThread(&MyPreviewPlay);
+	connect(this,SIGNAL(SignalPreviewPlay()),LP_PreviewPlay,SLOT(MyThreadPreviewPlay()));
+	MyPreviewPlay.start();
 	//申请解码器接口
 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
@@ -186,9 +191,9 @@ int QSubView::cbInit()
 	pRegist->Release();
 	return 0;
 }
-int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
+int QSubView::PrevPlay(QVariantMap evMap)
 {
-	//检测数据包，把数据包扔给解码器
+	//发射信号，启动preplay  线程
 	QVariantMap::const_iterator it;
 	for (it=evMap.begin();it!=evMap.end();++it)
 	{
@@ -197,5 +202,20 @@ int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 		qDebug()<<sKey;
 		qDebug()<<sValue;
 	}
-	return 0;
+//	emit SignalPreviewPlay();
+	
+	return 1;
+}
+int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
+{
+	//检测数据包，把数据包扔给解码器
+
+
+	if (evName=="LiveStream")
+	{
+		((QSubView*)pUser)->PrevPlay(evMap);
+		return 0;
+	}
+	else
+		return 1;
 }
