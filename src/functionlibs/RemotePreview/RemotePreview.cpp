@@ -245,7 +245,12 @@ int RemotePreview::authority()
 	QTimer::singleShot(50, &loop, SLOT(quit()));
 	loop.exec();
 	
-	return m_pStreamProcess->getVerifyResult();
+	if (1 == m_pStreamProcess->getVerifyResult())
+	{
+		return 0;
+	}
+	else
+		return 1;
 }
 
 int RemotePreview::disconnect()
