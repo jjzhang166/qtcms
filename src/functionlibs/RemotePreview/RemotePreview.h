@@ -79,7 +79,7 @@ private:
 
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 	QStringList m_eventList;
-	bool m_bpaused;
+	bool m_bPaused;
 	int m_channelNum;
 	int m_streamNum;
 	int m_streanCount;

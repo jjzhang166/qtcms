@@ -26,6 +26,11 @@ StreamProcess::~StreamProcess(void)
 
 int  StreamProcess::getSocketState()
 {
+	if (NULL == m_tcpSocket)
+	{
+		return 0;
+	}
+
     int nStatus = m_tcpSocket->state();
     int nRet = 0;
     if (QAbstractSocket::ConnectingState == nStatus)

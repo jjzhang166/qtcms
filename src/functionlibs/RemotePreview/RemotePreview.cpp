@@ -12,7 +12,7 @@
 RemotePreview::RemotePreview(void):
 m_nRef(0),
 m_streanCount(0),
-m_bpaused(false)
+m_bPaused(false)
 {
 	m_eventList<<"LiveStream"<<"SocketError";
 	m_manager = new QNetworkAccessManager(this);
@@ -93,6 +93,7 @@ int RemotePreview::connectToDevice()
 
 	QEventLoop loop;
 	connect(this, SIGNAL(QuitThread()), &loop, SLOT(quit()));
+	QTimer::singleShot(5000,&loop, SLOT(quit()));
 	loop.exec();
 
 	g_mutex.lock();
@@ -397,15 +398,28 @@ void RemotePreview::sendLiveStreamRequireEx(bool option)
 
 int RemotePreview::stopStream()
 {
-	if (CS_Connected == m_pStreamProcess->getSocketState())
-	{
-		sendRequire(false);
-	}
-	return 0;
+	return disconnect();
 }
 int RemotePreview::pauseStream(bool bPaused)
 {
-	m_bpaused = bPaused;
+	if (bPaused)//pause stream
+	{
+		m_bPaused = bPaused;
+		if (CS_Connected == m_pStreamProcess->getSocketState())
+		{
+			sendRequire(false);
+		}
+	}
+	//if push pause before
+	if (!bPaused && m_bPaused)
+	{
+		m_bPaused = bPaused;
+		if (CS_Connected == m_pStreamProcess->getSocketState())
+		{
+			sendRequire(true);
+		}
+	}
+
 	return 0;
 }
 int RemotePreview::getStreamCount()
