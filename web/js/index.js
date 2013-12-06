@@ -5,7 +5,7 @@ var	nViewNum = 0;
 		oBottom = $('#operating');
 		oView = $('#playback_view');
 		oPreView= $('#previewWindows')[0];
-		setViewMod('div2_2');
+		setViewMod('div2_2')
 
 		var oAs = $('ul.dev_list_btn a');
 		var oDiv = $('div.dev_list');
@@ -50,6 +50,10 @@ var	nViewNum = 0;
 				oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
 			})
 		})
+		$('div.operat li.setViewNum').click(function(){ 
+			setViewNumNow();
+		})
+		setViewNumNow();
 	})
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
@@ -62,4 +66,16 @@ var	nViewNum = 0;
 	}
 	function setViewMod(i){
 		oPreView.setDivMode(i);
+	}
+	function setViewNumNow(){     //显示当前分屏模式和当前第级分屏
+		var str = oPreView.getCurrentPage()+'/'+oPreView.getPages();
+		$('#nowWinMod').html('').html(str);
+	}
+	function preNextPage(type){ 
+		if(type){ 
+			oPreView.prePage();
+		}else{ 
+			oPreView.nextPage();
+		}
+		setViewNumNow();
 	}
