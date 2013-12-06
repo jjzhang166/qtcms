@@ -60,6 +60,10 @@ private:
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClient;
 
+	int iInitWidth;
+	int iInitHeight;
+	bool bIsInitFlags;
+
 private:
 	int cbInit();
 public:

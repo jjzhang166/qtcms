@@ -10,7 +10,10 @@
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
 	m_IVideoRender(NULL),
-	m_IDeviceClient(NULL)
+	m_IDeviceClient(NULL),
+	iInitHeight(0),
+	iInitWidth(0),
+	bIsInitFlags(false)
 {
 	setMouseTracking(true);
 	this->lower();
@@ -131,8 +134,13 @@ WId QSubView::GetCurrentWnd()
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
 	//注册事件，需检测是否注册成功
-	
-	cbInit();
+	if (false==bIsInitFlags)
+	{
+		if (1==cbInit())
+		{
+			return 1;
+		}
+	}
 	m_DevCliSetInfo.m_sAddress=sAddress;
 	m_DevCliSetInfo.m_uiPort=uiPort;
 	m_DevCliSetInfo.m_sEseeId=sEseeId;
@@ -146,7 +154,10 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	{
 		return 1;
 	}
-	m_IDeviceClient->setChannelName(sCameraname);
+	if (1==m_IDeviceClient->setChannelName(sCameraname))
+	{
+		return 1;
+	}
 	int nRet=1;
 	nRet=m_IDeviceClient->connectToDevice(sAddress,uiPort,sEseeId);
 	//需要等待连接成功，再发送请求，采用信号绑定的方法或者计时器
@@ -154,7 +165,10 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	{
 		return 1;
 	}
-	m_IDeviceClient->liveStreamRequire(uiChannelId,uiStreamId,true);
+	if (1==m_IDeviceClient->liveStreamRequire(uiChannelId,uiStreamId,true))
+	{
+		return 1;
+	}
 	return 0;
 }
 int QSubView::CloseWndCamera()
@@ -202,18 +216,27 @@ int QSubView::cbInit()
 	pRegist->registerEvent(evName,cbDecodedFrame,this);
 	pRegist->Release();
 	pRegist=NULL;
+	//初始化渲染器
 	if (NULL==m_IVideoRender)
 	{
 		return 1;
 	}
-	//m_IVideoRender->setRenderWnd((QWidget*)this);
-	//m_IVideoRender->init(this->width(),this->height());
+	qDebug("%p",winId());
+	qDebug("%p",this);
+	if (false==m_IVideoRender->setRenderWnd((QWidget*)this))
+	{
+		return 1;
+	}
+	//if (false==m_IVideoRender->init(this->width(),this->height()))
+	//{
+	//	return 1;
+	//}
+	bIsInitFlags=true;
 	return 0;
 }
 int QSubView::PrevPlay(QVariantMap evMap)
 {
 	unsigned int nLength=evMap.value("length").toUInt();
-	qDebug()<<nLength;
 	char * lpdata=(char *)evMap.value("data").toUInt();
 	if (NULL==m_IVideoDecoder)
 	{
@@ -237,7 +260,26 @@ int QSubView::PrevRender(QVariantMap evMap)
 	{
 		return 1;
 	}
-//	m_IVideoRender-render();
+	char* pData=(char*)evMap.value("data").toUInt();
+	char* pYdata=(char*)evMap.value("Ydata").toUInt();
+	char* pUdata=(char*)evMap.value("Udata").toUInt();
+	char* pVdata=(char*)evMap.value("Vdata").toUInt();
+	int iWidth=evMap.value("width").toInt();
+	int iHeight=evMap.value("height").toInt();
+	int iYStride=evMap.value("YStride").toInt();
+	int iUVStride=evMap.value("UVStride").toInt();
+	int iLineStride=evMap.value("lineStride").toInt();
+	QString iPixeFormat=evMap.value("pixelFormat").toString();
+	int iFlags=evMap.value("flags").toInt();
+
+	if (iInitHeight!=iHeight||iInitWidth!=iWidth)
+	{
+		m_IVideoRender->init(iWidth,iHeight);
+		iInitHeight=iHeight;
+		iInitWidth=iWidth;
+	}
+
+	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	return 0;
 }
 
