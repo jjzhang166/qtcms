@@ -22,13 +22,15 @@ int SDLRender::init(int nWidth,int nHeight)
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 		if(!m_pWindow)
+	//		qDebug("%p",pWidget->winId());
 		m_pWindow = SDL_CreateWindowFrom((void *)pWidget->winId());
 
 		qDebug("%s",SDL_GetError());
 		if (!m_pWindow)
 			return false;
 		if(!m_pRender)
-		m_pRender = SDL_CreateRenderer( m_pWindow, 0, SDL_RENDERER_ACCELERATED /*|SDL_RENDERER_PRESENTVSYNC*/);
+		m_pRender = SDL_CreateRenderer( m_pWindow, 2, SDL_RENDERER_ACCELERATED |SDL_RENDERER_PRESENTVSYNC);
+		qDebug("%s",SDL_GetError());
 		if (m_pTexture)
 		{
 			SDL_DestroyTexture( m_pTexture );
