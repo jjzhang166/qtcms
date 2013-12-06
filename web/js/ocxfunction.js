@@ -16,18 +16,12 @@ var oSelected = [],
 		var No = $('#UserMan table.UserMan tbody tr').length - 1;
 		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');		
 	}
-	function AddFaild(ev){
-		Confirm('添加失败!');
-	}
 	function DeleteSuccess(){
 		oSelected = [];
 		$('#UserMan table.UserMan tbody tr input:hidden').val('');
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
 			return $(this).attr('class') == 'selected';
 		}).remove();
-	}
-	function DeleteFaild(ev){ 
-		Confirm('删除失败');
 	}
 	function Fail(data){
 		var str = '<p>';
@@ -174,13 +168,6 @@ var oSelected = [],
 		adddev(devData2);
 		$('#esee_'+data.name).remove();
 	}
-	function debug (){ 
-		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'区域_root'});// 主区数据句填充.
-		$('#area_1').data('data',{'area_id':'1','area_name':'test1','pid':'0','pareaname':'区域_root'});// 
-		$('#group_0').data('data',['0',$('#group_0').html()]);// 主区数据句填充.
-		$('#dev_1').data('data',{'devname':'test4','address':'123','eseeid':'10001685','username':'admin','devid':'1'});// 主区数据句填充.
-		$('.debug').show();
-	}
 	function Confirm(str){
 		$('#confirm').find('h4').html($('#confirm').find('h4').html()+str).show();
 		$('div.close').html('确定')
@@ -209,7 +196,6 @@ var oSelected = [],
 		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').appendTo(group.next('ul'));
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
-
 	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(){ //区域菜单输出

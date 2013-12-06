@@ -1,6 +1,7 @@
 var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup'];  //事件名称集合
 var oSearchOcx;
 	$(function(){
+		window.resizeTo(600,950);
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -85,8 +86,6 @@ var oSearchOcx;
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
 		})
-
-		set_contentMax();
 		
 		$('#set_content div.left li').each(function(index){
 			$(this).click(function(){
@@ -156,7 +155,11 @@ var oSearchOcx;
 			$(this).toggleClass('selected');  // tr toggle样式
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
+		set_contentMax();
 	})///
+	$(window).resize(function(){ 
+		set_contentMax();
+	})
 	//分组区域添加到分组, 数据组织
 	function SetChannelIntoGroupData(){
 		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
@@ -181,9 +184,6 @@ var oSearchOcx;
 		$('#set_content .right').width(W - 250);
 		$('#set_content .right').height(H - 106);
 		$('#set_content .left').height(H - 106);
-		$('#foot').css({
-			top:H - 28
-		})
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){
@@ -212,7 +212,7 @@ var oSearchOcx;
 		if(obj == 'menu3' || obj == 'confirm'){
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
-				alert('please select user!!!');
+				Confirm('please select user!!!');
 				return false;
 			}
 			if(obj == 'menu3'){
@@ -232,7 +232,7 @@ var oSearchOcx;
 	function pwdTest(obj){
 		var str = obj.val();
 		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
-			alert('请用下划线数字字母组合且长度大于6位');
+			Confirm('请用下划线数字字母组合且长度大于6位');
 		}else{
 			obj.attr('enable','1');
 			valueIsSame($('#add_again_passwd'),$('#add_passwd'));
@@ -243,7 +243,7 @@ var oSearchOcx;
 		if(obj.val() && obj2.val() && obj.val() != obj2.val()){ 
 			obj.attr('enable','0');
 			obj2.attr('enable','0');
-			alert('2次密码不一样');
+			Confirm('2次密码不一样');
 			return;
 		}else{ 
 			obj.attr('enable','1')
@@ -312,12 +312,7 @@ function showContextMenu(y,x,obj){
 		})
 	});
 }
-function addDev(){
-	Confirm('测试用!')
-	var add = $('<li><span class="area">Area</span><ul><li><span class="device" >device</span><ul><li><span class="cam">Channel01</span></li><li><span class="cam">Channel02</span></li><li><span class="cam">Channel03</span></li><li><span class="cam">Channel04</span></li><li><span class="cam">Channel05</span></li><li><span class="cam">Channel06</span></li><li><span class="cam">Channel07</span></li><li><span class="cam">Channel08</span></li></ul></li></ul></li>').appendTo('div.dev_list:eq(0) ul.filetree');
-	$('ul.filetree').treeview({add:add});
 
-}
 //遮罩层和弹出框方法.
 var trance = {'area':'区域','device':'设备','channel':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
