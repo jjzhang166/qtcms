@@ -1,7 +1,6 @@
 var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup'];  //事件名称集合
 var oSearchOcx;
 	$(function(){
-		window.resizeTo(600,950);
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -102,7 +101,7 @@ var oSearchOcx;
 			})
 			//搜索设备;
 			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			oSearchOcx.Start();
+			searchFlush();
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
