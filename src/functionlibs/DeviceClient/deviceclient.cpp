@@ -111,9 +111,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	}
 	//需要检验是否设置成功，定义返回值的含义
 	m_ports.insert("media",uiPort);
-	n_IDeviceConnection->setDeviceHost(sAddr);
-	n_IDeviceConnection->setDeviceId(sEseeId);
-	n_IDeviceConnection->setDevicePorts(m_ports);
+	if (1==n_IDeviceConnection->setDeviceHost(sAddr)||1==n_IDeviceConnection->setDevicePorts(m_ports)||1==n_IDeviceConnection->setDeviceId(sEseeId))
+	{
+		n_IDeviceConnection->Release();
+		return 1;
+	}
 
 	//连接
 	int nRet=1;
@@ -177,7 +179,11 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 	//需要判定 是否已经请求过码流
 	if (true==bOpen)
 	{
-		n_IRemotePreview->getLiveStream(nChannel,nStream);
+		if (1==n_IRemotePreview->getLiveStream(nChannel,nStream))
+		{
+			n_IRemotePreview->Release();
+			return 1;
+		}
 	}
 	else if (false==bOpen)
 	{
