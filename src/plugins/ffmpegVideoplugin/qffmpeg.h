@@ -11,7 +11,7 @@ typedef struct test_nalu_header{
 	DWORD isider;  //1 ÊÇIÖ¡
 }NALU_HEADER_t;
 
-class qffmpeg : public QGroupBox,
+class qffmpeg : public QWidget,
 	public QWebPluginFWBase
 {
 	Q_OBJECT

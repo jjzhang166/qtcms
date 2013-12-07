@@ -103,11 +103,15 @@
     <ClInclude Include="DDrawRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SDL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ffmpegVideoplugin.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ffmpegvideoplugin.h">

@@ -1,13 +1,19 @@
 #include "SDLRender.h"	
 #include <WTypes.h>
 #include <QtGui/QMessageBox>
+//#include <SDL_Render.h>
 CSDLRender::CSDLRender(void)
 {
+	pWindow = nullptr;
 }
 
 
 CSDLRender::~CSDLRender(void)
 {
+	if (pWindow != nullptr)
+	{
+		SDL_DestroyWindow(pWindow);
+	}
 }
 
 IVideoRender::ErrorCode CSDLRender::Init(int nWidth,int nHeight)
@@ -25,7 +31,9 @@ IVideoRender::ErrorCode CSDLRender::DeInit()
 IVideoRender::ErrorCode CSDLRender::SetRenderWnd(WId qWid)
 {
 	m_csWnd.lock();
-	m_hPlayWnd = qWid;
+	SDL_Init(SDL_INIT_VIDEO);
+	 pWindow = SDL_CreateWindowFrom((void *)qWid);
+	qDebug("%s",SDL_GetError());
 	m_csWnd.unlock();
 	return SUCCESS;
 }
@@ -87,17 +95,15 @@ IVideoRender::ErrorCode CSDLRender::Render(char *pYData,char *pUData,char *pVDat
 // //	SDL_UpdateRects(ps_screen,1,&s_rect);
 // 	SDL_UnlockYUVOverlay(ps_bmp);
 // 	return SUCCESS;
-	FrameData * f_data;
-	f_data->pY = (unsigned char *)pYData;
-	f_data->pU = (unsigned char *)pUData;
-	f_data->pV = (unsigned char *)pVData;
-	f_data->nWidth = nWidth;
-	f_data->nHeight = nHeight;
-	f_data->nYStride = nYStride;
-	f_data->nUVStride = nUVStride;
-	char *sData =(char*)f_data;  
- 	SDL_Window * pWindow = SDL_CreateWindowFrom((void *)m_hPlayWnd);
-	qDebug("%s",SDL_GetError());
+	
+	char *pixel;
+	int nSize = nWidth * nHeight;
+	pixel = new char[nSize * 3 / 2];
+	memcpy(pixel,pYData,nSize);
+	memcpy(pixel + nSize ,pVData, nSize / 4);
+	memcpy(pixel + nSize * 5 /4,pUData,nSize / 4);
+
+
 	int iWidth = 0;
 	int iHeight = 0;
 	SDL_GetWindowSize( pWindow, &iWidth, &iHeight );
@@ -112,12 +118,12 @@ IVideoRender::ErrorCode CSDLRender::Render(char *pYData,char *pUData,char *pVDat
 	d_rect.w = iWidth;
 	d_rect.h = iHeight;
 
-	//创建渲染器，第二个参数为选用的画图驱动，0代表d3d,1代表opengl，3代表sofeware
-	SDL_Renderer * pRender = SDL_CreateRenderer( pWindow, 3, SDL_RENDERER_ACCELERATED );
+	//创建渲染器，第二个参数为选用的画图驱动，0代表d3d,1代表opengl，2代表sofeware
+	SDL_Renderer * pRender = SDL_CreateRenderer( pWindow, 2 , SDL_RENDERER_ACCELERATED );
 
 	SDL_Texture * pTexture = SDL_CreateTexture( pRender,SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, nWidth, nHeight);
 
-	SDL_UpdateTexture( pTexture, &s_rect, sData, iPitch );
+	SDL_UpdateTexture( pTexture, &s_rect, pixel, iPitch );
 	SDL_RenderClear( pRender );
 	SDL_RenderCopy( pRender, pTexture, &s_rect, &s_rect );
 	SDL_RenderPresent( pRender );
@@ -134,12 +140,11 @@ IVideoRender::ErrorCode CSDLRender::Render(char *pYData,char *pUData,char *pVDat
 		pRender = NULL;
 	}
 
-	if ( NULL != pWindow )
+	if (pixel != nullptr)
 	{
-		SDL_DestroyWindow( pWindow );
-		pWindow = NULL;
+		delete pixel;
+		pixel = nullptr;
 	}
-
 	return SUCCESS;
 }
 

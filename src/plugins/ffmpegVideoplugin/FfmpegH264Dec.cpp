@@ -69,6 +69,7 @@ void CFfmpegH264Dec::DeInit()
 	//m_csDecInit.unlock();
 }
 extern int GetWidthHeight(char *stream,int stream_len,int *width,int *height);
+int i = 0;
 void CFfmpegH264Dec::Decode(LPVOID pData,int nDataLen)
 {
 	m_csDecInit.lock();
@@ -106,13 +107,14 @@ void CFfmpegH264Dec::Decode(LPVOID pData,int nDataLen)
 	g_csInitAvlib.unlock();
 	m_csDecInit.unlock();
 
-	qDebug("%d\n%d\n%d\n",temp.pY,temp.pU,temp.pV);
 	if (outsize > 0)
 	{
 		//äÖÈ¾
 		if (NULL != m_CurRender)
 		{
+			qDebug("Decode Video %d",++i);
 			m_CurRender->Render((char *)temp.pY,(char *)temp.pU,(char *)temp.pV,temp.nWidth,temp.nHeight,temp.nYStride,temp.nUVStride);
+			Sleep(20);
 		}
 	}
 }

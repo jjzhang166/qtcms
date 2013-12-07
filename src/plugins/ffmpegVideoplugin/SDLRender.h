@@ -17,7 +17,7 @@ public:
 	virtual ErrorCode Render(char *pYData,char *pUData,char *pVData,int nWidth,int nHeight,int nYStride,int nUVStride);
 	virtual bool Enable(bool bEnable);
 	virtual void SetRecStatus(bool bRec);
-	
+
 public:
 	static int InitGlobalResource(WId qWid);
 	static int DeInitGlobalResource();
@@ -25,7 +25,8 @@ public:
 // 	SDL_Overlay* ps_bmp;
 	SDL_Rect     d_rect;
 	SDL_Rect     s_rect;
-	QMutex               m_csWnd;
-	WId                 m_hPlayWnd;
+	QMutex       m_csWnd;
+	SDL_Window *pWindow;
+	char * sData;
 };
 

@@ -7,10 +7,10 @@
 #include "DDrawRender.h"
 #include "SDLRender.h"
 qffmpeg::qffmpeg(QWidget * parent)
-	: QGroupBox(parent),
+	: QWidget(parent),
 	QWebPluginFWBase(this)
 {
-
+	
 }
 
 qffmpeg::~qffmpeg(void)
@@ -22,6 +22,7 @@ void qffmpeg::Init()
 {
 	CDDrawRender::InitGlobalResource(winId());
 	m_dec.SetRenderWnd(winId());
+	qDebug("Init OK!!!!!");
 }
 void qffmpeg::Open()
 {
@@ -35,6 +36,7 @@ void qffmpeg::Open()
 
 void qffmpeg::Play()
 {
+	int i = 0;
 	int len = 0;
 	char data[1280*720];
 	FILE *fp;
@@ -59,6 +61,7 @@ void qffmpeg::Play()
 			rewind(fp);
 			continue;
 		}
+		qDebug("Read Video Frame %d",++i);
 		m_dec.Decode(data,nhead.size);
 	}
 }

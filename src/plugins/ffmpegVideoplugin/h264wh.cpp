@@ -144,14 +144,14 @@ int GetWidthHeight(char *stream,int stream_len,int *width,int *height)
 	int i = 0;	
 	while(i < stream_len-4 )
 	{
-		if(0 == qstrncmp((stream+i),(const char*)startcode4,4))
+		if(0 == memcmp((stream+i),(const char*)startcode4,4))
 		{
 			if (h264_decode_seq_parameter_set((unsigned char *)stream +i +4, 11, width,height))
 			{			
 				return 0;
 			}		
 		}
-		if(0 == qstrncmp((stream+i),(const char*)startcode3,3))
+		if(0 == memcmp((stream+i),(const char*)startcode3,3))
 		{
 			if (h264_decode_seq_parameter_set((unsigned char *)stream +i +3, 11, width,height))
 			{			
