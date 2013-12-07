@@ -1569,7 +1569,7 @@ QStringList QCommonPlugin::GetChannelList(int dev_id)
 	//}
 
 	//qDebug("%d",listRet.count());
-	//return listRet;
+	//return listRet;	
 	QSqlQuery _query(m_db);
 	QStringList S_List;
 	S_List.clear();
