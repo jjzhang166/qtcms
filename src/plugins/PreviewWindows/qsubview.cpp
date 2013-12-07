@@ -22,8 +22,10 @@ QSubView::QSubView(QWidget *parent)
 	qDebug("IVideoDecoder:%x",m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_SDLRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
+	qDebug("m_IVideoRender:%x",m_IVideoRender);
 	//申请DeviceClient接口
 	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
+	qDebug("m_IDeviceClient:%x",m_IDeviceClient);
 }
 
 QSubView::~QSubView()
@@ -133,6 +135,8 @@ WId QSubView::GetCurrentWnd()
 
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	qDebug()<<"QSubView";
+	qDebug()<<this;
 	//注册事件，需检测是否注册成功
 	if (false==bIsInitFlags)
 	{
@@ -173,6 +177,8 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 }
 int QSubView::CloseWndCamera()
 {
+	qDebug()<<"QSubView";
+	qDebug()<<this;
 	if (NULL==m_IDeviceClient)
 	{
 		return 1;
@@ -199,6 +205,9 @@ int QSubView::cbInit()
 		return 1;
 	}
 	pRegist->registerEvent(evName,cbLiveStream,this);
+	evName.clear();
+	evName.append("SocketError");
+	pRegist->registerEvent(evName,cbConnectError,this);
 	pRegist->Release();
 	pRegist=NULL;
 	//注册解码回调函数
@@ -221,16 +230,12 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	qDebug("%p",winId());
-	qDebug("%p",this);
-	if (false==m_IVideoRender->setRenderWnd((QWidget*)this))
+
+	if (false==m_IVideoRender->setRenderWnd(this))
 	{
 		return 1;
 	}
-	//if (false==m_IVideoRender->init(this->width(),this->height()))
-	//{
-	//	return 1;
-	//}
+
 	bIsInitFlags=true;
 	return 0;
 }
@@ -306,4 +311,10 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 	}
 	else 
 		return 1;
+}
+
+int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
+{
+	qDebug()<<"cbConnectError";
+	return 1;
 }

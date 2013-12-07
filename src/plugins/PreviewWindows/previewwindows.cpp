@@ -41,6 +41,7 @@ QObject * PreviewWindows::create( const QString& mimeType, const QUrl&, const QS
 {
 	//QWSWindow  *myQWSWindow =new QWSWindow();
 	//myQWSWindow->Lowering();
+	qDebug()<<"PreviewWindows";
 	QPreviewWindows * previewWindows= new QPreviewWindows();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);

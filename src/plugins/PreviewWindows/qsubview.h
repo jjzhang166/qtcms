@@ -15,6 +15,7 @@
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
+int cbConnectError(QString evName,QVariantMap evMap,void*pUser);
 
 class QSubView :public QWidget
 {
