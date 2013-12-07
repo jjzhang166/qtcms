@@ -18,7 +18,7 @@ qfviewedit::~qfviewedit()
 void qfviewedit::PrintText( QString sText )
 {
 	qDebug("%s",sText.toAscii().data());
-	EventProcCall("Passed");
+//	EventProcCall("Passed");
 }
 
 QStringList qfviewedit::TestStringList(const QString & sTest)
