@@ -3,6 +3,8 @@
 
 #include "deviceclient_global.h"
 #include <IDeviceClient.h>
+#include <QThread>
+#include <QDebug>
 #include <IDeviceConnection.h>
 #include <IRemotePreview.h>
 #include <QMultiMap>
@@ -11,7 +13,8 @@
 #include <IEventRegister.h>
 
 class  DeviceClient:public IDeviceClient,
-	public IEventRegister
+	public IEventRegister,
+	public QThread
 {
 public:
 	DeviceClient();
@@ -45,6 +48,8 @@ private:
 	unsigned int m_uiPort;
 	QVariantMap m_ports;
 	QString m_sChannelName;
+
+	bool bIsInitFlags;
 
 private:
 	int cbInit();

@@ -2,15 +2,16 @@
 #include <guid.h>
 
 DeviceClient::DeviceClient():m_nRef(0),
-	m_DeviceConnecton(NULL)
+	m_DeviceConnecton(NULL),
+	bIsInitFlags(false)
 {
 	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnecton);
-	m_EventList<<"LiveStream";
+	m_EventList<<"LiveStream"<<"SocketError";
 }
 
 DeviceClient::~DeviceClient()
 {
-
+	m_DeviceConnecton->Release();
 }
 
 long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
@@ -102,57 +103,46 @@ int DeviceClient::registerEvent(QString eventName,int (__cdecl *proc)(QString,QV
 
 int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId)
 {
-	//尝试连接三个协议：bubble，穿透，转发
-	IDeviceConnection *n_IDeviceConnection;
-	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&n_IDeviceConnection);
-	if (NULL==n_IDeviceConnection)
+	//把前一次的连接释放掉
+	qDebug()<<"connectToDevice";
+	qDebug()<<this;
+	if (NULL==m_DeviceConnecton)
 	{
 		return 1;
 	}
-	//需要检验是否设置成功，定义返回值的含义
-	m_ports.insert("media",uiPort);
-	if (1==n_IDeviceConnection->setDeviceHost(sAddr)||1==n_IDeviceConnection->setDevicePorts(m_ports)||1==n_IDeviceConnection->setDeviceId(sEseeId))
+	if (IDeviceConnection::CS_Connected==m_DeviceConnecton->getCurrentStatus()||IDeviceConnection::CS_Connectting==m_DeviceConnecton->getCurrentStatus())
 	{
-		n_IDeviceConnection->Release();
+		m_DeviceConnecton->disconnect();
+		while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus()){
+			sleep(10);
+		}
+	}
+
+	m_ports.insert("media",uiPort);
+
+	if (1==m_DeviceConnecton->setDeviceHost(sAddr)||1==m_DeviceConnecton->setDevicePorts(m_ports)||1==m_DeviceConnecton->setDeviceId(sEseeId))
+	{
 		return 1;
 	}
 
-	//连接
 	int nRet=1;
-	nRet=n_IDeviceConnection->connectToDevice();
+	nRet=m_DeviceConnecton->connectToDevice();
 	if (1==nRet)
 	{
+		qDebug()<<"can't connect";
 		return 1;
 	}
-	//注册回调函数
-	IEventRegister *IEventReg=NULL;
-	n_IDeviceConnection->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
-	if (NULL==IEventReg)
-	{
-		n_IDeviceConnection->Release();
-		n_IDeviceConnection=NULL;
-		return 1;
-	}
-	QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
-	for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
-	{
-		QString sKey=it.key();
-		DeviceClientInfoItem sValue=it.value();
-		IEventReg->registerEvent(sKey,sValue.proc,sValue.puser);
-	}
 
-	if (NULL!=m_DeviceConnecton)
+	if (false==bIsInitFlags)
 	{
-		m_DeviceConnecton->Release();
-		m_DeviceConnecton=NULL;
+		if (1==cbInit())
+		{
+			return 1;
+		}
 	}
-
-	m_DeviceConnecton=n_IDeviceConnection;
-	m_DeviceConnecton->AddRef();
-	n_IDeviceConnection->Release();
-
 	//fix me
 	return 0;
+
 }
 int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
 {
@@ -165,6 +155,7 @@ int DeviceClient::setChannelName(const QString & sChannelName)
 }
 int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 {
+	qDebug()<<this;
 	IRemotePreview *n_IRemotePreview=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
@@ -195,6 +186,8 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 
 int DeviceClient::closeAll()
 {
+	qDebug()<<"closeAll";
+	qDebug()<<this;
 	IRemotePreview *n_IRemotePreview=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
@@ -226,23 +219,25 @@ int DeviceClient::getConnectStatus()
 }
 int DeviceClient::cbInit()
 {
+	//注册回调函数
 	if (NULL==m_DeviceConnecton)
 	{
 		return 1;
 	}
-	IEventRegister *pRegist=NULL;
-	m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void**)&pRegist);
-	if (NULL==pRegist)
+	IEventRegister *IEventReg=NULL;
+	m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
+	if (NULL==IEventReg)
 	{
 		return 1;
 	}
-	QMultiMap<QString,DeviceClientInfoItem> ::const_iterator it;
+	QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
 	for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
 	{
 		QString sKey=it.key();
 		DeviceClientInfoItem sValue=it.value();
-		pRegist->registerEvent(sKey,sValue.proc,sValue.puser);
+		IEventReg->registerEvent(sKey,sValue.proc,sValue.puser);
 	}
-	pRegist->Release();
+	IEventReg->Release();
+	bIsInitFlags=true;
 	return 0;
 }
