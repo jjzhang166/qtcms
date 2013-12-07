@@ -23,6 +23,7 @@ int SDLRender::init(int nWidth,int nHeight)
 		SDL_Init(SDL_INIT_VIDEO);
 		if(!m_pWindow)
 	//		qDebug("%p",pWidget->winId());
+		qDebug("------------------>1:%d",pWidget->winId());
 		m_pWindow = SDL_CreateWindowFrom((void *)pWidget->winId());
 
 		qDebug("%s",SDL_GetError());
@@ -68,6 +69,8 @@ int SDLRender::setRenderWnd(QWidget * wnd)
 	if (wnd)
 	{
 		pWidget = wnd;
+		pWidget->winId();
+		//qDebug("------------------>2:%p",pWidget->winId());
 		return true;
 	}
 	return false;
