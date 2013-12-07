@@ -74,16 +74,23 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	if ( NULL == m_tcpSocket )
 	{
 		m_tcpSocket = new QTcpSocket;
+		connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream())/*,Qt::DirectConnection*/);
+		connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError))/*,Qt::DirectConnection*/);
 	}
-
+	qDebug()<<this;
     m_tcpSocket->abort();
-    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream())/*,Qt::DirectConnection*/);
-    connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError))/*,Qt::DirectConnection*/);
+	//connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream())/*,Qt::DirectConnection*/);
+	//connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError))/*,Qt::DirectConnection*/);
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
     if (m_tcpSocket->waitForConnected())
     {
         qDebug()<<"Connected!!!!!!!!!!!!!!";
+		m_bStop = false;
+		m_nRemainBytes = 0;
+		m_nTotalBytes=0;
+		m_bIsHead=true;
+		m_nVerifyResult=1;
     }
 
 	g_mutex.unlock();
@@ -92,7 +99,9 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 
 void StreamProcess::stopStream()
 {
+	qDebug()<<this;
 	m_bStop = true;
+
 	if (NULL != m_tcpSocket)
 	{
 	    m_tcpSocket->disconnectFromHost();
@@ -101,6 +110,7 @@ void StreamProcess::stopStream()
 
 void StreamProcess::socketWrites(QByteArray block)
 {
+	qDebug()<<this;
 	if (NULL != m_tcpSocket && IDeviceConnection::CS_Connected == getSocketState())
 	{
 		m_tcpSocket->write(block);  
