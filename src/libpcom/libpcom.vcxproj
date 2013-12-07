@@ -141,8 +141,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\IActivities.h" />
+    <ClInclude Include="..\..\include\IAreaManager.h" />
+    <ClInclude Include="..\..\include\IDeviceClient.h" />
+    <ClInclude Include="..\..\include\IFsmPlay.h" />
+    <ClInclude Include="..\..\include\IGroupManager.h" />
+    <ClInclude Include="..\..\include\IIpcSearch.h" />
     <ClInclude Include="..\..\include\IUserManager.h" />
     <ClInclude Include="..\..\include\IWebPluginBase.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libpcom.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -30,7 +30,7 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
             QString sFileName =item.toElement().attribute("file");
             QString sModulePath = sAppPath + QString("/") + sFileName;
             QLibrary Module(sModulePath);
-
+			qDebug()<<sModulePath;
             typedef IPcomBase * (*lpCreateInstance)();
             lpCreateInstance pCreateInstance = (lpCreateInstance)Module.resolve("CreateInstance");
             IPcomBase * pInstance = pCreateInstance();
@@ -38,6 +38,7 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
             {
                 pBase = pInstance = pCreateInstance();
             }
+			qDebug()<<sModulePath;
             lRet = pInstance->QueryInterface(iid,ppv);
 			pInstance->Release();
 
