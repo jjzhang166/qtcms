@@ -16,6 +16,7 @@ m_bPaused(false)
 {
 	m_eventList<<"LiveStream"<<"SocketError";
 	m_manager = new QNetworkAccessManager(this);
+
 	m_pStreamProcess = new StreamProcess();
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
@@ -77,8 +78,6 @@ int RemotePreview::setDeviceAuthorityInfomation(QString username,QString passwor
 
 int RemotePreview::connectToDevice()
 {
-	qDebug()<<"RemotePreview";
-	qDebug()<<this;
 	int result = 1;
 
 	QUrl url;
@@ -257,11 +256,8 @@ int RemotePreview::authority()
 
 int RemotePreview::disconnect()
 {
-	qDebug()<<"RemotePreview";
-	qDebug()<<this;
 	if (IDeviceConnection::CS_Connected != getCurrentStatus())
 	{
-		emit EndStream();
 	    return 1;
 	}
 	else
@@ -467,7 +463,7 @@ int RemotePreview::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
 
 	if ("SocketError" == eventName)
 	{
-		eventParams<<"errorValue"<<"errorDescription";
+		eventParams<<"connectionStatus"<<"errorValue"<<"errorDescription";
 	}
  
  	return IEventRegister::OK;

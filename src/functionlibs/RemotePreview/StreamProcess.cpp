@@ -8,10 +8,9 @@
 StreamProcess::StreamProcess():
 m_nRemainBytes(0),
 m_nTotalBytes(0),
-m_bStop(false),
 m_bIsHead(true),
 m_nPort(80),
-m_nVerifyResult(1)
+m_nVerifyResult(0)
 {
     m_tcpSocket = NULL; 
 }
@@ -74,23 +73,24 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	if ( NULL == m_tcpSocket )
 	{
 		m_tcpSocket = new QTcpSocket;
-		connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream())/*,Qt::DirectConnection*/);
-		connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError))/*,Qt::DirectConnection*/);
 	}
-	qDebug()<<this;
+	else
+	{
+		m_tcpSocket->disconnectFromHost();
+	}
+
     m_tcpSocket->abort();
-	//connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream())/*,Qt::DirectConnection*/);
-	//connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError))/*,Qt::DirectConnection*/);
+    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
+    connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
     if (m_tcpSocket->waitForConnected())
     {
-        qDebug()<<"Connected!!!!!!!!!!!!!!";
-		m_bStop = false;
 		m_nRemainBytes = 0;
-		m_nTotalBytes=0;
-		m_bIsHead=true;
-		m_nVerifyResult=1;
+		m_nTotalBytes = 0;
+		m_bIsHead = true;
+		m_nPort = 80;
+		m_nVerifyResult = 0;
     }
 
 	g_mutex.unlock();
@@ -99,18 +99,16 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 
 void StreamProcess::stopStream()
 {
-	qDebug()<<this;
-	m_bStop = true;
-
 	if (NULL != m_tcpSocket)
 	{
+		disconnect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
+		disconnect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
 	    m_tcpSocket->disconnectFromHost();
 	}
 }
 
 void StreamProcess::socketWrites(QByteArray block)
 {
-	qDebug()<<this;
 	if (NULL != m_tcpSocket && IDeviceConnection::CS_Connected == getSocketState())
 	{
 		m_tcpSocket->write(block);  
@@ -124,7 +122,7 @@ void StreamProcess::receiveStream()
 	Message *pMsg = NULL;
 	AuthorityBack *pAutoBack = NULL;
 
- 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && !m_bStop)
+ 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes)
  	{
 		if (m_bIsHead)
 		{
@@ -232,6 +230,7 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 {
 	QVariantMap mStreamInfo;
 
+	mStreamInfo.insert("connectionStatus", m_tcpSocket->state());
 	mStreamInfo.insert("errorValue", m_tcpSocket->error());
 	mStreamInfo.insert("errorDescription", m_tcpSocket->errorString());
 

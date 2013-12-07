@@ -16,14 +16,6 @@ typedef struct _tagStream{
 	QString sx4;
 }Stream;
 
-typedef struct _tagBubbleInfo{
-	QString sServer;
-	QString sConnection;
-	QString sVersion;
-	quint32 uiChannelCount;
-	QList<QList<Stream>> lstVinList;
-}BubbleInfo;
-
 #pragma pack(1)
 typedef struct _tagBubble{
 	char cHead;
