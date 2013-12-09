@@ -2,6 +2,7 @@
 #define QPREVIEWWINDOWS_H
 
 #include <QWidget>
+#include <QMutex>
 #include "qsubview.h"
 #include "qwfw.h"
 #include "IWindowDivMode.h"
@@ -34,7 +35,9 @@ public slots:
 
 	void OnSubWindowDblClick(QWidget *,QMouseEvent *);
 
-	int GetCurrentWnd(unsigned int uiWndIndex);
+	void SetCurrentWind(QWidget *);
+
+	int GetCurrentWnd();
 
 	int OpenCameraInWnd(unsigned int uiWndIndex
 		,const QString sAddress,unsigned int uiPort,const QString & sEseeId
@@ -47,6 +50,7 @@ public slots:
 
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 
+	void CurrentStateChangePlugin(int statevalue);
 
 private:
 	QSubView m_PreviewWnd[64];
@@ -54,7 +58,9 @@ private:
 	QList<QWidget *> m_PreviewWndList;
 
 	int m_uiWndIndex;
-	WId m_CurrentWnd;
+	volatile int m_CurrentWnd;
+
+	QMutex m_mutex;
 
 };
 

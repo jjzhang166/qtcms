@@ -16,6 +16,7 @@
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser);
+int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
 
 class QSubView :public QWidget
 {
@@ -33,7 +34,7 @@ public:
 
 	virtual void mousePressEvent(QMouseEvent *);
 
-	WId GetCurrentWnd();
+	int GetCurrentWnd();
 	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword
@@ -54,7 +55,10 @@ public:
 	}DevCliSetInfo;
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
+	void mouseLeftClick(QWidget *,QMouseEvent *);
+	void SetCurrentWindSignl(QWidget *);
 	void SignalPreviewPlay();
+	void CurrentStateChangeSignl(int statevalue);
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
@@ -70,6 +74,7 @@ private:
 public:
 	int PrevPlay(QVariantMap evMap);
 	int PrevRender(QVariantMap evMap);
+	int CurrentStateChange(QVariantMap evMap);
 };
 
 

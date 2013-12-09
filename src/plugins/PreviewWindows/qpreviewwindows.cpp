@@ -10,13 +10,17 @@
 
 QPreviewWindows::QPreviewWindows(QWidget *parent)
 	: QWidget(parent),
-	QWebPluginFWBase(this)
+	QWebPluginFWBase(this),
+	m_uiWndIndex(0),
+	m_CurrentWnd(0)
 {
 	int i;
 	for (i = 0; i < ARRAY_SIZE(m_PreviewWnd); i ++)
 	{
 		m_PreviewWnd[i].setParent(this);
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
+		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(int)),this,SLOT(CurrentStateChangePlugin(int)));
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
 
@@ -164,25 +168,55 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 	m_DivMode->subWindowDblClick(wind,ev);
 }
 
-int QPreviewWindows::GetCurrentWnd( unsigned int uiWndIndex )
+void QPreviewWindows::SetCurrentWind(QWidget *wind)
 {
-	m_CurrentWnd=m_PreviewWnd[uiWndIndex].GetCurrentWnd();
-	return 1;
+	int j;
+	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
+	{
+		if (&m_PreviewWnd[j]==wind)
+		{
+			break;
+		}
+	}
+	m_mutex.lock();
+	m_CurrentWnd=j;
+	m_mutex.unlock();
+	return ;
+}
+
+int QPreviewWindows::GetCurrentWnd()
+{
+	return m_CurrentWnd;
 }
 
 int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
+	m_mutex.lock();
+	m_CurrentWnd=uiWndIndex;
+	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	return 0;
 }
 
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
+	m_mutex.lock();
+	m_CurrentWnd=uiWndIndex;
+	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].CloseWndCamera();
 	return 0;
 }
 
 int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 {
+	m_mutex.lock();
+	m_CurrentWnd=uiWndIndex;
+	m_mutex.unlock();
 	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
+}
+
+void QPreviewWindows::CurrentStateChangePlugin(int statevalue)
+{
+	qDebug("CurrentStateChangePlugin");
+	return ;
 }

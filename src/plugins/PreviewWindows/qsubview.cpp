@@ -126,11 +126,13 @@ void QSubView::mouseMoveEvent(QMouseEvent *ev)
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
+	emit SetCurrentWindSignl(this);
 }
 
-WId QSubView::GetCurrentWnd()
+int QSubView::GetCurrentWnd()
 {
-	return winId();
+	//emit mouseDoubleClick(this);
+	return 1;
 }
 
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
@@ -177,8 +179,6 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 }
 int QSubView::CloseWndCamera()
 {
-	qDebug()<<"QSubView";
-	qDebug()<<this;
 	if (NULL==m_IDeviceClient)
 	{
 		return 1;
@@ -208,6 +208,9 @@ int QSubView::cbInit()
 	evName.clear();
 	evName.append("SocketError");
 	pRegist->registerEvent(evName,cbConnectError,this);
+	evName.clear();
+	evName.append("StateChangeed");
+	pRegist->registerEvent(evName,cbStateChange,this);
 	pRegist->Release();
 	pRegist=NULL;
 	//注册解码回调函数
@@ -250,7 +253,17 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	m_IVideoDecoder->decode(lpdata,nLength);
 	return 0;
 }
-
+int QSubView::CurrentStateChange(QVariantMap evMap)
+{
+	QVariantMap::const_iterator it;
+	for (it=evMap.begin();it!=evMap.end();++it)
+	{
+		QString sKey=it.key();
+		int sValue=it.value().toInt();
+		emit CurrentStateChangeSignl(sValue);
+	}
+	return 0;
+}
 int QSubView::PrevRender(QVariantMap evMap)
 {
 	QVariantMap::const_iterator it;
@@ -316,5 +329,33 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
 {
 	qDebug()<<"cbConnectError";
+
+	QVariantMap::const_iterator it;
+	for (it=evMap.begin();it!=evMap.end();++it)
+	{
+		QString sKey=it.key();
+		QString sValue=it.value().toString();
+		qDebug()<<sKey;
+		qDebug()<<sValue;
+	}
+	return 1;
+}
+
+int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
+{
+	qDebug()<<"cbStateChange";
+	QVariantMap::const_iterator it;
+	for (it=evMap.begin();it!=evMap.end();++it)
+	{
+		QString sKey=it.key();
+		QString sValue=it.value().toString();
+		qDebug()<<sKey;
+		qDebug()<<sValue;
+	}
+	if (evName=="StateChangeed")
+	{
+		((QSubView*)pUser)->CurrentStateChange(evMap);
+		return 0;
+	}
 	return 1;
 }
