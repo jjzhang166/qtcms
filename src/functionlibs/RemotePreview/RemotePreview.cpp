@@ -14,7 +14,7 @@ m_nRef(0),
 m_streanCount(0),
 m_bPaused(false)
 {
-	m_eventList<<"LiveStream"<<"SocketError";
+	m_eventList<<"LiveStream"<<"SocketError"<<"StateChangeed";
 	m_manager = new QNetworkAccessManager(this);
 
 	m_pStreamProcess = new StreamProcess();
@@ -464,6 +464,11 @@ int RemotePreview::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
 	if ("SocketError" == eventName)
 	{
 		eventParams<<"connectionStatus"<<"errorValue"<<"errorDescription";
+	}
+
+	if ("StateChangeed" == eventName)
+	{
+		eventParams<<"status";
 	}
  
  	return IEventRegister::OK;

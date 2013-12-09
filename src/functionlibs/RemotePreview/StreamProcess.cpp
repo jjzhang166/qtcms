@@ -82,6 +82,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
     m_tcpSocket->abort();
     connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
+	connect(m_tcpSocket, SIGNAL(stateChanged ( QAbstractSocket::SocketState socketState )), this, SLOT(stateChanged(QAbstractSocket::SocketState socketState)));
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
     if (m_tcpSocket->waitForConnected())
@@ -236,6 +237,15 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 
 	eventProcCall(QString("SocketError"), mStreamInfo);
 	m_tcpSocket->close();
+}
+
+void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
+{
+	QVariantMap mStreamInfo;
+
+	mStreamInfo.insert("status", socketState);
+
+	eventProcCall(QString("StateChangeed"), mStreamInfo);
 }
 
 void StreamProcess::eventProcCall( QString sEvent,QVariantMap param )

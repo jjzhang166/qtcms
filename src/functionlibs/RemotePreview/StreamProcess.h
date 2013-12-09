@@ -24,10 +24,10 @@ public slots:
 private slots:
 	void receiveStream();
 	void showError(QAbstractSocket::SocketError sockerror);
+	void stateChanged (QAbstractSocket::SocketState socketState);
     void conToHost(QString , quint16 );
 	void socketWrites(QByteArray block);
 private:
-	bool m_bStop;
 	bool m_bIsHead;
 	QHostAddress m_hostAddress;
 	int m_nPort;
