@@ -79,8 +79,8 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtXmld4.lib;QtWebkitd4.lib;QtGuid4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtXml4.lib;QtWebkit4.lib;QtGui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Settingsactivity.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
