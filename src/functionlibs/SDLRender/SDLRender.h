@@ -5,6 +5,7 @@
 #include <QtCore/QMutex>
 #include <SDL.h>
 #include "SDLRender_global.h"
+#include <QDebug>
 #include "IVideoRender.h"
 
 class SDLRender :

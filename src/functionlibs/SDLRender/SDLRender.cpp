@@ -89,6 +89,8 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 	int iWidth = 0;
 	int iHeight = 0;
 	SDL_GetWindowSize( m_pWindow, &iWidth, &iHeight );
+	qDebug()<<"m_pWindow";
+	qDebug()<<m_pWindow;
 
 	d_rect.x = 0;
 	d_rect.y = 0;
@@ -99,8 +101,17 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 
 	SDL_UpdateTexture( m_pTexture, &s_rect, data, iPitch );
 	SDL_RenderClear( m_pRender );
+	qDebug()<<"m_pTexture";
+	qDebug()<<m_pTexture;
+	qDebug()<<"m_pRender";
+	qDebug()<<m_pRender;
 	SDL_RenderCopy( m_pRender, m_pTexture, &s_rect, &d_rect );
 	SDL_RenderPresent( m_pRender );
+
+	qDebug()<<"m_pTexture";
+	qDebug()<<m_pTexture;
+	qDebug()<<"m_pRender";
+	qDebug()<<m_pRender;
 
 	return true;
 }
