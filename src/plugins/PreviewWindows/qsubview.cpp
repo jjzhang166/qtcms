@@ -15,7 +15,6 @@ QSubView::QSubView(QWidget *parent)
 	iInitWidth(0),
 	bIsInitFlags(false)
 {
-	setMouseTracking(true);
 	this->lower();
 	//ÉêÇë½âÂëÆ÷½Ó¿Ú
 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
@@ -111,17 +110,6 @@ void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 	emit mouseDoubleClick(this,ev);
 }
 
-void QSubView::mouseMoveEvent(QMouseEvent *ev)
-{
-	QRect rect = contentsRect();
-	int x = ev->pos().x();
-	int y = ev->pos().y();
-
-	if (rect.contains(x, y))
-	{
-		setFocus(Qt::MouseFocusReason);
-	}
-}
 
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {

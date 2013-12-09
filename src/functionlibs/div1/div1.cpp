@@ -19,6 +19,11 @@ void div1::setSubWindows(  QList<QWidget *> windows,int count  )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
+
+	for (int i = 0; i < m_nSubWindowCount; i++)
+	{
+		m_subWindows.at(i)->resize(m_parentOfSubWindows->size());
+	}
 }
 
 void div1::setParentWindow( QWidget * parent )
