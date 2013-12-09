@@ -83,7 +83,7 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGuid4.lib;QtWebkit4.lib;ddraw.lib;dxguid.lib;$(SolutionDir)..\libs\libpcom.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>ffmpegVideoplugin.def</ModuleDefinitionFile>
     </Link>

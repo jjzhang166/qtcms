@@ -123,8 +123,8 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGui4.lib;$(SolutionDir)..\libs\libpcom.lib;QtWebKitd4.lib;QtXmld4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGui4.lib;$(SolutionDir)..\libs\libpcom.lib;QtWebKit4.lib;QtXml4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>DeviceSearchPlugin.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
