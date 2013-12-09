@@ -39,6 +39,7 @@ var	nViewNum = 0;
 			$(this).click(function(){
 				if($(this).attr('state')){
 					oPreView.CloseWndCamera($(this).attr('wind'));
+					$(this).attr({state:'0',wind:''});
 				}else{
 					var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
 					var chlData = $(this).data('data');
