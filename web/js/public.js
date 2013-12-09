@@ -54,6 +54,7 @@ function addMouseStyle(obj,action){
 }
 
 function ViewMax(type){
+	var devListH = type == 'preview' ? 120 : 154 ;
 	var WinW = $(window).width();
 	var WinH = $(window).height();
 
@@ -69,9 +70,9 @@ function ViewMax(type){
 	}
 	oLeft.css({
 		left:oView.width(),
-		height:oView.height()+120
+		height:oView.height()+devListH
 	});
-	$('div.dev_list').height(oLeft.height()-294);
+	$('div.dev_list').height(oLeft.height()-288);
 	oBottom.width(oView.width());
 	$('#foot').css({
 		top:oView.height()+212
@@ -103,9 +104,17 @@ function set_drag(oDrag,X1,X2){
 			    left = left < X1 ? X1 : left;
 				left = left > X2 ? X2 : left;
 			oDrag.css('left',left+'px');
-			if(oDrag.prop('nodeName') == 'SPAN'){
-				$('p.now').width(left-X1);
-			}
+			var sHours = ((left-79)/1248*24).toString().split('.'),
+			    H = sHours[0] == '' ? '0' : sHours[0],
+				H = H<10 ? '0'+H : H;
+				if(sHours[1]){
+					var sM = sHours[1].slice(0,2),
+			    	M = parseInt(sM*0.6);
+			    	M = M<10?'0'+M:M;
+			    }else{ 
+			    	M = '00';
+			    }
+			$('#playback_view').html(H+':'+M);
 		});
 		$(document).mouseup(function(){
 			$(document).off();

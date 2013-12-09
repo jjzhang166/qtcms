@@ -35,18 +35,17 @@ var	nViewNum = 0;
 		$('body')[0].onresize=function(){
 			ViewMax('preview');
 		}
-		var num=0;
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
 				var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
 				var chlData = $(this).data('data');
-				alert(num)
-				var wind = num;
-				num++;
+				var wind = oPreView.GetCurrentWnd()
+				if(oPreView.GetWindowConnectionStatus(wind) !=0){ 
+					wind = getWind(0);
+				}
 				for(i in chlData){ 
 					devData[i]=chlData[i];
 				}
-				show(devData);
 				oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
 			})
 		})
@@ -59,7 +58,7 @@ var	nViewNum = 0;
 	function getWind(i){
 		if(oPreView.GetWindowConnectionStatus(i)!=0){
 			i++;
-			return oPreView.GetWindowConnectionStatus(i);
+			return getWind(i);
 		}else{ 
 			return i;
 		}

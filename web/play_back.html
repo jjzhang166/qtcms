@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
+<script src="js/ocxfunction.js" type="text/javascript"></script>
 <script type="text/javascript">
 var oLeft,oBottom,oView;
 var	nViewNum = 0;
@@ -20,14 +21,13 @@ var num = 0;
 		oBottom = $('#operating');
 		oView = $('#playback_view')
 		ViewMax();
-		var oAs = $('ul.dev_list_btn a');
-		var oDiv = $('div.dev_list');
+		var oAs = $('ul.dev_list_btn a'),
+			oDiv = $('div.dev_list');
 	    
 	    $('ul.filetree').treeview();		
 		oDiv.eq(1).hide();
 
-		/*set_drag($('div.play_time span'),$('div.play_time span').offset().left,$('div.play_time p').first().width()+12);
-		set_drag($('div.bg_center'),$('div.Schedule').offset().left,$('span.Dir').eq(0).offset().left-34);*/
+		set_drag($('div.play_time'),79,1327);
 		
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
@@ -44,8 +44,10 @@ var num = 0;
 			})
 		})
 		
-		$('span.file').click(function(){
-			$(this).toggleClass('file_1')
+		$('div.dev_list span.device').click(function(){
+			$("#channelvideo tr:gt(4)").remove();
+			for(var i=0; i<$(this).data('data')['channel_count'];i++){}
+			 
 		})
 
 		$(window).resize(function(){
@@ -98,73 +100,22 @@ var num = 0;
 	</div>
 	<div id="playback_view"></div>
 	<div id="search_device">
+		<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
 		<ul class="dev_list_btn">
 			<li><a class="active" href="javascript:;">Area</a></li>
 			<li><a class=""href="javascript:;">Group</a></li>
 		</ul>
 		<div class="dev_list">
-			<ul id="area" class="filetree">
-				<li><span class="area" ></span>Area
-					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="area">Area</span>
-					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-								<li><span class="file">Channel05</span></li>
-								<li><span class="file">Channel06</span></li>
-								<li><span class="file">Channel07</span></li>
-								<li><span class="file">Channel08</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
+			<ul class="filetree" id="area_root">
+				<li>
+					<span class="area" id="area_0">区域_root</span>
+					<ul></ul>
+				</li>	
 			</ul>
 		</div>
 		<div class="dev_list">
-			<ul id="group" class="filetree">
-				<li><span class="group" ></span>Group
-					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li><span class="group">Group</span>
-					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-								<li><span class="file">Channel05</span></li>
-								<li><span class="file">Channel06</span></li>
-								<li><span class="file">Channel07</span></li>
-								<li><span class="file">Channel08</span></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-			</ul>	
+			<span id="group_0"></span>
+			<ul class="filetree"></ul>	
 		</div>
 		<div id="find_type"> 
 			<table>
@@ -231,9 +182,6 @@ var num = 0;
 	</div>
 	<div id="operating">
 		<div class="play_time">
-			<p></p>
-			<p class="now"></p>
-			<span></span>
 		</div>
 		<div class="operat">
 			<ul>
@@ -248,9 +196,9 @@ var num = 0;
 				<li class="hover" style="background-position: 0 -144px;"></li>
 				<li style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1/4x</li>
 				<!-- <li class="warn"><div style="background:#F78445"></div>Manual</li>
-<li class="warn"><div style="background:#7BC345"></div>Time</li>
-<li class="warn"><div style="background:#FFE62E"></div>Motion</li>
-<li class="warn"><div style="background:#F00"></div>Sensor</li> -->
+				<li class="warn"><div style="background:#7BC345"></div>Time</li>
+				<li class="warn"><div style="background:#FFE62E"></div>Motion</li>
+				<li class="warn"><div style="background:#F00"></div>Sensor</li> -->
 				<li class="hover" style="background-position: -120px -216px;"></li>
 				<li class="hover" style="background-position: 0 -180px"></li>
 				<!-- <li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li> -->
@@ -264,42 +212,19 @@ var num = 0;
 				<li class="hover" style="background-position: 0 -324px;"></li>
 			</ul>
 		</div>
-		<table class="table" cellpadding="0" cellspacing="0">
+		<table class="table" cellpadding="0" cellspacing="0" style="height:94px; overflow:auto;">
 			<thead>
 				<tr><td class="no_border"><td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
 			</thead>
-			<tbody>
+			<tbody id="channelvideo">
 				<tr><td class="no_border"><input type="checkbox">window 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 				<tr><td class="no_border"><input type="checkbox">window 02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 				<tr><td class="no_border"><input type="checkbox">window 03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 				<tr><td class="no_border"><input type="checkbox">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 			</tbody>
 		</table>
-		<!-- <ul class="table">
-			<li class="head">
-				<div class="no_border"></div><div>00</div><div>01</div><div>02</div><div>03</div><div>04</div><div>05</div><div>06</div><div>07</div><div>08</div><div>09</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div>
-			</li>
-			<li>
-				<div class="no_border"><input type="checkbox"><span>window 01</span></div>
-				<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			</li>
-			<li>
-				<div class="no_border"><input type="checkbox"><span>window 02</span>
-				</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			</li>
-			<li>
-				<div class="no_border"><input type="checkbox"><span>window 03</span></div>
-				<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			</li>
-			<li>
-				<div class="no_border"><input type="checkbox"><span>window 04</span></div>
-				<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			</li>
-			<li><div class="no_border bg_center" style="height:10px;"><strong class="bg_left" ><span class="bg_right"></span></strong></div><span class="hover Dir" style="background-position: -390px -38px; margin-right:2px;"></span><div class="Schedule"></div><span class="hover Dir"></span></li> -->
-		</ul>
 	</div>
-	<div id="foot">
-
-	</div>
+	<div id="foot"></div>
 </body>
 </html>

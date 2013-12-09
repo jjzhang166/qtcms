@@ -314,32 +314,13 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	left: 0;
 }
 .play_time{ 
-	height: 24px;
-	width: 100%;
+	height: 70px;
+	width: 4px;
 	position:absolute;
-}
-.play_time span{
-	border-radius: 2px;
-	top:  5px;
-	left: 16px;
-	position: absolute;
-	display: block;
-	height: 14px;
-	width: 14px;
-	background: url(../images/playback/operating_icon.jpg) no-repeat -184px -342px;
-}
-.play_time p{
-	height: 6px;
-	position: absolute;
-	top: 8px;
-	left: 20px;
-	right: 20px;
-	border: 1px solid #000;
-	background:#969696;
-}
-.play_time .now{ 
-	background:#00B1FF;
-	width: 0;
+	background: #B21E36;
+	left: 79px;
+	top: 57px;
+	z-index: 1;
 }
 .operat{ 
 	background: #fff;

@@ -2,7 +2,7 @@
 (function($){
 	$.fn.extend({
 		'initCalendar':function(obj,item){ //初始化日历
-			var date = new Date;
+			var date = this.defalut.Today
 			var dateStr = this.getdate(date);
 			this.item = 0;
 			if(item != null && item){
@@ -87,18 +87,25 @@
 		},
 		'initDaysData':function(date){ //当前月份的日期绑定到Dom中
 			var warp = this;			
+			var data = new Date()
 			var thisMonthData = this.getMonthdata(date);
 			warp.find('tbody td').html('').slice(thisMonthData[0]).each(function(index){
 				if(index == thisMonthData[1]){
 					return false;
 				}else{
 					$(this).html(index+1);
+					if(index+1 == data.getDate()){ 
+						$(this).css('backgroundColor','#B21E36');
+					}
 				}
 			})
 
 		},
 		'initDaysClick':function(obj){ //日期下每天的Dom对象点击事件
 			var warp = this;
+			if(!obj.html()){
+				return false;
+			}
 			obj.click(function(){
 				var newDay = $(this).html();
 				if(newDay != ''){
@@ -107,7 +114,9 @@
 					newDay = newDay < 10 ? '0'+newDay : newDay;
 					var nowDate = oldDate[0]+'-'+oldDate[1]+'-'+newDay;
 					warp.defalut.showData(nowDate,warp.item);
-				}	
+				}
+				warp.find('tbody td').css('backgroundColor','#CCCCCC');
+				$(this).css('backgroundColor','#B21E36');
 			})	
 		},
 		'defalut':{      //显示日期。
@@ -124,7 +133,8 @@
 						obj[i].html(str);
 					}
 				}
-			}
+			},
+			'Today': new Date()
 		}
 	});
 })(jQuery);
