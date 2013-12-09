@@ -135,8 +135,9 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtNetwork4.lib;QtXml4.lib;QtGui4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>RemotePreview.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"</Command>
