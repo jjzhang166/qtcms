@@ -6,7 +6,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	bIsInitFlags(false)
 {
 	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnecton);
-	m_EventList<<"LiveStream"<<"SocketError";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed";
 }
 
 DeviceClient::~DeviceClient()
@@ -125,6 +125,13 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		return 1;
 	}
 
+	if (false==bIsInitFlags)
+	{
+		if (1==cbInit())
+		{
+			return 1;
+		}
+	}
 	int nRet=1;
 	nRet=m_DeviceConnecton->connectToDevice();
 	if (1==nRet)
@@ -133,13 +140,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		return 1;
 	}
 
-	if (false==bIsInitFlags)
-	{
-		if (1==cbInit())
-		{
-			return 1;
-		}
-	}
+
 	//fix me
 	return 0;
 
