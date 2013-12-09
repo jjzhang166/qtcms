@@ -37,16 +37,21 @@ var	nViewNum = 0;
 		}
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
-				var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
-				var chlData = $(this).data('data');
-				var wind = oPreView.GetCurrentWnd()
-				if(oPreView.GetWindowConnectionStatus(wind) !=0){ 
-					wind = getWind(0);
+				if($(this).attr('state')){
+					oPreView.CloseWndCamera($(this).attr('wind'));
+				}else{
+					var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
+					var chlData = $(this).data('data');
+					var wind = oPreView.GetCurrentWnd()
+					if(oPreView.GetWindowConnectionStatus(wind) !=0){ 
+						wind = getWind(0);
+					}
+					for(i in chlData){ 
+						devData[i]=chlData[i];
+					}
+					oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
+					$(this).attr({state:'1',wind:wind});
 				}
-				for(i in chlData){ 
-					devData[i]=chlData[i];
-				}
-				oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
 			})
 		})
 		$('div.operat li.setViewNum').click(function(){ 
