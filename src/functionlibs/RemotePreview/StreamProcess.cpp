@@ -82,7 +82,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
     m_tcpSocket->abort();
     connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
-	connect(m_tcpSocket, SIGNAL(stateChanged ( QAbstractSocket::SocketState socketState )), this, SLOT(stateChanged(QAbstractSocket::SocketState socketState)));
+	connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
     if (m_tcpSocket->waitForConnected())
