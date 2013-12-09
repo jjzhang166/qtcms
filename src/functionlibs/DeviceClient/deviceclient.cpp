@@ -140,8 +140,6 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		return 1;
 	}
 
-
-	//fix me
 	return 0;
 
 }
