@@ -123,18 +123,20 @@ void StreamProcess::receiveStream()
 	Message *pMsg = NULL;
 	AuthorityBack *pAutoBack = NULL;
 
- 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes)
+ 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && m_tcpSocket->bytesAvailable() > 14)
  	{
 		if (m_bIsHead)
 		{
 			m_buffer.clear();
-			m_buffer = m_tcpSocket->read(16);
+            m_buffer = m_tcpSocket->read(14);
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
-			m_nRemainBytes = m_nTotalBytes - 16;
+            m_nRemainBytes = m_nTotalBytes - 14;
 			if ('\x00' == pBubble->cCmd)
 			{
 				pMsg = (Message *)pBubble->pLoad;
+				m_buffer += m_tcpSocket->read(pMsg->uiLength);
+				m_nRemainBytes = 0;
 				if ('\x03' == pMsg->cMessage)
 				{
 					pAutoBack = (AuthorityBack *)pMsg->pParameters;
