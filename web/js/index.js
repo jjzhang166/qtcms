@@ -50,7 +50,8 @@ var	nViewNum = 0;
 					for(i in chlData){ 
 						devData[i]=chlData[i];
 					}
-					oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
+					/*oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor)*/;
+					oPreView.SetCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
 					$(this).attr({state:'1',wind:wind});
 				}
 			})

@@ -77,21 +77,24 @@ function ViewMax(type){
 	$('#foot').css({
 		top:oView.height()+212
 	})
+	setTables(type);
+	
+}
+function setTables(type){ 
 	$('table.table tr').each(function(index){
-			var oTds = $(this).find('td');
-			if(type == 'preview'){
-				var W =  $('table.table').width() -14;
-				oTds.eq(0).width(W*0.19);
-				oTds.eq(1).width(W*0.71);
-				oTds.eq(2).width(W*0.1+8);
-			}else{
-				var W =  $('table.table').width() -50;
-				oTds.width((W-80)/24);
-				oTds.eq(0).width(80);			
-			}
+		var oTds = $(this).find('td');
+		if(type == 'preview'){
+			var W =  $('table.table').width() -14;
+			oTds.eq(0).width(W*0.19);
+			oTds.eq(1).width(W*0.71);
+			oTds.eq(2).width(W*0.1+8);
+		}else{
+			var W =  $('table.table').width() -50;
+			oTds.width((W-80)/24);
+			oTds.eq(0).width(80);			
+		}
 	})
 }
-
 function set_drag(oDrag,X1,X2){
 	var disX = 0;
 	oDrag.mousedown(function(event){
@@ -104,7 +107,7 @@ function set_drag(oDrag,X1,X2){
 			    left = left < X1 ? X1 : left;
 				left = left > X2 ? X2 : left;
 			oDrag.css('left',left+'px');
-			var sHours = ((left-79)/1248*24).toString().split('.'),
+			var sHours = ((left-79)/1224*24).toString().split('.'),
 			    H = sHours[0] == '' ? '0' : sHours[0],
 				H = H<10 ? '0'+H : H;
 				if(sHours[1]){
@@ -158,7 +161,68 @@ function set_drag(oDrag,X1,X2){
 					This.find('input:hidden').val($(this).attr('key'));
 				}
 			})
-		}
+		},
+		'timeInput':function(options){
+			var warp = $(this);
+			var defaults = { 
+			    Delimiter: ':',
+			    initTime:'00 00 00',
+			    timeFormat:24,
+			    width:'20',
+			    height:'18'
+			}; 
+			var opts = $.extend(defaults, options);
+			var times = opts.initTime.split(' ');
+			for(var i=0;i<3;i++){
+				$('<input  maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
+				if(i<2){ 
+					warp.html(warp.html()+opts.Delimiter);
+				}
+			}
+			var inputs = warp.find('input');
+			inputs.css({ 
+					height:opts.height,
+					width:opts.width,
+					border:'none',
+					background:warp.css('backgroundColor')
+				})
+				.each(function(index){ 
+					$(this).focusout(function() {
+						var str = availability($(this),index)
+						if(str == '' || str.length <= 1){
+							$(this).val($(this).attr('default'));
+						}
+					});
+
+					$(this).focus(function(){
+						$(this).val('');
+					});
+
+					$(this).keyup(function(){
+						var str = availability($(this),index)
+						if(str.length == 2){
+							$(this).attr('default',$(this).val());
+							inputs.eq(index + 1).focus();	
+						}
+					});	
+				})
+				function availability(obj,index){ 
+					var str = obj.val().split('');
+					if(index == 0){
+						if(str[0] > 2){
+							obj.val('2'+str[1]);	
+						}	
+						if(str[1] > 3){
+							obj.val(str[0]+'3');
+						}
+					}else{
+						if(str[0] > 6){
+							obj.val('5'+str[1]);
+						}	
+					}
+					return obj.val();
+				}
+			}
 	})
 })(jQuery)
 $(function(){
@@ -173,6 +237,14 @@ $(function(){
 		$(this).css('background-position','0 -52px');
 	}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
+	})
+	$('div.timeInput').each(function(index){ 
+		
+		if(index == 1){ 
+			$(this).timeInput({'initTime':'23 59 59'});
+		}else{
+			$(this).timeInput();
+		}
 	})
 })
 // 辅助方法.

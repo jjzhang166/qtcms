@@ -124,7 +124,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	font-size: 14px;
 	height: 74px;
 } 
-.select{
+.select,.timeInput{
 	border: 1px solid #646465;
 	border-right:0;
 	font-size: 12px;
@@ -133,6 +133,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	background: url(../images/playback/select_bg.png) repeat-x;
 	position: relative;
 }
+.timeInput input{color:#585858;}
 .select a{ 
 	background: url(../images/top_icon.png) no-repeat;
 	background-position: -440px -20px;
@@ -314,12 +315,12 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	left: 0;
 }
 .play_time{ 
-	height: 70px;
+	height: 90px;
 	width: 4px;
 	position:absolute;
 	background: #B21E36;
 	left: 79px;
-	top: 57px;
+	top: 38px;
 	z-index: 1;
 }
 .operat{ 

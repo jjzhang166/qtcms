@@ -27,7 +27,7 @@ var num = 0;
 	    $('ul.filetree').treeview();		
 		oDiv.eq(1).hide();
 
-		set_drag($('div.play_time'),79,1327);
+		set_drag($('div.play_time'),79,1303);
 		
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
@@ -45,11 +45,35 @@ var num = 0;
 		})
 		
 		$('div.dev_list span.device').click(function(){
-			$("#channelvideo tr:gt(4)").remove();
-			for(var i=0; i<$(this).data('data')['channel_count'];i++){}
-			 
+			var oVideoList = $("#channelvideo")
+			oVideoList.find('tr:gt(3)').remove()
+					  .end().find('input:checkbox').prop('disabled',false);
+			var count = $(this).data('data')['channel_count']
+			if(count<4){
+				oVideoList.find('input:checkbox:gt('+(count-1)+')').prop({disabled:true,checked:false});
+			}else{ 
+				oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
+			}
+			for(var i=5; i<count;i++){
+				var num = i<10 ? '0'+i : i;
+				$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+			}
+			setTables();
 		})
-
+		var oSelected = [];
+		$("#channelvideo input:checkbox:checked").each(function(){
+			oSelected.push($(this));
+		});
+		$("#channelvideo").on('click','input:checkbox',function(event){ 
+			event.stopPropagation();
+			oSelected.push($(this));
+			if(oSelected.length>4){
+				oSelected.shift().prop('checked',false);
+			}
+		})
+		$("#channelvideo").on('click','td.no_border',function(event){ 
+			$(this).find('input:checkbox').click();
+		})
 		$(window).resize(function(){
 			ViewMax();	
 		})
@@ -125,31 +149,33 @@ var num = 0;
 						<div class="select" style="width:133px;"><span>All</span><a class="hover" href="javascript:;"></a></div>
 						<ul class="option">
 							<li><a href="javascript:;">All</a></li>
-							<li><a href="javascript:;">123</a></li>
-							<li><a href="javascript:;">123</a></li>
+							<li><a href="javascript:;">Manual</a></li>
+							<li><a href="javascript:;">Time</a></li>
+							<li><a href="javascript:;">Motion</a></li>
+							<li><a href="javascript:;">Sensor</a></li>
 						</ul>
 					</td>
 				<tr>
 				<tr>
 					<td style="text-align:right">Start Time:</td>
 					<td>
-						<div class="select"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option">
+						<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+						<!-- <ul class="option">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-						</ul>
+						</ul> -->
 					</td>
 				<tr>
 				<tr>
 					<td style="text-align:right">End Time:</td>
 					<td>
-						<div class="select"><span>2013-07-15 00:00:00</span><a class="hover" href="javascript:;"></a></div>
-						<ul class="option">
+						<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+						<!-- <ul class="option">
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
 							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-						</ul>
+						</ul> -->
 					</td>
 				<tr>	
 			</table>
@@ -217,11 +243,10 @@ var num = 0;
 				<tr><td class="no_border"><td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
 			</thead>
 			<tbody id="channelvideo">
-				<tr><td class="no_border"><input type="checkbox">window 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><input type="checkbox">window 02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><input type="checkbox">window 03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><input type="checkbox">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><input type="checkbox">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">window 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">window 02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">window 03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">window 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 			</tbody>
 		</table>
 	</div>

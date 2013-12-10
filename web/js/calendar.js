@@ -36,6 +36,7 @@
 			var warp = $(this);
 			warp.find('div.calendar_top a').each(function(index){
 				$(this).click(function(){
+					warp.find('td').css('backgroundColor','#ccc');
 					switch(index){
 						case 0:
 							num  -= 12;
@@ -107,17 +108,21 @@
 				return false;
 			}
 			obj.click(function(){
-				var newDay = $(this).html();
-				if(newDay != ''){
-					var oldDate = warp.find('span.nowDate').html().split('-');
-					warp.parent('ul.option').hide();
-					newDay = newDay < 10 ? '0'+newDay : newDay;
-					var nowDate = oldDate[0]+'-'+oldDate[1]+'-'+newDay;
-					warp.defalut.showData(nowDate,warp.item);
-				}
 				warp.find('tbody td').css('backgroundColor','#CCCCCC');
 				$(this).css('backgroundColor','#B21E36');
+				var newDay = $(this).html();
+				if(newDay != ''){
+					var nowDate = warp.getNewDay(newDay);
+					warp.defalut.showData(nowDate,warp.item);
+				}
 			})	
+		},
+		'getNewDay':function(newDay){
+			var warp = $(this);
+			var oldDate = warp.find('span.nowDate').html().split('-');
+			warp.parent('ul.option').hide();
+			newDay = newDay < 10 ? '0'+newDay : newDay;
+			return oldDate[0]+'-'+oldDate[1]+'-'+newDay;
 		},
 		'defalut':{      //显示日期。
 			'showDataDom':[],
