@@ -166,15 +166,15 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			return 1;
 		}
 	}
-	m_DevCliSetInfo.m_sAddress=sAddress;
-	m_DevCliSetInfo.m_uiPort=uiPort;
-	m_DevCliSetInfo.m_sEseeId=sEseeId;
-	m_DevCliSetInfo.m_uiChannelId=uiChannelId;
-	m_DevCliSetInfo.m_uiStreamId=uiStreamId;
-	m_DevCliSetInfo.m_sUsername=sUsername;
-	m_DevCliSetInfo.m_sPassword=sPassword;
-	m_DevCliSetInfo.m_sCameraname=sCameraname;
-	m_DevCliSetInfo.m_sVendor=sVendor;
+	//m_DevCliSetInfo.m_sAddress=sAddress;
+	//m_DevCliSetInfo.m_uiPort=uiPort;
+	//m_DevCliSetInfo.m_sEseeId=sEseeId;
+	//m_DevCliSetInfo.m_uiChannelId=uiChannelId;
+	//m_DevCliSetInfo.m_uiStreamId=uiStreamId;
+	//m_DevCliSetInfo.m_sUsername=sUsername;
+	//m_DevCliSetInfo.m_sPassword=sPassword;
+	//m_DevCliSetInfo.m_sCameraname=sCameraname;
+	//m_DevCliSetInfo.m_sVendor=sVendor;
 	if (NULL==m_IDeviceClient)
 	{
 		return 1;
