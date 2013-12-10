@@ -13,9 +13,11 @@ QSubView::QSubView(QWidget *parent)
 	m_IDeviceClient(NULL),
 	iInitHeight(0),
 	iInitWidth(0),
-	bIsInitFlags(false)
+	bIsInitFlags(false),
+	ui(new Ui::titleview)
 {
 	this->lower();
+	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	qDebug("IVideoDecoder:%x",m_IVideoDecoder);
@@ -25,6 +27,15 @@ QSubView::QSubView(QWidget *parent)
 	//申请DeviceClient接口
 	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
 	qDebug("m_IDeviceClient:%x",m_IDeviceClient);
+
+	ui->setupUi(this);
+//	m_TitleBar.resize(this->size().width(),30);
+//	m_TitleBar.show();
+	QVBoxLayout *layout = new QVBoxLayout;
+	layout->addWidget(ui->gridLayoutWidget);
+	setLayout(layout);
+	connect(ui->pushButton_2,SIGNAL(pressed ()),this,SLOT(ConnectOn()),Qt::DirectConnection);
+	connect(ui->pushButton,SIGNAL(pressed()),this,SLOT(ConnectOff()),Qt::DirectConnection);
 }
 
 QSubView::~QSubView()
@@ -41,6 +52,7 @@ QSubView::~QSubView()
 	{
 		m_IVideoRender->Release();
 	}
+	delete ui;
 
 }
 
@@ -111,6 +123,7 @@ void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 }
 
 
+
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
@@ -122,7 +135,25 @@ int QSubView::GetCurrentWnd()
 	//emit mouseDoubleClick(this);
 	return 1;
 }
-
+int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
+{
+	m_DevCliSetInfo.m_sAddress.clear();
+	m_DevCliSetInfo.m_sEseeId.clear();
+	m_DevCliSetInfo.m_sUsername.clear();
+	m_DevCliSetInfo.m_sPassword.clear();
+	m_DevCliSetInfo.m_sCameraname.clear();
+	m_DevCliSetInfo.m_sVendor.clear();
+	m_DevCliSetInfo.m_sAddress=sAddress;
+	m_DevCliSetInfo.m_uiPort=uiPort;
+	m_DevCliSetInfo.m_sEseeId=sEseeId;
+	m_DevCliSetInfo.m_uiChannelId=uiChannelId;
+	m_DevCliSetInfo.m_uiStreamId=uiStreamId;
+	m_DevCliSetInfo.m_sUsername=sUsername;
+	m_DevCliSetInfo.m_sPassword=sPassword;
+	m_DevCliSetInfo.m_sCameraname=sCameraname;
+	m_DevCliSetInfo.m_sVendor=sVendor;
+	return 0;
+}
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
 	qDebug()<<"QSubView";
@@ -178,6 +209,18 @@ int QSubView::GetWindowConnectionStatus()
 {
 	return m_IDeviceClient->getConnectStatus();
 }
+int QSubView::ConnectOn()
+{
+	int nRet=1;
+	nRet=OpenCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
+	return nRet;
+}
+int QSubView::ConnectOff()
+{
+	int nRet=1;
+	nRet=CloseWndCamera();
+	return 1;
+}
 int QSubView::cbInit()
 {
 	//注册设备服务回调函数
@@ -221,8 +264,7 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-
-	if (false==m_IVideoRender->setRenderWnd(this))
+	if (false==m_IVideoRender->setRenderWnd(ui->widget_display))
 	{
 		return 1;
 	}

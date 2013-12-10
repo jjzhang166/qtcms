@@ -11,6 +11,8 @@
 #include <IVideoDecoder.h>
 #include "PreviewPlay.h"
 #include <IVideoRender.h>
+#include <QLineEdit>
+#include "ui_TitleView.h"
 
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
@@ -37,8 +39,14 @@ public:
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname,const QString & sVendor);
+	int SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
+		,unsigned int uiChannelId,unsigned int uiStreamId
+		,const QString & sUsername,const QString & sPassword
+		,const QString & sCameraname,const QString & sVendor);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
+
+
 
 	typedef struct _tagDevCliSetInfo{
 		QString m_sAddress;
@@ -67,12 +75,18 @@ private:
 	int iInitHeight;
 	bool bIsInitFlags;
 
+	Ui::titleview * ui;
 private:
 	int cbInit();
+
 public:
 	int PrevPlay(QVariantMap evMap);
 	int PrevRender(QVariantMap evMap);
 	int CurrentStateChange(QVariantMap evMap);
+
+public slots:
+	int ConnectOn();
+	int ConnectOff();
 };
 
 

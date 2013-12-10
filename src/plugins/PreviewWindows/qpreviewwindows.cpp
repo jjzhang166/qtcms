@@ -197,7 +197,14 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	return 0;
 }
-
+int QPreviewWindows::SetCameraInWnd(unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname ,const QString & sVendor)
+{
+	m_mutex.lock();
+	m_CurrentWnd=uiWndIndex;
+	m_mutex.unlock();
+	m_PreviewWnd[uiWndIndex].SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	return 0;
+}
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
 	m_mutex.lock();
@@ -218,5 +225,8 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 void QPreviewWindows::CurrentStateChangePlugin(int statevalue)
 {
 	qDebug("CurrentStateChangePlugin");
+	DEF_EVENT_PARAM(arg);
+	EP_ADD_PARAM(arg,"CurrentState","dagdasga");
+	EventProcCall("CurrentStateChange",arg);
 	return ;
 }
