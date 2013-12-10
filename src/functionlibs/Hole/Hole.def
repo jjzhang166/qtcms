@@ -1,0 +1,3 @@
+LIBRARY "Hole.dll"
+EXPORTS
+	CreateInstance @1
