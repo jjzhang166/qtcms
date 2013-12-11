@@ -17,6 +17,8 @@ public:
 	void setEventMap(QStringList eventList, QMultiMap<QString, ProcInfoItem> eventMap);
     int getSocketState();
 	int getVerifyResult();
+	bool getSupportState();
+	int getStreamListInfo(QList<QList<Stream>> &lstStreamList);
 	~StreamProcess(void);
 public slots:
     void stopStream();
@@ -39,10 +41,14 @@ private:
 	QStringList m_eventList;
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 	int m_nVerifyResult;
+	bool m_bIsSupportBubble;
+	QList<QList<Stream>> m_lstStreamList;
 
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	void analyzeStream();
+	void analyzeBubbleInfo();
+	QString checkXML(QString source);
 
 };
 

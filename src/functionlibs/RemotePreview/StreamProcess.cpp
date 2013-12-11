@@ -1,15 +1,17 @@
 #include "StreamProcess.h"
 #include <QDateTime>
 #include <QtEndian>
-#include <QMessageBox>
+#include <QDomDocument>
 #include "h264wh.h"
 #include "IDeviceConnection.h"
+
 
 StreamProcess::StreamProcess():
 m_nRemainBytes(0),
 m_nTotalBytes(0),
 m_bIsHead(true),
 m_nPort(80),
+m_bIsSupportBubble(true),
 m_nVerifyResult(0)
 {
     m_tcpSocket = NULL; 
@@ -116,6 +118,68 @@ void StreamProcess::socketWrites(QByteArray block)
 	}
 }
 
+QString StreamProcess::checkXML(QString source)
+{
+	int i = 0;
+	int nPos = source.lastIndexOf(QString("vin%1").arg(i));
+	while(nPos != -1)
+	{
+		if (! source.mid(--nPos,1).contains('/'))
+		{
+			source.insert(++nPos, '/');
+		} 
+		++i;
+		nPos = source.lastIndexOf(QString("vin%1").arg(i));    
+	}
+	return source;
+}
+
+void StreamProcess::analyzeBubbleInfo()
+{
+	int pos = m_buffer.indexOf("<");
+	QString xml = m_buffer.mid(pos, m_buffer.indexOf("#") - pos);
+
+
+	QString temp = xml;
+	xml = checkXML(temp);
+
+	QDomDocument *dom = new QDomDocument();
+	if(NULL == dom || !dom->setContent(xml))
+	{
+		delete dom;
+		dom = NULL;
+		return;
+	}
+
+	QDomNode root = dom->firstChild();
+	int uiChannelCount = root.toElement().attribute("vin").toInt();
+
+	for (int i = 0; i < uiChannelCount; i++)
+	{
+		QList<Stream> list;
+		QString tagName = QString("vin%1").arg(i);
+		QDomNodeList nodelist = dom->elementsByTagName(tagName);
+		QDomNode subnode = nodelist.at(0);
+		int StreamNum = subnode.toElement().attribute("stream").toInt();
+
+		for (int j = 0; j < StreamNum; j++)
+		{
+			QString name = QString("stream%1").arg(j);
+			QDomNodeList nodelist1 = dom->elementsByTagName(name);
+			QDomNode node =  nodelist1.at(0);
+			Stream stem;
+			stem.sName = node.toElement().attribute("name");
+			stem.sSize = node.toElement().attribute("size");
+			stem.sx1 = node.toElement().attribute("x1");
+			stem.sx2 = node.toElement().attribute("x2");
+			stem.sx4 = node.toElement().attribute("x4");
+
+			list.append(stem);
+		}
+		m_lstStreamList.append(list);
+	}
+}
+
 
 void StreamProcess::receiveStream()
 {
@@ -129,18 +193,38 @@ void StreamProcess::receiveStream()
 		{
 			m_buffer.clear();
             m_buffer = m_tcpSocket->read(14);
+
+			if (m_buffer.contains("HTTP/1.1 200"))
+			{
+				m_buffer += m_tcpSocket->read(1024 -14);
+				analyzeBubbleInfo();
+				m_bIsSupportBubble = true;
+				g_verify.wakeOne();
+				continue;
+			}
+			else if (m_buffer.contains("HTTP/1.1 404"))
+			{
+				m_bIsSupportBubble = false;
+				m_buffer.clear();
+				//暂时不知要清空多大的缓冲区,此处待定
+			}
+
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
             m_nRemainBytes = m_nTotalBytes - 14;
+			
+
 			if ('\x00' == pBubble->cCmd)
 			{
-				pMsg = (Message *)pBubble->pLoad;
-				m_buffer += m_tcpSocket->read(pMsg->uiLength);
+				m_buffer += m_tcpSocket->read(m_nRemainBytes);
+				pMsg = (Message *)(m_buffer.data() + 10);
+
 				m_nRemainBytes = 0;
 				if ('\x03' == pMsg->cMessage)
 				{
 					pAutoBack = (AuthorityBack *)pMsg->pParameters;
 					m_nVerifyResult = (int)pAutoBack->cVerified;
+					g_verify.wakeOne();
 					continue;
 				}
 			}
@@ -159,6 +243,7 @@ void StreamProcess::receiveStream()
 			m_bIsHead = false;
 		}
 	}
+
 }
 
 void StreamProcess::analyzeStream()
@@ -227,6 +312,21 @@ void StreamProcess::analyzeStream()
 int StreamProcess::getVerifyResult()
 {
 	return m_nVerifyResult;
+}
+
+bool StreamProcess::getSupportState()
+{
+	return m_bIsSupportBubble;
+}
+
+int StreamProcess::getStreamListInfo(QList<QList<Stream>> &lstStreamList)
+{
+	if (m_lstStreamList.isEmpty())
+	{
+		return 1;
+	}
+	lstStreamList = m_lstStreamList;
+	return 0;
 }
 
 void StreamProcess::showError(QAbstractSocket::SocketError sockerror)

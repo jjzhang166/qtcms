@@ -62,12 +62,8 @@ public:
 	void sendRequire(bool bSwitch);
 	void sendLiveStreamRequire(bool option);
 	void sendLiveStreamRequireEx(bool option);
-	QString checkXML(QString source);
-	void extractStreamInfo(QDomDocument *dom);
 private:
 	//member variable about device connection
-	QNetworkAccessManager *m_manager;
-	QNetworkReply *m_reply;
 	QByteArray m_block;
 	QHostAddress m_hostAddress;
 	QVariantMap m_ports;
@@ -93,8 +89,6 @@ signals:
 	void EndStream();
 	void writeSocket(QByteArray block);
     void childThreadToConn(QString address, quint16 port);
-private slots:
-	void finishReply();
 };
 
 #endif

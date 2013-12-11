@@ -15,14 +15,13 @@ m_streanCount(0),
 m_bPaused(false)
 {
 	m_eventList<<"LiveStream"<<"SocketError"<<"StateChangeed";
-	m_manager = new QNetworkAccessManager(this);
 
 	m_pStreamProcess = new StreamProcess();
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
     connect(this, SIGNAL(childThreadToConn(QString , quint16 )),m_pStreamProcess,SLOT(conToHost(QString , quint16 )),Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(EndStream()), m_pStreamProcess, SLOT(stopStream()), Qt::BlockingQueuedConnection);
-	connect(this, SIGNAL(writeSocket(QByteArray)), m_pStreamProcess,SLOT(socketWrites(QByteArray)),Qt::QueuedConnection);
+	connect(this, SIGNAL(writeSocket(QByteArray)), m_pStreamProcess,SLOT(socketWrites(QByteArray)),Qt::BlockingQueuedConnection);
 
 	m_workerThread.start();
 }
@@ -31,12 +30,6 @@ RemotePreview::~RemotePreview(void)
 {
 	m_workerThread.quit();
 	m_workerThread.wait();
-
-	if (NULL != m_manager)
-	{
-		delete m_manager;
-		m_manager = NULL;
-	}
 }
 
 int RemotePreview::setDeviceHost(const QString & sAddr)
@@ -80,129 +73,27 @@ int RemotePreview::connectToDevice()
 {
 	int result = 1;
 
-	QUrl url;
-	url.setScheme(QLatin1String("http"));
-	url.setHost(m_hostAddress.toString());
-	url.addQueryItem("ch", "0");
-	url.addQueryItem("stream", "0");
-	url.setPath("bubble/live");
-	url.setPort(m_ports["media"].toInt());
+	m_pStreamProcess->setAddressInfo(m_hostAddress, m_ports["media"].toInt());
+	emit childThreadToConn(m_hostAddress.toString(), m_ports["media"].toInt());
 
-	m_reply = m_manager->get(QNetworkRequest(url));
-	connect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()));
 
-	QEventLoop loop;
-	connect(this, SIGNAL(QuitThread()), &loop, SLOT(quit()));
-	QTimer::singleShot(5000,&loop, SLOT(quit()));
-	loop.exec();
+	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
+	emit writeSocket(block.toAscii());
 
 	g_mutex.lock();
+	g_verify.wait(&g_mutex, 100);
+	g_mutex.unlock();
+
+	m_pStreamProcess->getStreamListInfo(m_lstStreamList);
+
 	if (CS_Connected == m_pStreamProcess->getSocketState())
 	{
 		result = 0;
 	}
-	g_mutex.unlock();
 
 	return result;
 }
 
-void RemotePreview::finishReply()
-{
-	m_block = m_reply->readAll();
-
-	QVariant statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-	if (404 == statusCode.toInt())
-	{
-		m_isSupportBubble = false;
-		return;
-	}
-	if (200 != statusCode.toInt())
-	{
-		return;
-	}
-
-	int pos = m_block.indexOf("<");
-	QString xml = m_block.mid(pos, m_block.indexOf("#") - pos);
-
-
-	QString temp = xml;
-	xml = checkXML(temp);
-
-	QDomDocument *dom = new QDomDocument();
-	if(!dom->setContent(xml))
-	{
-		delete dom;
-		dom = NULL;
-		return;
-	}
-
-	extractStreamInfo(dom);
-
-	m_reply->disconnect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()));
-	m_reply->deleteLater();
-	delete dom;
-	dom = NULL;
-
-	g_mutex.lock();
-
- 	m_pStreamProcess->setAddressInfo(m_hostAddress, m_ports["media"].toInt());
-    emit childThreadToConn(m_hostAddress.toString(), m_ports["media"].toInt());
-	emit QuitThread();
-}
-
-QString RemotePreview::checkXML(QString source)
-{
-	int i = 0;
-	int nPos = source.lastIndexOf(QString("vin%1").arg(i));
-	while(nPos != -1)
-	{
-		if (! source.mid(--nPos,1).contains('/'))
-		{
-			source.insert(++nPos, '/');
-		} 
-		++i;
-		nPos = source.lastIndexOf(QString("vin%1").arg(i));    
-	}
-	return source;
-}
-
-void RemotePreview::extractStreamInfo(QDomDocument *dom)
-{
-	if (NULL == dom)
-	{
-		return;
-	}
-
-	QDomNode root = dom->firstChild();
-	int uiChannelCount = root.toElement().attribute("vin").toInt();
-
-	for (int i = 0; i < uiChannelCount; i++)
-	{
-		QList<Stream> list;
-		QString tagName = QString("vin%1").arg(i);
-		QDomNodeList nodelist = dom->elementsByTagName(tagName);
-		QDomNode subnode = nodelist.at(0);
-		int StreamNum = subnode.toElement().attribute("stream").toInt();
-
-		for (int j = 0; j < StreamNum; j++)
-		{
-			QString name = QString("stream%1").arg(j);
-			QDomNodeList nodelist1 = dom->elementsByTagName(name);
-			QDomNode node =  nodelist1.at(0);
-			Stream stem;
-			stem.sName = node.toElement().attribute("name");
-			stem.sSize = node.toElement().attribute("size");
-			stem.sx1 = node.toElement().attribute("x1");
-			stem.sx2 = node.toElement().attribute("x2");
-			stem.sx4 = node.toElement().attribute("x4");
-
-			list.append(stem);
-		}
-		m_lstStreamList.append(list);
-	}
-
-	m_isSupportBubble = true;
-}
 
 int RemotePreview::authority()
 {
@@ -242,10 +133,9 @@ int RemotePreview::authority()
 
 	emit writeSocket(block);
 
-	QEventLoop loop;
-	QTimer::singleShot(50, &loop, SLOT(quit()));
-	loop.exec();
-	
+	g_mutex.lock();
+	g_verify.wait(&g_mutex, 100);
+	g_mutex.unlock();
 	if (1 == m_pStreamProcess->getVerifyResult())
 	{
 		return 0;
@@ -324,7 +214,7 @@ int RemotePreview::getLiveStream(int nChannel, int nStream)
 
 void RemotePreview::sendRequire(bool bSwitch)
 {
-	if (m_isSupportBubble)
+	if (m_pStreamProcess->getSupportState())
 	{
 		sendLiveStreamRequireEx(bSwitch);
 	}
