@@ -118,14 +118,13 @@ void div4_4::setSingelDiaplay(QWidget * pSubWindows)
 
 	//QState state1 ;
 	//state1.assignProperty(pSubWindows,"geometry",QRect(0,0,m_parentSize.width(),m_parentSize.height()));
-	QPropertyAnimation *ani=new QPropertyAnimation(pSubWindows,"geometry");
-	ani->setStartValue(pSubWindows->geometry());
-	ani->setEndValue(QRect(0,0,m_parentSize.width(),m_parentSize.height()));
-	ani->setDuration(300);
-	ani->setEasingCurve(QEasingCurve::OutSine);
-	ani->start(QAbstractAnimation::DeleteWhenStopped);
-
-
+	//QPropertyAnimation *ani=new QPropertyAnimation(pSubWindows,"geometry");
+	//ani->setStartValue(pSubWindows->geometry());
+	//ani->setEndValue(QRect(0,0,m_parentSize.width(),m_parentSize.height()));
+	//ani->setDuration(300);
+	//ani->setEasingCurve(QEasingCurve::OutSine);
+	//ani->start(QAbstractAnimation::DeleteWhenStopped);
+	
 	flush();
 }
 void div4_4::setTotalDisplay(QWidget * pSubWindow)
@@ -146,12 +145,12 @@ void div4_4::setTotalDisplay(QWidget * pSubWindow)
 
 			int ii = index-indexfirst;
 
-			QPropertyAnimation *ani=new QPropertyAnimation(pSubWindow,"geometry");
-			ani->setStartValue(pSubWindow->geometry());
-			ani->setEndValue(QRect(subWidth*(ii%m_column),subHeight*(ii/m_row),subWidth-1,subHeight-1));
-			ani->setDuration(300);
-			ani->setEasingCurve(QEasingCurve::OutSine);
-			ani->start(QAbstractAnimation::DeleteWhenStopped);
+			//QPropertyAnimation *ani=new QPropertyAnimation(pSubWindow,"geometry");
+			//ani->setStartValue(pSubWindow->geometry());
+			//ani->setEndValue(QRect(subWidth*(ii%m_column),subHeight*(ii/m_row),subWidth-1,subHeight-1));
+			//ani->setDuration(300);
+			//ani->setEasingCurve(QEasingCurve::OutSine);
+			//ani->start(QAbstractAnimation::DeleteWhenStopped);
 		}
 		
 	}
