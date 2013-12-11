@@ -5,6 +5,7 @@
 #include <QString>
 #include <QThread>
 #include <QDebug>
+#include <QMutex>
 #include <QVariantMap>
 #include <IDeviceClient.h>
 #include <IEventRegister.h>
@@ -76,6 +77,8 @@ private:
 	bool bIsInitFlags;
 
 	Ui::titleview * ui;
+
+	QMutex m_MutexdoubleClick;
 private:
 	int cbInit();
 

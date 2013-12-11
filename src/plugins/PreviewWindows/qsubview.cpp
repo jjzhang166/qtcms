@@ -119,7 +119,9 @@ void QSubView::paintEvent( QPaintEvent * e)
 
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
+	m_MutexdoubleClick.lock();
 	emit mouseDoubleClick(this,ev);
+	m_MutexdoubleClick.unlock();
 }
 
 
@@ -322,12 +324,14 @@ int QSubView::PrevRender(QVariantMap evMap)
 
 	if (iInitHeight!=iHeight||iInitWidth!=iWidth)
 	{
+		//m_IVideoRender->deinit();
 		m_IVideoRender->init(iWidth,iHeight);
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
 	}
-
+	m_MutexdoubleClick.lock();
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
+	m_MutexdoubleClick.unlock();
 	return 0;
 }
 
