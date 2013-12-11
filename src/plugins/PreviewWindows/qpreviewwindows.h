@@ -57,7 +57,7 @@ public slots:
 
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 
-	void CurrentStateChangePlugin(int statevalue);
+	void CurrentStateChangePlugin(int statevalue,QWidget *WID);
 
 private:
 	QSubView m_PreviewWnd[64];

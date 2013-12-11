@@ -64,7 +64,7 @@ signals:
 	void mouseLeftClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
 	void SignalPreviewPlay();
-	void CurrentStateChangeSignl(int statevalue);
+	void CurrentStateChangeSignl(int statevalue,QWidget *);
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;

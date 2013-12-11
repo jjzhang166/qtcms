@@ -290,7 +290,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	{
 		QString sKey=it.key();
 		int sValue=it.value().toInt();
-		emit CurrentStateChangeSignl(sValue);
+		emit CurrentStateChangeSignl(sValue,this);
 	}
 	return 0;
 }
@@ -301,8 +301,8 @@ int QSubView::PrevRender(QVariantMap evMap)
 	{
 		QString sKey=it.key();
 		QString sValue=it.value().toString();
-		qDebug()<<sKey;
-		qDebug()<<sValue;
+		//qDebug()<<sKey;
+		//qDebug()<<sValue;
 	}
 	if (NULL==m_IVideoRender)
 	{

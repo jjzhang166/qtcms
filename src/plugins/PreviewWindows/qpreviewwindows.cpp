@@ -20,7 +20,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 		m_PreviewWnd[i].setParent(this);
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
-		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(int)),this,SLOT(CurrentStateChangePlugin(int)));
+		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(int,QWidget *)),this,SLOT(CurrentStateChangePlugin(int,QWidget *)));
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
 
@@ -93,16 +93,28 @@ void QPreviewWindows::nextPage()
 
 void QPreviewWindows::prePage()
 {
+	if (NULL==m_DivMode)
+	{
+		return;
+	}
 	m_DivMode->prePage();
 }
 
 int QPreviewWindows::getCurrentPage()
 {
+	if (NULL==m_DivMode)
+	{
+		return -1;
+	}
 	return m_DivMode->getCurrentPage();
 }
 
 int QPreviewWindows::getPages()
 {
+	if (NULL==m_DivMode)
+	{
+		return -1;
+	}
 	return m_DivMode->getPages();
 }
 
@@ -142,6 +154,8 @@ int QPreviewWindows::setDivMode( QString divModeName )
 					m_DivMode->setParentWindow(this);
 					m_DivMode->setSubWindows(m_PreviewWndList,ARRAY_SIZE(m_PreviewWnd));
 					m_DivMode->flush();
+					m_CurrentWnd=0;
+					m_uiWndIndex=0;
 				}
 			}
 		}
@@ -160,11 +174,20 @@ int QPreviewWindows::setDivMode( QString divModeName )
 
 QString QPreviewWindows::getCureentDivMode()
 {
+	if (NULL==m_DivMode)
+	{
+		QString s_Return;
+		return s_Return;
+	}
 	return m_DivMode->getModeName();
 }
 
 void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 {
+	if (NULL==m_DivMode)
+	{
+		return ;
+	}
 	m_DivMode->subWindowDblClick(wind,ev);
 }
 
@@ -222,11 +245,20 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
 }
 
-void QPreviewWindows::CurrentStateChangePlugin(int statevalue)
+void QPreviewWindows::CurrentStateChangePlugin(int statevalue,QWidget *WID)
 {
+	int j;
+	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
+	{
+		if (&m_PreviewWnd[j]==WID)
+		{
+			break;
+		}
+	}
 	qDebug("CurrentStateChangePlugin");
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"CurrentState",statevalue);
+	EP_ADD_PARAM(arg,"WPageId",j);
 	EventProcCall("CurrentStateChange",arg);
 	return ;
 }
