@@ -115,6 +115,7 @@
     </ClCompile>
     <ClCompile Include="PreviewPlay.cpp" />
     <ClCompile Include="previewwindows.cpp" />
+    <ClCompile Include="PreviewWindowsGlobalSetting.cpp" />
     <ClCompile Include="qpreviewwindows.cpp" />
     <ClCompile Include="qsubview.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WEBKIT_LIB -DPREVIEWWINDOWS_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(SolutionDir)..\include"</Command>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_TitleView.h" />
+    <ClInclude Include="PreviewWindowsGlobalSetting.h" />
     <ClInclude Include="previewwindows_global.h" />
   </ItemGroup>
   <ItemGroup>

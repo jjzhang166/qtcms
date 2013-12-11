@@ -77,6 +77,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_PreviewPlay.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="PreviewWindowsGlobalSetting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="previewwindows_global.h">
@@ -93,6 +96,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_TitleView.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewWindowsGlobalSetting.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

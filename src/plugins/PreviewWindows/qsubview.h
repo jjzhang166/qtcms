@@ -10,6 +10,7 @@
 #include <IDeviceClient.h>
 #include <IEventRegister.h>
 #include <IVideoDecoder.h>
+#include "PreviewWindowsGlobalSetting.h"
 #include "PreviewPlay.h"
 #include <IVideoRender.h>
 #include <QLineEdit>

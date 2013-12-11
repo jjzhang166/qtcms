@@ -5,6 +5,7 @@
 #include <QMutex>
 #include "qsubview.h"
 #include "qwfw.h"
+#include "PreviewWindowsGlobalSetting.h"
 #include "IWindowDivMode.h"
 
 class QPreviewWindows : public QWidget,
