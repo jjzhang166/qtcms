@@ -38,6 +38,7 @@ void div1::flush()
 	{
 		if (i == m_nCurrentPage)
 		{
+			m_subWindows.at(i)->setGeometry(0,0,m_parentOfSubWindows->width(),m_parentOfSubWindows->height());
 			m_subWindows.at(i)->show();
 		}
 		else
