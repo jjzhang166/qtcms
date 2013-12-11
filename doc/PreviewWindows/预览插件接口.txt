@@ -12,9 +12,15 @@
 	///*返回值：当前分屏模式*/
 	void OnSubWindowDblClick(QWidget *,QMouseEvent *);
 
-	int GetCurrentWnd(unsigned int uiWndIndex);
-	///**/
+	int GetCurrentWnd();
+	/*获得当前窗口的索引*//**/
 	int OpenCameraInWnd(unsigned int uiWndIndex
+		,const QString sAddress,unsigned int uiPort,const QString & sEseeId
+		,unsigned int uiChannelId,unsigned int uiStreamId
+		,const QString & sUsername,const QString & sPassword
+		,const QString & sCameraname
+		,const QString & sVendor);
+	int SetCameraInWnd(unsigned int uiWndIndex
 		,const QString sAddress,unsigned int uiPort,const QString & sEseeId
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword
@@ -24,4 +30,19 @@
 	int CloseWndCamera(unsigned int uiWndIndex);
 	///*返回值，成功返回0，失败返回1*//*参数说明：页面号*/
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
-	///*返回值，未连接返回0，已连接返回1，正在连接返回2，正在断开返回3*//*输入参数：页面号*/
+	///*返回值，未连接返回0，已正在连接返回1，已经连接返回2，正在断开返回3*//*输入参数：页面号*/
+
+
+
+连接状态抛出事件：
+事件名称：CurrentStateChange
+事件参数：CurrentState
+CurrentState取值：
+Constant	Value	Description
+QAbstractSocket::UnconnectedState	0	The socket is not connected.
+QAbstractSocket::HostLookupState	1	The socket is performing a host name lookup.
+QAbstractSocket::ConnectingState	2	The socket has started establishing a connection.
+QAbstractSocket::ConnectedState		3	A connection is established.
+QAbstractSocket::BoundState		4	The socket is bound to an address and port (for servers).
+QAbstractSocket::ClosingState		6	The socket is about to close (data may still be waiting to be written).
+QAbstractSocket::ListeningState		5	For internal use only.
