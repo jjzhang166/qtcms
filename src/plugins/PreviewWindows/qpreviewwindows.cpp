@@ -226,7 +226,7 @@ void QPreviewWindows::CurrentStateChangePlugin(int statevalue)
 {
 	qDebug("CurrentStateChangePlugin");
 	DEF_EVENT_PARAM(arg);
-	EP_ADD_PARAM(arg,"CurrentState","dagdasga");
+	EP_ADD_PARAM(arg,"CurrentState",statevalue);
 	EventProcCall("CurrentStateChange",arg);
 	return ;
 }
