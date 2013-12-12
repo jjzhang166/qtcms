@@ -33,7 +33,6 @@ private:
 	bool m_bIsHead;
 	QHostAddress m_hostAddress;
 	int m_nPort;
-	QTcpServer m_tcpServer;
 	QTcpSocket *m_tcpSocket;
 	QByteArray m_buffer;
 	int m_nTotalBytes;

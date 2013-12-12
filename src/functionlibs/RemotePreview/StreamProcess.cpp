@@ -87,7 +87,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
-    if (m_tcpSocket->waitForConnected())
+    if (m_tcpSocket->waitForConnected(1000))
     {
 		m_nRemainBytes = 0;
 		m_nTotalBytes = 0;
@@ -95,8 +95,6 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 		m_nPort = 80;
 		m_nVerifyResult = 0;
     }
-
-	g_mutex.unlock();
 }
 
 

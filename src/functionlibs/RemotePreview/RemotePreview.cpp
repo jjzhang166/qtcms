@@ -76,6 +76,9 @@ int RemotePreview::connectToDevice()
 	m_pStreamProcess->setAddressInfo(m_hostAddress, m_ports["media"].toInt());
 	emit childThreadToConn(m_hostAddress.toString(), m_ports["media"].toInt());
 
+	QEventLoop loop;
+	QTimer::singleShot(1000, &loop, SLOT(quit()));
+	loop.exec();
 
 	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
 	emit writeSocket(block.toAscii());
