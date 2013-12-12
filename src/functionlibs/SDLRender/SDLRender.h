@@ -41,6 +41,7 @@ private:
 	SDL_Renderer * m_pRender;
 	SDL_Texture * m_pTexture;
 
+
 };
 
 #endif // SDLRENDER_H

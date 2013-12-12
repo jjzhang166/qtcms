@@ -8,7 +8,7 @@ m_pWindow(NULL),
 m_pRender(NULL),
 m_pTexture(NULL)
 {
-
+	
 }
 
 SDLRender::~SDLRender()
@@ -22,10 +22,11 @@ int SDLRender::init(int nWidth,int nHeight)
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 		if(!m_pWindow)
-	//		qDebug("%p",pWidget->winId());
-		qDebug("------------------>1:%d",pWidget->winId());
-		m_pWindow = SDL_CreateWindowFrom((void *)pWidget->winId());
-
+		{
+			qDebug("------------------>1:%d",pWidget->winId());
+			m_pWindow = SDL_CreateWindowFrom((void *)pWidget->winId());
+		}
+		
 		qDebug("%s",SDL_GetError());
 		if (!m_pWindow)
 			return false;
@@ -36,7 +37,7 @@ int SDLRender::init(int nWidth,int nHeight)
 		{
 			SDL_DestroyTexture( m_pTexture );
 		}
-		else m_pTexture = SDL_CreateTexture( m_pRender,SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, nWidth, nHeight);
+		 m_pTexture = SDL_CreateTexture( m_pRender,SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, nWidth, nHeight);
 
 		return true;
 	}
@@ -77,8 +78,8 @@ int SDLRender::setRenderWnd(QWidget * wnd)
 }
 int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWidth,int nHeight,int nYStride,int nUVStride,int lineStride,const QString & pixelFormat,int flags)
 {
-	qDebug("Width_dec:%d  Height_dec:%d\n",nWidth,nHeight);
-	qDebug("%d\n%d\n%d\n",pYData,pUData,pVData);
+	//qDebug("Width_dec:%d  Height_dec:%d\n",nWidth,nHeight);
+	//qDebug("%d\n%d\n%d\n",pYData,pUData,pVData);
 
 	SDL_Rect s_rect,d_rect;
 	s_rect.x = 0;
@@ -88,10 +89,11 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 
 	int iWidth = 0;
 	int iHeight = 0;
-	SDL_GetWindowSize( m_pWindow, &iWidth, &iHeight );
-	qDebug()<<"m_pWindow";
-	qDebug()<<m_pWindow;
 
+
+	SDL_GetWindowSize( m_pWindow, &iWidth, &iHeight );
+	qDebug()<<iWidth;
+	qDebug()<<iHeight;
 	d_rect.x = 0;
 	d_rect.y = 0;
 	d_rect.w = iWidth;
@@ -101,17 +103,18 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 
 	SDL_UpdateTexture( m_pTexture, &s_rect, data, iPitch );
 	SDL_RenderClear( m_pRender );
-	qDebug()<<"m_pTexture";
-	qDebug()<<m_pTexture;
-	qDebug()<<"m_pRender";
-	qDebug()<<m_pRender;
+	//qDebug()<<"m_pTexture";
+	//qDebug()<<m_pTexture;
+	//qDebug()<<"m_pRender";
+	//qDebug()<<m_pRender;
 	SDL_RenderCopy( m_pRender, m_pTexture, &s_rect, &d_rect );
 	SDL_RenderPresent( m_pRender );
 
-	qDebug()<<"m_pTexture";
-	qDebug()<<m_pTexture;
-	qDebug()<<"m_pRender";
-	qDebug()<<m_pRender;
+
+	//qDebug()<<"m_pTexture";
+	//qDebug()<<m_pTexture;
+	//qDebug()<<"m_pRender";
+	//qDebug()<<m_pRender;
 
 	return true;
 }
