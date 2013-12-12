@@ -125,7 +125,7 @@ int h264Decoder::decode(char * pData,unsigned int nDataLength)
 	decodeParam.insert("flags",0);
 
 	bool ret = false;
-	qDebug("%d\n%d\n%d\n",temp.pY,temp.pU,temp.pV);
+	//qDebug("%d\n%d\n%d\n",temp.pY,temp.pU,temp.pV);
 	if (outsize > 0)
 	{
 		//Джх╬

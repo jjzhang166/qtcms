@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QKeyEvent>
+
 #include <QtXml/QtXml>
 #include <guid.h>
 #include <webkitpluginsfactory.h>
@@ -23,7 +24,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
 
 	// Disable context menu
-	setContextMenuPolicy(Qt::NoContextMenu);
+	//setContextMenuPolicy(Qt::NoContextMenu);
 
 	// Set web plugin factory
 	page()->setPluginFactory(new WebkitPluginsFactory(this));
@@ -73,6 +74,12 @@ void QJaWebView::OnLoad( bool bOk )
 {
     if (bOk)
     {
+		// test for widget levels
+
+		// end of test
+
+
+
         QWebFrame * MainFrame;
         MainFrame = page()->mainFrame();
 

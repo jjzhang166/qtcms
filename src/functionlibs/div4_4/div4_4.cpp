@@ -13,7 +13,6 @@ m_PageSubCount(16),
 m_row(4),
 m_column(4),
 m_singeldisplay(false)
-//m_currSubWindows(NULL)
 {
 
 }

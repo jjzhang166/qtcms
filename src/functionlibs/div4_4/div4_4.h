@@ -44,7 +44,6 @@ public:
 private:
 	int m_nRef;
 	QMutex m_csRef;
-//	QWidget * m_subWindows;
 	QList<QWidget *> m_subWindows; 
 	int m_nSubWindowCount;
 	QWidget * m_parentOfSubWindows;
@@ -55,11 +54,8 @@ private:
 	int m_column;
 	bool m_singeldisplay;
 	QSize m_parentSize;
-	//QWidget * m_currSubWindows;
 
 	int getSubVindowIndex(QWidget * pSubWindow);
-	//void adjustSubWindow(int index);
-	//void adjustSubWindow(QWidget * pSubWindow);
 	void setSingelDiaplay(QWidget * pSubWindow);
 	void setTotalDisplay(QWidget * pSubWindow);
 

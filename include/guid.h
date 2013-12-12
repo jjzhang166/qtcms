@@ -52,3 +52,5 @@ extern const CLSID CLSID_FsmPlay;
 extern const IID IID_IFsmPlay;
 extern const CLSID CLSID_DeviceClient;
 extern const IID IID_IDeviceClient;
+extern const IID IID_IRemotePlayback;
+extern const CLSID CLSID_RemotePlayback;

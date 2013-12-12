@@ -26,6 +26,8 @@ div2_2::~div2_2()
 
 void div2_2::setSubWindows(QList<QWidget *> windows,int count  )
 {
+	//再次调用注意清空
+	m_subWindows.clear();
 	m_subWindows = windows;
 	m_nTotalWindowsCount = count/(m_nRow * m_nColumn);
 	m_nSubWindowCount = count;
@@ -190,7 +192,6 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 			m_subWindows.at(i)->hide();
 		}
 		m_bIsMax             = true;
-		m_nCurrentPage       = j;
 		m_nTotalWindowsCount = m_nSubWindowCount;
 		subWindow->setGeometry(0,
 			                    0,
@@ -204,6 +205,7 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 
 void div2_2::nextPage()
 {
+
 	m_nCurrentPage ++;
 	if (m_nCurrentPage >= m_nTotalWindowsCount)
 	{
@@ -215,6 +217,7 @@ void div2_2::nextPage()
 
 void div2_2::prePage()
 {
+
 	m_nCurrentPage --;
 	if (m_nCurrentPage < 0)
 	{
