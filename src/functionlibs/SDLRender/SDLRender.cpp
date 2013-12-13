@@ -30,9 +30,18 @@ int SDLRender::init(int nWidth,int nHeight)
 		qDebug("%s",SDL_GetError());
 		if (!m_pWindow)
 			return false;
-		if(!m_pRender)
-		m_pRender = SDL_CreateRenderer( m_pWindow, 2, SDL_RENDERER_ACCELERATED |SDL_RENDERER_PRESENTVSYNC);
+		if(!m_pRender){
+			m_pRender = SDL_CreateRenderer( m_pWindow, 2, SDL_RENDERER_ACCELERATED |SDL_RENDERER_PRESENTVSYNC);
+		}
+		//int nRenderDrivers=SDL_GetNumRenderDrivers();
+		//SDL_RendererInfo info;  
+		//SDL_GetRendererInfo(m_pRender, &info);  
+
+		//SDL_GetRenderDriverInfo(0, &info);    //d3d  
+		//SDL_GetRenderDriverInfo(1, &info);    //opgl  
+		//SDL_GetRenderDriverInfo(2, &info);    //software 
 		qDebug("%s",SDL_GetError());
+
 		if (m_pTexture)
 		{
 			SDL_DestroyTexture( m_pTexture );

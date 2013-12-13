@@ -35,6 +35,14 @@ public:
 	virtual int closeAll();
 	virtual QString getVendor();
 	virtual int getConnectStatus();
+
+	typedef enum __enConnectStatus{
+		STATUS_CONNECTED,
+		STATUS_CONNECTING,
+		STATUS_DISCONNECTED,
+		STATUS_DISCONNECTING,
+	}ConnectStatus;
+
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -43,6 +51,9 @@ private:
 	QMultiMap<QString,DeviceClientInfoItem> m_EventMap;
 
 	IDeviceConnection *m_DeviceConnecton;
+	IDeviceConnection *m_DeviceConnectonBubble;
+	IDeviceConnection *m_DeviceConnectonHole;
+	IDeviceConnection *m_DeviceConnectonTurn;
 	QString m_sAddr;
 	QString m_sEseeId;
 	unsigned int m_uiPort;
@@ -51,8 +62,11 @@ private:
 
 	bool bIsInitFlags;
 
+	DeviceClient::ConnectStatus m_CurStatus;
+
 private:
 	int cbInit();
+	void eventProcCall(QString sEvent,QVariantMap param);
 
 };
 
