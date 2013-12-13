@@ -127,7 +127,7 @@ int Hole::connectToDevice()
 	{
 		m_bHoleSuccess = false;
 		CallBackStatus(IDeviceConnection::CS_Disconnected);
-		return -1;
+		return 1;
 	}
 	m_bConnected = true;
 	CallBackStatus(IDeviceConnection::CS_Connected);
@@ -139,7 +139,7 @@ int Hole::disconnect()
 	CRudpSession::ErrorCode eRet = m_s.Close();
 	if (CRudpSession::SUCCESS != eRet)
 	{
-		return -1;
+		return 1;
 	}
 	m_bConnected = false;
 	m_bHoleSuccess = false;
@@ -173,24 +173,24 @@ int Hole::authority()
 	{
 		SleepQ(30);
 	}
-	return 	m_bUserCheck;
+	return 	m_bUserCheck?0:1;
 }
 int Hole::getLiveStream(int nChannel, int nStream)
 {
 	m_Channel=nChannel;
 	m_Stream=nStream;
 
-	return 	m_soup.OpenChannel(m_Channel,m_Stream,true);
+	return 	m_soup.OpenChannel(m_Channel,m_Stream,true)?1:0;
 }
 int Hole::stopStream()
 {
-	return 	m_soup.OpenChannel(m_Channel,m_Stream,false);
+	return 	m_soup.OpenChannel(m_Channel,m_Stream,false)?1:0;
 }
 int Hole::pauseStream(bool bPaused)
 {
 	if (bPaused)
 	{
-		return 	m_soup.OpenChannel(m_Channel,m_Stream,false);
+		return 	m_soup.OpenChannel(m_Channel,m_Stream,false)?1:0;
 	}
 	return 0;
 }
@@ -223,10 +223,10 @@ int Hole::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
 	if (iter!=m_StaeamList.end())
 	{
 		streamInfo = *iter;
-		return true;
+		return 0;
 	}
 	m_cstreamDec.unlock();
-	return false;
+	return 1;
 }
 
 QStringList Hole::eventList()
