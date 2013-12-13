@@ -6,8 +6,20 @@
 
 interface IRemotePreview : public IPComBase
 {
+	//获取码流
+	//返回值
+	//0：获取成功
+	//1：获取失败
 	virtual int getLiveStream(int nChannel, int nStream) = 0;
+	//关闭通道
+	//返回值
+	//0：断开成功
+	//1：断开失败
 	virtual int stopStream() = 0;
+	//暂停码流
+	//返回值
+	//0：暂停成功
+	//1：暂停失败
 	virtual int pauseStream(bool bPaused) = 0;
 	virtual int getStreamCount() = 0;
 	virtual int getStreamInfo(int nStreamId,QVariantMap &streamInfo) = 0;
