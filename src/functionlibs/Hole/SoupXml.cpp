@@ -5,7 +5,7 @@
 //#include "stdafx.h"
 #include "SoupXml.h"
 #include <QtCore/QTime>
-#include "SleepQt.h"
+#include "netlib.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

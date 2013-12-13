@@ -15,7 +15,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EseeXml.cpp" />
     <ClCompile Include="Hole.cpp" />
-    <ClCompile Include="SleepQt.cpp" />
     <ClCompile Include="SoupXml.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,8 +37,8 @@
     </CustomBuild>
     <ClInclude Include="Hole.h" />
     <ClInclude Include="Hole_global.h" />
+    <ClInclude Include="netlib.h" />
     <ClInclude Include="RudpLib.h" />
-    <ClInclude Include="SleepQt.h" />
     <ClInclude Include="SoupXml.h" />
   </ItemGroup>
   <ItemGroup>
@@ -93,7 +92,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtXml4.lib;QtNetwork4.lib;$(SolutionDir)..\libs\libpcom.lib;RudpLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtXml4.lib;QtNetwork4.lib;$(SolutionDir)..\libs\libpcom.lib;RudpLib.lib;netlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Hole.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>

@@ -92,7 +92,7 @@ private:
 
 // Methods
 public:
-	TurnServerInfo TurnReq(char *sId);
+	//TurnServerInfo TurnReq(char *sId);
 	HolePeerInfo   HoleReq(char *sId,int nRandom);
 	int HoleTo(HolePeerInfo info,int nRandom);
 	int WaitForReadySignal();
@@ -100,7 +100,7 @@ public:
 	int DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize);
 	void SetEventPorc(EventType e,EventProc func,LPVOID pUserData);
 private:
-	DWORD GetServerAddr();
+	//DWORD GetServerAddr();
 	unsigned int ParseCmd(QDomElement & RootElement);
 	TurnServerInfo ParseServerInfo(QDomElement RootElement);
 	HolePeerInfo ParseHolePeerInfo(QDomElement RootElement);

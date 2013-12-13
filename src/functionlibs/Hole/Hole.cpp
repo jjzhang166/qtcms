@@ -1,5 +1,5 @@
 #include "Hole.h"
-#include "SleepQt.h"
+#include "netlib.h"
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QVariantMap>
 #include <guid.h>
@@ -15,7 +15,7 @@ typedef struct _tagAudioBufAttr{
 	int samplewidth;
 }AudioBufAttr;
 #pragma pack()
-extern ushort htons(ushort hostshort);
+//extern ushort htons(ushort hostshort);
 
 int hole_CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize,LPVOID pUser)
 {
@@ -439,7 +439,7 @@ int Hole::SendPre(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 {
 	CRudpSession::PreSendData * Param = (CRudpSession::PreSendData *)pData;
 	Param->TargetAddress.sin_addr.s_addr = m_peerInfo._U.ulPeerAddr;
-	Param->TargetAddress.sin_port = htons((unsigned short)m_peerInfo.ulPeerPort);
+	Param->TargetAddress.sin_port = htonsQ((unsigned short)m_peerInfo.ulPeerPort);
 
 	return 0;
 }
@@ -480,10 +480,10 @@ int Hole::HoleFromDev(CEseeXml::EventType e,LPVOID pData,int nDataSize)
 	{
 		struct sockaddr_in * fromAddr;
 		fromAddr = (struct sockaddr_in *)(&(DataTemp->from));
-		if (fromAddr->sin_addr.S_un.S_addr != m_peerInfo._U.ulPeerAddr || htons(fromAddr->sin_port) != m_peerInfo.ulPeerPort)
+		if (fromAddr->sin_addr.S_un.S_addr != m_peerInfo._U.ulPeerAddr || htonsQ(fromAddr->sin_port) != m_peerInfo.ulPeerPort)
 		{
 			m_peerInfo._U.ulPeerAddr = fromAddr->sin_addr.S_un.S_addr;
-			m_peerInfo.ulPeerPort = (htons(fromAddr->sin_port));
+			m_peerInfo.ulPeerPort = (htonsQ(fromAddr->sin_port));
 		}
 		m_bHoleRecved = true;
 	}

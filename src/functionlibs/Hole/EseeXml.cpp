@@ -4,7 +4,7 @@
 
 //#include "stdafx.h"
 #include "EseeXml.h"
-#include "SleepQt.h"
+#include "netlib.h"
 #include <QtCore/QElapsedTimer>
 #include <QtNetwork/QHostInfo>
 
@@ -15,30 +15,30 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 
-#define AF_INET         2               /* internetwork: UDP, TCP, etc. */
-
-ushort htons(ushort hostshort)
-{
-	union{
-		short s;
-		char c[2];
-	}un;
-	un.c[1]=0xff&hostshort;
-	un.c[0]=0xff&(hostshort>>8);
-	return un.s;
-}
-extern unsigned int htons32(unsigned int hostshort)
-{
-	union{
-		int s;
-		char c[4];
-	}un;
-	un.c[3]=0xff&hostshort;
-	un.c[2]=0xff&(hostshort>>8);
-	un.c[1]=0xff&(hostshort>>16);
-	un.c[0]=0xff&(hostshort>>24);
-	return un.s;
-}
+//#define AF_INET         2               /* internetwork: UDP, TCP, etc. */
+//
+//ushort htons(ushort hostshort)
+//{
+//	union{
+//		short s;
+//		char c[2];
+//	}un;
+//	un.c[1]=0xff&hostshort;
+//	un.c[0]=0xff&(hostshort>>8);
+//	return un.s;
+//}
+//extern unsigned int htons32(unsigned int hostshort)
+//{
+//	union{
+//		int s;
+//		char c[4];
+//	}un;
+//	un.c[3]=0xff&hostshort;
+//	un.c[2]=0xff&(hostshort>>8);
+//	un.c[1]=0xff&(hostshort>>16);
+//	un.c[0]=0xff&(hostshort>>24);
+//	return un.s;
+//}
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -53,42 +53,43 @@ CEseeXml::~CEseeXml()
 
 }
 
-CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
-{
-	memset(&m_ServerInfo,0,sizeof(m_ServerInfo));
-
-	char ReqStr[]="<esee ver=\"1.0\"><head><cmd>20011</cmd><tick>%d</tick></head><id>%s</id></esee>";
-	char ReqStrXml[1024] = {0};
-	sprintf(ReqStrXml,ReqStr,GetTickCountQ(),sId);
-
-	int nRetryCount = 0;
-	m_bServerInfoReady = false;
-	m_bDevReady = false;
-	while (!m_bServerInfoReady)
-	{
-		struct sockaddr_in addr;
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(60101);
-		addr.sin_addr.s_addr = GetServerAddr();
-
-		m_s->DirectSendTo(ReqStrXml,strlen(ReqStrXml),0,(struct sockaddr *)&addr,sizeof(addr));
-
-		QElapsedTimer Ticket;
-		Ticket.start();
-		while(!m_bServerInfoReady && Ticket.elapsed() < 3000)
-		{
-			SleepQ(30);
-		}
-		nRetryCount ++;
-		if (nRetryCount > 3)
-		{
-			qDebug("TurnReq time out\r\n");
-			break;
-		}
-	}
-
-	return m_ServerInfo;
-}
+#define SERVER_DOMAIN	("www.msndvr.com")
+//CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
+//{
+//	memset(&m_ServerInfo,0,sizeof(m_ServerInfo));
+//
+//	char ReqStr[]="<esee ver=\"1.0\"><head><cmd>20011</cmd><tick>%d</tick></head><id>%s</id></esee>";
+//	char ReqStrXml[1024] = {0};
+//	sprintf(ReqStrXml,ReqStr,GetTickCountQ(),sId);
+//
+//	int nRetryCount = 0;
+//	m_bServerInfoReady = false;
+//	m_bDevReady = false;
+//	while (!m_bServerInfoReady)
+//	{
+//		struct sockaddr_in addr;
+//		addr.sin_family = AF_INET;
+//		addr.sin_port = htonsQ(60101);
+//		addr.sin_addr.s_addr = GetServerAddr(SERVER_DOMAIN);
+//
+//		m_s->DirectSendTo(ReqStrXml,strlen(ReqStrXml),0,(struct sockaddr *)&addr,sizeof(addr));
+//
+//		QElapsedTimer Ticket;
+//		Ticket.start();
+//		while(!m_bServerInfoReady && Ticket.elapsed() < 3000)
+//		{
+//			SleepQ(30);
+//		}
+//		nRetryCount ++;
+//		if (nRetryCount > 3)
+//		{
+//			qDebug("TurnReq time out\r\n");
+//			break;
+//		}
+//	}
+//
+//	return m_ServerInfo;
+//}
 
 CEseeXml::HolePeerInfo CEseeXml::HoleReq(char *sId,int nRandom)
 {
@@ -104,8 +105,8 @@ CEseeXml::HolePeerInfo CEseeXml::HoleReq(char *sId,int nRandom)
 	{
 		struct sockaddr_in addr;
 		addr.sin_family = AF_INET;
-		addr.sin_port = htons(60101);
-		addr.sin_addr.s_addr = GetServerAddr();
+		addr.sin_port = htonsQ(60101);
+		addr.sin_addr.s_addr = GetServerAddr(SERVER_DOMAIN);
 		
 		m_s->DirectSendTo(ReqStrXml,strlen(ReqStrXml),0,(struct sockaddr *)&addr,sizeof(addr));
 		
@@ -134,7 +135,7 @@ int CEseeXml::HoleTo(HolePeerInfo info,int nRandom)
 
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons((unsigned short)info.ulPeerPort);
+	addr.sin_port = htonsQ((unsigned short)info.ulPeerPort);
 	addr.sin_addr.s_addr = info._U.ulPeerAddr;
 
 	m_s->DirectSendTo(ReqStrXml,strlen(ReqStrXml),0,(struct sockaddr *)&addr,sizeof(addr));
@@ -206,7 +207,7 @@ CEseeXml::HolePeerInfo CEseeXml::ParseHolePeerInfo(QDomElement RootElement)
 	tempport = dvrportElement.childNodes().item(0).toText().data();
 	/*holePeer._U.ulPeerAddr = inet_addr(dvripElement->GetText());
 	holePeer.ulPeerPort = atoi(dvrportElement->GetText());*/
-	holePeer._U.ulPeerAddr = htons32(QHostAddress(tempip).toIPv4Address());
+	holePeer._U.ulPeerAddr = htonlQ(QHostAddress(tempip).toIPv4Address());
 	holePeer.ulPeerPort = tempport.toInt();
 
 	return holePeer;
@@ -338,7 +339,6 @@ int CEseeXml::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
 	return 0;
 }
 
-#define SERVER_DOMAIN	("www.msndvr.com")
 //typedef struct  hostent {
 //	char    FAR * h_name;           /* official name of host */
 //	char    FAR * FAR * h_aliases;  /* alias list */
@@ -348,21 +348,21 @@ int CEseeXml::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
 //#define h_addr  h_addr_list[0]          /* address, for backward compat */
 //}FAR *LPHOSTENT;
 
-DWORD CEseeXml::GetServerAddr()
-{
-	DWORD dwIP = 0;
-	static QHostInfo hinfo = QHostInfo::fromName(SERVER_DOMAIN);
-	if (hinfo.error()!=QHostInfo::NoError)
-	{
-
-		dwIP = QHostAddress(SERVER_DOMAIN).toIPv4Address();
-	}
-	else
-	{
-		dwIP = hinfo.addresses()[0].toIPv4Address();
-	}
-	return htons32(dwIP);
-}
+//DWORD CEseeXml::GetServerAddr()
+//{
+//	DWORD dwIP = 0;
+//	static QHostInfo hinfo = QHostInfo::fromName(SERVER_DOMAIN);
+//	if (hinfo.error()!=QHostInfo::NoError)
+//	{
+//
+//		dwIP = QHostAddress(SERVER_DOMAIN).toIPv4Address();
+//	}
+//	else
+//	{
+//		dwIP = hinfo.addresses()[0].toIPv4Address();
+//	}
+//	return htonlQ(dwIP);
+//}
 
 unsigned int CEseeXml::ParseCmd(QDomElement & RootElement)
 {
