@@ -104,6 +104,7 @@ public:
 private:
 	void StreamData(LPVOID pData,int nDataSize);
 	int applyEventProc(QString eventName,QVariantMap datainfo);
+	void CallBackStatus(_enConnectionStatus status);
 
 	typedef struct _tagServerInfo{
 		struct sockaddr_in ServerAddr;

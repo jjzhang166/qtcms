@@ -134,23 +134,28 @@ int Turn::setDeviceAuthorityInfomation(QString username,QString password)
 }
 int Turn::connectToDevice()
 {
+	CallBackStatus(IDeviceConnection::CS_Connectting);
 	CRudpSession::ErrorCode errocode = m_s.Connect("192.168.1.25",8880);
 	if (CRudpSession::SUCCESS != errocode)
 	{
+		CallBackStatus(IDeviceConnection::CS_Disconnected);
 		return -1;
 	}
 	m_bConnected = true;
+	CallBackStatus(IDeviceConnection::CS_Connected);
 	return 0;
 }
 int Turn::disconnect()
 {
 	stopStream();
+	CallBackStatus(IDeviceConnection::CS_Disconnecting);
 	CRudpSession::ErrorCode eRet = m_s.Close();
 	if (CRudpSession::SUCCESS != eRet)
 	{
 		return -1;
 	}
 	m_bConnected = false;
+	CallBackStatus(IDeviceConnection::CS_Disconnected);
 	return 0;
 }
 int Turn::getCurrentStatus()
@@ -249,12 +254,11 @@ int Turn::queryEvent(QString eventName,QStringList& eventParams)
 		<<"height"<<"vcodec"<<"samplerate"<<"samplewidth"<<"audiochannel"
 		<<"acodec";
 	}
-	else if (eventName=="Close")
+	else if (eventName=="StateChangeed")
 	{
+		 eventParams<<"status";
 	}
-	else if (eventName=="Frame")
-	{
-	}
+
 	return 0;
 }
 int Turn::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
@@ -334,8 +338,6 @@ int Turn::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 
 	//else m_cStatus = IDeviceConnection::CS_Disconnected;
 
-	m_cStatus = IDeviceConnection::CS_Connectting;
-
 	int nRetryCount = 0;
 	bool bReady = false;
 	while (nRetryCount < 3)
@@ -363,7 +365,6 @@ int Turn::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 	if (!bReady)
 	{
 		qDebug("Esee time out\r\n");
-		m_cStatus = IDeviceConnection::CS_Disconnected;
 		return -1;
 	}
 
@@ -372,10 +373,8 @@ int Turn::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 	int nRet = GetTurnInfo();
 	if (0 != nRet)
 	{
-		m_cStatus = IDeviceConnection::CS_Disconnected;
 		return -1;
 	}
-	m_cStatus = IDeviceConnection::CS_Connected;
 	return 0;
 }
 
@@ -572,6 +571,14 @@ int Turn::applyEventProc(QString eventName,QVariantMap datainfo)
 	}
 
 	return false;
+}
+
+void Turn::CallBackStatus(_enConnectionStatus status)
+{
+	m_cStatus = status;
+	QVariantMap cState;
+	cState.insert("status",(int)m_cStatus);
+	applyEventProc("StateChangeed",cState);
 }
 
 int Turn::GetTurnInfo()
