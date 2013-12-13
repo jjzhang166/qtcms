@@ -3,6 +3,23 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 #top{
 	height: 78px;
 }
+
+.in{
+	background: url(../images/top_icon.png) no-repeat -450px 0;
+	border:0; 
+	width:18px;}
+.time_3{
+	background: url(../images/top_icon.png) no-repeat -440px 0;
+	float:left;
+	width:149px;
+	border:0px solid #7F9DB9;	
+}
+.add_tb{
+	background: #282828;
+	margin-top:22px; 
+	display:none;
+	}
+
 .top_act{ 
 	background:url(../images/cutting_bg.png) repeat-x;
 	height: 26px;

@@ -95,17 +95,79 @@ var oSearchOcx;
 				if(index == 0){
 					searchFlush();
 					areaList2Ui();
-				}else if(index == 3){ 
+				}else if(index == 1){
+					var areaList = oCommonLibrary.GetAreaList();
+				
+					$("#device_list li").remove();
+						for(n in areaList){
+							var id = areaList[n];
+							var name = oCommonLibrary.GetAreaName(areaList[n]);
+							var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+							
+							$('#device_list').treeview()	
+							
+							var add_li = $('<li><span class="area">'+name+'<ul id="area'+id+'"></ul></li>');
+							add_li.appendTo('#device_list');
+							$("#device_list").treeview({
+								add: add_li
+							});	
+							var deviceList = oCommonLibrary.GetDeviceList(id);
+								for(k in deviceList)
+								{
+									var dev_id = deviceList[k];
+									var deviceInfo = oCommonLibrary.GetDeviceInfo(dev_id);			
+									$('#area'+id).treeview()	
+									var add_li_0 = $('<li class="device1" value="'+dev_id+'"><span id="device'+dev_id+'" class="device11">'+deviceInfo.name+'</li>');
+									add_li_0.appendTo('#area'+id);
+									$('#area'+id).treeview({
+										add: add_li_0
+									});
+								}
+						}
+						
+						$('.device1').each(function(device_index){
+							$(this).click(function(){
+								var deviceInfo_0 = oCommonLibrary.GetDeviceInfo($(this)[0].value);
+								var _url = 'http://'+deviceInfo_0.address+':'+deviceInfo_0.port;
+								var _usr = deviceInfo_0.username;
+								var _pwd = deviceInfo_0.password;
+								var _chn = oCommonLibrary.GetChannelCount($(this)[0].value);
+								for(j = 0;j<=10;j++){	
+									$('.ipc_list').eq(j).hide();	
+									$('.dvr_list').eq(j).hide();	
+									$('.dvr_list0').eq(j).hide();		
+									$('.ipc_list0').eq(j).hide();	
+									$('.ope_list li').removeClass('act');					
+									if(deviceInfo_0.vendor == 'JUAN IPC'){//如果选中设备为ipc
+										$('.ipc_list0')[0].style.display='block';									
+										$('.ipc_list0 li').eq(0).addClass('act');
+										$('.ipc_list').eq(0).show();
+										ipc(_url,_usr,_pwd);
+										devinfo_load_content(true);										
+									}
+								    if(deviceInfo_0.vendor == 'JUAN DVR')//如果选中设备为dvr
+									{
+										$('.dvr_list0')[0].style.display='block';
+										$('.dvr_list0 li').eq(0).addClass('act');
+										$('.dvr_list').eq(0).show();
+										dvr(_url,_usr,_pwd,_chn);
+										dvr_devinfo_load_content();	
+										}
+								}		
+							})
+					    })
+				}
+				else if(index == 3){ 
 					userList2Ui();
 				}
 			})
 			//搜索设备;
-			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			searchFlush();
-			for (i in oActiveEvents){
+			//oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+			//searchFlush();
+			/*for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
-			}
+			}*/
 		})
 		//搜索结果 设备列表tr委托部分事件;
 		$('#SerachDevList tbody').on('click','tr',function(){
@@ -371,3 +433,4 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}
 	objShowCenter(obox);
 }
+//devinfo

@@ -127,13 +127,61 @@ function set_drag(oDrag,X1,X2){
 }
 (function($){
 	$.fn.extend({
-		'toSwitch': function(){
+		//dvr
+		'toSwitch_0': function(){
 			var warp = this;
 			warp.find('li').each(function(index){
 				$(this).click(function(){
 					warp.find('li').removeClass('act');
 					$(this).addClass('act');
-					warp.nextAll('div.switch').hide().eq(index).show();
+					warp.nextAll('div.switch').hide();
+					warp.nextAll('div.dvr_list').eq(index).show();
+					switch(index)
+					{
+						case 0: dvr_devinfo_load_content();break;
+						case 1: dvr_common_load_content();break;
+						case 2: dvr_network_load_content();break;
+						case 3: dvr_load('dvr_enc_chn_sel');break;
+						case 4: dvr_load('dvr_record_chn_sel');break;
+						case 5: dvr_load('dvr_screen_chn_sel');break;
+						case 6: dvr_load('dvr_detect_chn_sel');break;
+						case 7: dvr_load('dvr_ptz_chn_sel');break;
+						case 8: dvr_load('dvr_alarm_chn_sel');break;
+						default:break;
+					}		
+				})
+			})
+		},
+		//ipc
+		'toSwitch_1': function(){
+			var warp = this;
+			warp.find('li').each(function(index){
+				$(this).click(function(){
+					warp.find('li').removeClass('act');
+					$(this).addClass('act');
+					warp.nextAll('div.switch').hide();
+					warp.nextAll('div.ipc_list').eq(index).show();
+					switch(index)
+					{
+						case 0: devinfo_load_content(true);break;
+						case 1: encode_load_content();break;
+						case 2: network_load_content();break;
+						case 3: user_management_load_content();break;
+						case 4: time_load_content();break;
+						//case 5: alert(5);break;
+						default:break;
+					}			
+				})
+			})
+		},
+		//client setting
+		'toSwitch_2': function(){
+			var warp = this;
+			warp.find('li').each(function(index){
+				$(this).click(function(){
+					warp.find('li').removeClass('act');
+					$(this).addClass('act');
+					warp.nextAll('div.client_set').hide().eq(index).show();	
 				})
 			})
 		},
@@ -156,9 +204,9 @@ function set_drag(oDrag,X1,X2){
 			option.find('a').click(function(){
 				if($(this).attr('class') != 'hover'){
 					This.next('ul.option').hide();
-					This.find('span').html($(this).html());
-					This.find('#vendor_ID').val($(this).html());
-					This.find('input:hidden').val($(this).attr('key'));
+					//This.find('span').html($(this).html());
+					//This.find('#vendor_ID').val($(this).html());
+					//This.find('input:hidden').val($(this).attr('key'));
 				}
 			})
 		},
@@ -226,13 +274,18 @@ function set_drag(oDrag,X1,X2){
 	})
 })(jQuery)
 $(function(){
-	$('ul.ope_list').each(function(){
-		$(this).toSwitch();
+	$('ul.dvr_list0').each(function(){//dvr
+		$(this).toSwitch_0();
+	});
+	$('ul.ipc_list0').each(function(){//ipc
+		$(this).toSwitch_1();
+	});
+	$('ul.client_set0').each(function(){//client setting
+		$(this).toSwitch_2();
 	});
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
-
 	$('#top div.top_nav li').mousedown(function(){ 
 		$(this).css('background-position','0 -52px');
 	}).mouseup(function(){ 
