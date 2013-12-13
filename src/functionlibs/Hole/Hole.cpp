@@ -121,19 +121,30 @@ int Hole::setDeviceAuthorityInfomation(QString username,QString password)
 int Hole::connectToDevice()
 {
 	m_bHoleSuccess = false;
+	CallBackStatus(IDeviceConnection::CS_Connectting);
 	CRudpSession::ErrorCode errocode = m_s.Connect("192.168.1.1",80);
 	if (CRudpSession::SUCCESS != errocode)
 	{
 		m_bHoleSuccess = false;
+		CallBackStatus(IDeviceConnection::CS_Disconnected);
 		return -1;
 	}
 	m_bConnected = true;
+	CallBackStatus(IDeviceConnection::CS_Connected);
 	return 0;
 }
 int Hole::disconnect()
 {
-	stopStream();
-	return m_s.Close();
+	CallBackStatus(IDeviceConnection::CS_Disconnecting);
+	CRudpSession::ErrorCode eRet = m_s.Close();
+	if (CRudpSession::SUCCESS != eRet)
+	{
+		return -1;
+	}
+	m_bConnected = false;
+	m_bHoleSuccess = false;
+	CallBackStatus(IDeviceConnection::CS_Disconnected);
+	return 0;
 }
 int Hole::getCurrentStatus()
 {
@@ -225,18 +236,17 @@ QStringList Hole::eventList()
 int Hole::queryEvent(QString eventName,QStringList& eventParams)
 {
 	eventParams.empty();
-	if (eventName=="Frame")
-	{
-	}
-	else if (eventName=="Close")
-	{
-	}
-	else if (eventName=="LiveStream")
+	if (eventName=="LiveStream")
 	{
 		eventParams<<"channel"<<"pts"<<"length"<<"data"<<"frametype"<<"width"
 			<<"height"<<"vcodec"<<"samplerate"<<"samplewidth"<<"audiochannel"
 			<<"acodec";
 	}
+	else if (eventName=="StateChangeed")
+	{
+		eventParams<<"status";
+	}
+	
 	return 0;
 }
 int Hole::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
@@ -322,7 +332,7 @@ int Hole::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 	int nHoleRetryCount = 0;
 	int nHoleFailedCount = 0;
 	int nHoleReqRetry = 0;
-	m_cStatus = IDeviceConnection::CS_Connectting;
+
 	while(!bQuitHole)
 	{
 		switch (nStep)
@@ -408,7 +418,6 @@ int Hole::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 						else
 						{
 							// 从头再来
-							m_cStatus = IDeviceConnection::CS_Disconnecting;
 							nStep = 0;
 						}
 					}
@@ -424,9 +433,6 @@ int Hole::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 			break;
 		}
 	}
-
-	m_cStatus = IDeviceConnection::CS_Connected;
-
 
 	return 0;
 }
@@ -599,4 +605,12 @@ int Hole::applyEventProc(QString eventName,QVariantMap datainfo)
 	}
 
 	return false;
+}
+
+void Hole::CallBackStatus(_enConnectionStatus status)
+{
+	m_cStatus = status;
+	QVariantMap cState;
+	cState.insert("status",(int)m_cStatus);
+	applyEventProc("StateChangeed",cState);
 }

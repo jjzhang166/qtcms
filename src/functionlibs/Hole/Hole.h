@@ -66,6 +66,7 @@ public:
 private:
 	void StreamData(LPVOID pData,int nDataSize);
 	int applyEventProc(QString eventName,QVariantMap datainfo);
+	void CallBackStatus(_enConnectionStatus status);
 private:
 	int m_nRef;
 	QMutex m_csRef;
