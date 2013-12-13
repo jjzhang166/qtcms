@@ -23,5 +23,7 @@
 	<item clsid="D5BA4677-6E5D-4440-9E6C-507BA529C138" name="plugin.H264Playerplugin" file="plugins/H264Playerplugin.dll" mimetype="application/cms-h264-player"/>
 	<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
 	<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
+	<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="deviceconnent.Hole" file="Hole.dll" type="hole"/>
+	<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="deviceconnent.Turn" file="Turn.dll" type="turn"/>
     </CLSID>
 </root>
