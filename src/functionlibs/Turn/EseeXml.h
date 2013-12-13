@@ -101,7 +101,7 @@ public:
 	int DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize);
 	void SetEventPorc(EventType e,EventProc func,LPVOID pUserData);
 private:
-	DWORD GetServerAddr();
+	//DWORD GetServerAddr();
 	unsigned int ParseCmd(QDomElement & RootElement);
 	TurnServerInfo ParseServerInfo(QDomElement RootElement);
 	HolePeerInfo ParseHolePeerInfo(QDomElement RootElement);

@@ -4,7 +4,7 @@
 
 //#include "stdafx.h"
 #include "EseeXml.h"
-#include "SleepQt.h"
+#include "netlib.h"
 #include <QtCore/QElapsedTimer>
 #include <QtNetwork/QHostInfo>
 
@@ -14,28 +14,28 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-ushort htons(ushort hostshort)
-{
-	union{
-		short s;
-		char c[2];
-	}un;
-	un.c[1]=0xff&hostshort;
-	un.c[0]=0xff&(hostshort>>8);
-	return un.s;
-}
-unsigned int htons32(unsigned int hostshort)
-{
-	union{
-		int s;
-		char c[4];
-	}un;
-	un.c[3]=0xff&hostshort;
-	un.c[2]=0xff&(hostshort>>8);
-	un.c[1]=0xff&(hostshort>>16);
-	un.c[0]=0xff&(hostshort>>24);
-	return un.s;
-}
+//ushort htons(ushort hostshort)
+//{
+//	union{
+//		short s;
+//		char c[2];
+//	}un;
+//	un.c[1]=0xff&hostshort;
+//	un.c[0]=0xff&(hostshort>>8);
+//	return un.s;
+//}
+//unsigned int htons32(unsigned int hostshort)
+//{
+//	union{
+//		int s;
+//		char c[4];
+//	}un;
+//	un.c[3]=0xff&hostshort;
+//	un.c[2]=0xff&(hostshort>>8);
+//	un.c[1]=0xff&(hostshort>>16);
+//	un.c[0]=0xff&(hostshort>>24);
+//	return un.s;
+//}
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -50,6 +50,7 @@ CEseeXml::~CEseeXml()
 
 }
 
+#define SERVER_DOMAIN	("www.msndvr.com")
 CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
 {
 	memset(&m_ServerInfo,0,sizeof(m_ServerInfo));
@@ -65,8 +66,8 @@ CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
 	{
 		struct sockaddr_in addr;
 		addr.sin_family = AF_INET;
-		addr.sin_port = htons(60101);
-		addr.sin_addr.s_addr = GetServerAddr();
+		addr.sin_port = htonsQ(60101);
+		addr.sin_addr.s_addr = GetServerAddr(SERVER_DOMAIN);
 
 		m_s->DirectSendTo(ReqStrXml,strlen(ReqStrXml),0,(struct sockaddr *)&addr,sizeof(addr));
 
@@ -203,7 +204,7 @@ CEseeXml::HolePeerInfo CEseeXml::ParseHolePeerInfo(QDomElement RootElement)
 	tempport = dvrportElement.childNodes().item(0).toText().data();
 	/*holePeer._U.ulPeerAddr = inet_addr(dvripElement->GetText());
 	holePeer.ulPeerPort = atoi(dvrportElement->GetText());*/
-	holePeer._U.ulPeerAddr = htons32(QHostAddress(tempip).toIPv4Address());
+	holePeer._U.ulPeerAddr = htonlQ(QHostAddress(tempip).toIPv4Address());
 	holePeer.ulPeerPort = tempport.toInt();
 
 	return holePeer;
@@ -337,7 +338,7 @@ int CEseeXml::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
 	return 0;
 }
 
-#define SERVER_DOMAIN	("www.msndvr.com")
+
 //typedef struct  hostent {
 //	char    FAR * h_name;           /* official name of host */
 //	char    FAR * FAR * h_aliases;  /* alias list */
@@ -347,21 +348,21 @@ int CEseeXml::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
 //#define h_addr  h_addr_list[0]          /* address, for backward compat */
 //}FAR *LPHOSTENT;
 
-DWORD CEseeXml::GetServerAddr()
-{
-	DWORD dwIP = 0;
-	static QHostInfo hinfo = QHostInfo::fromName(SERVER_DOMAIN);
-	if (hinfo.error()!=QHostInfo::NoError)
-	{
-
-		dwIP = QHostAddress(SERVER_DOMAIN).toIPv4Address();
-	}
-	else
-	{
-		dwIP = hinfo.addresses()[0].toIPv4Address();
-	}
-	return htons32(dwIP);
-}
+//DWORD CEseeXml::GetServerAddr()
+//{
+//	DWORD dwIP = 0;
+//	static QHostInfo hinfo = QHostInfo::fromName(SERVER_DOMAIN);
+//	if (hinfo.error()!=QHostInfo::NoError)
+//	{
+//
+//		dwIP = QHostAddress(SERVER_DOMAIN).toIPv4Address();
+//	}
+//	else
+//	{
+//		dwIP = hinfo.addresses()[0].toIPv4Address();
+//	}
+//	return htonlQ(dwIP);
+//}
 
 unsigned int CEseeXml::ParseCmd(QDomElement & RootElement)
 {

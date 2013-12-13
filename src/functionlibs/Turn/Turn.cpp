@@ -1,5 +1,5 @@
 #include "Turn.h"
-#include "SleepQt.h"
+#include "netlib.h"
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QVariantMap>
 #include <guid.h>
@@ -15,8 +15,8 @@ typedef struct _tagAudioBufAttr{
 	int samplewidth;
 }AudioBufAttr;
 #pragma pack()
-extern ushort htons(ushort hostshort);
-extern unsigned int htons32(unsigned int hostshort);
+//extern ushort htons(ushort hostshort);
+//extern unsigned int htons32(unsigned int hostshort);
 
 int turn_CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize,LPVOID pUser)
 {
@@ -151,6 +151,7 @@ int Turn::disconnect()
 		return -1;
 	}
 	m_bConnected = false;
+	return 0;
 }
 int Turn::getCurrentStatus()
 {
@@ -625,8 +626,8 @@ Turn::ServerInfo Turn::GetServerInfo(char *sId)
 {
 	ServerInfo ret = {0};
 	ret.ServerAddr.sin_family = AF_INET;
-	ret.ServerAddr.sin_port = htons((short)(m_ServerInfo.ulServerPort));
-	ret.ServerAddr.sin_addr.S_un.S_addr = htons32(m_ServerInfo.ulServerAddr);
+	ret.ServerAddr.sin_port = htonsQ((short)(m_ServerInfo.ulServerPort));
+	ret.ServerAddr.sin_addr.S_un.S_addr = htonlQ(m_ServerInfo.ulServerAddr);
 	return ret;
 }
 int Turn::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
