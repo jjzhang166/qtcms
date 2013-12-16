@@ -23,6 +23,9 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
 
+	// Enable Local content access remote url
+	settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,true);
+
 	// Disable context menu
 	//setContextMenuPolicy(Qt::NoContextMenu);
 
