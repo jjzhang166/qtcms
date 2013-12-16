@@ -212,21 +212,21 @@ function encode_save_content()
 		ipc_enc_freeResolution = false;
 	}
 	var encode_data = '{"channelName": "'+ ipc_enc_channelname +'","resolution":"'+ipc_enc_resolution+'","freeResolution":'+ipc_enc_freeResolution+',"resolutionWidth":'+ ipc_enc_resolutionWidth +',"resolutionHeight":'+ ipc_enc_resolutionHeight +',"bitRateControlType":"'+ipc_enc_BitRateControlType+'","constantBitRate":'+ ipc_enc_bps +',"frameRate":'+ ipc_enc_fps +'}';
-//	alert(encode_data);  
+	
+	//	alert(encode_data); 
+	 
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
 	$.ajax({
 			type:'PUT',
 			url:ipc_url + '/netsdk/video/encode/channel/'+ id,
 			dataType:'json',
-			//contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
 			data:encode_data,
 			async:false,
 			beforeSend : function(req ) {
         	req .setRequestHeader('Authorization', auth);
     		},
 			success:function(data){
-//				alert(111)
 			},
 			error:function(a,b,c){ 
 				alert(b);
@@ -265,11 +265,7 @@ function devinfo_load_content(bflag)
 			$("#Ipc_Build_time")[0].value = dvr_data.juan.conf.info.build_date + " " + dvr_data.juan.conf.info.build_time;
 			$("#Ipc_Alarm_numbers")[0].value = dvr_data.juan.conf.spec.io_alarm;
 			$("#Ipc_SD_numbers")[0].value = dvr_data.juan.conf.spec.sd_card;				
-			//alert("current model:"+dvr_data.juan.conf.info.device_model);
-			if(bflag==false){
-				//alert(dvr_data.juan.conf.info.device_soc);
-				//encode_load_content(dvr_data.juan.conf.info.device_soc, dvr_data.juan.conf.info.sensor_type);
-			}
+			
 		},
 		complete: function(XMLHttpRequest, textStatus){
 //			alert("complete:" + textStatus);
@@ -279,7 +275,6 @@ function devinfo_load_content(bflag)
 		}
 	});	
 }
-//network
 //network
 function network_data2ui(dvr_data)
 {
@@ -643,7 +638,6 @@ function user_management_save_edit_usr()
 		},
 		success: function(data, textStatus, xmlhttp){
 //			alert("recv:" + data.xml);
-//			alert(xmlhttp.responseText);
 			var dvr_data = xml2json.parser(xmlhttp.responseText, "", false);
 			if(dvr_data.user.ret != "success")
 			{
@@ -653,9 +647,6 @@ function user_management_save_edit_usr()
 			{
 				user_management_load_content();
 			}
-//			user_management_data2ui(dvr_data);
-
-
 			user_management_target = "";
 		},
 		complete: function(XMLHttpRequest, textStatus){
@@ -709,7 +700,6 @@ function user_management_save_new_usr()
 		},
 		success: function(data, textStatus, xmlhttp){
 //			alert("recv:" + data.xml);
-//			alert(xmlhttp.responseText);
 			var dvr_data = xml2json.parser(xmlhttp.responseText, "", false);
 			if(dvr_data.user.ret != "success")
 			{
@@ -719,8 +709,6 @@ function user_management_save_new_usr()
 			{
 				user_management_load_content();
 			}
-//			user_management_data2ui(dvr_data);
-
 
 			user_management_target = "";
 		},
@@ -773,7 +761,6 @@ function user_management_prepare_save_modify_usr()
 		},
 		success: function(data, textStatus, xmlhttp){
 //			alert("recv:" + data.xml);
-//			alert(xmlhttp.responseText);
 			var dvr_data = xml2json.parser(xmlhttp.responseText, "", false);
 			if(dvr_data.user.ret != "success")
 			{
@@ -985,7 +972,6 @@ function time_data2ui(dvr_data)
 {
 	var utc_devtime = parseInt(dvr_data.juan.setup.time.value)*1000;
 	$("#time_ntp__server")[0].innerHTML = dvr_data.juan.conf.datetime.ntp_user_domain;
-	//$("#date_break")[0].innerHTML = dvr_data.juan.conf.datetime.date_separator;
 	
 	var devtime = new Date(utc_devtime);
 	devtime.toFormatString();
@@ -1009,7 +995,6 @@ function time_data2ui(dvr_data)
 			break;
 		default: break;
 	}
-	//$("#time_zone")[0].value = dvr_data.juan.conf.datetime.time_zone;
 	$("#daylight_time")[0].value = dvr_data.juan.conf.datetime.day_saving_time;
 
 	switch (dvr_data.juan.conf.datetime.ntp_sync)
@@ -1117,7 +1102,6 @@ function time_save_content()
 		},
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
-			//time_zone_save();
 		},
 		complete: function(XMLHttpRequest, textStatus){
 		},
@@ -1326,7 +1310,6 @@ function reboot()
 		beforeSend: function(XMLHttpRequest){
 		},
 		success: function(data, textStatus){
-			//alert(11);
 //			alert("recv:" + data.xml);
 			var dvr_data = xml2json.parser(data, "", false);
 	
