@@ -1,0 +1,3 @@
+LIBRARY "DDrawRenderObject.dll"
+EXPORTS
+	CreateObject @1

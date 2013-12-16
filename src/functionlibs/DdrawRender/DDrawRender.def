@@ -1,0 +1,3 @@
+LIBRARY "SDLRender.dll"
+EXPORTS
+	CreateInstance @1
