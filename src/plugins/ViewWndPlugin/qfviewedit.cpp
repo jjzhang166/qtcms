@@ -18,7 +18,10 @@ qfviewedit::~qfviewedit()
 void qfviewedit::PrintText( QString sText )
 {
 	qDebug("%s",sText.toAscii().data());
-//	EventProcCall("Passed");
+	DEF_EVENT_PARAM(t);
+	EP_ADD_PARAM(t,"hello","hi");
+	EP_ADD_PARAM(t,"text","this is a test");
+	EventProcCall("Passed",t);
 }
 
 QStringList qfviewedit::TestStringList(const QString & sTest)

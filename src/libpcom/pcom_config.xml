@@ -19,8 +19,9 @@
 		<item clsid="DE91223A-0978-4CA2-9F8B-829DA0EB88E8" name="plugin.DeviceSearchPlugin" file="plugins/DeviceSearchPlugin.dll" mimetype="application/cms-dsview-windows"/>
 		<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
 		<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
-		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="protocols.bubble" file="deviceclient.dll" /> 
-		<item clsid="22440D4D-9F81-4700-8519-7AD715461E25" name="bubble.RemotePreview" file="RemotePreview.dll" type="RemotePreview"/> 
+		<item clsid="6BC3DD4C-0365-48B3-8209-43DFE8A1DDCD" name="render.DDraw" file="DdrawRender.dll" type="ddraw"/>
+		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="JUAN DVR" /> 
+		<item clsid="22440D4D-9F81-4700-8519-7AD715461E25" name="protocols.RemotePreview" file="RemotePreview.dll" type="RemotePreview"/> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
 	</CLSID>
