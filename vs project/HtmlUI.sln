@@ -13,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViewWndPlugin", "..\src\plugins\ViewWndPlugin\ViewWndPlugin.vcxproj", "{96B79E57-8900-4809-BD02-B51B2B11EEA4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlib", "..\src\plugins\commonlib\commonlib.vcxproj", "{4B75D5BE-42C9-4575-B118-75D9B975A61A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "..\src\UnitTest\UnitTest.vcxproj", "{F1DAFB5E-3798-487E-9807-6B5EFA6C81D0}"
 EndProject
@@ -57,8 +60,15 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDLRender", "..\src\functionlibs\SDLRender\SDLRender.vcxproj", "{5614AFAE-BCBD-4EF7-B3CD-56E7A565F4A8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceClient", "..\src\functionlibs\DeviceClient\DeviceClient.vcxproj", "{8AEBF93D-5608-4A2C-8055-C6A1709A3327}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DdrawRender", "..\src\functionlibs\DdrawRender\DdrawRender.vcxproj", "{1C41CBB5-F688-4E9F-B652-E27AA9704EAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
+		{BCBE1171-E35D-4E3E-BD15-8387A9805270} = {BCBE1171-E35D-4E3E-BD15-8387A9805270}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DDrawRenderObject", "..\src\functionlibs\DDrawRenderObject\DDrawRenderObject.vcxproj", "{BCBE1171-E35D-4E3E-BD15-8387A9805270}"
 EndProject

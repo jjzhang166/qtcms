@@ -184,8 +184,8 @@ int DvrSearch::queryEvent(QString eventName, QStringList &eventParamList)
         eventParamList<<"SearchVendor_ID"  <<"SearchDeviceName_ID"  <<"SearchDeviceId_ID"     <<"SearchDeviceModelId_ID"
                       <<"SearchSeeId_ID"   <<"SearchChannelCount_ID"<<"SearchIP_ID"           <<"SearchMask_ID"
                       <<"SearchMac_ID"     <<"SearchGateway_ID"     <<"SearchHttpport_ID"     <<"SearchMediaPort_ID";
-		return IEventRegister::OK;
 	}
+	return IEventRegister::OK;
 }
 
 int DvrSearch::registerEvent(QString eventName,EventCallBack eventCB,void *pUser) 

@@ -20,7 +20,7 @@
 	2.2项目配置
 		2.2.1配置属性->常规:
 			2.2.1.1输出目录:$(SolutionDir)..\libs\
-			2.2.1.2中间目录:$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)
+			2.2.1.2中间目录:$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\
 		2.2.2配置属性->C/C++->常规:
 			附加包含目录中添加：$(SolutionDir)..\include\
 		2.2.3配置属性->链接器->输入

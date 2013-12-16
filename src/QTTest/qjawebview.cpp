@@ -135,6 +135,7 @@ void QJaWebView::OnLoad( bool bOk )
 
 void QJaWebView::OnurlChanged( const QUrl & url )
 {
+	Q_UNUSED(url);
 	if (NULL != m_Activity)
 	{
 		m_Activity->Release();

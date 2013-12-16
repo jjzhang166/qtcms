@@ -44,7 +44,7 @@ int Se(BYTE *pBuff, UINT nLen, UINT &nStartBit)
 
 int UeVal=Ue(pBuff,nLen,nStartBit);
 double k=UeVal;
-int nValue=ceil(k/2);//ceil函数：ceil函数的作用是求不小于给定实数的最小整数。ceil(2)=ceil(1.2)=cei(1.5)=2.00
+int nValue=(int)ceil(k/2);//ceil函数：ceil函数的作用是求不小于给定实数的最小整数。ceil(2)=ceil(1.2)=cei(1.5)=2.00
 if (UeVal % 2==0)
 nValue=-nValue;
      return nValue;

@@ -40,13 +40,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\libs\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <IncludePath>$(VCInstallDir)PlatformSDK\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;D:\Program Files (x86)\DirectX 9.0b SDK\Include;D:\Program Files (x86)\DirectX 9.0b SDK\Include\DShowIDL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\libs\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <IncludePath>$(VCInstallDir)PlatformSDK\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;D:\Program Files (x86)\DirectX 9.0b SDK\Include;D:\Program Files (x86)\DirectX 9.0b SDK\Include\DShowIDL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
