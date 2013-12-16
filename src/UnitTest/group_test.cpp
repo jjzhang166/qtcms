@@ -3,7 +3,7 @@
 #include <IGroupManager.h>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
-#include <QtSql>
+#include <QtSql/QtSql>
 
 #define  START_GROUP_UNIT_TEST(ii) IGroupManager *ii=NULL;\
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&ii);\
