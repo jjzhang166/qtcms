@@ -182,12 +182,12 @@ var oSearchOcx;
 				}
 			})
 			//搜索设备;
-			//oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			//searchFlush();
-			/*for (i in oActiveEvents){
+			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+			searchFlush();
+			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
-			}*/
+			}
 		})
 		//搜索结果 设备列表tr委托部分事件;
 		$('#SerachDevList tbody').on('click','tr',function(){
