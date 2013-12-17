@@ -120,7 +120,7 @@
       <LinkIncremental>false</LinkIncremental>
       <OutputFile>$(OutDir)\QTTest.exe</OutputFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Link>
     <Midl>

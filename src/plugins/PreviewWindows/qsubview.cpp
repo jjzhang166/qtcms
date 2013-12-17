@@ -22,7 +22,7 @@ QSubView::QSubView(QWidget *parent)
 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	qDebug("IVideoDecoder:%x",m_IVideoDecoder);
 	//ÉêÇëäÖÈ¾Æ÷½Ó¿Ú
-	pcomCreateInstance(CLSID_SDLRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
+	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
 	qDebug("m_IVideoRender:%x",m_IVideoRender);
 	//ÉêÇëDeviceClient½Ó¿Ú
 	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
@@ -113,7 +113,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	
  	p.setPen(pen);
 
-	p.drawText(rcClient, Qt::AlignCenter, "Pixmap");
+	p.drawText(rcClient, Qt::AlignCenter, "No Video");
 
 }
 
@@ -239,7 +239,7 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	if (false==m_IVideoRender->setRenderWnd(ui->widget_display))
+	if (0!=m_IVideoRender->setRenderWnd(ui->widget_display))
 	{
 		return 1;
 	}

@@ -63,6 +63,9 @@
       <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>DDrawRender.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

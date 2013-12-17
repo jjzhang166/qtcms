@@ -42,10 +42,10 @@ int SDLRender::init(int nWidth,int nHeight)
 		}
 		 m_pTexture = SDL_CreateTexture( m_pRender,SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, nWidth, nHeight);
 
-		return true;
+		return 0;
 	}
 
-	return false;
+	return -1;
 }
 int SDLRender::deinit()
 {
@@ -75,10 +75,11 @@ int SDLRender::setRenderWnd(QWidget * wnd)
 		pWidget = wnd;
 		pWidget->winId();
 		//qDebug("------------------>2:%p",pWidget->winId());
-		return true;
+		return 0;
 	}
-	return false;
+	return -1;
 }
+
 int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWidth,int nHeight,int nYStride,int nUVStride,int lineStride,const QString & pixelFormat,int flags)
 {
 	//qDebug("Width_dec:%d  Height_dec:%d\n",nWidth,nHeight);
@@ -119,15 +120,15 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 	//qDebug()<<"m_pRender";
 	//qDebug()<<m_pRender;
 
-	return true;
+	return 0;
 }
 int SDLRender::enable(bool bEnable)
 {
-	return true;
+	return 0;
 }
 int SDLRender::enableStretch(bool bEnable)
 {
-	return true;
+	return 0;
 }
 bool SDLRender::isRenderEnable()
 {
