@@ -53,6 +53,13 @@ interface IDeviceClient : public IPComBase
 	//	2:正在连接
 	//	3:正在断开
 	virtual int getConnectStatus() = 0;
+
+	typedef enum __enConnectStatus{
+		STATUS_CONNECTED,
+		STATUS_CONNECTING,
+		STATUS_DISCONNECTED,
+		STATUS_DISCONNECTING,
+	}ConnectStatus;
 };
 
 // Event
