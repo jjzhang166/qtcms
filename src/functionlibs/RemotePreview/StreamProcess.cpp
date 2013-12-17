@@ -343,7 +343,7 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 {
 	QVariantMap mStreamInfo;
 
-	mStreamInfo.insert("status", socketState);
+	mStreamInfo.insert("status", getSocketState());
 
 	eventProcCall(QString("StateChangeed"), mStreamInfo);
 }
