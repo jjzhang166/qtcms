@@ -96,54 +96,43 @@ var oSearchOcx;
 					searchFlush();
 					areaList2Ui();
 				}else if(index == 1){
+					$('#device_list').find('li').remove();	
 					var areaList = oCommonLibrary.GetAreaList();
 					var areaList0 = 0;
 				
-					$("#device_list li").remove();
-					var name0 = oCommonLibrary.GetAreaName(0);
-					var deviceList0 = oCommonLibrary.GetDeviceList(0);
-					$('#device_list').treeview()	
-							var add_li = $('<li><span class="area">'+name0+'<ul id="area0"></ul></li>');
-							add_li.appendTo('#device_list');
-							$("#device_list").treeview({
-								add: add_li
-							});	
-						for(n in areaList){
-							var id = areaList[n];
-							var name = oCommonLibrary.GetAreaName(areaList[n]);
-							var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+					//手动添加区域0
+					var deviceList0 = oCommonLibrary.GetDeviceList(0);	
+							var add_li = $('<li><span class="area" id="area0">区域_root</span><ul></ul></li>').appendTo('#device_list');
+							$('ul.filetree:eq(2)').treeview({add:add_li});
 							
-							$('#device_list').treeview()	
+					for(n in areaList){
+						var id = areaList[n];
+						var name = oCommonLibrary.GetAreaName(areaList[n]);
+						var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+						
+						$('#device_list').treeview()	
+						
+						var add_li = $('<li><span class="area">'+name+'</span><ul id="area'+id+'"></ul></li>').appendTo('#device_list');
+						$("#device_list").treeview({add: add_li});	
+					//搜索添加区域
+					var deviceList = oCommonLibrary.GetDeviceList(id)
+						for(k in deviceList)
+						{
+							var dev_id = deviceList[k];
+							var deviceInfo = oCommonLibrary.GetDeviceInfo(dev_id);			
+							var add_li = $('<li class="device1" value="'+dev_id+'"><span id="device'+dev_id+'">'+deviceInfo.name+'</span></li>').appendTo('#area'+id);
+							$('ul.filetree:eq(2)').treeview({add:add_li});
+						}
+					}
+					//手动添加area0的设备
+						for(j in deviceList0)
+						{
+							var dev_id0 = deviceList0[j];
+							var deviceInfo0 = oCommonLibrary.GetDeviceInfo(dev_id0);	
 							
-							var add_li = $('<li><span class="area">'+name+'<ul id="area'+id+'"></ul></li>');
-							add_li.appendTo('#device_list');
-							$("#device_list").treeview({
-								add: add_li
-							});	
-							var deviceList = oCommonLibrary.GetDeviceList(id)
-								for(k in deviceList)
-								{
-									var dev_id = deviceList[k];
-									var deviceInfo = oCommonLibrary.GetDeviceInfo(dev_id);			
-									$('#area'+id).treeview()	
-									var add_li_0 = $('<li class="device1" value="'+dev_id+'"><span id="device'+dev_id+'" class="device11">'+deviceInfo.name+'</li>');
-									add_li_0.appendTo('#area'+id);
-									$('#area'+id).treeview({
-										add: add_li_0
-									});
-								}
-							}
-							for(j in deviceList0)//手动添加area0的设备
-							{
-								var dev_id0 = deviceList0[j];
-								var deviceInfo0 = oCommonLibrary.GetDeviceInfo(dev_id0);	
-								$('#area0').treeview()	
-								var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span id="device'+dev_id0+'" class="device11">'+deviceInfo0.name+'</li>');
-								add_li_1.appendTo('#area0');
-								$('#area0').treeview({
-									add: add_li_1
-								});
-							}
+							var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span id="device'+dev_id0+'">'+deviceInfo0.name+'</span></li>').appendTo('#area0');
+							$('ul.filetree:eq(2)').treeview({add:add_li_1});
+						}
 						
 						$('.device1').each(function(device_index){
 							$(this).click(function(){
