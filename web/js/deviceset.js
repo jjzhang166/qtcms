@@ -102,7 +102,7 @@ var oSearchOcx;
 				
 					//手动添加区域0
 					var deviceList0 = oCommonLibrary.GetDeviceList(0);	
-							var add_li = $('<li><span class="area" id="area0">区域_root</span><ul></ul></li>').appendTo('#device_list');
+							var add_li = $('<li><span class="area">区域_root</span><ul id="area0"></ul></li>').appendTo('#device_list');
 							$('ul.filetree:eq(2)').treeview({add:add_li});
 							
 					for(n in areaList){
@@ -120,7 +120,7 @@ var oSearchOcx;
 						{
 							var dev_id = deviceList[k];
 							var deviceInfo = oCommonLibrary.GetDeviceInfo(dev_id);			
-							var add_li = $('<li class="device1" value="'+dev_id+'"><span id="device'+dev_id+'">'+deviceInfo.name+'</span></li>').appendTo('#area'+id);
+							var add_li = $('<li class="device1" value="'+dev_id+'"><span class="device" id="device'+dev_id+'">'+deviceInfo.name+'</span></li>').appendTo('#area'+id);
 							$('ul.filetree:eq(2)').treeview({add:add_li});
 						}
 					}
@@ -130,7 +130,7 @@ var oSearchOcx;
 							var dev_id0 = deviceList0[j];
 							var deviceInfo0 = oCommonLibrary.GetDeviceInfo(dev_id0);	
 							
-							var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span id="device'+dev_id0+'">'+deviceInfo0.name+'</span></li>').appendTo('#area0');
+							var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span class="device" id="device'+dev_id0+'">'+deviceInfo0.name+'</span></li>').appendTo('#area0');
 							$('ul.filetree:eq(2)').treeview({add:add_li_1});
 						}
 						
