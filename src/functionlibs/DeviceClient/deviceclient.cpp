@@ -6,7 +6,8 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnectonBubble(NULL),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
-	bIsInitFlags(false)
+	bIsInitFlags(false),
+	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
 	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
@@ -135,11 +136,16 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		{
 			m_DeviceConnecton->disconnect();
 			while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus()){
+				m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
 				sleep(10);
 			}
+			m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 		}
 	}
-	m_CurStatus=DeviceClient::STATUS_DISCONNECTED;
+	m_CurStatus=DeviceClient::STATUS_CONNECTING;
+	QVariantMap CurStatusParm;
+	CurStatusParm.insert("CurrentStatus",m_CurStatus);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	//尝试连接
 	int nStep=0;
 	while(nStep!=5){
@@ -165,6 +171,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=1;
 					break;
 				}
+				qDebug()<<"bubble success";
 				m_DeviceConnecton=m_DeviceConnectonBubble;
 				nStep=3;
 			}
@@ -190,6 +197,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=2;
 					break;
 				}
+				qDebug()<<"Hole success";
 				m_DeviceConnecton=m_DeviceConnectonHole;
 				nStep=3;
 			}
@@ -215,6 +223,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=4;
 					break;
 				}
+				qDebug()<<"turn success";
 				m_DeviceConnecton=m_DeviceConnectonTurn;
 				nStep=3;
 			}
@@ -222,7 +231,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接失败
 		case 3:
 			{
-				m_CurStatus=DeviceClient::STATUS_CONNECTED;
+				m_CurStatus=IDeviceClient::STATUS_CONNECTED;
 				QVariantMap CurStatusParm;
 				CurStatusParm.insert("CurrentStatus",m_CurStatus);
 				eventProcCall("CurrentStatus",CurStatusParm);
@@ -232,7 +241,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接成功
 		case 4:
 			{
-				m_CurStatus=DeviceClient::STATUS_DISCONNECTED;
+				m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 				QVariantMap CurStatusParm;
 				CurStatusParm.insert("CurrentStatus",m_CurStatus);
 				eventProcCall("CurrentStatus",CurStatusParm);
@@ -250,45 +259,6 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		}
 	}
 	return 0;
-	//===============================================================================
-	//把前一次的连接释放掉
-	//if (NULL==m_DeviceConnecton)
-	//{
-	//	return 1;
-	//}
-
-	//if (IDeviceConnection::CS_Connected==m_DeviceConnecton->getCurrentStatus()||IDeviceConnection::CS_Connectting==m_DeviceConnecton->getCurrentStatus())
-	//{
-	//	m_DeviceConnecton->disconnect();
-	//	while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus()){
-	//		sleep(10);
-	//	}
-	//}
-
-	//m_ports.insert("media",uiPort);
-
-	//if (1==m_DeviceConnecton->setDeviceHost(sAddr)||1==m_DeviceConnecton->setDevicePorts(m_ports)||1==m_DeviceConnecton->setDeviceId(sEseeId))
-	//{
-	//	return 1;
-	//}
-
-	//if (false==bIsInitFlags)
-	//{
-	//	if (1==cbInit())
-	//	{
-	//		return 1;
-	//	}
-	//}
-	//int nRet=1;
-	//nRet=m_DeviceConnecton->connectToDevice();
-	//if (1==nRet)
-	//{
-	//	qDebug()<<"can't connect";
-	//	return 1;
-	//}
-
-	//return 0;
-
 }
 int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
 {
@@ -324,7 +294,7 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 	}
 	else if (false==bOpen)
 	{
-		n_IRemotePreview->pauseStream(false);
+		n_IRemotePreview->pauseStream(true);
 	}
 	n_IRemotePreview->Release();
 	return 0;
@@ -332,8 +302,6 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 
 int DeviceClient::closeAll()
 {
-	qDebug()<<"closeAll";
-	qDebug()<<this;
 	IRemotePreview *n_IRemotePreview=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
@@ -344,7 +312,19 @@ int DeviceClient::closeAll()
 	{
 		return 1;
 	}
+	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
+	QVariantMap CurStatusParm;
+	CurStatusParm.insert("CurrentStatus",m_CurStatus);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	n_IRemotePreview->stopStream();
+	while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus())
+	{
+		msleep(100);
+	}
+	m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+	CurStatusParm.clear();
+	CurStatusParm.insert("CurrentStatus",m_CurStatus);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	n_IRemotePreview->Release();
 	return 0;
 }
@@ -356,12 +336,14 @@ QString DeviceClient::getVendor()
 }
 int DeviceClient::getConnectStatus()
 {
-	if (NULL==m_DeviceConnecton)
-	{
-		return 0;
-	}
-	int nRet=m_DeviceConnecton->getCurrentStatus();
-	return nRet;
+	return m_CurStatus;
+}
+int DeviceClient::ConnectStatusProc(QVariantMap evMap)
+{
+	//QVariantMap CurStatusParm;
+	//CurStatusParm.insert("CurrentStatus",m_CurStatus);
+	//eventProcCall("CurrentStatus",CurStatusParm);
+	return 0;
 }
 void DeviceClient::eventProcCall(QString sEvent,QVariantMap param)
 {
@@ -376,6 +358,10 @@ void DeviceClient::eventProcCall(QString sEvent,QVariantMap param)
 }
 int DeviceClient::cbInit()
 {
+	DeviceClientInfoItem devcliInfo;
+	devcliInfo.proc=cbStateChangeFormIprotocl;
+	devcliInfo.puser=this;
+	m_EventMap.insert("StateChangeed",devcliInfo);
 	//注册bubb协议的回调函数
 	if (NULL!=m_DeviceConnectonBubble)
 	{
@@ -429,25 +415,14 @@ int DeviceClient::cbInit()
 	}
 	bIsInitFlags=true;
 	return 0;
-	//=====================只有bubble协议的注册
-	//if (NULL==m_DeviceConnecton)
-	//{
-	//	return 1;
-	//}
-	//IEventRegister *IEventReg=NULL;
-	//m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
-	//if (NULL==IEventReg)
-	//{
-	//	return 1;
-	//}
-	//QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
-	//for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
-	//{
-	//	QString sKey=it.key();
-	//	DeviceClientInfoItem sValue=it.value();
-	//	IEventReg->registerEvent(sKey,sValue.proc,sValue.puser);
-	//}
-	//IEventReg->Release();
-	//bIsInitFlags=true;
-	//return 0;
+}
+int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser)
+{
+	qDebug("cbStateChangeFormIprotocl");
+	if ("StateChangeed"==evName)
+	{
+		((DeviceClient*)pUser)->ConnectStatusProc(evMap);
+		return 0;
+	}
+	return 1;
 }

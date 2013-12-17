@@ -12,6 +12,8 @@
 
 #include <IEventRegister.h>
 
+int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser);
+
 class  DeviceClient:public IDeviceClient,
 	public IEventRegister,
 	public QThread
@@ -36,13 +38,7 @@ public:
 	virtual QString getVendor();
 	virtual int getConnectStatus();
 
-	typedef enum __enConnectStatus{
-		STATUS_CONNECTED,
-		STATUS_CONNECTING,
-		STATUS_DISCONNECTED,
-		STATUS_DISCONNECTING,
-	}ConnectStatus;
-
+	int ConnectStatusProc(QVariantMap evMap);
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -62,12 +58,12 @@ private:
 
 	bool bIsInitFlags;
 
-	DeviceClient::ConnectStatus m_CurStatus;
+	IDeviceClient::ConnectStatus m_CurStatus;
 
 private:
 	int cbInit();
 	void eventProcCall(QString sEvent,QVariantMap param);
-
+	
 };
 
 #endif // DEVICECLIENT_H
