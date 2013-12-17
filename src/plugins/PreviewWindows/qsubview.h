@@ -11,8 +11,9 @@
 #include <IEventRegister.h>
 #include <IVideoDecoder.h>
 #include "PreviewWindowsGlobalSetting.h"
-#include "PreviewPlay.h"
+#include "QSubviewThread.h"
 #include <IVideoRender.h>
+#include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
 
@@ -25,7 +26,6 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
 class QSubView :public QWidget
 {
 	Q_OBJECT
-
 public:
 	QSubView(QWidget *parent = 0);
 	~QSubView();
@@ -47,31 +47,17 @@ public:
 		,const QString & sCameraname,const QString & sVendor);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
-
-
-
-	typedef struct _tagDevCliSetInfo{
-		QString m_sAddress;
-		unsigned int m_uiPort;
-		QString m_sEseeId;
-		unsigned int m_uiChannelId;
-		unsigned int m_uiStreamId;
-		QString m_sUsername;
-		QString m_sPassword;
-		QString m_sCameraname;
-		QString m_sVendor;
-	}DevCliSetInfo;
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void mouseLeftClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
-	void SignalPreviewPlay();
 	void CurrentStateChangeSignl(int statevalue,QWidget *);
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClient;
+	QSubViewObject m_QSubViewObject;
 
 	int iInitWidth;
 	int iInitHeight;
@@ -80,6 +66,7 @@ private:
 	Ui::titleview * ui;
 
 	QMutex m_MutexdoubleClick;
+
 private:
 	int cbInit();
 

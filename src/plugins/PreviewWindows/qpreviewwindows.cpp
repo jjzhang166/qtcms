@@ -222,6 +222,10 @@ int QPreviewWindows::GetCurrentWnd()
 
 int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
+	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 1;
+	}
 	m_mutex.lock();
 	m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
@@ -230,6 +234,10 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 }
 int QPreviewWindows::SetCameraInWnd(unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname ,const QString & sVendor)
 {
+	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 1;
+	}
 	m_mutex.lock();
 	m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
@@ -238,6 +246,10 @@ int QPreviewWindows::SetCameraInWnd(unsigned int uiWndIndex ,const QString sAddr
 }
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
+	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 1;
+	}
 	m_mutex.lock();
 	m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
@@ -247,6 +259,10 @@ int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 
 int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 {
+	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 0;
+	}
 	m_mutex.lock();
 	m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();

@@ -29,13 +29,13 @@ QSubView::QSubView(QWidget *parent)
 	qDebug("m_IDeviceClient:%x",m_IDeviceClient);
 
 	ui->setupUi(this);
-//	m_TitleBar.resize(this->size().width(),30);
-//	m_TitleBar.show();
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->addWidget(ui->gridLayoutWidget);
 	setLayout(layout);
 	connect(ui->pushButton_2,SIGNAL(pressed ()),this,SLOT(ConnectOn()),Qt::DirectConnection);
 	connect(ui->pushButton,SIGNAL(pressed()),this,SLOT(ConnectOff()),Qt::DirectConnection);
+
+	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 }
 
 QSubView::~QSubView()
@@ -133,7 +133,6 @@ void QSubView::mousePressEvent(QMouseEvent *ev)
 
 int QSubView::GetCurrentWnd()
 {
-	//emit mouseDoubleClick(this);
 	return 1;
 }
 int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
@@ -153,6 +152,7 @@ int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QS
 	m_DevCliSetInfo.m_sPassword=sPassword;
 	m_DevCliSetInfo.m_sCameraname=sCameraname;
 	m_DevCliSetInfo.m_sVendor=sVendor;
+	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	return 0;
 }
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
@@ -167,47 +167,21 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			return 1;
 		}
 	}
-	//m_DevCliSetInfo.m_sAddress=sAddress;
-	//m_DevCliSetInfo.m_uiPort=uiPort;
-	//m_DevCliSetInfo.m_sEseeId=sEseeId;
-	//m_DevCliSetInfo.m_uiChannelId=uiChannelId;
-	//m_DevCliSetInfo.m_uiStreamId=uiStreamId;
-	//m_DevCliSetInfo.m_sUsername=sUsername;
-	//m_DevCliSetInfo.m_sPassword=sPassword;
-	//m_DevCliSetInfo.m_sCameraname=sCameraname;
-	//m_DevCliSetInfo.m_sVendor=sVendor;
-	if (NULL==m_IDeviceClient)
-	{
-		return 1;
-	}
-	if (1==m_IDeviceClient->setChannelName(sCameraname))
-	{
-		return 1;
-	}
-	int nRet=1;
-	nRet=m_IDeviceClient->connectToDevice(sAddress,uiPort,sEseeId);
-	//需要等待连接成功，再发送请求，采用信号绑定的方法或者计时器
-	if (1==nRet)
-	{
-		return 1;
-	}
-	if (1==m_IDeviceClient->liveStreamRequire(uiChannelId,uiStreamId,true))
-	{
-		return 1;
-	}
+	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	m_QSubViewObject.OpenCameraInWnd();
 	return 0;
 }
 int QSubView::CloseWndCamera()
 {
-	if (NULL==m_IDeviceClient)
-	{
-		return 1;
-	}
-	m_IDeviceClient->closeAll();
+	m_QSubViewObject.CloseWndCamera();
 	return 0;
 }
 int QSubView::GetWindowConnectionStatus()
 {
+	if (NULL==m_IDeviceClient)
+	{
+		return 0;
+	}
 	return m_IDeviceClient->getConnectStatus();
 }
 int QSubView::ConnectOn()
@@ -241,7 +215,7 @@ int QSubView::cbInit()
 	evName.append("SocketError");
 	pRegist->registerEvent(evName,cbConnectError,this);
 	evName.clear();
-	evName.append("StateChangeed");
+	evName.append("CurrentStatus");
 	pRegist->registerEvent(evName,cbStateChange,this);
 	pRegist->Release();
 	pRegist=NULL;
@@ -302,8 +276,6 @@ int QSubView::PrevRender(QVariantMap evMap)
 	{
 		QString sKey=it.key();
 		QString sValue=it.value().toString();
-		//qDebug()<<sKey;
-		//qDebug()<<sValue;
 	}
 	if (NULL==m_IVideoRender)
 	{
@@ -323,7 +295,6 @@ int QSubView::PrevRender(QVariantMap evMap)
 
 	if (iInitHeight!=iHeight||iInitWidth!=iWidth)
 	{
-		//m_IVideoRender->deinit();
 		m_IVideoRender->init(iWidth,iHeight);
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
@@ -338,7 +309,7 @@ int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 {
 	//检测数据包，把数据包扔给解码器
 
-
+	qDebug("cbLiveStream");
 	if (evName=="LiveStream")
 	{
 		((QSubView*)pUser)->PrevPlay(evMap);
@@ -385,7 +356,7 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 		qDebug()<<sKey;
 		qDebug()<<sValue;
 	}
-	if (evName=="StateChangeed")
+	if (evName=="CurrentStatus")
 	{
 		((QSubView*)pUser)->CurrentStateChange(evMap);
 		return 0;
