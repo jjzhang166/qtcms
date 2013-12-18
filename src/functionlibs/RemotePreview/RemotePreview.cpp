@@ -28,6 +28,8 @@ m_bPaused(false)
 
 RemotePreview::~RemotePreview(void)
 {
+	m_pStreamProcess->stopStream();
+
 	m_workerThread.quit();
 	m_workerThread.wait();
 }
