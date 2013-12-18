@@ -105,6 +105,9 @@ private:
 	bool  m_bstrdataRecved;
 	int m_Camcnt;
 	int m_Channel, m_Stream;
+
+	//
+	bool m_connenting;
 };
 
 #endif // HOLE_H

@@ -120,9 +120,11 @@ int Hole::setDeviceAuthorityInfomation(QString username,QString password)
 }
 int Hole::connectToDevice()
 {
+	m_connenting = true;
 	m_bHoleSuccess = false;
 	CallBackStatus(IDeviceConnection::CS_Connectting);
 	CRudpSession::ErrorCode errocode = m_s.Connect("192.168.1.1",80);
+	m_connenting = false;
 	if (CRudpSession::SUCCESS != errocode)
 	{
 		m_bHoleSuccess = false;
@@ -131,10 +133,16 @@ int Hole::connectToDevice()
 	}
 	m_bConnected = true;
 	CallBackStatus(IDeviceConnection::CS_Connected);
+	
 	return 0;
 }
 int Hole::disconnect()
 {
+	if (m_connenting)
+	{
+		m_esee.StopReq();
+		m_connenting = false;
+	}
 	CallBackStatus(IDeviceConnection::CS_Disconnecting);
 	CRudpSession::ErrorCode eRet = m_s.Close();
 	if (CRudpSession::SUCCESS != eRet)
@@ -335,6 +343,8 @@ int Hole::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 
 	while(!bQuitHole)
 	{
+		if(false == m_connenting)
+			return -1;
 		switch (nStep)
 		{
 		case 0: // Hole Req

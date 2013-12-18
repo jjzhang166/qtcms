@@ -89,11 +89,13 @@ private:
 	bool m_bHoleReqAck;
 	bool m_bDevReady;
 	EseeEventMap m_eMap[EVENT_CNT];
-
+	//
+	bool m_reqing;
 // Methods
 public:
 	//TurnServerInfo TurnReq(char *sId);
 	HolePeerInfo   HoleReq(char *sId,int nRandom);
+	void StopReq();
 	int HoleTo(HolePeerInfo info,int nRandom);
 	int WaitForReadySignal();
 	void SetSession(CRudpSession *s);

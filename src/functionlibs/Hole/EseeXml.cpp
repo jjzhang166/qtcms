@@ -91,6 +91,11 @@ CEseeXml::~CEseeXml()
 //	return m_ServerInfo;
 //}
 
+void CEseeXml::StopReq()
+{
+	m_reqing = false;
+}
+
 CEseeXml::HolePeerInfo CEseeXml::HoleReq(char *sId,int nRandom)
 {
 	memset(&m_HolePeerInfo,0,sizeof(m_HolePeerInfo));
@@ -101,7 +106,8 @@ CEseeXml::HolePeerInfo CEseeXml::HoleReq(char *sId,int nRandom)
 
 	int nRetryCount = 0;
 	m_bHoleReqAck = false;
-	while (!m_bHoleReqAck)
+	m_reqing = true;
+	while ((!m_bHoleReqAck) && m_reqing)
 	{
 		struct sockaddr_in addr;
 		addr.sin_family = AF_INET;
@@ -112,7 +118,7 @@ CEseeXml::HolePeerInfo CEseeXml::HoleReq(char *sId,int nRandom)
 		
 		QElapsedTimer Ticket;
 		Ticket.start();
-		while(!m_bHoleReqAck && Ticket.elapsed() < 3000)
+		while((!m_bHoleReqAck) && m_reqing && Ticket.elapsed() < 3000)
 		{
 			SleepQ(30);
 		}
