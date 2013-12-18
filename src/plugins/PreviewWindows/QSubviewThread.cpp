@@ -16,6 +16,12 @@ QSubviewThread::~QSubviewThread(void)
 
 int QSubviewThread::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	m_DevCliSetInfo.m_sAddress.clear();
+	m_DevCliSetInfo.m_sEseeId.clear();
+	m_DevCliSetInfo.m_sUsername.clear();
+	m_DevCliSetInfo.m_sPassword.clear();
+	m_DevCliSetInfo.m_sCameraname.clear();
+	m_DevCliSetInfo.m_sVendor.clear();
 	m_DevCliSetInfo.m_sAddress=sAddress;
 	m_DevCliSetInfo.m_sCameraname=sCameraname;
 	m_DevCliSetInfo.m_sEseeId=sEseeId;
