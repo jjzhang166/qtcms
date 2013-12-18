@@ -14,28 +14,44 @@
 	
 	<script type="text/javascript">
 		$(function() {
-			//$("#browser").treeview();
-			/*$("#browser").bind("contextmenu", function(event) {
+			$("#browser").treeview();
+			$("#browser").bind("contextmenu", function(event) {
 				if ($(event.target).is("li") || $(event.target).parents("li").length) {
 					$("#browser").treeview({
 						remove: $(event.target).parents("li").filter(":first")
 					});
 					return false;
 				}
-			});*/
+			});
 			$("#add").click(function() {
 				var branches = $("<li><span class='folder'>New Sublist</span><ul>" + 
 					"<li><span class='file'>Item1</span></li>" + 
 					"<li><span class='file'>Item2</span></li></ul></li>").appendTo("#browser");
-				//$("#browser").treeview({add: branches});
+				$("#browser").treeview({
+					add: branches
+				});
 				branches = $("<li class='closed'><span class='folder'>New Sublist</span><ul><li><span class='file'>Item1</span></li><li><span class='file'>Item2</span></li></ul></li>").prependTo("#folder21");
 				$("#browser").treeview({
 					add: branches
 				});
 			});
-			$('#del').click(function(){	
-			   	$('#a').remove();
-				$('#browser').treeview()		
+			$('#del').click(function(){
+				if($.browser.webkit){
+					//webkit
+					/*$('#a').remove();
+					$('#browser').treeview();*/
+					
+					$('#browser').treeview({
+						remove:$('#a')
+						})
+					
+				}else{
+				var remove = $('#a').slideUp(500,function(){
+				$('#browser').treeview({
+					remove:remove
+				});								
+			  })
+			  }			
 			})
 		})/****/
 		
@@ -52,14 +68,14 @@
 	<button id="add">Add!</button><button id="del">Del!</button>
 	
 	<ul id="browser" class="filetree">
-		<li><span class="area" ></span>Folder
+		<li><span class="folder" ></span>Folder
 			<ul>
-				<li><span class="channel">Item</span></li>
+				<li><span class="file">Item</span></li>
 			</ul>
 		</li>
-		<li><span class="group">Folder</span>
+		<li><span class="folder">Folder</span>
 			<ul>
-				<li><span class="device">Subfolder</span>
+				<li><span class="folder">Subfolder</span>
 					<ul id="folder21">
 						<li><span class="file">File</span></li>
 						<li><span class="file">File</span></li>

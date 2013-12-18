@@ -286,6 +286,7 @@ $(function(){
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
+
 	$('#top div.top_nav li').mousedown(function(){ 
 		$(this).css('background-position','0 -52px');
 	}).mouseup(function(){ 

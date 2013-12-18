@@ -10,9 +10,9 @@ var oSelected = [],
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		oCommonLibrary = document.getElementById('commonLibrary');
 		//分组列表;
-		/*groupList2Ui();
+		groupList2Ui();
 		//区域列表;
-		areaList2Ui();*/
+		areaList2Ui();
 	})	
 
 	function AddSuccess(ev){
@@ -208,7 +208,6 @@ var oSelected = [],
 	//区域分组,属性菜单输出.
 	function areaList2Ui(){ //区域菜单输出
 		$('div.dev_list span.area').not('#area_0').parent('li').remove();
-		$('div.dev_list span.device').parent('li').remove();
 		//$('ul.filetree').treeview();
 		var areaListArrar=[];
 		var pidList=[];
@@ -276,7 +275,6 @@ var oSelected = [],
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var groupList = oCommonLibrary.GetGroupList();
-		//alert()
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
