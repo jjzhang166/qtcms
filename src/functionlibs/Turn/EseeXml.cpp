@@ -50,6 +50,10 @@ CEseeXml::~CEseeXml()
 
 }
 
+void CEseeXml::CloseReq()
+{
+	m_reqing = false;
+}
 #define SERVER_DOMAIN	("www.msndvr.com")
 CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
 {
@@ -62,7 +66,8 @@ CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
 	int nRetryCount = 0;
 	m_bServerInfoReady = false;
 	m_bDevReady = false;
-	while (!m_bServerInfoReady)
+	m_reqing = true;
+	while (!m_bServerInfoReady && m_reqing )
 	{
 		struct sockaddr_in addr;
 		addr.sin_family = AF_INET;
@@ -73,7 +78,7 @@ CEseeXml::TurnServerInfo CEseeXml::TurnReq(char *sId)
 
 		QElapsedTimer Ticket;
 		Ticket.start();
-		while(!m_bServerInfoReady && Ticket.elapsed() < 3000)
+		while(!m_bServerInfoReady && m_reqing && Ticket.elapsed() < 3000)
 		{
 			SleepQ(30);
 		}

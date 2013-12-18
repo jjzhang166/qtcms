@@ -91,8 +91,10 @@ private:
 	bool m_bDevReady;
 	EseeEventMap m_eMap[EVENT_CNT];
 
+	bool m_reqing;
 // Methods
 public:
+	void CloseReq();
 	TurnServerInfo TurnReq(char *sId);
 	HolePeerInfo   HoleReq(char *sId,int nRandom);
 	int HoleTo(HolePeerInfo info,int nRandom);

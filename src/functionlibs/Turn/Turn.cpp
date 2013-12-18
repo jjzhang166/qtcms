@@ -136,6 +136,7 @@ int Turn::connectToDevice()
 {
 	CallBackStatus(IDeviceConnection::CS_Connectting);
 	CRudpSession::ErrorCode errocode = m_s.Connect("192.168.1.25",8880);
+	m_connenting = false;
 	if (CRudpSession::SUCCESS != errocode)
 	{
 		CallBackStatus(IDeviceConnection::CS_Disconnected);
@@ -147,7 +148,11 @@ int Turn::connectToDevice()
 }
 int Turn::disconnect()
 {
-	stopStream();
+	if (m_connenting)
+	{
+		m_esee.CloseReq();
+		m_connenting = false;
+	}
 	CallBackStatus(IDeviceConnection::CS_Disconnecting);
 	CRudpSession::ErrorCode eRet = m_s.Close();
 	if (CRudpSession::SUCCESS != eRet)
@@ -340,7 +345,8 @@ int Turn::CreateSession(CRudpSession::EventType e,LPVOID pData,int nDataSize)
 
 	int nRetryCount = 0;
 	bool bReady = false;
-	while (nRetryCount < 3)
+	m_connenting = true;
+	while (m_connenting && nRetryCount < 3)
 	{
 		m_ServerInfo = m_esee.TurnReq(m_sId.toAscii().data());
 		if (0 == m_ServerInfo.ulServerAddr)
