@@ -12,6 +12,7 @@ m_nTotalBytes(0),
 m_bIsHead(true),
 m_nPort(80),
 m_bIsSupportBubble(true),
+m_bStop(false),
 m_nVerifyResult(0)
 {
     m_tcpSocket = NULL; 
@@ -92,6 +93,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 		m_nRemainBytes = 0;
 		m_nTotalBytes = 0;
 		m_bIsHead = true;
+		m_bStop = false;
 		m_nPort = 80;
 		m_nVerifyResult = 0;
     }
@@ -102,9 +104,8 @@ void StreamProcess::stopStream()
 {
 	if (NULL != m_tcpSocket)
 	{
-		disconnect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
-		disconnect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
-	    m_tcpSocket->disconnectFromHost();
+		m_bStop = true;
+		m_tcpSocket->abort();
 	}
 }
 
@@ -185,7 +186,7 @@ void StreamProcess::receiveStream()
 	Message *pMsg = NULL;
 	AuthorityBack *pAutoBack = NULL;
 
- 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && m_tcpSocket->bytesAvailable() > 14)
+ 	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && m_tcpSocket->bytesAvailable() > 14 && !m_bStop)
  	{
 		if (m_bIsHead)
 		{

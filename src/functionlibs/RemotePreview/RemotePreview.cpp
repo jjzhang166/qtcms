@@ -78,6 +78,7 @@ int RemotePreview::connectToDevice()
 
 	QEventLoop loop;
 	QTimer::singleShot(1000, &loop, SLOT(quit()));
+	connect(this, SIGNAL(QuitThread()), &loop, SLOT(quit()));
 	loop.exec();
 
 	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
@@ -149,6 +150,9 @@ int RemotePreview::authority()
 
 int RemotePreview::disconnect()
 {
+	//if has socket connecting, stop it
+	emit QuitThread();
+
 	if (IDeviceConnection::CS_Connected != getCurrentStatus())
 	{
 	    return 1;
