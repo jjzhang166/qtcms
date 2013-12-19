@@ -94,6 +94,7 @@ var oSearchOcx;
 				oTreeWarp.show();
 				if(index == 0){
 					searchFlush();
+					$('div.dev_list span.device').parent('li').remove();
 					areaList2Ui();
 				}else if(index == 1){
 					$('#device_list').find('li').remove();	

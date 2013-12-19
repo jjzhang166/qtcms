@@ -1,8 +1,4 @@
 
-window.onload = function(){
-	$(".dev_list li#area_0").next('li').remove();
-	areaList2Ui();
-	}
 var oSelected = [],
 	oCommonLibrary;
 	
@@ -12,6 +8,7 @@ var oSelected = [],
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
+		$(".dev_list li#area_0").next('li').remove();
 		areaList2Ui();
 	})	
 
@@ -207,8 +204,8 @@ var oSelected = [],
 	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(){ //区域菜单输出
+		//$('div.dev_list span.device').parent('li').remove();
 		$('div.dev_list span.area').not('#area_0').parent('li').remove();
-		$('div.dev_list span.device').parent('li').remove();
 		//$('ul.filetree').treeview();
 		var areaListArrar=[];
 		var pidList=[];
