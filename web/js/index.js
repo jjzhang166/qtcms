@@ -35,6 +35,7 @@ var	nViewNum = 0;
 		$('body')[0].onresize=function(){
 			ViewMax('preview');
 		}
+		alert(38)
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
 				if($(this).attr('state')){
@@ -44,7 +45,7 @@ var	nViewNum = 0;
 					var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
 					var chlData = $(this).data('data');
 					var wind = oPreView.GetCurrentWnd()
-					if(oPreView.GetWindowConnectionStatus(wind) !=0){ 
+					if(oPreView.GetWindowConnectionStatus(wind) !=2){ 
 						wind = getWind(0);
 					}
 					for(i in chlData){ 
@@ -63,7 +64,7 @@ var	nViewNum = 0;
 	})
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
-		if(oPreView.GetWindowConnectionStatus(i)!=0){
+		if(oPreView.GetWindowConnectionStatus(i)!=2){
 			i++;
 			return getWind(i);
 		}else{ 
