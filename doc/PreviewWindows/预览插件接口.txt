@@ -38,11 +38,7 @@
 事件名称：CurrentStateChange
 事件参数：CurrentState,WPageId
 CurrentState取值：
-Constant	Value	Description
-QAbstractSocket::UnconnectedState	0	The socket is not connected.
-QAbstractSocket::HostLookupState	1	The socket is performing a host name lookup.
-QAbstractSocket::ConnectingState	2	The socket has started establishing a connection.
-QAbstractSocket::ConnectedState		3	A connection is established.
-QAbstractSocket::BoundState		4	The socket is bound to an address and port (for servers).
-QAbstractSocket::ClosingState		6	The socket is about to close (data may still be waiting to be written).
-QAbstractSocket::ListeningState		5	For internal use only.
+0		STATUS_CONNECTED,
+1		STATUS_CONNECTING,
+2		STATUS_DISCONNECTED,
+3		STATUS_DISCONNECTING,
