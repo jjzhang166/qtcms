@@ -104,6 +104,7 @@ void StreamProcess::stopStream()
 {
 	if (NULL != m_tcpSocket)
 	{
+		qDebug()<<this<<"============";
 		m_bStop = true;
 		m_tcpSocket->abort();
 	}
@@ -188,6 +189,8 @@ void StreamProcess::receiveStream()
 
  	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && m_tcpSocket->bytesAvailable() > 14 && !m_bStop)
  	{
+		qDebug()<<this;
+		qDebug()<<m_bStop;
 		if (m_bIsHead)
 		{
 			m_buffer.clear();
@@ -247,7 +250,7 @@ void StreamProcess::receiveStream()
 
 void StreamProcess::analyzeStream()
 {
-
+	qDebug("bubble analyzeStream");
 	Bubble *bubble = NULL;
 	LiveStream *liveStreamInfo = NULL;
 

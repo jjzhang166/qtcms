@@ -13,6 +13,7 @@
 #include "PreviewWindowsGlobalSetting.h"
 #include "QSubviewThread.h"
 #include <IVideoRender.h>
+#include <QTime>
 #include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
@@ -62,6 +63,8 @@ private:
 	int iInitWidth;
 	int iInitHeight;
 	bool bIsInitFlags;
+	bool bRendering;
+	QTime dieTime;
 
 	Ui::titleview * ui;
 

@@ -7,6 +7,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
 	bIsInitFlags(false),
+	bCloseingFlags(false),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
 	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
@@ -17,6 +18,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 
 DeviceClient::~DeviceClient()
 {
+	closeAll();
 	if (NULL!=m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->Release();
@@ -123,6 +125,7 @@ int DeviceClient::registerEvent(QString eventName,int (__cdecl *proc)(QString,QV
 
 int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId)
 {
+	bCloseingFlags=false;
 	m_ports.insert("media",uiPort);
 	//注册回调函数
 	if (false==bIsInitFlags)
@@ -158,16 +161,23 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=1;
 					break;
 				}
+				m_DeviceConnecton=m_DeviceConnectonBubble;
+				if (true==bCloseingFlags)
+				{
+					nStep=1;
+					break;
+				}
 				if (1==m_DeviceConnectonBubble->setDeviceHost(sAddr)||1==m_DeviceConnectonBubble->setDevicePorts(m_ports)||1==m_DeviceConnectonBubble->setDeviceId(sEseeId))
 				{
 					nStep=1;
 					break;
 				}
 				int nRet=1;
+
 				nRet=m_DeviceConnectonBubble->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"can't connect";
+					qDebug()<<"bubble can't connect";
 					nStep=1;
 					break;
 				}
@@ -190,10 +200,16 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					break;
 				}
 				int nRet=1;
+				m_DeviceConnecton=m_DeviceConnectonHole;
+				if (true==bCloseingFlags)
+				{
+					nStep=2;
+					break;
+				}
 				nRet=m_DeviceConnectonHole->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"can't connect";
+					qDebug()<<"Hole can't connect";
 					nStep=2;
 					break;
 				}
@@ -216,10 +232,16 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					break;
 				}
 				int nRet=1;
+				m_DeviceConnecton=m_DeviceConnectonTurn;
+				if (true==bCloseingFlags)
+				{
+					nStep=4;
+					break;
+				}
 				nRet=m_DeviceConnectonTurn->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"can't connect";
+					qDebug()<<"turn can't connect";
 					nStep=4;
 					break;
 				}
@@ -231,6 +253,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接失败
 		case 3:
 			{
+				bCloseingFlags=false;
 				m_CurStatus=IDeviceClient::STATUS_CONNECTED;
 				QVariantMap CurStatusParm;
 				CurStatusParm.insert("CurrentStatus",m_CurStatus);
@@ -241,6 +264,9 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接成功
 		case 4:
 			{
+				qDebug("%s", __FUNCTION__);
+				qDebug()<<"connect fail";
+				bCloseingFlags=false;
 				m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 				QVariantMap CurStatusParm;
 				CurStatusParm.insert("CurrentStatus",m_CurStatus);
@@ -316,11 +342,16 @@ int DeviceClient::closeAll()
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	eventProcCall("CurrentStatus",CurStatusParm);
-	n_IRemotePreview->stopStream();
-	while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus())
-	{
-		msleep(100);
-	}
+	bCloseingFlags=true;
+	//n_IRemotePreview->stopStream();
+	m_DeviceConnecton->disconnect();
+	//while(IDeviceConnection::CS_Disconnected!=m_DeviceConnecton->getCurrentStatus())
+	//{
+	//	msleep(100);
+	//}
+	//QEventLoop loop;
+	//QTimer::singleShot(10000, &loop, SLOT(quit()));
+	//loop.exec();
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 	CurStatusParm.clear();
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
@@ -340,6 +371,18 @@ int DeviceClient::getConnectStatus()
 }
 int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 {
+	QVariantMap::const_iterator it;
+	for (it=evMap.begin();it!=evMap.end();++it)
+	{
+		QString sKey=it.key();
+		QString sValue=it.value().toString();
+		if (IDeviceConnection::CS_Disconnected==it.value().toInt())
+		{
+			QVariantMap CurStatusParm;
+			CurStatusParm.insert("reflash",IDeviceClient::STATUS_DISCONNECTED);
+			eventProcCall("CurrentStatus",CurStatusParm);
+		}
+	}
 	//QVariantMap CurStatusParm;
 	//CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	//eventProcCall("CurrentStatus",CurStatusParm);

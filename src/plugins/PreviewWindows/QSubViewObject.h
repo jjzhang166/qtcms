@@ -21,7 +21,6 @@ public:
 	int SetDeviceClient(IDeviceClient *m_IDeviceClient);
 signals:
 	void OpenCameraInWndSignl();
-	void CloseAllSignl();
 private:
 	IDeviceClient *m_IDeviceClient;
 	QSubviewThread *m_QSubviewProcess;

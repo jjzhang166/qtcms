@@ -42,6 +42,7 @@
     <OutDir>$(SolutionDir)..\libs\</OutDir>
     <IntDir>$(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <IncludePath>$(VCInstallDir)PlatformSDK\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;D:\Program Files (x86)\DirectX 9.0b SDK\Include;D:\Program Files (x86)\DirectX 9.0b SDK\Include\DShowIDL;$(IncludePath)</IncludePath>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;D:\Program Files (x86)\DirectX 9.0b SDK\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

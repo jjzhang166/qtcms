@@ -189,7 +189,7 @@ QVariantMap RemotePreview::getDevicePorts()
 
 int RemotePreview::getLiveStream(int nChannel, int nStream)
 {
-	//¨¨Y¡ä¨ª
+	//ï¿½ï¿½Yï¿½ä¨ª
 	if (m_lstStreamList.isEmpty() || nChannel< 0 || nStream <0)
 	{
 		return 1;

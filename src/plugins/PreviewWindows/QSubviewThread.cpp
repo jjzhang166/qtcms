@@ -36,7 +36,6 @@ int QSubviewThread::SetCameraInWnd(const QString sAddress,unsigned int uiPort,co
 
 void QSubviewThread::OpenCameraInWnd()
 {
-
 	if (NULL==m_IDeviceClient)
 	{
 		return;

@@ -89,6 +89,8 @@ signals:
 	void EndStream();
 	void writeSocket(QByteArray block);
     void childThreadToConn(QString address, quint16 port);
+
+
 };
 
 #endif

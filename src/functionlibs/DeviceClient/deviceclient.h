@@ -5,6 +5,8 @@
 #include <IDeviceClient.h>
 #include <QThread>
 #include <QDebug>
+#include <QTimer>
+#include <QEventLoop>
 #include <IDeviceConnection.h>
 #include <IRemotePreview.h>
 #include <QMultiMap>
@@ -57,12 +59,15 @@ private:
 	QString m_sChannelName;
 
 	bool bIsInitFlags;
+	volatile bool bCloseingFlags;
 
 	IDeviceClient::ConnectStatus m_CurStatus;
 
 private:
 	int cbInit();
 	void eventProcCall(QString sEvent,QVariantMap param);
+signals:
+	void TerminateConnectSignal();
 	
 };
 

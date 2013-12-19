@@ -14,6 +14,7 @@ QSubView::QSubView(QWidget *parent)
 	iInitHeight(0),
 	iInitWidth(0),
 	bIsInitFlags(false),
+	bRendering(false),
 	ui(new Ui::titleview)
 {
 	this->lower();
@@ -40,6 +41,13 @@ QSubView::QSubView(QWidget *parent)
 
 QSubView::~QSubView()
 {
+	CloseWndCamera();
+	//while(bRendering==true){
+	//	dieTime=QTime::currentTime().addMSecs(10);
+	//	while(QTime::currentTime()<dieTime){
+	//		QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+	//	}
+	//}
 	if (NULL!=m_IDeviceClient)
 	{
 		m_IDeviceClient->Release();
@@ -59,6 +67,10 @@ QSubView::~QSubView()
 
 void QSubView::paintEvent( QPaintEvent * e)
 {
+	if (IDeviceClient::STATUS_CONNECTED==GetWindowConnectionStatus())
+	{
+		return;
+	}
 	QPainter p(this);
 
 	QString image;
@@ -265,7 +277,15 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	{
 		QString sKey=it.key();
 		int sValue=it.value().toInt();
-		emit CurrentStateChangeSignl(sValue,this);
+		if ("reflash"==sKey)
+		{
+			paintEvent((QPaintEvent*)this);
+		}
+		if ("CurrentStatus"==sKey)
+		{
+			emit CurrentStateChangeSignl(sValue,this);
+		}
+		
 	}
 	return 0;
 }
@@ -299,9 +319,9 @@ int QSubView::PrevRender(QVariantMap evMap)
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
 	}
-	g_PreviewWindowsMutex.lock();
+	bRendering=true;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
-	g_PreviewWindowsMutex.unlock();
+	bRendering=false;
 	return 0;
 }
 
@@ -339,8 +359,8 @@ int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
 	{
 		QString sKey=it.key();
 		QString sValue=it.value().toString();
-		qDebug()<<sKey;
-		qDebug()<<sValue;
+		//qDebug()<<sKey;
+		//qDebug()<<sValue;
 	}
 	return 1;
 }
@@ -353,8 +373,8 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 	{
 		QString sKey=it.key();
 		QString sValue=it.value().toString();
-		qDebug()<<sKey;
-		qDebug()<<sValue;
+		//qDebug()<<sKey;
+		//qDebug()<<sValue;
 	}
 	if (evName=="CurrentStatus")
 	{

@@ -87,9 +87,7 @@ void QPreviewWindows::nextPage()
 {
 	if (NULL != m_DivMode)
 	{
-		g_PreviewWindowsMutex.lock();
 		m_DivMode->nextPage();
-		g_PreviewWindowsMutex.unlock();
 	}
 }
 
@@ -99,9 +97,7 @@ void QPreviewWindows::prePage()
 	{
 		return;
 	}
-	g_PreviewWindowsMutex.lock();
 	m_DivMode->prePage();
-	g_PreviewWindowsMutex.unlock();
 }
 
 int QPreviewWindows::getCurrentPage()
@@ -155,11 +151,9 @@ int QPreviewWindows::setDivMode( QString divModeName )
 				pcomCreateInstance(divModeClsid,NULL,IID_IWindowDivMode,(void **)&m_DivMode);
 				if (NULL != m_DivMode)
 				{
-					g_PreviewWindowsMutex.lock();
 					m_DivMode->setParentWindow(this);
 					m_DivMode->setSubWindows(m_PreviewWndList,ARRAY_SIZE(m_PreviewWnd));
 					m_DivMode->flush();
-					g_PreviewWindowsMutex.unlock();
 					m_CurrentWnd=0;
 					m_uiWndIndex=0;
 				}

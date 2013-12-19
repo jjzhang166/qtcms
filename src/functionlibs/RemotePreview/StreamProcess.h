@@ -31,7 +31,7 @@ private slots:
 	void socketWrites(QByteArray block);
 private:
 	bool m_bIsHead;
-	bool m_bStop;
+	volatile bool m_bStop;
 	QHostAddress m_hostAddress;
 	int m_nPort;
 	QTcpSocket *m_tcpSocket;
