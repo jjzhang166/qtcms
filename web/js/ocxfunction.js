@@ -208,6 +208,7 @@ var oSelected = [],
 	//区域分组,属性菜单输出.
 	function areaList2Ui(){ //区域菜单输出
 		$('div.dev_list span.area').not('#area_0').parent('li').remove();
+		$('div.dev_list span.device').parent('li').remove();
 		//$('ul.filetree').treeview();
 		var areaListArrar=[];
 		var pidList=[];
