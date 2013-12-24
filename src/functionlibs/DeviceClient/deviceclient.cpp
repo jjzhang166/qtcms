@@ -3,6 +3,8 @@
 
 DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnecton(NULL),
+	m_pRemotePlayback(NULL),
+	m_nChannels(0),
 	m_DeviceConnectonBubble(NULL),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
@@ -10,10 +12,15 @@ DeviceClient::DeviceClient():m_nRef(0),
 	bCloseingFlags(false),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
-	pcomCreateInstance(CLSID_RemotePreview,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
+	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile";
+
+	if (NULL != m_DeviceConnectonBubble)
+	{
+		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
+	}
 }
 
 DeviceClient::~DeviceClient()
@@ -34,6 +41,26 @@ DeviceClient::~DeviceClient()
 		m_DeviceConnectonTurn->Release();
 		m_DeviceConnectonTurn=NULL;
 	}
+	if (NULL != m_pRemotePlayback)
+	{
+		m_pRemotePlayback->Release();
+	}
+
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL != it->playManager)
+		{
+			delete it->playManager;			
+		}
+
+		msleep(10);
+		if (NULL != it->bufferManager)
+		{
+			delete it->bufferManager;
+		}
+	}
+
 }
 
 long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
@@ -50,6 +77,14 @@ long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 	{
 		*ppv=static_cast<IEventRegister*>(this);
 	}
+	else if (IID_IDeviceSearchRecord==iid)
+	{
+		*ppv=static_cast<IDeviceSearchRecord*>(this);
+	}
+	else if (IID_IDeviceGroupRemotePlayback==iid)
+	{
+		*ppv=static_cast<IDeviceGroupRemotePlayback*>(this);
+	}	
 	else 
 	{
 		*ppv=NULL;
@@ -95,6 +130,14 @@ int DeviceClient::queryEvent(QString eventName,QStringList& eventParams)
 	if ("LiveStream"==eventName)
 	{
 		eventParams<<"channel"<<"pts"<<"length"<<"data"<<"frametype"<<"width"<<"height"<<"vcodec"<<"samplerate"<<"samplewidth"<<"audiochannel"<<"acodec";
+	}
+ 	if ("foundFile" == eventName)
+ 	{
+ 		eventParams<<"channel"<<"types"<<"start"<<"end"<<"filename";
+ 	}
+	if ("recFileSearchFinished" == eventName)
+	{
+		eventParams<<"total";
 	}
 	return IEventRegister::OK;
 }
@@ -293,6 +336,8 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 }
 int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
 {
+	m_sUserName = sUsername;
+	m_sPassWord = sPassword;
 	return 0;
 }
 int DeviceClient::setChannelName(const QString & sChannelName)
@@ -410,6 +455,9 @@ int DeviceClient::cbInit()
 		m_DeviceConnectonBubble->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
 		if (NULL!=IEventReg)
 		{
+			QString evName = QString("recStream");
+			IEventReg->registerEvent(evName, cbRecordStream, &m_groupMap);
+
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
 			for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
 			{
@@ -467,3 +515,230 @@ int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser)
 	}
 	return 1;
 }
+
+void DeviceClient::action(QString options, BufferManager *pBuffer)
+{
+	if ("StartPlay" == options)
+	{
+		QMap<int, WndPlay>::iterator it;
+		for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+		{
+			if (it->bufferManager == pBuffer)
+			{
+				it->playManager->setParamter(pBuffer, it->wnd);
+				it->playManager->start();
+			}
+		}
+	}
+	else if ("Pause" == options)
+	{
+		m_pRemotePlayback->pausePlaybackStream(true);
+	}
+	else if ("Continue" == options)
+	{
+		m_pRemotePlayback->pausePlaybackStream(false);
+	}
+	else
+	{
+		//nothing
+	}
+}
+
+
+int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
+{
+	int ret = 1;
+	if (NULL == m_pRemotePlayback)
+	{
+		return 1;
+	}
+
+	IDeviceConnection *pDeviceConnection = NULL;
+	m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
+	if (NULL == pDeviceConnection)
+	{
+		return 1;
+	}
+
+	pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
+
+	ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
+
+	return ret;
+}
+
+int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
+{
+	if (4 <= m_groupMap.size() || nChannel <= 0 || NULL == wnd)
+	{
+		return 1;
+	}
+
+	//insert new item into the map
+	if (1 != (m_nChannels>>(nChannel - 1))&1)
+	{
+		m_nChannels |= 1<<(nChannel - 1);
+
+		WndPlay wndPlay;
+		wndPlay.bufferManager = new BufferManager();
+		wndPlay.playManager = new PlayManager();
+		wndPlay.wnd = wnd;
+
+		QObject::connect(wndPlay.bufferManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
+		QObject::connect(wndPlay.playManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
+
+		m_groupMap.insert(nChannel, wndPlay);
+	}
+	
+	return 0;
+}
+
+int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime & end)
+{
+	if (nTypes > 15 || start >= end)
+	{
+		return 2;
+	}
+	if (NULL == m_pRemotePlayback)
+	{
+		return 1;
+	}
+
+	int nRet = m_pRemotePlayback->getPlaybackStreamByTime(m_nChannels, nTypes, start, end);
+
+	return nRet;
+}
+QDateTime DeviceClient::GroupGetPlayedTime()
+{
+	QDateTime time;
+	QTime secTime;
+
+	QMap<int, WndPlay>::iterator it;
+	it = m_groupMap.begin();
+
+	if (NULL == it->playManager)
+	{
+		return time;
+	}
+
+	int seconds = it->playManager->getPlayTime();
+
+	time.setTime(secTime.addSecs(seconds));
+
+	return time;
+}
+int DeviceClient::GroupPause()
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+
+		it->playManager->pause(true);
+	}
+	return 0;
+}
+int DeviceClient::GroupContinue()
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+
+		it->playManager->pause(false);
+		g_pause.wakeOne();
+	}
+	return 0;
+}
+int DeviceClient::GroupStop()
+{
+	if (NULL == m_pRemotePlayback)
+	{
+		return 1;
+	}
+
+	int nRet = m_pRemotePlayback->stopPlaybackStream();
+
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->bufferManager)
+		{
+			continue;
+		}
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+		it->playManager->stop();
+		it->bufferManager->emptyBuff();
+	}
+
+	return nRet;
+}
+bool DeviceClient::GroupEnableAudio(bool bEnable)
+{
+	bool preStatus = false;
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		BufferManager *pBuffer = it->bufferManager;
+		if (NULL == pBuffer)
+		{
+			continue;
+		}
+		preStatus = pBuffer->getAudioStatus();
+		pBuffer->audioSwitch(bEnable);
+	}
+
+	return preStatus;
+}
+int DeviceClient::GroupSpeedFast()
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+
+		it->playManager->setPlaySpeed(1);
+	}
+	return 0;
+}
+int DeviceClient::GroupSpeedSlow()
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+
+		it->playManager->setPlaySpeed(2);
+	}
+	return 0;
+}
+int DeviceClient::GroupSpeedNormal()
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (NULL == it->playManager)
+		{
+			continue;
+		}
+
+		it->playManager->setPlaySpeed(0);
+	}
+	return 0;
+}
+

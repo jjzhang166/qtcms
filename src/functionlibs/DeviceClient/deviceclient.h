@@ -3,6 +3,7 @@
 
 #include "deviceclient_global.h"
 #include "DeviceGlobalSettings.h"
+#include "GlobalSettings.h"
 #include <IDeviceClient.h>
 #include <QThread>
 #include <QDebug>
@@ -12,15 +13,20 @@
 #include <IRemotePreview.h>
 #include <QMultiMap>
 #include <QMutex>
-
+#include <IDeviceRemotePlayback.h>
+#include <IDeviceSearchRecord.h>
+#include <IRemotePlayback.h>
 #include <IEventRegister.h>
 
 int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser);
 
-class  DeviceClient:public IDeviceClient,
+class  DeviceClient:public QThread,
+	public IDeviceClient,
 	public IEventRegister,
-	public QThread
+	public IDeviceSearchRecord,
+	public IDeviceGroupRemotePlayback
 {
+	Q_OBJECT
 public:
 	DeviceClient();
 	~DeviceClient();
@@ -28,11 +34,11 @@ public:
 	virtual long __stdcall QueryInterface(const IID & iid,void **ppv);
 	virtual unsigned long __stdcall AddRef();
 	virtual unsigned long __stdcall Release();
-
+	//IEventRegister
 	virtual QStringList eventList();
 	virtual int queryEvent(QString eventName,QStringList& eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
-
+	//IDeviceClient
 	virtual int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	virtual int checkUser(const QString & sUsername,const QString &sPassword);
 	virtual int setChannelName(const QString & sChannelName);
@@ -42,6 +48,24 @@ public:
 	virtual int getConnectStatus();
 
 	int ConnectStatusProc(QVariantMap evMap);
+	
+	//IDeviceSearchRecord
+	virtual int startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime);
+	//IDeviceGroupRemotePlayback
+	virtual int AddChannelIntoPlayGroup(int nChannel,QWidget * wnd);
+	virtual int GroupPlay(int nTypes,const QDateTime & start,const QDateTime & end);
+	virtual QDateTime GroupGetPlayedTime();
+	virtual int GroupPause();
+	virtual int GroupContinue();
+	virtual int GroupStop();
+	virtual bool GroupEnableAudio(bool bEnable);
+	virtual int GroupSpeedFast();
+	virtual int GroupSpeedSlow();
+	virtual int GroupSpeedNormal();
+
+private slots:
+	void action(QString options, BufferManager*);
+
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -63,6 +87,12 @@ private:
 	volatile bool bCloseingFlags;
 
 	IDeviceClient::ConnectStatus m_CurStatus;
+	IRemotePlayback *m_pRemotePlayback;
+	QMap<int, WndPlay> m_groupMap;
+	int m_nChannels;
+	QString m_sUserName;
+	QString m_sPassWord;
+	
 
 private:
 	int cbInit();

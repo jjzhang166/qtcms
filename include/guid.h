@@ -54,6 +54,9 @@ extern const CLSID CLSID_DeviceClient;
 extern const IID IID_IDeviceClient;
 extern const IID IID_IRemotePlayback;
 extern const CLSID CLSID_RemotePlayback;
+extern const IID IID_IDeviceSearchRecord;
+extern const IID IID_IDeviceGroupRemotePlayback;
+extern const CLSID CLSID_RemotePlaybackPlugin;
 extern const CLSID CLSID_DDrawRender;
 
 extern const GUID CLSID_Hole;

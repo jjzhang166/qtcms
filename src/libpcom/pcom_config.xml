@@ -24,5 +24,6 @@
 		<item clsid="22440D4D-9F81-4700-8519-7AD715461E25" name="protocols.RemotePreview" file="RemotePreview.dll" type="RemotePreview"/> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
+        <item clsid="9291E9A4-9E2B-4FC1-A145-8FBDEC96F0C4" name="protocols.Preview_Playback" file="BubbleProtocol.dll" type="Preview_Playback"/>  
 	</CLSID>
 </root>
