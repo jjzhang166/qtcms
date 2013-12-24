@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClInclude Include="deviceclient.h" />
     <ClInclude Include="deviceclient_global.h" />
+    <ClInclude Include="DeviceGlobalSettings.h" />
     <ClInclude Include="dllmain.h" />
   </ItemGroup>
   <ItemGroup>

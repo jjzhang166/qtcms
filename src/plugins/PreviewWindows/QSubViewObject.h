@@ -1,6 +1,7 @@
 #pragma once
 #include <QObject>
 #include <QThread>
+#include <QDebug>
 #include <IDeviceClient.h>
 #include "QSubviewThread.h"
 class QSubViewObject:public QThread
@@ -21,8 +22,12 @@ public:
 	int SetDeviceClient(IDeviceClient *m_IDeviceClient);
 signals:
 	void OpenCameraInWndSignl();
+	void m_workerThreadQuitSignal();
 private:
 	IDeviceClient *m_IDeviceClient;
 	QSubviewThread *m_QSubviewProcess;
+
+public slots:
+	void m_workerThreadQuit();
 };
 

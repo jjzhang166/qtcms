@@ -37,6 +37,7 @@ public:
 
 	virtual void mousePressEvent(QMouseEvent *);
 
+
 	int GetCurrentWnd();
 	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
 		,unsigned int uiChannelId,unsigned int uiStreamId
@@ -53,6 +54,7 @@ signals:
 	void mouseLeftClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
 	void CurrentStateChangeSignl(int statevalue,QWidget *);
+	void FreshWindow();
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
@@ -70,6 +72,7 @@ private:
 
 	QMutex m_MutexdoubleClick;
 
+
 private:
 	int cbInit();
 
@@ -79,8 +82,12 @@ public:
 	int CurrentStateChange(QVariantMap evMap);
 
 public slots:
-	int ConnectOn();
-	int ConnectOff();
+	void OnFreshWindow();
+	void emitOnFreshWindow();
+
+	virtual void timerEvent( QTimerEvent * );
+
+
 };
 
 

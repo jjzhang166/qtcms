@@ -188,9 +188,7 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 	{
 		return ;
 	}
-	g_PreviewWindowsMutex.lock();
 	m_DivMode->subWindowDblClick(wind,ev);
-	g_PreviewWindowsMutex.unlock();
 }
 
 void QPreviewWindows::SetCurrentWind(QWidget *wind)

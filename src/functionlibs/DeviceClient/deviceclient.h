@@ -2,6 +2,7 @@
 #define DEVICECLIENT_H_AIFQ90SDGSGSDGPZ1283R__
 
 #include "deviceclient_global.h"
+#include "DeviceGlobalSettings.h"
 #include <IDeviceClient.h>
 #include <QThread>
 #include <QDebug>

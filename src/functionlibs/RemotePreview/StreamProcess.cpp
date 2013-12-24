@@ -76,6 +76,9 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	if ( NULL == m_tcpSocket )
 	{
 		m_tcpSocket = new QTcpSocket;
+		connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
+		connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
+		connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
 	}
 	else
 	{
@@ -83,9 +86,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	}
 
     m_tcpSocket->abort();
-    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
-    connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
-	connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
+
 
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
     if (m_tcpSocket->waitForConnected(1000))
@@ -189,8 +190,6 @@ void StreamProcess::receiveStream()
 
  	while(m_tcpSocket->bytesAvailable() > m_nRemainBytes && m_tcpSocket->bytesAvailable() > 14 && !m_bStop)
  	{
-		qDebug()<<this;
-		qDebug()<<m_bStop;
 		if (m_bIsHead)
 		{
 			m_buffer.clear();
@@ -250,7 +249,6 @@ void StreamProcess::receiveStream()
 
 void StreamProcess::analyzeStream()
 {
-	qDebug("bubble analyzeStream");
 	Bubble *bubble = NULL;
 	LiveStream *liveStreamInfo = NULL;
 
