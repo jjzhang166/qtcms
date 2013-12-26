@@ -15,7 +15,7 @@ interface IDeviceSearchRecord : IPComBase
 	//	2:²ÎÊı´íÎó
 	virtual int startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime) = 0;
 
-}
+};
 
 // event
 // 	@1 name "foundFile"
