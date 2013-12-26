@@ -90,6 +90,7 @@ private:
 	IRemotePlayback *m_pRemotePlayback;
 	QMap<int, WndPlay> m_groupMap;
 	int m_nChannels;
+	int m_nSpeedRate;
 	QString m_sUserName;
 	QString m_sPassWord;
 	
@@ -97,6 +98,7 @@ private:
 private:
 	int cbInit();
 	void eventProcCall(QString sEvent,QVariantMap param);
+	bool removeRepeatWnd(QWidget*);
 signals:
 	void TerminateConnectSignal();
 	

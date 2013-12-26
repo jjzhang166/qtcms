@@ -22,7 +22,7 @@ m_streamNum(0),
 m_streanCount(0)
 {
 	m_eventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
-               <<"recFileSearchFinished"<<"recStream"  <<"SocketError"  <<"StateChanged";
+               <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged";
 
 // 	m_timer.singleShot(10000, this, SLOT(sendHeartBeat()));
 
@@ -387,7 +387,12 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
     QTimer::singleShot(500,&loop, SLOT(quit()));
     loop.exec();
 
-    return 0;
+	if (m_lstRecordList.isEmpty())
+	{
+		return 1;
+	}
+	else
+	    return 0;
 }
 
 int BubbleProtocol::writeBuff(QByteArray &block, int nChannel, int nTypes, uint nStartTime, uint nEndTime)
@@ -753,7 +758,7 @@ int BubbleProtocol::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
     {
         eventParams<<"total";
     }
-    if ("recStream" == eventName)
+    if ("RecordStream" == eventName)
     {
         eventParams<<"length"<<"frametype"<<"channel"<<"width"<<"height"<<"framerate"
             <<"audioSampleRate"<<"audioFormat"<<"audioDataWidth"<<"tsp"<<"gentime"<<"data";

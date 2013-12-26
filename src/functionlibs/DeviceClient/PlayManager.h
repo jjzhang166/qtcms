@@ -17,7 +17,7 @@ public:
 	PlayManager(void);
 	~PlayManager(void);
 	void setParamter(BufferManager *pBufferManager, QWidget* wnd);
-	void setPlaySpeed(int types);
+	void setPlaySpeed(int types, int speedRate);
 	void pause(bool isPause);
 	void stop();
 	int prePlay(QVariantMap item);
@@ -38,6 +38,7 @@ private:
 	bool m_bFirstFrame;
 	int m_nInitHeight;
 	int m_nInitWidth;
+	int m_nSpeedRate;
 	SpeedType m_speed;
 	quint64 m_ui64TSP;
 	uint m_uiStartFrameTime;

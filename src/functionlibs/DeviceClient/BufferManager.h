@@ -31,7 +31,6 @@ private:
 	QQueue<RecordVedioStream> m_vedioStreamBuffer;
 	QQueue<RecordAudioStream> m_audioStreamBuffer;
 	bool m_bVedioBufferIsFull;
-	bool m_bVedioBufferIsEmpty;
 	bool m_bStopAudio;
 };
 

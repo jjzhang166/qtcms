@@ -14,6 +14,7 @@ m_uiStartFrameTime(0),
 m_uiCurrentFrameTime(0),
 m_pRenderWnd(NULL),
 m_speed(SpeedNomal),
+m_nSpeedRate(1),
 m_bPause(false),
 m_bFirstFrame(true),
 m_bStop(false)
@@ -53,10 +54,12 @@ void PlayManager::setParamter(BufferManager *pBufferManager, QWidget* wnd)
 	m_pBufferManager = pBufferManager;
 	m_pRenderWnd = wnd;
 
+	m_bStop = false;
+
 	initCb();
 }
 
-void PlayManager::setPlaySpeed(int types)
+void PlayManager::setPlaySpeed(int types, int speedRate)
 {
 	if (1 == types)
 	{
@@ -70,6 +73,8 @@ void PlayManager::setPlaySpeed(int types)
 	{
 		m_speed = SpeedNomal;
 	}
+
+	m_nSpeedRate = speedRate;
 }
 
 int PlayManager::getPlayTime()
@@ -148,7 +153,7 @@ void PlayManager::run()
 		else if (SpeedSlow == m_speed)
 		{
 			int offsets = 1000000/recVeStream.uiFrameRate;
-			waitSeconds = recVeStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + offsets;
+			waitSeconds = recVeStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
 			if (waitSeconds > 0)
 			{
 				usleep(waitSeconds);

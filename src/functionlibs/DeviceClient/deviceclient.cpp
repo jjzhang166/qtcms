@@ -5,6 +5,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnecton(NULL),
 	m_pRemotePlayback(NULL),
 	m_nChannels(0),
+	m_nSpeedRate(0),
 	m_DeviceConnectonBubble(NULL),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
@@ -15,7 +16,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished";
 
 	if (NULL != m_DeviceConnectonBubble)
 	{
@@ -455,7 +456,7 @@ int DeviceClient::cbInit()
 		m_DeviceConnectonBubble->QueryInterface(IID_IEventRegister,(void**)&IEventReg);
 		if (NULL!=IEventReg)
 		{
-			QString evName = QString("recStream");
+			QString evName = QString("RecordStream");
 			IEventReg->registerEvent(evName, cbRecordStream, &m_groupMap);
 
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
@@ -526,6 +527,12 @@ void DeviceClient::action(QString options, BufferManager *pBuffer)
 			if (it->bufferManager == pBuffer)
 			{
 				it->playManager->setParamter(pBuffer, it->wnd);
+
+				if (it->playManager->isRunning())
+				{
+					it->playManager->quit();
+				}
+
 				it->playManager->start();
 			}
 		}
@@ -544,9 +551,32 @@ void DeviceClient::action(QString options, BufferManager *pBuffer)
 	}
 }
 
+bool DeviceClient::removeRepeatWnd(QWidget *wndID)
+{
+	QMap<int, WndPlay>::iterator it;
+	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	{
+		if (it->wnd == wndID)
+		{
+			int temp = ~m_nChannels;
+			temp |= 1<<(it.key() - 1);
+			m_nChannels = ~temp;
+			m_groupMap.remove(it.key());
+
+			return true;
+		}
+	}
+
+	return false;
+}
 
 int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
 {
+	if (nChannel < 0 || nChannel > 31 || nTypes < 0 || nTypes > 15 || startTime >= endTime)
+	{
+		return 2;
+	}
+
 	int ret = 1;
 	if (NULL == m_pRemotePlayback)
 	{
@@ -566,7 +596,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 
 	return ret;
 }
-
+//nChannel start from 1 to 32
 int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 {
 	if (4 <= m_groupMap.size() || nChannel <= 0 || NULL == wnd)
@@ -575,13 +605,15 @@ int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 	}
 
 	//insert new item into the map
+	WndPlay wndPlay;
 	if (1 != (m_nChannels>>(nChannel - 1))&1)
 	{
 		m_nChannels |= 1<<(nChannel - 1);
 
-		WndPlay wndPlay;
 		wndPlay.bufferManager = new BufferManager();
 		wndPlay.playManager = new PlayManager();
+
+		removeRepeatWnd(wnd);
 		wndPlay.wnd = wnd;
 
 		QObject::connect(wndPlay.bufferManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
@@ -589,17 +621,21 @@ int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 
 		m_groupMap.insert(nChannel, wndPlay);
 	}
+	else
+	{
+		m_groupMap[nChannel].wnd = wnd;
+	}
 	
 	return 0;
 }
 
 int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime & end)
 {
-	if (nTypes > 15 || start >= end)
+	if (nTypes < 0 || nTypes > 15 || start >= end)
 	{
 		return 2;
 	}
-	if (NULL == m_pRemotePlayback)
+	if (NULL == m_pRemotePlayback || 0 != getConnectStatus())
 	{
 		return 1;
 	}
@@ -621,7 +657,8 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 		return time;
 	}
 
-	int seconds = it->playManager->getPlayTime();
+	int seconds = 0;
+	seconds = it->playManager->getPlayTime();
 
 	time.setTime(secTime.addSecs(seconds));
 
@@ -676,6 +713,7 @@ int DeviceClient::GroupStop()
 		{
 			continue;
 		}
+		g_pause.wakeOne();
 		it->playManager->stop();
 		it->bufferManager->emptyBuff();
 	}
@@ -708,13 +746,15 @@ int DeviceClient::GroupSpeedFast()
 		{
 			continue;
 		}
-
-		it->playManager->setPlaySpeed(1);
+		m_nSpeedRate = 0;
+		it->playManager->setPlaySpeed(1, 1);
 	}
 	return 0;
 }
 int DeviceClient::GroupSpeedSlow()
 {
+	m_nSpeedRate++;
+
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
@@ -723,7 +763,7 @@ int DeviceClient::GroupSpeedSlow()
 			continue;
 		}
 
-		it->playManager->setPlaySpeed(2);
+		it->playManager->setPlaySpeed(2, m_nSpeedRate);
 	}
 	return 0;
 }
@@ -736,8 +776,8 @@ int DeviceClient::GroupSpeedNormal()
 		{
 			continue;
 		}
-
-		it->playManager->setPlaySpeed(0);
+		m_nSpeedRate = 0;
+		it->playManager->setPlaySpeed(0, 1);
 	}
 	return 0;
 }

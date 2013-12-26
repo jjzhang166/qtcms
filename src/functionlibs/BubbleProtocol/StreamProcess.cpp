@@ -356,7 +356,6 @@ void StreamProcess::analyzePreviewStream()
 
 void StreamProcess::analyzeRecordStream()
 {
-
 	Bubble *pBubble = NULL;
 	Message *pMsg = NULL;
 	AuthorityBack *pAutoBack = NULL;
@@ -412,7 +411,7 @@ void StreamProcess::analyzeRecordStream()
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128 + 4;
 				mStreamInfo.insert("data"           ,(uint)((char*)pRecordStream + offSet));
 
-				eventProcCall(QString("recStream")  , mStreamInfo);
+				eventProcCall(QString("RecordStream")  , mStreamInfo);
 			}
 
 			//สำฦต
@@ -430,7 +429,7 @@ void StreamProcess::analyzeRecordStream()
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128;
 				mStreamInfo.insert("data"         ,(uint)((char*)pRecordStream + offSet));
 
-				eventProcCall(QString("recStream"), mStreamInfo);
+				eventProcCall(QString("RecordStream"), mStreamInfo);
 			}
 			m_buffer.remove(0, m_nTotalBytes);
 		}

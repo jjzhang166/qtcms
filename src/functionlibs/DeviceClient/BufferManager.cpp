@@ -4,7 +4,6 @@
 
 BufferManager::BufferManager(void):
 m_bVedioBufferIsFull(false),
-m_bVedioBufferIsEmpty(false),
 m_bStopAudio(false)
 {
 }
@@ -29,6 +28,10 @@ int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 		if (iter.key() - 1 == evMap.value("channel"))
 		{
 			BufferManager *pBuffer = iter->bufferManager;
+			if (NULL == pBuffer)
+			{
+				return 1;
+			}
 			if (0 == evMap.value("frametype").toInt()  && pBuffer->getAudioStatus())
 			{
 				nRet = pBuffer->recordAudioStream(evMap);
@@ -104,7 +107,7 @@ int BufferManager::readVedioStream(RecordVedioStream &streamInfo)
 int BufferManager::emptyBuff()
 {
 	m_vedioStreamBuffer.clear();
-	m_bVedioBufferIsEmpty = true;
+
 
 	return 0;
 }
