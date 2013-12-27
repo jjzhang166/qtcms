@@ -54,6 +54,16 @@ group_id integer,
 name char(64)
 );
 
+create table recordtime
+ (
+ id integer primary key autoincrement,
+ chl_id integer,
+ schedle_id integer,
+ weekday integer,
+ starttime char£¨64£©,
+endtime char£¨64£©,
+enable integer
+ );
 create trigger area_delete
 before delete on area
 for each row
