@@ -19,6 +19,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 	{
 		m_PreviewWnd[i].setParent(this);
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
+		connect(&m_PreviewWnd[i],SIGNAL(mousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowRmousePress(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
 		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(int,QWidget *)),this,SLOT(CurrentStateChangePlugin(int,QWidget *)));
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
@@ -271,10 +272,24 @@ void QPreviewWindows::CurrentStateChangePlugin(int statevalue,QWidget *WID)
 			break;
 		}
 	}
-	qDebug("CurrentStateChangePlugin");
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"CurrentState",statevalue);
 	EP_ADD_PARAM(arg,"WPageId",j);
 	EventProcCall("CurrentStateChange",arg);
 	return ;
+}
+
+void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
+{
+	int j;
+	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
+	{
+		if (&m_PreviewWnd[j]==Wid)
+		{
+			break;
+		}
+	}
+	DEF_EVENT_PARAM(arg);
+	EP_ADD_PARAM(arg,"Wid",j);
+	EventProcCall("CurrentWindows",arg);
 }

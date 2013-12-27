@@ -51,6 +51,7 @@ public:
 	int GetWindowConnectionStatus();
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
+	void mousePressEvent(QWidget *,QMouseEvent *);
 	void mouseLeftClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
 	void CurrentStateChangeSignl(int statevalue,QWidget *);

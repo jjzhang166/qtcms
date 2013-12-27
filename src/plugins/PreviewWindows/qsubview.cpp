@@ -120,7 +120,6 @@ void QSubView::paintEvent( QPaintEvent * e)
 
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
-
 	emit mouseDoubleClick(this,ev);
 }
 
@@ -129,6 +128,7 @@ void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
+	emit mousePressEvent(this,ev);
 	emit SetCurrentWindSignl(this);
 }
 
