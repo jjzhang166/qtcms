@@ -14,7 +14,6 @@ m_bIsHead(true),
 m_nPort(80),
 m_bIsSupportBubble(true),
 m_bStop(false),
-m_bIsPreview(false),
 m_nVerifyResult(0),
 m_tcpSocket(NULL)
 {
@@ -73,11 +72,6 @@ void StreamProcess::setEventMap(QStringList eventList, QMultiMap<QString, ProcIn
 	m_eventMap = eventMap;
 }
 
-void StreamProcess::setPreview()
-{
-	m_bIsPreview = true;
-}
-
 void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 {
 	if ( NULL == m_tcpSocket )
@@ -98,7 +92,6 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 		m_nTotalBytes = 0;
 		m_bIsHead = true;
 		m_bStop = false;
-		m_bIsPreview = false;
 		m_nPort = 80;
 		m_nVerifyResult = 0;
     }
@@ -228,11 +221,8 @@ void StreamProcess::receiveStream()
 		m_buffer += m_tcpSocket->readAll();
 		if (m_buffer.contains("HTTP/1.1 200") && m_buffer.size() >= 1024)
 		{
-			if (m_bIsPreview)
-			{
-				analyzeBubbleInfo();
-				g_verify.wakeOne();
-			}
+			analyzeBubbleInfo();
+			g_verify.wakeOne();
 			m_buffer.remove(0, 1024);
 		}
 		else if(m_buffer.contains("HTTP/1.1 404"))

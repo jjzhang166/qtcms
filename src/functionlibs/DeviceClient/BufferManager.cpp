@@ -90,7 +90,8 @@ int BufferManager::readVedioStream(RecordVedioStream &streamInfo)
 {
 	if (!m_vedioStreamBuffer.isEmpty())
 	{
-		streamInfo = m_vedioStreamBuffer.dequeue();
+		streamInfo = m_vedioStreamBuffer.first();
+		m_vedioStreamBuffer.removeFirst();
 		if (200 == m_vedioStreamBuffer.size() && m_bVedioBufferIsFull)
 		{
 			m_bVedioBufferIsFull = false;

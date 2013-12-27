@@ -16,7 +16,6 @@ public:
 	StreamProcess(void);
 	void setAddressInfo(QHostAddress hostAddress, int port);
 	void setEventMap(QStringList eventList, QMultiMap<QString, ProcInfoItem> eventMap);
-	void setPreview();
     int getSocketState();
 	int getVerifyResult();
 	bool getSupportState();
@@ -44,7 +43,6 @@ private:
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 	int m_nVerifyResult;
 	bool m_bIsSupportBubble;
-	bool m_bIsPreview;
 	QList<QList<Stream>> m_lstStreamList;
 
 private:

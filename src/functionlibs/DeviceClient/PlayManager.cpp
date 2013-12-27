@@ -121,7 +121,12 @@ void PlayManager::run()
 		}
 
 		RecordVedioStream recVeStream;
+		recVeStream.sData.clear();
 		if (1 == m_pBufferManager->readVedioStream(recVeStream))
+		{
+			continue;
+		}
+		if (recVeStream.sData.isEmpty())
 		{
 			continue;
 		}

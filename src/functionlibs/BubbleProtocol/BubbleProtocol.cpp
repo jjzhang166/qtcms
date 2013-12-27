@@ -585,7 +585,6 @@ int BubbleProtocol::getLiveStream(int nChannel, int nStream)
 
     m_bIsPreviewStopped  = false;
     m_bIsPlaybackStopped = true;
-    m_pStreamProcess->setPreview();
 
 	m_channelNum = nChannel;
 	m_streamNum = nStream;

@@ -649,6 +649,11 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 	QDateTime time;
 	QTime secTime;
 
+	if (m_groupMap.isEmpty())
+	{
+		return time;
+	}
+
 	QMap<int, WndPlay>::iterator it;
 	it = m_groupMap.begin();
 
@@ -666,6 +671,11 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 }
 int DeviceClient::GroupPause()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
@@ -680,6 +690,11 @@ int DeviceClient::GroupPause()
 }
 int DeviceClient::GroupContinue()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
@@ -695,6 +710,11 @@ int DeviceClient::GroupContinue()
 }
 int DeviceClient::GroupStop()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	if (NULL == m_pRemotePlayback)
 	{
 		return 1;
@@ -722,6 +742,11 @@ int DeviceClient::GroupStop()
 }
 bool DeviceClient::GroupEnableAudio(bool bEnable)
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	bool preStatus = false;
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
@@ -739,6 +764,11 @@ bool DeviceClient::GroupEnableAudio(bool bEnable)
 }
 int DeviceClient::GroupSpeedFast()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
@@ -753,6 +783,11 @@ int DeviceClient::GroupSpeedFast()
 }
 int DeviceClient::GroupSpeedSlow()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	m_nSpeedRate++;
 
 	QMap<int, WndPlay>::iterator it;
@@ -769,6 +804,11 @@ int DeviceClient::GroupSpeedSlow()
 }
 int DeviceClient::GroupSpeedNormal()
 {
+	if (m_groupMap.isEmpty())
+	{
+		return 1;
+	}
+
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
