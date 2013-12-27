@@ -738,6 +738,8 @@ int DeviceClient::GroupStop()
 		it->bufferManager->emptyBuff();
 	}
 
+	m_groupMap.clear();
+
 	return nRet;
 }
 bool DeviceClient::GroupEnableAudio(bool bEnable)

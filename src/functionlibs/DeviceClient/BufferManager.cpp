@@ -90,8 +90,20 @@ int BufferManager::readVedioStream(RecordVedioStream &streamInfo)
 {
 	if (!m_vedioStreamBuffer.isEmpty())
 	{
-		streamInfo = m_vedioStreamBuffer.first();
-		m_vedioStreamBuffer.removeFirst();
+		if (1 == m_vedioStreamBuffer.size())
+		{
+			QMutex mutex;
+			mutex.lock();
+			streamInfo = m_vedioStreamBuffer.first();
+			m_vedioStreamBuffer.removeFirst();
+			mutex.unlock();
+		}
+		else
+		{
+			streamInfo = m_vedioStreamBuffer.first();
+			m_vedioStreamBuffer.removeFirst();
+		}
+
 		if (200 == m_vedioStreamBuffer.size() && m_bVedioBufferIsFull)
 		{
 			m_bVedioBufferIsFull = false;
