@@ -33,14 +33,14 @@ interface IDisksSetting : public IPComBase
 	S_OK：设置成功
 	E_PARAMETER_ERROR 参数不正确
 	--*/
-	virtual int setFilePackageSize(const unsigned int filesize) = 0;
+	virtual int setFilePackageSize(const int filesize) = 0;
 	/*++
 	读取录像文件包大小(单位m)
 	返回值_emError代码
 	S_OK：获取成功
 	E_SYSTEM_FAILED：读取数据失败
 	--*/
-	virtual int getFilePackageSize(unsigned int& filesize) = 0;
+	virtual int getFilePackageSize(int& filesize) = 0;
 	/*++
 	设置是否循环录像
 	返回值_emError代码
@@ -59,14 +59,14 @@ interface IDisksSetting : public IPComBase
 	S_OK：设置成功
 	E_PARAMETER_ERROR 参数不正确
 	--*/
-	virtual int setDiskSpaceReservedSize(const unsigned int spacereservedsize) = 0;
+	virtual int setDiskSpaceReservedSize(const int spacereservedsize) = 0;
 	/*++
 	读取磁盘剩余空间(单位m)
 	返回值_emError代码
 	S_OK：获取成功
 	E_SYSTEM_FAILED：读取数据失败
 	--*/
-	virtual int getDiskSpaceReservedSize(unsigned int& spacereservedsize) = 0;
+	virtual int getDiskSpaceReservedSize(int& spacereservedsize) = 0;
 	
 	enum _emError{
 		S_OK = 0,          //成功
