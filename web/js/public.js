@@ -91,7 +91,8 @@ function setTables(type){
 		}else{
 			var W =  $('table.table').width() -50;
 			oTds.width((W-80)/24);
-			oTds.eq(0).width(80);			
+			oTds.eq(0).width(80);
+			set_drag($('div.play_time'),79,W+14);		
 		}
 	})
 }
@@ -107,7 +108,7 @@ function set_drag(oDrag,X1,X2){
 			    left = left < X1 ? X1 : left;
 				left = left > X2 ? X2 : left;
 			oDrag.css('left',left+'px');
-			var sHours = ((left-79)/1224*24).toString().split('.'),
+			var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
 			    H = sHours[0] == '' ? '0' : sHours[0],
 				H = H<10 ? '0'+H : H;
 				if(sHours[1]){
@@ -292,8 +293,7 @@ $(function(){
 	}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
 	})
-	$('div.timeInput').each(function(index){ 
-		
+	$('div.timeInput').each(function(index){ 	
 		if(index == 1){ 
 			$(this).timeInput({'initTime':'23 59 59'});
 		}else{
