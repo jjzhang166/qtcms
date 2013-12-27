@@ -31,37 +31,63 @@ var	nViewNum = 0;
 				oDiv.eq(index).show();
 			})
 		})
+		
 		ViewMax('preview');
+		
 		$('body')[0].onresize=function(){
 			ViewMax('preview');
 		}
-		alert(38)
+ 
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
 				if($(this).attr('state')){
 					oPreView.CloseWndCamera($(this).attr('wind'));
-					$(this).attr({state:'',wind:''});
 				}else{
 					var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
 					var chlData = $(this).data('data');
 					var wind = oPreView.GetCurrentWnd()
-					if(oPreView.GetWindowConnectionStatus(wind) !=2){ 
+					if(oPreView.GetWindowConnectionStatus(wind) != 2 ){ 
 						wind = getWind(0);
 					}
 					for(i in chlData){ 
 						devData[i]=chlData[i];
 					}
-					/*oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);*/
-					oPreView.SetCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
-					$(this).attr({state:'1',wind:wind});
+					$(this).attr('wind',wind);
+					oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
 				}
+			})
+		})
+		$('div.dev_list span.device').each(function(){ 
+			$(this).click(function(){
+				$(this).next('ul').find('span.channel').click();
 			})
 		})
 		$('div.operat li.setViewNum').click(function(){ 
 			setViewNumNow();
 		})
 		setViewNumNow();
-	})
+
+		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
+
+		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)')
+	})///
+	function WindCallback(ev){ 
+		var obj = $('div.dev_list span.channel').filter(function(){ 
+			return $(this).attr('wind') == ev.Wid;
+		})
+		$('div.dev_list span.channel').removeClass('sel');
+		obj.addClass('sel');
+	}
+	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
+		var obj = $('div.dev_list span').filter(function(){ 
+			return $(this).attr('wind') == ev.WPageId;
+		})
+		if(ev.CurrentState == 2){
+			obj.removeAttr('state wind');
+		}else{
+			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
+		}
+	}
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
 		if(oPreView.GetWindowConnectionStatus(i)!=2){
