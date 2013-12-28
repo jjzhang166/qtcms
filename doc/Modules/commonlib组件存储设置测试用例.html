@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  编辑日期：2013.12.27<br />
+  文档简介：<br />
+  commonlib组件存储设置测试用例文档<br />
+  测试的接口：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="568" valign="top"><br />
+      int setUseDisks(const QString    &amp; sDisk) </td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int getUseDisks(QString &amp; sDisk)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int getEnableDisks(QString&amp; sDisks)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int setFilePackageSize(const int filesize)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int getFilePackageSize (int&amp;fileszie)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int setLoopRecording(bool bcover)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>bool getLoopRecording ()</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int setDiskSpaceReservedSize(const int spacereservedsize)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int getDiskSpaceReservedSize (int&amp; spacereservedsize)</p></td>
+  </tr>
+</table>
+<p>测试用例：<br />
+  前置条件:  两块分区数目不同的硬盘A,B;A分为C,D,E,F区;B分为C,D,E,F,G区, 数据库默认都只使用D盘放置录像</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int setUseDisks(const    QString &amp; sDisk)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>使用非法输入参数</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>A硬盘下, 已设置录像存储使用D分区</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>使用格式为&rdquo;DD:&rdquo;,&rdquo;D;&rdquo;,&rdquo;G:&rdquo;,</p></td>
+    <td width="284" valign="top"><p>返回错误号E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>使用正确格式和盘符&rdquo;E:&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回S_OK</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int setUseDisks(const    QString &amp; sDisk)<br />
+      int getUseDisks(QString    &amp; sDisk)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>setUseDisks设置值和getUseDisks函数传出的值比较</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>A硬盘下, 已设置录像存储使用D分区</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>调用setUseDisks设置&rdquo;E:&rdquo;调用getUseDisk返回&rdquo;E:&rdquo;</p></td>
+    <td width="284" valign="top"><p>设置值和返回值结果一致</p></td>
+  </tr>
+</table>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int getEnableDisks(QString&amp; sDisks)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试A,B盘可用分区数</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>在AB两盘上测试</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>A返回&rdquo;C:D:E:F:&rdquo;B返回&rdquo;C:D:E:F:G:&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回结果和分区一致</p></td>
+  </tr>
+</table>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int setFilePackageSize(const int filesize)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>使用非法参数</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>A硬盘下, 使用D盘测试, D盘大小194560MB可用空间数&gt;1GB</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="149" valign="top"><p>步骤</p></td>
+    <td width="277" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="149" valign="top"><p>Filesize设为小于等于0</p></td>
+    <td width="277" valign="top"><p>设置&lt; = 0时返回 E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="149" valign="top"><p>Filesize设为大于512MB数:700MB</p></td>
+    <td width="277" valign="top"><p>设置大于该分区大小时返回E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="149" valign="top"><p>Filesize设置为合理的数: 200MB</p></td>
+    <td width="277" valign="top"><p>返回S_OK</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int setFilePackageSize(const int filesize)<br />
+      int getFilePackageSize (int&amp;fileszie)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>setFilePackageSize设置值和getFilePackageSize函数参数输出的值比较</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>A硬盘下,D盘下</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="149" valign="top"><p>步骤</p></td>
+    <td width="277" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="149" valign="top"><p>Filesize设为非法参数:如小于0的数-200</p></td>
+    <td width="277" valign="top"><p>设置-200时getFilePackageSize参数返回值仍为    128</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="149" valign="top"><p>Filesize设为合法参数, 如:200</p></td>
+    <td width="277" valign="top"><p>setFilePackageSize设置值和getFilePackageSize参数返回值一致为200</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int  setLoopRecording(bool bcover);<br />
+      bool getLoopRecording ()</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>setLoopRecording使用参数设置和使用函数getLoopRecording返回的结果进行比较</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>1.调用setLoopRecording关闭录像自动覆盖功能<br />
+      2.调用get...获取当前状态<br />
+      3.调用set...开启<br />
+      4.调用get...获取当前状态</p></td>
+    <td width="284" valign="top"><p>3,4步结果一致, 同为true</p></td>
+  </tr>
+</table>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>int setDiskSpaceReservedSize(const int spacereservedsize)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>参数测试</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>A硬盘下D分区, D盘大小194560MB, 可用空间178176MB</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>设置小于或等于0的数, 如: -2000和0</p></td>
+    <td width="284" valign="top"><p>设置-200和0都    返回E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>设置大小大于磁盘分区大小的数: 394560MB</p></td>
+    <td width="284" valign="top"><p>设置大小大于磁盘分区大小返回E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p>设置合理的数550MB</p></td>
+    <td width="284" valign="top"><p>返回S_OK</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p>设置合法但超出磁盘可用空间的数: 184560MB</p></td>
+    <td width="284" valign="top"><p>返回E_PARAMETER_ERROR</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="131" valign="top"><p>测试对象</p></td>
+    <td width="437" colspan="2" valign="top"><p>int setDiskSpaceReservedSize(const int spacereservedsize)<br />
+      int getDiskSpaceReservedSize (int&amp; spacereservedsize)</p></td>
+  </tr>
+  <tr>
+    <td width="131" valign="top"><p>测试内容</p></td>
+    <td width="437" colspan="2" valign="top"><p>设置值和返回值比较</p></td>
+  </tr>
+  <tr>
+    <td width="131" valign="top"><p>前置条件</p></td>
+    <td width="437" colspan="2" valign="top"><p>A硬盘下D分区, D盘大小194560MB, 可用空间178176MB</p></td>
+  </tr>
+  <tr>
+    <td width="131" valign="top"><p>步骤编号</p></td>
+    <td width="164" valign="top"><p>步骤</p></td>
+    <td width="273" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="131" valign="top"><p>1</p></td>
+    <td width="164" valign="top"><p>setDiskSpaceReservedSize参数设置为上一用例中不合理的值: -2000, 0, 394560和184560, 然后用getDiskSpaceReservedSize传出</p></td>
+    <td width="273" valign="top"><p>getDiskSpaceReservedSize传出的是默认值1024</p></td>
+  </tr>
+  <tr>
+    <td width="131" valign="top"><p>2</p></td>
+    <td width="164" valign="top"><p>setDiskSpaceReservedSize设置合理的数2048,然后和getDiskSpaceReservedSize传出值比较</p></td>
+    <td width="273" valign="top"><p>结果也是2048</p></td>
+  </tr>
+</table>
+</body>
+</html>
