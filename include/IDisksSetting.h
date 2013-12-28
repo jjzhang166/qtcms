@@ -3,6 +3,8 @@
 #include <libpcom.h>
 #include <QtCore/QString>
 
+//接口定义参见doc\Interface\IDisksSetting.htm
+
 interface IDisksSetting : public IPComBase
 {
 
@@ -33,13 +35,15 @@ interface IDisksSetting : public IPComBase
 };
 
 /*
-	数据库存储：
-	system.db
-	字段id     name           初始 value
-			  "use_disks"          "D;"
-	          "b_cover"            "true"
-			  "file_size"          "128"
-			  "reserved_size"      "1024"
+	数据库存储：system.db
+	表disks_setting
+	字段：                    
+	id     name                value
+		  "use_disks"          "D;"
+	      "b_cover"            "true"
+		  "file_size"          "128"
+		  "reserved_size"      "1024"
+	（初始value如上）
 	事件：无
 */
 
