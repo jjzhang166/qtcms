@@ -47,7 +47,7 @@ interface IDisksSetting : public IPComBase
 	S_OK：设置成功
 	E_SYSTEM_FAILED：设置数据失败
 	--*/
-	virtual int setLoopRecording(bool loop) = 0;
+	virtual int setLoopRecording(bool bcover) = 0;
 	/*++
 	获取是否循环录像
 	返回值bool  
@@ -78,6 +78,13 @@ interface IDisksSetting : public IPComBase
 };
 
 /*
+	数据库存储：
+	system.db
+	字段id     name           初始 value
+			  "use_disks"          "D;"
+	          "b_cover"            "true"
+			  "file_size"          "128"
+			  "reserved_size"      "1024"
 	事件：无
 */
 
