@@ -2,6 +2,7 @@ var oLeft,oBottom,oView,oPreView;
 var	nViewNum = 0;
 var timer = null;
 var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
+var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在关闭!'];
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -14,9 +15,8 @@ var winState=['已经接入了连接!','正在连接!','断开连接!','正在�
 	    
 		$(window).off();
 
-	    $('ul.filetree').treeview().find('span.file').click(function(){
-			$(this).toggleClass('file_1')
-		});
+	    $('ul.filetree').treeview()
+		
 		oDiv.eq(1).hide();
 
 		$('.hover').each(function(){
@@ -33,13 +33,13 @@ var winState=['已经接入了连接!','正在连接!','断开连接!','正在�
 				oDiv.eq(index).show();
 			})
 		})
-		
+		//控件最大化
 		ViewMax('preview');
 		
 		$('body')[0].onresize=function(){
 			ViewMax('preview');
 		}
- 
+ 		//打开通道
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){		
 				if($(this).attr('state')){
@@ -50,35 +50,62 @@ var winState=['已经接入了连接!','正在连接!','断开连接!','正在�
 				}
 			})
 		})
+		//打开设备下的说所有通道
 		$('div.dev_list span.device').each(function(){ 
 			var oDevice = $(this);
 			oDevice.attr('bAllopen','1').click(function(){
+				var chlData;
+				var wind = oPreView.GetCurrentWnd();
 				oDevice.next('ul').find('span.channel').each(function(){
+					chlData = getChlFullInfo($(this));
 					if(!$(this).attr('wind')){
 						oDevice.attr('bAllopen','0')
-						var wind = oPreView.GetCurrentWnd();
 						var windState = oPreView.GetWindowConnectionStatus(wind);
+						var win = wind;
 						if(windState != 2){
-							wind = getWind(wind);
+							win = getWind(wind);
 						}
-						var chlData = getChlFullInfo($(this));
-						openWind(wind,chlData);
+						openWind(win,chlData);
 					}
 					if(oDevice.attr('bAllopen') == 1){ 
 						CloseWind($(this).attr('wind'));
 					}
 				})
-
+				if(oDevice.attr('bAllopen') == 1){ 
+					var str = '正在关闭设备:'+chlData.name;
+				}else{ 
+					var str = '正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
+				}
+				writeActionLog(str);
 			})
 		})
+		//显示分屏的文字
 		$('div.operat li.setViewNum').click(function(){ 
 			setViewNumNow();
 		})
-		setViewNumNow();
 
+		setViewNumNow();
+		//绑定控件事件
 		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
 
-		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)')
+		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
+		//日志区域右键从菜单
+		$('#actionLog').mouseup(function(){ 
+			if(event.which == 3){
+				var l = event.pageX > $(this).width() - 64 ? $(this).width() - 64 : event.pageX;
+				var t = event.pageY - $(this).offset().top 
+					t = t > $(this).height() - 19 ? $(this).height() - 19: t;
+				$(this).find('a.emptyAct').css({ 
+					left:l,
+					top:t
+				}).show();
+				$(document).click(function(){ 
+					$(this).find('a.emptyAct').hide();
+					$(document).off();
+				})
+			}
+		})
+
 	})///
 	function CloseWind(wind){ 
 		oPreView.CloseWndCamera(wind);
@@ -103,21 +130,28 @@ var winState=['已经接入了连接!','正在连接!','断开连接!','正在�
 		obj.addClass('sel');
 	}
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
-		var obj = $('div.dev_list span').filter(function(){ 
+		var obj = $('div.dev_list span.channel').filter(function(){ 
 			return $(this).attr('wind') == ev.WPageId;
 		})
-		if(ev.CurrentState == 2){
+		var chlData = getChlFullInfo(obj);
+		var str='设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+ev.WPageId+' '+currentWinStateChange[ev.CurrentState];
+		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind');
-		}else if(ev.CurrentState == 0){ 	
+		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
 		}else{
+			str=''
 			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
 		}
+		writeActionLog(str);
 	}
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
 		if(oPreView.GetWindowConnectionStatus(i)!=2){
 			i++;
+			if(i>64){
+				i=0;
+			}
 			return getWind(i);
 		}else{ 
 			return i;
@@ -150,10 +184,16 @@ var winState=['已经接入了连接!','正在连接!','断开连接!','正在�
 		setViewNumNow();
 	}
 	function writeActionLog(str){ 
-		$('<p>'+str+'</p>').appendTo('#actionLog');
+		if(str){
+			$('<p>'+str+'</p>').appendTo('#actionLog');
+		}
+	}
+	function showEmptyAction(){ 
+		$('#actionLog a.emptyAct').show();
 	}
 	function emptyLog(){
 		$('#actionLog p').remove();	
+		$('#actionLog a.emptyAct').hide();
 	}
 	function getChlFullInfo(oChl){ 
 		var dev_id = oChl.data('data').dev_id;

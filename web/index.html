@@ -23,6 +23,13 @@
 		left: 2px;
 		color:#ccc;
 	}
+	.emptyAct{
+		text-align: left;
+		color: #ccc;
+		display: none;
+		background: #EB343D;
+		position: absolute;
+	}
 </style>
 </head>
 <body>
@@ -130,11 +137,6 @@
 		</div>
 	</div>
 	<div id="operating">
-		<!-- <div class="play_time">
-			<p></p>
-			<p class="now"></p>
-			<span></span>
-		</div> -->
 		<div class="operat preview">
 			<ul style="width:430px;">
 				<li style="background:0;">
@@ -168,15 +170,8 @@
 			</ul>
 		</div>
 		<div id="actionLog">
-			
+		<a href="javascript:;" class="emptyAct" onclick="emptyLog();">清空日志</a>
 		</div>
-		<!-- <table class="table" cellpadding="0" cellspacing="0">
-				<tr><td>Time</td><td>info</td><td></td></tr>
-				<tr><td><input type="checkbox">window 01</td><td></td><td></td></tr>
-				<tr><td><input type="checkbox">window 02</td><td></td><td></td></tr>
-				<tr><td><input type="checkbox">window 03</td><td></td><td></td></tr>
-				<tr><td><input type="checkbox">window 04</td><td></td><td></td></tr>
-		</table> -->
 	</div>
 <div id="foot">
 
