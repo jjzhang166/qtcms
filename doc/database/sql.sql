@@ -64,6 +64,14 @@ create table recordtime
 endtime char£¨64£©,
 enable integer
  );
+ 
+ create table disks_setting
+(
+id integer primary key autoincrement,
+name char(64),
+value text,
+);
+
 create trigger area_delete
 before delete on area
 for each row
@@ -93,6 +101,11 @@ delete from r_chl_group where group_id = old.id;
 end;
 
 pragma recursive_triggers=true;
+
+insert into disks_setting (name,value) values('use_disks','D;');
+insert into disks_setting (name,value) values('b_cover','true');
+insert into disks_setting (name,value) values('file_size','128');
+insert into disks_setting (name,value) values('reserved_size','1024');
 
 insert into area (pid,path) values(0,'0|1|');
 insert into area (pid,path) values(1,'0|1|2|');
