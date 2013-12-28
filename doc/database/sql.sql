@@ -102,7 +102,7 @@ end;
 
 pragma recursive_triggers=true;
 
-insert into disks_setting (name,value) values('use_disks','D;');
+insert into disks_setting (name,value) values('use_disks','D:');
 insert into disks_setting (name,value) values('b_cover','true');
 insert into disks_setting (name,value) values('file_size','128');
 insert into disks_setting (name,value) values('reserved_size','1024');
