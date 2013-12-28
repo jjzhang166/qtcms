@@ -58,6 +58,7 @@ QJaWebView::~QJaWebView()
 	{
 		m_Activity->Release();
 	}
+	setObjectName("NULL");
 }
 
 void QJaWebView::keyPressEvent(QKeyEvent *ev)
