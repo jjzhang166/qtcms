@@ -25,7 +25,7 @@ int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 	QMap<int, WndPlay>::iterator iter;
 	for (iter = plstSubClient->begin(); iter != plstSubClient->end(); iter++)
 	{
-		if (iter.key() - 1 == evMap.value("channel"))
+		if (iter.key() == evMap.value("channel"))
 		{
 			BufferManager *pBuffer = iter->bufferManager;
 			if (NULL == pBuffer)

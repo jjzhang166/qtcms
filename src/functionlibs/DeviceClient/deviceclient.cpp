@@ -52,16 +52,18 @@ DeviceClient::~DeviceClient()
 	{
 		if (NULL != it->playManager)
 		{
-			delete it->playManager;			
+			delete it->playManager;
+			it->playManager = NULL;
 		}
 
 		msleep(10);
 		if (NULL != it->bufferManager)
 		{
 			delete it->bufferManager;
+			it->bufferManager = NULL;
 		}
 	}
-
+	m_groupMap.clear();
 }
 
 long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
@@ -596,19 +598,19 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 
 	return ret;
 }
-//nChannel start from 1 to 32
+//nChannel start from 0 to 31
 int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 {
-	if (4 <= m_groupMap.size() || nChannel <= 0 || NULL == wnd)
+	if (4 <= m_groupMap.size() || nChannel < 0 || NULL == wnd)
 	{
 		return 1;
 	}
 
 	//insert new item into the map
 	WndPlay wndPlay;
-	if (1 != (m_nChannels>>(nChannel - 1))&1)
+	if (1 != (m_nChannels>>(nChannel))&1)
 	{
-		m_nChannels |= 1<<(nChannel - 1);
+		m_nChannels |= 1<<(nChannel);
 
 		wndPlay.bufferManager = new BufferManager();
 		wndPlay.playManager = new PlayManager();
