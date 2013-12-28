@@ -12,6 +12,12 @@
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script src="js/ocxfunction.js" type="text/javascript"></script>
 <script src="js/index.js" type="text/javascript"></script>
+<style type="text/css">
+	#actionLog{ 
+		border: 1px solid #373737;
+		overflow: auto;
+	}
+</style>
 </head>
 <body>
 	<div id="test"></div>
@@ -155,13 +161,14 @@
 				<li class="hover" style="background:0; width:70px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
 			</ul>
 		</div>
-		<table class="table" cellpadding="0" cellspacing="0">
+		<div id="actionLog"></div>
+		<!-- <table class="table" cellpadding="0" cellspacing="0">
 				<tr><td>Time</td><td>info</td><td></td></tr>
 				<tr><td><input type="checkbox">window 01</td><td></td><td></td></tr>
 				<tr><td><input type="checkbox">window 02</td><td></td><td></td></tr>
 				<tr><td><input type="checkbox">window 03</td><td></td><td></td></tr>
 				<tr><td><input type="checkbox">window 04</td><td></td><td></td></tr>
-		</table>
+		</table> -->
 	</div>
 <div id="foot">
 

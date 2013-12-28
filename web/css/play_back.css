@@ -450,7 +450,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	height: 10px;
 	width: 34px;
 	float: left;
-	border:0;
+	.border:0;
 	background: url(../images/playback/Schedule_bg.png) repeat-x 0 -10px;
 }
 .bg_right{

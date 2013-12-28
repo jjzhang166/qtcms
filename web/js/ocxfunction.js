@@ -5,10 +5,10 @@ var oSelected = [],
 	$(function(){ 
 		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		oCommonLibrary = document.getElementById('commonLibrary');
+		$(".dev_list li#area_0").next('li').remove();
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
-		$(".dev_list li#area_0").next('li').remove();
 		areaList2Ui();
 	})	
 

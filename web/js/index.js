@@ -1,5 +1,6 @@
 var oLeft,oBottom,oView,oPreView;
 var	nViewNum = 0;
+var timer = null;
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -40,26 +41,32 @@ var	nViewNum = 0;
  
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
+				/*var i =0;
+				setInterval(function(){
+					alert(123);
+					i++;
+					show(i);
+				},1000);*/
+			
 				if($(this).attr('state')){
-					oPreView.CloseWndCamera($(this).attr('wind'));
+					CloseWind($(this).attr('wind'));
 				}else{
-					var devData = $(this).parent('li').parent('ul').prev('span.device').data('data');
-					var chlData = $(this).data('data');
-					var wind = oPreView.GetCurrentWnd()
-					if(oPreView.GetWindowConnectionStatus(wind) != 2 ){ 
-						wind = getWind(0);
-					}
-					for(i in chlData){ 
-						devData[i]=chlData[i];
-					}
-					$(this).attr('wind',wind);
-					oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
+					openWind($(this));
 				}
 			})
 		})
 		$('div.dev_list span.device').each(function(){ 
-			$(this).click(function(){
-				$(this).next('ul').find('span.channel').click();
+			var oDevice = $(this);
+			oDevice.attr('bAllopen','1').click(function(){
+				oDevice.next('ul').find('span.channel').each(function(){
+					if(!$(this).attr('wind')){
+						oDevice.attr('bAllopen','0')
+						openWind($(this));
+					}
+					if(oDevice.attr('bAllopen')){ 
+						CloseWind($(this).attr('wind'));
+					}
+				})
 			})
 		})
 		$('div.operat li.setViewNum').click(function(){ 
@@ -71,6 +78,25 @@ var	nViewNum = 0;
 
 		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)')
 	})///
+	function CloseWind(wind){ 
+		oPreView.CloseWndCamera(wind);
+
+	}
+	function openWind(node){
+		var devData = node.parent('li').parent('ul').prev('span.device').data('data');
+		var chlData = node.data('data');
+		var wind = oPreView.GetCurrentWnd()
+		alert('焦点窗口为'+wind+'|状态为:'+oPreView.GetWindowConnectionStatus(wind));
+		if(oPreView.GetWindowConnectionStatus(wind) != 2 ){ //该窗口不可用。
+			wind = getWind(0);
+		}
+		for(i in chlData){ 
+			devData[i]=chlData[i];
+		}
+		node.attr('wind',wind);
+		alert('检测焦点窗口状态后调整的打开窗口为:'+wind);
+		oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
+	}
 	function WindCallback(ev){ 
 		var obj = $('div.dev_list span.channel').filter(function(){ 
 			return $(this).attr('wind') == ev.Wid;
@@ -79,6 +105,7 @@ var	nViewNum = 0;
 		obj.addClass('sel');
 	}
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
+		clearInterval(timer);
 		var obj = $('div.dev_list span').filter(function(){ 
 			return $(this).attr('wind') == ev.WPageId;
 		})

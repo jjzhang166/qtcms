@@ -63,7 +63,7 @@ var num = 0;
 			}else{ 
 				oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
 			}
-			for(var i=5; i<count;i++){
+			for(var i=5; i<=count;i++){
 				var num = i<10 ? '0'+i : i;
 				$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 			}
@@ -89,6 +89,13 @@ var num = 0;
 
 		$("#channelvideo").on('click','td.no_border',function(event){ 
 			$(this).find('input:checkbox').click();
+		})
+
+		$("#channelvideo").mousedown(function(event){
+			event.preventDefault();
+			$('div.play_time').css('left',event.pageX);
+			var W =  $('table.table').width() -50;
+			set_drag($('div.play_time'),79,W+14);
 		})
 
 		$(window).resize(function(){

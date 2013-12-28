@@ -77,53 +77,41 @@ function ViewMax(type){
 	$('#foot').css({
 		top:oView.height()+212
 	})
-	setTables(type);
+	setTables();
 	
 }
-function setTables(type){ 
+function setTables(){ 
 	$('table.table tr').each(function(index){
 		var oTds = $(this).find('td');
-		if(type == 'preview'){
-			var W =  $('table.table').width() -14;
-			oTds.eq(0).width(W*0.19);
-			oTds.eq(1).width(W*0.71);
-			oTds.eq(2).width(W*0.1+8);
-		}else{
-			var W =  $('table.table').width() -50;
-			oTds.width((W-80)/24);
-			oTds.eq(0).width(80);
-			set_drag($('div.play_time'),79,W+14);		
-		}
+		var W =  $('table.table').width() -50;
+		oTds.width((W-80)/24);
+		oTds.eq(0).width(80);		
 	})
 }
 function set_drag(oDrag,X1,X2){
 	var disX = 0;
-	oDrag.mousedown(function(event){
-		var event = event || window.event;
-		disX = event.clientX - oDrag.offset().left;
-
-		$(document).mousemove(function(event){
-			var event = event || window.event;
-				var left = event.clientX - disX;
-			    left = left < X1 ? X1 : left;
-				left = left > X2 ? X2 : left;
-			oDrag.css('left',left+'px');
-			var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
-			    H = sHours[0] == '' ? '0' : sHours[0],
-				H = H<10 ? '0'+H : H;
-				if(sHours[1]){
-					var sM = sHours[1].slice(0,2),
-			    	M = parseInt(sM*0.6);
-			    	M = M<10?'0'+M:M;
-			    }else{ 
-			    	M = '00';
-			    }
-			$('#playback_view').html(H+':'+M);
-		});
-		$(document).mouseup(function(){
-			$(document).off();
-		})
+		disX = oDrag.offset().left;
+	$(document).mousemove(function(event){
+			event.preventDefault();
+			var left = event.pageX;
+		    left = left < X1 ? X1 : left;
+			left = left > X2 ? X2 : left;
+		oDrag.css('left',left+'px');
+		var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
+		    H = sHours[0] == '' ? '0' : sHours[0],
+			H = H<10 ? '0'+H : H;
+			if(sHours[1]){
+				var sM = sHours[1].slice(0,2),
+		    	M = parseInt(sM*0.6);
+		    	M = M<10?'0'+M:M;
+		    }else{ 
+		    	M = '00';
+		    }
+		$('#playback_view').html(H+':'+M);
 		return false;
+	});
+	$(document).mouseup(function(){
+		$(document).off();
 	})
 }
 (function($){
