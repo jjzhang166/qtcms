@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  编辑日期：2013.12.27</p>
+<p>插件简介：<br />
+  //插件名称：Bubble协议回放插件<br />
+  //插件功能：实现回放功能</p>
+<p>接口说明：<br />
+  <br />
+  //简述：设置设备连接信息 <br />
+  // 输入参数:<br />
+  //   sAddress:  IP地址,如&rdquo;192.168.2.134&rdquo;形式 <br />
+  //   uiPort:     端口 <br />
+  //   eseeID:    易视网ID<br />
+  // 返回值: <br />
+  //   0: 设置成功 <br />
+  //   1: IP地址设置失败或者端口不合法 <br />
+  int  setDeviceHostInfo(const QString &amp; sAddress,unsigned int uiPort,const QString &amp;eseeID);</p>
+<p align="left">    //简述：页面设置设备的Vendor类型 <br />
+  //输入参数:<br />
+  //     vendor: 设备类型, 有JUAN DVR, JUAN IPC, ONVIF等 <br />
+  //返回值： <br />
+  //    1：vendor为空设置失败 <br />
+  //    0：设置成功 <br />
+  int  setDeviceVendor(const QString &amp; vendor);</p>
+<p align="left">    //简述：添加通道到指定窗口 <br />
+  //输入参数:<br />
+  //    uiWndId: 窗口索引, 从0开始,到3为止 <br />
+  //    uiChannel: 指定通道, 从0开始, 1, 2, 3,4 … <br />
+  //返回值： <br />
+  // -1：指定的窗口索引大于4或者是指定的通道号&gt;64 <br />
+  //0 ：  添加成功 <br />
+  // 1 :  组已满 <br />
+  // 2 :  创建实例失败 <br />
+  int  AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel);</p>
+<p align="left">    //简介：设置用户身份信息 <br />
+  //输入参数： <br />
+  //  sUsername ：用户名 <br />
+  //    sPassword  : 密码 <br />
+  void setUserVerifyInfo(const  QString &amp; sUsername,const QString &amp;  sPassword);</p>
+<p align="left">    //简介：开始搜索录像文件信息 <br />
+  //输入参数： <br />
+  //  nChannel：通道号 <br />
+  //   nTypes:   录像类型 <br />
+  //   startTime: 指定的开始时间,格式为: yyyy-MM-dd hh:mm:ss <br />
+  //   endTime  : 指定的结束时间,格式为: yyyy-MM-dd hh:mm:ss <br />
+  //返回值： <br />
+  //   -1 :  之前实例创建失败或者开始时间和结束时间为空 <br />
+  //    0  : 组件中 的startSearchRecFile函数调用成功并且子线程有结果返回 <br />
+  //    1  : 组件中 的startSearchRecFile函数调用失败, 或者子线程无结果返回 <br />
+  int  startSearchRecFile(int nChannel,int nTypes,const  QString &amp; startTime,const QString &amp;  endTime);</p>
+<p align="left">    //简介：返回当前已播放时间 <br />
+  //返回值： <br />
+  //  QString：返回当前已播放时间, 格式为: <a></a><a>yyyy-MM-dd hh:mm:ss</a> <br />
+  QString getGroupPlayedTime();</p>
+<p align="left">    //简介：播放视频 <br />
+  //输入参数： <br />
+  //  nTypes：录像类型 <br />
+  //  start： 开始时间, 格式为: yyyy-MM-dd hh:mm:ss<br />
+  //  end   ： 结束时间, 格式为: yyyy-MM-dd hh:mm:ss <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败或者开始时间和结束时间为空 <br />
+  //  0： 组件中GroupPlay函数返回调用成功 <br />
+  //  1： 组件中GroupPlay函数返回连接中断 <br />
+  int   GroupPlay(int  nTypes,const QString &amp; start,const QString &amp; end);</p>
+<p align="left">    //简介：播放视频暂停 <br />
+  //输入参数： <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupPause函数返回调用成功 <br />
+  int   GroupPause();</p>
+<p align="left">    //简介：播放视频继续 <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupContinue()函数返回调用成功 <br />
+  int   GroupContinue();</p>
+<p align="left">//简介：播放视频终止 <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupStop()函数返回调用成功 <br />
+  //    1:  组件中实例未创建或者创建失败 <br />
+  int   GroupStop();</p>
+<p align="left">//简介：播放的视频开启音频 <br />
+  //输入参数:<br />
+  //   bEnable:  开启或者关闭 <br />
+  //返回值： <br />
+  //  bool值: 返回之前的音频状态 <br />
+  //  附加说明： 返回false可能是播放的实例创建失败 <br />
+  bool  GroupEnableAudio(bool  bEnable);</p>
+<p align="left">//简介：快速播放视频 <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupSpeedFast函数返回调用成功 <br />
+  int   GroupSpeedFast() ;</p>
+<p align="left">//简介：慢速播放视频 <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupSpeedSlow函数返回调用成功 <br />
+  int   GroupSpeedSlow();</p>
+<p align="left">//简介：正常速度播放视频 <br />
+  //返回值： <br />
+  //  -1: 播放的实例创建失败 <br />
+  //  0： 组件中GroupSpeedNormal函数返回调用成功 <br />
+  int   GroupSpeedNormal();</p>
+<p align="left">&nbsp;</p>
+<p><strong>插件抛出的事件</strong>：<br />
+  @1<br />
+  事件名称：CurrentStateChange<br />
+  事件参数:<br />
+  <a></a><a>CurrentState</a> ：转变后的状态号<br />
+  CurrentState取值：<br />
+  0                STATUS_CONNECTED,<br />
+  1                STATUS_CONNECTING,<br />
+  2                STATUS_DISCONNECTED,<br />
+  3                STATUS_DISCONNECTING,</p>
+<p>@2<br />
+  事件名称：RecFileInfo<br />
+  事件参数:<br />
+  channel： 通道号<br />
+  types：   录像类型<br />
+  start:     开始时间<br />
+  end:      结束时间<br />
+  types取值：<br />
+  1                表示定时录像,<br />
+  2                表示移动侦测录像,<br />
+  4                表示报警录像,<br />
+  8                表示手动录像,<br />
+  start和end取值:<br />
+  形式为&ldquo;yyyy-MM-dd  hh:mm:ss&rdquo;</p>
+<p>&nbsp;</p>
+<p><strong>页面调用接口时序</strong>：<br />
+  //@1搜索流程 ：</p>
+<p><img width="554" height="597" src="RemotePlaybackPlugin1.png" alt="RemotePlaybackPlugin1.png" /></p>
+<p>&nbsp;</p>
+<p align="left">//@2播放流程 : <br />
+  <img width="554" height="692" src="RemotePlaybackPlugin2.png" alt="RemotePlaybackPlugin2.png" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
