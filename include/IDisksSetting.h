@@ -27,7 +27,7 @@ interface IDisksSetting : public IPComBase
 	virtual int getDiskSpaceReservedSize(int& spacereservedsize) = 0;
 	
 	enum _emError{
-		S_OK = 0,          //成功	
+		OK = 0,          //成功	
 		E_PARAMETER_ERROR, //输入参数不正确
 		E_SYSTEM_FAILED,   //系统错误
 	};
