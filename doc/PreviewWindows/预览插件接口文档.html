@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创<br>
+  编辑日期：2013/12/26</p>
+<p>插件简介：<br>
+  插件名称：预览插件<br>
+  插件功能：实现预览功能</p>
+<p>接口说明：<br>
+  简述：提供页面事件绑定<br>
+  输入参数：<br>
+  sEvent：事件名称 <br>
+  sProc：页面响应事件函数<br>
+  void  AddEventProc( const QString sEvent,QString <a name="OLE_LINK2"></a><a name="OLE_LINK1">sProc </a>){m_mapEventProc.insertMulti(sEvent,sProc);};<br>
+  简述：跳转到下一页 <br>
+  void  nextPage();<br>
+  简述：跳转到前一页 <br>
+  void  prePage();<br>
+  简述：获取当前页数 <br>
+  返回值： <br>
+  -1：获取失败 <br>
+  int：当前页数 <br>
+  int  getCurrentPage();<br>
+  简述：获取分屏数 <br>
+  返回值： <br>
+  -1：获取失败 <br>
+  int：总分屏数 <br>
+  int  getPages();<br>
+  简介：设置分屏模式 <br>
+  输入参数： <br>
+  可选值：div1_1|div2_2|div3_3|div4_4|div5_5|div6_1|div7_7|div8_1||div8_8<br>
+  返回值： <br>
+  0：设置成功 <br>
+  1：设置失败 <br>
+  int  setDivMode( QString divModeName );<br>
+  简介：获取当前分屏模式 <br>
+  返回值： <br>
+  <br>
+  QString getCureentDivMode();<br>
+  简介：获取当前窗口的索引 <br>
+  返回值： <br>
+  int：返回当前窗口的索引号 <br>
+  int  GetCurrentWnd();<br>
+  简介：播放视频 <br>
+  输入参数： <br>
+  uiWndIndex：窗口索引号 <br>
+  sAddress：设备ip地址 <br>
+  uiPort：设备端口 <br>
+  sEseeId：设备易视网id<br>
+  uiChannelId：请求打开的通道号 <br>
+  uiStreamId：请求的码流id<br>
+  sUsername：用户名 <br>
+  sPassword：用户密码 <br>
+  sCameraname：通道名 <br>
+  sVendor：厂商信息 <br>
+  返回值： <br>
+  0：打开成功 <br>
+  1：打开失败 <br>
+  <a name="OLE_LINK16"></a><a name="OLE_LINK15">         int  OpenCameraInWnd(unsigned int uiWndIndex</a><br>
+  ,const  QString sAddress,unsigned int uiPort,const  QString &amp; <a name="OLE_LINK4"></a><a name="OLE_LINK3">sEseeId</a><br>
+  ,unsigned  int <a name="OLE_LINK6"></a><a name="OLE_LINK5">uiChannelId</a>,unsigned  int uiStreamId<br>
+  ,const  QString &amp; sUsername,const QString &amp;  sPassword<br>
+  ,const  QString &amp; sCameraname<br>
+  ,const  QString &amp; <a name="OLE_LINK8"></a><a name="OLE_LINK7">sVendor</a>);</p>
+<p align="left">         简介：设置播放视频参数 <br>
+  输入参数： <br>
+  uiWndIndex：窗口索引号 <br>
+  sAddress：设备ip地址 <br>
+  uiPort：设备端口 <br>
+  sEseeId：设备易视网id<br>
+  uiChannelId：请求打开的通道号 <br>
+  uiStreamId：请求的码流id<br>
+  sUsername：用户名 <br>
+  sPassword：用户密码 <br>
+  sCameraname：通道名 <br>
+  sVendor：厂商信息 <br>
+  返回值： <br>
+  0：设置成功 <br>
+  1：设置失败 </p>
+<p align="left">         int  SetCameraInWnd(unsigned int uiWndIndex<br>
+  ,const  QString sAddress,unsigned int uiPort,const  QString &amp; sEseeId<br>
+  ,unsigned  int uiChannelId,unsigned  int uiStreamId<br>
+  ,const  QString &amp; sUsername,const QString &amp;  sPassword<br>
+  ,const  QString &amp; sCameraname<br>
+  ,const  QString &amp; sVendor);<br>
+  简介：关闭指定索引窗口的视频 <br>
+  输入参数： <br>
+  uiWndIndex：<a name="OLE_LINK10"></a><a name="OLE_LINK9">窗口索引号</a> <br>
+  返回值： <br>
+  0：关闭成功 <br>
+  1：关闭失败 <br>
+  int  CloseWndCamera(unsigned int uiWndIndex);<br>
+  简介：获取当前窗口的状态 <br>
+  输入参数： <br>
+  uiWndIndex：窗口索引号 <br>
+  返回值： <br>
+  0：已连接 <br>
+  1：正在连接 <br>
+  2：未连接 <br>
+  3：正在断开 <br>
+  int  GetWindowConnectionStatus(unsigned int uiWndIndex);</p>
+<p>接口简介：开始进行本地录像<br>
+  返回值：<br>
+  0：成功<br>
+  1：失败<br>
+  int StartRecord();</p>
+<p>         接口简介：停止本地录像<br>
+  返回值：<br>
+  0：成功<br>
+  1：失败<br>
+  int  StopRecord();<br>
+  插件抛出事件：<br>
+  @1<br>
+  抛出条件：连接状态发生改变时<br>
+  事件名称：<a name="OLE_LINK18"></a><a name="OLE_LINK17">CurrentStateChange</a> <br>
+  事件参数<br>
+  <a name="OLE_LINK14"></a><a name="OLE_LINK13">CurrentState</a> ：转变后的状态号<br>
+  WPageId：抛出状态的窗口索引<br>
+  CurrentState取值：<br>
+  0                STATUS_CONNECTED,<br>
+  1                STATUS_CONNECTING,<br>
+  2                STATUS_DISCONNECTED,<br>
+  3                STATUS_DISCONNECTING,</p>
+<p>@2<br>
+  抛出条件：鼠标按下时<br>
+  事件名称：<a name="OLE_LINK22"></a><a name="OLE_LINK21">CurrentWindows</a>;<br>
+  事件参数： <br>
+  <a name="OLE_LINK23"></a><a name="OLE_LINK20"></a><a name="OLE_LINK19">Wid</a>:当前窗口的索引号<br>
+  wid取值：<br>
+  0       ：表示第一个窗口，依次类推</p>
+<p>页面调用接口时序：<br>
+  @1预览功能：<br>
+  <img src="clip_image002.gif" alt="预览插件函数调用时序图" width="270" height="477"></p>
+</body>
+</html>
