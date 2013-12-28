@@ -85,7 +85,8 @@ private:
 
 	QMutex m_MutexdoubleClick;
 	QMenu m_RMousePressMenu;
-	QMutex m_MutexCurrentState;
+
+	QAction *m_QActionCloseView;
 
 
 private:
@@ -100,6 +101,7 @@ public slots:
 	void OnFreshWindow();
 	void emitOnFreshWindow();
 	void OnRMousePressMenu();
+	void OnCloseFromMouseEv();
 
 	virtual void timerEvent( QTimerEvent * );
 

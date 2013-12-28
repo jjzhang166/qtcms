@@ -17,6 +17,7 @@ QSubView::QSubView(QWidget *parent)
 	bIsInitFlags(false),
 	bRendering(false),
 	ui(new Ui::titleview),
+	m_QActionCloseView(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED)
 {
 	this->lower();
@@ -34,8 +35,9 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
 	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
-	m_RMousePressMenu.addAction("close view");
+	m_QActionCloseView=m_RMousePressMenu.addAction("close view");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
+	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
 }
 
 QSubView::~QSubView()
@@ -175,9 +177,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			return 1;
 		}
 	}
-	m_MutexCurrentState.lock();
 	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_CONNECTING;
-	m_MutexCurrentState.unlock();
 	SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.OpenCameraInWnd();
@@ -185,9 +185,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 }
 int QSubView::CloseWndCamera()
 {
-	m_MutexCurrentState.lock();
 	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_DISCONNECTING;
-	m_MutexCurrentState.unlock();
 	m_QSubViewObject.CloseWndCamera();
 	return 0;
 }
@@ -270,9 +268,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	{
 		emit FreshWindow();
 	}
-	m_MutexCurrentState.lock();
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
-	m_MutexCurrentState.unlock();
 	emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
 
 	return 0;
@@ -332,14 +328,12 @@ void QSubView::timerEvent( QTimerEvent * ev)
 
 void QSubView::OnRMousePressMenu()
 {
-	QPoint pos;
-	int x=pos.x();
-	int y=pos.y();
+	m_RMousePressMenu.exec(QCursor::pos());
+}
 
-	pos.setX(x);
-	pos.setY(y);
-
-	m_RMousePressMenu.exec(this->mapToGlobal(pos));
+void QSubView::OnCloseFromMouseEv()
+{
+	CloseWndCamera();
 }
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
