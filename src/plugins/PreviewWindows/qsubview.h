@@ -14,6 +14,7 @@
 #include "QSubviewThread.h"
 #include <IVideoRender.h>
 #include <QTime>
+#include <QMenu>
 #include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
@@ -49,6 +50,13 @@ public:
 		,const QString & sCameraname,const QString & sVendor);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
+
+	typedef enum __enQSubViewConnectStatus{
+		STATUS_CONNECTED,
+		STATUS_CONNECTING,
+		STATUS_DISCONNECTED,
+		STATUS_DISCONNECTING,
+	}QSubViewConnectStatus;
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void mousePressEvent(QWidget *,QMouseEvent *);
@@ -56,6 +64,9 @@ signals:
 	void SetCurrentWindSignl(QWidget *);
 	void CurrentStateChangeSignl(int statevalue,QWidget *);
 	void FreshWindow();
+	void RMousePressMenu();
+
+
 private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
@@ -63,6 +74,7 @@ private:
 	IDeviceClient *m_IDeviceClient;
 	QSubViewObject m_QSubViewObject;
 
+	QSubViewConnectStatus m_CurrentState;
 	int iInitWidth;
 	int iInitHeight;
 	bool bIsInitFlags;
@@ -72,6 +84,8 @@ private:
 	Ui::titleview * ui;
 
 	QMutex m_MutexdoubleClick;
+	QMenu m_RMousePressMenu;
+	QMutex m_MutexCurrentState;
 
 
 private:
@@ -85,6 +99,7 @@ public:
 public slots:
 	void OnFreshWindow();
 	void emitOnFreshWindow();
+	void OnRMousePressMenu();
 
 	virtual void timerEvent( QTimerEvent * );
 
