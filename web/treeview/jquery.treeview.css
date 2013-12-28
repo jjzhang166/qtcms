@@ -71,8 +71,9 @@
 
 .filetree li{padding: 3px 0 2px 16px; color: #000;}
 .filetree span.device, .filetree span.area, .filetree span.group, .filetree span.channel { padding: 1px 0 1px 16px; cursor: pointer;}
-.filetree span.device { background: url(images/dev_01.png) 0 no-repeat;}
-.filetree li.expandable span.device{ background: url(images/dev_02.png) 0 no-repeat;}
+.filetree span.device { background: url(images/dev_02.png) 0 no-repeat;}
+.filetree span.device_1{ background: url(images/dev_01.png) 0 no-repeat;}
+/* .filetree li.expandable span.device{ background: url(images/dev_01.png) 0 no-repeat;} */
 .filetree .channel { background: url(images/cam_01.png) 0 no-repeat;}
 .filetree .channel_1 { background: url(images/cam_02.png) 0 no-repeat;}
 

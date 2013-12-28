@@ -15,10 +15,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	    
 		$(window).off();
 
-	    $('ul.filetree').treeview()
+	    $('ul.filetree').treeview().not(':eq(0)').parent('div.dev_list').hide();
 		
-		oDiv.eq(1).hide();
-
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
@@ -42,10 +40,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
  		//打开通道
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){		
+				var chlData = getChlFullInfo($(this));
 				if($(this).attr('state')){
-					CloseWind($(this).attr('wind'));
+					CloseWind($(this).attr('wind'),chlData.dev_id);
 				}else{
-					var chlData = getChlFullInfo($(this));
 					openWind(oPreView.GetCurrentWnd(),chlData);
 				}
 			})
@@ -68,7 +66,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 						openWind(win,chlData);
 					}
 					if(oDevice.attr('bAllopen') == 1){ 
-						CloseWind($(this).attr('wind'));
+						CloseWind($(this).attr('wind'),chlData.dev_id);
 					}
 				})
 				if(oDevice.attr('bAllopen') == 1){ 
@@ -107,9 +105,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		})
 
 	})///
-	function CloseWind(wind){ 
+	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
-
 	}
 	function openWind(wind,data){	
 		var windState = oPreView.GetWindowConnectionStatus(wind)
@@ -136,9 +133,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		var chlData = getChlFullInfo(obj);
 		var str='设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+ev.WPageId+' '+currentWinStateChange[ev.CurrentState];
 		if(ev.CurrentState == 2){			
-			obj.removeAttr('state wind');
+			obj.removeAttr('state wind').removeClass('channel_1');
+			checkDevAllOpen(obj.data('data').dev_id);
 		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
+			obj.addClass('channel_1');
 		}else{
 			str=''
 			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
@@ -166,6 +165,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			};
 		})
 		oDev.attr('bAllopen',bAllopen);
+		if(oDev.attr('bAllopen') ==1){
+			oDev.addClass('device_1');
+		}else{ 
+			oDev.removeClass('device_1');
+		}
 
 	}
 	function setViewMod(i){
