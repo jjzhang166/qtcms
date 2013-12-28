@@ -65,7 +65,7 @@ endtime char£¨64£©,
 enable integer
  );
  
- create table disks_setting
+create table general_setting
 (
 id integer primary key autoincrement,
 name char(64),
@@ -102,10 +102,18 @@ end;
 
 pragma recursive_triggers=true;
 
-insert into disks_setting (name,value) values('use_disks','D:');
-insert into disks_setting (name,value) values('b_cover','true');
-insert into disks_setting (name,value) values('file_size','128');
-insert into disks_setting (name,value) values('reserved_size','1024');
+insert into general_setting (name,value) values('storage_usedisks','D:');
+insert into general_setting (name,value) values('storage_cover','true');
+insert into general_setting (name,value) values('storage_filesize','128');
+insert into general_setting (name,value) values('storage_reservedsize','1024');
+insert into general_setting (name,value) values('misc_slanguage','en_GB');
+insert into general_setting (name,value) values('misc_aptime','120');
+insert into general_setting (name,value) values('misc_smode','div4_4');
+insert into general_setting (name,value) values('misc_alogin','true');
+insert into general_setting (name,value) values('misc_synctime','true');
+insert into general_setting (name,value) values('misc_aconnent','false');
+insert into general_setting (name,value) values('misc_afullscreen','true');
+insert into general_setting (name,value) values('misc_bootstart','false');
 
 insert into area (pid,path) values(0,'0|1|');
 insert into area (pid,path) values(1,'0|1|2|');
