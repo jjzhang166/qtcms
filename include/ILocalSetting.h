@@ -58,6 +58,7 @@ interface ILocalSetting : public IPComBase
 		"misc_alogin"          "true"
 		"misc_synctime"		   "true"
 		"misc_aconnent"		   "false"
+		"misc_afullscreen"	   "true"
 		"misc_bootstart"	   "false"
 	£®≥ı ºvalue»Á…œ£©
 	
