@@ -77,8 +77,11 @@ function ViewMax(type){
 	$('#foot').css({
 		top:oView.height()+212
 	})
-	setTables();
-	
+	if(type == 'preview'){
+		$('#actionLog').width(oView.width()-6);
+	}else{
+		setTables();
+	}	
 }
 function setTables(){ 
 	$('table.table tr').each(function(index){

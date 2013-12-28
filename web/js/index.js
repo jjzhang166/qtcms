@@ -1,6 +1,7 @@
 var oLeft,oBottom,oView,oPreView;
 var	nViewNum = 0;
 var timer = null;
+var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -40,18 +41,12 @@ var timer = null;
 		}
  
 		$('div.dev_list span.channel').each(function(){ 
-			$(this).click(function(){
-				/*var i =0;
-				setInterval(function(){
-					alert(123);
-					i++;
-					show(i);
-				},1000);*/
-			
+			$(this).click(function(){		
 				if($(this).attr('state')){
 					CloseWind($(this).attr('wind'));
 				}else{
-					openWind($(this));
+					var chlData = getChlFullInfo($(this));
+					openWind(oPreView.GetCurrentWnd(),chlData);
 				}
 			})
 		})
@@ -61,12 +56,19 @@ var timer = null;
 				oDevice.next('ul').find('span.channel').each(function(){
 					if(!$(this).attr('wind')){
 						oDevice.attr('bAllopen','0')
-						openWind($(this));
+						var wind = oPreView.GetCurrentWnd();
+						var windState = oPreView.GetWindowConnectionStatus(wind);
+						if(windState != 2){
+							wind = getWind(wind);
+						}
+						var chlData = getChlFullInfo($(this));
+						openWind(wind,chlData);
 					}
-					if(oDevice.attr('bAllopen')){ 
+					if(oDevice.attr('bAllopen') == 1){ 
 						CloseWind($(this).attr('wind'));
 					}
 				})
+
 			})
 		})
 		$('div.operat li.setViewNum').click(function(){ 
@@ -82,20 +84,16 @@ var timer = null;
 		oPreView.CloseWndCamera(wind);
 
 	}
-	function openWind(node){
-		var devData = node.parent('li').parent('ul').prev('span.device').data('data');
-		var chlData = node.data('data');
-		var wind = oPreView.GetCurrentWnd()
-		alert('焦点窗口为'+wind+'|状态为:'+oPreView.GetWindowConnectionStatus(wind));
-		if(oPreView.GetWindowConnectionStatus(wind) != 2 ){ //该窗口不可用。
-			wind = getWind(0);
+	function openWind(wind,data){	
+		var windState = oPreView.GetWindowConnectionStatus(wind)
+		if(windState != 2 ){ //该窗口不可用.
+			var str = '设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+wind+',打开失败！  错误:当前窗口'+wind+' '+winState[windState];
+			writeActionLog(str);
+			return;
 		}
-		for(i in chlData){ 
-			devData[i]=chlData[i];
-		}
-		node.attr('wind',wind);
-		alert('检测焦点窗口状态后调整的打开窗口为:'+wind);
-		oPreView.OpenCameraInWnd(wind,devData.address,devData.port,devData.eseeid,chlData.channel_number,chlData.stream_id,devData.username,devData.password,chlData.channel_name,devData.vendor);
+		$('#channel_'+data.channel_id).attr('wind',wind);
+		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
+		
 	}
 	function WindCallback(ev){ 
 		var obj = $('div.dev_list span.channel').filter(function(){ 
@@ -105,12 +103,13 @@ var timer = null;
 		obj.addClass('sel');
 	}
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
-		clearInterval(timer);
 		var obj = $('div.dev_list span').filter(function(){ 
 			return $(this).attr('wind') == ev.WPageId;
 		})
 		if(ev.CurrentState == 2){
 			obj.removeAttr('state wind');
+		}else if(ev.CurrentState == 0){ 	
+			checkDevAllOpen(obj.data('data').dev_id);
 		}else{
 			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
 		}
@@ -123,6 +122,17 @@ var timer = null;
 		}else{ 
 			return i;
 		}
+	}
+	function checkDevAllOpen(dev_id){ 
+		var bAllopen = 1;
+		var oDev =$('#dev_'+dev_id);
+		oDev.next('ul').find('span.channel').each(function(){ 
+			if(!$(this).attr('wind')){ 
+				bAllopen = 0;
+			};
+		})
+		oDev.attr('bAllopen',bAllopen);
+
 	}
 	function setViewMod(i){
 		oPreView.setDivMode(i);
@@ -138,4 +148,19 @@ var timer = null;
 			oPreView.nextPage();
 		}
 		setViewNumNow();
+	}
+	function writeActionLog(str){ 
+		$('<p>'+str+'</p>').appendTo('#actionLog');
+	}
+	function emptyLog(){
+		$('#actionLog p').remove();	
+	}
+	function getChlFullInfo(oChl){ 
+		var dev_id = oChl.data('data').dev_id;
+		var devData = $('#dev_'+dev_id).data('data');
+		var chlData = oChl.data('data');
+		for(i in devData){ 
+			chlData[i]=devData[i];
+		}
+		return chlData;
 	}
