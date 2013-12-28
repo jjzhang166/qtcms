@@ -61,3 +61,7 @@ extern const CLSID CLSID_DDrawRender;
 
 extern const GUID CLSID_Hole;
 extern const GUID CLSID_Turn;
+
+extern const IID IID_IDiskSetting; 
+extern const IID IID_ILocalSetting; 
+extern const IID IID_IRecorder;
