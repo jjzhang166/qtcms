@@ -36,13 +36,13 @@ interface IDisksSetting : public IPComBase
 
 /*
 	数据库存储：system.db
-	表disks_setting
+	表general_setting
 	字段：                    
-	id     name                value
-		  "use_disks"          "D;"
-	      "b_cover"            "true"
-		  "file_size"          "128"
-		  "reserved_size"      "1024"
+	id     name                       value
+		  "storage_usedisks"          "D:"
+	      "storage_cover"             "true"
+		  "storage_filesize"          "128"
+		  "storage_reservedsize"      "1024"
 	（初始value如上）
 	事件：无
 */

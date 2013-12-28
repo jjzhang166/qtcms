@@ -3,11 +3,13 @@
 #include <libpcom.h>
 #include <QtCore/QString>
 
+//详细接口定义参见doc\Interface\ILocalSetting.html
+
 interface ILocalSetting : public IPComBase
 {
-	virtual int setLauguage(const QString & sLauguage) = 0;
+	virtual int setLanguage(const QString & sLanguage) = 0;
 
-	virtual QString getLauguage() = 0;
+	virtual QString getLanguage() = 0;
 	
 	virtual int setAutoPollingTime(int aptime) = 0;
 
@@ -46,6 +48,19 @@ interface ILocalSetting : public IPComBase
 };
 
 /*
+	数据库存储：system.db
+	表general_setting
+	字段：                    
+	id     name                value
+		"misc_slanguage"       "en_GB"
+		"misc_aptime"          "120"
+		"misc_smode"           "div4_4"
+		"misc_alogin"          "true"
+		"misc_synctime"		   "true"
+		"misc_aconnent"		   "false"
+		"misc_bootstart"	   "false"
+	（初始value如上）
+	
 	事件：无
 */
 
