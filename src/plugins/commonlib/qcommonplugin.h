@@ -132,6 +132,20 @@ public slots:
 	int GetChannelInfo(int chl_id,QString &sName,int &nStream,int &nChannelNum);
 	QVariantMap GetChannelInfo(int chl_id);
 
+	/*IDisksSetting module*/
+	int setUseDisks(const QString & sDisks);
+	int getUseDisks(QString & sDisks);
+	QString getUseDisks();
+	int getEnableDisks(QString & sDisks);
+	QString getEnableDisks();
+	int setFilePackageSize(const int filesize);
+	int getFilePackageSize(int& filesize);
+	int getFilePackageSize ();
+	int setLoopRecording(bool bcover);
+	bool getLoopRecording();
+	int setDiskSpaceReservedSize(const int spacereservedsize);
+	int getDiskSpaceReservedSize(int& spacereservedsize);
+	int getDiskSpaceReservedSize();
 };
 
 #endif // QCOMMONPLUGIN_H

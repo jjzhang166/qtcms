@@ -70,6 +70,10 @@ long __stdcall Ccommonlib::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDeviceManager *>(this);
 	}
+	else if(IID_IDiskSetting==iid)
+	{
+		*ppv = static_cast<IDisksSetting *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -480,5 +484,70 @@ int Ccommonlib::GetChannelInfo(int chl_id,QString &sName,int &nStream,int &nChan
 QVariantMap Ccommonlib::GetChannelInfo(int chl_id)
 {
 	return m_pluginObj.GetChannelInfo(chl_id);
+}
+
+int Ccommonlib::setUseDisks(const QString & sDisks)
+{
+	return m_pluginObj.setUseDisks(sDisks);
+}
+
+int Ccommonlib::getUseDisks(QString & sDisks)
+{
+	return m_pluginObj.getUseDisks(sDisks);
+}
+
+QString Ccommonlib::getUseDisks()
+{
+	return m_pluginObj.getUseDisks();
+}
+
+int Ccommonlib::getEnableDisks(QString & sDisks)
+{
+	return m_pluginObj.getEnableDisks(sDisks);
+}
+
+QString Ccommonlib::getEnableDisks()
+{
+	return m_pluginObj.getEnableDisks();
+}
+
+int Ccommonlib::setFilePackageSize(const int filesize)
+{
+	return m_pluginObj.setFilePackageSize(filesize);
+}
+
+int Ccommonlib::getFilePackageSize(int& filesize)
+{
+	return m_pluginObj.getFilePackageSize(filesize);
+}
+
+int Ccommonlib::getFilePackageSize()
+{
+	return m_pluginObj.getFilePackageSize();
+}
+
+int Ccommonlib::setLoopRecording(bool loop)
+{
+	return m_pluginObj.setLoopRecording(loop);
+}
+
+bool Ccommonlib::getLoopRecording()
+{
+	return m_pluginObj.getLoopRecording();
+}
+
+int Ccommonlib::setDiskSpaceReservedSize(const int spacereservedsize)
+{
+	return m_pluginObj.setDiskSpaceReservedSize(spacereservedsize);
+}
+
+int Ccommonlib::getDiskSpaceReservedSize(int& spacereservedsize)
+{
+	return m_pluginObj.getDiskSpaceReservedSize(spacereservedsize);
+}
+
+int Ccommonlib::getDiskSpaceReservedSize()
+{
+	return m_pluginObj.getDiskSpaceReservedSize();
 }
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

@@ -10,6 +10,7 @@
 #include <IAreaManager.h>
 #include <IDeviceManager.h>
 #include <IChannelManager.h>
+#include <IDisksSetting.h>
 #include "qcommonplugin.h"
 
 class Ccommonlib : public QObject,
@@ -18,6 +19,7 @@ class Ccommonlib : public QObject,
 	public IGroupManager,
 	public IAreaManager,
 	public IDeviceManager,
+	public IDisksSetting,
 	public IChannelManager
 {
 public:
@@ -126,6 +128,21 @@ public:
 	virtual int GetChannelNumber(int chl_id,int & nChannelNum);
 	virtual int GetChannelInfo(int chl_id,QString &sName,int &nStream,int &nChannelNum);
 	virtual QVariantMap GetChannelInfo(int chl_id);
+
+	/*IDisksSetting module*/
+	virtual int setUseDisks(const QString & sDisks);
+	virtual int getUseDisks(QString & sDisks);
+	virtual QString getUseDisks();
+	virtual int getEnableDisks(QString & sDisks);
+	virtual QString getEnableDisks();
+	virtual int setFilePackageSize(const int filesize);
+	virtual int getFilePackageSize(int& filesize);
+	virtual int getFilePackageSize ();
+	virtual int setLoopRecording(bool bcover);
+	virtual bool getLoopRecording();
+	virtual int setDiskSpaceReservedSize(const int spacereservedsize);
+	virtual int getDiskSpaceReservedSize(int& spacereservedsize);
+	virtual int getDiskSpaceReservedSize();
 private:
 	int m_nRef;
 	QMutex m_csRef;

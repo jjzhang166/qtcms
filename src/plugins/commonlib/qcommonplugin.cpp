@@ -4,6 +4,8 @@
 #include <IAreaManager.h>
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
+#include <IDisksSetting.h>
+#include "DisksInfo.h"
 #include <QtGui/QMessageBox>
 
 QMutex QCommonPlugin::Group_lock;
@@ -1693,4 +1695,266 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 	}
 
 	return chl_info;
+}
+//设置录像使用的磁盘(格式为"X:X:X:..."  X为D E F....)
+int QCommonPlugin::setUseDisks(const QString & sDisks)
+{
+	QString sDistInSystem;
+	if (IDisksSetting::OK != getEnableDisks(sDistInSystem))
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+	//检查输入的磁盘号是否存在
+	QStringList diskList = sDisks.split(':');
+	for (int i = 0; i < diskList.size(); i++)
+	{
+		if (diskList[i].isEmpty())
+		{
+			continue;
+		}
+		if (!sDistInSystem.contains(diskList[i]))
+		{
+			return IDisksSetting::E_PARAMETER_ERROR;
+		}
+	}
+
+	QSqlQuery _query(m_db);
+	QString command = QString("update general_setting set value='%1' where name='storage_usedisks'").arg(sDisks);
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取录像使用的磁盘(格式为"X:X:X:..."  X为D E F....)
+int QCommonPlugin::getUseDisks(QString & sDisks)
+{
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_usedisks'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		sDisks = _query.value(0).toString();
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取录像使用的磁盘(格式为"X:X:X:..."  X为D E F....),
+QString QCommonPlugin::getUseDisks()
+{
+	QString sDisks("");
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_usedisks'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		sDisks = _query.value(0).toString();
+		return sDisks;
+	}
+	else
+	{
+		return sDisks;
+	}
+}
+
+//获取系统可用的磁盘分区(格式为"X:X:X:..."  X为D E F....)
+int QCommonPlugin::getEnableDisks(QString & sDisks)
+{
+	int nRet = IDisksSetting::OK;
+	char buffer[100];
+	memset(buffer, 0, 100);
+
+	int length = getLogicalDriveStrings(buffer);
+	if (0 != length)
+	{
+		for (int i = 0; i < length; i++)
+		{
+			QChar ch(buffer[i]);
+			if (ch.isLetter())
+			{
+				sDisks.append(ch);
+				sDisks.append(QChar(':'));
+			}
+		}
+	}
+	else
+	{
+		nRet = IDisksSetting::E_SYSTEM_FAILED;
+	}
+	return nRet;
+}
+
+//获取系统可用的磁盘分区(格式为"X:X:X:..."  X为D E F....)
+QString QCommonPlugin::getEnableDisks()
+{
+	QString sDisks("");
+	char buffer[100];
+	memset(buffer, 0, 100);
+
+	int length = getLogicalDriveStrings(buffer);
+	if (0 != length)
+	{
+		for (int i = 0; i < length; i++)
+		{
+			QChar ch(buffer[i]);
+			if (ch.isLetter())
+			{
+				sDisks.append(ch);
+				sDisks.append(QChar(':'));
+			}
+		}
+	}
+	return sDisks;
+}
+
+//设置录像文件包大小(单位m)
+int QCommonPlugin::setFilePackageSize(const int filesize)
+{
+	if (filesize > 512 || filesize <= 0)
+	{
+		return IDisksSetting::E_PARAMETER_ERROR;
+	}
+
+	QSqlQuery _query(m_db);
+	QString command = QString("update general_setting set value='%1' where name='storage_filesize'").arg(filesize);
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//读取录像文件包大小(单位m)
+int QCommonPlugin::getFilePackageSize(int& filesize)
+{
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_filesize'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		filesize = _query.value(0).toUInt();
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//读取录像文件包大小(单位m)
+int QCommonPlugin::getFilePackageSize()
+{
+	int filesize = 0;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_filesize'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		filesize = _query.value(0).toInt();
+	}
+
+	return filesize;
+}
+
+//设置是否循环录像
+int QCommonPlugin::setLoopRecording(bool loop)
+{
+	QString strBool = "false";
+	if (loop)
+	{
+		strBool = "true";
+	}
+
+	QSqlQuery _query(m_db);
+	QString command = QString("update general_setting set value='%1' where name='storage_cover'").arg(strBool);
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取是否循环录像
+bool QCommonPlugin::getLoopRecording()
+{
+	bool loop = true;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_cover'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		QString strBool = _query.value(0).toString();
+		if ("false" == strBool)
+		{
+			loop = false;
+		}
+	}
+
+	return loop;
+}
+
+//设置磁盘预留空间(单位m)
+int QCommonPlugin::setDiskSpaceReservedSize(const int spacereservedsize)
+{
+	if (spacereservedsize > 5120 || spacereservedsize <= 0)
+	{
+		return IDisksSetting::E_PARAMETER_ERROR;
+	}
+	QSqlQuery _query(m_db);
+	QString command = QString("update general_setting set value='%1' where name='storage_reservedsize'").arg(spacereservedsize);
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//读取磁盘剩余空间(单位m)
+int QCommonPlugin::getDiskSpaceReservedSize(int& spacereservedsize)
+{
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_reservedsize'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		spacereservedsize = _query.value(0).toInt();
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		spacereservedsize = 0;
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//读取磁盘剩余空间(单位m)
+int QCommonPlugin::getDiskSpaceReservedSize()
+{
+	int spacereservedsize = 0;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='storage_reservedsize'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		spacereservedsize = _query.value(0).toInt();
+	}
+
+	return spacereservedsize;
 }

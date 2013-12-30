@@ -58,7 +58,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtWebkitd4.lib;QtSqld4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtWebkit4.lib;QtSqld4.lib;$(SolutionDir)..\libs\libpcom.lib;$(SolutionDir)..\libs\DisksInfo.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>commonlib.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
@@ -101,6 +101,7 @@
   <ItemGroup>
     <ClInclude Include="ccommonlib.h" />
     <ClInclude Include="commonlib_global.h" />
+    <ClInclude Include="DisksInfo.h" />
     <ClInclude Include="dllmain.h" />
     <CustomBuild Include="qcommonplugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
