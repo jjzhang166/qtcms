@@ -8,7 +8,7 @@
 #include "dvrsearchtest.h"
 #include "HiChipTest.h"
 #include "RemotePreviewTest.h"
-
+#include "DisksSettingTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 	HiChipUnitTest test1;
 	QTest::qExec(&test1, argc, argv);
 	RemotePreviewTest remoteViewTest;
+	//DisksSettingTest my_diskssetting_test;
+	//QTest::qExec(&my_diskssetting_test, argc, argv);
 	QTest::qExec(&remoteViewTest, argc, argv);
 	return 0;
 }
