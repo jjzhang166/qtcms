@@ -12,7 +12,6 @@ class DisksSettingTest :
 public:
     DisksSettingTest(void);
     ~DisksSettingTest(void);
-    static int cbOutPut(QString,QVariantMap,void *);
     void beforeDisksSettingTest();
 
     private Q_SLOTS:
