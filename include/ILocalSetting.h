@@ -19,25 +19,25 @@ interface ILocalSetting : public IPComBase
 
 	virtual QString getSplitScreenMode() = 0;
 	
-	virtual int setAutoLogin(bool alogin);
+	virtual int setAutoLogin(bool alogin) = 0;
 
-	virtual bool getAutoLogin();
+	virtual bool getAutoLogin() = 0;
 
-	virtual int setAutoSyncTime(bool synctime);
+	virtual int setAutoSyncTime(bool synctime) = 0;
 
-	virtual bool getAutoSyncTime();
+	virtual bool getAutoSyncTime() = 0;
 
-	virtual int setAutoConnect(bool aconnect);
+	virtual int setAutoConnect(bool aconnect) = 0;
 
-	virtual bool getAutoConnect();
+	virtual bool getAutoConnect() = 0;
 
-	virtual int setAutoFullscreen(bool afullscreen);
+	virtual int setAutoFullscreen(bool afullscreen) = 0;
 
-	virtual bool getAutoFullscreen();
+	virtual bool getAutoFullscreen() = 0;
 
-	virtual int setBootFromStart(bool bootstart);
+	virtual int setBootFromStart(bool bootstart) = 0;
 
-	virtual bool getBootFromStart();
+	virtual bool getBootFromStart() = 0;
 
 	enum _emError{
 		OK = 0,          //³É¹¦
