@@ -293,13 +293,6 @@ var oSearchOcx;
 		objShowCenter(node);
 	}
 
-	function objShowCenter(obj){ //调整弹出框定位 居中
-		$('#iframe').hide().show();
-		obj.css({
-			top:($(window).height() - obj.height())/2,
-			left:($(window).width() - obj.width())/2
-		}).show();
-	}
 	function pwdTest(obj){
 		var str = obj.val();
 		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
@@ -332,13 +325,6 @@ var oSearchOcx;
 		var oDevData = $('#SerachDevList tbody tr').filter(function(){ 
 			return $(this).find('input:checkbox').is(':checked')
 		}).eq(0).data('data');
-	}
-	function closeMenu(){ 
-		$('#iframe,div.confirm,#menusList div.menu').hide();
-		$('#menusList div.menu input.data').remove();
-		$('#menusList div.menu input:text').val('');
-		$('#confirm h4').html('');
-		$('div.close').html('取消');
 	}
 	function removeArry(obj,number){ 
 		for(i in obj){ 

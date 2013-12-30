@@ -4,198 +4,31 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>回放</title>
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
-<script type="text/javascript" src="js/calendar.js"></script>
-<script type="text/javascript" src="js/xml2json.js"></script>
-<link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<script type="text/javascript" src="js/calendar.js"></script>	
 <script src="treeview/jquery.treeview.js" type="text/javascript"></script>
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script src="js/ocxfunction.js" type="text/javascript"></script>
+<script src="js/playback.js" type="text/javascript"></script>
 <style type="text/css">
 	#channelvideo tr{position: relative;}
 	#channelvideo .video{height:16px; position: absolute; ;top:1px;}
 </style>
-<script type="text/javascript">
-var oLeft,oBottom,oView;
-var	nViewNum = 0;
-var NowMonth = 0;
-var num = 0;
-	$(function(){
-		oLeft = $('#search_device');
-		oBottom = $('#operating');
-		oView = $('#playback_view')
-		ViewMax();
-		var oAs = $('ul.dev_list_btn a'),
-			oDiv = $('div.dev_list');
-	    
-	    $('ul.filetree').treeview();		
-		oDiv.eq(1).hide();
-		
-		$('.hover').each(function(){
-			var action = $(this).attr('class').split(' ')[0];
-			addMouseStyle($(this),action);
-		})
-		
-		oAs.each(function(index){
-			$(this).click(function(){
-				$(window).off();
-				oAs.removeClass('active');
-				oDiv.hide();
-				$(this).addClass('active');
-				oDiv.eq(index).show();
-			})
-		})
-
-		var oSelected = [];
-		$('div.dev_list span.device').click(function(){
-			oSelected = [];
-			
-			$('div.dev_list span.device').removeClass('sel');
-			$(this).addClass('sel');
-
-			var oVideoList = $("#channelvideo")
-			oVideoList.find('tr:gt(3)').remove()
-					  .end().find('input:checkbox').prop('disabled',false);
-			var count = $(this).data('data')['channel_count']
-			if(count<4){
-				oVideoList.find('input:checkbox:gt('+(count-1)+')').prop({disabled:true,checked:false});
-			}else{ 
-				oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
-			}
-			for(var i=5; i<=count;i++){
-				var num = i<10 ? '0'+i : i;
-				$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
-			}
-
-			setTables();
-
-			$("#channelvideo input:checkbox:checked").each(function(){
-				oSelected.push($(this));
-			});
-		})
-
-		$("#channelvideo").on('click','input:checkbox',function(event){ 
-			event.stopPropagation();
-			if($(this).prop('checked')){
-				oSelected.push($(this));
-			}else{ 
-				oSelected.pop($(this));
-			}
-			if(oSelected.length>4){
-				oSelected.shift().prop('checked',false);
-			}
-		})
-
-		$("#channelvideo").on('click','td.no_border',function(event){ 
-			$(this).find('input:checkbox').click();
-		})
-
-		$("#channelvideo").mousedown(function(event){
-			event.preventDefault();
-			$('div.play_time').css('left',event.pageX);
-			var W =  $('table.table').width() -50;
-			set_drag($('div.play_time'),79,W+14);
-		})
-
-		$(window).resize(function(){
-			ViewMax();	
-		})
-
-		oView.on({
-			mouseover:function(){
-				$(this).addClass('view_hover');
-			},
-			mouseleave:function(){
-				$(this).removeClass('view_hover');
-			}
-		},'div');
-
-		$('div.calendar').initCalendar();
-
-		$('#type').next('ul').find('a').each(function(index){ 
-			$(this).click(function(){
-				$('#type span').attr('type',index);
-			})
-		})         
-
-	})///
-	function searchVideo(){
-		$('#channelvideo div.video').remove();
-		var devData = $('div.dev_list span.device.sel').data('data');
-		var channels = 0;
-		$('#channelvideo input:checkbox').each(function(index){ 
-			if($(this).is(':checked')){
-				channels += 1 << index;
-			}
-		});
-		var type = $('#type span').attr('type')
-			type = type == 0 ? 15 : 1 << parseInt(type)-1;
-		var date = $("div.calendar span.nowDate").html();
-		var begin = gettime($('div.timeInput:eq(0) input'));
-		var end = gettime( $('div.timeInput:eq(1) input'));
-		var url ='http://'+devData['address']+':'+devData['http'];
-		var num=0;
-		var page = 100;
-		getVideoData(num);
-
-		function getVideoData(num){ 
-			var xmlstr = '<juan ver="0" squ="fastweb" dir="0"><recsearch usr="' + devData['username'] + '" pwd="' + devData['password'] + '" channels="' + channels + '" 	types="' + type + '" date="' + date + '" begin="' + begin + '" end="' + end + '" session_index="'+num+'" session_count="'+page+'" /></juan>';
-			$.ajax({ 
-			type:"GET",
-			url: url + "/cgi-bin/gw.cgi?f=j",
-			data: "xml=" + xmlstr, 
-			dataType: 'jsonp',
-			jsonp: 'jsoncallback',
-			success: function(data, textStatus){
-				VideoData2Ui($('s',data.xml))
-				if($('recsearch',data.xml).attr('session_total')>(num+page)){
-					num += page;
-					getVideoData(num);
-				}
-			}
-		});	
-		}
-	}
-	var color = [];
-		color[1] = '#7BC345';
-		color[2] = '#FFE62E';
-		color[4] = '#F00';
-		color[8] = '#F78445';
-	function VideoData2Ui(obj){
-		obj.each(function(){ 
-			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
-			var startDate = $('div.calendar span.nowDate').html().split('-');
-			var start = parseInt(chlData[4])-Date.UTC(startDate[0],parseInt(startDate[1])-1,startDate[2])/1000;
-			var p = ($('#channelvideo').width()-80)/(3600*24);
-			var width = (chlData[5]-chlData[4])*p
-			var left = start*p+81;
-			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
-		})
-		
-	}
-	function DAction(mdate){
-		var d = new Date(mdate);
-		var sMonth = String(d.getUTCMonth() + parseInt(1));
-		var month=(sMonth<10) ? '0'+sMonth:sMonth;
-		var day=(d.getUTCDate()<10) ? '0'+String(d.getUTCDate()):d.getUTCDate();
-		var h=(d.getUTCHours()<10) ? '0'+String(d.getUTCHours()):d.getUTCHours();
-		var m=(d.getUTCMinutes()<10) ? '0'+String(d.getUTCMinutes()):d.getUTCMinutes();
-		var s=(d.getUTCSeconds()<10) ? '0'+String(d.getUTCSeconds()):d.getUTCSeconds();	
-		var dstr=d.getUTCFullYear()+'-'+month+'-'+day+' '+h+':'+m+':'+s;
-		return dstr;
-	} 
-	function gettime(objs){
-		var time = []
-		objs.each(function(){ 
-			time.push($(this).val());
-		})
-		return time.join(':');
-	}
-</script>
 </head>
 
 <body>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
+<div id="confirm" class="menu">
+	<p><span></span><a class="hover close" href="javascript:;"></a></p>
+	<div style="padding:10px;">
+		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
+		<table style="margin:0 auto;">
+			<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close" >取消</div></tr>
+		</table>
+	</div>
+</div>
 <div id="test"></div>
 	<div id="top">
 		<div class="top_act">
@@ -224,7 +57,9 @@ var num = 0;
 			</div>
 		</div>
 	</div>
-	<div id="playback_view"></div>
+	<div id="playback_view">
+		<object type="application/cms-remote-playback" id="playback" style="width:100%;height:100%;"></object>
+	</div>
 	<div id="search_device">
 		<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
 		<ul class="dev_list_btn">

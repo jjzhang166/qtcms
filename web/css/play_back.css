@@ -1,5 +1,5 @@
 body,h3,h4,h5,li,ul,p,a,input{margin: 0; padding: 0; list-style: none;text-decoration: none;}
-body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4;}
+body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4; -webkit-user-select:none;}
 #top{
 	height: 78px;
 }
@@ -468,3 +468,28 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	bottom: 0;
 }
 .dev_list ul.treeview span.sel{background-color: #ABCDEF;}
+
+/*弹出菜单*/
+#iframe{
+		overflow: hidden;
+		position: absolute;
+		background: none repeat scroll 0% 0% rgb(0, 0, 0);
+		z-index: 999;
+		width: 100%; 
+		left: 0px; 
+		top: 0px; 
+		height: 100%; 
+		opacity: 0.75;
+		filter:alpha(opacity=75);
+	}
+.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
+.menu p{ width: 100%; height: 24px; background: url(../images/box_nav.png) repeat-x; line-height: 24px;}
+.menu p a{ width: 24px; height: 24px; display: block; background: url(../images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
+.menu h4 p{background:0;}
+.menu table{ margin:0 20px 20px;}
+.menu table .td1{width: 120px;}
+.menu table tr{background: #B4B4B4; color: #000;}
+.menu table input{height: 19px; width: 155px;}
+.menu table .tr1{ background: #ccc; color: #B4B4B4;}
+.menu table .tr1 input{background: 0;}
+.tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(../images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}

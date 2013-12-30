@@ -91,31 +91,26 @@ function setTables(){
 		oTds.eq(0).width(80);		
 	})
 }
-function set_drag(oDrag,X1,X2){
-	var disX = 0;
-		disX = oDrag.offset().left;
-	$(document).mousemove(function(event){
-			event.preventDefault();
-			var left = event.pageX;
-		    left = left < X1 ? X1 : left;
-			left = left > X2 ? X2 : left;
-		oDrag.css('left',left+'px');
-		var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
-		    H = sHours[0] == '' ? '0' : sHours[0],
-			H = H<10 ? '0'+H : H;
-			if(sHours[1]){
-				var sM = sHours[1].slice(0,2),
-		    	M = parseInt(sM*0.6);
-		    	M = M<10?'0'+M:M;
-		    }else{ 
-		    	M = '00';
-		    }
-		$('#playback_view').html(H+':'+M);
-		return false;
-	});
-	$(document).mouseup(function(){
-		$(document).off();
-	})
+function set_drag(disX,X1,X2){
+		var oDrag=$('div.play_time')
+		$(document).mousemove(function(event){
+				var left = event.pageX - disX;
+			    left = left < X1 ? X1 : left;
+				left = left > X2 ? X2 : left;
+			oDrag.css('left',(left-2)+'px');
+			var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
+			    H = sHours[0] == '' ? '0' : sHours[0],
+				H = addZero(H);
+				if(sHours[1]){
+					var sM = sHours[1].slice(0,2),
+			    	M = addZero(parseInt(sM*0.6));
+			    }else{ 
+			    	M = '00';
+			    }
+			//$('#playback_view').html(H+':'+M);
+		}).mouseup(function(){
+			$(this).off();
+		})
 }
 (function($){
 	$.fn.extend({
@@ -329,6 +324,10 @@ function show(data){
 		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
 	}
 }
+function addZero(num){   //数字小于0的时候用0补一位.
+	num = parseInt(num);
+	return num = num<10?'0'+num:num;
+}
 function showdata(id,type){ 
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
@@ -337,3 +336,28 @@ function showdata(id,type){
 	})
 	show(str);
 }
+//弹出框部分操作
+function closeMenu(){
+	$('#iframe,div.confirm, div.menu').hide();
+	$('#menusList div.menu input.data').remove();
+	$('#menusList div.menu input:text').val('');
+	$('#confirm h4').html('');
+	$('div.menue').each(function(){ 
+		$(this).find('div.close:last').html('取消');
+	})
+	
+}
+function Confirm(str){
+	$('#confirm').find('h4').html($('#confirm').find('h4').html()+str).show();
+	$('div.menue').each(function(){ 
+		$(this).find('div.close').not(':last').html('确认')
+	})
+	objShowCenter($('#confirm'));
+}
+	function objShowCenter(obj){ //调整弹出框定位 居中
+		$('#iframe').hide().show();
+		obj.css({
+			top:($(window).height() - obj.height())/2,
+			left:($(window).width() - obj.width())/2
+		}).show();
+	}

@@ -173,11 +173,7 @@ var oSelected = [],
 		adddev(devData2);
 		$('#esee_'+data.name).remove();
 	}
-	function Confirm(str){
-		$('#confirm').find('h4').html($('#confirm').find('h4').html()+str).show();
-		$('div.close').html('确定')
-		objShowCenter($('#confirm'));
-	}
+
 	function adddev(data){ 
 		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		add.find('span.device').data('data',data);

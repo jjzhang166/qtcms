@@ -44,7 +44,6 @@
 	table .td4 div{ width: 34px; float: left; margin: 0 4px; height: 16px;}
 	table .td4 input{margin:0; float: left;}
 	table .td4 span{margin-left: 2px; float: left; display: block; width: 16px; height: 16px; text-indent: 0px; }
-	.tdBtn div{float: right; margin-right: 6px; width: 100px; background: url(images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}
 	table .chk{margin:0 4px;}
 	table .chk1{margin:0 52px 0 14px;}
 	table .iput{float: right; margin-right: 6px;}
@@ -62,28 +61,6 @@
 	table h5{ display: inline;}
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
-	#iframe{
-		overflow: hidden;
-		position: absolute;
-		background: none repeat scroll 0% 0% rgb(0, 0, 0);
-		z-index: 999;
-		width: 100%; 
-		left: 0px; 
-		top: 0px; 
-		height: 100%; 
-		opacity: 0.75;
-		filter:alpha(opacity=75);
-	}
-	.menu{ display:none; position:absolute; border:1px solid #000; z-index:1000; background: #B4B4B4; padding: 1px;}
-	.menu p{ width: 100%; height: 24px; background: url(images/box_nav.png) repeat-x; line-height: 24px;}
-	.menu p a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
-	.menu h4 p{background:0;}
-	.menu table{ margin:0 20px 20px;}
-	.menu table .td1{width: 120px;}
-	.menu table tr{background: #B4B4B4; color: #000;}
-	.menu table input{height: 19px; width: 155px;}
-	.menu table .tr1{ background: #ccc; color: #B4B4B4;}
-	.menu table .tr1 input{background: 0;}
 	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
 	.menu0 li:hover{ background:#C25451;}
 
@@ -139,7 +116,7 @@
 					</ul>
 				</td>
 			</tr>
-			<tr><td colspan="2" class="tdBtn"><div class="hover close" onclick="showdata('设备','device')">取消</div><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td></tr>
+			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td><td><div class="hover close" onclick="showdata('设备','device')">取消</div></td></tr>
 		</table>
 </div>
 <div id="area" class="menu">
@@ -220,7 +197,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td colspan="2"><div class="hover close">取消</div><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div></td></tr>
+			<tr class="tdBtn"><td colspan="2"><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
 		</table>
 	</div>
 </div>
