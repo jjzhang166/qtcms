@@ -2,9 +2,12 @@
 <root ver="1.0">
 	<CLSID>
 		<item clsid="6C997D3A-503C-4BD6-88D8-B3ABDA5A2AC9" name="activity.preview" file="previewactivity.dll" title="preview"/>
+		<item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
 		<item clsid="B15ABB14-5545-4B14-9109-0EB573B33D64" name="plugin.commonlib" file="plugins/commonlib.dll" mimetype="application/cms-common-library"/>
 		<item clsid="074814B4-91A2-4B91-8FD9-1C1316578F81" name="plugin.previewwindowsplugin" file="plugins/previewwindows.dll" mimetype="application/cms-preview-windows" />
-		<item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
+		<item clsid="CB2CC692-E924-4003-A5A0-C686D090E0B0" name="plugin.remoteplaybackplugin" file="plugins/remoteplaybackplugin.dll" mimetype="application/cms-remote-playback" />
+		<item clsid="DE91223A-0978-4CA2-9F8B-829DA0EB88E8" name="plugin.DeviceSearchPlugin" file="plugins/DeviceSearchPlugin.dll" mimetype="application/cms-dsview-windows"/>
+
 		<item clsid="3C5C3FDF-F9C4-452B-A0FE-84A6280F3057" name="divmode.div1" file="div1.dll" mode="div1_1"/>
 		<item clsid="A9D7E3FE-FD1A-469C-B491-994DE4C5FEDB" name="divmode.div4_4" file="div4_4.dll" mode="div4_4"/>
 		<item clsid="1711E8ED-0213-42F4-AB0C-830D9F3DC402" name="divmode.div8_1" file="div8_1.dll" mode="div8_1"/>
@@ -14,9 +17,8 @@
 		<item clsid="3BE38AF5-FEF5-4168-B67F-FCF6A05CFFDC" name="divmode.div8_8" file="div8_8.dll" mode="div8_8"/> 
 		<item clsid="E2B5CF38-07A2-4ECF-9BFF-001082C203BF" name="divmode.div3_3" file="div3_3.dll" mode="div3_3"/> 
 		<item clsid="D37D3047-D605-4116-94B2-47D964AA5809" name="divmode.div6_1" file="div6_1.dll" mode="div6_1"/> 
-		<item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
-		<item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 
-		<item clsid="DE91223A-0978-4CA2-9F8B-829DA0EB88E8" name="plugin.DeviceSearchPlugin" file="plugins/DeviceSearchPlugin.dll" mimetype="application/cms-dsview-windows"/>
+
+
 		<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
 		<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
 		<item clsid="6BC3DD4C-0365-48B3-8209-43DFE8A1DDCD" name="render.DDraw" file="DdrawRender.dll" type="ddraw"/>
@@ -24,6 +26,8 @@
 		<item clsid="22440D4D-9F81-4700-8519-7AD715461E25" name="protocols.RemotePreview" file="RemotePreview.dll" type="RemotePreview"/> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
+		<item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
+		<item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 
         <item clsid="9291E9A4-9E2B-4FC1-A145-8FBDEC96F0C4" name="protocols.Preview_Playback" file="BubbleProtocol.dll" type="Preview_Playback"/>  
 	</CLSID>
 </root>
