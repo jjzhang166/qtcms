@@ -26,8 +26,8 @@
 <p> //修改设备录像时间<br />
   //输入参数：<br />
   //	recordtime_id：指定需修改的录像时间的id号<br />
-  //	starttime：开始录像时间<br />
-  //	endtime：结束录像时间<br />
+  //	starttime：开始录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
+  //	endtime：结束录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
   //	enable：true为开始，false为关闭此录像时间<br />
   //返回值：<br />
   //	0：修改成功<br />
@@ -45,64 +45,11 @@
   //返回值：<br />
   //	录像时间的字段值：<br />
   //		chl_id:通道号<br />
-  //		schedle_id：时间段id<br />
+  //		schedle_id：时间段id（可选值0，1，2，3）<br />
   //		weekday：（可选值 0（周一），1（周二），2（周三），3（周四），4（周五），5（周六），6（星期天））<br />
-  //		starttime：开始时间<br />
-  //		endtime：结束时间<br />
+  //		starttime：开始时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
+  //		endtime：结束时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
   //		enable：是否使用（0（true），1(false)）<br />
   QVariantMap GetRecordTimeInfo(int recordtime_id)<br />
-</p>
-<p>编辑人：冯明创<br />
-  编辑日期：2.13/12/26<br />
-  接口简介：<br />
-  //名称：录像时间设置接口<br />
-  //功能：提供录像时间设置接口<br />
-  表名称：recordtime<br />
-  字段解析：<br />
-  id：integer primary key autoincrement<br />
-  chl_id:integer(通道id)<br />
-  schedle_id:integer(时间段id)<br />
-  weekday:integer（day）<br />
-  starttime：char（64）（开始录像时间）<br />
-  endtime：char（64）（结束录像时间）<br />
-  enable:integer（是否开启）</p>
-<p>create table recordtime<br />
-  (<br />
-  id integer primary key autoincrement,<br />
-  chl_id integer,<br />
-  schedle_id integer,<br />
-  weekday integer,<br />
-  starttime char（64）,<br />
-  endtime char（64）,<br />
-  enable integer<br />
-  );</p>
-<p>接口定义：</p>
-<p> //修改设备录像时间<br />
-  //输入参数：<br />
-  //	recordtime_id：指定需修改的录像时间的id号<br />
-  //	starttime：开始录像时间<br />
-  //	endtime：结束录像时间<br />
-  //	enable：true为开始，false为关闭此录像时间<br />
-  //返回值：<br />
-  //	0：修改成功<br />
-  //	1：修改失败<br />
-  int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable）</p>
-<p> //查询指定通道下的录像时间记录<br />
-  //输入参数：<br />
-  //	chl_id：通道号<br />
-  //返回值：<br />
-  //	录像时间记录的id号列表<br />
-  QStringList GetRecordTimeBydevId(int chl_id)</p>
-<p> //查询指定录像时间记录条的字段值<br />
-  //输入参数：<br />
-  //	recordtime_id：录像时间记录id<br />
-  //返回值：<br />
-  //	录像时间的字段值：<br />
-  //		chl_id:通道号<br />
-  //		schedle_id：时间段id<br />
-  //		weekday：（可选值 0（周一），1（周二），2（周三），3（周四），4（周五），5（周六），6（星期天））<br />
-  //		starttime：开始时间<br />
-  //		endtime：结束时间<br />
-  //		enable：是否使用（0（true），1(false)）<br />
-  QVariantMap GetRecordTimeInfo(int recordtime_id)<br />
+  <br />
 </p>
