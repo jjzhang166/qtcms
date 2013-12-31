@@ -201,7 +201,7 @@
   <tr>
     <td width="189" valign="top"><p>1</p></td>
     <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回&ldquo;CH&rdquo;（默认值）</p></td>
+    <td width="189" valign="top"><p>返回&ldquo;en_GB&rdquo;（默认值）</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -220,7 +220,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段为&ldquo;5&rdquo;；正常参数输入范围为&ldquo;a-b&rdquo;</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段为&ldquo;5&rdquo;；正常参数输入范围为&ldquo;30-86400&rdquo;</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -234,7 +234,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入正常参数    &ldquo;5&rdquo;</p></td>
+    <td width="189" valign="top"><p>输入正常参数    &ldquo;30&rdquo;</p></td>
     <td width="189" valign="top"><p>返回S_OK </p></td>
   </tr>
 </table>
@@ -263,7 +263,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入正常参数    &ldquo;5&rdquo;</p></td>
+    <td width="189" valign="top"><p>输入正常参数    &ldquo;30&rdquo;</p></td>
     <td width="189" valign="top"><p>返回E_SYSTEM_FAILED </p></td>
   </tr>
 </table>
@@ -283,7 +283,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段 值为&ldquo;5&rdquo;</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段 值为&ldquo;30&rdquo;</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -293,7 +293,7 @@
   <tr>
     <td width="189" valign="top"><p>1</p></td>
     <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回5 </p></td>
+    <td width="189" valign="top"><p>返回30</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -524,23 +524,18 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>3</p></td>
-    <td width="189" valign="top"><p>输入非法参数    &ldquo;3&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_PARAMETER_ERROR </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -621,23 +616,18 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>3</p></td>
-    <td width="189" valign="top"><p>输入非法参数    &ldquo;3&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_PARAMETER_ERROR </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -718,23 +708,18 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>3</p></td>
-    <td width="189" valign="top"><p>输入非法参数    &ldquo;3&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_PARAMETER_ERROR </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -816,23 +801,18 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
     <td width="189" valign="top"><p>返回 S_OK</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>3</p></td>
-    <td width="189" valign="top"><p>输入非法参数    &ldquo;3&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_PARAMETER_ERROR </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
