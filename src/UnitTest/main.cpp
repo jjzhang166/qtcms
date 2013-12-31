@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
 	RemotePreviewTest remoteViewTest;
 	//DisksSettingTest my_diskssetting_test;
 	//QTest::qExec(&my_diskssetting_test, argc, argv);
+	//SetRecordTimeTest my_SetRecordTime_Test;
+	//QTest::qExec(&my_SetRecordTime_Test, argc, argv);
 	QTest::qExec(&remoteViewTest, argc, argv);
 	return 0;
 }
