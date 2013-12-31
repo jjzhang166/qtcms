@@ -24,7 +24,7 @@
   </tr>
 </table>
 <p>测试用例：<br />
-  前置条件:  数据库中建立表recordtime,  设置一条记录: 0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p>
+  // 用例1</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="142" valign="top"><br />
@@ -37,7 +37,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>&nbsp;</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-30    00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -75,10 +75,11 @@
     <td width="284" valign="top"><p>返回1</p></td>
   </tr>
 </table>
-<p>&nbsp;</p>
+<p>// 用例2</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
     <td width="426" colspan="2" valign="top"><p>QStringList GetRecordTimeBydevId(int chl_id)</p></td>
   </tr>
   <tr>
@@ -87,7 +88,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-30    00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -105,10 +106,11 @@
     <td width="284" valign="top"><p>返回空的QstringList</p></td>
   </tr>
 </table>
-<p>&nbsp;</p>
+<p>// 用例3</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="140" valign="top"><p>测试对象</p></td>
+    <td width="140" valign="top"><br />
+      测试对象 </td>
     <td width="428" colspan="2" valign="top"><p>QStringList GetRecordTimeBydevId(int chl_id)</p></td>
   </tr>
   <tr>
@@ -117,7 +119,7 @@
   </tr>
   <tr>
     <td width="140" valign="top"><p>前置条件</p></td>
-    <td width="428" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 再增加2条记录0|1|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;和1|0|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;</p></td>
+    <td width="428" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 再增加2条记录0|1|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;和1|0|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="140" valign="top"><p>步骤编号</p></td>
@@ -135,10 +137,11 @@
     <td width="280" valign="top"><p>GetRecordTimeBydevId返回结果:返回的id号1有1条 </p></td>
   </tr>
 </table>
-<p>&nbsp;</p>
+<p>// 用例4</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
     <td width="426" colspan="2" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)</p></td>
   </tr>
   <tr>
@@ -147,7 +150,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; </p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -170,10 +173,11 @@
     <td width="277" valign="top"><p>返回&rdquo; chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
 </table>
-<p>&nbsp;</p>
+<p>// 用例5</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
     <td width="426" colspan="2" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)<br />
       int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable)</p></td>
   </tr>
@@ -183,7 +187,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 </p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -212,7 +216,7 @@
   </tr>
   <tr>
     <td width="568" colspan="3" valign="top"><p>&nbsp;</p>
-      <p>&nbsp;</p></td>
+      <p>// 用例6</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>测试对象</p></td>
@@ -225,7 +229,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 </p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
