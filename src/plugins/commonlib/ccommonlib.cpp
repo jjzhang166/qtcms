@@ -74,6 +74,10 @@ long __stdcall Ccommonlib::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDisksSetting *>(this);
 	}
+	else if (IID_ISetRecordTime == iid)
+	{
+		*ppv = static_cast<ISetRecordTime *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -549,5 +553,20 @@ int Ccommonlib::getDiskSpaceReservedSize(int& spacereservedsize)
 int Ccommonlib::getDiskSpaceReservedSize()
 {
 	return m_pluginObj.getDiskSpaceReservedSize();
+}
+
+int Ccommonlib::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
+{
+	return m_pluginObj.ModifyRecordTime(recordtime_id,starttime,endtime,enable);
+}
+
+QStringList Ccommonlib::GetRecordTimeBydevId( int chl_id )
+{
+	return m_pluginObj.GetRecordTimeBydevId( chl_id);
+}
+
+QVariantMap Ccommonlib::GetRecordTimeInfo( int recordtime_id )
+{
+	return m_pluginObj.GetRecordTimeInfo(recordtime_id);
 }
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

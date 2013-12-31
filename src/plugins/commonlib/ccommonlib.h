@@ -11,16 +11,18 @@
 #include <IDeviceManager.h>
 #include <IChannelManager.h>
 #include <IDisksSetting.h>
+#include <ISetRecordTime.h>
 #include "qcommonplugin.h"
 
-class Ccommonlib : public QObject,
-	public IWebPluginBase,
-	public IUserManager,
-	public IGroupManager,
-	public IAreaManager,
-	public IDeviceManager,
-	public IDisksSetting,
-	public IChannelManager
+class Ccommonlib : public QObject
+	,public IWebPluginBase
+	,public IUserManager
+	,public IGroupManager
+	,public IAreaManager
+	,public IDeviceManager
+	,public IDisksSetting
+	,public IChannelManager
+	,public ISetRecordTime
 {
 public:
 	Ccommonlib();
@@ -143,6 +145,13 @@ public:
 	virtual int setDiskSpaceReservedSize(const int spacereservedsize);
 	virtual int getDiskSpaceReservedSize(int& spacereservedsize);
 	virtual int getDiskSpaceReservedSize();
+
+	// ISetRecordTime
+	virtual int ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable );
+
+	virtual QStringList GetRecordTimeBydevId( int chl_id );
+
+	virtual QVariantMap GetRecordTimeInfo( int recordtime_id );
 private:
 	int m_nRef;
 	QMutex m_csRef;

@@ -79,9 +79,6 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_unittest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_unittest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_unittest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,6 +115,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_RemotePreviewTest.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="SetRecordTimeTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SetRecordTimeTest.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SetRecordTimeTest.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="unittest.h">
@@ -142,6 +148,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="RemotePreviewTest.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SetRecordTimeTest.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -1958,3 +1958,65 @@ int QCommonPlugin::getDiskSpaceReservedSize()
 
 	return spacereservedsize;
 }
+
+int QCommonPlugin::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
+{
+	// check time format
+	if (CheckTimeFormat(starttime) || CheckTimeFormat(endtime))
+	{
+		return 1;
+	}
+
+	// check time if it is correct
+	QDateTime timeStart = QDateTime::fromString(starttime,"yyyy-MM-dd hh:mm:ss");
+	if (!timeStart.isValid())
+	{
+		return 1;
+	}
+
+	QDateTime timeEnd = QDateTime::fromString(endtime,"yyyy-MM-dd hh:mm:ss");
+	if (!timeEnd.isValid())
+	{
+		return 1;
+	}
+
+	// check if they are the same day
+	if (timeStart.date() != timeEnd.date())
+	{
+		return 1;
+	}
+
+	// end must after start
+	if (timeStart.time() >= timeEnd.time())
+	{
+		return 1;
+	}
+
+	// check record id
+	QSqlQuery _query(m_db);
+	QString sSql = QString("update recordtime set starttime='%s',").arg(starttime);
+	_query.exec(command);
+
+	// modify it
+}
+
+QStringList QCommonPlugin::GetRecordTimeBydevId( int chl_id )
+{
+	// check channel identifier
+	// get record identifiers from database
+}
+
+QVariantMap QCommonPlugin::GetRecordTimeInfo( int recordtime_id )
+{
+	// check record id
+	// get record infomation
+}
+
+bool QCommonPlugin::CheckTimeFormat( QString sTime )
+{
+	// check the time format if it is correct
+	// ex "YYYY-MM-DD hh:mm:ss"
+	QString sTemp = sTime;
+	QRegExp regTimeFormat("^[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\ [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}$");
+	return sTime.contains(regTimeFormat);
+}

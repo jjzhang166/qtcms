@@ -58,7 +58,7 @@ create table recordtime
  (
  id integer primary key autoincrement,
  chl_id integer,
- schedle_id integer,
+ schedule_id integer,
  weekday integer,
  starttime char£¨64£©,
 endtime char£¨64£©,
@@ -69,7 +69,7 @@ create table general_setting
 (
 id integer primary key autoincrement,
 name char(64),
-value text,
+value text
 );
 
 create trigger area_delete
@@ -86,11 +86,46 @@ begin
 delete from chl where dev_id = old.id;
 end;
 
+create trigger chl_insert
+after insert on chl
+for each row
+begin
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,0,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,0,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,0,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,0,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,1,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,1,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,1,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,1,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,2,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,2,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,2,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,2,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,3,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,3,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,3,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,3,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,4,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,4,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,4,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,4,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,5,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,5,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,5,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,5,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,0,6,'1970-01-01 00:00:00','1970-01-01 23:59:59',1);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,1,6,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,2,6,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+insert into recordtime(chl_id,schedule_id,weekday,starttime,endtime,enable) values(new.id,3,6,'1970-01-01 00:00:00','1970-01-01 23:59:59',0);
+end;
+
 create trigger chl_delete
 before delete on chl
 for each row
 begin
 delete from r_chl_group where chl_id = old.id;
+delete from recordtime where chl_id = old.id;
 end;
 
 create trigger dev_group_delete
@@ -114,84 +149,3 @@ insert into general_setting (name,value) values('misc_synctime','true');
 insert into general_setting (name,value) values('misc_aconnent','false');
 insert into general_setting (name,value) values('misc_afullscreen','true');
 insert into general_setting (name,value) values('misc_bootstart','false');
-
-insert into area (pid,path) values(0,'0|1|');
-insert into area (pid,path) values(1,'0|1|2|');
-insert into area (pid,path) values(1,'0|1|3|');
-insert into area (pid,path) values(2,'0|1|2|4|');
-insert into area (pid,path) values(3,'0|1|3|5|');
-insert into area (pid,path) values(3,'0|1|3|6|');
-insert into area (pid,path) values(3,'0|1|3|7|');
-insert into area (pid,path) values(7,'0|1|3|7|8|');
-insert into area (pid,path) values(4,'0|1|2|4|9|');
-insert into dev (area_id) values(3);
-insert into dev (area_id) values(3);
-insert into dev (area_id) values(5);
-insert into dev (area_id) values(2);
-insert into dev (area_id) values(7);
-insert into dev (area_id) values(8);
-insert into chl (dev_id) values(1);
-insert into chl (dev_id) values(1);
-insert into chl (dev_id) values(1);
-insert into chl (dev_id) values(1);
-insert into chl (dev_id) values(2);
-insert into chl (dev_id) values(2);
-insert into chl (dev_id) values(2);
-insert into chl (dev_id) values(2);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(3);
-insert into chl (dev_id) values(5);
-insert into chl (dev_id) values(5);
-insert into chl (dev_id) values(5);
-insert into chl (dev_id) values(5);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(6);
-insert into chl (dev_id) values(4);
-insert into chl (dev_id) values(4);
-insert into chl (dev_id) values(4);
-insert into chl (dev_id) values(4);
-insert into dev_group (id) values(1);
-insert into dev_group (id) values(2);
-insert into dev_group (id) values(3);
-insert into r_chl_group (chl_id,group_id) values(46,1);
-insert into r_chl_group (chl_id,group_id) values(47,1);
-insert into r_chl_group (chl_id,group_id) values(14,1);
-insert into r_chl_group (chl_id,group_id) values(15,1);
-insert into r_chl_group (chl_id,group_id) values(18,1);
-insert into r_chl_group (chl_id,group_id) values(19,1);
-insert into r_chl_group (chl_id,group_id) values(2,2);
-insert into r_chl_group (chl_id,group_id) values(11,2);
-insert into r_chl_group (chl_id,group_id) values(12,2);
-insert into r_chl_group (chl_id,group_id) values(25,2);
-insert into r_chl_group (chl_id,group_id) values(46,3);
-insert into r_chl_group (chl_id,group_id) values(48,3);
-insert into r_chl_group (chl_id,group_id) values(21,3);
-insert into r_chl_group (chl_id,group_id) values(25,3);

@@ -25,6 +25,9 @@ public:
 	static int m_randSeed;
 	static QMutex m_csRandSeed;
 
+private:
+	bool CheckTimeFormat(QString sTime);
+
 
 public:
 	int GetUserLevel( const QString & sUsername,int & nLevel );
@@ -146,6 +149,11 @@ public slots:
 	int setDiskSpaceReservedSize(const int spacereservedsize);
 	int getDiskSpaceReservedSize(int& spacereservedsize);
 	int getDiskSpaceReservedSize();
+
+	// ISetRecordTime
+	virtual int ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable );
+	virtual QStringList GetRecordTimeBydevId( int chl_id );
+	virtual QVariantMap GetRecordTimeInfo( int recordtime_id );
 };
 
 #endif // QCOMMONPLUGIN_H
