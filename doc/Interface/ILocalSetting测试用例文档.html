@@ -98,18 +98,38 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入非法语言字符，如&ldquo;agagl&rdquo;，正常字符表参见 附表1</p></td>
-    <td width="189" valign="top"><p>返回E_PARAMETER_ERROR</p></td>
+    <td width="379" valign="top"><p>输入非法语言字符，如&ldquo;agagl&rdquo;，正常字符表参见 附表1</p></td>
+    <td width="189" valign="top"><p>返回E_PARAMETER_ERROR </p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入正常参数，正确参数见附表1，如&ldquo;CH&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回S_OK </p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用QString getLaunguage()</td>
+    <td valign="top">返回&ldquo;en_GB&rdquo;（默认值）</td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入正常参数，正确参数见附表1，如&ldquo;zh_CN&rdquo;</td>
+    <td valign="top">返回S_OK </td>
+  </tr>
+  <tr>
+    <td valign="top"><p>4</p></td>
+    <td valign="top"><p>调用QString getLaunguage()</p></td>
+    <td valign="top"><p>返回zh_CN</p></td>
+  </tr>
+  <tr>
+    <td valign="top">5</td>
+    <td valign="top">输入非法语言字符，如&ldquo;agagl&rdquo;，正常字符表参见 附表1</td>
+    <td valign="top">返回E_PARAMETER_ERROR </td>
+  </tr>
+  <tr>
+    <td valign="top">6</td>
+    <td valign="top">调用QString getLaunguage()</td>
+    <td valign="top">返回zh_CN</td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -120,40 +140,6 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setLaunguage(const    QString &amp; sLanguage)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库不正确</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    sLanguage字段不存在的情况</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入正确字符，如&ldquo;CH&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回E_SYSTEM_FAILED</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入非法字符，如&ldquo;agag&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回E_SYSTEM_FAILED</p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>3</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
     <td width="379" colspan="2" valign="top"><p>QString getLaunguage()</p></td>
   </tr>
   <tr>
@@ -162,36 +148,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    sLanguage字段存在的情况，并且为&ldquo;CH&rdquo;</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回&ldquo;CH&rdquo;</p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>4</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>QString getLaunguage()</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    sLanguage字段不存在</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -203,12 +160,22 @@
     <td width="189" valign="top"><p>调用函数</p></td>
     <td width="189" valign="top"><p>返回&ldquo;en_GB&rdquo;（默认值）</p></td>
   </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">调用setLaunguage（“zh_CN”）</td>
+    <td valign="top">返回S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回zh_CN</td>
+  </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>5</p></td>
+    <td width="379" colspan="2" valign="top"><p>3</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -220,58 +187,50 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段为&ldquo;5&rdquo;；正常参数输入范围为&ldquo;30-86400&rdquo;</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空；正常参数输入范围为&ldquo;30-86400&rdquo;</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入错误参数    &ldquo;0&rdquo;</p></td>
+    <td width="379" valign="top"><p>输入错误参数    &ldquo;0&rdquo;</p></td>
     <td width="189" valign="top"><p>返回E_PARAMETER_ERROR</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入正常参数    &ldquo;30&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回S_OK </p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用int getAutoPollingTime()</td>
+    <td valign="top">返回m（默认值）</td>
+  </tr>
+  <tr>
+    <td valign="top"><p>3</p></td>
+    <td valign="top"><p>输入正常参数    &ldquo;60&rdquo;</p></td>
+    <td valign="top"><p>返回S_OK </p></td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">调用int getAutoPollingTime()</td>
+    <td valign="top">返回‘60’</td>
+  </tr>
+  <tr>
+    <td valign="top">5</td>
+    <td valign="top">输入错误参数    &ldquo;0&rdquo;</td>
+    <td valign="top">输入错误参数    &ldquo;0&rdquo;</td>
+  </tr>
+  <tr>
+    <td valign="top">6</td>
+    <td valign="top">调用int getAutoPollingTime()</td>
+    <td valign="top">返回‘60’</td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>6</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setAutoPollingTime(int aptime)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段 不存在时 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入正常参数    &ldquo;30&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回E_SYSTEM_FAILED </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>7</p></td>
+    <td width="379" colspan="2" valign="top"><p>4</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -283,7 +242,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段 值为&ldquo;30&rdquo;</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -295,41 +254,22 @@
     <td width="189" valign="top"><p>调用函数</p></td>
     <td width="189" valign="top"><p>返回30</p></td>
   </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>8</p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用函数setAutoPollingTime（60）</td>
+    <td valign="top">返回 S_OK</td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int getAutoPollingTime()</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aptime 字段不存在</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 0 </p></td>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回 60</td>
   </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>9</p></td>
+    <td width="379" colspan="2" valign="top"><p>5</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -341,7 +281,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段默认值为&ldquo;div1_1&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -351,48 +291,40 @@
   <tr>
     <td width="189" valign="top"><p>1</p></td>
     <td width="189" valign="top"><p>输入参数    为空</p></td>
-    <td width="189" valign="top"><p>返回    E_PARAMETER_ERROR </p></td>
+    <td width="189" valign="top"><p>返回      E_PARAMETER_ERROR </p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="189" valign="top"><p>输入参数    为&ldquo;div2_2&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK </p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用QString getSplitScreenMode()</td>
+    <td valign="top">返回 “div1_1”(默认值)</td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入参数    为&ldquo;div2_2&rdquo;</td>
+    <td valign="top">返回 S_OK</td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>4</p></td>
+    <td width="189" valign="top"><p>调用QString getSplitScreenMode()</p></td>
+    <td width="189" valign="top"><p>返回 div2_2 </p></td>
+  </tr>
+  <tr>
+    <td valign="top">5</td>
+    <td valign="top">输入参数    为空</td>
+    <td valign="top"><p>返回      E_PARAMETER_ERROR </p></td>
+  </tr>
+  <tr>
+    <td valign="top">6</td>
+    <td valign="top">调用QString getSplitScreenMode()</td>
+    <td valign="top">返回 div2_2 </td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>10</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setSplitScreenMode(const QString &amp;smode)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库错误的情况</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段 不存在 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入参数    为&ldquo;div2_2&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_SYSTEM_FAILED </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>11</p></td>
+    <td width="379" colspan="2" valign="top"><p>6</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -404,7 +336,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段 值为&ldquo;div2_2&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -414,101 +346,24 @@
   <tr>
     <td width="189" valign="top"><p>1</p></td>
     <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 &ldquo;div2_2&rdquo; </p></td>
+    <td width="189" valign="top"><p>返回 &ldquo;div2_2&rdquo;（默认）</p></td>
+  </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">调用函数setSplitScreenMode（“div1_1”）</td>
+    <td valign="top">返回S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回div1_1</td>
   </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>11</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>QString getSplitScreenMode()</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段 值为&ldquo;div3_3&rdquo; </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 &ldquo;div3_3&rdquo; </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>12</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>QString getSplitScreenMode()</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段 值为空 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 &ldquo;div2_2&rdquo;（默认） </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>13</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>QString getSplitScreenMode()</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    smode 字段不存在 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 &ldquo;div2_2&rdquo;（默认） </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>14</p></td>
+    <td width="379" colspan="2" valign="top"><p>7</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -520,7 +375,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    alogin字段 为true </p></td>
+    <td width="379" colspan="2" valign="top">数据库清空</td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -533,45 +388,27 @@
     <td width="189" valign="top"><p>返回 S_OK</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td valign="top"><p>2</p></td>
+    <td valign="top"><p>调用bool getAutoLogin()</p></td>
+    <td valign="top"><p>返回  &ldquo;false&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入    正确参数 &ldquo;true&rdquo;</td>
+    <td valign="top">返回 S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">调用bool getAutoLogin()</td>
+    <td valign="top">返回  &ldquo;true&rdquo;</td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>15</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setAutoLogin(bool    alogin)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>输入参数；正常参数限定为&ldquo;false&rdquo;和&ldquo;true&rdquo;</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    alogin字段 不存在 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_SYSTEM_FAILED </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>16</p></td>
+    <td width="379" colspan="2" valign="top"><p>8</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -583,7 +420,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    alogin字段为&ldquo;true&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -593,14 +430,24 @@
   <tr>
     <td width="189" valign="top"><p>1</p></td>
     <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 true </p></td>
+    <td width="189" valign="top"><p>返回 true （默认值）</p></td>
+  </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">调用函数int setAutoLogin(false)</td>
+    <td valign="top"><p>返回S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回 false</td>
   </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>17</p></td>
+    <td width="379" colspan="2" valign="top"><p>9</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -612,7 +459,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    synctime字段为&ldquo;true&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -626,44 +473,26 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>2</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td width="379" valign="top"><p>调用函数bool getAutoSyncTime()</p></td>
+    <td width="189" valign="top"><p>返回 false</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入    正确参数 &ldquo;true&rdquo;</td>
+    <td valign="top">返回 S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">调用函数bool getAutoSyncTime()</td>
+    <td valign="top">返回 true</td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>18</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setAutoSyncTime(bool synctime)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>输入参数；正常参数限定为&ldquo;false&rdquo;和&ldquo;true&rdquo;</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    synctime字段 不存在 </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_SYSTEM_FAILED </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>19</p></td>
+    <td width="379" colspan="2" valign="top"><p>10</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -675,36 +504,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    synctime字段为&ldquo;true&rdquo; </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 true </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>20</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setAutoConnent(bool aconnent)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>输入参数；正常参数限定为&ldquo;false&rdquo;和&ldquo;true&rdquo;</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aconnent字段为&ldquo;true&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -713,20 +513,26 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>1</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td width="379" valign="top"><p>调用函数</p></td>
+    <td width="189" valign="top"><p>返回 true （默认值）</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用函数int setAutoSyncTime(false)</td>
+    <td valign="top"><p>返回S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回 false</td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>21</p></td>
+    <td width="379" colspan="2" valign="top"><p>11</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -738,24 +544,39 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aconnent字段 不存在 </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_SYSTEM_FAILED </p></td>
+    <td valign="top"><p>1</p></td>
+    <td valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td valign="top"><p>返回 S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top"><p>2</p></td>
+    <td valign="top"><p>调用函数bool getAutoConnent()</p></td>
+    <td valign="top"><p>返回 false</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入    正确参数 &ldquo;true&rdquo;</td>
+    <td valign="top">返回 S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">调用函数bool getAutoConnent()</td>
+    <td valign="top">返回 true</td>
   </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>22</p></td>
+    <td width="379" colspan="2" valign="top"><p>12</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -767,37 +588,7 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    aconnent字段为&ldquo;true&rdquo; </p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
-    <td width="189" valign="top"><p>预期</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数</p></td>
-    <td width="189" valign="top"><p>返回 true </p></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<table border="1" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>23</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试对象</p></td>
-    <td width="379" colspan="2" valign="top"><p>int setBootFromStart(bool bootstart)</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>测试内容</p></td>
-    <td width="379" colspan="2" valign="top"><p>输入参数；正常参数限定为&ldquo;false&rdquo;和&ldquo;true&rdquo;</p></td>
-  </tr>
-  <tr>
-    <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    bootstart字段为&ldquo;true&rdquo; </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
@@ -805,21 +596,27 @@
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td valign="top"><p>1</p></td>
+    <td valign="top"><p>调用函数</p></td>
+    <td valign="top"><p>返回 true （默认值）</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>2</p></td>
-    <td width="379" valign="top"><p>输入    正确参数 &ldquo;true&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 S_OK</p></td>
+    <td valign="top">2</td>
+    <td valign="top">调用函数int setAutoConnent(false)</td>
+    <td valign="top"><p>返回S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回 false</td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="189" valign="top"><p>测试编号</p></td>
-    <td width="379" colspan="2" valign="top"><p>24</p></td>
+    <td width="379" colspan="2" valign="top"><p>13</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>测试对象</p></td>
@@ -831,48 +628,75 @@
   </tr>
   <tr>
     <td width="189" valign="top"><p>前置条件</p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    bootstart字段    不存在 </p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库    清空</p></td>
   </tr>
   <tr>
     <td width="189" valign="top"><p>步骤编号</p></td>
-    <td width="189" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
     <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
-    <td width="189" valign="top"><p>返回 E_SYSTEM_FAILED </p></td>
+    <td valign="top"><p>1</p></td>
+    <td valign="top"><p>输入    正确参数 &ldquo;false&rdquo;</p></td>
+    <td valign="top"><p>返回 S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top"><p>2</p></td>
+    <td valign="top"><p>调用函数bool setBootFromStart()</p></td>
+    <td valign="top"><p>返回 false</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">输入    正确参数 &ldquo;true&rdquo;</td>
+    <td valign="top">返回 S_OK</td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">调用函数bool setBootFromStart()</td>
+    <td valign="top">返回 true</td>
   </tr>
 </table>
 <p>&nbsp;</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="189" valign="top"><p>测试编号 </p></td>
-    <td width="379" colspan="2" valign="top"><p>25</p></td>
+    <td width="189" valign="top"><p>测试编号</p></td>
+    <td width="379" colspan="2" valign="top"><p>14</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>测试对象 </p></td>
-    <td width="379" colspan="2" valign="top"><p>int setBootFromStart(bool <a name="OLE_LINK6"></a><a name="OLE_LINK5">bootstart</a>)</p></td>
+    <td width="189" valign="top"><p>测试对象</p></td>
+    <td width="379" colspan="2" valign="top"><p><span lang="EN-US" xml:lang="EN-US"> bool getBootFromStart() </span></p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>测试内容 </p></td>
-    <td width="379" colspan="2" valign="top"><p>返回值 </p></td>
+    <td width="189" valign="top"><p>测试内容</p></td>
+    <td width="379" colspan="2" valign="top"><p>返回值</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>前置条件 </p></td>
-    <td width="379" colspan="2" valign="top"><p>数据库    bootstart字段为&ldquo;true&rdquo; </p></td>
+    <td width="189" valign="top"><p>前置条件</p></td>
+    <td width="379" colspan="2" valign="top"><p>数据库清空</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>步骤编号 </p></td>
-    <td width="189" valign="top"><p>步骤 </p></td>
-    <td width="189" valign="top"><p>预期 </p></td>
+    <td width="189" valign="top"><p>步骤编号</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
+    <td width="189" valign="top"><p>预期</p></td>
   </tr>
   <tr>
-    <td width="189" valign="top"><p>1</p></td>
-    <td width="189" valign="top"><p>调用函数 </p></td>
-    <td width="189" valign="top"><p>返回 true </p></td>
+    <td valign="top"><p>1</p></td>
+    <td valign="top"><p>调用函数</p></td>
+    <td valign="top"><p>返回 true （默认值）</p></td>
+  </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">调用函数int setBootFromStart(false)</td>
+    <td valign="top"><p>返回S_OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">调用函数</td>
+    <td valign="top">返回 false</td>
   </tr>
 </table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <p align="left">附录表：1</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
