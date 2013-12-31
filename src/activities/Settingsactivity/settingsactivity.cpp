@@ -711,7 +711,7 @@ void settingsActivity::OnModifyDevice()
 	QVariant sAddress=QueryValue("address_ID");
 	QVariant port=QueryValue("port_ID");
 	QVariant http=QueryValue("http_ID");
-	if(false==sAddress.isNull()&&false==port.isNull()&&http.isNull()){
+	if(false==sAddress.isNull()&&false==port.isNull()&&false==http.isNull()){
 		int nRet_int=Idevice->ModifyDeviceHost(Dev_Id.toInt(),sAddress.toString(),port.toInt(),http.toInt());
 		if(0!=nRet_int){
 			arg.clear();
