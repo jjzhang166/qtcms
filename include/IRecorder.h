@@ -22,8 +22,8 @@ interface IRecorder : public IPComBase
 
 /*
 	参数type类型：
-	REC_SYS_DATA 0x11 为信息数据
-	0x1、0x2为视频帧
+	视频帧 0x01(关键帧) 、0x02
+	音频帧 0x00
 
 	事件：无
 */
