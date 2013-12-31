@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  编辑日期：2013.12.30<br />
+  文档简介：<br />
+  commonlib组件录像时间表设置测试用例文档<br />
+  测试的接口：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="568" valign="top"><br />
+      int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable) </td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>QStringList GetRecordTimeBydevId(int chl_id)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)</p></td>
+  </tr>
+</table>
+<p>测试用例：<br />
+  前置条件:  数据库中建立表recordtime,  设置一条记录: 0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试输入参数与返回值</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>对starttime和endtime使用格式为空字符串,</p></td>
+    <td width="284" valign="top"><p>都返回1</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>对starttime使用格式为除&quot;yyyy-MM-dd    hh:mm:ss&quot;之外的其他形式: &ldquo;yyyyMMdd hh:mm:ss&rdquo;,&rdquo;yyyy&rdquo;还有2013/12/30    XX:XX:XX,</p></td>
+    <td width="284" valign="top"><p>都返回1</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为0 </p></td>
+    <td width="284" valign="top"><p>返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为1</p></td>
+    <td width="284" valign="top"><p>返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2012-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo; </p></td>
+    <td width="284" valign="top"><p>返回1</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2014-01-03 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回1</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>QStringList GetRecordTimeBydevId(int chl_id)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试输入参数与返回值</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>使用通道号0查询</p></td>
+    <td width="284" valign="top"><p>默认值和返回值结果一致, 返回默认的那组数据的id号0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>使用参数id不存在的值查询: 200和-200</p></td>
+    <td width="284" valign="top"><p>返回空的QstringList</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="140" valign="top"><p>测试对象</p></td>
+    <td width="428" colspan="2" valign="top"><p>QStringList GetRecordTimeBydevId(int chl_id)</p></td>
+  </tr>
+  <tr>
+    <td width="140" valign="top"><p>测试内容</p></td>
+    <td width="428" colspan="2" valign="top"><p>查询数据库记录是否成功</p></td>
+  </tr>
+  <tr>
+    <td width="140" valign="top"><p>前置条件</p></td>
+    <td width="428" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 再增加2条记录0|1|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;和1|0|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;</p></td>
+  </tr>
+  <tr>
+    <td width="140" valign="top"><p>步骤编号</p></td>
+    <td width="148" valign="top"><p>步骤</p></td>
+    <td width="280" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="140" valign="top"><p>1</p></td>
+    <td width="148" valign="top"><p>使用0通道为参数用GetRecordTimeBydevId查询通道0的id记录;</p></td>
+    <td width="280" valign="top"><p>GetRecordTimeBydevId返回结果:返回的id号0有2条</p></td>
+  </tr>
+  <tr>
+    <td width="140" valign="top"><p>2</p></td>
+    <td width="148" valign="top"><p>使用1通道为参数用GetRecordTimeBydevId查询通道1的id记录; </p></td>
+    <td width="280" valign="top"><p>GetRecordTimeBydevId返回结果:返回的id号1有1条 </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>使用非法参数</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="149" valign="top"><p>步骤</p></td>
+    <td width="277" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="149" valign="top"><p>recordtime_id 使用小于0的数</p></td>
+    <td width="277" valign="top"><p>返回空的QvariantMap </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="149" valign="top"><p>recordtime_id 使用超出数据库实际最大id的数200</p></td>
+    <td width="277" valign="top"><p>返回空的QvariantMap </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="149" valign="top"><p>recordtime_id 使用合理的数0</p></td>
+    <td width="277" valign="top"><p>返回&rdquo; chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)<br />
+      int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>修改值和查询值结果一致</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="149" valign="top"><p>步骤</p></td>
+    <td width="277" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="149" valign="top"><p>使用ModifyRecordTime(使用正确的参数)来修改录像时间id为0的记录的开始时间为&rdquo; 2014-01-01 00:00:00&rdquo;结束时间为&rdquo; 2014-01-01    23:59:59&rdquo;的录像时间</p></td>
+    <td width="277" valign="top"><p>函数返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2014-01-01 00:00:00&rdquo;, endtime返回为&rdquo; 2014-01-01 23:59:59&rdquo;,enable返回0 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="149" valign="top"><p>步骤1和3两个结果对比</p></td>
+    <td width="277" valign="top"><p>时间设置成功</p></td>
+  </tr>
+  <tr>
+    <td width="568" colspan="3" valign="top"><p>&nbsp;</p>
+      <p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试对象</p></td>
+    <td width="426" colspan="2" valign="top"><p>QVariantMap GetRecordTimeInfo (int recordtime_id)<br />
+      int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>修改值和查询值结果一致</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="149" valign="top"><p>步骤</p></td>
+    <td width="277" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="149" valign="top"><p>使用ModifyRecordTime(使用错误的参数)来修改录像时间id为0的记录的开始时间为&rdquo; 2012-01-01 00:00:00&rdquo;结束时间为&rdquo; 2012-01-01    23:59:59&rdquo;的录像时间</p></td>
+    <td width="277" valign="top"><p>返回1</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="149" valign="top"><p>步骤1和3两个结果对比</p></td>
+    <td width="277" valign="top"><p>结果一致</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
