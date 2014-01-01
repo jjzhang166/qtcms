@@ -1994,22 +1994,103 @@ int QCommonPlugin::ModifyRecordTime( int recordtime_id,QString starttime,QString
 
 	// check record id
 	QSqlQuery _query(m_db);
-	QString sSql = QString("update recordtime set starttime='%s',").arg(starttime);
-	_query.exec(command);
+	QString sSql = QString("select id from recordtime where id=") + QString::number(recordtime_id);
+	if ( !_query.exec(sSql))
+	{
+		return 1;
+	}
+	if ( !_query.first() )
+	{
+		return 1;
+	}
+	_query.finish();
 
 	// modify it
+	// update recordtime set starttime='',endtime='',enable=1 where id=recordtime_id
+	sSql = QString("update recordtime set starttime='") + starttime
+		+ QString("',endtime='") + endtime
+		+ QString("',enable=") + (enable ? QString::number(1) : QString::number(0))
+		+ QString(" where id=") + QString::number(recordtime_id);
+	if ( !_query.exec(sSql) )
+	{
+		return 1;
+	}
+	
+	return 0;
 }
 
 QStringList QCommonPlugin::GetRecordTimeBydevId( int chl_id )
 {
+	QStringList ret;
+	// initialize return value
+	ret.clear();
+
 	// check channel identifier
-	// get record identifiers from database
+	QSqlQuery _query(m_db);
+	QString sSql;
+	sSql = QString("select id from chl where id=") + QString::number(chl_id);
+	if ( !_query.exec(sSql) )
+	{
+		return ret;
+	}
+	if ( !_query.first() )
+	{
+		return ret;
+	}
+	_query.finish();
+
+	// get the identifier of the records
+	// select id from recordtime where chl_id=chl_id;
+	sSql = QString("select id from recordtime where chl_id=") + QString::number(chl_id);
+	if ( !_query.exec(sSql) )
+	{ // execute failed
+		return ret;
+	}
+	if ( !_query.first() )
+	{ // no id was selected
+		return ret;
+	}
+	
+	// input the ids into ret
+	QSqlRecord rec = _query.record();
+	int idColumnIndex = rec.indexOf("id");
+	do 
+	{
+		ret << _query.value(idColumnIndex).toString();
+	} while (_query.next());
+
+	return ret;
 }
 
 QVariantMap QCommonPlugin::GetRecordTimeInfo( int recordtime_id )
 {
-	// check record id
+	QVariantMap ret;
+	ret.clear();
+
+	// SQL select
+	QSqlQuery _query(m_db);
+	QString sSql;
+	sSql = QString("select * from recordtime where id=") + QString::number(recordtime_id);
+	if ( !_query.exec(sSql) )
+	{
+		return ret;
+	}
+	if ( !_query.first() )
+	{
+		return ret;
+	}
+
+	// read record
+	QSqlRecord rec = _query.record();
+	ret.insert("chl_id", _query.value(rec.indexOf("chl_id")));
+	ret.insert("schedle_id", _query.value(rec.indexOf("schedule_id")));
+	ret.insert("weekday", _query.value(rec.indexOf("weekday")));
+	ret.insert("starttime", _query.value(rec.indexOf("starttime")));
+	ret.insert("endtime", _query.value(rec.indexOf("endtime")));
+	ret.insert("enable", _query.value(rec.indexOf("enable")));
+	
 	// get record infomation
+	return ret;
 }
 
 bool QCommonPlugin::CheckTimeFormat( QString sTime )
