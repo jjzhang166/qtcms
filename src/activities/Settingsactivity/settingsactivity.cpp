@@ -90,6 +90,12 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("AddChannelInGroup_ok","click","OnAddChannelInGroup()");
 	QWFW_MSGMAP("RemoveChannelFromGroup_ok","click","OnRemoveChannelFromGroup()");
 	QWFW_MSGMAP("ModifyGroupChannelName_ok","click","OnModifyGroupChannelName()");
+
+	QWFW_MSGMAP("SettingStorageParm_ok","click","OnSettingStorageParm()");
+
+	QWFW_MSGMAP("SettingCommonParm_ok","click","OnSettingCommonParm()");
+	
+	QWFW_MSGMAP("SettingRecordTimeParm_ok","click","OnSettingRecordTimeParm()");
 	QWFW_MSGMAP_END;
 }
 
@@ -1278,5 +1284,264 @@ void settingsActivity::OnModifyGroupChannelName()
 	EP_ADD_PARAM(arg,"success",Content);
 	EventProcCall("ModifyGroupChannelName",arg);
 	IGroup->Release();
+	return;
+}
+
+void settingsActivity::OnSettingStorageParm()
+{
+	IDisksSetting *IDisk=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void**)&IDisk);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==IDisk)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingStorageParmFail",arg);
+		return;
+	}
+	QVariant sDisk_ID=QueryValue("sDisk_ID");
+	QVariant filesize_ID=QueryValue("filesize_ID");
+	QVariant bcover_ID=QueryValue("bcover_ID");
+	QVariant spacereservedsize_ID=QueryValue("spacereservedsize_ID");
+
+	int nRet=-1;
+	nRet=IDisk->setUseDisks(sDisk_ID.toString());
+	if (IDisksSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setUseDisks Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingStorageParmFail",arg);
+		IDisk->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=IDisk->setFilePackageSize(filesize_ID.toInt());
+	if (IDisksSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setFilePackageSize Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingStorageParmFail",arg);
+		IDisk->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=IDisk->setLoopRecording(bcover_ID.toBool());
+	if (IDisksSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setLoopRecording Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingStorageParmFail",arg);
+		IDisk->Release();
+		return;
+	}
+	nRet=-1;
+	nRet=IDisk->setDiskSpaceReservedSize(spacereservedsize_ID.toInt());
+	if (IDisksSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setDiskSpaceReservedSize Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingStorageParmFail",arg);
+		IDisk->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("SettingStorageParm success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("SettingStorageParmSuccess",arg);
+	IDisk->Release();
+	return;
+}
+
+void settingsActivity::OnSettingCommonParm()
+{
+	ILocalSetting *Ilocal=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void**)&Ilocal);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==Ilocal)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		return;
+	}
+	QVariant sLanguage_ID=QueryValue("sLanguage_ID");
+	QVariant aptime_ID=QueryValue("aptime_ID");
+	QVariant smode_ID=QueryValue("smode_ID");
+	QVariant alogin_ID=QueryValue("alogin_ID");
+	QVariant synctime_ID=QueryValue("synctime_ID");
+	QVariant aconnent_ID=QueryValue("aconnent_ID");
+	QVariant afullscreen_ID=QueryValue("afullscreen_ID");
+	QVariant bootstart_ID=QueryValue("bootstart_ID");
+
+	int nRet=-1;
+	nRet=Ilocal->setLanguage(sLanguage_ID.toString());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setLanguage Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setAutoPollingTime(aptime_ID.toInt());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoPollingTime Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setSplitScreenMode(smode_ID.toString());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setSplitScreenMode Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setAutoLogin(alogin_ID.toInt());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoLogin Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setAutoSyncTime(synctime_ID.toBool());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoSyncTime Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setAutoConnect(aconnent_ID.toBool());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoConnect Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setAutoFullscreen(afullscreen_ID.toBool());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoFullscreen Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setBootFromStart(bootstart_ID.toBool());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setAutoFullscreen Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("SettingCommonParm success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("SettingCommonParmSuccess",arg);
+	Ilocal->Release();
+	return;
+}
+
+void settingsActivity::OnSettingRecordTimeParm()
+{
+	ISetRecordTime *ISetRecord=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void**)&ISetRecord);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==ISetRecord)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordTimeFail",arg);
+		return;
+	}
+	QVariant recordtime_ID=QueryValue("recordtime_ID");
+	QVariant starttime_ID=QueryValue("starttime_ID");
+	QVariant endtime_ID=QueryValue("endtime_ID");
+	QVariant enable_ID=QueryValue("enable_ID");
+
+	int nRet=-1;
+	nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID.toString(),endtime_ID.toString(),enable_ID.toBool());
+	if (1==nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("ModifyRecordTime Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordTimeFail",arg);
+		ISetRecord->Release();
+		return;
+	}
+
+	arg.clear();
+	Content.clear();
+	Content.append("ModifyRecordTime success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("SettingRecordTimeSuccess",arg);
+	ISetRecord->Release();
 	return;
 }

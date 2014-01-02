@@ -10,6 +10,9 @@
 #include <IAreaManager.h>
 #include <IGroupManager.h>
 #include <IChannelManager.h>
+#include <IDisksSetting.h>
+#include <ISetRecordTime.h>
+#include <ILocalSetting.h>
 #include <QMutex>
 #include <QObject>
 #include <QPoint>
@@ -68,6 +71,12 @@ public slots:
 	void OnAddChannelInGroupDouble();
 	void OnRemoveChannelFromGroup();
 	void OnModifyGroupChannelName();
+	/*录像存储设置管理*/
+	void OnSettingStorageParm();
+	/*通用设置管理*/
+	void OnSettingCommonParm();
+	/*录像时间设置*/
+	void OnSettingRecordTimeParm();
 private:
 	QWidget * m_MainView;
 	int m_nRef;
