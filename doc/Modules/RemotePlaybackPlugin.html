@@ -64,17 +64,21 @@
   //  nTypes：录像类型 <br />
   //  start： 开始时间, 格式为: yyyy-MM-dd hh:mm:ss<br />
   //  end   ： 结束时间, 格式为: yyyy-MM-dd hh:mm:ss <br />
-  //返回值： <br />
-  //  -1: 播放的实例创建失败或者开始时间和结束时间为空 <br />
+  //返回值：<br />
+// -2: 连接的实例创建失败<br />
+  // -1: 播放的实例创建失败或者开始时间和结束时间为空 <br />
   //  0： 组件中GroupPlay函数返回调用成功 <br />
-  //  1： 组件中GroupPlay函数返回连接中断 <br />
-  int   GroupPlay(int  nTypes,const QString &amp; start,const QString &amp; end);</p>
+//  1： 组件中GroupPlay函数返回连接中断 <br />
+//  2: 组件中GroupPlay函数返回参数错误      <br />
+//  3: 函数注册失败  <br />
+  int   GroupPlay(int  nTypes,const QString &amp; start,const QString &amp; end);
+</p>
 <p align="left">    //简介：播放视频暂停 <br />
   //输入参数： <br />
   //返回值： <br />
   //  -1: 播放的实例创建失败 <br />
   //  0： 组件中GroupPause函数返回调用成功 <br />
-  int   GroupPause();</p>
+int   GroupPause();</p>
 <p align="left">    //简介：播放视频继续 <br />
   //返回值： <br />
   //  -1: 播放的实例创建失败 <br />
