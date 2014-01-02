@@ -66,3 +66,4 @@ extern const IID IID_IDiskSetting;
 extern const IID IID_ILocalSetting; 
 extern const IID IID_IRecorder;
 extern const IID IID_ISetRecordTime;
+extern const GUID CLSID_Recorder;
