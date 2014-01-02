@@ -154,6 +154,25 @@ public slots:
 	virtual int ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable );
 	virtual QStringList GetRecordTimeBydevId( int chl_id );
 	virtual QVariantMap GetRecordTimeInfo( int recordtime_id );
+
+	/*ILocalSetting module*/
+	int setLanguage(const QString & sLanguage);
+	QString getLanguage();
+	int setAutoPollingTime(int aptime);
+	int getAutoPollingTime();
+	int setSplitScreenMode(const QString & smode);
+	QString getSplitScreenMode();
+	int setAutoLogin(bool alogin);
+	bool getAutoLogin();
+	int setAutoSyncTime(bool synctime);
+	bool getAutoSyncTime();
+	int setAutoConnect(bool aconnect);
+	bool getAutoConnect();
+	int setAutoFullscreen(bool afullscreen);
+	bool getAutoFullscreen();
+	int setBootFromStart(bool bootstart);
+	bool getBootFromStart();
+
 };
 
 #endif // QCOMMONPLUGIN_H

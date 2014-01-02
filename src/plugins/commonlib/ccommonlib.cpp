@@ -78,6 +78,10 @@ long __stdcall Ccommonlib::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<ISetRecordTime *>(this);
 	}
+	else if(IID_ILocalSetting==iid)
+	{
+		*ppv = static_cast<ILocalSetting *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -569,4 +573,85 @@ QVariantMap Ccommonlib::GetRecordTimeInfo( int recordtime_id )
 {
 	return m_pluginObj.GetRecordTimeInfo(recordtime_id);
 }
+
+int Ccommonlib::setLanguage(const QString & sLanguage)
+{
+	return m_pluginObj.setLanguage(sLanguage);
+}
+
+QString Ccommonlib::getLanguage()
+{
+	return m_pluginObj.getLanguage();
+}
+
+int Ccommonlib::setAutoPollingTime(int aptime)
+{
+	return m_pluginObj.setAutoPollingTime(aptime);
+}
+int Ccommonlib::getAutoPollingTime()
+{
+	return m_pluginObj.getAutoPollingTime();
+}
+
+int Ccommonlib::setSplitScreenMode(const QString & smode)
+{
+	return m_pluginObj.setSplitScreenMode(smode);
+}
+
+QString Ccommonlib::getSplitScreenMode()
+{
+	return m_pluginObj.getSplitScreenMode();
+}
+
+int Ccommonlib::setAutoLogin(bool alogin)
+{
+	return m_pluginObj.setAutoLogin(alogin);
+}
+
+bool Ccommonlib::getAutoLogin()
+{
+	return m_pluginObj.getAutoLogin();
+}
+
+int Ccommonlib::setAutoSyncTime(bool synctime)
+{
+	return m_pluginObj.setAutoSyncTime(synctime);
+}
+
+bool Ccommonlib::getAutoSyncTime()
+{
+	return m_pluginObj.getAutoSyncTime();
+}
+
+int Ccommonlib::setAutoConnect(bool aconnect)
+{
+	return m_pluginObj.setAutoConnect(aconnect);
+}
+
+bool Ccommonlib::getAutoConnect()
+{
+	return m_pluginObj.getAutoConnect();
+}
+
+int Ccommonlib::setAutoFullscreen(bool afullscreen)
+{
+	return m_pluginObj.setAutoFullscreen(afullscreen);
+}
+
+bool Ccommonlib::getAutoFullscreen()
+{
+	return m_pluginObj.getAutoFullscreen();
+}
+
+int Ccommonlib::setBootFromStart(bool bootstart)
+{
+	return m_pluginObj.setBootFromStart(bootstart);
+}
+
+bool Ccommonlib::getBootFromStart()
+{
+	return m_pluginObj.getBootFromStart();
+}
+
+
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

@@ -12,6 +12,7 @@
 #include <IChannelManager.h>
 #include <IDisksSetting.h>
 #include <ISetRecordTime.h>
+#include <ILocalSetting.h>
 #include "qcommonplugin.h"
 
 class Ccommonlib : public QObject
@@ -23,6 +24,7 @@ class Ccommonlib : public QObject
 	,public IDisksSetting
 	,public IChannelManager
 	,public ISetRecordTime
+	,public ILocalSetting
 {
 public:
 	Ccommonlib();
@@ -152,6 +154,25 @@ public:
 	virtual QStringList GetRecordTimeBydevId( int chl_id );
 
 	virtual QVariantMap GetRecordTimeInfo( int recordtime_id );
+
+	/*ILocalSetting module*/
+	virtual int setLanguage(const QString & sLanguage);
+	virtual QString getLanguage();
+	virtual int setAutoPollingTime(int aptime);
+	virtual int getAutoPollingTime();
+	virtual int setSplitScreenMode(const QString & smode);
+	virtual QString getSplitScreenMode();
+	virtual int setAutoLogin(bool alogin);
+	virtual bool getAutoLogin();
+	virtual int setAutoSyncTime(bool synctime);
+	virtual bool getAutoSyncTime();
+	virtual int setAutoConnect(bool aconnect);
+	virtual bool getAutoConnect();
+	virtual int setAutoFullscreen(bool afullscreen);
+	virtual bool getAutoFullscreen();
+	virtual int setBootFromStart(bool bootstart);
+	virtual bool getBootFromStart();
+
 private:
 	int m_nRef;
 	QMutex m_csRef;

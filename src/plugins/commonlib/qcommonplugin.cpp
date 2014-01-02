@@ -5,6 +5,7 @@
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
 #include <IDisksSetting.h>
+#include <ILocalSetting.h>
 #include "DisksInfo.h"
 #include <QtGui/QMessageBox>
 
@@ -1571,7 +1572,7 @@ QStringList QCommonPlugin::GetChannelList(int dev_id)
 	//}
 
 	//qDebug("%d",listRet.count());
-	//return listRet;	
+	//return listRet;
 	QSqlQuery _query(m_db);
 	QStringList S_List;
 	S_List.clear();
@@ -1719,7 +1720,21 @@ int QCommonPlugin::setUseDisks(const QString & sDisks)
 	}
 
 	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='storage_usedisks'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
 	QString command = QString("update general_setting set value='%1' where name='storage_usedisks'").arg(sDisks);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("storage_usedisks").arg(sDisks);
+	}
+
 	if (_query.exec(command))
 	{
 		return IDisksSetting::OK;
@@ -1824,7 +1839,21 @@ int QCommonPlugin::setFilePackageSize(const int filesize)
 	}
 
 	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='storage_filesize'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
 	QString command = QString("update general_setting set value='%1' where name='storage_filesize'").arg(filesize);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("storage_filesize").arg(filesize);
+	}
+
 	if (_query.exec(command))
 	{
 		return IDisksSetting::OK;
@@ -1877,7 +1906,21 @@ int QCommonPlugin::setLoopRecording(bool loop)
 	}
 
 	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='storage_cover'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
 	QString command = QString("update general_setting set value='%1' where name='storage_cover'").arg(strBool);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("storage_cover").arg(strBool);
+	}
+
 	if (_query.exec(command))
 	{
 		return IDisksSetting::OK;
@@ -1915,7 +1958,21 @@ int QCommonPlugin::setDiskSpaceReservedSize(const int spacereservedsize)
 		return IDisksSetting::E_PARAMETER_ERROR;
 	}
 	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='storage_reservedsize'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
 	QString command = QString("update general_setting set value='%1' where name='storage_reservedsize'").arg(spacereservedsize);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("storage_reservedsize").arg(spacereservedsize);
+	}
+
 	if (_query.exec(command))
 	{
 		return IDisksSetting::OK;
@@ -2101,3 +2158,434 @@ bool QCommonPlugin::CheckTimeFormat( QString sTime )
 	QRegExp regTimeFormat("^[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\ [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}$");
 	return sTime.contains(regTimeFormat);
 }
+
+//设置语言,sLanguage为输入语言字符串
+int QCommonPlugin::setLanguage(const QString & sLanguage)
+{
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/LocalSetting.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+	QStringList languageList;
+
+	languageList = IniFile.allKeys();
+	if (!languageList.contains(QString("LanguageSupport/") + sLanguage))
+	{
+		return ILocalSetting::E_PARAMETER_ERROR;
+	}
+
+	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_slanguage'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_slanguage'").arg(sLanguage);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_slanguage").arg(sLanguage);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取设置的语言,返回值QString 为获取数据库保存的语言。
+QString QCommonPlugin::getLanguage()
+{
+	QString sLanguage("en_GB");
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_slanguage'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		sLanguage = _query.value(0).toString();
+	}
+
+	return sLanguage;
+}
+
+//设置轮询时间,aptime为输入时间(单位秒)
+int QCommonPlugin::setAutoPollingTime(int aptime)
+{
+	if (aptime < 30 || aptime > 86400)
+	{
+		return ILocalSetting::E_PARAMETER_ERROR;
+	}
+
+	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_aptime'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_aptime'").arg(aptime);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_aptime").arg(aptime);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取轮询时间,返回值int 为获取数据库保存时间的文本。
+int QCommonPlugin::getAutoPollingTime()
+{
+	int aptime = 30;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_aptime'");
+	_query.exec(command);
+	if (_query.next())
+	{
+		aptime = _query.value(0).toInt();
+	}
+
+	return aptime;
+}
+
+//设置分屏模式, smode为输入分屏模式字符串
+int QCommonPlugin::setSplitScreenMode(const QString & smode)
+{
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/LocalSetting.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+	QStringList languageList;
+
+	languageList = IniFile.allKeys();
+	if (!languageList.contains(QString("SplitScreen/") + smode))
+	{
+		return ILocalSetting::E_PARAMETER_ERROR;
+	}
+
+	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_smode'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_smode'").arg(smode);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_smode").arg(smode);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+
+}
+
+//获取以设置的分屏模式。返回值QString 为获取数据库保存分屏模式的文本。
+QString QCommonPlugin::getSplitScreenMode()
+{
+	QString smode("div4_4");
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_smode'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		smode = _query.value(0).toString();
+	}
+
+	return smode;
+}
+
+//设置是否自动登录, alogin为输入bool 参数
+int QCommonPlugin::setAutoLogin(bool alogin)
+{
+	QString strLogin = "false";
+	if (alogin)
+	{
+		strLogin = "true";
+	}
+
+	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_alogin'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_alogin'").arg(strLogin);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_alogin").arg(strLogin);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+//获取是否自动登录，返回值bool 类型。
+bool QCommonPlugin::getAutoLogin()
+{
+	bool autoLogin = false;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_alogin'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strLogin = _query.value(0).toString();
+		if ("true" == strLogin)
+		{
+			autoLogin = true;
+		}
+	}
+
+	return autoLogin;
+}
+
+int QCommonPlugin::setAutoSyncTime(bool synctime)
+{
+	QString strSycTime = "false";
+	if (synctime)
+	{
+		strSycTime = "true";
+	}
+
+	QSqlQuery _query(m_db);
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_synctime'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_synctime'").arg(strSycTime);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_synctime").arg(strSycTime);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+bool QCommonPlugin::getAutoSyncTime()
+{
+	bool bSycTime = false;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_synctime'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strSycTime = _query.value(0).toString();
+		if ("true" == strSycTime)
+		{
+			bSycTime = true;
+		}
+	}
+
+	return bSycTime;
+}
+
+int QCommonPlugin::setAutoConnect(bool aconnect)
+{
+	QString strAutoConnect = "false";
+	if (aconnect)
+	{
+		strAutoConnect = "true";
+	}
+
+	QSqlQuery _query(m_db);
+
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_aconnent'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_aconnent'").arg(strAutoConnect);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_aconnent").arg(strAutoConnect);
+	}
+
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+bool QCommonPlugin::getAutoConnect()
+{
+	bool bAutoConnect = false;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_aconnent'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strAutoConnect = _query.value(0).toString();
+		if ("true" == strAutoConnect)
+		{
+			bAutoConnect = true;
+		}
+	}
+
+	return bAutoConnect;
+}
+
+int QCommonPlugin::setAutoFullscreen(bool afullscreen)
+{
+	QString strAutoFullScreen = "false";
+	if (afullscreen)
+	{
+		strAutoFullScreen = "true";
+	}
+
+	QSqlQuery _query(m_db);
+
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_afullscreen'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_afullscreen'").arg(strAutoFullScreen);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_afullscreen").arg(strAutoFullScreen);
+	}
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+bool QCommonPlugin::getAutoFullscreen()
+{
+	bool bAutoFullScreen = false;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_afullscreen'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strAutoFullScreen = _query.value(0).toString();
+		if ("true" == strAutoFullScreen)
+		{
+			bAutoFullScreen = true;
+		}
+	}
+
+	return bAutoFullScreen;
+}
+
+int QCommonPlugin::setBootFromStart(bool bootstart)
+{
+	QString strBootFromStart = "false";
+	if (bootstart)
+	{
+		strBootFromStart = "true";
+	}
+
+	QSqlQuery _query(m_db);
+
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_bootstart'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_bootstart'").arg(strBootFromStart);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_bootstart").arg(strBootFromStart);
+	}
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+bool QCommonPlugin::getBootFromStart()
+{
+	bool bBootFromStart = false;
+	QSqlQuery _query(m_db);
+	QString command = QString("select value from general_setting where name='misc_bootstart'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strBootFromStart = _query.value(0).toString();
+		if ("true" == strBootFromStart)
+		{
+			bBootFromStart = true;
+		}
+	}
+
+	return bBootFromStart;
+}
+
