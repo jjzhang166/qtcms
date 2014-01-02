@@ -22,6 +22,9 @@
   <tr>
     <td width="568" valign="top"><p>int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
   </tr>
+  <tr>
+    <td width="568" valign="top"><p>int  SetDevInfo(const QString&amp;devname,int nChannelNum) </p></td>
+  </tr>
 </table>
 <p>需要同时使用的接口IDisksSetting.h (已测):</p>
 <table border="1" cellspacing="0" cellpadding="0">
@@ -62,11 +65,12 @@
       测试对象 </td>
     <td width="435" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>测试内容</p></td>
-    <td width="435" colspan="2" valign="top"><p>测试录像文件写入大小和磁盘分区号</p></td>
+    <td width="435" colspan="2" valign="top"><p>测试录像文件写入大小和路径以及最后保留空间大小</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>前置条件</p></td>
@@ -84,13 +88,13 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>2</p></td>
-    <td width="164" valign="top"><p>setUseDisks函数设置使用F:盘存储录像文件</p></td>
+    <td width="164" valign="top"><p>setUseDisks函数设置使用E:F:盘存储录像文件</p></td>
     <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>3</p></td>
     <td width="164" valign="top"><p>getUseDisks验证使用磁盘为F:</p></td>
-    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo; F:&rdquo;</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo;E: F:&rdquo;</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>4</p></td>
@@ -114,13 +118,13 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>8</p></td>
-    <td width="164" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为2048MB </p></td>
+    <td width="164" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
     <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>9</p></td>
     <td width="164" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
-    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;2048&rdquo;</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>10</p></td>
@@ -129,99 +133,186 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>11</p></td>
-    <td width="164" valign="top"><p>调用InputFrame ,设置参数正确</p></td>
+    <td width="164" valign="top"><p>调用InputFrame ,设置参数正确, </p></td>
     <td width="271" valign="top"><p>返回值为IRecorder:OK</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>12</p></td>
-    <td width="164" valign="top"><p>调用Stop()停止,观察F:盘下录像文件大小</p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB且均在F盘下</p></td>
+    <td width="164" valign="top"><p>在开始往F:写数据一段时间后, 调用SetDevInfo设置设备名为1000和通道号1 </p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>13</p></td>
+    <td width="164" valign="top"><p>调用Stop()停止,观察E:F:盘下录像文件大小</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB,在F盘下\JAREC\2014-01-02\1000\CHL01目录下有录像, E盘剩余保留空间大小,且E盘有录像,E盘保留空间为5000MB左右</p></td>
   </tr>
 </table>
 <p>// 用例2</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="142" valign="top"><br />
+    <td width="133" valign="top"><br />
       测试对象 </td>
-    <td width="426" colspan="2" valign="top"><p>int  Start()<br />
+    <td width="435" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
       int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>测试内容</p></td>
-    <td width="426" colspan="2" valign="top"><p>测试 循环录像是否循环和保留空间大小</p></td>
+    <td width="133" valign="top"><p>测试内容 </p></td>
+    <td width="435" colspan="2" valign="top"><p>测试录像文件写入大小和路径以及最后保留空间大小 </p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:</p></td>
+    <td width="133" valign="top"><p>前置条件 </p></td>
+    <td width="435" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>步骤编号</p></td>
-    <td width="142" valign="top"><p>步骤</p></td>
-    <td width="284" valign="top"><p>预期</p></td>
+    <td width="133" valign="top"><p>步骤编号 </p></td>
+    <td width="164" valign="top"><p>步骤 </p></td>
+    <td width="271" valign="top"><p>预期 </p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>1</p></td>
-    <td width="142" valign="top"><p>getEnableDisks获取可用分区</p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo; C:D:E:F:&rdquo;</p></td>
+    <td width="133" valign="top"><p>1</p></td>
+    <td width="164" valign="top"><p>getEnableDisks获取可用分区 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo; C:D:E:F:&rdquo;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>2</p></td>
-    <td width="142" valign="top"><p>setUseDisks函数设置使用F:盘存储录像文件</p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+    <td width="133" valign="top"><p>2</p></td>
+    <td width="164" valign="top"><p>setUseDisks函数设置使用E:F:盘存储录像文件 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>3</p></td>
-    <td width="142" valign="top"><p>getUseDisks验证使用磁盘为E:F:</p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo;E: F:&rdquo;</p></td>
+    <td width="133" valign="top"><p>3</p></td>
+    <td width="164" valign="top"><p>getUseDisks验证使用磁盘为F:</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo;E: F:&rdquo;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>4</p></td>
-    <td width="142" valign="top"><p>setFilePackageSize设置录像文件包大小为200MB</p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+    <td width="133" valign="top"><p>4</p></td>
+    <td width="164" valign="top"><p>setFilePackageSize设置录像文件包大小为200MB </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>5</p></td>
-    <td width="142" valign="top"><p>getFilePackageSize获取录像文件包大小的设置 </p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;200&rdquo;</p></td>
+    <td width="133" valign="top"><p>5</p></td>
+    <td width="164" valign="top"><p>getFilePackageSize获取录像文件包大小的设置 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;200&rdquo;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>6</p></td>
-    <td width="142" valign="top"><p>setLoopRecording设置为循环录像</p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+    <td width="133" valign="top"><p>6</p></td>
+    <td width="164" valign="top"><p>setLoopRecording设置为循环录像 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>7</p></td>
-    <td width="142" valign="top"><p>getLoopRecording验证为循环录像 </p></td>
-    <td width="284" valign="top"><p>返回值为true</p></td>
+    <td width="133" valign="top"><p>7</p></td>
+    <td width="164" valign="top"><p>getLoopRecording验证为循环录像 </p></td>
+    <td width="271" valign="top"><p>返回值为true</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>8</p></td>
-    <td width="142" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+    <td width="133" valign="top"><p>8</p></td>
+    <td width="164" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>9</p></td>
-    <td width="142" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
+    <td width="133" valign="top"><p>9</p></td>
+    <td width="164" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>10</p></td>
-    <td width="142" valign="top"><p>调用Start()开始录像 </p></td>
-    <td width="284" valign="top"><p>返回值为IRecorder::OK</p></td>
+    <td width="133" valign="top"><p>10</p></td>
+    <td width="164" valign="top"><p>调用Start()开始录像 </p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>11</p></td>
-    <td width="142" valign="top"><p>调用InputFrame ,设置参数正确, 多次调用, 观察直到F开始有录像文件</p></td>
-    <td width="284" valign="top"><p>返回值为IRecorder:OK</p></td>
+    <td width="133" valign="top"><p>11</p></td>
+    <td width="164" valign="top"><p>调用InputFrame ,设置参数正确, </p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder:OK</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>12</p></td>
-    <td width="142" valign="top"><p>调用Stop()停止,观察E:F:盘下录像文件大小, 和剩余空间大小, 是否有录像文件被覆盖</p></td>
-    <td width="284" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB, E盘剩余空间约为5000MB, </p></td>
+    <td width="133" valign="top"><p>12</p></td>
+    <td width="164" valign="top"><p>调用Stop()停止,观察E:F:盘下录像文件大小 </p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB,在EF盘有录像,E盘保留空间为5000MB左右 </p></td>
   </tr>
 </table>
+<p>&nbsp;</p>
 <p>// 用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="133" valign="top"><br />
+      测试对象 </td>
+    <td width="435" colspan="2" valign="top"><p>int  Start()<br />
+      int  Stop() <br />
+      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>测试内容</p></td>
+    <td width="435" colspan="2" valign="top"><p>测试 不循环录像是否正常停止而不覆盖和分区保留空间大小以及路径是否正确</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>前置条件</p></td>
+    <td width="435" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>步骤编号</p></td>
+    <td width="164" valign="top"><p>步骤</p></td>
+    <td width="271" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>1</p></td>
+    <td width="164" valign="top"><p>getEnableDisks获取可用分区</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo; C:D:E:F:&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>2</p></td>
+    <td width="164" valign="top"><p>setUseDisks函数设置使用F:盘存储录像文件</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>3</p></td>
+    <td width="164" valign="top"><p>getUseDisks验证使用磁盘为E:</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK; 输出值为&rdquo;E: &rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>4</p></td>
+    <td width="164" valign="top"><p>setFilePackageSize设置录像文件包大小为200MB</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>5</p></td>
+    <td width="164" valign="top"><p>getFilePackageSize获取录像文件包大小的设置 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;200&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>6</p></td>
+    <td width="164" valign="top"><p>setLoopRecording设置为非循环录像</p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>7</p></td>
+    <td width="164" valign="top"><p>getLoopRecording验证为循环录像 </p></td>
+    <td width="271" valign="top"><p>返回值为false</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>8</p></td>
+    <td width="164" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>9</p></td>
+    <td width="164" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
+    <td width="271" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>10</p></td>
+    <td width="164" valign="top"><p>调用Start()开始录像 </p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>11</p></td>
+    <td width="164" valign="top"><p>调用InputFrame ,设置参数正确, 不调用Stop ()观察当E盘只剩5000MB时是否会覆盖之前文件</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder:OK<br />
+      观察E:盘下录像文件大小, 和剩余空间大小, 是否有录像文件被覆盖</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>// 用例4</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="142" valign="top"><br />
@@ -446,13 +537,13 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>8</p></td>
-    <td width="142" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为2048MB </p></td>
+    <td width="142" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
     <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>9</p></td>
     <td width="142" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;2048&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>10</p></td>
@@ -477,11 +568,12 @@
       测试对象 </td>
     <td width="426" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>测试内容</p></td>
-    <td width="426" colspan="2" valign="top"><p>测试InputFrame参数buffersize和返回值</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试SetDevInfo参数nChannelNum和返回值</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
@@ -529,13 +621,13 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>8</p></td>
-    <td width="142" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为2048MB </p></td>
+    <td width="142" valign="top"><p>setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB </p></td>
     <td width="284" valign="top"><p>返回值为IDisksSetting::OK;</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>9</p></td>
     <td width="142" valign="top"><p>getDiskSpaceReservedSize验证上一步设置值 </p></td>
-    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;2048&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回值为IDisksSetting::OK;输出值为&rdquo;5000&rdquo;</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>10</p></td>
@@ -544,13 +636,18 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>11</p></td>
-    <td width="142" valign="top"><p>调用InputFrame ,设置参数buffersize为-300, 其他参数正确</p></td>
-    <td width="284" valign="top"><p>返回值为IRecorder: E_PARAMETER_ERROR</p></td>
+    <td width="142" valign="top"><p>调用InputFrame ,设置正确的参数</p></td>
+    <td width="284" valign="top"><p>返回值为IRecorder: :OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>12</p></td>
+    <td width="142" valign="top"><p>一段时间后, 调用SetDevInfo设置nChannelNum为17和-200</p></td>
+    <td width="284" valign="top"><p>返回值为IRecorder: : E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>13</p></td>
     <td width="142" valign="top"><p>调用Stop()停止</p></td>
-    <td width="284" valign="top"><p>返回值为IRecorder::OK,  F盘录像文件无</p></td>
+    <td width="284" valign="top"><p>返回值为IRecorder::OK,  F盘有录像文件但是无目录为17和-200</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
