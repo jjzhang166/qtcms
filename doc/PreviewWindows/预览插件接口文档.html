@@ -110,11 +110,19 @@
   0：成功<br>
   1：失败<br>
   int StartRecord();</p>
-<p>         接口简介：停止本地录像<br>
+<p>接口简介：停止本地录像<br>
   返回值：<br>
   0：成功<br>
   1：失败<br>
-  int  StopRecord();<br>
+  int  StopRecord();</p>
+<p>接口简介：设置设备信息（生成录像文件路径使用）</p>
+<p>输入参数：</p>
+<p>devname：设备名称</p>
+<p>nChannelNum：通道号（取值范围1～16）</p>
+<p>返回值：</p>
+<p>0：成功<br />
+1：失败</p>
+<p>int SetDevInfo(const QString&amp;devname,int nChannelNum)<br>
   插件抛出事件：<br>
   @1<br>
   抛出条件：连接状态发生改变时<br>
