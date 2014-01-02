@@ -86,11 +86,13 @@ var oLeft,oBottom,oView,oPlayBack,
 		$('div.play_time').on({ 
 			mousedown: function(event){
 				event.stopPropagation();
+				oPlayBack.GroupStop();
 				var disX = event.pageX - $(this).offset().left;
 				set_drag(disX,79,$('table.table').width() -42);
 			},
 			mouseup:function(event){
 				event.stopPropagation();
+				$(document).off();
 				var disX = event.pageX - $(this).offset().left,
 					X1 = 79,
 					X2 = $('table.table').width() -42,
