@@ -293,3 +293,36 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 	EP_ADD_PARAM(arg,"Wid",j);
 	EventProcCall("CurrentWindows",arg);
 }
+
+int QPreviewWindows::StartRecord()
+{
+	int nRet = 0;
+	for (int i = 0; i < ARRAY_SIZE(m_PreviewWnd); i++)
+	{
+		nRet |= m_PreviewWnd[i].StartRecord();
+	}
+
+	return nRet;
+}
+
+int QPreviewWindows::StopRecord()
+{
+	int nRet = 0;
+	for (int i = 0; i < ARRAY_SIZE(m_PreviewWnd); i++)
+	{
+		nRet |= m_PreviewWnd[i].StopRecord();
+	}
+
+	return nRet;
+}
+
+int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum)
+{
+	int nRet = 0;
+	for (int i = 0; i < ARRAY_SIZE(m_PreviewWnd); i++)
+	{
+		nRet |= m_PreviewWnd[i].SetDevInfo(devname, nChannelNum);
+	}
+
+	return nRet;	
+}

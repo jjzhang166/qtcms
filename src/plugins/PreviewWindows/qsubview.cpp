@@ -6,7 +6,7 @@
 #include <QtCore>
 #include <QSettings>
 #include <QMouseEvent>
-
+#include <QtXml/QtXml>
 
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
@@ -255,6 +255,13 @@ int QSubView::PrevPlay(QVariantMap evMap)
 {
 	unsigned int nLength=evMap.value("length").toUInt();
 	char * lpdata=(char *)evMap.value("data").toUInt();
+
+	int nType = evMap.value("frametype").toUInt();
+	if (NULL != m_pRecorder)
+	{
+		m_pRecorder->InputFrame(nType, lpdata, nLength);
+	}
+
 	if (NULL==m_IVideoDecoder)
 	{
 		return 1;
@@ -388,4 +395,73 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 		return 0;
 	}
 	return 1;
+}
+
+int QSubView::StartRecord()
+{
+	// configuration
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QFile * file = new QFile(sAppPath + "/pcom_config.xml");
+	file->open(QIODevice::ReadOnly);
+	QDomDocument ConfFile;
+	ConfFile.setContent(file);
+
+	QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	bool bFound = false;
+	for (int n = 0; n < itemList.count(); n++)
+	{
+		QDomNode item = itemList.at(n);
+		QString sItemName = item.toElement().attribute("name");
+
+		if (sItemName.left(strlen("record.")) == QString("record."))
+		{
+			bFound = true;
+			if (NULL != m_pRecorder)
+			{
+				m_pRecorder->Release();
+				m_pRecorder = NULL;
+			}
+			CLSID recordClsid = pcomString2GUID(item.toElement().attribute("clsid"));
+			pcomCreateInstance(recordClsid,NULL,IID_IRecorder,(void **)&m_pRecorder);
+			if (NULL != m_pRecorder)
+			{
+				m_pRecorder->Start();
+			}
+			break;
+		}
+	}
+
+	file->close();
+	delete file;
+
+	if (!bFound)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+int QSubView::StopRecord()
+{
+	if (NULL == m_pRecorder)
+	{
+		return 1;
+	}
+	int nRet = m_pRecorder->Stop();
+	m_pRecorder->Release();
+
+	return nRet;
+}
+
+int QSubView::SetDevInfo(const QString&devname,int nChannelNum)
+{
+	if (NULL == m_pRecorder)
+	{
+		return 1;
+	}
+
+	int nRet = m_pRecorder->SetDevInfo(devname, nChannelNum);
+	return nRet;
 }

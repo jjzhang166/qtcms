@@ -62,6 +62,10 @@ public slots:
 
 	void CurrentStateChangePlugin(int statevalue,QWidget *WID);
 
+	//????????
+	int StartRecord();
+	int StopRecord();
+	int SetDevInfo(const QString&devname,int nChannelNum);
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

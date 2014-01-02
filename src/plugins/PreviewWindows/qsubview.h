@@ -13,6 +13,7 @@
 #include "PreviewWindowsGlobalSetting.h"
 #include "QSubviewThread.h"
 #include <IVideoRender.h>
+#include <IRecorder.h>
 #include <QTime>
 #include <QMenu>
 #include "QSubViewObject.h"
@@ -51,6 +52,11 @@ public:
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
 
+	//????????
+	int StartRecord();
+	int StopRecord();
+	int SetDevInfo(const QString&devname,int nChannelNum);
+
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -73,6 +79,7 @@ private:
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClient;
 	QSubViewObject m_QSubViewObject;
+	IRecorder *m_pRecorder;
 
 	QSubViewConnectStatus m_CurrentState;
 	int iInitWidth;
