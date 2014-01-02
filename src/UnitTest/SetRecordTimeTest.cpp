@@ -67,7 +67,7 @@ void SetRecordTimeTest::beforeSetRecordTimeTest()
 //      对starttime和endtime使用格式为空字符串 | 返回1
 //      对starttime和endtime使用格式为除"yyyy-MM-dd hh:mm:ss"之外的其他形式: “yyyyMMdd hh:mm:ss”,”yyyy”还有2013/12/31 | 返回1
 //      使用合理的值: starttime 设为“2013-12-31 01:00:00” endtime设为” 2013-12-31 22:00:00”, enable 设为0和1两种情况  | 返回0
-//      使用正确的格式但错误的值: starttime 设为“2012-12-31 01:00:00” endtime设为” 2012-12-31 22:00:00”, enable 设为0和1两种情况 | 返回1
+//      使用正确的格式但错误的值: starttime 设为“2012-12-31 01:00:00” endtime设为” 2013-12-31 22:00:00”, enable 设为0和1两种情况 | 返回1
 void SetRecordTimeTest::SetRecordTimeTest1()
 {
     beforeSetRecordTimeTest();
@@ -84,7 +84,7 @@ void SetRecordTimeTest::SetRecordTimeTest1()
     QVERIFY2(1 == nRet,"step 4:return");
     nRet = Itest->ModifyRecordTime(1, "2013-12-31 00:00:00", "2013/12/31 23:59:59", true);
     QVERIFY2(1 == nRet,"step 5:return");
-    nRet = Itest->ModifyRecordTime(1, "2012-12-31 00:00:00", "2012-12-31 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2012-12-31 00:00:00", "2013-12-31 23:59:59", true);
     QVERIFY2(1 == nRet,"step 6:return");
     nRet = Itest->ModifyRecordTime(1, "2013-12-31 00:00:00", "2013-12-31 23:59:59", true);
     QVERIFY2(0 == nRet,"step 7:return");
