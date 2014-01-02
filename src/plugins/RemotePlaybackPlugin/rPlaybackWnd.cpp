@@ -268,6 +268,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
                 nRet = 3;
             }
         }
+        m_DeviceClient->checkUser(m_sUserName,m_sUserPwd);
         m_DeviceClient->connectToDevice(m_HostAddress.toString(),m_uiPort,m_sEseeId);
 
 		QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
