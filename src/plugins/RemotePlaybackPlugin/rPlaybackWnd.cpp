@@ -251,9 +251,35 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
     int nRet = -1;
     if (NULL != m_GroupPlayback && !startTime.isEmpty() && !endTime.isEmpty() )
     {
+        if (m_DeviceClient != NULL)
+        {
+            m_DeviceClient->Release();
+            m_DeviceClient = NULL;
+        }
+        m_GroupPlayback->QueryInterface(IID_IDeviceClient , (void **)&m_DeviceClient);
+        if (NULL == m_DeviceClient)
+        {
+            return nRet = 1;
+        }
+        if (!bIsInitFlags)
+        {
+            if (1 == cbInit())
+            {
+                return nRet = 2;
+            }
+        }
+        m_DeviceClient->checkUser(m_sUserName,m_sUserPwd);
+        m_DeviceClient->connectToDevice(m_HostAddress.toString(),m_uiPort,m_sEseeId);
+
 		QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
 		QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
         nRet = m_GroupPlayback->GroupPlay(nTypes, start, end);
+
+        if (m_DeviceClient != NULL)
+        {
+            m_DeviceClient->Release();
+            m_DeviceClient = NULL;
+        }
     } 
     return nRet;
 }
@@ -399,7 +425,9 @@ int  RPlaybackWnd::cbInit()
          recordInfo.sStartTime = QDateTime::fromString(evMap["start"].toString(), "yyyy-MM-dd hh:mm:ss");
          recordInfo.sEndTime = QDateTime::fromString(evMap["end"].toString(), "yyyy-MM-dd hh:mm:ss");
          recordInfo.sFileName = evMap["filename"].toString();
-		 g_RecList.append(recordInfo);
+
+		 qDebug()<<recordInfo.uiChannel<<","<<recordInfo.uiTypes<<","<<recordInfo.sStartTime<<","<<recordInfo.sEndTime<<","<<recordInfo.sFileName;
+         g_RecList.append(recordInfo);
          nRet = 0;
      }
      return nRet;
@@ -409,12 +437,14 @@ int  RPlaybackWnd::cbInit()
  int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
+     qDebug()<<"cbRecFileSearchFinished";
      if (evName == "recFileSearchFinished")
      {
          QVariantMap::const_iterator it;
          for (it=evMap.begin();it!=evMap.end();++it)
          {
              ((RPlaybackWnd*)pUser)->GetRecFileNum(it.value().toUInt());
+             qDebug()<<"total"<<it.value().toUInt();
              nRet = 0;
          }
      }
@@ -423,6 +453,7 @@ int  RPlaybackWnd::cbInit()
 
  int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
  {
+     qDebug()<<"cbStateChange";
      if (evName=="StateChangeed")
      {
          ((RPlaybackWnd*)pUser)->CurrentStateChangePlugin(evMap.value("status").toInt());
