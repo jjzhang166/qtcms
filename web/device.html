@@ -69,11 +69,10 @@
 	.user div{ float: left;}
 	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
 	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
-	.debug,.confirm{ display: none;}
+	.confirm{ display: none;}
 
 </style>
 </head>
-
 <body>
 <div id="test"></div>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
@@ -92,14 +91,14 @@
 		<table>
 			<tr><td colspan="2">设备连接方式</td></tr>
 			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="1" />易视网链接</td></tr>
-			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" value="192.168.2.1" /></td></tr>
-			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" value="80" /></td></tr>
-			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" value="8080" /></td></tr>
-			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" value="" /></td></tr>
-			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" value="admin" /></td></tr>
+			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" /></td></tr>
+			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" /></td></tr>
+			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" /></td></tr>
+			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
+			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" /></td></tr>
 			<tr><td class="td1">密码</td><td><input type="text" id="password_ID" value="" /></td></tr>
-			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" value="test123" /></td></tr>
-			<tr><td class="td1">通道数</td><td><input   type="text" id="channel_count_ID" value="4" /></td></tr>
+			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" /></td></tr>
+			<tr><td class="td1">通道数</td><td><input   type="text" id="channel_count_ID" /></td></tr>
 			<tr><td class="td1">所在区域</td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
 			<tr>
 				<td class="td1">设备类型</td>
@@ -116,7 +115,7 @@
 					</ul>
 				</td>
 			</tr>
-			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td><td><div class="hover close" onclick="showdata('设备','device')">取消</div></td></tr>
+			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;">取消</div></td></tr>
 		</table>
 </div>
 <div id="area" class="menu">
@@ -124,7 +123,7 @@
 	<table style="margin-top:10px;">
 		<tr><td>区域名</td><td><input type="text" id="area_name_ID"/></td></tr>
 		<tr><td>主区域</td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok">确认</div><div class="hover confirm" id="AddArea_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加区域','area')">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok">确认</div><div class="hover confirm" id="AddArea_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;">取消</div></td></tr>
 	</table>
 </div>
 <div id="group" class="menu">
@@ -132,7 +131,7 @@
 	<table style="margin-top:10px;">
 		<tr><td>分组名</td><td><input type="text" id="group_name_ID"/></td></tr>
 		<!-- <tr><td>主组名</td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
-		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok">确认</div><div class="hover confirm" id="ModifyGroup_ok">确认</div></td><td><div class="hover close" onclick="showdata('分组','group')" >取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok">确认</div><div class="hover confirm" id="ModifyGroup_ok">确认</div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;">取消</div></td></tr>
 	</table>
 </div>
 <div id="channel" class="menu">
@@ -140,7 +139,7 @@
 	<table style="margin-top:10px;">
 		<tr><td>通道名:</td><td><input type="text" id="channel_name_ID" /></td></tr>
 		<tr><td colspan="2" style="height:10px;"></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu2" class="menu">
@@ -197,7 +196,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td colspan="2"><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
 		</table>
 	</div>
 </div>

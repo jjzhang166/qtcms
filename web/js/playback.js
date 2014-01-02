@@ -41,31 +41,12 @@ var oLeft,oBottom,oView,oPlayBack,
 			oSelected = [];
 			
 			var oDevData=$(this).data('data')
-			show(oDevData);
-			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
-				alert('IP地址设置失败或者端口不合法!');
-				return false;
-			}
-			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
-				alert('vendor为空设置失败!');
+			//show(oDevData);
+			if(!setDevData2ocx(oDevData)){ 
 				return false;
 			}
 
 			var oVideoList = $("#channelvideo")
-			var i=0;
-			oVideoList.find('input:checkbox:checked').each(function(index){
-				alert('设备'+oDevData.name+'下的通道'+index+'绑定到窗口'+i+',  状态为:'+oPlayBack.AddChannelIntoPlayGroup(i,index)) 
-				if(oPlayBack.AddChannelIntoPlayGroup(i,index) != 0){
-					alert('设备'+oDevData.name+'下的通道'+index+'绑定到窗口'+i+'失败!');
-					return false;
-				};
-				i++;
-				i = i > 4 ? 4 : i;
-			});
-			if(oVideoList.setUserVerifyInfo(oDevData.username,oDevData.password)){
-				alert('设备'+oDevData.name+'下的通道'+index+'绑定到窗口'+i+'失败!');
-				return;
-			};
 			oVideoList.find('tr:gt(3)').remove()
 					  .end().find('input:checkbox').prop('disabled',false);
 			var count = oDevData['channel_count']
@@ -102,10 +83,26 @@ var oLeft,oBottom,oView,oPlayBack,
 			$(this).find('input:checkbox').click();
 		})
 
-		$('div.play_time').mousedown(function(event){
-			event.stopPropagation();
-			var disX = event.pageX - $(this).offset().left;
-			set_drag(disX,79,$('table.table').width() -42);
+		$('div.play_time').on({ 
+			mousedown: function(event){
+				event.stopPropagation();
+				var disX = event.pageX - $(this).offset().left;
+				set_drag(disX,79,$('table.table').width() -42);
+			},
+			mouseup:function(event){
+				event.stopPropagation();
+				var disX = event.pageX - $(this).offset().left,
+					X1 = 79,
+					X2 = $('table.table').width() -42,
+					left = event.pageX - disX,
+					date = $("div.calendar span.nowDate").html(),
+					sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
+					type = parseInt($('#type span').attr('type')),
+					begin = date+' '+returnTime(sScond),
+					end = date+' 23:59:59';
+					type = type == 0 ? 15 : 1 << type;
+					oPlayBack.GroupPlay(type,begin,end);
+			}
 		})
 
 		$("#channelvideo").mousedown(function(event){
@@ -139,7 +136,7 @@ var oLeft,oBottom,oView,oPlayBack,
 	function searchVideo(){
 		var devData = $('div.dev_list span.device.sel').data('data');
 		if(!devData){
-			Confirm('请选择一台设备');
+			alert('请选择一台设备');
 			return false;
 		}
 		$('#channelvideo div.video').remove();
@@ -149,8 +146,8 @@ var oLeft,oBottom,oView,oPlayBack,
 				channels += 1 << index;
 			}
 		});
-		var type = $('#type span').attr('type')
-			type = type == 0 ? 15 : 1 << parseInt(type)-1;
+		var type = parseInt($('#type span').attr('type'))
+			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var begin = gettime($('div.timeInput:eq(0) input'));
 		var end = gettime( $('div.timeInput:eq(1) input'));
@@ -176,12 +173,54 @@ var oLeft,oBottom,oView,oPlayBack,
 			}
 		});	
 		}
+		ocxsearchVideo(devData);
+	}
+	function setDevData2ocx(oDevData){
+		var  b = true;
+		if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
+			alert('IP地址设置失败或者端口不合法!');
+			b = false;
+		}
+		if(oPlayBack.setDeviceVendor(oDevData.vendor)){
+			alert('vendor为空设置失败!');
+			b = false;
+		}
+		$("#channelvideo").find('input:checkbox').each(function(index){
+			if($(this).is(':checked')){
+				if(oPlayBack.AddChannelIntoPlayGroup(index,(index+1))){
+					b = false;
+				};
+			}
+		});
+		oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
+		return b
+	}
+	var typeHint = [];
+		typeHint[1] = '定时';
+		typeHint[2] = '运动';
+		typeHint[4] = '警告';
+		typeHint[8] = '手动';
+		typeHint[15] = '全部';
+	function ocxsearchVideo(devData){
+		var type = $('#type span').attr('type');
+			type = type == 0 ? 15 : 1 << type;
+		var date = $("div.calendar span.nowDate").html();
+		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
+		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
+		$("#channelvideo").find('input:checkbox').each(function(index){
+			if($(this).is(':checked')){
+				if(oPlayBack.startSearchRecFile(index,type,startTime,endTime)!=0){
+						alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+				};
+			}
+		});
 	}
 	var color = [];
 		color[1] = '#7BC345';
 		color[2] = '#FFE62E';
 		color[4] = '#F00';
 		color[8] = '#F78445';
+		color[15] = '#ABCDEF';
 	function VideoData2Ui(obj){
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)

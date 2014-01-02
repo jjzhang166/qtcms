@@ -98,16 +98,7 @@ function set_drag(disX,X1,X2){
 			    left = left < X1 ? X1 : left;
 				left = left > X2 ? X2 : left;
 			oDrag.css('left',(left-2)+'px');
-			var sHours = ((left-X1)/(X2-X1)*24).toString().split('.'),
-			    H = sHours[0] == '' ? '0' : sHours[0],
-				H = addZero(H);
-				if(sHours[1]){
-					var sM = sHours[1].slice(0,2),
-			    	M = addZero(parseInt(sM*0.6));
-			    }else{ 
-			    	M = '00';
-			    }
-			//$('#playback_view').html(H+':'+M);
+			
 		}).mouseup(function(){
 			$(this).off();
 		})
@@ -325,8 +316,8 @@ function show(data){
 	}
 }
 function addZero(num){   //数字小于0的时候用0补一位.
-	num = parseInt(num);
-	return num = num<10?'0'+num:num;
+	num = num.toString();
+	return num = num<10 ? '0'+num : num;
 }
 function showdata(id,type){ 
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
@@ -348,16 +339,34 @@ function closeMenu(){
 	
 }
 function Confirm(str){
-	$('#confirm').find('h4').html($('#confirm').find('h4').html()+str).show();
-	$('div.menue').each(function(){ 
-		$(this).find('div.close').not(':last').html('确认')
-	})
+	$('#confirm h4').append('<p>'+str+'</p>');
 	objShowCenter($('#confirm'));
 }
-	function objShowCenter(obj){ //调整弹出框定位 居中
-		$('#iframe').hide().show();
-		obj.css({
-			top:($(window).height() - obj.height())/2,
-			left:($(window).width() - obj.width())/2
-		}).show();
-	}
+function objShowCenter(obj){ //调整弹出框定位 居中
+	$('#iframe').hide().show();
+	obj.css({
+		top:($(window).height() - obj.height())/2,
+		left:($(window).width() - obj.width())/2
+	}).show();
+}
+function returnTime(sInt){ 
+	var H = sInt/3600;
+		H = addZero(parseInt(H));
+	var M = (sInt-H*3600)/60
+		M = addZero(parseInt(M));
+	var S = sInt-H*3600-M*60;
+		S = addZero(parseInt(S));
+	/*if(sHours[1]){
+		var sM = sHours[1].slice(0,2),
+    	M = addZero(parseInt(sM*0.6));
+    }else{ 
+    	M = '00';
+    }*/
+	/*var type = parseInt($('#type span').attr('type'))
+		type = type == 0 ? 15 : 1 << type;
+	var date = $("div.calendar span.nowDate").html();
+	var begin = date
+	var end = date*/
+	return H+':'+M+':'+S
+
+}

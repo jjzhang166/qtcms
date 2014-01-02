@@ -26,14 +26,14 @@ var oSelected = [],
 		}).remove();
 	}
 	function Fail(data){
-		var str = '<p>';
+		var str='';
 		if(data.name){
-			str +=data.name+':';
+			str +=data.name+': ';
 		}else if(data.channelname){ 
-			str +=data.name+':';
+			str +=data.name+': ';
 		}
-		str+=data.fail+'</p>';
-		Confirm('<p>'+data.name+':'+data.fail+'</p>');
+		str += data.fail
+		Confirm(str);
 	}
 	function ModifyUserLevelSuccess(ev){
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
@@ -166,12 +166,13 @@ var oSelected = [],
 		closeMenu();
 	}
 	function AddDeviceDoubleSuccess(data){
-		Confirm('<p>'+data.name+'AddSuccess</p>');
+		Confirm(data.name+'AddSuccess');
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
 		adddev(devData2);
 		$('#esee_'+data.name).remove();
+		$('#adddevicedouble_ID').val('');
 	}
 
 	function adddev(data){ 
@@ -192,7 +193,7 @@ var oSelected = [],
 
 	}
 	function AddChannelDoubleInGroupSuccess(data){
-		Confirm('<p>'+data.channelname+'AddSuccess</p>');
+		Confirm(data.channelname+'AddSuccess');
 		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
 		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').appendTo(group.next('ul'));
 		$('ul.filetree').treeview({add:add});
