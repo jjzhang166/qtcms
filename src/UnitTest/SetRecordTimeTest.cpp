@@ -42,23 +42,27 @@ void SetRecordTimeTest::beforeSetRecordTimeTest()
     QSqlQuery query1(db);
     query1.prepare("delete from recordtime");
     query1.exec();
-
+   
     QSqlQuery query2(db);
-    query2.prepare("insert into recordtime(chl_id ,schedle_id ,weekday ,starttime ,endtime,enable  ) values(:chl_id,:schedle_id,:weekday,:starttime,:endtime,:enable)");
-    query2.bindValue(":chl_id"     ,0);
-    query2.bindValue(":schedle_id" ,0);
-    query2.bindValue(":weekday"    ,0);
-    query2.bindValue(":starttime"  ,"2013-12-31 00:00:00");
-    query2.bindValue(":endtime"    ,"2013-12-31 23:59:59");
-    query2.bindValue(":enable"     ,0);
-
+    query2.prepare("update sqlite_sequence set seq=1 where name= 'recordtime'");
     query2.exec();
+
+    QSqlQuery query3(db);
+    query3.prepare("insert into recordtime(chl_id ,schedule_id ,weekday ,starttime ,endtime,enable  ) values(:chl_id,:schedule_id,:weekday,:starttime,:endtime,:enable)");
+    query3.bindValue(":chl_id"     ,0);
+    query3.bindValue(":schedule_id",0);
+    query3.bindValue(":weekday"    ,0);
+    query3.bindValue(":starttime"  ,"2013-12-31 00:00:00");
+    query3.bindValue(":endtime"    ,"2013-12-31 23:59:59");
+    query3.bindValue(":enable"     ,0);
+
+    query3.exec();
     
     db.close();
 }
 //测试用例:
 // 前置：重置数据库，数据库中创建了recordtime表，数据库中仅有一条记录：0|0|0|”2013-12-31 00:00:00”|” 2013-12-31 23:59:59” | 0 
-//      自增长id从0开始;
+//      自增长id从1开始;
 // 1. 测试函数ModifyRecordTime的输入参数和返回值: 
 //      对starttime和endtime使用格式为空字符串 | 返回1
 //      对starttime和endtime使用格式为除"yyyy-MM-dd hh:mm:ss"之外的其他形式: “yyyyMMdd hh:mm:ss”,”yyyy”还有2013/12/31 | 返回1
@@ -70,28 +74,28 @@ void SetRecordTimeTest::SetRecordTimeTest1()
     START_SETRECORDTIME_UNIT_TEST(Itest);
     int nRet = -1;
 
-    nRet = Itest->ModifyRecordTime(0, "", "", true);
+    nRet = Itest->ModifyRecordTime(1, "", "", true);
     QVERIFY2(1 == nRet,"step 1:return");
-    nRet = Itest->ModifyRecordTime(0, "20131230 00:00:00", "20131230 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "20131230 00:00:00", "20131230 23:59:59", true);
     QVERIFY2(1 == nRet,"step 2:return");
-    nRet = Itest->ModifyRecordTime(0, "2013", "2014", true);
+    nRet = Itest->ModifyRecordTime(1, "2013", "2014", true);
     QVERIFY2(1 == nRet,"step 3:return");
-    nRet = Itest->ModifyRecordTime(0, "2013/12/31 00:00:00", "2013/12/31 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2013/12/31 00:00:00", "2013/12/31 23:59:59", true);
     QVERIFY2(1 == nRet,"step 4:return");
-    nRet = Itest->ModifyRecordTime(0, "2013-12-31 00:00:00", "2013/12/31 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2013-12-31 00:00:00", "2013/12/31 23:59:59", true);
     QVERIFY2(1 == nRet,"step 5:return");
-    nRet = Itest->ModifyRecordTime(0, "2012-12-31 00:00:00", "2012-12-31 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2012-12-31 00:00:00", "2012-12-31 23:59:59", true);
     QVERIFY2(1 == nRet,"step 6:return");
-    nRet = Itest->ModifyRecordTime(0, "2013-12-31 00:00:00", "2013-12-31 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2013-12-31 00:00:00", "2013-12-31 23:59:59", true);
     QVERIFY2(0 == nRet,"step 7:return");
-    nRet = Itest->ModifyRecordTime(0, "2013-12-31 00:00:00", "2013-12-31 23:59:59", false);
+    nRet = Itest->ModifyRecordTime(1, "2013-12-31 00:00:00", "2013-12-31 23:59:59", false);
     QVERIFY2(0 == nRet,"step 8:return");
 
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }
 
 // 2. 测试函数GetRecordTimeBydevId的输入参数和返回值: 
-//      使用通道号0查询 | 返回默认的那组数据的id号0
+//      使用通道号0查询 | 返回默认的那组数据的id号1
 //      使用不存在的通道号 200和-200查询 | 返回1空的QStringList
 void SetRecordTimeTest::SetRecordTimeTest2()
 {
@@ -101,7 +105,7 @@ void SetRecordTimeTest::SetRecordTimeTest2()
     //step1
     strlist = Itest->GetRecordTimeBydevId(0);
     QVERIFY2(strlist.size() == 1  ,"step 1:");
-    QVERIFY2(strlist[0]     == "0","step 1:");
+    QVERIFY2(strlist[0]     == "1","step 1:");
     //step2
     strlist.clear();
     strlist = Itest->GetRecordTimeBydevId(200);
@@ -114,8 +118,8 @@ void SetRecordTimeTest::SetRecordTimeTest2()
 //     数据库中预置的一条记录0|0|0|”2013-12-31 00:00:00”|” 2013-12-31 23:59:59” | 0;
 //        再增加2条记录0|1|1|”2014-01-01 00:00:00”|” 2014-01-01 23:59:59” | 0;
 //        和1|0|1|”2014-01-01 00:00:00”|” 2014-01-01 23:59:59” | 0;
-//     使用0通道为参数用GetRecordTimeBydevId查询通道0的id记录 | 返回结果是2条, 分别是"0""1"
-//     使用1通道为参数用GetRecordTimeBydevId查询通道1的id记录 | 返回结果是1条,"2"
+//     使用0通道为参数用GetRecordTimeBydevId查询通道0的id记录 | 返回结果是2条, 分别是"1""2"
+//     使用1通道为参数用GetRecordTimeBydevId查询通道1的id记录 | 返回结果是1条,"3"
 void SetRecordTimeTest::SetRecordTimeTest3()
 {
     beforeSetRecordTimeTest();
@@ -161,19 +165,19 @@ void SetRecordTimeTest::SetRecordTimeTest3()
     //step1
     strlist = Itest->GetRecordTimeBydevId(0);
     QVERIFY2(strlist.size() == 2,"step 1:");
-    QVERIFY2(strlist[0]     == "0","step 1:");
-    QVERIFY2(strlist[1]     == "1","step 1:");
+    QVERIFY2(strlist[0]     == "1","step 1:");
+    QVERIFY2(strlist[1]     == "2","step 1:");
     //step2
     strlist = Itest->GetRecordTimeBydevId(1);
     QVERIFY2(strlist.size() == 1,"step 2:");
-    QVERIFY2(strlist[0]     == "2","step 2:");
+    QVERIFY2(strlist[0]     == "3","step 2:");
 
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }
 // 4. 使用非法参数设置GetRecordTimeInfo 函数;
 //    参数recordtime_id 使用小于0的数; | 返回0条记录
 //       recordtime_id 使用超出数据库实际最大id的数200  | 返回0条记录
-//       recordtime_id 使用合理的数0  | 返回1条记录, 返回” chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
+//       recordtime_id 使用合理的数1  | 返回1条记录, 返回” chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
 void SetRecordTimeTest::SetRecordTimeTest4()
 {
     beforeSetRecordTimeTest();
@@ -188,7 +192,7 @@ void SetRecordTimeTest::SetRecordTimeTest4()
     QVERIFY2(vMap.size() == 0,"step 2:return");
     vMap.clear();
     //step3
-    vMap = Itest->GetRecordTimeInfo(0);
+    vMap = Itest->GetRecordTimeInfo(1);
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedle_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
@@ -199,9 +203,9 @@ void SetRecordTimeTest::SetRecordTimeTest4()
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }
 // 5. 修改值和查询值结果一致:
-//       使用GetRecordTimeInfo查询id为0的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
-//       使用ModifyRecordTime(使用正确的参数)来修改录像时间id为0的记录的开始时间为” 2014-01-01 00:00:00”结束时间为” 2014-01-01 23:59:59”的录像时间 | 函数返回0
-//       用GetRecordTimeInfo查询id为0的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2014-01-01 00:00:00”, endtime返回为” 2014-01-01 23:59:59”,enable返回0
+//       使用GetRecordTimeInfo查询id为1的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
+//       使用ModifyRecordTime(使用正确的参数)来修改录像时间id为1的记录的开始时间为” 2014-01-01 00:00:00”结束时间为” 2014-01-01 23:59:59”的录像时间 | 函数返回0
+//       用GetRecordTimeInfo查询id为1的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2014-01-01 00:00:00”, endtime返回为” 2014-01-01 23:59:59”,enable返回0
 void SetRecordTimeTest::SetRecordTimeTest5()
 {
     beforeSetRecordTimeTest();
@@ -210,7 +214,7 @@ void SetRecordTimeTest::SetRecordTimeTest5()
     QVariantMap vMap;
 
     //step1
-    vMap = Itest->GetRecordTimeInfo(0);
+    vMap = Itest->GetRecordTimeInfo(1);
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 1:return");
     QVERIFY2(0 == vMap["schedle_id"].toInt()            ,"step 1:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 1:return");
@@ -218,11 +222,11 @@ void SetRecordTimeTest::SetRecordTimeTest5()
     QVERIFY2(vMap["endtime"]   == "2013-12-31 23:59:59" ,"step 1:return");
     QVERIFY2(0 ==  vMap["enable"]                       ,"step 1:return");
     //step2
-    nRet = Itest->ModifyRecordTime(0, "2014-01-01 00:00:00", "2014-01-01 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2014-01-01 00:00:00", "2014-01-01 23:59:59", true);
     QVERIFY2(0 == nRet,"step 2:return");
     //step3
     vMap.clear();
-    vMap = Itest->GetRecordTimeInfo(0);
+    vMap = Itest->GetRecordTimeInfo(1);
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedle_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
@@ -233,9 +237,9 @@ void SetRecordTimeTest::SetRecordTimeTest5()
 }
 
 // 6. 修改值和查询值结果一致:
-//       使用GetRecordTimeInfo查询id为0的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
-//       使用ModifyRecordTime(使用错误的参数)来修改录像时间id为0的记录的开始时间为” 2012-01-01 00:00:00”结束时间为” 2014-01-01 23:59:59”的录像时间 | 函数返回0
-//       用GetRecordTimeInfo查询id为0的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2014-01-01 00:00:00”, endtime返回为” 2014-01-01 23:59:59”,enable返回0
+//       使用GetRecordTimeInfo查询id为1的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2013-12-31 00:00:00”, endtime返回为” 2013-12-31 23:59:59”,enable返回0
+//       使用ModifyRecordTime(使用错误的参数)来修改录像时间id为1的记录的开始时间为” 2012-01-01 00:00:00”结束时间为” 2014-01-01 23:59:59”的录像时间 | 函数返回0
+//       用GetRecordTimeInfo查询id为1的录像时间记录; | 返回”chl_id”为0, “schedle_id”为0, “weekday”返回为0, “starttime”返回为” 2014-01-01 00:00:00”, endtime返回为” 2014-01-01 23:59:59”,enable返回0
 void SetRecordTimeTest::SetRecordTimeTest6()
 {
     beforeSetRecordTimeTest();
@@ -244,7 +248,7 @@ void SetRecordTimeTest::SetRecordTimeTest6()
     QVariantMap vMap;
 
     //step1
-    vMap = Itest->GetRecordTimeInfo(0);
+    vMap = Itest->GetRecordTimeInfo(1);
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 1:return");
     QVERIFY2(0 == vMap["schedle_id"].toInt()            ,"step 1:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 1:return");
@@ -252,11 +256,11 @@ void SetRecordTimeTest::SetRecordTimeTest6()
     QVERIFY2(vMap["endtime"]   == "2013-12-31 23:59:59" ,"step 1:return");
     QVERIFY2(0 ==  vMap["enable"]                       ,"step 1:return");
     //step2
-    nRet = Itest->ModifyRecordTime(0, "2012-01-01 00:00:00", "2014-01-01 23:59:59", true);
+    nRet = Itest->ModifyRecordTime(1, "2012-01-01 00:00:00", "2014-01-01 23:59:59", true);
     QVERIFY2(1 == nRet,"step 2:return");
     //step3
     vMap.clear();
-    vMap = Itest->GetRecordTimeInfo(0);
+    vMap = Itest->GetRecordTimeInfo(1);
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedle_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
