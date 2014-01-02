@@ -12,6 +12,8 @@ interface IRecorder : public IPComBase
 
 	virtual int InputFrame(int type,char *cbuf,int buffersize) = 0;
 
+	virtual int SetDevInfo(const QString& devname,int nChannelNum) = 0;
+
 	enum _emError{
 		OK = 0,          //成功
 		E_PARAMETER_ERROR, //输入参数不正确
