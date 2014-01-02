@@ -51,28 +51,38 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="142" valign="top"><p>对starttime使用格式为除&quot;yyyy-MM-dd    hh:mm:ss&quot;之外的其他形式: &ldquo;yyyyMMdd hh:mm:ss&rdquo;,&rdquo;yyyy&rdquo;还有2013/12/30    XX:XX:XX,</p></td>
+    <td width="142" valign="top"><p>对starttime使用格式为除&quot;yyyy-MM-dd    hh:mm:ss&quot;之外的其他形式: &ldquo;yyyyMMdd hh:mm:ss&rdquo;,</p></td>
     <td width="284" valign="top"><p>都返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
-    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为0 </p></td>
-    <td width="284" valign="top"><p>返回0</p></td>
+    <td width="142" valign="top"><p>对starttime使用格式为除&quot;yyyy-MM-dd    hh:mm:ss&quot;之外的其他形式&rdquo;yyyy&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>4</p></td>
-    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为1</p></td>
-    <td width="284" valign="top"><p>返回0</p></td>
+    <td width="142" valign="top"><p><em>4</em></p></td>
+    <td width="142" valign="top"><p>对starttime,endtime使用格式2013/12/30 XX:XX:XX,</p></td>
+    <td width="284" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>5</p></td>
-    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2012-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo; </p></td>
+    <td width="142" valign="top"><p>只对starttime使用格式2013/12/30    XX:XX:XX,</p></td>
     <td width="284" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>6</p></td>
-    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2014-01-03 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;</p></td>
-    <td width="284" valign="top"><p>返回1</p></td>
+    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2012-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo; </p></td>
+    <td width="284" valign="top"><p>返回1 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>7</p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为0 </p></td>
+    <td width="284" valign="top"><p>返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>8</p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为1</p></td>
+    <td width="284" valign="top"><p>返回0</p></td>
   </tr>
 </table>
 <p>// 用例2</p>
@@ -98,7 +108,7 @@
   <tr>
     <td width="142" valign="top"><p>1</p></td>
     <td width="142" valign="top"><p>使用通道号0查询</p></td>
-    <td width="284" valign="top"><p>默认值和返回值结果一致, 返回默认的那组数据的id号0</p></td>
+    <td width="284" valign="top"><p>默认值和返回值结果一致, 返回默认的那组数据的id号1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
@@ -169,7 +179,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
-    <td width="149" valign="top"><p>recordtime_id 使用合理的数0</p></td>
+    <td width="149" valign="top"><p>recordtime_id 使用合理的数1</p></td>
     <td width="277" valign="top"><p>返回&rdquo; chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
 </table>
@@ -196,17 +206,17 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>1</p></td>
-    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
     <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="149" valign="top"><p>使用ModifyRecordTime(使用正确的参数)来修改录像时间id为0的记录的开始时间为&rdquo; 2014-01-01 00:00:00&rdquo;结束时间为&rdquo; 2014-01-01    23:59:59&rdquo;的录像时间</p></td>
+    <td width="149" valign="top"><p>使用ModifyRecordTime(使用正确的参数)来修改录像时间id为1的记录的开始时间为&rdquo; 2014-01-01 00:00:00&rdquo;结束时间为&rdquo; 2014-01-01    23:59:59&rdquo;的录像时间</p></td>
     <td width="277" valign="top"><p>函数返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
-    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
     <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2014-01-01 00:00:00&rdquo;, endtime返回为&rdquo; 2014-01-01 23:59:59&rdquo;,enable返回0 </p></td>
   </tr>
   <tr>
@@ -238,17 +248,17 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>1</p></td>
-    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
     <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="149" valign="top"><p>使用ModifyRecordTime(使用错误的参数)来修改录像时间id为0的记录的开始时间为&rdquo; 2012-01-01 00:00:00&rdquo;结束时间为&rdquo; 2012-01-01    23:59:59&rdquo;的录像时间</p></td>
+    <td width="149" valign="top"><p>使用ModifyRecordTime(使用错误的参数)来修改录像时间id为1的记录的开始时间为&rdquo; 2012-01-01 00:00:00&rdquo;结束时间为&rdquo; 2012-01-01    23:59:59&rdquo;的录像时间</p></td>
     <td width="277" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
-    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为0的录像时间记录; </p></td>
+    <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
     <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0 </p></td>
   </tr>
   <tr>
