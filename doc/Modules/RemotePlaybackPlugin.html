@@ -34,10 +34,10 @@
   //    uiWndId: 窗口索引, 从0开始,到3为止 <br />
   //    uiChannel: 指定通道, 从0开始, 1, 2, 3,4 … <br />
   //返回值： <br />
-  // -1：指定的窗口索引大于4或者是指定的通道号&gt;64 <br />
-  //0 ：  添加成功 <br />
-  // 1 :  组已满 <br />
-  // 2 :  创建实例失败 <br />
+  // -1：指定的窗口索引大于4或者是指定的通道号&gt;32<br />
+  // 0 ：  添加成功 <br />
+  // 1 :  组已满, 无法添加更多通道<br />
+  // 2 :  实例为NULL时 <br />
   int  AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel);</p>
 <p align="left">    //简介：设置用户身份信息 <br />
   //输入参数： <br />
