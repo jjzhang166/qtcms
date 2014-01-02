@@ -7,7 +7,7 @@
 
 <body>
 <p>编辑人：姜晟<br />
-  编辑日期：2013.12.30<br />
+  编辑日期：2013.12.31<br />
   文档简介：<br />
   commonlib组件录像时间表设置测试用例文档<br />
   测试的接口：</p>
@@ -37,7 +37,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-30    00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-31    00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -61,27 +61,27 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p><em>4</em></p></td>
-    <td width="142" valign="top"><p>对starttime,endtime使用格式2013/12/30 XX:XX:XX,</p></td>
+    <td width="142" valign="top"><p>对starttime,endtime使用格式2013/12/31 XX:XX:XX,</p></td>
     <td width="284" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>5</p></td>
-    <td width="142" valign="top"><p>只对starttime使用格式2013/12/30    XX:XX:XX,</p></td>
+    <td width="142" valign="top"><p>只对starttime使用格式2013/12/31    XX:XX:XX,</p></td>
     <td width="284" valign="top"><p>返回1</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>6</p></td>
-    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2012-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo; </p></td>
+    <td width="142" valign="top"><p>使用正确的格式但错误的值: starttime 设为&ldquo;2012-12-31 01:00:00&rdquo; endtime设为&rdquo; 2013-12-31 22:00:00&rdquo; </p></td>
     <td width="284" valign="top"><p>返回1 </p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>7</p></td>
-    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为0 </p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-31 01:00:00&rdquo; endtime设为&rdquo; 2013-12-31 22:00:00&rdquo;, enable 设为0 </p></td>
     <td width="284" valign="top"><p>返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>8</p></td>
-    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-30 01:00:00&rdquo; endtime设为&rdquo; 2013-12-30 22:00:00&rdquo;, enable 设为1</p></td>
+    <td width="142" valign="top"><p>使用合理的参数值: starttime 设为&ldquo;2013-12-31 01:00:00&rdquo; endtime设为&rdquo; 2013-12-31 22:00:00&rdquo;, enable 设为1</p></td>
     <td width="284" valign="top"><p>返回0</p></td>
   </tr>
 </table>
@@ -98,7 +98,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-30    00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中建立表recordtime, 设置一条记录: 0|0|0|&rdquo;2013-12-31    00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0 , 自增长id从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -129,7 +129,7 @@
   </tr>
   <tr>
     <td width="140" valign="top"><p>前置条件</p></td>
-    <td width="428" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 再增加2条记录0|1|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;和1|0|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
+    <td width="428" colspan="2" valign="top"><p>数据库中预置的一条记录0|0|0|&rdquo;2013-12-31 00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0; 再增加2条记录0|1|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0;和1|0|1|&rdquo;2014-01-01 00:00:00&rdquo;|&rdquo; 2014-01-01 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="140" valign="top"><p>步骤编号</p></td>
@@ -160,7 +160,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-31 00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0; 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -180,7 +180,7 @@
   <tr>
     <td width="142" valign="top"><p>3</p></td>
     <td width="149" valign="top"><p>recordtime_id 使用合理的数1</p></td>
-    <td width="277" valign="top"><p>返回&rdquo; chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+    <td width="277" valign="top"><p>返回&rdquo; chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-31 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-31 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
 </table>
 <p>// 用例5</p>
@@ -197,7 +197,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-31 00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -207,7 +207,7 @@
   <tr>
     <td width="142" valign="top"><p>1</p></td>
     <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
-    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-31 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-31 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
@@ -239,7 +239,7 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>前置条件</p></td>
-    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-30 00:00:00&rdquo;|&rdquo; 2013-12-30 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
+    <td width="426" colspan="2" valign="top"><p>数据库中预置的1条记录0|0|0|1|&rdquo;2013-12-31 00:00:00&rdquo;|&rdquo; 2013-12-31 23:59:59&rdquo; | 0 , 自增长从0开始</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>步骤编号</p></td>
@@ -249,7 +249,7 @@
   <tr>
     <td width="142" valign="top"><p>1</p></td>
     <td width="149" valign="top"><p>使用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
-    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0</p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-31 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-31 23:59:59&rdquo;,enable返回0</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
@@ -259,7 +259,7 @@
   <tr>
     <td width="142" valign="top"><p>3</p></td>
     <td width="149" valign="top"><p>用GetRecordTimeInfo查询id为1的录像时间记录; </p></td>
-    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-30 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-30 23:59:59&rdquo;,enable返回0 </p></td>
+    <td width="277" valign="top"><p>返回&rdquo;chl_id&rdquo;为0, &ldquo;schedle_id&rdquo;为0, &ldquo;weekday&rdquo;返回为0, &ldquo;starttime&rdquo;返回为&rdquo; 2013-12-31 00:00:00&rdquo;, endtime返回为&rdquo; 2013-12-31 23:59:59&rdquo;,enable返回0 </p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>4</p></td>
