@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创<br />
+  编辑日期：2014/1/2</p>
+<p>文档简介：<br />
+  定义setting activity 模块与页面之间的消息映射</p>
+<p>//页面出给setting activity 模块事件名：<br />
+  @设备管理<br />
+  AddDevice_ok|<br />
+  AddDeviceDouble_ok|<br />
+  RemoveDevice_ok|<br />
+  ModifyDevice_ok|<br />
+  @区域管理<br />
+  AddArea_ok|<br />
+  RemoveArea_ok|<br />
+  ModifyArea_ok|<br />
+  @组管理<br />
+  AddGroup_ok|<br />
+  RemoveGroup_ok|<br />
+  ModifyGroup_ok|<br />
+  @通道管理<br />
+  AddChannel_ok|不支持，已删除<br />
+  RemoveChannel_ok|不支持，已删除<br />
+  ModifyChannel_ok|<br />
+  @通道与组管理<br />
+  AddChannelInGroup_ok|<br />
+  RemoveChannelFromGroup_ok|<br />
+  ModifyGroupChannelName_ok|<br />
+  @录像存储设置管理<br />
+  SettingStorageParm_ok|<br />
+  @通用设置管理<br />
+  SettingCommonParm_ok|<br />
+  @录像时间设置<br />
+  SettingRecordTimeParm_ok|<br />
+  //setting activity 模块抛出给页面的事件<br />
+  @设备管理<br />
+  AddDeviceSuccess(deviceid)<br />
+  AddDeviceDoubleSuccess(deviceid,state,name)<br />
+  AddDeviceDoubleFail(fail,state,name)<br />
+  AddDeviceFail(fail)<br />
+  ModifyDeviceSuccess(success)<br />
+  ModifyDeviceFail(fail)<br />
+  RemoveDeviceSuccess(success)<br />
+  RemoveDeviceFail(fail)<br />
+  @区域管理<br />
+  AddAreaSuccess(areaid)<br />
+  AddAreaFail(fail)<br />
+  ModifyAreaSuccess(success)<br />
+  ModifyAreaFail(fail)<br />
+  RemoveAreaSuccess(success)<br />
+  RemoveAreaFail(fail)<br />
+  @组管理<br />
+  AddGroupSuccess(groupid)<br />
+  AddGroupFail(fail)<br />
+  ModifyGroupSuccess(success)<br />
+  ModifyGroupFail(fail)<br />
+  RemoveGroupSuccess(success)<br />
+  RemoveGroupFail(fail)<br />
+  @通道管理<br />
+  AddChannelSuccess(success)<br />
+  AddChannelFail(fail)<br />
+  ModifyChannelSuccess(success)<br />
+  ModifyChannelNameFail(fail)<br />
+  ModifyGroupNameSuccess(success)<br />
+  RemoveChannelFail(fail)<br />
+  @通道与组管理<br />
+  AddChannelInGroupSuccess(chlgroupid)<br />
+  AddChannelInGroupFail(fail)<br />
+  ModifyGroupChannelNameSuccess(success)<br />
+  ModifyGroupChannelNameFail(fail)<br />
+  RemoveChannelFromGroupSuccess(success)<br />
+  RemoveChannelFromGroupFail(fail)<br />
+  @录像存储设置管理<br />
+  SettingStorageParmSuccess(success)<br />
+  SettingStorageParmFail(fail)<br />
+  @通用设置管理<br />
+  SettingCommonParmSuccess(success)<br />
+  SettingCommonParmFail(fail)<br />
+  @录像时间设置<br />
+  SettingRecordTimeSuccess(success)<br />
+  SettingRecordTimeFail(fail)<br />
+  //页面传入参数，其中ID号相同的表示为同一个ID<br />
+  @dev module<br />
+  adddevicedouble_ID(设备列表ID)|<br />
+  dev_id_ID|<br />
+  area_id_ID|<br />
+  address_ID|<br />
+  port_ID|<br />
+  http_ID|<br />
+  eseeid_ID|<br />
+  username_ID|<br />
+  password_ID|<br />
+  device_name_ID|<br />
+  channel_count_ID|<br />
+  connect_method_ID(可选值为：IP(0)|sEsee(1))|<br />
+  vendor_ID|<br />
+  @channel module<br />
+  channel_id_ID|dev_id_ID|channel_number_ID|channel_name_ID|stream_id_ID|<br />
+  @group module<br />
+  group_id_ID|<br />
+  group_name_ID<br />
+  @area module<br />
+  area_id_ID|<br />
+  pid_ID|<br />
+  area_name_ID<br />
+  @r_chl_group module<br />
+  r_chl_group_id_ID|<br />
+  channel_id_ID|<br />
+  group_id_ID|<br />
+  r_chl_group_name_ID</p>
+<p>@录像存储设置管理<br />
+  sDisk_ID|(存储磁盘，输入参数格式：格式为&quot;X:X:X:...&quot; X为D E F G H..)<br />
+  filesize_ID|（录像文件包大小为filesize (单位m)）<br />
+  bcover_ID|(设置是否循环录像，可选值：true|false)<br />
+  spacereservedsize_ID(设置录像磁盘预留空间大小,spacereservedsize (单位m))<br />
+  @录像时间设置<br />
+  recordtime_ID|(指定需修改的录像时间的id号)<br />
+  starttime_ID|(开始录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;))<br />
+  endtime_ID|(结束录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;))<br />
+  enable_ID|(设置是否开始录像，可选值：true|false)<br />
+  @通用设置管理<br />
+  sLanguage_ID|(设置语言,sLanguage为输入语言字符串（具体参见附录表)<br />
+  aptime_ID|(设置轮询时间,取值范围为30-86400，默认值为30)<br />
+  smode_ID|(设置分屏模式,默认分屏模式(&quot;div4_4&quot;))<br />
+  alogin_ID|(设置是否自动登录,可选值：true|false)<br />
+  synctime_ID|(设置是否自动同步时间,可选值：true|false)<br />
+  aconnent_ID|(设置是否自动连接,可选值：true|false)<br />
+  afullscreen_ID|(设置是否自动全屏,可选值：true|false)<br />
+bootstart_ID|(设置是否开机启动,可选值：true|false)</p>
+<p></p>
+</body>
+</html>
