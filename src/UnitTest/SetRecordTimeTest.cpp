@@ -44,7 +44,7 @@ void SetRecordTimeTest::beforeSetRecordTimeTest()
     query1.exec();
    
     QSqlQuery query2(db);
-    query2.prepare("update sqlite_sequence set seq=1 where name= 'recordtime'");
+    query2.prepare("update sqlite_sequence set seq=0 where name= 'recordtime'");
     query2.exec();
 
     QSqlQuery query3(db);
