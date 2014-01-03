@@ -160,22 +160,15 @@ void BubbleProtocol::extractRecordInfo(QDomDocument* dom)
 
     QDomNodeList searchNodeList = dom->elementsByTagName("recsearch");
     QDomNode subnode = searchNodeList.at(0);
-    m_nRecordNum = subnode.toElement().attribute("session_total").toInt();
+
+    QDomNodeList recordList = dom->elementsByTagName("s");
+	m_nRecordNum = recordList.size();
 
     QVariantMap recordTotal;
     recordTotal.insert("total", QString("%1").arg(m_nRecordNum));
     eventProcCall(QString("recFileSearchFinished"), recordTotal); 
 
-    int sessionIndex = subnode.toElement().attribute("session_index").toInt();
-    int sessionCount = subnode.toElement().attribute("session_count").toInt();
-
-    int recordNum = m_nRecordNum;
-    if( sessionCount - sessionIndex < recordNum)
-    {
-        recordNum = sessionCount - sessionIndex;
-    }
-    QDomNodeList recordList = dom->elementsByTagName("s");
-    for (int i = 0; i < recordNum; i++)
+    for (int i = 0; i < m_nRecordNum; i++)
     {
         Record record;
         QDomNode reNode = recordList.at(i);
