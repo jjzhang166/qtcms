@@ -80,37 +80,32 @@ var oLeft,oBottom,oView,oPlayBack,
 			}
 		})
 
-		$('div.play_time').mousedown(function(event){
-			event.stopPropagation();
-			var disX = event.pageX - $(this).offset().left;
-			set_drag(disX,79,$('table.table').width() -42);
-		})
-
 		$("#channelvideo").on('click','td.no_border',function(event){ 
 			$(this).find('input:checkbox').click();
 		})
-		
-		$('#channelvideo').on({ 
+
+		$('div.play_time').on({ 
 			mousedown: function(event){
 				event.stopPropagation();
-				//oPlayBack.GroupStop();
-				$('div.play_time').css('left',event.pageX-2);
-				set_drag(0,79,$('table.table').width() -42);
+				oPlayBack.GroupStop();
+				var disX = event.pageX - $(this).offset().left;
+				set_drag(disX,79,$('table.table').width() -42);
 			},
 			mouseup:function(event){
 				event.stopPropagation();
 				$(document).off();
-				var disX = event.pageX - $(this).offset().left,
-					X1 = 79,
-					X2 = $('table.table').width() -42,
-					left = event.pageX - disX,
-					date = $("div.calendar span.nowDate").html(),
-					sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
-					type = parseInt($('#type span').attr('type')),
-					begin = date+' '+returnTime(sScond),
-				end = date+' 23:59:59';
-				type = type == 0 ? 15 : 1 << type;
-				oPlayBack.GroupPlay(type,begin,end);
+				playVideo(event.pageX);
+			}
+		})
+
+		$("#channelvideo").on({ 
+			mousedown:function(event){
+				event.stopPropagation();
+				$('div.play_time').css('left',event.pageX-2);
+				set_drag(0,79,$('table.table').width() -42);
+			},
+			mouseup:function(event){ 
+				playVideo(event.pageX);
 			}
 		})
 		
@@ -178,7 +173,19 @@ var oLeft,oBottom,oView,oPlayBack,
 		}
 		ocxsearchVideo(devData);
 	}
-
+	function playVideo(pageX){ 
+		var disX = pageX - $('div.play_time').offset().left,
+			X1 = 79,
+			X2 = $('table.table').width() -42,
+			left = pageX - disX,
+			date = $("div.calendar span.nowDate").html(),
+			sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
+			type = parseInt($('#type span').attr('type')),
+			begin = date+' '+returnTime(sScond),
+		end = date+' 23:59:59';
+		type = type == 0 ? 15 : 1 << type;
+		oPlayBack.GroupPlay(type,begin,end);
+	}
 	function setDevData2ocx(oDevData){
 		var  b = true;
 		if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
