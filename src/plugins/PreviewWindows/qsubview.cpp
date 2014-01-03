@@ -31,6 +31,9 @@ QSubView::QSubView(QWidget *parent)
 	//申请DeviceClient接口
 	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
 	qDebug("m_IDeviceClient:%x",m_IDeviceClient);
+	//申请IRecorder接口
+	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void **)&m_pRecorder);
+
 
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
 	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
@@ -58,6 +61,11 @@ QSubView::~QSubView()
 	}
 	delete ui;
 
+	if (NULL != m_pRecorder)
+	{
+		m_pRecorder->Release();
+		m_pRecorder == NULL;
+	}
 }
 
 
@@ -256,10 +264,15 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	unsigned int nLength=evMap.value("length").toUInt();
 	char * lpdata=(char *)evMap.value("data").toUInt();
 
+	FrameInfo info;
+	info.pData = lpdata;
+	info.uiDataSize = nLength;
+	info.uiTimeStamp = evMap.value("pts").toUInt();
+
 	int nType = evMap.value("frametype").toUInt();
 	if (NULL != m_pRecorder)
 	{
-		m_pRecorder->InputFrame(nType, lpdata, nLength);
+		m_pRecorder->InputFrame(nType, (char*)&info, nLength);
 	}
 
 	if (NULL==m_IVideoDecoder)
@@ -399,48 +412,13 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 
 int QSubView::StartRecord()
 {
-	// configuration
-	QString sAppPath = QCoreApplication::applicationDirPath();
-	QFile * file = new QFile(sAppPath + "/pcom_config.xml");
-	file->open(QIODevice::ReadOnly);
-	QDomDocument ConfFile;
-	ConfFile.setContent(file);
-
-	QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
-	QDomNodeList itemList = clsidNode.childNodes();
-	bool bFound = false;
-	for (int n = 0; n < itemList.count(); n++)
-	{
-		QDomNode item = itemList.at(n);
-		QString sItemName = item.toElement().attribute("name");
-
-		if (sItemName.left(strlen("record.")) == QString("record."))
-		{
-			bFound = true;
-			if (NULL != m_pRecorder)
-			{
-				m_pRecorder->Release();
-				m_pRecorder = NULL;
-			}
-			CLSID recordClsid = pcomString2GUID(item.toElement().attribute("clsid"));
-			pcomCreateInstance(recordClsid,NULL,IID_IRecorder,(void **)&m_pRecorder);
-			if (NULL != m_pRecorder)
-			{
-				m_pRecorder->Start();
-			}
-			break;
-		}
-	}
-
-	file->close();
-	delete file;
-
-	if (!bFound)
+	if (NULL == m_pRecorder)
 	{
 		return 1;
 	}
 
-	return 0;
+	int nRet = m_pRecorder->Start();
+	return nRet;
 }
 
 int QSubView::StopRecord()
@@ -450,12 +428,11 @@ int QSubView::StopRecord()
 		return 1;
 	}
 	int nRet = m_pRecorder->Stop();
-	m_pRecorder->Release();
 
 	return nRet;
 }
 
-int QSubView::SetDevInfo(const QString&devname,int nChannelNum)
+int QSubView::SetDevInfo(const QString &devname,int nChannelNum)
 {
 	if (NULL == m_pRecorder)
 	{

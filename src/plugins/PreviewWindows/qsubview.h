@@ -52,7 +52,13 @@ public:
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
 
-	//????????
+	typedef struct _tagFrameInfo{
+		char * pData;
+		unsigned int uiDataSize;
+		unsigned int uiTimeStamp;
+	}FrameInfo;
+
+	//и║??бе????
 	int StartRecord();
 	int StopRecord();
 	int SetDevInfo(const QString&devname,int nChannelNum);
