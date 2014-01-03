@@ -38,16 +38,20 @@ interface ILocalRecordSearch : public IPComBase
 备注：以上两个接口为非阻塞实现
 	  获取收索结果以注册事件来得到
 Event:
-@1	name: "GetRecordDate"
+@1	name: "GetRecordDate" 用接口searchDateByDeviceName来开始
 	parameters:
-		"devname":设备名
+		"devname":设备名(QString)
 		"date":录像日期(QDateTime)
 	
-@2	name: "GetRecordFile"
+@2	name: "GetRecordFile" 用接口searchVideoFile来开始
 	parameters:
-		"filename":文件名
-		"filepath":文件路径 (注意文件路径以'/'来分隔)
-		"filesize":文件大小(MB)
+		"filename":文件名 (QString)
+		"filepath":文件路径 (QString)(注意文件路径以'/'来分隔)
+		"filesize":文件大小 (int) (单位(MB))
+
+@3	name: "SearchStop"
+	parameters:
+		"stopevent":对应事件检索结束(QString) （可用参数 GetRecordDate 、GetRecordFile)
 */
 
 
