@@ -249,7 +249,7 @@ void Recorder::run()
 				quint64 TotalNumberOfFreeBytes;
 				m_StorageMgr.GetDiskFreeSpaceEx(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
 
-				if( TotalNumberOfFreeBytes<= m_StorageMgr.getFreeSizeForDisk() * 1024 * 1024)
+				if( TotalNumberOfFreeBytes<= (quint64)m_StorageMgr.getFreeSizeForDisk() * 1024 * 1024)
 				{ // not enough free space
 
 					qDebug("Not enough free space\n");
