@@ -12,6 +12,7 @@ var oLeft,oBottom,oView,oPlayBack,
 			oDiv = $('div.dev_list');
 	    
 	    $('ul.filetree').treeview();		
+		
 		oDiv.eq(1).hide();
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
@@ -79,16 +80,22 @@ var oLeft,oBottom,oView,oPlayBack,
 			}
 		})
 
+		$('div.play_time').mousedown(function(event){
+			event.stopPropagation();
+			var disX = event.pageX - $(this).offset().left;
+			set_drag(disX,79,$('table.table').width() -42);
+		})
+
 		$("#channelvideo").on('click','td.no_border',function(event){ 
 			$(this).find('input:checkbox').click();
 		})
-
-		$('div.play_time').on({ 
+		
+		$('#channelvideo').on({ 
 			mousedown: function(event){
 				event.stopPropagation();
-				oPlayBack.GroupStop();
-				var disX = event.pageX - $(this).offset().left;
-				set_drag(disX,79,$('table.table').width() -42);
+				//oPlayBack.GroupStop();
+				$('div.play_time').css('left',event.pageX-2);
+				set_drag(0,79,$('table.table').width() -42);
 			},
 			mouseup:function(event){
 				event.stopPropagation();
@@ -101,16 +108,10 @@ var oLeft,oBottom,oView,oPlayBack,
 					sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
 					type = parseInt($('#type span').attr('type')),
 					begin = date+' '+returnTime(sScond),
-					end = date+' 23:59:59';
-					type = type == 0 ? 15 : 1 << type;
-					oPlayBack.GroupPlay(type,begin,end);
+				end = date+' 23:59:59';
+				type = type == 0 ? 15 : 1 << type;
+				oPlayBack.GroupPlay(type,begin,end);
 			}
-		})
-
-		$("#channelvideo").mousedown(function(event){
-			event.stopPropagation();
-			$('div.play_time').css('left',event.pageX-2);
-			set_drag(0,79,$('table.table').width() -42);
 		})
 		
 		$(window).resize(function(){
@@ -132,9 +133,9 @@ var oLeft,oBottom,oView,oPlayBack,
 			$(this).click(function(){
 				$('#type span').attr('type',index);
 			})
-		})         
-
+		})
 	})///
+
 	function searchVideo(){
 		var devData = $('div.dev_list span.device.sel').data('data');
 		if(!devData){
@@ -177,6 +178,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		}
 		ocxsearchVideo(devData);
 	}
+
 	function setDevData2ocx(oDevData){
 		var  b = true;
 		if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
@@ -197,6 +199,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 		return b
 	}
+
 	var typeHint = [];
 		typeHint[1] = '定时';
 		typeHint[2] = '运动';
@@ -217,6 +220,7 @@ var oLeft,oBottom,oView,oPlayBack,
 			}
 		});
 	}
+
 	var color = [];
 		color[1] = '#7BC345';
 		color[2] = '#FFE62E';
@@ -232,9 +236,9 @@ var oLeft,oBottom,oView,oPlayBack,
 			var width = (chlData[5]-chlData[4])*p
 			var left = start*p+81;
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
-		})
-		
+		})		
 	}
+
 	function gettime(objs){
 		var time = []
 		objs.each(function(){ 

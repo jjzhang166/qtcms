@@ -97,8 +97,7 @@ function set_drag(disX,X1,X2){
 				var left = event.pageX - disX;
 			    left = left < X1 ? X1 : left;
 				left = left > X2 ? X2 : left;
-			oDrag.css('left',(left-2)+'px');
-			
+			oDrag.css('left',(left-2)+'px');	
 		}).mouseup(function(){
 			$(this).off();
 		})
