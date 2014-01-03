@@ -63,6 +63,7 @@ QSubView::~QSubView()
 
 	if (NULL != m_pRecorder)
 	{
+		m_pRecorder->Stop();
 		m_pRecorder->Release();
 		m_pRecorder == NULL;
 	}
