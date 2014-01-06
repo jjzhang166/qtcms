@@ -149,7 +149,7 @@ void TestCommonLibSet::test4()
 	QVERIFY2(30==nRet,"step 1:return");
 	nRet=-1;
 	nRet=ILocalSet->setAutoPollingTime(60);
-	QVERIFY2(nRet==60,"step 2:return");
+	QVERIFY2(nRet==ILocalSetting::OK,"step 2:return");
 	nRet=-1;
 	nRet=ILocalSet->getAutoPollingTime();
 	QVERIFY2(60==nRet,"step 3:return");
@@ -186,7 +186,7 @@ void TestCommonLibSet::test5()
 	QVERIFY2(ILocalSetting::E_PARAMETER_ERROR==nRet,"step 5:return");
 	nRet=-1;
 	m_smode.clear();
-	nRet=ILocalSet->setSplitScreenMode("div2_2");
+	m_smode=ILocalSet->getSplitScreenMode();
 	QVERIFY2("div2_2"==m_smode,"step 6:return");
 	END_AREA_UNIT_TEST(ILocalSet);
 }
@@ -232,7 +232,7 @@ void TestCommonLibSet::test7()
 	QVERIFY2(false==bRet,"step 2:return");
 	nRet=-1;
 	nRet=ILocalSet->setAutoLogin(true);
-	QVERIFY2(ILocalSetting::OK,"step 3:return");
+	QVERIFY2(ILocalSetting::OK==nRet,"step 3:return");
 	bRet=false;
 	bRet=ILocalSet->getAutoLogin();
 	QVERIFY2(true==bRet,"step 4:return");
