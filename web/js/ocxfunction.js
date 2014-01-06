@@ -26,6 +26,7 @@ var oSelected = [],
 		}).remove();
 	}
 	function Fail(data){
+		alert(1);
 		var str='';
 		if(data.name){
 			str +=data.name+': ';
@@ -296,14 +297,11 @@ var oSelected = [],
 		}
 	}
 	function SettingCommonParmSuccess(data){
-		alert(0);
 		show(data);
 	}
 	function SettingRecordTimeParmSuccess(data){ 
-		alert(1);
 		show(data);
 	}
 	function SettingStorageParmSuccess(data){ 
-		alert(2);
 		show(data);
 	}

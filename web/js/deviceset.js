@@ -165,11 +165,7 @@ var oSearchOcx;
 							})
 					    })
 				}else if(index == 2){
-					var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
-					for(i in item){
-						var str = oCommonLibrary['get'+item[i]]();
-						$('#'+item[i]+'_ID').html(str).prop('checked',Boolean(str)).val(str);
-					}
+					FillCommonParmData();
 				}else if(index == 3){ 
 					userList2Ui();
 				}
@@ -247,14 +243,22 @@ var oSearchOcx;
 		set_contentMax();
 	})
 	function FillCommonParmData(){ 
-
-	}
-	function FillStorageParmData(){ 
-
+		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
+		for(i in item){
+			var str = oCommonLibrary['get'+item[i]]();
+			$('#'+item[i]+'_ID').html(str).prop('checked',Boolean(str)).val(str);
+		}
 	}
 	function FillRecordTimeData(){ 
 
 	}
+	function FillStorageParmData(){ 
+		oCommonLibrary.getUseDisks()
+		oCommonLibrary.getFilePackageSize();
+		oCommonLibrary.getLoopRecording();
+		oCommonLibrary.getDiskSpaceReservedSize();
+	}
+	
 	//分组区域添加到分组, 数据组织
 	function SetChannelIntoGroupData(){
 		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
