@@ -14,7 +14,9 @@
 #include "QSubviewThread.h"
 #include <IVideoRender.h>
 #include <IRecorder.h>
+#include <ISetRecordTime.h>
 #include <QTime>
+#include <QTimer>
 #include <QMenu>
 #include "QSubViewObject.h"
 #include <QLineEdit>
@@ -86,6 +88,7 @@ private:
 	IDeviceClient *m_IDeviceClient;
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
+	ISetRecordTime *m_pRecordTime;
 
 	QSubViewConnectStatus m_CurrentState;
 	int iInitWidth;
@@ -93,6 +96,7 @@ private:
 	bool bIsInitFlags;
 	bool bRendering;
 	QTime dieTime;
+	QTimer m_checkTime;
 
 	Ui::titleview * ui;
 
@@ -118,7 +122,7 @@ public slots:
 
 	virtual void timerEvent( QTimerEvent * );
 
-
+	void OnCheckTime();
 };
 
 

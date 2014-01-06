@@ -12,6 +12,8 @@ QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
 	m_IVideoRender(NULL),
 	m_IDeviceClient(NULL),
+	m_pRecorder(NULL),
+	m_pRecordTime(NULL),
 	iInitHeight(0),
 	iInitWidth(0),
 	bIsInitFlags(false),
@@ -34,6 +36,9 @@ QSubView::QSubView(QWidget *parent)
 	//申请IRecorder接口
 	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void **)&m_pRecorder);
 
+	//申请ISetRecordTime接口
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&m_pRecordTime);
+	connect(&m_checkTime, SIGNAL(timeout()), this, SLOT(OnCheckTime()));
 
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
 	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
@@ -60,6 +65,13 @@ QSubView::~QSubView()
 		m_IVideoRender->Release();
 	}
 	delete ui;
+
+	m_checkTime.stop();
+	if (NULL != m_pRecordTime)
+	{
+		m_pRecordTime->Release();
+		m_pRecordTime = NULL;
+	}
 
 	if (NULL != m_pRecorder)
 	{
@@ -190,6 +202,9 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.OpenCameraInWnd();
+
+	m_checkTime.start(1000);
+
 	return 0;
 }
 int QSubView::CloseWndCamera()
@@ -442,4 +457,50 @@ int QSubView::SetDevInfo(const QString &devname,int nChannelNum)
 
 	int nRet = m_pRecorder->SetDevInfo(devname, nChannelNum);
 	return nRet;
+}
+
+void QSubView::OnCheckTime()
+{
+	if (NULL == m_pRecorder)
+	{
+		return;
+	}
+
+	if (NULL == m_pRecordTime)
+	{
+		//重新申请ISetRecordTime接口
+		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&m_pRecordTime);
+		if (NULL == m_pRecordTime)
+		{
+			return;
+		}
+	}
+
+	static bool recording = false;
+	QStringList recordIdList = m_pRecordTime->GetRecordTimeBydevId(m_DevCliSetInfo.m_uiChannelId);
+	for (int i = 0; i < recordIdList.size(); i++)
+	{
+		QString recordID = recordIdList[i];
+		QVariantMap timeInfo = m_pRecordTime->GetRecordTimeInfo(recordID.toInt());
+		if (1 == timeInfo.value("enable").toInt())
+		{
+			continue;
+		}
+
+		QDateTime currentTime = QDateTime::currentDateTime();
+		QDateTime timeStart = QDateTime::fromString(timeInfo.value("starttime").toString(), "yyyy-MM-dd hh:mm:ss");
+		QDateTime timeEnd = QDateTime::fromString(timeInfo.value("endtime").toString(), "yyyy-MM-dd hh:mm:ss");
+		if (currentTime >= timeStart && currentTime < timeEnd)
+		{
+			m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+			m_pRecorder->Start();
+			recording = true;
+		}
+
+		if (currentTime >= timeEnd && recording)
+		{
+			m_pRecorder->Stop();
+			recording = false;
+		}
+	}
 }
