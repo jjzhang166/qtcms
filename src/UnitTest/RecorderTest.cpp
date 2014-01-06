@@ -131,7 +131,8 @@ void RecorderTest::RecorderTest1()
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
     FILE *pFile = NULL;
-    char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
+    
     int   nlen = 0;
     char  data[1280*720];
     uint  nTimes = 0;
@@ -151,7 +152,7 @@ void RecorderTest::RecorderTest1()
         , &i64TotalNumberOfBytesOfF
         , &i64TotalNumberOfFreeBytesOfF);
     nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 + (float)i64FreeBytesAvailableOfF/1024/1024 - 10000) / 4.58);
-    QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+    QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
     uint nTmp = (uint) (((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) /4.58 );
@@ -242,9 +243,8 @@ void RecorderTest::RecorderTest2()
     nRet = Itest->Start();
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
-
     FILE *pFile = NULL;
-    char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
     int   nlen = 0;
     char  data[1280*720];
     uint  nTimes = 0;
@@ -264,7 +264,7 @@ void RecorderTest::RecorderTest2()
         , &i64TotalNumberOfBytesOfF
         , &i64TotalNumberOfFreeBytesOfF);
     nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 + (float)i64FreeBytesAvailableOfF/1024/1024 - 10000) / 4.58);
-    QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+    QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
     while (nTimes < nTotalLoopTimes )
@@ -343,9 +343,9 @@ void RecorderTest::RecorderTest3()
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
-
 	FILE *pFile = NULL;
-	char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
+
 	int   nlen = 0;
 	char  data[1280*720];
 	uint  nTimes = 0;
@@ -359,7 +359,7 @@ void RecorderTest::RecorderTest3()
 		, &i64TotalNumberOfBytesOfE
 		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) / 4.58);
-	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
 	while (nTimes < nTotalLoopTimes )
@@ -438,9 +438,9 @@ void RecorderTest::RecorderTest4()
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
-
 	FILE *pFile = NULL;
-	char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
+
 	int   nlen = 0;
 	char  data[1280*720];
 	uint  nTimes = 0;
@@ -454,7 +454,7 @@ void RecorderTest::RecorderTest4()
 		, &i64TotalNumberOfBytesOfE
 		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
-	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
 	while (nTimes < nTotalLoopTimes)
@@ -533,7 +533,7 @@ void RecorderTest::RecorderTest5()
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
 	FILE *pFile = NULL;
-	char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
 	int   nlen = 0;
 	char  data[1280*720];
 	uint  nTimes = 0;
@@ -547,7 +547,7 @@ void RecorderTest::RecorderTest5()
 		, &i64TotalNumberOfBytesOfE
 		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
-	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
 	while (nTimes < nTotalLoopTimes)
@@ -627,7 +627,7 @@ void RecorderTest::RecorderTest6()
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
 	FILE *pFile = NULL;
-	char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
 	int   nlen = 0;
 	char  data[1280*720];
 	uint  nTimes = 0;
@@ -641,7 +641,7 @@ void RecorderTest::RecorderTest6()
 		, &i64TotalNumberOfBytesOfE
 		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
-	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
 	while (nTimes < nTotalLoopTimes)
@@ -724,7 +724,8 @@ void RecorderTest::RecorderTest7()
 
 
 	FILE *pFile = NULL;
-	char  pFileName[] = "CIF_12fps_128kbps.h264";
+    QString sFileName = QCoreApplication::applicationDirPath() + "/CIF_12fps_128kbps.h264";
+
 	int   nlen = 0;
 	char  data[1280*720];
 	uint  nTimes = 0;
@@ -738,7 +739,7 @@ void RecorderTest::RecorderTest7()
 		, &i64TotalNumberOfBytesOfE
 		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) / 4.58);
-	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
+	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
     bool bIsDevInfoSetFlag = false;
