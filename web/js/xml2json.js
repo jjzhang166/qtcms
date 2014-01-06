@@ -1,4 +1,3 @@
-<<<<<<< .mine
 /*
 xml2json v 1.1
 copyright 2005-2007 Thomas Frank
@@ -171,7 +170,6 @@ if (!Array.prototype.pop){
 	}
 };
 
-=======
 /*
 xml2json v 1.1
 copyright 2005-2007 Thomas Frank
@@ -343,4 +341,3 @@ if (!Array.prototype.pop){
   		return response
 	}
 };
->>>>>>> .r420

@@ -69,7 +69,7 @@
 	.user div{ float: left;}
 	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
 	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
-	.confirm{ display: none;}
+	.right_content,.confirm{ display: none;}
 
 </style>
 </head>
@@ -239,8 +239,8 @@
 		<div class="right">
 			<object type="application/cms-dsview-windows" id="devSearch" width="0" height="0"></object>
 			<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
-			<div style="position:relative;">
-				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style=" margin:10px; height:454px; width:760px; overflow:auto; position: absolute; left:0;">
+			<div style="position:relative; display:block;" class="right_content">
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="width:760px; overflow:auto; position: absolute; left:0;">
 					<thead class="thead">
 						<tr>
 							<td style="width:100px;">设备</td>
@@ -254,17 +254,18 @@
 					</tbody>
 				</table>
 				<input type="hidden" id="adddevicedouble_ID" />
-				<div class="action" style="position: absolute; left:760px;">
+				<div class="action" style="position: absolute;">
 					<ul>
 						<li class="hover" id="AddDeviceDouble_ok">添加→</li>
 						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
+						<li class="hover" onclick="showObjActBox('Add','device');">添加设备</li>
 						<li class="hover" onclick="showObjActBox('Add','group');">添加分组</li>
 						<li class="hover" onclick="showObjActBox('Modify','device');">修改设备</li>
 						<li class="hover" onclick="searchFlush();">设备搜索</li>
 					</ul>
 				</div>
-				<table class="tb1 tb2" cellpadding="0" style="margin:0 10px; clear:both; height:146px; width:760px;position: absolute; top:468px;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" />全选</td></tr></thead>
+				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px; width:760px;position: absolute;">
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="selectAll();" />全选</td></tr></thead>
 					<tbody>
 						<tr>
 							<td style="width:100px;">设备IP</td>
@@ -287,7 +288,7 @@
 						</tr>
 					</tbody>
 				</table>
-					<div style="position: absolute; left:950px;">
+					<div id="left_list" style="position: absolute;">
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree" id="area_root">
 							<li><span class="area" id="area_0">区域_root</span>
@@ -321,7 +322,7 @@
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
-					<div class="action" style="height:22px; margin:10px;"><ul><li id="AddChannelInGroupDouble_ok" class="hover">添加至分组</li></ul></div>
+					<div class="action" style="height:22px;"><ul><li id="AddChannelInGroupDouble_ok" class="hover">添加至分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<span id="group_0"></span>
 						<ul class="filetree">
@@ -350,7 +351,7 @@
 					</div>
 				</div>
 			</div>
-			<div  style="display:none;">
+			<div class="right_content">
 				<ul class="ope_list nav1 dvr_list0" style="margin-right:300px;">
 					<li class="act">DeviceInfo</li>
 					<li>CommonSettings</li>
@@ -1610,20 +1611,20 @@
 					</table>
 				</div>
 			</div>
-			<div style="display:none;">
-				<ul class="ope_list nav1 client_set0">
+			<div class="right_content">
+				<ul class="ope_list nav1">
 					<li class="act">Local Setting</li>
 					<li>Record Setting</li>
 					<li>Warming Linkage</li>
 				</ul>
-				<div class="switch client_set"  style="display:block;">
+				<div class="switch" style="display:block;">
 					<table>
 						<tr><td></td><td></td><td></td></tr>
 						<tr>
 							<td>Language</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span></span>
+									<span id="Language_ID" value=""></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
@@ -1633,31 +1634,37 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td>Auto polling time</td><td colspan="2"><input type="text" style="width:133px;"/></td></tr>
+						<tr><td>Auto polling time</td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
 						<tr><td>Screenshot save location</td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr>
 						<tr>
 							<td>default split-screen mode</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span></span>
+									<span id="SplitScreenMode_ID"></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;">1_1</a></li>
+									<li><a href="javascript:;">2_2</a></li>
+									<li><a href="javascript:;">3_3</a></li>
+									<li><a href="javascript:;">4_4</a></li>
+									<li><a href="javascript:;">5_5</a></li>
+									<li><a href="javascript:;">6_1</a></li>
+									<li><a href="javascript:;">7_7</a></li>
+									<li><a href="javascript:;">8_1</a></li>
+									<li><a href="javascript:;">8_8</a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="3"><input type="checkbox">Auto Login</td></tr>
-						<tr><td colspan="3"><input type="checkbox">Auto sync time</td></tr>
-						<tr><td colspan="3"><input type="checkbox">Auto connect devices</td></tr>
-						<tr><td colspan="3"><input type="checkbox">Auto switch to fullscreen</td></tr>
-						<tr><td colspan="3"><input type="checkbox">Boot from the start</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover">save</div></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoLogin_ID">Auto Login</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoSyncTime_ID">Auto sync time</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID">Auto connect devices</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID">Auto switch to fullscreen</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID">Boot from the start</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok">save</div></td></tr>
 					</table>
 				</div>
-				<div class="switch client_set">
+				<div class="switch">
 					<div style="height:400px; width:230px; overflow: auto; background:#CCC; float:left; margin-right:20px;"></div>
 					<table style="float:left">
 						<tr>
@@ -1690,10 +1697,10 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover">save</div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover" id="SettingRecordTimeParm_ok">save</div></td></tr>
 					</table>
 				</div>
-				<div class="switch client_set">
+				<div class="switch">
 					<table><tr><td class="td1">Disk drive</td><td style="width:450px;"><table class="tb1" style="padding:10px">
 									<tr>
 										<td colspan="4" class="td4">
@@ -1736,11 +1743,11 @@
 						<tr><td>File package size</td><td><input type="text"  style="margin-left:10px" />MB</td></tr>
 						<tr><td>Loop recording</td><td><input type="checkbox"  style="margin-left:10px" /></td></tr>
 						<tr><td>Disk space reserved</td><td><input type="text"  style="margin-left:10px" />MB</td></tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">save</div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingStorageParm_ok">save</div></td></tr>
 					</table>
 				</div>
 			</div>
-			<div style="position: relative; display:none;">
+			<div style="position: relative;" class="right_content">
 			<table id="UserMan">
 				<tr>
 					<td style="width:300px;">

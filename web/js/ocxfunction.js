@@ -103,6 +103,7 @@ var oSelected = [],
 		closeMenu();
 	} 
 	function AddGroupSuccess(data){
+		alert(1);
 		var name = $('#group_name_ID').val();
 		var id = data.groupid;
 		var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
@@ -293,4 +294,16 @@ var oSelected = [],
 			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}
+	}
+	function SettingCommonParmSuccess(data){
+		alert(0);
+		show(data);
+	}
+	function SettingRecordTimeParmSuccess(data){ 
+		alert(1);
+		show(data);
+	}
+	function SettingStorageParmSuccess(data){ 
+		alert(2);
+		show(data);
 	}

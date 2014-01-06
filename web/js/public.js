@@ -152,13 +152,13 @@ function set_drag(disX,X1,X2){
 			})
 		},
 		//client setting
-		'toSwitch_2': function(){
+		'toSwitch': function(){
 			var warp = this;
 			warp.find('li').each(function(index){
 				$(this).click(function(){
 					warp.find('li').removeClass('act');
 					$(this).addClass('act');
-					warp.nextAll('div.client_set').hide().eq(index).show();	
+					warp.nextAll('div.switch').hide().eq(index).show();	
 				})
 			})
 		},
@@ -251,15 +251,7 @@ function set_drag(disX,X1,X2){
 	})
 })(jQuery)
 $(function(){
-	$('ul.dvr_list0').each(function(){//dvr
-		$(this).toSwitch_0();
-	});
-	$('ul.ipc_list0').each(function(){//ipc
-		$(this).toSwitch_1();
-	});
-	$('ul.client_set0').each(function(){//client setting
-		$(this).toSwitch_2();
-	});
+
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
@@ -269,6 +261,7 @@ $(function(){
 	}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
 	})
+	
 	$('div.timeInput').each(function(index){ 	
 		if(index == 1){ 
 			$(this).timeInput({'initTime':'23 59 59'});
@@ -310,7 +303,7 @@ function show(data){
 			str = data[i];
 			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
 		}
-	}else{ 
+	}else{
 		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
 	}
 }

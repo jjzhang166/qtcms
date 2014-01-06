@@ -129,6 +129,8 @@ var oLeft,oBottom,oView,oPlayBack,
 				$('#type span').attr('type',index);
 			})
 		})
+
+		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(ev)');
 	})///
 
 	function searchVideo(){
@@ -138,7 +140,8 @@ var oLeft,oBottom,oView,oPlayBack,
 			return false;
 		}
 		$('#channelvideo div.video').remove();
-		var channels = 0;
+		  //cgi 请求数据
+		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
 			if($(this).is(':checked')){
 				channels += 1 << index;
@@ -170,7 +173,7 @@ var oLeft,oBottom,oView,oPlayBack,
 				}
 			}
 		});	
-		}
+		}*/
 		ocxsearchVideo(devData);
 	}
 	function playVideo(pageX){ 
@@ -219,13 +222,12 @@ var oLeft,oBottom,oView,oPlayBack,
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
 		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		$("#channelvideo").find('input:checkbox').each(function(index){
-			if($(this).is(':checked')){
-				if(oPlayBack.startSearchRecFile(index,type,startTime,endTime)!=0){
-						alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
-				};
-			}
-		});
+		
+		for (var i=0;i<devData.channel_count;i++){
+			if(oPlayBack.startSearchRecFile(index,type,startTime,endTime)!=0){
+				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+			};
+		};
 	}
 
 	var color = [];
@@ -234,7 +236,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		color[4] = '#F00';
 		color[8] = '#F78445';
 		color[15] = '#ABCDEF';
-	function VideoData2Ui(obj){
+	function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
 			var startDate = $('div.calendar span.nowDate').html().split('-');
@@ -244,6 +246,9 @@ var oLeft,oBottom,oView,oPlayBack,
 			var left = start*p+81;
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
 		})		
+	}
+	function RecFileInfoCallback(ev){ 
+		show(ev);
 	}
 
 	function gettime(objs){
