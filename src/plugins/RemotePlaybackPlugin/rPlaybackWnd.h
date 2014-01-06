@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMutex>
 #include <QtNetwork/QHostAddress>
+#include "RemotePlaybackObject.h"
 #include "qwfw.h"
 #include "IWindowDivMode.h"
 #include "IDeviceRemotePlayback.h"
@@ -49,9 +50,15 @@ public:
     void  CurrentStateChangePlugin(int stateValue);
     void  SocketErrorPlugin(int stateValue);
     int   GetRecFileNum(uint uiNum);
+
+	void  FoundFile(QVariantMap evMap);
+	void  RecFileSearchFinished(QVariantMap evMap);
+	void  SocketError(QVariantMap evMap);
+	void  StateChange(QVariantMap evMap);
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
+
 private:
 	RSubView         m_PlaybackWnd[4];
 	IWindowDivMode * m_DivMode;
@@ -59,8 +66,10 @@ private:
     IDeviceClient *  m_DeviceClient;
 	QList<QWidget *> m_PlaybackWndList;
     QList<QVariantMap>m_SelectedRecList;
+	RemotePlaybackObject m_RemotePlaybackObject;
 
     QHostAddress  m_HostAddress;
+	QString		  m_sHostAddress;
     QString       m_sEseeId;
     QString       m_sVendor;
     QString       m_sUserName;

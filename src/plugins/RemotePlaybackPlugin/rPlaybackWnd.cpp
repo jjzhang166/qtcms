@@ -74,7 +74,9 @@ int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPo
     {
         return 1;
     }
-
+	qDebug()<<m_HostAddress.toString();
+	m_sHostAddress.clear();
+	m_sHostAddress=m_HostAddress.toString();
     m_uiPort   = uiPort;
     m_sEseeId  = eseeID;
     return 0;
@@ -123,6 +125,7 @@ int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
                 }
                 CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
                 pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)&m_GroupPlayback);
+				m_RemotePlaybackObject.SetIDeviceGroupRemotePlaybackParm(m_GroupPlayback);
                 bIsCaseInitFlags = true;
                 break;
             }
@@ -149,56 +152,106 @@ void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString &
 
 int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime)
 {
-	int nRet = -1;
-    g_RecList.clear();
-    m_SelectedRecList.clear();
-    bIsCaseInitFlags = false;
+	int nRet=1;
+	if (false==bIsInitFlags)
+	{
+		if (1==cbInit())
+		{
+			return nRet;
+		}
+	}
+	qDebug()<<m_HostAddress.toString();
+	nRet=m_RemotePlaybackObject.SetParm(m_sUserName,m_sUserPwd,m_uiPort,m_sHostAddress,m_sEseeId);
+	if (1==nRet)
+	{
+		return nRet;
+	}
+	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	return nRet;
+	//int nRet=1;
+	//if (NULL==m_GroupPlayback||startTime.isEmpty()||endTime.isEmpty())
+	//{
+	//	return nRet;
+	//}
+	//IDeviceClient *m_nIDeviceClient=NULL;
+	//m_GroupPlayback->QueryInterface(IID_IDeviceClient,(void**)&m_nIDeviceClient);
+	//if (NULL==m_nIDeviceClient)
+	//{
+	//	return nRet;
+	//}
+	//if (false==bIsInitFlags)
+	//{
+	//	if (1==cbInit())
+	//	{
+	//		return nRet;
+	//	}
+	//}
+
+	//m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
+	////需要设置成非阻塞的连接
+	//m_DeviceClient->connectToDevice(m_HostAddress.toString(),m_uiPort,m_sEseeId);
+	//IDeviceSearchRecord *m_DeviceSearchRecord = NULL;
+	//m_GroupPlayback->QueryInterface(IID_IDeviceSearchRecord, (void**)&m_DeviceSearchRecord);
+	//if (NULL==m_DeviceSearchRecord)
+	//{
+	//	return nRet;
+	//}
+
+	//QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+	//QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
+	//nRet = m_DeviceSearchRecord->startSearchRecFile(nChannel, nTypes, start, end);
+	//return nRet;
+	//====================================================================================
+	//int nRet = -1;
+	/*  g_RecList.clear();
+	m_SelectedRecList.clear();
+	bIsCaseInitFlags = false;
 	if (NULL != m_GroupPlayback && !startTime.isEmpty() && !endTime.isEmpty())
 	{
-        if (m_DeviceClient != NULL)
-        {
-            m_DeviceClient->Release();
-            m_DeviceClient = NULL;
-        }
-        m_GroupPlayback->QueryInterface(IID_IDeviceClient , (void **)&m_DeviceClient);
-        if (NULL == m_DeviceClient)
-        {
-            return nRet = 1;
-        }
-        if (!bIsInitFlags)
-        {
-            if (1 == cbInit())
-            {
-                return nRet = 2;
-            }
-        }
-        m_DeviceClient->checkUser(m_sUserName,m_sUserPwd);
-        m_DeviceClient->connectToDevice(m_HostAddress.toString(),m_uiPort,m_sEseeId);
-
-        IDeviceSearchRecord *pDeviceSearchRecord = NULL;
-        m_GroupPlayback->QueryInterface(IID_IDeviceSearchRecord, (void**)&pDeviceSearchRecord);
-        if (NULL == pDeviceSearchRecord)
-        {
-            return nRet;
-        }
-        QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
-        QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
-        nRet = pDeviceSearchRecord->startSearchRecFile(nChannel, nTypes, start, end);
-        
-        QFuture<int> future = QtConcurrent::run(childThreadSearch,m_uiRecFileSearched, startTime, endTime, m_SelectedRecList);
-        nRet = future.result();
-        future.waitForFinished();
-        for (int i = 0; i < m_SelectedRecList.size(); ++i)
-        {
-            EventProcCall("RecFileInfo",m_SelectedRecList[i]);
-        }
-        m_SelectedRecList.clear();
-        pDeviceSearchRecord->Release();
-        pDeviceSearchRecord = NULL;
-        m_DeviceClient->Release();
-        m_DeviceClient = NULL;
+	if (m_DeviceClient != NULL)
+	{
+	m_DeviceClient->Release();
+	m_DeviceClient = NULL;
 	}
+	m_GroupPlayback->QueryInterface(IID_IDeviceClient , (void **)&m_DeviceClient);
+	if (NULL == m_DeviceClient)
+	{
+	return nRet = 1;
+	}
+	if (!bIsInitFlags)
+	{
+	if (1 == cbInit())
+	{
+	return nRet = 2;
+	}
+	}
+	m_DeviceClient->checkUser(m_sUserName,m_sUserPwd);
+	m_DeviceClient->connectToDevice(m_HostAddress.toString(),m_uiPort,m_sEseeId);
+
+	IDeviceSearchRecord *pDeviceSearchRecord = NULL;
+	m_GroupPlayback->QueryInterface(IID_IDeviceSearchRecord, (void**)&pDeviceSearchRecord);
+	if (NULL == pDeviceSearchRecord)
+	{
 	return nRet;
+	}
+	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+	QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
+	nRet = pDeviceSearchRecord->startSearchRecFile(nChannel, nTypes, start, end);
+
+	QFuture<int> future = QtConcurrent::run(childThreadSearch,m_uiRecFileSearched, startTime, endTime, m_SelectedRecList);
+	nRet = future.result();
+	future.waitForFinished();
+	for (int i = 0; i < m_SelectedRecList.size(); ++i)
+	{
+	EventProcCall("RecFileInfo",m_SelectedRecList[i]);
+	}
+	m_SelectedRecList.clear();
+	pDeviceSearchRecord->Release();
+	pDeviceSearchRecord = NULL;
+	m_DeviceClient->Release();
+	m_DeviceClient = NULL;
+	}
+	return nRet;*/
 }
 int  childThreadSearch(uint nNum, QString& start,QString& end, QList<QVariantMap> &selectedList)
 {
@@ -248,8 +301,23 @@ int  childThreadSearch(uint nNum, QString& start,QString& end, QList<QVariantMap
 
 int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString & endTime)
 {
-    int nRet = -1;
-    if (NULL != m_GroupPlayback && !startTime.isEmpty() && !endTime.isEmpty() )
+	int nRet=1;
+	if (false==bIsInitFlags)
+	{
+		if (1==cbInit())
+		{
+			return nRet;
+		}
+	}
+	nRet=m_RemotePlaybackObject.SetParm(m_sUserName,m_sUserPwd,m_uiPort,m_sHostAddress,m_sEseeId);
+	if (1==nRet)
+	{
+		return nRet;
+	}
+	nRet=m_RemotePlaybackObject.GroupPlay(nTypes,startTime,endTime);
+	return nRet;
+    //int nRet = -1;
+ /*   if (NULL != m_GroupPlayback && !startTime.isEmpty() && !endTime.isEmpty() )
     {
         if (m_DeviceClient != NULL)
         {
@@ -281,7 +349,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
             m_DeviceClient = NULL;
         }
     } 
-    return nRet;
+    return nRet;*/
 }
 
 int   RPlaybackWnd::GroupPause()
@@ -414,21 +482,43 @@ int  RPlaybackWnd::cbInit()
      return 0;
  }
 
+void RPlaybackWnd::FoundFile( QVariantMap evMap )
+{
+	QVariantMap::const_iterator it;
+	EventProcCall("RecFileInfo",evMap);
+}
+
+void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
+{
+
+}
+
+void RPlaybackWnd::SocketError( QVariantMap evMap )
+{
+
+}
+
+void RPlaybackWnd::StateChange( QVariantMap evMap )
+{
+
+}
+
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
      if (evName == "foundFile")
      {
-         RecordInfo recordInfo;
-         recordInfo.uiChannel = evMap["channel"].toUInt();
-         recordInfo.uiTypes = evMap["types"].toUInt();
-         recordInfo.sStartTime = QDateTime::fromString(evMap["start"].toString(), "yyyy-MM-dd hh:mm:ss");
-         recordInfo.sEndTime = QDateTime::fromString(evMap["end"].toString(), "yyyy-MM-dd hh:mm:ss");
-         recordInfo.sFileName = evMap["filename"].toString();
+		 ((RPlaybackWnd*)pUser)->FoundFile(evMap);
+   //      RecordInfo recordInfo;
+   //      recordInfo.uiChannel = evMap["channel"].toUInt();
+   //      recordInfo.uiTypes = evMap["types"].toUInt();
+   //      recordInfo.sStartTime = QDateTime::fromString(evMap["start"].toString(), "yyyy-MM-dd hh:mm:ss");
+   //      recordInfo.sEndTime = QDateTime::fromString(evMap["end"].toString(), "yyyy-MM-dd hh:mm:ss");
+   //      recordInfo.sFileName = evMap["filename"].toString();
 
-		 qDebug()<<recordInfo.uiChannel<<","<<recordInfo.uiTypes<<","<<recordInfo.sStartTime<<","<<recordInfo.sEndTime<<","<<recordInfo.sFileName;
-         g_RecList.append(recordInfo);
-         nRet = 0;
+		 //qDebug()<<recordInfo.uiChannel<<","<<recordInfo.uiTypes<<","<<recordInfo.sStartTime<<","<<recordInfo.sEndTime<<","<<recordInfo.sFileName;
+   //      g_RecList.append(recordInfo);
+   //      nRet = 0;
      }
      return nRet;
 
@@ -440,13 +530,14 @@ int  RPlaybackWnd::cbInit()
      qDebug()<<"cbRecFileSearchFinished";
      if (evName == "recFileSearchFinished")
      {
-         QVariantMap::const_iterator it;
-         for (it=evMap.begin();it!=evMap.end();++it)
-         {
-             ((RPlaybackWnd*)pUser)->GetRecFileNum(it.value().toUInt());
-             qDebug()<<"total"<<it.value().toUInt();
-             nRet = 0;
-         }
+		 ((RPlaybackWnd*)pUser)->RecFileSearchFinished(evMap);
+         //QVariantMap::const_iterator it;
+         //for (it=evMap.begin();it!=evMap.end();++it)
+         //{
+         //    ((RPlaybackWnd*)pUser)->GetRecFileNum(it.value().toUInt());
+         //    qDebug()<<"total"<<it.value().toUInt();
+         //    nRet = 0;
+         //}
      }
      return nRet;
  }
@@ -456,8 +547,9 @@ int  RPlaybackWnd::cbInit()
      qDebug()<<"cbStateChange";
      if (evName=="StateChangeed")
      {
-         ((RPlaybackWnd*)pUser)->CurrentStateChangePlugin(evMap.value("status").toInt());
-         return 0;
+		 ((RPlaybackWnd*)pUser)->StateChange(evMap);
+         //((RPlaybackWnd*)pUser)->CurrentStateChangePlugin(evMap.value("status").toInt());
+         //return 0;
      }
      return 1;
  }
