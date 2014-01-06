@@ -9,11 +9,14 @@
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
 
-#define START_RECORDER_UNIT_TEST(ii) 	IRecorder * ii = NULL; \
-   pcomCreateInstance(CLSID_Recorder, NULL, IID_IRecorder,(void **)&ii); \
-    QVERIFY2(NULL != ii,"Create Recorder instance");
+#define START_RECORDER_UNIT_TEST(ii, iDiskSetting) 	IRecorder * ii = NULL; IDisksSetting *iDiskSetting = NULL;\
+   pcomCreateInstance(CLSID_Recorder, NULL, IID_IRecorder,(void **)&ii);\
+   pcomCreateInstance(CLSID_CommonLibPlugin, NULL, IID_IDiskSetting,(void **)&iDiskSetting);\
+    QVERIFY2(NULL != ii,"Create Recorder instance");\
+    QVERIFY2(NULL != iDiskSetting,"Create commonlib instance");\
 
-#define END_RECORDER_UNIT_TEST(ii) ii->Release(); 
+#define END_RECORDER_UNIT_TEST(ii, iDiskSetting) ii->Release(); iDiskSetting->Release();\
+
 
 RecorderTest::RecorderTest()
 {
@@ -83,21 +86,19 @@ void RecorderTest::beforeRecorderTest()
 //      getLoopRecording验证为循环录像	            | 返回值为true
 //      setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB	 | 返回值为IDisksSetting::OK;
 //      getDiskSpaceReservedSize验证上一步设置值	| 返回值为IDisksSetting::OK;输出值为”5000”
+//      调用SetDevInfo设置设备名为1000和通道数1     | 返回值为IRecorder:OK
 //      调用Start()开始录像	                    | 返回值为IRecorder::OK
 //      调用InputFrame ,设置参数正确	            | 返回值为IRecorder:OK
-//      在开始往F:写数据一定次数后, 调用SetDevInfo设置设备名为1000和通道号1  | 返回值为IRecorder:OK
+//      在开始往F:写数据一定次数后, 调用SetDevInfo设置设备名为1001和通道数1  | 返回值为IRecorder:OK
 //      调用Stop()停止     | 返回值为IRecorder::OK, 录像文件大小均为200MB左右且均在EF盘下,E盘剩余保留空间5000MB
 void RecorderTest::RecorderTest1()
 {
     beforeRecorderTest();
-    START_RECORDER_UNIT_TEST(Itest);
+    START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
     int nRet = -1;
-    IDisksSetting *pDiskSetting = NULL;
     int nFileSize = 0;
     QString sDiskEnabled;
     int nDiskSpaceReservedSize = 0 ;
-    nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-    QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
     nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
     QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -122,10 +123,12 @@ void RecorderTest::RecorderTest1()
     nRet = pDiskSetting->getDiskSpaceReservedSize(nDiskSpaceReservedSize);
     QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
     QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
-
+    
+    QString sDevName("1000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     nRet = Itest->Start();
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
-
 
     FILE *pFile = NULL;
     char  pFileName[] = "CIF_12fps_128kbps.h264";
@@ -151,7 +154,7 @@ void RecorderTest::RecorderTest1()
     QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
-    uint nTmp = (uint) (((float)i64FreeBytesAvailableOfF/1024/1024 - 5000) /4.58 );
+    uint nTmp = (uint) (((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) /4.58 );
     bool bIsDevInfoSetFlag = false;
     while (nTimes < nTotalLoopTimes)
     {
@@ -163,7 +166,8 @@ void RecorderTest::RecorderTest1()
         if(nTimes > nTmp && !bIsDevInfoSetFlag)
         {
             bIsDevInfoSetFlag = true;
-            QString sDevName("1000");
+            sDevName.clear();
+            sDevName = "1001";
             nRet = Itest->SetDevInfo(sDevName,  1);
             QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
         }
@@ -180,7 +184,7 @@ void RecorderTest::RecorderTest1()
     nRet = Itest->Stop();
     QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-    END_RECORDER_UNIT_TEST(Itest);
+    END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 
 // 2. 测试录像文件写入大小和路径以及最后保留空间大小
@@ -193,21 +197,20 @@ void RecorderTest::RecorderTest1()
 //getLoopRecording验证为循环录像	         | 返回值为true
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB	| 返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值  |	返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为2000和通道数4     | 返回值为IRecorder:OK
 //调用Start()开始录像	                     |  返回值为IRecorder::OK
+
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次, (n与测试者磁盘可用空间大小有关)|	返回值为IRecorder:OK
 //调用Stop()停止,                         |  返回值为IRecorder::OK, 录像文件大小均为200MB左右,在EF盘有录像,E盘保留空间为5000MB左右
 
 void RecorderTest::RecorderTest2()
 {
     beforeRecorderTest();
-    START_RECORDER_UNIT_TEST(Itest);
+    START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
     int nRet = -1;
-    IDisksSetting *pDiskSetting = NULL;
     int nFileSize = 0;
     QString sDiskEnabled;
     int nDiskSpaceReservedSize = 0 ;
-    nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-    QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
     nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
     QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -233,6 +236,9 @@ void RecorderTest::RecorderTest2()
     QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
     QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("2000");
+    nRet = Itest->SetDevInfo(sDevName,  4);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     nRet = Itest->Start();
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -282,7 +288,7 @@ void RecorderTest::RecorderTest2()
     nRet = Itest->Stop();
     QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-    END_RECORDER_UNIT_TEST(Itest);
+    END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 // 3.  测试 不循环录像是否正常停止而不覆盖和测试分区保留空间大小以及路径是否正确
 //getEnableDisks获取可用分区	| 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
@@ -294,20 +300,18 @@ void RecorderTest::RecorderTest2()
 //getLoopRecording验证为循环录像	| 返回值为false
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB	| 返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值  |	返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为3000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	 | 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,, 不调用Stop () | 	返回值为IRecorder:OK
 //检测F:盘下录像文件大小, 和剩余空间大小, 是否有录像文件被覆盖
 void RecorderTest::RecorderTest3()
 {
 	beforeRecorderTest();
-	START_RECORDER_UNIT_TEST(Itest);
+	START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 	int nRet = -1;
-	IDisksSetting *pDiskSetting = NULL;
 	int nFileSize = 0;
 	QString sDiskEnabled;
 	int nDiskSpaceReservedSize = 0 ;
-	nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-	QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
 	nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -333,6 +337,9 @@ void RecorderTest::RecorderTest3()
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
 	QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("3000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -376,7 +383,7 @@ void RecorderTest::RecorderTest3()
 	nRet = Itest->Stop();
 	QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-	END_RECORDER_UNIT_TEST(Itest);
+	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 // 4. 测试InputFrame参数cbuf和返回值
 //getEnableDisks获取可用分区	 | 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
@@ -388,22 +395,20 @@ void RecorderTest::RecorderTest3()
 //getLoopRecording验证为循环录像 |	返回值为true
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB | 	返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值  |	返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为4000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	 | 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame时设置参数cbuf为NULL, 其他参数正确 | 	返回值为IRecorder: E_PARAMETER_ERROR
 //调用Stop()停止	 | 返回值为IRecorder::OK,  F盘录像文件无
 void RecorderTest::RecorderTest4()
 {
 	beforeRecorderTest();
-	START_RECORDER_UNIT_TEST(Itest);
+	START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 	int nRet = -1;
-	IDisksSetting *pDiskSetting = NULL;
 	int nFileSize = 0;
 	QString sDiskEnabled;
 	int nDiskSpaceReservedSize = 0 ;
-	nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-	QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
-	nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
+    nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
 	QVERIFY2(sDiskEnabled == "C:D:E:F:" ,"getEnableDisks :out");
 	nRet = pDiskSetting->setUseDisks("F:");
@@ -427,6 +432,9 @@ void RecorderTest::RecorderTest4()
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
 	QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("4000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -469,7 +477,7 @@ void RecorderTest::RecorderTest4()
 	nRet = Itest->Stop();
 	QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-	END_RECORDER_UNIT_TEST(Itest);
+	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 // 5. 测试InputFrame参数type和返回值
 //getEnableDisks获取可用分区	| 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
@@ -481,20 +489,18 @@ void RecorderTest::RecorderTest4()
 //getLoopRecording验证为循环录像	| 返回值为true
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB	| 返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值	| 返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为5000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	| 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame 时设置参数type为0x3, 其他参数正确	| 返回值为IRecorder: E_PARAMETER_ERROR
 //调用Stop()停止	| 返回值为IRecorder::OK,  F盘录像文件无
 void RecorderTest::RecorderTest5()
 {
 	beforeRecorderTest();
-	START_RECORDER_UNIT_TEST(Itest);
+	START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 	int nRet = -1;
-	IDisksSetting *pDiskSetting = NULL;
 	int nFileSize = 0;
 	QString sDiskEnabled;
 	int nDiskSpaceReservedSize = 0 ;
-	nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-	QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
 	nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -520,6 +526,9 @@ void RecorderTest::RecorderTest5()
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
 	QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("5000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -561,7 +570,7 @@ void RecorderTest::RecorderTest5()
 	nRet = Itest->Stop();
 	QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-	END_RECORDER_UNIT_TEST(Itest);
+	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 
 // 6. 测试InputFrame参数buffersize和返回值
@@ -574,20 +583,18 @@ void RecorderTest::RecorderTest5()
 //getLoopRecording验证为循环录像 |	返回值为true
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB	| 返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值	| 返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为6000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	| 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,调用InputFrame时设置参数buffersize为-300, 其他参数正确	| 返回值为IRecorder: E_PARAMETER_ERROR
 //调用Stop()停止	| 返回值为IRecorder::OK,  F盘录像文件无
 void RecorderTest::RecorderTest6()
 {
 	beforeRecorderTest();
-	START_RECORDER_UNIT_TEST(Itest);
+	START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 	int nRet = -1;
-	IDisksSetting *pDiskSetting = NULL;
 	int nFileSize = 0;
 	QString sDiskEnabled;
 	int nDiskSpaceReservedSize = 0 ;
-	nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-	QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
 	nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -613,6 +620,9 @@ void RecorderTest::RecorderTest6()
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
 	QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("6000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -654,7 +664,7 @@ void RecorderTest::RecorderTest6()
 	nRet = Itest->Stop();
 	QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-	END_RECORDER_UNIT_TEST(Itest);
+	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 
 // 7. 测试SetDevInfo参数nChannelNum和返回值
@@ -667,22 +677,20 @@ void RecorderTest::RecorderTest6()
 //getLoopRecording验证为循环录像	|返回值为true
 //setDiskSpaceReservedSize设置磁盘保留空间大小为5000MB |	返回值为IDisksSetting::OK;
 //getDiskSpaceReservedSize验证上一步设置值 | 返回值为IDisksSetting::OK;输出值为”5000”
+//调用SetDevInfo设置设备名为7000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像 | 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,设置正确的参数	| 返回值为IRecorder: :OK
-//达到n次后, 调用SetDevInfo设置nChannelNum为17和-200 | 返回值为IRecorder: : E_PARAMETER_ERROR
+//达到n次后, 调用SetDevInfo设置nChannelNum为17和-200 devname设为"7001"| 返回值为IRecorder: : E_PARAMETER_ERROR
 //调用Stop()停止 | 返回值为IRecorder::OK,  F盘有录像文件但是无目录为17和-200
 
 void RecorderTest::RecorderTest7()
 {
 	beforeRecorderTest();
-	START_RECORDER_UNIT_TEST(Itest);
+	START_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 	int nRet = -1;
-	IDisksSetting *pDiskSetting = NULL;
 	int nFileSize = 0;
 	QString sDiskEnabled;
 	int nDiskSpaceReservedSize = 0 ;
-	nRet = Itest->QueryInterface(IID_IDiskSetting, (void**)&pDiskSetting);
-	QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
 	nRet = pDiskSetting->getEnableDisks(sDiskEnabled);
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getEnableDisks :return");
@@ -708,6 +716,9 @@ void RecorderTest::RecorderTest7()
 	QVERIFY2(IDisksSetting::OK == nRet  ,"getDiskSpaceReservedSize :return");
 	QVERIFY2(5000 == nDiskSpaceReservedSize,"getDiskSpaceReservedSize :out");
 
+    QString sDevName("7000");
+    nRet = Itest->SetDevInfo(sDevName,  1);
+    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -741,7 +752,8 @@ void RecorderTest::RecorderTest7()
 		if(nTimes > nTotalLoopTimes - 1000 && !bIsDevInfoSetFlag)
 		{
 			bIsDevInfoSetFlag = true;
-			QString sDevName("1000");
+            sDevName.clear();
+			sDevName="7001";
 			nRet = Itest->SetDevInfo(sDevName,  17);
 			QVERIFY2(IRecorder::E_PARAMETER_ERROR== nRet  ,"SetDevInfo :return");
 			nRet = Itest->SetDevInfo(sDevName,  -200);
@@ -760,6 +772,6 @@ void RecorderTest::RecorderTest7()
 	nRet = Itest->Stop();
 	QVERIFY2(IRecorder::OK == nRet,"Stop() :return");
 
-	END_RECORDER_UNIT_TEST(Itest);
+	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 
 }
