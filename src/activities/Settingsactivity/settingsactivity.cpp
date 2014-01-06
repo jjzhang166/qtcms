@@ -1302,10 +1302,10 @@ void settingsActivity::OnSettingStorageParm()
 		EventProcCall("SettingStorageParmFail",arg);
 		return;
 	}
-	QVariant sDisk_ID=QueryValue("sDisk_ID");
-	QVariant filesize_ID=QueryValue("filesize_ID");
-	QVariant bcover_ID=QueryValue("bcover_ID");
-	QVariant spacereservedsize_ID=QueryValue("spacereservedsize_ID");
+	QVariant sDisk_ID=QueryValue("UseDisks_ID");
+	QVariant filesize_ID=QueryValue("FilePackageSize_ID");
+	QVariant bcover_ID=QueryValue("LoopRecording_ID");
+	QVariant spacereservedsize_ID=QueryValue("DiskSpaceReservedSize_ID");
 
 	int nRet=-1;
 	nRet=IDisk->setUseDisks(sDisk_ID.toString());
@@ -1382,14 +1382,14 @@ void settingsActivity::OnSettingCommonParm()
 		EventProcCall("SettingCommonParmFail",arg);
 		return;
 	}
-	QVariant sLanguage_ID=QueryValue("sLanguage_ID");
-	QVariant aptime_ID=QueryValue("aptime_ID");
-	QVariant smode_ID=QueryValue("smode_ID");
-	QVariant alogin_ID=QueryValue("alogin_ID");
-	QVariant synctime_ID=QueryValue("synctime_ID");
-	QVariant aconnent_ID=QueryValue("aconnent_ID");
-	QVariant afullscreen_ID=QueryValue("afullscreen_ID");
-	QVariant bootstart_ID=QueryValue("bootstart_ID");
+	QVariant sLanguage_ID=QueryValue("Language_ID");
+	QVariant aptime_ID=QueryValue("AutoPollingTime_ID");
+	QVariant smode_ID=QueryValue("SplitScreenMode_ID");
+	QVariant alogin_ID=QueryValue("AutoLogin_ID");
+	QVariant synctime_ID=QueryValue("AutoSyncTime_ID");
+	QVariant aconnent_ID=QueryValue("AutoConnect_ID");
+	QVariant afullscreen_ID=QueryValue("AutoFullscreen_ID");
+	QVariant bootstart_ID=QueryValue("BootFromStart_ID");
 
 	int nRet=-1;
 	nRet=Ilocal->setLanguage(sLanguage_ID.toString());
