@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+    var obj = document.getElementById('tea');
+    obj.AddEventProc("Passed", "alert('man');");
+    obj.AddEventProc("Passed", "alert(1);");
+    obj = document.getElementById('DeviceSearch');
+    obj.AddEventProc("SearchDeviceSuccess", "alert('SearchDeviceSuccess');");
+    obj.AddEventProc("SearchDeviceSuccess", 'SearchDeviceSuccess(ev)');
+    obj.AddEventProc("pass", 'passed(ev)');
+    obj.AddEventProc("ip",'ip(ev)');
+
+}
+
+
+
+function GetChannelInfo(){
+	var obj = document.getElementById('common-library');
+	obj.GetChannelInfoFromGroup(12);
+	}
+</script>
+</head>
+
+<body onload="Onload()">
+<object type="application/cms-common-library" id="common-library" style="width:300; height:300"></object>
+<button onclick="GetChannelInfo()">GetChannelInfo</button>
+
+
+</body>
+</html>

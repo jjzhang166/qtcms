@@ -1,0 +1,117 @@
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>settings</title>
+		<script type="text/javascript" src="js/jquery.js"></script>
+        <script language="javascript" src="qframework.js" ></script>
+		<script type="text/javascript">
+		$(function(){
+			var oCommonLibrary = document.getElementById('commonLibrary');
+			var areaListArrar=[];
+			var pidList=[];
+			var areaList = oCommonLibrary.GetAreaList();
+			var AreaData = $('#dataArea');
+			for(n in areaList){
+				var id = areaList[n];
+				var name = oCommonLibrary.GetAreaName(areaList[n]);
+				var pid = oCommonLibrary.GetAreaPid(areaList[n]);
+				var pareaname = pid == 0 ? '区域_root' : oCommonLibrary.GetAreaName(pid);
+				areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
+				pidList.push(pid);
+
+			}
+			var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
+			for(j in arr){
+				for(k in areaListArrar){		
+					if(areaListArrar[k]['pid'] == arr[j]){		
+						var add = $('<span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><br/>').appendTo(AreaData);
+						add.data('data',areaListArrar[k]);
+						//$('ul.filetree:eq(0)').treeview({add:add});
+						//deviceList2Ui(areaListArrar[k]['area_id']);
+					}
+				}
+			}
+			$('#dataArea').on('click','span',function(){
+				$('#dataArea2').html('');
+				var data = $(this).data('data');
+				for(i in data){ 
+					if($('#'+i+'_ID')[0]){ 
+						$('#'+i+'_ID').val(data[i]);
+					}else{ 
+						$('<span>'+i+'_ID:</span><input type="text" value="'+data[i]+'" id="'+i+'_ID" class="hadden"/>').appendTo('body');
+					}
+				}
+				show(data);
+			})
+			function del(str) {   //数组去除重复
+				var a = {}, c = [], l = str.length; 
+				for (var i = 0; i < l; i++) { 
+				var b = str[i]; 
+				var d = (typeof b) + b; 
+				if (a[d] === undefined) { 
+				c.push(b); 
+				a[d] = 1; 
+				} 
+				} 
+				return c; 
+			}
+
+			function sortNumber(a,b){ //数组生序排列
+				return a-b;
+			}
+
+			function firstUp(str){  //字符串首字母大写
+				var a = str.split('');
+				a[0] = a[0].toUpperCase();
+				return a.join('');
+			}
+			function show(data){
+				var index='default'
+				var str = 'Null'
+				var obj = $('#dataArea2')
+				obj.html('');
+				if(typeof(data) != 'string'){
+					for(i in data){
+						index = i;
+						if(data[i] != ''){
+							str = data[i];
+						}
+						$('<span>'+index+'</span>:<span>'+str+'/</span><br/>').appendTo(obj);
+					}
+				}else{ 
+					$('<span>'+index+'</span>:<span>'+data+'/</span><br/>').appendTo(obj);
+				}
+			}
+		})
+		
+		
+function Onload()
+{
+AddActivityEvent('AddDeviceFail','AddDeviceFail(ev)');
+AddActivityEvent('AddDeviceSuccess','AddDeviceSuccess(ev)');
+AddActivityEvent('ModifyAreaSuccess','ModifyAreaSuccess(ev)');
+AddActivityEvent('ModifyAreaFail','ModifyAreaFail(ev)');
+}
+function ModifyAreaFail(ev){
+	alert('Add Device failed');
+}
+function ModifyAreaSuccess(ev){
+	alert('AddDeviceSuccess ');
+	}
+		</script>
+		<style type="text/css">
+			div{ background:#ABCDEF; width: 300px; height: auto; margin-top: 10px;}
+		</style>
+	</head>
+	<body onload="Onload()">
+		<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
+		area_name_ID:<input type="text" value="" id="area_name_ID" />
+		pareaname_ID:<input type="text" value="" id="pareaname_ID" />
+		<input type="button" value="AddArea_ok" id="AddArea_ok" />
+		<input type="button" value="RemoveArea_ok" id="RemoveArea_ok" />
+		<input type="button" value="ModifyArea_ok" id="ModifyArea_ok" />
+        
+        
+		<div id="dataArea"></div><div id="dataArea2"></div>
+	</body>
+</html>

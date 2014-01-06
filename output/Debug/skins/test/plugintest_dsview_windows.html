@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+
+
+function search(){
+	alert("search");
+	var obj = document.getElementById('DeviceSearch');
+	obj.Start();
+
+	}
+function tostop(){
+	var obj=document.getElementById('DeviceSearch')
+	obj.Stop();
+	}
+function Onload()
+{
+    obj = document.getElementById('DeviceSearch');
+    obj.AddEventProc("SearchDeviceSuccess", "alert('SearchDeviceSuccess');");
+    obj.AddEventProc("SearchDeviceSuccess", 'SearchDeviceSuccess(ev)');
+}
+function SearchDeviceSuccess(ev) {
+ //   alert("ev.SearchIP_ID");
+    alert(ev.SearchIP_ID)
+	}
+
+</script>
+</head>
+
+<body onload="Onload()">
+  /<object type="application/cms-dsview-windows" id="DeviceSearch" style="width:300; height:300"></
+        style="width:174px; height:112px"></object>
+ 
+<input type="button" value="search" onclick="search();" />
+
+<input type="button" value="stop" onclick="tostop();"
+
+</body>
+</html>

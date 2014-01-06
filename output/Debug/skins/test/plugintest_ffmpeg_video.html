@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+
+function Onload()
+{
+    var obj = document.getElementById('tea');
+    obj.AddEventProc("Passed", "alert('man');");
+    obj.AddEventProc("Passed", "alert(1);");
+    obj = document.getElementById('DeviceSearch');
+    obj.AddEventProc("SearchDeviceSuccess", "alert('SearchDeviceSuccess');");
+    obj.AddEventProc("SearchDeviceSuccess", 'SearchDeviceSuccess(ev)');
+    obj.AddEventProc("pass", 'passed(ev)');
+    obj.AddEventProc("ip",'ip(ev)');
+
+}
+
+
+function fsmplay() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('fsmplay');
+    obj.Fsm_play();
+}
+function fsmopen() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('fsmopen');
+    obj.Fsm_open();
+}
+
+function fsmpause() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('fsmpause');
+    obj.Fsm_pause();
+}
+function fsmstop() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('fsmstop');
+    obj.Fsm_stop();
+}
+function getStreamCount() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('getStreamCount');
+    obj.getStreamCount();
+}
+function pauseStream() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('pauseStream');
+    obj.pauseStream();
+}
+
+function stopStream() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('stopStream');
+    obj.stopStream();
+}
+function getLiveStream() {
+    var obj = document.getElementById('Test-cms-ffmpeg-video');
+    alert('getLiveStream');
+    obj.getLiveStream(0,0);
+}
+</script>
+</head>
+
+<body onload="Onload()">
+    <object type="application/Test-cms-ffmpeg-video" id="Test-cms-ffmpeg-video" style="width:300; height:300"></object>
+ <button onclick="fsmplay()">fsmplay</button>
+<button onclick="fsmopen()">fsmopen</button>
+<button onclick="fsmpause()">fsmpause</button>
+<button onclick="fsmstop()">fsmstop</button>
+
+ <button onclick="getLiveStream()">getLiveStream</button>
+<button onclick="stopStream()">stopStream</button>
+<button onclick="pauseStream()">pauseStream</button>
+<button onclick="getStreamCount()">getStreamCount</button>
+<button onclick="getStreamInfo()">getStreamInfo</button>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+	obj = document.getElementById('windows');
+	obj.AddEventProc("CurrentStateChange",'CurrentStateChange(ev)');
+	obj.AddEventProc("CurrentWindows",'a(ev)');
+
+}
+function CurrentStateChange(ev)
+{
+}
+	
+function a(ev)
+{
+}
+
+function nextPage()
+{
+    var obj = document.getElementById('windows');
+    alert('nextPage');
+    obj.nextPage();
+}
+function prePage() {
+    var obj = document.getElementById('windows');
+    alert('prePage');
+    obj.prePage();
+}
+function getCurrentPage() {
+    var obj = document.getElementById('windows');
+    alert('prePage');
+    obj.getCurrentPage();
+	alert(obj.getCurrentPage());
+}
+function getPages() {
+    var obj = document.getElementById('windows');
+    alert('getPages');
+    obj.getPages();
+	alert(obj.getPages());
+}
+function setDivMode() {
+    var obj = document.getElementById('windows');
+    alert('setDivMode');
+    obj.setDivMode("div4_4");
+    obj.OnAddDevice();
+}
+
+function GetCurrentWnd() {
+    var obj = document.getElementById('windows');
+    alert('GetCurrentWnd');
+    obj.GetCurrentWnd();
+	alert(obj.GetCurrentWnd());
+}
+function OpenCamraInWnd() {
+    var obj = document.getElementById('windows');
+	var uiWndIndex=document.getElementById('uiWndIndex');
+	var sAddress=document.getElementById('sAddress');
+	var uiPort=document.getElementById('uiPort');
+	var sEseeId=document.getElementById('sEseeId');
+	var uiChannelId=document.getElementById('uiChannelId');
+	var uiStreamId=document.getElementById('uiStreamId');
+	var sUsername=document.getElementById('sUsername');
+	var sPassword=document.getElementById('sPassword');
+	var sCameraname=document.getElementById('sCameraname');
+	var sVendor=document.getElementById('sVendor');
+	obj.OpenCameraInWnd(0,sAddress.value,parseInt(uiPort.value),sEseeId.value,0,parseInt(uiStreamId.value),sUsername.value,sPassword.value,sCameraname.value,sVendor.value);
+	alert(obj.GetWindowConnectionStatus(0));
+/*	for(i=0;i<4;i++){
+		for(j=0;j<4;j++){
+			if(2==obj.GetWindowConnectionStatus(j)){
+				 obj.OpenCameraInWnd(j,sAddress.value,parseInt(uiPort.value),sEseeId.value,i,parseInt(uiStreamId.value),sUsername.value,sPassword.value,sCameraname.value,sVendor.value);
+				 break;
+				}/*
+			alert('窗口')
+			alert(j)
+			alert('窗口状态')
+			alert(obj.GetWindowConnectionStatus(j))*/
+//			}
+		   
+//		}
+		/*
+    obj.OpenCameraInWnd(parseInt(uiWndIndex.value),sAddress.value,parseInt(uiPort.value),sEseeId.value,parseInt(uiChannelId.value),parseInt(uiStreamId.value),sUsername.value,sPassword.value,sCameraname.value,sVendor.value);*/
+}
+function CloseWndCamera() {
+    var obj = document.getElementById('windows');
+	var uiWndIndex=document.getElementById('uiWndIndex');
+    
+    obj.CloseWndCamera(parseInt(uiWndIndex.value));
+	alert(obj.GetWindowConnectionStatus(uiWndIndex.value));
+}
+function GetWindowConnectionStatus() {
+    var obj = document.getElementById('windows');
+	var uiWndIndex=document.getElementById('uiWndIndex');
+    obj.GetWindowConnectionStatus(parseInt(uiWndIndex.value));
+	alert(obj.GetWindowConnectionStatus(parseInt(uiWndIndex.value)));
+}
+function ondblclick(event)
+{
+	alert("agag")
+	}
+</script>
+</head>
+
+<body onload="Onload()">
+<div id="div1" ondblclick="ondblclick(event)"</div>
+  <object type="application/cms-preview-windows" id="windows" style="width:1200; height:1200;" ></object>
+<button onclick="nextPage()">nextPage</button>
+<button onclick="prePage()">prePage</button>
+<button onclick="getCurrentPage()">getCurrentPage</button>
+<button onclick="getPages()">getPages</button>
+<button onclick="setDivMode()">setDiveMode</button>
+<button onclick="GetCurrentWnd()">GetCurrentWnd</button>
+<button onclick="OpenCamraInWnd()">OpenCamraInWnd</button>
+<button onclick="CloseWndCamera()">CloseWndCamera</button>
+<button onclick="GetWindowConnectionStatus()">GetWindowConnectionStatus</button>
+
+
+
+<input type="text" id="text0" value="uiWndIndex"/>
+<input type="text" id="uiWndIndex" value="0"/>
+<input type="text" id="text1" value="sAddress"/>
+<input type="text" id="sAddress" value="192.168.2.134"/>
+<input type="text" id="text2" value="uiPort"/>
+<input type="text" id="uiPort" value="8785"/>
+<input type="text" id="text3" value="sEseeId"/>
+<input type="text" id="sEseeId" value="100015721"/>
+<input type="text" id="text4" value="uiChannelId"/>
+<input type="text" id="uiChannelId" value="0"/>
+<input type="text" id="text5" value="uiStreamId"/>
+<input type="text" id="uiStreamId" value="0"/>
+<input type="text" id="text6" value="sUsername"/>
+<input type="text" id="sUsername" value="admin"/>
+<input type="text" id="text7" value="sPassword"/>
+<input type="text" id="sPassword" value=""/>
+<input type="text" id="text8" value="sCameraname"/>
+<input type="text" id="sCameraname" value="test"/>
+<input type="text" id="text9" value="sVendor"/>
+<input type="text" id="sVendor" value="JUAN IPC"/>
+
+</body>
+</html>

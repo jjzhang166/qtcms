@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="qframework.js" ></script>
+<script language="javascript">
+function passed(ev)
+{
+alert("hei");
+alert(ev.first);
+alert(ev.second);
+}
+function ip(ev) {
+alert("hei");
+alert(ev.ip);
+alert(ev.ip_v);
+}
+function Onload()
+{
+var obj = document.getElementById('common-library');
+alert('common_library');
+AddActivityEvent('AddDeviceFail','AddDeviceFail(ev)');
+AddActivityEvent('AddDeviceSuccess','AddDeviceSuccess(ev)');
+AddActivityEvent('AddAreaFail','AddAreaFail(ev)');
+AddActivityEvent('AddAreaSuccess','AddAreaSuccess(ev)');
+
+AddActivityEvent('AddChannelInGroupFail','AddChannelInGroupFail(ev)');
+AddActivityEvent('AddChannelInGroupSuccess','AddChannelInGroupSuccess(ev)');
+
+AddActivityEvent('AddGroupFail','AddGroupFail(ev)');
+AddActivityEvent('AddGroupSuccess','AddGroupSuccess(ev)');
+
+AddActivityEvent('ModifyGroupFail','ModifyGroupFail(ev)');
+AddActivityEvent('ModifyGroupSuccess','ModifyGroupSuccess(ev)');
+
+AddActivityEvent('SettingRecordTimeParmFail','SettingRecordTimeFail(ev)');
+
+obj = document.getElementById('DeviceSearch');
+obj.AddEventProc("SearchDeviceSuccess", "alert('SearchDeviceSuccess');");
+obj.AddEventProc("SearchDeviceSuccess", 'SearchDeviceSuccess(ev)');
+obj.AddEventProc("pass", 'passed(ev)');
+obj.AddEventProc("ip",'ip(ev)');
+
+}
+
+function common_library(){
+var obj=document.getElementById('common-library');
+alert('common_library');
+obj.GetGroupChannelList(1);
+obj. GetChannelInfo(10);
+obj.GetChannelList(2);
+var nRet=obj.GetDeviceInfo(1);
+alert(nRet.name);
+
+}
+
+function AddDeviceFail(ev){
+	alert('Add Device failed');
+	alert(ev.fail);
+}
+
+function SettingRecordTimeFail(ev){
+	alert('Add Device failed');
+	alert(ev.fail);
+}
+function AddDeviceSuccess(ev){
+	alert('AddDeviceSuccess ');
+	alert(ev.deviceid);
+	}
+function AddChannelInGroupFail(ev){
+	alert('AddChannelInGroupFail');
+	alert(ev.fail);
+}
+function AddChannelInGroupSuccess(ev){
+	alert('AddChannelInGroupSuccess ');
+	alert(ev.chlgroupid);
+	}
+	
+	function ModifyGroupFail(ev){
+	alert('ModifyGroupFail');
+	alert(ev.fail);
+}
+function ModifyGroupSuccess(ev){
+	alert('ModifyGroupSuccess ');
+	alert(ev.success);
+	}
+function AddAreaFail(ev){
+	alert('AddAreaFail');
+	alert(ev.fail);
+}
+function AddAreaSuccess(ev){
+	alert('AddAreaSuccess ');
+	alert(ev.areaid);
+	}
+	
+function AddGroupFail(ev){
+	alert('AddAreaFail');
+	alert(ev.fail);
+}
+function AddGroupSuccess(ev){
+	alert('AddAreaSuccess ');
+	alert(ev.groupid);
+	}
+</script>
+</head>
+
+<body onload="Onload()">
+<div style="width:100%; height:25px" id="top_act">
+</div>
+style="width:174px; height:112px"></object>
+<object type="application/cms-common-library" id="common-library" style="width:300; height:300"></object>
+
+<button onclick=" common_library()">common-library</button>
+
+
+<input type="button" value="search" onclick="search();" />
+<input type="button" id="AddDevice_ok" value="AddDevice_ok"/>
+<input type="button" id="RemoveDevice_ok" value="RemoveDevice_ok" />
+<input type="button" id="ModifyDevice_ok" value="ModifyDevice_ok" />
+<input type="button" id="AddGroup_ok" value="AddGroup_ok" />
+<input type="button" id="RemoveGroup_ok" value="RemoveGroup_ok" />
+<input type="button" id="ModifyGroup_ok" value="ModifyGroup_ok" />
+<input type="button" id="AddArea_ok" value="AddArea_ok" />
+<input type="button" id="RemoveArea_ok" value="RemoveArea_ok" />
+<input type="button" id="ModifyArea_ok" value="ModifyArea_ok" />
+<input type="button" id="AddChannel_ok" value="AddChannel_ok" />
+<input type="button" id="RemoveChannel_ok" value="RemoveChannel_ok" />
+<input type="button" id="ModifyChannel_ok" value="ModifyChannel_ok" />
+<input type="button" id="AddChannelInGroup_ok" value="AddChannelInGroup_ok" />
+<input type="button" id="RemoveChannelFromGroup_ok" value="RemoveChannelFromGroup_ok" />
+<input type="button" id="SettingRecordTimeParm_ok" value="SettingRecordTimeParm_ok" />
+
+
+<input type="text" id="area_id_ID" value="0" />
+<input type="text" id="device_name_ID" value="JIUANDVR2" />
+<input type="text" id="address_ID" value="192.168.2.198" />
+<input type="text" id="port_ID" value="90" />
+<input type="text" id="http_ID" value="80" />
+<input type="text" id="eseeid_ID" value="123456" />
+<input type="text" id="userName_ID" value="simon" />
+<input type="text" id="password_ID" value="123456" />
+<input type="text" id="channel_count_ID" value="16" />
+<input type="text" id="connect_method_ID" value="IP" />
+<input type="text" id="vendor_ID" value="JIUAN" />
+<input type="text" id="dev_id_ID" value="145" />
+
+<input type="text" id="group_name_ID" value="Group_Name" />
+<input type="text" id="group_id_ID" value="4" />
+
+<input type="text" id="area_name_ID" value="Area_Name" />
+<input type="text" id="pid_ID" value="0" />
+
+<input type="text" id="channel_id_ID" value="0" />
+<input type="text" id="r_chl_group_name_ID" value="R_Chl_Group_Name" />
+</body>
+</html>
