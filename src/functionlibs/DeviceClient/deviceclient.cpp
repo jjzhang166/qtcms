@@ -384,12 +384,12 @@ int DeviceClient::closeAll()
 	IRemotePreview *n_IRemotePreview=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
-		return 1;
+		return 0;
 	}
 	m_DeviceConnecton->QueryInterface(IID_IRemotePreview,(void**)&n_IRemotePreview);
 	if (NULL==n_IRemotePreview)
 	{
-		return 1;
+		return 0;
 	}
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
 	QVariantMap CurStatusParm;
