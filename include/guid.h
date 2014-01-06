@@ -67,3 +67,4 @@ extern const IID IID_ILocalSetting;
 extern const IID IID_IRecorder;
 extern const IID IID_ISetRecordTime;
 extern const GUID CLSID_Recorder;
+extern const IID IID_IRemoteBackup;
