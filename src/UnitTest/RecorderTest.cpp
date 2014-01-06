@@ -1,16 +1,16 @@
 #include "RecorderTest.h"
-#include <windows.h>
 #include <guid.h>
-#include <IRecorder.h>
 #include <IDisksSetting.h>
+#include <IRecorder.h>
 #include <QtCore/QStringList>
 #include <QtCore/QVariantMap>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
-
+#include "netlib.h"
+#pragma comment(lib,"netlib.lib")
 
 #define START_RECORDER_UNIT_TEST(ii) 	IRecorder * ii = NULL; \
-    pcomCreateInstance(CLSID_Record, NULL, IID_IRecorder,(void **)&ii); \
+   pcomCreateInstance(CLSID_Recorder, NULL, IID_IRecorder,(void **)&ii); \
     QVERIFY2(NULL != ii,"Create Recorder instance");
 
 #define END_RECORDER_UNIT_TEST(ii) ii->Release(); 
@@ -133,20 +133,20 @@ void RecorderTest::RecorderTest1()
     char  data[1280*720];
     uint  nTimes = 0;
     uint  nTotalLoopTimes = 0;
-    unsigned _int64  i64FreeBytesAvailableOfE = 0;
-    unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-    unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
-    unsigned _int64  i64FreeBytesAvailableOfF = 0;
-    unsigned _int64  i64TotalNumberOfBytesOfF = 0;
-    unsigned _int64  i64TotalNumberOfFreeBytesOfF = 0;
-    GetDiskFreeSpaceEx(L"E:\\"
-        ,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-        ,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-        ,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
-    GetDiskFreeSpaceEx(L"F:\\"
-        ,(PULARGE_INTEGER)&i64FreeBytesAvailableOfF
-        ,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfF
-        ,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfF);
+    unsigned long long   i64FreeBytesAvailableOfE = 0;
+    unsigned long long   i64TotalNumberOfBytesOfE = 0;
+    unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
+    unsigned long long   i64FreeBytesAvailableOfF = 0;
+    unsigned long long   i64TotalNumberOfBytesOfF = 0;
+    unsigned long long   i64TotalNumberOfFreeBytesOfF = 0;
+    GetDiskFreeSpaceExQ("E:\\"
+        , &i64FreeBytesAvailableOfE
+        , &i64TotalNumberOfBytesOfE
+        , &i64TotalNumberOfFreeBytesOfE);
+    GetDiskFreeSpaceExQ("F:\\"
+        , &i64FreeBytesAvailableOfF
+        , &i64TotalNumberOfBytesOfF
+        , &i64TotalNumberOfFreeBytesOfF);
     nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 + (float)i64FreeBytesAvailableOfF/1024/1024 - 10000) / 4.58);
     QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -243,20 +243,20 @@ void RecorderTest::RecorderTest2()
     char  data[1280*720];
     uint  nTimes = 0;
     uint  nTotalLoopTimes = 0;
-    unsigned _int64  i64FreeBytesAvailableOfE = 0;
-    unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-    unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
-    unsigned _int64  i64FreeBytesAvailableOfF = 0;
-    unsigned _int64  i64TotalNumberOfBytesOfF = 0;
-    unsigned _int64  i64TotalNumberOfFreeBytesOfF = 0;
-    GetDiskFreeSpaceEx(L"E:\\"
-        ,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-        ,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-        ,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
-    GetDiskFreeSpaceEx(L"F:\\"
-        ,(PULARGE_INTEGER)&i64FreeBytesAvailableOfF
-        ,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfF
-        ,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfF);
+    unsigned long long   i64FreeBytesAvailableOfE = 0;
+    unsigned long long   i64TotalNumberOfBytesOfE = 0;
+    unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
+    unsigned long long   i64FreeBytesAvailableOfF = 0;
+    unsigned long long   i64TotalNumberOfBytesOfF = 0;
+    unsigned long long   i64TotalNumberOfFreeBytesOfF = 0;
+    GetDiskFreeSpaceExQ("E:\\"
+        , &i64FreeBytesAvailableOfE
+        , &i64TotalNumberOfBytesOfE
+        , &i64TotalNumberOfFreeBytesOfE);
+    GetDiskFreeSpaceExQ("F:\\"
+        , &i64FreeBytesAvailableOfF
+        , &i64TotalNumberOfBytesOfF
+        , &i64TotalNumberOfFreeBytesOfF);
     nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 + (float)i64FreeBytesAvailableOfF/1024/1024 - 10000) / 4.58);
     QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -343,14 +343,14 @@ void RecorderTest::RecorderTest3()
 	char  data[1280*720];
 	uint  nTimes = 0;
 	uint  nTotalLoopTimes = 0;
-	unsigned _int64  i64FreeBytesAvailableOfE = 0;
-	unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-	unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
+	unsigned long long   i64FreeBytesAvailableOfE = 0;
+	unsigned long long   i64TotalNumberOfBytesOfE = 0;
+	unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
 	
-	GetDiskFreeSpaceEx(L"E:\\"
-		,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
+	GetDiskFreeSpaceExQ("E:\\"
+		, &i64FreeBytesAvailableOfE
+		, &i64TotalNumberOfBytesOfE
+		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) / 4.58);
 	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -437,14 +437,14 @@ void RecorderTest::RecorderTest4()
 	char  data[1280*720];
 	uint  nTimes = 0;
 	uint  nTotalLoopTimes = 0;
-	unsigned _int64  i64FreeBytesAvailableOfE = 0;
-	unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-	unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
+	unsigned long long   i64FreeBytesAvailableOfE = 0;
+	unsigned long long   i64TotalNumberOfBytesOfE = 0;
+	unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
 
-	GetDiskFreeSpaceEx(L"E:\\"
-		,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
+	GetDiskFreeSpaceExQ("E:\\"
+		, &i64FreeBytesAvailableOfE
+		, &i64TotalNumberOfBytesOfE
+		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
 	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -529,14 +529,14 @@ void RecorderTest::RecorderTest5()
 	char  data[1280*720];
 	uint  nTimes = 0;
 	uint  nTotalLoopTimes = 0;
-	unsigned _int64  i64FreeBytesAvailableOfE = 0;
-	unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-	unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
+	unsigned long long   i64FreeBytesAvailableOfE = 0;
+	unsigned long long   i64TotalNumberOfBytesOfE = 0;
+	unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
 
-	GetDiskFreeSpaceEx(L"E:\\"
-		,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
+	GetDiskFreeSpaceExQ("E:\\"
+		, &i64FreeBytesAvailableOfE
+		, &i64TotalNumberOfBytesOfE
+		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
 	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -622,14 +622,14 @@ void RecorderTest::RecorderTest6()
 	char  data[1280*720];
 	uint  nTimes = 0;
 	uint  nTotalLoopTimes = 0;
-	unsigned _int64  i64FreeBytesAvailableOfE = 0;
-	unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-	unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
+	unsigned long long   i64FreeBytesAvailableOfE = 0;
+	unsigned long long   i64TotalNumberOfBytesOfE = 0;
+	unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
 
-	GetDiskFreeSpaceEx(L"E:\\"
-		,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
+	GetDiskFreeSpaceExQ("E:\\"
+		, &i64FreeBytesAvailableOfE
+		, &i64TotalNumberOfBytesOfE
+		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024  - 5000) / 4.58);
 	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
@@ -718,14 +718,14 @@ void RecorderTest::RecorderTest7()
 	char  data[1280*720];
 	uint  nTimes = 0;
 	uint  nTotalLoopTimes = 0;
-	unsigned _int64  i64FreeBytesAvailableOfE = 0;
-	unsigned _int64  i64TotalNumberOfBytesOfE = 0;
-	unsigned _int64  i64TotalNumberOfFreeBytesOfE = 0;
+	unsigned long long   i64FreeBytesAvailableOfE = 0;
+	unsigned long long   i64TotalNumberOfBytesOfE = 0;
+	unsigned long long   i64TotalNumberOfFreeBytesOfE = 0;
 
-	GetDiskFreeSpaceEx(L"E:\\"
-		,(PULARGE_INTEGER)&i64FreeBytesAvailableOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfBytesOfE
-		,(PULARGE_INTEGER)&i64TotalNumberOfFreeBytesOfE);
+	GetDiskFreeSpaceExQ("E:\\"
+		, &i64FreeBytesAvailableOfE
+		, &i64TotalNumberOfBytesOfE
+		, &i64TotalNumberOfFreeBytesOfE);
 	nTotalLoopTimes = (uint)( ((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) / 4.58);
 	QVERIFY2 (NULL != (pFile = fopen(pFileName,"rb")), "File Open Error");
 
