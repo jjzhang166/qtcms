@@ -230,8 +230,8 @@ void SetRecordTimeTest::SetRecordTimeTest5()
     QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
-    QVERIFY2(vMap["starttime"] == "2013-12-31 00:00:00" ,"step 3:return");
-    QVERIFY2(vMap["endtime"]   == "2013-12-31 23:59:59" ,"step 3:return");
+    QVERIFY2(vMap["starttime"] == "2014-01-01 00:00:00" ,"step 3:return");
+    QVERIFY2(vMap["endtime"]   == "2014-01-01 23:59:59" ,"step 3:return");
     QVERIFY2(0 ==  vMap["enable"]                       ,"step 3:return");
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }

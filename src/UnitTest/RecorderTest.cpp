@@ -31,7 +31,7 @@ typedef struct test_nalu_header{
     unsigned long size;
     unsigned long isider;  //1 ÊÇIÖ¡, 0x02ÊÇPÖ¡, 0x00ÊÇÒôÆµÖ¡
 }NALU_HEADER_t;
-
+uint RecorderTest :: m_sTimeStamp = 1;
 void RecorderTest::beforeRecorderTest()
 {
     QSqlDatabase db;
@@ -126,7 +126,7 @@ void RecorderTest::RecorderTest1()
     
     QString sDevName("1000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
     nRet = Itest->Start();
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -155,6 +155,7 @@ void RecorderTest::RecorderTest1()
     QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
     uint nTmp = (uint) (((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) /4.58 );
     bool bIsDevInfoSetFlag = false;
     while (nTimes < nTotalLoopTimes)
@@ -170,13 +171,16 @@ void RecorderTest::RecorderTest1()
             sDevName.clear();
             sDevName = "1001";
             nRet = Itest->SetDevInfo(sDevName,  1);
-            QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+            QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
         }
         memset(&nhead,0,sizeof(NALU_HEADER_t));
         memset(data,0,sizeof(data));
         QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        nRet = Itest->InputFrame(nhead.isider, data,  nhead.size);
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     }
 
@@ -239,7 +243,7 @@ void RecorderTest::RecorderTest2()
 
     QString sDevName("2000");
     nRet = Itest->SetDevInfo(sDevName,  4);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
     nRet = Itest->Start();
     QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -267,6 +271,7 @@ void RecorderTest::RecorderTest2()
     QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
     while (nTimes < nTotalLoopTimes )
     {
         if (feof(pFile))
@@ -278,7 +283,10 @@ void RecorderTest::RecorderTest2()
         memset(data,0,sizeof(data));
         QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        nRet = Itest->InputFrame(nhead.isider, data,  nhead.size);
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     }
 
@@ -339,7 +347,7 @@ void RecorderTest::RecorderTest3()
 
     QString sDevName("3000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -362,6 +370,7 @@ void RecorderTest::RecorderTest3()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes )
 	{
 		if (feof(pFile))
@@ -373,8 +382,11 @@ void RecorderTest::RecorderTest3()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-		nRet = Itest->InputFrame(nhead.isider, data,  nhead.size);
-		QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
 
 	fclose(pFile);
@@ -434,7 +446,7 @@ void RecorderTest::RecorderTest4()
 
     QString sDevName("4000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -457,6 +469,7 @@ void RecorderTest::RecorderTest4()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -468,6 +481,9 @@ void RecorderTest::RecorderTest4()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
 		nRet = Itest->InputFrame(nhead.isider, NULL,  nhead.size);
 		QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
@@ -528,7 +544,7 @@ void RecorderTest::RecorderTest5()
 
     QString sDevName("5000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -550,6 +566,7 @@ void RecorderTest::RecorderTest5()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -561,8 +578,11 @@ void RecorderTest::RecorderTest5()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-		nRet = Itest->InputFrame(0x3, data,  nhead.size);
-		QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(0x3, (char*)&frameInfo,  nhead.size);
+        QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
 
 	fclose(pFile);
@@ -622,7 +642,7 @@ void RecorderTest::RecorderTest6()
 
     QString sDevName("6000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -644,6 +664,7 @@ void RecorderTest::RecorderTest6()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -655,7 +676,10 @@ void RecorderTest::RecorderTest6()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-		nRet = Itest->InputFrame(nhead.isider, data,  -300);
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  -300);
 		QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
 
@@ -718,7 +742,7 @@ void RecorderTest::RecorderTest7()
 
     QString sDevName("7000");
     nRet = Itest->SetDevInfo(sDevName,  1);
-    QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    QVERIFY2(IRecorder::OK == nRet  ,"SetDevInfo :return");
 	nRet = Itest->Start();
 	QVERIFY2(IRecorder::OK == nRet,"Start() :return");
 
@@ -742,6 +766,7 @@ void RecorderTest::RecorderTest7()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
+    FrameInfo frameInfo ;
     bool bIsDevInfoSetFlag = false;
 	while (nTimes < nTotalLoopTimes - 900)
 	{
@@ -764,7 +789,10 @@ void RecorderTest::RecorderTest7()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-		nRet = Itest->InputFrame(nhead.isider, data,  nhead.size);
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
 		QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
 	fclose(pFile);

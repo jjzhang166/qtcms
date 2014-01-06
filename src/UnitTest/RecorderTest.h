@@ -14,6 +14,12 @@ public:
     ~RecorderTest(void);
     void beforeRecorderTest();
 
+    typedef struct _tagFrameInfo{
+        char * pData;
+        unsigned int uiDataSize;
+        unsigned int uiTimeStamp;
+    }FrameInfo;
+    static uint m_sTimeStamp;
     private Q_SLOTS:
         void RecorderTest1();
         void RecorderTest2();

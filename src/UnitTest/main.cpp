@@ -10,6 +10,7 @@
 #include "RemotePreviewTest.h"
 #include "DisksSettingTest.h"
 #include "SetRecordTimeTest.h"
+#include "RecorderTest.h"
 #include "IRecorder.h"
 
 int main(int argc, char *argv[])
@@ -25,8 +26,8 @@ int main(int argc, char *argv[])
 // 	HiChipUnitTest test1;
 // 	RemotePreviewTest remoteViewTest;
 // 	DisksSettingTest my_diskssetting_test;
-	SetRecordTimeTest my_SetRecordTime_Test;
-//	RecorderTest my_Recorder_Test;
+//	SetRecordTimeTest my_SetRecordTime_Test;
+	RecorderTest my_Recorder_Test;
 // 	QTest::qExec(&my_devive_test,argc,argv);
 // 	QTest::qExec(&my_area_test,argc,argv);
 // 	QTest::qExec(&tc, argc, argv);
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
 // 	QTest::qExec(&test1, argc, argv);
 // 	QTest::qExec(&my_diskssetting_test, argc, argv);
 // 	QTest::qExec(&remoteViewTest, argc, argv);
-	QTest::qExec(&my_SetRecordTime_Test, argc, argv);
+	QTest::qExec(&my_Recorder_Test, argc, argv);
 //  QTest::qExec(&my_SetRecordTime_Test,argc,argv);	
 	return 0;
 }
