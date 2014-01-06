@@ -253,7 +253,7 @@ var oSearchOcx;
 
 	}
 	function FillStorageParmData(){ 
-		oCommonLibrary.getUseDisks()
+		alert(oCommonLibrary.getUseDisks());
 		oCommonLibrary.getFilePackageSize();
 		oCommonLibrary.getLoopRecording();
 		oCommonLibrary.getDiskSpaceReservedSize();

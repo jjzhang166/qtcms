@@ -26,7 +26,6 @@ var oSelected = [],
 		}).remove();
 	}
 	function Fail(data){
-		alert(1);
 		var str='';
 		if(data.name){
 			str +=data.name+': ';
