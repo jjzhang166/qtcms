@@ -20,7 +20,7 @@
     <td width="568" valign="top"><p>int  Stop()</p></td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p>int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+    <td width="568" valign="top"><p>int  InputFrame (FrameInfo frameinfo)</p></td>
   </tr>
   <tr>
     <td width="568" valign="top"><p>int  SetDevInfo(const QString&amp;devname,int nChannelNum) </p></td>
@@ -65,7 +65,7 @@
       测试对象 </td>
     <td width="435" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  InputFrame (FrameInfo frameinfo)<br />
       int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
   </tr>
   <tr>
@@ -164,11 +164,11 @@
       测试对象 </td>
     <td width="435" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (FrameInfo frameinfo)</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>测试内容</p></td>
-    <td width="435" colspan="2" valign="top"><p>录像时不通过SetDevInfo改设置, 测试录像文件写入大小和路径以及最后保留空间大小</p></td>
+    <td width="435" colspan="2" valign="top"><p>录像时不用SetDevInfo改设置, 测试录像文件写入大小和路径以及最后保留空间大小</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>前置条件</p></td>
@@ -253,7 +253,7 @@
       测试对象 </td>
     <td width="435" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  InputFrame (FrameInfo frameinfo)<br />
       int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
   </tr>
   <tr>
@@ -343,11 +343,11 @@
       测试对象 </td>
     <td width="436" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (FrameInfo frameinfo)</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>测试内容</p></td>
-    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数cbuf和返回值</p></td>
+    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数frameinfo里面pData和函数返回值</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>前置条件</p></td>
@@ -415,7 +415,7 @@
   </tr>
   <tr>
     <td width="132" valign="top"><p>12</p></td>
-    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame时设置参数cbuf为NULL, 其他参数正确</p></td>
+    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame时设置参数frameinfo里面的pData为NULL, 其他参数正确</p></td>
     <td width="272" valign="top"><p>返回值为IRecorder: E_PARAMETER_ERROR</p></td>
   </tr>
   <tr>
@@ -431,11 +431,11 @@
       测试对象 </td>
     <td width="436" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (FrameInfo frameinfo)</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>测试内容</p></td>
-    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数type和返回值</p></td>
+    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数frameinfo里type和返回值</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>前置条件</p></td>
@@ -503,7 +503,7 @@
   </tr>
   <tr>
     <td width="132" valign="top"><p>12</p></td>
-    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame 时设置参数type为0x3, 其他参数正确</p></td>
+    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame 时设置参数frameinfo里面type为0x3, 其他参数正确</p></td>
     <td width="272" valign="top"><p>返回值为IRecorder: E_PARAMETER_ERROR</p></td>
   </tr>
   <tr>
@@ -519,11 +519,11 @@
       测试对象 </td>
     <td width="436" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)</p></td>
+      int  InputFrame (FrameInfo frameinfo)</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>测试内容</p></td>
-    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数buffersize和返回值</p></td>
+    <td width="436" colspan="2" valign="top"><p>测试InputFrame参数frameinfo里uiDataSize和返回值</p></td>
   </tr>
   <tr>
     <td width="132" valign="top"><p>前置条件</p></td>
@@ -591,7 +591,7 @@
   </tr>
   <tr>
     <td width="132" valign="top"><p>12</p></td>
-    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,调用InputFrame时设置参数buffersize为-300, 其他参数正确</p></td>
+    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,调用InputFrame时设置参数frameinfo里uiDataSize为0, 其他参数正确</p></td>
     <td width="272" valign="top"><p>返回值为IRecorder: E_PARAMETER_ERROR</p></td>
   </tr>
   <tr>
@@ -607,7 +607,7 @@
       测试对象 </td>
     <td width="436" colspan="2" valign="top"><p>int  Start()<br />
       int  Stop() <br />
-      int  InputFrame (int    type, char    *cbuf,int buffersize)<br />
+      int  InputFrame (FrameInfo frameinfo)<br />
       int  SetDevInfo(const QString&amp;devname,int nChannelNum)</p></td>
   </tr>
   <tr>

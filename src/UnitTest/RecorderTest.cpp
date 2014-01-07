@@ -156,7 +156,7 @@ void RecorderTest::RecorderTest1()
     QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
     uint nTmp = (uint) (((float)i64FreeBytesAvailableOfE/1024/1024 - 5000) /4.58 );
     bool bIsDevInfoSetFlag = false;
     while (nTimes < nTotalLoopTimes)
@@ -178,10 +178,11 @@ void RecorderTest::RecorderTest1()
         memset(data,0,sizeof(data));
         QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     }
 
@@ -272,7 +273,7 @@ void RecorderTest::RecorderTest2()
     QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
     NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
     while (nTimes < nTotalLoopTimes )
     {
         if (feof(pFile))
@@ -284,10 +285,11 @@ void RecorderTest::RecorderTest2()
         memset(data,0,sizeof(data));
         QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     }
 
@@ -371,7 +373,7 @@ void RecorderTest::RecorderTest3()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes )
 	{
 		if (feof(pFile))
@@ -383,10 +385,11 @@ void RecorderTest::RecorderTest3()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
     nTimes = 1000;
@@ -400,10 +403,11 @@ void RecorderTest::RecorderTest3()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
 
@@ -415,7 +419,7 @@ void RecorderTest::RecorderTest3()
 
 	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
-// 4. 测试InputFrame参数cbuf和返回值
+// 4. 测试InputFrame参数frameinfo里面pData和函数返回值
 //getEnableDisks获取可用分区	 | 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
 //setUseDisks函数设置使用F:盘存储录像文件	| 返回值为IDisksSetting::OK;
 //getUseDisks验证使用磁盘为F:	            | 返回值为IDisksSetting::OK; 输出值为” F:”
@@ -427,7 +431,7 @@ void RecorderTest::RecorderTest3()
 //getDiskSpaceReservedSize验证上一步设置值  |	返回值为IDisksSetting::OK;输出值为”5000”
 //调用SetDevInfo设置设备名为4000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	 | 返回值为IRecorder::OK
-//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame时设置参数cbuf为NULL, 其他参数正确 | 	返回值为IRecorder: E_PARAMETER_ERROR
+//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入,调用InputFrame时设置参数frameinfo里面的pData为NULL, 其他参数正确 | 	返回值为IRecorder: E_PARAMETER_ERROR
 //调用Stop()停止	 | 返回值为IRecorder::OK,  F盘录像文件无
 void RecorderTest::RecorderTest4()
 {
@@ -487,7 +491,7 @@ void RecorderTest::RecorderTest4()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -499,10 +503,11 @@ void RecorderTest::RecorderTest4()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.pData = data;
+        frameInfo.type = nhead.isider;
+        frameInfo.pData = NULL;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-		nRet = Itest->InputFrame(nhead.isider, NULL,  nhead.size);
+		nRet = Itest->InputFrame(frameInfo);
 		QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
 
@@ -513,7 +518,7 @@ void RecorderTest::RecorderTest4()
 
 	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
-// 5. 测试InputFrame参数type和返回值
+// 5. 测试InputFrame参数frameinfo里面type和返回值
 //getEnableDisks获取可用分区	| 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
 //setUseDisks函数设置使用F:盘存储录像文件 |	返回值为IDisksSetting::OK;
 //getUseDisks验证使用磁盘为F: | 	返回值为IDisksSetting::OK; 输出值为” F:”
@@ -584,7 +589,7 @@ void RecorderTest::RecorderTest5()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -596,10 +601,11 @@ void RecorderTest::RecorderTest5()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = 0x3;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(0x3, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
 
@@ -611,7 +617,7 @@ void RecorderTest::RecorderTest5()
 	END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 
-// 6. 测试InputFrame参数buffersize和返回值
+// 6. 测试InputFrame参数frameinfo里面uiDataSize和返回值
 //getEnableDisks获取可用分区	| 返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
 //setUseDisks函数设置使用F:盘存储录像文件 | 返回值为IDisksSetting::OK;
 //getUseDisks验证使用磁盘为F:  | 	返回值为IDisksSetting::OK; 输出值为” F:”
@@ -623,7 +629,7 @@ void RecorderTest::RecorderTest5()
 //getDiskSpaceReservedSize验证上一步设置值	| 返回值为IDisksSetting::OK;输出值为”5000”
 //调用SetDevInfo设置设备名为6000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	| 返回值为IRecorder::OK
-//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,调用InputFrame时设置参数buffersize为-300, 其他参数正确	| 返回值为IRecorder: E_PARAMETER_ERROR
+//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,调用InputFrame时设置参数frameinfo里面uiDataSize为0, 其他参数正确	| 返回值为IRecorder: E_PARAMETER_ERROR
 //调用Stop()停止	| 返回值为IRecorder::OK,  F盘录像文件无
 void RecorderTest::RecorderTest6()
 {
@@ -682,7 +688,7 @@ void RecorderTest::RecorderTest6()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
 	while (nTimes < nTotalLoopTimes)
 	{
 		if (feof(pFile))
@@ -694,10 +700,11 @@ void RecorderTest::RecorderTest6()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type  = nhead.isider;
         frameInfo.pData = data;
-        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiDataSize = 0;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  -300);
+        nRet = Itest->InputFrame(frameInfo);
 		QVERIFY2(IRecorder::E_PARAMETER_ERROR == nRet  ,"InputFrame :return");
 	}
 
@@ -785,7 +792,7 @@ void RecorderTest::RecorderTest7()
 	QVERIFY2 (NULL != (pFile = fopen(sFileName.toAscii().data(),"rb")), "File Open Error");
 
 	NALU_HEADER_t nhead;
-    FrameInfo frameInfo ;
+    IRecorder::FrameInfo frameInfo ;
     bool bIsDevInfoSetFlag = false;
 	while (nTimes < nTotalLoopTimes - 900)
 	{
@@ -808,10 +815,11 @@ void RecorderTest::RecorderTest7()
 		memset(data,0,sizeof(data));
 		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
 		QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
     nTimes = 1000;
@@ -825,10 +833,11 @@ void RecorderTest::RecorderTest7()
         memset(data,0,sizeof(data));
         QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.type = nhead.isider;
         frameInfo.pData = data;
         frameInfo.uiDataSize = nhead.size;
         frameInfo.uiTimeStamp = m_sTimeStamp++;
-        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        nRet = Itest->InputFrame(frameInfo);
         QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
     }
 	fclose(pFile);
