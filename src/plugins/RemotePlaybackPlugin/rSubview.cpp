@@ -11,10 +11,10 @@ RSubView::RSubView(QWidget *parent)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
-	ui->setupUi(this);
-	QVBoxLayout *layout = new QVBoxLayout;
-	layout->addWidget(ui->gridLayoutWidget);
-	setLayout(layout);
+	//ui->setupUi(this);
+	//QVBoxLayout *layout = new QVBoxLayout;
+	//layout->addWidget(ui->gridLayoutWidget);
+	//setLayout(layout);
 }
 
 RSubView::~RSubView()
