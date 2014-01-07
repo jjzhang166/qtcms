@@ -70,6 +70,7 @@
 	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
 	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
 	.right_content,.confirm{ display: none;}
+	.timeInput{width: 90px; float:left; margin-right:6px;}
 
 </style>
 </head>
@@ -290,10 +291,10 @@
 				</table>
 					<div id="left_list" style="position: absolute;">
 					<div class="dev_list" style="height:300px;">
-						<ul class="filetree" id="area_root">
-							<li><span class="area" id="area_0">区域_root</span>
+						<ul class="filetree">
+							<!-- <li><span class="area" id="area_0">区域_root</span>
 								<ul>
-									<!-- <li><span class="device" id="dev_1" >device</span>
+									<li><span class="device" id="dev_1" >device</span>
 										<ul>
 											<li><span class="channel">Channel01</span></li>
 											<li><span class="channel">Channel02</span></li>
@@ -316,9 +317,9 @@
 												</ul>
 											</li>
 										</ul>
-									</li> -->
+									</li>
 								</ul>
-							</li>
+							</li> -->
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
@@ -346,7 +347,7 @@
 									</ul>
 								</li> -->
 								<!-- </ul>
-																							</li> -->								
+																							</li> -->		
 						</ul>
 					</div>
 				</div>
@@ -372,7 +373,7 @@
                     <li>IniliazationSettings</li>
 				</ul>
 				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
-					<ul class="filetree" id="device_list">
+					<ul class="filetree">
 						<!-- <li><span class="device">dvr</span>
 							<ul>
 								<li><span class="channel">Channel01</span></li>
@@ -1617,7 +1618,7 @@
 					<li onclick="FillRecordTimeData();">Record Setting</li>
 					<li onclick="FillStorageParmData();">Warming Linkage</li>
 				</ul>
-				<div class="switch" style="display:block;">
+				<div id="CommonParm" class="switch" style="display:block;">
 					<table>
 						<tr><td></td><td></td><td></td></tr>
 						<tr>
@@ -1640,19 +1641,19 @@
 							<td>default split-screen mode</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span id="SplitScreenMode_ID"></span>
+									<span id="SplitScreenMode_ID" value=""></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
-								<ul class="option">
-									<li><a href="javascript:;">1_1</a></li>
-									<li><a href="javascript:;">2_2</a></li>
-									<li><a href="javascript:;">3_3</a></li>
-									<li><a href="javascript:;">4_4</a></li>
-									<li><a href="javascript:;">5_5</a></li>
-									<li><a href="javascript:;">6_1</a></li>
-									<li><a href="javascript:;">7_7</a></li>
-									<li><a href="javascript:;">8_1</a></li>
-									<li><a href="javascript:;">8_8</a></li>
+								<ul class="option" id="viewMod">
+									<li><a>1_1</a></li>
+									<li><a>2_2</a></li>
+									<li><a>3_3</a></li>
+									<li><a>4_4</a></li>
+									<li><a>5_5</a></li>
+									<li><a>6_1</a></li>
+									<li><a>7_7</a></li>
+									<li><a>8_1</a></li>
+									<li><a>8_8</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1661,11 +1662,15 @@
 						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID">Auto connect devices</td></tr>
 						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID">Auto switch to fullscreen</td></tr>
 						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID">Boot from the start</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok">save</div></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" onclick="showdata('CommonParm','CommonParm')" id="SettingCommonParm_ok">save</div></td></tr>
 					</table>
 				</div>
-				<div class="switch">
-					<div style="height:400px; width:230px; overflow: auto; background:#CCC; float:left; margin-right:20px;"></div>
+				<div id="RecordTime" class="switch">
+					<div style="height:400px; width:230px; overflow: auto; background:#E4EBF4; float:left; margin-right:20px;" class="dev_list" >
+						<ul class="filetree">
+						</ul>	
+
+					</div>
 					<table style="float:left">
 						<tr>
 							<td class="td1">Week</td>
@@ -1674,15 +1679,19 @@
 									<span></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
-								<ul class="option">
-									<li><a href="javascript:;" style="width:59px"></a></li>
-									<li><a href="javascript:;" style="width:59px"></a></li>
-									<li><a href="javascript:;" style="width:59px"></a></li>
+								<ul class="option week">
+									<li><a>星期一</a></li>
+									<li><a>星期二</a></li>
+									<li><a>星期三</a></li>
+									<li><a>星期四</a></li>
+									<li><a>星期五</a></li>
+									<li><a>星期六</a></li>
+									<li><a>星期日</a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1">Time1</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr>
-						<tr><td class="td1">Time2</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr><tr><td class="td1">Time3</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr><tr><td class="td1">Time4</td><td class="td2"><input type="text" style="width:80px;" /><input type="text" style="width:80px;" /></td></tr>
+						<tr><td class="td1">Time1</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1">Time2</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr><tr><td class="td1">Time3</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr><tr><td class="td1">Time4</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
 							<td class="td1">Copy To</td>
 							<td class="td2">
@@ -1700,43 +1709,43 @@
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordTimeParm_ok">save</div><div class="hover">cancel</div></td></tr>
 					</table>
 				</div>
-				<div class="switch">
+				<div id="StorageParm" class="switch">
 					<table><tr><td class="td1">Disk drive</td><td style="width:450px;"><table class="tb1" style="padding:10px">
 									<tr>
 										<td colspan="4" class="td4">
-										<div><input type="checkbox" /><span>D</span></div>
-										<div><input type="checkbox" /><span>E</span></div>
-										<div><input type="checkbox" /><span>F</span></div>
-										<div><input type="checkbox" /><span>G</span></div>
-										<div><input type="checkbox" /><span>H</span></div>
-										<div><input type="checkbox" /><span>I</span></div>
-										<div><input type="checkbox" /><span>J</span></div>
-										<div><input type="checkbox" /><span>K</span></div>
+										<div><input type="checkbox" value="D" disabled="disable" /><span>D</span></div>
+										<div><input type="checkbox" value="E" disabled="disable"/><span>E</span></div>
+										<div><input type="checkbox" value="F" disabled="disable"/><span>F</span></div>
+										<div><input type="checkbox" value="G" disabled="disable"/><span>G</span></div>
+										<div><input type="checkbox" value="H" disabled="disable"/><span>H</span></div>
+										<div><input type="checkbox" value="I" disabled="disable"/><span>I</span></div>
+										<div><input type="checkbox" value="J" disabled="disable"/><span>J</span></div>
+										<div><input type="checkbox" value="K" disabled="disable"/><span>K</span></div>
 										</td>
 									</tr>
 									<tr>
 										<td colspan="4" class="td4">
-										<div><input type="checkbox" /><span>L</span></div>
-										<div><input type="checkbox" /><span>M</span></div>
-										<div><input type="checkbox" /><span>N</span></div>
-										<div><input type="checkbox" /><span>O</span></div>
-										<div><input type="checkbox" /><span>P</span></div>
-										<div><input type="checkbox" /><span>Q</span></div>
-										<div><input type="checkbox" /><span>R</span></div>
-										<div><input type="checkbox" /><span>S</span></div>
+										<div><input type="checkbox" value="L" disabled="disable"/><span>L</span></div>
+										<div><input type="checkbox" value="M" disabled="disable"/><span>M</span></div>
+										<div><input type="checkbox" value="N" disabled="disable"/><span>N</span></div>
+										<div><input type="checkbox" value="O" disabled="disable"/><span>O</span></div>
+										<div><input type="checkbox" value="P" disabled="disable"/><span>P</span></div>
+										<div><input type="checkbox" value="Q" disabled="disable"/><span>Q</span></div>
+										<div><input type="checkbox" value="R" disabled="disable"/><span>R</span></div>
+										<div><input type="checkbox" value="S" disabled="disable"/><span>S</span></div>
 										</td>
 									</tr>
 									<tr>
 										<td colspan="4" class="td4">
-										<div><input type="checkbox" /><span>T</span></div>
-										<div><input type="checkbox" /><span>U</span></div>
-										<div><input type="checkbox" /><span>V</span></div>
-										<div><input type="checkbox" /><span>X</span></div>
-										<div><input type="checkbox" /><span>Y</span></div>
-										<div><input type="checkbox" /><span>Z</span></div>
+										<div><input type="checkbox" value="T" disabled="disable"/><span>T</span></div>
+										<div><input type="checkbox" value="U" disabled="disable"/><span>U</span></div>
+										<div><input type="checkbox" value="V" disabled="disable"/><span>V</span></div>
+										<div><input type="checkbox" value="X" disabled="disable"/><span>X</span></div>
+										<div><input type="checkbox" value="Y" disabled="disable"/><span>Y</span></div>
+										<div><input type="checkbox" value="Z" disabled="disable"/><span>Z</span></div>
 										</td>
 									</tr>
-									<tr><td><input style="margin:0 4px;" type="checkbox" />All<td></td><td></td></tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" onclick="disksSelectAll()" />All<td></td><td></td></tr>
 								</table>
 							</td>
 						</tr>

@@ -263,10 +263,10 @@ $(function(){
 	})
 	
 	$('div.timeInput').each(function(index){ 	
-		if(index == 1){ 
-			$(this).timeInput({'initTime':'23 59 59'});
-		}else{
+		if(index%2 ==0){ 
 			$(this).timeInput();
+		}else{
+			$(this).timeInput({'initTime':'23 59 59'});
 		}
 	})
 })
@@ -314,7 +314,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 function showdata(id,type){ 
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
-	$('#'+type).find('input[id]').each(function(){ 
+	$('#'+type).find('[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
 	show(str);
@@ -359,6 +359,15 @@ function returnTime(sInt){
 	var date = $("div.calendar span.nowDate").html();
 	var begin = date
 	var end = date*/
-	return H+':'+M+':'+S
-
+	return H+':'+M+':'+S;
+}
+function getType(o) { 
+var _t; return ((_t = typeof(o)) == "object" ? o==null && "null" || Object.prototype.toString.call(o).slice(8,-1):_t).toLowerCase(); 
+} 
+function toJsArray(obj){ 
+	var a=[];
+	for(i in obj){ 
+		a.push(obj[i]);
+	}
+	return a;
 }

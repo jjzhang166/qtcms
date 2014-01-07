@@ -3,13 +3,11 @@ var oSelected = [],
 	oCommonLibrary;
 	
 	$(function(){ 
-		$('#area_0').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		oCommonLibrary = document.getElementById('commonLibrary');
-		$(".dev_list li#area_0").next('li').remove();
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
-		areaList2Ui();
+		areaList2Ui('0');
 	})	
 
 	function AddSuccess(ev){
@@ -103,7 +101,6 @@ var oSelected = [],
 		closeMenu();
 	} 
 	function AddGroupSuccess(data){
-		alert(1);
 		var name = $('#group_name_ID').val();
 		var id = data.groupid;
 		var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
@@ -201,10 +198,12 @@ var oSelected = [],
 		$('ul.filetree').treeview();
 	}
 	//区域分组,属性菜单输出.
-	function areaList2Ui(){ //区域菜单输出
-		//$('div.dev_list span.device').parent('li').remove();
-		$('div.dev_list span.area').not('#area_0').parent('li').remove();
-		//$('ul.filetree').treeview();
+	function areaList2Ui(num){ //区域菜单输出
+		$('div.dev_list span.area').parent('li').remove();
+		var obj = $('ul.filetree:eq('+num+')')
+		var add = $('<li><span class="area" id="area_0">区域_root</span><ul></ul</li>').appendTo(obj);
+		obj.treeview({add:add});
+		add.find('span.area:first').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();
@@ -217,21 +216,21 @@ var oSelected = [],
 			pidList.push(pid);
 
 		}
-		var arr =del(pidList.sort(sortNumber));;  //  返回pid升序的PID数组
-		deviceList2Ui('0');
+		var arr =del(pidList.sort(sortNumber)); //  返回pid升序的PID数组
+		deviceList2Ui('0',num);
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		
-					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+arr[j]).next('ul'));
+					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('#area_'+arr[j]).next('ul'));
 					add.find('span.area').data('data',areaListArrar[k]);
-					$('ul.filetree:eq(0)').treeview({add:add});
-					deviceList2Ui(areaListArrar[k]['area_id']);
+					obj.treeview({add:add});
+					deviceList2Ui(areaListArrar[k]['area_id'],num);
 				}
 			}
 		}
 	}
 	
-	function deviceList2Ui(areaid){ //设备菜单输出
+	function deviceList2Ui(areaid,num){ //设备菜单输出
 		var devList = oCommonLibrary.GetDeviceList(areaid);
 		for (i in devList){
 			var id=devList[i];
@@ -244,11 +243,11 @@ var oSelected = [],
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
-			$('ul.filetree:eq(0)').treeview({add:add});	
-			devChannelList2Ui(id);
+			$('ul.filetree:eq('+num+')').treeview({add:add});	
+			devChannelList2Ui(id,num);
 		}
 	}
-	function devChannelList2Ui(devid){ //设备下通道菜单输出
+	function devChannelList2Ui(devid,num){ //设备下通道菜单输出
 		var chlList = oCommonLibrary.GetChannelList(devid);
 		for(i in chlList){ 
 			var id = chlList[i];
@@ -263,7 +262,7 @@ var oSelected = [],
 				//show(data);
 				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
 				add.find('span.channel').data('data',data);
-				$('ul.filetree:eq(1)').treeview({add:add});
+				$('ul.filetree:eq('+num+')').treeview({add:add});
 			}else{ 
 				$('#channel_'+id).data('data')['dev_id'] = devid;
 			}	
@@ -296,7 +295,7 @@ var oSelected = [],
 		}
 	}
 	function SettingCommonParmSuccess(data){
-		show(data);
+		//show(data);
 	}
 	function SettingRecordTimeParmSuccess(data){ 
 		show(data);

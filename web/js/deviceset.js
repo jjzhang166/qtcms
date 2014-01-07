@@ -1,4 +1,4 @@
-var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordTimeParm'];  //事件名称集合
+var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordTime'];  //事件名称集合
 var oSearchOcx;
 	$(function(){
 		oSearchOcx = document.getElementById('devSearch');
@@ -37,7 +37,7 @@ var oSearchOcx;
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
 		})
-		$('div.dev_list').each(function(index){
+		$('div.dev_list:lt(2)').each(function(index){
 			var This = $(this);
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
@@ -88,13 +88,14 @@ var oSearchOcx;
 		
 		$('#set_content div.left li').each(function(index){
 			$(this).click(function(){
-				$('#set_content div.right div.right_content').hide().eq(index).show();
+				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
 				oTreeWarp.show();
 				set_contentMax();
 				if(index == 0){
 					$('div.dev_list span.device').parent('li').remove();
 					searchFlush();
-					areaList2Ui();
+					//区域列表;
+					areaList2Ui('0');
 				}else if(index == 1){
 					$('#device_list').find('li').remove();	
 					var areaList = oCommonLibrary.GetAreaList();
@@ -165,14 +166,14 @@ var oSearchOcx;
 							})
 					    })
 				}else if(index == 2){
-					FillCommonParmData();
+					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}else if(index == 3){ 
 					userList2Ui();
 				}
 			})
 			//搜索设备;
 			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			//searchFlush();
+			searchFlush();
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -246,17 +247,36 @@ var oSearchOcx;
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
-			$('#'+item[i]+'_ID').html(str).prop('checked',Boolean(str)).val(str);
+			var obj = $('#'+item[i]+'_ID').prop('checked',Boolean(str)).val(str);
+			if(obj[0].nodeName != 'INPUT'){ 
+				obj.html(str);
+				if(str.charAt('div')){ 
+					obj.html(str.split('iv')[1]);
+				}
+			}
 		}
-	}
-	function FillRecordTimeData(){ 
 
+		$('#CommonParm input:checkbox').click(function(){ 
+			$(this).val($(this).prop('checked'));
+		})
+		$('#viewMod a').click(function(){ 
+			var str = $(this).html();
+			$('#SplitScreenMode_ID').html(str).val('div'+str);
+		})
 	}
-	function FillStorageParmData(){ 
-		alert(oCommonLibrary.getUseDisks());
-		oCommonLibrary.getFilePackageSize();
-		oCommonLibrary.getLoopRecording();
-		oCommonLibrary.getDiskSpaceReservedSize();
+	function FillRecordTimeData(){
+		areaList2Ui('3');
+	}
+	function FillStorageParmData(){
+		var disks = oCommonLibrary.getEnableDisks().split(':');
+		for(i in disks){ 
+			$('#StorageParm input:checkbox').each(function(){ 
+				if(disks[i] == $(this).val()){ 
+					$(this).prop('disabled',false);
+				};
+			})
+		}
+		
 	}
 	
 	//分组区域添加到分组, 数据组织
@@ -482,9 +502,12 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}
 	objShowCenter(obox);
 }
+//devinfo
 function selectAll(){
 	$('#SerachDevList tbody input:checkbox').click();/*.on('click','tr',function(){
 		$(this).find('input:checkbox').click();
 	})*/
 }
-//devinfo
+function disksSelectAll(){
+	$('#StorageParm input:checkbox:lt(22)').click();
+}
