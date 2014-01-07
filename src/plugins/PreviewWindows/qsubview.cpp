@@ -280,15 +280,15 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	unsigned int nLength=evMap.value("length").toUInt();
 	char * lpdata=(char *)evMap.value("data").toUInt();
 
-	FrameInfo info;
+	IRecorder::FrameInfo info;
+	info.type = evMap.value("frametype").toUInt();
 	info.pData = lpdata;
 	info.uiDataSize = nLength;
 	info.uiTimeStamp = evMap.value("pts").toUInt();
 
-	int nType = evMap.value("frametype").toUInt();
 	if (NULL != m_pRecorder)
 	{
-		m_pRecorder->InputFrame(nType, (char*)&info, nLength);
+		m_pRecorder->InputFrame(info);
 	}
 
 	if (NULL==m_IVideoDecoder)
