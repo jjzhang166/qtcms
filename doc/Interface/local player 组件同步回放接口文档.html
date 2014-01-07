@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创<br />
+  接口简介：<br />
+  名称：local player组件同步回放接口文档<br />
+  功能：提供本地录像文件的同步回放接口<br />
+  包含头文件：ILocalPlayer.h<br />
+  接口定义：<br />
+  @1<br />
+  简介：搜索在限定时间范围内的本地录像文件<br />
+  输入参数：<br />
+  start：开始时间（时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;）<br />
+  end：结束时间（时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;）<br />
+  filelist：返回搜索到的文件list（完整的文件路径）<br />
+  返回值：<br />
+  0：成功<br />
+  1：失败 <br />
+  virtual int SearchLocalPlayFileList(const QDateTime &amp;start,const QDateTime &amp;end,QStringList &amp;filelist)=0;</p>
+<p>@2<br />
+  简介：添加播放文件到同步组中，并指定文件播放的窗口ID<br />
+  输入参数：<br />
+  filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，如：F:\project\date1\devname<br />
+</p>
+<p>\chl2\filename.avi，F:\project\date2\devname\chl2\filename.avi<br />
+  wnd:播放窗口的id<br />
+  start:开始播放时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
+  end：结束播放时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
+  返回值：<br />
+  0：添加成功<br />
+  1：添加失败，通道组已经满<br />
+  2：添加失败，窗口已经被占用<br />
+  3：添加失败，（失败原因未定义）<br />
+  virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end)=0;</p>
+<p>@3<br />
+  简介：设置同步组数量<br />
+  输入参数：<br />
+  num:设置同步组的数量值<br />
+  返回值：<br />
+  0：设置成功<br />
+  1：设置失败<br />
+  virtual int SetSynGroupNum(int num)=0;</p>
+<p>@4<br />
+  简介：组播放<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupPlay()=0;</p>
+<p>@5<br />
+  简介：暂停播放<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupPause()=0;</p>
+<p>@6<br />
+  简介：继续播放<br />
+  返回值：<br />
+  0：调用成功<br />
+  调用失败<br />
+  virtual int GroupContinue()=0;</p>
+<p>@7<br />
+  简介：停止播放<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupStop()=0;</p>
+<p>@8<br />
+  简介：快进<br />
+  输入参数：<br />
+  speed：正常播放速度的倍数（可选值：2，4，8）<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupSpeedFast(int speed)=0;</p>
+<p>@9<br />
+  简介：慢放<br />
+  输入参数：<br />
+  speed：正常播放速度的1/N倍（可选值：2，4，8）<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupSpeedSlow(int speed)=0;</p>
+<p>@10<br />
+  简介：恢复正常的播放速度<br />
+  返回值：<br />
+  0：调用成功<br />
+  1：调用失败<br />
+  virtual int GroupSpeedNormal() = 0;</p>
+</body>
+</html>
