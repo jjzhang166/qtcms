@@ -7,6 +7,7 @@
 
 RSubView::RSubView(QWidget *parent)
 	: QWidget(parent),
+	m_LpClient(NULL),
 	ui(new Ui::titleview)
 {
 	this->lower();
@@ -20,10 +21,21 @@ RSubView::RSubView(QWidget *parent)
 RSubView::~RSubView()
 {
 	delete ui;
+	if (NULL!=m_LpClient)
+	{
+		m_LpClient->Release();
+	}
 }
 
 void RSubView::paintEvent( QPaintEvent * e)
 {
+	if (NULL!=m_LpClient)
+	{
+		if (IDeviceClient::STATUS_CONNECTED==m_LpClient->getConnectStatus())
+		{
+			return;
+		}
+	}
 	QPainter p(this);
 
 	QString image;
@@ -91,5 +103,15 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
+}
+
+void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
+{
+	if (NULL==m_GroupPlayback)
+	{
+		return;
+	}
+	m_GroupPlayback->QueryInterface(IID_IDeviceClient,(void**)&m_LpClient);
+	return;
 }
 

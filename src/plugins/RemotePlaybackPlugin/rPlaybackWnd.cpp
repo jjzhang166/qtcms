@@ -125,6 +125,10 @@ int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
                 }
                 CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
                 pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)&m_GroupPlayback);
+				for (int i=0;i< ARRAY_SIZE(m_PlaybackWnd); ++i)
+				{
+					m_PlaybackWnd[i].SetLpClient(m_GroupPlayback);
+				}
 				m_RemotePlaybackObject.SetIDeviceGroupRemotePlaybackParm(m_GroupPlayback);
                 bIsCaseInitFlags = true;
                 break;
