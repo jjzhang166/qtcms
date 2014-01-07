@@ -1431,7 +1431,7 @@ void settingsActivity::OnSettingCommonParm()
 	}
 
 	nRet=-1;
-	nRet=Ilocal->setAutoLogin(alogin_ID.toInt());
+	nRet=Ilocal->setAutoLogin(alogin_ID.toBool());
 	if (ILocalSetting::OK!=nRet)
 	{
 		arg.clear();
@@ -1516,7 +1516,7 @@ void settingsActivity::OnSettingRecordTimeParm()
 		Content.clear();
 		Content.append("system fail");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeFail",arg);
+		EventProcCall("SettingRecordTimeParmFail",arg);
 		return;
 	}
 	QVariant recordtime_ID=QueryValue("recordtime_ID");
@@ -1532,7 +1532,7 @@ void settingsActivity::OnSettingRecordTimeParm()
 		Content.clear();
 		Content.append("ModifyRecordTime Fail");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeFail",arg);
+		EventProcCall("SettingRecordTimeParmFail",arg);
 		ISetRecord->Release();
 		return;
 	}
@@ -1541,7 +1541,7 @@ void settingsActivity::OnSettingRecordTimeParm()
 	Content.clear();
 	Content.append("ModifyRecordTime success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("SettingRecordTimeSuccess",arg);
+	EventProcCall("SettingRecordTimeParmSuccess",arg);
 	ISetRecord->Release();
 	return;
 }
