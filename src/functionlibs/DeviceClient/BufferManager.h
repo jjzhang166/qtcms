@@ -6,9 +6,6 @@
 #include <QQueue>
 
 
-int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
-
-
 class BufferManager : public QThread
 {
 	Q_OBJECT

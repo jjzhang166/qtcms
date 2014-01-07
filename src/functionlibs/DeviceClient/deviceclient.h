@@ -19,6 +19,7 @@
 #include <IEventRegister.h>
 
 int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
 
 class  DeviceClient:public QThread,
 	public IDeviceClient,
@@ -62,6 +63,8 @@ public:
 	virtual int GroupSpeedFast();
 	virtual int GroupSpeedSlow();
 	virtual int GroupSpeedNormal();
+
+	int recordFrame(QVariantMap &evMap);
 
 private slots:
 	void action(QString options, BufferManager*);

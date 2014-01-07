@@ -17,35 +17,6 @@ BufferManager::~BufferManager(void)
 	}
 }
 
-int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
-{
-	int nRet = 0;
- 	QMap<int, WndPlay> *plstSubClient = (QMap<int, WndPlay>*)pUser;
-
-	QMap<int, WndPlay>::iterator iter;
-	for (iter = plstSubClient->begin(); iter != plstSubClient->end(); iter++)
-	{
-		if (iter.key() == evMap.value("channel"))
-		{
-			BufferManager *pBuffer = iter->bufferManager;
-			if (NULL == pBuffer)
-			{
-				return 1;
-			}
-			if (0 == evMap.value("frametype").toInt()  && pBuffer->getAudioStatus())
-			{
-				nRet = pBuffer->recordAudioStream(evMap);
-			}
-			else
-			{
-				nRet = pBuffer->recordVedioStream(evMap);
-			}
-		}
-	}
-
-	return nRet;
-}
-
 int BufferManager::recordAudioStream(QVariantMap &evMap)
 {
 	//´ý¶¨

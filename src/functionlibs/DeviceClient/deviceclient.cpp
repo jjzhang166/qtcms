@@ -459,7 +459,7 @@ int DeviceClient::cbInit()
 		if (NULL!=IEventReg)
 		{
 			QString evName = QString("RecordStream");
-			IEventReg->registerEvent(evName, cbRecordStream, &m_groupMap);
+			IEventReg->registerEvent(evName, cbRecordStream, this);
 
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
 			for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
@@ -826,3 +826,34 @@ int DeviceClient::GroupSpeedNormal()
 	return 0;
 }
 
+int DeviceClient::recordFrame(QVariantMap &evMap)
+{
+	int nRet = 0;
+	int channle = evMap.value("channel").toInt();
+	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channle);
+	BufferManager *pBuffer = iter->bufferManager;
+	if (NULL == pBuffer)
+	{
+		return 1;
+	}
+	if (0 == evMap.value("frametype").toInt()  && pBuffer->getAudioStatus())
+	{
+		nRet = pBuffer->recordAudioStream(evMap);
+	}
+	else
+	{
+		nRet = pBuffer->recordVedioStream(evMap);
+	}
+
+	return nRet;
+}
+
+int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
+{
+	int nRet = 0;
+	DeviceClient *pClient = (DeviceClient*)pUser;
+
+	nRet = pClient->recordFrame(evMap);
+
+	return nRet;
+}

@@ -29,8 +29,15 @@ m_bStop(false)
 
 PlayManager::~PlayManager(void)
 {
+  	if (!m_bStop)
+   	{
+   		msleep(100);
+   	}
+
 	m_pVedioDecoder->Release();
+	m_pVedioDecoder = NULL;
 	m_pVedioRender->Release();
+	m_pVedioRender = NULL;
 }
 
 int PlayManager::initCb()
@@ -138,6 +145,11 @@ void PlayManager::run()
 		{
 			m_uiStartFrameTime = recVeStream.uiGenTime;
 			m_ui64TSP = recVeStream.ui64TSP;
+
+			if (NULL == m_pVedioDecoder)
+			{
+				return;
+			}
 			m_pVedioDecoder->decode(lpdata, nLength);//解码播放
 			m_bFirstFrame = false;
 
@@ -172,6 +184,10 @@ void PlayManager::run()
 		m_ui64TSP = recVeStream.ui64TSP;
 
 		//解码播放
+		if (NULL == m_pVedioDecoder)
+		{
+			return;
+		}
 		m_pVedioDecoder->decode(lpdata, nLength);
 		frameTimer.start();
 	}
