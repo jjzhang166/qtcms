@@ -22,7 +22,7 @@ public:
 	//IRecorder
 	virtual int Start();
 	virtual int Stop();
-	virtual int InputFrame(int type,char *cbuf,int buffersize);
+	virtual int InputFrame(FrameInfo frameinfo);
 	virtual int SetDevInfo(const QString& devname,int nChannelNum);
 
 	virtual QString getModeName();
@@ -32,11 +32,11 @@ public:
 	virtual unsigned long __stdcall AddRef();
 	virtual unsigned long __stdcall Release();
 
-	typedef struct _tagFrameInfo{
-		char * pData;
-		unsigned int uiDataSize;
-		unsigned int uiTimeStamp;
-	}FrameInfo;
+	/*typedef struct _tagFrameInfo{
+	char * pData;
+	unsigned int uiDataSize;
+	unsigned int uiTimeStamp;
+	}FrameInfo;*/
 
 	typedef struct _tagVideoInfo{
 		unsigned int uiWidth;

@@ -49,22 +49,23 @@ int Recorder::Stop()
 	cleardata();
 	return IRecorder::OK;
 }
-int Recorder::InputFrame(int type,char *cbuf,int buffersize)
+int Recorder::InputFrame(FrameInfo frameinfo)
 {
-	if ((type != 0x00 && type !=  0x01 && type != 0x02) || buffersize<=0 )
+	int type = frameinfo.type;
+	if ((type != 0x00 && type !=  0x01 && type != 0x02) || frameinfo.uiDataSize<=0 )
 	{
 		return IRecorder::E_PARAMETER_ERROR;
 	}
 	if (!m_bFinish)
 	{
-		FrameInfo *frame = (FrameInfo *)cbuf;
+		//FrameInfo *frame = (FrameInfo *)cbuf;
 		RecBufferNode bufTemp;
 		bufTemp.dwDataType = type;
-		bufTemp.dwBufferSize = frame->uiDataSize;
-		bufTemp.dwTicketCount = frame->uiTimeStamp;
+		bufTemp.dwBufferSize = frameinfo.uiDataSize;
+		bufTemp.dwTicketCount = frameinfo.uiTimeStamp;
 		bufTemp.nChannel = 0;
-		bufTemp.Buffer = new char[frame->uiDataSize];
-		memcpy(bufTemp.Buffer,frame->pData,frame->uiDataSize);
+		bufTemp.Buffer = new char[frameinfo.uiDataSize];
+		memcpy(bufTemp.Buffer,frameinfo.pData,frameinfo.uiDataSize);
 		m_dataRef.lock();
 		m_dataqueue.enqueue(bufTemp);
 		m_dataRef.unlock();
@@ -78,18 +79,18 @@ int Recorder::InputFrame(int type,char *cbuf,int buffersize)
 			m_nFrameCount ++;
 			if ( 0 == m_nLastTicket )
 			{
-				m_nLastTicket = frame->uiTimeStamp;
+				m_nLastTicket = frameinfo.uiTimeStamp;
 			}
 			else
 			{
-				if (frame->uiTimeStamp - m_nLastTicket >= 1000)
+				if (frameinfo.uiTimeStamp - m_nLastTicket >= 1000)
 				{
 					if (m_nFrameCount < 31)
 					{
 						m_nFrameCountArray[m_nFrameCount] ++;
 					}
 						m_nFrameCount = 0;
-					m_nLastTicket = frame->uiTimeStamp;
+					m_nLastTicket = frameinfo.uiTimeStamp;
 				}
 			}
 		}
