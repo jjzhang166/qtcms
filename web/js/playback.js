@@ -130,7 +130,7 @@ var oLeft,oBottom,oView,oPlayBack,
 			})
 		})
 
-		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(ev)');
+		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 	})///
 
 	function searchVideo(){
@@ -222,11 +222,11 @@ var oLeft,oBottom,oView,oPlayBack,
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
 		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		
+		show(startTime+'+'+endTime);
 		for (var i=0;i<devData.channel_count;i++){
-			if(oPlayBack.startSearchRecFile(index,type,startTime,endTime)!=0){
+			if(oPlayBack.startSearchRecFile(i,type,startTime,endTime)!=0){
 				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
-			};
+			}
 		};
 	}
 
@@ -247,8 +247,19 @@ var oLeft,oBottom,oView,oPlayBack,
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
 		})		
 	}
-	function RecFileInfoCallback(ev){ 
-		show(ev);
+
+	function RecFileInfoCallback(data){
+		//show(data);
+		var start = time2Sec(data.start.split(' ')[1]);
+		var end = time2Sec(data.end.split(' ')[1]);
+		var p =($('#channelvideo').width()-80)/(3600*24);
+		var width = (end-start)*p;
+		var left = start*p+81;
+		//alert(left+'+'+width);
+		//alert(data.type+'+'+data.channel);
+		$('<div class="video" style="background:'+color[data.types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+data.channel+')');
+		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
+
 	}
 
 	function gettime(objs){
@@ -257,4 +268,8 @@ var oLeft,oBottom,oView,oPlayBack,
 			time.push($(this).val());
 		})
 		return time.join(':');
+	}
+	function time2Sec(str){ 
+		var a =str.split(':');
+		return parseInt(a[0])*60*60+parseInt(a[1])*60+parseInt(a[2]);
 	}
