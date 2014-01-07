@@ -76,7 +76,7 @@ void RecorderTest::beforeRecorderTest()
 }
 //测试用例:
 // 前置：重置数据库，数据库中创建了disks_setting表，数据库中仅有一条记录：D:|true|128|1024|; 程序Debug目录下.h264文件: CIF_12fps_128kbps.h264
-// 1.测试录像文件写入大小和路径以及最后保留空间大小: 
+// 1.测试最后保留空间大小, 录像时用SetDevInfo改写设置,测试文件写入大小和路径: 
 //      getEnableDisks获取可用分区	返回值为IDisksSetting::OK | 输出值为” C:D:E:F:”
 //      setUseDisks函数设置使用E:F:盘存储录像文件	| 返回值为IDisksSetting::OK;
 //      getUseDisks验证使用磁盘为E:F: |	返回值为IDisksSetting::OK; 输出值为”E:F:”
@@ -88,9 +88,10 @@ void RecorderTest::beforeRecorderTest()
 //      getDiskSpaceReservedSize验证上一步设置值	| 返回值为IDisksSetting::OK;输出值为”5000”
 //      调用SetDevInfo设置设备名为1000和通道数1     | 返回值为IRecorder:OK
 //      调用Start()开始录像	                    | 返回值为IRecorder::OK
-//      调用InputFrame ,设置参数正确	            | 返回值为IRecorder:OK
-//      在开始往F:写数据一定次数后, 调用SetDevInfo设置设备名为1001和通道数1  | 返回值为IRecorder:OK
-//      调用Stop()停止     | 返回值为IRecorder::OK, 录像文件大小均为200MB左右且均在EF盘下,E盘剩余保留空间5000MB
+//      调用InputFrame ,设置参数正确	            | 返回值为IRecorder:OK, 在E盘下\REC\”日期”\1000\CHL01目录下有录像
+//      在开始往F:写数据一定次数后, 调用SetDevInfo设置设备名为1001和通道数1  | 返回值为IRecorder:OK,在F:\REC\”日期”\1000\CHL01目录下有录像文件
+//      继续将读取到的帧数据通过InputFrame写入 ,重复多次 | 返回值为IRecorder:OK, 在F:\REC\”日期”\1001\CHL01目录下有录像文件
+//      调用Stop()停止     | 返回值为IRecorder::OK, E盘录像文件大小均为200MB±3MB(除文件名最大的外) ,E盘剩余保留空间5000MB±200MB
 void RecorderTest::RecorderTest1()
 {
     beforeRecorderTest();
@@ -192,7 +193,7 @@ void RecorderTest::RecorderTest1()
     END_RECORDER_UNIT_TEST(Itest, pDiskSetting);
 }
 
-// 2. 测试录像文件写入大小和路径以及最后保留空间大小
+// 2. 录像时不通过SetDevInfo改设置, 测试录像文件写入大小和路径以及最后保留空间大小
 //getEnableDisks获取可用分区	         |  返回值为IDisksSetting::OK; 输出值为” C:D:E:F:”
 //setUseDisks函数设置使用E:F:盘存储录像文件	 |  返回值为IDisksSetting::OK;
 //getUseDisks验证使用磁盘为E:F:	         |  返回值为IDisksSetting::OK; 输出值为”E:F:”
@@ -310,8 +311,8 @@ void RecorderTest::RecorderTest2()
 //getDiskSpaceReservedSize验证上一步设置值  |	返回值为IDisksSetting::OK;输出值为”5000”
 //调用SetDevInfo设置设备名为3000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像	 | 返回值为IRecorder::OK
-//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,, 不调用Stop () | 	返回值为IRecorder:OK
-//检测F:盘下录像文件大小, 和剩余空间大小, 是否有录像文件被覆盖
+//打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame循环写入 ,重复n次,记录录像文件中最小的时间戳| 	返回值为IRecorder:OK
+//在磁盘可用空间只剩下5000MB±200MB时, 再继续1000次循环 | 时间戳最小的录像文件仍然存在, 且大小为200MB±3MB; F盘保留空间为5000MB±200MB
 void RecorderTest::RecorderTest3()
 {
 	beforeRecorderTest();
@@ -377,6 +378,23 @@ void RecorderTest::RecorderTest3()
 		{
 			rewind(pFile);
 			++nTimes;
+		}
+		memset(&nhead,0,sizeof(NALU_HEADER_t));
+		memset(data,0,sizeof(data));
+		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+	}
+    nTimes = 1000;
+    while (nTimes--)
+    {
+        if (feof(pFile))
+        {
+            rewind(pFile);
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
@@ -704,8 +722,9 @@ void RecorderTest::RecorderTest6()
 //调用SetDevInfo设置设备名为7000和通道数1     | 返回值为IRecorder:OK
 //调用Start()开始录像 | 返回值为IRecorder::OK
 //打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,设置正确的参数	| 返回值为IRecorder: :OK
-//达到n次后, 调用SetDevInfo设置nChannelNum为17和-200 devname设为"7001"| 返回值为IRecorder: : E_PARAMETER_ERROR
-//调用Stop()停止 | 返回值为IRecorder::OK,  F盘有录像文件但是无目录为17和-200
+//达到n次后, 调用SetDevInfo设置nChannelNum为-200 devname设为"7001"| 返回值为IRecorder: : E_PARAMETER_ERROR
+//继续读取文件的帧数据通过InputFrame写入 ,重复1000次,设置正确的参数  | 返回值为IRecorder: :OK
+//调用Stop()停止 | 返回值为IRecorder::OK,  F盘有录像文件但是无目录为-200
 
 void RecorderTest::RecorderTest7()
 {
@@ -795,6 +814,23 @@ void RecorderTest::RecorderTest7()
         nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
 		QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
 	}
+    nTimes = 1000;
+    while (nTimes--)
+    {
+        if (feof(pFile))
+        {
+            rewind(pFile);
+        }
+        memset(&nhead,0,sizeof(NALU_HEADER_t));
+        memset(data,0,sizeof(data));
+        QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
+        frameInfo.pData = data;
+        frameInfo.uiDataSize = nhead.size;
+        frameInfo.uiTimeStamp = m_sTimeStamp++;
+        nRet = Itest->InputFrame(nhead.isider, (char*)&frameInfo,  nhead.size);
+        QVERIFY2(IRecorder::OK == nRet  ,"InputFrame :return");
+    }
 	fclose(pFile);
 	pFile=NULL;
 

@@ -70,7 +70,7 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>测试内容</p></td>
-    <td width="435" colspan="2" valign="top"><p>测试录像文件写入大小和路径以及最后保留空间大小</p></td>
+    <td width="435" colspan="2" valign="top"><p>测试最后保留空间大小, 录像时用SetDevInfo改写设置,测试文件写入大小和路径</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>前置条件</p></td>
@@ -139,17 +139,22 @@
   <tr>
     <td width="133" valign="top"><p>12</p></td>
     <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次, (n与测试者磁盘可用空间大小有关)</p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder:OK</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, 在E盘下\REC\&rdquo;日期&rdquo;\1000\CHL01目录下有录像</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>13</p></td>
     <td width="164" valign="top"><p>在开始往F:写数据一定次数后, 调用SetDevInfo设置设备名为1001和通道数1 </p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder::OK</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, 在F:\REC\&rdquo;日期&rdquo;\1000\CHL01目录下有录像文件</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>14</p></td>
+    <td width="164" valign="top"><p>继续将读取到的帧数据通过InputFrame写入 ,重复多次</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder:OK, 在F:\REC\&rdquo;日期&rdquo;\1001\CHL01目录下有录像文件</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>15</p></td>
     <td width="164" valign="top"><p>调用Stop()停止</p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200M左右,在F盘下\JAREC\2014-01-02\1000\CHL01目录下有录像, E盘剩余保留空间大小,且E盘有录像,E盘保留空间为5000MB左右</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, E盘录像文件大小均为200MB±3MB(除文件名最大的外) , E盘剩余保留空间大小为5000MB±200MB</p></td>
   </tr>
 </table>
 <p>// 用例2</p>
@@ -163,7 +168,7 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>测试内容</p></td>
-    <td width="435" colspan="2" valign="top"><p>测试录像文件写入大小和路径以及最后保留空间大小</p></td>
+    <td width="435" colspan="2" valign="top"><p>录像时不通过SetDevInfo改设置, 测试录像文件写入大小和路径以及最后保留空间大小</p></td>
   </tr>
   <tr>
     <td width="133" valign="top"><p>前置条件</p></td>
@@ -237,7 +242,7 @@
   <tr>
     <td width="133" valign="top"><p>13</p></td>
     <td width="164" valign="top"><p>调用Stop()停止,</p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB左右,在EF盘有录像,E盘保留空间为5000MB左右</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder::OK, 录像文件大小均为200MB±3MB,在EF盘有录像,E盘保留空间为5000MB±200MB</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -321,9 +326,13 @@
   </tr>
   <tr>
     <td width="133" valign="top"><p>12</p></td>
-    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过InputFrame写入 ,重复n次,, 不调用Stop ()</p></td>
-    <td width="271" valign="top"><p>返回值为IRecorder:OK<br />
-      检测F:盘下录像文件大小, 和剩余空间大小, 是否有录像文件被覆盖</p></td>
+    <td width="164" valign="top"><p>打开CIF_12fps_128kbps.h264文件,读取到的帧数据通过循环InputFrame写入,记录录像文件中最小的时间戳</p></td>
+    <td width="271" valign="top"><p>返回值为IRecorder:OK</p></td>
+  </tr>
+  <tr>
+    <td width="133" valign="top"><p>13</p></td>
+    <td width="164" valign="top"><p>在磁盘可用空间只剩下5000MB±200MB时, 再继续1000次循环</p></td>
+    <td width="271" valign="top"><p>时间戳最小的录像文件仍然存在, 且大小为200MB±3MB; F盘保留空间为5000MB±200MB</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -681,6 +690,11 @@
   </tr>
   <tr>
     <td width="132" valign="top"><p>14</p></td>
+    <td width="164" valign="top"><p>继续读取文件的帧数据通过InputFrame写入 ,重复1000次,设置正确的参数 </p></td>
+    <td width="272" valign="top"><p>返回值为IRecorder: :OK</p></td>
+  </tr>
+  <tr>
+    <td width="132" valign="top"><p>15</p></td>
     <td width="164" valign="top"><p>调用Stop()停止</p></td>
     <td width="272" valign="top"><p>返回值为IRecorder::OK,  F盘有录像文件但是无目录为-200</p></td>
   </tr>
