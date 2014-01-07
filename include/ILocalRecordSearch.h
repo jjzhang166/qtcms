@@ -48,6 +48,10 @@ Event:
 		"filename":文件名 (QString)
 		"filepath":文件路径 (QString)(注意文件路径以'/'来分隔)
 		"filesize":文件大小 (int) (单位(MB))
+		"channelnum":通道号
+		"startTime":开始时间(QDateTime)
+		"stopTime":结束时间(QDateTime)
+
 
 @3	name: "SearchStop"
 	parameters:
