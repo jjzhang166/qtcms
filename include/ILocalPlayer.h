@@ -10,35 +10,24 @@ interface ILocalPlayer:IPComBase
 	//输入参数：
 	//start：限定的开始时间(时间格式："yyyy-MM-dd hh:mm:ss")
 	//end：限定的结束时间(时间格式："yyyy-MM-dd hh:mm:ss")
-	//filelist:返回搜索到的文件list
+	//filelist:返回搜索到的文件list(完整的文件路径)
 	//返回值：
 	//0：成功
 	//1：失败
 	virtual int SearchLocalPlayFileList(const QDateTime &start,const QDateTime &end,QStringList &filelist)=0;
 	//添加播放文件到同步组中，并指定文件播放的窗口ID
 	//输入参数：
-	//filename:文件名，包括完整的文章路径，如：F:\project\date\devname\chl2\filename.cvi
+	//filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，如：F:\project\date1\devname\chl2\filename.avi，F:\project\date2\devname\chl2\filename.avi
 	//wnd:播放窗口的id
+	//start:开始播放时间(时间格式："yyyy-MM-dd hh:mm:ss")
+	//end：结束播放时间(时间格式："yyyy-MM-dd hh:mm:ss")
 	//返回值：
 	//0：添加成功
 	//1：添加失败，通道组已经满
 	//2：添加失败，窗口已经被占用
 	//3：添加失败，（失败原因未定义）
-	virtual int AddFileIntoPlayGroup(QString const filename,QWidget *wnd)=0;
-	//通过文件文件名从播放组中去除文件
-	//输入参数：
-	//filename：文件名称，包括完整的文章路径，如：F:\project\date\devname\chl2\filename.cvi
-	//返回值：
-	//0：去除成功
-	//1：去除失败
-	virtual int RemoveFileFromPlayGroupByFilename(QString const filename)=0;
-	//通过窗口id从播放组中去除文件
-	//输入参数：
-	//Wnd：窗口的id
-	//返回值：
-	//0：去除成功
-	//1：去除失败
-	virtual int RemoveFileFromPlayGroupByWnd(QWidget *Wnd)=0;
+	virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end)=0;
+
 	//设置同步组数量
 	//输入参数：
 	//num:设置同步组的数量值
@@ -47,13 +36,10 @@ interface ILocalPlayer:IPComBase
 	//1：设置失败
 	virtual int SetSynGroupNum(int num)=0;
 	//组播放
-	//输入参数:
-	//start:开始播放时间(时间格式："yyyy-MM-dd hh:mm:ss")
-	//end：结束播放时间(时间格式："yyyy-MM-dd hh:mm:ss")
 	//返回值：
 	//0：调用成功
 	//1：调用失败
-	virtual int GroupPlay(const QDateTime & start,const QDateTime &end)=0;
+	virtual int GroupPlay()=0;
 	//暂停播放
 	//返回值：
 	//0：调用成功
