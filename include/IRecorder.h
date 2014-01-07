@@ -6,11 +6,18 @@
 
 interface IRecorder : public IPComBase
 {
+	typedef struct _tagFrameInfo{
+		int type;
+		char * pData;
+		unsigned int uiDataSize;
+		unsigned int uiTimeStamp;
+	}FrameInfo;
+
 	virtual int Start() = 0;
 
 	virtual int Stop() = 0;
 
-	virtual int InputFrame(int type,char *cbuf,int buffersize) = 0;
+	virtual int InputFrame(FrameInfo frameinfo) = 0;
 
 	virtual int SetDevInfo(const QString& devname,int nChannelNum) = 0;
 
