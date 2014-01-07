@@ -94,6 +94,7 @@ int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 
 int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
 {
+	uiChannel=uiChannel-1;
     if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || uiChannel > 32)
     {
         return -1;
