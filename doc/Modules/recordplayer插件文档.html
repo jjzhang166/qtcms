@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：杨美化<br />
+  编辑日期：2014.01.08</p>
+<p>插件简介：<br />
+  //插件名称：record player插件<br />
+  //插件功能：实现本地录像检索和同步回放</p>
+<p>接口说明：</p>
+<p>//简述：检索设备是否有录像文件存在，如果有通过回调返回录像的日期。 <br />
+  //输入参数:<br />
+  //   sdevname:  设备名称 <br />
+  //返回值: <br />
+  //   0: 调用成功 <br />
+  //   1: 调用失败 <br />
+  int searchDateByDeviceName(const QString &amp; sdevname);</p>
+<p>//简述：检索设备是否有录像文件存在,如果有返回录像文件的信息。 <br />
+  //输入参数:<br />
+  //   sdevname:     设备名称 <br />
+  //   sdate：       录像日期，格式为“yyyy-MM-dd”。<br />
+  //   sbegintime：  开始时间，格式为“hh:mm:ss”。<br />
+  //   sendtime：    结束时间，格式为“hh:mm:ss”。<br />
+  //   schannellist：通道号，从1开始，格式为“1;2;3;4;”。<br />
+  //返回值： <br />
+  //    1：调用失败 <br />
+  //    0：调用成功 <br />
+  int RecordPlayer::searchVideoFile(const QString&amp; sdevname,const QString&amp; sdate,const QString&amp; sbegintime,const QString&amp; sendtime,const QString&amp; schannellist);</p>
+<p> </p>
+<p>插件抛出的事件：<br />
+  @1<br />
+  事件名称：GetRecordDate<br />
+  事件参数:<br />
+  devname ：设备名(QString)<br />
+  date：日期(QString)，格式为“yyyy-MM-dd”<br />
+</p>
+<p>@2<br />
+  事件名称：GetRecordFile<br />
+  事件参数:<br />
+  filename： 文件名(QString)<br />
+  filepath： 文件路径(QString)<br />
+  filesize： 文件大小（MB）(QString)<br />
+  channelnum：通道号(QString)<br />
+  startTime:    开始时间(QString)， 格式为“yyyy-MM-dd hh:mm:ss”<br />
+  stopTime:     结束时间(QString)， 格式为“yyyy-MM-dd hh:mm:ss”</p>
+<p>@3<br />
+  事件名称：SearchStop<br />
+  事件参数:<br />
+  stopevent ：对应事件检索结束(QString) （可用参数 GetRecordDate 、GetRecordFile)<br />
+</p>
+</body>
+</html>
