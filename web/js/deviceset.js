@@ -288,7 +288,7 @@ var oSearchOcx;
 
 		for( k in item){ 
 			var str = oCommonLibrary['get'+item[k]]();
-			var obj = $('#'+item[i]+'_ID');
+			var obj = $('#'+item[k]+'_ID');
 			if(obj.is(':checkbox')){
 				obj.dataIntoSelected(str);
 			}else{ 
