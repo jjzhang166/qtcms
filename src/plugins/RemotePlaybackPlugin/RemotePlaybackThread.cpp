@@ -44,12 +44,14 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 		return;
 	}
 	m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
-
-	nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
-	if (1==nRet&&IDeviceClient::STATUS_CONNECTED!=m_nIDeviceClient->getConnectStatus())
+	if (IDeviceClient::STATUS_CONNECTED!=m_nIDeviceClient->getConnectStatus())
 	{
-		m_nIDeviceClient->Release();
-		return;
+		nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
+		if (1==nRet)
+		{
+			m_nIDeviceClient->Release();
+			return;
+		}
 	}
 	m_nIDeviceClient->Release();
 	IDeviceSearchRecord *m_DeviceSearchRecord = NULL;
