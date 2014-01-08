@@ -1662,7 +1662,7 @@
 						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID">Auto connect devices</td></tr>
 						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID">Auto switch to fullscreen</td></tr>
 						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID">Boot from the start</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover" onclick="showdata('CommonParm','CommonParm')" id="SettingCommonParm_ok">save</div></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok">save</div></td></tr>
 					</table>
 				</div>
 				<div id="RecordTime" class="switch">
@@ -1676,7 +1676,7 @@
 							<td class="td1">Week</td>
 							<td class="td2">
 								<div class="select" style="width:60px;">
-									<span></span>
+									<span id="week" value="">星期一</span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option week">
@@ -1690,8 +1690,10 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1">Time1</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1">Time2</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr><tr><td class="td1">Time3</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr><tr><td class="td1">Time4</td><td class="td2"><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1">Time1</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1">Time2</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1">Time3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1">Time4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
 							<td class="td1">Copy To</td>
 							<td class="td2">
@@ -1705,6 +1707,7 @@
 									<li><a href="javascript:;"></a></li>
 								</ul>
 							</td>
+							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordTimeParm_ok">save</div><div class="hover">cancel</div></td></tr>
 					</table>

@@ -258,12 +258,36 @@ var oSearchOcx;
 		$('#CommonParm input:checkbox').each(function(){ 
 			$(this).toCheck();
 		})
-		$('#viewMod a').click(function(){ 
+		$('#viewMod a').click(function(){
 			$('#SplitScreenMode_ID').val('div'+$(this).html());
 		})
 	}
 	function FillRecordTimeData(){
 		areaList2Ui('3');
+		$('ul.week a').each(function(index){ 
+			$(this).click(function(){ 
+				$('#week').html($(this).html());
+			})
+		})
+		$('div.dev_list span.channel').click(function(){ 
+			var chlData = $(this).data('data');
+			alert(oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id));
+		})
+		$('#RecordTime div.timeInput input').blur(function(){ 
+				var str = '<recordtime num="4">';
+				$('#RecordTime div.timeInput input').each(function(index){ 
+					if(index%6 == 0){
+						var timeid = $(this).prev('input:hidden').val();
+						var start = $(this).parent('div.timeInput').gettime();
+						var end = $(this).parent('div.timeInput').next('div.timeInput').gettime();
+						var week = $('#week').val();
+						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="'+start+'" endtime_ID="'+end+'" enable_ID="'+week+'" />'
+					}
+				})
+				str +='</recordtime>';
+				$('#recordtimedouble_ID').val(str);
+				//alert($('#recordtimedouble_ID').val());
+		})
 	}
 	function FillStorageParmData(){
 		var diskcheckbox = $('#StorageParm table table input:checkbox')
@@ -539,4 +563,7 @@ function selectAll(){
 }
 function disksSelectAll(){
 	$('#StorageParm input:checkbox:lt(22)').click();
+}
+function test(){ 
+	alert(123);
 }

@@ -248,6 +248,15 @@ function set_drag(disX,X1,X2){
 				return obj.val();
 			}
 		},
+		'gettime':function (){
+			if($(this).attr('class') == 'timeInput'){
+				var time = []
+				$(this).find('input').each(function(){ 
+					time.push($(this).val());
+				})
+				return time.join(':');
+			}
+		},
 
 		//数据填充部分
 		'toCheck':function(){
@@ -393,4 +402,15 @@ function toJsArray(obj){
 		a.push(obj[i]);
 	}
 	return a;
+}
+function gettime(objs){
+	var time = []
+	objs.each(function(){ 
+		time.push($(this).val());
+	})
+	return time.join(':');
+}
+function time2Sec(str){ 
+	var a =str.split(':');
+	return parseInt(a[0])*60*60+parseInt(a[1])*60+parseInt(a[2]);
 }

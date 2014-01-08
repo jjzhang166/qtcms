@@ -222,11 +222,12 @@ var oLeft,oBottom,oView,oPlayBack,
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
 		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		//show(startTime+'+'+endTime);
 		var chl = 0;
 		for (var i=0;i<devData.channel_count;i++){
 			chl += 1 << i;
 		};
+		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
+		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
 			alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
 		}
@@ -262,16 +263,4 @@ var oLeft,oBottom,oView,oPlayBack,
 		$('<div class="video" style="background:'+color[data.types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+data.channel+')');
 		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
 
-	}
-
-	function gettime(objs){
-		var time = []
-		objs.each(function(){ 
-			time.push($(this).val());
-		})
-		return time.join(':');
-	}
-	function time2Sec(str){ 
-		var a =str.split(':');
-		return parseInt(a[0])*60*60+parseInt(a[1])*60+parseInt(a[2]);
 	}

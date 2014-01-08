@@ -295,7 +295,7 @@ var oSelected = [],
 		}
 	}
 	function SettingCommonParmSuccess(data){
-		//show(data);
+		show(data);
 	}
 	function SettingRecordTimeParmSuccess(data){ 
 		show(data);
