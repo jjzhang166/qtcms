@@ -297,7 +297,10 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 int QPreviewWindows::StartRecord()
 {
 	int nRet = 0;
-	nRet = m_PreviewWnd[m_CurrentWnd].StartRecord();
+	for (int i = 0; i <ARRAY_SIZE(m_PreviewWnd); i++)
+	{
+		nRet |= m_PreviewWnd[i].StartRecord();
+	}
 
 	return nRet;
 }
@@ -305,15 +308,18 @@ int QPreviewWindows::StartRecord()
 int QPreviewWindows::StopRecord()
 {
 	int nRet = 0;
-	nRet = m_PreviewWnd[m_CurrentWnd].StopRecord();
+	for (int i = 0; i <ARRAY_SIZE(m_PreviewWnd); i++)
+	{
+		nRet |= m_PreviewWnd[i].StopRecord();
+	}
 
 	return nRet;
 }
 
-int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum)
+int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndID)
 {
 	int nRet = 0;
-	nRet = m_PreviewWnd[m_CurrentWnd].SetDevInfo(devname, nChannelNum);
+	nRet = m_PreviewWnd[nWndID].SetDevInfo(devname, nChannelNum);
 
-	return nRet;	
+	return nRet;
 }
