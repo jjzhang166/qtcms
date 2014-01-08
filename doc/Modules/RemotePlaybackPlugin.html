@@ -32,7 +32,7 @@
 <p align="left">    //简述：添加通道到指定窗口 <br />
   //输入参数:<br />
   //    uiWndId: 窗口索引, 从0开始,到3为止 <br />
-  //    uiChannel: 指定通道, 从1开始, 1, 2, 3,4 … <br />
+  //    uiChannel: 指定通道, 从0开始:0, 1, 2, 3,4 … <br />
   //返回值： <br />
   // -1：指定的窗口索引大于4或者是指定的通道号&gt;32<br />
   // 0 ：  添加成功 <br />
@@ -46,7 +46,7 @@
   void setUserVerifyInfo(const  QString &amp; sUsername,const QString &amp;  sPassword);</p>
 <p align="left">    //简介：开始搜索录像文件信息 <br />
   //输入参数： <br />
-  //  nChannel：通道号 <br />
+  //  nChannel：通道号 (通道号按位算，例如请求 0，1，2，3通道，输入的nChannel 值为15（1111）)<br />
   //   nTypes:   录像类型 <br />
   //   startTime: 指定的开始时间,格式为: yyyy-MM-dd hh:mm:ss <br />
   //   endTime  : 指定的结束时间,格式为: yyyy-MM-dd hh:mm:ss <br />
