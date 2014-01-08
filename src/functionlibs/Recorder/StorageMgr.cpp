@@ -79,7 +79,7 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum)
 		filesavepath += "/"+devname;
 
 		char sChannelNum[3];
-		sprintf(sChannelNum,"%02d",nChannelNum);
+		sprintf(sChannelNum,"%02d",nChannelNum+1);
 		filesavepath += "/CHL" + QString("%1").arg(QString(sChannelNum));
 
 		filesavepath += "/" + datetime.toString("hhmmss") + ".avi";
