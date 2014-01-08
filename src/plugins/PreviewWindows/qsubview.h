@@ -110,7 +110,7 @@ public:
 
 public slots:
 	void OnFreshWindow();
-	void emitOnFreshWindow();
+	//void emitOnFreshWindow();
 	void OnRMousePressMenu();
 	void OnCloseFromMouseEv();
 

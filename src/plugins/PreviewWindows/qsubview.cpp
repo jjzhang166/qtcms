@@ -350,10 +350,10 @@ void QSubView::OnFreshWindow()
 	startTimer(400);
 }
 
-void QSubView::emitOnFreshWindow()
-{
-	emit FreshWindow();
-}
+//void QSubView::emitOnFreshWindow()
+//{
+//	emit FreshWindow();
+//}
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
