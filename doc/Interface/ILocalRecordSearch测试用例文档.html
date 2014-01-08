@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  编辑日期：2013.1.7<br />
+  文档简介：<br />
+  local player 组件本地录像检索接口测试用例文档<br />
+  测试的接口：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="568" valign="top"><br />
+      int searchDateByDeviceName(const QString    &amp; sdevname) </td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int searchVideoFile(QString&amp; sdevname, <br />
+      QString &amp; sdate, <br />
+      QString &amp; sbegintime, <br />
+      QString &amp; sendtime, <br />
+      QString &amp; schannellist);</p></td>
+  </tr>
+</table>
+<p>测试用例：<br />
+  前置条件:  一块硬盘,分为C,D,E,F区, 数据库general_setting表中默认使用D盘放置录像<br />
+  //@用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int searchDateByDeviceName(const QString    &amp; sdevname)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>使用非法输入参数和合法参数测试返回值</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 104717.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>使用参数为1000(为int类型)</p></td>
+    <td width="284" valign="top"><p>返回错误号E_PARAMETER_ERROR</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>使用参数为&rdquo;1000&rdquo;(为QString类型)</p></td>
+    <td width="284" valign="top"><p>返回OK, 有事件GetRecordDate抛出,devname为&rdquo;1000&rdquo;, date为&rdquo; 2014-01-08&rdquo;<br />
+      抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p>使用参数为&rdquo;1002&rdquo;(为QString类型)</p></td>
+    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@ 用例2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int searchVideoFile(QString&amp; sdevname, <br />
+      QString &amp; sdate, <br />
+      QString &amp; sbegintime, <br />
+      QString &amp; sendtime, <br />
+      QString &amp; schannellist); </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容 </p></td>
+    <td width="426" colspan="2" valign="top"><p>使用非法输入参数和合法参数以及抛出的事件的值 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件 </p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及 <br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号 </p></td>
+    <td width="142" valign="top"><p>步骤 </p></td>
+    <td width="284" valign="top"><p>预期 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p>sdevname使用参数为1000(为int类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回错误号E_PARAMETER_ERROR </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
+    <td width="284" valign="top"><p align="left">返回OK, 有事件GetRecordFile抛出, filename:&rdquo; 143429.avi&rdquo;对应 filepath:&rdquo; D: JAREC/2014-01-08/1000/CHL02/ 143429.avi&rdquo;<br />
+      , filesize:    0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
+      , startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
+      抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;3;4;&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+</table>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int searchVideoFile(QString&amp; sdevname, <br />
+      QString &amp; sdate, <br />
+      QString &amp; sbegintime, <br />
+      QString &amp; sendtime, <br />
+      QString &amp; schannellist); </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容 </p></td>
+    <td width="426" colspan="2" valign="top"><p>使用适当的输入参数以让它抛出不同的事件 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件 </p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及 <br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号 </p></td>
+    <td width="142" valign="top"><p>步骤 </p></td>
+    <td width="284" valign="top"><p>预期 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">1</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo; 2014-01-09&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, 抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;&rdquo;</p></td>
+    <td width="284" valign="top"><p align="left">返回OK,抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;14:35:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;2;&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, <br />
+      有事件GetRecordFile抛出, filename:&rdquo; 143429.avi&rdquo;对应 filepath:&rdquo; D: JAREC/2014-01-08/1000/CHL02/ 143429.avi&rdquo;<br />
+      , filesize:    0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
+      , startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
+      有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+</table>
+</body>
+</html>
