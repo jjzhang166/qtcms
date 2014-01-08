@@ -201,7 +201,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		}
 		$("#channelvideo").find('input:checkbox').each(function(index){
 			if($(this).is(':checked')){
-				if(oPlayBack.AddChannelIntoPlayGroup(index,(index+1))){
+				if(oPlayBack.AddChannelIntoPlayGroup(index,(index))){
 					b = false;
 				};
 			}
@@ -222,12 +222,14 @@ var oLeft,oBottom,oView,oPlayBack,
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
 		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		show(startTime+'+'+endTime);
+		//show(startTime+'+'+endTime);
+		var chl = 0;
 		for (var i=0;i<devData.channel_count;i++){
-			if(oPlayBack.startSearchRecFile(i,type,startTime,endTime)!=0){
-				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
-			}
+			chl += 1 << i;
 		};
+		if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
+			alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+		}
 	}
 
 	var color = [];

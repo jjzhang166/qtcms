@@ -181,7 +181,7 @@ function set_drag(disX,X1,X2){
 			option.find('a').click(function(){
 				if($(this).attr('class') != 'hover'){
 					This.next('ul.option').hide();
-					//This.find('span').html($(this).html());
+					This.find('span').html($(this).html());
 					//This.find('#vendor_ID').val($(this).html());
 					//This.find('input:hidden').val($(this).attr('key'));
 				}
@@ -206,48 +206,71 @@ function set_drag(disX,X1,X2){
 			}
 			var inputs = warp.find('input');
 			inputs.css({ 
-					height:opts.height,
-					width:opts.width,
-					border:'none',
-					background:warp.css('backgroundColor')
-				})
-				.each(function(index){ 
-					$(this).focusout(function() {
-						var str = availability($(this),index)
-						if(str == '' || str.length <= 1){
-							$(this).val($(this).attr('default'));
-						}
-					});
-
-					$(this).focus(function(){
-						$(this).val('');
-					});
-
-					$(this).keyup(function(){
-						var str = availability($(this),index)
-						if(str.length == 2){
-							$(this).attr('default',$(this).val());
-							inputs.eq(index + 1).focus();	
-						}
-					});	
-				})
-				function availability(obj,index){ 
-					var str = obj.val().split('');
-					if(index == 0){
-						if(str[0] > 2){
-							obj.val('2'+str[1]);	
-						}	
-						if(str[1] > 3){
-							obj.val(str[0]+'3');
-						}
-					}else{
-						if(str[0] > 6){
-							obj.val('5'+str[1]);
-						}	
+				height:opts.height,
+				width:opts.width,
+				border:'none',
+				background:warp.css('backgroundColor')
+			})
+			.each(function(index){ 
+				$(this).focusout(function() {
+					var str = availability($(this),index)
+					if(str == '' || str.length <= 1){
+						$(this).val($(this).attr('default'));
 					}
-					return obj.val();
+				});
+
+				$(this).focus(function(){
+					$(this).val('');
+				});
+
+				$(this).keyup(function(){
+					var str = availability($(this),index)
+					if(str.length == 2){
+						$(this).attr('default',$(this).val());
+						inputs.eq(index + 1).focus();	
+					}
+				});	
+			})
+			function availability(obj,index){ 
+				var str = obj.val().split('');
+				if(index == 0){
+					if(str[0] > 2){
+						obj.val('2'+str[1]);	
+					}	
+					if(str[1] > 3){
+						obj.val(str[0]+'3');
+					}
+				}else{
+					if(str[0] > 6){
+						obj.val('5'+str[1]);
+					}	
 				}
+				return obj.val();
 			}
+		},
+
+		//数据填充部分
+		'toCheck':function(){
+			$(this).click(function(){
+				return $(this).val($(this).prop('checked'));
+			})
+		},
+		'dataIntoVal':function (val){ 
+			return $(this).val(val);
+		},
+		'dataIntoHtml':function(val){ 
+			return $(this).html(val);
+		},
+		'dataIntoSelected':function (val){
+			if(typeof val == 'string'){
+				if($(this).val() == val){
+					$(this).prop('checked',true);
+				}
+			}else{
+				$(this).prop('checked',Boolean(val)).val(val);
+			}
+			return $(this);
+		}
 	})
 })(jQuery)
 $(function(){

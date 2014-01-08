@@ -247,36 +247,65 @@ var oSearchOcx;
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
-			var obj = $('#'+item[i]+'_ID').prop('checked',Boolean(str)).val(str);
-			if(obj[0].nodeName != 'INPUT'){ 
-				obj.html(str);
-				if(str.charAt('div')){ 
-					obj.html(str.split('iv')[1]);
-				}
+			var obj = $('#'+item[i]+'_ID')
+			if(obj[0].nodeName != 'INPUT'){
+				obj.dataIntoHtml(str).dataIntoVal(str)
+			}else{
+				obj.dataIntoSelected(str);
 			}
 		}
 
-		$('#CommonParm input:checkbox').click(function(){ 
-			$(this).val($(this).prop('checked'));
+		$('#CommonParm input:checkbox').each(function(){ 
+			$(this).toCheck();
 		})
 		$('#viewMod a').click(function(){ 
-			var str = $(this).html();
-			$('#SplitScreenMode_ID').html(str).val('div'+str);
+			$('#SplitScreenMode_ID').val('div'+$(this).html());
 		})
 	}
 	function FillRecordTimeData(){
 		areaList2Ui('3');
 	}
 	function FillStorageParmData(){
+		var diskcheckbox = $('#StorageParm table table input:checkbox')
 		var disks = oCommonLibrary.getEnableDisks().split(':');
 		for(i in disks){ 
-			$('#StorageParm input:checkbox').each(function(){ 
+			diskcheckbox.each(function(){ 
 				if(disks[i] == $(this).val()){ 
 					$(this).prop('disabled',false);
 				};
 			})
 		}
-		
+		var item = ['FilePackageSize','LoopRecording','DiskSpaceReservedSize']
+		var useDisks = oCommonLibrary.getUseDisks().split(':');
+		var clickedAbles = diskcheckbox.filter(function(){ 
+			return !$(this).prop('disabled');
+		})
+		for( n in useDisks){ 
+			clickedAbles.each(function(){ 
+				$(this).dataIntoSelected(useDisks[n]);
+			})
+		}
+
+		for( k in item){ 
+			var str = oCommonLibrary['get'+item[k]]();
+			var obj = $('#'+item[i]+'_ID');
+			if(obj.is(':checkbox')){
+				obj.dataIntoSelected(str);
+			}else{ 
+				obj.dataIntoVal(str).dataIntoHtml(str);
+			}
+		}
+
+		clickedAbles.each(function(){
+			$(this).click(function(){
+				var checked = []; 
+				clickedAbles.each(function(){ 
+					$(this).is(':checked') == true && checked.push($(this).val());
+					$('#UseDisks_ID').val(checked.join(':'));
+				})
+			})
+		})
+		$('#LoopRecording_ID').toCheck();
 	}
 	
 	//分组区域添加到分组, 数据组织
