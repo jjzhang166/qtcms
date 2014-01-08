@@ -102,7 +102,7 @@ int Recorder::InputFrame(FrameInfo frameinfo)
 int Recorder::SetDevInfo(const QString& devname,int nChannelNum)
 {
 	m_devname = devname;
-	if (nChannelNum<1 || nChannelNum >16)
+	if (nChannelNum<0)
 	{
 		return IRecorder::E_PARAMETER_ERROR;
 	}
