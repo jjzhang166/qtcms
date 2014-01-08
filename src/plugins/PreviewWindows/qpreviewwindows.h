@@ -70,6 +70,7 @@ private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;
 	QList<QWidget *> m_PreviewWndList;
+	QList<int> m_channelList;
 
 	int m_uiWndIndex;
 	volatile int m_CurrentWnd;
