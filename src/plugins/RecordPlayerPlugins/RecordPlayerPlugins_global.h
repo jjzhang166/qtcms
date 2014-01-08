@@ -1,0 +1,6 @@
+#ifndef RECORDPLAYERPLUGIN_GLOBAL_H
+#define RECORDPLAYERPLUGIN_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#endif // RECORDPLAYERPLUGIN_GLOBAL_H

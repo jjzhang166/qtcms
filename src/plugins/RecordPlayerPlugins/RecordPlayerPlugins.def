@@ -1,0 +1,3 @@
+LIBRARY "RecordPlayerPlugins.dll"
+EXPORTS
+	CreateInstance @1
