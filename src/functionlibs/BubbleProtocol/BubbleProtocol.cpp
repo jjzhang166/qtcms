@@ -439,6 +439,11 @@ int BubbleProtocol::getPlaybackStreamByTime(int nChannel,int nTypes,const QDateT
     {
         return 2;
     }
+
+	QDateTime time1 = QDateTime::currentDateTime();
+	QDateTime time2 = QDateTime::currentDateTimeUtc();
+	int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
+
     uint nStartTime = startTime.toTime_t();
     uint nEndTime   = endTime.toTime_t();
 
@@ -446,7 +451,7 @@ int BubbleProtocol::getPlaybackStreamByTime(int nChannel,int nTypes,const QDateT
     emit sigWriteSocket(sendData.toAscii());
 
     QByteArray block;
-    if (0 == writeBuff(block, nChannel,nTypes, nStartTime, nEndTime))
+    if (0 == writeBuff(block, nChannel,nTypes, nStartTime + timeDifference, nEndTime + timeDifference))
     {
         emit sigWriteSocket(block);
         return 0;
