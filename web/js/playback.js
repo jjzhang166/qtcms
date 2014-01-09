@@ -84,28 +84,14 @@ var oLeft,oBottom,oView,oPlayBack,
 			$(this).find('input:checkbox').click();
 		})
 
-		$('div.play_time').on({ 
-			mousedown: function(event){
-				event.stopPropagation();
-				oPlayBack.GroupStop();
-				var disX = event.pageX - $(this).offset().left;
-				set_drag(disX,79,$('table.table').width() -42);
-			},
-			mouseup:function(event){
-				event.stopPropagation();
-				$(document).off();
-				playVideo(event.pageX);
-			}
-		})
-
 		$("#channelvideo").on({ 
 			mousedown:function(event){
-				event.stopPropagation();
+				//event.stopPropagation();
 				$('div.play_time').css('left',event.pageX-2);
-				set_drag(0,79,$('table.table').width() -42);
+				set_drag(0,79,$('#channelvideo').width());
 			},
 			mouseup:function(event){ 
-				playVideo(event.pageX);
+				//playVideo(event.pageX);
 			}
 		})
 		

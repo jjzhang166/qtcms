@@ -173,7 +173,7 @@ var oSearchOcx;
 			})
 			//搜索设备;
 			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			searchFlush();
+			//searchFlush();
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -271,8 +271,10 @@ var oSearchOcx;
 		})
 		$('div.dev_list span.channel').click(function(){ 
 			var chlData = $(this).data('data');
-			alert(oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id));
+			show(chlData);
+			alert('通道ID为:'+chlData.channel_id+'  的时间列表为:'+oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id));
 		})
+
 		$('#RecordTime div.timeInput input').blur(function(){ 
 				var str = '<recordtime num="4">';
 				$('#RecordTime div.timeInput input').each(function(index){ 
@@ -281,7 +283,7 @@ var oSearchOcx;
 						var start = $(this).parent('div.timeInput').gettime();
 						var end = $(this).parent('div.timeInput').next('div.timeInput').gettime();
 						var week = $('#week').val();
-						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="'+start+'" endtime_ID="'+end+'" enable_ID="'+week+'" />'
+						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01'+start+'" endtime_ID="1970-01-01'+end+'" enable_ID="'+week+'" />'
 					}
 				})
 				str +='</recordtime>';
