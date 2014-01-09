@@ -89,10 +89,10 @@ var oLeft,oBottom,oView,oPlayBack,
 				//event.stopPropagation();
 				$('div.play_time').css('left',event.pageX-2);
 				set_drag(0,79,$('#channelvideo').width());
-			},
+			}/*,
 			mouseup:function(event){ 
-				//playVideo(event.pageX);
-			}
+				playVideo(event.pageX);
+			}*/
 		})
 		
 		$(window).resize(function(){
@@ -162,11 +162,10 @@ var oLeft,oBottom,oView,oPlayBack,
 		}*/
 		ocxsearchVideo(devData);
 	}
-	function playVideo(pageX){ 
-		var disX = pageX - $('div.play_time').offset().left,
-			X1 = 79,
+	function playVideo(){ 
+		var	X1 = 79,
 			X2 = $('table.table').width() -42,
-			left = pageX - disX,
+			left = $('div.play_time').offset().left,
 			date = $("div.calendar span.nowDate").html(),
 			sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
 			type = parseInt($('#type span').attr('type')),
@@ -174,6 +173,9 @@ var oLeft,oBottom,oView,oPlayBack,
 		end = date+' 23:59:59';
 		type = type == 0 ? 15 : 1 << type;
 		oPlayBack.GroupPlay(type,begin,end);
+	}
+	function playAction(str){ 
+		oPlayBack[str]();
 	}
 	function setDevData2ocx(oDevData){
 		var  b = true;
