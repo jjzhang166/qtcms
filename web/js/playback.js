@@ -163,6 +163,9 @@ var oLeft,oBottom,oView,oPlayBack,
 		ocxsearchVideo(devData);
 	}
 	function playVideo(){ 
+		oPlayBack.GroupStop();
+		var oDevData = $('div.dev_list span.device.sel').data('data');
+		setDevData2ocx(oDevData);
 		var	X1 = 79,
 			X2 = $('table.table').width() -42,
 			left = $('div.play_time').offset().left,
