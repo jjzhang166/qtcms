@@ -20,10 +20,10 @@
     <td width="568" valign="top"><p align="left">int StopRecord();</p></td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p align="left">int SetDevInfo(const QString&amp;devname,int nChannelNum);</p></td>
+    <td width="568" valign="top"><p align="left">int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);</p></td>
   </tr>
 </table>
-<p align="left">需要同时使用: 接口IWindowDivMode.h,commonlib插件里的磁盘默认设置, 测试文件和目录用的插件PreviewWindowsTest, 用于测试的页面文件plugintest_preview_window.html</p>
+<p align="left">需要同时使用: 接口IWindowDivMode.h, commonlib插件里的磁盘默认设置(注意:测试前需要保证general_setting表里面有默认值, 无时自加), 测试文件和目录用的插件PreviewWindowsTest, 用于测试的页面文件plugintest_preview_window_record.html在doc/PreviewWindows/文件夹下.</p>
 <p align="left">主要用到的IWindowDivMode.h里面主要用到的接口: </p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
@@ -37,7 +37,7 @@
     <td width="568" valign="top"><p align="left">int setDivMode( QString divModeName );</p></td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p align="left">int OpenCameraInWnd(unsigned    int uiWndIndex<br />
+    <td width="568" valign="top"><p align="left">int OpenCameraInWnd(unsigned    int uiWndIndex <br />
       ,const    QString sAddress,unsigned int uiPort,const    QString &amp; sEseeId<br />
       ,unsigned    int uiChannelId,unsigned    int uiStreamId<br />
       ,const    QString &amp; sUsername,const QString &amp;    sPassword<br />
@@ -45,8 +45,7 @@
       ,const    QString &amp; sVendor);</p></td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p align="left">int SetCameraInWnd(unsigned    int uiWndIndex<br />
-      ,const    QString sAddress,unsigned int uiPort,const    QString &amp; sEseeId<br />
+    <td width="568" valign="top"><p align="left">int SetCameraInWnd(unsigned    int uiWndIndex      ,const QString sAddress,unsigned    int uiPort,const    QString &amp; sEseeId<br />
       ,unsigned    int uiChannelId,unsigned    int uiStreamId<br />
       ,const    QString &amp; sUsername,const QString &amp;    sPassword<br />
       ,const    QString &amp; sCameraname<br />
@@ -59,14 +58,14 @@
 <p>测试用例：<br />
   前置条件:  一台可以录像的DVR,  IP地址为192.168.2.135, 端口8785; <br />
   Debug目录下MainSet.ini配置文件设置页面文件为:  Configure节的Theme键值设为plugintest_preview_window, 对应的节plugintest_preview_window的Dir键值设为/skins/test/plugintest_preview_window.html;   <br />
-  数据库表general_setting使用默认值:  'storage_usedisks' , 'D:'</p>
+  数据库表general_setting使用默认值:  'storage_usedisks' , 'D:'</p>
 <p>// @用例1</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
     <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
-      int SetDevInfo(const QString&amp;devname,int nChannelNum);</p></td>
+      int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
@@ -83,29 +82,36 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>从页面给OpenCameraInWnd设置用户名设备等信息分别为: 0, &ldquo;192.168.2.135&rdquo;,8785,0,1,0,<br />
-      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN    DVR&rdquo;</p></td>
-    <td width="258" valign="top"><p>返回值为0, 表示打开成功</p></td>
+    <td width="197" valign="top"><p>从页面点击setDivMode按钮来调用setDivMode给定分屏模式为div2_2</p></td>
+    <td width="258" valign="top"><p>弹出对话框,界面分出2*2区域,插件函数setDivMode返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>从页面调用setDivMode给定分屏模式为div2_2 </p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;1000&rdquo;, 通道号为0,1,2,3,窗口ID对应分4次设为0,1,2,3,</p></td>
+    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
-    <td width="197" valign="top"><p>从页面给SetDevInfo函数设置参数: 设备名为&rdquo;1000&rdquo;, 通道号为4</p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p align="left">从页面设置文本框sAddress,uiPort, sEseeId, uiStreamId,    sUsername, sPassword, sCameraname, sVendor的值分别为: &ldquo;192.168.2.135&rdquo;,8785,0,0,<br />
+      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
+      设置4次,值分别为0,1,2,3;<br />
+      uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击AddPaths按钮 </p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, AddPaths返回0</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p>页面点击按钮检测目录和文件</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 提示存在D:\JAREC\&rdquo;日期&rdquo;\1000\4个CHL0X目录路径(X从1开始, 下同), 并有录像文件, 且最大为128MB左右</p></td>
+    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
+    <td width="258" valign="top"><p>弹出对话框,插件函数返回值为0,</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>20分钟后页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\1000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大型, 且最大为128MB±3MB</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -115,7 +121,7 @@
     <td width="114" valign="top"><br />
       测试对象 </td>
     <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
-      int SetDevInfo(const QString&amp;devname,int nChannelNum);<br />
+      int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
       int StopRecord();</p></td>
   </tr>
   <tr>
@@ -133,34 +139,41 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>从页面给OpenCameraInWnd设置用户名设备等信息分别为: 0, &ldquo;192.168.2.135&rdquo;,8785,0,1,0,<br />
-      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN    DVR&rdquo;</p></td>
-    <td width="258" valign="top"><p>返回值为0, 表示打开成功</p></td>
+    <td width="197" valign="top"><p>从页面点击setDivMode按钮来调用setDivMode给定分屏模式为div2_2</p></td>
+    <td width="258" valign="top"><p>弹出对话框,界面分出2*2区域, 插件函数setDivMode返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>从页面调用setDivMode给定分屏模式为div2_2 </p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;2000&rdquo;, 通道号为0~3, 窗口ID分4次设为0~3</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 插件函数SetDevInfo返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
-    <td width="197" valign="top"><p>从页面调用, 给SetDevInfo函数设置参数分别为&rdquo;2000&rdquo;, 4</p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p align="left">从页面设置文本框sAddress,uiPort, sEseeId, uiStreamId,    sUsername, sPassword, sCameraname, sVendor的值分别为: &ldquo;192.168.2.135&rdquo;,8785,0,0,<br />
+      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
+      设置4次,值分别为0,1,2,3;<br />
+      uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击AddPaths按钮 </p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, AddPaths返回0</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p>一段时间后, 调用StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>返回值为0 </p></td>
+    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
+    <td width="258" valign="top"><p>弹出对话框,返回值为0, </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>页面点击按钮检测目录和文件 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, 提示存在D:\JAREC\&rdquo;日期&rdquo;\2000\4个CHL0X目录路径, 并有录像文件, 且最大为128MB左右, 大小均不再增长 </p></td>
+    <td width="197" valign="top"><p>20分钟后, 页面点击StopRecord按钮停止录像</p></td>
+    <td width="258" valign="top"><p>弹出对话框,返回值为0 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\2000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大型, 且最大为128MB±3MB </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -170,7 +183,7 @@
     <td width="114" valign="top"><br />
       测试对象 </td>
     <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
-      int SetDevInfo(const QString&amp;devname,int nChannelNum);<br />
+      int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
       int StopRecord();</p></td>
   </tr>
   <tr>
@@ -188,34 +201,46 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>从页面OpenCameraInWnd设置参数信息分别为: 0, &ldquo;192.168.2.135&rdquo;,8785,0,1,0,<br />
-      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN    DVR&rdquo;</p></td>
-    <td width="258" valign="top"><p>返回值为0, 表示打开成功</p></td>
+    <td width="197" valign="top"><p>从页面点击setDivMode按钮来调用setDivMode给定分屏模式为div2_2</p></td>
+    <td width="258" valign="top"><p>弹出对话框,界面分出2*2区域,插件函数setDivMode返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>从页面调用SetDevInfo函数,设置参数为&rdquo;3000&rdquo;, 4</p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮前设置参数: 设备名为&rdquo;3000&rdquo;, 通道号对应分4次设为0,1,2,3, 窗口ID对应分4次设为0,1,2,3,</p></td>
+    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
-    <td width="197" valign="top"><p align="left">从页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面设置文本框sAddress,uiPort, sEseeId, uiStreamId,    sUsername, sPassword, sCameraname, sVendor的值分别为: &ldquo;192.168.2.135&rdquo;,8785,0,0,<br />
+      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
+      设置4次,值分别为0,1,2,3;<br />
+      uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
+    <td width="258" valign="top"><p>弹出对话框,函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击调用nextPage,prePage等函数</p></td>
-    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击AddPaths按钮 </p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, AddPaths返回0</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p>一段时间后, 调用StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮 </p></td>
+    <td width="258" valign="top"><p>弹出对话框,返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>页面点击按钮检测目录和文件 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, 提示只存在D:\JAREC\&rdquo;日期&rdquo;\3000\4个CHL0X目录路径, 并有录像文件, 且最大为128MB左右, 大小均不再增长 </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击nextPage,prePage按钮</p></td>
+    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>20分钟后, 点击StopRecord停止录像</p></td>
+    <td width="258" valign="top"><p>返回值为0 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\3000\4个CHL0X目录路径, 并有录像文件, 且最大为128MB±3MB, 大小均不再增长</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -225,62 +250,74 @@
     <td width="114" valign="top"><br />
       测试对象 </td>
     <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
-      int SetDevInfo(const QString&amp;devname,int nChannelNum);<br />
+      int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
       int StopRecord();</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>测试内容 </p></td>
-    <td width="454" colspan="2" valign="top"><p>测试录像文件写入是否成功, 大小和路径, 测试CloseWndCamera对录像的影响 </p></td>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试录像文件写入是否成功, 大小和路径, 测试CloseWndCamera对录像的影响</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>前置条件 </p></td>
-    <td width="454" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:, 使用默认的D:分区装录像 </p></td>
+    <td width="114" valign="top"><p>前置条件</p></td>
+    <td width="454" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:, 使用默认的D:分区装录像</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>步骤编号 </p></td>
-    <td width="197" valign="top"><p>步骤 </p></td>
-    <td width="258" valign="top"><p>预期 </p></td>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>从页面OpenCameraInWnd设置参数信息分别为: 0, &ldquo;192.168.2.135&rdquo;,8785,0,1,0,<br />
-      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN    DVR&rdquo; </p></td>
-    <td width="258" valign="top"><p>返回值为0, 表示打开成功 </p></td>
+    <td width="197" valign="top"><p>从页面点击setDivMode按钮来调用setDivMode给定分屏模式为div2_2</p></td>
+    <td width="258" valign="top"><p>弹出对话框,界面分出2*2区域,插件函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>从页面调用SetDevInfo函数,设置参数为&rdquo;4000&rdquo;, 4</p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;1000&rdquo;, 通道号为0~3, 窗口ID对应分4次设为0~3</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
-    <td width="197" valign="top"><p align="left">从页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面设置文本框sAddress,uiPort, sEseeId, uiStreamId,    sUsername, sPassword, sCameraname, sVendor的值分别为: &ldquo;192.168.2.135&rdquo;,8785,0,0,<br />
+      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
+      设置4次,值分别为0,1,2,3;<br />
+      uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击调用nextPage函数 </p></td>
-    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件 </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击AddPaths按钮 </p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, AddPaths返回0</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击调用prePage函数</p></td>
-    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件</p></td>
+    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
+    <td width="258" valign="top"><p>返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p align="left">一段时间后, 调用CloseWndCamera(), 给定参数1, </p></td>
-    <td width="258" valign="top"><p>返回值为0;  1通道停止录像 </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击nextPage按钮</p></td>
+    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p align="left">继续一段时间, 调用StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击prePage按钮</p></td>
+    <td width="258" valign="top"><p>对录像没有造成影响, 不会生成其他文件夹和录像文件</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
-    <td width="197" valign="top"><p>页面点击按钮检测目录和文件 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, 提示存在D:\JAREC\&rdquo;日期&rdquo;\4000\4个CHL0X目录路径, 并有录像文件, CHL01下录像比其他同级目录下录像文件小 </p></td>
+    <td width="197" valign="top"><p align="left">一段时间后, 点击CloseWndCamera按钮, 给定参数1, </p></td>
+    <td width="258" valign="top"><p>返回值为0;  1通道停止录像</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">继续20分钟, 调用StopRecord()停止录像</p></td>
+    <td width="258" valign="top"><p>返回值为0 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p>页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\4000\4个CHL0X目录路径, 并打印出相应录像文件名称及大型, 且最大为128MB±3MB, CHL02下录像比其他同级目录下录像文件小</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -290,62 +327,79 @@
     <td width="114" valign="top"><br />
       测试对象 </td>
     <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
-      int SetDevInfo(const QString&amp;devname,int nChannelNum);<br />
+      int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
       int StopRecord();</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>测试内容 </p></td>
-    <td width="454" colspan="2" valign="top"><p>测试停止录像然后重新开启录像是否成功 </p></td>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试停止录像然后重新开启录像是否成功</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>前置条件 </p></td>
-    <td width="454" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:, 使用默认的D:分区装录像 </p></td>
+    <td width="114" valign="top"><p>前置条件</p></td>
+    <td width="454" colspan="2" valign="top"><p>硬盘分区为C:D:E:F:, 使用默认的D:分区装录像</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>步骤编号 </p></td>
-    <td width="197" valign="top"><p>步骤 </p></td>
-    <td width="258" valign="top"><p>预期 </p></td>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>从页面OpenCameraInWnd设置参数信息分别为: 0, &ldquo;192.168.2.135&rdquo;,8785,0,1,0,<br />
-      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN    DVR&rdquo; </p></td>
-    <td width="258" valign="top"><p>返回值为0, 表示打开成功 </p></td>
+    <td width="197" valign="top"><p>从页面点击setDivMode按钮来调用setDivMode给定分屏模式为div2_2</p></td>
+    <td width="258" valign="top"><p>弹出对话框,界面分出2*2区域, setDivMode函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>从页面调用SetDevInfo函数,设置参数为&rdquo;5000&rdquo;, 4</p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;5000&rdquo;, 通道号为4, 窗口ID分4次设为0,1,2,3</p></td>
+    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
-    <td width="197" valign="top"><p align="left">从页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面设置文本框sAddress,uiPort, sEseeId, uiStreamId,    sUsername, sPassword, sCameraname, sVendor的值分别为: &ldquo;192.168.2.135&rdquo;,8785,0,0,<br />
+      &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
+      设置4次,值分别为0,1,2,3;<br />
+      uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">一段时间后调用StopRecord()停止录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击AddPaths按钮 </p></td>
+    <td width="258" valign="top"><p align="left">弹出对话框, AddPaths返回0</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">页面点击按钮删除已生成的录像文件及文件夹 </p></td>
-    <td width="258" valign="top"><p>CHL0X文件夹及文件被删除 </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮 </p></td>
+    <td width="258" valign="top"><p>弹出对话框, StartRecord函数返回值为0,</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p align="left">从页面调用StartRecord()开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0;</p></td>
+    <td width="197" valign="top"><p align="left">10分钟后调用StopRecord()停止录像</p></td>
+    <td width="258" valign="top"><p>弹出对话框, StopRecord返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p align="left">从页面调用StopRecord()停止录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0</p></td>
+    <td width="197" valign="top"><p align="left">页面点击RemovePaths按钮删除已生成的录像文件及文件夹</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 5000及CHL0X文件夹及文件被删除, 控制台打印&rdquo;文件夹名 is changing&rdquo;的语句</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
-    <td width="197" valign="top"><p>页面点击按钮检测目录和文件 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, 提示存在D:\JAREC\&rdquo;日期&rdquo;\4000\4个CHL0X目录路径, 并都有录像文件 </p></td>
+    <td width="197" valign="top"><p align="left">页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p align="left">控制台输出The Path is not exist.</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮开始录像 </p></td>
+    <td width="258" valign="top"><p>弹出对话框, 返回值为0; </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p align="left">10分钟后从页面点击StopRecord()停止录像</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 返回值为0, </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>11</p></td>
+    <td width="197" valign="top"><p>页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
+    <td width="258" valign="top"><p>弹出对话框, 控制台输出D:\JAREC\&rdquo;日期&rdquo;\5000\4个CHL0X目录路径, 并打印出文件名和大小</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>

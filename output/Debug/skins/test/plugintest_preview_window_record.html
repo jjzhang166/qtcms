@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Preview Windows Manual Record</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+	var obj = document.getElementById('preview');
+	obj.AddEventProc("CurrentStateChange",'CurrentStateChange(ev)');
+	obj.AddEventProc("CurrentWindows",'a(ev)');
+    
+}
+function CurrentStateChange(ev)
+{
+}
+function a(ev)
+{
+}
+
+function AddPaths() {
+    var obj = document.getElementById('windows');
+	var sDevName=document.getElementById('sDevName');
+    obj.AddPaths(sDevName.value);
+	alert('AddPaths');
+}
+
+function IsPathsAndFilesExist() {
+    var obj = document.getElementById('windows');
+    alert('IsPathsAndFilesExist');
+    obj.IsPathsAndFilesExist();
+}
+function RemovePaths() {
+    var obj = document.getElementById('windows');
+    alert('RemovePaths');
+    obj.RemovePaths();
+}
+function setDivMode() {
+    var obj = document.getElementById('preview');
+    alert('setDivMode');
+	var divModeName=document.getElementById('divModeName');
+    obj.setDivMode(divModeName.value);
+}
+function StartRecord() {
+    var obj = document.getElementById('preview');
+    alert('StartRecord');
+    obj.StartRecord();
+}
+function StopRecord() {
+    var obj = document.getElementById('preview');
+    alert('StopRecord');
+    obj.StopRecord();
+}
+function SetDevInfo() {
+    var obj = document.getElementById('preview');
+    alert('SetDevInfo');
+	var sDevName=document.getElementById('sDevName');
+	var uiChannelId = document.getElementById('uiChannelId');
+	var uiWndIndex = document.getElementById('uiWndIndex');
+    obj.SetDevInfo(sDevName.value, parseInt(uiChannelId.value),parseInt(uiWndIndex.value));
+}
+function nextPage() {
+    var obj = document.getElementById('preview');
+    alert('nextPage');
+    obj.nextPage();
+}
+function prePage() {
+    var obj = document.getElementById('preview');
+    alert('prePage');
+    obj.prePage();
+}
+
+
+function OpenCamraInWnd() {
+    var obj = document.getElementById('preview');
+    var uiWndIndex = document.getElementById('uiWndIndex');
+    var sAddress = document.getElementById('sAddress');
+    var uiPort = document.getElementById('uiPort');
+    var sEseeId = document.getElementById('sEseeId');
+    var uiChannelId = document.getElementById('uiChannelId');
+    var uiStreamId = document.getElementById('uiStreamId');
+    var sUsername = document.getElementById('sUsername');
+    var sPassword = document.getElementById('sPassword');
+    var sCameraname = document.getElementById('sCameraname');
+    var sVendor = document.getElementById('sVendor');
+    alert(parseInt(uiWndIndex.value));
+    obj.OpenCameraInWnd(parseInt(uiWndIndex.value), sAddress.value, parseInt(uiPort.value), sEseeId.value, parseInt(uiChannelId.value), parseInt(uiStreamId.value), sUsername.value, sPassword.value, sCameraname.value, sVendor.value);
+}
+function CloseWndCamera() {
+    var obj = document.getElementById('preview');
+    var uiWndIndex = document.getElementById('uiWndIndex');
+    alert('CloseWndCamera');
+    obj.CloseWndCamera(parseInt(uiWndIndex.value));
+}
+
+</script>
+</head>
+
+<body onload="Onload()">
+  <object type="application/cms-preview-windows" id="preview" style="width:1000; height:1000;">
+   <embed></embed> 
+  </object>
+  <object type="application/cms-manualrecord-test" id="windows" style="width:2000; height:2000;">
+   <embed></embed>
+  </object>
+
+<table border="0" cellspacing="0" cellpadding="0" width="50%">
+    <tr>
+    <td><p>divModeName</p></td>
+    <td><input type="text" id="divModeName" value="div2_2"/></td>
+     <td><button onclick="setDivMode()">setDivMode</button></td>
+    </tr>
+     <tr>
+    <td><p>sDevName</p></td>
+    <td><input type="text" id="sDevName" value="1000"/></td>
+     <td><button onclick="SetDevInfo()">SetDevInfo</button></td>
+    </tr>
+	<tr>
+	    <td><p>uiWndIndex</p></td>
+		<td><input type="text" id="uiWndIndex" value="0"/></td>
+        <td><button onclick="StartRecord()">StartRecord</button></td>
+	</tr>
+	<tr>
+		<td>sAddress</td>
+		<td><input type="text" id="sAddress" value="192.168.2.135"/></td>
+        <td><button onclick="StopRecord()">StopRecord</button></td>
+	</tr>
+	<tr>
+		<td>uiPort</td>
+		<td><input type="text" id="uiPort" value="8785"/></td>
+        <td><button onclick="prePage()">prePage</button></td>
+	</tr>
+	<tr>
+		<td>sEseeId</td>
+		<td><input type="text" id="sEseeId" value="0"/></td>
+        <td><button onclick="nextPage()">nextPage</button></td>
+	</tr>
+	<tr>
+		<td>uiChannelId</td>
+		<td><input type="text" id="uiChannelId" value="0"/></td>
+        <td><button onclick="IsPathsAndFilesExist()">IsPathsAndFilesExist</button></td>
+	</tr>
+	<tr>
+		<td>uiStreamId</td>
+		<td><input type="text" id="uiStreamId" value="0"/></td>
+        <td><button onclick="RemovePaths()">RemovePaths</button></td>
+	</tr>
+	<tr>
+		<td>sUsername</td>
+		<td><input type="text" id="sUsername" value="admin"/></td>
+        <td><button onclick="AddPaths()">AddPaths</button></td>
+	</tr>
+	<tr>
+		<td>sPassword</td>
+		<td><input type="text" id="sPassword" value="0"/></td>
+        
+	</tr>
+    <tr>
+		<td>sCameraname</td>
+		<td><input type="text" id="sCameraname" value="test"/></td>
+        <td><button onclick="OpenCamraInWnd()">open camera in wnd</button></td>
+	</tr>
+    <tr>
+		<td>sVendor</td>
+		<td><input type="text" id="sVendor" value="JUAN DVR"/></td>
+        <td><button onclick="CloseWndCamera()">close wnd camera</button></td>
+	</tr>
+</table>
+
+
+</body>
+</html>

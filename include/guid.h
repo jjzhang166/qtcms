@@ -37,6 +37,7 @@ extern const CLSID CLSID_TestIpcamSearch;
 extern const CLSID CLSID_DeviceSearchPlugin;
 extern const CLSID CLSID_TestffmpegVideoplugin;
 extern const CLSID CLSID_TestBubble;
+extern const CLSID CLSID_TestPreviewWindowsPlugin;
 //extern const IID IID_IDeviceConnection;
 
 extern const IID IID_IDeviceConnection;
