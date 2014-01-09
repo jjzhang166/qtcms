@@ -130,6 +130,15 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_unittest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LocalRecordSearchTest.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LocalRecordSearchTest.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalRecordSearchTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="unittest.h">
@@ -160,6 +169,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="RecorderTest.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LocalRecordSearchTest.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

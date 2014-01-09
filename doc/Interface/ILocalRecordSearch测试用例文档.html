@@ -35,12 +35,12 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>测试内容</p></td>
-    <td width="426" colspan="2" valign="top"><p>使用非法输入参数和合法参数测试返回值</p></td>
+    <td width="426" colspan="2" valign="top"><p>searchDateByDeviceName参数测试返回值及抛出的事件的值</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p align="left">前置条件</p></td>
     <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
-      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 104717.avi<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi<br />
       F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
   </tr>
   <tr>
@@ -50,19 +50,30 @@
   </tr>
   <tr>
     <td width="142" valign="top"><p>1</p></td>
-    <td width="142" valign="top"><p>使用参数为1000(为int类型)</p></td>
-    <td width="284" valign="top"><p>返回错误号E_PARAMETER_ERROR</p></td>
+    <td width="142" valign="top"><p align="left">注册事件: &ldquo;GetRecordDate&rdquo;,</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="142" valign="top"><p>使用参数为&rdquo;1000&rdquo;(为QString类型)</p></td>
-    <td width="284" valign="top"><p>返回OK, 有事件GetRecordDate抛出,devname为&rdquo;1000&rdquo;, date为&rdquo; 2014-01-08&rdquo;<br />
-      抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+    <td width="142" valign="top"><p align="left">注册事件:&quot;GetRecordFile&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">注册事件: <br />
+      &quot;SearchStop&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p>使用参数为&rdquo;1000&rdquo;(为QString类型)</p></td>
+    <td width="284" valign="top"><p>返回OK, 有事件GetRecordDate抛出,devname为&rdquo;1000&rdquo;, date为&rdquo; 2014-01-08&rdquo;<br />
+      抛出SearchStop事件:    &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
     <td width="142" valign="top"><p>使用参数为&rdquo;1002&rdquo;(为QString类型)</p></td>
-    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出:    &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -75,43 +86,65 @@
       QString &amp; sdate, <br />
       QString &amp; sbegintime, <br />
       QString &amp; sendtime, <br />
-      QString &amp; schannellist); </p></td>
+      QString &amp; schannellist);</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>测试内容 </p></td>
-    <td width="426" colspan="2" valign="top"><p>使用非法输入参数和合法参数以及抛出的事件的值 </p></td>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>searchVideoFile参数以及抛出的事件的值</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p align="left">前置条件 </p></td>
-    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及 <br />
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
       JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
       F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>步骤编号 </p></td>
-    <td width="142" valign="top"><p>步骤 </p></td>
-    <td width="284" valign="top"><p>预期 </p></td>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>1</p></td>
-    <td width="142" valign="top"><p>sdevname使用参数为1000(为int类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
-      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
-    <td width="284" valign="top"><p>返回错误号E_PARAMETER_ERROR </p></td>
+    <td width="142" valign="top"><p align="left">注册事件: &ldquo;GetRecordDate&rdquo;, </p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
-      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
-    <td width="284" valign="top"><p align="left">返回OK, 有事件GetRecordFile抛出, filename:&rdquo; 143429.avi&rdquo;对应 filepath:&rdquo; D: JAREC/2014-01-08/1000/CHL02/ 143429.avi&rdquo;<br />
-      , filesize:    0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
-      , startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
-      抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+    <td width="142" valign="top"><p align="left">注册事件:&quot;GetRecordFile&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>3</p></td>
-    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+    <td width="142" valign="top"><p align="left">注册事件: <br />
+      &quot;SearchStop&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;,    sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
+    <td width="284" valign="top"><p align="left">返回OK, 有事件GetRecordFile抛出, filename:&rdquo; 143429.avi&rdquo;对应 filepath:&rdquo; D: JAREC/2014-01-08/1000/CHL02/ 143429.avi&rdquo;<br />
+      ,    filesize: 0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
+      ,    startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
+      抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;,    sendtime为&rdquo;16:00:00&rdquo;;<br />
       schannellist为&rdquo;3;4;&rdquo;</p></td>
-    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出:    &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;,    sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1234&rdquo; </p></td>
+    <td width="284" valign="top"><p>返回E_PARAMETER_ERROR, 无事件抛出</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>7</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;33:50:00&rdquo;, sendtime为&rdquo;16:66:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo; </p></td>
+    <td width="284" valign="top"><p>返回E_PARAMETER_ERROR, 无事件抛出</p></td>
   </tr>
 </table>
 <p>//@用例3</p>
@@ -123,45 +156,62 @@
       QString &amp; sdate, <br />
       QString &amp; sbegintime, <br />
       QString &amp; sendtime, <br />
-      QString &amp; schannellist); </p></td>
+      QString &amp; schannellist);</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>测试内容 </p></td>
-    <td width="426" colspan="2" valign="top"><p>使用适当的输入参数以让它抛出不同的事件 </p></td>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>searchVideoFile使用适当的输入参数以让它抛出不同的事件</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p align="left">前置条件 </p></td>
-    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及 <br />
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
       JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
       F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>步骤编号 </p></td>
-    <td width="142" valign="top"><p>步骤 </p></td>
-    <td width="284" valign="top"><p>预期 </p></td>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p align="left">1</p></td>
-    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo; 2014-01-09&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
-      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
-    <td width="284" valign="top"><p>返回OK, 抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">注册事件: &ldquo;GetRecordDate&rdquo;, </p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
   </tr>
   <tr>
     <td width="142" valign="top"><p>2</p></td>
-    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+    <td width="142" valign="top"><p align="left">注册事件:&quot;GetRecordFile&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">注册事件: <br />
+      &quot;SearchStop&quot;</p></td>
+    <td width="284" valign="top"><p align="left">注册成功, 注册函数返回IEventRegister::OK</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">4</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo; 2014-01-09&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+      schannellist为&rdquo;1;2;3;&rdquo;</p></td>
+    <td width="284" valign="top"><p>返回OK, 抛出SearchStop事件:    &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;, sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;13:50:00&rdquo;,    sendtime为&rdquo;16:00:00&rdquo;;<br />
       schannellist为&rdquo;1;&rdquo;</p></td>
     <td width="284" valign="top"><p align="left">返回OK,抛出SearchStop事件: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
   </tr>
   <tr>
-    <td width="142" valign="top"><p>3</p></td>
-    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo; 2014-01-08&rdquo;, sbegintime为&rdquo;14:35:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p align="left">sdevname使用参数为&rdquo;1000&rdquo;(为QString类型), sdate&rdquo;    2014-01-08&rdquo;, sbegintime为&rdquo;14:35:00&rdquo;, sendtime为&rdquo;16:00:00&rdquo;;<br />
       schannellist为&rdquo;2;&rdquo;</p></td>
     <td width="284" valign="top"><p>返回OK, <br />
       有事件GetRecordFile抛出, filename:&rdquo; 143429.avi&rdquo;对应 filepath:&rdquo; D: JAREC/2014-01-08/1000/CHL02/ 143429.avi&rdquo;<br />
-      , filesize:    0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
-      , startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
+      ,    filesize: 0.8±0.2, channelnum:&rdquo; 2&rdquo;<br />
+      ,    startTime:&rdquo; 14:34:29&rdquo;对应 stopTime:&rdquo;14:37:53&rdquo;<br />
       有SearchStop事件抛出: &quot;stopevent&quot;对应&rdquo; GetRecordFile&rdquo;</p></td>
   </tr>
 </table>
+<p>&nbsp;</p>
 </body>
 </html>
