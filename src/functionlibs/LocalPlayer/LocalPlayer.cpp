@@ -98,7 +98,14 @@ bool LocalPlayer::checkChannel(const QString& schannellist)
 	while(temp.contains(regTimeFormat))
 	{
 		num++;
-		temp = sltChannels[num] + ";";
+		if (num < sltChannels.size())
+		{
+			temp = sltChannels[num] + ";";
+		}
+		else
+		{
+			break;
+		}
 	}
 
 	if (num == sltChannels.size() - 1)
