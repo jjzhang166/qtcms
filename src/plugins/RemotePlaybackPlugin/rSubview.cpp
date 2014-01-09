@@ -29,13 +29,13 @@ RSubView::~RSubView()
 
 void RSubView::paintEvent( QPaintEvent * e)
 {
-	if (NULL!=m_LpClient)
-	{
-		if (IDeviceClient::STATUS_CONNECTED==m_LpClient->getConnectStatus())
-		{
-			return;
-		}
-	}
+	//if (NULL!=m_LpClient)
+	//{
+	//	if (IDeviceClient::STATUS_CONNECTED==m_LpClient->getConnectStatus())
+	//	{
+	//		return;
+	//	}
+	//}
 	QPainter p(this);
 
 	QString image;

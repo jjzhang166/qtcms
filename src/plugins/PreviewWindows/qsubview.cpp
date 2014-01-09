@@ -70,24 +70,22 @@ QSubView::~QSubView()
 	if (NULL != m_pRecordTime)
 	{
 		m_pRecordTime->Release();
-		m_pRecordTime = NULL;
 	}
 
 	if (NULL != m_pRecorder)
 	{
 		m_pRecorder->Stop();
 		m_pRecorder->Release();
-		m_pRecorder == NULL;
 	}
 }
 
 
 void QSubView::paintEvent( QPaintEvent * e)
 {
-	if (IDeviceClient::STATUS_CONNECTED==GetWindowConnectionStatus())
-	{
-		return;
-	}
+	//if (IDeviceClient::STATUS_CONNECTED==GetWindowConnectionStatus())
+	//{
+	//	return;
+	//}
 	QPainter p(this);
 
 	QString image;

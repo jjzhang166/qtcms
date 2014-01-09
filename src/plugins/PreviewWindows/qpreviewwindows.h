@@ -62,7 +62,7 @@ public slots:
 
 	void CurrentStateChangePlugin(int statevalue,QWidget *WID);
 
-	//????????
+	//
 	int StartRecord();
 	int StopRecord();
 	int SetDevInfo(const QString&devname,int nChannelNum,int nWndID);

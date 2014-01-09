@@ -38,9 +38,6 @@
     <ClCompile Include="ccommonlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\guid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qcommonplugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,6 +48,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
