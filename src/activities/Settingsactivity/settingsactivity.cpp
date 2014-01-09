@@ -96,6 +96,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("SettingCommonParm_ok","click","OnSettingCommonParm()");
 	
 	QWFW_MSGMAP("SettingRecordTimeParm_ok","click","OnSettingRecordTimeParm()");
+	QWFW_MSGMAP("SettingRecordTimeParmDouble_ok","click","OnSettingRecordTimeParmDouble()");
 	QWFW_MSGMAP_END;
 }
 
@@ -1544,4 +1545,22 @@ void settingsActivity::OnSettingRecordTimeParm()
 	EventProcCall("SettingRecordTimeParmSuccess",arg);
 	ISetRecord->Release();
 	return;
+}
+
+void settingsActivity::OnSettingRecordTimeParmDouble()
+{
+	ISetRecordTime *ISetRecord=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void**)&ISetRecord);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==ISetRecord)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordTimeParmFail",arg);
+		return;
+	}
+
 }
