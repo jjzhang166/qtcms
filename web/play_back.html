@@ -149,13 +149,13 @@
 				<li class="hover" style="background-position: 0 0;" onclick="playVideo();"></li>
 				<li class="hover" style="background-position: -120px -72px;" onclick="playAction('GroupPause');"></li>
 				<li class="hover" style="background-position: 0 -36px;" onclick="playAction('GroupContinue');"></li>
-				<li class="hover" style="background-position: -120px -108px;" onclick="playAction('GroupSpeedSlow');"></li>
+				<li class="hover" style="background-position: -120px -108px;" onclick="playAction('GroupSpeedSlow');palybackspeed('1/2x')"></li>
 				<li class="hover" style="background-position:  0 -72px;" onclick="playAction();"></li>
 				<li class="hover" style="background-position: -120px -144px;" onclick="playAction();"></li>
-				<li class="hover" style="background-position: 0 -108px;" onclick="playAction('GroupSpeedFast');"></li>
-				<li class="hover" style="background-position: -120px -180px;" onclick="playAction('GroupSpeedNormal');"></li>
+				<li class="hover" style="background-position: 0 -108px;" onclick="playAction('GroupSpeedFast');palybackspeed('2x')"></li>
+				<li class="hover" style="background-position: -120px -180px;" onclick="playAction('GroupSpeedNormal');palybackspeed('1x')"></li>
 				<li class="hover" style="background-position: 0 -144px;" onclick="playAction('GroupStop');"></li>
-				<li style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1/4x</li>
+				<li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1x</li>
 				<!-- 
 				<li class="warn"><div style="background:#7BC345"></div>Time</li>
 				<li class="warn"><div style="background:#FFE62E"></div>Motion</li>

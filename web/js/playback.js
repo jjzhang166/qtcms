@@ -177,6 +177,9 @@ var oLeft,oBottom,oView,oPlayBack,
 	function playAction(str){ 
 		oPlayBack[str]();
 	}
+	function palybackspeed(str){ 
+		$('#palybackspeed').html(str);
+	}
 	function setDevData2ocx(oDevData){
 		var  b = true;
 		if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
