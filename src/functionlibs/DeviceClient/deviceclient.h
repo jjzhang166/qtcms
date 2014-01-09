@@ -96,6 +96,7 @@ private:
 	int m_nSpeedRate;
 	QString m_sUserName;
 	QString m_sPassWord;
+	bool m_bGroupStop;
 	
 
 private:

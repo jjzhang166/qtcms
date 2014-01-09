@@ -29,10 +29,11 @@ m_bStop(false)
 
 PlayManager::~PlayManager(void)
 {
-  	if (!m_bStop)
-   	{
-   		msleep(100);
-   	}
+	m_bStop = true;
+	if(this->isRunning())
+	{
+		wait();
+	}
 
 	m_pVedioDecoder->Release();
 	m_pVedioDecoder = NULL;

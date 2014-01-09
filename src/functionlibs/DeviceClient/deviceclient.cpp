@@ -11,6 +11,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_DeviceConnectonTurn(NULL),
 	bIsInitFlags(false),
 	bCloseingFlags(false),
+	m_bGroupStop(false),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
@@ -643,6 +644,7 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 	}
 
 	int nRet = m_pRemotePlayback->getPlaybackStreamByTime(m_nChannels, nTypes, start, end);
+	m_bGroupStop = false;
 
 	return nRet;
 }
@@ -740,7 +742,9 @@ int DeviceClient::GroupStop()
 		it->bufferManager->emptyBuff();
 	}
 
+	m_nChannels = 0;
 	m_groupMap.clear();
+	m_bGroupStop = true;
 
 	return nRet;
 }
@@ -828,6 +832,11 @@ int DeviceClient::GroupSpeedNormal()
 
 int DeviceClient::recordFrame(QVariantMap &evMap)
 {
+	if (m_bGroupStop)
+	{
+		return 1;
+	}
+
 	int nRet = 0;
 	int channle = evMap.value("channel").toInt();
 	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channle);
