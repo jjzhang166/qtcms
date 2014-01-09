@@ -2019,7 +2019,7 @@ int QCommonPlugin::getDiskSpaceReservedSize()
 int QCommonPlugin::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
 {
 	// check time format
-	if (!CheckTimeFormat(starttime) || !CheckTimeFormat(endtime))
+	if ( !CheckTimeFormat(starttime) || !CheckTimeFormat(endtime))
 	{
 		return 1;
 	}
@@ -2066,7 +2066,7 @@ int QCommonPlugin::ModifyRecordTime( int recordtime_id,QString starttime,QString
 	// update recordtime set starttime='',endtime='',enable=1 where id=recordtime_id
 	sSql = QString("update recordtime set starttime='") + starttime
 		+ QString("',endtime='") + endtime
-		+ QString("',enable=") + (!enable ? QString::number(1) : QString::number(0))
+		+ QString("',enable=") + (enable ? QString::number(1) : QString::number(0))
 		+ QString(" where id=") + QString::number(recordtime_id);
 	if ( !_query.exec(sSql) )
 	{
@@ -2085,7 +2085,7 @@ QStringList QCommonPlugin::GetRecordTimeBydevId( int chl_id )
 	// check channel identifier
 	QSqlQuery _query(m_db);
 	QString sSql;
-	sSql = QString("select id from chl where channel_number=") + QString::number(chl_id);
+	sSql = QString("select id from chl where id=") + QString::number(chl_id);
 	if ( !_query.exec(sSql) )
 	{
 		return ret;
@@ -2156,7 +2156,7 @@ bool QCommonPlugin::CheckTimeFormat( QString sTime )
 	// ex "YYYY-MM-DD hh:mm:ss"
 	QString sTemp = sTime;
 	QRegExp regTimeFormat("^[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\ [0-9]{2}\\:[0-9]{2}\\:[0-9]{2}$");
-	return sTime.contains(regTimeFormat);
+	return sTemp.contains(regTimeFormat);
 }
 
 //…Ë÷√”Ô—‘,sLanguageŒ™ ‰»Î”Ô—‘◊÷∑˚¥Æ
