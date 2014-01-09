@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  文档简介：<br />
+  local player 组件同步回放接口用例文档<br />
+测试的接口：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="568" valign="top"><br />
+      int SearchLocalPlayFileList(const QDateTime    &amp;start,const    QDateTime &amp;end,QStringList &amp;filelist) </td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end) </p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int SetSynGroupNum(int num)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupPlay()</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupPause()</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupContinue()</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupStop()</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupSpeedFast(int speed)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupSpeedSlow(int speed)</p></td>
+  </tr>
+  <tr>
+    <td width="568" valign="top"><p>int GroupSpeedNormal()</p></td>
+  </tr>
+</table>
+<p>测试用例：<br />
+  前置条件:  一块硬盘,分为C,D,E,F区, 数据库general_setting表中默认使用D盘放置录像<br />
+  //@用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int SearchLocalPlayFileList(const QDateTime    &amp;start,const    QDateTime &amp;end,QStringList &amp;filelist)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>参数测试 返回值测试</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    07:00:00&rdquo;,</p></td>
+    <td width="284" valign="top"><p align="left">返回1:失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    09-00-00&rdquo;, </p></td>
+    <td width="284" valign="top"><p align="left">返回1:失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">&nbsp;</p></td>
+    <td width="284" valign="top"><p align="left">&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p>使用参数为&rdquo;1000&rdquo;(为QString类型)</p></td>
+    <td width="284" valign="top"><p>返回OK, 有事件GetRecordDate抛出,devname为&rdquo;1000&rdquo;, date为&rdquo; 2014-01-08&rdquo;<br />
+      抛出SearchStop事件:    &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p>使用参数为&rdquo;1002&rdquo;(为QString类型)</p></td>
+    <td width="284" valign="top"><p>返回OK, 只有SearchStop事件抛出:    &quot;stopevent&quot;对应&rdquo;GetRecordDate&rdquo;</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@ 用例2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end) </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>参数以及返回值测试</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    07:00:00&rdquo;, 其他参数给正确值</p></td>
+    <td width="284" valign="top"><p align="left">返回3:失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22-00-00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">返回3:失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 播放窗口指针给NULL, </p></td>
+    <td width="284" valign="top"><p align="left">返回3:失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值</p></td>
+    <td width="284" valign="top"><p align="left">返回0, 添加成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">参数设置:start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数和4的完全一样</p></td>
+    <td width="284" valign="top"><p align="left">返回2, 添加失败，窗口已经被占用 </p></td>
+  </tr>
+</table>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int SetSynGroupNum(int num)</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试参数值和返回值</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">参数给-3 </p></td>
+    <td width="284" valign="top"><p align="left">返回1设置失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p>参数给0</p></td>
+    <td width="284" valign="top"><p align="left">返回1设置失败 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p>参数给4</p></td>
+    <td width="284" valign="top"><p align="left">返回0设置成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">4</p></td>
+    <td width="142" valign="top"><p align="left">参数给100</p></td>
+    <td width="284" valign="top"><p>返回1设置失败</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例4</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end)<br />
+      int SetSynGroupNum(int num) </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>设置同步组数量,看有没有对添加到组进行限制</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">SetSynGroupNum参数设置为2; </p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">连续2次调用函数AddFileIntoPlayGroup 中设置start为&rdquo; 2014-01-08    08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">返回0:添加成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">再调用函数AddFileIntoPlayGroup 中设置start为&rdquo; 2014-01-08    08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">返回1:通道组已满 </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例5</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int SearchLocalPlayFileList(const QDateTime    &amp;start,const    QDateTime &amp;end,QStringList &amp;filelist)<br />
+      int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end)<br />
+      int SetSynGroupNum(int num)<br />
+      int GroupPlay()<br />
+      int GroupPause()<br />
+      int GroupContinue()<br />
+      int GroupStop()</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试播放, 暂停, 暂停后继续, 停止</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">SearchLocalPlayFileList参数设置为: start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;,</p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">SetSynGroupNum 设置同步组数量为2 </p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">3次调用AddFileIntoPlayGroup    中设置start为&rdquo; 2014-01-08    08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">前2次返回0:添加成功 <br />
+      最后一次返回1: 通道组已满 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p align="left">调用GroupPlay</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">10分钟后调用GroupPause</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p align="left">10分钟后调用GroupContinue</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>7</p></td>
+    <td width="142" valign="top"><p align="left">10分钟后调用GroupStop</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例6</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int SearchLocalPlayFileList(const QDateTime    &amp;start,const    QDateTime &amp;end,QStringList &amp;filelist)<br />
+      int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end)<br />
+      int SetSynGroupNum(int num)<br />
+      int GroupPlay()<br />
+      int GroupStop()</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容</p></td>
+    <td width="426" colspan="2" valign="top"><p>测试播放停止后再启动播放是否成功</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件</p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及<br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号</p></td>
+    <td width="142" valign="top"><p>步骤</p></td>
+    <td width="284" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">SearchLocalPlayFileList参数设置为: start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;,</p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">SetSynGroupNum 设置同步组数量为3 </p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">3次调用AddFileIntoPlayGroup    中设置start为&rdquo; 2014-01-08    08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">3次返回0:添加成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p align="left">调用GroupPlay</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">10分钟后调用GroupStop</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后调用GroupPlay</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>7</p></td>
+    <td width="142" valign="top"><p align="left">10分钟后调用GroupStop</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例7</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="142" valign="top"><br />
+      测试对象 </td>
+    <td width="426" colspan="2" valign="top"><p>int SearchLocalPlayFileList(const QDateTime    &amp;start,const    QDateTime &amp;end,QStringList &amp;filelist)<br />
+      int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &amp;start,const QDateTime &amp;end)<br />
+      int SetSynGroupNum(int num)<br />
+      int GroupPlay()<br />
+      int GroupSpeedFast(int speed)<br />
+      int GroupSpeedSlow(int speed)<br />
+      int GroupSpeedNormal()<br />
+      int GroupStop()</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>测试内容 </p></td>
+    <td width="426" colspan="2" valign="top"><p>测试快速/慢速播放是否成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p align="left">前置条件 </p></td>
+    <td width="426" colspan="2" valign="top"><p align="left">D分区放置JAREC/2014-01-08/1000/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/ 094717.avi以及 <br />
+      JAREC/2014-01-08/1001/CHL01/ 094717.avi和JAREC/2014-01-08/1000/CHL02/    143429.avi<br />
+      F分区放置JAREC/2014-01-08/1000/CHL01/ 124717.avi和JAREC/2014-01-08/1000/CHL02/ 124717.avi</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>步骤编号 </p></td>
+    <td width="142" valign="top"><p>步骤 </p></td>
+    <td width="284" valign="top"><p>预期 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>1</p></td>
+    <td width="142" valign="top"><p align="left">SearchLocalPlayFileList参数设置为: start为&rdquo; 2014-01-08 08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;,</p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>2</p></td>
+    <td width="142" valign="top"><p align="left">SetSynGroupNum 设置同步组数量为3 </p></td>
+    <td width="284" valign="top"><p align="left">返回0:成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>3</p></td>
+    <td width="142" valign="top"><p align="left">3次调用AddFileIntoPlayGroup    中设置start为&rdquo; 2014-01-08    08:00:00&rdquo;<br />
+      end为&rdquo; 2014-01-08    22:00:00&rdquo;, 其他参数给正确值 </p></td>
+    <td width="284" valign="top"><p align="left">3次返回0:添加成功 </p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>4</p></td>
+    <td width="142" valign="top"><p align="left">调用GroupPlay</p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>5</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后调用GroupSpeedFast2倍速 </p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>6</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后调用GroupSpeedFast8倍速 </p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>7</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后调用GroupSpeedSlow设置1/2倍速 </p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>8</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后调用GroupSpeedNormal设置正常播放 </p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+  <tr>
+    <td width="142" valign="top"><p>9</p></td>
+    <td width="142" valign="top"><p align="left">5分钟后GroupStop停止播放 </p></td>
+    <td width="284" valign="top"><p align="left">返回0</p></td>
+  </tr>
+</table>
+</body>
+</html>
