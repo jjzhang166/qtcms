@@ -5,6 +5,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
 #include <QtCore/QQueue>
+#include <QDebug>
 #include "IRecorder.h"
 #include "StorageMgr.h"
 

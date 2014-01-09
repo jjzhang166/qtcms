@@ -368,7 +368,6 @@ void Recorder::cleardata()
 bool Recorder::CreateSavePath(QString& sSavePath)
 {
 	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum);
-
 	return true;
 }
 

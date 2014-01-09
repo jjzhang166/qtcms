@@ -642,7 +642,7 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 	{
 		return 1;
 	}
-
+	
 	int nRet = m_pRemotePlayback->getPlaybackStreamByTime(m_nChannels, nTypes, start, end);
 	m_bGroupStop = false;
 

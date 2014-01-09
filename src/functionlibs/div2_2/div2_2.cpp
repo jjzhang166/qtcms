@@ -173,7 +173,6 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 			break;
 		}
 	}
-
 	//qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
 
 	if( subWindow->frameGeometry().width() == m_parentOfSubWindows->width() 

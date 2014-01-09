@@ -129,7 +129,7 @@ void DvrSearch::run()
 {
     QElapsedTimer timer;
     timer.start();
-    m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
+    qint64 nLen = m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
     while (0 == m_nStopped || 2 == m_nStopped)
 	{
         m_bThreadRunning = true;
