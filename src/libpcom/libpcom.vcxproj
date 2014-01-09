@@ -146,6 +146,8 @@
     <ClInclude Include="..\..\include\IFsmPlay.h" />
     <ClInclude Include="..\..\include\IGroupManager.h" />
     <ClInclude Include="..\..\include\IIpcSearch.h" />
+    <ClInclude Include="..\..\include\ILcalPlayer.h" />
+    <ClInclude Include="..\..\include\ISetRecordTime.h" />
     <ClInclude Include="..\..\include\IUserManager.h" />
     <ClInclude Include="..\..\include\IWebPluginBase.h" />
     <ClInclude Include="resource.h" />
