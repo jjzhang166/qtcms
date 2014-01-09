@@ -27,7 +27,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,true);
 
 	// Disable context menu
-	//setContextMenuPolicy(Qt::NoContextMenu);
+	setContextMenuPolicy(Qt::NoContextMenu);
 
 	// Set web plugin factory
 	page()->setPluginFactory(new WebkitPluginsFactory(this));
