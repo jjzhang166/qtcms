@@ -42,19 +42,21 @@ void SetRecordTimeTest::beforeSetRecordTimeTest()
     QSqlQuery query1(db);
     query1.prepare("delete from recordtime");
     query1.exec();
+	query1.finish();
+	query1.exec("delete from chl");
    
     QSqlQuery query2(db);
     query2.prepare("update sqlite_sequence set seq=0 where name= 'recordtime'");
     query2.exec();
+	query2.finish();
+	query2.exec("update sqlite_sequence set seq=0 where name='chl'");
+	query2.finish();
+	query2.exec("insert into chl(dev_id,channel_number,name,stream_id) values(1,0,\"test\",0)");
+	query2.finish();
 
     QSqlQuery query3(db);
-    query3.prepare("insert into recordtime(chl_id ,schedule_id ,weekday ,starttime ,endtime,enable  ) values(:chl_id,:schedule_id,:weekday,:starttime,:endtime,:enable)");
-    query3.bindValue(":chl_id"     ,0);
-    query3.bindValue(":schedule_id",0);
-    query3.bindValue(":weekday"    ,0);
-    query3.bindValue(":starttime"  ,"2013-12-31 00:00:00");
-    query3.bindValue(":endtime"    ,"2013-12-31 23:59:59");
-    query3.bindValue(":enable"     ,0);
+	query3.exec("update recordtime set chl_id=1,schedule_id=0,weekday=0,starttime='2013-12-31 00:00:00',endtime='2013-12-31 23:59:59',enable=0");
+	query3.finish();
 
     query3.exec();
     
@@ -103,9 +105,18 @@ void SetRecordTimeTest::SetRecordTimeTest2()
     START_SETRECORDTIME_UNIT_TEST(Itest);
     QStringList strlist;
     //step1
-    strlist = Itest->GetRecordTimeBydevId(0);
-    QVERIFY2(strlist.size() == 1  ,"step 1:");
-    QVERIFY2(strlist[0]     == "1","step 1:");
+    strlist = Itest->GetRecordTimeBydevId(1);
+    QVERIFY2(strlist.size() == 28  ,"step 1:");
+	bool bContains = true;
+	int i;
+	for (i = 0; i < strlist.size(); i++)
+	{
+		if (!strlist.contains(QString::number(i + 1)))
+		{
+			bContains = false;
+		}
+	}
+    QVERIFY2(bContains,"step 1:");
     //step2
     strlist.clear();
     strlist = Itest->GetRecordTimeBydevId(200);
@@ -138,20 +149,9 @@ void SetRecordTimeTest::SetRecordTimeTest3()
     db.setDatabaseName(sDatabasePath);
     db.open();
 
-    QSqlQuery query1(db);
-    query1.prepare("insert into recordtime(chl_id ,schedule_id ,weekday ,starttime ,endtime,enable  ) values(:chl_id,:schedule_id,:weekday,:starttime,:endtime,:enable)");
-    query1.bindValue(":chl_id"     ,0);
-    query1.bindValue(":schedule_id" ,1);
-    query1.bindValue(":weekday"    ,1);
-    query1.bindValue(":starttime"  ,"2014-01-01 00:00:00");
-    query1.bindValue(":endtime"    ,"2014-01-01 23:59:59");
-    query1.bindValue(":enable"     ,0);
-
-    query1.exec();
-
     QSqlQuery query2(db);
     query2.prepare("insert into recordtime(chl_id ,schedule_id ,weekday ,starttime ,endtime,enable  ) values(:chl_id,:schedule_id,:weekday,:starttime,:endtime,:enable)");
-    query2.bindValue(":chl_id"     ,1);
+    query2.bindValue(":chl_id"     ,2);
     query2.bindValue(":schedule_id" ,0);
     query2.bindValue(":weekday"    ,1);
     query2.bindValue(":starttime"  ,"2014-01-01 00:00:00");
@@ -163,14 +163,25 @@ void SetRecordTimeTest::SetRecordTimeTest3()
     QStringList strlist;
 
     //step1
-    strlist = Itest->GetRecordTimeBydevId(0);
-    QVERIFY2(strlist.size() == 2,"step 1:");
-    QVERIFY2(strlist[0]     == "1","step 1:");
-    QVERIFY2(strlist[1]     == "2","step 1:");
-    //step2
     strlist = Itest->GetRecordTimeBydevId(1);
-    QVERIFY2(strlist.size() == 1,"step 2:");
-    QVERIFY2(strlist[0]     == "3","step 2:");
+    QVERIFY2(strlist.size() == 28,"step 1:");
+
+	bool bContains = true;
+	int i;
+	for (i = 0; i < strlist.size(); i++)
+	{
+		if (!strlist.contains(QString::number(i + 1)))
+		{
+			bContains = false;
+		}
+	}
+	QVERIFY2(bContains,"step 1:");
+
+    //step2
+    strlist = Itest->GetRecordTimeBydevId(2);
+	QVERIFY2(strlist.isEmpty(),"step 2");
+//    QVERIFY2(strlist.size() == 1,"step 2:");
+//    QVERIFY2(strlist[0]     == "29","step 2:");
 
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }
@@ -193,7 +204,7 @@ void SetRecordTimeTest::SetRecordTimeTest4()
     vMap.clear();
     //step3
     vMap = Itest->GetRecordTimeInfo(1);
-    QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
+    QVERIFY2(1 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
     QVERIFY2(vMap["starttime"] == "2013-12-31 00:00:00" ,"step 3:return");
@@ -215,7 +226,7 @@ void SetRecordTimeTest::SetRecordTimeTest5()
 
     //step1
     vMap = Itest->GetRecordTimeInfo(1);
-    QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 1:return");
+    QVERIFY2(1 == vMap["chl_id"].toInt()                ,"step 1:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 1:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 1:return");
     QVERIFY2(vMap["starttime"] == "2013-12-31 00:00:00" ,"step 1:return");
@@ -227,12 +238,12 @@ void SetRecordTimeTest::SetRecordTimeTest5()
     //step3
     vMap.clear();
     vMap = Itest->GetRecordTimeInfo(1);
-    QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
+    QVERIFY2(1 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
     QVERIFY2(vMap["starttime"] == "2014-01-01 00:00:00" ,"step 3:return");
     QVERIFY2(vMap["endtime"]   == "2014-01-01 23:59:59" ,"step 3:return");
-    QVERIFY2(0 ==  vMap["enable"]                       ,"step 3:return");
+    QVERIFY2(1 ==  vMap["enable"]                       ,"step 3:return");
     END_SETRECORDTIME_UNIT_TEST(Itest);
 }
 
@@ -249,7 +260,7 @@ void SetRecordTimeTest::SetRecordTimeTest6()
 
     //step1
     vMap = Itest->GetRecordTimeInfo(1);
-    QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 1:return");
+    QVERIFY2(1 == vMap["chl_id"].toInt()                ,"step 1:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 1:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 1:return");
     QVERIFY2(vMap["starttime"] == "2013-12-31 00:00:00" ,"step 1:return");
@@ -261,7 +272,7 @@ void SetRecordTimeTest::SetRecordTimeTest6()
     //step3
     vMap.clear();
     vMap = Itest->GetRecordTimeInfo(1);
-    QVERIFY2(0 == vMap["chl_id"].toInt()                ,"step 3:return");
+    QVERIFY2(1 == vMap["chl_id"].toInt()                ,"step 3:return");
     QVERIFY2(0 == vMap["schedule_id"].toInt()            ,"step 3:return");
     QVERIFY2(0 == vMap["weekday"].toInt()               ,"step 3:return");
     QVERIFY2(vMap["starttime"] == "2013-12-31 00:00:00" ,"step 3:return");
