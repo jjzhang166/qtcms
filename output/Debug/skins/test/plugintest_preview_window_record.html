@@ -44,13 +44,15 @@ function setDivMode() {
 }
 function StartRecord() {
     var obj = document.getElementById('preview');
+	var uiWndIndex = document.getElementById('uiWndIndex');
     alert('StartRecord');
-    obj.StartRecord();
+    obj.StartRecord(parseInt(uiWndIndex.value));
 }
 function StopRecord() {
     var obj = document.getElementById('preview');
     alert('StopRecord');
-    obj.StopRecord();
+	var uiWndIndex = document.getElementById('uiWndIndex');
+    obj.StopRecord(parseInt(uiWndIndex.value));
 }
 function SetDevInfo() {
     var obj = document.getElementById('preview');
@@ -98,7 +100,7 @@ function CloseWndCamera() {
 </head>
 
 <body onload="Onload()">
-  <object type="application/cms-preview-windows" id="preview" style="width:1000; height:1000;">
+  <object type="application/cms-preview-windows" id="preview" style="width:700px; height:500px;">
    <embed></embed> 
   </object>
   <object type="application/cms-manualrecord-test" id="windows" style="width:2000; height:2000;">

@@ -14,10 +14,10 @@
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="568" valign="top"><br />
-      int StartRecord(); </td>
+      int StartRecord(int nWndID); </td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p align="left">int StopRecord();</p></td>
+    <td width="568" valign="top"><p align="left">int StopRecord(int nWndID);</p></td>
   </tr>
   <tr>
     <td width="568" valign="top"><p align="left">int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);</p></td>
@@ -45,7 +45,7 @@
       ,const    QString &amp; sVendor);</p></td>
   </tr>
   <tr>
-    <td width="568" valign="top"><p align="left">int SetCameraInWnd(unsigned    int uiWndIndex      ,const QString sAddress,unsigned    int uiPort,const    QString &amp; sEseeId<br />
+    <td width="568" valign="top"><p align="left">int SetCameraInWnd(unsigned    int uiWndIndex      ,const QString sAddress,unsigned int    uiPort,const QString &amp; sEseeId<br />
       ,unsigned    int uiChannelId,unsigned    int uiStreamId<br />
       ,const    QString &amp; sUsername,const QString &amp;    sPassword<br />
       ,const    QString &amp; sCameraname<br />
@@ -64,7 +64,7 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
+    <td width="454" colspan="2" valign="top"><p>int StartRecord(int nWndID);<br />
       int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);</p></td>
   </tr>
   <tr>
@@ -88,7 +88,7 @@
   <tr>
     <td width="114" valign="top"><p>2</p></td>
     <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;1000&rdquo;, 通道号为0,1,2,3,窗口ID对应分4次设为0,1,2,3,</p></td>
-    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, SetDevInfo函数返回值都为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -96,7 +96,7 @@
       &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
       设置4次,值分别为0,1,2,3;<br />
       uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, 插件函数返回值为0, 4个窗口显示图像, 打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -105,13 +105,13 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
-    <td width="258" valign="top"><p>弹出对话框,插件函数返回值为0,</p></td>
+    <td width="197" valign="top"><p align="left">页面4次点击StartRecord按钮开始录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出对话框4次,插件函数返回值均为0,</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
     <td width="197" valign="top"><p>20分钟后页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
-    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\1000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大型, 且最大为128MB±3MB</p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\1000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大小, 且最大为128MB±3MB</p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -120,9 +120,9 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
+    <td width="454" colspan="2" valign="top"><p>int StartRecord(int nWndID);<br />
       int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
-      int StopRecord();</p></td>
+      int StopRecord(int nWndID);</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
@@ -145,7 +145,7 @@
   <tr>
     <td width="114" valign="top"><p>2</p></td>
     <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;2000&rdquo;, 通道号为0~3, 窗口ID分4次设为0~3</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 插件函数SetDevInfo返回值为0;</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, 插件函数SetDevInfo返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -153,7 +153,7 @@
       &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
       设置4次,值分别为0,1,2,3;<br />
       uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, 插件函数返回值为0, 表示打开成功, 4个窗口显示出图像</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -162,18 +162,18 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
-    <td width="258" valign="top"><p>弹出对话框,返回值为0, </p></td>
+    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮4次开始录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框,返回值为0, </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>20分钟后, 页面点击StopRecord按钮停止录像</p></td>
-    <td width="258" valign="top"><p>弹出对话框,返回值为0 </p></td>
+    <td width="197" valign="top"><p>20分钟后, 页面点击StopRecord按钮4次(uiWndIndex分别给0,1,2,3)停止录像</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框,返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
     <td width="197" valign="top"><p>页面点击按钮IsPathsAndFilesExist检测目录和文件</p></td>
-    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\2000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大型, 且最大为128MB±3MB </p></td>
+    <td width="258" valign="top"><p>控制台打印出D:\JAREC\&rdquo;日期&rdquo;\2000\4个CHL0X目录路径(X从1开始, 下同), 并打印出相应录像文件名称及大小, 且最大为128MB±3MB </p></td>
   </tr>
 </table>
 <p>&nbsp;</p>
@@ -182,9 +182,9 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
+    <td width="454" colspan="2" valign="top"><p>int StartRecord(int nWndID);<br />
       int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
-      int StopRecord();</p></td>
+      int StopRecord(int nWndID);</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
@@ -207,7 +207,7 @@
   <tr>
     <td width="114" valign="top"><p>2</p></td>
     <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮前设置参数: 设备名为&rdquo;3000&rdquo;, 通道号对应分4次设为0,1,2,3, 窗口ID对应分4次设为0,1,2,3,</p></td>
-    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, SetDevInfo函数返回值均为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -215,7 +215,7 @@
       &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
       设置4次,值分别为0,1,2,3;<br />
       uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
-    <td width="258" valign="top"><p>弹出对话框,函数返回值为0, 表示打开成功</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框,函数返回值为0, 表示打开成功, 4个子窗口有预览的图像</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -224,8 +224,8 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮 </p></td>
-    <td width="258" valign="top"><p>弹出对话框,返回值为0 </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮4次(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框,返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
@@ -234,8 +234,8 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p>20分钟后, 点击StopRecord停止录像</p></td>
-    <td width="258" valign="top"><p>返回值为0 </p></td>
+    <td width="197" valign="top"><p>20分钟后, 点击StopRecord4次(uiWndIndex分别给0,1,2,3)停止录像</p></td>
+    <td width="258" valign="top"><p>返回值为0 , 弹出4次对话框</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
@@ -249,9 +249,9 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
+    <td width="454" colspan="2" valign="top"><p>int StartRecord(int nWndID);<br />
       int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
-      int StopRecord();</p></td>
+      int StopRecord(int     nWndID);</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
@@ -274,7 +274,7 @@
   <tr>
     <td width="114" valign="top"><p>2</p></td>
     <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;1000&rdquo;, 通道号为0~3, 窗口ID对应分4次设为0~3</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0;</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, 插件函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -282,7 +282,7 @@
       &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
       设置4次,值分别为0,1,2,3;<br />
       uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
+    <td width="258" valign="top"><p>弹出4次对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -291,8 +291,8 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮开始录像 </p></td>
-    <td width="258" valign="top"><p>返回值为0 </p></td>
+    <td width="197" valign="top"><p align="left">页面点击StartRecord按钮4次开始录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>返回值为0 .弹出4次对话框</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
@@ -311,8 +311,8 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>9</p></td>
-    <td width="197" valign="top"><p align="left">继续20分钟, 调用StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>返回值为0 </p></td>
+    <td width="197" valign="top"><p align="left">继续20分钟, 点击StopRecord4次停止录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>返回值为0 ,弹出4次对话框</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>10</p></td>
@@ -326,9 +326,9 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>int StartRecord();<br />
+    <td width="454" colspan="2" valign="top"><p>int StartRecord(int nWndID);<br />
       int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);<br />
-      int StopRecord();</p></td>
+      int StopRecord(int nWndID);</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
@@ -351,7 +351,7 @@
   <tr>
     <td width="114" valign="top"><p>2</p></td>
     <td width="197" valign="top"><p>从页面4次点击SetDevInfo按钮给SetDevInfo函数设置参数: 设备名为&rdquo;5000&rdquo;, 通道号为4, 窗口ID分4次设为0,1,2,3</p></td>
-    <td width="258" valign="top"><p>弹出对话框, SetDevInfo函数返回值为0;</p></td>
+    <td width="258" valign="top"><p>弹出4对话框, SetDevInfo函数返回值为0;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -359,7 +359,7 @@
       &rdquo;admin&rdquo;,&rdquo;&rdquo;,&rdquo;camera&rdquo;,&rdquo;JUAN DVR&rdquo;, uiWndIndex文本框 <br />
       设置4次,值分别为0,1,2,3;<br />
       uiChannelId设置4次,值分别为0,1,2,3;然后分4次点击OpenCameraInWnd</p></td>
-    <td width="258" valign="top"><p align="left">弹出对话框, 插件函数返回值为0, 表示打开成功</p></td>
+    <td width="258" valign="top"><p align="left">弹出4对话框, 插件函数返回值为0, 表示打开成功</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -368,13 +368,13 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, StartRecord函数返回值为0,</p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮4次(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4对话框, StartRecord函数返回值均为0,</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p align="left">10分钟后调用StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>弹出对话框, StopRecord返回值为0 </p></td>
+    <td width="197" valign="top"><p align="left">10分钟后点击StopRecord按钮4次停止录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4对话框, StopRecord返回值为0 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
@@ -388,13 +388,13 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>9</p></td>
-    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮开始录像 </p></td>
-    <td width="258" valign="top"><p>弹出对话框, 返回值为0; </p></td>
+    <td width="197" valign="top"><p align="left">从页面点击StartRecord按钮4次开始录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4对话框, 返回值均为0; </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>10</p></td>
-    <td width="197" valign="top"><p align="left">10分钟后从页面点击StopRecord()停止录像</p></td>
-    <td width="258" valign="top"><p>弹出对话框, 返回值为0, </p></td>
+    <td width="197" valign="top"><p align="left">10分钟后从页面4次点击StopRecord停止录像(uiWndIndex分别给0,1,2,3)</p></td>
+    <td width="258" valign="top"><p>弹出4对话框, 返回值为0, </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>11</p></td>
