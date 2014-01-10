@@ -192,37 +192,42 @@ void BubbleProtocol::extractRecordInfo(QDomDocument* dom)
 
 void BubbleProtocol::setRecordInfo(Record& record, QStringList strList)
 {
-    if (strList.isEmpty())
-    {
-        return;
-    }
+	if (strList.isEmpty())
+	{
+		return;
+	}
+	QDateTime time1 = QDateTime::currentDateTime();
+	QDateTime time2 = QDateTime::currentDateTimeUtc();
+	int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
 
-    int typeNum = strList.at(3).toInt();
-    record.cChannel = strList.at(2).toInt();
-    record.cTypes = typeNum;
-    record.StartTime = QDateTime::fromTime_t(strList.at(4).toInt());
-    record.EndTime = QDateTime::fromTime_t(strList.at(5).toInt());
-    record.sFileName = record.StartTime.toString("yyyyMMddhhmmss") + "_" + record.EndTime.toString("yyyyMMddhhmmss");
+	int typeNum = strList.at(3).toInt();
+	record.cChannel = strList.at(2).toInt();
+	record.cTypes = typeNum;
+	record.StartTime = QDateTime::fromTime_t(strList.at(4).toInt());
+	record.StartTime = record.StartTime.addSecs(0 - timeDifference);
+	record.EndTime = QDateTime::fromTime_t(strList.at(5).toInt());
+	record.EndTime = record.EndTime.addSecs(0 - timeDifference);
+	record.sFileName = record.StartTime.toString("yyyyMMddhhmmss") + "_" + record.EndTime.toString("yyyyMMddhhmmss");
 
-    QString sType;
-    if (1 == (int)(typeNum & 1) )
-    {
-        sType += "T";
-    }
-    if (2 == (int)(typeNum & 2))
-    {
-        sType += "M";
-    }
-    if (4 == (int)(typeNum & 4))
-    {
-        sType += "S";
-    }
-    if (8 == (int)(typeNum & 8))
-    {
-        sType += "H";
-    }
+	QString sType;
+	if (1 == (int)(typeNum & 1) )
+	{
+		sType += "T";
+	}
+	if (2 == (int)(typeNum & 2))
+	{
+		sType += "M";
+	}
+	if (4 == (int)(typeNum & 4))
+	{
+		sType += "S";
+	}
+	if (8 == (int)(typeNum & 8))
+	{
+		sType += "H";
+	}
 
-    record.sFileName += "_" + sType;
+	record.sFileName += "_" + sType;
 }
 
 void BubbleProtocol::sendHeartBeat()
