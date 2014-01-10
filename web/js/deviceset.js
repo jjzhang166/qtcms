@@ -172,8 +172,8 @@ var oSearchOcx;
 				}
 			})
 			//搜索设备;
-			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			searchFlush();
+			//oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+			//searchFlush();
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -262,38 +262,71 @@ var oSearchOcx;
 			$('#SplitScreenMode_ID').val('div'+$(this).html());
 		})
 	}
+	var weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 	function FillRecordTimeData(){
 		areaList2Ui('3');
+		$('#recordtime div.timeInput input').val('');
 		$('ul.week a').each(function(index){ 
 			$(this).click(function(){ 
 				$('#week').html($(this).html());
 			})
 		})
-		$('div.dev_list span.channel').click(function(){ 
+		$('div.dev_list span.channel').click(function(){
+			$('div.dev_list span.channel').removeClass('sel')	
+			$(this).addClass('sel');
 			var chlData = $(this).data('data');
-			show(chlData);
 			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id);
-			alert(sTimeID);
-			/*for( i in sTimeID){
-
-			} */
+			for(var i in sTimeID){
+				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]);
+				$('#week').attr('chl',chlData.channel_id);
+				for(var j in weeks){
+					if(j == sTimeIDdata.weekday){
+						$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
+					}
+				}
+			}
+		})
+		$('ul.week.option li').each(function(index){
+			var oTimes=$('#recordtime tr:lt(5)');
+			var str = '<recordtime num="4">';
+			$(this).on('click',function(){
+				var n = 0;
+				for(i in $(this).data()){ 
+					n++;
+					var data = $(this).data()[i];
+					var timeid = i.split('_')[1];
+					var start = data.starttime.split(' ')[1];
+					var end = data.endtime.split(' ')[1]
+					var enable = Boolean(data.enable);
+					oTimes.eq(n).find('input:checkbox').prop('checked',enable);
+					oTimes.eq(n).find('input.timeid').val(timeid);
+					oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
+					oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
+					str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />'
+				}
+				str +='</recordtime>';
+				$('#recordtimedouble_ID').val('').val(str);
+			})
 		})
 
-		$('#RecordTime div.timeInput input').blur(function(){ 
+		$('#RecordTime div.timeInput').on('blur','input',function(){ 
 				var str = '<recordtime num="4">';
 				$('#RecordTime div.timeInput input').each(function(index){ 
+					var warp = $(this).parent('div.timeInput').parent('td.td2');
 					if(index%6 == 0){
-						var timeid = $(this).prev('input:hidden').val();
-						var start = $(this).parent('div.timeInput').gettime();
-						var end = $(this).parent('div.timeInput').next('div.timeInput').gettime();
-						var week = $('#week').val();
-						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01'+start+'" endtime_ID="1970-01-01'+end+'" enable_ID="'+week+'" />'
+						var timeid = warp.find('input:hidden').val();
+						var start = warp.find('div.timeInput:eq(0)').gettime();
+						var end = warp.find('div.timeInput:eq(1)').gettime();
+						var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');			
+						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />'
 					}
 				})
 				str +='</recordtime>';
-				$('#recordtimedouble_ID').val(str);
-				//alert($('#recordtimedouble_ID').val());
+				$('#recordtimedouble_ID').val('').val(str);
 		})
+	}
+	function getrecrodxml(){ 
+		alert($('#recordtimedouble_ID').val());
 	}
 	function FillStorageParmData(){
 		var diskcheckbox = $('#StorageParm table table input:checkbox')

@@ -188,16 +188,17 @@ function set_drag(disX,X1,X2){
 			})
 		},
 		'timeInput':function(options){
+			$(this).html('');
 			var warp = $(this);
 			var defaults = { 
 			    Delimiter: ':',
-			    initTime:'00 00 00',
+			    initTime:'00:00:00',
 			    timeFormat:24,
 			    width:'20',
 			    height:'18'
 			}; 
 			var opts = $.extend(defaults, options);
-			var times = opts.initTime.split(' ');
+			var times = opts.initTime.split(':');
 			for(var i=0;i<3;i++){
 				$('<input  maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
 				if(i<2){ 
@@ -336,7 +337,7 @@ function show(data){
 			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
 		}
 	}else{
-		$('<span>'+index+'</span>:<span>'+data+'/</span>').appendTo($('#test'));
+		$('<span>'+index+'</span>:<span>"'+data+'"/</span>').appendTo($('#test'));
 	}
 }
 function addZero(num){   //数字小于0的时候用0补一位.

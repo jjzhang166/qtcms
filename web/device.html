@@ -1671,9 +1671,9 @@
 						</ul>	
 
 					</div>
-					<table style="float:left">
+					<table style="float:left" id="recordtime">
 						<tr>
-							<td class="td1">Week</td>
+							<td class="td1" style="text-align:right;">Week</td>
 							<td class="td2">
 								<div class="select" style="width:60px;">
 									<span id="week" value="">星期一</span>
@@ -1690,10 +1690,10 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1">Time1</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1">Time2</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1">Time3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1">Time4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">Time1</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">Time2</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">Time3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">Time4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
 							<td class="td1">Copy To</td>
 							<td class="td2">
@@ -1709,7 +1709,7 @@
 							</td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordTimeParm_ok">save</div><div class="hover">cancel</div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordTimeParm_ok" onclick="getrecrodxml()">save</div><div class="hover">cancel</div></td></tr>
 					</table>
 				</div>
 				<div id="StorageParm" class="switch">

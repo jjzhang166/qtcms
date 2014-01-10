@@ -295,11 +295,11 @@ var oSelected = [],
 		}
 	}
 	function SettingCommonParmSuccess(data){
-		show(data);
+		alert(data);
 	}
 	function SettingRecordTimeParmSuccess(data){ 
-		show(data);
+		alert(data);
 	}
 	function SettingStorageParmSuccess(data){ 
-		show(data);
+		alert(data);
 	}
