@@ -96,7 +96,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("SettingCommonParm_ok","click","OnSettingCommonParm()");
 	
 	QWFW_MSGMAP("SettingRecordTimeParm_ok","click","OnSettingRecordTimeParm()");
-	QWFW_MSGMAP("SettingRecordTimeParmDouble_ok","click","OnSettingRecordTimeParmDouble()");
+	QWFW_MSGMAP("SettingRecordDoubleTimeParm_ok","click","OnSettingRecordTimeParmDouble()");
 	QWFW_MSGMAP_END;
 }
 
@@ -1559,7 +1559,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		Content.clear();
 		Content.append("system fail");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeParmFail",arg);
+		EventProcCall("SettingRecordTimeDoubleParmFail",arg);
 		return;
 	}
 
@@ -1575,7 +1575,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		Content.clear();
 		Content.append("parm is null");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeParmFail",arg);
+		EventProcCall("SettingRecordTimeDoubleParmFail",arg);
 		ISetRecord->Release();
 		return;
 	}
@@ -1600,7 +1600,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 			Content.clear();
 			Content.append("ModifyRecordTime Fail");
 			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("SettingRecordTimeParmFail",arg);
+			EventProcCall("SettingRecordTimeDoubleParmFail",arg);
 			ISetRecord->Release();
 			return;
 		}
@@ -1609,7 +1609,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 	Content.clear();
 	Content.append("ModifyRecordTime success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("SettingRecordTimeParmSuccess",arg);
+	EventProcCall("SettingRecordTimeDoubleParmSuccess",arg);
 	ISetRecord->Release();
 	return;
 }
