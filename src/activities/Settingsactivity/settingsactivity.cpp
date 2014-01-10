@@ -1559,7 +1559,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		Content.clear();
 		Content.append("system fail");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeDoubleParmFail",arg);
+		EventProcCall("SettingRecordDoubleTimeParmFail",arg);
 		return;
 	}
 
@@ -1575,7 +1575,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		Content.clear();
 		Content.append("parm is null");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("SettingRecordTimeDoubleParmFail",arg);
+		EventProcCall("SettingRecordDoubleTimeParmFail",arg);
 		ISetRecord->Release();
 		return;
 	}
@@ -1600,7 +1600,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 			Content.clear();
 			Content.append("ModifyRecordTime Fail");
 			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("SettingRecordTimeDoubleParmFail",arg);
+			EventProcCall("SettingRecordDoubleTimeParmFail",arg);
 			ISetRecord->Release();
 			return;
 		}
@@ -1609,7 +1609,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 	Content.clear();
 	Content.append("ModifyRecordTime success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("SettingRecordTimeDoubleParmSuccess",arg);
+	EventProcCall("SettingRecordDoubleTimeParmSuccess",arg);
 	ISetRecord->Release();
 	return;
 }
