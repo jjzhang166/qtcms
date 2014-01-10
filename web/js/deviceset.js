@@ -266,6 +266,7 @@ var oSearchOcx;
 	function FillRecordTimeData(){
 		areaList2Ui('3');
 		$('#recordtime div.timeInput input').val('');
+		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week a').each(function(index){ 
 			$(this).click(function(){ 
 				$('#week').html($(this).html());
@@ -302,28 +303,30 @@ var oSearchOcx;
 					oTimes.eq(n).find('input.timeid').val(timeid);
 					oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
 					oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
-					str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />'
+					str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
 				}
 				str +='</recordtime>';
 				$('#recordtimedouble_ID').val('').val(str);
 			})
 		})
 
-		$('#RecordTime div.timeInput').on('blur','input',function(){ 
-				var str = '<recordtime num="4">';
-				$('#RecordTime div.timeInput input').each(function(index){ 
-					var warp = $(this).parent('div.timeInput').parent('td.td2');
-					if(index%6 == 0){
-						var timeid = warp.find('input:hidden').val();
-						var start = warp.find('div.timeInput:eq(0)').gettime();
-						var end = warp.find('div.timeInput:eq(1)').gettime();
-						var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');			
-						str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />'
-					}
-				})
-				str +='</recordtime>';
-				$('#recordtimedouble_ID').val('').val(str);
+		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml)
+		$('#RecordTime').on('click','input:checkbox',initRecrodxml) 
+	}
+	function initRecrodxml(){
+		var str = '<recordtime num="4">';
+		$('#RecordTime div.timeInput input').each(function(index){ 
+			var warp = $(this).parent('div.timeInput').parent('td.td2');
+			if(index%6 == 0){
+				var timeid = warp.find('input:hidden').val();
+				var start = warp.find('div.timeInput:eq(0)').gettime();
+				var end = warp.find('div.timeInput:eq(1)').gettime();
+				var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
+				str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+			}
 		})
+		str +='</recordtime>';
+		$('#recordtimedouble_ID').val('').val(str);
 	}
 	function getrecrodxml(){ 
 		alert($('#recordtimedouble_ID').val());
