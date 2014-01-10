@@ -86,8 +86,10 @@ var oLeft,oBottom,oView,oPlayBack,
 
 		$("#channelvideo").on({ 
 			mousedown:function(event){
+				var left = event.pageX
+			    	left = left < 79 ? 79 : left;
 				//event.stopPropagation();
-				$('div.play_time').css('left',event.pageX-2);
+				$('div.play_time').css('left',left-2);
 				set_drag(0,79,$('#channelvideo').width());
 			}/*,
 			mouseup:function(event){ 
