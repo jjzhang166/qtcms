@@ -1,4 +1,4 @@
-var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordTime'];  //事件名称集合
+var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
 var oSearchOcx;
 	$(function(){
 		oSearchOcx = document.getElementById('devSearch');
@@ -265,8 +265,7 @@ var oSearchOcx;
 	var weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 	function FillRecordTimeData(){
 		areaList2Ui('3');
-		$('#recordtime div.timeInput input').val('');
-		$('#recordtime input:checkbox').prop('checked',false);
+		SettingRecordDoubleTimeParmSuccess();
 		$('ul.week a').each(function(index){ 
 			$(this).click(function(){ 
 				$('#week').html($(this).html());

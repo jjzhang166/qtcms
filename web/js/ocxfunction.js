@@ -297,8 +297,10 @@ var oSelected = [],
 	function SettingCommonParmSuccess(data){
 		alert(data);
 	}
-	function SettingRecordTimeParmSuccess(data){ 
-		alert(data);
+	function SettingRecordDoubleTimeParmSuccess(data){ 
+		$('#recordtime div.timeInput input').val('');
+		$('#recordtime input:checkbox').prop('checked',false);
+		$('#week').html('').val('');
 	}
 	function SettingStorageParmSuccess(data){ 
 		alert(data);
