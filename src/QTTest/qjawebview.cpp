@@ -22,6 +22,8 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	// Enable Javascript and plugins
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
+	settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows,true);
+	settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows,true);
 
 	// Enable Local content access remote url
 	settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,true);
@@ -52,6 +54,52 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 }
 
+QJaWebView::QJaWebView( bool bLoadDefault, QWidget *parent /*= 0*/):
+	QWebView(parent),
+	m_Activity(NULL)
+{
+	// Window styles
+	setWindowFlags(Qt::FramelessWindowHint);
+
+	// Set object name
+	setObjectName("QtWebKitFW");
+
+	// Enable Javascript and plugins
+	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
+	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
+	settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows,true);
+	settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows,true);
+
+	// Enable Local content access remote url
+	settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,true);
+
+	// Disable context menu
+	//setContextMenuPolicy(Qt::NoContextMenu);
+
+	// Set web plugin factory
+	page()->setPluginFactory(new WebkitPluginsFactory(this));
+
+
+	// Get Application Path
+	QString temp = QCoreApplication::applicationDirPath();
+
+	m_sApplicationPath.append(temp);
+
+	// Connect Signals
+	connect(this,SIGNAL(loadFinished(bool)),this,SLOT(OnLoad(bool)));
+	connect(this,SIGNAL(urlChanged(const QUrl &)),this,SLOT(OnurlChanged(const QUrl &)));
+
+	if (bLoadDefault)
+	{
+		// Read Main ini file
+		QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
+		QString sTheme = MainIniFile.value(QString("Configure/Theme")).toString();
+		QString sThemeDir = MainIniFile.value(sTheme + "/Dir").toString();
+		QString sUiDir = m_sApplicationPath + sThemeDir;
+		qDebug("%s",sUiDir.toAscii().data());
+		load("file:///" + sUiDir);
+	}
+}
 QJaWebView::~QJaWebView()
 {
 	if (NULL != m_Activity)
@@ -142,4 +190,12 @@ void QJaWebView::OnurlChanged( const QUrl & url )
 		m_Activity->Release();
 		m_Activity = NULL;
 	}
+}
+
+QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )
+{
+	QWebView * ret = new QJaWebView(false,NULL);
+	ret->move(0,0);
+	ret->showMaximized();
+	return ret;
 }

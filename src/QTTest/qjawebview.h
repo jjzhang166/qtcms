@@ -9,6 +9,7 @@ class QJaWebView : public QWebView
     Q_OBJECT
 public:
     explicit QJaWebView(QWidget *parent = 0);
+	QJaWebView(bool bLoadDefault, QWidget *parent = 0);
 	virtual ~QJaWebView();
 
 private:
@@ -22,6 +23,8 @@ signals:
 public slots:
     void OnLoad(bool bOk);
 	void OnurlChanged(const QUrl & url);
+
+	virtual QWebView * createWindow( QWebPage::WebWindowType type );
 private:
 	IActivities * m_Activity;
 };
