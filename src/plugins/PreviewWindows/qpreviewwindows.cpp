@@ -294,24 +294,26 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 	EventProcCall("CurrentWindows",arg);
 }
 
-int QPreviewWindows::StartRecord()
+int QPreviewWindows::StartRecord(int nWndID)
 {
-	int nRet = 0;
-	for (int i = 0; i <m_channelList.size(); i++)
+	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
-		nRet |= m_PreviewWnd[m_channelList[i]].StartRecord();
+		return 1;
 	}
+	int nRet = 0;
+	nRet = m_PreviewWnd[nWndID].StartRecord();
 
 	return nRet;
 }
 
-int QPreviewWindows::StopRecord()
+int QPreviewWindows::StopRecord(int nWndID)
 {
-	int nRet = 0;
-	for (int i = 0; i <m_channelList.size(); i++)
+	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
-		nRet |= m_PreviewWnd[m_channelList[i]].StopRecord();
+		return 1;
 	}
+	int nRet = 0;
+	nRet = m_PreviewWnd[nWndID].StopRecord();
 
 	return nRet;
 }
@@ -322,10 +324,22 @@ int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndI
 	{
 		return 1;
 	}
-
-	if (!m_channelList.contains(nChannelNum))
+	//if channel or window ID repeat, Covering the previous items;
+	if (!m_channelWndMap.contains(nChannelNum))
 	{
-		m_channelList.append(nChannelNum);
+		QMap<int, int>::iterator iter;
+		for (iter = m_channelWndMap.begin(); iter != m_channelWndMap.end(); iter++)
+		{
+			if (iter.value() == nWndID)
+			{
+				m_channelWndMap.remove(iter.key());
+			}
+		}
+		m_channelWndMap.insert(nChannelNum, nWndID);
+	}
+	else
+	{
+		m_channelWndMap[nChannelNum] = nWndID;
 	}
 
 	int nRet = 0;

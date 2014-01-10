@@ -62,15 +62,15 @@ public slots:
 
 	void CurrentStateChangePlugin(int statevalue,QWidget *WID);
 
-	//
-	int StartRecord();
-	int StopRecord();
+	//????????
+	int StartRecord(int nWndID);
+	int StopRecord(int nWndID);
 	int SetDevInfo(const QString&devname,int nChannelNum,int nWndID);
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;
 	QList<QWidget *> m_PreviewWndList;
-	QList<int> m_channelList;
+	QMap<int, int> m_channelWndMap;
 
 	int m_uiWndIndex;
 	volatile int m_CurrentWnd;
