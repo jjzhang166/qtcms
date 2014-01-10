@@ -172,8 +172,8 @@ var oSearchOcx;
 				}
 			})
 			//搜索设备;
-			//oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			//searchFlush();
+			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+			searchFlush();
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');

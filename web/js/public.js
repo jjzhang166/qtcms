@@ -299,7 +299,7 @@ $(function(){
 		if(index%2 ==0){ 
 			$(this).timeInput();
 		}else{
-			$(this).timeInput({'initTime':'23 59 59'});
+			$(this).timeInput({'initTime':'23:59:59'});
 		}
 	})
 })
