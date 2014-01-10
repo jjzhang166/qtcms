@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+<body>
+
+<p>编辑人：章深鹏<br>
+  编辑日期：2014.1.8<br>
+  文档介绍：<br>
+  RemoteBackup远程备份测试用例文档<br>
+  测试接口：</p>
+<table width="668" border="1" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="617" valign="top"><br>
+      startBackup(const QString &amp;sAddr,unsigned int uiPort,const QString &amp;sEseeId,<br />
+int nChannel,<br />
+int nTypes,<br />
+const QDateTime &amp; startTime,<br />
+const QDateTime &amp; endTime,<br />
+const QString &amp; sbkpath)</td>
+  </tr>
+  <tr>
+    <td width="617" valign="top"><p>int stopBackup()</p></td>
+  </tr>
+  <tr>
+    <td width="617" valign="top"><p>float getProgress()</p></td>
+  </tr>
+</table>
+<p>测试用例：<br>
+  注意：<br>
+  （1）包含头文件#include&lt; IRemoteBackup.h&gt;<br>
+（2接口错误号如下</p>
+<table border="1" cellspacing="0" cellpadding="0" width="104%">
+  <tr>
+    <td><br>
+      S_OK </td>
+    <td><p align="left">0</p></td>
+    <td><p align="left">成功 </p></td>
+  </tr>
+  <tr>
+    <td><p align="left">E_PARAMETER_ERROR </p></td>
+    <td><p align="left">1</p></td>
+    <td><p align="left">输入参数不正确 </p></td>
+  </tr>
+  <tr>
+    <td><p align="left">E_SYSTEM_FAILED</p></td>
+    <td><p align="left">2</p></td>
+    <td><p align="left">系统错误 </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="189" valign="top"><p>测试编号</p></td>
+    <td width="379" colspan="2" valign="top"><p>1</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>测试对象</p></td>
+    <td width="379" colspan="2" valign="top"><p>virtual int startBackup(int nChannel,<br />
+int nTypes,<br />
+const QDateTime &amp; startTime,<br />
+const QDateTime &amp; endTime，<br />
+const QString&amp; sbkpath) = 0;</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>测试内容</p></td>
+    <td width="379" colspan="2" valign="top"><p>startBackup 接口参数设置</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>前置条件</p></td>
+    <td width="379" colspan="2" valign="top"><p>前置条件 存在分区F  且F下存在目录RemoteBackup<br />
+      存在可用主机 ip&quot;192.168.2.132&quot; 端口8785<br />
+    准备合法通道号0~31  合法时间 开始时间(系统当前时间-1小时)&lt;结束时间（系统当前时间） 合法路径F:/RemoteBackup。</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>步骤编号</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td valign="top">1</td>
+    <td valign="top">输入不可用的主机ip(192.168.2.210)，其他参数使用合法约定</td>
+    <td valign="top">返回E_PARAMETER_ERROR</td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>2</p></td>
+    <td width="379" valign="top"><p>输入非法通道号，如-1，其他参数使用合法约定</p></td>
+    <td width="379" valign="top"><p>返回E_PARAMETER_ERROR </p></td>
+  </tr>
+  <tr>
+    <td valign="top">3</td>
+    <td valign="top">使用结束时间&lt;开始时间，其他参数使用合法约定</td>
+    <td valign="top">返回E_PARAMETER_ERROR</td>
+  </tr>
+  <tr>
+    <td valign="top">4</td>
+    <td valign="top">使用非法路径&quot;ADBC:/DDDD&quot;，其他参数使用合法约定</td>
+    <td valign="top">返回E_PARAMETER_ERROR</td>
+  </tr>
+  <tr>
+    <td valign="top"><p>5</p></td>
+    <td valign="top"><p>参数都是用合法约定</p></td>
+    <td valign="top"><p>返回OK</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="189" valign="top"><p>测试编号</p></td>
+    <td width="379" colspan="2" valign="top"><p>2</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>测试对象</p></td>
+    <td width="379" colspan="2" valign="top"><p>int startBackup(int nChannel,<br />
+int nTypes,<br />
+const QDateTime &amp; startTime,<br />
+const QDateTime &amp; endTime,<br />
+const QString &amp; sbkpath)</p>
+    <p>int stopBackup()</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>测试内容</p></td>
+    <td width="379" colspan="2" valign="top"><p>手动停止录像测试 及事件</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>前置条件</p></td>
+    <td width="379" colspan="2" valign="top"><p>前置条件 存在分区F  且F下存在目录RemoteBackup<br />
+存在可用主机 ip&quot;192.168.2.132&quot; 端口8785<br />
+准备合法通道号0~31  合法时间 开始时间(系统当前时间-1小时)&lt;结束时间（系统当前时间） 合法路径F:/RemoteBackup。</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>步骤编号</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
+    <td width="379" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>1</p></td>
+    <td width="379" valign="top"><p>参数都是用合法约定，调用startBackup开始进行备份</p></td>
+    <td width="379" valign="top"><p>返回OK   并开始进行备份</p></td>
+  </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">休眠一段时间（没达到备份完成的时间），调用stopBackup</td>
+    <td valign="top">返回OK 并结束备份</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="189" valign="top"><p>测试编号</p></td>
+    <td width="379" colspan="2" valign="top"><p>3</p></td>
+  </tr>
+  <tr>
+    <td width="189" height="134" valign="top"><p>测试对象</p></td>
+    <td width="379" colspan="2" valign="top"><p>int startBackup(int nChannel,<br />
+int nTypes,<br />
+const QDateTime &amp; startTime,<br />
+const QDateTime &amp; endTime,<br />
+const QString &amp; sbkpath)
+    </p>
+    <p>float getProgress()</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>测试内容</p></td>
+    <td width="379" colspan="2" valign="top"><p>备份完成及获取备份进度测试 及事件</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>前置条件</p></td>
+    <td width="379" colspan="2" valign="top"><p>前置条件 存在分区D  且D下存在目录RemoteBackup。准合法输入参数channel = 1，开始时间&quot;2013-3-23 12:00:00&quot;   结束时间&quot;2013-3-23 12:30:00&quot;，备份路径&quot;D:/RemoteBackup&quot;。    注册备份结束事件&quot;stopBackup&quot;。 使用全局变量stopbackup来标明备份结束与否</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>步骤编号</p></td>
+    <td width="379" valign="top"><p>步骤</p></td>
+    <td width="189" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="189" valign="top"><p>1</p></td>
+    <td width="379" valign="top"><p>创建事件句柄并且注册事件&quot;stopBackup&quot;</p></td>
+    <td width="189" valign="top"><p>返回OK</p></td>
+  </tr>
+  <tr>
+    <td valign="top">2</td>
+    <td valign="top">参数都是用合法约定，调用startBackup开始进行备份</td>
+    <td valign="top">返回OK</td>
+  </tr>
+  <tr>
+    <td valign="top"><p>3</p></td>
+    <td valign="top"><p>循环等待stopbackup为真sleep 1秒并打印出备份进度</p></td>
+    <td valign="top"><p>每隔1秒，打印备份进度，（0.0~1.0）。直到获取备份结束事件</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p align="left">附录表：1</p>
+<p>&nbsp;</p>
+</body>
+</html>
