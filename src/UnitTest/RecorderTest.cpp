@@ -176,7 +176,8 @@ void RecorderTest::RecorderTest1()
         }
         memset(&nhead,0,sizeof(NALU_HEADER_t));
         memset(data,0,sizeof(data));
-        QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
@@ -283,7 +284,8 @@ void RecorderTest::RecorderTest2()
         }
         memset(&nhead,0,sizeof(NALU_HEADER_t));
         memset(data,0,sizeof(data));
-        QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
@@ -383,7 +385,8 @@ void RecorderTest::RecorderTest3()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
@@ -401,7 +404,8 @@ void RecorderTest::RecorderTest3()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
@@ -501,7 +505,8 @@ void RecorderTest::RecorderTest4()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = NULL;
@@ -599,7 +604,8 @@ void RecorderTest::RecorderTest5()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = 0x3;
         frameInfo.pData = data;
@@ -698,7 +704,8 @@ void RecorderTest::RecorderTest6()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type  = nhead.isider;
         frameInfo.pData = data;
@@ -813,7 +820,8 @@ void RecorderTest::RecorderTest7()
 		}
 		memset(&nhead,0,sizeof(NALU_HEADER_t));
 		memset(data,0,sizeof(data));
-		QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
@@ -831,7 +839,8 @@ void RecorderTest::RecorderTest7()
         }
         memset(&nhead,0,sizeof(NALU_HEADER_t));
         memset(data,0,sizeof(data));
-        QVERIFY2((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) > 0, "fread Error");
+        if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
+            continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.type = nhead.isider;
         frameInfo.pData = data;
