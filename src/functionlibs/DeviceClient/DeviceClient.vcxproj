@@ -59,7 +59,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtXmld4.lib;QtNetworkd4.lib;QtWebKitd4.lib;QtTestd4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtXmld4.lib;QtNetworkd4.lib;QtWebKitd4.lib;QtTestd4.lib;$(SolutionDir)..\libs\libpcom.lib;netlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>deviceclient.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\guid.cpp" />
+    <ClCompile Include="avilib.cpp" />
     <ClCompile Include="BufferManager.cpp" />
     <ClCompile Include="deviceclient.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -112,9 +113,13 @@
     </ClCompile>
     <ClCompile Include="GlobalSettings.cpp" />
     <ClCompile Include="PlayManager.cpp" />
+    <ClCompile Include="RemoteBackup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="avilib.h" />
     <ClInclude Include="GlobalSettings.h" />
+    <ClInclude Include="netlib.h" />
+    <ClInclude Include="RemoteBackup.h" />
     <CustomBuild Include="PlayManager.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing PlayManager.h...</Message>

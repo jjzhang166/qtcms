@@ -17,6 +17,8 @@
 #include <IDeviceSearchRecord.h>
 #include <IRemotePlayback.h>
 #include <IEventRegister.h>
+#include <IRemoteBackup.h>
+#include "RemoteBackup.h"
 
 int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
@@ -25,7 +27,8 @@ class  DeviceClient:public QThread,
 	public IDeviceClient,
 	public IEventRegister,
 	public IDeviceSearchRecord,
-	public IDeviceGroupRemotePlayback
+	public IDeviceGroupRemotePlayback,
+	public IRemoteBackup
 {
 	Q_OBJECT
 public:
@@ -66,6 +69,16 @@ public:
 
 	int recordFrame(QVariantMap &evMap);
 
+	//IRemoteBackup
+	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
+		int nChannel,
+		int nTypes,
+		const QDateTime & startTime,
+		const QDateTime & endTime,
+		const QString & sbkpath);
+	virtual int stopBackup();
+	virtual float getProgress();
+
 private slots:
 	void action(QString options, BufferManager*);
 
@@ -98,6 +111,7 @@ private:
 	QString m_sPassWord;
 	bool m_bGroupStop;
 	
+	RemoteBackup m_RemoteBackup;
 
 private:
 	int cbInit();

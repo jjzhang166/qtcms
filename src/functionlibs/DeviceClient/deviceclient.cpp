@@ -88,7 +88,11 @@ long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 	else if (IID_IDeviceGroupRemotePlayback==iid)
 	{
 		*ppv=static_cast<IDeviceGroupRemotePlayback*>(this);
-	}	
+	}
+	else if (IID_IRemoteBackup==iid)
+	{
+		*ppv=static_cast<IRemoteBackup*>(this);
+	}
 	else 
 	{
 		*ppv=NULL;
@@ -148,6 +152,11 @@ int DeviceClient::queryEvent(QString eventName,QStringList& eventParams)
 
 int DeviceClient::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
 {
+	if ("backupEvent" == eventName)
+	{
+		m_RemoteBackup.SetBackupEvent(eventName,proc,pUser);
+		return IEventRegister::OK;
+	}
 	if (!m_EventList.contains(eventName))
 	{
 		return IEventRegister::E_EVENT_NOT_SUPPORT;
@@ -855,6 +864,24 @@ int DeviceClient::recordFrame(QVariantMap &evMap)
 	}
 
 	return nRet;
+}
+
+int DeviceClient::startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
+	int nChannel,
+	int nTypes,
+	const QDateTime & startTime,
+	const QDateTime & endTime,
+	const QString & sbkpath)
+{
+	return m_RemoteBackup.StartByParam(sAddr,uiPort,sEseeId,nChannel,nTypes,startTime,endTime,sbkpath);
+}
+int DeviceClient::stopBackup()
+{
+	return m_RemoteBackup.Stop();
+}
+float DeviceClient::getProgress()
+{
+	return m_RemoteBackup.getProgress();
 }
 
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)

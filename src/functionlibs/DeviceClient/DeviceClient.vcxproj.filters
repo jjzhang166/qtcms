@@ -71,6 +71,12 @@
     <ClCompile Include="GeneratedFiles\Release\moc_BufferManager.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteBackup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="avilib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deviceclient_global.h">
@@ -82,11 +88,24 @@
     <ClInclude Include="GlobalSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DeviceGlobalSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteBackup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="avilib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="netlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="deviceclient.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="deviceclient.h">
