@@ -6,15 +6,6 @@
 #include <QStringList>
 interface ILocalPlayer:IPComBase
 {
-	//搜索本地限定时间内可播放的文件
-	//输入参数：
-	//start：限定的开始时间(时间格式："yyyy-MM-dd hh:mm:ss")
-	//end：限定的结束时间(时间格式："yyyy-MM-dd hh:mm:ss")
-	//filelist:返回搜索到的文件list(完整的文件路径)
-	//返回值：
-	//0：成功
-	//1：失败
-	virtual int SearchLocalPlayFileList(const QDateTime &start,const QDateTime &end,QStringList &filelist)=0;
 	//添加播放文件到同步组中，并指定文件播放的窗口ID
 	//输入参数：
 	//filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，如：F:\project\date1\devname\chl2\filename.avi，F:\project\date2\devname\chl2\filename.avi
