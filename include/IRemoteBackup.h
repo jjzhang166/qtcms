@@ -39,7 +39,7 @@ interface IRemoteBackup : public IPComBase
 // event
 // 	@1 name "backupEvent"
 // parameters:
-// 	"types":"startBackup"开始进行备份 "stopBackup"停止备份 "diskfull"磁盘已满 "backupFinished"备份完成
+// 	"types":"startBackup"开始进行备份 "stopBackup"停止备份 "diskfull"磁盘已满 "backupFinished"备份完成 "noStream"获取不到码流
 
 
 #endif
