@@ -1566,7 +1566,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 	QVariant RecordtimeFile=QueryValue("recordtimedouble_ID");
 	QDomDocument ConfFile;
 	ConfFile.setContent(RecordtimeFile.toString());
-	QDomNode RecordtimeFileNode=ConfFile.elementsByTagName("recordtime ").at(0);
+	QDomNode RecordtimeFileNode=ConfFile.elementsByTagName("recordtime").at(0);
 	QDomNodeList itemList=RecordtimeFileNode.childNodes();
 	qDebug()<<itemList.count();
 	if (0==itemList.count())
@@ -1584,7 +1584,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		QDomNode item;
 		item=itemList.at(n);
 		QString recordtime_ID=item.toElement().attribute("recordtime_ID");
-		QString starttime_ID=item.toElement().attribute(" starttime_ID");
+		QString starttime_ID=item.toElement().attribute("starttime_ID");
 		QString endtime_ID=item.toElement().attribute("endtime_ID");
 		QString enable_ID=item.toElement().attribute("enable_ID");
 		bool bEnable=false;
