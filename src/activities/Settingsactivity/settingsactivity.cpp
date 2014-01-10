@@ -1563,4 +1563,53 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		return;
 	}
 
+	QVariant RecordtimeFile=QueryValue("recordtimedouble_ID");
+	QDomDocument ConfFile;
+	ConfFile.setContent(RecordtimeFile.toString());
+	QDomNode RecordtimeFileNode=ConfFile.elementsByTagName("recordtime ").at(0);
+	QDomNodeList itemList=RecordtimeFileNode.childNodes();
+	qDebug()<<itemList.count();
+	if (0==itemList.count())
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("parm is null");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordTimeParmFail",arg);
+		ISetRecord->Release();
+		return;
+	}
+	for (int n=0;n<itemList.count();n++)
+	{
+		QDomNode item;
+		item=itemList.at(n);
+		QString recordtime_ID=item.toElement().attribute("recordtime_ID");
+		QString starttime_ID=item.toElement().attribute(" starttime_ID");
+		QString endtime_ID=item.toElement().attribute("endtime_ID");
+		QString enable_ID=item.toElement().attribute("enable_ID");
+		bool bEnable=false;
+		if ("true"==enable_ID)
+		{
+			bEnable=true;
+		}
+		int nRet=-1;
+		nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID,endtime_ID,bEnable);
+		if (1==nRet)
+		{
+			arg.clear();
+			Content.clear();
+			Content.append("ModifyRecordTime Fail");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("SettingRecordTimeParmFail",arg);
+			ISetRecord->Release();
+			return;
+		}
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("ModifyRecordTime success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("SettingRecordTimeParmSuccess",arg);
+	ISetRecord->Release();
+	return;
 }
