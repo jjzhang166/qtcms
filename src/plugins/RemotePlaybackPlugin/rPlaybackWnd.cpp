@@ -178,40 +178,40 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	return nRet;
 }
-int  childThreadSearch(uint nNum, QString& start,QString& end, QList<QVariantMap> &selectedList)
-{
-    int nRet = -1;
-    if (nNum != g_RecList.size())
-    {
-        QElapsedTimer t;
-        t.start();
-        while(t.elapsed()<2000)
-            QCoreApplication::processEvents();
-    }
-    QVariantMap vMap;
-    uint uiChannel = 0;
-    uint uiType    = 0;
-  	QList<TimeInfo> lstTimeInfo;
-    analyze(g_RecList, lstTimeInfo);
-    for (int i = 0; i < lstTimeInfo.size(); ++i)
-    {
-        uiChannel = lstTimeInfo.at(i).uiChannel;
-        for (int j = 0; j < lstTimeInfo.at(i).lstTypeTime.size(); ++j)
-        {
-            uiType = lstTimeInfo.at(i).lstTypeTime.at(j).uiType;
-            for (int k = 0; k < lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.size(); k+=2)
-            {
-                vMap.clear();
-                vMap.insert("channel", uiChannel);
-                vMap.insert("types", uiType);
-                vMap.insert("start", lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k));
-                vMap.insert("end",lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k+1));
-                selectedList.append(vMap);
-            }
-        }
-    }
-	return nRet = 0;
-}
+//int  childThreadSearch(uint nNum, QString& start,QString& end, QList<QVariantMap> &selectedList)
+//{
+//    int nRet = -1;
+//    if (nNum != g_RecList.size())
+//    {
+//        QElapsedTimer t;
+//        t.start();
+//        while(t.elapsed()<2000)
+//            QCoreApplication::processEvents();
+//    }
+//    QVariantMap vMap;
+//    uint uiChannel = 0;
+//    uint uiType    = 0;
+//  	QList<TimeInfo> lstTimeInfo;
+//    analyze(g_RecList, lstTimeInfo);
+//    for (int i = 0; i < lstTimeInfo.size(); ++i)
+//    {
+//        uiChannel = lstTimeInfo.at(i).uiChannel;
+//        for (int j = 0; j < lstTimeInfo.at(i).lstTypeTime.size(); ++j)
+//        {
+//            uiType = lstTimeInfo.at(i).lstTypeTime.at(j).uiType;
+//            for (int k = 0; k < lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.size(); k+=2)
+//            {
+//                vMap.clear();
+//                vMap.insert("channel", uiChannel);
+//                vMap.insert("types", uiType);
+//                vMap.insert("start", lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k));
+//                vMap.insert("end",lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k+1));
+//                selectedList.append(vMap);
+//            }
+//        }
+//    }
+//	return nRet = 0;
+//}
 
  QString RPlaybackWnd::getGroupPlayedTime()
  {
@@ -375,13 +375,12 @@ int  RPlaybackWnd::cbInit()
 
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
-	QVariantMap::const_iterator it;
 	EventProcCall("RecFileInfo",evMap);
 }
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
-
+	EventProcCall("recFileSearchFinished",evMap);
 }
 
 void RPlaybackWnd::SocketError( QVariantMap evMap )
@@ -400,16 +399,6 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
      if (evName == "foundFile")
      {
 		 ((RPlaybackWnd*)pUser)->FoundFile(evMap);
-   //      RecordInfo recordInfo;
-   //      recordInfo.uiChannel = evMap["channel"].toUInt();
-   //      recordInfo.uiTypes = evMap["types"].toUInt();
-   //      recordInfo.sStartTime = QDateTime::fromString(evMap["start"].toString(), "yyyy-MM-dd hh:mm:ss");
-   //      recordInfo.sEndTime = QDateTime::fromString(evMap["end"].toString(), "yyyy-MM-dd hh:mm:ss");
-   //      recordInfo.sFileName = evMap["filename"].toString();
-
-		 //qDebug()<<recordInfo.uiChannel<<","<<recordInfo.uiTypes<<","<<recordInfo.sStartTime<<","<<recordInfo.sEndTime<<","<<recordInfo.sFileName;
-   //      g_RecList.append(recordInfo);
-   //      nRet = 0;
      }
      return nRet;
 
@@ -422,13 +411,6 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
      if (evName == "recFileSearchFinished")
      {
 		 ((RPlaybackWnd*)pUser)->RecFileSearchFinished(evMap);
-         //QVariantMap::const_iterator it;
-         //for (it=evMap.begin();it!=evMap.end();++it)
-         //{
-         //    ((RPlaybackWnd*)pUser)->GetRecFileNum(it.value().toUInt());
-         //    qDebug()<<"total"<<it.value().toUInt();
-         //    nRet = 0;
-         //}
      }
      return nRet;
  }
@@ -439,12 +421,10 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
      if (evName=="StateChangeed")
      {
 		 ((RPlaybackWnd*)pUser)->StateChange(evMap);
-         //((RPlaybackWnd*)pUser)->CurrentStateChangePlugin(evMap.value("status").toInt());
-         //return 0;
      }
      return 1;
  }
- int checkChannel(QList<TimeInfo>& lstTimeInfo, uint& uiChannel)
+ /*int checkChannel(QList<TimeInfo>& lstTimeInfo, uint& uiChannel)
  {
 	 int i = 0;
      int nTmp = lstTimeInfo.size();
@@ -457,80 +437,80 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
 		 i++;
 	 }
 	 return 0;
- }
- int checkType(QList<Session>& lstTypeTime, uint& uiType)
+ }*/
+ /*int checkType(QList<Session>& lstTypeTime, uint& uiType)
  {
-	 int i = 0;
-     int nTmp = lstTypeTime.size();
-	 while(i < nTmp)
-	 {
-		 if (lstTypeTime[i].uiType == uiType)
-		 {
-			 return i;
-		 }
-		 i++;
-	 }
-	 return 0;
- }
- void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo)
+ int i = 0;
+ int nTmp = lstTypeTime.size();
+ while(i < nTmp)
  {
-     QDateTime start, end;
-	 for (int i = 0; i < lstInfo.size(); ++i)
-	 {
-		 RecordInfo record = lstInfo.at(i);
-		 int index = checkChannel(lstTimeInfo, record.uiChannel);
-		 if (0 == index)
-		 {
-			 TimeInfo ti;
-			 Session se;
-			 ti.uiChannel = record.uiChannel;
-			 se.uiType = record.uiTypes;
-			 se.timeSession<<record.sStartTime<<record.sEndTime;
-			 ti.lstTypeTime.append(se);
-			 lstTimeInfo.append(ti);
-			 continue;
-		 }
-		 else
-		 {
-			 int in = checkType(lstTimeInfo[index].lstTypeTime, record.uiTypes);
-			 if (0 == in)
-			 {
-				 Session se;
-				 se.uiType = record.uiTypes;
-				 se.timeSession<<record.sStartTime<<record.sEndTime;
-				 lstTimeInfo[index].lstTypeTime.append(se);
-				 continue;
-			 }
-			 else
-			 {
-                 bool bExistFlag = false;
-                 for (int j = 0; j < lstTimeInfo[index].lstTypeTime[in].timeSession.size(); j+=2)
-                 {
-                     start = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j);
-                     end   = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j + 1);
-                     if (end.addSecs(1) == record.sStartTime)
-                     {
-                         bExistFlag = false;
-                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j + 1, record.sEndTime);
-                         break;
-                     }
-                     else if (record.sEndTime.addSecs(1) == start)
-                     {
-                         bExistFlag = false;
-                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j, record.sStartTime);
-                         break;
-                     }
-                     else 
-                     {
-                         bExistFlag = true;
-                     }
-                 }
-                 if (bExistFlag)
-                 {
-                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sStartTime);
-                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sEndTime);
-                 }
-			 }
-		 }
-	 }
-}
+ if (lstTypeTime[i].uiType == uiType)
+ {
+ return i;
+ }
+ i++;
+ }
+ return 0;
+ }*/
+// void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo)
+// {
+//     QDateTime start, end;
+//	 for (int i = 0; i < lstInfo.size(); ++i)
+//	 {
+//		 RecordInfo record = lstInfo.at(i);
+//		 int index = checkChannel(lstTimeInfo, record.uiChannel);
+//		 if (0 == index)
+//		 {
+//			 TimeInfo ti;
+//			 Session se;
+//			 ti.uiChannel = record.uiChannel;
+//			 se.uiType = record.uiTypes;
+//			 se.timeSession<<record.sStartTime<<record.sEndTime;
+//			 ti.lstTypeTime.append(se);
+//			 lstTimeInfo.append(ti);
+//			 continue;
+//		 }
+//		 else
+//		 {
+//			 int in = checkType(lstTimeInfo[index].lstTypeTime, record.uiTypes);
+//			 if (0 == in)
+//			 {
+//				 Session se;
+//				 se.uiType = record.uiTypes;
+//				 se.timeSession<<record.sStartTime<<record.sEndTime;
+//				 lstTimeInfo[index].lstTypeTime.append(se);
+//				 continue;
+//			 }
+//			 else
+//			 {
+//                 bool bExistFlag = false;
+//                 for (int j = 0; j < lstTimeInfo[index].lstTypeTime[in].timeSession.size(); j+=2)
+//                 {
+//                     start = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j);
+//                     end   = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j + 1);
+//                     if (end.addSecs(1) == record.sStartTime)
+//                     {
+//                         bExistFlag = false;
+//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j + 1, record.sEndTime);
+//                         break;
+//                     }
+//                     else if (record.sEndTime.addSecs(1) == start)
+//                     {
+//                         bExistFlag = false;
+//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j, record.sStartTime);
+//                         break;
+//                     }
+//                     else 
+//                     {
+//                         bExistFlag = true;
+//                     }
+//                 }
+//                 if (bExistFlag)
+//                 {
+//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sStartTime);
+//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sEndTime);
+//                 }
+//			 }
+//		 }
+//	 }
+//}

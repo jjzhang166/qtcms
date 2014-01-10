@@ -27,13 +27,13 @@ typedef struct _tagTimeInfo
 }TimeInfo;
 QList<RecordInfo> g_RecList;
 
-void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo);
+//void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo);
 
 int cbFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 int cbSocketError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
 
-int  childThreadSearch(uint uiRecNum, QString& start,QString& end, QList<QVariantMap> &selectedList);
+//int  childThreadSearch(uint uiRecNum, QString& start,QString& end, QList<QVariantMap> &selectedList);
 
 #endif // REMOTEPLAYBACKPLUGIN_GLOBAL_H
