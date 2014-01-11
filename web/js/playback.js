@@ -87,7 +87,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		$("#channelvideo").on({ 
 			mousedown:function(event){
 				var left = event.pageX
-			    	if(netleft < 79){
+			    	if(left < 79){
 			    		return false;
 			    	}
 				//event.stopPropagation();
