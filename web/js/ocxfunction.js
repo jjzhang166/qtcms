@@ -295,7 +295,7 @@ var oSelected = [],
 		}
 	}
 	function SettingCommonParmSuccess(data){
-		alert(data);
+		//alert(data);
 	}
 	function SettingRecordDoubleTimeParmSuccess(data){ 
 		$('#recordtime div.timeInput input').val('');
@@ -303,5 +303,5 @@ var oSelected = [],
 		$('#week').html('').val('');
 	}
 	function SettingStorageParmSuccess(data){ 
-		alert(data);
+		//alert(data);
 	}
