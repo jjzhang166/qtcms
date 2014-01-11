@@ -14,7 +14,6 @@ public:
     ~RecorderTest(void);
     void beforeRecorderTest();
 
-    static uint m_sTimeStamp;
     private Q_SLOTS:
         void RecorderTest1();
         void RecorderTest2();
