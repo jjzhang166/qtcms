@@ -49,10 +49,11 @@ int Recorder::Stop()
 	cleardata();
 	return IRecorder::OK;
 }
-int Recorder::InputFrame(FrameInfo frameinfo)
+int Recorder::InputFrame(QVariantMap& frameinfo)
 {
-	int type = frameinfo.type;
-	if ((type != 0x00 && type !=  0x01 && type != 0x02) || frameinfo.uiDataSize<=0 )
+	int type = frameinfo["frametype"].toInt();
+	int datasize = frameinfo["length"].toInt();
+	if ((type != 0x00 && type !=  0x01 && type != 0x02) || datasize<=0 )
 	{
 		return IRecorder::E_PARAMETER_ERROR;
 	}
@@ -61,11 +62,14 @@ int Recorder::InputFrame(FrameInfo frameinfo)
 		//FrameInfo *frame = (FrameInfo *)cbuf;
 		RecBufferNode bufTemp;
 		bufTemp.dwDataType = type;
-		bufTemp.dwBufferSize = frameinfo.uiDataSize;
-		bufTemp.dwTicketCount = frameinfo.uiTimeStamp;
-		bufTemp.nChannel = 0;
-		bufTemp.Buffer = new char[frameinfo.uiDataSize];
-		memcpy(bufTemp.Buffer,frameinfo.pData,frameinfo.uiDataSize);
+		bufTemp.dwBufferSize = datasize;
+		bufTemp.dwTicketCount = (unsigned int)frameinfo["pts"].toUInt();
+		bufTemp.nChannel = frameinfo["channel"].toInt();
+		bufTemp.Buffer = new char[datasize];
+		if (!bufTemp.Buffer)
+			return IRecorder::E_SYSTEM_FAILED;
+		char* pdata = (char*)frameinfo["data"].toUInt();
+		memcpy(bufTemp.Buffer,pdata,datasize);
 		m_dataRef.lock();
 		m_dataqueue.enqueue(bufTemp);
 		m_dataRef.unlock();
@@ -79,20 +83,25 @@ int Recorder::InputFrame(FrameInfo frameinfo)
 			m_nFrameCount ++;
 			if ( 0 == m_nLastTicket )
 			{
-				m_nLastTicket = frameinfo.uiTimeStamp;
+				m_nLastTicket = bufTemp.dwTicketCount;
 			}
 			else
 			{
-				if (frameinfo.uiTimeStamp - m_nLastTicket >= 1000)
+				if (bufTemp.dwTicketCount - m_nLastTicket >= 1000)
 				{
 					if (m_nFrameCount < 31)
 					{
 						m_nFrameCountArray[m_nFrameCount] ++;
 					}
 						m_nFrameCount = 0;
-					m_nLastTicket = frameinfo.uiTimeStamp;
+					m_nLastTicket = bufTemp.dwTicketCount;
 				}
 			}
+		}
+		else if (0x00 == type)
+		{
+			bufTemp.samplerate = frameinfo["samplerate"].toInt();
+			bufTemp.samplewidth = frameinfo["samplewidth"].toInt();
 		}
 
 	}
@@ -216,23 +225,23 @@ void Recorder::run()
 					}// Ignor audio frame
 					else if (0x00 == node.dwDataType)
 					{
-						AudioBufAttr * AudioHead = (AudioBufAttr *)node.Buffer;
+						//AudioBufAttr * AudioHead = (AudioBufAttr *)node.Buffer;
 						if (!bAudioBeSet)
 						{
 							int AudioFormat = WAVE_FORMAT_ALAW;
-							if (!strcmp(AudioHead->encode,"g711a"))
-							{
-								qDebug("Audio format g711a\n");
-								AudioFormat = WAVE_FORMAT_ALAW;
-							}
-							AVI_set_audio(AviFile, 1, AudioHead->samplerate, AudioHead->samplewidth, AudioFormat, 64);
+							//if (!strcmp(node.encode,"g711a"))
+							//{
+							//	qDebug("Audio format g711a\n");
+							//	AudioFormat = WAVE_FORMAT_ALAW;
+							//}
+							AVI_set_audio(AviFile, 1, node.samplerate, node.samplewidth, AudioFormat, 64);
 							bAudioBeSet = true;
 						}
-						AVI_write_audio(AviFile,node.Buffer + sizeof(AudioBufAttr),AudioHead->entries * AudioHead->packsize);
+						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
+
 					}
 
-
-					delete node.Buffer;
+					delete[] node.Buffer;
 					node.Buffer = NULL;
 					m_dataqueue.pop_front();
 				}
@@ -282,16 +291,15 @@ void Recorder::run()
 						qDebug("Over frame\n");
 						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR == node.dwDataType));
 
-						delete node.Buffer;
+						delete[] node.Buffer;
 						node.Buffer = NULL;
 						m_dataqueue.pop_front();
 					}
 					else if (AVENC_AUDIO == node.dwDataType)
 					{
-						AudioBufAttr * AudioHead = (AudioBufAttr *)node.Buffer;
-						AVI_write_audio(AviFile,node.Buffer + sizeof(AudioBufAttr),AudioHead->entries * AudioHead->packsize);
+						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
 
-						delete node.Buffer;
+						delete[] node.Buffer;
 						node.Buffer = NULL;
 						m_dataqueue.pop_front();
 					}

@@ -23,7 +23,9 @@ public:
 	//IRecorder
 	virtual int Start();
 	virtual int Stop();
-	virtual int InputFrame(FrameInfo frameinfo);
+
+	virtual int InputFrame(QVariantMap& frameinfo);
+
 	virtual int SetDevInfo(const QString& devname,int nChannelNum);
 
 	virtual QString getModeName();
@@ -49,9 +51,12 @@ public:
 		unsigned int  dwDataType;
 		unsigned int  dwBufferSize;
 		unsigned int  dwTicketCount;
-		int    nWidth;
-		int    nHeight;
+		//int    nWidth;
+		//int    nHeight;
 		char * Buffer;
+		int samplerate;
+		int samplewidth;
+		char encode[8];
 	}RecBufferNode;
 protected:
 	void run();
