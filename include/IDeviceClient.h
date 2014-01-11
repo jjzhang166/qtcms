@@ -48,10 +48,10 @@ interface IDeviceClient : public IPComBase
 
 	// 获取当前的连接状态
 	// 返回值:
-	//	0:未连接
-	//	1:已连接
-	//	2:正在连接
-	//	3:正在断开
+	//	0:已连接
+	//	1:正在连接
+	//	2:断开连接
+	//	3:正在断开连接
 	virtual int getConnectStatus() = 0;
 
 	typedef enum __enConnectStatus{

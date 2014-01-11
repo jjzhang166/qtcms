@@ -1,6 +1,6 @@
 #ifndef __IREMOTEPLAYBACK_HEAD_FILE_OASDF892389HUDSAF80BAS__
 #define __IREMOTEPLAYBACK_HEAD_FILE_OASDF892389HUDSAF80BAS__
-#include "libpcom.h"
+#include <libpcom.h>
 
 interface IRemotePlayback : public IPComBase
 {

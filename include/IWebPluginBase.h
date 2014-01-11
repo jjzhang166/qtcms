@@ -4,7 +4,7 @@
 #include "libpcom.h"
 #include <QtWebKit/QWebPluginFactory>
 
-interface	IWebPluginBase : public IPComBase
+interface IWebPluginBase : public IPComBase
 {
 	virtual QList<QWebPluginFactory::Plugin> plugins() const = 0;
 	virtual QObject * create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const = 0;
