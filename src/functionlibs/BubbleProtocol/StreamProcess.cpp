@@ -316,7 +316,7 @@ void StreamProcess::analyzePreviewStream()
 				GetWidthHeight(liveStreamInfo->pData, qToBigEndian(liveStreamInfo->uiLength), &width, &height);	
 
 				mStreamInfo.insert("channel", liveStreamInfo->cChannel);
-				mStreamInfo.insert("pts", qToBigEndian(pBubble->uiTicket)*1000);
+				mStreamInfo.insert("pts", (unsigned long long)qToBigEndian(pBubble->uiTicket)*1000);
 				mStreamInfo.insert("length", qToBigEndian(liveStreamInfo->uiLength));
 				mStreamInfo.insert("data", (int)(liveStreamInfo->pData));
 				mStreamInfo.insert("frametype", liveStreamInfo->cType);
