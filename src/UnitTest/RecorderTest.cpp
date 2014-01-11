@@ -180,8 +180,8 @@ void RecorderTest::RecorderTest1()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -291,8 +291,8 @@ void RecorderTest::RecorderTest2()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(4));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -395,8 +395,8 @@ void RecorderTest::RecorderTest3()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -416,8 +416,8 @@ void RecorderTest::RecorderTest3()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -519,8 +519,8 @@ void RecorderTest::RecorderTest4()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(NULL));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(NULL));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -621,7 +621,7 @@ void RecorderTest::RecorderTest5()
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
         frameInfo.insert("frametype", QVariant(0x3)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -722,8 +722,8 @@ void RecorderTest::RecorderTest6()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant(0));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -841,8 +841,8 @@ void RecorderTest::RecorderTest7()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
 		QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data",    QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data",    (unsigned int)(data));
         frameInfo.insert("length",  QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -863,8 +863,8 @@ void RecorderTest::RecorderTest7()
         if ((nlen = fread(&nhead,sizeof(NALU_HEADER_t),1,pFile)) <= 0)
             continue;
         QVERIFY2((nlen = fread(data,1,nhead.size,pFile)) > 0, "fread Error");
-        frameInfo.insert("frametype", QVariant((uint)nhead.isider)) ;
-        frameInfo.insert("data", QVariant(data));
+        frameInfo.insert("frametype", QVariant((int)nhead.isider)) ;
+        frameInfo.insert("data", (unsigned int)(data));
         frameInfo.insert("length", QVariant((uint)nhead.size));
         frameInfo.insert("channel", QVariant(1));
         quint64 u64_tTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
