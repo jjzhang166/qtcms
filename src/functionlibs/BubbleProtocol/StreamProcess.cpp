@@ -302,6 +302,7 @@ void StreamProcess::analyzePreviewStream()
 				mStreamInfo.insert("samplewidth", audioStream->uiSampleWidth);
 				mStreamInfo.insert("audiochannel", liveStreamInfo->cChannel);
 				mStreamInfo.insert("acodec", audioStream->sEncode);
+				mStreamInfo.insert("gentime", audioStream->uiGtime);
 
 				eventProcCall(QString("LiveStream")  , mStreamInfo);
 			}
@@ -315,12 +316,13 @@ void StreamProcess::analyzePreviewStream()
 				GetWidthHeight(liveStreamInfo->pData, qToBigEndian(liveStreamInfo->uiLength), &width, &height);	
 
 				mStreamInfo.insert("channel", liveStreamInfo->cChannel);
-				mStreamInfo.insert("pts", qToBigEndian(pBubble->uiTicket));
+				mStreamInfo.insert("pts", qToBigEndian(pBubble->uiTicket)*1000);
 				mStreamInfo.insert("length", qToBigEndian(liveStreamInfo->uiLength));
 				mStreamInfo.insert("data", (int)(liveStreamInfo->pData));
 				mStreamInfo.insert("frametype", liveStreamInfo->cType);
 				mStreamInfo.insert("width", width);
 				mStreamInfo.insert("height", height);
+				mStreamInfo.insert("vcodec", "H264");
 
 				eventProcCall(QString("LiveStream"), mStreamInfo);
 			}
@@ -400,6 +402,11 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("gentime"        ,pRecordStream->nGenTime);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128 + 4;
 				mStreamInfo.insert("data"           ,(uint)((char*)pRecordStream + offSet));
+
+				mStreamInfo.insert("samplerate"		,pRecordStream->nAudioSampleRate);
+				mStreamInfo.insert("samplewidth"	,pRecordStream->nAudioDataWidth);
+				mStreamInfo.insert("audiochannel"	,pRecordStream->nChannel);
+				mStreamInfo.insert("acodec"			,pRecordStream->cAudioFormat);
 
 				eventProcCall(QString("RecordStream")  , mStreamInfo);
 			}
