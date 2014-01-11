@@ -295,8 +295,8 @@ void StreamProcess::analyzePreviewStream()
 
 				mStreamInfo.insert("channel", liveStreamInfo->cChannel);
 				mStreamInfo.insert("pts", audioStream->ui64Pts);
-				mStreamInfo.insert("length", qToBigEndian(liveStreamInfo->uiLength));
-				mStreamInfo.insert("data", (int)audioStream);
+				mStreamInfo.insert("length", audioStream->uiEntries * audioStream->uiPacksize);
+				mStreamInfo.insert("data", (int)((char*)audioStream + sizeof(LiveStreamAudio)));
 				mStreamInfo.insert("frametype", liveStreamInfo->cType);
 				mStreamInfo.insert("samplerate", audioStream->uiSampleRate);
 				mStreamInfo.insert("samplewidth", audioStream->uiSampleWidth);
