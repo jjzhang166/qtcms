@@ -302,7 +302,6 @@ int QPreviewWindows::StartRecord(int nWndID)
 	}
 	int nRet = 0;
 	nRet = m_PreviewWnd[nWndID].StartRecord();
-
 	return nRet;
 }
 
