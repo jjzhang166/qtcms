@@ -56,7 +56,6 @@ DeviceClient::~DeviceClient()
 			delete it->playManager;
 			it->playManager = NULL;
 		}
-
 		msleep(10);
 		if (NULL != it->bufferManager)
 		{
