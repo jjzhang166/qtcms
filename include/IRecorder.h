@@ -35,7 +35,7 @@ interface IRecorder : public IPComBase
 	"frametype":帧类型，取值'I'0x01,'P'0x02,'B','A'0x00
 	"data":数据指针
 	"length":数据长度
-	"pts":当前帧32位时间戳，精确到毫秒
+	"pts":当前帧64位时间戳，精确到微妙
 	"gentime":帧的产生事件，单位为秒，为GMT时间
 	
 	"channel":当前帧的通道号，如果是音频帧，不传递该参数
