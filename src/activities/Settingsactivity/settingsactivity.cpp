@@ -118,6 +118,7 @@ void settingsActivity::OnTopActDbClick()
 
 void settingsActivity::OnMinClick()
 {
+
 	m_MainView->showMinimized();
 }
 
