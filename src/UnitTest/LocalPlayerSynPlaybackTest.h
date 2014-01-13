@@ -5,6 +5,7 @@
 #include "LocalPlayerSynPlaybackWnd.h"
 #include <QString>
 #include <QtTest>
+#include "IWindowDivMode.h"
 
 class LocalPlayerSynPlaybackTest : public QWidget
 {
@@ -25,7 +26,9 @@ private:
         void TestCase5();
         void TestCase6();
 private:
-    LocalPlayerSynPlaybackWnd m_PlaybackWnd[64];
+    LocalPlayerSynPlaybackWnd m_PlaybackWnd[4];
+    IWindowDivMode *m_DivMode;
+    QList<QWidget *> m_PlaybackWndList;
 };
 
 

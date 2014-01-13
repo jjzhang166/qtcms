@@ -76,11 +76,24 @@ LocalPlayerSynPlaybackTest::LocalPlayerSynPlaybackTest()
     for (int i = 0; i < sizeof(m_PlaybackWnd) / sizeof(m_PlaybackWnd[0]); ++i)
     {
         m_PlaybackWnd[i].setParent(this);
+        m_PlaybackWndList.insert(i,&m_PlaybackWnd[i]);
+    }
+    pcomCreateInstance(CLSID_DivMode2_2,NULL,IID_IWindowDivMode,(void **)&m_DivMode);
+    if (NULL != m_DivMode)
+    {
+        m_DivMode->setParentWindow(this);
+        m_DivMode->setSubWindows(m_PlaybackWndList, sizeof(m_PlaybackWnd)/sizeof(m_PlaybackWnd[0]));
+        m_DivMode->flush();
     }
 }
 
 LocalPlayerSynPlaybackTest::~LocalPlayerSynPlaybackTest()
 {
+    if (NULL != m_DivMode)
+    {
+        m_DivMode->Release();
+        m_DivMode = NULL;
+    }
 }
 
 //≤‚ ‘”√¿˝
@@ -128,7 +141,7 @@ void LocalPlayerSynPlaybackTest::TestCase1()
              <<"D:/JAREC/2014-01-11/1000/CHL01/143429.avi";
     QDateTime sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime sEnd = QDateTime::fromString("2014-01-11 07:00:00", "yyyy-MM-dd hh:mm:ss");
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[0].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]  , sStart, sEnd);
     QVERIFY2(3 == nRet, "AddFileIntoPlayGroup return Error! : step1");
 
     sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
@@ -138,12 +151,12 @@ void LocalPlayerSynPlaybackTest::TestCase1()
 
     sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss"); 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList, m_PlaybackWnd[2].ui->widget_display, sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList, &m_PlaybackWnd[2] , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step3");
 
     sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss"); 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,  m_PlaybackWnd[2].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,  &m_PlaybackWnd[2]  , sStart, sEnd);
     QVERIFY2(2 == nRet, "AddFileIntoPlayGroup return Error! : step4");
     END_LOCALPLAYERSYNPLAYBACK_UNIT_TEST(Itest);
 }
@@ -233,13 +246,13 @@ void LocalPlayerSynPlaybackTest::TestCase3()
 
     QDateTime sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss");
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[0].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[1].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[1]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[2].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[2]  , sStart, sEnd);
     QVERIFY2(1 == nRet, "AddFileIntoPlayGroup return Error! : step3");
 
     END_LOCALPLAYERSYNPLAYBACK_UNIT_TEST(Itest);
@@ -290,13 +303,13 @@ void LocalPlayerSynPlaybackTest::TestCase4()
 
     QDateTime sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss");
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[0].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[1].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[1]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[2].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[2]  , sStart, sEnd);
     QVERIFY2(1 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
     nRet = Itest->GroupPlay();
@@ -362,13 +375,13 @@ void LocalPlayerSynPlaybackTest::TestCase5()
 
     QDateTime sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss");
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[0].ui->widget_display  , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]   , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[1].ui->widget_display  , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[1]   , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[2].ui->widget_display  , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[2]   , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
     nRet = Itest->GroupPlay();
@@ -380,7 +393,13 @@ void LocalPlayerSynPlaybackTest::TestCase5()
     QVERIFY2(0 == nRet, "GroupStop return Error! : step4");
 
     QTest::qWait(10000*60);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]   , sStart, sEnd);
+    QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step5");
 
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[1]   , sStart, sEnd);
+    QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step5");
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[2] , sStart, sEnd);
+    QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step5");
     nRet = Itest->GroupPlay();
     QVERIFY2(0 == nRet, "GroupPlay return Error! : step5");
 
@@ -437,13 +456,13 @@ void LocalPlayerSynPlaybackTest::TestCase6()
 
     QDateTime sStart = QDateTime::fromString("2014-01-11 08:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime sEnd   = QDateTime::fromString("2014-01-11 22:00:00", "yyyy-MM-dd hh:mm:ss");
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[0].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[0]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[1].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[1]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
-    nRet = Itest->AddFileIntoPlayGroup(sFileList,m_PlaybackWnd[2].ui->widget_display , sStart, sEnd);
+    nRet = Itest->AddFileIntoPlayGroup(sFileList,&m_PlaybackWnd[2]  , sStart, sEnd);
     QVERIFY2(0 == nRet, "AddFileIntoPlayGroup return Error! : step2");
 
     nRet = Itest->GroupPlay();
