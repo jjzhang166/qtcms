@@ -271,7 +271,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			start=time2Sec(start.split(' ')[1]);
 		var end = data.end || data.stopTime;
 			end = time2Sec(end.split(' ')[1]);
-		var chl = data.channel || data.channelnum;
+		var chl = data.channel || parseInt(data.channelnum -1);
 		var p = ($('#channelvideo').width()-80)/(3600*24);
 		var width = (end-start)*p;
 		var left = start*p+81;
