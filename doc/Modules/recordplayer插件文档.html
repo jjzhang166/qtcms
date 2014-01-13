@@ -7,50 +7,109 @@
 
 <body>
 <p>编辑人：杨美化<br />
-  编辑日期：2014.01.08</p>
-<p>插件简介：<br />
-  //插件名称：record player插件<br />
-  //插件功能：实现本地录像检索和同步回放</p>
-<p>接口说明：</p>
-<p>//简述：检索设备是否有录像文件存在，如果有通过回调返回录像的日期。 <br />
+  编辑日期：2014.01.13<br />
+  插件简介：<br />
+  //插件名称：RecordPlayer插件<br />
+  //插件功能：实现本地录像检索和同步回放<br />
+  接口说明：<br />
+  //简述：检索设备是否有录像文件存在，如果有通过回调返回录像的日期。&nbsp;<br />
   //输入参数:<br />
-  //   sdevname:  设备名称 <br />
-  //返回值: <br />
-  //   0: 调用成功 <br />
-  //   1: 调用失败 <br />
+  // sdevname: 设备名称&nbsp;<br />
+  //返回值:&nbsp;<br />
+  // 0: 调用成功&nbsp;<br />
+  // 1: 调用失败&nbsp;<br />
   int searchDateByDeviceName(const QString &amp; sdevname);</p>
-<p>//简述：检索设备是否有录像文件存在,如果有返回录像文件的信息。 <br />
+<p>//简述：检索设备是否有录像文件存在,如果有返回录像文件的信息。&nbsp;<br />
   //输入参数:<br />
-  //   sdevname:     设备名称 <br />
-  //   sdate：       录像日期，格式为“yyyy-MM-dd”。<br />
-  //   sbegintime：  开始时间，格式为“hh:mm:ss”。<br />
-  //   sendtime：    结束时间，格式为“hh:mm:ss”。<br />
-  //   schannellist：通道号，从1开始，格式为“1;2;3;4;”。<br />
-  //返回值： <br />
-  //    1：调用失败 <br />
-  //    0：调用成功 <br />
-  int RecordPlayer::searchVideoFile(const QString&amp; sdevname,const QString&amp; sdate,const QString&amp; sbegintime,const QString&amp; sendtime,const QString&amp; schannellist);</p>
-<p> </p>
+  // sdevname: 设备名称&nbsp;<br />
+  // sdate：  录像日期，格式为&ldquo;yyyy-MM-dd&rdquo;。<br />
+  // sbegintime：  开始时间，格式为&ldquo;hh:mm:ss&rdquo;。<br />
+  // sendtime：  结束时间，格式为&ldquo;hh:mm:ss&rdquo;。<br />
+  // schannellist：通道号，从1开始，格式为&ldquo;1;2;3;4;&rdquo;。<br />
+  //返回值：&nbsp;<br />
+  // 1：调用失败&nbsp;<br />
+  // 0：调用成功&nbsp;<br />
+  int RecordPlayer::searchVideoFile(const QString&amp; sdevname,const  QString&amp; sdate,const QString&amp; sbegintime,const QString&amp;  sendtime,const QString&amp; schannellist);</p>
+<p>//添加播放文件到同步组中，并指定文件播放的窗口ID<br />
+  //输入参数：<br />
+  //filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，且按时间先后排序如：D:/JAREC/2014-01-10/99467979/CHL02/190545.avi,D:/JAREC/2014-01-10/99467979/CHL02/201525.avi,D:/JAREC/2014-01-10/99467979/CHL02/204137.avi<br />
+  //wnd:播放窗口的id<br />
+  //start:开始播放时间(时间格式：&quot;yyyy-MM-dd  hh:mm:ss&quot;)<br />
+  //end：结束播放时间(时间格式：&quot;yyyy-MM-dd  hh:mm:ss&quot;)<br />
+  //返回值：<br />
+  //0：添加成功<br />
+  //1：添加失败，通道组已经满    <br />
+  //2：添加失败，窗口已经被占用<br />
+  //3：添加失败，（失败原因未定义）<br />
+  int  AddFileIntoPlayGroup(const QString &amp;filelist,const int &amp;nWndID,const  QString &amp;startTime,const QString &amp;endTime);</p>
+<p>&nbsp;</p>
+<p>//设置同步组数量，默认为4<br />
+  //输入参数：<br />
+  //num:设置同步组的数量值<br />
+  //返回值：<br />
+  //0：设置成功<br />
+  //1：设置失败<br />
+  int SetSynGroupNum(int num);</p>
+<p>//组播放<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupPlay();</p>
+<p>//暂停播放<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupPause();</p>
+<p>//继续播放<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //调用失败<br />
+  int GroupContinue();</p>
+<p>//停止播放<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupStop();</p>
+<p>//快进<br />
+  //输入参数：<br />
+  //speed：正常播放速度的倍数（可选值：2，4，8）<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupSpeedFast(int speed);</p>
+<p>//慢放<br />
+  //输入参数：<br />
+  //speed：正常播放速度的1/N倍（可选值：2，4，8）<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupSpeedSlow(int speed);</p>
+<p>//恢复正常的播放速度<br />
+  //返回值：<br />
+  //0：调用成功<br />
+  //1：调用失败<br />
+  int GroupSpeedNormal();</p>
 <p>插件抛出的事件：<br />
   @1<br />
   事件名称：GetRecordDate<br />
   事件参数:<br />
   devname ：设备名(QString)<br />
-  date：日期(QString)，格式为“yyyy-MM-dd”<br />
-</p>
-<p>@2<br />
+  date：日期(QString)，格式为&ldquo;yyyy-MM-dd&rdquo;<br />
+  @2<br />
   事件名称：GetRecordFile<br />
   事件参数:<br />
-  filename： 文件名(QString)<br />
-  filepath： 文件路径(QString)<br />
-  filesize： 文件大小（MB）(QString)<br />
+  filename：  文件名(QString)<br />
+  filepath：  文件路径(QString)<br />
+  filesize：  文件大小（MB）(QString)<br />
   channelnum：通道号(QString)<br />
-  startTime:    开始时间(QString)， 格式为“yyyy-MM-dd hh:mm:ss”<br />
-  stopTime:     结束时间(QString)， 格式为“yyyy-MM-dd hh:mm:ss”</p>
-<p>@3<br />
+  startTime: 开始时间(QString)，  格式为&ldquo;yyyy-MM-dd hh:mm:ss&rdquo;<br />
+  stopTime: 结束时间(QString)，  格式为&ldquo;yyyy-MM-dd hh:mm:ss&rdquo;<br />
+  @3<br />
   事件名称：SearchStop<br />
   事件参数:<br />
-  stopevent ：对应事件检索结束(QString) （可用参数 GetRecordDate 、GetRecordFile)<br />
-</p>
+  stopevent ：对应事件检索结束(QString) （可用参数 GetRecordDate 、GetRecordFile)</p>
+<p>&nbsp;</p>
+<p>//@1 同步回放<br />
+  <img src="LocalPlayer.png" alt="同步回放调用时序" width="421" height="830" /></p>
 </body>
 </html>
