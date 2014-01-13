@@ -3,10 +3,11 @@
 #include <QtCore/QDir>
 
 #include <guid.h>
-
+#include "avilib.h"
 
 LocalPlayer::LocalPlayer() :
-m_nRef(0)
+m_nRef(0),
+m_nGroupNum(4)
 {
 	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
 
@@ -20,6 +21,17 @@ LocalPlayer::~LocalPlayer()
 	{
 		m_pDiskSetting->Release();
 	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL != iter->pPlayMgr)
+		{
+			delete iter->pPlayMgr;
+			iter->pPlayMgr = NULL;
+		}
+	}
+	m_GroupMap.clear();
 }
 
 int LocalPlayer::checkUsedDisk(QString &strDisk)
@@ -127,6 +139,10 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	QDateTime date = QDateTime::fromString(sdate,"yyyy-MM-dd");
 	QTime timeStart = QTime::fromString(sbegintime,"hh:mm:ss");
 	QTime timeEnd = QTime::fromString(sendtime,"hh:mm:ss");
+	int aviFileLength = 0;
+	int totalFrames = 0;
+	int frameRate = 0;
+	avi_t *aviFile = NULL;
 
 	if (!date.isValid() || !timeStart.isValid() || !timeEnd.isValid())
 	{
@@ -164,16 +180,23 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 				{
 					QString filePath = subPath + "/" + fileName;
 					qint64 fileSize = sltFileList[k].size()/1024/1024;
+
+					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 1);
+					totalFrames = AVI_video_frames(aviFile);
+					frameRate = AVI_frame_rate(aviFile);
+					aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+
+					AVI_close(aviFile);
+
 					
 					QVariantMap fileInfo;
 					fileInfo.insert("filename", fileName);
 					fileInfo.insert("filepath", filePath);
 					fileInfo.insert("filesize", QString("%1").arg(fileSize));
 					fileInfo.insert("channelnum", sltChannels[j]);
-					date.setTime(timeStart);
+					date.setTime(fileTime);
 					fileInfo.insert("startTime", date);
-					date.setTime(timeEnd);
-					fileInfo.insert("stopTime", date);
+					fileInfo.insert("stopTime", date.addSecs(aviFileLength));
 
 					eventProcCall(QString("GetRecordFile"), fileInfo);
 				}
@@ -186,6 +209,266 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	eventProcCall(QString("SearchStop"), stopInfo);
 
 	return ILocalRecordSearch::OK;
+}
+
+int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime)
+{
+	QString filePath;
+	QString dateStr;
+	QFileInfo fileInfo(filePath);
+	QDateTime dateTime;
+	QDate date;
+	QTime time;
+	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+	int aviFileLength = 0;
+	int totalFrames = 0;
+	int frameRate = 0;
+	avi_t *aviFile = NULL;
+
+	for(int pos = 0; pos < fileList.size(); pos++)
+	{
+		filePath = fileList[pos];
+		if (-1 != rx.indexIn(filePath,0))
+		{
+			dateStr = rx.cap(1);
+		}
+		fileInfo.setFile(filePath);
+		QString baseName = fileInfo.baseName();
+		date = QDate::fromString(dateStr, "yyyy-MM-dd");
+		time = QTime::fromString(baseName, "hhmmss");
+		dateTime.setDate(date);
+		dateTime.setTime(time);
+
+		aviFile = AVI_open_input_file(filePath.toLatin1().data(), 1);
+		totalFrames = AVI_video_frames(aviFile);
+		frameRate = AVI_frame_rate(aviFile);
+		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+
+		AVI_close(aviFile);
+
+		if (!((dateTime >= endTime) || (dateTime.addSecs(aviFileLength) <= startTime)))
+		{
+			return pos;
+		}
+	}
+
+	return -1;
+}
+
+bool LocalPlayer::checkChannelInFileList(QStringList const filelist)
+{
+	QString channel;
+	QString tempCh;
+	QRegExp rx("CHL([0-9]{2})");
+
+	for (int i = 0; i < filelist.size(); i++)
+	{
+		if ( -1 != rx.indexIn(filelist[i], 0))
+		{
+			tempCh = rx.cap(1);
+		}
+
+		if (channel.isEmpty())
+		{
+			channel = tempCh;
+		}
+		else if (channel != tempCh)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end)
+{
+	if (filelist.isEmpty() || NULL == wnd || start >= end)
+	{
+		return 3;
+	}
+	//fileList has different channel
+	if (!checkChannelInFileList(filelist))
+	{
+		return 3;
+	}
+	//group full
+	if (m_GroupMap.size() >= m_nGroupNum)
+	{
+		return 1;
+	}
+	//Window is occupied
+	if (m_GroupMap.contains(wnd))
+	{
+		return 2;
+	}
+	//there is no file between start time and end time
+	int startPos = checkFileExist(filelist, start, end);
+	if (-1 == startPos)
+	{
+		return 3;
+	}
+
+	PrePlay prePlay;
+	prePlay.pPlayMgr = new PlayMgr();
+	prePlay.fileList = filelist;
+	prePlay.startTime = start;
+	prePlay.endTime = end;
+	prePlay.startPos = startPos;
+	
+	m_GroupMap.insert(wnd, prePlay);
+
+	return 0;
+}
+int LocalPlayer::SetSynGroupNum(int num)
+{
+	if (num <= 0 || num > 64)
+	{
+		return 1;
+	}
+	m_nGroupNum = num;
+	return 0;
+}
+int LocalPlayer::GroupPlay()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos);
+		if (iter->pPlayMgr->isRunning())
+		{
+			iter->pPlayMgr->quit();
+		}
+		iter->pPlayMgr->start();
+	}
+
+	return 0;
+}
+int LocalPlayer::GroupPause()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->pause(true);
+	}
+
+	return 0;
+}
+int LocalPlayer::GroupContinue()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->pause(false);
+		g_waitConPause.wakeOne();
+	}
+
+	return 0;
+}
+int LocalPlayer::GroupStop()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		g_waitConPause.wakeOne();
+		iter->pPlayMgr->stop();
+		delete iter->pPlayMgr;
+	}
+
+	m_GroupMap.clear();
+	return 0;
+}
+int LocalPlayer::GroupSpeedFast(int speed)
+{
+	if (m_GroupMap.isEmpty() || (2 != speed && 4 != speed && 8 != speed))
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->setPlaySpeed(0 - speed);
+	}
+	return 0;
+}
+int LocalPlayer::GroupSpeedSlow(int speed)
+{
+	if (m_GroupMap.isEmpty() || (2 != speed && 4 != speed && 8 != speed))
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->setPlaySpeed(speed);
+	}
+
+	return 0;
+}
+int LocalPlayer::GroupSpeedNormal()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator iter;
+	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
+	{
+		if (NULL == iter->pPlayMgr)
+		{
+			continue;
+		}
+		iter->pPlayMgr->setPlaySpeed(0);
+	}
+
+	return 0;
 }
 
 QStringList LocalPlayer::eventList()
@@ -234,6 +517,10 @@ long __stdcall LocalPlayer::QueryInterface( const IID & iid,void **ppv )
 	if (IID_ILocalRecordSearch == iid)
 	{
 		*ppv = static_cast<ILocalRecordSearch *>(this);
+	}
+	else if (IID_ILocalPlayer == iid)
+	{
+		*ppv = static_cast<ILocalPlayer *>(this);
 	}
 	else if (IID_IEventRegister == iid)
 	{
