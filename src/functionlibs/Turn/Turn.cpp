@@ -557,7 +557,7 @@ void Turn::StreamData(LPVOID pData,int nDataSize)
 		frameitem.insert("frametype",Frame->frametype);
 		frameitem.insert("samplerate",Frame->_U.a.samplerate);
 		frameitem.insert("samplewidth",Frame->_U.a.samplewidth);
-		frameitem.insert("vcodec",(unsigned)Frame->_U.a.enc);
+		frameitem.insert("acodec",(unsigned)Frame->_U.a.enc);
 		frameitem.insert("audiochannel",1);
 	}
 
