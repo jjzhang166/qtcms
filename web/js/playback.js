@@ -224,8 +224,8 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
-			/*$(oPlayBack).show();
-			$(oPlaybacKLocl).hide();*/
+			$(oPlayBack).show();
+			$(oPlaybacKLocl).hide();
 			var chl = 0;
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
@@ -234,8 +234,8 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
-			/*$(oPlayBack).hide();
-			$(oPlaybacKLocl).show();*/
+			$(oPlayBack).hide();
+			$(oPlaybacKLocl).show();
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
