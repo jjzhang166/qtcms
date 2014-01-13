@@ -1,15 +1,39 @@
 #include "RecordPlayer.h"
 #include "libpcom.h"
 #include "qwfw.h"
+#include <QtGui/QResizeEvent>
+#include <qwfw_tools.h>
 #include <guid.h>
 #include "IEventRegister.h"
 
 RecordPlayer::RecordPlayer():
 QWebPluginFWBase(this),
-m_pLocakRecordSearch(NULL)
+m_pLocalRecordSearch(NULL),
+m_pLocalPlayer(NULL),
+m_pWindowDivMode(NULL),
+m_currentWindID(0)
 {
 	//申请ILocalRecordSearch接口
-	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocakRecordSearch);
+	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
+	//申请ILocalPlayer接口
+	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalPlayer,(void **)&m_pLocalPlayer);
+	//申请IWindowDivMode接口
+	pcomCreateInstance(CLSID_DivMode2_2,NULL,IID_IWindowDivMode,(void **)&m_pWindowDivMode);
+
+	for (int i = 0; i < ARRAY_SIZE(m_subRecPlayerView); i++)
+	{
+		m_subRecPlayerView[i].setParent(this);
+		connect(&m_subRecPlayerView[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
+		connect(&m_subRecPlayerView[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		m_lstRecordPlayerWndList.insert(i,&m_subRecPlayerView[i]);
+	}
+
+	if (m_pWindowDivMode != NULL)
+	{
+		m_pWindowDivMode->setParentWindow(this);
+		m_pWindowDivMode->setSubWindows(m_lstRecordPlayerWndList,ARRAY_SIZE(m_subRecPlayerView));
+		m_pWindowDivMode->flush();
+	}
 
 	//注册事件
 	cbInit();
@@ -17,22 +41,32 @@ m_pLocakRecordSearch(NULL)
 
 RecordPlayer::~RecordPlayer()
 {
-	if (NULL != m_pLocakRecordSearch)
+	if (NULL != m_pLocalRecordSearch)
 	{
-		m_pLocakRecordSearch->Release();
-		m_pLocakRecordSearch = NULL;
+		m_pLocalRecordSearch->Release();
+		m_pLocalRecordSearch = NULL;
+	}
+	if (NULL != m_pLocalPlayer)
+	{
+		m_pLocalPlayer->Release();
+		m_pLocalPlayer = NULL;
+	}
+	if (NULL != m_pWindowDivMode)
+	{
+		m_pWindowDivMode->Release();
+		m_pWindowDivMode = NULL;
 	}
 }
 
 int RecordPlayer::cbInit()
 {
 	IEventRegister *pEvRegister = NULL;
-	if (NULL == m_pLocakRecordSearch)
+	if (NULL == m_pLocalRecordSearch)
 	{
 		return 1;
 	}
 
-	m_pLocakRecordSearch->QueryInterface(IID_IEventRegister, (void**)&pEvRegister);
+	m_pLocalRecordSearch->QueryInterface(IID_IEventRegister, (void**)&pEvRegister);
 	if (NULL == pEvRegister)
 	{
 		return 1;
@@ -46,6 +80,41 @@ int RecordPlayer::cbInit()
 	return 0;
 }
 
+void  RecordPlayer::resizeEvent(QResizeEvent *ev)
+{
+	if (NULL != m_pWindowDivMode)
+	{
+		m_pWindowDivMode->parentWindowResize(ev);
+	}
+}
+
+void  RecordPlayer::OnSubWindowDblClick(QWidget *wind,QMouseEvent *ev)
+{
+	if (NULL==m_pWindowDivMode)
+	{
+		return ;
+	}
+	m_pWindowDivMode->subWindowDblClick(wind,ev);
+}
+
+void  RecordPlayer::SetCurrentWind(QWidget *wind)
+{
+	int j;
+	for (j = 0; j < ARRAY_SIZE(m_subRecPlayerView); ++j)
+	{
+		if (&m_subRecPlayerView[j] == wind)
+		{
+			break;
+		}
+	}
+	m_currentWindID = j;
+}
+
+int RecordPlayer::GetCurrentWnd()
+{
+	return m_currentWindID;
+}
+
 int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
 {
 	if (sdevname.isEmpty())
@@ -53,12 +122,12 @@ int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
 		return 1;
 	}
 
-	if (NULL == m_pLocakRecordSearch)
+	if (NULL == m_pLocalRecordSearch)
 	{
 		return 1;
 	}
 
-	int nRet = m_pLocakRecordSearch->searchDateByDeviceName(sdevname);
+	int nRet = m_pLocalRecordSearch->searchDateByDeviceName(sdevname);
 	if (ILocalRecordSearch::OK != nRet)
 	{
 		return 1;
@@ -72,25 +141,12 @@ int RecordPlayer::searchVideoFile(const QString& sdevname,
 	const QString& sendtime,
 	const QString& schannellist)
 {
-	if (sdevname.isEmpty() || !checkChannel(schannellist))
-	{
-		return 1;
-	}
-	QDateTime date = QDateTime::fromString(sdate,"yyyy-MM-dd");
-	QTime timeStart = QTime::fromString(sbegintime,"hh:mm:ss");
-	QTime timeEnd = QTime::fromString(sendtime,"hh:mm:ss");
-
-	if (!date.isValid() || !timeStart.isValid() || !timeEnd.isValid())
+	if (NULL == m_pLocalRecordSearch)
 	{
 		return 1;
 	}
 
-	if (NULL == m_pLocakRecordSearch)
-	{
-		return 1;
-	}
-
-	int nRet = m_pLocakRecordSearch->searchVideoFile(sdevname, sdate, sbegintime, sendtime, schannellist);
+	int nRet = m_pLocalRecordSearch->searchVideoFile(sdevname, sdate, sbegintime, sendtime, schannellist);
 	if (ILocalRecordSearch::OK != nRet)
 	{
 		return 1;
@@ -99,31 +155,199 @@ int RecordPlayer::searchVideoFile(const QString& sdevname,
 	return 0;
 }
 
-bool RecordPlayer::checkChannel(const QString& schannellist)
+QDateTime RecordPlayer::getDateFromPath(QString &filePath)
 {
-	if (schannellist.isEmpty())
+	QDateTime dateTime;;
+	QDate date;
+	QTime time;
+	QString dateStr;
+	QString timeStr;
+	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+
+	if (-1 != rx.indexIn(filePath,0))
 	{
-		return false;
+		dateStr = rx.cap(1);
 	}
 
-	QStringList sltChannels = schannellist.split(";");
-	QRegExp regTimeFormat("[0-9]{1,2};");
-	int num = 0;
-	QString temp = sltChannels[num] + ";";
-	while(temp.contains(regTimeFormat))
+	rx = QRegExp("([0-9]{6}).avi");
+	if (-1 != rx.indexIn(filePath, 0))
 	{
-		num++;
-		temp = sltChannels[num] + ";";
+		timeStr = rx.cap(1);
+	}
+	date = QDate::fromString(dateStr, "yyyy-MM-dd");
+	time = QTime::fromString(timeStr, "hhmmss");
+	dateTime.setDate(date);
+	dateTime.setTime(time);
+
+	return dateTime;
+}
+
+void RecordPlayer::sortFileList(QStringList &fileList)
+{
+	QDateTime minDate;
+	QDateTime tempDate;
+	int keyPos = 0;
+	for (int i = 0; i < fileList.size() - 1; i++)
+	{
+		keyPos = i;
+		minDate = getDateFromPath(fileList[i]);
+		for (int j = i + 1; j < fileList.size(); j++)
+		{
+			tempDate = getDateFromPath(fileList[j]);
+			if (minDate > tempDate)
+			{
+				minDate = tempDate;
+				keyPos = j;
+			}
+		}
+		if (i != keyPos)
+		{
+			fileList.swap(i, keyPos);
+		}
+	}
+}
+
+int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
+{
+	if (NULL == m_pLocalPlayer || filelist.isEmpty() || nWndID <0 || nWndID >= ARRAY_SIZE(m_subRecPlayerView))
+	{
+		return 1;
 	}
 
-	if (num == sltChannels.size() - 1)
+	QStringList lstFileList = filelist.split(",", QString::SkipEmptyParts);
+	sortFileList(lstFileList);
+
+	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+	QDateTime end = QDateTime::fromString(endTime, "yyyy-MM-dd hh:mm:ss");
+
+	int nRet = m_pLocalPlayer->AddFileIntoPlayGroup(lstFileList, &m_subRecPlayerView[nWndID], start, end);
+	if (1 == nRet)
 	{
-		return true;
+		return 1;
 	}
-	else
+
+	return 0;
+}
+
+int RecordPlayer::SetSynGroupNum(int num)
+{
+	if (NULL == m_pLocalPlayer)
 	{
-		return false;
+		return 1;
 	}
+
+	int nRet = m_pLocalPlayer->SetSynGroupNum(num);
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupPlay()
+{
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupPlay();
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupPause()
+{
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupPause();
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupContinue()
+{
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupContinue();
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupStop()
+{
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupStop();
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupSpeedFast(int speed)
+{
+	if (NULL == m_pLocalPlayer || speed < 0)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupSpeedFast(speed);
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupSpeedSlow(int speed)
+{
+	if (NULL == m_pLocalPlayer || speed < 0)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupSpeedSlow(speed);
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+int RecordPlayer::GroupSpeedNormal()
+{
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+
+	int nRet = m_pLocalPlayer->GroupSpeedNormal();
+	if (1 == nRet)
+	{
+		return 1;
+	}
+
+	return 0;
 }
 
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser)
