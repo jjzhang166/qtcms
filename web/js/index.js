@@ -4,6 +4,7 @@ var timer = null;
 var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
 var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在关闭!'];
 	$(function(){
+		
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
 		oView = $('#playback_view');

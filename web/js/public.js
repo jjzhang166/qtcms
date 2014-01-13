@@ -72,7 +72,7 @@ function ViewMax(type){
 		left:oView.width(),
 		height:oView.height()+devListH
 	});
-	$('div.dev_list').height(oLeft.height()-288);
+	$('div.dev_list').height(oLeft.height()-315);
 	oBottom.width(oView.width());
 	$('#foot').css({
 		top:oView.height()+212
@@ -153,11 +153,12 @@ function set_drag(disX,X1,X2){
 		},
 		//client setting
 		'toSwitch': function(){
-			var warp = this;
+			var warp = $(this);
+			var sClass = $(this).attr('class')+'Act';
 			warp.find('li').each(function(index){
-				$(this).click(function(){
-					warp.find('li').removeClass('act');
-					$(this).addClass('act');
+				$(this).on('click',function(){
+					warp.find('li').removeClass(sClass);
+					$(this).addClass(sClass);
 					warp.nextAll('div.switch').hide().eq(index).show();	
 				})
 			})
@@ -301,6 +302,10 @@ $(function(){
 		}else{
 			$(this).timeInput({'initTime':'23:59:59'});
 		}
+	})
+
+	$('div.switchlist').each(function(){
+		$(this).toSwitch();
 	})
 })
 // 辅助方法.

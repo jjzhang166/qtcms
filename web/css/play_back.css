@@ -111,11 +111,23 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	position: absolute;
 	background: #323232;
 }
-.dev_list_btn li{ 
+/* .dev_list_btn li{ 
 	float: left;
+} */
+.switchlist li{ 
+	float:left;
+	line-height: 22px;
+	font-size: 14px;
+	text-align: center;
+	display: block;
+	height:22px;
+	width: 66px;
+	background: url(../images/top_icon.png) no-repeat -66px -312px;
 }
-
-.dev_list_btn a{ 
+.switchlist li.switchlistAct{ 
+	background: url(../images/top_icon.png) no-repeat 0 -312px;
+}
+/* .dev_list_btn a{ 
 	display: block;
 	height:22px;
 	width: 66px;
@@ -125,7 +137,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	text-align: center;
 	font-size: 14px;
 	line-height: 22px;
-}
+} */
 #search_device .active{ 
 	background: url(../images/top_icon.png) no-repeat 0 -312px;
 }
@@ -201,7 +213,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 .ope_list{
 	height: 24px;
 }
-.ope_list .act{
+.ope_list .ope_listAct{
 	background-position:0 -16px;
 }
 #PTZ_control .switch{

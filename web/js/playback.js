@@ -1,4 +1,4 @@
-var oLeft,oBottom,oView,oPlayBack,
+var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 	nViewNum = 0,
 	NowMonth = 0,
 	num = 0;
@@ -7,8 +7,9 @@ var oLeft,oBottom,oView,oPlayBack,
 		oBottom = $('#operating');
 		oView = $('#playback_view')
 		oPlayBack = $('#playback')[0];
+		oPlaybackLocl = $('#playbacKLocl')[0];
 		ViewMax();
-		var oAs = $('ul.dev_list_btn a'),
+		var oAs = $('ul.dev_list_btn li'),
 			oDiv = $('div.dev_list');
 	    
 	    $('ul.filetree').treeview();		
@@ -21,11 +22,9 @@ var oLeft,oBottom,oView,oPlayBack,
 		})
 
 		oAs.each(function(index){
-			$(this).click(function(){
+			$(this).on('click',function(){
 				$(window).off();
-				oAs.removeClass('active');
 				oDiv.hide();
-				$(this).addClass('active');
 				oDiv.eq(index).show();
 			})
 		})
@@ -119,8 +118,8 @@ var oLeft,oBottom,oView,oPlayBack,
 				$('#type span').attr('type',index);
 			})
 		})
-
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
+		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 	})///
 
 	function searchVideo(){
@@ -165,6 +164,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		});	
 		}*/
 		ocxsearchVideo(devData);
+		
 	}
 	function playVideo(){ 
 		oPlayBack.GroupStop();
@@ -215,19 +215,36 @@ var oLeft,oBottom,oView,oPlayBack,
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
 	function ocxsearchVideo(devData){
+		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
 		var type = $('#type span').attr('type');
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
 		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		var chl = 0;
-		for (var i=0;i<devData.channel_count;i++){
-			chl += 1 << i;
-		};
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
-		if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
-			alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+		if(bool){
+			/*$(oPlayBack).show();
+			$(oPlaybacKLocl).hide();*/
+			var chl = 0;
+			for (var i=0;i<devData.channel_count;i++){
+				chl += 1 << i;
+			};
+			if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
+				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+			}
+		}else{
+			/*$(oPlayBack).hide();
+			$(oPlaybacKLocl).show();*/
+			var chl ='';
+			for (var i=1;i<=devData.channel_count;i++){
+				chl+=i+';';
+			};
+			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){ 
+				alert('设备'+devData.name+'在本地没有录像!  '+oPlaybacKLocl.searchDateByDeviceName(devData.name));
+				return false;
+			}
+			oPlaybackLocl.searchVideoFile(devData.name,date,gettime($('div.timeInput:eq(0) input')),gettime($('div.timeInput:eq(1) input')),chl);
 		}
 	}
 
@@ -236,7 +253,7 @@ var oLeft,oBottom,oView,oPlayBack,
 		color[2] = '#FFE62E';
 		color[4] = '#F00';
 		color[8] = '#F78445';
-		color[15] = '#ABCDEF';
+
 	function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
@@ -250,15 +267,17 @@ var oLeft,oBottom,oView,oPlayBack,
 	}
 
 	function RecFileInfoCallback(data){
-		//show(data);
-		var start = time2Sec(data.start.split(' ')[1]);
-		var end = time2Sec(data.end.split(' ')[1]);
-		var p =($('#channelvideo').width()-80)/(3600*24);
+		var start = data.start || data.startTime;
+			start=time2Sec(start.split(' ')[1]);
+		var end = data.end || data.stopTime;
+			end = time2Sec(end.split(' ')[1]);
+		var chl = data.channel || data.channelnum;
+		var p = ($('#channelvideo').width()-80)/(3600*24);
 		var width = (end-start)*p;
 		var left = start*p+81;
-		//alert(left+'+'+width);
+		var types = data.types || 8;
 		//alert(data.type+'+'+data.channel);
-		$('<div class="video" style="background:'+color[data.types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+data.channel+')');
+		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
 
 	}

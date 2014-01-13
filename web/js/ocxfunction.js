@@ -42,10 +42,10 @@ var oSelected = [],
 	//搜索设备控件方法.
 	function searchFlush(){
 		$('#SerachDevList tbody tr').remove();	 
-		oSearchOcx.Start();
+		/*oSearchOcx.Start();
 		setTimeout(function(){
 			oSearchOcx.Stop();	
-		},5000)
+		},5000)*/
 	}
 	//设备搜索回调函数
 	function callback(oJson){

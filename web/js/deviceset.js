@@ -173,7 +173,7 @@ var oSearchOcx;
 			})
 			//搜索设备;
 			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			searchFlush();
+			/*searchFlush();*/
 			for (i in oActiveEvents){
 				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -604,4 +604,7 @@ function selectAll(){
 }
 function disksSelectAll(){
 	$('#StorageParm input:checkbox:lt(22)').click();
+}
+function test(){
+	alert(123);
 }
