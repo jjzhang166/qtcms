@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：章深鹏<br />
+  编辑日期：2014.01.12</p>
+<p>插件简介：<br />
+  //插件名称：RemoteBackupPlugin插件<br />
+  //插件功能：远程备份功能插件，根据指定设备 路径 起止日期 进行远程备份<br />
+生成avi文件 文件名以通道号</p>
+<p>接口说明：</p>
+<p>//简述：根据输入参数进行远程备份。 <br />
+  //输入参数:<br />
+  <code>/*++<br />
+sAddr:  设备ip<br />
+uiPort: 端口号<br />
+sEseeId:设备id<br />
+nChannel:通道号(0~31)<br />
+nTypes:类型(录像类型，按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像)<br />
+startTime:开始时间<br />
+endTime:结束时间<br />
+sbkpath:备份路径<br />
+  返回值: <br />
+     0: 调用成功 <br />
+   1: 参数错误<br />
+   2:系统错误
+  <br /> 
+--*/
+<br />
+  <strong>int startBackup(const QString &amp;sAddr,unsigned int uiPort,const QString &amp;sEseeId,<br />
+int nChannel,<br />
+int nTypes,<br />
+const QString &amp; startTime,<br />
+const QString &amp; endTime,<br />
+const QString &amp; sbkpath);</strong></code><br />
+<br />
+<code>/*++ <br />
+简述：手动停止备份。<br />
+输入参数:<br />
+   无。<br />
+返回值： <br />
+    1：调用失败 <br />
+    2：系统错误<br />
+--*/
+<br />
+<strong>int Stop();</strong></code></p>
+<p><code>/*++<br />
+  简述：获取备份进度<br />
+  输入参数：无<br />
+  返回值：<br />
+  (0.0~1.0) 当前的备份进度<br />
+  --*/<br />
+  <strong>float getProgress(); </strong></code><br />
+</p>
+<p>插件抛出的事件：<br />
+  @1<br />
+  事件名称：BackupStatusChange<br />
+  事件参数:<br />  &quot;types&quot;:&quot;startBackup&quot;开始进行备份 &quot;stopBackup&quot;停止备份 &quot;diskfull&quot;磁盘已满 &quot;backupFinished&quot;备份完成 &quot;noStream&quot;获取不到码流<br />
+  <br />
+</p>
+</body>
+</html>
