@@ -79,7 +79,7 @@ void PlayMgr::run()
 	QString filePath;
 	QString fileName;
 	QString fileDate;
-	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+	QRegExp rx;
 	QDateTime fileStartTime;
 	QDateTime currentPlayTime;
 	QDate date;
@@ -91,7 +91,8 @@ void PlayMgr::run()
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
 	{
 		//open file
-		filePath = m_lstfileList[i];		
+		filePath = m_lstfileList[i];
+		rx = QRegExp("([0-9]{4}-[0-9]{2}-[0-9]{2})");
 		if (-1 != rx.indexIn(filePath,0))
 		{
 			fileDate = rx.cap(1);
@@ -191,6 +192,7 @@ void PlayMgr::run()
 				//count current play time;
 				currentPlayTime = fileStartTime.addSecs(frame/frameRate);
 			}
+			m_startTime = currentPlayTime;
 			AVI_close(file);
 		}
 		else
