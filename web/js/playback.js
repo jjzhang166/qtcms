@@ -39,12 +39,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			$(this).addClass('sel');
 			
 			oSelected = [];
-			
-			var oDevData=$(this).data('data')
-			//show(oDevData);
-			if(!setDevData2ocx(oDevData)){ 
-				return false;
-			}
 
 			var oVideoList = $("#channelvideo")
 			oVideoList.find('tr:gt(3)').remove()
@@ -120,13 +114,15 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		})
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
+		$('div.dev_list').on('click','span.channel',function(){ 
+			alert($(this).data('filepath'));
+		})
 	})///
 
 	function searchVideo(){
-		var devData = $('div.dev_list span.device.sel').data('data');
-		if(!devData){
-			alert('请选择一台设备');
-			return false;
+		var seletDev = $('div.dev_list span.device.sel');
+		if(seletDev.length == 0){
+			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
 		  //cgi 请求数据
@@ -163,49 +159,83 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			}
 		});	
 		}*/
-		ocxsearchVideo(devData);
+		ocxsearchVideo();
 		
 	}
 	function playVideo(){ 
-		oPlayBack.GroupStop();
-		var oDevData = $('div.dev_list span.device.sel').data('data');
-		setDevData2ocx(oDevData);
-		var	X1 = 79,
+		setDevData2ocx();
+		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
+		if(bool){
+			oPlayBack.GroupStop();
+			var	X1 = 79,
 			X2 = $('table.table').width() -42,
 			left = $('div.play_time').offset().left,
 			date = $("div.calendar span.nowDate").html(),
 			sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
 			type = parseInt($('#type span').attr('type')),
 			begin = date+' '+returnTime(sScond),
-		end = date+' 23:59:59';
-		type = type == 0 ? 15 : 1 << type;
-		oPlayBack.GroupPlay(type,begin,end);
+			end = date+' 23:59:59';
+			type = type == 0 ? 15 : 1 << type;
+			oPlayBack.GroupPlay(type,begin,end);	
+		}else{
+			oPlaybackLocl.GroupPlay();
+		}	
 	}
 	function playAction(str){ 
-		oPlayBack[str]();
+		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
+		var obj = {};  //回放插件对象
+		if(bool){ 
+			obj = oPlayBack;
+		}else{ 
+			obj = oPlaybackLocl;
+		}
+		obj[str]();
 	}
 	function palybackspeed(str){ 
 		$('#palybackspeed').html(str);
 	}
-	function setDevData2ocx(oDevData){
-		var  b = true;
-		if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
-			alert('IP地址设置失败或者端口不合法!');
-			b = false;
-		}
-		if(oPlayBack.setDeviceVendor(oDevData.vendor)){
-			alert('vendor为空设置失败!');
-			b = false;
-		}
-		$("#channelvideo").find('input:checkbox').each(function(index){
-			if($(this).is(':checked')){
-				if(oPlayBack.AddChannelIntoPlayGroup(index,(index))){
-					b = false;
-				};
+	function setDevData2ocx(){
+		var oDevData = $('div.dev_list span.device.sel').data('data');
+		var b = true;
+		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
+		if(bool){
+			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
+				alert('IP地址设置失败或者端口不合法!');
+				b = false;
 			}
-		});
-		oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
-		return b
+			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
+				alert('vendor为空设置失败!');
+				b = false;
+			}
+			$("#channelvideo").find('input:checkbox').each(function(index){
+				if($(this).is(':checked')){
+					if(oPlayBack.AddChannelIntoPlayGroup(index,(index))){
+						b = false;
+					};
+				}
+			});
+			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
+		}else{ 
+			if(oPlaybackLocl.SetSynGroupNum(4)){ 
+				alert('同步组数量设置失败');
+				b = false
+			}
+			var date = $("div.calendar span.nowDate").html();
+			var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
+			var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
+			$("#channelvideo").find('input:checkbox').each(function(index){
+				if($(this).is(':checked')){
+					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
+					if(filepath){
+						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,startTime,endTime) != 0){
+							alert('设备'+oDevData.name+'下的通道'+index+'的本地回放数据写入到窗口失败');
+							b = false;
+						};
+					}
+				}
+			});
+		}
+		return b;
 	}
 
 	var typeHint = [];
@@ -214,7 +244,8 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		typeHint[4] = '警告';
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
-	function ocxsearchVideo(devData){
+	function ocxsearchVideo(){
+		var devData = $('div.dev_list span.device.sel').data('data');
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
 		var type = $('#type span').attr('type');
 			type = type == 0 ? 15 : 1 << type;
@@ -231,7 +262,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				chl += 1 << i;
 			};
 			if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
-				alert('控件检索设备'+devData.name+'下的通道'+index+'的'+typeHint[type]+'录像失败');
+				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
 			oPlayBack.style.height='0px';
@@ -276,8 +307,22 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		var width = (end-start)*p;
 		var left = start*p+81;
 		var types = data.types || 8;
+		if(data.filepath){
+			var oChannel = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(chl);
+			var filepathArr = oChannel.data('filepath');
+				filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
+				filepathArr.push(data.filepath);
+				filepathArr.sort(SortByfileTime).join(',');
+			oChannel.data('filepath',filepathArr);			
+		}
 		//alert(data.type+'+'+data.channel);
 		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
 
+	}
+	function SortByfileTime(a,b){  //文件路径时间升序排列
+		var reg = /.*?(\d{6})\.avi/g;
+		var a = parseInt(a.replace(reg,'$1'));
+		var b = parseInt(b.replace(reg,'$1'));
+		return a - b;
 	}
