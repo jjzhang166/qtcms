@@ -207,7 +207,7 @@ void Recorder::run()
 						m_dataRef.unlock();
 						break;
 					}
-					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,16,"X264");
+					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,25,"X264");
 					qDebug("Set pic resolution:%d * %d\n",m_nRecWidth,m_nRecHeight);
 					nRecStep = 3;
 				}
