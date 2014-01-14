@@ -90,14 +90,12 @@
     <ClCompile Include="..\..\common\guid.cpp" />
     <ClCompile Include="avilib.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="h264wh.cpp" />
     <ClCompile Include="Recorder.cpp" />
     <ClCompile Include="StorageMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="avilib.h" />
     <ClInclude Include="dllmain.h" />
-    <ClInclude Include="h264wh.h" />
     <ClInclude Include="netlib.h" />
     <ClInclude Include="Recorder.h" />
     <ClInclude Include="Recorder_global.h" />

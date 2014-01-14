@@ -37,9 +37,6 @@
     <ClCompile Include="avilib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="h264wh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StorageMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,9 +52,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="avilib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="h264wh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StorageMgr.h">
