@@ -263,7 +263,7 @@ bool RemoteBackup::createFile()
 		if (NULL == AviFile) 
 			return false;
 
-		AVI_set_video(AviFile,m_videoWidth,m_videoHeight,16,"X264");
+		AVI_set_video(AviFile,m_videoWidth,m_videoHeight,25,"X264");
 		memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
 	}
 
