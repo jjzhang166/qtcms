@@ -68,6 +68,7 @@ private:
 
 	QMap<QWidget*, PrePlay> m_GroupMap;
 	int m_nGroupNum;
+	bool m_bIsGroupPlaying;
 };
 
 #endif // LOCALPLAYER_H

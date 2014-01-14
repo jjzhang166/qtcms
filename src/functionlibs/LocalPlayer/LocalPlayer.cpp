@@ -7,7 +7,8 @@
 
 LocalPlayer::LocalPlayer() :
 m_nRef(0),
-m_nGroupNum(4)
+m_nGroupNum(4),
+m_bIsGroupPlaying(false)
 {
 	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
 
@@ -336,6 +337,11 @@ int LocalPlayer::GroupPlay()
 		return 1;
 	}
 
+	if (m_bIsGroupPlaying)
+	{
+		GroupStop();
+	}
+
 	QMap<QWidget*, PrePlay>::iterator iter;
 	for (iter = m_GroupMap.begin(); iter != m_GroupMap.end(); iter++)
 	{
@@ -350,6 +356,8 @@ int LocalPlayer::GroupPlay()
 		}
 		iter->pPlayMgr->start();
 	}
+
+	m_bIsGroupPlaying = true;
 
 	return 0;
 }
@@ -411,6 +419,7 @@ int LocalPlayer::GroupStop()
 		delete iter->pPlayMgr;
 	}
 
+	m_bIsGroupPlaying = false;
 	m_GroupMap.clear();
 	return 0;
 }
