@@ -21,9 +21,9 @@ uiPort: 端口号<br />
 sEseeId:设备id<br />
 nChannel:通道号(0~31)<br />
 nTypes:类型(录像类型，按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像)<br />
-startTime:开始时间<br />
-endTime:结束时间<br />
-sbkpath:备份路径<br />
+startTime:开始时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
+endTime:结束时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
+sbkpath:备份路径(必须是存在的路径,以'/'分隔)<br />
   返回值: <br />
      0: 调用成功 <br />
    1: 参数错误<br />
@@ -59,8 +59,10 @@ const QString &amp; sbkpath);</strong></code><br />
 <p>插件抛出的事件：<br />
   @1<br />
   事件名称：BackupStatusChange<br />
-  事件参数:<br />  &quot;types&quot;:&quot;startBackup&quot;开始进行备份 &quot;stopBackup&quot;停止备份 &quot;diskfull&quot;磁盘已满 &quot;backupFinished&quot;备份完成 &quot;noStream&quot;获取不到码流<br />
-  <br />
+事件类型:&quot;types&quot;:<br />
+&quot;types&quot;可选参数:&quot;startBackup&quot;开始进行备份 &quot;stopBackup&quot;停止备份 &quot;diskfull&quot;磁盘已满 &quot;backupFinished&quot;备份完成 &quot;noStream&quot;获取不到码流<br />
+</p>
+<p>文件名生成规则:设备id_CHL通道号_开始时间_结束时间.avi<br />
 </p>
 </body>
 </html>
