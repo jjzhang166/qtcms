@@ -8,17 +8,17 @@
 #define AVENC_PSLICE	0x02
 #define AVENC_AUDIO		0x00
 
-#pragma pack(4)
-typedef struct _tagAudioBufAttr{
-	int entries;
-	int packsize;
-	unsigned long long pts;
-	time_t * gtime;
-	char encode[8];
-	int samplerate;
-	int samplewidth;
-}AudioBufAttr;
-#pragma pack()
+//#pragma pack(4)
+//typedef struct _tagAudioBufAttr{
+//	int entries;
+//	int packsize;
+//	unsigned long long pts;
+//	time_t * gtime;
+//	char encode[8];
+//	int samplerate;
+//	int samplewidth;
+//}AudioBufAttr;
+//#pragma pack()
 
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser);
 
@@ -147,6 +147,11 @@ int RemoteBackup::WriteFrameData(QVariantMap &frameinfo)
 				m_nLastTicket = recframe.pts;
 			}
 		}
+	}
+	else if (0x00 == type)
+	{
+		m_samplerate = frameinfo["samplerate"].toInt();
+		m_samplewidth = frameinfo["samplewidth"].toInt();
 	}
 
 	m_bufflock.lock();
@@ -351,19 +356,14 @@ void RemoteBackup::run()
 			}// first audio frame
 			else if (0x00 == recframe.type)
 			{
-				AudioBufAttr * AudioHead = (AudioBufAttr *)recframe.pdata;
 				if (!m_bAudioBeSet)
 				{
 					int AudioFormat = WAVE_FORMAT_ALAW;
-					if (!strcmp(AudioHead->encode,"g711a"))
-					{
-						qDebug("Audio format g711a\n");
-						AudioFormat = WAVE_FORMAT_ALAW;
-					}
-					AVI_set_audio(AviFile, 1, AudioHead->samplerate, AudioHead->samplewidth, AudioFormat, 64);
+
+					AVI_set_audio(AviFile, 1, m_samplerate, m_samplewidth, AudioFormat, 64);
 					m_bAudioBeSet = true;
 				}
-				AVI_write_audio(AviFile,recframe.pdata + sizeof(AudioBufAttr),AudioHead->entries * AudioHead->packsize);
+				AVI_write_audio(AviFile,recframe.pdata ,recframe.datasize);
 			}
 		
 			delete recframe.pdata;

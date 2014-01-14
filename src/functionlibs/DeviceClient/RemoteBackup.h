@@ -19,8 +19,7 @@ public:
 		int type;
 		char* pdata;
 		unsigned int datasize;
-		int width;
-		int height;
+
 		unsigned int pts;
 		unsigned int gentime;
 	}RecFrame;
@@ -67,6 +66,8 @@ private:
 	avi_t * AviFile;
 	int m_videoHeight;
 	int m_videoWidth;
+	int m_samplerate;
+	int m_samplewidth;
 
 	bool m_bAudioBeSet;
 	bool m_backuping;
