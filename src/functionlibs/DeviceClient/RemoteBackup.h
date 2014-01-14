@@ -46,6 +46,7 @@ private:
 		BackProc backproc;
 		void* pUser;
 	}evItem;
+	//bool checkParam(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,int nChannel);
 	bool connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	bool tryConnectProtocol(CLSID clsid,const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	void stopConnect();
