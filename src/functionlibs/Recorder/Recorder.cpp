@@ -55,6 +55,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 	int datasize = frameinfo["length"].toInt();
 	if ((type != 0x00 && type !=  0x01 && type != 0x02) || datasize<=0 )
 	{
+		qDebug("get frame type is:%d",type);
 		return IRecorder::E_PARAMETER_ERROR;
 	}
 	if (!m_bFinish)
@@ -63,16 +64,13 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 		RecBufferNode bufTemp;
 		bufTemp.dwDataType = type;
 		bufTemp.dwBufferSize = datasize;
-		bufTemp.dwTicketCount = (unsigned int)frameinfo["pts"].toUInt();
+		bufTemp.dwTicketCount = (unsigned int)frameinfo["pts"].toULongLong()/1000;
 		bufTemp.nChannel = frameinfo["channel"].toInt();
 		bufTemp.Buffer = new char[datasize];
 		if (!bufTemp.Buffer)
 			return IRecorder::E_SYSTEM_FAILED;
 		char* pdata = (char*)frameinfo["data"].toUInt();
 		memcpy(bufTemp.Buffer,pdata,datasize);
-		m_dataRef.lock();
-		m_dataqueue.enqueue(bufTemp);
-		m_dataRef.unlock();
 
 		if (0x01 == type || 0x02 == type)
 		{
@@ -103,6 +101,10 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 			bufTemp.samplerate = frameinfo["samplerate"].toInt();
 			bufTemp.samplewidth = frameinfo["samplewidth"].toInt();
 		}
+
+		m_dataRef.lock();
+		m_dataqueue.enqueue(bufTemp);
+		m_dataRef.unlock();
 
 	}
 
@@ -158,7 +160,7 @@ void Recorder::run()
 
 				memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
 				m_nFrameCount = 0;
-
+				m_nLastTicket = 0;
 				nRecStep = 1;
 			}
 			break;
@@ -190,9 +192,6 @@ void Recorder::run()
 				m_dataRef.lock();
 				if (m_dataqueue.size() > 0)
 				{
-
-					QDateTime timeCur = QDateTime::currentDateTime();
-					// Save path read from private profile
 
 					// Create path
 					CreateDir(sFilePathName);
