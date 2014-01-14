@@ -48,7 +48,7 @@ int BufferManager::recordVedioStream(QVariantMap &evMap)
 	recVeStream.uiWidth = evMap.value("width").toInt();
 	recVeStream.uiHeight = evMap.value("height").toUInt();
 	recVeStream.uiFrameRate = evMap.value("framerate").toUInt();
-	recVeStream.ui64TSP = evMap.value("tsp").toULongLong();
+	recVeStream.ui64TSP = evMap.value("pts").toULongLong();
 	recVeStream.uiGenTime = evMap.value("gentime").toUInt();
 	recVeStream.sData.append((char*)evMap.value("data").toUInt(), recVeStream.uiLength);
 

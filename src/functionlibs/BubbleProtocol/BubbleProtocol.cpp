@@ -771,7 +771,7 @@ int BubbleProtocol::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
     if ("RecordStream" == eventName)
     {
         eventParams<<"length"<<"frametype"<<"channel"<<"width"<<"height"<<"framerate"
-            <<"audioSampleRate"<<"audioFormat"<<"audioDataWidth"<<"tsp"<<"gentime"<<"data";
+            <<"audioSampleRate"<<"audioFormat"<<"audioDataWidth"<<"pts"<<"gentime"<<"data";
     }
 	if ("SocketError" == eventName)
 	{

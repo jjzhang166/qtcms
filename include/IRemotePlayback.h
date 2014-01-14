@@ -74,7 +74,7 @@ interface IRemotePlayback : public IPComBase
 // 	"audioSampleRate":音频帧的采样率，如果是视频帧则忽略该参数
 // 	"audioFormat":音频帧的编码格式，采用字符串表示，如"g711"等
 // 	"audioDataWidth":音频帧的采样位宽，如果是视频帧则忽略该参数
-// 	"tsp":64位时间戳，精确到微秒
+// 	"pts":64位时间戳，精确到微秒
 // 	"gentime":帧的产生事件，单位为秒，为GMT时间
 // 	"data":码流数据的地址
 

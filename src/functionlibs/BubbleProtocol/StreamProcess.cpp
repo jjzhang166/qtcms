@@ -402,7 +402,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("audioSampleRate",pRecordStream->nAudioSampleRate);
 				mStreamInfo.insert("audioFormat"    ,pRecordStream->cAudioFormat);
 				mStreamInfo.insert("audioDataWidth" ,pRecordStream->nAudioDataWidth);
-				mStreamInfo.insert("tsp"            ,pRecordStream->nU64TSP);
+				mStreamInfo.insert("pts"            ,pRecordStream->nU64TSP);
 				mStreamInfo.insert("gentime"        ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128 + 4;
 				mStreamInfo.insert("data"           ,(uint)((char*)pRecordStream + offSet));
@@ -425,7 +425,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("width"        ,pRecordStream->nFrameWidth);
 				mStreamInfo.insert("height"       ,pRecordStream->nFrameHeight);
 				mStreamInfo.insert("framerate"    ,pRecordStream->nFrameRate);
-				mStreamInfo.insert("tsp"          ,pRecordStream->nU64TSP);
+				mStreamInfo.insert("pts"          ,pRecordStream->nU64TSP);
 				mStreamInfo.insert("gentime"      ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128;
 				mStreamInfo.insert("data"         ,(uint)((char*)pRecordStream + offSet));
