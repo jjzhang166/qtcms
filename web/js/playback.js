@@ -125,7 +125,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
-		setDevData2ocx();
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -174,12 +173,13 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			var type = parseInt($('#type span').attr('type')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
+			alert('远程播放。。')
 		}else{
+			oPlaybackLocl.GroupStop();
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
 					if(filepath){
-						alert(begin);
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
 							alert('设备'+oDevData.name+'下的通道'+index+'的本地回放数据写入到窗口失败');
 							b = false;
@@ -249,6 +249,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
+		setDevData2ocx();
 		var devData = $('div.dev_list span.device.sel').data('data');
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
 		var type = $('#type span').attr('type');
@@ -259,8 +260,9 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
-			oPlaybackLocl.style.height='0px';
-			oPlayBack.style.height='100%';
+			/*oPlaybackLocl.style.height='0px';
+			oPlayBack.style.height='100%';*/
+			oPlaybackLocl.GroupStop();
 			var chl = 0;
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
@@ -269,8 +271,9 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
-			oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';
+			/*oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';*/
+			oPlayBack.GroupStop();
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
