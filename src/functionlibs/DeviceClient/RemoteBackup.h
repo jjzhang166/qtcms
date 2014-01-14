@@ -80,10 +80,12 @@ private:
 	unsigned int m_edtime;*/
 	
 	float m_progress;
+	unsigned int m_firstgentime;
 	
 	QDateTime m_stime;
 	QDateTime m_etime;
 	int m_nchannel;
 	QString m_savePath;
+	QString m_devid;
 };
 

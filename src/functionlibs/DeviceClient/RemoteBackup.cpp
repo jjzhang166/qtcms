@@ -36,6 +36,7 @@ AviFile(NULL)
 
 	m_nFrameCount = 0;
 	m_nLastTicket = 0;
+	m_firstgentime = 0;
 }
 
 
@@ -61,10 +62,15 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 	{
 		return 1;
 	}
+	if (QThread::isRunning())
+	{
+		return 2;
+	}
 	m_stime = startTime;
 	m_etime = endTime;
 	m_nchannel = nChannel;
 	m_savePath = sbkpath;
+	m_devid = sEseeId;
 	if (connectToDevice(sAddr,uiPort,sEseeId))
 	{
 		IEventRegister* pEventRegister = NULL;
@@ -108,23 +114,47 @@ int RemoteBackup::WriteFrameData(QVariantMap &frameinfo)
 	RecFrame recframe;
 	recframe.type = type;
 	recframe.datasize = frameinfo["length"].toUInt();
-	recframe.pts = frameinfo["tsp"].toULongLong()/1000;
+	recframe.pts = (unsigned int)frameinfo["pts"].toULongLong()/1000;
 	recframe.gentime = frameinfo["gentime"].toUInt();
 	recframe.pdata = new char[recframe.datasize];
 	if(NULL == recframe.pdata)
 		return 2;
 	char* pfdata = (char*)frameinfo["data"].toUInt();
 	memcpy(recframe.pdata,pfdata,recframe.datasize);
-	if(AVENC_IDR == recframe.type)
+	
+	//Calculation the frame
+	if (0x01 == recframe.type || 0x02 == recframe.type)
 	{
-		m_videoWidth = frameinfo["width"].toInt();
-		m_videoHeight = frameinfo["height"].toInt();
+		if(AVENC_IDR == recframe.type)
+		{
+			m_videoWidth = frameinfo["width"].toInt();
+			m_videoHeight = frameinfo["height"].toInt();
+		}
+		m_nFrameCount ++;
+		if ( 0 == m_nLastTicket )
+		{
+			m_nLastTicket = recframe.pts;
+		}
+		else
+		{
+			if (recframe.pts - m_nLastTicket >= 1000)
+			{
+				if (m_nFrameCount < 31)
+				{
+					m_nFrameCountArray[m_nFrameCount] ++;
+				}
+				m_nFrameCount = 0;
+				m_nLastTicket = recframe.pts;
+			}
+		}
 	}
 
 	m_bufflock.lock();
 	m_bufferqueue.enqueue(recframe);
 	m_bufflock.unlock();
 
+	if(0 == m_firstgentime)
+		m_firstgentime = recframe.gentime;
 	return 0;
 }
 
@@ -219,10 +249,10 @@ bool RemoteBackup::createFile()
 		QString fullname = m_savePath ;
 		char sChannelNum[3];
 		sprintf(sChannelNum,"%02d",m_nchannel+1);
-		fullname += "/CHL" + QString("%1").arg(QString(sChannelNum))
-			+"_" + m_etime.toString("yyyy-MM-dd")
-			+"_" + m_stime.toString("hhmmss") 
-			+"_"+ m_etime.toString("hhmmss")+".avi";
+		fullname += "/" + m_devid
+			+"_"+"CHL" + QString("%1").arg(QString(sChannelNum))
+			+"_" + m_stime.toString("yyyy-MM-dd(hhmmss)") 
+			+"_"+ m_etime.toString("yyyy-MM-dd(hhmmss)")+".avi";
 	    
 		AviFile = AVI_open_output_file(fullname.toAscii().data());
 		if (NULL == AviFile) 
@@ -288,13 +318,16 @@ void RemoteBackup::clearbuffer()
 
 void RemoteBackup::run()
 {
-	bool threadruning = true;
+
 	if (createFile())
 	{
 		m_backuping = true;
 	}
 	int timeout = 0;
 	RecFrame recframe;
+
+	unsigned int sdtime = m_stime.toTime_t();
+	unsigned int edtime = m_etime.toTime_t();
 	while(m_backuping )
 	{
 		if (m_bufferqueue.size()>0)
@@ -305,33 +338,12 @@ void RemoteBackup::run()
 			m_bufflock.unlock();
 
 			//Calculation the progress
-			unsigned int sdtime = m_stime.toTime_t();
-			unsigned int edtiem = m_etime.toTime_t();
-			if(recframe.gentime>sdtime)
-				m_progress = (float)(recframe.gentime - sdtime)/(edtiem - sdtime);
+			
+			unsigned int curr_gentime = recframe.gentime;
+			if(curr_gentime>=m_firstgentime)
+				m_progress = (float)(curr_gentime - m_firstgentime)/(edtime - sdtime);
 
-			//Calculation the frame
-			if (0x01 == recframe.type || 0x02 == recframe.type)
-			{
-
-				m_nFrameCount ++;
-				if ( 0 == m_nLastTicket )
-				{
-					m_nLastTicket = recframe.pts;
-				}
-				else
-				{
-					if (recframe.pts - m_nLastTicket >= 1000)
-					{
-						if (m_nFrameCount < 31)
-						{
-							m_nFrameCountArray[m_nFrameCount] ++;
-						}
-						m_nFrameCount = 0;
-						m_nLastTicket = recframe.pts;
-					}
-				}
-			}
+			
 			//write the video file
 			if (AVENC_IDR == recframe.type || AVENC_PSLICE == recframe.type)
 			{
@@ -357,6 +369,13 @@ void RemoteBackup::run()
 			delete recframe.pdata;
 			recframe.pdata = NULL;
 
+			if (m_progress>=1.0f || AVI_bytes_written(AviFile)>1024*1024*1024)	
+			{
+				//完成备份
+				callBackupStatus("backupFinished");
+				break;
+			}
+
 			quint64 FreeByteAvailable;
 			quint64 TotalNumberOfBytes;
 			quint64 TotalNumberOfFreeBytes;
@@ -367,12 +386,6 @@ void RemoteBackup::run()
 				break;
 			}
 
-			if (recframe.gentime >= m_etime.toTime_t() || AVI_bytes_written(AviFile)>1024*1024>1024)	
-			{
-				//完成备份
-				callBackupStatus("backupFinished");
-				break;
-			}
 		}
 		else 
 		{
@@ -389,6 +402,7 @@ void RemoteBackup::run()
 	closeFile();
 	clearbuffer();
 	m_backuping = false;
+	m_firstgentime = 0;
 }
 
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser)
