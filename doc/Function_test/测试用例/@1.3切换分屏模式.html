@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @1.3切换分屏模式<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的切换分屏模式功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面切换分屏模式测试(测dvr)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(DVR, 4通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.3-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中设备名(如果通道图标已改变, 单击至初始状态) </p></td>
+    <td width="258" valign="top"><p>通道全开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始(4个)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>点击上一页图标多次(64分屏只有1页,忽略)</p></td>
+    <td width="258" valign="top"><p>上一页旁边的&rdquo;**/**&rdquo;在各自均为2位数时显示完全;有预览图像的子窗口在固定的子窗口总序号上</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4共5次 </p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//用例@2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的切换分屏模式功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面切换分屏模式测试(测IPC)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(ipc, 1通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.3-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中ch1(如果通道图标已改变, 单击至初始状态) </p></td>
+    <td width="258" valign="top"><p>通道打开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始(1个)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">点击上一页图标多次(64分屏只有1页,忽略)</p></td>
+    <td width="258" valign="top"><p align="left">上一页图标旁边的&rdquo;**/**&rdquo;在各自均为2位数时显示完全;有预览图像的子窗口在固定的子窗口总序号上 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4共5次 </p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
