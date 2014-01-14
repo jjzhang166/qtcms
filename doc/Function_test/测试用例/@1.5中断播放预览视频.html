@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @1.5中断播放预览视频<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的中断播放功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面中断播放测试(测dvr)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(DVR, 4通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.5-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中设备名(如果通道图标已改变, 单击前置为初始状态) </p></td>
+    <td width="258" valign="top"><p>通道全开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始(4个)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>播放20s钟后点击设备栏中该设备名 </p></td>
+    <td width="258" valign="top"><p>预览图像的子窗口图像关闭</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>重复执行第2,3步</p></td>
+    <td width="258" valign="top"><p>结果和第2,3步预期相同</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>在有预览图像的子窗口点右键选择&rdquo;close view&rdquo;</p></td>
+    <td width="258" valign="top"><p>预览子窗口图像关闭</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4共5次 </p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//用例@2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的中断播放功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面中断播放测试(测IPC)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(ipc, 1通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.5-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中ch1(如果通道图标已改变, 单击前置为初始状态) </p></td>
+    <td width="258" valign="top"><p>通道打开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始(1个)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">播放20s钟后点击第3步中的ch1 </p></td>
+    <td width="258" valign="top"><p align="left">预览图像的子窗口恢复初始状态 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>重复执行第2,3步</p></td>
+    <td width="258" valign="top"><p>结果和第2,3步预期相同</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>在有预览图像的子窗口点右键选择&rdquo;close view&rdquo;</p></td>
+    <td width="258" valign="top"><p>预览子窗口图像关闭</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4共5次 </p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的中断播放功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面中断播放测试(测试多台dvr同时连接时)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已添加有测试设备(DVR2台, 与测试者在同一网段)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.5-3</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取16分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中第一台设备名(如果通道图标已改变, 单击前置为初始状态) </p></td>
+    <td width="258" valign="top"><p>通道全开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始,<br />
+      个数和通道数一样</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">鼠标选取下一DVR预览开始的子窗口, 点击设备栏中的第二台设备名</p></td>
+    <td width="258" valign="top"><p>通道全开, 下面通道图标颜色改变;<br />
+      预览图像从选取的子窗口开始,<br />
+      个数和通道数一样</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>播放20s钟后点击设备栏第一台设备名 </p></td>
+    <td width="258" valign="top"><p>对应该设备下的预览图像的子窗口恢复初始状态</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>继续播放20s钟后鼠标逐一右击正在预览的窗口, 选择&rdquo;close view&rdquo;(保留最后2个子窗口)</p></td>
+    <td width="258" valign="top"><p>对应预览图像的子窗口恢复初始状态</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>单击设备栏第二台设备的设备名</p></td>
+    <td width="258" valign="top"><p>该设备名下所有通道对应的子窗口均有预览图像,且通道图标颜色一致改变</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p align="left">选取25,49,64,1X6,1X8分屏模式, 重复步骤2-7</p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">修改第二台DVR设备IP(或者选取另一网段的dvr), 使其与测试者和第一台设备不在同一网段,重复步骤1-8</p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例4</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的中断播放功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面中断播放测试(测多台IPC)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(A: ipc, 1通道, 地址: 192.168.2.132; B: ipc, 1通道, 地址: 192.168.2.106)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.5-4</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键单击选取开始预览的第一个子窗口</p></td>
+    <td width="258" valign="top"><p>显示相应分屏</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中A的ch1(如果通道图标已改变, 单击前置为初始状态) </p></td>
+    <td width="258" valign="top"><p>通道打开, 下面通道图标颜色改变;<br />
+      预览图像从步骤2中选取的子窗口开始(1个)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">播放20s钟后点击第3步中的ch1 </p></td>
+    <td width="258" valign="top"><p align="left">预览图像的子窗口恢复初始状态 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>对设备B重复执行第2,3步</p></td>
+    <td width="258" valign="top"><p>结果和第2,3步预期相同</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>在有预览图像的子窗口点右键选择&rdquo;close view&rdquo;</p></td>
+    <td width="258" valign="top"><p>预览子窗口图像关闭</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p align="left">选取9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4共5次 </p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
