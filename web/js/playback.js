@@ -163,24 +163,24 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		
 	}
 	function playVideo(){ 
-		setDevData2ocx();
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
 		var begin = getDragSart(),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
 		if(bool){
 			oPlayBack.GroupStop();
+			setDevData2ocx();
 			var type = parseInt($('#type span').attr('type')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
 		}else{
 			oPlaybackLocl.GroupStop();
+			setDevData2ocx();
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
 					if(filepath){
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
-							alert('设备'+oDevData.name+'下的通道'+index+'的本地回放数据写入到窗口失败');
 							b = false;
 						};
 					}
@@ -227,9 +227,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
-					var state = oPlayBack.AddChannelIntoPlayGroup(index,index);
-					alert('当前窗口:'+index+'绑定通道 '+index+'的数据 ,完成状态为: '+state);
-					if(state){
+					if(oPlayBack.AddChannelIntoPlayGroup(index,index)){
 						b = false;
 					};
 				}
@@ -261,8 +259,8 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
-			/*oPlaybackLocl.style.height='0px';
-			oPlayBack.style.height='100%';*/
+			oPlaybackLocl.style.height='0px';
+			oPlayBack.style.height='100%';
 			oPlaybackLocl.GroupStop();
 			var chl = 0;
 			for (var i=0;i<devData.channel_count;i++){
@@ -272,8 +270,8 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
-			/*oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';*/
+			oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';
 			oPlayBack.GroupStop();
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
