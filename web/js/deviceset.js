@@ -103,8 +103,7 @@ var oSearchOcx;
 					//手动添加区域0
 					var deviceList0 = oCommonLibrary.GetDeviceList(0);	
 							var add_li = $('<li><span class="area">区域_root</span><ul id="area0"></ul></li>').appendTo('#device_list');
-							$('ul.filetree:eq(2)').treeview({add:add_li});
-							
+							$('ul.filetree:eq(2)').treeview({add:add_li});				
 					for(n in areaList){
 						var id = areaList[n];
 						var name = oCommonLibrary.GetAreaName(areaList[n]);

@@ -2,6 +2,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 	nViewNum = 0,
 	NowMonth = 0,
 	num = 0;
+	drag_timer = null;
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -79,6 +80,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 
 		$("#channelvideo").on({ 
 			mousedown:function(event){
+				dragStopMove();
 				var left = event.pageX
 			    	if(left < 79){
 			    		return false;
@@ -114,9 +116,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		})
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
-		$('div.dev_list').on('click','span.channel',function(){ 
-			alert($(this).data('filepath'));
-		})
 	})///
 
 	function searchVideo(){
@@ -163,6 +162,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		
 	}
 	function playVideo(){ 
+		dragStopMove();
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
 		var begin = getDragSart(),
 			date = $("div.calendar span.nowDate").html(),
@@ -188,6 +188,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			});
 			oPlaybackLocl.GroupPlay();
 		}	
+		dragStartMove();
 	}
 	function getDragSart(){
 		var	X1 = 79,
@@ -212,6 +213,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		$('#palybackspeed').html(str);
 	}
 	function setDevData2ocx(){
+		dragStopMove();
 		var oDevData = $('div.dev_list span.device.sel').data('data');
 		var b = true;
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
@@ -331,4 +333,21 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		var a = parseInt(a.replace(reg,'$1'));
 		var b = parseInt(b.replace(reg,'$1'));
 		return a - b;
+	}
+	function dragStartMove(){ 
+		var oDrag=$('div.play_time');
+		var initleft = parseInt(oDrag.offset().left);
+		var p = ($('#channelvideo').width()-80)/(3600*24);
+		var max = $('#channelvideo').width();
+		drag_timer = setInterval(function(){
+			var left = initleft+=p;
+			if(left >= max){ 
+				left=max;
+				dragStopMove()
+			}
+			oDrag.css('left',left);
+		},1000);
+	}
+	function dragStopMove(){
+		clearInterval(drag_timer);
 	}
