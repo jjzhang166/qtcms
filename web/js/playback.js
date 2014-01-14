@@ -173,7 +173,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			var type = parseInt($('#type span').attr('type')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
-			alert('远程播放。。')
 		}else{
 			oPlaybackLocl.GroupStop();
 			$("#channelvideo").find('input:checkbox').each(function(index){
@@ -225,14 +224,16 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				alert('vendor为空设置失败!');
 				b = false;
 			}
+			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
-					if(oPlayBack.AddChannelIntoPlayGroup(index,(index))){
+					var state = oPlayBack.AddChannelIntoPlayGroup(index,index);
+					alert('当前窗口:'+index+'绑定通道 '+index+'的数据 ,完成状态为: '+state);
+					if(state){
 						b = false;
 					};
 				}
 			});
-			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 		}else{ 
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
 				alert('同步组数量设置失败');
