@@ -353,6 +353,10 @@ void StreamProcess::analyzeRecordStream()
 	AuthorityBack *pAutoBack = NULL;
 	RecordStream *pRecordStream = NULL;
 
+	QDateTime time1 = QDateTime::currentDateTime();
+	QDateTime time2 = QDateTime::currentDateTimeUtc();
+	int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
+
 	while(m_buffer.size() >= m_nTotalBytes)
 	{
 		char *dataArr = new char[m_nTotalBytes];
@@ -399,7 +403,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("audioFormat"    ,pRecordStream->cAudioFormat);
 				mStreamInfo.insert("audioDataWidth" ,pRecordStream->nAudioDataWidth);
 				mStreamInfo.insert("tsp"            ,pRecordStream->nU64TSP);
-				mStreamInfo.insert("gentime"        ,pRecordStream->nGenTime);
+				mStreamInfo.insert("gentime"        ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128 + 4;
 				mStreamInfo.insert("data"           ,(uint)((char*)pRecordStream + offSet));
 
@@ -422,7 +426,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("height"       ,pRecordStream->nFrameHeight);
 				mStreamInfo.insert("framerate"    ,pRecordStream->nFrameRate);
 				mStreamInfo.insert("tsp"          ,pRecordStream->nU64TSP);
-				mStreamInfo.insert("gentime"      ,pRecordStream->nGenTime);
+				mStreamInfo.insert("gentime"      ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128;
 				mStreamInfo.insert("data"         ,(uint)((char*)pRecordStream + offSet));
 

@@ -483,6 +483,14 @@ int BubbleProtocol::getPlaybackStreamByFileName(int nChannel,const QString &sFil
     }
     unsigned int nStartTime = QDateTime::fromString(list1.at(0),"yyyyMMddhhmmss").toTime_t();
     unsigned int nEndTime   = QDateTime::fromString(list1.at(1),"yyyyMMddhhmmss").toTime_t();
+
+	QDateTime time1 = QDateTime::currentDateTime();
+	QDateTime time2 = QDateTime::currentDateTimeUtc();
+	int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
+
+	nStartTime += timeDifference;
+	nEndTime += timeDifference;
+
     QString sPlayBackType = list1.at(2);
     int nTmp = 0;
 
