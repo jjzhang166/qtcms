@@ -18,6 +18,7 @@ QSubView::QSubView(QWidget *parent)
 	iInitWidth(0),
 	bIsInitFlags(false),
 	bRendering(false),
+	m_bIsRecording(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED)
@@ -209,6 +210,12 @@ int QSubView::CloseWndCamera()
 {
 	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_DISCONNECTING;
 	m_QSubViewObject.CloseWndCamera();
+
+	if (m_bIsRecording && NULL != m_pRecorder)
+	{
+		m_pRecorder->Stop();
+		m_bIsRecording = false;
+	}
 	return 0;
 }
 int QSubView::GetWindowConnectionStatus()
@@ -425,6 +432,7 @@ int QSubView::StartRecord()
 		return 1;
 	}
 
+	m_bIsRecording = true;
 	int nRet = m_pRecorder->Start();
 	return nRet;
 }
@@ -436,6 +444,7 @@ int QSubView::StopRecord()
 		return 1;
 	}
 	int nRet = m_pRecorder->Stop();
+	m_bIsRecording = false;
 
 	return nRet;
 }

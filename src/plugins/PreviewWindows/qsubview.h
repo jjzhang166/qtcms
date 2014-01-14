@@ -89,6 +89,7 @@ private:
 	int iInitHeight;
 	bool bIsInitFlags;
 	bool bRendering;
+	bool m_bIsRecording;
 	QTime dieTime;
 	QTimer m_checkTime;
 
