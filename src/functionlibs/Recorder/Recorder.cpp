@@ -2,7 +2,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include "avilib.h"
-#include "h264wh.h"
+//#include "h264wh.h"
 
 #include <guid.h>
 
@@ -76,7 +76,9 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 		{
 			if (0x01 == type)
 			{
-				GetWidthHeight(bufTemp.Buffer,bufTemp.dwBufferSize,&m_nRecWidth,&m_nRecHeight);
+				//GetWidthHeight(bufTemp.Buffer,bufTemp.dwBufferSize,&m_nRecWidth,&m_nRecHeight);
+				m_nRecWidth = frameinfo["width"].toInt();
+				m_nRecHeight = frameinfo["height"].toInt();
 			}
 			m_nFrameCount ++;
 			if ( 0 == m_nLastTicket )
