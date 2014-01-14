@@ -160,14 +160,14 @@ void PlayMgr::run()
 				AVI_set_video_position(file, frame);
 				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
 
-				if (startframe > 0 && 0 == isKeyFrame && !isPlayInMid)
+				if (0 == isKeyFrame && isPlayInMid)
 				{
 					continue;
 				}
 
-				if (startframe > 0 && 1 == isKeyFrame && !isPlayInMid)
+				if (1 == isKeyFrame && isPlayInMid)
 				{
-					isPlayInMid = true;
+					isPlayInMid = false;
 					isFirstKeyFrame = true;
 				}
 
