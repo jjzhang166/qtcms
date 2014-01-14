@@ -125,6 +125,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
+		setDevData2ocx();
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -165,21 +166,38 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 	function playVideo(){ 
 		setDevData2ocx();
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
+		var begin = getDragSart(),
+			date = $("div.calendar span.nowDate").html(),
+			end = date+' 23:59:59';
 		if(bool){
 			oPlayBack.GroupStop();
-			var	X1 = 79,
+			var type = parseInt($('#type span').attr('type')),
+			type = type == 0 ? 15 : 1 << type;
+			oPlayBack.GroupPlay(type,begin,end);
+		}else{
+			$("#channelvideo").find('input:checkbox').each(function(index){
+				if($(this).is(':checked')){
+					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
+					if(filepath){
+						alert(begin);
+						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
+							alert('设备'+oDevData.name+'下的通道'+index+'的本地回放数据写入到窗口失败');
+							b = false;
+						};
+					}
+				}
+			});
+			oPlaybackLocl.GroupPlay();
+		}	
+	}
+	function getDragSart(){
+		var	X1 = 79,
 			X2 = $('table.table').width() -42,
 			left = $('div.play_time').offset().left,
 			date = $("div.calendar span.nowDate").html(),
 			sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
-			type = parseInt($('#type span').attr('type')),
-			begin = date+' '+returnTime(sScond),
-			end = date+' 23:59:59';
-			type = type == 0 ? 15 : 1 << type;
-			oPlayBack.GroupPlay(type,begin,end);	
-		}else{
-			oPlaybackLocl.GroupPlay();
-		}	
+			begin = date+' '+returnTime(sScond);
+			return begin;
 	}
 	function playAction(str){ 
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
@@ -220,20 +238,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				alert('同步组数量设置失败');
 				b = false
 			}
-			var date = $("div.calendar span.nowDate").html();
-			var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
-			var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-			$("#channelvideo").find('input:checkbox').each(function(index){
-				if($(this).is(':checked')){
-					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
-					if(filepath){
-						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,startTime,endTime) != 0){
-							alert('设备'+oDevData.name+'下的通道'+index+'的本地回放数据写入到窗口失败');
-							b = false;
-						};
-					}
-				}
-			});
 		}
 		return b;
 	}
