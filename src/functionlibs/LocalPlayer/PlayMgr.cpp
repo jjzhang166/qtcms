@@ -86,6 +86,7 @@ void PlayMgr::run()
 	QTime time;
 	bool isPlayInMid = false;
 	bool isFirstKeyFrame = false;
+	qint64 timeOffset = 0;
 
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
 	{
@@ -108,6 +109,18 @@ void PlayMgr::run()
 		fileStartTime.setDate(date);
 		fileStartTime.setTime(time);
 
+		timeOffset = fileStartTime.toMSecsSinceEpoch() - m_startTime.toMSecsSinceEpoch();
+		if (timeOffset > 0)
+		{
+			m_mutex.lock();
+			m_waitForPlay.wait(&m_mutex, timeOffset - 100);
+			m_mutex.unlock();
+		}
+		else
+		{
+			isPlayInMid = true;
+		}
+
 		avi_t *file = AVI_open_input_file(filePath.toLatin1().data(),1);
 		if (NULL != file)
 		{
@@ -128,14 +141,10 @@ void PlayMgr::run()
 				continue;
 			}
 			//start frame
-			int startframe = frameRate*(m_startTime.toTime_t() - fileStartTime.toTime_t());
-			if (startframe < 0)
+			int startframe = 0;
+			if (isPlayInMid)
 			{
-				startframe = 0;
-			}
-			else
-			{
-				isPlayInMid = false;
+				startframe = qAbs(timeOffset)*frameRate/1000;
 			}
 			for (int frame = startframe; frame < totalFrames && !m_bStop && currentPlayTime < m_endTime; frame++)
 			{
@@ -206,6 +215,7 @@ void PlayMgr::pause(bool isPause)
 void PlayMgr::stop()
 {
 	m_bStop = true;
+	m_waitForPlay.wakeOne();
 
 	m_nInitWidth = 0;
 	m_nInitHeight = 0;

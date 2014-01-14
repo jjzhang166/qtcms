@@ -44,6 +44,9 @@ private:
 	int m_nStartPos;
 	QDateTime m_startTime;
 	QDateTime m_endTime;
+
+	QMutex m_mutex;
+	QWaitCondition m_waitForPlay;
 };
 
 
