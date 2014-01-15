@@ -395,13 +395,13 @@ bool Recorder::CreateDir(QString fullname)
 		QDir dir;
 		if (!dir.exists(filepath))
 			dir.mkpath(filepath);
-		//创建文件
-		QFile file(fullname);
-		file.open(QIODevice::ReadOnly);
-		file.close();
+		////创建文件
+		//QFile file(fullname);
+		//file.open(QIODevice::ReadOnly);
+		//file.close();
 
-		if (!file.exists())
-		    return false;
+		//if (!file.exists())
+		//    return false;
 	}
 
 	return true;
