@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+    var obj = document.getElementById('windows');
+    obj.AddEventProc("BackupStatusChange", "alert('BackupStatusChange');");
+    obj.AddEventProc("BackupStatusChange", 'BackupStatusChange(ev)');
+
+}
+function BackupStatusChange(ev) {
+    var str;
+    str = ev.types ;
+    alert(str); 
+}
+function startBackup() {
+	var obj = document.getElementById('windows');
+	var startTime=document.getElementById('startTime');
+	var endTime=document.getElementById('endTime');
+	var sbkpath=document.getElementById('sbkpath');
+	var sAddr=document.getElementById('sAddr');
+	var uiPort=document.getElementById('uiPort');
+	var sEseeId=document.getElementById('sEseeId');
+	var nChannel=document.getElementById('nChannel');
+	var nTypes=document.getElementById('nTypes');
+	obj.startBackup(sAddr.value,8785,sEseeId.value,parseInt(nChannel.value),parseInt(nTypes.value),startTime.value,endTime.value,sbkpath.value);
+}
+function Stop() {
+   var obj = document.getElementById('windows');
+   obj.Stop();
+}
+function getProgress() {
+   var obj = document.getElementById('windows');
+   obj.getProgress()
+   }
+</script>
+</head>
+
+<body onload="Onload()">
+  <object type="application/cms-remote-backup" id="windows" style="width:800; height:500;"></object>
+  <object type="application/cms-record-player" id="window3s" style="width:800px; height:500px;"></object>
+  	<tr>
+		<td>startTime</td>
+		<td><input type="text" id="startTime" value="2014-01-15 06:30:00"/></td>
+	</tr>
+	<tr>
+		<td>endTime</td>
+		<td><input type="text" id="endTime" value="2014-01-15 06:35:00"/></td>
+	</tr>
+    	<tr>
+		<td>sbkpath</td>
+		<td><input type="text" id="sbkpath" value="D:\JAREC\2014-01-15"/></td>
+	</tr>
+    	<tr>
+		<td>sAddr</td>
+		<td><input type="text" id="sAddr" value="192.168.2.132"/></td>
+	</tr>
+    	<tr>
+		<td>uiPort</td>
+		<td><input type="text" id="uiPort" value="8785"/></td>
+	</tr>
+        	<tr>
+		<td>sEseeId</td>
+		<td><input type="text" id="sEseeId" value="100005770"/></td>
+	</tr>
+        	<tr>
+		<td>nChannel</td>
+		<td><input type="text" id="nChannel" value="0"/></td>
+	</tr>
+        	<tr>
+		<td>nTypes</td>
+		<td><input type="text" id="nTypes" value="15"/></td>
+	</tr>
+        <tr>
+        <td><button onclick="startBackup()">startBackup</button></td>
+        <td><button onclick="Stop()">Stop</button></td>
+        <td><button onclick="getProgress()">getProgress</button></td>
+    </tr>
+</body>
+</html>
