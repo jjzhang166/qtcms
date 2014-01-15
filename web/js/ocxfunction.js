@@ -42,10 +42,10 @@ var oSelected = [],
 	//搜索设备控件方法.
 	function searchFlush(){
 		$('#SerachDevList tbody tr').remove();	 
-		/*oSearchOcx.Start();
+		oSearchOcx.Start();
 		setTimeout(function(){
 			oSearchOcx.Stop();	
-		},5000)*/
+		},5000)
 	}
 	//设备搜索回调函数
 	function callback(oJson){
@@ -304,4 +304,142 @@ var oSelected = [],
 	}
 	function SettingStorageParmSuccess(data){ 
 		//alert(data);
+	}
+	//搜索远程录像
+function setDevData2ocx(bool){
+		var oDevData = $('div.dev_list span.device.sel').data('data');
+		var b = true;
+			up = 1;
+			down=1;
+			palybackspeed('1x');
+		if(bool){
+			oPlayBack.GroupStop();
+			oPlayBack.GroupSpeedNormal();
+	
+			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
+				alert('IP地址设置失败或者端口不合法!');
+				b = false;
+			}
+			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
+				alert('vendor为空设置失败!');
+				b = false;
+			}
+			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
+			var intoWindsChl = $("#channelvideo").find('input:checkbox');
+			if($("#channelvideo").find('input:checkbox').length != 0){
+				intoWindsChl.each(function(index){
+					if($(this).is(':checked')){
+						if(oPlayBack.AddChannelIntoPlayGroup(index,index)){
+							b = false;
+						};
+					}
+				});
+				dragStopMove();
+			}else{
+				oPlaybackLocl.GroupStop();
+				oPlaybackLocl.GroupSpeedNormal();
+				for(var i=0;i<oDevData.channel_count;i++){
+					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
+						b = false;
+					}
+				}
+			}		
+		}else{
+			if(oPlaybackLocl.SetSynGroupNum(4)){ 
+				alert('同步组数量设置失败');
+				b = false
+			}
+		}
+		return b;
+	}
+	function searchVideo(){
+		var seletDev = $('div.dev_list span.device.sel');
+		if(seletDev.length == 0){
+			$('div.dev_list span.device:first').addClass('sel');
+		}
+		$('#channelvideo div.video').remove();
+		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
+			bool=bool < 0 ? 1 : bool;
+		  //cgi 请求数据
+		/*var channels = 0;   
+		$('#channelvideo input:checkbox').each(function(index){ 
+			if($(this).is(':checked')){
+				channels += 1 << index;
+			}
+		});
+		var type = parseInt($('#type span').attr('type'))
+			type = type == 0 ? 15 : 1 << type;
+		var date = $("div.calendar span.nowDate").html();
+		var begin = gettime($('div.timeInput:eq(0) input'));
+		var end = gettime( $('div.timeInput:eq(1) input'));
+		var url ='http://'+devData['address']+':'+devData['http'];
+		var num=0;
+		var page = 100;
+		getVideoData(num);
+
+		function getVideoData(num){ 
+			var xmlstr = '<juan ver="0" squ="fastweb" dir="0"><recsearch usr="' + devData['username'] + '" pwd="' + devData['password'] + '" channels="' + channels + '" 	types="' + type + '" date="' + date + '" begin="' + begin + '" end="' + end + '" session_index="'+num+'" session_count="'+page+'" /></juan>';
+			$.ajax({ 
+			type:"GET",
+			url: url + "/cgi-bin/gw.cgi?f=j",
+			data: "xml=" + xmlstr, 
+			dataType: 'jsonp',
+			jsonp: 'jsoncallback',
+			success: function(data, textStatus){
+				VideoData2Ui($('s',data.xml))
+				if($('recsearch',data.xml).attr('session_total')>(num+page)){
+					num += page;
+					getVideoData(num);
+				}
+			}
+		});	
+		}*/
+		ocxsearchVideo(bool);
+	}
+	var typeHint = [];
+		typeHint[1] = '定时';
+		typeHint[2] = '运动';
+		typeHint[4] = '警告';
+		typeHint[8] = '手动';
+		typeHint[15] = '全部';
+	function ocxsearchVideo(bool){
+		var devData = $('div.dev_list span.device.sel').data('data');
+		var type = $('#type span').attr('type') || 0;
+			type = type == 0 ? 15 : 1 << type;
+		var date = $("div.calendar span.nowDate").html();
+		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
+		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
+		setDevData2ocx(bool)
+		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
+		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
+		if(bool){
+			try{
+				oPlaybackLocl.style.height='0px';
+				oPlaybackLocl.GroupStop();
+				oPlayBack.style.height='100%';
+			}catch(e){
+
+			}
+			
+			var chl = 0;
+			for (var i=0;i<devData.channel_count;i++){
+				chl += 1 << i;
+			};
+			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
+				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
+			}
+		}else{
+			oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';
+			oPlayBack.GroupStop();
+			var chl ='';
+			for (var i=1;i<=devData.channel_count;i++){
+				chl+=i+';';
+			};
+			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){ 
+				alert('设备'+devData.name+'在本地没有录像!  '+oPlaybacKLocl.searchDateByDeviceName(devData.name));
+				return false;
+			}
+			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
+		}
 	}

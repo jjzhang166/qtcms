@@ -191,12 +191,8 @@ var oSearchOcx;
 			});
 		})
 		//搜索结果 设备列表tr委托部分事件;
-		$('#SerachDevList tbody').on('click','tr',function(){
-			$(this).find('input:checkbox').click();
-		})
-		$('#SerachDevList tbody').on('click','input:checkbox',function(event){
-			event.stopPropagation();
-			var devList = $('#SerachDevList tbody input:checked');
+		$('tbody.synCheckboxClick').on('click','input:checkbox',function(event){
+			var devList = $('tbody.synCheckboxClick input:checked');
 			var oArea=$('div.dev_list:eq(0)')
 			if(!oArea.find('span.sel')[0]){
 				oArea.find('span').removeClass('sel');
@@ -596,14 +592,6 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	objShowCenter(obox);
 }
 //devinfo
-function selectAll(){
-	$('#SerachDevList tbody input:checkbox').click();/*.on('click','tr',function(){
-		$(this).find('input:checkbox').click();
-	})*/
-}
 function disksSelectAll(){
 	$('#StorageParm input:checkbox:lt(22)').click();
-}
-function test(){
-	alert(123);
 }

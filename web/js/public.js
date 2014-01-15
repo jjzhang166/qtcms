@@ -281,6 +281,27 @@ function set_drag(disX,X1,X2){
 				$(this).prop('checked',Boolean(val)).val(val);
 			}
 			return $(this);
+		},
+		// 表单tr点击同步首个td下的checkbox点击
+		'SynchekboxClick':function(){
+			var warp = $(this);
+			if(warp.length == 0 || warp[0].nodeName != 'TBODY'){
+				return false;
+			}
+			warp.on('click','tr',function(){
+				$(this).find('input:checkbox').click();
+			})
+			warp.on('click',':checkbox',function(event){
+				event.stopPropagation();
+			})
+
+			$('#tableSelectAll').on('click',function(){ 
+				warp.find(':checkbox').prop('checked',true);
+			})
+
+			$('#tableAntiElection').on('click',function(){ 
+				warp.find(':checkbox').prop('checked',false);
+			})
 		}
 	})
 })(jQuery)
@@ -307,6 +328,7 @@ $(function(){
 	$('div.switchlist').each(function(){
 		$(this).toSwitch();
 	})
+	$('tbody.synCheckboxClick').SynchekboxClick();
 })
 // 辅助方法.
 function del(str) {   //数组去除重复

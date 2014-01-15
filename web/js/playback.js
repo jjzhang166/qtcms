@@ -118,49 +118,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 	})///
 
-	function searchVideo(){
-		var seletDev = $('div.dev_list span.device.sel');
-		if(seletDev.length == 0){
-			$('div.dev_list span.device:first').addClass('sel');
-		}
-		$('#channelvideo div.video').remove();
-		  //cgi 请求数据
-		/*var channels = 0;   
-		$('#channelvideo input:checkbox').each(function(index){ 
-			if($(this).is(':checked')){
-				channels += 1 << index;
-			}
-		});
-		var type = parseInt($('#type span').attr('type'))
-			type = type == 0 ? 15 : 1 << type;
-		var date = $("div.calendar span.nowDate").html();
-		var begin = gettime($('div.timeInput:eq(0) input'));
-		var end = gettime( $('div.timeInput:eq(1) input'));
-		var url ='http://'+devData['address']+':'+devData['http'];
-		var num=0;
-		var page = 100;
-		getVideoData(num);
-
-		function getVideoData(num){ 
-			var xmlstr = '<juan ver="0" squ="fastweb" dir="0"><recsearch usr="' + devData['username'] + '" pwd="' + devData['password'] + '" channels="' + channels + '" 	types="' + type + '" date="' + date + '" begin="' + begin + '" end="' + end + '" session_index="'+num+'" session_count="'+page+'" /></juan>';
-			$.ajax({ 
-			type:"GET",
-			url: url + "/cgi-bin/gw.cgi?f=j",
-			data: "xml=" + xmlstr, 
-			dataType: 'jsonp',
-			jsonp: 'jsoncallback',
-			success: function(data, textStatus){
-				VideoData2Ui($('s',data.xml))
-				if($('recsearch',data.xml).attr('session_total')>(num+page)){
-					num += page;
-					getVideoData(num);
-				}
-			}
-		});	
-		}*/
-		ocxsearchVideo();
-		
-	}
 	function playVideo(){ 
 		dragStopMove();
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
@@ -168,14 +125,12 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
 		if(bool){
-			oPlayBack.GroupStop();
-			setDevData2ocx();
+			setDevData2ocx(bool);
 			var type = parseInt($('#type span').attr('type')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
 		}else{
-			oPlaybackLocl.GroupStop();
-			setDevData2ocx();
+			setDevData2ocx(bool);
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
@@ -199,6 +154,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			begin = date+' '+returnTime(sScond);
 			return begin;
 	}
+	var up = 1,down=1;
 	function playAction(str){ 
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
 		var obj = {};  //回放插件对象
@@ -207,92 +163,42 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		}else{ 
 			obj = oPlaybackLocl;
 		}
-		obj[str]();
+		if(str == 'GroupSpeedFast' || str == 'GroupSpeedSlow'){
+			var show ='';
+			if(obj.id == 'playback' && str == 'GroupSpeedFast'){
+				show = '2x';
+				obj[str]();
+			}else if(obj.id == 'playback' && str == 'GroupSpeedSlow'){ 
+				show = '1/2x';
+				obj[str]();
+			}else if(obj.id == 'playbackLocl' && str == 'GroupSpeedFast'){
+				down = 1;
+				up *= 2;
+				up = up > 8 ? 8:up;
+				show = up+'x';
+				obj[str](up);
+			}else if(obj.id == 'playbackLocl' && str == 'GroupSpeedSlow'){
+				up=1;
+				down *= 2;
+				down = down > 8 ? 8:down;
+				show = '1/'+down+'x';
+				obj[str](down);
+			}
+			palybackspeed(show);
+		}else{ 
+			obj[str]();
+		}
 	}
 	function palybackspeed(str){ 
-		$('#palybackspeed').html(str);
-	}
-	function setDevData2ocx(){
-		dragStopMove();
-		var oDevData = $('div.dev_list span.device.sel').data('data');
-		var b = true;
-		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
-		if(bool){
-			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
-				alert('IP地址设置失败或者端口不合法!');
-				b = false;
-			}
-			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
-				alert('vendor为空设置失败!');
-				b = false;
-			}
-			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
-			$("#channelvideo").find('input:checkbox').each(function(index){
-				if($(this).is(':checked')){
-					if(oPlayBack.AddChannelIntoPlayGroup(index,index)){
-						b = false;
-					};
-				}
-			});
-		}else{ 
-			if(oPlaybackLocl.SetSynGroupNum(4)){ 
-				alert('同步组数量设置失败');
-				b = false
-			}
-		}
-		return b;
+		$('#palybackspeed').html('').html(str);
 	}
 
-	var typeHint = [];
-		typeHint[1] = '定时';
-		typeHint[2] = '运动';
-		typeHint[4] = '警告';
-		typeHint[8] = '手动';
-		typeHint[15] = '全部';
-	function ocxsearchVideo(){
-		setDevData2ocx();
-		var devData = $('div.dev_list span.device.sel').data('data');
-		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
-		var type = $('#type span').attr('type');
-			type = type == 0 ? 15 : 1 << type;
-		var date = $("div.calendar span.nowDate").html();
-		var startTime =date+' '+gettime($('div.timeInput:eq(0) input'));
-		var endTime =date+' '+gettime($('div.timeInput:eq(1) input'));
-		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
-		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
-		if(bool){
-			oPlaybackLocl.style.height='0px';
-			oPlayBack.style.height='100%';
-			oPlaybackLocl.GroupStop();
-			var chl = 0;
-			for (var i=0;i<devData.channel_count;i++){
-				chl += 1 << i;
-			};
-			if(oPlayBack.startSearchRecFile(chl,type,startTime,endTime)!=0){
-				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
-			}
-		}else{
-			oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';
-			oPlayBack.GroupStop();
-			var chl ='';
-			for (var i=1;i<=devData.channel_count;i++){
-				chl+=i+';';
-			};
-			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){ 
-				alert('设备'+devData.name+'在本地没有录像!  '+oPlaybacKLocl.searchDateByDeviceName(devData.name));
-				return false;
-			}
-			oPlaybackLocl.searchVideoFile(devData.name,date,gettime($('div.timeInput:eq(0) input')),gettime($('div.timeInput:eq(1) input')),chl);
-		}
-	}
 
 	var color = [];
 		color[1] = '#7BC345';
 		color[2] = '#FFE62E';
 		color[4] = '#F00';
 		color[8] = '#F78445';
-
 	function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
