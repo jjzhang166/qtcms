@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @1.8鼠标双击窗口<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>鼠标双击窗口功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面双击窗口测试(测试多台dvr同时连接时)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(DVR2台A和B, 与测试者在同一网段)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.8-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取16分屏模式, 鼠标左键双击第一个子窗口</p></td>
+    <td width="258" valign="top"><p>子窗口放大, 窗口序号显示完整: 0/4</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">点击下一页16次 </p></td>
+    <td width="258" valign="top"><p>子窗口放大, 窗口序号显示完整: 16/64</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>左键双击子窗口</p></td>
+    <td width="258" valign="top"><p>子窗口变小, 窗口序号显示完整: 1/4</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>左键选取左上角第一个子窗口,点击设备栏的设备A的DVR名称</p></td>
+    <td width="258" valign="top"><p>预览窗口显示视频图像    ,对应通道全部显示</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>左键选取左上角一个子窗口,点击设备栏的设备B的DVR名称</p></td>
+    <td width="258" valign="top"><p>预览窗口显示视频图像,对应通道全部显示</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>预览打开后, 双击子窗口2次</p></td>
+    <td width="258" valign="top"><p>先放大后缩小</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p align="left">点击设备栏的A和B的DVR名称</p></td>
+    <td width="258" valign="top"><p>关闭预览图像</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">选取25,49,64,1X6,1X8分屏模式, 重复步骤2-8</p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期类似,仅仅序号变化</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//用例@2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>鼠标双击窗口功能 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面双击窗口测试(测ipc)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面中已有测试设备(ipc, 1通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.8-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到预览界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>选取4分屏模式, 鼠标左键双击第一个子窗口 </p></td>
+    <td width="258" valign="top"><p>子窗口放大, 窗口序号显示完整: 0/64</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">点击下一页4次 </p></td>
+    <td width="258" valign="top"><p>子窗口放大, 窗口序号显示完整: 4/64</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>左键双击子窗口 </p></td>
+    <td width="258" valign="top"><p>子窗口变小, 窗口序号显示完整: 1/16</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>左键选取左上角第一个子窗口,点击设备栏的ipc名称 </p></td>
+    <td width="258" valign="top"><p>预览窗口显示视频图像 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>预览打开后, 双击子窗口2次 </p></td>
+    <td width="258" valign="top"><p>先放大后缩小 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p align="left">点击设备栏的下第5步中的ipc名称 </p></td>
+    <td width="258" valign="top"><p>关闭预览图像 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p align="left">选取9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-7</p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期类似,仅仅序号变化</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>鼠标双击窗口功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>回放时鼠标双击窗口测试(测试dvr)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>页面中已添加有测试设备(DVR1台, 与测试者在同一网段)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.8-3</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到回放界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击第一个子窗口2次</p></td>
+    <td width="258" valign="top"><p>第一个子窗口先放大后缩小</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中设备名后,再点击检索 </p></td>
+    <td width="258" valign="top"><p>下面出现彩色长条, 显示有录像的时间段</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">鼠标点击任意时间点</p></td>
+    <td width="258" valign="top"><p>回放图像打开</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击任一个子窗口2次</p></td>
+    <td width="258" valign="top"><p>子窗口先放大后缩小, 录像播放继续</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>录像播放2min后, 点击■关闭, </p></td>
+    <td width="258" valign="top"><p>录像播放关闭</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击任一个子窗口</p></td>
+    <td width="258" valign="top"><p>子窗口放大</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>鼠标点击任意时间点</p></td>
+    <td width="258" valign="top"><p>回放图像打开</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>录像播放2min后点击关闭■</p></td>
+    <td width="258" valign="top"><p>录像播放关闭</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例4</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>鼠标双击窗口功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>回放时鼠标双击窗口测试(测IPC)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>页面中已有测试设备( ipc, 1通道, 地址: 192.168.2.132)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.8-4</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到回放界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击第一个子窗口2次 </p></td>
+    <td width="258" valign="top"><p>第一个子窗口先放大后缩小 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">然后点击设备栏中设备名后,再点击检索 </p></td>
+    <td width="258" valign="top"><p>下面出现彩色长条, 显示有录像的时间段 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">鼠标点击任意时间点 </p></td>
+    <td width="258" valign="top"><p>回放图像打开 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击正在播放的子窗口2次 </p></td>
+    <td width="258" valign="top"><p>子窗口先放大后缩小, 录像播放继续 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>录像播放2min后, 点击■关闭, </p></td>
+    <td width="258" valign="top"><p>录像播放关闭 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>鼠标左键双击之前播放的子窗口 </p></td>
+    <td width="258" valign="top"><p>子窗口放大 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>鼠标点击任意时间点 </p></td>
+    <td width="258" valign="top"><p>回放图像打开 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>录像播放2min后点击关闭■ </p></td>
+    <td width="258" valign="top"><p>录像播放关闭 </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
