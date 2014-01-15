@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @2.3停止播放<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>停止播放功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>停止播放后重新播放, 选择有录像时间点播放,(测试dvr)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>已开启录像一段时间的测试设备DVR, 4通道, 地址: 192.168.2.132,与测试者在同一网段)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@2.3-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到回放界面</p></td>
+    <td width="258" valign="top"><p>没有播放的视频</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>在设备栏点击设备的名称</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">直接点击检索 </p></td>
+    <td width="258" valign="top"><p>表格栏出现时间长条</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">在长条中鼠标任选一点,再点击播放按钮▶</p></td>
+    <td width="258" valign="top"><p>长条对应通道的窗口播放录像,屏幕上时间点大致符合长条对应时间坐标</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">播放2min后, 点击停止播放按钮■</p></td>
+    <td width="258" valign="top"><p>播放停止</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p align="left">再点击播放按钮▶</p></td>
+    <td width="258" valign="top"><p>播放开始</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p align="left">播放2min后, 点击停止播放按钮■</p></td>
+    <td width="258" valign="top"><p>播放停止</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>FileType依次改为Time,Motion,Sensor,Manual,    重复步骤2-7</p></td>
+    <td width="258" valign="top"><p>如果只开启了Sensor录像会出现仅仅Sensor在表格栏有长条而其它都没有长条的情况,那样会出现其它的都不能播放    (All类型时,时间长条是4种情况的叠加) , 对应无长条的FileType在子窗口中无播放效果</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//用例2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>停止播放功能 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容 </p></td>
+    <td width="454" colspan="2" valign="top"><p>选择有录像时间点播放,(测试dvr)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加 </p></td>
+    <td width="454" colspan="2" valign="top"><p>已开启录像一段时间的测试设备(DVR, 4通道, 地址: 192.168.2.132, 与测试者在同一网段)</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号 </p></td>
+    <td width="454" colspan="2" valign="top"><p>@2.3-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号 </p></td>
+    <td width="197" valign="top"><p>步骤 </p></td>
+    <td width="258" valign="top"><p>预期 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>切换到回放界面 </p></td>
+    <td width="258" valign="top"><p>没有播放的视频 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>在设备栏点击设备的名称后直接点击检索 </p></td>
+    <td width="258" valign="top"><p>表格栏出现时间长条 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">在长条末中选一点,点击播放按钮▶ </p></td>
+    <td width="258" valign="top"><p>长条对应窗口播放录像,屏幕上时间点大致符合长条对应时间坐标 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p align="left">等待指示播放位置的红色长条跨过长条末跳到下一长条开始后点击停止播放按钮■ </p></td>
+    <td width="258" valign="top"><p>播放停止 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">再次点击播放按钮▶ </p></td>
+    <td width="258" valign="top"><p>从最后一次停止处开始播放,时间是最后一次停止的时间 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p align="left">1min后点击停止播放按钮■</p></td>
+    <td width="258" valign="top"><p>播放停止</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>选择开始时间为当前时间之后1个小时,结束时间为当前时间后3个小时, 点击检索 </p></td>
+    <td width="258" valign="top"><p>表格栏在当前时间之后没有出现时间长条 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>在未出现时间长条的地方点击, 再点击播放按钮▶ </p></td>
+    <td width="258" valign="top"><p>无录像播放 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>FileType依次改为Time,Motion,Sensor,Manual,    重复步骤2-8</p></td>
+    <td width="258" valign="top"><p>如果仅仅开启了Sensor录像,那么仅仅Sensor类型FileType时会有表格栏出现长条的情况, 其他情况表格栏都不会出现长条(All类型时,时间长条是4种情况的叠加) , 对应无长条的FileType在子窗口中无播放效果 </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
