@@ -8,18 +8,18 @@
 <body>
 <p>编辑人：姜晟<br />
   测试项目：CMS<br />
-  测试子项: @1.6开始录像<br />
+  测试子项: @1.7停止录像<br />
   测试用例:</p>
 <p>// @用例1</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>预览页面的录像功能</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面的停止录像功能</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
-    <td width="454" colspan="2" valign="top"><p>预览时页面录像测试(测dvr)</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面停止录像测试(测dvr)</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>前置添加</p></td>
@@ -27,7 +27,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试编号</p></td>
-    <td width="454" colspan="2" valign="top"><p>@1.6-1</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.7-1</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>步骤编号</p></td>
@@ -57,17 +57,17 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p>录像10分钟后,逐一关闭所有通道</p></td>
-    <td width="258" valign="top"><p>录像文件大小不再增长</p></td>
+    <td width="197" valign="top"><p>录像10分钟后,点击停止录像图标■</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
     <td width="197" valign="top"><p align="left">观察目录下总的文件大小2分钟, 删除D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\下生成的文件夹</p></td>
-    <td width="258" valign="top"><p>&nbsp;</p></td>
+    <td width="258" valign="top"><p>录像文件大小不再增长</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-6共5次 </p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-6</p></td>
     <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
   </tr>
 </table>
@@ -77,11 +77,11 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>预览页面的录像功能</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面停止录像功能</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
-    <td width="454" colspan="2" valign="top"><p>预览时页面录像功能测试(测IPC)</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面停止录像功能测试(测IPC)</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>前置添加</p></td>
@@ -89,7 +89,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试编号</p></td>
-    <td width="454" colspan="2" valign="top"><p>@1.6-2</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.7-2</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>步骤编号</p></td>
@@ -114,13 +114,13 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">播放20s钟后点击录像图标 </p></td>
+    <td width="197" valign="top"><p align="left">预览开始后点击录像图标 </p></td>
     <td width="258" valign="top"><p align="left">硬盘里出现D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL0X(X为通道号, 从1开始)的目录, 目录下开始有录像文件, 录像文件名为&rdquo;hhmmss&rdquo;这样的形式 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p>录像20分钟后点右键选择&rdquo;close view&rdquo;</p></td>
-    <td width="258" valign="top"><p>预览子窗口图像关闭, 第4步中文件大小不再增长</p></td>
+    <td width="197" valign="top"><p>录像10分钟后点■关闭录像</p></td>
+    <td width="258" valign="top"><p>第4步中文件大小不再增长</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
@@ -129,7 +129,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-6共5次 </p></td>
+    <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-4</p></td>
     <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
   </tr>
 </table>
@@ -139,11 +139,11 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>预览页面录像功能</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览页面停止录像功能</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
-    <td width="454" colspan="2" valign="top"><p>预览时页面录像测试(测试多台dvr同时连接时)</p></td>
+    <td width="454" colspan="2" valign="top"><p>预览时页面停止录像测试(测试多台dvr同时连接时)</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>前置添加</p></td>
@@ -151,7 +151,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试编号</p></td>
-    <td width="454" colspan="2" valign="top"><p>@1.6-3</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.7-3</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>步骤编号</p></td>
@@ -189,28 +189,31 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>预览10min后, 点击关闭A设备名下chl1和chl2,保留chl3和chl4的预览开启, </p></td>
-    <td width="258" valign="top"><p>设备A的chl1和chl2预览图像窗口关闭,<br />
-      D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL0X(X为1和2)下大小不变,CHL03和CHL04目录大小继续增长 </p></td>
+    <td width="197" valign="top"><p>预览10min后, 点击■关闭录像, </p></td>
+    <td width="258" valign="top"><p>D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\A或B设备名\ 文件夹大小不变, </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p>右键关闭B的chl1,chl2, 保留chl3和chl4的预览开启,</p></td>
-    <td width="258" valign="top"><p>设备B的chl1和chl2预览图像窗口关闭,<br />
-      D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL0X(X为1和2)下大小不变,CHL03和CHL04目录大小继续增长</p></td>
+    <td width="197" valign="top"><p>删除第6步文件夹里面内容</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
-    <td width="197" valign="top"><p>继续录像10min,然后点击关闭停止录像的按钮■</p></td>
-    <td width="258" valign="top"><p>设备A和B对应的文件夹&rdquo;D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\&rdquo; 的大小都不再变化</p></td>
+    <td width="197" valign="top"><p>点击录像图标开始录像</p></td>
+    <td width="258" valign="top"><p>设备A和B对应的文件夹&rdquo;D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\&rdquo; 产生avi文件</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>10min后点击关闭停止录像的按钮■</p></td>
+    <td width="258" valign="top"><p>上一步中文件大小不再改变</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
     <td width="197" valign="top"><p>删除设备A和B的录像的目录</p></td>
     <td width="258" valign="top"><p>&nbsp;</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>10</p></td>
+    <td width="114" valign="top"><p>11</p></td>
     <td width="197" valign="top"><p align="left">选取1,4,8,25,49,64,1X6,1X8分屏模式, 重复步骤2-9</p></td>
     <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
   </tr>
@@ -233,7 +236,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试编号</p></td>
-    <td width="454" colspan="2" valign="top"><p>@1.6-4</p></td>
+    <td width="454" colspan="2" valign="top"><p>@1.7-4</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>步骤编号</p></td>
@@ -268,16 +271,26 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>10min钟后, 在A对应的子窗口点右键选择&rdquo;close view&rdquo;</p></td>
-    <td width="258" valign="top"><p>预览子窗口图像关闭,A对应的 D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL01的目录下文件大小不再增长</p></td>
+    <td width="197" valign="top"><p>10min钟后, 点击关闭停止录像的按钮■</p></td>
+    <td width="258" valign="top"><p>预览子窗口图像关闭,A与B对应的 D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL01的目录下文件大小不再增长</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p>10min钟后, 在B对应的子窗口点右键选择&rdquo;close view&rdquo;</p></td>
-    <td width="258" valign="top"><p>预览子窗口图像关闭,B对应的 D:\JAREC\&rdquo;2014-01-14&rdquo;(测试日期)\设备名\CHL01的目录下文件大小不再增长</p></td>
+    <td width="197" valign="top"><p>删除第6步中产生的文件夹</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>点击开始录像按钮</p></td>
+    <td width="258" valign="top"><p>产生和第6步中一样的目录,并有avi录像文件产生</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>重复步骤6~7</p></td>
+    <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
     <td width="197" valign="top"><p align="left">选取1,9,16,25,49,64,1X6,1X8分屏模式, 重复步骤2-7 </p></td>
     <td width="258" valign="top"><p>与相应步骤的预期相同</p></td>
   </tr>
