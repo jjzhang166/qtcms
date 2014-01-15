@@ -58,7 +58,7 @@ private slots:
 private:
 	int cbInit();
 	QDateTime getDateFromPath(QString &filePath);
-	void sortFileList(QStringList &fileList);
+	int sortFileList(QStringList &fileList);
 
 private:
 	ILocalRecordSearch *m_pLocalRecordSearch;

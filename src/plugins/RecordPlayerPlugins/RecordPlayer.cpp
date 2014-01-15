@@ -182,13 +182,17 @@ QDateTime RecordPlayer::getDateFromPath(QString &filePath)
 	return dateTime;
 }
 
-void RecordPlayer::sortFileList(QStringList &fileList)
+int RecordPlayer::sortFileList(QStringList &fileList)
 {
 	QDateTime minDate;
 	QDateTime tempDate;
 	int keyPos = 0;
 	for (int i = 0; i < fileList.size() - 1; i++)
 	{
+		if (!QFile::exists(fileList[i]))
+		{
+			return -1;
+		}
 		keyPos = i;
 		minDate = getDateFromPath(fileList[i]);
 		for (int j = i + 1; j < fileList.size(); j++)
@@ -205,6 +209,7 @@ void RecordPlayer::sortFileList(QStringList &fileList)
 			fileList.swap(i, keyPos);
 		}
 	}
+	return 0;
 }
 
 int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
@@ -215,7 +220,10 @@ int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID
 	}
 
 	QStringList lstFileList = filelist.split(",", QString::SkipEmptyParts);
-	sortFileList(lstFileList);
+	if (-1 == sortFileList(lstFileList))
+	{
+		return 1;
+	}
 
 	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
 	QDateTime end = QDateTime::fromString(endTime, "yyyy-MM-dd hh:mm:ss");
