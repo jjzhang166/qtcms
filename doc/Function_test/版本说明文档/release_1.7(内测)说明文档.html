@@ -1,0 +1,845 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编写人：冯明创<br />
+  名称：重构版CMS<br />
+  版本：release_1.7( 内测)<br />
+  文档简介：<br />
+  1.本版本的功能以及测试项；<br />
+  2.<a name="OLE_LINK14" id="OLE_LINK14"></a><a name="OLE_LINK13" id="OLE_LINK13">相对于上一版本添加的新功能列表；</a><br />
+  3.解决bug的列表</p>
+<p>&nbsp;</p>
+<p>1.功能列表<br />
+  @1<br />
+  预览</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>1</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>远程预览</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>支持协议有：bubble，穿透，转发</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.1</p></td>
+    <td width="162" valign="top"><p>获取远程预览视频</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.2</p></td>
+    <td width="162" valign="top"><p>指定通道开启预览</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.2</p></td>
+    <td width="162" valign="top"><p>指定通道关闭预览视频</p></td>
+    <td width="84" valign="top"><p>支持鼠标右键关闭</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.3</p></td>
+    <td width="162" valign="top"><p>指定设备开启预览</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.4</p></td>
+    <td width="162" valign="top"><p>指定设备关闭预览视频</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.5</p></td>
+    <td width="162" valign="top"><p>多分割窗口预览</p></td>
+    <td width="84" valign="top"><p>1，4，6，7，9，16，25，49，64</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.6</p></td>
+    <td width="162" valign="top"><p>不同分屏模式的的切换</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.7</p></td>
+    <td width="162" valign="top"><p>窗口的翻页</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.8</p></td>
+    <td width="162" valign="top"><p>窗口的最大化</p></td>
+    <td width="84" valign="top"><p>双击</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.9</p></td>
+    <td width="162" valign="top"><p>预览声音</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>不支持</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>1.10</p></td>
+    <td width="162" valign="top"><p>预览状态栏提示</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+</table>
+<p>@2<br />
+  预览录像</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><p>功能编号</p></td>
+    <td width="468" colspan="4" valign="top"><p>2</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>预览录像</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>保存录像的路径为：D（设置指定的录像磁盘）:\JAREC（固定生成）\2014-01-14（预览的日期）\100005770（设备名称）\CHL03（设备通道号）\ 163335.avi(录像的时间)</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>2.1</p></td>
+    <td width="162" valign="top"><p>开启所有预览窗口的录像</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>2.2</p></td>
+    <td width="162" valign="top"><p>关闭所有预览窗口的录像</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>2.3</p></td>
+    <td width="162" valign="top"><p>开启指定预览窗口的录像</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>不支持</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>2.4</p></td>
+    <td width="162" valign="top"><p>关闭指定窗口的录像</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>不支持</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+</table>
+<p>@3<br />
+  远程回放</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>3</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>远程同步回放</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>支持协议：bubble；最多支持四路同步回放</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.1</p></td>
+    <td width="162" valign="top"><p>搜索远程录像文件</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.2</p></td>
+    <td width="162" valign="top"><p>播放</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.3</p></td>
+    <td width="162" valign="top"><p>停止</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.4</p></td>
+    <td width="162" valign="top"><p>暂停</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.5</p></td>
+    <td width="162" valign="top"><p>快进</p></td>
+    <td width="84" valign="top"><p>快进的速率与网速有关</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.6</p></td>
+    <td width="162" valign="top"><p>慢进</p></td>
+    <td width="84" valign="top"><p>1/2，1/4倍</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.7</p></td>
+    <td width="162" valign="top"><p>窗口最大化</p></td>
+    <td width="84" valign="top"><p>双击</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>3.8</p></td>
+    <td width="162" valign="top"><p>选定窗口开启同步视频播放</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+</table>
+<p>@4<br />
+  本地录像文件同步播放</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>4</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>本地录像文件同步播放</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>最多支持四路同步回放（目前）</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p><a name="_Hlk377571053" id="_Hlk377571053">4.1</a></p></td>
+    <td width="162" valign="top"><p>搜索指定设备的本地录像文件</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.2</p></td>
+    <td width="162" valign="top"><p>搜索指定通道的本地录像文件</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>不支持</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.3</p></td>
+    <td width="162" valign="top"><p>播放</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.4</p></td>
+    <td width="162" valign="top"><p>快进</p></td>
+    <td width="84" valign="top"><p>2，4，8</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.5</p></td>
+    <td width="162" valign="top"><p>慢进</p></td>
+    <td width="84" valign="top"><p>1/2，1/4，1/8</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.6</p></td>
+    <td width="162" valign="top"><p>暂停</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.7</p></td>
+    <td width="162" valign="top"><p>停止</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p><a name="OLE_LINK6" id="OLE_LINK6"></a><a name="OLE_LINK5" id="OLE_LINK5">Yes</a></p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.8</p></td>
+    <td width="162" valign="top"><p>窗口最大化</p></td>
+    <td width="84" valign="top"><p>双击</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>4.9</p></td>
+    <td width="162" valign="top"><p>多模式窗口分割切换</p></td>
+    <td width="84" valign="top"><p>4（目前支持4画面）</p></td>
+    <td width="112" valign="top"><p>支持</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>@5<br />
+  <a name="OLE_LINK8" id="OLE_LINK8"></a><a name="OLE_LINK7" id="OLE_LINK7">备份远程录像文件</a></p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><p>功能编号</p></td>
+    <td width="468" colspan="4" valign="top"><p>5</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>备份远程录像文件</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>支持协议：bubble</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.1</p></td>
+    <td width="162" valign="top"><p>搜索指定设备的远程录像文件列表</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.2</p></td>
+    <td width="162" valign="top"><p>单文件下载</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.3</p></td>
+    <td width="162" valign="top"><p>多文件同时下载</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.4</p></td>
+    <td width="162" valign="top"><p>停止下载</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.5</p></td>
+    <td width="162" valign="top"><p>指定备份路径</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>5.6</p></td>
+    <td width="162" valign="top"><p>续点下载</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>No</p></td>
+    <td width="110" valign="top"><p>No</p></td>
+  </tr>
+</table>
+<p>@6<br />
+  <a name="OLE_LINK10" id="OLE_LINK10"></a><a name="OLE_LINK9" id="OLE_LINK9">设备管理(Device Manage)</a></p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><p><a name="OLE_LINK12" id="OLE_LINK12"></a><a name="OLE_LINK11" id="OLE_LINK11">功能编号</a></p></td>
+    <td width="468" colspan="4" valign="top"><p>6</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>设备管理(Device Manage)</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.1</p></td>
+    <td width="162" valign="top"><p>搜索局域网内的设备</p></td>
+    <td width="84" valign="top"><p>支持ipc和dvr</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.2</p></td>
+    <td width="162" valign="top"><p>一键添加设备</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.3</p></td>
+    <td width="162" valign="top"><p>单项添加设备</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.4</p></td>
+    <td width="162" valign="top"><p>手动添加设备</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.5</p></td>
+    <td width="162" valign="top"><p>修改设备</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.6</p></td>
+    <td width="162" valign="top"><p>删除设备</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.7</p></td>
+    <td width="162" valign="top"><p>添加区域</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.8</p></td>
+    <td width="162" valign="top"><p>修改区域</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.9</p></td>
+    <td width="162" valign="top"><p>删除区域</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.10</p></td>
+    <td width="162" valign="top"><p>添加分组</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.11</p></td>
+    <td width="162" valign="top"><p>修改分组</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>6.12</p></td>
+    <td width="162" valign="top"><p>删除分组</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>Yes</p></td>
+  </tr>
+</table>
+<p>@7</p>
+<p>网络设置（server setting）</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>7</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>网络设置（server setting）</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>尚不支持</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.1</p></td>
+    <td width="162" valign="top"><p>Device Info</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.2</p></td>
+    <td width="162" valign="top"><p>Common Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.3</p></td>
+    <td width="162" valign="top"><p>Network Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.4</p></td>
+    <td width="162" valign="top"><p>Encoding Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.5</p></td>
+    <td width="162" valign="top"><p>Videos Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.6</p></td>
+    <td width="162" valign="top"><p>Screen Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.7</p></td>
+    <td width="162" valign="top"><p>Video Detect Setting</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.8</p></td>
+    <td width="162" valign="top"><p>Ptz Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>7.9</p></td>
+    <td width="162" valign="top"><p>Alarm Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+</table>
+<p>@8<br />
+  客户端设置（Client Setting）</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>8</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>客户端设置（Client Setting）</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>8.1</p></td>
+    <td width="162" valign="top"><p>Local Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>YES</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>8.2</p></td>
+    <td width="162" valign="top"><p>Record Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>Yes</p></td>
+    <td width="110" valign="top"><p>YES</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>8.3</p></td>
+    <td width="162" valign="top"><p>Warming Linage</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>yes</p></td>
+    <td width="110" valign="top"><p>YES</p></td>
+  </tr>
+</table>
+<p>@9<br />
+  用户管理（user manager）</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>9</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>用户管理（user manager）</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>9.1</p></td>
+    <td width="162" valign="top"><p>Local Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>9.2</p></td>
+    <td width="162" valign="top"><p>Record Settings</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>9.3</p></td>
+    <td width="162" valign="top"><p>Warming Linage</p></td>
+    <td width="84" valign="top"><p>&nbsp;</p></td>
+    <td width="112" valign="top"><p>NO</p></td>
+    <td width="110" valign="top"><p>NO</p></td>
+  </tr>
+</table>
+<p>@10<br />
+  用户日记（log）</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100" valign="top"><br />
+      功能编号 </td>
+    <td width="468" colspan="4" valign="top"><p>9</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能名称</p></td>
+    <td width="468" colspan="4" valign="top"><p>用户日记（log）</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>备注</p></td>
+    <td width="468" colspan="4" valign="top"><p>尚不支持</p></td>
+  </tr>
+  <tr>
+    <td width="100" valign="top"><p>功能子项编号</p></td>
+    <td width="162" valign="top"><p>名称</p></td>
+    <td width="84" valign="top"><p>备注</p></td>
+    <td width="112" valign="top"><p>是否支持</p></td>
+    <td width="110" valign="top"><p>是否请求测试</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>2. 相对于上一版本添加的新功能列表<br />
+  上一版本号：release_1.6(内测)<br />
+  添加功能：<br />
+  @3远程录像同步回放<br />
+  @4本地录像同步回放</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="284" valign="top"><br />
+      功能编号 </td>
+    <td width="284" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.1</p></td>
+    <td width="284" valign="top"><p>搜索远程录像文件</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.2</p></td>
+    <td width="284" valign="top"><p>播放</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.3</p></td>
+    <td width="284" valign="top"><p>停止</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.4</p></td>
+    <td width="284" valign="top"><p>暂停</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.5</p></td>
+    <td width="284" valign="top"><p>快进</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.6</p></td>
+    <td width="284" valign="top"><p>慢进</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.7</p></td>
+    <td width="284" valign="top"><p>窗口最大化</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>3.8</p></td>
+    <td width="284" valign="top"><p>选定窗口开启同步视频播放</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.1</p></td>
+    <td width="284" valign="top"><p>搜索指定设备的本地录像文件</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.3</p></td>
+    <td width="284" valign="top"><p>播放</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.4</p></td>
+    <td width="284" valign="top"><p>快进</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.5</p></td>
+    <td width="284" valign="top"><p>慢进</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.6</p></td>
+    <td width="284" valign="top"><p>暂停</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.7</p></td>
+    <td width="284" valign="top"><p>停止</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.8</p></td>
+    <td width="284" valign="top"><p>窗口最大化</p></td>
+  </tr>
+  <tr>
+    <td width="284" valign="top"><p>4.9</p></td>
+    <td width="284" valign="top"><p>多模式窗口分割切换</p></td>
+  </tr>
+</table>
+<p>3.相对于上一版本解决了的bug列表<br />
+  上一版本号：release_1.6(内测)<br />
+  <strong>注：</strong><strong>BUG</strong><strong>详细内容请参照&ldquo;二期客户端</strong><strong>V1.6 BUG</strong><strong>汇总</strong><strong>.doc</strong><strong>&rdquo;文档</strong><strong> </strong></p>
+<table border="1" cellspacing="0" cellpadding="0" width="568">
+  <tr>
+    <td><br />
+      Bug编号 </td>
+    <td><p align="center">Bug描述</p></td>
+    <td><p align="center">是否确认</p></td>
+    <td><p align="center">是否修复</p></td>
+    <td><p align="center">备注</p></td>
+  </tr>
+  <tr>
+    <td><p align="center"><a name="OLE_LINK2" id="OLE_LINK2"></a><a name="OLE_LINK1" id="OLE_LINK1">V1.6 BUG-1</a></p></td>
+    <td><p>视频预览并使用客户端进行本地录像时，大约6—8分钟会出现软件崩溃，提示内存错误。 </p></td>
+    <td><p align="center">否</p></td>
+    <td><p align="center">是</p></td>
+    <td><p align="center">录像时间超过10分钟，没有崩溃，认为BUG不再现</p></td>
+  </tr>
+  <tr>
+    <td width="88"><p align="center">V1.6 BUG-2</p></td>
+    <td width="293"><p>使用客户端录制的视频文件，进行播放时发现视频回放时间正常，但是画面失帧严重，画面中的人物动作人迟缓；查看帧率发现只有16帧每秒</p></td>
+    <td width="38"><p align="center">是</p></td>
+    <td width="38"><p align="center">是</p></td>
+    <td width="110"><p align="center">仅有失帧现象</p></td>
+  </tr>
+  <tr>
+    <td><p align="center">V1.4/1.5 BUG-1</p></td>
+    <td><p>目前可以进行视频回放，但是检索出来视频，选择一个开始回放时间点后需要经过较长的时间视频才可以回放，回放时发现画面延迟严重，画面中的人物动作迟缓。</p></td>
+    <td><p align="center">否</p></td>
+    <td><p align="center">是</p></td>
+    <td><p align="center">仅有失帧现象</p></td>
+  </tr>
+  <tr>
+    <td><p align="center">V1.4/1.5 BUG-4</p></td>
+    <td><p>视频回放一段时间后会导致软件崩溃</p></td>
+    <td><p align="center">否</p></td>
+    <td><p align="center">是</p></td>
+    <td><p align="center">录像时间超过10分钟，没有崩溃，认为BUG不再现</p></td>
+  </tr>
+  <tr>
+    <td><p align="center">V1.3 BUG-4</p></td>
+    <td><p>同时开启多台设备，电脑提示内存错误，然后软件崩溃。</p></td>
+    <td><p align="center">否</p></td>
+    <td><p align="center">是</p></td>
+    <td><p align="center">预览时间超过10分钟，没有崩溃，认为BUG不再现</p></td>
+  </tr>
+  <tr>
+    <td><p align="center">V1.3 BUG-10</p></td>
+    <td><p>连接多台报告，否则是大路数的设备软件会出来内存错误（如连接99467979这台16路的设备）</p></td>
+    <td><p align="center">否</p></td>
+    <td><p align="center">是</p></td>
+    <td><p align="center">预览时间超过10分钟，没有崩溃，认为BUG不再现</p></td>
+  </tr>
+</table>
+</body>
+</html>
