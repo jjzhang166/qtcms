@@ -403,12 +403,17 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"filename",evMap["filename"].toString());
+	qDebug()<<evMap["filename"].toString();
 	EP_ADD_PARAM(arg,"filepath",evMap["filepath"].toString());
+	qDebug()<<evMap["filepath"].toString();
 	EP_ADD_PARAM(arg,"filesize",evMap["filesize"].toString());
+	qDebug()<<evMap["filesize"].toString();
 	EP_ADD_PARAM(arg,"channelnum",evMap["channelnum"].toString());
+	qDebug()<<evMap["channelnum"].toString();
 	EP_ADD_PARAM(arg,"startTime",startTime.toString("yyyy-MM-dd hh:mm:ss"));
+	qDebug()<<startTime.toString("yyyy-MM-dd hh:mm:ss");
 	EP_ADD_PARAM(arg,"stopTime",stopTime.toString("yyyy-MM-dd hh:mm:ss"));
-
+	qDebug()<<stopTime.toString("yyyy-MM-dd hh:mm:ss");
 	EventProcCall("GetRecordFile",arg);
 
 }

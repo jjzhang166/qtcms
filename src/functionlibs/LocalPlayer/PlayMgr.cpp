@@ -110,6 +110,12 @@ void PlayMgr::run()
 		fileStartTime.setDate(date);
 		fileStartTime.setTime(time);
 
+		qDebug()<<"================= filePath "<<filePath;
+		qDebug()<<"================= fileDate "<<fileDate<<" fileName "<<fileName;
+		qDebug()<<"================= fileStartTime "<<fileStartTime;
+		qDebug()<<"================= m_startTime "<<m_startTime;
+
+
 		timeOffset = fileStartTime.toMSecsSinceEpoch() - m_startTime.toMSecsSinceEpoch();
 		if (timeOffset > 0)
 		{

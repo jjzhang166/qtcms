@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMutex>
 #include "qwfw.h"
+#include <QDebug>
 #include "IDeviceRemotePlayback.h"
 #include "ILocalRecordSearch.h"
 #include "ILocalPlayer.h"
@@ -17,7 +18,7 @@ int cbSearchStop(QString evName,QVariantMap evMap,void*pUser);
 class RecordPlayer : public QWidget,
 	public QWebPluginFWBase
 {
-	Q_OBJECT
+	Q_OBJECT 
 
 public:
 	RecordPlayer();

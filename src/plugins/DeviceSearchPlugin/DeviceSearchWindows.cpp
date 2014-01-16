@@ -105,6 +105,7 @@ void DeviceSearchWindows::addItemMap(QVariantMap item)
 void DeviceSearchWindows::sendToHtml(QVariantMap item)
 {
 	qDebug("SearchDeviceSuccess");
+
 	EventProcCall("SearchDeviceSuccess",item);
 }
 
