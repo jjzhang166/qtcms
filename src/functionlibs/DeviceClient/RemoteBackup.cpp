@@ -316,7 +316,7 @@ void RemoteBackup::clearbuffer()
 	{
 		RecFrame recframe = m_bufferqueue.dequeue();
 		if(recframe.pdata)
-			delete recframe.pdata;
+			delete[] recframe.pdata;
 	}
 	m_bufflock.unlock();
 }
@@ -366,7 +366,7 @@ void RemoteBackup::run()
 				AVI_write_audio(AviFile,recframe.pdata ,recframe.datasize);
 			}
 		
-			delete recframe.pdata;
+			delete[] recframe.pdata;
 			recframe.pdata = NULL;
 
 			if (m_progress>=1.0f || AVI_bytes_written(AviFile)>1024*1024*1024)	
