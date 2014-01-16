@@ -8,7 +8,6 @@ var oSearchOcx;
 		});
 		oTreeWarp.hide();
 		$('#iframe').hide();
-
 		document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
 			var e = e || window.event;
 			if(e.target.tagName != 'BODY'){
@@ -97,22 +96,23 @@ var oSearchOcx;
 					//区域列表;
 					areaList2Ui('0');
 				}else if(index == 1){
-					$('#device_list').find('li').remove();	
-					var areaList = oCommonLibrary.GetAreaList();
+					$('ul.filetree:eq(2)').find('li').remove();
+					areaList2Ui('2')
+					/*var areaList = oCommonLibrary.GetAreaList();
 					var areaList0 = 0;				
 					//手动添加区域0
 					var deviceList0 = oCommonLibrary.GetDeviceList(0);	
-							var add_li = $('<li><span class="area">区域_root</span><ul id="area0"></ul></li>').appendTo('#device_list');
+							var add_li = $('<li><span class="area">区域_root</span><ul id="area0"></ul></li>').appendTo('ul.filetree:eq(2)');
 							$('ul.filetree:eq(2)').treeview({add:add_li});				
 					for(n in areaList){
 						var id = areaList[n];
 						var name = oCommonLibrary.GetAreaName(areaList[n]);
 						var pid = oCommonLibrary.GetAreaPid(areaList[n]);
 						
-						$('#device_list').treeview()	
+						$('ul.filetree:eq(2)').treeview()	
 						
-						var add_li = $('<li><span class="area">'+name+'</span><ul id="area'+id+'"></ul></li>').appendTo('#device_list');
-						$("#device_list").treeview({add: add_li});	
+						var add_li = $('<li><span class="area">'+name+'</span><ul id="area'+id+'"></ul></li>').appendTo('ul.filetree:eq(2)');
+						$('ul.filetree:eq(2)').treeview({add: add_li});	
 					//搜索添加区域
 					var deviceList = oCommonLibrary.GetDeviceList(id)
 						for(k in deviceList)
@@ -131,32 +131,29 @@ var oSearchOcx;
 							
 							var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span class="device" id="device'+dev_id0+'">'+deviceInfo0.name+'</span></li>').appendTo('#area0');
 							$('ul.filetree:eq(2)').treeview({add:add_li_1});
-						}
+						}*/
 						
-						$('.device1').each(function(device_index){
+						$('ul.filetree:eq(2) span.device').each(function(device_index){
 							$(this).click(function(){
-								var deviceInfo_0 = oCommonLibrary.GetDeviceInfo($(this)[0].value);
-								var _url = 'http://'+deviceInfo_0.address+':'+deviceInfo_0.port;
-								var _usr = deviceInfo_0.username;
-								var _pwd = deviceInfo_0.password;
-								var _chn = oCommonLibrary.GetChannelCount($(this)[0].value);
+								var oDevData = $(this).data('data');
+								var _url = 'http://'+oDevData.address+':'+oDevData.port;
+								var _usr = oDevData.username;
+								var _pwd = oDevData.password;e;
+								var _chn = oDevData.channel_count;
 								for(j = 0;j<=10;j++){	
 									$('.ipc_list').eq(j).hide();	
 									$('.dvr_list').eq(j).hide();	
 									$('.dvr_list0').eq(j).hide();		
-									$('.ipc_list0').eq(j).hide();	
-									$('.ope_list li').removeClass('act');					
-									if(deviceInfo_0.vendor == 'JUAN IPC'){//如果选中设备为ipc
-										$('.ipc_list0')[0].style.display='block';									
-										$('.ipc_list0 li').eq(0).addClass('act');
+									$('.ipc_list0').eq(j).hide();					
+									if(oDevData.vendor == 'JUAN IPC'){//如果选中设备为ipc
+										$('.ipc_list0').show();								
 										$('.ipc_list').eq(0).show();
 										ipc(_url,_usr,_pwd);
 										devinfo_load_content(true);										
 									}
-								    if(deviceInfo_0.vendor == 'JUAN DVR')//如果选中设备为dvr
+								    if(oDevData.vendor == 'JUAN DVR')//如果选中设备为dvr
 									{
-										$('.dvr_list0')[0].style.display='block';
-										$('.dvr_list0 li').eq(0).addClass('act');
+										$('.dvr_list0').show()
 										$('.dvr_list').eq(0).show();
 										dvr(_url,_usr,_pwd,_chn);
 										dvr_devinfo_load_content();	
@@ -179,15 +176,42 @@ var oSearchOcx;
 			}
 			// 设置相关
 			$('ul.dvr_list0').each(function(){//dvr
-				$(this).toSwitch_0();
+				var warp = $(this);
+				warp.find('li').each(function(index){
+					$(this).click(function(){
+						switch(index)
+						{
+							case 0: dvr_devinfo_load_content();break;
+							case 1: dvr_common_load_content();break;
+							case 2: dvr_network_load_content();break;
+							case 3: dvr_load('dvr_enc_chn_sel');break;
+							case 4: dvr_load('dvr_record_chn_sel');break;
+							case 5: dvr_load('dvr_screen_chn_sel');break;
+							case 6: dvr_load('dvr_detect_chn_sel');break;
+							case 7: dvr_load('dvr_ptz_chn_sel');break;
+							case 8: dvr_load('dvr_alarm_chn_sel');break;
+							default:break;
+						}		
+					})
+				})
 			});
 
 			$('ul.ipc_list0').each(function(){//ipc
-				$(this).toSwitch_1();
-			});
-
-			$('ul.ope_list').each(function(){    //设置项目UI相应逻辑.
-				$(this).toSwitch();
+				var warp = $(this);
+				warp.find('li').each(function(index){
+					$(this).click(function(){
+						switch(index)
+						{
+							case 0: devinfo_load_content(true);break;
+							case 1: encode_load_content();break;
+							case 2: network_load_content();break;
+							case 3: user_management_load_content();break;
+							case 4: time_load_content();break;
+							//case 5: alert(5);break;
+							default:break;
+						}			
+					})
+				})
 			});
 		})
 		//搜索结果 设备列表tr委托部分事件;
@@ -234,6 +258,13 @@ var oSearchOcx;
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
 		set_contentMax();
+		$('ul.filetree:gt(1)').each(function(){ 
+			var warp = $(this)
+			$(this).on('click','span.device',function(){ 
+				warp.find('span.device').removeClass('sel');
+				$(this).addClass('sel');
+			})
+		})
 	})///
 	$(window).resize(function(){ 
 		set_contentMax();

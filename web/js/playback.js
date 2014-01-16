@@ -1,7 +1,6 @@
 var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 	nViewNum = 0,
-	NowMonth = 0,
-	num = 0;
+	NowMonth = 0
 	drag_timer = null;
 	$(function(){
 		oLeft = $('#search_device');
@@ -165,27 +164,35 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		}
 		if(str == 'GroupSpeedFast' || str == 'GroupSpeedSlow'){
 			var show ='';
-			if(obj.id == 'playback' && str == 'GroupSpeedFast'){
-				show = '2x';
+			if(obj.id == 'playback'){
+				if(str == 'GroupSpeedFast'){ 
+					show = '2x';
+				}else{ 
+					show = '1/2x';
+				}		
 				obj[str]();
-			}else if(obj.id == 'playback' && str == 'GroupSpeedSlow'){ 
-				show = '1/2x';
-				obj[str]();
-			}else if(obj.id == 'playbackLocl' && str == 'GroupSpeedFast'){
-				down = 1;
-				up *= 2;
-				up = up > 8 ? 8:up;
-				show = up+'x';
-				obj[str](up);
-			}else if(obj.id == 'playbackLocl' && str == 'GroupSpeedSlow'){
-				up=1;
-				down *= 2;
-				down = down > 8 ? 8:down;
-				show = '1/'+down+'x';
-				obj[str](down);
+			}else if(obj.id == 'playbackLocl'){
+				var speed = 1;
+				if(str == 'GroupSpeedFast'){
+					down = 1;			
+					up *= 2;
+					up = up > 8 ? 8:up;
+					speed = up;
+				}else{ 
+					up = 1;
+					down *= 2;
+					down = down > 8 ? 8:down;
+					show = '1/';
+					speed = down;
+				}		
+				show = show+speed+'x';			
+				obj[str](speed);
 			}
 			palybackspeed(show);
 		}else{ 
+			if(str == 'GroupSpeedNormal'){
+				palybackspeed('1x');
+			}
 			obj[str]();
 		}
 	}

@@ -1,5 +1,13 @@
+/*
 
-function addMouseStyle(obj,action){
+   该文件不要涉及到设备/插件/播放器的数据,及相关逻辑操作处理。
+	1.UI上的公共事件添加 及响应处理.
+	2.辅助方法.
+	3.其他数据相关事件响应处理和个别形式的事件, 请在对应JS文件中处理
+	4.如UI上有相同的逻辑操作, 请慎重在文件添加.
+
+*/
+function addMouseStyle(obj,action){  //按钮UI响应
 	var width = obj.width();
 	var left,top;
 	obj.hover(function(){
@@ -83,7 +91,7 @@ function ViewMax(type){
 		setTables();
 	}	
 }
-function setTables(){ 
+function setTables(){   // 回放页面底部表格最大化相应调整
 	$('table.table tr').each(function(index){
 		var oTds = $(this).find('td');
 		var W =  $('table.table').width() -50;
@@ -91,7 +99,7 @@ function setTables(){
 		oTds.eq(0).width(80);		
 	})
 }
-function set_drag(disX,X1,X2){
+function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 		var oDrag=$('div.play_time')
 		$(document).mousemove(function(event){
 				var left = event.pageX - disX;
@@ -102,59 +110,12 @@ function set_drag(disX,X1,X2){
 			$(this).off();
 		})
 }
-(function($){
+(function($){   // 
 	$.fn.extend({
-		//dvr
-		'toSwitch_0': function(){
-			var warp = this;
-			warp.find('li').each(function(index){
-				$(this).click(function(){
-					warp.find('li').removeClass('act');
-					$(this).addClass('act');
-					warp.nextAll('div.switch').hide();
-					warp.nextAll('div.dvr_list').eq(index).show();
-					switch(index)
-					{
-						case 0: dvr_devinfo_load_content();break;
-						case 1: dvr_common_load_content();break;
-						case 2: dvr_network_load_content();break;
-						case 3: dvr_load('dvr_enc_chn_sel');break;
-						case 4: dvr_load('dvr_record_chn_sel');break;
-						case 5: dvr_load('dvr_screen_chn_sel');break;
-						case 6: dvr_load('dvr_detect_chn_sel');break;
-						case 7: dvr_load('dvr_ptz_chn_sel');break;
-						case 8: dvr_load('dvr_alarm_chn_sel');break;
-						default:break;
-					}		
-				})
-			})
-		},
-		//ipc
-		'toSwitch_1': function(){
-			var warp = this;
-			warp.find('li').each(function(index){
-				$(this).click(function(){
-					warp.find('li').removeClass('act');
-					$(this).addClass('act');
-					warp.nextAll('div.switch').hide();
-					warp.nextAll('div.ipc_list').eq(index).show();
-					switch(index)
-					{
-						case 0: devinfo_load_content(true);break;
-						case 1: encode_load_content();break;
-						case 2: network_load_content();break;
-						case 3: user_management_load_content();break;
-						case 4: time_load_content();break;
-						//case 5: alert(5);break;
-						default:break;
-					}			
-				})
-			})
-		},
 		//client setting
 		'toSwitch': function(){
 			var warp = $(this);
-			var sClass = $(this).attr('class')+'Act';
+			var sClass = warp.find('li:first').attr('class');
 			warp.find('li').each(function(index){
 				$(this).on('click',function(){
 					warp.find('li').removeClass(sClass);
@@ -163,7 +124,7 @@ function set_drag(disX,X1,X2){
 				})
 			})
 		},
-		'toSelect':function(){
+		'toSelect':function(){ //魔力HTML下拉选择框 JQ插件形式
 			var This = this;
 			var option = this.next('ul.option');
 			this.click(function(){
@@ -188,7 +149,7 @@ function set_drag(disX,X1,X2){
 				}
 			})
 		},
-		'timeInput':function(options){
+		'timeInput':function(options){  //时间输入框
 			$(this).html('');
 			var warp = $(this);
 			var defaults = { 
@@ -233,7 +194,7 @@ function set_drag(disX,X1,X2){
 					}
 				});	
 			})
-			function availability(obj,index){ 
+			function availability(obj,index){   //调整输入的事件范围
 				var str = obj.val().split('');
 				if(index == 0){
 					if(str[0] > 2){
@@ -250,7 +211,7 @@ function set_drag(disX,X1,X2){
 				return obj.val();
 			}
 		},
-		'gettime':function (){
+		'gettime':function (){  // 初始化好的事件控件    的相应获取事件方法。
 			if($(this).attr('class') == 'timeInput'){
 				var time = []
 				$(this).find('input').each(function(){ 
@@ -261,7 +222,7 @@ function set_drag(disX,X1,X2){
 		},
 
 		//数据填充部分
-		'toCheck':function(){
+		'toCheck':function(){ 
 			$(this).click(function(){
 				return $(this).val($(this).prop('checked'));
 			})
@@ -295,11 +256,11 @@ function set_drag(disX,X1,X2){
 				event.stopPropagation();
 			})
 
-			$('#tableSelectAll').on('click',function(){ 
+			$('#tableSelectAll').on('click',function(){  // 全选
 				warp.find(':checkbox').prop('checked',true);
 			})
 
-			$('#tableAntiElection').on('click',function(){ 
+			$('#tableAntiElection').on('click',function(){ //全不选
 				warp.find(':checkbox').prop('checked',false);
 			})
 		}
@@ -325,7 +286,7 @@ $(function(){
 		}
 	})
 
-	$('div.switchlist').each(function(){
+	$('ul.switchlist,.ope_list').each(function(){
 		$(this).toSwitch();
 	})
 	$('tbody.synCheckboxClick').SynchekboxClick();
@@ -353,7 +314,7 @@ function firstUp(str){  //字符串首字母大写
 	a[0] = a[0].toUpperCase();
 	return a.join('');
 }
-function show(data){
+function show(data){  // 在ID为test的div元素中打印对象数据
 	var index='default'
 	var str = 'Null'
 	$('#test').html('');
@@ -371,7 +332,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	num = num.toString();
 	return num = num<10 ? '0'+num : num;
 }
-function showdata(id,type){ 
+function showdata(id,type){  //显示表单下有ID的元素的val值
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
 	$('#'+type).find('[id]').each(function(){ 
@@ -380,7 +341,7 @@ function showdata(id,type){
 	show(str);
 }
 //弹出框部分操作
-function closeMenu(){
+function closeMenu(){  
 	$('#iframe,div.confirm, div.menu').hide();
 	$('#menusList div.menu input.data').remove();
 	$('#menusList div.menu input:text').val('');
@@ -401,7 +362,7 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 		left:($(window).width() - obj.width())/2
 	}).show();
 }
-function returnTime(sInt){ 
+function returnTime(sInt){  //
 	var H = sInt/3600;
 		H = addZero(parseInt(H));
 	var M = (sInt-H*3600)/60
