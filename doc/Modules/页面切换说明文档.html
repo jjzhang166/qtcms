@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p><a name="OLE_LINK4" id="OLE_LINK4"></a><a name="OLE_LINK3" id="OLE_LINK3">编辑人：冯明创</a><br />
+  编辑日期：2014.01.13</p>
+<p>简介：页面与QWebView的交互说明文档</p>
+<p>@1<br />
+  主页面  需要添加<a name="OLE_LINK8" id="OLE_LINK8"></a><a name="OLE_LINK7" id="OLE_LINK7">QtQWebViewPlugin</a> 插件，QtQWebViewPlugin插件的用法请看QtQWebViewPlugin插件的说明文档。<br />
+  @2<br />
+  子页面  之间的切换 使用以下指令：<br />
+  window.status='&lt;pageaction  SrcUrl=&quot;&quot; SrcAct=&quot;&quot; DstUrl=&quot;&quot;  DstAct=&quot;&quot;&gt;&lt;/pageaction&gt;'</p>
+<p>指令含义：<br />
+  SrcUrl：为本页面的url<br />
+  SrcAct可选值 ：<br />
+  &ldquo;index&rdquo;：跳转到主页<br />
+  &ldquo;close&rdquo;：关闭当前页面<br />
+  DstUrl：为目的页面的url<br />
+  DstAct可选值 ：<br />
+  &ldquo;new&rdquo;：如果dsturl还没存在，则新建一个page，如果存在，就跳转到dsturl页面<br />
+  &ldquo;reload&rdquo;：dsturl页面替换原来页面</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="219" valign="top"><br />
+      指令 </td>
+    <td width="175" valign="top"><p>含义</p></td>
+  </tr>
+  <tr>
+    <td width="219" valign="top"><p>&lt;pageaction    SrcUrl=&quot;/skins/test/load_test.html&quot; SrcAct=&quot;&quot; DstUrl=&quot;/skins/default/device.html&quot;    DstAct=&quot;reload&quot;&gt;&lt;/pageaction&gt;</p></td>
+    <td width="175" valign="top"><p>重新加载页面（禁止加载主页）</p></td>
+  </tr>
+  <tr>
+    <td width="219" valign="top"><p>&lt;pageaction    SrcUrl=&quot;/skins/test/load_test.html&quot; SrcAct=&quot;index&quot;    DstUrl=&quot;/skins/default/device.html&quot;    DstAct=&quot;reload&quot;&gt;&lt;/pageaction&gt;</p></td>
+    <td width="175" valign="top"><p>返回到主页</p></td>
+  </tr>
+  <tr>
+    <td width="219" valign="top"><p>&lt;pageaction    SrcUrl=&quot;/skins/test/load_test.html&quot; SrcAct=&quot;close&quot; DstUrl=&quot;/skins/default/device.html&quot;    DstAct=&quot;reload&quot;&gt;&lt;/pageaction&gt;</p></td>
+    <td width="175" valign="top"><p>关闭当前页面</p></td>
+  </tr>
+  <tr>
+    <td width="219" valign="top"><p>&lt;pageaction    SrcUrl=&quot;/skins/test/load_test.html&quot; SrcAct=&quot;&quot;    DstUrl=&quot;/skins/default/device.html&quot;    DstAct=&quot;new&quot;&gt;&lt;/pageaction&gt;</p></td>
+    <td width="175" valign="top"><p>新建页面</p></td>
+  </tr>
+</table>
+<p>demo：</p>
+<p>1.把两个demo文件拷贝到/skins/test/下</p>
+<p>2.需改debug文件夹下的MainSet.ini文件：Theme=Default_SubViewPage_test</p>
+</body>
+</html>

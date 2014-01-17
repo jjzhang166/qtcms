@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+    var obj = document.getElementById('windows');
+    obj.AddEventProc("BackupStatusChange", "alert('BackupStatusChange');");
+    obj.AddEventProc("BackupStatusChange", 'BackupStatusChange(ev)');
+
+}
+function BackupStatusChange(ev) {
+    var str;
+    str = ev.types ;
+    alert(str); 
+}
+var i=0;
+function newurl() {
+   var obj = document.getElementById('windows');
+   var url=document.getElementById('url');
+   obj.LoadNewPage(url.value);
+}
+function newurlfromview() {
+	i++;
+	window.status=i;
+}
+</script>
+</head>
+
+<body onload="Onload()">
+  <object type="application/cms-qwebview" id="windows" style="width:800; height:500;"></object>
+    	<tr>
+		<td>url</td>
+		<td><input type="text" id="url" value="/skins/test/load_test.html"/></td>
+	</tr>
+
+    <tr>
+        <td><button onclick="newurl()">newurl</button></td>
+        <td><button onclick="newurlfromview()">newurlfromview</button></td>
+    </tr>
+</body>
+</html>
