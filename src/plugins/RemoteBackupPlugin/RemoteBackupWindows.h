@@ -4,6 +4,7 @@
 #include <QtGui/QWidget>
 #include <QtCore/QVariantMap>
 #include <QtCore/QTime>
+#include <QFileDialog>
 #include "qwfw.h"
 #include "IRemoteBackup.h"
 //#include "IEventRegister.h"
@@ -29,6 +30,7 @@ public slots:
 	int stopBackup();
 	float getProgress();
 
+	void ChooseDir();
 	void sendToHtml(QVariantMap item);
 private:
 	bool LoadDeviceClient(QString vender);

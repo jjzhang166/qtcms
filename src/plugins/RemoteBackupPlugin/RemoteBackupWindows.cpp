@@ -112,6 +112,18 @@ void RemoteBackupWindows::procCallBack(QVariantMap item)
 	emit sendStatus(item);
 }
 
+void RemoteBackupWindows::ChooseDir()
+{
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+		".",
+		QFileDialog::ShowDirsOnly
+		| QFileDialog::DontResolveSymlinks);
+	QVariantMap item;
+	item.insert("path",dir);
+	EventProcCall("RecordDirPath",item);
+
+}
+
 int __cdecl BackupStatusProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {
 	if (sEventName == "backupEvent")
