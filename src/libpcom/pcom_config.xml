@@ -10,6 +10,7 @@
 		<item clsid="DE91223A-0978-4CA2-9F8B-829DA0EB88E8" name="plugin.DeviceSearchPlugin" file="plugins/DeviceSearchPlugin.dll" mimetype="application/cms-dsview-windows"/>
         <item clsid="477F1555-9614-43D7-8985-4B6B92623F4E" name="plugin.recordplayerplugin" file="plugins/RecordPlayerPlugins.dll" mimetype="application/cms-record-player" />
 		<item clsid="F3014A77-DCE1-41BC-9D9D-B12B2E7E8653" name="plugin.PreviewWindowsTest" file="plugins/PreviewWindowsTest.dll" mimetype="application/cms-manualrecord-test"/>
+		<item clsid="B1C67BFF-560F-47C3-8983-112DFE4DF652" name="plugin.QtQWebViewPlugin" file="plugins/QtQWebViewPlugin.dll" mimetype="application/cms-qwebview"/>
 		<item clsid="3C5C3FDF-F9C4-452B-A0FE-84A6280F3057" name="divmode.div1" file="div1.dll" mode="div1_1"/>
 		<item clsid="A9D7E3FE-FD1A-469C-B491-994DE4C5FEDB" name="divmode.div4_4" file="div4_4.dll" mode="div4_4"/>
 		<item clsid="1711E8ED-0213-42F4-AB0C-830D9F3DC402" name="divmode.div8_1" file="div8_1.dll" mode="div8_1"/>
