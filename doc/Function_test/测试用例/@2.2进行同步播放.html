@@ -36,7 +36,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>切换到回放界面</p></td>
+    <td width="197" valign="top"><p>切换到回放界面，点击远程搜索</p></td>
     <td width="258" valign="top"><p>没有视频在播放</p></td>
   </tr>
   <tr>
@@ -94,6 +94,11 @@
     <td width="197" valign="top"><p>FileType依次改为Time,Motion,Sensor,Manual,    重复步骤2-11</p></td>
     <td width="258" valign="top"><p>如果仅仅开启了Sensor录像, 那么仅仅Sensor类型的文件时会有表格栏出现长条的情况,其他情况表格栏都不会出现长条(All类型时,时间长条是4种情况的叠加) , 对应无长条的FileType在子窗口中无播放效果</p></td>
   </tr>
+  <tr>
+    <td width="114" valign="top"><p>13</p></td>
+    <td width="197" valign="top"><p>切换到本地搜索，重复步骤2~12</p></td>
+    <td width="258" valign="top"><p>对于本地没有录像的CHL和DVR，检索时是不会有时间长条的，而没有时间长条的地方点击后点播放按钮是不应该有录像播放的</p></td>
+  </tr>
 </table>
 <p>&nbsp;</p>
 <p>//@用例2</p>
@@ -101,34 +106,34 @@
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>同步播放 </p></td>
+    <td width="454" colspan="2" valign="top"><p>同步播放</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>测试内容 </p></td>
+    <td width="114" valign="top"><p>测试内容</p></td>
     <td width="454" colspan="2" valign="top"><p>测试其他操作对同步播放的影响(测试dvr)</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>前置添加 </p></td>
+    <td width="114" valign="top"><p>前置添加</p></td>
     <td width="454" colspan="2" valign="top"><p>已开启录像一段时间的测试设备(DVR, 4通道, 地址: 192.168.2.132, 与测试者在同一网段)</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>测试编号 </p></td>
+    <td width="114" valign="top"><p>测试编号</p></td>
     <td width="454" colspan="2" valign="top"><p>@2.2-2</p></td>
   </tr>
   <tr>
-    <td width="114" valign="top"><p>步骤编号 </p></td>
-    <td width="197" valign="top"><p>步骤 </p></td>
-    <td width="258" valign="top"><p>预期 </p></td>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>点击Playback图标切换到回放界面 </p></td>
-    <td width="258" valign="top"><p>没有视频在播放 </p></td>
+    <td width="197" valign="top"><p>点击Playback图标切换到回放界面，点击远程搜索</p></td>
+    <td width="258" valign="top"><p>没有视频在播放</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>在设备栏点击设备的名称, 直接点击检索 </p></td>
-    <td width="258" valign="top"><p>表格栏出现时间长条 </p></td>
+    <td width="197" valign="top"><p>在设备栏点击设备的名称, 直接点击检索</p></td>
+    <td width="258" valign="top"><p>表格栏出现时间长条</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
@@ -137,34 +142,39 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
-    <td width="197" valign="top"><p align="left">在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式 </p></td>
+    <td width="197" valign="top"><p align="left">在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式</p></td>
     <td width="258" valign="top"><p>长条对应通道的窗口播放录像,屏幕上时间点大致符合长条对应时间坐标,<br />
       控制栏2X变1X</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>5</p></td>
-    <td width="197" valign="top"><p align="left">再次执行第1,2步,点击慢速播放按钮 </p></td>
+    <td width="197" valign="top"><p align="left">再次执行第1,2步,点击慢速播放按钮</p></td>
     <td width="258" valign="top"><p>控制栏1X变1/2X</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式 </p></td>
+    <td width="197" valign="top"><p>在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式</p></td>
     <td width="258" valign="top"><p>控制栏1/2X变1X, 长条对应通道的窗口播放录像,屏幕上时间点大致符合长条对应时间坐标,</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p>执行第1,2步,依次点击暂停,停止,音量,放大(2次),缩小(1次)等图标 </p></td>
-    <td width="258" valign="top"><p>第1,2步对应预期相同, 依然无视频播放, 放大,缩小应有效果 </p></td>
+    <td width="197" valign="top"><p>执行第1,2步,依次点击暂停,停止,音量,放大(2次),缩小(1次)等图标</p></td>
+    <td width="258" valign="top"><p>第1,2步对应预期相同, 依然无视频播放, 放大,缩小应有效果</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
-    <td width="197" valign="top"><p>在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式 </p></td>
+    <td width="197" valign="top"><p>在长条中鼠标任选一点,再点击播放按钮▶,进入正常播放模式</p></td>
     <td width="258" valign="top"><p>长条对应通道的窗口播放录像,屏幕上时间点大致符合长条对应时间坐标,</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>9</p></td>
     <td width="197" valign="top"><p>FileType依次改为Time,Motion,Sensor,Manual,    重复步骤1-8</p></td>
-    <td width="258" valign="top"><p>如果仅仅开启了Sensor录像, 那么仅仅Sensor类型的文件时会有表格栏出现长条的情况,其他情况表格栏都不会出现长条(All类型时,时间长条是4种情况的叠加) , 对应无长条的FileType在子窗口中无播放效果 </p></td>
+    <td width="258" valign="top"><p>如果仅仅开启了Sensor录像, 那么仅仅Sensor类型的文件时会有表格栏出现长条的情况,其他情况表格栏都不会出现长条(All类型时,时间长条是4种情况的叠加) , 对应无长条的FileType在子窗口中无播放效果</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p>切换到本地搜索,重复步骤1~9</p></td>
+    <td width="258" valign="top"><p>对于本地没有录像的CHL和DVR，检索时是不会有时间长条的，而没有时间长条的地方点击后点播放按钮是不应该有录像播放的</p></td>
   </tr>
 </table>
 </body>
