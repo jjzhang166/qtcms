@@ -80,8 +80,8 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		if (SrcUrl==item->url&&SrcAct=="close")
 		{
 			item->m_SubWebView->close();
-			delete item->m_SubWebView;
-			m_ViewPageList.removeAt(i);
+			//delete item->m_SubWebView;
+			//m_ViewPageList.removeAt(i);
 			return;
 		}
 		i++;
