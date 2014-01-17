@@ -1,5 +1,5 @@
 #include "QtQWebView.h"
-
+#include <QFileDialog>
 
 QtQWebView::QtQWebView():QWebPluginFWBase(this)
 {

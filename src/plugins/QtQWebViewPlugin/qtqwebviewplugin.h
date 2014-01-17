@@ -14,7 +14,7 @@ class  QtQWebViewPlugin:public IWebPluginBase
 {
 public:
 	QtQWebViewPlugin();
-	~QtQWebViewPlugin();
+	virtual ~QtQWebViewPlugin();
 
 	virtual QList<QWebPluginFactory::Plugin> plugins() const;
 	virtual QObject * create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const;
