@@ -117,7 +117,8 @@ int   GroupPause();</p>
 <p align="left">&nbsp;</p>
 <p><strong>插件抛出的事件</strong>：<br />
   @1<br />
-  事件名称：CurrentStateChange<br />
+  事件名称：CurrentStateChange</p>
+<p>抛出条件：连接状态发生改变<br />
   事件参数:<br />
   <a></a><a>CurrentState</a> ：转变后的状态号<br />
   CurrentState取值：<br />
@@ -126,8 +127,9 @@ int   GroupPause();</p>
   2                STATUS_DISCONNECTED,<br />
   3                STATUS_DISCONNECTING,</p>
 <p>@2<br />
-  事件名称：RecFileInfo<br />
-  事件参数:<br />
+  事件名称：RecFileInfo</p>
+<p>抛出条件：调用int  startSearchRecFile(int nChannel,int nTypes,const  QString &amp; startTime,const QString &amp;  endTime);</p>
+<p>事件参数:<br />
   channel： 通道号<br />
   types：   录像类型<br />
   start:     开始时间<br />
@@ -139,7 +141,11 @@ int   GroupPause();</p>
   8                表示手动录像,<br />
   start和end取值:<br />
   形式为&ldquo;yyyy-MM-dd  hh:mm:ss&rdquo;</p>
-<p>&nbsp;</p>
+<p>@3</p>
+<p>事件名称：recFileSearchFinished</p>
+<p>抛出条件：调用int  startSearchRecFile(int nChannel,int nTypes,const  QString &amp; startTime,const QString &amp;  endTime);</p>
+<p>事件参数：</p>
+<p>total：搜索到的总条数</p>
 <p><strong>页面调用接口时序</strong>：<br />
   //@1搜索流程 ：</p>
 <p><img width="554" height="597" src="RemotePlaybackPlugin1.png" alt="RemotePlaybackPlugin1.png" /></p>
