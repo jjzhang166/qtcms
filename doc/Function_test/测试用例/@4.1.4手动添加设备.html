@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @4.1.4手动添加设备<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>手动添加设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试&ldquo;添加设备&rdquo;连接方式为IP地址链接时的设备添加功能、错误设备信息添加、键盘特殊字符支持、重复添加同名设备、指定区域手动添加设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>删除&ldquo;区域_root&rdquo;下的所有区域和设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.4-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device Manage选项卡下</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;添加设备&rdquo;按钮</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p>选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：1000，通道数为4，其他默认，点击&ldquo;取消&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域栏无变化</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>重复第2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：1000，通道数为4，其他默认，点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为1000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：2000，通道数为16，其他默认，点击&ldquo;确定&rdquo;（实际通道数为4）</p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为2000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；而不是16个通道</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：80，用户名：admin，设备名：3000，通道数为4，其他默认，点击&ldquo;确定&rdquo;（实际端口为8785） </p></td>
+    <td width="258" valign="top"><p>区域栏下设备无变化，未新增名为3000的设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名为空，设备名：4000，通道数为4，其他默认，点击&ldquo;确定&rdquo;（实际用户名为admin） </p></td>
+    <td width="258" valign="top"><p>区域栏下设备无变化，未新增名为4000的设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名为admin，密码设为kkkk，设备名：5000，通道数为4，其他默认，点击&ldquo;确定&rdquo;（实际用户密码为空）</p></td>
+    <td width="258" valign="top"><p>区域栏下设备无变化，未新增名为5000的设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>11</p></td>
+    <td width="197" valign="top"><p align="left">重复第1、2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：1000，通道数为4，其他默认，点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>应该弹出提示    &ldquo;添加失败&rdquo;，然后区域栏里设备信息不变</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>12</p></td>
+    <td width="197" valign="top"><p align="left">重复第1、2步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：~@%&amp;*￥#@，通道数为4，其他默认，点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为~@%&amp;*￥#@的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>13</p></td>
+    <td width="197" valign="top"><p align="left">点击&ldquo;添加区域&rdquo;按钮，添加一个名为&ldquo;区域1&rdquo;的区域</p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个区域：&ldquo;区域1&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>14</p></td>
+    <td width="197" valign="top"><p align="left">右键点击&ldquo;区域1&rdquo;，选择&ldquo;添加设备&rdquo;</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>15</p></td>
+    <td width="197" valign="top"><p align="left">选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：6000，通道数为4，其他默认，点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>&ldquo;区域1&rdquo;下新增一个名为6000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>// @用例2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>手动添加设备功能 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容 </p></td>
+    <td width="454" colspan="2" valign="top"><p>测试&ldquo;添加设备&rdquo;连接方式为易视网链接时的设备添加功能、错误设备信息添加、键盘特殊字符支持、重复添加同名设备、指定区域手动添加设备功能 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加 </p></td>
+    <td width="454" colspan="2" valign="top"><p>删除&ldquo;区域_root&rdquo;下的所有区域和设备 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号 </p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.4-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号 </p></td>
+    <td width="197" valign="top"><p>步骤 </p></td>
+    <td width="258" valign="top"><p>预期 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device Manage选项卡下， </p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;添加设备&rdquo;按钮 </p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，合适的用户名和密码，设备名：1000，通道数为4，其他默认，然后点击&ldquo;取消&rdquo; </p></td>
+    <td width="258" valign="top"><p>区域栏无变化 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>重复第2步，点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，合适的用户名和密码，设备名：1000，通道数为4，其他默认，然后点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为1000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;； </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，合适的用户名和密码，设备名：2000，通道数为16，其他默认，然后点击&ldquo;确定&rdquo;（实际通道数为4） </p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为2000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；而不是16个通道 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>重复第1,2步，点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，给错误的用户名或密码，设备名：3000，通道数为16，其他默认，然后点击&ldquo;确定&rdquo;（实际通道数为4） </p></td>
+    <td width="258" valign="top"><p>区域栏下设备无变化，未新增名为3000的设备 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">点击&ldquo;添加区域&rdquo;按钮，添加一个名为&ldquo;区域1&rdquo;的区域 </p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个区域：&ldquo;区域1&rdquo; </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p align="left">右键点击&ldquo;区域1&rdquo;，选择&ldquo;添加设备&rdquo; </p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>11</p></td>
+    <td width="197" valign="top"><p align="left">点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，合适的用户名和密码，设备名：4000，通道数为4，其他默认，然后点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>&ldquo;区域1&rdquo;下新增一个名为4000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;； </p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>手动添加设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试区域名上右键添加设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>删除&ldquo;区域_root&rdquo;下的所有区域和设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.4-3</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面， </p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>右键&ldquo;区域_root&rdquo;，选择添加设备</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p align="left">选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：1000，通道数为4，其他默认，点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>区域栏下新增一个名为1000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>右键&ldquo;区域_root&rdquo;，选择添加区域</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;增加区域&rdquo;对话框，</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>在区域名文本框填入&rdquo;1&rdquo;，点击&ldquo;确认&rdquo;</p></td>
+    <td width="258" valign="top"><p>&ldquo;区域_root&rdquo;下面增加了一个区域&ldquo;1&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>右键区域&ldquo;1&rdquo;，选择添加设备</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;添加设备&rdquo;对话框</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;易视网链接&rdquo;，填入一个可用的易视网ID(其设备为4通道)，合适的用户名和密码，设备名：1000，通道数为4，其他默认，然后点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域&ldquo;1&rdquo;下新增一个名为1000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>重复上一步</p></td>
+    <td width="258" valign="top"><p>弹出添加失败的对话框，&ldquo;AddDeviceFail&rdquo;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>重复第6步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：2000，通道数为4，其他默认，点击&ldquo;取消&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域栏设备、对应通道等信息不变</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p>重复第6步，选择&ldquo;IP地址链接&rdquo;，设备地址填入：&ldquo;192.168.2.132&rdquo;设备端口：8785，用户名：admin，设备名：2000，通道数为4，其他默认，点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>区域&ldquo;1&rdquo;下新增一个名为2000的设备，其下通道名依次为    &ldquo;chl1&rdquo;&ldquo;chl2&rdquo;&ldquo;chl3&rdquo;&ldquo;chl4&rdquo;；</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>11</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>显示的区域、设备名、通道信息一致 </p></td>
+  </tr>
+</table>
+</body>
+</html>
