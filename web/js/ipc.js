@@ -243,7 +243,6 @@ function devinfo_load_content(bflag)
 	xmlstr += '<info device_name="" device_model="" device_soc="" device_sn="" sensor_type="" hardware_version="" software_version="" build_date="" build_time="" />';
 	xmlstr += '</conf>';
 	xmlstr += '</juan>';
-//	alert(xmlstr);
 	dvr_ajax = $.ajax({ 
 		type:"GET",
 		url: ipc_url + "/cgi-bin/gw2.cgi?f=j", 
@@ -253,10 +252,11 @@ function devinfo_load_content(bflag)
 		async:true,
 		dataType: 'jsonp',
 		jsonp: 'jsoncallback',
+		tiemout:'5000',
 		beforeSend: function(XMLHttpRequest){
 		},
 		success: function(data, textStatus){
-//		alert("recv:" + data);
+		//alert("recv:" + data.xml);
 			var dvr_data = xml2json.parser(data.xml, "", false);
 			$("#Ipc_Device_name")[0].value = dvr_data.juan.conf.info.device_name;
 			$("#Ipc_Device_model")[0].value = dvr_data.juan.conf.info.device_model;
@@ -268,10 +268,10 @@ function devinfo_load_content(bflag)
 			
 		},
 		complete: function(XMLHttpRequest, textStatus){
-//			alert("complete:" + textStatus);
+			//alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-//			alert("error:" + textStatus);
+			//alert("error:" + textStatus);
 		}
 	});	
 }
