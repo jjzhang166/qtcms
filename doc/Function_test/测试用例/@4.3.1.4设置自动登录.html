@@ -8,18 +8,18 @@
 <body>
 <p>编辑人：姜晟<br />
   测试项目：CMS<br />
-  测试子项: @4.3.1.2设置巡航时间（auto polling time）<br />
+  测试子项: @4.3.1.4设置自动登录<br />
   测试用例:</p>
 <p>// @用例1</p>
 <table border="1" cellspacing="0" cellpadding="0">
   <tr>
     <td width="114" valign="top"><br />
       测试对象 </td>
-    <td width="454" colspan="2" valign="top"><p>设置巡航时间（auto polling time）</p></td>
+    <td width="454" colspan="2" valign="top"><p>设置自动登录</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试内容</p></td>
-    <td width="454" colspan="2" valign="top"><p>测试设置巡航时间（auto    polling time）参数</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试设置自动登录</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>前置添加</p></td>
@@ -27,7 +27,7 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>测试编号</p></td>
-    <td width="454" colspan="2" valign="top"><p>@4.3.1.2-1</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.3.1.4-1</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>步骤编号</p></td>
@@ -36,18 +36,18 @@
   </tr>
   <tr>
     <td width="114" valign="top"><p>1</p></td>
-    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Client    Setting选项卡下</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框默认是300</p></td>
+    <td width="197" valign="top"><p>启动应用程序，点击Device切换到设备信息界面，在Client    Setting选项卡下</p></td>
+    <td width="258" valign="top"><p>Auto Login默认是勾选上了的 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>2</p></td>
-    <td width="197" valign="top"><p>Auto polling time文本框中填入301 </p></td>
+    <td width="197" valign="top"><p>取消Auto Login前的勾选 </p></td>
     <td width="258" valign="top"><p>  </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>3</p></td>
     <td width="197" valign="top"><p>切换到User Manage选项卡，再切换回Client    Setting</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框显示是300</p></td>
+    <td width="258" valign="top"><p>Auto Login仍然是勾选上了的</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>4</p></td>
@@ -57,32 +57,27 @@
   <tr>
     <td width="114" valign="top"><p>5</p></td>
     <td width="197" valign="top"><p>切换到User Manage选项卡，再切换回Client    Setting</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框显示是301</p></td>
+    <td width="258" valign="top"><p>Auto Login前的勾选取消了</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>6</p></td>
-    <td width="197" valign="top"><p>Auto polling time文本框中填入300000，点击&ldquo;save&rdquo;按钮 </p></td>
-    <td width="258" valign="top"><p> 弹出&ldquo;setAutoPollingTime Fail&rdquo; </p></td>
+    <td width="197" valign="top"><p>关闭应用程序再重新启动该程序，点击Device切换到设备信息界面，在Client    Setting选项卡下 </p></td>
+    <td width="258" valign="top"><p>右上角没显示登陆用户名 </p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>7</p></td>
-    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;后，切换到User Manage选项卡，再切换回Client    Setting</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框显示是301</p></td>
+    <td width="197" valign="top"><p>Auto Login前选项勾选上，然后点击保存</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>8</p></td>
-    <td width="197" valign="top"><p>Auto polling time文本框中填入-200，点击&ldquo;save&rdquo;按钮 </p></td>
-    <td width="258" valign="top"><p>弹出&ldquo;setAutoPollingTime Fail&rdquo;</p></td>
+    <td width="197" valign="top"><p>点击用户图像以显示登陆对话框，填写完正确的用户名和密码后登陆</p></td>
+    <td width="258" valign="top"><p>这时&ldquo;Login User：&rdquo;后为登陆的用户名</p></td>
   </tr>
   <tr>
     <td width="114" valign="top"><p>9</p></td>
-    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;后，切换到User Manage选项卡，再切换回Client    Setting</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框显示是301</p></td>
-  </tr>
-  <tr>
-    <td width="114" valign="top"><p>10</p></td>
-    <td width="197" valign="top"><p>关闭应用程序再重新启动，点击Device切换到设备信息界面，在Client    Setting选项卡下</p></td>
-    <td width="258" valign="top"><p>Auto polling time文本框显示是301</p></td>
+    <td width="197" valign="top"><p>关闭应用程序再重新启动该程序，点击Device切换到设备信息界面，在Client    Setting选项卡下</p></td>
+    <td width="258" valign="top"><p>右上角显示登陆用户名，用户名和第8步的一致</p></td>
   </tr>
 </table>
 </body>
