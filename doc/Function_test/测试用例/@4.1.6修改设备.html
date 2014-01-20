@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：姜晟<br />
+  测试项目：CMS<br />
+  测试子项: @4.1.6修改设备<br />
+  测试用例:</p>
+<p>// @用例1</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>修改设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试&ldquo;修改设备&rdquo;按钮的功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>在区域栏下面有两台设备：设备名分别为A和B</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.6-1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device    Manage选项卡下</p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>区域栏中不选中任何一款设备，点击&ldquo;修改设备&rdquo;按钮 </p></td>
+    <td width="258" valign="top"><p>弹出对话框，提示&ldquo;请选择一台设备&rdquo; </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;，区域栏左键选中&ldquo;区域_root&rdquo;，点击&ldquo;修改设备&rdquo;按钮</p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;修改设备&rdquo;对话框，对话框上无确定按钮，只能取消</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;，区域栏左键选中设备A，点击&ldquo;修改设备&rdquo;按钮</p></td>
+    <td width="258" valign="top"><p>弹出设备A的相关信息。</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>可以对参数进行修改，如&ldquo;通道数&rdquo;修改为23（修改IP地址会把该设备名指向另一台设备，修改端口可能导致连接不上，修改设备名确定后可以在设备栏立即显示出来；所在区域不能修改，设备类型可以修改），点击&ldquo;确定&rdquo;</p></td>
+    <td width="258" valign="top"><p>如果是修改设备名，    点击&ldquo;确定&rdquo;后可以在设备栏立即显示出来</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p>再次在区域栏左键选中设备A，点击&ldquo;修改设备&rdquo;按钮</p></td>
+    <td width="258" valign="top"><p>可以看到&ldquo;通道数&rdquo;修改成了23 （如果做出过其他改变，在这一步也可以看出来）</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;，分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面，</p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device    Manage选项卡下，重复执行第6步，修改&ldquo;设备名&rdquo;为A1后点击确定</p></td>
+    <td width="258" valign="top"><p>&ldquo;区域_root&rdquo;下设备A的设备名变成了A1</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p>分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面，</p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>10</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device    Manage选项卡下，选中设备B的设备名，修改&ldquo;设备名&rdquo;为A1后点击确定 </p></td>
+    <td width="258" valign="top"><p>应该出现类似    &ldquo;设备名重复&rdquo;的提示，然后重命名失败</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>11</p></td>
+    <td width="197" valign="top"><p>重复第9步 </p></td>
+    <td width="258" valign="top"><p>预期与第9步一致</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>// @用例2</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>右键修改设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试右键&ldquo;修改设备&rdquo;的功能 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>在区域栏下面有两台设备：设备名分别为A和B</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.6-2</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device    Manage选项卡下 </p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>区域栏中选中设备A，右击选中&ldquo;修改&rdquo; </p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;修改设备&rdquo;对话框 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;，分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>设备A的相关信息在区域栏显示一致，并无改变</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>重复第1、2步，可以对参数进行修改，如&ldquo;通道数&rdquo;修改为13（修改IP地址会把该设备名指向另一台设备，修改端口可能导致连接不上，修改设备名确定后可以在设备栏立即显示出来；所在区域不能修改，设备类型可以修改），点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>如果是修改设备名，    点击&ldquo;确定&rdquo;后可以在设备栏立即显示出来</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>再次在区域栏右键选中设备A，选择&ldquo;修改&rdquo; </p></td>
+    <td width="258" valign="top"><p>可以看到&ldquo;通道数&rdquo;修改成了13 （如果做出过其他改变，在这一步也可以看出来） </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面，在Device    Manage选项卡下，重复执行第5步，修改&ldquo;设备名&rdquo;为B后点击确定</p></td>
+    <td width="258" valign="top"><p>应该出现类似    &ldquo;设备名重复&rdquo;的提示，然后重命名失败 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>重复执行第5步 </p></td>
+    <td width="258" valign="top"><p>可以看到设备A信息和上一次修改后相比没变化</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>9</p></td>
+    <td width="197" valign="top"><p align="left">分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>//@用例3</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="114" valign="top"><br />
+      测试对象 </td>
+    <td width="454" colspan="2" valign="top"><p>&ldquo;修改设备&rdquo;功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试内容</p></td>
+    <td width="454" colspan="2" valign="top"><p>测试子区域下右键修改设备功能</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>前置添加</p></td>
+    <td width="454" colspan="2" valign="top"><p>在    &ldquo;区域_root&rdquo;下添加一个区域Area_1, &ldquo;区域_root&rdquo;下有一个设备名为A的设备，区域Area_1下有一个设备名为B的设备</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>测试编号</p></td>
+    <td width="454" colspan="2" valign="top"><p>@4.1.6-3</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>步骤编号</p></td>
+    <td width="197" valign="top"><p>步骤</p></td>
+    <td width="258" valign="top"><p>预期</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>1</p></td>
+    <td width="197" valign="top"><p>点击Device切换到设备信息界面， </p></td>
+    <td width="258" valign="top"><p>&nbsp;</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>2</p></td>
+    <td width="197" valign="top"><p>区域栏&ldquo;区域_root&rdquo;下选中设备A，右击选中&ldquo;修改&rdquo; </p></td>
+    <td width="258" valign="top"><p>弹出&ldquo;修改设备&rdquo;对话框 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>3</p></td>
+    <td width="197" valign="top"><p>对参数进行修改，如&ldquo;通道数&rdquo;修改为14（修改IP地址会把该设备名指向另一台设备，修改端口可能导致连接不上，修改设备名确定后可以在设备栏立即显示出来；所在区域不能修改，设备类型可以修改），点击&ldquo;确定&rdquo; </p></td>
+    <td width="258" valign="top"><p>如果是修改设备名，    点击&ldquo;确定&rdquo;后可以在设备栏立即显示出来 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>4</p></td>
+    <td width="197" valign="top"><p>再次在&ldquo;区域_root&rdquo;下右键选中设备A，选择&ldquo;修改&rdquo; </p></td>
+    <td width="258" valign="top"><p>在弹出的对话框可以看到&ldquo;通道数&rdquo;修改成了14 （如果做出过其他改变，在这一步也可以看出来） </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>5</p></td>
+    <td width="197" valign="top"><p>点击&ldquo;取消&rdquo;，分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>6</p></td>
+    <td width="197" valign="top"><p align="left">点击Device切换到设备信息界面，在Device Manage选项卡下，右键&ldquo;区域Area_1&rdquo;下设备B，选择&ldquo;修改&rdquo; </p></td>
+    <td width="258" valign="top"><p>弹出对话框，显示出B的相关信息 </p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>7</p></td>
+    <td width="197" valign="top"><p>修改&ldquo;设备名&rdquo;为A后点击确定 </p></td>
+    <td width="258" valign="top"><p>不会出现类似    &ldquo;设备名重复&rdquo;的提示，然后重命名成功，&ldquo;区域Area_1&rdquo;下设备B成功重命名为A</p></td>
+  </tr>
+  <tr>
+    <td width="114" valign="top"><p>8</p></td>
+    <td width="197" valign="top"><p>分别切换到&ldquo;Preview&rdquo;界面和&rdquo;Playback&rdquo;界面以及&ldquo;backup&rdquo;界面， </p></td>
+    <td width="258" valign="top"><p>区域栏显示的区域名、设备名、通道信息和Device界面下一致， </p></td>
+  </tr>
+</table>
+</body>
+</html>
