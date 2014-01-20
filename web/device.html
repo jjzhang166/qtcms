@@ -364,38 +364,6 @@
 					<li>PTZ Settings</li>
 					<li>Alarm Settings</li>
 				</ul>
-                <ul class="ope_list nav1 ipc_list0" style="margin-right:300px; display:none;">
-					<li class="ope_listAct">DeviceInfo</li>
-					<li>EncodingSettings</li>
-					<li>NetworkSettings</li>
-					<li>UserSettings</li>
-					<li>TimeSettings</li>
-                    <li>IniliazationSettings</li>
-				</ul>
-				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
-					<ul class="filetree">
-						<!-- <li><span class="device">dvr</span>
-							<ul>
-								<li><span class="channel">Channel01</span></li>
-								<li><span class="channel">Channel02</span></li>
-								<li><span class="channel">Channel03</span></li>
-								<li><span class="channel">Channel04</span></li>
-							</ul>
-						</li>
-						<li><span class="device" >ipc</span>
-							<ul>
-								<li><span class="channel">Channel01</span></li>
-								<li><span class="channel">Channel02</span></li>
-								<li><span class="channel">Channel03</span></li>
-								<li><span class="channel">Channel04</span></li>
-								<li><span class="channel">Channel05</span></li>
-								<li><span class="channel">Channel06</span></li>
-								<li><span class="channel">Channel07</span></li>
-								<li><span class="channel">Channel08</span></li>
-							</ul>
-						</li>-->
-					</ul>
-				</div>
 				<div class="switch dvr_list"  style="display:block;">
 					<table>
 						<tr><td>Device Name</td><td><input type="text" id="Dvr_Device_name" /></td></tr>
@@ -407,17 +375,6 @@
 						<tr><td>Audio of channels</td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
 						<tr><td>Alarm Inputs</td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
 						<tr><td>Alarm Outputs</td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr>
-					</table>
-				</div>
-                <div class="switch ipc_list"  style="display:none;">
-					<table>
-						<tr><td>Device Name</td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Device Model</td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Hardware version</td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Software Version</td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Build time</td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Alarm numbers</td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>SD numbers</td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -517,58 +474,6 @@
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_common_save_content();">save</div></td></tr>
 					</table>
 				</div>
-                <div class="switch ipc_list">
-					<table>
-						<tr>
-							<td>Stream</td>
-							<td>
-								<div class="select" style="width:133px;" id="encode_id">
-									<span id="ipc_enc_stream">101</span>
-									<a class="hover" href="javascript:;"></a>
-								</div>
-								<ul id="ipc_enc_stream_sel" class="option">
-									<li><a href="javascript:;">101</a></li>
-									<li><a href="javascript:;">102</a></li>
-									<li><a href="javascript:;">103</a></li>
-								</ul>
-							</td><td></td>
-						</tr>
-						<tr><td>ChannelName</td><td><input id="ipc_enc_channelname" onKeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><div onClick="deviceName_load();" class="hover">Copy</div></td></tr>
-                        <tr>
-							<td>Resolution</td>
-							<td id="ipc_enc_freeResolution_0">
-								<div class="select" style="width:133px;">
-									<span id="ipc_enc_resolution"></span>
-									<a class="hover" href="javascript:;"></a>
-								</div>
-								<ul id="ipc_enc_resolution_sel" class="option">
-									
-								</ul>
-							</td>
-                            <td id="ipc_enc_freeResolution_1" style="display:none;">
-								<input id="ipc_enc_resolutionWidth" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />X   
-                                <input id="ipc_enc_resolutionHeight" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />
-							</td>
-                            <td><input id="ipc_enc_freeResolution" type="checkbox" />Defined Resolution</td></td>
-						</tr>
-                    	<tr>
-							<td>BitRateControlType</td>
-							<td>
-								<div class="select" style="width:133px;">
-									<span id="ipc_enc_BitRateControlType"></span>
-									<a class="hover" href="javascript:;"></a>
-								</div>
-								<ul id="ipc_enc_BitRateControlType_sel" class="option">
-									<li><a href="javascript:;">Constant</a></li>
-									<li><a href="javascript:;">Variable</a></li>
-								</ul>
-							</td><td></td>
-						</tr>
-                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
-                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
-                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover" onclick="encode_save_content();">save</div></td></tr>
-                        </table>
-                  </div>
 				<div class="switch dvr_list">
 					<table>
 						<tr><td>MAC Addr</td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
@@ -621,71 +526,6 @@
 						<tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_network_save_content();">save</div></td></tr>
 					</table>
 				</div>
-                <div class="switch ipc_list">
-                	<table>
-                    	<tr><td>MAC Addr</td><td><input id="network_mac" type="text" onFocus="save_mac_value()" onChange="is_valid_mac()"/></td><td></td><td></td></tr>
-						<tr class="title"><td colspan="2"><h5>Local</h5></td><td style="padding-left:30px;" colspan="2"><h5>Remote</h5></td></tr>
-						<tr>
-							<td colspan="2">
-								<table class="tb1">
-                                	
-							 		<tr><td>DHCP State</td><td>
-                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" />Open
-                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked />Close</td></tr>
-                                    <tr><td>ESEE State</td><td>
-                                    <input name="esee" type="radio" id="network_esee_1" />Open
-                                    <input name="esee" type="radio" id="network_esee_0" checked />Close</td></tr>
-							 		<tr><td >IP Address</td>
-                                    <td><input id="network_ip" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/>
-                                    </td></tr>
-							 		<tr><td>Gateway</td>
-                                    <td><input id="network_gateway" type="text" onChange="is_valid_ip('network_gateway')" onFocus="save_ipaddr('network_gateway')"/></td></tr>
-							 		<tr><td>Netmask</td>
-                                    <td><input id="network_submask" type="text" onChange="is_valid_ip('network_submask')" onFocus="save_ipaddr('network_submask')"/></td></tr>
-							 		<tr><td>Preferred DNS</td>
-                                    <td><input id="network_dns" type="text" onChange="is_valid_ip('network_dns')" onFocus="save_ipaddr('network_dns')"/></td></tr>
-                                    <tr><td>Alternate DNS</td>
-                                    <td><input id="network_dns2" type="text" onChange="is_valid_ip('network_dns2')" onFocus="save_ipaddr('network_dns2')"/></td></tr>
-                                    <tr><td>port</td>
-                                    <td><input id="network_port" type="text" onChange="is_valid_port()" onFocus="save_port()"/></td></tr>
-								</table>
-							</td>
-							<td colspan="2" style="padding-left:30px;">
-								<table class="tb1">
-						 			<tr><td>DDNS State</td><td>
-                                    <input name="ddns" type="radio" id="network_ddns_1" onClick="remote_change();" />Open
-                                    <input name="ddns" type="radio" id="network_ddns_0" onClick="remote_change();" checked />Close
-                                    </td></tr>
-						 			<tr><td>server</td><td>
-                                    <div class="select" style="width:149px;">
-                                        <span id="remote_provider">dyndns</span>
-                                        <a class="hover" href="javascript:;"></a>
-                                    </div>
-                                    <ul class="option">
-                                        <li><a href="javascript:;">dyndns</a></li>
-                                        <li><a href="javascript:;">noip</a></li>
-                                        <li><a href="javascript:;">3322</a></li>
-                                        <li><a href="javascript:;">changeip</a></li>
-                                        <li><a href="javascript:;">popdvr</a></li>
-                                        <li><a href="javascript:;">skybest</a></li>
-                                        <li><a href="javascript:;">dvrtop</a></li>  
-                                    </ul>
-                                    </td></tr>
-						 			<tr><td>Domain</td><td><input type="text" id="networkddns_url" /></td></tr>
-						 			<tr><td>User</td><td><input type="text" id="networkddns_usr" /></td></tr>
-						 			<tr><td>Password</td><td><input type="text" id="networkddns_pwd" /></td></tr>
-                                    <tr><td>PPPoE State</td><td>
-                                    <input name="pppoe" type="radio" id="network_pppoe__1" onClick="remote_change();" />Open
-                                    <input name="pppoe" type="radio" id="network_pppoe__0" onClick="remote_change();" checked />Close
-                                    </td></tr>
-                                    <tr><td>User</td><td><input type="text" id="network_ppoe_usr"/></td></tr>
-						 			<tr><td>Password</td><td><input type="text" id="network_ppoe_pwd"/></td></tr>
-							 	</table>
-							</td>
-						</tr>
-						<tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="remote_save_content();">save</div></td></tr>
-					</table>
-                </div>
 				<div class="switch dvr_list">
 					<table>
 						<tr>
@@ -958,45 +798,6 @@
 						<tr><td colspan="3" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');">save</div></td><td></td></tr>
 					</table>
 				</div>
-                <div class="switch ipc_list">
-                    <table id="tbl_user_manage">
-                        <tr><td>UserName</td><td>Authority</td><td>Operation</td></tr>
-                    </table>
-                            <table id="tbl_user_manage1">
-                            <tr>
-                                <td class="tdBtn">
-                                    <div class="hover" onClick="user_management_load_content()">update_list</div>
-                                    <div class="hover" id="add_user_button" onClick="user_management_prepare_add()">adduser</div>
-                                    <div class="hover" onClick="user_management_prepare_modify()">changepwd</div>	
-                                        
-                            <table id="tbl_add_user" class="add_tb">
-                            <tr>
-                                <td>username</td>
-                                <td><input type="text" id="txt_new_usr"  onBlur="user_management_save_new_usr()"/></td>
-                            </tr>
-                            <tr>
-                                <td>password</td>
-                                <td><input type="password" id="txt_new_pwd" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <div class="hover" onClick="user_management_save_new_usr()">save</div>
-                                    <div class="hover" onClick="user_management_prepare_cancel()">cancel</div>
-                                </td>
-                            </tr>
-                        </table>
-                        <table id="tbl_modify_pwd" class="add_tb">
-                            <tr><td>oldpwd</td><td><input type="password" id="txt_old_pwd" /></td></tr>
-                            <tr><td>newpwd</td><td><input type="password" id="txt_modify_pwd" /></td> </tr>
-                            <tr><td>confirmpwd</td><td><input type="password" id="txt_repeat_pwd" /> </td></tr>
-                            <tr><td colspan="2">
-                                    <div class="hover" onClick="user_management_prepare_save_modify_usr()">save</div>
-                                    <div class="hover" onClick="user_management_prepare_cancel()">cancel</div></td></tr>
-                        </table>						
-                        </td>
-                    </tr>
-                </table>
-                </div>
 				<div class="switch dvr_list">
 				<table>
 					<tr class="title"><td><h5>Common settings</h5></td><td></td><td></td><td></td></tr>
@@ -1129,66 +930,6 @@
 
 				</table>
 				</div>
-                <div class="switch ipc_list">
-				<table>
-					<tr><td>Device Time</td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
-                    <tr><td>Date Format</td><td>
-                    	<div class="select" style="width:149px;">
-                                <span class="date_form" onChange="showtime();"></span>
-                                <a class="hover" href="javascript:;"></a>
-								</div>
-								<ul class="option" >
-									<li><a href="javascript:;">YMD: xxxx xx xx</a></li>
-									<li><a href="javascript:;">MDY: xx xx xxxx</a></li>
-									<li><a href="javascript:;">DMY: xx xx xxxx</a></li>
-								</ul>
-                    </td><td></td></tr>
-                    <tr><td>Time Delimiter</td><td>
-                    	<div class="select" style="width:149px;">
-                                <span id="date_break" onChange="showtime();"></span>
-                                <a class="hover" href="javascript:;"></a>
-								</div>
-								<ul class="option" >
-									<li><a href="javascript:;">xxxx-xx-xx</a></li>
-									<li><a href="javascript:;">xxxx/xx/xx</a></li>
-									<li><a href="javascript:;">xxxx.xx.xx</a></li>
-								</ul>
-                    </td><td></td></tr>
-                    <tr><td>Time Zone</td><td>
-                    	<div class="select" style="width:149px;">
-                                <span id="time_zone">GMT-12:00</span>
-                                <a class="hover" href="javascript:;"></a>
-								</div>
-								<ul class="option" >
-									<li><a href="javascript:;">1</a></li>
-									<li><a href="javascript:;">2</a></li>
-									<li><a href="javascript:;">1</a></li>
-									<li><a href="javascript:;">2</a></li>
-									<li><a href="javascript:;">3</a></li>
-                                    <li><a href="javascript:;">3</a></li>
-								</ul>
-                    </td><td></td></tr>
-                    <tr><td>Daylight Saving Time</td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
-                    <tr><td>Manually Setup</td><td></td><td></td></tr>
-                    <tr><td>Date</td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
-                    <tr><td>Time</td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()">OK</div></td></tr>
-                    <tr><td>Local Time Sync.</td><td></td><td></td></tr>
-                    <tr><td>Computer Time</td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()">Sync</div></td></tr>
-                    <tr><td>NTP Time Sync.</td><td></td><td></td></tr>
-                    <tr><td>NTP Server Sync. State</td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" />Open<input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked />Close</td><td></td></tr>
-                    <tr><td>NTP Server</td><td>
-                    	<div class="select" style="width:149px;">
-                                <span id="time_ntp__server" name="ntp_server"></span>
-                                <a class="hover" href="javascript:;"></a>
-								</div>
-								<ul class="option" >
-									<li><a href="javascript:;">time.window.com</a></li>
-									<li><a href="javascript:;">time.nist.gov</a></li>
-								</ul>
-                    </td><td></td></tr>
-                    <tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="time_save_content();">save</div></td></tr>
-				</table>
-                </div>
 				<div class="switch dvr_list">
 					<table>
 						<tr>
@@ -1204,153 +945,6 @@
 						</tr>
 						<tr><td>Name</td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
 						<tr><td colspan="2" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_screen_save_content()">save</div></td></tr>
-					</table>
-				</div>
-                <div class="switch ipc_list">
-					<table>
-						<tr><td>Click button below to reboot IP Camera.</td><td  class="tdBtn"><div class="hover" onClick="reboot()">Root Now...</div></td></tr>
-                        <tr><td>Click button below to restore default factory.Note: This Function will reboot system automatically!</td><td class="tdBtn"><div class="hover" onClick="default_setting()">Restore</div></td></tr>
-                       <!-- <tr><td>Please click button below to select Upgrade File and then perform upgrade</td>
-                        <td>
-                        <div id="swfupload-control"></div>
-                            <span id="txt_status"></span><span id="txt_progress"></span><input type="button" id="button_upload" /><br />
-                            <span id="txt_upgrade_status"></span><span id="txt_upgrade_progress"></span>
-                        </td></tr>-->
-                    </table>
-                </div>
-				<div class="switch dvr_list">
-					<table>
-						<tr>
-							<td class="td1">channel</td>
-							<td>
-								<div class="select" style="width:133px;">
-								<span id="dvr_detect_chn_sel0"></span>
-								<a class="hover" href="javascript:;"></a></div>
-								<ul id="dvr_detect_chn_sel" class="option">
-									
-								</ul>
-							</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td class="td1">Sensitivity</td>
-								<td style="width:278px;">
-                                    <div class="select" style="width:133px;">
-                                    <span id="dvr_detect_sens"></span>
-                                    <a class="hover" href="javascript:;"></a></div>
-                                    <ul class="option">
-                                        <li><a href="javascript:;">Highest</a></li>
-                                        <li><a href="javascript:;">High</a></li>
-                                        <li><a href="javascript:;">Moderato</a></li>
-                                        <li><a href="javascript:;">Low</a></li>
-                                        <li><a href="javascript:;">Lowest</a></li>
-                                    </ul>
-                                </td>
-							<td></td>
-						</tr>
-						<tr class="title"><td colspan="3"><h5>Motion Detection</h5></td></tr>
-						<tr><td colspan="3">
-							<table class="tb1">
-								<tr>
-									<td class="td1">Duration</td>
-									<td style="width:278px;">
-										<div class="select" style="width:133px;">
-										<span id="dvr_detect_mduration"></span>
-										<a class="hover" href="javascript:;"></a></div>
-										<ul class="option">
-											<li><a href="javascript:;">1s</a></li>
-											<li><a href="javascript:;">2s</a></li>
-											<li><a href="javascript:;">3s</a></li>
-                                            <li><a href="javascript:;">4s</a></li>
-											<li><a href="javascript:;">5s</a></li>
-											<li><a href="javascript:;">8s</a></li>
-                                            <li><a href="javascript:;">10s</a></li>
-											<li><a href="javascript:;">continuous</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_mAlarm" type="checkbox" />Alarm<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" />Buzzer<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
-							</table>
-						</td></tr>
-						<tr><td colspan="3" class="title"><h5>Video loss</h5></td></tr>
-						<tr><td colspan="3">
-							<table class="tb1">
-								<tr>
-									<td class="td1">Duration</td>
-									<td style="width:262px;">
-										<div class="select" style="width:133px;">
-										<span id="dvr_detect_vduration"></span>
-										<a class="hover" href="javascript:;"></a></div>
-										<ul class="option">
-											<li><a href="javascript:;">1s</a></li>
-											<li><a href="javascript:;">2s</a></li>
-											<li><a href="javascript:;">3s</a></li>
-                                            <li><a href="javascript:;">4s</a></li>
-											<li><a href="javascript:;">5s</a></li>
-											<li><a href="javascript:;">8s</a></li>
-                                            <li><a href="javascript:;">10s</a></li>
-											<li><a href="javascript:;">continuous</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_vAlarm" type="checkbox" />Alarm<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" />Buzzer<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
-							</table>
-						</td></tr>
-						<tr class="title"><td colspan="4"><h5>Copied to other</h5></td></tr>
-						<tr><td colspan="3">
-								<table class="tb1">
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>1</span></div>
-									<div><input type="checkbox" /><span>2</span></div>
-									<div><input type="checkbox" /><span>3</span></div>
-									<div><input type="checkbox" /><span>4</span></div>
-									<div><input type="checkbox" /><span>5</span></div>
-									<div><input type="checkbox" /><span>6</span></div>
-									<div><input type="checkbox" /><span>7</span></div>
-									<div><input type="checkbox" /><span>8</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>9</span></div>
-									<div><input type="checkbox" /><span>10</span></div>
-									<div><input type="checkbox" /><span>11</span></div>
-									<div><input type="checkbox" /><span>12</span></div>
-									<div><input type="checkbox" /><span>13</span></div>
-									<div><input type="checkbox" /><span>14</span></div>
-									<div><input type="checkbox" /><span>15</span></div>
-									<div><input type="checkbox" /><span>16</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>17</span></div>
-									<div><input type="checkbox" /><span>18</span></div>
-									<div><input type="checkbox" /><span>19</span></div>
-									<div><input type="checkbox" /><span>20</span></div>
-									<div><input type="checkbox" /><span>21</span></div>
-									<div><input type="checkbox" /><span>22</span></div>
-									<div><input type="checkbox" /><span>23</span></div>
-									<div><input type="checkbox" /><span>24</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>25</span></div>
-									<div><input type="checkbox" /><span>26</span></div>
-									<div><input type="checkbox" /><span>27</span></div>
-									<div><input type="checkbox" /><span>28</span></div>
-									<div><input type="checkbox" /><span>29</span></div>
-									<div><input type="checkbox" /><span>30</span></div>
-									<div><input type="checkbox" /><span>31</span></div>
-									<div><input type="checkbox" /><span>32</span></div>
-									</td>
-								</tr>
-								<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" />All<td></td><td class="tdBtn"><div class="hover chk_all_btn">Copy to All</div></td></tr>
-							</table>
-						</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');">save</div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -1504,6 +1098,141 @@
 					</table>
 				</div>
 				<div class="switch dvr_list">
+					<table>
+						<tr>
+							<td class="td1">channel</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span id="dvr_detect_chn_sel0"></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul id="dvr_detect_chn_sel" class="option">
+									
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="td1">Sensitivity</td>
+								<td style="width:278px;">
+                                    <div class="select" style="width:133px;">
+                                    <span id="dvr_detect_sens"></span>
+                                    <a class="hover" href="javascript:;"></a></div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">Highest</a></li>
+                                        <li><a href="javascript:;">High</a></li>
+                                        <li><a href="javascript:;">Moderato</a></li>
+                                        <li><a href="javascript:;">Low</a></li>
+                                        <li><a href="javascript:;">Lowest</a></li>
+                                    </ul>
+                                </td>
+							<td></td>
+						</tr>
+						<tr class="title"><td colspan="3"><h5>Motion Detection</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1">Duration</td>
+									<td style="width:278px;">
+										<div class="select" style="width:133px;">
+										<span id="dvr_detect_mduration"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">1s</a></li>
+											<li><a href="javascript:;">2s</a></li>
+											<li><a href="javascript:;">3s</a></li>
+                                            <li><a href="javascript:;">4s</a></li>
+											<li><a href="javascript:;">5s</a></li>
+											<li><a href="javascript:;">8s</a></li>
+                                            <li><a href="javascript:;">10s</a></li>
+											<li><a href="javascript:;">continuous</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_mAlarm" type="checkbox" />Alarm<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" />Buzzer<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="title"><h5>Video loss</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1">Duration</td>
+									<td style="width:262px;">
+										<div class="select" style="width:133px;">
+										<span id="dvr_detect_vduration"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">1s</a></li>
+											<li><a href="javascript:;">2s</a></li>
+											<li><a href="javascript:;">3s</a></li>
+                                            <li><a href="javascript:;">4s</a></li>
+											<li><a href="javascript:;">5s</a></li>
+											<li><a href="javascript:;">8s</a></li>
+                                            <li><a href="javascript:;">10s</a></li>
+											<li><a href="javascript:;">continuous</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_vAlarm" type="checkbox" />Alarm<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" />Buzzer<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/>Osd</td></tr>
+							</table>
+						</td></tr>
+						<tr class="title"><td colspan="4"><h5>Copied to other</h5></td></tr>
+						<tr><td colspan="3">
+								<table class="tb1">
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>1</span></div>
+									<div><input type="checkbox" /><span>2</span></div>
+									<div><input type="checkbox" /><span>3</span></div>
+									<div><input type="checkbox" /><span>4</span></div>
+									<div><input type="checkbox" /><span>5</span></div>
+									<div><input type="checkbox" /><span>6</span></div>
+									<div><input type="checkbox" /><span>7</span></div>
+									<div><input type="checkbox" /><span>8</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>9</span></div>
+									<div><input type="checkbox" /><span>10</span></div>
+									<div><input type="checkbox" /><span>11</span></div>
+									<div><input type="checkbox" /><span>12</span></div>
+									<div><input type="checkbox" /><span>13</span></div>
+									<div><input type="checkbox" /><span>14</span></div>
+									<div><input type="checkbox" /><span>15</span></div>
+									<div><input type="checkbox" /><span>16</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>17</span></div>
+									<div><input type="checkbox" /><span>18</span></div>
+									<div><input type="checkbox" /><span>19</span></div>
+									<div><input type="checkbox" /><span>20</span></div>
+									<div><input type="checkbox" /><span>21</span></div>
+									<div><input type="checkbox" /><span>22</span></div>
+									<div><input type="checkbox" /><span>23</span></div>
+									<div><input type="checkbox" /><span>24</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>25</span></div>
+									<div><input type="checkbox" /><span>26</span></div>
+									<div><input type="checkbox" /><span>27</span></div>
+									<div><input type="checkbox" /><span>28</span></div>
+									<div><input type="checkbox" /><span>29</span></div>
+									<div><input type="checkbox" /><span>30</span></div>
+									<div><input type="checkbox" /><span>31</span></div>
+									<div><input type="checkbox" /><span>32</span></div>
+									</td>
+								</tr>
+								<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" />All<td></td><td class="tdBtn"><div class="hover chk_all_btn">Copy to All</div></td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');">save</div></td></tr>
+					</table>
+				</div>	
+				<div class="switch dvr_list">
 					<table class="tb1">
 						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" />Alarm</td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/>Buzzer</td></tr>
 						<tr>
@@ -1611,6 +1340,278 @@
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">cancel</div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');">save</div></td></tr>
 					</table>
 				</div>
+				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
+					<ul class="filetree">
+						<!-- <li><span class="device">dvr</span>
+							<ul>
+								<li><span class="channel">Channel01</span></li>
+								<li><span class="channel">Channel02</span></li>
+								<li><span class="channel">Channel03</span></li>
+								<li><span class="channel">Channel04</span></li>
+							</ul>
+						</li>
+						<li><span class="device" >ipc</span>
+							<ul>
+								<li><span class="channel">Channel01</span></li>
+								<li><span class="channel">Channel02</span></li>
+								<li><span class="channel">Channel03</span></li>
+								<li><span class="channel">Channel04</span></li>
+								<li><span class="channel">Channel05</span></li>
+								<li><span class="channel">Channel06</span></li>
+								<li><span class="channel">Channel07</span></li>
+								<li><span class="channel">Channel08</span></li>
+							</ul>
+						</li>-->
+					</ul>
+				</div>
+				<ul class="ope_list nav1 ipc_list0" style="margin-right:300px; display:none;">
+					<li class="ope_listAct">DeviceInfo</li>
+					<li>EncodingSettings</li>
+					<li>NetworkSettings</li>
+					<li>UserSettings</li>
+					<li>TimeSettings</li>
+                    <li>IniliazationSettings</li>
+				</ul>
+                <div class="switch ipc_list">
+					<table>
+						<tr>
+							<td>Stream</td>
+							<td>
+								<div class="select" style="width:133px;" id="encode_id">
+									<span id="ipc_enc_stream">101</span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_stream_sel" class="option">
+									<li><a href="javascript:;">101</a></li>
+									<li><a href="javascript:;">102</a></li>
+									<li><a href="javascript:;">103</a></li>
+								</ul>
+							</td><td></td>
+						</tr>
+						<tr><td>ChannelName</td><td><input id="ipc_enc_channelname" onKeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><div onClick="deviceName_load();" class="hover">Copy</div></td></tr>
+                        <tr>
+							<td>Resolution</td>
+							<td id="ipc_enc_freeResolution_0">
+								<div class="select" style="width:133px;">
+									<span id="ipc_enc_resolution"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_resolution_sel" class="option">
+									
+								</ul>
+							</td>
+                            <td id="ipc_enc_freeResolution_1" style="display:none;">
+								<input id="ipc_enc_resolutionWidth" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />X   
+                                <input id="ipc_enc_resolutionHeight" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />
+							</td>
+                            <td><input id="ipc_enc_freeResolution" type="checkbox" />Defined Resolution</td></td>
+						</tr>
+                    	<tr>
+							<td>BitRateControlType</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="ipc_enc_BitRateControlType"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_BitRateControlType_sel" class="option">
+									<li><a href="javascript:;">Constant</a></li>
+									<li><a href="javascript:;">Variable</a></li>
+								</ul>
+							</td><td></td>
+						</tr>
+                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
+                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
+                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover">cancel</div><div class="hover" onclick="encode_save_content();">save</div></td></tr>
+                        </table>
+                  </div>
+                <div class="switch ipc_list">
+                	<table>
+                    	<tr><td>MAC Addr</td><td><input id="network_mac" type="text" onFocus="save_mac_value()" onChange="is_valid_mac()"/></td><td></td><td></td></tr>
+						<tr class="title"><td colspan="2"><h5>Local</h5></td><td style="padding-left:30px;" colspan="2"><h5>Remote</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+                                	
+							 		<tr><td>DHCP State</td><td>
+                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" />Open
+                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked />Close</td></tr>
+                                    <tr><td>ESEE State</td><td>
+                                    <input name="esee" type="radio" id="network_esee_1" />Open
+                                    <input name="esee" type="radio" id="network_esee_0" checked />Close</td></tr>
+							 		<tr><td >IP Address</td>
+                                    <td><input id="network_ip" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/>
+                                    </td></tr>
+							 		<tr><td>Gateway</td>
+                                    <td><input id="network_gateway" type="text" onChange="is_valid_ip('network_gateway')" onFocus="save_ipaddr('network_gateway')"/></td></tr>
+							 		<tr><td>Netmask</td>
+                                    <td><input id="network_submask" type="text" onChange="is_valid_ip('network_submask')" onFocus="save_ipaddr('network_submask')"/></td></tr>
+							 		<tr><td>Preferred DNS</td>
+                                    <td><input id="network_dns" type="text" onChange="is_valid_ip('network_dns')" onFocus="save_ipaddr('network_dns')"/></td></tr>
+                                    <tr><td>Alternate DNS</td>
+                                    <td><input id="network_dns2" type="text" onChange="is_valid_ip('network_dns2')" onFocus="save_ipaddr('network_dns2')"/></td></tr>
+                                    <tr><td>port</td>
+                                    <td><input id="network_port" type="text" onChange="is_valid_port()" onFocus="save_port()"/></td></tr>
+								</table>
+							</td>
+							<td colspan="2" style="padding-left:30px;">
+								<table class="tb1">
+						 			<tr><td>DDNS State</td><td>
+                                    <input name="ddns" type="radio" id="network_ddns_1" onClick="remote_change();" />Open
+                                    <input name="ddns" type="radio" id="network_ddns_0" onClick="remote_change();" checked />Close
+                                    </td></tr>
+						 			<tr><td>server</td><td>
+                                    <div class="select" style="width:149px;">
+                                        <span id="remote_provider">dyndns</span>
+                                        <a class="hover" href="javascript:;"></a>
+                                    </div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">dyndns</a></li>
+                                        <li><a href="javascript:;">noip</a></li>
+                                        <li><a href="javascript:;">3322</a></li>
+                                        <li><a href="javascript:;">changeip</a></li>
+                                        <li><a href="javascript:;">popdvr</a></li>
+                                        <li><a href="javascript:;">skybest</a></li>
+                                        <li><a href="javascript:;">dvrtop</a></li>  
+                                    </ul>
+                                    </td></tr>
+						 			<tr><td>Domain</td><td><input type="text" id="networkddns_url" /></td></tr>
+						 			<tr><td>User</td><td><input type="text" id="networkddns_usr" /></td></tr>
+						 			<tr><td>Password</td><td><input type="text" id="networkddns_pwd" /></td></tr>
+                                    <tr><td>PPPoE State</td><td>
+                                    <input name="pppoe" type="radio" id="network_pppoe__1" onClick="remote_change();" />Open
+                                    <input name="pppoe" type="radio" id="network_pppoe__0" onClick="remote_change();" checked />Close
+                                    </td></tr>
+                                    <tr><td>User</td><td><input type="text" id="network_ppoe_usr"/></td></tr>
+						 			<tr><td>Password</td><td><input type="text" id="network_ppoe_pwd"/></td></tr>
+							 	</table>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="remote_save_content();">save</div></td></tr>
+					</table>
+                </div>
+                <div class="switch ipc_list">
+                    <table id="tbl_user_manage">
+                        <tr><td>UserName</td><td>Authority</td><td>Operation</td></tr>
+                    </table>
+                            <table id="tbl_user_manage1">
+                            <tr>
+                                <td class="tdBtn">
+                                    <div class="hover" onClick="user_management_load_content()">update_list</div>
+                                    <div class="hover" id="add_user_button" onClick="user_management_prepare_add()">adduser</div>
+                                    <div class="hover" onClick="user_management_prepare_modify()">changepwd</div>	
+                                        
+                            <table id="tbl_add_user" class="add_tb">
+                            <tr>
+                                <td>username</td>
+                                <td><input type="text" id="txt_new_usr"  onBlur="user_management_save_new_usr()"/></td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td><input type="password" id="txt_new_pwd" /></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="hover" onClick="user_management_save_new_usr()">save</div>
+                                    <div class="hover" onClick="user_management_prepare_cancel()">cancel</div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tbl_modify_pwd" class="add_tb">
+                            <tr><td>oldpwd</td><td><input type="password" id="txt_old_pwd" /></td></tr>
+                            <tr><td>newpwd</td><td><input type="password" id="txt_modify_pwd" /></td> </tr>
+                            <tr><td>confirmpwd</td><td><input type="password" id="txt_repeat_pwd" /> </td></tr>
+                            <tr><td colspan="2">
+                                    <div class="hover" onClick="user_management_prepare_save_modify_usr()">save</div>
+                                    <div class="hover" onClick="user_management_prepare_cancel()">cancel</div></td></tr>
+                        </table>						
+                        </td>
+                    </tr>
+                </table>
+                </div>
+	
+                <div class="switch ipc_list">
+				<table>
+					<tr><td>Device Time</td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
+                    <tr><td>Date Format</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span class="date_form" onChange="showtime();"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">YMD: xxxx xx xx</a></li>
+									<li><a href="javascript:;">MDY: xx xx xxxx</a></li>
+									<li><a href="javascript:;">DMY: xx xx xxxx</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>Time Delimiter</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="date_break" onChange="showtime();"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">xxxx-xx-xx</a></li>
+									<li><a href="javascript:;">xxxx/xx/xx</a></li>
+									<li><a href="javascript:;">xxxx.xx.xx</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>Time Zone</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="time_zone">GMT-12:00</span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">1</a></li>
+									<li><a href="javascript:;">2</a></li>
+									<li><a href="javascript:;">1</a></li>
+									<li><a href="javascript:;">2</a></li>
+									<li><a href="javascript:;">3</a></li>
+                                    <li><a href="javascript:;">3</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>Daylight Saving Time</td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
+                    <tr><td>Manually Setup</td><td></td><td></td></tr>
+                    <tr><td>Date</td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
+                    <tr><td>Time</td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()">OK</div></td></tr>
+                    <tr><td>Local Time Sync.</td><td></td><td></td></tr>
+                    <tr><td>Computer Time</td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()">Sync</div></td></tr>
+                    <tr><td>NTP Time Sync.</td><td></td><td></td></tr>
+                    <tr><td>NTP Server Sync. State</td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" />Open<input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked />Close</td><td></td></tr>
+                    <tr><td>NTP Server</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="time_ntp__server" name="ntp_server"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">time.window.com</a></li>
+									<li><a href="javascript:;">time.nist.gov</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="time_save_content();">save</div></td></tr>
+				</table>
+                </div>
+				 <div class="switch ipc_list"  style="display:none;">
+					<table>
+						<tr><td>Device Name</td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Device Model</td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Hardware version</td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Software Version</td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Build time</td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Alarm numbers</td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>SD numbers</td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
+					</table>
+				</div>
+                <div class="switch ipc_list">
+					<table>
+						<tr><td>Click button below to reboot IP Camera.</td><td  class="tdBtn"><div class="hover" onClick="reboot()">Root Now...</div></td></tr>
+                        <tr><td>Click button below to restore default factory.Note: This Function will reboot system automatically!</td><td class="tdBtn"><div class="hover" onClick="default_setting()">Restore</div></td></tr>
+                       <!-- <tr><td>Please click button below to select Upgrade File and then perform upgrade</td>
+                        <td>
+                        <div id="swfupload-control"></div>
+                            <span id="txt_status"></span><span id="txt_progress"></span><input type="button" id="button_upload" /><br />
+                            <span id="txt_upgrade_status"></span><span id="txt_upgrade_progress"></span>
+                        </td></tr>-->
+                    </table>
+                </div>
 			</div>
 			<div class="right_content">
 				<ul class="ope_list nav1">

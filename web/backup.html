@@ -25,11 +25,44 @@ var oPlayBack;
 
 		$('div.calendar').initCalendar();
 
-		contentMax();	
+		$('div.dev_list').on('click','span.device',function(){
+			$('div.dev_list span.device').removeClass('sel');
+			$(this).toggleClass('sel');
+			/*if($(this).parent('li').hasClass('sel')){ 
+				$(this).parent('li').find('li').addClass('sel');
+			}else{
+				$(this).parent('li').find('li').removeClass('sel');
+			}*/
+		})
+
+		/*$('div.dev_list').on('click','span.channel',function(){
+			var oChl = $(this);
+			$('#area_0+ul li').filter(function(){ 
+				if($(this).find('span.device').length && $(this).find(oChl).length ==0){
+					return $(this);
+				}
+			}).removeClass('sel').find('li').removeClass('sel');
+
+			oChl.parent('li').toggleClass('sel');
+			var b = 1;
+			oChl.parent('li').siblings().addBack().each(function(){ 
+				if(!$(this).hasClass('sel')){
+					b=0;
+				}
+			})
+			if(b){
+				oChl.parent('li').parent('ul').parent('li').addClass('sel')	
+			}else{ 
+				oChl.parent('li').parent('ul').parent('li').removeClass('sel')	
+			}
+		})*/
+		contentMax();
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
-	})
+	})///
+
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
+		show(data);
 		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td></tr>').appendTo('tbody.search_result');
 	}
 	function contentMax(){
@@ -108,36 +141,36 @@ var oPlayBack;
 					<ul></ul>
 				</li>	
 			</ul>	
-			<!-- <ul id="area" class="filetree">
-				<li><span class="area" ></span>Area
+	<!-- 	<ul id="area" class="filetree">
+		<li><span class="area" ></span>Area
+			<ul>
+				<li><span class="device" >device</span>
 					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-							</ul>
-						</li>
+						<li><span class="channel">Channel01</span></li>
+						<li><span class="channel">Channel02</span></li>
+						<li><span class="channel">Channel03</span></li>
+						<li><span class="channel">Channel04</span></li>
 					</ul>
 				</li>
-				<li><span class="area">Area</span>
+			</ul>
+		</li>
+		<li><span class="area">Area</span>
+			<ul>
+				<li><span class="device" >device</span>
 					<ul>
-						<li><span class="folder" ></span>device
-							<ul>
-								<li><span class="file">Channel01</span></li>
-								<li><span class="file">Channel02</span></li>
-								<li><span class="file">Channel03</span></li>
-								<li><span class="file">Channel04</span></li>
-								<li><span class="file">Channel05</span></li>
-								<li><span class="file">Channel06</span></li>
-								<li><span class="file">Channel07</span></li>
-								<li><span class="file">Channel08</span></li>
-							</ul>
-						</li>
+						<li><span class="channel">Channel01</span></li>
+						<li><span class="channel">Channel02</span></li>
+						<li><span class="channel">Channel03</span></li>
+						<li><span class="channel">Channel04</span></li>
+						<li><span class="channel">Channel05</span></li>
+						<li><span class="channel">Channel06</span></li>
+						<li><span class="channel">Channel07</span></li>
+						<li><span class="channel">Channel08</span></li>
 					</ul>
 				</li>
-			</ul> -->
+			</ul>
+		</li> -->
+		</ul>
 		</div>
 		<div class="calendar">
 			<div class="calendar_top">

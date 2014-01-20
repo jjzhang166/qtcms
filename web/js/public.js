@@ -114,13 +114,15 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 	$.fn.extend({
 		//client setting
 		'toSwitch': function(){
+
 			var warp = $(this);
 			var sClass = warp.find('li:first').attr('class');
 			warp.find('li').each(function(index){
 				$(this).on('click',function(){
+					warp.show().nextUntil('div.dev_list').show();
 					warp.find('li').removeClass(sClass);
 					$(this).addClass(sClass);
-					warp.nextAll('div.switch').hide().eq(index).show();	
+					warp.nextUntil('div.dev_list').hide().eq(index).show();	
 				})
 			})
 		},

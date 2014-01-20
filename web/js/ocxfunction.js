@@ -307,19 +307,23 @@ var oSelected = [],
 	}
 	//搜索远程录像
 function setDevData2ocx(bool){
-		var oDevData = $('div.dev_list span.device.sel').data('data');
 		var b = true;
+		var oDevData = $('div.dev_list span.device.sel').data('data');
+		try{
 			up = 1;
 			down=1;
 			palybackspeed('1x');
+		}catch(e){ 
+		}
+
 		if(bool){
 			oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();
-	
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert('IP地址设置失败或者端口不合法!');
 				b = false;
 			}
+
 			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
 				alert('vendor为空设置失败!');
 				b = false;
@@ -336,8 +340,10 @@ function setDevData2ocx(bool){
 				});
 				dragStopMove();
 			}else{
-				oPlaybackLocl.GroupStop();
-				oPlaybackLocl.GroupSpeedNormal();
+				try{
+					oPlaybackLocl.GroupStop();
+					oPlaybackLocl.GroupSpeedNormal();
+				}catch(e){}
 				for(var i=0;i<oDevData.channel_count;i++){
 					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
 						b = false;
@@ -358,7 +364,7 @@ function setDevData2ocx(bool){
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
-		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index()
+		var bool=$('#search_device ul.switchlist:eq(1) li.switchlistAct').index();
 			bool=bool < 0 ? 1 : bool;
 		  //cgi 请求数据
 		/*var channels = 0;   
@@ -404,27 +410,28 @@ function setDevData2ocx(bool){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(bool){
 		var devData = $('div.dev_list span.device.sel').data('data');
+
 		var type = $('#type span').attr('type') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx(bool)
+		setDevData2ocx(bool);
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
+			var chl = 0;
 			try{
 				oPlaybackLocl.style.height='0px';
 				oPlaybackLocl.GroupStop();
-				oPlayBack.style.height='100%';
+				oPlayBack.style.height='100%';			
 			}catch(e){
-
+				
 			}
-			
-			var chl = 0;
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
+			alert(chl);
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}

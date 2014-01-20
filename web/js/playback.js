@@ -113,6 +113,17 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				$('#type span').attr('type',index);
 			})
 		})
+
+		$('div.dev_list').on('click','span.device',function(){
+			$('div.dev_list span.device').removeClass('sel');
+			$(this).toggleClass('sel');
+			/*if($(this).parent('li').hasClass('sel')){ 
+				$(this).parent('li').find('li').addClass('sel');
+			}else{
+				$(this).parent('li').find('li').removeClass('sel');
+			}*/
+		})
+		
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 	})///

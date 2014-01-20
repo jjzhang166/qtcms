@@ -177,6 +177,10 @@ var oSearchOcx;
 			// 设置相关
 			$('ul.dvr_list0').each(function(){//dvr
 				var warp = $(this);
+				warp.click(function(){ 
+					warp.show();
+					$('ul.ipc_list0').hide();
+				})
 				warp.find('li').each(function(index){
 					$(this).click(function(){
 						switch(index)
@@ -198,6 +202,10 @@ var oSearchOcx;
 
 			$('ul.ipc_list0').each(function(){//ipc
 				var warp = $(this);
+				warp.click(function(){ 
+					warp.show();
+					$('ul.dvr_list0').hide();
+				})
 				warp.find('li').each(function(index){
 					$(this).click(function(){
 						switch(index)
