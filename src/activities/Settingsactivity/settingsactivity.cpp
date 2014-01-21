@@ -65,9 +65,13 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("max","click","OnMaxClick()");
 	QWFW_MSGMAP("min","click","OnMinClick()");
 	QWFW_MSGMAP("close","click","OnCloseClick()");
-	QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
-	QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
-	QWFW_MSGMAP("delete_ok","click","OnDeleteUserOk()");
+
+	//QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
+	//QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
+	//QWFW_MSGMAP("delete_ok","click","OnDeleteUserOk()");
+	QWFW_MSGMAP("AddUser_ok","click","OnAddUserOk()");
+	QWFW_MSGMAP("ModifyUser_ok","click","OnModifyUserOk()");
+	QWFW_MSGMAP("DeleteUser_ok","click","OnDeleteUserOk()");
 
 	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
 	QWFW_MSGMAP("AddDeviceDouble_ok","click","OnAddDeviceDouble()");
@@ -172,6 +176,48 @@ void settingsActivity::OnMouseMove()
 	}
 }
 
+//void settingsActivity::OnAddUserOk()
+//{
+//	IUserManager *Iuser = NULL;
+//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+//	if (NULL == Iuser)
+//	{
+//		return;
+//	}
+//	QVariant sUserName = QueryValue("add_username");
+//	if (Iuser->IsUserExists(sUserName.toString()))
+//	{
+//		DEF_EVENT_PARAM(arg);
+//		EP_ADD_PARAM(arg,"username",sUserName.toString());
+//		EventProcCall("AddFaild",arg);
+//		return;
+//	}
+//
+//	QVariant sPassWd = QueryValue("add_passwd");
+//	QVariant sPassWd2 = QueryValue("add_again_passwd");
+//	QVariant sLevel = QueryValue("add_level");
+//	int nLevel = sLevel.toInt();
+//	int nMask1 = 0xFFFFFFFF;
+//	int nMask2 = 0xFFFFFFFF;
+//	bool bRes = Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1,nMask2);
+//	
+//	if (!bRes)
+//	{
+//		DEF_EVENT_PARAM(arg);
+//		EP_ADD_PARAM(arg,"username",sUserName.toString());
+//		EP_ADD_PARAM(arg,"level",nLevel);
+//		EventProcCall("AddSuccess",arg);
+//	}
+//	else
+//	{
+//		DEF_EVENT_PARAM(arg);
+//		EP_ADD_PARAM(arg,"username",sUserName.toString());
+//		EP_ADD_PARAM(arg,"level",nLevel);
+//		EventProcCall("AddFaild",arg);
+//	}
+//	
+//	Iuser->Release();
+//}
 void settingsActivity::OnAddUserOk()
 {
 	IUserManager *Iuser = NULL;
@@ -180,41 +226,100 @@ void settingsActivity::OnAddUserOk()
 	{
 		return;
 	}
-	QVariant sUserName = QueryValue("add_username");
+	QVariant sUserName = QueryValue("username_ID");
 	if (Iuser->IsUserExists(sUserName.toString()))
 	{
 		DEF_EVENT_PARAM(arg);
-		EP_ADD_PARAM(arg,"username",sUserName.toString());
-		EventProcCall("AddFaild",arg);
+		EP_ADD_PARAM(arg,"fail","AddUserFail");
+		EventProcCall("AddUserFail",arg);
 		return;
 	}
 
-	QVariant sPassWd = QueryValue("add_passwd");
-	QVariant sPassWd2 = QueryValue("add_again_passwd");
-	QVariant sLevel = QueryValue("add_level");
+	QVariant sPassWd = QueryValue("password_ID");
+	QVariant sPassWd2 = QueryValue("password_again_ID");
+	QVariant sLevel = QueryValue("level_ID");
+
+	QVariant nMask1 = QueryValue("mask1_ID");
+	QVariant nMask2 = QueryValue("mask2_ID");
+
 	int nLevel = sLevel.toInt();
-	int nMask1 = 0xFFFFFFFF;
-	int nMask2 = 0xFFFFFFFF;
-	bool bRes = Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1,nMask2);
-	
+	//int nMask1 = 0xFFFFFFFF;
+	//int nMask2 = 0xFFFFFFFF;
+	bool bRes = Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1.toInt(),nMask2.toInt());
+
 	if (!bRes)
 	{
 		DEF_EVENT_PARAM(arg);
-		EP_ADD_PARAM(arg,"username",sUserName.toString());
-		EP_ADD_PARAM(arg,"level",nLevel);
-		EventProcCall("AddSuccess",arg);
+		EP_ADD_PARAM(arg,"success","AddUserSuccess");
+		EventProcCall("AddUserSuccess",arg);
 	}
 	else
 	{
 		DEF_EVENT_PARAM(arg);
-		EP_ADD_PARAM(arg,"username",sUserName.toString());
-		EP_ADD_PARAM(arg,"level",nLevel);
-		EventProcCall("AddFaild",arg);
+		EP_ADD_PARAM(arg,"fail","AddUserFail");
+		EventProcCall("AddUserFail",arg);
 	}
-	
+
 	Iuser->Release();
 }
-
+//void settingsActivity::OnModifyUserOk()
+//{
+//	IUserManager *Iuser = NULL;
+//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+//	if (NULL == Iuser)
+//	{
+//		return;
+//	}
+//	QVariant sUserName = QueryValue("user");
+//	QVariant sOldPassWd = QueryValue("modify_oldpasswd");
+//	//检查输入密码是否正确
+// 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
+// 	{
+//		QVariant sNewPassWd = QueryValue("modify_newpasswd");
+//		QVariant sNewPassWd2 = QueryValue("modify_again_passwd");
+//		//获取combox里的权限值，修改权限
+//		QVariant sLevel = QueryValue("modify_level");
+//		int nLevel = sLevel.toInt();
+//		if (!(sNewPassWd.toString().isEmpty() || sNewPassWd2.toString().isEmpty()))
+//		{
+//			bool bRes2 = Iuser->ModifyUserPassword(sUserName.toString(),sNewPassWd.toString());	
+//			if (!bRes2)
+//			{
+//				DEF_EVENT_PARAM(arg);
+//				EP_ADD_PARAM(arg,"username",sUserName.toString());
+//				EventProcCall("ModifyUserPasswdSuccess",arg);
+//			}else
+//			{
+//				DEF_EVENT_PARAM(arg);
+//				EP_ADD_PARAM(arg,"username",sUserName.toString());
+//				EventProcCall("ModifyUserPasswdFaild",arg);
+//			}
+//		}
+//		bool bRes = Iuser->ModifyUserLevel(sUserName.toString(),nLevel);
+//		if (!bRes)
+//		{
+//			DEF_EVENT_PARAM(arg);
+//			EP_ADD_PARAM(arg,"username",sUserName.toString());
+//			EP_ADD_PARAM(arg,"level",nLevel);
+//			EventProcCall("ModifyUserLevelSuccess",arg);
+//		}else
+//		{
+//			DEF_EVENT_PARAM(arg);
+//			EP_ADD_PARAM(arg,"username",sUserName.toString());
+//			EP_ADD_PARAM(arg,"level",nLevel);
+//			EventProcCall("ModifyUserLevelFaild",arg);
+//		}	
+//	}
+//	else
+//	{
+//		//event
+//		DEF_EVENT_PARAM(arg);
+//		EP_ADD_PARAM(arg,"username",sUserName);
+//		EP_ADD_PARAM(arg,"password",sOldPassWd);
+//		EventProcCall("ErrorPasswd",arg);
+//	}
+//	Iuser->Release();
+//}
 void settingsActivity::OnModifyUserOk()
 {
 	IUserManager *Iuser = NULL;
@@ -223,15 +328,15 @@ void settingsActivity::OnModifyUserOk()
 	{
 		return;
 	}
-	QVariant sUserName = QueryValue("user");
-	QVariant sOldPassWd = QueryValue("modify_oldpasswd");
+	QVariant sUserName = QueryValue("username_ID");
+	QVariant sOldPassWd = QueryValue("password_old_ID");
 	//检查输入密码是否正确
- 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
- 	{
-		QVariant sNewPassWd = QueryValue("modify_newpasswd");
-		QVariant sNewPassWd2 = QueryValue("modify_again_passwd");
+	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
+	{
+		QVariant sNewPassWd = QueryValue("password_ID");
+		QVariant sNewPassWd2 = QueryValue("password_again_ID");
 		//获取combox里的权限值，修改权限
-		QVariant sLevel = QueryValue("modify_level");
+		QVariant sLevel = QueryValue("level_ID");
 		int nLevel = sLevel.toInt();
 		if (!(sNewPassWd.toString().isEmpty() || sNewPassWd2.toString().isEmpty()))
 		{
@@ -239,27 +344,25 @@ void settingsActivity::OnModifyUserOk()
 			if (!bRes2)
 			{
 				DEF_EVENT_PARAM(arg);
-				EP_ADD_PARAM(arg,"username",sUserName.toString());
-				EventProcCall("ModifyUserPasswdSuccess",arg);
+				EP_ADD_PARAM(arg,"success","Modify User Password Success");
+				EventProcCall("ModifyUserSuccess",arg);
 			}else
 			{
 				DEF_EVENT_PARAM(arg);
-				EP_ADD_PARAM(arg,"username",sUserName.toString());
-				EventProcCall("ModifyUserPasswdFaild",arg);
+				EP_ADD_PARAM(arg,"fail","Modify User Password Fail");
+				EventProcCall("ModifyUserFail",arg);
 			}
 		}
 		bool bRes = Iuser->ModifyUserLevel(sUserName.toString(),nLevel);
 		if (!bRes)
 		{
 			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"username",sUserName.toString());
-			EP_ADD_PARAM(arg,"level",nLevel);
-			EventProcCall("ModifyUserLevelSuccess",arg);
+			EP_ADD_PARAM(arg,"success","Modify User Level Success");
+			EventProcCall("ModifyUserSuccess",arg);
 		}else
 		{
 			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"username",sUserName.toString());
-			EP_ADD_PARAM(arg,"level",nLevel);
+			EP_ADD_PARAM(arg,"fail","Modify User Level Fail");
 			EventProcCall("ModifyUserLevelFaild",arg);
 		}	
 	}
@@ -267,19 +370,42 @@ void settingsActivity::OnModifyUserOk()
 	{
 		//event
 		DEF_EVENT_PARAM(arg);
-		EP_ADD_PARAM(arg,"username",sUserName);
-		EP_ADD_PARAM(arg,"password",sOldPassWd);
-		EventProcCall("ErrorPasswd",arg);
+		EP_ADD_PARAM(arg,"fail","Modify User Fail");
+		EventProcCall("ModifyUserFail",arg);
 	}
 	Iuser->Release();
 }
-
+//void settingsActivity::OnDeleteUserOk()
+//{
+//	IUserManager *Iuser = NULL;
+//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
+//	//获取用户列表
+//	QVariant sUser = QueryValue("user");
+//	QStringList user_list = sUser.toString().split(",");
+//	for (int i = 0;i<user_list.size();i++)
+//	{
+//		sUser = user_list.at(i).toLatin1().data();
+//		bool bRes = Iuser->RemoveUser(sUser.toString());
+//		if (!bRes)
+//		{
+//			DEF_EVENT_PARAM(arg);
+//			EP_ADD_PARAM(arg,"username",sUser.toString());
+//			EventProcCall("DeleteSuccess",arg);
+//		}else
+//		{
+//			DEF_EVENT_PARAM(arg);
+//			EP_ADD_PARAM(arg,"username",sUser.toString());
+//			EventProcCall("DeleteFaild",arg);
+//		}
+//	}
+//	Iuser->Release();
+//}
 void settingsActivity::OnDeleteUserOk()
 {
 	IUserManager *Iuser = NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
 	//获取用户列表
-	QVariant sUser = QueryValue("user");
+	QVariant sUser = QueryValue("username_list_ID");
 	QStringList user_list = sUser.toString().split(",");
 	for (int i = 0;i<user_list.size();i++)
 	{
@@ -289,17 +415,18 @@ void settingsActivity::OnDeleteUserOk()
 		{
 			DEF_EVENT_PARAM(arg);
 			EP_ADD_PARAM(arg,"username",sUser.toString());
-			EventProcCall("DeleteSuccess",arg);
+			EP_ADD_PARAM(arg,"success","success");
+			EventProcCall("DeleteUserSuccess",arg);
 		}else
 		{
 			DEF_EVENT_PARAM(arg);
 			EP_ADD_PARAM(arg,"username",sUser.toString());
-			EventProcCall("DeleteFaild",arg);
+			EP_ADD_PARAM(arg,"fail","fail");
+			EventProcCall("DeleteUserFail",arg);
 		}
 	}
 	Iuser->Release();
 }
-
 /*device module*/
 void settingsActivity::OnAddDeviceDouble()
 {
