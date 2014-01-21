@@ -11,6 +11,10 @@
 <p>文档简介：<br />
   定义setting activity 模块与页面之间的消息映射</p>
 <p>//页面出给setting activity 模块事件名：<br />
+  @用户管理<br />
+  AddUser_ok|<br />
+  ModifyUser_ok|<br />
+  DeleteUser_ok|<br />
   @设备管理<br />
   AddDevice_ok|<br />
   AddDeviceDouble_ok|<br />
@@ -40,6 +44,14 @@
   SettingRecordTimeParm_ok|</p>
 <p>SettingRecordDoubleTimeParm_ok|<br />
   //setting activity 模块抛出给页面的事件<br />
+    @用户管理<br />
+  AddUserSuccess(success)<br />
+  AddUserFail(fail)<br />
+  ModifyUserSuccess(success)<br />
+  ModifyUserFail(fail)<br />
+  DeleteUserSuccess(success,username)<br />
+  DeleteUserFail(fail,username)<br />
+  
   @设备管理<br />
   AddDeviceSuccess(deviceid)<br />
   AddDeviceDoubleSuccess(deviceid,state,name)<br />
@@ -49,6 +61,7 @@
   ModifyDeviceFail(fail)<br />
   RemoveDeviceSuccess(success)<br />
   RemoveDeviceFail(fail)<br />
+  
   @区域管理<br />
   AddAreaSuccess(areaid)<br />
   AddAreaFail(fail)<br />
@@ -56,6 +69,7 @@
   ModifyAreaFail(fail)<br />
   RemoveAreaSuccess(success)<br />
   RemoveAreaFail(fail)<br />
+  
   @组管理<br />
   AddGroupSuccess(groupid)<br />
   AddGroupFail(fail)<br />
@@ -63,6 +77,7 @@
   ModifyGroupFail(fail)<br />
   RemoveGroupSuccess(success)<br />
   RemoveGroupFail(fail)<br />
+  
   @通道管理<br />
   AddChannelSuccess(success)<br />
   AddChannelFail(fail)<br />
@@ -70,6 +85,7 @@
   ModifyChannelNameFail(fail)<br />
   ModifyGroupNameSuccess(success)<br />
   RemoveChannelFail(fail)<br />
+  
   @通道与组管理<br />
   AddChannelInGroupSuccess(chlgroupid)<br />
   AddChannelInGroupFail(fail)<br />
@@ -77,18 +93,32 @@
   ModifyGroupChannelNameFail(fail)<br />
   RemoveChannelFromGroupSuccess(success)<br />
   RemoveChannelFromGroupFail(fail)<br />
+  
   @录像存储设置管理<br />
   SettingStorageParmSuccess(success)<br />
   SettingStorageParmFail(fail)<br />
+  
   @通用设置管理<br />
   SettingCommonParmSuccess(success)<br />
   SettingCommonParmFail(fail)<br />
+  
   @录像时间设置<br />
   SettingRecordTimeParmSuccess(success)<br />
   SettingRecordTimeParmFail(fail)</p>
 <p>SettingRecordDoubleTimeParmSuccess(success)<br />
 SettingRecordDoubleTimeParmFail(fail)<br />
   //页面传入参数，其中ID号相同的表示为同一个ID<br />
+  @user module<br />
+  user_id_ID|<br />
+  username_ID（不能重复）|<br />
+  username_list_ID|(如：name1,name2,name3)<br />()
+  password_ID|<br />
+  password_again_ID|<br />
+  password_old_ID|<br />
+  level_ID（0：高级管理员，1：管理员，2：普通用户，3:游客）|<br />
+  mask1_ID(未定义：0xFFFFFFFF（默认值）)|<br />
+  mask2_ID(未定义：0xFFFFFFFF（默认值）)|<br />
+  
   @dev module<br />
   adddevicedouble_ID(设备列表ID)|<br />
   dev_id_ID|<br />
@@ -103,15 +133,19 @@ SettingRecordDoubleTimeParmFail(fail)<br />
   channel_count_ID|<br />
   connect_method_ID(可选值为：IP(0)|sEsee(1))|<br />
   vendor_ID|<br />
+  
   @channel module<br />
   channel_id_ID|dev_id_ID|channel_number_ID|channel_name_ID|stream_id_ID|<br />
+  
   @group module<br />
   group_id_ID|<br />
   group_name_ID<br />
+  
   @area module<br />
   area_id_ID|<br />
   pid_ID|<br />
   area_name_ID<br />
+  
   @r_chl_group module<br />
   r_chl_group_id_ID|<br />
   channel_id_ID|<br />

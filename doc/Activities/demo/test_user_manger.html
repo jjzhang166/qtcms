@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+var obj = document.getElementById('common-library');
+AddActivityEvent('AddUserSuccess','AddUserSuccess(ev)');
+AddActivityEvent('AddUserFail','AddUserFail(ev)');
+AddActivityEvent('ModifyUserSuccess','ModifyUserSuccess(ev)');
+AddActivityEvent('ModifyUserFail','ModifyUserFail(ev)');
+AddActivityEvent('DeleteUserSuccess','DeleteUserSuccess(ev)');
+AddActivityEvent('DeleteUserFail','DeleteUserFail(ev)');
+}
+function AddUserSuccess(ev){
+    var str;
+     str = ev.success;
+    alert(str); 
+	}
+function AddUserFail(ev){
+    var str;
+     str = ev.fail;
+    alert(str); 
+	}
+function ModifyUserSuccess(ev){
+    var str;
+     str = ev.success;
+    alert(str); 
+	}
+function ModifyUserFail(ev){
+    var str;
+     str = ev.fail;
+    alert(str);
+	}
+function DeleteUserSuccess(ev){
+    var str;
+     str = ev.success+ "\n" + ev.username;
+    alert(str); 
+	}
+function DeleteUserFail(ev){
+    var str;
+     str = ev.fail+ "\n" + ev.username;
+    alert(str);
+	}
+</script>
+</head>
+
+<body onload="Onload()">
+<object type="application/cms-common-library" id="common-library" style="width:300; height:300"></object>
+
+    <tr>
+		<td>user_id_ID</td>
+		<td><input type="text" id="user_id_ID" value="0"/></td>
+        <td>username_ID</td>
+		<td><input type="text" id="username_ID" value="name1"/></td>
+        <td>username_list_ID</td>
+		<td><input type="text" id="username_list_ID" value="name1,name2"/></td>
+        <td>password_ID</td>
+		<td><input type="text" id="password_ID" value="123456"/></td>
+        <td>password_again_ID</td>
+		<td><input type="text" id="password_again_ID" value="123456"/></td>
+        <td>password_old_ID</td>
+		<td><input type="text" id="password_old_ID" value="123456"/></td>
+        <td>level_ID</td>
+		<td><input type="text" id="level_ID" value="0"/></td>
+        <td>mask1_ID</td>
+		<td><input type="text" id="mask1_ID" value="0xFFFFFFFF"/></td>
+        <td>mask2_ID</td>
+		<td><input type="text" id="mask2_ID" value="0xFFFFFFFF"/></td>
+	</tr>
+     <input type="button" id="AddUser_ok" value="AddUser_ok"/>
+     <input type="button" id="ModifyUser_ok" value="ModifyUser_ok"/>
+     <input type="button" id="DeleteUser_ok" value="DeleteUser_ok"/> 
+   <tr>
+
+	</tr>
+</body>
+</html>
