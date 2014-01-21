@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p><a name="OLE_LINK3" id="OLE_LINK3">编辑人：杨美化</a><br />
+  编辑日期：2014.01.21</p>
+<p>简介：通用页面测试说明文档</p>
+<p>一，User Manager</p>
+<p>输入框说明：</p>
+<p>sUsername ：用户名<br />
+  sPassword ：密码<br />
+  nLevel ：用户级别<br />
+  nAuthorityMask1 ：具体用户权限1<br />
+  nAuthorityMask2 ：具体用户权限2<br />
+  sNewPassword ：新密码<br />
+  <br />
+</p>
+<p>按钮说明：</p>
+<p>AddUser ：添加用户<br />
+  RemoveUser ：删除用户<br />
+  ModifyUserPassword ：修改密码<br />
+  ModifyUserLevel ：修改用户级别<br />
+  ModifyUserAuthorityMask ：修改用户权限<br />
+  IsUserExists ：用户是否存在<br />
+  CheckUser：检查用户<br />
+  GetUserLevel ：获取用户级别<br />
+  GetUserAuthorityMask：获取用户详细权限<br />
+  GetUserCount：获取用户数量<br />
+ListGetUserList：获取用户列表</p>
+<p>二，Group Manager</p>
+<p>输入框说明：</p>
+<p>sName ：组名<br />
+  group_id ：组ID<br />
+  chl_id ：通道ID<br />
+rgc_id：组_通道ID</p>
+<p>按钮说明：</p>
+<p>AddGroup：添加组<br />
+  RemoveGroup：移除组<br />
+  ModifyGroupName：修改组名<br />
+  GetGroupCount：获取组数量<br />
+  ListGetGroupList：获取组列表<br />
+  GetGroupName：获取组名<br />
+  IsGroupExists：组是否存在<br />
+  IsChannelExists：通道是否存在<br />
+  IsR_Channel_GroupExist：组_通道是否存在<br />
+  AddChannelInGroup：向组中添加通道<br />
+  RemoveChannelFromGroup：从组中删除通道<br />
+  ModifyGroupChannelName：修改组中的通道<br />
+  MoveChannelToGroup：移动通道到组<br />
+  GetGroupChannelCount：获取组中指定通道的数量<br />
+  GetGroupChannelList：获取组中指定通道的列表<br />
+  GetGroupChannelName：获取组中指定通道的名称<br />
+  GetChannelIdFromGroup：获取组中的通道号<br />
+GetChannelInfoFromGroup：获取组中通道信息</p>
+<p>三，Area Manager</p>
+<p>输入框说明：</p>
+<p>nPid ：父区域ID<br />
+  sName ：区域名<br />
+nId ：区域ID</p>
+<p>按钮说明：</p>
+<p>AddArea：添加区域<br />
+  RemoveAreaById：通过区域ID删除区域<br />
+  RemoveAreaByName：通过区域名删除区域<br />
+  SetAreaName：设置区域名<br />
+  IsAreaNameExist：区域名是否存在<br />
+  IsAreaIdExist：区域ID是否存在<br />
+  GetAreaCount：区域数量<br />
+  GetAreaList：获取区域列表<br />
+  GetSubArea：获取子区域列表<br />
+  GetAreaPid：获取父区域ID<br />
+  GetAreaName：获取区域名<br />
+GetAreaInfo：获取区域信息</p>
+<p>四，Device Manager</p>
+<p>输入框说明：</p>
+<p>dev_id ：设备ID<br />
+  area_id ：区域ID<br />
+  sDeviceName ：设备名称<br />
+  sAddress ：设备地址<br />
+  nPort ：设备端口<br />
+  http ：设备IP<br />
+  sEseeid ：易视网ID<br />
+  sUsername ：用户名<br />
+  sPassword ：密码<br />
+  chlCount ：通道数量<br />
+  connectMethod ：连接方式<br />
+  sVendor ：厂商信息<br />
+</p>
+<p>按钮说明：</p>
+<p>IsDeviceExist：设备是否存在<br />
+  IsDevExistsInArea：区域内的设备是否存在<br />
+  AddDevice：添加设备<br />
+  RemoveDevice：删除设备<br />
+  ModifyDeviceName：修改设备名<br />
+  ModifyDeviceHost：修改设备IP信息<br />
+  ModifyDeviceEseeId：修改易视网ID<br />
+  ModifyDeviceAuthority：修改设备用户信息<br />
+  ModifyDeviceChannelCount：修改设备通道数<br />
+  ModifyDeviceConnectMethod：修改设备连接方式<br />
+  ModifyDeviceVendor：修改设备厂商信息<br />
+  GetDeviceCount：获取设备数量<br />
+  GetDeviceList：获取设备列表<br />
+  GetDeviceName：获取设备名<br />
+  GetDeviceHost：获取设备IP信息<br />
+  GetDeviceEseeId：获取设备易视网ID<br />
+  GetDeviceLoginInfo：获取用户信息<br />
+  GetDeviceConnectMethod：获取设备连接信息<br />
+  GetDevicdVendor：获取设备厂商信息<br />
+GetDeviceInfo：获取设备详细信息</p>
+<p>五，Channel Manager</p>
+<p>输入框说明：</p>
+<p>channel_id ：通道号<br />
+  sChlName ：通道名称<br />
+  nStream ：码流<br />
+  device_id ：设备ID<br />
+nChannelNum ：通道数</p>
+<p>按钮说明：</p>
+<p>ModifyChannelName：修改通道名<br />
+  ModifyChannelStream：修改通道码流<br />
+  GetChannelCount：获取指定设备的通道数<br />
+  GetChannelList：获取通道列表<br />
+  GetChannelName：获取通道名<br />
+  GetChannelStream：获取通道码流<br />
+  GetChannelNumber：获取数<br />
+  GetChannelInfo：获取通道信息<br />
+</p>
+<p>六，Disk Setting</p>
+<p>输入框说明：</p>
+<p>sDisks ：磁盘号序列<br />
+  filesize ：文件大小<br />
+  bcover ：是否循环录像<br />
+spacereservedsize ：磁盘预留空间</p>
+<p>按键说明：</p>
+<p>setUseDisks：设置磁盘存储序列<br />
+  getUseDisks：获取磁盘存储序列<br />
+  getEnableDisks：获取系统可用磁盘号<br />
+  setFilePackageSize：设置录像文件大小<br />
+  getFilePackageSize：获取录像文件的大小<br />
+  setLoopRecording：设置是否循环录像<br />
+  getLoopRecording：获取是否循环录像<br />
+  setDiskSpaceReservedSize：设置磁盘预留空间<br />
+getDiskSpaceReservedSize：获取磁盘预留空间</p>
+<p>七，Set Record Time</p>
+<p>输入框说明：</p>
+<p>recordtime_id ：录像时间ID<br />
+  starttime ：开始录像时间<br />
+  endtime ：停止录像时间<br />
+  enable ：是否循环录像<br />
+chanl_id ：录像通道号</p>
+<p>按钮说明：</p>
+<p>ModifyRecordTime：修改录像时间<br />
+  GetRecordTimeBydevId：获取录像计划<br />
+GetRecordTimeInfo：获取录像计划的详细信息</p>
+<p>八，Local Setting</p>
+<p>输入框说明：</p>
+<p>sLanguage ：语言<br />
+  aptime ：轮循时间<br />
+  smode ：分屏模式<br />
+  alogin ：是否自动登录<br />
+  synctime ：是否自动同步时间<br />
+  aconnect ：是否自动连接<br />
+  afullscreen ：是否自动全屏<br />
+bootstart ：是否开机启动</p>
+<p>按钮说明：</p>
+<p>setLanguage：设置语言<br />
+  getLanguage：获取语言<br />
+  setAutoPollingTime：设置轮循时间<br />
+  getAutoPollingTime：获取轮循时间<br />
+  setSplitScreenMode：设置分屏模式<br />
+  getSplitScreenMode：获取分屏模式<br />
+  setAutoLogin：设置是否自动登录<br />
+  getAutoLogin：获取是否自动登录<br />
+  setAutoSyncTime：设置是否自动同步时间<br />
+  getAutoSyncTime：获取是否自动同步时间<br />
+  setAutoConnect：设置是否自动连接<br />
+  getAutoConnect：获取是否自动连接<br />
+  setAutoFullscreen：设置是否自动全屏<br />
+  getAutoFullscreen：获取是否自动全屏<br />
+  setBootFromStart：设置是否开机启动<br />
+  getBootFromStart：获取是否开机启动<br />
+</p>
+</body>
+</html>

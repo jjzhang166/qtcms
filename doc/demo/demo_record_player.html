@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>demo_record_player</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+    var obj = document.getElementById('windows');
+    obj.AddEventProc("GetRecordDate", "alert('GetRecordDate');");
+    obj.AddEventProc("GetRecordDate", 'GetRecordDate(ev)');
+
+    obj.AddEventProc("GetRecordFile", "alert('GetRecordFile');");
+    obj.AddEventProc("GetRecordFile", 'GetRecordFile(ev)');
+
+    obj.AddEventProc("SearchStop", "alert('SearchStop');");
+    obj.AddEventProc("SearchStop", 'SearchStop(ev)');
+
+}
+
+function GetRecordDate(ev) {
+    var str;
+    str = ev.devname + "\n" + ev.date;
+    alert(str); 
+}
+
+function GetRecordFile(ev) {
+    var str;
+    str = ev.filename + "\n" + ev.filepath + "\n" + ev.filesize + "\n" + ev.channelnum + "\n" + ev.startTime + "\n" + ev.stopTime;
+    alert(str);
+}
+
+function SearchStop(ev) {
+    var str;
+    str = ev.stopevent;
+    alert(str);
+}
+
+
+function searchDateByDeviceName() {
+    var obj = document.getElementById('windows');
+    var sdevname = document.getElementById('sdevname');
+
+    alert('searchDateByDeviceName');
+    obj.searchDateByDeviceName(sdevname.value);
+}
+
+function searchVideoFile() {
+    var obj = document.getElementById('windows');
+    var sdevname = document.getElementById('sdevname');
+    var sSearchDate = document.getElementById('sSearchDate');
+    var sSearchBeginTime = document.getElementById('sSearchBeginTime');
+    var sSearchEndTime = document.getElementById('sSearchEndTime');
+    var schannellist = document.getElementById('schannellist');
+    alert('searchVideoFile');
+    obj.searchVideoFile(sdevname.value, sSearchDate.value, sSearchBeginTime.value, sSearchEndTime.value, schannellist.value);
+}
+
+function AddFileIntoPlayGroup() {
+    var obj = document.getElementById('windows');
+    var fileList = document.getElementById('fileList');
+    var windID = document.getElementById('windowID');
+    var sTimeOfStartPlay = document.getElementById('sTimeOfStartPlay');
+    var sTimeOfEndPlay = document.getElementById('sTimeOfEndPlay');
+
+    alert("AddFileIntoPlayGroup");
+    obj.AddFileIntoPlayGroup(fileList.value, parseInt(windID.value), sTimeOfStartPlay.value, sTimeOfEndPlay.value);
+}
+
+function SetSynGroupNum() {
+    var obj = document.getElementById('windows');
+    var groupNum = document.getElementById('groupNum');
+    alert('SetSynGroupNum');
+    obj.SetSynGroupNum(parseInt(groupNum.value));
+}
+
+function GroupPlay() {
+    var obj = document.getElementById('windows');
+    alert('GroupPlay');
+    obj.GroupPlay();
+}
+
+function GroupPause() {
+    var obj = document.getElementById('windows');
+    alert('GroupPause');
+    obj.GroupPause();
+}
+
+function GroupContinue() {
+    var obj = document.getElementById('windows');
+    alert('GroupContinue');
+    obj.GroupContinue();
+}
+
+function GroupStop() {
+    var obj = document.getElementById('windows');
+    alert('GroupStop');
+    obj.GroupStop();
+}
+
+function GroupSpeedFast() {
+    var obj = document.getElementById('windows');
+    var speed = document.getElementById('playSpeed');
+    alert('GroupSpeedFast');
+    obj.GroupSpeedFast(parseInt(speed.value));
+}
+
+function GroupSpeedSlow() {
+    var obj = document.getElementById('windows');
+    var speed = document.getElementById('playSpeed');
+    alert('GroupSpeedSlow');
+    obj.GroupSpeedSlow(parseInt(speed.value));
+}
+
+function GroupSpeedNormal() {
+    var obj = document.getElementById('windows');
+    alert('GroupSpeedNormal');
+    obj.GroupSpeedNormal();
+}
+
+</script>
+</head>
+
+<body onload="Onload()">
+  <object type="application/cms-record-player" id="windows" style="width:800px; height:500px;"></object>
+
+
+<table border="0" cellspacing="0" cellpadding="0" width="75%">
+	<tr>
+		<td>sdevname</td>
+		<td><input type="text" id="sdevname" value="1000"/></td>
+        <td><button onclick="searchDateByDeviceName()">searchDateByDeviceName</button></td>
+	</tr>
+	<tr>
+		<td>sSearchDate</td>
+		<td><input type="text" id="sSearchDate" value="2014-01-14"/></td>
+        <td><button onclick="searchVideoFile()">searchVideoFile</button></td>
+	</tr>
+	<tr>
+		<td>sSearchBeginTime</td>
+		<td><input type="text" id="sSearchBeginTime" value="00:00:00"/></td>
+        <td></td>
+	</tr>
+	<tr>
+		<td>sSearchEndTime</td>
+		<td><input type="text" id="sSearchEndTime" value="23:59:59"/></td>
+        <td><button onclick="SetSynGroupNum()">SetSynGroupNum</button></td>
+	</tr>
+	<tr>
+		<td>schannellist</td>
+		<td><input type="text" id="schannellist" value="1;"/></td>
+        <td><button onclick="AddFileIntoPlayGroup()">AddFileIntoPlayGroup</button></td>
+	</tr>
+	<tr>
+		<td>fileList</td>
+		<td><input type="text" id="fileList" value="D:\JAREC\2014-01-14\1000\CHL01\195530.avi"/></td>
+        <td><button onclick="GroupPlay()">GroupPlay</button></td>
+	</tr>
+	<tr>
+		<td>windowID</td>
+		<td><input type="text" id="windowID" value="0"/></td>
+        <td><button onclick="GroupPause()">GroupPause</button></td>
+	</tr>
+	<tr>
+		<td>sTimeOfStartPlay</td>
+		<td><input type="text" id="sTimeOfStartPlay" value="2014-01-14 09:58:00"/></td>
+        <td><button onclick="GroupContinue()">GroupContinue</button></td>
+	</tr>
+	<tr>
+		<td>sTimeOfEndPlay</td>
+		<td><input type="text" id="sTimeOfEndPlay" value="2014-01-14 18:00:00"/></td>
+        <td><button onclick="GroupStop()">GroupStop</button></td>
+	</tr>
+	<tr>
+		<td>groupNum</td>
+		<td><input type="text" id="groupNum" value="4"/></td>
+        <td><button onclick="GroupSpeedFast()">GroupSpeedFast</button></td>
+	</tr>
+	<tr>
+		<td>playSpeed</td>
+		<td><input type="text" id="playSpeed" value="0"/></td>
+        <td><button onclick="GroupSpeedSlow()">GroupSpeedSlow</button></td>
+	</tr>
+	<tr>
+    	<td></td>
+		<td></td>
+        <td><button onclick="GroupSpeedNormal()">GroupSpeedNormal</button></td>
+	</tr>
+
+</table>
+
+
+</body>
+</html>

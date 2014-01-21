@@ -1,0 +1,1366 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>demo_record_player</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+
+    //user manager
+    function AddUser() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+        var sPassword = document.getElementById('sPassword');
+        var nLevel = document.getElementById('nLevel');
+        var nAuthorityMask1 = document.getElementById('nAuthorityMask1');
+        var nAuthorityMask2 = document.getElementById('nAuthorityMask2');
+
+        alert('AddUser');
+        alert(obj.AddUser(sUsername.value, sPassword.value, parseInt(nLevel.value), nAuthorityMask1.value, nAuthorityMask2.value));
+    }
+
+    function RemoveUser() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+
+        alert('RemoveUser');
+        alert(obj.RemoveUser(sUsername.value));
+    }
+
+    function ModifyUserPassword() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+        var sNewPassword = document.getElementById('sNewPassword');
+
+        alert('ModifyUserPassword');
+        alert(obj.ModifyUserPassword(sUsername.value, sNewPassword.value));
+    }
+
+    function ModifyUserLevel() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+        var nLevel = document.getElementById('nLevel');
+
+        alert('ModifyUserLevel');
+        alert(obj.ModifyUserLevel(sUsername.value, parseInt(nLevel.value)));
+    }
+
+    function ModifyUserAuthorityMask() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+        var nAuthorityMask1 = document.getElementById('nAuthorityMask1');
+        var nAuthorityMask2 = document.getElementById('nAuthorityMask2');
+
+        alert('ModifyUserAuthorityMask');
+        alert(obj.ModifyUserAuthorityMask(sUsername.value, nAuthorityMask1.value, nAuthorityMask2.value));
+    }
+
+    function IsUserExists() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+
+        alert('IsUserExists');
+        alert(obj.IsUserExists(sUsername.value));
+    }
+
+    function CheckUser() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+        var sPassword = document.getElementById('sPassword');
+
+        alert('CheckUser');
+        alert(obj.CheckUser(sUsername.value, sPassword.value));
+    }
+
+    function GetUserLevel() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+
+        alert('GetUserLevel');
+        alert(obj.GetUserLevel(sUsername.value));
+    }
+
+    function GetUserAuthorityMask() {
+        var obj = document.getElementById('windows');
+        var sUsername = document.getElementById('sUsername');
+
+        alert('GetUserAuthorityMask');
+        alert(obj.GetUserAuthorityMask(sUsername.value));
+    }
+
+    function GetUserCount() {
+        var obj = document.getElementById('windows');
+
+        alert('GetUserCount');
+        alert(obj.GetUserCount());
+    }
+
+    function ListGetUserList() {
+        var obj = document.getElementById('windows');
+
+        alert('ListGetUserList');
+        alert(obj.ListGetUserList());
+    }
+
+    //group manager
+    function AddGroup() {
+        var obj = document.getElementById('windows');
+        var sName = document.getElementById('sName');
+
+        alert('AddGroup');
+        alert(obj.AddGroup(sName.value));
+    }
+
+    function RemoveGroup() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+
+        alert('RemoveGroup');
+        alert(obj.RemoveGroup(parseInt(group_id.value)));
+    }
+
+    function ModifyGroupName() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+        var sName = document.getElementById('sName');
+
+        alert('ModifyGroupName');
+        alert(obj.ModifyGroupName(parseInt(group_id.value), sName.value));
+    }
+
+    function GetGroupCount() {
+        var obj = document.getElementById('windows');
+
+        alert('GetGroupCount');
+        alert(obj.GetGroupCount());
+    }
+
+    function ListGetGroupList() {
+        var obj = document.getElementById('windows');
+
+        alert('ListGetGroupList');
+        alert(obj.ListGetGroupList());
+    }
+
+    function GetGroupName() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+
+        alert('GetGroupName');
+        alert(obj.GetGroupName(parseInt(group_id.value)));
+    }
+
+    function IsGroupExists() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+
+        alert('IsGroupExists');
+        alert(obj.IsGroupExists(parseInt(group_id.value)));
+    }
+
+    function IsChannelExists() {
+        var obj = document.getElementById('windows');
+        var chl_id = document.getElementById('chl_id');
+
+        alert('IsChannelExists');
+        alert(obj.IsChannelExists(parseInt(chl_id.value)));
+    }
+
+    function IsR_Channel_GroupExist() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+
+        alert('IsR_Channel_GroupExist');
+        alert(obj.IsR_Channel_GroupExist(parseInt(rgc_id.value)));
+    }
+
+    function AddChannelInGroup() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+        var chl_id = document.getElementById('chl_id');
+        var sName = document.getElementById('sName');
+
+        alert('AddChannelInGroup');
+        alert(obj.AddChannelInGroup(parseInt(group_id.value), parseInt(chl_id.value), sName.value));
+    }
+
+    function RemoveChannelFromGroup() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+
+        alert('RemoveChannelFromGroup');
+        alert(obj.RemoveChannelFromGroup(parseInt(rgc_id.value)));
+    }
+
+    function ModifyGroupChannelName() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+        var sName = document.getElementById('sName');
+
+        alert('ModifyGroupChannelName');
+        alert(obj.ModifyGroupChannelName(parseInt(rgc_id.value), sName.value));
+    }
+
+    function MoveChannelToGroup() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+        var group_id = document.getElementById('group_id');
+
+        alert('MoveChannelToGroup');
+        alert(obj.MoveChannelToGroup(parseInt(rgc_id.value), parseInt(group_id.value)));
+    }
+
+    function GetGroupChannelCount() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+
+        alert('GetGroupChannelCount');
+        alert(obj.GetGroupChannelCount(parseInt(group_id.value)));
+    }
+
+    function GetGroupChannelList() {
+        var obj = document.getElementById('windows');
+        var group_id = document.getElementById('group_id');
+
+        alert('GetGroupChannelList');
+        alert(obj.GetGroupChannelList(parseInt(group_id.value)));
+    }
+
+    function GetGroupChannelName() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+
+        alert('GetGroupChannelName');
+        alert(obj.GetGroupChannelName(parseInt(rgc_id.value)));
+    }
+
+    function GetChannelIdFromGroup() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+
+        alert('GetChannelIdFromGroup');
+        alert(obj.GetChannelIdFromGroup(parseInt(rgc_id.value)));
+    }
+
+    function GetChannelInfoFromGroup() {
+        var obj = document.getElementById('windows');
+        var rgc_id = document.getElementById('rgc_id');
+
+        alert('GetChannelInfoFromGroup');
+        alert(obj.GetChannelInfoFromGroup(parseInt(rgc_id.value)));
+    }
+
+    //area manager
+    function AddArea() {
+        var obj = document.getElementById('windows');
+        var nPid = document.getElementById('nPid');
+        var sName = document.getElementById('areaName');
+
+        alert('AddArea');
+        alert(obj.AddArea(parseInt(nPid.value), sName.value));
+    }
+
+    function RemoveAreaById() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('RemoveAreaById');
+        alert(obj.RemoveAreaById(parseInt(nId.value)));
+    }
+
+    function RemoveAreaByName() {
+        var obj = document.getElementById('windows');
+        var sName = document.getElementById('areaName');
+
+        alert('RemoveAreaByName');
+        alert(obj.RemoveAreaByName(sName.value));
+    }
+
+    function SetAreaName() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+        var sName = document.getElementById('areaName');
+
+        alert('SetAreaName');
+        alert(obj.SetAreaName(parseInt(nId.value), sName.value));
+    }
+
+    function IsAreaNameExist() {
+        var obj = document.getElementById('windows');
+        var sName = document.getElementById('areaName');
+
+        alert('IsAreaNameExist');
+        alert(obj.IsAreaNameExist(sName.value));
+    }
+
+    function IsAreaIdExist() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('IsAreaIdExist');
+        alert(obj.IsAreaIdExist(parseInt(nId.value)));
+    }
+
+    function GetAreaCount() {
+        var obj = document.getElementById('windows');
+
+        alert('GetAreaCount');
+        alert(obj.GetAreaCount());
+    }
+
+    function GetAreaList() {
+        var obj = document.getElementById('windows');
+
+        alert('GetAreaList');
+        alert(obj.GetAreaList());
+    }
+
+    function GetSubArea() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('GetSubArea');
+        alert(obj.GetSubArea(parseInt(nId.value)));
+    }
+
+    function GetAreaPid() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('GetAreaPid');
+        alert(obj.GetAreaPid(parseInt(nId.value)));
+    }
+
+    function GetAreaName() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('GetAreaName');
+        alert(obj.GetAreaName(parseInt(nId.value)));
+    }
+
+    function GetAreaInfo() {
+        var obj = document.getElementById('windows');
+        var nId = document.getElementById('nId');
+
+        alert('GetAreaInfo');
+        alert(obj.GetAreaInfo(parseInt(nId.value)));
+    }
+
+    //device manager
+    function IsDeviceExist() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+
+        alert('IsDeviceExist');
+        alert(obj.IsDeviceExist(parseInt(dev_id.value)));
+    }
+
+    function IsDevExistsInArea() {
+        var obj = document.getElementById('windows');
+        var area_id = document.getElementById('area_id');
+        var sDeviceName = document.getElementById('sDeviceName');
+
+        alert('IsDevExistsInArea');
+        alert(obj.IsDevExistsInArea(parseInt(area_id.value), sDeviceName.value));
+    }
+
+    function AddDevice() {
+        var obj = document.getElementById('windows');
+        var area_id = document.getElementById('area_id');
+        var sDeviceName = document.getElementById('sDeviceName');
+        var sAddress = document.getElementById('sAddress');
+        var nPort = document.getElementById('nPort');
+        var http = document.getElementById('http');
+        var sEseeid = document.getElementById('sEseeid');
+        var sUsername = document.getElementById('sUsername');
+        var sPassword = document.getElementById('sPassword');
+        var chlCount = document.getElementById('chlCount');
+        var connectMethod = document.getElementById('connectMethod');
+        var sVendor = document.getElementById('sVendor');
+
+        alert('AddDevice');
+        alert(obj.AddDevice(parseInt(area_id.value), sDeviceName.value, sAddress.value, parseInt(nPort.value), parseInt(http.value), sEseeid.value, sUsername.value, sPassword.value, chlCount.value, connectMethod.value, sVendor.value));
+    }
+
+    function RemoveDevice() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+
+        alert('RemoveDevice');
+        alert(obj.RemoveDevice(parseInt(dev_id.value)));
+    }
+
+    function ModifyDeviceName() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sDeviceName = document.getElementById('sDeviceName');
+
+        alert('ModifyDeviceName');
+        alert(obj.ModifyDeviceName(parseInt(dev_id.value), sDeviceName.value));
+    }
+
+    function ModifyDeviceHost() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sAddress = document.getElementById('sAddress');
+        var nPort = document.getElementById('nPort');
+        var http = document.getElementById('http');
+
+        alert('ModifyDeviceHost');
+        alert(obj.ModifyDeviceHost(parseInt(dev_id.value), sAddress.value, parseInt(nPort.value), parseInt(http.value)));
+    }
+
+    function ModifyDeviceEseeId() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sEseeId = document.getElementById('sEseeid');
+
+        alert('ModifyDeviceEseeId');
+        alert(obj.ModifyDeviceEseeId(parseInt(dev_id.value), sEseeId.value));
+    }
+
+    function ModifyDeviceAuthority() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sUsername = document.getElementById('sDeviceUn');
+        var sPassword = document.getElementById('sDevicePs');
+
+        alert('ModifyDeviceAuthority');
+        alert(obj.ModifyDeviceAuthority(parseInt(dev_id.value), sUsername.value, sPassword.value));
+    }
+
+    function ModifyDeviceChannelCount() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var chlCount = document.getElementById('chlCount');
+
+        alert('ModifyDeviceChannelCount');
+        alert(obj.ModifyDeviceChannelCount(parseInt(dev_id.value), chlCount.value));
+    }
+
+    function ModifyDeviceConnectMethod() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var connectMethod = document.getElementById('connectMethod');
+
+        alert('ModifyDeviceConnectMethod');
+        alert(obj.ModifyDeviceConnectMethod(parseInt(dev_id.value), connectMethod.value));
+    }
+
+    function ModifyDeviceVendor() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sVendor = document.getElementById('sVendor');
+
+        alert('ModifyDeviceVendor');
+        alert(obj.ModifyDeviceVendor(parseInt(dev_id.value), sVendor.value));
+    }
+
+    function GetDeviceCount() {
+        var obj = document.getElementById('windows');
+        var area_id = document.getElementById('area_id');
+
+        alert('GetDeviceCount');
+        alert(obj.GetDeviceCount(parseInt(area_id.value)));
+    }
+
+    function GetDeviceList() {
+        var obj = document.getElementById('windows');
+        var area_id = document.getElementById('area_id');
+
+        alert('GetDeviceList');
+        alert(obj.GetDeviceList(parseInt(area_id.value)));
+    }
+
+    function GetDeviceName() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sDeviceName = document.getElementById('sDeviceName');
+
+        alert('GetDeviceName');
+        alert(obj.GetDeviceName(parseInt(dev_id.value), sDeviceName.value));
+    }
+
+    function GetDeviceHost() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sAddress = document.getElementById('sAddress');
+        var nPort = document.getElementById('nPort');
+        var http = document.getElementById('http');
+
+        alert('GetDeviceHost');
+        alert(obj.GetDeviceHost(parseInt(dev_id.value), sAddress.value, parseInt(nPort.value), parseInt(http.value)));
+    }
+
+    function GetDeviceEseeId() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sEseeid = document.getElementById('sEseeid');
+
+        alert('GetDeviceEseeId');
+        alert(obj.GetDeviceEseeId(parseInt(dev_id.value), sEseeid.value));
+    }
+
+    function GetDeviceLoginInfo() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sUsername = document.getElementById('sDeviceUn');
+        var sPassword = document.getElementById('sDevicePs');
+
+        alert('GetDeviceLoginInfo');
+        alert(obj.GetDeviceLoginInfo(parseInt(dev_id.value), sUsername.value, sPassword.value));
+    }
+
+    function GetDeviceConnectMethod() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var connectMethod = document.getElementById('connectMethod');
+
+        alert('GetDeviceConnectMethod');
+        alert(obj.GetDeviceConnectMethod(parseInt(dev_id.value), connectMethod.value));
+    }
+
+    function GetDevicdVendor() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+        var sVendor = document.getElementById('sVendor');
+
+        alert('GetDevicdVendor');
+        alert(obj.GetDevicdVendor(parseInt(dev_id.value), sVendor.value));
+    }
+
+    function GetDeviceInfo() {
+        var obj = document.getElementById('windows');
+        var dev_id = document.getElementById('dev_id');
+
+        alert('GetDeviceInfo');
+        alert(obj.GetDeviceInfo(parseInt(dev_id.value)));
+    }
+
+    //channel manager
+    function ModifyChannelName() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+        var sChlName = document.getElementById('sChlName');
+
+        alert('ModifyChannelName');
+        alert(obj.ModifyChannelName(parseInt(channel_id.value), sChlName.value));
+    }
+
+    function ModifyChannelStream() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+        var nStream = document.getElementById('nStream');
+
+        alert('ModifyChannelStream');
+        alert(obj.ModifyChannelStream(parseInt(channel_id.value), parseInt(nStream.value)));
+    }
+
+    function GetChannelCount() {
+        var obj = document.getElementById('windows');
+        var device_id = document.getElementById('device_id');
+
+        alert('GetChannelCount');
+        alert(obj.GetChannelCount(parseInt(device_id.value)));
+    }
+
+    function GetChannelList() {
+        var obj = document.getElementById('windows');
+        var device_id = document.getElementById('device_id');
+
+        alert('GetChannelList');
+        alert(obj.GetChannelList(parseInt(device_id.value)));
+    }
+
+    function GetChannelName() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+        var sChlName = document.getElementById('sChlName');
+
+        alert('GetChannelName');
+        alert(obj.GetChannelName(parseInt(channel_id.value), sChlName.value));
+    }
+
+    function GetChannelStream() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+        var nStream = document.getElementById('nStream');
+
+        alert('GetChannelStream');
+        alert(obj.GetChannelStream(parseInt(channel_id.value), parseInt(nStream.value)));
+    }
+
+    function GetChannelNumber() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+        var nChannelNum = document.getElementById('nChannelNum');
+
+        alert('GetChannelNumber');
+        alert(obj.GetChannelNumber(parseInt(channel_id.value), nChannelNum.value));
+    }
+
+    function GetChannelInfo() {
+        var obj = document.getElementById('windows');
+        var channel_id = document.getElementById('channel_id');
+
+        alert('GetChannelInfo');
+        alert(obj.GetChannelInfo(parseInt(channel_id.value)));
+    }
+
+    //disk setting
+    function setUseDisks() {
+        var obj = document.getElementById('windows');
+        var sDisks = document.getElementById('sDisks');
+
+        alert('setUseDisks');
+        alert(obj.setUseDisks(sDisks.value));
+    }
+
+    function getUseDisks() {
+        var obj = document.getElementById('windows');
+
+        alert('getUseDisks');
+        alert(obj.getUseDisks());
+    }
+
+    function getEnableDisks() {
+        var obj = document.getElementById('windows');
+
+        alert('getEnableDisks');
+        alert(obj.getEnableDisks());
+    }
+
+    function setFilePackageSize() {
+        var obj = document.getElementById('windows');
+        var filesize = document.getElementById('filesize');
+
+        alert('setFilePackageSize');
+        alert(obj.setFilePackageSize(parseInt(filesize.value)));
+    }
+
+    function getFilePackageSize() {
+        var obj = document.getElementById('windows');
+
+        alert('getFilePackageSize');
+        alert(obj.getFilePackageSize());
+    }
+
+    function setLoopRecording() {
+        var obj = document.getElementById('windows');
+        var bcover = document.getElementById('bcover');
+
+        alert('setLoopRecording');
+        alert(obj.setLoopRecording(bcover.value));
+    }
+
+    function getLoopRecording() {
+        var obj = document.getElementById('windows');
+
+        alert('getLoopRecording');
+        alert(obj.getLoopRecording());
+    }
+
+    function setDiskSpaceReservedSize() {
+        var obj = document.getElementById('windows');
+        var spacereservedsize = document.getElementById('spacereservedsize');
+
+        alert('setDiskSpaceReservedSize');
+        alert(obj.setDiskSpaceReservedSize(parseInt(spacereservedsize.value)));
+    }
+
+    function getDiskSpaceReservedSize() {
+        var obj = document.getElementById('windows');
+
+        alert('getDiskSpaceReservedSize');
+        alert(obj.getDiskSpaceReservedSize());
+    }
+
+    //set record time
+    function ModifyRecordTime() {
+        var obj = document.getElementById('windows');
+        var recordtime_id = document.getElementById('recordtime_id');
+        var starttime = document.getElementById('starttime');
+        var endtime = document.getElementById('endtime');
+        var enable = document.getElementById('enable');
+
+        alert('ModifyRecordTime');
+        alert(obj.ModifyRecordTime(parseInt(recordtime_id.value), starttime.value, endtime.value, enable.value));
+    }
+
+    function GetRecordTimeBydevId() {
+        var obj = document.getElementById('windows');
+        var chanl_id = document.getElementById('chanl_id');
+
+        alert('GetRecordTimeBydevId');
+        alert(obj.GetRecordTimeBydevId(parseInt(chanl_id.value)));
+    }
+
+    function GetRecordTimeInfo() {
+        var obj = document.getElementById('windows');
+        var recordtime_id = document.getElementById('recordtime_id');
+
+        alert('GetRecordTimeInfo');
+        alert(obj.GetRecordTimeInfo(parseInt(recordtime_id.value)));
+    }
+
+    //local setting
+    function setLanguage() {
+        var obj = document.getElementById('windows');
+        var sLanguage = document.getElementById('sLanguage');
+
+        alert('setLanguage');
+        alert(obj.setLanguage(sLanguage.value));
+    }
+
+    function getLanguage() {
+        var obj = document.getElementById('windows');
+
+        alert('getLanguage');
+        alert(obj.getLanguage());
+    }
+
+    function setAutoPollingTime() {
+        var obj = document.getElementById('windows');
+        var aptime = document.getElementById('aptime');
+
+        alert('setAutoPollingTime');
+        alert(obj.setAutoPollingTime(parseInt(aptime.value)));
+    }
+
+    function getAutoPollingTime() {
+        var obj = document.getElementById('windows');
+
+        alert('getAutoPollingTime');
+        alert(obj.getAutoPollingTime());
+    }
+
+    function setSplitScreenMode() {
+        var obj = document.getElementById('windows');
+        var smode = document.getElementById('smode');
+
+        alert('setSplitScreenMode');
+        alert(obj.setSplitScreenMode(smode.value));
+    }
+
+    function getSplitScreenMode() {
+        var obj = document.getElementById('windows');
+
+        alert('getSplitScreenMode');
+        alert(obj.getSplitScreenMode());
+    }
+
+    function setAutoLogin() {
+        var obj = document.getElementById('windows');
+        var alogin = document.getElementById('alogin');
+
+        alert('setAutoLogin');
+        alert(obj.setAutoLogin(alogin.value));
+    }
+
+    function getAutoLogin() {
+        var obj = document.getElementById('windows');
+
+        alert('getAutoLogin');
+        alert(obj.getAutoLogin());
+    }
+
+    function setAutoSyncTime() {
+        var obj = document.getElementById('windows');
+        var synctime = document.getElementById('synctime');
+
+        alert('setAutoSyncTime');
+        alert(obj.setAutoSyncTime(synctime.value));
+    }
+
+    function getAutoSyncTime() {
+        var obj = document.getElementById('windows');
+
+        alert('getAutoSyncTime');
+        alert(obj.getAutoSyncTime());
+    }
+
+    function setAutoConnect() {
+        var obj = document.getElementById('windows');
+        var aconnect = document.getElementById('aconnect');
+
+        alert('setAutoConnect');
+        alert(obj.setAutoConnect(aconnect.value));
+    }
+
+    function getAutoConnect() {
+        var obj = document.getElementById('windows');
+
+        alert('getAutoConnect');
+        alert(obj.getAutoConnect());
+    }
+
+    function setAutoFullscreen() {
+        var obj = document.getElementById('windows');
+        var afullscreen = document.getElementById('afullscreen');
+
+        alert('setAutoFullscreen');
+        alert(obj.setAutoFullscreen(afullscreen.value));
+    }
+
+    function getAutoFullscreen() {
+        var obj = document.getElementById('windows');
+
+        alert('getAutoFullscreen');
+        alert(obj.getAutoFullscreen());
+    }
+
+    function setBootFromStart() {
+        var obj = document.getElementById('windows');
+        var bootstart = document.getElementById('bootstart');
+
+        alert('setBootFromStart');
+        alert(obj.setBootFromStart(bootstart.value));
+    }
+
+    function getBootFromStart() {
+        var obj = document.getElementById('windows');
+
+        alert('getBootFromStart');
+        alert(obj.getBootFromStart());
+    }
+
+
+</script>
+</head>
+
+<body>
+<object type="application/cms-common-library" id="windows" style="width:300; height:300"></object>
+    <p>User Manager</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>sUsername</td>
+	<td><input type="text" id="sUsername" value="0"/></td>
+	<td><button onclick="AddUser()">AddUser</button></td>
+</tr>
+<tr>
+	<td>sPassword</td>
+	<td><input type="text" id="sPassword" value="0"/></td>
+	<td><button onclick="RemoveUser()">RemoveUser</button></td>
+</tr>
+<tr>
+	<td>nLevel</td>
+	<td><input type="text" id="nLevel" value="0"/></td>
+	<td><button onclick="ModifyUserPassword()">ModifyUserPassword</button></td>
+</tr>
+<tr>
+	<td>nAuthorityMask1</td>
+	<td><input type="text" id="nAuthorityMask1" value="0"/></td>
+	<td><button onclick="ModifyUserLevel()">ModifyUserLevel</button></td>
+</tr>
+<tr>
+	<td>nAuthorityMask2</td>
+	<td><input type="text" id="nAuthorityMask2" value="0"/></td>
+	<td><button onclick="ModifyUserAuthorityMask()">ModifyUserAuthorityMask</button></td>
+</tr>
+<tr>
+	<td>sNewPassword</td>
+	<td><input type="text" id="sNewPassword" value="0"/></td>
+	<td><button onclick="IsUserExists()">IsUserExists</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="CheckUser()">CheckUser</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetUserLevel()">GetUserLevel</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetUserAuthorityMask()">GetUserAuthorityMask</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetUserCount()">GetUserCount</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="ListGetUserList()">ListGetUserList</button></td>
+</tr>
+</table>
+    <p>Group Manager</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>sName</td>
+	<td><input type="text" id="sName" value="0"/></td>
+	<td><button onclick="AddGroup()">AddGroup</button></td>
+</tr>
+<tr>
+	<td>group_id</td>
+	<td><input type="text" id="group_id" value="0"/></td>
+	<td><button onclick="RemoveGroup()">RemoveGroup</button></td>
+</tr>
+<tr>
+	<td>chl_id</td>
+	<td><input type="text" id="chl_id" value="0"/></td>
+	<td><button onclick="ModifyGroupName()">ModifyGroupName</button></td>
+</tr>
+<tr>
+	<td>rgc_id</td>
+	<td><input type="text" id="rgc_id" value="0"/></td>
+	<td><button onclick="GetGroupCount()">GetGroupCount</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="ListGetGroupList()">ListGetGroupList</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetGroupName()">GetGroupName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="IsGroupExists()">IsGroupExists</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="IsChannelExists()">IsChannelExists</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="IsR_Channel_GroupExist()">IsR_Channel_GroupExist</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="AddChannelInGroup()">AddChannelInGroup</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="RemoveChannelFromGroup()">RemoveChannelFromGroup</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="ModifyGroupChannelName()">ModifyGroupChannelName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="MoveChannelToGroup()">MoveChannelToGroup</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetGroupChannelCount()">GetGroupChannelCount</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetGroupChannelList()">GetGroupChannelList</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetGroupChannelName()">GetGroupChannelName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetChannelIdFromGroup()">GetChannelIdFromGroup</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetChannelInfoFromGroup()">GetChannelInfoFromGroup</button></td>
+</tr>
+</table>
+    <p>Area Manager</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>nPid</td>
+	<td><input type="text" id="nPid" value="0"/></td>
+	<td><button onclick="AddArea()">AddArea</button></td>
+</tr>
+<tr>
+	<td>sName</td>
+	<td><input type="text" id="areaName" value="0"/></td>
+	<td><button onclick="RemoveAreaById()">RemoveAreaById</button></td>
+</tr>
+<tr>
+	<td>nId</td>
+	<td><input type="text" id="nId" value="0"/></td>
+	<td><button onclick="RemoveAreaByName()">RemoveAreaByName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="SetAreaName()">SetAreaName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="IsAreaNameExist()">IsAreaNameExist</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="IsAreaIdExist()">IsAreaIdExist</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetAreaCount()">GetAreaCount</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetAreaList()">GetAreaList</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetSubArea()">GetSubArea</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetAreaPid()">GetAreaPid</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetAreaName()">GetAreaName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetAreaInfo()">GetAreaInfo</button></td>
+</tr>
+</table>
+    <p>Device Manager</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>dev_id</td>
+	<td><input type="text" id="dev_id" value="0"/></td>
+	<td><button onclick="IsDeviceExist()">IsDeviceExist</button></td>
+</tr>
+<tr>
+	<td>area_id</td>
+	<td><input type="text" id="area_id" value="0"/></td>
+	<td><button onclick="IsDevExistsInArea()">IsDevExistsInArea</button></td>
+</tr>
+<tr>
+	<td>sDeviceName</td>
+	<td><input type="text" id="sDeviceName" value="0"/></td>
+	<td><button onclick="AddDevice()">AddDevice</button></td>
+</tr>
+<tr>
+	<td>sAddress</td>
+	<td><input type="text" id="sAddress" value="0"/></td>
+	<td><button onclick="RemoveDevice()">RemoveDevice</button></td>
+</tr>
+<tr>
+	<td>nPort</td>
+	<td><input type="text" id="nPort" value="0"/></td>
+	<td><button onclick="ModifyDeviceName()">ModifyDeviceName</button></td>
+</tr>
+<tr>
+	<td>http</td>
+	<td><input type="text" id="http" value="0"/></td>
+	<td><button onclick="ModifyDeviceHost()">ModifyDeviceHost</button></td>
+</tr>
+<tr>
+	<td>sEseeid</td>
+	<td><input type="text" id="sEseeid" value="0"/></td>
+	<td><button onclick="ModifyDeviceEseeId()">ModifyDeviceEseeId</button></td>
+</tr>
+<tr>
+	<td>sUsername</td>
+	<td><input type="text" id="sDeviceUn" value="0"/></td>
+	<td><button onclick="ModifyDeviceAuthority()">ModifyDeviceAuthority</button></td>
+</tr>
+<tr>
+	<td>sPassword</td>
+	<td><input type="text" id="sDevicePs" value="0"/></td>
+	<td><button onclick="ModifyDeviceChannelCount()">ModifyDeviceChannelCount</button></td>
+</tr>
+<tr>
+	<td>chlCount</td>
+	<td><input type="text" id="chlCount" value="0"/></td>
+	<td><button onclick="ModifyDeviceConnectMethod()">ModifyDeviceConnectMethod</button></td>
+</tr>
+<tr>
+	<td>connectMethod</td>
+	<td><input type="text" id="connectMethod" value="0"/></td>
+	<td><button onclick="ModifyDeviceVendor()">ModifyDeviceVendor</button></td>
+</tr>
+<tr>
+	<td>sVendor</td>
+	<td><input type="text" id="sVendor" value="0"/></td>
+	<td><button onclick="GetDeviceCount()">GetDeviceCount</button></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td><button onclick="GetDeviceList()">GetDeviceList</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceName()">GetDeviceName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceHost()">GetDeviceHost</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceEseeId()">GetDeviceEseeId</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceLoginInfo()">GetDeviceLoginInfo</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceConnectMethod()">GetDeviceConnectMethod</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDevicdVendor()">GetDevicdVendor</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetDeviceInfo()">GetDeviceInfo</button></td>
+</tr>
+</table>
+    <p>Channel Manager</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>channel_id</td>
+	<td><input type="text" id="channel_id" value="0"/></td>
+	<td><button onclick="ModifyChannelName()">ModifyChannelName</button></td>
+</tr>
+<tr>
+	<td>sChlName</td>
+	<td><input type="text" id="sChlName" value="0"/></td>
+	<td><button onclick="ModifyChannelStream()">ModifyChannelStream</button></td>
+</tr>
+<tr>
+	<td>nStream</td>
+	<td><input type="text" id="nStream" value="0"/></td>
+	<td><button onclick="GetChannelCount()">GetChannelCount</button></td>
+</tr>
+<tr>
+	<td>device_id</td>
+	<td><input type="text" id="device_id" value="0"/></td>
+	<td><button onclick="GetChannelList()">GetChannelList</button></td>
+</tr>
+<tr>
+	<td>nChannelNum</td>
+	<td><input type="text" id="nChannelNum" value="0"/></td>
+	<td><button onclick="GetChannelName()">GetChannelName</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetChannelStream()">GetChannelStream</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetChannelNumber()">GetChannelNumber</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="GetChannelInfo()">GetChannelInfo</button></td>
+</tr>
+</table>
+    <p>Disk Setting</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>sDisks</td>
+	<td><input type="text" id="sDisks" value="0"/></td>
+	<td><button onclick="setUseDisks()">setUseDisks</button></td>
+</tr>
+<tr>
+	<td>filesize</td>
+	<td><input type="text" id="filesize" value="0"/></td>
+	<td><button onclick="getUseDisks()">getUseDisks</button></td>
+</tr>
+<tr>
+	<td>bcover</td>
+	<td><input type="text" id="bcover" value="0"/></td>
+	<td><button onclick="getEnableDisks()">getEnableDisks</button></td>
+</tr>
+<tr>
+	<td>spacereservedsize</td>
+	<td><input type="text" id="spacereservedsize" value="0"/></td>
+	<td><button onclick="setFilePackageSize()">setFilePackageSize</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getFilePackageSize()">getFilePackageSize</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setLoopRecording()">setLoopRecording</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getLoopRecording()">getLoopRecording</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setDiskSpaceReservedSize()">setDiskSpaceReservedSize</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getDiskSpaceReservedSize()">getDiskSpaceReservedSize</button></td>
+</tr>
+</table>
+
+    <p>Set Record Time</p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>recordtime_id</td>
+	<td><input type="text" id="recordtime_id" value="0"/></td>
+	<td><button onclick="ModifyRecordTime()">ModifyRecordTime</button></td>
+</tr>
+<tr>
+	<td>starttime</td>
+	<td><input type="text" id="starttime" value="0"/></td>
+	<td><button onclick="GetRecordTimeBydevId()">GetRecordTimeBydevId</button></td>
+</tr>
+<tr>
+	<td>endtime</td>
+	<td><input type="text" id="endtime" value="0"/></td>
+	<td><button onclick="GetRecordTimeInfo()">GetRecordTimeInfo</button></td>
+</tr>
+<tr>
+	<td>enable</td>
+	<td><input type="text" id="enable" value="0"/></td>
+    <td></td>
+</tr>
+<tr>
+	<td>chanl_id</td>
+	<td><input type="text" id="chanl_id" value="0"/></td>
+    <td></td>
+</tr>
+</table>
+
+    <p>Local Setting</p>
+<table border="1" cellspacing="0" cellpadding="0" width="75%">
+<tr>
+	<td>sLanguage</td>
+	<td><input type="text" id="sLanguage" value="0"/></td>
+	<td><button onclick="setLanguage()">setLanguage</button></td>
+</tr>
+<tr>
+	<td>aptime</td>
+	<td><input type="text" id="aptime" value="0"/></td>
+	<td><button onclick="getLanguage()">getLanguage</button></td>
+</tr>
+<tr>
+	<td>smode</td>
+	<td><input type="text" id="smode" value="0"/></td>
+	<td><button onclick="setAutoPollingTime()">setAutoPollingTime</button></td>
+</tr>
+<tr>
+	<td>alogin</td>
+	<td><input type="text" id="alogin" value="0"/></td>
+	<td><button onclick="getAutoPollingTime()">getAutoPollingTime</button></td>
+</tr>
+<tr>
+	<td>synctime</td>
+	<td><input type="text" id="synctime" value="0"/></td>
+	<td><button onclick="setSplitScreenMode()">setSplitScreenMode</button></td>
+</tr>
+<tr>
+	<td>aconnect</td>
+	<td><input type="text" id="aconnect" value="0"/></td>
+	<td><button onclick="getSplitScreenMode()">getSplitScreenMode</button></td>
+</tr>
+<tr>
+	<td>afullscreen</td>
+	<td><input type="text" id="afullscreen" value="0"/></td>
+	<td><button onclick="setAutoLogin()">setAutoLogin</button></td>
+</tr>
+<tr>
+	<td>bootstart</td>
+	<td><input type="text" id="bootstart" value="0"/></td>
+	<td><button onclick="getAutoLogin()">getAutoLogin</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setAutoSyncTime()">setAutoSyncTime</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getAutoSyncTime()">getAutoSyncTime</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setAutoConnect()">setAutoConnect</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getAutoConnect()">getAutoConnect</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setAutoFullscreen()">setAutoFullscreen</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getAutoFullscreen()">getAutoFullscreen</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="setBootFromStart()">setBootFromStart</button></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+	<td><button onclick="getBootFromStart()">getBootFromStart</button></td>
+</tr>
+
+</table>
+
+
+</body>
+</html>
