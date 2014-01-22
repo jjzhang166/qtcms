@@ -28,34 +28,8 @@ var oPlayBack;
 		$('div.dev_list').on('click','span.device',function(){
 			$('div.dev_list span.device').removeClass('sel');
 			$(this).toggleClass('sel');
-			/*if($(this).parent('li').hasClass('sel')){ 
-				$(this).parent('li').find('li').addClass('sel');
-			}else{
-				$(this).parent('li').find('li').removeClass('sel');
-			}*/
 		})
 
-		/*$('div.dev_list').on('click','span.channel',function(){
-			var oChl = $(this);
-			$('#area_0+ul li').filter(function(){ 
-				if($(this).find('span.device').length && $(this).find(oChl).length ==0){
-					return $(this);
-				}
-			}).removeClass('sel').find('li').removeClass('sel');
-
-			oChl.parent('li').toggleClass('sel');
-			var b = 1;
-			oChl.parent('li').siblings().addBack().each(function(){ 
-				if(!$(this).hasClass('sel')){
-					b=0;
-				}
-			})
-			if(b){
-				oChl.parent('li').parent('ul').parent('li').addClass('sel')	
-			}else{ 
-				oChl.parent('li').parent('ul').parent('li').removeClass('sel')	
-			}
-		})*/
 		contentMax();
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 	})///
@@ -199,7 +173,7 @@ var oPlayBack;
 	<div id="search_result" style="overflow:auto;">
 			<table>
 				<thead>
-					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td></tr>
+					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td>End Time</td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
 					<!-- <tr><td><input type="checkbox" /></td><td></td><td></td><td></td></tr> -->
