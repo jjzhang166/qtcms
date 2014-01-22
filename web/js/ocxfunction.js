@@ -410,7 +410,6 @@ function setDevData2ocx(bool){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(bool){
 		var devData = $('div.dev_list span.device.sel').data('data');
-
 		var type = $('#type span').attr('type') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();

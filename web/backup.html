@@ -12,10 +12,11 @@
 <script src="treeview/jquery.treeview.edit.js" type="text/javascript"></script>
 <script src="js/ocxfunction.js" type="text/javascript"></script>
 <script type="text/javascript">
-var oPlayBack;
+var oPlayBack,oBackup;
 	$(function(){
 		
 		oPlayBack = $('#playback')[0];
+		oBackup = $('#backup')[0];
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
@@ -32,11 +33,14 @@ var oPlayBack;
 
 		contentMax();
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
+		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
+		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
+
 	})///
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
-		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td><div class="progess"></div></td></tr>').appendTo('tbody.search_result');
+		$('<tr><td><input type="checkbox" value="'+data.channel+'" type="'+data.types+'" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td><div class="progess"></div></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
 	}
 	function contentMax(){
 		var H = $(window).height();
@@ -62,6 +66,25 @@ var oPlayBack;
 		$('div.dev_list').height(main.height() - $('.calendar').height()+5);
 		$('#file_bottom').width(main.width());
 	}
+
+	function getDir(){ 
+		oBackup.ChooseDir();
+	};
+	function getDirCallback(data){ 
+		var oDevData = $('div.dev_list span.device.sel').data('data');
+		$('#search_result input:checked').each(function(){ 
+			var fileData = $(this).data('data');
+			//alert(oDevData.dev_id+'::'+oDevData.port+'::'+oDevData.eseeid+'::'+fileData.channel+'::'+fileData.types+'::'+fileData.start+'::'+fileData.end+'::'+data.path)
+			if(oBackup.startBackup(oDevData.dev_id,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,data.path)){
+				alert('下载失败!!');
+			};
+		})
+
+	}
+	function BackupStatusChangeCallback(data){
+		show(data);
+	}
+
 </script>
 <style type="text/css">
 	#search_result{background: #1E1E1E;}
@@ -79,6 +102,7 @@ var oPlayBack;
 <div id="test"></div>
 <object type="application/cms-common-library" id="commonLibrary" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
+<object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
 	<div id="top">
 		<div class="top_act">
 			<h4>DVR Client</h4>
@@ -173,7 +197,7 @@ var oPlayBack;
 	<div id="search_result" style="overflow:auto;">
 			<table>
 				<thead>
-					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td>Progess</td></tr>
+					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td style="width:300px;">Progess</td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
 					<!-- <tr><td><input type="checkbox" /></td><td></td><td></td><td></td></tr> -->
@@ -181,7 +205,7 @@ var oPlayBack;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Inverse</a><a class="hover" href="javascript:;">Backup</a>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Inverse</a><a class="hover" onclick="getDir();">Backup</a>
 	</div>
 	<div id="foot"></div>
 </body>

@@ -286,7 +286,6 @@ $(function(){
 			src= '/skins/default/'+src;
 			dst = '/skins/default/'+dst;
 
-			alert('<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>');
 			window.status = '<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>';
 		})
 	})
