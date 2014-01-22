@@ -1,7 +1,8 @@
 #include "qtqwebviewplugin.h"
 #include <guid.h>
 #include <libpcom.h>
-QtQWebViewPlugin::QtQWebViewPlugin()
+QtQWebViewPlugin::QtQWebViewPlugin():
+m_nRef(0)
 {
 
 }

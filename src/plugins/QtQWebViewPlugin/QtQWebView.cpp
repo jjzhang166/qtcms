@@ -40,7 +40,6 @@ void QtQWebView::LoadNewPage( QString url )
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 	m_tagViewPage.m_SubWebView->showMaximized();
 	m_tagViewPage.url = url;
-// 	m_tagViewPage.url.append(url);
 
 	m_ViewPageList.append(m_tagViewPage);
 	return;
@@ -69,7 +68,6 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 
 	//关闭当前页面
 	QList<tagViewPage>::const_iterator item;
-	int i=0;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
 		qDebug()<<item->url;
@@ -80,16 +78,19 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		if (SrcUrl==item->url&&SrcAct=="close")
 		{
 			item->m_SubWebView->close();
-			//delete item->m_SubWebView;
-			//m_ViewPageList.removeAt(i);
 			return;
 		}
-		i++;
 	}
 	//跳转到目的页面
 	if ("new"==DstAct)
 	{
 		bool bExit=false;
+
+		QList<tagViewPage>::const_iterator ite;
+		for(ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite){
+			ite->m_SubWebView->hide();
+		}
+
 		QList<tagViewPage>::const_iterator it;
 		for (it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it)
 		{
@@ -108,7 +109,6 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			{
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 				m_tagViewPage.m_SubWebView->showMaximized();
-				//m_tagViewPage.url=DstUrl;
 				m_tagViewPage.url.append(DstUrl);
 				m_ViewPageList.append(m_tagViewPage);
 			}
@@ -119,7 +119,6 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	if ("reload"==DstAct)
 	{
 		QList<tagViewPage>::iterator it;
-		int i=0;
 		for(it=m_ViewPageList.begin();it!=m_ViewPageList.end();++it){
 			if (it->url==SrcUrl)
 			{
@@ -128,12 +127,8 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 				it->m_SubWebView->load(temp);
 				it->url.clear();
 				it->url.append(DstUrl);
-/*				veiwPage.url.clear();*/
-// 				m_ViewPageList.at(i).url.clear();
-// 				m_ViewPageList.at(i).url.append(DstUrl);
 				it->m_SubWebView->showMaximized();
 			}
-			i++;
 		}
 	}
 	return;
