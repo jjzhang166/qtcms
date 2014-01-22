@@ -110,6 +110,14 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[i]);
 			}
 		}
+		$('div.top_nav li').each(function(index){
+			$(this).click(function(){ 
+				if(index == 0){
+					return false;
+				}
+				$('#winCon')[0].LoadNewPage('/skins/default/'+url[index]);
+			})	
+		})
 		//window.status = '<pageaction SrcUrl="/skins/default/log.html" SrcAct="index" DstUrl="/skins/default/index.html" DstAct="reload"></pageaction>';
 	})///
 

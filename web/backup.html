@@ -36,7 +36,7 @@ var oPlayBack;
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
-		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td></tr>').appendTo('tbody.search_result');
+		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td><div class="progess"></div></td></tr>').appendTo('tbody.search_result');
 	}
 	function contentMax(){
 		var H = $(window).height();
@@ -173,7 +173,7 @@ var oPlayBack;
 	<div id="search_result" style="overflow:auto;">
 			<table>
 				<thead>
-					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td>End Time</td></tr>
+					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td>Progess</td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
 					<!-- <tr><td><input type="checkbox" /></td><td></td><td></td><td></td></tr> -->

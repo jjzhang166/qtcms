@@ -276,6 +276,9 @@ $(function(){
 				srcAct = '';
 				dstAct = 'new';
 			var dst = url[index];
+			if(dst == src){
+				return false;
+			}
 			if(dst == 'index.html'){ 
 				srcAct = 'index';
 				dstAct = 'reload';
