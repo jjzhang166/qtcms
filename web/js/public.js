@@ -269,7 +269,25 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 	})
 })(jQuery)
 $(function(){
+	var url =['index.html','play_back.html','backup.html','device.html','log.html']
+	$('div.top_nav li').each(function(index){
+		$(this).on('click',function(){
+			var src = location.href.replace(/.*?(\w+\.html)/g,'$1'),
+				srcAct = '';
+				dstAct = 'new';
+			var dst = url[index];
+			if(dst == 'index.html'){ 
+				srcAct = 'index';
+				dstAct = 'reload';
+			}
+			src= '/skins/default/'+src;
+			dst = '/skins/default/'+dst;
 
+			alert('<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>');
+			window.status = '<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>';
+		})
+	})
+		
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
@@ -291,6 +309,7 @@ $(function(){
 	$('ul.switchlist,.ope_list').each(function(){
 		$(this).toSwitch();
 	})
+	
 	$('tbody.synCheckboxClick').SynchekboxClick();
 })
 // 辅助方法.

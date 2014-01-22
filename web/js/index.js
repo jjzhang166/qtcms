@@ -104,11 +104,19 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				})
 			}
 		})
-
+		var url =['index.html','play_back.html','backup.html','device.html','log.html']
+		for(i in url){
+			if(i != 0){ 
+				$('#winCon')[0].LoadNewPage('/skins/default/'+url[i]);
+			}
+		}
+		//window.status = '<pageaction SrcUrl="/skins/default/log.html" SrcAct="index" DstUrl="/skins/default/index.html" DstAct="reload"></pageaction>';
 	})///
+
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
 	}
+
 	function openWind(wind,data){	
 		var windState = oPreView.GetWindowConnectionStatus(wind)
 		if(windState != 2 ){ //该窗口不可用.
@@ -117,9 +125,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			return;
 		}
 		$('#channel_'+data.channel_id).attr('wind',wind);
-		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
-		
+		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);	
 	}
+
 	function WindCallback(ev){ 
 		var obj = $('div.dev_list span.channel').filter(function(){ 
 			return $(this).attr('wind') == ev.Wid;
@@ -127,6 +135,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		$('div.dev_list span.channel').removeClass('sel');
 		obj.addClass('sel');
 	}
+
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
 		var obj = $('div.dev_list span.channel').filter(function(){ 
 			return $(this).attr('wind') == ev.WPageId;
@@ -219,6 +228,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			S = S<10 ? '0'+S:S;
 		return H+':'+M+':'+S;	
 	}
+
 	function StartRecord(){ 
 		$('div.dev_list span.channel[wind]').each(function(){
 			var data = $(this).data('data'),
@@ -235,6 +245,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			writeActionLog(str);
 		})
 	}
+
 	function StopRecord(){ 
 		$('div.dev_list span.channel[wind]').each(function(){
 			var data = $(this).data('data'),

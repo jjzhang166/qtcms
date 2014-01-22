@@ -416,7 +416,7 @@ function setDevData2ocx(bool){
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx(bool);
+		alert(setDevData2ocx(bool));
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
@@ -431,7 +431,6 @@ function setDevData2ocx(bool){
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
-			alert(chl);
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
