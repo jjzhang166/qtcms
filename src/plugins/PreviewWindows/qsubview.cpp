@@ -44,7 +44,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
 	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
-	m_QActionCloseView=m_RMousePressMenu.addAction("close view");
+	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
 }
@@ -91,6 +91,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 
 	QString image;
 	QColor LineColor;
+	QColor LineCurColor;
 	QColor FontColor;
 	int FontSize;
 	QString FontFamily;
@@ -101,6 +102,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 
 	image = IniFile.value("background/background-image", NULL).toString();
 	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", NULL).toString());
 	FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 	FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", NULL).toString();
@@ -115,7 +117,8 @@ void QSubView::paintEvent( QPaintEvent * e)
 
  	p.drawPixmap(rcClient,pix);
 
-	QPen pen = QPen(LineColor, 2);
+	QPen pen = QPen(LineColor);
+	pen.setWidth(2);
  	p.setPen(pen);
 
 	p.drawRect(rcClient);
@@ -126,14 +129,26 @@ void QSubView::paintEvent( QPaintEvent * e)
 		int width = 0;
 		int height = 0;
 		rcClient.getCoords(&x, &y, &width, &height);
+		pen.setWidth(5);
+		pen.setColor(LineCurColor);
+		p.setPen(pen);
 		p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
 	}
 	else
 	{
 	 	p.drawRect(rcClient);
 	}
+	int awidth=0;
+	int bheight=0;
+	int ax=0;
+	int ay=0;
 
-	QFont font(FontFamily, FontSize, QFont::Bold);
+	rcClient.getCoords(&ax, &ay, &awidth, &bheight);
+	int aFontSize=10;
+	int aw=400;
+	int ah=300;
+	aFontSize=awidth*FontSize/(aw);
+	QFont font(FontFamily, aFontSize, QFont::Bold);
 	
 	p.setFont(font);
 
@@ -301,6 +316,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 {
 	if (evMap.value("CurrentStatus").toInt() == IDeviceClient::STATUS_DISCONNECTED)
 	{
+		//qDebug()<<this<<"FreshWindow";
 		emit FreshWindow();
 	}
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
