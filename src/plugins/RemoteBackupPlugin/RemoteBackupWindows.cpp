@@ -22,10 +22,12 @@ m_pRemoteBackup(NULL)
 
 RemoteBackupWindows::~RemoteBackupWindows(void)
 {
+	stopBackup();
 	if (m_pRemoteBackup)
 	{
 		m_pRemoteBackup->Release();
 	}
+	
 }
 
 bool RemoteBackupWindows::LoadDeviceClient(QString vendor)
@@ -119,6 +121,7 @@ void RemoteBackupWindows::ChooseDir()
 		QFileDialog::ShowDirsOnly
 		| QFileDialog::DontResolveSymlinks);
 	QVariantMap item;
+	dir.replace(QString("\\"),QString("/"));
 	item.insert("path",dir);
 	EventProcCall("RecordDirPath",item);
 
