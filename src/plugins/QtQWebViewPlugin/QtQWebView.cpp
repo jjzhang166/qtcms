@@ -21,6 +21,12 @@ QtQWebView::~QtQWebView()
 
 void QtQWebView::LoadNewPage( QString url )
 {
+	QList<tagViewPage>::const_iterator ite;
+	for (ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite)
+	{
+		ite->m_SubWebView->hide();
+	}
+
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{

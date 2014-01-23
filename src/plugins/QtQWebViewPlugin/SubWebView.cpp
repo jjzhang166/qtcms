@@ -124,3 +124,14 @@ void SubWebView::OnurlChanged( const QUrl & url )
 		m_Activity = NULL;
 	}
 }
+
+void SubWebView::keyPressEvent( QKeyEvent* ev )
+{
+	switch(ev->key()){
+	case  Qt::Key_Escape:{
+		close();
+						 }
+						 break;
+	}
+	QWebView::keyPressEvent(ev);
+}

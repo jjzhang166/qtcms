@@ -9,7 +9,8 @@ class SubWebView:public QWebView
 public:
 	explicit SubWebView(QString nurl,QWidget *parent = 0);
 	virtual ~SubWebView(void);
-
+protected:
+	virtual void keyPressEvent(QKeyEvent* ev);
 signals:
 	void LoadOrChangeUrl(const QString &text);
 	public slots:
