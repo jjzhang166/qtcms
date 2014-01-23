@@ -72,10 +72,11 @@ var oPlayBack,oBackup;
 	};
 	function getDirCallback(data){ 
 		var oDevData = $('div.dev_list span.device.sel').data('data');
+		//show(oDevData);
 		$('#search_result input:checked').each(function(){ 
 			var fileData = $(this).data('data');
-			//alert(oDevData.dev_id+'::'+oDevData.port+'::'+oDevData.eseeid+'::'+fileData.channel+'::'+fileData.types+'::'+fileData.start+'::'+fileData.end+'::'+data.path)
-			if(oBackup.startBackup(oDevData.dev_id,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,data.path)){
+			alert(oDevData.address+'::'+oDevData.port+'::'+oDevData.eseeid+'::'+fileData.channel+'::'+fileData.types+'::'+fileData.start+'::'+fileData.end+'::'+data.path)
+			if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,data.path)){
 				alert('下载失败!!');
 			};
 		})

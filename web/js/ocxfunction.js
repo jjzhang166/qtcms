@@ -423,9 +423,9 @@ function setDevData2ocx(bool){
 			try{
 				oPlaybackLocl.style.height='0px';
 				oPlaybackLocl.GroupStop();
-				oPlayBack.style.height='100%';			
-			}catch(e){
-				
+				oPlayBack.style.height='100%';	
+			}catch(e){	
+				$('tbody.search_result tr').remove();
 			}
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
