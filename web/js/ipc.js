@@ -106,7 +106,7 @@ function deviceName_load()
 					$('#ipc_enc_channelname').val(data.deviceName);
 				},
 				error:function(a,b,c){ 
-					alert(b);
+					//alert(b);
 				}
 			});
 }
@@ -229,7 +229,7 @@ function encode_save_content()
 			success:function(data){
 			},
 			error:function(a,b,c){ 
-				alert(b);
+				//alert(b);
 			}
 		})
 }
@@ -965,7 +965,7 @@ function time_zone_save()
 					}
 				},
 				error:function(a,b,c){ 
-					alert(b);
+					//alert(b);
 				}
 			})
 }

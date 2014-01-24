@@ -255,7 +255,7 @@ function dvr_common_load_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -342,7 +342,7 @@ function dvr_common_save_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -418,7 +418,7 @@ function dvr_network_load_content()
 //			alert("complete:" + textStatus)
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+		//	alert(textStatus);
 		}
 	});	
 }
@@ -475,7 +475,7 @@ function dvr_network_save_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -505,7 +505,7 @@ function setAjax(xmlstr,fun){
 			fun(dvr_selected_chn);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){	
-			alert(textStatus);
+			//alert(textStatus);
 		},
 		complete: function(XMLHttpRequest, textStatus){
 //			alert("complete:" + textStatus);
@@ -892,7 +892,7 @@ function dvr_record_load_content(dvr_selected_chn)
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -952,7 +952,7 @@ function dvr_record_save_content(chk_chn)
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1004,7 +1004,7 @@ function dvr_screen_load_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1048,7 +1048,7 @@ function dvr_screen_save_content(chk_chn)
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1327,7 +1327,7 @@ function dvr_ptz_load_content()
 //			alert("complete:" + textStatus)
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1392,7 +1392,7 @@ function dvr_ptz_save_content(chk_chn)
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1471,7 +1471,7 @@ function dvr_alarm_load_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
@@ -1542,7 +1542,7 @@ function dvr_alarm_save_content(chk_chn)
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert(textStatus);
+			//alert(textStatus);
 		}
 	});	
 }
