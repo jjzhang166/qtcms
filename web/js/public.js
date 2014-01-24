@@ -338,17 +338,16 @@ function firstUp(str){  //字符串首字母大写
 	return a.join('');
 }
 function show(data){  // 在ID为test的div元素中打印对象数据
-	var index='default'
-	var str = 'Null'
-	$('#test').html('');
-	if(typeof(data) != 'string'){
+	var index='default',
+		str = 'Null';
+	if(typeof(data) == 'number' || typeof(data) == 'string'){
+		$('<span>'+index+'</span>:<span>"'+data+'"/</span><br/>').appendTo($('#test'));
+	}else{
 		for(i in data){ 
 			index = i;
 			str = data[i];
-			$('<span>'+index+'</span>:<span>'+str+'/</span>').appendTo($('#test'));
+			$('<span>'+index+'</span>:<span>'+str+'/</span><br/>').appendTo($('#test'));
 		}
-	}else{
-		$('<span>'+index+'</span>:<span>"'+data+'"/</span>').appendTo($('#test'));
 	}
 }
 function addZero(num){   //数字小于0的时候用0补一位.

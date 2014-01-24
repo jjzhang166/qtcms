@@ -40,7 +40,7 @@ var oPlayBack,oBackup;
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
-		$('<tr><td><input type="checkbox" value="'+data.channel+'" type="'+data.types+'" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td><div class="progess"></div></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
+		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
 	}
 	function contentMax(){
 		var H = $(window).height();
@@ -70,20 +70,72 @@ var oPlayBack,oBackup;
 	function getDir(){ 
 		oBackup.ChooseDir();
 	};
+	var path = '',
+		now = 0,
+		timer = null;
 	function getDirCallback(data){ 
+		now = 0;
+		path = data.path;
+		startDownload();
+	}
+
+	function startDownload(){
+		var oList = $('#search_result input:checked')
+		if(now >= oList.length){
+			show('所有选择的文件下载完成!');
+			now=0;
+			return false;
+		}
 		var oDevData = $('div.dev_list span.device.sel').data('data');
 		//show(oDevData);
-		$('#search_result input:checked').each(function(){ 
-			var fileData = $(this).data('data');
-			alert(oDevData.address+'::'+oDevData.port+'::'+oDevData.eseeid+'::'+fileData.channel+'::'+fileData.types+'::'+fileData.start+'::'+fileData.end+'::'+data.path)
-			if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,data.path)){
-				alert('下载失败!!');
-			};
-		})
-
+		var fileData = oList.eq(now).data('data');
+		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
+		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path)){
+					show('当前第'+now+'个文件下载失败!!');
+					now++;
+		}
+		syndownload();
+		/*oList = oList.filter(function(index){
+			if(index == 0){ 
+				var fileData = $(this).data('data');
+				
+			}
+			return index != 0;
+		})*/
+	}
+	function syndownload(){
+		var i=0;
+		var oWarp = $('#search_result tr').has('input:checked').eq(now);
+			oWarp.find('a').one('click',function(){
+				show('当前第'+now+'个任务已被终止!');
+				oBackup.Stop();
+			})
+		timer = setInterval(function(){
+			i++;
+			var p = oBackup.getProgress();
+			var width = p*oWarp.find('div').width()+1;
+			show('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
+			oWarp.find('span').width(width);
+			/*if(p == 1){
+				clearInterval(timer);
+				$('#search_result tr').has('input:checked').eq(now).find('span').width(oWarp.find('div').width());
+			}*/
+		},1000);
+		show('正在下载当前选中文件的第'+now+'个!');
 	}
 	function BackupStatusChangeCallback(data){
-		show(data);
+		show('当前文件的下载状态'+data.types);
+		if(data.types != 'startBackup'){
+			var oWarp = $('#search_result tr').has('input:checked').eq(now);
+			oWarp.find('a').off();
+			//oBackup.Stop();
+			if(data.types == 'backupFinished'){ 
+				oWarp.find('span').width('100%');
+			}
+			clearInterval(timer);
+			now++;
+			startDownload();
+		}
 	}
 
 </script>
@@ -96,11 +148,15 @@ var oPlayBack,oBackup;
 	#search_result table thead td{ height: 14px; background:url(./images/backup/backup_table_bg.png) repeat-x; font-size: 10px;}
 	#search_result .search_result tr{height: 20px;}
 	.switch{ position: relative;}
+
+	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
+	.progess span{ background: #abcdef; height: 14px; width:0px; display: block;}
+	.progess a{height:14px; width: 14px; display: block; background: red; float:left; margin:1px 8px;}
 </style>
 </head>
 
 <body>
-<div id="test"></div>
+<div id="test" style="height:80px; overflow:auto;"></div>
 <object type="application/cms-common-library" id="commonLibrary" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
@@ -201,13 +257,13 @@ var oPlayBack,oBackup;
 					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td style="width:300px;">Progess</td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
-					<!-- <tr><td><input type="checkbox" /></td><td></td><td></td><td></td></tr> -->
+					<!-- <tr><td><input type="checkbox" /></td><td>1</td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
 				</tbody>
 			</table>
 	</div>
 	<div id="file_bottom">
 		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Inverse</a><a class="hover" onclick="getDir();">Backup</a>
 	</div>
-	<div id="foot"></div>
+	<!-- <div id="foot"></div> -->
 </body>
 </html>
