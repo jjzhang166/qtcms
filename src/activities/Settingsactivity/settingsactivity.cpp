@@ -235,8 +235,8 @@ void settingsActivity::OnAddUserOk()
 		return;
 	}
 
-	QVariant sPassWd = QueryValue("password_user_ID");
-	QVariant sPassWd2 = QueryValue("password_again_ID");
+	QVariant sPassWd = QueryValue("password_add_ID");
+	QVariant sPassWd2 = QueryValue("password_add_again_ID");
 	QVariant sLevel = QueryValue("level_add_ID");
 
 	QVariant nMask1 = QueryValue("mask1_ID");
@@ -329,12 +329,12 @@ void settingsActivity::OnModifyUserOk()
 		return;
 	}
 	QVariant sUserName = QueryValue("username_modify_ID");
-	QVariant sOldPassWd = QueryValue("password_old_ID");
+	QVariant sOldPassWd = QueryValue("password_modify_old_user_ID");
 	//检查输入密码是否正确
 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
 	{
-		QVariant sNewPassWd = QueryValue("password_user_ID");
-		QVariant sNewPassWd2 = QueryValue("password_again_ID");
+		QVariant sNewPassWd = QueryValue("password_modify_new_user_ID");
+		QVariant sNewPassWd2 = QueryValue("password_modify_new_again_user_ID");
 		//获取combox里的权限值，修改权限
 		QVariant sLevel = QueryValue("level_modify_ID");
 		int nLevel = sLevel.toInt();
