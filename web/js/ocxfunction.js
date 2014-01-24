@@ -1,6 +1,5 @@
 
-var oSelected = [],
-	oCommonLibrary;
+var oCommonLibrary;
 	
 	$(function(){ 
 		oCommonLibrary = document.getElementById('commonLibrary');
@@ -10,19 +9,25 @@ var oSelected = [],
 		areaList2Ui('0');
 	})	
 
-	function AddSuccess(ev){
-		var name = document.getElementById('add_username').value;
-		var usrLev= $('#menu2 div.select span').html();
+	function AddUserSuccess(ev){
+		var name =$('#username_user_ID').val();
+		var usrLev= $('#level_add_ID').html();
 		var No = $('#UserMan table.UserMan tbody tr').length - 1;
 		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');		
 	}
-	function DeleteSuccess(){
-		oSelected = [];
-		$('#UserMan table.UserMan tbody tr input:hidden').val('');
+	function DeleteUserSuccess(){
+		$('#username_list_ID').val('');
 		$('#UserMan table.UserMan tbody tr').filter(function(){ 
 			return $(this).attr('class') == 'selected';
 		}).remove();
 	}
+
+	function ModifyUserSuccess(ev){
+		$('#UserMan table.UserMan tbody tr').filter(function(){ 
+			return $(this).attr('class') == 'selected';
+		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
+	}
+
 	function Fail(data){
 		var str='';
 		if(data.name){
@@ -32,11 +37,6 @@ var oSelected = [],
 		}
 		str += data.fail
 		Confirm(str);
-	}
-	function ModifyUserLevelSuccess(ev){
-		$('#UserMan table.UserMan tbody tr').filter(function(){ 
-			return $(this).attr('class') == 'selected';
-		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
 	}
 
 	//搜索设备控件方法.
@@ -103,7 +103,7 @@ var oSelected = [],
 	function AddGroupSuccess(data){
 		var name = $('#group_name_ID').val();
 		var id = data.groupid;
-		var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
+		var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo('#group_0');
 			add.find('span.group').data('data',{'group_id':id,'group_name':name});
 			$('ul.filetree:eq(1)').treeview({add:add});
 		closeMenu();
@@ -267,10 +267,11 @@ var oSelected = [],
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var groupList = oCommonLibrary.GetGroupList();
+		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root','pid':'0','pareaname':'root'})
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
-			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#group_0').next('ul'));
+			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo('#group_0');
 			add.find('span.group').data('data',{'group_id':id,'group_name':name});
 			$('ul.filetree:eq(1)').treeview({add:add});
 			groupChannelList2Ui(id);

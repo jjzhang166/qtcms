@@ -143,19 +143,21 @@
 		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;">取消</div></td></tr>
 	</table>
 </div>
+<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
+<input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" id="add_username" enable="1" onblur="pwdTest($(this));" /></td></tr>
-		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="add_passwd" onblur="pwdTest($(this));" enable="0"/></td></tr>
-		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="add_again_passwd" onblur="pwdTest($(this));" enable="0"/></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="username_user_ID" enable="1" onblur="pwdTest($(this));" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_user_ID" onblur="pwdTest($(this));" enable="0"/></td></tr>
+		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_again_ID" onblur="pwdTest($(this));" enable="0"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
 				<div class="select" style="width:60px;">
 					<span>游客</span>
 					<a class="hover" href="javascript:;"></a>
-					<input type="hidden" value="3" id="add_level"/>
+					<input type="hidden" value="3" id="level_add_ID"/>
 				</div>
 				<ul class="option">
 					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
@@ -164,14 +166,14 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close" id="add_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover close" id="AddUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu3" class="menu">
 	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
 		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" /></td></tr>
-		<tr><td>旧密码</td><td><input enable="1" type="password" id="modify_oldpasswd"/></td></tr>
+		<tr><td>旧密码</td><td><input enable="1" type="password" id="password_old_ID"/></td></tr>
 		<tr><td>新密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_newpasswd"/></td></tr>
 		<tr><td>确认密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_again_passwd"/></td></tr>
 		<tr>
@@ -180,7 +182,7 @@
 				<div class="select" style="width:60px;">
 				<span>游客</span>
 				<a class="hover" href="javascript:;"></a>
-				<input type="hidden" value="3" id="modify_level"/>
+				<input type="hidden" value="3" id="level_modify_ID"/>
 				</div>
 				<ul class="option">
 					<li><a href="javascript:;" style="width:59px;" key="2">游客</a></li>
@@ -189,7 +191,7 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="modify_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyUser_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="confirm" class="menu">
@@ -197,7 +199,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover confirm" id="DeleteUser_ok" >确认</div><div class="hover close">取消</div></td></tr>
 		</table>
 	</div>
 </div>
@@ -325,8 +327,7 @@
 					</div>
 					<div class="action" style="height:22px;"><ul><li id="AddChannelInGroupDouble_ok" class="hover">添加至分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
-						<span id="group_0"></span>
-						<ul class="filetree">
+						<ul class="filetree" id="group_0">
 							<!-- <li><span class="group" id="group_0">Group_root</span>
 										<ul>
 										<li><span class="cam">Channel01</span></li>
@@ -1769,7 +1770,7 @@
 								<tr><td style="width:30px;">序号</td><td style="width:110px;">用户名</td><td style="width:144px;">权限等级</td></tr>
 							</thead>
 							<tbody>
-								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="user"/></td></tr>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="username_list_ID"/></td></tr>
 							</tbody>
 						</table>
 					</td>

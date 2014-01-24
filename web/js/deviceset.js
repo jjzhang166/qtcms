@@ -217,17 +217,17 @@ var oSearchOcx;
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
 			var userName = $(this).find('td').eq(1).html();
-			if($(this).attr('class')){
+			/*if($(this).attr('class')){
 				for(i in oSelected){
 					if(oSelected[i] == userName){ 
 						oSelected.splice(i,1);
 					}
 				}
 			}else{
-				oSelected.push(userName);	
-			}
+				oSelected.push(userName);
+			}*/
 			$(this).toggleClass('selected');  // tr toggle样式
-			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
+			$('#username_list_ID').val(oSelected.join(','));
 		})
 		
 		set_contentMax();
@@ -241,7 +241,7 @@ var oSearchOcx;
 		})
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -450,7 +450,8 @@ var oSearchOcx;
 					case 3 : userCom = '游客'; break;
 					default: userCom = '游客'; break;
 				}
-				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan');
+				var data = {'userid':userList[i],'userlv':userlv,'userCom':userCom}
+				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
 			}
 		}		
 	}
@@ -551,11 +552,14 @@ function showContextMenu(y,x,obj){
 //遮罩层和弹出框方法.
 var trance = {'area':'区域','device':'设备','channel':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
-	var pObjClass = objclass == 'group'?'group':'area';
+	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
 	if(action == 'Add'){ // 调整添加的父级对象
 		if(!$('span.sel')[0] || !$('span.sel').hasClass(pObjClass)){
 			pObj = $('span.'+pObjClass+':eq(0)');
+		}
+		if(objclass == 'group'){
+			pObj = $('#group_0');
 		}
 	}else{ 
 		if(!$('span.sel')[0]){
