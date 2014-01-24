@@ -132,7 +132,7 @@ function encode_load_content()
 					encode_load();
 				},
 				error:function(a,b,c){ 
-					alert(b);
+					//alert(b);
 				}
 			});
 }
@@ -524,6 +524,7 @@ function remote_save_content()
 		beforeSend: function(XMLHttpRequest){
 		},
 		success: function(data, textStatus){
+			//alert(11);
 			//alert("recv:" + data.xml);
 		network_save_content();
 		},
@@ -611,7 +612,7 @@ function user_management_save_del_usr()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert("error:" + textStatus);
+			//alert("error:" + textStatus);
 		}
 	});	
 }
@@ -653,7 +654,7 @@ function user_management_save_edit_usr()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert("error:" + textStatus);
+			//alert("error:" + textStatus);
 		}
 	});	
 }
@@ -716,7 +717,7 @@ function user_management_save_new_usr()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert("error:" + textStatus);
+			//alert("error:" + textStatus);
 		}
 	});	
 }
@@ -776,7 +777,7 @@ function user_management_prepare_save_modify_usr()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert("error:" + textStatus);
+		//	alert("error:" + textStatus);
 		}
 	});	
 }
@@ -792,7 +793,7 @@ function user_management_data2ui(dvr_data)
 {
 	var user_count = dvr_data.user.user_list.count;
 	var tbl = $("#tbl_user_manage")[0];
-	for(var i = tbl.rows.length - 1; i >= 2; i--)
+	for(var i = tbl.rows.length - 1; i >= 1; i--)
 	{
 		tbl.deleteRow(i);
 	}
@@ -895,7 +896,7 @@ function user_management_load_content()
 //			alert("complete:" + textStatus);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			alert("error:" + textStatus);
+			//alert("error:" + textStatus);
 		}
 	});	
 }

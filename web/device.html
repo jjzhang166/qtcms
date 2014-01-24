@@ -1372,6 +1372,17 @@
 					<li>TimeSettings</li>
                     <li>IniliazationSettings</li>
 				</ul>
+                <div class="switch ipc_list"  style="display:none;">
+					<table>
+						<tr><td>Device Name</td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Device Model</td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Hardware version</td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Software Version</td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Build time</td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>Alarm numbers</td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>SD numbers</td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
+					</table>
+				</div>
                 <div class="switch ipc_list">
 					<table>
 						<tr>
@@ -1589,17 +1600,6 @@
                     <tr><td colspan="4" class="tdBtn"><div class="hover">cancel</div><div class="hover" onclick="time_save_content();">save</div></td></tr>
 				</table>
                 </div>
-				 <div class="switch ipc_list"  style="display:none;">
-					<table>
-						<tr><td>Device Name</td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Device Model</td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Hardware version</td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Software Version</td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Build time</td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>Alarm numbers</td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td>SD numbers</td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
-					</table>
-				</div>
                 <div class="switch ipc_list">
 					<table>
 						<tr><td>Click button below to reboot IP Camera.</td><td  class="tdBtn"><div class="hover" onClick="reboot()">Root Now...</div></td></tr>

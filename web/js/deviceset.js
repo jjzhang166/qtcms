@@ -98,46 +98,12 @@ var oSearchOcx;
 					areaList2Ui('0');
 				}else if(index == 1){
 					$('ul.filetree:eq(2)').find('li').remove();
-					areaList2Ui('2')
-					/*var areaList = oCommonLibrary.GetAreaList();
-					var areaList0 = 0;				
-					//手动添加区域0
-					var deviceList0 = oCommonLibrary.GetDeviceList(0);	
-							var add_li = $('<li><span class="area">区域_root</span><ul id="area0"></ul></li>').appendTo('ul.filetree:eq(2)');
-							$('ul.filetree:eq(2)').treeview({add:add_li});				
-					for(n in areaList){
-						var id = areaList[n];
-						var name = oCommonLibrary.GetAreaName(areaList[n]);
-						var pid = oCommonLibrary.GetAreaPid(areaList[n]);
-						
-						$('ul.filetree:eq(2)').treeview()	
-						
-						var add_li = $('<li><span class="area">'+name+'</span><ul id="area'+id+'"></ul></li>').appendTo('ul.filetree:eq(2)');
-						$('ul.filetree:eq(2)').treeview({add: add_li});	
-					//搜索添加区域
-					var deviceList = oCommonLibrary.GetDeviceList(id)
-						for(k in deviceList)
-						{
-							var dev_id = deviceList[k];
-							var deviceInfo = oCommonLibrary.GetDeviceInfo(dev_id);			
-							var add_li = $('<li class="device1" value="'+dev_id+'"><span class="device" id="device'+dev_id+'">'+deviceInfo.name+'</span></li>').appendTo('#area'+id);
-							$('ul.filetree:eq(2)').treeview({add:add_li});
-						}
-					}
-					//手动添加area0的设备
-						for(j in deviceList0)
-						{
-							var dev_id0 = deviceList0[j];
-							var deviceInfo0 = oCommonLibrary.GetDeviceInfo(dev_id0);	
-							
-							var add_li_1 = $('<li class="device1" value="'+dev_id0+'"><span class="device" id="device'+dev_id0+'">'+deviceInfo0.name+'</span></li>').appendTo('#area0');
-							$('ul.filetree:eq(2)').treeview({add:add_li_1});
-						}*/
+					areaList2Ui('2');
+					$('div.dev_list span.channel').parent('li').remove();
 						
 						$('ul.filetree:eq(2) span.device').each(function(device_index){
 							$(this).click(function(){
 								var oDevData = $(this).data('data');
-								//show(oDevData);
 								var _url = 'http://'+oDevData.address+':'+oDevData.port;
 								var _usr = oDevData.username;
 								var _pwd = oDevData.password;
@@ -145,6 +111,8 @@ var oSearchOcx;
 								$('ul.ipc_list0').hide().nextUntil('div.dev_list').hide();
 								$('ul.dvr_list0').hide().nextUntil('div.dev_list').hide();
 								if(oDevData.vendor == 'JUAN IPC'){//如果选中设备为ipc
+									$('ul.ipc_list0 li').removeClass('ope_listAct');
+									$('ul.ipc_list0 li').eq(0).addClass('ope_listAct');
 									$('.ipc_list0').show();	
 									$('.ipc_list').eq(0).show();
 									ipc(_url,_usr,_pwd);
@@ -152,6 +120,8 @@ var oSearchOcx;
 								}
 							    if(oDevData.vendor == 'JUAN DVR')//如果选中设备为dvr
 								{
+									$('ul.dvr_list0 li').removeClass('ope_listAct');
+									$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
 									$('.dvr_list0').show()
 									$('.dvr_list').eq(0).show();
 									dvr(_url,_usr,_pwd,_chn);
