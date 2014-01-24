@@ -97,7 +97,6 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
     }
 }
 
-
 void StreamProcess::stopStream()
 {
 	if (NULL != m_tcpSocket)
