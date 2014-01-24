@@ -207,7 +207,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	}
 	function writeActionLog(str){ 
 		if(str){
-			$('<p>'+str+'</p>').appendTo('#actionLog');
+			$('<p>'+str+'</p>').prependTo('#actionLog');
 		}
 	}
 	function showEmptyAction(){ 

@@ -31,6 +31,12 @@ var oPlayBack,oBackup;
 			$(this).toggleClass('sel');
 		})
 
+		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
+			if(oBackup.getProgress() != 0){
+				return false;
+			}
+		})
+
 		contentMax();
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
@@ -81,11 +87,11 @@ var oPlayBack,oBackup;
 
 	function startDownload(){
 		var oList = $('#search_result input:checked')
-		if(now >= oList.length){
+/*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
 			now=0;
 			return false;
-		}
+		}*/
 		var oDevData = $('div.dev_list span.device.sel').data('data');
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
@@ -107,8 +113,9 @@ var oPlayBack,oBackup;
 		var i=0;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').one('click',function(){
+				oBackup.stopBackup()
 				show('当前第'+now+'个任务已被终止!');
-				oBackup.Stop();
+				return false;
 			})
 		timer = setInterval(function(){
 			i++;
@@ -128,12 +135,19 @@ var oPlayBack,oBackup;
 		if(data.types != 'startBackup'){
 			var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').off();
-			//oBackup.Stop();
 			if(data.types == 'backupFinished'){ 
 				oWarp.find('span').width('100%');
 			}
 			clearInterval(timer);
 			now++;
+			var oList = $('#search_result input:checked')
+			if(now >= oList.length){
+				show('所有选择的文件下载完成!');
+				now=0;
+				$('#search_result input:checked').prop('checked',false);
+				return false;
+			}
+			//oBackup.stopBackup();
 			startDownload();
 		}
 	}

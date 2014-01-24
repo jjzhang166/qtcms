@@ -341,12 +341,12 @@ function show(data){  // 在ID为test的div元素中打印对象数据
 	var index='default',
 		str = 'Null';
 	if(typeof(data) == 'number' || typeof(data) == 'string'){
-		$('<span>'+index+'</span>:<span>"'+data+'"/</span><br/>').appendTo($('#test'));
+		$('<p><span>'+index+'</span>:<span>"'+data+'"/</span></p>').prependTo($('#test'));
 	}else{
 		for(i in data){ 
 			index = i;
 			str = data[i];
-			$('<span>'+index+'</span>:<span>'+str+'/</span><br/>').appendTo($('#test'));
+			$('<p>'+index+'</span>:<span>'+str+'/</span></p>').prependTo($('#test'));
 		}
 	}
 }
