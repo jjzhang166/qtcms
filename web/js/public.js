@@ -283,7 +283,7 @@ $(function(){
 				srcAct = 'index';
 				dstAct = 'reload';
 			}
-			src= '/skins/default/'+src;
+			src = '/skins/default/'+src;
 			dst = '/skins/default/'+dst;
 
 			window.status = '<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>';

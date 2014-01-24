@@ -142,8 +142,7 @@ var oSelected = [],
 				dataIndex[i] = $('#device #'+i+'_ID').val();
 			}
 		}
-		adddev(dataIndex);
-		
+		adddev(dataIndex);	
 	}
 
 	function ModifyDeviceSuccess(){
@@ -164,7 +163,6 @@ var oSelected = [],
 		closeMenu();
 	}
 	function AddDeviceDoubleSuccess(data){
-		Confirm(data.name+'AddSuccess');
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
@@ -173,22 +171,21 @@ var oSelected = [],
 		$('#adddevicedouble_ID').val('');
 	}
 
-	function adddev(data){ 
+	function adddev(data){
+		Confirm(data.device_name+'AddSuccess!');
 		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		add.find('span.device').data('data',data);
 		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
 		for(i in chlList){
 			var chlNum = '';//oCommonLibrary.GetChannelNumber(chlList[i]);
 			var num =parseInt(i)+1;
-			var name = num < 10 ? 'channel'+'0'+num : 'channel'+num;
+			var name = 'chl';
 			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
 			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+chldata.channel_name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
 			addchl.find('span.channel').data('data',chldata);
 			$('ul.filetree:eq(0)').treeview({add:addchl});
 		}
 		$('ul.filetree:eq(0)').treeview({add:add});
-		closeMenu();
-
 	}
 	function AddChannelDoubleInGroupSuccess(data){
 		Confirm(data.channelname+'AddSuccess');

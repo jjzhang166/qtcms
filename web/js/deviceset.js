@@ -1,6 +1,6 @@
-var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
 var oSearchOcx;
 	$(function(){
+			
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -36,6 +36,7 @@ var oSearchOcx;
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
 		})
+
 		$('div.dev_list:lt(2)').each(function(index){
 			var This = $(this);
 			This.mouseup(function(event){ 
@@ -136,7 +137,7 @@ var oSearchOcx;
 						$('ul.filetree:eq(2) span.device').each(function(device_index){
 							$(this).click(function(){
 								var oDevData = $(this).data('data');
-								show(oDevData);
+								//show(oDevData);
 								var _url = 'http://'+oDevData.address+':'+oDevData.port;
 								var _usr = oDevData.username;
 								var _pwd = oDevData.password;
@@ -164,13 +165,7 @@ var oSearchOcx;
 					userList2Ui();
 				}
 			})
-			//搜索设备;
-			oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
-			searchFlush();
-			for (i in oActiveEvents){
-				AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
-				AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
-			}
+
 			// 设置相关
 			$('ul.dvr_list0').each(function(){//dvr
 				var warp = $(this);
@@ -219,6 +214,7 @@ var oSearchOcx;
 				})
 			});
 		})
+
 		//搜索结果 设备列表tr委托部分事件;
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(event){
 			var devList = $('tbody.synCheckboxClick input:checked');
@@ -246,6 +242,7 @@ var oSearchOcx;
 				return false;
 			}
 		})
+		
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
@@ -262,7 +259,9 @@ var oSearchOcx;
 			$(this).toggleClass('selected');  // tr toggle样式
 			$(this).parent('tbody').find('input:hidden').val(oSelected.join());
 		})
+		
 		set_contentMax();
+		
 		$('ul.filetree:gt(1)').each(function(){ 
 			var warp = $(this)
 			$(this).on('click','span.device',function(){ 
@@ -270,6 +269,17 @@ var oSearchOcx;
 				$(this).addClass('sel');
 			})
 		})
+
+		//设备操作相关的事件绑定
+		var oActiveEvents = ['Add','Delete','ModifyUserLevel','ModifyUserPasswd','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
+		for (i in oActiveEvents){
+			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
+			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
+		}
+
+		//搜索设备;
+		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+		searchFlush();
 	})///
 	$(window).resize(function(){ 
 		set_contentMax();

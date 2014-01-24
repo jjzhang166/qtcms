@@ -97,7 +97,7 @@ var oPlayBack,oBackup;
 		var fileData = oList.eq(now).data('data');
 		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
 		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path)){
-					show('当前第'+now+'个文件下载失败!!');
+					//show('当前第'+now+'个文件下载失败!!');
 					now++;
 		}
 		syndownload();
@@ -114,24 +114,24 @@ var oPlayBack,oBackup;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').one('click',function(){
 				oBackup.stopBackup()
-				show('当前第'+now+'个任务已被终止!');
+				//show('当前第'+now+'个任务已被终止!');
 				return false;
 			})
 		timer = setInterval(function(){
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			show('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
+			//show('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
 			oWarp.find('span').width(width);
 			/*if(p == 1){
 				clearInterval(timer);
 				$('#search_result tr').has('input:checked').eq(now).find('span').width(oWarp.find('div').width());
 			}*/
 		},1000);
-		show('正在下载当前选中文件的第'+now+'个!');
+		//show('正在下载当前选中文件的第'+now+'个!');
 	}
 	function BackupStatusChangeCallback(data){
-		show('当前文件的下载状态'+data.types);
+		//show('当前文件的下载状态'+data.types);
 		if(data.types != 'startBackup'){
 			var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').off();
@@ -142,7 +142,7 @@ var oPlayBack,oBackup;
 			now++;
 			var oList = $('#search_result input:checked')
 			if(now >= oList.length){
-				show('所有选择的文件下载完成!');
+				//show('所有选择的文件下载完成!');
 				now=0;
 				$('#search_result input:checked').prop('checked',false);
 				return false;
@@ -165,12 +165,11 @@ var oPlayBack,oBackup;
 
 	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
 	.progess span{ background: #abcdef; height: 14px; width:0px; display: block;}
-	.progess a{height:14px; width: 14px; display: block; background: red; float:left; margin:1px 8px;}
 </style>
 </head>
 
 <body>
-<div id="test" style="height:80px; overflow:auto;"></div>
+<div id="test" style=""></div>
 <object type="application/cms-common-library" id="commonLibrary" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
@@ -278,6 +277,6 @@ var oPlayBack,oBackup;
 	<div id="file_bottom">
 		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Inverse</a><a class="hover" onclick="getDir();">Backup</a>
 	</div>
-	<!-- <div id="foot"></div> -->
+	<div id="foot"></div>
 </body>
 </html>
