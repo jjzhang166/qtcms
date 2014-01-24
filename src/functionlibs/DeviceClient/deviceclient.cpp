@@ -431,14 +431,12 @@ int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 	{
 		QString sKey=it.key();
 		QString sValue=it.value().toString();
-		qDebug()<<it.value().toInt();
-		qDebug()<<m_CurStatus;
 		if (IDeviceConnection::CS_Disconnected==it.value().toInt()&&m_CurStatus==IDeviceClient::STATUS_CONNECTED)
 		{
-			//m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-			//QVariantMap CurStatusParm;
-			//CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-			//eventProcCall("CurrentStatus",CurStatusParm);
+			m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+			QVariantMap CurStatusParm;
+			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+			eventProcCall("CurrentStatus",CurStatusParm);
 		}
 	}
 	return 0;

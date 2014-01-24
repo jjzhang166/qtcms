@@ -56,6 +56,7 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 	const QString & sbkpath)
 {
 	QDir dir;
+	
 	/*m_sttime = startTime.toTime_t();
 	m_edtime = endTime.toTime_t();*/
 	if (nChannel<0 || (endTime.toTime_t() < startTime.toTime_t()) || !dir.exists(sbkpath))
