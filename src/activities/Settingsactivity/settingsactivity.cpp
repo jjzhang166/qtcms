@@ -237,7 +237,7 @@ void settingsActivity::OnAddUserOk()
 
 	QVariant sPassWd = QueryValue("password_user_ID");
 	QVariant sPassWd2 = QueryValue("password_again_ID");
-	QVariant sLevel = QueryValue("level_ID");
+	QVariant sLevel = QueryValue("level_add_ID");
 
 	QVariant nMask1 = QueryValue("mask1_ID");
 	QVariant nMask2 = QueryValue("mask2_ID");
@@ -336,7 +336,7 @@ void settingsActivity::OnModifyUserOk()
 		QVariant sNewPassWd = QueryValue("password_user_ID");
 		QVariant sNewPassWd2 = QueryValue("password_again_ID");
 		//获取combox里的权限值，修改权限
-		QVariant sLevel = QueryValue("level_ID");
+		QVariant sLevel = QueryValue("level_modify_ID");
 		int nLevel = sLevel.toInt();
 		if (!(sNewPassWd.toString().isEmpty() || sNewPassWd2.toString().isEmpty()))
 		{
