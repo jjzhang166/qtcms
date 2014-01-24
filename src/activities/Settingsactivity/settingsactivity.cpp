@@ -226,7 +226,7 @@ void settingsActivity::OnAddUserOk()
 	{
 		return;
 	}
-	QVariant sUserName = QueryValue("username_user_ID");
+	QVariant sUserName = QueryValue("username_add_ID");
 	if (Iuser->IsUserExists(sUserName.toString()))
 	{
 		DEF_EVENT_PARAM(arg);
@@ -328,7 +328,7 @@ void settingsActivity::OnModifyUserOk()
 	{
 		return;
 	}
-	QVariant sUserName = QueryValue("username_user_ID");
+	QVariant sUserName = QueryValue("username_modify_ID");
 	QVariant sOldPassWd = QueryValue("password_old_ID");
 	//检查输入密码是否正确
 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
