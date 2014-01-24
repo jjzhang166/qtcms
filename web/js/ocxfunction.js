@@ -8,12 +8,20 @@ var oCommonLibrary;
 		//区域列表;
 		areaList2Ui('0');
 	})	
-
+	var userLev = ['超级管理员','管理员','普通用户','游客'];
+	
 	function AddUserSuccess(ev){
 		var name =$('#username_user_ID').val();
-		var usrLev= $('#level_add_ID').html();
+		var userCom= $('#level_add_ID').prev('a').prev('span').html();
+		for(i in userLev){
+			if(userLev[i] == userCom){
+				var userlv = i
+			}
+		}
 		var No = $('#UserMan table.UserMan tbody tr').length - 1;
-		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan');		
+		var data = {'username':name,'userlv':userlv,'userCom':usrLev}
+		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
+		closeMenu();	
 	}
 	function DeleteUserSuccess(){
 		$('#username_list_ID').val('');

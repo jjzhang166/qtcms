@@ -148,9 +148,9 @@
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" id="username_user_ID" enable="1" onblur="pwdTest($(this));" /></td></tr>
-		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_user_ID" onblur="pwdTest($(this));" enable="0"/></td></tr>
-		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_again_ID" onblur="pwdTest($(this));" enable="0"/></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="username_user_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_user_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -166,7 +166,7 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover close" id="AddUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover" id="AddUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')">取消</div></td></tr>
 	</table>
 </div>
 <div id="menu3" class="menu">
@@ -191,7 +191,7 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyUser_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
 	</table>
 </div>
 <div id="confirm" class="menu">

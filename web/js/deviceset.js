@@ -216,18 +216,14 @@ var oSearchOcx;
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
+			var oSelected =[];
 			var userName = $(this).find('td').eq(1).html();
-			/*if($(this).attr('class')){
-				for(i in oSelected){
-					if(oSelected[i] == userName){ 
-						oSelected.splice(i,1);
-					}
-				}
-			}else{
-				oSelected.push(userName);
-			}*/
 			$(this).toggleClass('selected');  // tr toggle样式
+			$('table.UserMan tr.selected').each(function(){ 
+				oSelected.push($(this).data('data')['username'])
+			})
 			$('#username_list_ID').val(oSelected.join(','));
+			alert($('#username_list_ID').val());
 		})
 		
 		set_contentMax();
@@ -442,15 +438,9 @@ var oSearchOcx;
 		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
 			for(i in userList){
 				var userlv = oCommonLibrary.GetUserLevel(userList[i]);
-				var userCom;
-				switch(userlv){
-					case 0 : userCom = '超级管理员';	break;
-					case 1 : userCom = '管理员';	break;	
-					case 2 : userCom = '普通用户'; break;
-					case 3 : userCom = '游客'; break;
-					default: userCom = '游客'; break;
-				}
-				var data = {'userid':userList[i],'userlv':userlv,'userCom':userCom}
+				var userCom = userLev[userlv]
+				
+				var data = {'username':userList[i],'userlv':userlv,'userCom':userCom}
 				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
 			}
 		}		
