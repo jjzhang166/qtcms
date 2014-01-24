@@ -85,6 +85,7 @@ public slots:
 	void OnJavaScriptWindowObjectCleared(){QWFW_MSGRESET;};
 	void AttachEvent(QString sEvent,QString sProc){
 		m_mapEventProc.insertMulti(sEvent,sProc);
+		/*m_mapEventProc.insert(sEvent,sProc);*/
 		qDebug("Call AttachEvent %s %s",sEvent.toAscii().data(),sProc.toAscii().data() );
 	};
 protected:
