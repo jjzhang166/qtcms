@@ -148,9 +148,9 @@
 <div id="menu2" class="menu">
 	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input type="text" id="username_user_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
-		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_user_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
-		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr><td>用户名</td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_add_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -172,10 +172,10 @@
 <div id="menu3" class="menu">
 	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
 	<table>
-		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" /></td></tr>
-		<tr><td>旧密码</td><td><input enable="1" type="password" id="password_old_ID"/></td></tr>
-		<tr><td>新密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_newpasswd"/></td></tr>
-		<tr><td>确认密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="modify_again_passwd"/></td></tr>
+		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
+		<tr><td>旧密码</td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
+		<tr><td>新密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_user_ID"/></td></tr>
+		<tr><td>确认密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_again_user_ID"/></td></tr>
 		<tr>
 			<td>用户权限等级</td>
 			<td>
@@ -191,7 +191,7 @@
 				</ul>
 			</td>
 		</tr>
-		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok">确认</div></td><td><div class="hover close">取消</div></td></tr>
+		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改用户','menu3')">取消</div></td></tr>
 	</table>
 </div>
 <div id="confirm" class="menu">
@@ -199,7 +199,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover confirm" id="DeleteUser_ok" >确认</div><div class="hover close">取消</div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
 		</table>
 	</div>
 </div>
@@ -1794,7 +1794,7 @@
 						<ul class="tdBtn user">
 							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')">AddUser</div></li>
 							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')">ModifyUser</div></li>
-							<li><div class="hover" onclick="ShowUserOperateMenu('confirm')">DeleteUser</div></li>
+							<li><div class="hover" id="DeleteUser_ok">DeleteUser</div></li>
 						</ul>
 					</td>
 				</tr>

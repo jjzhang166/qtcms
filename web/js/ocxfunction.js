@@ -8,10 +8,10 @@ var oCommonLibrary;
 		//区域列表;
 		areaList2Ui('0');
 	})	
-	var userLev = ['超级管理员','管理员','普通用户','游客'];
+	var userLev = ['超级管理员','管理员','用户','游客'];
 	
 	function AddUserSuccess(ev){
-		var name =$('#username_user_ID').val();
+		var name =$('#username_add_ID').val();
 		var userCom= $('#level_add_ID').prev('a').prev('span').html();
 		for(i in userLev){
 			if(userLev[i] == userCom){
@@ -19,21 +19,26 @@ var oCommonLibrary;
 			}
 		}
 		var No = $('#UserMan table.UserMan tbody tr').length - 1;
-		var data = {'username':name,'userlv':userlv,'userCom':usrLev}
-		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+usrLev+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
+		var data = {'username':name,'userlv':userlv,'userCom':userCom}
+		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
 		closeMenu();	
 	}
 	function DeleteUserSuccess(){
 		$('#username_list_ID').val('');
-		$('#UserMan table.UserMan tbody tr').filter(function(){ 
-			return $(this).attr('class') == 'selected';
-		}).remove();
+		$('#UserMan tr.selected').remove();
 	}
 
 	function ModifyUserSuccess(ev){
-		$('#UserMan table.UserMan tbody tr').filter(function(){ 
-			return $(this).attr('class') == 'selected';
-		}).eq(0).find('td:last').html($('#menu3 div.select span').html());
+		var userCom= $('#level_modify_ID').prev('a').prev('span').html();
+		for(i in userLev){
+			if(userLev[i] == userCom){
+				var userlv = i
+			}
+		}
+		var name = $('#username_modify_ID').val();
+		var data = {'username':name,'userlv':userlv,'userCom':userCom}
+		$('#UserMan tr.selected:first').data('data',data).find('td:last').html(userCom);
+		closeMenu();
 	}
 
 	function Fail(data){

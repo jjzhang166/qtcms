@@ -223,7 +223,6 @@ var oSearchOcx;
 				oSelected.push($(this).data('data')['username'])
 			})
 			$('#username_list_ID').val(oSelected.join(','));
-			alert($('#username_list_ID').val());
 		})
 		
 		set_contentMax();

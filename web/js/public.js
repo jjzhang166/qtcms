@@ -142,13 +142,15 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 					}
 				});
 			})
-			option.find('a').click(function(){
-				if($(this).attr('class') != 'hover'){
-					This.next('ul.option').hide();
-					This.find('span').html($(this).html());
-					//This.find('#vendor_ID').val($(this).html());
-					//This.find('input:hidden').val($(this).attr('key'));
-				}
+			option.find('a').each(function(index){
+				$(this).click(function(){
+					if($(this).attr('class') != 'hover'){
+						This.next('ul.option').hide();
+						This.find('span').html($(this).html())
+						//This.find('#vendor_ID').val($(this).html());
+						This.find('input:hidden').val(index);
+					}
+				})
 			})
 		},
 		'timeInput':function(options){  //时间输入框
