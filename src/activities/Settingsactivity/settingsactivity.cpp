@@ -1356,14 +1356,34 @@ void settingsActivity::OnRemoveChannelFromGroup()
 	}
 
 	QVariant R_Chl_Group_id_ID=QueryValue("r_chl_group_id_ID");
-	int nRet=-1;
-	nRet=IGroup->RemoveChannelFromGroup(R_Chl_Group_id_ID.toInt());
-	if(-1==nRet){
+	
+	QStringList R_Chl_Group_id_ID_list=R_Chl_Group_id_ID.toString().split(",");
+
+	QStringList::const_iterator it;
+	bool n_input=false;
+	for(it=R_Chl_Group_id_ID_list.begin();it!=R_Chl_Group_id_ID_list.end();++it){
+		n_input=true;
+		int r_ch_id=it->toInt();
+		int nRet=-1;
+		nRet=IGroup->RemoveChannelFromGroup(r_ch_id);
+		if (-1==nRet)
+		{
+			arg.clear();
+			Content.clear();
+			Content.append("RemoveChannelFromGroup fail");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EP_ADD_PARAM(arg,"r_chl_group_id_ID",r_ch_id);
+			EventProcCall("RemoveChannelFromFail",arg);
+		}
 		arg.clear();
 		Content.clear();
-		Content.append("RemoveChannelFromGroup fail");
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("RemoveChannelFromFail",arg);
+		Content.append("RemoveChannelFromGroup success");
+		EP_ADD_PARAM(arg,"success",Content);
+		EP_ADD_PARAM(arg,"r_chl_group_id_ID",r_ch_id);
+		EventProcCall("RemoveChannelFromSuccess",arg);
+	}
+	if (true==n_input)
+	{
 		IGroup->Release();
 		return;
 	}
@@ -1374,6 +1394,24 @@ void settingsActivity::OnRemoveChannelFromGroup()
 	EventProcCall("RemoveChannelFromSuccess",arg);
 	IGroup->Release();
 	return;
+	//int nRet=-1;
+	//nRet=IGroup->RemoveChannelFromGroup(R_Chl_Group_id_ID.toInt());
+	//if(-1==nRet){
+	//	arg.clear();
+	//	Content.clear();
+	//	Content.append("RemoveChannelFromGroup fail");
+	//	EP_ADD_PARAM(arg,"fail",Content);
+	//	EventProcCall("RemoveChannelFromFail",arg);
+	//	IGroup->Release();
+	//	return;
+	//}
+	//arg.clear();
+	//Content.clear();
+	//Content.append("RemoveChannelFromGroup success");
+	//EP_ADD_PARAM(arg,"success",Content);
+	//EventProcCall("RemoveChannelFromSuccess",arg);
+	//IGroup->Release();
+	//return;
 }
 
 void settingsActivity::OnModifyGroupChannelName()
