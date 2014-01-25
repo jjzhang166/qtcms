@@ -838,7 +838,7 @@ int QCommonPlugin::RemoveAreaByName(QString sName)
 int QCommonPlugin::SetAreaName(int nId,QString sName)
 {
 	Area_lock.lock();
-	if(IsAreaIdExist(nId)){
+	if(IsAreaIdExist(nId)&&IsAreaNameExist(sName)==false){
 		QSqlQuery _query(m_db);
 		QString command=QString("update area set name='%1' where id=%2").arg(sName).arg(nId);
 		_query.exec(command);
