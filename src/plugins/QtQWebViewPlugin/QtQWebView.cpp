@@ -1,5 +1,7 @@
 #include "QtQWebView.h"
 #include <QFileDialog>
+#include <QMap>
+
 
 QtQWebView::QtQWebView():QWebPluginFWBase(this)
 {
@@ -46,8 +48,8 @@ void QtQWebView::LoadNewPage( QString url )
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 	m_tagViewPage.m_SubWebView->showMaximized();
 	m_tagViewPage.url = url;
-
 	m_ViewPageList.append(m_tagViewPage);
+
 	return;
 }
 
@@ -139,3 +141,4 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	}
 	return;
 }
+
