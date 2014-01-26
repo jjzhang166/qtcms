@@ -1351,7 +1351,7 @@ void settingsActivity::OnRemoveChannelFromGroup()
 		Content.clear();
 		Content.append("OnRemoveChannelFromGroup fail");
 		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("RemoveChannelFromFail",arg);
+		EventProcCall("RemoveChannelFromGroupFail",arg);
 		return;
 	}
 
@@ -1373,14 +1373,14 @@ void settingsActivity::OnRemoveChannelFromGroup()
 			Content.append("RemoveChannelFromGroup fail");
 			EP_ADD_PARAM(arg,"fail",Content);
 			EP_ADD_PARAM(arg,"r_chl_group_id_ID",r_ch_id);
-			EventProcCall("RemoveChannelFromFail",arg);
+			EventProcCall("RemoveChannelFromGroupFail",arg);
 		}
 		arg.clear();
 		Content.clear();
 		Content.append("RemoveChannelFromGroup success");
 		EP_ADD_PARAM(arg,"success",Content);
 		EP_ADD_PARAM(arg,"r_chl_group_id_ID",r_ch_id);
-		EventProcCall("RemoveChannelFromSuccess",arg);
+		EventProcCall("RemoveChannelFromGroupSuccess",arg);
 	}
 	if (true==n_input)
 	{
@@ -1391,7 +1391,7 @@ void settingsActivity::OnRemoveChannelFromGroup()
 	Content.clear();
 	Content.append("RemoveChannelFromGroup success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("RemoveChannelFromSuccess",arg);
+	EventProcCall("RemoveChannelFromGroupSuccess",arg);
 	IGroup->Release();
 	return;
 	//int nRet=-1;
