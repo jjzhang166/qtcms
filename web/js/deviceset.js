@@ -57,6 +57,7 @@ var oSearchOcx;
 						}
 						obj.toggleClass('sel');
 					}
+					//SetChannelIntoGroupData();
 				}
 				if(event.which == 3){ 
 					if(obj[0].nodeName == 'SPAN'){ 
@@ -242,6 +243,12 @@ var oSearchOcx;
 			$('#r_chl_group_id_ID').val('').val(groupOutChlID.join(','));
 			//show($('#r_chl_group_id_ID').val());
 		})*/
+		/*
+		控件触发事件调用的元素事件绑定.
+		控件触发事件在JS事件绑定触发的事件后面... 有待考证.
+		暂时只用了 RemoveChannelFromGroup_ok AddChannelInGroupDouble_ok 这2个ID做实验
+		*/
+
 		$('#RemoveChannelFromGroup_ok').click(function(){
 			var groupOutChlID =[];
 			$('#group_0 span.channel.sel').each(function(){
@@ -253,6 +260,7 @@ var oSearchOcx;
 		$('#AddChannelInGroupDouble_ok').click(function(){ 
 			SetChannelIntoGroupData();
 		});
+		/*控件触发事件调用的元素事件绑定.*/
 		
 
 		//设备操作相关的事件绑定
