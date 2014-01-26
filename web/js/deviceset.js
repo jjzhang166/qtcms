@@ -235,13 +235,20 @@ var oSearchOcx;
 			})
 		})
 
-		$('#group_0 span.channel').click(function(){
+		/*$('#group_0 span.channel').click(function(){
 			var groupOutChlID =[];
 			$('#group_0 span.channel.sel').each(function(){
 				groupOutChlID.push($(this).data('data').r_chl_group_id);
 			})
 			$('#r_chl_group_id_ID').val('').val(groupOutChlID.join(','));
 			//show($('#r_chl_group_id_ID').val());
+		})*/
+		$('#RemoveChannelFromGroup_ok').click(function(){
+			var groupOutChlID =[];
+			$('#group_0 span.channel.sel').each(function(){
+				groupOutChlID.push($(this).data('data').r_chl_group_id);
+			})
+			$('#r_chl_group_id_ID').val('').val(groupOutChlID.join(','));
 		})
 		//设备操作相关的事件绑定
 		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup'];  //事件名称集合

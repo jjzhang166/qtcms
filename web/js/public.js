@@ -148,7 +148,7 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 						This.next('ul.option').hide();
 						This.find('span').html($(this).html())
 						//This.find('#vendor_ID').val($(this).html());
-						This.find('input:hidden').val(index);
+						This.find('input:hidden').val($(this).attr('value'));
 					}
 				})
 			})

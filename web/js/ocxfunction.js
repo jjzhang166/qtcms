@@ -215,7 +215,11 @@ var oCommonLibrary;
 		$('ul.filetree').treeview();
 	}
 	function RemoveChannelFromGroupSuccess(data){ 
-		show(data);
+		$('#group_0 span.channel.sel').each(function(){
+			var add =$(this).parent('li').appendTo($('#dev_'+$(this).data('data').dev_id).next('ul'));
+			$('ul.filetree:eq(0)').treeview({add:add});
+		})
+		$('ul.filetree').treeview();
 	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num){ //区域菜单输出
