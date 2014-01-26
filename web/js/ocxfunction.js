@@ -394,7 +394,7 @@ function setDevData2ocx(bool){
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
-		var bool=$('#search_device ul.switchlist:eq(1) li.switchlistAct').index();
+		var bool=$('#nowSearchType li.switchlistAct').attr('now');
 			bool=bool < 0 ? 1 : bool;
 		  //cgi 请求数据
 		/*var channels = 0;   
@@ -439,33 +439,41 @@ function setDevData2ocx(bool){
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
 	function ocxsearchVideo(bool){
-		try{oPlaybackLocl.GroupStop();oPlayBack.GroupStop();}catch(e){$('tbody.search_result tr').remove();}
+		try{
+			oPlaybackLocl.GroupStop();
+			oPlayBack.GroupStop();
+			$('tbody.search_result tr').remove();
+		}catch(e){
+			alert('try:'+e);
+		}
+
 		var devData = $('div.dev_list span.device.sel').data('data');
 		var type = $('#type span').attr('type') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		alert(setDevData2ocx(bool));
+		setDevData2ocx(bool);
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
-		if(bool){
+		if(bool == 1){
 			var chl = 0;
 			try{
-				/*oPlaybackLocl.style.height='0px';
-				oPlayBack.style.height='100%';*/
+				oPlaybackLocl.style.height='0px';
+				oPlayBack.style.height='100%';
 			}catch(e){
 
 			}
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
+			
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
-			/*oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';*/
+			oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';

@@ -58,8 +58,8 @@
 		</div>
 	</div>
 	<div id="playback_view">
-		<object type="application/cms-remote-playback" id="playback" style="width:49%;height:100%;"></object>
-		<object type="application/cms-record-player" id="playbackLocl" style="width:49%;height:100%;"></object>
+		<object type="application/cms-remote-playback" id="playback" style="width:100%;height:0;"></object>
+		<object type="application/cms-record-player" id="playbackLocl" style="width:100%;height:100%;"></object>
 	</div>
 	<div id="search_device">
 		<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
@@ -79,12 +79,12 @@
 			<ul class="filetree" id="group_0"></ul>	
 		</div>
 		<div style="background:#E4EBF4; width:224px; height:22px; padding:2px;">
-			<ul class="switchlist">
-				<li class="switchlistAct">本地搜索</li>
-				<li>远程搜索</li>
+			<ul class="switchlist" id="nowSearchType">
+				<li class="switchlistAct" now="0">本地搜索</li>
+				<li now="1">远程搜索</li>
 			</ul>
 		</div>
-		<div id="find_type"> 
+		<div id="find_type">
 			<table>
 				<tr>
 					<td style="text-align:right">File Type:</td>
