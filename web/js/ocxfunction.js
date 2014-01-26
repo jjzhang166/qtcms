@@ -54,11 +54,12 @@ var oCommonLibrary;
 
 	//搜索设备控件方法.
 	function searchFlush(){
+		oSearchOcx.Stop();
 		$('#SerachDevList tbody tr').remove();	 
 		oSearchOcx.Start();
-		setTimeout(function(){
+		/*setTimeout(function(){
 			oSearchOcx.Stop();	
-		},5000)
+		},5000)*/
 	}
 	//设备搜索回调函数
 	function callback(oJson){
@@ -73,8 +74,14 @@ var oCommonLibrary;
 				bUsed = false;
 			}
 		})
+
 		if(bUsed){
-			$('<tr id="esee_'+oJson.SearchSeeId_ID+'"><td><input type="checkbox"/>'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
+			if(oJson.SearchSeeId_ID<=0 || oJson.SearchSeeId_ID == ''){
+				var act = 'disabled="disable"';
+			}else{
+				var act = '';
+			}
+			$('<tr id="esee_'+oJson.SearchSeeId_ID+'"><td><input type="checkbox" '+act+' />'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
 		}		
 	}
 	function AddAreaSuccess(data){
@@ -207,6 +214,9 @@ var oCommonLibrary;
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
 	}
+	function RemoveChannelFromGroupSuccess(data){ 
+		show(data);
+	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num){ //区域菜单输出
 		$('div.dev_list span.area').parent('li').remove();
@@ -293,14 +303,18 @@ var oCommonLibrary;
 	function groupChannelList2Ui(groupId){  //分组下通道菜单输出
 		var chlList = oCommonLibrary.GetGroupChannelList(groupId);
 		for(i in chlList){ 
-			var id = chlList[i]
+			var id = chlList[i];
 			var chldata = oCommonLibrary.GetChannelInfoFromGroup(id);
 			var data = {};
 			data['r_chl_group_id'] = id;
 			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id);
+			var chldata2 = oCommonLibrary.GetChannelInfo(data['channel_id']);
+			data['channel_number'] = chldata2['number']
+			data['stream_id'] = chldata2['stream'];
+			data['channel_name'] = chldata2['name'];
 			data['group_id'] = chldata['group_id']
-			data['r_chl_group_name'] = chldata['name'];
-			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
+			data['r_chl_group_name'] = ['name'];
+			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata2['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
 			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}

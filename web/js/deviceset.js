@@ -227,7 +227,7 @@ var oSearchOcx;
 		
 		set_contentMax();
 		
-		$('ul.filetree:gt(1)').each(function(){ 
+		$('ul.filetree:eq(2)').each(function(){ 
 			var warp = $(this)
 			$(this).on('click','span.device',function(){ 
 				warp.find('span.device').removeClass('sel');
@@ -235,8 +235,16 @@ var oSearchOcx;
 			})
 		})
 
+		$('#group_0 span.channel').click(function(){
+			var groupOutChlID =[];
+			$('#group_0 span.channel.sel').each(function(){
+				groupOutChlID.push($(this).data('data').r_chl_group_id);
+			})
+			$('#r_chl_group_id_ID').val('').val(groupOutChlID.join(','));
+			//show($('#r_chl_group_id_ID').val());
+		})
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -272,16 +280,17 @@ var oSearchOcx;
 	function FillRecordTimeData(){
 		areaList2Ui('3');
 		SettingRecordDoubleTimeParmSuccess();
-		$('ul.week a').each(function(index){ 
-			$(this).click(function(){ 
+		/*$('ul.week a').each(function(index){ 
+			$(this).click(function(){
 				$('#week').html($(this).html());
 			})
-		})
-		$('div.dev_list span.channel').click(function(){
-			$('div.dev_list span.channel').removeClass('sel')	
+		})*/
+		$('div.dev_list:eq(3) span.channel').click(function(){
+			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 			$(this).addClass('sel');
 			var chlData = $(this).data('data');
 			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id);
+
 			for(var i in sTimeID){
 				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]);
 				$('#week').attr('chl',chlData.channel_id);
@@ -291,32 +300,38 @@ var oSearchOcx;
 					}
 				}
 			}
+			initChannlrecTime($('ul.week.option li:eq(0)'));
+			$('#week').html('星期一');
 		})
 		$('ul.week.option li').each(function(index){
-			var oTimes=$('#recordtime tr:lt(5)');
-			var str = '<recordtime num="4">';
 			$(this).on('click',function(){
-				var n = 0;
-				for(i in $(this).data()){ 
-					n++;
-					var data = $(this).data()[i];
-					var timeid = i.split('_')[1];
-					var start = data.starttime.split(' ')[1];
-					var end = data.endtime.split(' ')[1]
-					var enable = Boolean(data.enable);
-					oTimes.eq(n).find('input:checkbox').prop('checked',enable);
-					oTimes.eq(n).find('input.timeid').val(timeid);
-					oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
-					oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
-					str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
-				}
-				str +='</recordtime>';
-				$('#recordtimedouble_ID').val('').val(str);
+				initChannlrecTime($(this));
 			})
 		})
 
-		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml)
-		$('#RecordTime').on('click','input:checkbox',initRecrodxml) 
+		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
+		$('#RecordTime').on('click','input:checkbox',initRecrodxml);
+
+	}
+	function initChannlrecTime(obj){
+		var oTimes=$('#recordtime tr:lt(5)');
+		var str = '<recordtime num="4">';
+		var n = 0;
+		for(i in obj.data()){ 
+			n++;
+			var data = obj.data()[i];
+			var timeid = i.split('_')[1];
+			var start = data.starttime.split(' ')[1];
+			var end = data.endtime.split(' ')[1]
+			var enable = Boolean(data.enable);
+			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
+			oTimes.eq(n).find('input.timeid').val(timeid);
+			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
+			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
+			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+		}
+		str +='</recordtime>';
+		$('#recordtimedouble_ID').val('').val(str);
 	}
 	function initRecrodxml(){
 		var str = '<recordtime num="4">';
@@ -421,11 +436,11 @@ var oSearchOcx;
 			/*if(main.width()>760){ 
 				main.width(780);
 			}*/
-			$('#Allocation').css({ 
+			$('#Allocation').css({
 				top:main.height()+2
 			})
-			oWarp.find('div.action').css('left',main.width()-30);
-			$('#left_list').css('left',main.width()+116);
+			oWarp.find('div.action:eq(0)').css('left',main.width()-30);
+			$('#left_list').css('left',main.width()+136);
 		}
 		$('#foot').css('top',H-28)
 	}

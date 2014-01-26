@@ -40,7 +40,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		}
  		//打开通道
 		$('div.dev_list span.channel').each(function(){ 
-			$(this).click(function(){		
+			$(this).click(function(){
 				var chlData = getChlFullInfo($(this));
 				if($(this).attr('state')){
 					CloseWind($(this).attr('wind'),chlData.dev_id);
@@ -58,7 +58,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				oDevice.next('ul').find('span.channel').each(function(){
 					chlData = getChlFullInfo($(this));
 					if(!$(this).attr('wind')){
-						oDevice.attr('bAllopen','0')
+						oDevice.attr('bAllopen','0');
 						var windState = oPreView.GetWindowConnectionStatus(wind);
 						var win = wind;
 						if(windState != 2){
@@ -118,6 +118,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[index]);
 			})	
 		})
+
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
 
@@ -130,9 +131,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		if(windState != 2 ){ //该窗口不可用.
 			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+wind+',打开失败！  错误:当前窗口'+wind+' '+winState[windState];
 			writeActionLog(str);
-			return;
+			return false;
 		}
+		
 		$('#channel_'+data.channel_id).attr('wind',wind);
+
 		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);	
 	}
 

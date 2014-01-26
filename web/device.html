@@ -71,6 +71,7 @@
 	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
 	.right_content,.confirm{ display: none;}
 	.timeInput{width: 90px; float:left; margin-right:6px;}
+	ul.groupAction li{float: left;}
 
 </style>
 </head>
@@ -268,7 +269,7 @@
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px; width:760px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" id="tableSelectAll" />全选</td></tr></thead>
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" id="tableSelectAll" status="0" />全选</td></tr></thead>
 					<tbody>
 						<tr>
 							<td style="width:100px;">设备IP</td>
@@ -325,8 +326,9 @@
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
-					<div class="action" style="height:22px;"><ul><li id="AddChannelInGroupDouble_ok" class="hover">添加至分组</li></ul></div>
+					<div class="action" style="height:42px; width:228px;margin:10px 6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;">添加至分组</li><li id="RemoveChannelFromGroup_ok" class="hover">移回至设备</li></ul></div>
 					<div class="dev_list" style="height:300px;">
+						<input type="hidden" id="r_chl_group_id_ID" value="" />
 						<ul class="filetree" id="group_0">
 							<!-- <li><span class="group" id="group_0">Group_root</span>
 										<ul>

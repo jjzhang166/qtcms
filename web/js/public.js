@@ -114,15 +114,15 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 	$.fn.extend({
 		//client setting
 		'toSwitch': function(){
-
 			var warp = $(this);
 			var sClass = warp.find('li:first').attr('class');
+			var num = warp.find('li').length;
 			warp.find('li').each(function(index){
 				$(this).on('click',function(){
-					warp.show().nextUntil('div.dev_list').show();
+					warp.show().nextAll(':lt('+num+')').show();
 					warp.find('li').removeClass(sClass);
 					$(this).addClass(sClass);
-					warp.nextUntil('div.dev_list').hide().eq(index).show();	
+					warp.nextAll(':lt('+num+')').hide().eq(index).show();	
 				})
 			})
 		},
@@ -253,20 +253,29 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 			if(warp.length == 0 || warp[0].nodeName != 'TBODY'){
 				return false;
 			}
+
 			warp.on('click','tr',function(){
 				$(this).find('input:checkbox').click();
 			})
+
 			warp.on('click',':checkbox',function(event){
 				event.stopPropagation();
 			})
 
 			$('#tableSelectAll').on('click',function(){  // 全选
-				warp.find(':checkbox').prop('checked',true);
+				if($(this).attr('status') == 0){
+					warp.find('input:checkbox').not(':checked').click();	
+					$(this).attr('status',1);
+				}else{
+					warp.find('input:checkbox').prop('checked',false);
+					$(this).attr('status',0);
+				}
+				
 			})
 
-			$('#tableAntiElection').on('click',function(){ //全不选
-				warp.find(':checkbox').prop('checked',false);
-			})
+			/*$('#tableAntiElection').on('click',function(){ //全不选
+				warp.find('input:checkbox').prop('checked',false);
+			})*/
 		}
 	})
 })(jQuery)
@@ -350,6 +359,7 @@ function show(data){  // 在ID为test的div元素中打印对象数据
 			str = data[i];
 			$('<p>'+index+'</span>:<span>'+str+'/</span></p>').prependTo($('#test'));
 		}
+		$('<hr />').prependTo('#test');
 	}
 }
 function addZero(num){   //数字小于0的时候用0补一位.
