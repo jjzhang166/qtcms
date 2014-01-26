@@ -52,24 +52,29 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		//打开设备下的说所有通道
 		$('div.dev_list span.device').each(function(){ 
 			var oDevice = $(this);
-			oDevice.attr('bAllopen','1').click(function(){
+			oDevice.attr('bAllopen','0').click(function(){
 				var chlData;
 				var wind = oPreView.GetCurrentWnd();
-				oDevice.next('ul').find('span.channel').each(function(){
-					chlData = getChlFullInfo($(this));
-					if(!$(this).attr('wind')){
-						oDevice.attr('bAllopen','0');
-						var windState = oPreView.GetWindowConnectionStatus(wind);
-						var win = wind;
-						if(windState != 2){
-							win = getWind(wind);
-						}
-						openWind(win,chlData);
-					}
-					if(oDevice.attr('bAllopen') == 1){ 
+				if(oDevice.attr('bAllopen') == 1){
+					oDevice.next('ul').find('span.channel').each(function(){
+						chlData = getChlFullInfo($(this));	 
 						CloseWind($(this).attr('wind'),chlData.dev_id);
-					}
-				})
+					})
+				}else{
+					oDevice.next('ul').find('span.channel').each(function(){
+					chlData = getChlFullInfo($(this));	 
+						if(!$(this).attr('wind')){
+							oDevice.attr('bAllopen','0');
+							var windState = oPreView.GetWindowConnectionStatus(wind);
+							var win = wind;
+							if(windState != 2){
+								win = getWind(wind);
+							}
+							openWind(win,chlData);
+						}
+					})
+				}
+				
 				if(oDevice.attr('bAllopen') == 1){ 
 					var str = getNowTime()+'   正在关闭设备:'+chlData.name;
 				}else{ 
@@ -186,6 +191,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			};
 		})
 		oDev.attr('bAllopen',bAllopen);
+		//show(oDev.attr('bAllopen'))
 		if(oDev.attr('bAllopen') ==1){
 			oDev.addClass('device_1');
 		}else{ 

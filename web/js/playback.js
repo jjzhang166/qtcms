@@ -130,17 +130,17 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 
 	function playVideo(){ 
 		dragStopMove();
+		try{oPlaybackLocl.GroupStop();oPlayBack.GroupStop();}catch(e){alert(e)};
 		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
 		var begin = getDragSart(),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
+			alert(setDevData2ocx(bool));
 		if(bool){
-			setDevData2ocx(bool);
 			var type = parseInt($('#type span').attr('type')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
 		}else{
-			setDevData2ocx(bool);
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');

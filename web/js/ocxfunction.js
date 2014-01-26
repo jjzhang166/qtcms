@@ -439,23 +439,23 @@ function setDevData2ocx(bool){
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
 	function ocxsearchVideo(bool){
+		try{oPlaybackLocl.GroupStop();oPlayBack.GroupStop();}catch(e){$('tbody.search_result tr').remove();}
 		var devData = $('div.dev_list span.device.sel').data('data');
 		var type = $('#type span').attr('type') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx(bool);
+		alert(setDevData2ocx(bool));
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
 			var chl = 0;
 			try{
-				oPlaybackLocl.style.height='0px';
-				oPlaybackLocl.GroupStop();
-				oPlayBack.style.height='100%';	
-			}catch(e){	
-				$('tbody.search_result tr').remove();
+				/*oPlaybackLocl.style.height='0px';
+				oPlayBack.style.height='100%';*/
+			}catch(e){
+
 			}
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
@@ -464,9 +464,8 @@ function setDevData2ocx(bool){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
 		}else{
-			oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';
-			oPlayBack.GroupStop();
+			/*oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';*/
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
