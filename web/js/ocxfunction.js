@@ -213,6 +213,7 @@ var oCommonLibrary;
 		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').appendTo(group.next('ul'));
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
+		$('#addchannelingroupdouble_ID').val('');
 	}
 	function RemoveChannelFromGroupSuccess(data){ 
 		$('#group_0 span.channel.sel').each(function(){

@@ -57,7 +57,6 @@ var oSearchOcx;
 						}
 						obj.toggleClass('sel');
 					}
-					SetChannelIntoGroupData();
 				}
 				if(event.which == 3){ 
 					if(obj[0].nodeName == 'SPAN'){ 
@@ -250,6 +249,12 @@ var oSearchOcx;
 			})
 			$('#r_chl_group_id_ID').val('').val(groupOutChlID.join(','));
 		})
+
+		$('#AddChannelInGroupDouble_ok').click(function(){ 
+			SetChannelIntoGroupData();
+		});
+		
+
 		//设备操作相关的事件绑定
 		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup'];  //事件名称集合
 		for (i in oActiveEvents){
