@@ -132,7 +132,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 		pen.setWidth(5);
 		pen.setColor(LineCurColor);
 		p.setPen(pen);
-		p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+		p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
 	}
 	else
 	{
@@ -320,6 +320,10 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 		emit FreshWindow();
 	}
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
+	if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+	{
+		qDebug()<<m_CurrentState<<"disconnect";
+	}
 	emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
 
 	return 0;
