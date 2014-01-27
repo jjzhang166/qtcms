@@ -2,6 +2,7 @@
 #include "IEventRegister.h"
 #include "guid.h"
 #include <QtXml\qdom.h>
+#include <QDebug>
 #include <QtCore\QFile>
 #include <QtCore\QIODevice>
 #include <QtCore\QCoreApplication>
@@ -78,6 +79,7 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 	int nRet = 0;
 	QDateTime stime = QDateTime::fromString(startTime,"yyyy-MM-dd hh:mm:ss");
 	QDateTime etime = QDateTime::fromString(endTime,"yyyy-MM-dd hh:mm:ss");
+	QString dir=QString::fromLocal8Bit(sbkpath.toLocal8Bit());
 	if (m_pRemoteBackup)
 	{
 		nRet = m_pRemoteBackup->startBackup(sAddr,uiPort,sEseeId,nChannel,nTypes,stime,etime,sbkpath);
@@ -100,6 +102,7 @@ float RemoteBackupWindows::getProgress()
 	{
 		progress = m_pRemoteBackup->getProgress();
 	}
+	qDebug()<<progress<<"==================";
 	return progress;
 }
 
