@@ -104,8 +104,8 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 		$(document).mousemove(function(event){
 				var left = event.pageX - disX;
 			    left = left < X1 ? X1 : left;
-				left = left > X2 ? X2 : left;
-			oDrag.css('left',(left-2)+'px');	
+				left = left > X2 ? X2-2 : left;
+			oDrag.css('left',left+'px');	
 		}).mouseup(function(){
 			$(this).off();
 		})
@@ -351,6 +351,7 @@ function firstUp(str){  //字符串首字母大写
 function show(data){  // 在ID为test的div元素中打印对象数据
 	var index='default',
 		str = 'Null';
+		$('#test').html('');
 	if(typeof(data) == 'number' || typeof(data) == 'string'){
 		$('<p><span>'+index+'</span>:<span>"'+data+'"/</span></p>').prependTo($('#test'));
 	}else{

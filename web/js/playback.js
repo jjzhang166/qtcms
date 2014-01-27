@@ -140,6 +140,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		var begin = getDragSart(),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
+			//show(begin+'//'+end);
 			setDevData2ocx(bool);
 		if(bool == 1){
 			var type = parseInt($('#type span').attr('type')),
@@ -162,10 +163,10 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 	}
 	function getDragSart(){
 		var	X1 = 79,
-			X2 = $('table.table').width() -42,
+			X2 = $('#channelvideo').width()-$('#channelvideo .no_border').width(),
 			left = $('div.play_time').offset().left,
 			date = $("div.calendar span.nowDate").html(),
-			sScond = parseInt(((left-X1)/(X2-X1)*24*3600)),
+			sScond = parseInt(((left-X1)/(X2-1)*24*3600)),
 			begin = date+' '+returnTime(sScond);
 			return begin;
 	}
