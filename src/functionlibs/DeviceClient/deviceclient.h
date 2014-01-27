@@ -20,7 +20,9 @@
 #include <IRemoteBackup.h>
 #include "RemoteBackup.h"
 
-int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
 
 class  DeviceClient:public QThread,
@@ -52,6 +54,7 @@ public:
 	virtual int getConnectStatus();
 
 	int ConnectStatusProc(QVariantMap evMap);
+
 	
 	//IDeviceSearchRecord
 	virtual int startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime);
@@ -68,6 +71,8 @@ public:
 	virtual int GroupSpeedNormal();
 
 	int recordFrame(QVariantMap &evMap);
+	int cbFoundFile(QVariantMap &evmap);
+	int cbRecFileSearchFinished(QVariantMap &evmap);
 
 	//IRemoteBackup
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
@@ -89,6 +94,7 @@ private:
 	QStringList m_EventList;
 	QMultiMap<QString,DeviceClientInfoItem> m_EventMap;
 
+	QMultiMap<QString,DeviceClientInfoItem> m_EventMapToPro;
 	IDeviceConnection *m_DeviceConnecton;
 	IDeviceConnection *m_DeviceConnectonBubble;
 	IDeviceConnection *m_DeviceConnectonHole;

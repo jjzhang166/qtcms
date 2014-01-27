@@ -19,6 +19,21 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
 	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished";
 
+	DeviceClientInfoItem devcliInfo;
+
+	devcliInfo.proc=cbStateChangeFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("StateChangeed",devcliInfo);
+
+
+	devcliInfo.proc=cbFoundFileFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("foundFile",devcliInfo);
+
+	devcliInfo.proc=cbRecFileSearchFinishedFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("recFileSearchFinished",devcliInfo);
+
 	if (NULL != m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
@@ -426,6 +441,7 @@ int DeviceClient::getConnectStatus()
 }
 int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 {
+	qDebug()<<evMap<<"-------------";
 	QVariantMap::const_iterator it;
 	for (it=evMap.begin();it!=evMap.end();++it)
 	{
@@ -435,6 +451,7 @@ int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 		{
 			m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 			QVariantMap CurStatusParm;
+			qDebug()<<m_CurStatus<<"+++++++++++++";
 			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
 			eventProcCall("CurrentStatus",CurStatusParm);
 		}
@@ -454,10 +471,6 @@ void DeviceClient::eventProcCall(QString sEvent,QVariantMap param)
 }
 int DeviceClient::cbInit()
 {
-	DeviceClientInfoItem devcliInfo;
-	devcliInfo.proc=cbStateChangeFormIprotocl;
-	devcliInfo.puser=this;
-	m_EventMap.insert("StateChangeed",devcliInfo);
 	//注册bubb协议的回调函数
 	if (NULL!=m_DeviceConnectonBubble)
 	{
@@ -469,7 +482,7 @@ int DeviceClient::cbInit()
 			IEventReg->registerEvent(evName, cbRecordStream, this);
 
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
-			for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
+			for (it=m_EventMapToPro.begin();it!=m_EventMapToPro.end();++it)
 			{
 				QString sKey=it.key();
 				DeviceClientInfoItem sValue=it.value();
@@ -486,7 +499,7 @@ int DeviceClient::cbInit()
 		if (NULL!=IEventReg)
 		{
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
-			for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
+			for (it=m_EventMapToPro.begin();it!=m_EventMapToPro.end();++it)
 			{
 				QString sKey=it.key();
 				DeviceClientInfoItem sValue=it.value();
@@ -503,7 +516,7 @@ int DeviceClient::cbInit()
 		if (NULL!=IEventReg)
 		{
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
-			for (it=m_EventMap.begin();it!=m_EventMap.end();++it)
+			for (it=m_EventMapToPro.begin();it!=m_EventMapToPro.end();++it)
 			{
 				QString sKey=it.key();
 				DeviceClientInfoItem sValue=it.value();
@@ -515,9 +528,9 @@ int DeviceClient::cbInit()
 	bIsInitFlags=true;
 	return 0;
 }
-int cbStateChangeFormIprotocl(QString evName,QVariantMap evMap,void*pUser)
+int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 {
-	qDebug("cbStateChangeFormIprotocl");
+	qDebug("cbStateChangeFormprotocl");
 	if ("StateChangeed"==evName)
 	{
 		((DeviceClient*)pUser)->ConnectStatusProc(evMap);
@@ -719,7 +732,7 @@ int DeviceClient::GroupContinue()
 	return 0;
 }
 int DeviceClient::GroupStop()
-{
+t{
 	if (m_groupMap.isEmpty())
 	{
 		return 1;
@@ -729,7 +742,7 @@ int DeviceClient::GroupStop()
 	{
 		return 1;
 	}
-
+	qDebug()<<"GroupStop"<<"===========================";
 	int nRet = m_pRemotePlayback->stopPlaybackStream();
 
 	QMap<int, WndPlay>::iterator it;
@@ -886,6 +899,18 @@ float DeviceClient::getProgress()
 	return m_RemoteBackup.getProgress();
 }
 
+int DeviceClient::cbFoundFile( QVariantMap &evmap )
+{
+	eventProcCall("foundFile",evmap);
+	return 0;
+}
+
+int DeviceClient::cbRecFileSearchFinished( QVariantMap &evmap )
+{
+	eventProcCall("recFileSearchFinished",evmap);
+	return 0;
+}
+
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 {
 	int nRet = 0;
@@ -894,4 +919,26 @@ int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 	nRet = pClient->recordFrame(evMap);
 
 	return nRet;
+}
+
+int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+{
+	qDebug("cbFoundFileFormprotocl");
+	if ("foundFile"==evName)
+	{
+		((DeviceClient*)pUser)->cbFoundFile(evMap);
+		return 0;
+	}
+	return 1;
+}
+
+int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+{
+	qDebug("cbRecFileSearchFinishedFormprotocl");
+	if ("recFileSearchFinished"==evName)
+	{
+		((DeviceClient*)pUser)->cbRecFileSearchFinished(evMap);
+		return 0;
+	}
+	return 1;
 }
