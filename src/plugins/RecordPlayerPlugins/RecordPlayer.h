@@ -56,6 +56,7 @@ private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);
 
+
 private:
 	int cbInit();
 	QDateTime getDateFromPath(QString &filePath);
