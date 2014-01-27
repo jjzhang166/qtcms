@@ -104,10 +104,13 @@ void StreamProcess::stopStream()
 		m_bStop = true;
 
 		disconnect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
+
+		m_tcpSocket->disconnectFromHost();
+
 		disconnect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
 		disconnect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
 
-		m_tcpSocket->disconnectFromHost();
+		
 	}
 }
 

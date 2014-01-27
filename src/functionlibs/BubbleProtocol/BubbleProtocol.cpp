@@ -581,6 +581,9 @@ int BubbleProtocol::stopPlaybackStream()
     QByteArray block;
     block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
     emit sigWriteSocket(block);
+
+	disconnect();
+
     return 0;
 
 }
