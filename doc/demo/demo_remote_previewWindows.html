@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>demo_remote_preview</title>
-
+<title>settings</title>
 <script language="javascript" src="js/qframework.js" ></script>
 <script language="javascript">
 function Onload(){
@@ -12,12 +11,11 @@ function Onload(){
 	obj.AddEventProc("CurrentWindows",'CurrentWindows(ev)');
 }
 function CurrentStateChange(ev){
+	alert('CurrentStateChange');
 	alert(ev.CurrentState);
 }
 	
-function CurrentWindows(ev){
-	alert(ev.Mid);
-}
+
 
 function nextPage()
 {
@@ -32,7 +30,6 @@ function prePage() {
 }
 function getCurrentPage() {
     var obj = document.getElementById('windows');
-    alert('prePage');
     obj.getCurrentPage();
 	alert(obj.getCurrentPage());
 }
@@ -46,7 +43,6 @@ function setDivMode() {
     var obj = document.getElementById('windows');
     alert('setDivMode');
     obj.setDivMode("div4_4");
-    obj.OnAddDevice();
 }
 
 function GetCurrentWnd() {
@@ -85,7 +81,7 @@ function GetWindowConnectionStatus() {
 	alert(obj.GetWindowConnectionStatus(parseInt(uiWndIndex.value)));
 }
 function ondblclick(event){
-	alert("double click")
+	alert('double click')
 }
 function StopRecord(){
 	var obj = document.getElementById('windows');
@@ -107,7 +103,7 @@ function SetDevInfo(){
 
 <body onload="Onload()">
 <div id="div1" ondblclick="ondblclick(event)"</div>
-<object type="application/cms-preview-windows" id="windows" style="width:500px; height:400px;" ></object>
+  <object type="application/cms-preview-windows" id="windows" style="width:400px; height:400px;" ></object>
 <table border="0" cellspacing="0" cellpadding="0" width="75%">
   <tr>
     <td>uiWndIndex</td>
@@ -116,7 +112,7 @@ function SetDevInfo(){
   </tr>
   <tr>
     <td>sAddress</td>
-    <td><input type="text" id="sAddress" value="192.168.2.135"/></td>
+    <td><input type="text" id="sAddress" value="192.168.2.132"/></td>
     <td><button onclick="prePage()">prePage</button></td>
   </tr>
   <tr>
@@ -156,7 +152,7 @@ function SetDevInfo(){
   </tr>
   <tr>
     <td>sVendor</td>
-    <td><input type="text" id="sVendor" value="JUAN IPC"/></td>
+    <td><input type="text" id="sVendor" value="JUAN DVR"/></td>
   </tr>
   <tr>
     <td>devname</td>
