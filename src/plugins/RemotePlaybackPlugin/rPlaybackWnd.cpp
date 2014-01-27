@@ -375,6 +375,8 @@ int  RPlaybackWnd::cbInit()
 
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
+	qDebug()<<evMap;
+
 	EventProcCall("RecFileInfo",evMap);
 }
 

@@ -50,8 +50,10 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 		return;
 	}
 	m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
+	qDebug()<<m_nIDeviceClient->getConnectStatus()<<"********************";
 	if (IDeviceClient::STATUS_CONNECTED!=m_nIDeviceClient->getConnectStatus())
 	{
+		qDebug()<<"in"<<"#################";
 		nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
 		if (1==nRet)
 		{
