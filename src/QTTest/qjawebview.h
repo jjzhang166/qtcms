@@ -22,6 +22,7 @@ signals:
     
 public slots:
     void OnLoad(bool bOk);
+	void OnstatusBarMessage(const QString &text);
 	void OnurlChanged(const QUrl & url);
 
 	virtual QWebView * createWindow( QWebPage::WebWindowType type );

@@ -43,7 +43,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	// Connect Signals
     connect(this,SIGNAL(loadFinished(bool)),this,SLOT(OnLoad(bool)));
 	connect(this,SIGNAL(urlChanged(const QUrl &)),this,SLOT(OnurlChanged(const QUrl &)));
-
+	connect(this,SIGNAL(statusBarMessage(const QString &)),this,SLOT(OnstatusBarMessage(const QString &)));
     // Read Main ini file
     QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
     QString sTheme = MainIniFile.value(QString("Configure/Theme")).toString();
@@ -190,6 +190,12 @@ void QJaWebView::OnurlChanged( const QUrl & url )
 		m_Activity->Release();
 		m_Activity = NULL;
 	}
+}
+
+void QJaWebView::OnstatusBarMessage( const QString &text )
+{
+	qDebug()<<text;
+}
 }
 
 QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )

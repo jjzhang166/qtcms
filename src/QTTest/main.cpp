@@ -14,6 +14,5 @@ int main(int argc, char *argv[])
 	QApplication::addLibraryPath(sExternLib);
 	QJaWebView view;
     view.showMaximized();
-
     return a.exec();
 }
