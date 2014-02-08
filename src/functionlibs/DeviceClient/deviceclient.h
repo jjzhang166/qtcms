@@ -19,11 +19,12 @@
 #include <IEventRegister.h>
 #include <IRemoteBackup.h>
 #include "RemoteBackup.h"
-
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
+int cbLiveStreamFormprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbSocketErrorFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 
 class  DeviceClient:public QThread,
 	public IDeviceClient,
@@ -73,6 +74,8 @@ public:
 	int recordFrame(QVariantMap &evMap);
 	int cbFoundFile(QVariantMap &evmap);
 	int cbRecFileSearchFinished(QVariantMap &evmap);
+	int cbLiveStream(QVariantMap &evmap);
+	int cbSocketError(QVariantMap &evmap);
 
 	//IRemoteBackup
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,

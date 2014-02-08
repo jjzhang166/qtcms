@@ -70,7 +70,6 @@ unsigned long __stdcall DvrSearch::Release()
 
 int DvrSearch::Start()
 {
-	qDebug("Dvr search start");
      if (0 == m_nStopped )
      {
          return -1;

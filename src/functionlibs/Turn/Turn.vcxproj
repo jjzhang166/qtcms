@@ -79,7 +79,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtXml4.lib;QtNetwork4.lib;$(SolutionDir)..\libs\libpcom.lib;RudpLib.lib;netlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtXmld4.lib;QtNetworkd4.lib;$(SolutionDir)..\libs\libpcom.lib;RudpLib.lib;netlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>Turn.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>

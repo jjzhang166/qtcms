@@ -34,6 +34,14 @@ DeviceClient::DeviceClient():m_nRef(0),
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("recFileSearchFinished",devcliInfo);
 
+	devcliInfo.proc=cbLiveStreamFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("LiveStream",devcliInfo);
+
+	devcliInfo.proc=cbSocketErrorFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("SocketError",devcliInfo);
+
 	if (NULL != m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
@@ -339,7 +347,6 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接成功
 		case 4:
 			{
-				qDebug("%s,%d,%s", __FUNCTION__,__LINE__,__FILE__);
 				qDebug()<<"connect fail";
 				bCloseingFlags=false;
 				m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -359,6 +366,10 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			break;
 		}
 	}
+	if (m_CurStatus==IDeviceClient::STATUS_DISCONNECTED)
+	{
+		return 1;
+	}
 	return 0;
 }
 int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
@@ -374,7 +385,6 @@ int DeviceClient::setChannelName(const QString & sChannelName)
 }
 int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 {
-	qDebug()<<this;
 	IRemotePreview *n_IRemotePreview=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
@@ -530,7 +540,6 @@ int DeviceClient::cbInit()
 }
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 {
-	qDebug("cbStateChangeFormprotocl");
 	if ("StateChangeed"==evName)
 	{
 		((DeviceClient*)pUser)->ConnectStatusProc(evMap);
@@ -732,7 +741,7 @@ int DeviceClient::GroupContinue()
 	return 0;
 }
 int DeviceClient::GroupStop()
-t{
+{
 	if (m_groupMap.isEmpty())
 	{
 		return 1;
@@ -743,8 +752,9 @@ t{
 		return 1;
 	}
 	qDebug()<<"GroupStop"<<"===========================";
-	int nRet = m_pRemotePlayback->stopPlaybackStream();
-
+	//bCloseingFlags=true;
+	//int nRet = m_pRemotePlayback->stopPlaybackStream();
+	int nRet=closeAll();
 	QMap<int, WndPlay>::iterator it;
 	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
 	{
@@ -911,6 +921,17 @@ int DeviceClient::cbRecFileSearchFinished( QVariantMap &evmap )
 	return 0;
 }
 
+int DeviceClient::cbLiveStream( QVariantMap &evmap )
+{
+	eventProcCall("LiveStream",evmap);
+	return 0;
+}
+
+int DeviceClient::cbSocketError(QVariantMap &evmap)
+{
+	eventProcCall("SocketError",evmap);
+	return 0;
+}
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 {
 	int nRet = 0;
@@ -934,10 +955,29 @@ int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 
 int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 {
-	qDebug("cbRecFileSearchFinishedFormprotocl");
 	if ("recFileSearchFinished"==evName)
 	{
 		((DeviceClient*)pUser)->cbRecFileSearchFinished(evMap);
+		return 0;
+	}
+	return 1;
+}
+
+int cbLiveStreamFormprotocl( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("LiveStream"==evName)
+	{
+		((DeviceClient*)pUser)->cbLiveStream(evMap);
+		return 0;
+	}
+	return 1;
+}
+
+int cbSocketErrorFormprotocl( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("SocketError"==evName)
+	{
+		((DeviceClient*)pUser)->cbSocketError(evMap);
 		return 0;
 	}
 	return 1;
