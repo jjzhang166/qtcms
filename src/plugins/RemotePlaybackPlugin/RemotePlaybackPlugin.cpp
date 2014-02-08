@@ -38,7 +38,6 @@ QList<QWebPluginFactory::Plugin> RemotePlaybackPlug::plugins() const
 
 QObject * RemotePlaybackPlug::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
-	qDebug()<<"RemotePlaybackPlugin";
 	RPlaybackWnd * pPlaybackWnd= new RPlaybackWnd();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);

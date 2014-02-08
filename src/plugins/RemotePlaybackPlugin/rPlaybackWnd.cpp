@@ -375,8 +375,6 @@ int  RPlaybackWnd::cbInit()
 
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
-	qDebug()<<evMap;
-
 	EventProcCall("RecFileInfo",evMap);
 }
 
@@ -419,7 +417,6 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
 
  int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
  {
-     qDebug()<<"cbStateChange";
      if (evName=="StateChangeed")
      {
 		 ((RPlaybackWnd*)pUser)->StateChange(evMap);

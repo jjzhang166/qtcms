@@ -316,7 +316,6 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 {
 	if (evMap.value("CurrentStatus").toInt() == IDeviceClient::STATUS_DISCONNECTED)
 	{
-		//qDebug()<<this<<"FreshWindow";
 		emit FreshWindow();
 	}
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
@@ -430,7 +429,6 @@ int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
 
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 {
-	qDebug()<<"cbStateChange";
 	QVariantMap::const_iterator it;
 	for (it=evMap.begin();it!=evMap.end();++it)
 	{
