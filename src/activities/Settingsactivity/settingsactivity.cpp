@@ -458,7 +458,6 @@ void settingsActivity::OnAddDeviceDouble()
 
 	QDomNode DevListInfoNode=ConfFile.elementsByTagName("devListInfo").at(0);
 	QDomNodeList itemList=DevListInfoNode.childNodes();
-	qDebug()<<itemList.count();
 	if(0==itemList.count()){
 		arg.clear();
 		Content.clear();
@@ -1734,7 +1733,6 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 	ConfFile.setContent(RecordtimeFile.toString());
 	QDomNode RecordtimeFileNode=ConfFile.elementsByTagName("recordtime").at(0);
 	QDomNodeList itemList=RecordtimeFileNode.childNodes();
-	qDebug()<<itemList.count();
 	if (0==itemList.count())
 	{
 		arg.clear();
