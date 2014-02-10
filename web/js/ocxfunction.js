@@ -477,7 +477,7 @@ function setDevData2ocx(bool){
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
 			};
-			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){ 
+			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){
 				alert('设备'+devData.name+'在本地没有录像!  '+oPlaybacKLocl.searchDateByDeviceName(devData.name));
 				return false;
 			}
