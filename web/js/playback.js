@@ -134,7 +134,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			oPlaybackLocl.GroupStop();
 			oPlayBack.GroupStop();
 		}catch(e){
-			alert('try:'+e);
+			//alert('try:'+e);
 		};
 		var bool=$('#nowSearchType li.switchlistAct').attr('now');
 		var begin = getDragSart(),

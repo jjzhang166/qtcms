@@ -344,8 +344,8 @@ function setDevData2ocx(bool){
 			down=1;
 			palybackspeed('1x');
 		}catch(e){ 
+		
 		}
-
 		if(bool){
 			oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();
@@ -374,11 +374,11 @@ function setDevData2ocx(bool){
 					oPlaybackLocl.GroupStop();
 					oPlaybackLocl.GroupSpeedNormal();
 				}catch(e){}
-				for(var i=0;i<oDevData.channel_count;i++){
-					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
-						b = false;
+					for(var i=0;i<oDevData.channel_count;i++){
+						if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
+							b = false;
+						}
 					}
-				}
 			}		
 		}else{
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
@@ -394,8 +394,7 @@ function setDevData2ocx(bool){
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
-		var bool=$('#nowSearchType li.switchlistAct').attr('now');
-			bool=bool < 0 ? 1 : bool;
+		var bool=$('#nowSearchType li.switchlistAct').attr('now') || 1;
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -440,11 +439,11 @@ function setDevData2ocx(bool){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(bool){
 		try{
-			oPlaybackLocl.GroupStop();
 			oPlayBack.GroupStop();
+			oPlaybackLocl.GroupStop();
 			$('tbody.search_result tr').remove();
 		}catch(e){
-			alert('try:'+e);
+			//alert('try:'+e);
 		}
 
 		var devData = $('div.dev_list span.device.sel').data('data');
