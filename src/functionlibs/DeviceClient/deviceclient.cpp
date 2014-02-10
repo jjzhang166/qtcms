@@ -736,7 +736,6 @@ int DeviceClient::GroupContinue()
 		}
 
 		it->playManager->pause(false);
-		g_pause.wakeOne();
 	}
 	return 0;
 }

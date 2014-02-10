@@ -123,9 +123,11 @@ void PlayManager::run()
 	{
 		if (m_bPause)
 		{
-			g_mutex.lock();
-			g_pause.wait(&g_mutex);
-			g_mutex.unlock();
+// 			g_mutex.lock();
+// 			g_pause.wait(&g_mutex);
+// 			g_mutex.unlock();
+			usleep(40);
+			continue;
 		}
 
 		RecordVedioStream recVeStream;
