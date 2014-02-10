@@ -75,3 +75,4 @@ extern const IID IID_IRemoteBackup;
 extern const CLSID CLSID_RecordPlayerPlugin;
 extern const CLSID CLSID_RemoteBackupPlugin;
 extern const CLSID CLSID_QtQWebViewPlugin;
+extern const CLSID CLSID_HiH264Decoder;

@@ -20,7 +20,7 @@
 		<item clsid="E2B5CF38-07A2-4ECF-9BFF-001082C203BF" name="divmode.div3_3" file="div3_3.dll" mode="div3_3"/> 
 		<item clsid="D37D3047-D605-4116-94B2-47D964AA5809" name="divmode.div6_1" file="div6_1.dll" mode="div6_1"/> 
 
-
+		<item clsid="C8CFB4A2-A05A-4D56-AF3A-54D7A910FE75" name="decoder.HiH264Decoder" file="Hih264Decoder.dll" type="Hih264decoder"/>
 		<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
 		<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
 		<item clsid="6BC3DD4C-0365-48B3-8209-43DFE8A1DDCD" name="render.DDraw" file="DdrawRender.dll" type="ddraw"/>

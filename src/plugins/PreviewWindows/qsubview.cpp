@@ -26,7 +26,8 @@ QSubView::QSubView(QWidget *parent)
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
-	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+// 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	qDebug("IVideoDecoder:%x",m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
