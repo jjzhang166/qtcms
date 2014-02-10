@@ -196,7 +196,6 @@ void QJaWebView::OnstatusBarMessage( const QString &text )
 {
 	qDebug()<<text;
 }
-}
 
 QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )
 {
