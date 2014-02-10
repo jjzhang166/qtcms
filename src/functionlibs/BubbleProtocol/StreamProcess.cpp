@@ -225,7 +225,13 @@ void StreamProcess::receiveStream()
 		{
 			analyzeBubbleInfo();
 			g_verify.wakeOne();
-			m_buffer.remove(0, 1024);
+			int pos = m_buffer.indexOf("HTTP/1.1 200");
+
+			m_buffer.remove(0, 1024 + pos);
+			if (m_buffer.size() > 0)
+			{
+				qDebug("-------------------->size:%d %d",m_buffer.size(),m_buffer.at(0));
+			}
 		}
 		else if(m_buffer.contains("HTTP/1.1 404"))
 		{
