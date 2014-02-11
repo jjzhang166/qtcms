@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创</p>
+<p>包含文件</p>
+<p>#include
+&lt;IDeviceRemotePlayback.h&gt;</p>
+<p>函数定义</p>
+<p>// 将通道添加到同步组，并且指定通道nChannel在窗口wnd内播放<br />
+// 返回值:<br />
+//	0:添加成功<br />
+//	1:组已满，无法添加更多通道（最多能添加四通道）<br />
+virtual int AddChannelIntoPlayGroup(int nChannel,QWidget * wnd) = 0;</p>
+<p> // 启动回放<br />
+  // nTypes:录像类型，按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像<br />
+  // startTime:开始时间<br />
+  // endTime:结束时间<br />
+  // 返回值:<br />
+  //	0:调用成功<br />
+  //	1:连接中断<br />
+  //	2:参数错误<br />
+  virtual int GroupPlay(int nTypes,const QDateTime &amp; start,const QDateTime &amp; end) = 0;</p>
+<p> // 获取当前播放时间点<br />
+  virtual QDateTime GroupGetPlayedTime() = 0;</p>
+<p> // 暂停播放<br />
+  virtual int GroupPause() = 0;</p>
+<p> // 继续播放<br />
+  virtual int GroupContinue() = 0;</p>
+<p> // 停止播放<br />
+  virtual int GroupStop() = 0;</p>
+<p> // 开启/关闭音频<br />
+  // 返回值：返回之前的音频开关状态<br />
+  virtual bool GroupEnableAudio(bool bEnable) = 0;</p>
+<p> // 快放<br />
+  virtual int GroupSpeedFast() = 0;</p>
+<p> // 慢放<br />
+  virtual int GroupSpeedSlow() = 0;</p>
+<p> // 恢复正常速度播放<br />
+  virtual int GroupSpeedNormal() = 0;</p>
+</body>
+</html>

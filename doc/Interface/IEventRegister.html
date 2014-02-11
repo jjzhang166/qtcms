@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+div.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+li.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+</style>
+</head>
+
+<body>
+<p>编辑人：冯明创</p>
+<p>包含文件</p>
+<p>#include
+  &lt;IEventRegister.h&gt;</p>
+<p>函数定义</p>
+<p> //返回事件列表<br />
+virtual QStringList eventList() = 0;<br />
+//查询事件参数<br />
+//eventName：请求返回事件参数的名称<br />
+//eventParams：返回事件参数的列表<br />
+//返回值：<br />
+//OK：成功<br />
+//E_EVENT_NOT_SUPPORT：无此事件<br />
+//E_INVALID_PARAM：系统错误<br />
+virtual int queryEvent(QString eventName,QStringList &amp;eventParams) = 0;<br />
+//注册事件<br />
+//eventName：注册的事件名称<br />
+//proc：注册事件的回调函数<br />
+//pUser：注册事件的父指针<br />
+//返回值：<br />
+//OK：成功<br />
+//E_EVENT_NOT_SUPPORT：无此事件<br />
+//E_INVALID_PARAM：系统错误<br />
+virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser) = 0;</p>
+<p>错误号定义</p>
+<table width="100%" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable"
+ style='width:100.0%;mso-cellspacing:0cm;mso-yfti-tbllook:1184;mso-padding-alt:
+ 0cm 5.4pt 0cm 5.4pt'>
+  <tr style='mso-yfti-irow:1'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">OK</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">0</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">成功</p></td>
+  </tr>
+  <tr style='mso-yfti-irow:2'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">E_EVENT_NOT_SUPPORT</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">1</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">事件不支持</p></td>
+  </tr>
+  <tr style='mso-yfti-irow:3;mso-yfti-lastrow:yes'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">E_INVALID_PARAM</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">2</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">非法参数</p></td>
+  </tr>
+</table>
+<p>enum _enErrorCode{<br />
+  OK,<br />
+  E_EVENT_NOT_SUPPORT,<br />
+  E_INVALID_PARAM<br />
+};</p>
+</body>
+</html>

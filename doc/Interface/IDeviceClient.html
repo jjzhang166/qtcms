@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+div.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+li.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+</style>
+</head>
+
+<body>
+<p>编辑人：冯明创</p>
+<p>包含文件</p>
+<p>#include
+  &lt;IDeviceClient.h&gt;</p>
+<p>函数定义</p>
+<p> // 连接到设备<br />
+// sAddress:设备ip地址<br />
+// uiPort:设备端口<br />
+// sEseeId:设备id<br />
+// 返回值:<br />
+//	0:连接成功<br />
+//  1:连接失败<br />
+virtual int connectToDevice(const QString &amp; sAddr,unsigned int uiPort,const QString &amp; sEseeId) = 0;</p>
+<p> // 校验用户名密码<br />
+  // sUsername:用户名<br />
+  // sPassword:密码<br />
+  // 返回值:<br />
+  //	0:校验成功<br />
+  //	1:校验失败<br />
+  virtual int checkUser(const QString &amp; sUsername,const QString &amp; sPassword) = 0;</p>
+<p> // 设置当前所连接通道的名称<br />
+  // sChannelName:通道名称<br />
+  // 返回值:<br />
+  //	0:设置成功<br />
+  //	1:设置失败<br />
+  virtual int setChannelName(const QString &amp; sChannelName) = 0;</p>
+<p> // 请求实时码流<br />
+  // nChannel:通道号<br />
+  // nStream:码流编号<br />
+  // bOpen:为true时打开通道预览，为false时，关闭通道预览<br />
+  // 返回值:<br />
+  //	0:请求成功<br />
+  //	1:请求失败<br />
+  virtual int liveStreamRequire(int nChannel,int nStream,bool bOpen) = 0;</p>
+<p> // 关闭连接，并清理资源<br />
+  // 返回值:<br />
+  //	0:关闭成功<br />
+  //	1:关闭失败<br />
+  virtual int closeAll() = 0;</p>
+<p> // 获取当前组件的Vendor名称，当前定义值为:&quot;JUAN DVR&quot;，&quot;JUAN IPC&quot;,&quot;ONVIF&quot;三种<br />
+  virtual QString getVendor() = 0;</p>
+<p> // 获取当前的连接状态<br />
+  // 返回值:<br />
+  //	0:已连接<br />
+  //	1:正在连接<br />
+  //	2:断开连接<br />
+  //	3:正在断开连接<br />
+  virtual int getConnectStatus() = 0;</p>
+<p>连接状态定义</p>
+<table width="100%" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable"
+ style='width:100.0%;mso-cellspacing:0cm;mso-yfti-tbllook:1184;mso-padding-alt:
+ 0cm 5.4pt 0cm 5.4pt'>
+  <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+    <td width="17%" style='width:17.0%;padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">STATUS_CONNECTED</p></td>
+    <td width="27%" style='width:27.0%;padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">0</p></td>
+    <td width="56%" style='width:56.0%;padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">连接成功</p></td>
+  </tr>
+  <tr style='mso-yfti-irow:1'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">STATUS_CONNECTING</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">1</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">正在连接</p></td>
+  </tr>
+  <tr style='mso-yfti-irow:2'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">STATUS_DISCONNECTED</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">2</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">连接已经断开</p></td>
+  </tr>
+  <tr style='mso-yfti-irow:3;mso-yfti-lastrow:yes'>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">STATUS_DISCONNECTING</p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal"><span lang="EN-US" xml:lang="EN-US">3</span></p></td>
+    <td style='padding:.75pt .75pt .75pt .75pt'><p class="MsoNormal">正在断开</p></td>
+  </tr>
+</table>
+<p>typedef enum __enConnectStatus{<br />
+  STATUS_CONNECTED,<br />
+  STATUS_CONNECTING,<br />
+  STATUS_DISCONNECTED,<br />
+  STATUS_DISCONNECTING,<br />
+}ConnectStatus;</p>
+<p><span class="MsoNormal">事件：</span></p>
+<p>// @1 name:&quot;PreviewStream&quot;<br />
+  // parameters：<br />
+  // 	&quot;channel&quot;:当前帧的通道号<br />
+  // 	&quot;pts&quot;:当前帧时间戳，单位为微秒<br />
+  // 	&quot;length&quot;:数据长度<br />
+  // 	&quot;data&quot;:数据指针<br />
+  // 	&quot;frametype&quot;:帧类型，取值'I','P','B','A'<br />
+  // 	&quot;width&quot;:视频帧的宽，单位像素，如果是音频帧，不传递该参数<br />
+  // 	&quot;height&quot;:视频帧的高，单位像素，如果是音频帧，不传递该参数<br />
+  // 	&quot;vcodec&quot;:视频帧的编码格式，当前定义值:&quot;H264&quot;，如果是音频帧，不传递该参数<br />
+  // 	&quot;samplerate&quot;:音频采样率，如果是视频帧，不传递该参数<br />
+  // 	&quot;samplewidth&quot;:音频采样位宽，如果是视频帧，不传递该参数<br />
+  // 	&quot;audiochannel&quot;:音频的采样通道数，如果是视频帧，不传递该参数<br />
+  // 	&quot;acodec&quot;:音频编码格式，当前定义值：&quot;G711&quot;，如果是视频帧，不传递该参数<br />
+  // @2 name:&quot;RecordStream&quot;<br />
+  // parameters:<br />
+  // &quot;channel&quot;:当前帧的通道号<br />
+  // 	&quot;pts&quot;:当前帧时间戳，单位为微秒<br />
+  // 	&quot;length&quot;:数据长度<br />
+  // 	&quot;data&quot;:数据指针<br />
+  // 	&quot;frametype&quot;:帧类型，取值'I','P','B','A'<br />
+  // 	&quot;width&quot;:视频帧的宽，单位像素，如果是音频帧，不传递该参数<br />
+  // 	&quot;height&quot;:视频帧的高，单位像素，如果是音频帧，不传递该参数<br />
+  // 	&quot;vcodec&quot;:视频帧的编码格式，当前定义值:&quot;H264&quot;，如果是音频帧，不传递该参数<br />
+  // 	&quot;samplerate&quot;:音频采样率，如果是视频帧，不传递该参数<br />
+  // 	&quot;samplewidth&quot;:音频采样位宽，如果是视频帧，不传递该参数<br />
+  // 	&quot;audiochannel&quot;:音频的采样通道数，如果是视频帧，不传递该参数<br />
+// 	&quot;acodec&quot;:音频编码格式，当前定义值：&quot;G711&quot;，如果是视频帧，不传递该参数</p>
+</body>
+</html>
