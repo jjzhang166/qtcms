@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+}
+var i=0;
+function subViewMsg(msg,param){
+	alert(param.title)
+	alert(msg.Proc)
+	alert(param.Dsturl)
+}
+function IndexPageState(ev){
+
+}
+function button1() {
+	window.status='<pageaction SrcUrl="/skins/test/test_subpage3.html" SrcAct="index" DstUrl="/skins/test/test_subpage.html" DstAct="new"></pageaction>';
+}
+function button2() {
+		window.status='<pageaction SrcUrl="/skins/test/test_subpage3.html" SrcAct="" DstUrl="/skins/test/test_subpage2.html" DstAct="new"></pageaction>';
+}
+function button3() {
+
+
+}
+function button4() {
+
+}
+</script>
+</head>
+
+<body onload="Onload()">
+		<p>pagenum=3</p>
+    	<tr>
+		<td>url</td>
+		<td><input type="text" id="url" value="/skins/test/plugintest_area.html"/></td>
+	</tr>
+
+    <tr>
+        <td><button onclick="button1()">1</button></td>
+        <td><button onclick="button2()">2</button></td>
+        <td><button onclick="button3()">3</button></td>
+        <td><button onclick="button4()">4</button></td>
+    </tr>
+</body>
+</html>

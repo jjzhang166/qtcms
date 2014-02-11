@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>preview</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+function Onload()
+{
+    var obj = document.getElementById('common-library');
+	obj.AddEventProc("IndexPageState", 'IndexPageState(ev)');
+}
+var i=0;
+function IndexPageState(ev){
+	if(ev.state=="hide"){
+		qob.OnHide();
+		}
+	if(ev.state=="show"){
+		qob.OnShow();
+		}
+	if(ev.state=="close"){
+		qob.OnCloseWindow();
+		}
+}
+function subViewMsg(msg,param){
+	alert(param.title)
+	alert(param.Dsturl)
+	alert(msg.Proc)
+}
+function button1() {
+}
+function button2() {
+		var obj = document.getElementById('common-library');
+	obj.LoadNewPage("/skins/test/test_subpage2.html");
+}
+function button3() {
+	i++;
+		var obj = document.getElementById('common-library');
+	obj.LoadNewPage("/skins/test/test_subpage3.html");
+}
+function button4() {
+
+}
+</script>
+</head>
+
+<body onload="Onload()">
+<object type="application/cms-qwebview" id="common-library" style="width:300; height:300"></object>
+<p>pagenum=index</p>
+    	<tr>
+		<td>url</td>
+		<td><input type="text" id="url" value="/skins/test/plugintest_area.html"/></td>
+	</tr>
+
+    <tr>
+        <td><button onclick="button1()">1</button></td>
+        <td><button onclick="button2()">2</button></td>
+        <td><button onclick="button3()">3</button></td>
+        <td><button onclick="button4()">4</button></td>
+    </tr>
+</body>
+</html>
