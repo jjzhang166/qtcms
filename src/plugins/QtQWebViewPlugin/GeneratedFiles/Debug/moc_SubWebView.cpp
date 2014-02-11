@@ -22,28 +22,31 @@ static const uint qt_meta_data_SubWebView[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
       17,   12,   11,   11, 0x05,
+      42,   11,   11,   11, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      46,   42,   11,   11, 0x0a,
-      59,   12,   11,   11, 0x0a,
-      91,   87,   11,   11, 0x0a,
+      61,   57,   11,   11, 0x0a,
+      74,   12,   11,   11, 0x0a,
+     106,  102,   11,   11, 0x0a,
+     125,   11,   11,   11, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SubWebView[] = {
     "SubWebView\0\0text\0LoadOrChangeUrl(QString)\0"
-    "bOk\0OnLoad(bool)\0OnstatusBarMessage(QString)\0"
-    "url\0OnurlChanged(QUrl)\0"
+    "CloseAllPage()\0bOk\0OnLoad(bool)\0"
+    "OnstatusBarMessage(QString)\0url\0"
+    "OnurlChanged(QUrl)\0OnRefressMessage()\0"
 };
 
 void SubWebView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -53,9 +56,11 @@ void SubWebView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         SubWebView *_t = static_cast<SubWebView *>(_o);
         switch (_id) {
         case 0: _t->LoadOrChangeUrl((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 1: _t->OnLoad((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 2: _t->OnstatusBarMessage((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 3: _t->OnurlChanged((*reinterpret_cast< const QUrl(*)>(_a[1]))); break;
+        case 1: _t->CloseAllPage(); break;
+        case 2: _t->OnLoad((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 3: _t->OnstatusBarMessage((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 4: _t->OnurlChanged((*reinterpret_cast< const QUrl(*)>(_a[1]))); break;
+        case 5: _t->OnRefressMessage(); break;
         default: ;
         }
     }
@@ -93,9 +98,9 @@ int SubWebView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     return _id;
 }
@@ -105,5 +110,11 @@ void SubWebView::LoadOrChangeUrl(const QString & _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void SubWebView::CloseAllPage()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, 0);
 }
 QT_END_MOC_NAMESPACE

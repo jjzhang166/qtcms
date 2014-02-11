@@ -27,11 +27,15 @@ public slots:
 	void OnCloseWindow();
 	void OnMaxsizeWindow();
 	void OnMinsizeWindow();
-
+	void OnHide();
+	void OnShow();
+public:
+	QString EventProcsScripte(QString sEvent,QVariantMap eventParam);
 private:
 	QWidget * m_MainView;
 	int m_nRef;
 	QMutex m_csRef;
+	QWebFrame *m_frame;
 
 };
 

@@ -5,6 +5,7 @@
 #include <libpcom.h>
 #include <QSettings>
 
+
 SubWebView::SubWebView(QString nurl,QWidget *parent):QWebView(parent),
 	m_url(nurl),
 	m_Activity(NULL)
@@ -112,6 +113,8 @@ void SubWebView::OnLoad( bool bOk )
 void SubWebView::OnstatusBarMessage( const QString &text )
 {
 	qDebug()<<text;
+	statusBarMessage.clear();
+	statusBarMessage.append(text);
 	emit LoadOrChangeUrl(text);
 }
 
@@ -128,10 +131,58 @@ void SubWebView::OnurlChanged( const QUrl & url )
 void SubWebView::keyPressEvent( QKeyEvent* ev )
 {
 	switch(ev->key()){
-	case  Qt::Key_Escape:{
-		close();
-						 }
-						 break;
+	case  Qt::Key_Escape:
+		{
+//			close();
+			hide();
+			emit CloseAllPage();
+		}
+		break;
 	}
 	QWebView::keyPressEvent(ev);
 }
+
+void SubWebView::OnRefressMessage()
+{
+	page()->mainFrame()->title();
+	QVariantMap eventParam;
+	eventParam.insert("title",page()->mainFrame()->title());
+	eventParam.insert("refresh","true");
+	eventParam.insert("Dsturl",m_url);
+	QString sEvent="refresh";
+	QString Scripte=EventProcsScripte(sEvent,eventParam);
+	page()->mainFrame()->evaluateJavaScript(Scripte);
+}
+
+QString SubWebView::EventProcsScripte( QString sEvent,QVariantMap eventParam )
+{
+	QString sItem="subViewMsg(data)";
+	QString sScripte;
+	sScripte += "{var e={";
+	QVariantMap::const_iterator itParameters;
+	for (itParameters = eventParam.begin();itParameters != eventParam.end(); itParameters ++)
+	{
+		QString sKey = itParameters.key();
+		QString sValue = itParameters.value().toString();
+		sScripte += sKey;
+		sScripte += ":'";
+		sScripte += sValue;
+		sScripte += "'";
+		if (itParameters + 1 != eventParam.end())
+		{
+			sScripte += ",";
+		}
+	}
+	QString sEventProc;
+	sEventProc+=";var Proc={'Proc':'";
+	sEventProc+=sEvent;
+	sEventProc+="'};";
+	sScripte += "}";
+	sScripte+=sEventProc;
+	sScripte += sItem.replace(QRegExp("\\((.*)\\)"),"(Proc,e)");
+	sScripte += ";}";
+	return sScripte;
+}
+
+
+

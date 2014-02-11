@@ -58,11 +58,14 @@ unsigned long __stdcall previewactivity::Release()
 void previewactivity::Active( QWebFrame * frame)
 {
 	m_MainView = (frame->page())->view();
+	m_frame=frame;
 	QWFW_MSGMAP_BEGIN(frame);
 	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
 	QWFW_MSGMAP("app_close_window","click","OnCloseWindow()");
 	QWFW_MSGMAP("app_maxsize","click","OnMaxsizeWindow()");
 	QWFW_MSGMAP("app_minsize","click","OnMinsizeWindow()");
+	QWFW_MSGMAP("app_hide","click","OnHide()");
+	QWFW_MSGMAP("app_show","click","OnShow()");
 	QWFW_MSGMAP_END;
 }
 
@@ -126,4 +129,51 @@ void previewactivity::OnMinsizeWindow()
 	{
 		m_MainView->showMinimized();
 	}
+}
+
+void previewactivity::OnHide()
+{
+	m_MainView->hide();
+}
+void previewactivity::OnShow()
+{
+	m_MainView->show();
+	QVariantMap eventParam;
+	eventParam.insert("title",m_frame->page()->mainFrame()->title());
+	eventParam.insert("refresh","true");
+	QString m_url=m_frame->url().toString();
+	eventParam.insert("Dsturl",m_url);
+	QString sEvent="refresh";
+	QString Scripte=EventProcsScripte(sEvent,eventParam);
+	m_frame->page()->mainFrame()->evaluateJavaScript(Scripte);
+}
+
+QString previewactivity::EventProcsScripte( QString sEvent,QVariantMap eventParam )
+{
+	QString sItem="subViewMsg(data)";
+	QString sScripte;
+	sScripte += "{var e={";
+	QVariantMap::const_iterator itParameters;
+	for (itParameters = eventParam.begin();itParameters != eventParam.end(); itParameters ++)
+	{
+		QString sKey = itParameters.key();
+		QString sValue = itParameters.value().toString();
+		sScripte += sKey;
+		sScripte += ":'";
+		sScripte += sValue;
+		sScripte += "'";
+		if (itParameters + 1 != eventParam.end())
+		{
+			sScripte += ",";
+		}
+	}
+	QString sEventProc;
+	sEventProc+=";var Proc={'Proc':'";
+	sEventProc+=sEvent;
+	sEventProc+="'};";
+	sScripte += "}";
+	sScripte+=sEventProc;
+	sScripte += sItem.replace(QRegExp("\\((.*)\\)"),"(Proc,e)");
+	sScripte += ";}";
+	return sScripte;
 }

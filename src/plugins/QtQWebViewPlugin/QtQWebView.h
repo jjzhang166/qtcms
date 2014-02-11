@@ -28,6 +28,7 @@ typedef struct _tagViewPage{
 		void LoadNewPage(QString url);
 
 		void LoadNewPageFromViewSignal(const QString &text);
+		void CloseAllPage();
 private:
 	QList<tagViewPage> m_ViewPageList;
 };

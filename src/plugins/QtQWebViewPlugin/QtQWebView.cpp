@@ -36,6 +36,10 @@ void QtQWebView::LoadNewPage( QString url )
 		if (url==item->url)
 		{
 			item->m_SubWebView->showMaximized();
+			item->m_SubWebView->OnRefressMessage();
+			DEF_EVENT_PARAM(arg);
+			EP_ADD_PARAM(arg,"state","hide");
+			EventProcCall("IndexPageState",arg);
 			return;
 		}
 	}
@@ -46,7 +50,11 @@ void QtQWebView::LoadNewPage( QString url )
 		return;
 	}
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
+	connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
 	m_tagViewPage.m_SubWebView->showMaximized();
+	DEF_EVENT_PARAM(arg);
+	EP_ADD_PARAM(arg,"state","hide");
+	EventProcCall("IndexPageState",arg);
 	m_tagViewPage.url = url;
 	m_ViewPageList.append(m_tagViewPage);
 
@@ -71,6 +79,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		for(it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it){
 			it->m_SubWebView->hide();
 		}
+		DEF_EVENT_PARAM(arg);
+		EP_ADD_PARAM(arg,"state","show");
+		EventProcCall("IndexPageState",arg);
 		return;
 	}
 
@@ -79,13 +90,16 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
 		qDebug()<<item->url;
-		if (SrcUrl==item->url)
-		{
-			item->m_SubWebView->hide();
-		}
+		//if (SrcUrl==item->url)
+		//{
+		//	item->m_SubWebView->hide();
+		//}
 		if (SrcUrl==item->url&&SrcAct=="close")
 		{
 			item->m_SubWebView->close();
+			DEF_EVENT_PARAM(arg);
+			EP_ADD_PARAM(arg,"state","show");
+			EventProcCall("IndexPageState",arg);
 			return;
 		}
 	}
@@ -94,19 +108,22 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	{
 		bool bExit=false;
 
-		QList<tagViewPage>::const_iterator ite;
-		for(ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite){
-			ite->m_SubWebView->hide();
-		}
-
 		QList<tagViewPage>::const_iterator it;
 		for (it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it)
 		{
 			if (DstUrl==it->url)
 			{
 				it->m_SubWebView->showMaximized();
+				it->m_SubWebView->OnRefressMessage();
 				bExit=true;
 				break;
+			}
+		}
+		QList<tagViewPage>::const_iterator ite;
+		for(ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite){
+			if (DstUrl!=ite->url)
+			{
+				ite->m_SubWebView->hide();
 			}
 		}
 		if (false==bExit)
@@ -116,6 +133,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			if (NULL!=m_tagViewPage.m_SubWebView)
 			{
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
+				connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
 				m_tagViewPage.m_SubWebView->showMaximized();
 				m_tagViewPage.url.append(DstUrl);
 				m_ViewPageList.append(m_tagViewPage);
@@ -140,5 +158,12 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		}
 	}
 	return;
+}
+
+void QtQWebView::CloseAllPage()
+{
+	DEF_EVENT_PARAM(arg);
+	EP_ADD_PARAM(arg,"state","close");
+	EventProcCall("IndexPageState",arg);
 }
 
