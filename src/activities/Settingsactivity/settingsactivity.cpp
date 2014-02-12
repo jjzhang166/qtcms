@@ -62,9 +62,13 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("top_act","mousedown","OnMouseDown()");
 	QWFW_MSGMAP("top_act","mouseup","OnMouseUp()");
 	QWFW_MSGMAP("top_act","mousemove","OnMouseMove()");
-	QWFW_MSGMAP("max","click","OnMaxClick()");
-	QWFW_MSGMAP("min","click","OnMinClick()");
-	QWFW_MSGMAP("close","click","OnCloseClick()");
+	//QWFW_MSGMAP("max","click","OnMaxClick()");
+	//QWFW_MSGMAP("min","click","OnMinClick()");
+	//QWFW_MSGMAP("close","click","OnCloseClick()");
+
+	QWFW_MSGMAP("app_maxsize","click","OnMaxClick()");
+	QWFW_MSGMAP("app_minsize","click","OnMinClick()");
+	QWFW_MSGMAP("app_close_window","click","OnCloseClick()");
 
 	//QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
 	//QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
