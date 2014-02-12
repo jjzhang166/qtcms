@@ -10,10 +10,10 @@ var oCommonLibrary;
 	})
 	function refresh(data){ 
 		alert('Pagerefresh');
-		/*//分组列表;
+		//分组列表;
 		groupList2Ui();
 		//区域列表;
-		areaList2Ui('0');*/
+		areaList2Ui('0');
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];
 	
@@ -302,7 +302,7 @@ var oCommonLibrary;
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var groupList = oCommonLibrary.GetGroupList();
-		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root','pid':'0','pareaname':'root'})
+		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root','pid':'0','pareaname':'root'}).html('');
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);

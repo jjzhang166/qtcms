@@ -24,9 +24,10 @@ function ttst(){alert(1);}
 
 function subViewMsg(msg,param)
 {
-	alert('123');
+	alert(msg.Proc);
 	try{
-		alert(msg.Proc);
 		window[msg.Proc](param)
-	}catch(e){};
+	}catch(e){
+		alert(e);
+	};
 }
