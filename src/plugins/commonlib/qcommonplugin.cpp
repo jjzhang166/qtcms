@@ -458,6 +458,25 @@ int QCommonPlugin::AddChannelInGroup(int group_id,int chl_id,QString sName)
 	if(IsGroupExists(group_id)){
 		if(IsChannelExists(chl_id)){
 			QSqlQuery _query(m_db);
+			QString command_all=QString("select *from r_chl_group");
+			_query.exec(command_all);
+			if (_query.isActive())
+			{
+				int index_rgc_id=_query.record().indexOf("id");
+				int index_group_id=_query.record().indexOf("group_id");
+				int index_chl_id=_query.record().indexOf("chl_id");
+				while(_query.next()){
+					int rgc_group_id=_query.value(index_group_id).toInt();
+					int rgc_chl_id=_query.value(index_chl_id).toInt();
+					if (rgc_chl_id==chl_id&&rgc_group_id==group_id)
+					{
+						int rgc_id=_query.value(index_rgc_id).toInt();
+						QString command_clear=QString("delete from r_chl_group where id=%1").arg(rgc_id);
+						_query.exec(command_clear);
+						break;
+					}
+				}
+			}
 			_query.prepare("insert into r_chl_group(chl_id,group_id,name) values(:chl_id,:group_id,:name)");
 			_query.bindValue(":name",sName);
 			_query.bindValue(":chl_id",chl_id);
