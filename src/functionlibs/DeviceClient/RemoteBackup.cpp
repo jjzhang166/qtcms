@@ -259,7 +259,12 @@ bool RemoteBackup::createFile()
 			+"_"+"CHL" + QString("%1").arg(QString(sChannelNum))
 			+"_" + m_stime.toString("yyyy-MM-dd(hhmmss)") 
 			+"_"+ m_etime.toString("yyyy-MM-dd(hhmmss)")+".avi";
-	    
+	    QFile file;
+		file.setFileName(fullname);
+		if (file.exists())
+		{
+			file.remove();
+		}
 		AviFile = AVI_open_output_file(fullname.toAscii().data());
 		if (NULL == AviFile) 
 			return false;
@@ -334,6 +339,7 @@ void RemoteBackup::run()
 
 	unsigned int sdtime = m_stime.toTime_t();
 	unsigned int edtime = m_etime.toTime_t();
+	bool m_firstflame=true;
 	while(m_backuping )
 	{
 		if (m_bufferqueue.size()>0)
@@ -346,6 +352,11 @@ void RemoteBackup::run()
 			//Calculation the progress
 			
 			unsigned int curr_gentime = recframe.gentime;
+			if (true==m_firstflame)
+			{
+				m_firstgentime=curr_gentime;
+				m_firstflame=false;
+			}
 			if(curr_gentime>=m_firstgentime)
 				m_progress = (float)(curr_gentime - m_firstgentime)/(edtime - sdtime);
 
