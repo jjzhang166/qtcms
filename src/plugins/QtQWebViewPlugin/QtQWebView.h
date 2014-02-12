@@ -29,8 +29,11 @@ typedef struct _tagViewPage{
 
 		void LoadNewPageFromViewSignal(const QString &text);
 		void CloseAllPage();
+		void OnRefressMessage();
 private:
 	QList<tagViewPage> m_ViewPageList;
+public:
+	QString EventProcsScripte(QString sEvent,QVariantMap eventParam);
 };
 
 #endif

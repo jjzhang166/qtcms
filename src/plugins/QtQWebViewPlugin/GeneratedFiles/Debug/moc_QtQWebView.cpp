@@ -22,7 +22,7 @@ static const uint qt_meta_data_QtQWebView[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,6 +34,7 @@ static const uint qt_meta_data_QtQWebView[] = {
       59,   55,   11,   11, 0x0a,
       85,   80,   11,   11, 0x0a,
      120,   11,   11,   11, 0x0a,
+     135,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -43,7 +44,7 @@ static const char qt_meta_stringdata_QtQWebView[] = {
     "AddEventProc(QString,QString)\0url\0"
     "LoadNewPage(QString)\0text\0"
     "LoadNewPageFromViewSignal(QString)\0"
-    "CloseAllPage()\0"
+    "CloseAllPage()\0OnRefressMessage()\0"
 };
 
 void QtQWebView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -56,6 +57,7 @@ void QtQWebView::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 1: _t->LoadNewPage((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 2: _t->LoadNewPageFromViewSignal((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 3: _t->CloseAllPage(); break;
+        case 4: _t->OnRefressMessage(); break;
         default: ;
         }
     }
@@ -95,9 +97,9 @@ int QtQWebView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }

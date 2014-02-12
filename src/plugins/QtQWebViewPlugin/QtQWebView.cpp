@@ -80,6 +80,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		//显示主页
 		QWidget *pa=this->parentWidget();
 		((QWebView*)pa)->show();
+		OnRefressMessage();
 		return;
 	}
 
@@ -97,6 +98,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			//显示主页
 			QWidget *pa=this->parentWidget();
 			((QWebView*)pa)->show();
+			OnRefressMessage();
 			return;
 		}
 	}
@@ -162,5 +164,48 @@ void QtQWebView::CloseAllPage()
 	//关闭窗口
 	QWidget *pa=this->parentWidget();
 	((QWebView*)pa)->close();
+}
+
+void QtQWebView::OnRefressMessage()
+{
+	QWidget *pa=this->parentWidget();
+	((QWebView*)pa)->page()->mainFrame()->title();
+	QVariantMap eventParam;
+	eventParam.insert("title",((QWebView*)pa)->page()->mainFrame()->title());
+	eventParam.insert("refresh","true");
+	eventParam.insert("Dsturl","null");
+	QString sEvent="refresh";
+	QString Scripte=EventProcsScripte(sEvent,eventParam);
+	((QWebView*)pa)->page()->mainFrame()->evaluateJavaScript(Scripte);
+}
+
+QString QtQWebView::EventProcsScripte( QString sEvent,QVariantMap eventParam )
+{
+	QString sItem="subViewMsg(data)";
+	QString sScripte;
+	sScripte += "{var e={";
+	QVariantMap::const_iterator itParameters;
+	for (itParameters = eventParam.begin();itParameters != eventParam.end(); itParameters ++)
+	{
+		QString sKey = itParameters.key();
+		QString sValue = itParameters.value().toString();
+		sScripte += sKey;
+		sScripte += ":'";
+		sScripte += sValue;
+		sScripte += "'";
+		if (itParameters + 1 != eventParam.end())
+		{
+			sScripte += ",";
+		}
+	}
+	QString sEventProc;
+	sEventProc+=";var Proc={'Proc':'";
+	sEventProc+=sEvent;
+	sEventProc+="'};";
+	sScripte += "}";
+	sScripte+=sEventProc;
+	sScripte += sItem.replace(QRegExp("\\((.*)\\)"),"(Proc,e)");
+	sScripte += ";}";
+	return sScripte;
 }
 
