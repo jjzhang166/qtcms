@@ -430,7 +430,6 @@ var oSearchOcx;
 		})
 		str+='</chlintogroup>';
 		$('#addchannelingroupdouble_ID').val('').val(str);
-		//alert($('#addchannelingroupdouble_ID').val());
 	}
 	function set_contentMax(){
 		var W = $(window).width(),

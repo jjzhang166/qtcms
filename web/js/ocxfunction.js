@@ -9,7 +9,6 @@ var oCommonLibrary;
 		areaList2Ui('0');
 	})
 	function refresh(data){ 
-		alert('Pagerefresh');
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
@@ -137,11 +136,11 @@ var oCommonLibrary;
 	}
 	function RemoveGroupSuccess(data){ 
 		var id=$('#group_id_ID').val();
-		$('#group_'+id).next('ul').find('span.channel').each(function(){ 
+		/*$('#group_'+id).next('ul').find('span.channel').each(function(){ 
 			var devid = $(this).data('data')['dev_id'];
 			var add = $(this).parent('li').appendTo($('div.dev_list:eq(0) #dev_'+devid).next('ul'));
 			$('ul.filetree').treeview({add:add});
-		})
+		})*/
 		$('#group_'+id).parent('li').remove();
 		$('ul.filetree').treeview();
 		closeMenu();
@@ -206,26 +205,31 @@ var oCommonLibrary;
 		for(i in chlList){
 			var chlNum = '';//oCommonLibrary.GetChannelNumber(chlList[i]);
 			var num =parseInt(i)+1;
-			var name = 'chl';
+			var name = 'chl_'+i;
 			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
-			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+chldata.channel_name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
+			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
 			addchl.find('span.channel').data('data',chldata);
 			$('ul.filetree:eq(0)').treeview({add:addchl});
 		}
 		$('ul.filetree:eq(0)').treeview({add:add});
 	}
 	function AddChannelDoubleInGroupSuccess(data){
-		Confirm(data.channelname+'AddSuccess');
+		//Confirm(data.channelname+'AddSuccess');
 		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
-		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').appendTo(group.next('ul'));
+		if($('#g_channel_'+data.chlid)[0]){
+			return false;
+		}
+		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true);
+			add.find('span.channel').removeAttr('id')
+			   .attr('id','g_channel_'+data.chlid).end()
+			   .appendTo(group.next('ul'));
+			add.find('span.channel').data('data')['r_chl_group_id'] = data.chlgroupid;
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
-		$('#addchannelingroupdouble_ID').val('');
 	}
 	function RemoveChannelFromGroupSuccess(data){ 
-		$('#group_0 span.channel.sel').each(function(){
-			var add =$(this).parent('li').appendTo($('#dev_'+$(this).data('data').dev_id).next('ul'));
-			$('ul.filetree:eq(0)').treeview({add:add});
+		$('div.dev_list:eq(1) span.channel.sel').each(function(){
+			$(this).parent('li').remove();//appendTo($('#dev_'+$(this).data('data').dev_id).next('ul'));
 		})
 		$('ul.filetree').treeview();
 	}
@@ -235,7 +239,7 @@ var oCommonLibrary;
 		var obj = $('ul.filetree:eq('+num+')')
 		var add = $('<li><span class="area" id="area_0">区域_root</span><ul></ul</li>').appendTo(obj);
 		obj.treeview({add:add});
-		add.find('span.area:first').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'})
+		add.find('span.area:first').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'});
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();
@@ -283,7 +287,7 @@ var oCommonLibrary;
 		var chlList = oCommonLibrary.GetChannelList(devid);
 		for(i in chlList){ 
 			var id = chlList[i];
-			if(!$('#channel_'+id)[0]){ 
+			//if(!$('#channel_'+id)[0]){ 
 				var chldata = oCommonLibrary.GetChannelInfo(id);
 				var data = {};
 				data['channel_id'] = id;
@@ -295,9 +299,9 @@ var oCommonLibrary;
 				var add = $('<li><span class="channel" id="channel_'+id+'" >'+chldata['name']+'</span></li>').appendTo($('#dev_'+devid).next('ul'));
 				add.find('span.channel').data('data',data);
 				$('ul.filetree:eq('+num+')').treeview({add:add});
-			}else{ 
+			/*}else{ 
 				$('#channel_'+id).data('data')['dev_id'] = devid;
-			}	
+			}*/	
 		}
 	}
 	function groupList2Ui(){   //分组菜单输出
@@ -326,7 +330,7 @@ var oCommonLibrary;
 			data['channel_name'] = chldata2['name'];
 			data['group_id'] = chldata['group_id']
 			data['r_chl_group_name'] = ['name'];
-			var add = $('<li><span class="channel" id="channel_'+data['channel_id']+'" >'+chldata2['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
+			var add = $('<li><span class="channel" id="g_channel_'+data['channel_id']+'" >'+chldata2['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
 			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}
@@ -339,7 +343,7 @@ var oCommonLibrary;
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('#week').html('').val('');
 	}
-	function SettingStorageParmSuccess(data){ 
+	function SettingStorageParmSuccess(data){
 		//alert(data);
 	}
 	//搜索远程录像

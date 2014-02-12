@@ -351,7 +351,7 @@ function firstUp(str){  //字符串首字母大写
 function show(data){  // 在ID为test的div元素中打印对象数据
 	var index='default',
 		str = 'Null';
-		$('#test').html('');
+		//$('#test').html('');
 	if(typeof(data) == 'number' || typeof(data) == 'string'){
 		$('<p><span>'+index+'</span>:<span>"'+data+'"/</span></p>').prependTo($('#test'));
 	}else{
@@ -368,6 +368,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	return num = num<10 ? '0'+num : num;
 }
 function showdata(id,type){  //显示表单下有ID的元素的val值
+	//return false;
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
 	$('#'+type).find('[id]').each(function(){ 

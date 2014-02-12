@@ -24,7 +24,6 @@ function ttst(){alert(1);}
 
 function subViewMsg(msg,param)
 {
-	alert(msg.Proc);
 	try{
 		window[msg.Proc](param)
 	}catch(e){
