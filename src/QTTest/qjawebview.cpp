@@ -194,7 +194,7 @@ void QJaWebView::OnurlChanged( const QUrl & url )
 
 void QJaWebView::OnstatusBarMessage( const QString &text )
 {
-	qDebug()<<text;
+	
 }
 
 QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )

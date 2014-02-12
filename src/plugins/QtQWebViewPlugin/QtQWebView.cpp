@@ -14,7 +14,6 @@ QtQWebView::~QtQWebView()
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
-		qDebug()<<item->url;
 		item->m_SubWebView->close();
 		delete item->m_SubWebView;
 	}
@@ -32,14 +31,14 @@ void QtQWebView::LoadNewPage( QString url )
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
-		qDebug()<<item->url;
+		
 		if (url==item->url)
 		{
 			item->m_SubWebView->showMaximized();
 			item->m_SubWebView->OnRefressMessage();
-			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"state","hide");
-			EventProcCall("IndexPageState",arg);
+			//隐藏主页
+			QWidget *pa=this->parentWidget();
+			((QWebView*)pa)->hide();
 			return;
 		}
 	}
@@ -52,9 +51,9 @@ void QtQWebView::LoadNewPage( QString url )
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
 	m_tagViewPage.m_SubWebView->showMaximized();
-	DEF_EVENT_PARAM(arg);
-	EP_ADD_PARAM(arg,"state","hide");
-	EventProcCall("IndexPageState",arg);
+	//隐藏主页
+	QWidget *pa=this->parentWidget();
+	((QWebView*)pa)->hide();
 	m_tagViewPage.url = url;
 	m_ViewPageList.append(m_tagViewPage);
 
@@ -63,7 +62,6 @@ void QtQWebView::LoadNewPage( QString url )
 
 void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 {
-	qDebug()<<text;
 	QDomDocument ConFile;
 	ConFile.setContent(text);
 	QDomNode pageaction=ConFile.elementsByTagName("pageaction").at(0);
@@ -79,9 +77,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		for(it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it){
 			it->m_SubWebView->hide();
 		}
-		DEF_EVENT_PARAM(arg);
-		EP_ADD_PARAM(arg,"state","show");
-		EventProcCall("IndexPageState",arg);
+		//显示主页
+		QWidget *pa=this->parentWidget();
+		((QWebView*)pa)->show();
 		return;
 	}
 
@@ -89,7 +87,6 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
-		qDebug()<<item->url;
 		//if (SrcUrl==item->url)
 		//{
 		//	item->m_SubWebView->hide();
@@ -97,9 +94,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		if (SrcUrl==item->url&&SrcAct=="close")
 		{
 			item->m_SubWebView->close();
-			DEF_EVENT_PARAM(arg);
-			EP_ADD_PARAM(arg,"state","show");
-			EventProcCall("IndexPageState",arg);
+			//显示主页
+			QWidget *pa=this->parentWidget();
+			((QWebView*)pa)->show();
 			return;
 		}
 	}
@@ -162,8 +159,8 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 
 void QtQWebView::CloseAllPage()
 {
-	DEF_EVENT_PARAM(arg);
-	EP_ADD_PARAM(arg,"state","close");
-	EventProcCall("IndexPageState",arg);
+	//关闭窗口
+	QWidget *pa=this->parentWidget();
+	((QWebView*)pa)->close();
 }
 

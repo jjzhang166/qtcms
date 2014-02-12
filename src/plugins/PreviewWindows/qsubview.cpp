@@ -28,13 +28,10 @@ QSubView::QSubView(QWidget *parent)
 	//申请解码器接口
 	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 // 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
-	qDebug("IVideoDecoder:%x",m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
-	qDebug("m_IVideoRender:%x",m_IVideoRender);
 	//申请DeviceClient接口
 	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
-	qDebug("m_IDeviceClient:%x",m_IDeviceClient);
 	//申请IRecorder接口
 	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void **)&m_pRecorder);
 
@@ -376,7 +373,6 @@ void QSubView::OnFreshWindow()
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
-	qDebug()<<this;
 	repaint(this->x(),this->y(),this->width(),this->height());
 	killTimer(ev->timerId());
 }

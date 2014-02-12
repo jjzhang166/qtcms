@@ -168,8 +168,6 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	{
 		return nRet;
 	}
-
-	qDebug()<<m_HostAddress.toString();
 	nRet=m_RemotePlaybackObject.SetParm(m_sUserName,m_sUserPwd,m_uiPort,m_sHostAddress,m_sEseeId);
 	if (1==nRet)
 	{

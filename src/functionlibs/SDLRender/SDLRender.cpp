@@ -23,7 +23,6 @@ int SDLRender::init(int nWidth,int nHeight)
 		SDL_Init(SDL_INIT_VIDEO);
 		if(!m_pWindow)
 		{
-			qDebug("------------------>1:%d",pWidget->winId());
 			m_pWindow = SDL_CreateWindowFrom((void *)pWidget->winId());
 		}
 		
@@ -96,8 +95,6 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 
 
 	SDL_GetWindowSize( m_pWindow, &iWidth, &iHeight );
-	qDebug()<<iWidth;
-	qDebug()<<iHeight;
 	d_rect.x = 0;
 	d_rect.y = 0;
 	d_rect.w = iWidth;
@@ -107,19 +104,8 @@ int SDLRender::render(char *data,char *pYData,char *pUData,char *pVData,int nWid
 
 	SDL_UpdateTexture( m_pTexture, &s_rect, data, iPitch );
 	SDL_RenderClear( m_pRender );
-	//qDebug()<<"m_pTexture";
-	//qDebug()<<m_pTexture;
-	//qDebug()<<"m_pRender";
-	//qDebug()<<m_pRender;
 	SDL_RenderCopy( m_pRender, m_pTexture, &s_rect, &d_rect );
 	SDL_RenderPresent( m_pRender );
-
-
-	//qDebug()<<"m_pTexture";
-	//qDebug()<<m_pTexture;
-	//qDebug()<<"m_pRender";
-	//qDebug()<<m_pRender;
-
 	return 0;
 }
 int SDLRender::enable(bool bEnable)

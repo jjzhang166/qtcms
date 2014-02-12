@@ -451,7 +451,6 @@ int DeviceClient::getConnectStatus()
 }
 int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 {
-	qDebug()<<evMap<<"-------------";
 	QVariantMap::const_iterator it;
 	for (it=evMap.begin();it!=evMap.end();++it)
 	{
@@ -461,7 +460,6 @@ int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 		{
 			m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 			QVariantMap CurStatusParm;
-			qDebug()<<m_CurStatus<<"+++++++++++++";
 			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
 			eventProcCall("CurrentStatus",CurStatusParm);
 		}
@@ -750,7 +748,6 @@ int DeviceClient::GroupStop()
 	{
 		return 1;
 	}
-	qDebug()<<"GroupStop"<<"===========================";
 	//bCloseingFlags=true;
 	//int nRet = m_pRemotePlayback->stopPlaybackStream();
 	int nRet=closeAll();

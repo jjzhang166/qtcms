@@ -67,7 +67,7 @@ void div8_1::parentWindowResize( QResizeEvent *ev )
 
 void div8_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
-	qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
+	//qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
 
 	if (!m_singeldisplay)
 	{

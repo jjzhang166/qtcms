@@ -339,6 +339,7 @@ void Device_Test::DeviceTestCase11()
 
 	QStringList DeviceList = Itest->GetDeviceList(15);
 	QStringList::const_iterator it;
+	// 需要修改，（之前是返回设备名称），修改成检测返回的设备id号；
 	for (it = DeviceList.begin(); it != DeviceList.end(); it++)
 	{
 		QVERIFY2(*it == "tianxia","step 1:GetUserList");

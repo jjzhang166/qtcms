@@ -65,10 +65,10 @@ void RemotePreviewTest::RemotePreviewCase1()
     nRet = Itest->QueryInterface(IID_IDeviceConnection, (void**)&pConnect);
     QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
-    nRet = pConnect->setDeviceHost("192.168.2.222");
+    nRet = pConnect->setDeviceHost("192.168.2.171");
     QVERIFY2(0 == nRet, "set Device host Error");
     QString host = pConnect->getDeviceHost();
-    QVERIFY2("192.168.2.222" == host, "device host is wrong");
+    QVERIFY2("192.168.1.207" == host, "device host is wrong");
 
     QVariantMap ports;
     ports.insert("media", 80);
@@ -127,10 +127,10 @@ void RemotePreviewTest::RemotePreviewCase2()
     nRet = Itest->QueryInterface(IID_IDeviceConnection, (void**)&pConnect);
     QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
-    nRet = pConnect->setDeviceHost("192.168.2.222");
+    nRet = pConnect->setDeviceHost("192.168.1.207");
     QVERIFY2(0 == nRet, "set Device host Error");
     QString host = pConnect->getDeviceHost();
-    QVERIFY2("192.168.2.222" == host, "device host is wrong");
+    QVERIFY2("192.168.1.207" == host, "device host is wrong");
 
     QVariantMap ports;
     ports.insert("media", 80);
@@ -167,7 +167,7 @@ void RemotePreviewTest::RemotePreviewCase2()
 
     END_BUBBLEPROTOCOL_UNIT_TEST(Itest);
 }
-// 3. 使用LiveStream注册,调用setDeviceHost()设置多种非法的IP, 与getDeviceHost()返回值比较 | setDeviceHost()返回1; 
+// 3. 使用LiveStream注册,调用setDeviceHost()设置多种非法的IP, 与getDeviceHost()返回值比较 | setDeviceHost()返回-1; 
 //   使用LiveStream注册,调用setDeviceHost()设置合法的IP地址, 与getDeviceHost()返回值比较 | setDeviceHost()返回0,  
 void RemotePreviewTest::RemotePreviewCase3()
 {
@@ -186,15 +186,15 @@ void RemotePreviewTest::RemotePreviewCase3()
     QVERIFY2(S_OK == nRet, "QueryInterface Error!");
     //step1
     nRet = pConnect->setDeviceHost("192");
-    QVERIFY2(1 == nRet, "set Device host Error");
+    QVERIFY2(-1 == nRet, "set Device host Error");
     QString host = pConnect->getDeviceHost();
     QVERIFY2("" == host, "Get device host Error");
     nRet = pConnect->setDeviceHost("192.256.256.2");
-    QVERIFY2(1 == nRet, "set Device host Error");
+    QVERIFY2(-1 == nRet, "set Device host Error");
     host = pConnect->getDeviceHost();
     QVERIFY2("" == host, "Get device host Error");
     nRet = pConnect->setDeviceHost("192.253.253.-2");
-    QVERIFY2(1 == nRet, "set Device host Error");
+    QVERIFY2(-1 == nRet, "set Device host Error");
     host = pConnect->getDeviceHost();
     QVERIFY2("" == host, "Get device host Error");
     //step2
@@ -205,7 +205,7 @@ void RemotePreviewTest::RemotePreviewCase3()
 
     END_BUBBLEPROTOCOL_UNIT_TEST(Itest);
 }
-//4. 使用LiveStream注册,调用setDevicePorts()设置多种非法的端口, 与getDeviceHost()返回值比较 | setDevicePorts()返回1;
+//4. 使用LiveStream注册,调用setDevicePorts()设置多种非法的端口, 与getDeviceHost()返回值比较 | setDevicePorts()返回-1;
 //   使用LiveStream注册,调用setDevicePorts()设置合法的Port号,  与getDeviceHost()返回值比较 | setDevicePorts()返回0
 void RemotePreviewTest::RemotePreviewCase4()
 {
@@ -226,7 +226,7 @@ void RemotePreviewTest::RemotePreviewCase4()
     QVariantMap ports;
     ports.insert("media", 65537);
     nRet = pConnect->setDevicePorts(ports);
-    QVERIFY2(1 == nRet, "set Device port wrong");
+    QVERIFY2(-1 == nRet, "set Device port wrong");
     ports.clear();
     ports = pConnect->getDevicePorts();
     if (ports.contains("media"))
@@ -236,7 +236,7 @@ void RemotePreviewTest::RemotePreviewCase4()
 
     ports.insert("media", -5);
     nRet = pConnect->setDevicePorts(ports);
-    QVERIFY2(1 == nRet, "set Device port wrong");
+    QVERIFY2(-1 == nRet, "set Device port wrong");
     ports.clear();
     ports = pConnect->getDevicePorts();
     if (ports.contains("media"))
@@ -281,7 +281,7 @@ void RemotePreviewTest::RemotePreviewCase5()
 }
 //6. 使用LiveStream注册,设置合法的IP地址和端口后,connectToDevice()连接到设备获取设备信息,测试调用getStreamInfo()
 //正确参数和错误参数时的情况和getStreamCount()的值,最后disconnect()   .中间调用getCurrentStatus()取得当前状态
-// | getStreamInfo()参数给错时返回1,正确返回0, getStreamCount()192.168.2.222这个IP对应的返回值是3
+// | getStreamInfo()参数给错时返回-1,正确返回0, getStreamCount()192.168.1.207这个IP对应的返回值是3
 void RemotePreviewTest::RemotePreviewCase6()
 {
     START_BUBBLEPROTOCOL_UNIT_TEST(Itest);
@@ -298,10 +298,10 @@ void RemotePreviewTest::RemotePreviewCase6()
     nRet = Itest->QueryInterface(IID_IDeviceConnection, (void**)&pConnect);
     QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
-    nRet = pConnect->setDeviceHost("192.168.2.222");
+    nRet = pConnect->setDeviceHost("192.168.1.207");
     QVERIFY2(0 == nRet, "set Device host Error");
     QString host = pConnect->getDeviceHost();
-    QVERIFY2("192.168.2.222" == host, "device host is wrong");
+    QVERIFY2("192.168.1.207" == host, "device host is wrong");
 
     QVariantMap ports;
     ports.insert("media", 80);
@@ -325,7 +325,7 @@ void RemotePreviewTest::RemotePreviewCase6()
     //step1
     QVariantMap streamInfo;
     nRet = Itest->getStreamInfo(3, streamInfo);
-    QVERIFY2(1 == nRet, "Get  Info Error");
+    QVERIFY2(-1 == nRet, "Get  Info Error");
 
     //step2
     streamInfo.clear();
@@ -367,10 +367,10 @@ void RemotePreviewTest::RemotePreviewCase7()
     nRet = Itest->QueryInterface(IID_IDeviceConnection, (void**)&pConnect);
     QVERIFY2(S_OK == nRet, "QueryInterface Error!");
 
-    nRet = pConnect->setDeviceHost("192.168.2.222");
+    nRet = pConnect->setDeviceHost("192.168.1.207");
     QVERIFY2(0 == nRet, "set Device host Error");
     QString host = pConnect->getDeviceHost();
-    QVERIFY2("192.168.2.222" == host, "device host is wrong");
+    QVERIFY2("192.168.1.207" == host, "device host is wrong");
 
     QVariantMap ports;
     ports.insert("media", 80);

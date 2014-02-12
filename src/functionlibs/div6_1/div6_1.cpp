@@ -108,8 +108,6 @@ void div6_1::parentWindowResize( QResizeEvent *ev )
 
 void div6_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
-	qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
-
 	if ( m_nWindowsPerPage > 1)
 	{
 		m_nWindowsPerPage = 1;

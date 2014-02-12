@@ -55,7 +55,6 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 	int datasize = frameinfo["length"].toInt();
 	if ((type != 0x00 && type !=  0x01 && type != 0x02) || datasize<=0 )
 	{
-		qDebug("get frame type is:%d",type);
 		return IRecorder::E_PARAMETER_ERROR;
 	}
 	if (!m_bFinish)
@@ -156,7 +155,6 @@ void Recorder::run()
 				}
 
 				// Create save path
-				qDebug("Prepare to record,read path from profile:%s\n",sSavePath);
 
 				bAudioBeSet = false;
 

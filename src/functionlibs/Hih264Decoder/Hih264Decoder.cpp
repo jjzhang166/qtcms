@@ -31,7 +31,7 @@ int Hih264Decoder::init(int nWidth,int nHeight)
 	DecAttr.uPicWidthInMB = nWidth / 16 + ((nWidth % 16) ? 1 : 0);
 	DecAttr.uPicHeightInMB = nHeight / 16 + ((nHeight % 16) ? 1 : 0);
 	DecAttr.uBufNum = 2;
-	DecAttr.uWorkMode = 0x01;
+	DecAttr.uWorkMode = 0x31;
 	DecAttr.pUserData = NULL;
 	DecAttr.uReserved = 0;
 

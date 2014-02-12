@@ -102,7 +102,6 @@ float RemoteBackupWindows::getProgress()
 	{
 		progress = m_pRemoteBackup->getProgress();
 	}
-	qDebug()<<progress<<"==================";
 	return progress;
 }
 

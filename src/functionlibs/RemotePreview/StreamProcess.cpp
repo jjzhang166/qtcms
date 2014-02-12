@@ -105,7 +105,6 @@ void StreamProcess::stopStream()
 {
 	if (NULL != m_tcpSocket)
 	{
-		qDebug()<<this<<"============";
 		m_bStop = true;
 		m_tcpSocket->abort();
 	}
