@@ -1450,7 +1450,7 @@ void settingsActivity::OnModifyGroupChannelName()
 	Content.clear();
 	Content.append("ModifyGroupChannelName success");
 	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("ModifyGroupChannelName",arg);
+	EventProcCall("ModifyGroupChannelNameSuccess",arg);
 	IGroup->Release();
 	return;
 }
