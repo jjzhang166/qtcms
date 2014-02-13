@@ -35,6 +35,7 @@ public slots:
 private:
 	bool LoadDeviceClient(QString vender);
 	IRemoteBackup* m_pRemoteBackup;
+	QString m_dir;
 signals:
 	void sendStatus(QVariantMap item);
 };

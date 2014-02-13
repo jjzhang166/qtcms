@@ -17,7 +17,7 @@ m_pRemoteBackup(NULL)
 
 	// install all search component
 	LoadDeviceClient("JUAN DVR");
-
+	m_dir.append(".");
 	connect(this,SIGNAL(sendStatus(QVariantMap)),this,SLOT(sendToHtml(QVariantMap)));
 }
 
@@ -119,10 +119,11 @@ void RemoteBackupWindows::procCallBack(QVariantMap item)
 void RemoteBackupWindows::ChooseDir()
 {
 	QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-		".",
+		m_dir,
 		QFileDialog::ShowDirsOnly
 		| QFileDialog::DontResolveSymlinks);
 	QVariantMap item;
+	m_dir=dir;
 	dir.replace(QString("\\"),QString("/"));
 	item.insert("path",dir);
 	EventProcCall("RecordDirPath",item);
