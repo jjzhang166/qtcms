@@ -170,7 +170,10 @@ var oCommonLibrary;
 		}
 		adddev(dataIndex);	
 	}
-
+	function ModifyGroupChannelName(data){
+		alert(data);
+		show(data);
+	}
 	function ModifyDeviceSuccess(){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){ 
@@ -219,11 +222,15 @@ var oCommonLibrary;
 		if($('#g_channel_'+data.chlid)[0]){
 			return false;
 		}
-		var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true);
-			add.find('span.channel').removeAttr('id')
-			   .attr('id','g_channel_'+data.chlid).end()
-			   .appendTo(group.next('ul'));
+			var g_channel_name = $('#dev_'+$('#channel_'+data.chlid).data('data').dev_id).data('data').device_name+'_chl_'+$('#channel_'+data.chlid).data('data').channel_number;
+			var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true)
+			    .find('span.channel')
+			    .attr('id','g_channel_'+data.chlid)
+			    .html(g_channel_name)
+			    .end()
+			    .appendTo(group.next('ul'));
 			add.find('span.channel').data('data')['r_chl_group_id'] = data.chlgroupid;
+			add.find('span.channel').data('data')['channel_name'] = g_channel_name;
 		$('ul.filetree').treeview({add:add});
 		$('ul.filetree').treeview();
 	}
@@ -327,10 +334,10 @@ var oCommonLibrary;
 			var chldata2 = oCommonLibrary.GetChannelInfo(data['channel_id']);
 			data['channel_number'] = chldata2['number']
 			data['stream_id'] = chldata2['stream'];
-			data['channel_name'] = chldata2['name'];
+			data['channel_name'] = chldata['name'];
 			data['group_id'] = chldata['group_id']
 			data['r_chl_group_name'] = ['name'];
-			var add = $('<li><span class="channel" id="g_channel_'+data['channel_id']+'" >'+chldata2['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
+			var add = $('<li><span class="channel" id="g_channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
 			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}

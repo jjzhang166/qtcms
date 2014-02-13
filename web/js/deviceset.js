@@ -264,7 +264,7 @@ var oSearchOcx;
 		
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -423,13 +423,17 @@ var oSearchOcx;
 			var sChl = '<chlinfo ';
 			var data = $(this).data('data')
 			for(i in data){ 
-				sChl+=i+'_ID="'+data[i]+'" ';
+				if(i == 'channel_name'){
+					sChl+='channel_name_ID="'+$('#dev_'+data.dev_id).data('data').eseeid+'_chl_'+data.channel_number+'" ';	
+				}else{
+					sChl+=i+'_ID="'+data[i]+'" ';
+				}
 			}
 			sChl+='/>';
 			str+=sChl
 		})
 		str+='</chlintogroup>';
-		$('#addchannelingroupdouble_ID').val('').val(str);
+		$('#addchannelingroupdouble_ID').val(str);
 	}
 	function set_contentMax(){
 		var W = $(window).width(),
@@ -551,7 +555,7 @@ function showContextMenu(y,x,obj){
 			menu.find('li').not(':eq(3)').hide();
 			menu.find('li:eq(3)').show();
 		}	
-		menu.find('li:eq(3)').one('click',function(){ 
+		menu.find('li:eq(3)').one('click',function(){
 			showObjActBox('Modify',obj.attr('class').split(' ')[0]);
 		})
 		menu.find('li:last').one('click',function(){ 
@@ -573,7 +577,7 @@ function showContextMenu(y,x,obj){
 }
 
 //遮罩层和弹出框方法.
-var trance = {'area':'区域','device':'设备','channel':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改'};
+var trance = {'area':'区域','device':'设备','channel':'通道','group':'分组','Add':'增加','Remove':'删除','Modify':'修改','GroupChannelName':'通道下设备名字'};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -599,11 +603,18 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
+	//show(data);
 	if(!data){ 
 		Confirm('请选择一台设备!');
 		return false;
 	}
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
+	if(pObj.attr('id')=='g_channel_'+data.channel_id){
+		pObjType = 'GroupChannelName';
+		obox.find('input:text').attr('id','r_chl_group_name_ID');
+	}else if(pObj.attr('id')=='channel_'+data.channel_id){ 
+		obox.find('input:text').attr('id','channel_name_ID');
+	}
 	$('#'+action+pObjType+'_ok').show();
 	/*if(pObj.parent('li').parent('ul').prev('span').hasClass('group')){ 
 		$('#channel input:text').attr('id','r_chl_group_name_ID');
