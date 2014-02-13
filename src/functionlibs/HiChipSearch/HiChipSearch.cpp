@@ -143,6 +143,8 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchDeviceId_ID", context);
 // 	itemmap.insert("SearchDeviceId_ID", context);
 //	itemmap.insert("SearchSeeId_ID", context);
+	getItem(buff,"MASK=",context);
+	itemmap.insert("SearchMask_ID", context);
 
 	getItem(buff,"Device-Model=",context);
 	itemmap.insert("SearchDeviceModelId_ID", context);
@@ -171,6 +173,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 
 	itemmap.insert("SearchMediaPort_ID", context);
 	itemmap.insert("SearchVendor_ID", "JUAN IPC");
+
 }
 
 
