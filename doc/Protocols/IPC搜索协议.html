@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p align="center"><strong>设备搜索协议说明 </strong></p>
+<p><strong>       </strong>设备搜索是通过向局域网发送UDP的组播包，查找当前网络上有多少设备。<br />
+  该协议准寻http协议。在每行结束要有结束符&rdquo;\r\n&rdquo;,包尾要有包结束符&rdquo;\r\n\r\n&rdquo;<br />
+  Cseq为递增字段<br />
+  Content-Length为内容长度字段<br />
+  Authorization:Basic 为用户名和密码字段。</p>
+<p>发送搜索组播包以后不要马上发送设置组播包，之间应该有时间间隔，不然设置组播包会收不到回复信息。 </p>
+<p>以下代码不要连续<br />
+  Send(搜索包);<br />
+  Send(设置包);<br />
+  中间要有时间间隔， 比如：<br />
+  Send(搜索包);<br />
+  Sleep(500);//毫秒 <br />
+  Send(设置包);</p>
+<p>&nbsp;</p>
+<p>组播地址为：239.255.255.250<br />
+  组播端口为：8002</p>
+<ol>
+  <li>搜索发送内容</li>
+</ol>
+<p>SEARCH * HDS/1.0<br />
+  CSeq:1<br />
+  Client-ID:nvmOPxEnYfQRAeLFdsMrpBbnMDbEPiMC<br />
+  Accept-Type:text/HDP<br />
+  Content-Length:0</p>
+<p>Client-ID字段可以长度如上的任意字符。起到标识作用。在后面的内容都会用到。 </p>
+<ol>
+  <li>搜索回复内容</li>
+</ol>
+<p>HDS/1.0 200 OK<br />
+  CSeq:1<br />
+  Client-ID:nvmOPxEnYfQRAeLFdsMrpBbnMDbEPiMC<br />
+  Content-Type:text/HDP<br />
+  Content-Length:550</p>
+<p>Segment-Num:2<br />
+  Segment-Seq:1<br />
+  Data-Length:360</p>
+<p>Device-ID=TFLoSreSpZhDLLgNKTtYlJugtrWNQmWq<br />
+  Device-Model=ZNY10.22<br />
+  Device-Name=IPCAM<br />
+  IP=192.168.1.7<br />
+  MASK=255.255.255.0<br />
+  MAC=00:11:89:11:11:07<br />
+  Gateway=192.168.1.1<br />
+  Software-Version=V2.0.1.1-R01:20101008<br />
+  Http-Port=80<br />
+  Dhcp=0<br />
+  Ddns=0<br />
+  Fdns=192.168.1.2<br />
+  Sdns=211.23.12.13<br />
+  DDNS-Enable=y<br />
+  DDNS-User=test<br />
+  DDNS-Passwd=123<br />
+  DDNS-Host=hipcam.net<br />
+  DDNS-Port=80<br />
+  Segment-Seq:2<br />
+  Data-Length:107</p>
+<p>[dev-media-info]<br />
+  cam-count=1<br />
+  [cam1]<br />
+  id=1<br />
+  stream-count=2<br />
+  [cam1-stream1]<br />
+  id=11<br />
+  [cam1-stream2]<br />
+  id=12</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="127" valign="top"><br />
+      <strong>字  </strong><strong>段 </strong></td>
+    <td width="441" valign="top"><p align="center"><strong>说  </strong><strong>明 </strong></p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Device-ID</p></td>
+    <td width="441" valign="top"><p>设备唯一ID号。每台设备不一样。设备自己生成的。在设置时需要用到。</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Device-Name</p></td>
+    <td width="441" valign="top"><p>设备名称</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>IP</p></td>
+    <td width="441" valign="top"><p>设备的IP地址。</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>MASK</p></td>
+    <td width="441" valign="top"><p>设备的子网掩码。</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>MAC</p></td>
+    <td width="441" valign="top"><p>设备的MAC地址。</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Gateway</p></td>
+    <td width="441" valign="top"><p>网关</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Http-Port</p></td>
+    <td width="441" valign="top"><p>端口号</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Software-Version</p></td>
+    <td width="441" valign="top"><p>设备软件版本号</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Dhcp</p></td>
+    <td width="441" valign="top"><p>动态IP，0为指定IP，1为自动获取IP.</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Ddns</p></td>
+    <td width="441" valign="top"><p>动态DNS标志，0为手动设置DNS，1为动态获取DNS。</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Fdns</p></td>
+    <td width="441" valign="top"><p>首选DNS</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>Sdns</p></td>
+    <td width="441" valign="top"><p>备用DNS</p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>DDNS-Enable</p></td>
+    <td width="441" valign="top"><p>启动厂商动态域名，y为启动，n为关闭。 </p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>DDNS-User</p></td>
+    <td width="441" valign="top"><p>用户名 </p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>DDNS-Passwd</p></td>
+    <td width="441" valign="top"><p>密码 </p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>DDNS-Host</p></td>
+    <td width="441" valign="top"><p>服务器地址 </p></td>
+  </tr>
+  <tr>
+    <td width="127" valign="top"><p>DDNS-Port</p></td>
+    <td width="441" valign="top"><p>服务器端口号 </p></td>
+  </tr>
+</table>
+<p>­­<br />
+  2. 设置网络参数<br />
+  发送内容如下：<br />
+  CMD * HDS/1.0<br />
+  CSeq:2<br />
+  Client-ID:dNAgrwFVXSsAGHeOSZVJXTzkSkPotYOB<br />
+  Accept-Type:text/HDP<br />
+  Authorization:Basic admin:admin<br />
+  Device-ID:PDhAKgKRUawLAosfozCCSHMrhqrfMgtV<br />
+  Content-Length:102</p>
+<p>netconf set -ipaddr  192.168.1.7 -netmask 255.255.255.0 -gateway 192.168.1.1 -dhcp off -fdnsip  192.168.1.2 -sdnsip 211.23.12.13 -dnsstat 0 -hwaddr 00:01:89:11:11:07.</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="211" valign="top"><br />
+      <strong>字段 </strong></td>
+    <td width="357" valign="top"><p align="center"><strong>说明 </strong></p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>Authorization:Basic admin:admin</p></td>
+    <td width="357" valign="top"><p>&ldquo;:&rdquo;前的admin为用户名，后的admin为密码</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>Content-Length</p></td>
+    <td width="357" valign="top"><p>内容的字符数。</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-ipaddr</p></td>
+    <td width="357" valign="top"><p>网络摄像机IP地址</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-netmask</p></td>
+    <td width="357" valign="top"><p>子网掩码</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-gateway</p></td>
+    <td width="357" valign="top"><p>网关</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-dhcp</p></td>
+    <td width="357" valign="top"><p>动态IP获取，off 静态指定IP，on 动态分配IP</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-fdnsip</p></td>
+    <td width="357" valign="top"><p>首选DNS</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>- sdnsip</p></td>
+    <td width="357" valign="top"><p>备用DNS</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-dnsstat</p></td>
+    <td width="357" valign="top"><p>DNS获取方式，0 指定DNS, 1 自动获取DNS</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-hwaddr</p></td>
+    <td width="357" valign="top"><p>MAC地址</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>设备回复信息如下：<br />
+  MCTP/1.0 200 OK<br />
+  CSeq:2<br />
+  <a name="OLE_LINK1" id="OLE_LINK1">Client-ID:dNAgrwFVXSsAGHeOSZVJXTzkSkPotYOB</a><br />
+  Device-ID:PDhAKgKRUawLAosfozCCSHMrhqrfMgtV</p>
+<p>Content-Type:text/HDP<br />
+  Content-Length:83</p>
+<p>Segment-Num:1<br />
+  Segment-Seq:1<br />
+  Data-Length:35</p>
+<p>[Success]set  net information OK!</p>
+<p>用户名密码错误回复信息如下：<br />
+  HDS/1.0 401 Unauthorized<br />
+  CSeq:3<br />
+  Client-ID:dNAgrwFVXSsAGHeOSZVJXTzkSkPotYOB<br />
+  Device-ID:PDhAKgKRUawLAosfozCCSHMrhqrfMgtV</p>
+<p>&nbsp;</p>
+<p>200 OK和net information OK代表设置成功。否则，设置失败。<br />
+  设置MAC地址要重新启动设备才会生效。</p>
+<p>&nbsp;</p>
+<ol>
+  <li>设置端口号</li>
+</ol>
+<p>发送内容如下：<br />
+  CMD * HDS/1.0<br />
+  CSeq:3<br />
+  Client-ID:pWtfObcNpgISvBrGUfwqitVhUjWCJCbU<br />
+  Accept-Type:text/HDP<br />
+  Authorization:Basic admin:admin<br />
+  Device-ID:TFLoSreSpZhDLLgNKTtYlJugtrWNQmWq<br />
+  Content-Length:28</p>
+<p>httpport set -httpport  8000.</p>
+<table border="1" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="211" valign="top"><br />
+      <strong>字段 </strong></td>
+    <td width="357" valign="top"><p align="center"><strong>说明 </strong></p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>Authorization:Basic admin:admin</p></td>
+    <td width="357" valign="top"><p>&ldquo;:&rdquo;前的admin为用户名，后的admin为密码</p></td>
+  </tr>
+  <tr>
+    <td width="211" valign="top"><p>-httpport</p></td>
+    <td width="357" valign="top"><p>网络摄像机端口，网络摄像机修改端口后会自动重新启动。最大65536</p></td>
+  </tr>
+</table>
+<p>回复信息 <br />
+  MCTP/1.0 200 OK<br />
+  CSeq:3<br />
+  Client-ID:xfNCfsSuTxkTqBQPPFQAEeoSDWtHlThx<br />
+  Device-ID:(..<br />
+  Content-Type:text/HDP<br />
+  Content-Length:71</p>
+<p>Segment-Num:1<br />
+  Segment-Seq:1<br />
+  Data-Length:23</p>
+<p>[Success] set port ! </p>
+</body>
+</html>
