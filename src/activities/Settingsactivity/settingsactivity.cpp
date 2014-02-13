@@ -58,13 +58,11 @@ void settingsActivity::Active( QWebFrame * frame)
 	m_MainView = (frame->page())->view();
 	m_MainView->setMouseTracking(true);
 	QWFW_MSGMAP_BEGIN(frame);
-	QWFW_MSGMAP("top_act","dblclick","OnTopActDbClick()");
+	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
 	QWFW_MSGMAP("top_act","mousedown","OnMouseDown()");
 	QWFW_MSGMAP("top_act","mouseup","OnMouseUp()");
 	QWFW_MSGMAP("top_act","mousemove","OnMouseMove()");
-	//QWFW_MSGMAP("max","click","OnMaxClick()");
-	//QWFW_MSGMAP("min","click","OnMinClick()");
-	//QWFW_MSGMAP("close","click","OnCloseClick()");
+
 
 	QWFW_MSGMAP("app_maxsize","click","OnMaxClick()");
 	QWFW_MSGMAP("app_minsize","click","OnMinClick()");
@@ -1317,7 +1315,7 @@ void settingsActivity::OnAddChannelInGroup()
 
 	QVariant Group_id_ID=QueryValue("group_id_ID");
 	QVariant Channel_id_ID=QueryValue("channel_id_ID");
-	QVariant R_Chl_Group_Name_ID=QueryValue("r_chl_group_name_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("channel_name_ID");
 
 
 	nRet_id=IGroup->AddChannelInGroup(Group_id_ID.toInt(),Channel_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
@@ -1433,7 +1431,7 @@ void settingsActivity::OnModifyGroupChannelName()
 	}
 
 	QVariant R_Chl_Group_id_ID=QueryValue("r_chl_group_id_ID");
-	QVariant R_Chl_Group_Name_ID=QueryValue("r_chl_group_name_ID");
+	QVariant R_Chl_Group_Name_ID=QueryValue("channel_name_ID");
 
 	int nRet=-1;
 
