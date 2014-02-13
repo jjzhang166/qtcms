@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>包含文件<br />
+  #include&lt;IDeviceSearch.h&gt;</p>
+<p>函数定义<br />
+  virtual int Start() = 0;<br />
+  开启搜索设备，搜索结构以事件的形式抛出。<br />
+  返回值_enErrorCode 代码<br />
+  OK：进行检索。E_SYSTEM_FAILED：检索失败</p>
+<p> virtual int Stop() = 0;<br />
+  停止搜索设备。<br />
+  返回值_enErrorCode 代码<br />
+  OK：停止检索。E_SYSTEM_FAILED：停止失败</p>
+<p> virtual int Flush() = 0;<br />
+  重新搜索设备。<br />
+  返回值_enErrorCode 代码<br />
+  OK：调用成功。E_SYSTEM_FAILED：调用失败。</p>
+<p> virtual int setInterval(int nInterval) = 0;<br />
+  设置检索每次发送检索请求的间隔<br />
+  返回值_enErrorCode 代码<br />
+  OK：设置成功。E_INVALID_PARAM：参数错误。E_SYSTEM_FAILED：设置失败</p>
+<p> virtual IEventRegister * QueryEventRegister() = 0;</p>
+<p> enum _enErrorCode{<br />
+  OK,<br />
+  E_INVALID_PARAM,<br />
+  E_SYSTEM_FAILED,<br />
+  };</p>
+<p>备注：以上的Start（）和Stop两个接口为非阻塞实现，获取搜索的结构以注册事件来得到</p>
+<p>事件：<br />
+  @1<br />
+  事件名：SearchDeviceSuccess<br />
+  事件参数：<br />
+  SearchDeviceName_ID：设备名称<br />
+  SearchDeviceId_ID：设备id <br />
+  SearchDeviceModelId_ID <br />
+  SearchSeeId_ID：设备易视网id <br />
+  SearchChannelCount_ID：设备通道数 <br />
+  SearchIP_ID：设备ip地址 <br />
+  SearchMac_ID：设备mac <br />
+  SearchGateway_ID：设备网关 <br />
+  SearchHttpport_ID：设备端口 <br />
+  SearchMediaPort_ID <br />
+  SearchVendor_ID：设备厂商<br />
+  SearchMask_ID：</p>
+</body>
+</html>
