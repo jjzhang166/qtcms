@@ -1078,7 +1078,7 @@ int QCommonPlugin::AddDevice(int area_id,
 		_query.prepare("insert into chl(dev_id,channel_number,name,stream_id) values(:dev_id,:channel_number,:name,:stream_id)");
 		_query.bindValue(":dev_id",dev_id);
 		_query.bindValue(":channel_number",nChl);
-		QString chlname=QString("chl_%1").arg(nChl);
+		QString chlname=QString("chl_%1").arg(nChl+1);
 		_query.bindValue(":name",chlname);
 		_query.bindValue(":stream_id",0);
 		_query.exec();
