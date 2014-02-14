@@ -65,5 +65,9 @@ interface ILocalPlayer:IPComBase
 	//0：调用成功
 	//1：调用失败
 	virtual int GroupSpeedNormal() = 0;
+	//获取当前播放时间
+	//返回值：
+	//当前播放的时间
+	virtual QDateTime GetNowPlayedTime()=0;
 };
 #endif
