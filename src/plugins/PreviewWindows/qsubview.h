@@ -24,6 +24,7 @@
 
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
+int cbForRecord(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
@@ -106,6 +107,7 @@ private:
 
 public:
 	int PrevPlay(QVariantMap evMap);
+	int ForRecord(QVariantMap evMap);
 	int PrevRender(QVariantMap evMap);
 	int CurrentStateChange(QVariantMap evMap);
 

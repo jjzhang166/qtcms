@@ -263,6 +263,11 @@ int QSubView::cbInit()
 	evName.clear();
 	evName.append("CurrentStatus");
 	pRegist->registerEvent(evName,cbStateChange,this);
+
+	evName.clear();
+	evName.append("ForRecord");
+	pRegist->registerEvent(evName,cbForRecord,this);
+
 	pRegist->Release();
 	pRegist=NULL;
 	//注册解码回调函数
@@ -298,10 +303,10 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	unsigned int nLength=evMap.value("length").toUInt();
 	char * lpdata=(char *)evMap.value("data").toUInt();
 
-	if (NULL != m_pRecorder)
-	{
-		m_pRecorder->InputFrame(evMap);
-	}
+	//if (NULL != m_pRecorder)
+	//{
+	//	m_pRecorder->InputFrame(evMap);
+	//}
 
 	if (NULL==m_IVideoDecoder)
 	{
@@ -399,7 +404,18 @@ int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 	else
 		return 1;
 }
+int cbForRecord(QString evName,QVariantMap evMap,void*pUser)
+{
+	//检测数据包，把数据包扔给解码器
 
+	if (evName=="ForRecord")
+	{
+		((QSubView*)pUser)->ForRecord(evMap);
+		return 0;
+	}
+	else
+		return 1;
+}
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 {
 	if (evName=="DecodedFrame")
@@ -519,4 +535,13 @@ void QSubView::OnCheckTime()
 			recording = false;
 		}
 	}
+}
+
+int QSubView::ForRecord( QVariantMap evMap )
+{
+	if (NULL != m_pRecorder)
+	{
+		m_pRecorder->InputFrame(evMap);
+	}
+	return 0;
 }
