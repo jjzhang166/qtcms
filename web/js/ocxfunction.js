@@ -208,7 +208,7 @@ var oCommonLibrary;
 		for(i in chlList){
 			var chlNum = '';//oCommonLibrary.GetChannelNumber(chlList[i]);
 			var num =parseInt(i)+1;
-			var name = 'chl_'+i;
+			var name = 'chl_'+num;
 			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
 			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
 			addchl.find('span.channel').data('data',chldata);

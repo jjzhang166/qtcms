@@ -260,6 +260,35 @@ var oSearchOcx;
 		$('#AddChannelInGroupDouble_ok').click(function(){ 
 			SetChannelIntoGroupData();
 		});
+
+		//record setting  回放设置;
+		$('div.dev_list:eq(3)').on('click','span.channel',function(){
+			SettingRecordDoubleTimeParmSuccess();
+			$('ul.week.option li').removeData();
+			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
+			$(this).addClass('sel');
+			var chlData = $(this).data('data');
+			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id);
+			for(var i in sTimeID){
+				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]);
+				$('#week').attr('chl',chlData.channel_id);
+				for(var j in weeks){
+					if(j == sTimeIDdata.weekday){
+						$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
+					}
+				}
+			}
+			initChannlrecTime($('ul.week.option li:eq(0)'));
+			$('#week').html('星期一');
+		})
+		$('ul.week.option li').each(function(index){
+			$(this).on('click',function(){
+				initChannlrecTime($(this));
+			})
+		})
+
+		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
+		$('#RecordTime').on('click','input:checkbox',initRecrodxml);
 		/*控件触发事件调用的元素事件绑定.*/
 		
 
@@ -305,33 +334,6 @@ var oSearchOcx;
 				$('#week').html($(this).html());
 			})
 		})*/
-		$('div.dev_list:eq(3) span.channel').click(function(){
-			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
-			$(this).addClass('sel');
-			var chlData = $(this).data('data');
-			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id);
-
-			for(var i in sTimeID){
-				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]);
-				$('#week').attr('chl',chlData.channel_id);
-				for(var j in weeks){
-					if(j == sTimeIDdata.weekday){
-						$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
-					}
-				}
-			}
-			initChannlrecTime($('ul.week.option li:eq(0)'));
-			$('#week').html('星期一');
-		})
-		$('ul.week.option li').each(function(index){
-			$(this).on('click',function(){
-				initChannlrecTime($(this));
-			})
-		})
-
-		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
-		$('#RecordTime').on('click','input:checkbox',initRecrodxml);
-
 	}
 	function initChannlrecTime(obj){
 		var oTimes=$('#recordtime tr:lt(5)');
@@ -351,7 +353,7 @@ var oSearchOcx;
 			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
 		}
 		str +='</recordtime>';
-		$('#recordtimedouble_ID').val('').val(str);
+		$('#recordtimedouble_ID').val(str);
 	}
 	function initRecrodxml(){
 		var str = '<recordtime num="4">';
@@ -366,7 +368,7 @@ var oSearchOcx;
 			}
 		})
 		str +='</recordtime>';
-		$('#recordtimedouble_ID').val('').val(str);
+		$('#recordtimedouble_ID').val(str);
 	}
 	function getrecrodxml(){ 
 		alert($('#recordtimedouble_ID').val());
@@ -611,9 +613,9 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
 	if(pObj.attr('id')=='g_channel_'+data.channel_id){
 		pObjType = 'GroupChannelName';
-		obox.find('input:text').attr('id','r_chl_group_name_ID');
+		/*obox.find('input:text').attr('id','r_chl_group_name_ID');
 	}else if(pObj.attr('id')=='channel_'+data.channel_id){ 
-		obox.find('input:text').attr('id','channel_name_ID');
+		obox.find('input:text').attr('id','channel_name_ID');*/
 	}
 	$('#'+action+pObjType+'_ok').show();
 	/*if(pObj.parent('li').parent('ul').prev('span').hasClass('group')){ 
