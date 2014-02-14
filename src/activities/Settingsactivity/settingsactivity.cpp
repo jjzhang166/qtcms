@@ -1436,7 +1436,7 @@ void settingsActivity::OnModifyGroupChannelName()
 	int nRet=-1;
 
 	nRet=IGroup->ModifyGroupChannelName(R_Chl_Group_id_ID.toInt(),R_Chl_Group_Name_ID.toString());
-	if(-1==nRet){
+	if(0!=nRet){
 		arg.clear();
 		Content.clear();
 		Content.append("ModifyGroupChannelName fail");

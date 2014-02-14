@@ -531,6 +531,24 @@ int QCommonPlugin:: ModifyGroupChannelName(int rgc_id,QString sName)
 	Group_lock.lock();
 	if(IsR_Channel_GroupExist(rgc_id)){
 		QSqlQuery _query(m_db);
+
+		QString command_all=QString("select *from r_chl_group");
+		_query.exec(command_all);
+		if (_query.isActive())
+		{
+			int index_rgc_id=_query.record().indexOf("id");
+			int index_name_id=_query.record().indexOf("name");
+			while(_query.next()){
+				int rgc_f_id=_query.value(index_rgc_id).toInt();
+				QString rgc_name_id=_query.value(index_name_id).toString();
+				if (sName==rgc_name_id&&rgc_id!=rgc_f_id)
+				{
+					Group_lock.unlock();
+					return IGroupManager::E_SYSTEM_FAILED;
+				}
+			}
+		}
+
 		QString command = QString("update r_chl_group set name='%1' where id=%2").arg(sName).arg(rgc_id);
 		_query.exec(command);
 		if(_query.isActive()){

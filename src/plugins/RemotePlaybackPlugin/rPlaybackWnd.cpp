@@ -378,6 +378,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
+	qDebug()<<evMap;
 	EventProcCall("recFileSearchFinished",evMap);
 }
 

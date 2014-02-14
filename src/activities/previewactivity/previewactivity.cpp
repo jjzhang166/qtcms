@@ -64,8 +64,6 @@ void previewactivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("app_close_window","click","OnCloseWindow()");
 	QWFW_MSGMAP("app_maxsize","click","OnMaxsizeWindow()");
 	QWFW_MSGMAP("app_minsize","click","OnMinsizeWindow()");
-	QWFW_MSGMAP("app_hide","click","OnHide()");
-	QWFW_MSGMAP("app_show","click","OnShow()");
 	QWFW_MSGMAP_END;
 }
 
