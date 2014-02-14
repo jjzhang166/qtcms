@@ -17,7 +17,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord";
 
 	DeviceClientInfoItem devcliInfo;
 
@@ -920,6 +920,7 @@ int DeviceClient::cbRecFileSearchFinished( QVariantMap &evmap )
 int DeviceClient::cbLiveStream( QVariantMap &evmap )
 {
 	eventProcCall("LiveStream",evmap);
+	eventProcCall("ForRecord",evmap);
 	return 0;
 }
 
