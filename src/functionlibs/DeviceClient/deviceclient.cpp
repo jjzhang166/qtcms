@@ -677,7 +677,7 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 QDateTime DeviceClient::GroupGetPlayedTime()
 {
 	QDateTime time;
-	QTime secTime;
+	QTime secTime(0,0,0);
 
 	if (m_groupMap.isEmpty())
 	{
@@ -694,9 +694,7 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 
 	int seconds = 0;
 	seconds = it->playManager->getPlayTime();
-
-	time.setTime(secTime.addSecs(seconds));
-
+	time=QDateTime::fromTime_t(seconds+57600);
 	return time;
 }
 int DeviceClient::GroupPause()
