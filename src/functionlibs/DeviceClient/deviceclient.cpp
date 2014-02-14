@@ -601,7 +601,7 @@ bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 
 int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
 {
-	if (nChannel < 0 || nChannel > 31 || nTypes < 0 || nTypes > 15 || startTime >= endTime)
+	if (nChannel < 0 || nTypes < 0 || nTypes > 15 || startTime >= endTime)
 	{
 		return 2;
 	}
