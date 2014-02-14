@@ -35,7 +35,7 @@ public slots:
     void setUserVerifyInfo(const QString & sUsername,const QString & sPassword);
 
 	int startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime);
-    QString getGroupPlayedTime();
+    QString GetNowPlayedTime();
 
     int   GroupPlay(int nTypes,const QString & start,const QString & end);
     int   GroupPause();

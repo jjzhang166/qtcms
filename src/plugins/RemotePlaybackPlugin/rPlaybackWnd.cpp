@@ -211,7 +211,7 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 //	return nRet = 0;
 //}
 
- QString RPlaybackWnd::getGroupPlayedTime()
+ QString RPlaybackWnd::GetNowPlayedTime()
  {
      if (NULL != m_GroupPlayback )
      {
