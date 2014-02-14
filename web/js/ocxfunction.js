@@ -222,7 +222,7 @@ var oCommonLibrary;
 		if($('#g_channel_'+data.chlid)[0]){
 			return false;
 		}
-			var g_channel_name = $('#dev_'+$('#channel_'+data.chlid).data('data').dev_id).data('data').device_name+'_chl_'+$('#channel_'+data.chlid).data('data').channel_number;
+			var g_channel_name = $('#dev_'+$('#channel_'+data.chlid).data('data').dev_id).data('data').device_name+'_chl_'+(parseInt($('#channel_'+data.chlid).data('data').channel_number)+1);
 			var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true)
 			    .find('span.channel')
 			    .attr('id','g_channel_'+data.chlid)

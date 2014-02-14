@@ -426,7 +426,7 @@ var oSearchOcx;
 			var data = $(this).data('data')
 			for(i in data){ 
 				if(i == 'channel_name'){
-					sChl+='channel_name_ID="'+$('#dev_'+data.dev_id).data('data').eseeid+'_chl_'+data.channel_number+'" ';	
+					sChl+='channel_name_ID="'+$('#dev_'+data.dev_id).data('data').eseeid+'_chl_'+(parseInt(data.channel_number)+1)+'" ';	
 				}else{
 					sChl+=i+'_ID="'+data[i]+'" ';
 				}
