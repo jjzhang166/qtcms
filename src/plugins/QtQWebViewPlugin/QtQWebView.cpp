@@ -73,13 +73,13 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	//跳转到主页
 	if ("index"==SrcAct)
 	{
+		//显示主页
+		QWidget *pa=this->parentWidget();
+		((QWebView*)pa)->show();
 		QList<tagViewPage>::const_iterator it;
 		for(it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it){
 			it->m_SubWebView->hide();
 		}
-		//显示主页
-		QWidget *pa=this->parentWidget();
-		((QWebView*)pa)->show();
 		OnRefressMessage();
 		return;
 	}
