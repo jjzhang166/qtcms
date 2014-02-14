@@ -41,7 +41,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
  		//打开通道
 		$('div.dev_list span.channel').each(function(){ 
 			$(this).click(function(){
-				show($(this).data('data'));
+				//show($(this).data('data'));
 				var chlData = getChlFullInfo($(this));
 				if($(this).attr('state')){
 					CloseWind($(this).attr('wind'),chlData.dev_id);
@@ -133,18 +133,19 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	}
 
 	function openWind(wind,data){
-		show(data);
-		return false;
-		var windState = oPreView.GetWindowConnectionStatus(wind)
+		//show(data);
+		//return false;
+		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
 			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+wind+',打开失败！  错误:当前窗口'+wind+' '+winState[windState];
 			writeActionLog(str);
 			return false;
 		}
 		
-		$('#channel_'+data.channel_id).attr('wind',wind);
+		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
-		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);	
+		try{oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);}
+		catch(e){}
 	}
 
 	function WindCallback(ev){ 

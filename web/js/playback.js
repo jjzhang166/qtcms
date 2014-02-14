@@ -34,31 +34,45 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		})
 
 		var oSelected = [];
-		$('div.dev_list span.device').click(function(){
+		/*$('div.dev_list').on('click','span.device',function(){
 			$('div.dev_list span.device').removeClass('sel');
-			$(this).addClass('sel');
-			
-			oSelected = [];
-
-			var oVideoList = $("#channelvideo")
-			oVideoList.find('tr:gt(3)').remove()
-					  .end().find('input:checkbox').prop('disabled',false);
-			var count = oDevData['channel_count']
-			if(count<4){
-				oVideoList.find('input:checkbox:gt('+(count-1)+')').prop({disabled:true,checked:false});
-			}else{ 
-				oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
+			$(this).toggleClass('sel');
+			if($(this).parent('li').hasClass('sel')){ 
+				$(this).parent('li').find('li').addClass('sel');
+			}else{
+				$(this).parent('li').find('li').removeClass('sel');
 			}
-			for(var i=5; i<=count;i++){
-				var num = addZero(i);
-				$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+		})*/
+		$('div.dev_list span.device').on({
+			click:function(){
+				$('div.dev_list span.device').removeClass('sel');
+				$(this).addClass('sel');
+				
+				oSelected = [];
+
+				var oVideoList = $("#channelvideo")
+				oVideoList.find('tr:gt(3)').remove()
+						  .end().find('input:checkbox').prop('disabled',false);
+				var count = $(this).data('data').channel_count;
+				if(count<4){
+					oVideoList.find('input:checkbox:gt('+(count-1)+')').prop({disabled:true,checked:false});
+				}else{ 
+					oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
+				}
+				for(var i=5; i<=count;i++){
+					var num = addZero(i);
+					$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+				}
+
+				setTables();
+
+				$("#channelvideo input:checkbox:checked").each(function(){
+					oSelected.push($(this));
+				});
+			},
+			dblclick:function(){
+				searchVideo();
 			}
-
-			setTables();
-
-			$("#channelvideo input:checkbox:checked").each(function(){
-				oSelected.push($(this));
-			});
 		})
 
 		$("#channelvideo").on('click','input:checkbox',function(event){ 
@@ -87,10 +101,10 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				//event.stopPropagation();
 				$('div.play_time').css('left',left-2);
 				set_drag(0,79,$('#channelvideo').width());
-			}/*,
-			mouseup:function(event){ 
+			},
+			dblclick:function(event){ 
 				playVideo(event.pageX);
-			}*/
+			}
 		})
 		
 		$(window).resize(function(){
@@ -112,16 +126,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			$(this).click(function(){
 				$('#type span').attr('type',index);
 			})
-		})
-
-		$('div.dev_list').on('click','span.device',function(){
-			$('div.dev_list span.device').removeClass('sel');
-			$(this).toggleClass('sel');
-			/*if($(this).parent('li').hasClass('sel')){ 
-				$(this).parent('li').find('li').addClass('sel');
-			}else{
-				$(this).parent('li').find('li').removeClass('sel');
-			}*/
 		})
 		
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
@@ -158,7 +162,9 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 				}
 			});
 			oPlaybackLocl.GroupPlay();
-		}	
+		}
+		var speed = 1000;
+		//speed = up == 1 ? speed*down:speed/up;
 		dragStartMove();
 	}
 	function getDragSart(){
@@ -182,9 +188,13 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		if(str == 'GroupSpeedFast' || str == 'GroupSpeedSlow'){
 			var show ='';
 			if(obj.id == 'playback'){
-				if(str == 'GroupSpeedFast'){ 
+				if(str == 'GroupSpeedFast'){
+					down = 1;
+					up = 2;
 					show = '2x';
 				}else{ 
+					down = 2;
+					up = 1;
 					show = '1/2x';
 				}		
 				obj[str]();
@@ -195,7 +205,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 					up *= 2;
 					up = up > 8 ? 8:up;
 					speed = up;
-				}else{ 
+				}else{
 					up = 1;
 					down *= 2;
 					down = down > 8 ? 8:down;
@@ -208,12 +218,14 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			palybackspeed(show);
 		}else{ 
 			if(str == 'GroupSpeedNormal'){
+				up = 1;
+				down=1;
 				palybackspeed('1x');
 			}
 			obj[str]();
 		}
 	}
-	function palybackspeed(str){ 
+	function palybackspeed(str){
 		$('#palybackspeed').html('').html(str);
 	}
 
@@ -264,18 +276,23 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		var b = parseInt(b.replace(reg,'$1'));
 		return a - b;
 	}
-	function dragStartMove(){ 
+	function dragStartMove(){
+		var oPlay = $('#nowSearchType li.switchlistAct').attr('now') ? oPlayBack : oPlaybackLocl;
 		var oDrag=$('div.play_time');
-		var initleft = parseInt(oDrag.offset().left);
-		var p = ($('#channelvideo').width()-80)/(3600*24);
+		//var initleft = parseInt(oDrag.offset().left);
+		//var p = ($('#channelvideo').width()-80)/(3600*24);
 		var max = $('#channelvideo').width();
 		drag_timer = setInterval(function(){
-			var left = initleft+=p;
-			if(left >= max){ 
-				left=max;
-				dragStopMove()
+			
+			try{show('now:'+oPlay.GetNowPlayedTime());}catch(e){
+				alert(e);
 			}
-			oDrag.css('left',left);
+		
+			/*if(left >= max){ 
+				left=max;
+				dragStopMove();
+			}
+			oDrag.css('left',left);*/
 		},1000);
 	}
 	function dragStopMove(){

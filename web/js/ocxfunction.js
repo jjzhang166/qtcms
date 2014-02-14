@@ -170,9 +170,13 @@ var oCommonLibrary;
 		}
 		adddev(dataIndex);	
 	}
-	function ModifyGroupChannelName(data){
-		alert(data);
-		show(data);
+	function ModifyGroupChannelNameSuccess(data){
+		var id= $('#channel_id_ID').val();
+		var oChannel=$('#g_channel_'+id)
+		var name =$('#channel_name_ID').val();
+		oChannel.html(name);
+		oChannel.data('data')['channel_name'] = name;
+		closeMenu();
 	}
 	function ModifyDeviceSuccess(){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
@@ -334,6 +338,7 @@ var oCommonLibrary;
 			var chldata2 = oCommonLibrary.GetChannelInfo(data['channel_id']);
 			data['channel_number'] = chldata2['number']
 			data['stream_id'] = chldata2['stream'];
+			data['dev_id'] = chldata2['dev_id'];
 			data['channel_name'] = chldata['name'];
 			data['group_id'] = chldata['group_id']
 			data['r_chl_group_name'] = ['name'];
@@ -484,7 +489,6 @@ function setDevData2ocx(bool){
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
-			
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}
