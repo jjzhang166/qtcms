@@ -39,6 +39,7 @@ public:
 	virtual int GroupSpeedFast(int speed);
 	virtual int GroupSpeedSlow(int speed);
 	virtual int GroupSpeedNormal();
+	virtual QDateTime GetNowPlayedTime();
 
 	//IEventRegister
 	virtual QStringList eventList();

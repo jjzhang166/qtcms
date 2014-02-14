@@ -591,3 +591,9 @@ void LocalPlayer::eventProcCall( QString sEvent,QVariantMap param )
 		}
 	}
 }
+
+QDateTime LocalPlayer::GetNowPlayedTime()
+{
+	QDateTime m;
+	return m;
+}
