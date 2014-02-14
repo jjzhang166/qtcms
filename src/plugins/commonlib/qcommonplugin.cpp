@@ -1714,6 +1714,7 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 	chl_info.insert("name"  , "");
 	chl_info.insert("stream", 0);
 	chl_info.insert("number", 0);
+	chl_info.insert("dev_id",0);
 
 	// check if channel exists
 	if (!IsChannelExists(chl_id))
@@ -1723,7 +1724,7 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 
 	QSqlQuery _query(m_db);
 
-	QString command = QString("select name,stream_id,channel_number from chl where id='%1'").arg(chl_id);
+	QString command = QString("select name,stream_id,channel_number,dev_id from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
 
 	if (_query.next())
@@ -1731,6 +1732,7 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 		chl_info.insert("name"    ,_query.value(0).toString());
 		chl_info.insert("stream"  ,_query.value(1).toInt());
 		chl_info.insert("number"  ,_query.value(2).toInt());
+		chl_info.insert("dev_id"  ,_query.value(3).toInt());
 	}
 
 	return chl_info;
