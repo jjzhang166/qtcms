@@ -358,6 +358,20 @@ int RecordPlayer::GroupSpeedNormal()
 	return 0;
 }
 
+QString RecordPlayer::GetNowPlayedTime()
+{
+	QString playedTime = "";
+	if (NULL == m_pLocalPlayer)
+	{
+		return playedTime;
+	}
+
+	QDateTime ptime = m_pLocalPlayer->GetNowPlayedTime();
+	playedTime = ptime.toString("yyyy-MM-dd hh:mm:ss");
+
+	return playedTime;
+}
+
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser)
 {
 	RecordPlayer *pRecordPlayer = (RecordPlayer*)pUser;

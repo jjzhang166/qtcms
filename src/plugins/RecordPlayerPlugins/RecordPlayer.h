@@ -50,6 +50,7 @@ public slots:
 	int GroupSpeedFast(int speed);
 	int GroupSpeedSlow(int speed);
 	int GroupSpeedNormal();
+	QString GetNowPlayedTime();
 
 
 private slots:
