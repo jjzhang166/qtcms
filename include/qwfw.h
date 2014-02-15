@@ -56,7 +56,6 @@ protected:
 { \
 	m_MainFrame = x; \
 	m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this); \
-	qDebug("Insert qob"); \
 	connect(m_MainFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(OnJavaScriptWindowObjectCleared())); \
 }
 
@@ -70,7 +69,7 @@ protected:
 #define QWFW_MSGRESET	{m_MainFrame->addToJavaScriptWindowObject(QString("qob"),this);}
 
 class QWebUiFWBase : public QObject
-	{
+{
 	Q_OBJECT
 public:
 	QVariant QueryValue(QString sElementId){
@@ -86,7 +85,7 @@ public slots:
 	void AttachEvent(QString sEvent,QString sProc){
 		m_mapEventProc.insertMulti(sEvent,sProc);
 		/*m_mapEventProc.insert(sEvent,sProc);*/
-		qDebug("Call AttachEvent %s %s",sEvent.toAscii().data(),sProc.toAscii().data() );
+		
 	};
 protected:
 	void EventProcCall(QString sEvent,QVariantMap eventParam){
