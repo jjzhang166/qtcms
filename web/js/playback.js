@@ -163,8 +163,6 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			});
 			oPlaybackLocl.GroupPlay();
 		}
-		var speed = 1000;
-		//speed = up == 1 ? speed*down:speed/up;
 		dragStartMove();
 	}
 	function getDragSart(){
@@ -224,8 +222,10 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			}
 			obj[str]();
 		}
+		dragStartMove();
 	}
 	function palybackspeed(str){
+		dragStartMove();
 		$('#palybackspeed').html('').html(str);
 	}
 
@@ -277,23 +277,24 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		return a - b;
 	}
 	function dragStartMove(){
+		var SynTimeUnits = up == 1 ? 1000*down:1000/up;
 		var oPlay = $('#nowSearchType li.switchlistAct').attr('now') ? oPlayBack : oPlaybackLocl;
 		var oDrag=$('div.play_time');
-		//var initleft = parseInt(oDrag.offset().left);
-		//var p = ($('#channelvideo').width()-80)/(3600*24);
-		var max = $('#channelvideo').width();
+		var initleft = parseInt(oDrag.offset().left);
+		var p = ($('#channelvideo').width()-80)/(3600*24);
+		var max = $('#channelvideo').width()-2;
 		drag_timer = setInterval(function(){
-			
-			try{show('now:'+oPlay.GetNowPlayedTime());}catch(e){
+			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()) == 0 ? 1 : parseInt(oPlay.GetNowPlayedTime())
+			var left = initleft+p*nowPlayd;
+			try{show('初始左边距:'+initleft+'像素//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');}catch(e){
 				alert(e);
 			}
-		
-			/*if(left >= max){ 
+			if(left >= max){ 
 				left=max;
 				dragStopMove();
 			}
-			oDrag.css('left',left);*/
-		},1000);
+			oDrag.css('left',left);
+		},SynTimeUnits);
 	}
 	function dragStopMove(){
 		clearInterval(drag_timer);
