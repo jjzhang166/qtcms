@@ -5,6 +5,7 @@
 #include "IVideoRender.h"
 #include <QVariantMap>
 #include <QDateTime>
+#include <QTime>
 #include <QMutex>
 #include <QWaitCondition>
 
@@ -25,6 +26,8 @@ public:
 	void pause(bool isPause);
 	void stop();
 	int prePlay(QVariantMap item);
+	int getPlayTime();
+
 
 private:
 	int initCb();
@@ -37,6 +40,7 @@ private:
 	QWidget* m_pRenderWnd;
 	bool m_bStop;
 	bool m_bPause;
+	bool m_bPlaying;
 	QStringList m_lstfileList;
 	int m_nInitHeight;
 	int m_nInitWidth;
@@ -44,6 +48,7 @@ private:
 	int m_nStartPos;
 	QDateTime m_startTime;
 	QDateTime m_endTime;
+	QTime m_playTime;
 
 	QMutex m_mutex;
 	QWaitCondition m_waitForPlay;

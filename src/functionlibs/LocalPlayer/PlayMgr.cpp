@@ -17,6 +17,7 @@ PlayMgr::PlayMgr(void):
 	m_nInitWidth(0),
 	m_nSpeedRate(0),
 	m_nStartPos(0),
+	m_bPlaying(false),
 	m_bStop(false),
 	m_bPause(false)
 {
@@ -88,8 +89,11 @@ void PlayMgr::run()
 	bool isFirstKeyFrame = false;
 	qint64 timeOffset = 0;
 
+	m_bPlaying = true;
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
 	{
+		m_playTime.start();
+
 		//open file
 		filePath = m_lstfileList[i];
 		rx = QRegExp("([0-9]{4}-[0-9]{2}-[0-9]{2})");
@@ -109,12 +113,6 @@ void PlayMgr::run()
 		time = QTime::fromString(fileName, "hhmmss");
 		fileStartTime.setDate(date);
 		fileStartTime.setTime(time);
-
-		qDebug()<<"================= filePath "<<filePath;
-		qDebug()<<"================= fileDate "<<fileDate<<" fileName "<<fileName;
-		qDebug()<<"================= fileStartTime "<<fileStartTime;
-		qDebug()<<"================= m_startTime "<<m_startTime;
-
 
 		timeOffset = fileStartTime.toMSecsSinceEpoch() - m_startTime.toMSecsSinceEpoch();
 		if (timeOffset > 0)
@@ -210,6 +208,19 @@ void PlayMgr::run()
 	m_bStop = false;
 }
 
+int PlayMgr::getPlayTime()
+{
+	if (!m_bPlaying)
+	{
+		return 0;
+	}
+	else
+	{
+		return m_playTime.elapsed();	
+	}
+
+}
+
 void PlayMgr::setPlaySpeed(int speedRate)
 {
 	m_nSpeedRate = speedRate;
@@ -222,6 +233,7 @@ void PlayMgr::pause(bool isPause)
 
 void PlayMgr::stop()
 {
+	m_bPlaying = false;
 	m_bStop = true;
 	m_waitForPlay.wakeOne();
 

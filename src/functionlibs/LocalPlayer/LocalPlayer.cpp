@@ -5,6 +5,7 @@
 #include <guid.h>
 #include "avilib.h"
 
+
 LocalPlayer::LocalPlayer() :
 m_nRef(0),
 m_nGroupNum(4),
@@ -489,6 +490,34 @@ int LocalPlayer::GroupSpeedNormal()
 	return 0;
 }
 
+QDateTime LocalPlayer::GetNowPlayedTime()
+{
+	QDateTime time;
+	QTime secTime(0, 0, 0);
+
+	if (m_GroupMap.isEmpty())
+	{
+		return time;
+	}
+
+	QMap<QWidget*, PrePlay>::iterator it;
+	it = m_GroupMap.begin();
+
+	if (NULL == it->pPlayMgr)
+	{
+		return time;
+	}
+
+	int mSeconds = 0;
+	mSeconds = it->pPlayMgr->getPlayTime();
+
+	time.setDate(QDate::currentDate());
+	time.setTime(secTime.addMSecs(mSeconds));
+
+	return time;
+}
+
+
 QStringList LocalPlayer::eventList()
 {
 	return m_eventList;
@@ -592,8 +621,3 @@ void LocalPlayer::eventProcCall( QString sEvent,QVariantMap param )
 	}
 }
 
-QDateTime LocalPlayer::GetNowPlayedTime()
-{
-	QDateTime m;
-	return m;
-}
