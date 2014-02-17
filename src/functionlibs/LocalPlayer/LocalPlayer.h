@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtCore/QMutex>
 #include "IEventRegister.h"
+#include <QDebug>
 #include "ILocalRecordSearch.h"
 #include "IDisksSetting.h"
 #include "ILocalPlayer.h"

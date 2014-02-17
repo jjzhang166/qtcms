@@ -510,10 +510,10 @@ QDateTime LocalPlayer::GetNowPlayedTime()
 
 	int mSeconds = 0;
 	mSeconds = it->pPlayMgr->getPlayTime();
-
-	time.setDate(QDate::currentDate());
-	time.setTime(secTime.addMSecs(mSeconds));
-
+	mSeconds=mSeconds/1000;
+	//time.setDate(QDate::currentDate());
+	//time.setTime(secTime.addMSecs(mSeconds));
+	time=QDateTime::fromTime_t(mSeconds);
 	return time;
 }
 
