@@ -95,7 +95,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
 		//日志区域右键从菜单
-		$('#actionLog').mouseup(function(){ 
+		$('#actionLog').mouseup(function(){
 			if(event.which == 3){
 				var l = event.pageX > $(this).width() - 64 ? $(this).width() - 64 : event.pageX;
 				var t = event.pageY - $(this).offset().top 

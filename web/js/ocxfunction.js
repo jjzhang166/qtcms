@@ -1,5 +1,6 @@
 
-var oCommonLibrary;
+var oCommonLibrary,
+	bool = 0;
 	
 	$(function(){ 
 		oCommonLibrary = document.getElementById('commonLibrary');
@@ -359,7 +360,7 @@ var oCommonLibrary;
 		//alert(data);
 	}
 	//搜索远程录像
-function setDevData2ocx(bool){
+function setDevData2ocx(){
 		var b = true;
 		var oDevData = $('div.dev_list span.device.sel').data('data');
 		try{
@@ -370,6 +371,11 @@ function setDevData2ocx(bool){
 		
 		}
 		if(bool){
+			if(oPlaybackLocl.SetSynGroupNum(4)){ 
+				alert('同步组数量设置失败');
+				b = false
+			}
+		}else{
 			oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
@@ -391,22 +397,16 @@ function setDevData2ocx(bool){
 						};
 					}
 				});
-				dragStopMove();
 			}else{
 				try{
 					oPlaybackLocl.GroupStop();
 					oPlaybackLocl.GroupSpeedNormal();
 				}catch(e){}
-					for(var i=0;i<oDevData.channel_count;i++){
-						if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
-							b = false;
-						}
+				for(var i=0;i<oDevData.channel_count;i++){
+					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
+						b = false;
 					}
-			}		
-		}else{
-			if(oPlaybackLocl.SetSynGroupNum(4)){ 
-				alert('同步组数量设置失败');
-				b = false
+				}
 			}
 		}
 		return b;
@@ -417,7 +417,6 @@ function setDevData2ocx(bool){
 			$('div.dev_list span.device:first').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
-		var bool=$('#nowSearchType li.switchlistAct').attr('now') || 1;
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -452,7 +451,7 @@ function setDevData2ocx(bool){
 			}
 		});	
 		}*/
-		ocxsearchVideo(bool);
+		ocxsearchVideo();
 	}
 	var typeHint = [];
 		typeHint[1] = '定时';
@@ -460,8 +459,9 @@ function setDevData2ocx(bool){
 		typeHint[4] = '警告';
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
-	function ocxsearchVideo(bool){
+	function ocxsearchVideo(){
 		try{
+			dragStopMove();
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
 			$('tbody.search_result tr').remove();
@@ -475,24 +475,10 @@ function setDevData2ocx(bool){
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx(bool);
+		setDevData2ocx();
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
-		if(bool == 1){
-			var chl = 0;
-			try{
-				oPlaybackLocl.style.height='0px';
-				oPlayBack.style.height='100%';
-			}catch(e){
-
-			}
-			for (var i=0;i<devData.channel_count;i++){
-				chl += 1 << i;
-			};
-			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
-				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
-			}
-		}else{
+		if(bool){
 			oPlayBack.style.height='0px';
 			oPlaybackLocl.style.height='100%';
 			var chl ='';
@@ -504,5 +490,18 @@ function setDevData2ocx(bool){
 				return false;
 			}
 			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
+		}else{
+			var chl = 0;
+			try{
+				oPlaybackLocl.style.height='0px';
+				oPlayBack.style.height='100%';
+			}catch(e){}
+
+			for (var i=0;i<devData.channel_count;i++){
+				chl += 1 << i;
+			};
+			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
+				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
+			}		
 		}
 	}

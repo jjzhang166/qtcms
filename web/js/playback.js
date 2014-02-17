@@ -110,7 +110,7 @@ var	nViewNum = 0,
 			}
 		})
 		$('div.play_time').on('dblclick',function(event){ 
-			playVideo(event.pageX);
+			playVideo();
 		});
 		
 		$(window).resize(function(){
@@ -133,7 +133,11 @@ var	nViewNum = 0,
 				$('#type span').attr('type',index);
 			})
 		})
-		
+		$('#nowSearchType li').each(function(index){
+			$(this).click(function(){
+				bool = index;
+			})
+		})
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 	})///
@@ -146,17 +150,12 @@ var	nViewNum = 0,
 		}catch(e){
 			//alert('try:'+e);
 		};
-		var bool=$('#nowSearchType li.switchlistAct').attr('now');
 		var begin = getDragSart(),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
 			//show(begin+'//'+end);
-			setDevData2ocx(bool);
-		if(bool == 1){
-			var type = parseInt($('#type span').attr('type')),
-			type = type == 0 ? 15 : 1 << type;
-			oPlayBack.GroupPlay(type,begin,end);
-		}else{
+			setDevData2ocx();
+		if(bool){
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
@@ -168,6 +167,10 @@ var	nViewNum = 0,
 				}
 			});
 			oPlaybackLocl.GroupPlay();
+		}else{
+			var type = parseInt($('#type span').attr('type')),
+			type = type == 0 ? 15 : 1 << type;
+			oPlayBack.GroupPlay(type,begin,end);
 		}
 		dragStartMove();
 	}
@@ -178,17 +181,11 @@ var	nViewNum = 0,
 			date = $("div.calendar span.nowDate").html(),
 			sScond = parseInt(((left-X1)/(X2-1)*24*3600)),
 			begin = date+' '+returnTime(sScond);
-			return begin;
+		return begin;
 	}
 	var up = 1,down=1;
-	function playAction(str){ 
-		var bool=$('#nowSearchType li.switchlistAct').attr('now');
-		var obj = {};  //回放插件对象
-		if(bool){ 
-			obj = oPlayBack;
-		}else{ 
-			obj = oPlaybackLocl;
-		}
+	function playAction(str){
+		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
 		if(str == 'GroupSpeedFast' || str == 'GroupSpeedSlow'){
 			var show ='';
 			if(obj.id == 'playback'){
@@ -230,9 +227,9 @@ var	nViewNum = 0,
 		}
 	}
 	function palybackspeed(str){
-		dragStopMove();
-		dragStartMove();
-		$('#palybackspeed').html('').html(str);
+		/*dragStopMove();
+		dragStartMove();*/
+		$('#palybackspeed').html(str);
 	}
 
 
@@ -284,19 +281,16 @@ var	nViewNum = 0,
 	}
 	function dragStartMove(){
 		var SynTimeUnits = up == 1 ? 1000*down:1000/up;
-		var bool = $('#nowSearchType li.switchlistAct').attr('now');
-		var oPlay = bool == '1' ? oPlayBack : oPlaybackLocl;
+		var oPlay = bool ? oPlaybackLocl : oPlayBack;
 		//return false;
 		var oDrag=$('div.play_time');
 		var initleft = parseInt(oDrag.offset().left);
 		var p = ($('#channelvideo').width()-80)/(3600*24);
 		var max = $('#channelvideo').width()-2;
 		drag_timer = setInterval(function(){
-			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()) == 0 ? 1 : parseInt(oPlay.GetNowPlayedTime())
+			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			try{show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');}catch(e){
-				alert(e);
-			}
+			show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒')
 			if(left >= max){ 
 				left=max;
 				dragStopMove();
