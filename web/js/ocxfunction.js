@@ -397,6 +397,7 @@ function setDevData2ocx(){
 						};
 					}
 				});
+				dragStopMove();
 			}else{
 				try{
 					oPlaybackLocl.GroupStop();
@@ -461,7 +462,6 @@ function setDevData2ocx(){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
 		try{
-			dragStopMove();
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
 			$('tbody.search_result tr').remove();
