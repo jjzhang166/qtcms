@@ -182,7 +182,7 @@ var	nViewNum = 0,
 	}
 	var up = 1,down=1;
 	function playAction(str){ 
-		var bool=$('#search_device div.switchlist:eq(1) li.switchlistAct').index();
+		var bool=$('#nowSearchType li.switchlistAct').attr('now');
 		var obj = {};  //回放插件对象
 		if(bool){ 
 			obj = oPlayBack;
@@ -284,7 +284,9 @@ var	nViewNum = 0,
 	}
 	function dragStartMove(){
 		var SynTimeUnits = up == 1 ? 1000*down:1000/up;
-		var oPlay = $('#nowSearchType li.switchlistAct').attr('now') ? oPlayBack : oPlaybackLocl;
+		var bool = $('#nowSearchType li.switchlistAct').attr('now');
+		var oPlay = bool == '1' ? oPlayBack : oPlaybackLocl;
+		//return false;
 		var oDrag=$('div.play_time');
 		var initleft = parseInt(oDrag.offset().left);
 		var p = ($('#channelvideo').width()-80)/(3600*24);
@@ -292,7 +294,9 @@ var	nViewNum = 0,
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()) == 0 ? 1 : parseInt(oPlay.GetNowPlayedTime())
 			var left = initleft+p*nowPlayd;
-			show('初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');
+			try{show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');}catch(e){
+				alert(e);
+			}
 			if(left >= max){ 
 				left=max;
 				dragStopMove();
