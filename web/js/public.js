@@ -100,15 +100,15 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 	})
 }
 function set_drag(disX,X1,X2){  // 回放页面的拖拽条
-		var oDrag=$('div.play_time')
-		$(document).mousemove(function(event){
-				var left = event.pageX - disX;
-			    left = left < X1 ? X1 : left;
-				left = left > X2 ? X2-2 : left;
-			oDrag.css('left',left+'px');	
-		}).mouseup(function(){
-			$(this).off();
-		})
+	var oDrag=$('div.play_time')
+	$(document).mousemove(function(event){
+			var left = event.pageX - disX;
+		    left = left < X1 ? X1 : left;
+			left = left > X2 ? X2 : left;
+		oDrag.css('left',left+'px');	
+	}).mouseup(function(){
+		$(this).off();
+	})
 }
 (function($){   // 
 	$.fn.extend({
@@ -126,7 +126,7 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 				})
 			})
 		},
-		'toSelect':function(){ //魔力HTML下拉选择框 JQ插件形式
+		'toSelect':function(){ //模拟HTML下拉选择框 JQ插件形式
 			var This = this;
 			var option = this.next('ul.option');
 			this.click(function(){
@@ -437,5 +437,14 @@ function gettime(objs){
 }
 function time2Sec(str){ 
 	var a =str.split(':');
-	return parseInt(a[0])*60*60+parseInt(a[1])*60+parseInt(a[2]);
+	return fuckParseInt(a[0])*60*60+fuckParseInt(a[1])*60+fuckParseInt(a[2]);
 }
+// parseInt('08') == 0;  fuck it;
+function fuckParseInt(str){
+	var s = str.split('');
+	if(parseInt(s[0]) == 0){
+		return parseInt(s[1]);
+	}else{ 
+		return parseInt(str);
+	}
+} 

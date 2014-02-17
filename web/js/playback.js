@@ -1,6 +1,6 @@
-var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
-	nViewNum = 0,
-	NowMonth = 0
+var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl;
+var	nViewNum = 0,
+	NowMonth = 0,
 	drag_timer = null;
 	$(function(){
 		oLeft = $('#search_device');
@@ -94,18 +94,24 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		$("#channelvideo").on({ 
 			mousedown:function(event){
 				dragStopMove();
+				try{
+					oPlaybackLocl.GroupStop();
+					oPlayBack.GroupStop();
+				}catch(e){
+					//alert('try:'+e);
+				};
 				var left = event.pageX
 			    	if(left < 79){
 			    		return false;
 			    	}
 				//event.stopPropagation();
 				$('div.play_time').css('left',left-2);
-				set_drag(0,79,$('#channelvideo').width());
-			},
-			dblclick:function(event){ 
-				playVideo(event.pageX);
+				set_drag(2,79,$('#channelvideo').width());
 			}
 		})
+		$('div.play_time').on('dblclick',function(event){ 
+			playVideo(event.pageX);
+		});
 		
 		$(window).resize(function(){
 			ViewMax();	
@@ -222,9 +228,9 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 			}
 			obj[str]();
 		}
-		dragStartMove();
 	}
 	function palybackspeed(str){
+		dragStopMove();
 		dragStartMove();
 		$('#palybackspeed').html('').html(str);
 	}
@@ -286,9 +292,7 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()) == 0 ? 1 : parseInt(oPlay.GetNowPlayedTime())
 			var left = initleft+p*nowPlayd;
-			try{show('初始左边距:'+initleft+'像素//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');}catch(e){
-				alert(e);
-			}
+			show('初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒');
 			if(left >= max){ 
 				left=max;
 				dragStopMove();
