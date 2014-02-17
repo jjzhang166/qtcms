@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QMutex>
 #include "IDeviceSearch.h"
+#include "IDeviceNetModify.h"
 #include "IEventRegister.h"
 
 #define MCASTADDR     "239.255.255.250"
@@ -18,6 +19,7 @@
 
 class HiChipSearch : public QThread,
 	public IDeviceSearch,
+	public IDeviceNetModify,
 	public IEventRegister
 {
 	Q_OBJECT
@@ -37,6 +39,15 @@ public:
 	virtual int setInterval(int nInterval);
 	virtual IEventRegister * QueryEventRegister();
 
+	virtual int SetNetworkInfo(const QString &sDeviceID,
+		const QString &sAddress,
+		const QString &sMask,
+		const QString &sGateway,
+		const QString &sMac,
+		const QString &sPort,
+		const QString &sUsername,
+		const QString &sPassword);
+
 	virtual QStringList eventList();
 	virtual int queryEvent(QString eventName,QStringList& eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
@@ -55,10 +66,13 @@ private:
 	volatile bool						m_bReceiving;
 	bool								m_bFlush;
 	bool								m_bEnd;
+	bool								m_bSetNetInfo;
 	QUdpSocket							*m_Socket;
 	int									m_nInterval;
 	QMultiMap<QString, ProcInfoItem_t>	m_eventMap;
 	QStringList							m_eventList;
+	QByteArray							m_portInfo;
+	QByteArray							m_netInfo;
 };
 
 

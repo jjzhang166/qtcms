@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：杨美化<br />
+  编辑日期：2014.02.14<br />
+  插件简介：<br />
+  //插件名称：DeviceSearchPlugin插件<br />
+  //插件功能：搜索DVR,IPC设备，修改IPC的网络参数</p>
+<p>接口说明：<br />
+  //简介：开始搜索设备<br />
+//返回值：<br />
+  //      0:调用成功<br />
+int Start();</p>
+<p>接口说明：<br />
+//简介：停止搜索设备<br />
+//返回值：<br />
+  //      0:调用成功<br />
+int Stop();</p>
+<p>接口说明：<br />
+//简介：刷新列表<br />
+//返回值：<br />
+  //      0:调用成功<br />
+int Flush();</p>
+<p>接口说明：<br />
+//简介：设置搜索时间间隔<br />
+//输入参数：<br />
+  //      nInterval:时间间隔<br />
+//返回值：<br />
+  //      0:调用成功<br />
+int setInterval(int nInterval);</p>
+<p>接口说明：<br />
+//简介：设置网络参数<br />
+//输入参数：<br />
+  //      sDeviceID:设备ID<br />
+  //      sAddress:设备IP<br />
+  //      sMask:子网掩码<br />
+  //      sGateway:网关<br />
+  //      sMac:MAC地址<br />
+  //      sPort:端口号<br />
+  //      sUsername:用户名<br />
+  //      sPassword:密码<br />
+//返回值：<br />
+  //      0:调用成功<br />
+  //      1:调用失败<br />
+int SetNetworkInfo(const QString &amp;sDeviceID,<br />
+  const QString &amp;sAddress,<br />
+  const QString &amp;sMask,<br />
+  const QString &amp;sGateway,<br />
+  const QString &amp;sMac,<br />
+  const QString &amp;sPort,<br />
+  const QString &amp;sUsername,<br />
+const QString &amp;sPassword);</p>
+<p><br />
+</p>
+<p>插件抛出的事件：<br />
+@1<br />
+事件名称：SettingStatus<br />
+事件参数:&quot;Status&quot;:<br />
+//Status可选值:<br />
+  //      “set info success”:设置参数成功<br />
+  //      “set port success”:设置端口成功<br />
+  //      “Unauthorized”:用户名不正确</p>
+
+</body>
+</html>

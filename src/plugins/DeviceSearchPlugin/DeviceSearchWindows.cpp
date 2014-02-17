@@ -6,9 +6,11 @@
 #include <QtCore\QCoreApplication>
 
 int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser);
+int __cdecl DeviceSetNetInfoProc(QString sEventName, QVariantMap ipcItem, void *pUser);
 
 DeviceSearchWindows::DeviceSearchWindows(QWidget *parent)
 : QTableWidget(parent),
+m_pDeviceNetModify(NULL),
 QWebPluginFWBase(this)
 {
 	// clear search component
@@ -28,6 +30,7 @@ QWebPluginFWBase(this)
 	{
 		QDomNode item = itemList.at(n);
 		QString sItemName = item.toElement().attribute("name");
+		QString sItemType = item.toElement().attribute("type");
 
 		if (sItemName.left(strlen("protocols.")) == QString("protocols."))
 		{
@@ -38,6 +41,12 @@ QWebPluginFWBase(this)
 			{
 				IEventRegister* pEventInstance = p_deviceSearch->QueryEventRegister();
 				pEventInstance->registerEvent("SearchDeviceSuccess",DeviceSearchProc,this);
+
+				if (QString("ipcsearch") == sItemType)
+				{
+					p_deviceSearch->QueryInterface(IID_IDeviceNetModify, (void**)&m_pDeviceNetModify);
+					pEventInstance->registerEvent("SettingStatus", DeviceSetNetInfoProc, this);
+				}
 				pEventInstance->Release();
 
 				m_deviceList.insert(m_deviceList.size(),p_deviceSearch);
@@ -97,6 +106,35 @@ int DeviceSearchWindows::setInterval(int nInterval)
 	return 0;
 }
 
+int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
+	const QString &sAddress,
+	const QString &sMask,
+	const QString &sGateway,
+	const QString &sMac,
+	const QString &sPort,
+	const QString &sUsername,
+	const QString &sPassword)
+{
+	if (sDeviceID.isEmpty() && sAddress.isEmpty() && sMask.isEmpty() && sGateway.isEmpty() && sMac.isEmpty() && sPort.isEmpty())
+	{
+		return 1;
+	}
+
+	if (NULL == m_pDeviceNetModify)
+	{
+		return 1;
+	}
+	int nRet = m_pDeviceNetModify->SetNetworkInfo( sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
+	if (nRet != 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void DeviceSearchWindows::addItemMap(QVariantMap item)
 {
 	emit addItemToUI(item);
@@ -109,6 +147,11 @@ void DeviceSearchWindows::sendToHtml(QVariantMap item)
 	EventProcCall("SearchDeviceSuccess",item);
 }
 
+void DeviceSearchWindows::sendInfoToUI(QVariantMap item)
+{
+	EventProcCall("SettingStatus",item);
+}
+
 int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {
 	/*qDebug("\nname:%s\ndev_mode:%s\nesee_id:%s\nip:%s\nnetmask:%s\ngetaway:%s\nport:%s\nchannelcnt:%s\nmac:%s\ndevid:%s\n",
@@ -116,6 +159,15 @@ int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser
 	if (sEventName == "SearchDeviceSuccess")
 	{
 		((DeviceSearchWindows*)pUser)->addItemMap(dvrItem);
+	}
+	return 0;
+}
+
+int __cdecl DeviceSetNetInfoProc(QString sEventName, QVariantMap ipcItem, void *pUser)
+{
+	if ("SettingStatus" == sEventName)
+	{
+		((DeviceSearchWindows*)pUser)->sendInfoToUI(ipcItem);
 	}
 	return 0;
 }
