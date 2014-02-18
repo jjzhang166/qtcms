@@ -360,9 +360,8 @@ var oCommonLibrary,
 		//alert(data);
 	}
 	//搜索远程录像
-function setDevData2ocx(){
+function setDevData2ocx(oDevData){
 		var b = true;
-		var oDevData = $('div.dev_list span.device.sel').data('data');
 		try{
 			up = 1;
 			down=1;
@@ -389,7 +388,7 @@ function setDevData2ocx(){
 			}
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 			var intoWindsChl = $("#channelvideo").find('input:checkbox');
-			if($("#channelvideo").find('input:checkbox').length != 0){
+			if(intoWindsChl.length != 0){
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
 						if(oPlayBack.AddChannelIntoPlayGroup(index,index)){
@@ -413,9 +412,9 @@ function setDevData2ocx(){
 		return b;
 	}
 	function searchVideo(){
-		var seletDev = $('div.dev_list span.device.sel');
+		var seletDev = $('div.dev_list li.sel');
 		if(seletDev.length == 0){
-			$('div.dev_list span.device:first').addClass('sel');
+			$('div.dev_list li:eq(1)').addClass('sel');
 		}
 		$('#channelvideo div.video').remove();
 		  //cgi 请求数据
@@ -468,14 +467,13 @@ function setDevData2ocx(){
 		}catch(e){
 			//alert('try:'+e);
 		}
-
-		var devData = $('div.dev_list span.device.sel').data('data');
+		var devData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
 		var type = $('#type span').attr('type') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx();
+		setDevData2ocx(devData);
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){

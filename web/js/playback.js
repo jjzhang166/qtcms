@@ -34,36 +34,49 @@ var	nViewNum = 0,
 		})
 
 		var oSelected = [];
-		/*$('div.dev_list').on('click','span.device',function(){
-			$('div.dev_list span.device').removeClass('sel');
-			$(this).toggleClass('sel');
-			if($(this).parent('li').hasClass('sel')){ 
-				$(this).parent('li').find('li').addClass('sel');
-			}else{
-				$(this).parent('li').find('li').removeClass('sel');
+		$('div.dev_list span.device').on('click',function(){
+			var obj = $(this).parent('li');
+			$('div.dev_list li').not(obj).removeClass('sel');
+			obj.toggleClass('sel');
+		})
+
+		/*$('div.dev_list span.channel').on('click',function(){
+			var b = true;
+			var obj = $(this).parent('li')
+			var oSibs = obj.siblings().add(obj);
+			$('div.dev_list li').filter(function(){
+				if(!checkHasObj(oSibs,$(this))){
+					return $(this);
+				} 			
+			}).removeClass('sel');
+
+			obj.toggleClass('sel');
+
+			obj.siblings().add(obj).each(function(){
+				if(!$(this).hasClass('sel')){
+					b = false;
+				}
+			})
+
+			if(b){
+				obj.parent('ul').parent('li').addClass('sel').find('span.device').addClass('sel');
+			}else{ 
+				obj.parent('ul').parent('li').removeClass('sel').find('span.device').removeClass('sel');
 			}
 		})*/
+
 		$('div.dev_list span.device').on({
-			click:function(){
-				$('div.dev_list span.device').removeClass('sel');
-				$(this).addClass('sel');
-				
+			click:function(){				
 				oSelected = [];
 
-				var oVideoList = $("#channelvideo")
-				oVideoList.find('tr:gt(3)').remove()
-						  .end().find('input:checkbox').prop('disabled',false);
-				var count = $(this).data('data').channel_count;
-				if(count<4){
-					oVideoList.find('input:checkbox:gt('+(count-1)+')').prop({disabled:true,checked:false});
-				}else{ 
-					oVideoList.find('input:checkbox:lt(4)').prop({checked:true});
+				if($('div.dev_list li.sel span.channel').length != 0){
+					var oVideoList = $("#channelvideo").html('');
+					$('div.dev_list li.sel span.channel').each(function(index){
+						var name = $(this).data('data').channel_name;
+						var str = index < 4 ? 'checked="checked"' : '';
+						$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
+					})
 				}
-				for(var i=5; i<=count;i++){
-					var num = addZero(i);
-					$('<tr><td class="no_border"><input type="checkbox">window '+num+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
-				}
-
 				setTables();
 
 				$("#channelvideo input:checkbox:checked").each(function(){
@@ -106,7 +119,7 @@ var	nViewNum = 0,
 			    	}
 				//event.stopPropagation();
 				$('div.play_time').css('left',left-2);
-				set_drag(2,79,$('#channelvideo').width());
+				set_drag(2,79,$('#channelvideo').width()-2);
 			}
 		})
 		$('div.play_time').on('dblclick',function(event){ 

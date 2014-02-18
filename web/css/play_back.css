@@ -480,6 +480,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	bottom: 0;
 }
 .dev_list ul.treeview .sel{background-color: #ABCDEF;}
+.dev_list ul.treeview .sel li{background-color: #ABCDEF;}
 
 /*弹出菜单*/
 #iframe{

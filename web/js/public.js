@@ -448,3 +448,12 @@ function fuckParseInt(str){
 		return parseInt(str);
 	}
 } 
+function checkHasObj(oSil,obj){
+	var b = false;			
+	oSil.each(function(){
+		if($(this).is(obj)){
+			return b=true;
+		}
+	})
+	return b;
+}
