@@ -27,9 +27,9 @@ var oPlayBack,oBackup;
 
 		$('div.calendar').initCalendar();
 
-		$('div.dev_list').on('click','span.device',function(){
-			$('div.dev_list span.device').removeClass('sel');
-			$(this).toggleClass('sel');
+		$('div.dev_list span.device').on('click',function(){
+			$('div.dev_list span.device').parent('li').removeClass('sel');
+			$(this).parent('li').toggleClass('sel');
 		})
 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
