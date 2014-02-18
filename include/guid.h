@@ -72,6 +72,7 @@ extern const CLSID CLSID_LocalPlayer;
 extern const IID IID_ILocalRecordSearch;
 extern const IID IID_ILocalPlayer;
 extern const IID IID_IRemoteBackup;
+extern const IID IID_ISwitchStream;
 extern const CLSID CLSID_RecordPlayerPlugin;
 extern const CLSID CLSID_RemoteBackupPlugin;
 extern const CLSID CLSID_QtQWebViewPlugin;
