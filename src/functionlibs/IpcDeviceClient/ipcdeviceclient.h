@@ -19,7 +19,8 @@ int cbStateChangeFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser)
 
 class IpcDeviceClient:public QThread,
 	public IDeviceClient,
-	public IEventRegister
+	public IEventRegister,
+	public ISwitchStream
 {
 public:
 	IpcDeviceClient(void);
@@ -53,13 +54,18 @@ public:
 	int cbConnectStatusProc(QVariantMap evMap);
 
 	bool TryToConnectProtocol(CLSID clsid);
+	void DeInitProtocl();
 
 	int RegisterProc(IEventRegister *m_RegisterProc,int m_Stream);
 private:
 	int m_nRef;
 	QMutex m_csRef;
+	QMutex m_csDeInit;
+	QMutex m_cscbLiveStream;
 
-	int m_CurStream;
+	QMutex m_csRefDelete;
+	volatile int m_CurStream;
+	volatile int m_IfSwithStream;
 	IDeviceClient::ConnectStatus m_CurStatus;
 
 	QStringList m_EventList;
@@ -70,5 +76,6 @@ private:
 	//设备信息
 	DeviceInfo m_DeviceInfo;
 	volatile bool bCloseingFlags;
+	volatile bool bHadCallCloseAll;
 };
 

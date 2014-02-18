@@ -11,12 +11,11 @@
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
 	m_IVideoRender(NULL),
-	m_IDeviceClient(NULL),
+	m_IDeviceClientDecideByVendor(NULL),
 	m_pRecorder(NULL),
 	m_pRecordTime(NULL),
 	iInitHeight(0),
 	iInitWidth(0),
-	bIsInitFlags(false),
 	bRendering(false),
 	m_bIsRecording(false),
 	ui(new Ui::titleview),
@@ -30,8 +29,8 @@ QSubView::QSubView(QWidget *parent)
 // 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
-	//申请DeviceClient接口
-	pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
+	//申请DeviceClient接口,修改成动态生成，此处去掉
+	/*pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);*/
 	//申请IRecorder接口
 	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void **)&m_pRecorder);
 
@@ -40,7 +39,8 @@ QSubView::QSubView(QWidget *parent)
 	connect(&m_checkTime, SIGNAL(timeout()), this, SLOT(OnCheckTime()));
 
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
-	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
+	//修改成动态生成，此处去掉
+//	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
 	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
@@ -50,11 +50,17 @@ QSubView::QSubView(QWidget *parent)
 QSubView::~QSubView()
 {
 	CloseWndCamera();
-
-	if (NULL!=m_IDeviceClient)
+	
+	if (NULL!=m_IDeviceClientDecideByVendor)
 	{
-		m_IDeviceClient->Release();
+		m_IDeviceClientDecideByVendor->Release();
+		m_IDeviceClientDecideByVendor=NULL;
 	}
+	//动态释放，此处去掉
+	//if (NULL!=m_IDeviceClient)
+	//{
+	//	m_IDeviceClient->Release();
+	//}
 	if (NULL!=m_IVideoDecoder)
 	{
 		m_IVideoDecoder->Release();
@@ -161,6 +167,33 @@ void QSubView::paintEvent( QPaintEvent * e)
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
 	emit mouseDoubleClick(this,ev);
+	if (this->parentWidget()->width()==this->width())
+	{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(0);
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
+	else{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(1);
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
 }
 
 
@@ -202,14 +235,20 @@ int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QS
 }
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	//关闭上一次的连接
+	CloseWndCamera();
+	//生成设备组件
+	SetDeviceByVendor(sVendor);
 	//注册事件，需检测是否注册成功
-	if (false==bIsInitFlags)
-	{
 		if (1==cbInit())
 		{
+			if (NULL!=m_IDeviceClientDecideByVendor)
+			{
+				m_IDeviceClientDecideByVendor->Release();
+				m_IDeviceClientDecideByVendor=NULL;
+			}
 			return 1;
 		}
-	}
 	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_CONNECTING;
 	SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
@@ -223,7 +262,13 @@ int QSubView::CloseWndCamera()
 {
 	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_DISCONNECTING;
 	m_QSubViewObject.CloseWndCamera();
-
+	//释放动态生成的指针
+	if (NULL!=m_IDeviceClientDecideByVendor)
+	{
+		m_IDeviceClientDecideByVendor->Release();
+		m_IDeviceClientDecideByVendor=NULL;
+	}
+	//录像
 	if (m_bIsRecording && NULL != m_pRecorder)
 	{
 		m_pRecorder->Stop();
@@ -233,11 +278,6 @@ int QSubView::CloseWndCamera()
 }
 int QSubView::GetWindowConnectionStatus()
 {
-	//if (NULL==m_IDeviceClient)
-	//{
-	//	return 0;
-	//}
-	//return m_IDeviceClient->getConnectStatus();
 	return m_CurrentState;
 }
 
@@ -247,11 +287,19 @@ int QSubView::cbInit()
 	//注册设备服务回调函数
 	QString evName="LiveStream";
 	IEventRegister *pRegist=NULL;
-	if (NULL==m_IDeviceClient)
+	if (NULL==m_IDeviceClientDecideByVendor)
 	{
 		return 1;
 	}
-	m_IDeviceClient->QueryInterface(IID_IEventRegister,(void**)&pRegist);
+	m_IDeviceClientDecideByVendor->QueryInterface(IID_IEventRegister,(void**)&pRegist);
+	//改成动态生成，此处去掉
+	//if (NULL==m_IDeviceClient)
+	//{
+	//	return 1;
+	//}
+	//m_IDeviceClient->QueryInterface(IID_IEventRegister,(void**)&pRegist);
+
+
 	if (NULL==pRegist)
 	{
 		return 1;
@@ -294,8 +342,6 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-
-	bIsInitFlags=true;
 	return 0;
 }
 int QSubView::PrevPlay(QVariantMap evMap)
@@ -544,4 +590,66 @@ int QSubView::ForRecord( QVariantMap evMap )
 		m_pRecorder->InputFrame(evMap);
 	}
 	return 0;
+}
+
+int QSubView::SetDeviceByVendor( const QString & sVendor )
+{
+	QString sAppPath=QCoreApplication::applicationDirPath();
+	QFile *file=new QFile(sAppPath+"/pcom_config.xml");
+	file->open(QIODevice::ReadOnly);
+	QDomDocument ConFile;
+	ConFile.setContent(file);
+	QDomNode clsidNode=ConFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList=clsidNode.childNodes();
+	int n;
+	for (n=0;n<itemList.count();n++)
+	{
+		QDomNode item=itemList.at(n);
+		QString sItemName=item.toElement().attribute("vendor");
+		if (sItemName==sVendor)
+		{
+			CLSID DeviceVendorClsid=pcomString2GUID(item.toElement().attribute("clsid"));
+			if (NULL!=m_IDeviceClientDecideByVendor)
+			{
+				m_IDeviceClientDecideByVendor->Release();
+				m_IDeviceClientDecideByVendor=NULL;
+			}
+			pcomCreateInstance(DeviceVendorClsid,NULL,IID_IDeviceClient,(void**)&m_IDeviceClientDecideByVendor);
+			if (NULL!=m_IDeviceClientDecideByVendor)
+			{
+				//设置主次码流
+				if (this->parentWidget()->width()==this->width())
+				{
+					if (NULL!=m_IDeviceClientDecideByVendor)
+					{
+						ISwitchStream *m_SwitchStream=NULL;
+						m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+						if (NULL!=m_SwitchStream)
+						{
+							m_SwitchStream->SwitchStream(0);
+							m_SwitchStream->Release();
+							m_SwitchStream=NULL;
+						}
+					}
+				}
+				else{
+					if (NULL!=m_IDeviceClientDecideByVendor)
+					{
+						ISwitchStream *m_SwitchStream=NULL;
+						m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+						if (NULL!=m_SwitchStream)
+						{
+							m_SwitchStream->SwitchStream(1);
+							m_SwitchStream->Release();
+							m_SwitchStream=NULL;
+						}
+					}
+				}
+
+				m_QSubViewObject.SetDeviceClient(m_IDeviceClientDecideByVendor);				
+				return 0;
+			}		
+		}
+	}
+	return 1;
 }

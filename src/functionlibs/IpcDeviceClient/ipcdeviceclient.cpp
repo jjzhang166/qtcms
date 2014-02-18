@@ -4,8 +4,14 @@
 
 IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED),
-	m_CurStream(0)
+	m_CurStream(0),
+	m_csRefDelete(QMutex::Recursive),
+	bHadCallCloseAll(false),
+	bCloseingFlags(false),
+	m_IfSwithStream(0)
 {
+	//设置本组件支持的回调函数事件名称
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord";
 	//设置主次码流的初始连接状态
 	CurStatusInfo m_statusInfo;
 	m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -45,7 +51,11 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 
 IpcDeviceClient::~IpcDeviceClient(void)
 {
-	closeAll();
+	if (false==bHadCallCloseAll)
+	{
+		closeAll();
+	}
+
 }
 
 long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )
@@ -61,6 +71,10 @@ long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_IEventRegister==iid)
 	{
 		*ppv=static_cast<IEventRegister*>(this);
+	}
+	else if (IID_ISwitchStream==iid)
+	{
+		*ppv=static_cast<ISwitchStream*>(this);
 	}
 	else 
 	{
@@ -149,11 +163,17 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
 	//断开上一次的连接
-	closeAll();
+	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED)
+	{
+		closeAll();
+	}
 	//make sure had been disconnect
-	bCloseingFlags=true;
+	bCloseingFlags=false;
 	int nStep=0;
 	m_CurStatus=IDeviceClient::STATUS_CONNECTING;
+	QVariantMap CurStatusParm;
+	CurStatusParm.insert("CurrentStatus",m_CurStatus);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	while(nStep!=5){
 		switch(nStep){
 			//尝试bubble
@@ -216,11 +236,18 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				//fixme
 				nStep =5;
 				m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+				QVariantMap CurStatusParm;
+				CurStatusParm.insert("CurrentStatus",m_CurStatus);
+				eventProcCall("CurrentStatus",CurStatusParm);
+				return 1;
 			}
 			break;
 		case 5:
 			{
 				m_CurStatus=IDeviceClient::STATUS_CONNECTED;
+				QVariantMap CurStatusParm;
+				CurStatusParm.insert("CurrentStatus",m_CurStatus);
+				eventProcCall("CurrentStatus",CurStatusParm);
 			}
 			break;
 		default:
@@ -295,11 +322,17 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 int IpcDeviceClient::closeAll()
 {
 	//中断正在连接的状态
+	bHadCallCloseAll=true;
+	m_csRefDelete.lock();
 	bCloseingFlags=true;
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
+	QVariantMap CurStatusParm;
+	CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTING);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	QMultiMap<int,SingleConnect>::iterator it;
 	for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
 	{
+		
 		if (NULL!=it->m_DeviceConnecton)
 		{
 			//断开连接
@@ -307,13 +340,17 @@ int IpcDeviceClient::closeAll()
 			it->m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&m_CloseAllConnect);
 			m_CloseAllConnect->disconnect();
 			m_CloseAllConnect->Release();
-			//释放资源
-			it->m_DeviceConnecton->Release();
-			it->m_DeviceConnecton=NULL;
 		}
 	}
+	//释放资源
+	DeInitProtocl();
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+	CurStatusParm.clear();
+	CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+	eventProcCall("CurrentStatus",CurStatusParm);
 	m_CurStream=0;
+	m_csRefDelete.unlock();
+	bHadCallCloseAll=false;
 	return 0;
 }
 
@@ -330,24 +367,73 @@ int IpcDeviceClient::getConnectStatus()
 
 int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 {
-	if (0==m_CurStatus)
+	m_cscbLiveStream.lock();
+	//录像码流
+	if ("Primary"==evmap.value("Stream"))
 	{
-		if ("Primary"==evmap.value("Stream"))
+		evmap.remove("Stream");
+		eventProcCall("ForRecord",evmap);
+	}
+	//预览码流
+	if (m_IfSwithStream==m_CurStream)
+	{
+		if (0==m_CurStream)
+		{
+			if ("Primary"==evmap.value("Stream"))
+			{
+				evmap.remove("Stream");
+				eventProcCall("LiveStream",evmap);
+				m_cscbLiveStream.unlock();
+				return 0;
+			}
+		}
+		if (1==m_CurStream)
+		{
+			if ("Minor"==evmap.value("Stream"))
+			{
+				evmap.remove("Stream");
+				eventProcCall("LiveStream",evmap);
+			}
+		}
+		m_cscbLiveStream.unlock();
+		return 0;
+	}
+	if (m_IfSwithStream!=m_CurStream)
+	{
+		//如果是I帧，则令m_IfSwithStream=m_CurStream，同时抛出I帧
+		if (1==evmap.value("frametype"))
 		{
 			evmap.remove("Stream");
 			eventProcCall("LiveStream",evmap);
+			m_IfSwithStream=m_CurStream;
+			m_cscbLiveStream.unlock();
 			return 0;
 		}
+		//如果不是I帧，则抛出m_IfSwithStream码流
+		else{
+			if (m_IfSwithStream==0)
+			{
+				if ("Primary"==evmap.value("Stream"))
+				{
+					evmap.remove("Stream");
+					eventProcCall("LiveStream",evmap);
+					m_cscbLiveStream.unlock();
+					return 0;
+				}
+			}
+			else if (m_IfSwithStream==1)
+			{
+				if ("Minor"==evmap.value("Stream"))
+				{
+					evmap.remove("Stream");
+					eventProcCall("LiveStream",evmap);
+					m_cscbLiveStream.unlock();
+					return 0;
+				}
+			}
+		}		
 	}
-	if (1==m_CurStatus)
-	{
-		if ("Minor"==evmap.value("Stream"))
-		{
-			evmap.remove("Stream");
-			eventProcCall("LiveStream",evmap);
-			return 0;
-		}
-	}
+	m_cscbLiveStream.unlock();
 	return 0;
 }
 
@@ -389,8 +475,6 @@ int IpcDeviceClient::cbSocketError( QVariantMap &evmap )
 int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 {
 	//处理主码流的状态，只保存连接和不连接两种状态
-	if (0==m_CurStatus)
-	{
 		if ("Primary"==evMap.value("Stream"))
 		{
 			evMap.remove("Stream");
@@ -410,12 +494,21 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 					m_StreamCurStatus.insert(0,m_statusInfo);
 				}
+				else if (IDeviceConnection::CS_Disconnecting==it.value().toInt())
+				{
+					CurStatusInfo m_statusInfo;
+					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
+					m_StreamCurStatus.insert(0,m_statusInfo);
+				}
+				else if (IDeviceConnection::CS_Connectting==it.value().toInt())
+				{
+					CurStatusInfo m_statusInfo;
+					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTING;
+					m_StreamCurStatus.insert(0,m_statusInfo);
+				}
 			}
 		}
-	}
 		//处理子码流的状态，只保存连接和不连接两种状态
-	if (1==m_CurStatus)
-	{
 		if ("Minor"==evMap.value("Stream"))
 		{
 			evMap.remove("Stream");
@@ -435,9 +528,21 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
 					m_StreamCurStatus.insert(1,m_statusInfo);
 				}
+				else if (IDeviceConnection::CS_Disconnecting==it.value().toInt())
+				{
+					CurStatusInfo m_statusInfo;
+					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
+					m_StreamCurStatus.insert(1,m_statusInfo);
+				}
+				else if (IDeviceConnection::CS_Connectting==it.value().toInt())
+				{
+					CurStatusInfo m_statusInfo;
+					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTING;
+					m_StreamCurStatus.insert(1,m_statusInfo);
+				}
 			}
 		}
-	}
+
 	//处理IpcDeviceClient的状态
 	//连接状态，两路都连接
 	if (IDeviceClient::STATUS_CONNECTED==m_StreamCurStatus.value(0).m_CurStatus&&IDeviceClient::STATUS_CONNECTED==m_StreamCurStatus.value(1).m_CurStatus)
@@ -451,17 +556,23 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 	//断开状态，两路都断开
 	if (IDeviceClient::STATUS_DISCONNECTED==m_StreamCurStatus.value(0).m_CurStatus&&IDeviceClient::STATUS_DISCONNECTED==m_StreamCurStatus.value(1).m_CurStatus)
 	{
+		if (IDeviceClient::STATUS_CONNECTED==m_CurStatus)
+		{
+			QVariantMap CurStatusParm;
+			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+			eventProcCall("CurrentStatus",CurStatusParm);
+		}
 		m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-		QVariantMap CurStatusParm;
-		CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-		eventProcCall("CurrentStatus",CurStatusParm);
 	}
 	//原来状态为连接，一路断开，即断开所有的连接
 	if (IDeviceClient::STATUS_CONNECTED==m_CurStatus)
 	{
 		if (m_StreamCurStatus.value(0).m_CurStatus!=m_StreamCurStatus.value(1).m_CurStatus)
 		{
-			closeAll();
+			if (false==bHadCallCloseAll)
+			{
+				closeAll();
+			}
 		}
 	}
 
@@ -484,35 +595,38 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		if (NULL==m_DeviceConnectProtocol)
 		{
 			//释放资源
-			QMultiMap<int,SingleConnect>::iterator it;
-			for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			{
-				if (NULL!=it->m_DeviceConnecton)
-				{
-					it->m_DeviceConnecton->Release();
-					it->m_DeviceConnecton=NULL;
-				}
-			}
+			DeInitProtocl();
+			//QMultiMap<int,SingleConnect>::iterator it;
+			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+			//{
+			//	if (NULL!=it->m_DeviceConnecton)
+			//	{
+			//		it->m_DeviceConnecton->Release();
+			//		it->m_DeviceConnecton=NULL;
+			//	}
+			//}
 			return false;
 		}
 		//save to struct 
 		SingleConnect m_SingleConnect;
-		m_SingleConnect.m_DeviceConnecton=m_DeviceConnectProtocol;
+		m_SingleConnect.m_DeviceConnecton=NULL;
+		m_DeviceConnectProtocol->QueryInterface(IID_IDeviceConnection,(void**)&m_SingleConnect.m_DeviceConnecton);
 		m_DeviceClentMap.insert(mount,m_SingleConnect);
 		//注册事件
 		IEventRegister *m_RegisterProc=NULL;
 		m_DeviceConnectProtocol->QueryInterface(IID_IEventRegister,(void**)&m_RegisterProc);
 		if (NULL==m_RegisterProc)
 		{
-			QMultiMap<int,SingleConnect>::iterator it;
-			for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			{
-				if (NULL!=it->m_DeviceConnecton)
-				{
-					it->m_DeviceConnecton->Release();
-					it->m_DeviceConnecton=NULL;
-				}
-			}
+			DeInitProtocl();
+			//QMultiMap<int,SingleConnect>::iterator it;
+			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+			//{
+			//	if (NULL!=it->m_DeviceConnecton)
+			//	{
+			//		it->m_DeviceConnecton->Release();
+			//		it->m_DeviceConnecton=NULL;
+			//	}
+			//}
 			return false;
 		}
 		RegisterProc(m_RegisterProc,mount);
@@ -522,48 +636,54 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		if (1==m_DeviceConnectProtocol->setDeviceHost(m_DeviceInfo.m_sAddr)||1==m_DeviceConnectProtocol->setDevicePorts(m_DeviceInfo.m_ports)||1==m_DeviceConnectProtocol->setDeviceId(m_DeviceInfo.m_sEseeId))
 		{
 			//设置失败，释放资源，直接返回失败
-			QMultiMap<int,SingleConnect>::iterator it;
-			for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			{
-				if (NULL!=it->m_DeviceConnecton)
-				{
-					it->m_DeviceConnecton->Release();
-					it->m_DeviceConnecton=NULL;
-				}
-			}
+			DeInitProtocl();
+			//QMultiMap<int,SingleConnect>::iterator it;
+			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+			//{
+			//	if (NULL!=it->m_DeviceConnecton)
+			//	{
+			//		it->m_DeviceConnecton->Release();
+			//		it->m_DeviceConnecton=NULL;
+			//	}
+			//}
 			return false;
 		}
 		if (true==bCloseingFlags)
 		{
 			//要求停止连接
 			//释放资源
-			QMultiMap<int,SingleConnect>::iterator it;
-			for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			{
-				if (NULL!=it->m_DeviceConnecton)
-				{
-					it->m_DeviceConnecton->Release();
-					it->m_DeviceConnecton=NULL;
-				}
-			}
+			//QMultiMap<int,SingleConnect>::iterator it;
+			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+			//{
+			//	if (NULL!=it->m_DeviceConnecton)
+			//	{
+			//		it->m_DeviceConnecton->Release();
+			//		it->m_DeviceConnecton=NULL;
+			//	}
+			//}
+			DeInitProtocl();
 			return false;
 		}
 			//连接设备
 		if (1==m_DeviceConnectProtocol->connectToDevice())
 		{
 			//连接失败，释放资源，直接返回
-			QMultiMap<int,SingleConnect>::iterator it;
-			for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			{
-				if (NULL!=it->m_DeviceConnecton)
-				{
-					it->m_DeviceConnecton->Release();
-					it->m_DeviceConnecton=NULL;
-				}
-			}
+			DeInitProtocl();
+			//QMultiMap<int,SingleConnect>::iterator it;
+			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+			//{
+			//	if (NULL!=it->m_DeviceConnecton)
+			//	{
+			//		qDebug()<<"release======================"<<it->m_DeviceConnecton;
+			//		it->m_DeviceConnecton->Release();
+			//		it->m_DeviceConnecton=NULL;
+			//	}
+			//}
 			return false;
 		}
 		//连接成功
+		m_DeviceConnectProtocol->Release();
+		m_DeviceConnectProtocol=NULL;
 		mount++;
 	}
 	return true;
@@ -582,6 +702,24 @@ int IpcDeviceClient::RegisterProc(IEventRegister *m_RegisterProc,int m_Stream )
 	}
 	return 0;
 }
+
+void IpcDeviceClient::DeInitProtocl()
+{
+	m_csDeInit.lock();
+	QMultiMap<int,SingleConnect>::iterator it;
+	for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
+	{
+		if (NULL!=it->m_DeviceConnecton)
+		{
+			qDebug()<<"release======================"<<it->m_DeviceConnecton;
+			it->m_DeviceConnecton->Release();
+			it->m_DeviceConnecton=NULL;
+		}
+	}
+	m_csDeInit.unlock();
+}
+
+
 
 int cbLiveStreamFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
@@ -648,3 +786,4 @@ int cbStateChangeFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser
 	}
 	return 1;
 }
+

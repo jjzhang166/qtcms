@@ -18,6 +18,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QMenu>
+#include <ISwitchStream.h>
 #include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
@@ -80,7 +81,8 @@ private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
-	IDeviceClient *m_IDeviceClient;
+	//IDeviceClient *m_IDeviceClient;
+	IDeviceClient *m_IDeviceClientDecideByVendor;
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
 	ISetRecordTime *m_pRecordTime;
@@ -88,7 +90,6 @@ private:
 	QSubViewConnectStatus m_CurrentState;
 	int iInitWidth;
 	int iInitHeight;
-	bool bIsInitFlags;
 	bool bRendering;
 	bool m_bIsRecording;
 	QTime dieTime;
@@ -106,11 +107,13 @@ private:
 	int cbInit();
 
 public:
+	//»Øµ÷
 	int PrevPlay(QVariantMap evMap);
 	int ForRecord(QVariantMap evMap);
 	int PrevRender(QVariantMap evMap);
 	int CurrentStateChange(QVariantMap evMap);
-
+	//////////////
+	int SetDeviceByVendor(const QString & sVendor);
 public slots:
 	void OnFreshWindow();
 	//void emitOnFreshWindow();

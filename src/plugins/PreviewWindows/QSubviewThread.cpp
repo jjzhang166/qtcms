@@ -11,6 +11,7 @@ QSubviewThread::~QSubviewThread(void)
 	if (NULL!=m_IDeviceClient)
 	{
 		m_IDeviceClient->Release();
+		m_IDeviceClient=NULL;
 	}
 }
 
@@ -40,21 +41,38 @@ void QSubviewThread::OpenCameraInWnd()
 	{
 		return;
 	}
-	if (1==m_IDeviceClient->setChannelName(m_DevCliSetInfo.m_sCameraname))
+	//申请接口使用
+	IDeviceClient * m_IDeviceClientOpenCameraInWnd=NULL;
+	m_IDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientOpenCameraInWnd);
+	if (1!=m_IDeviceClientOpenCameraInWnd->setChannelName(m_DevCliSetInfo.m_sCameraname))
 	{
-		return;
+		if (1!=m_IDeviceClientOpenCameraInWnd->connectToDevice(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId))
+		{
+			if (1!=m_IDeviceClientOpenCameraInWnd->liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true));
+			{
+				m_IDeviceClientOpenCameraInWnd->Release();
+				m_IDeviceClientOpenCameraInWnd=NULL;
+				return;
+			}
+		}
 	}
-	int nRet=1;
-	nRet=m_IDeviceClient->connectToDevice(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId);
-	if (1==nRet)
-	{
-		return;
-	}
-	if (1==m_IDeviceClient->liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true))
-	{
-		return;
-	}
-	return;
+	m_IDeviceClientOpenCameraInWnd->Release();
+	m_IDeviceClientOpenCameraInWnd=NULL;
+	//if (1==m_IDeviceClient->setChannelName(m_DevCliSetInfo.m_sCameraname))
+	//{
+	//	return;
+	//}
+	//int nRet=1;
+	//nRet=m_IDeviceClient->connectToDevice(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId);
+	//if (1==nRet)
+	//{
+	//	return;
+	//}
+	//if (1==m_IDeviceClient->liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true))
+	//{
+	//	return;
+	//}
+	//return;
 }
 
 int QSubviewThread::SetDeviceClient(IDeviceClient *parm)
@@ -62,6 +80,11 @@ int QSubviewThread::SetDeviceClient(IDeviceClient *parm)
 	if (NULL==parm)
 	{
 		return 1;
+	}
+	if (NULL!=m_IDeviceClient)
+	{
+		m_IDeviceClient->Release();
+		m_IDeviceClient=NULL;
 	}
 	parm->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClient);
 	if (NULL==m_IDeviceClient)
@@ -76,6 +99,13 @@ void QSubviewThread::CloseAll()
 	{
 		return;
 	}
-	m_IDeviceClient->closeAll();
+	//申请接口
+	IDeviceClient *m_IDeviceClientCloseAll=NULL;
+	m_IDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientCloseAll);
+	m_IDeviceClientCloseAll->closeAll();
+	m_IDeviceClientCloseAll->Release();
+	m_IDeviceClientCloseAll=NULL;
+	m_IDeviceClient->Release();
+	m_IDeviceClient=NULL;
 	return;
 }

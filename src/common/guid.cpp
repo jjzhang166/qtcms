@@ -279,6 +279,9 @@ static const CLSID CLSID_HiH264Decoder =
 // {C46890FD-8603-4BBB-975C-FE0410F3AF45}
 static const CLSID CLSID_IpcDeviceClient = 
 { 0xc46890fd, 0x8603, 0x4bbb, { 0x97, 0x5c, 0xfe, 0x4, 0x10, 0xf3, 0xaf, 0x45 } };
+// {BF24F8B2-429A-4D73-96EF-D8BDA533974F}
+static const IID IID_ISwitchStream = 
+{ 0xbf24f8b2, 0x429a, 0x4d73, { 0x96, 0xef, 0xd8, 0xbd, 0xa5, 0x33, 0x97, 0x4f } };
 
 // {F10F30BA-CC2A-4E7A-AD93-B2347853B0F8}
 static const IID IID_IDeviceNetModify = 
