@@ -189,6 +189,22 @@
   //      获取当前设备录像的记录条目数<br />
   //  parameters:<br />
   //     &quot;total&quot;:总共的录像记录条目数</p>
+    // @6  name:&quot;ForRecord&quot;<br />
+  //abstract:<br />
+  //      获取到设备的预览码流信息进行录像<br />
+  //  parameters：<br />
+  //     &quot;channel&quot;:当前帧的通道号<br />
+  //     &quot;pts&quot;:当前帧时间戳，单位为微秒<br />
+  //     &quot;length&quot;:数据长度<br />
+  //     &quot;data&quot;:数据指针<br />
+  //     &quot;frametype&quot;:帧类型，取值'I','P','B','A'<br />
+  //     &quot;width&quot;:视频帧的宽，单位像素，如果是音频帧，不传递该参数<br />
+  //     &quot;height&quot;:视频帧的高，单位像素，如果是音频帧，不传递该参数<br />
+  //     &quot;vcodec&quot;:视频帧的编码格式，当前定义值:&quot;H264&quot;，如果是音频帧，不传递该参数<br />
+  //     &quot;samplerate&quot;:音频采样率，如果是视频帧，不传递该参数<br />
+  //     &quot;samplewidth&quot;:音频采样位宽，如果是视频帧，不传递该参数<br />
+  //     &quot;audiochannel&quot;:音频的采样通道数，如果是视频帧，不传递该参数<br />
+  //     &quot;acodec&quot;:音频编码格式，当前定义值：&quot;G711&quot;，如果是视频帧，不传递该参数</p>
 <p>接口调用时序：<br />
   //@1 预览功能</p>
 <p><img src="Preview.png" alt="预览调用时序" width="551" height="834" /><br />
