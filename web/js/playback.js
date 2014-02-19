@@ -82,10 +82,10 @@ var	nViewNum = 0,
 				$("#channelvideo input:checkbox:checked").each(function(){
 					oSelected.push($(this));
 				});
-			},
+			}/*,
 			dblclick:function(){
 				searchVideo();
-			}
+			}*/
 		})
 
 		$("#channelvideo").on('click','input:checkbox',function(event){ 
@@ -106,8 +106,8 @@ var	nViewNum = 0,
 
 		$("#channelvideo").on({ 
 			mousedown:function(event){
-				dragStopMove();
 				try{
+					dragStopMove();
 					oPlaybackLocl.GroupStop();
 					oPlayBack.GroupStop();
 				}catch(e){
@@ -156,8 +156,8 @@ var	nViewNum = 0,
 	})///
 
 	function playVideo(){ 
-		dragStopMove();
 		try{
+			dragStopMove();
 			oPlaybackLocl.GroupStop();
 			oPlayBack.GroupStop();
 		}catch(e){
@@ -171,7 +171,7 @@ var	nViewNum = 0,
 		if(bool){
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
-					var filepath = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(index).data('filepath');
+					var filepath = $('div.dev_list li.sel').find('span.channel').eq(index).data('filepath');
 					if(filepath){
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
 							b = false;
@@ -274,7 +274,7 @@ var	nViewNum = 0,
 		var left = start*p+81;
 		var types = data.types || 8;
 		if(data.filepath){
-			var oChannel = $('div.dev_list span.device.sel').parent('li').find('span.channel').eq(chl);
+			var oChannel = $('div.dev_list li.sel').find('span.channel').eq(chl);
 			var filepathArr = oChannel.data('filepath');
 				filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
 				filepathArr.push(data.filepath);

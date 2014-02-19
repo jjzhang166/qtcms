@@ -207,7 +207,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		oPreView.setDivMode(i);
 	}
 	function setViewNumNow(){     //显示当前分屏模式和当前第级分屏
-		var str = oPreView.getCurrentPage()+'/'+oPreView.getPages();
+		var str = (oPreView.getCurrentPage()+1)+'/'+oPreView.getPages();
 		$('#nowWinMod').html('').html(str);
 	}
 	function preNextPage(type){ 

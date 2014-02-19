@@ -360,7 +360,8 @@ var oCommonLibrary,
 		//alert(data);
 	}
 	//搜索远程录像
-function setDevData2ocx(oDevData){
+function setDevData2ocx(){
+		var oDevData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
 		var b = true;
 		try{
 			up = 1;
@@ -396,7 +397,6 @@ function setDevData2ocx(oDevData){
 						};
 					}
 				});
-				dragStopMove();
 			}else{
 				try{
 					oPlaybackLocl.GroupStop();
@@ -461,6 +461,7 @@ function setDevData2ocx(oDevData){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
 		try{
+			dragStopMove();
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
 			$('tbody.search_result tr').remove();
@@ -473,7 +474,7 @@ function setDevData2ocx(oDevData){
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		setDevData2ocx(devData);
+		setDevData2ocx();
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
