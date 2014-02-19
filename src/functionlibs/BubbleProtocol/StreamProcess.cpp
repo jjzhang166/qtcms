@@ -495,7 +495,31 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 {
 	QVariantMap mStreamInfo;
 
-	mStreamInfo.insert("status", getSocketState());
+	int nStatus = m_tcpSocket->state();
+	int nRet = 0;
+	if (QAbstractSocket::ConnectingState == nStatus)
+	{
+		nRet = IDeviceConnection::CS_Connectting;
+		goto pro;
+	}
+	else if (QAbstractSocket::ConnectedState == nStatus)
+	{
+		nRet = IDeviceConnection::CS_Connected;
+		goto pro;
+	}
+	else if (QAbstractSocket::ClosingState == nStatus)
+	{
+		nRet = IDeviceConnection::CS_Disconnecting;
+		goto pro;
+	}
+	else if (QAbstractSocket::UnconnectedState == nStatus)
+	{
+		nRet = IDeviceConnection::CS_Disconnected;
+		goto pro;
+	}
+	return ;
+	pro:
+	mStreamInfo.insert("status", nRet);
 
 	eventProcCall(QString("StateChangeed"), mStreamInfo);
 }

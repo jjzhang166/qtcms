@@ -93,7 +93,7 @@ int Hih264Decoder::decode(char * pData,unsigned int nDataLength)
 	if (-1 == nResult)
 	{
 		m_csDecInit.unlock();
-		qDebug()<<"HI H264DEC need more bits";
+	/*	qDebug()<<"HI H264DEC need more bits";*/
 		return 0;
 	}
 	else if (-3 == nResult)                 

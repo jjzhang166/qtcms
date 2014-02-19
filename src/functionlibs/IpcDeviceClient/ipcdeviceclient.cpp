@@ -163,7 +163,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
 	//断开上一次的连接
-	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED)
+	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED||m_CurStatus==IDeviceClient::STATUS_DISCONNECTING||m_CurStatus==IDeviceClient::STATUS_CONNECTING)
 	{
 		closeAll();
 	}
@@ -235,19 +235,22 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				qDebug()<<"connect fail";
 				//fixme
 				nStep =5;
-				m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-				QVariantMap CurStatusParm;
-				CurStatusParm.insert("CurrentStatus",m_CurStatus);
-				eventProcCall("CurrentStatus",CurStatusParm);
+				if (m_CurStatus!=IDeviceClient::STATUS_DISCONNECTED)
+				{
+					m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+					QVariantMap CurStatusParm;
+					CurStatusParm.insert("CurrentStatus",m_CurStatus);
+					eventProcCall("CurrentStatus",CurStatusParm);
+				}
 				return 1;
 			}
 			break;
 		case 5:
 			{
-				m_CurStatus=IDeviceClient::STATUS_CONNECTED;
-				QVariantMap CurStatusParm;
-				CurStatusParm.insert("CurrentStatus",m_CurStatus);
-				eventProcCall("CurrentStatus",CurStatusParm);
+				//m_CurStatus=IDeviceClient::STATUS_CONNECTED;
+				//QVariantMap CurStatusParm;
+				//CurStatusParm.insert("CurrentStatus",m_CurStatus);
+				//eventProcCall("CurrentStatus",CurStatusParm);
 			}
 			break;
 		default:
@@ -321,9 +324,18 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 
 int IpcDeviceClient::closeAll()
 {
+
 	//中断正在连接的状态
 	bHadCallCloseAll=true;
 	m_csRefDelete.lock();
+	//如果已经处于断开的状态，则释放资源
+	if (m_CurStatus==IDeviceClient::STATUS_DISCONNECTED)
+	{
+		DeInitProtocl();
+		m_csRefDelete.unlock();
+		bHadCallCloseAll=false;
+		return 0;
+	}
 	bCloseingFlags=true;
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
 	QVariantMap CurStatusParm;
@@ -344,10 +356,10 @@ int IpcDeviceClient::closeAll()
 	}
 	//释放资源
 	DeInitProtocl();
-	m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-	CurStatusParm.clear();
-	CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-	eventProcCall("CurrentStatus",CurStatusParm);
+	//m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
+	//CurStatusParm.clear();
+	//CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+	//eventProcCall("CurrentStatus",CurStatusParm);
 	m_CurStream=0;
 	m_csRefDelete.unlock();
 	bHadCallCloseAll=false;
@@ -373,6 +385,7 @@ int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 	{
 		evmap.remove("Stream");
 		eventProcCall("ForRecord",evmap);
+		evmap.insert("Stream","Primary");
 	}
 	//预览码流
 	if (m_IfSwithStream==m_CurStream)
@@ -547,16 +560,26 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 	//连接状态，两路都连接
 	if (IDeviceClient::STATUS_CONNECTED==m_StreamCurStatus.value(0).m_CurStatus&&IDeviceClient::STATUS_CONNECTED==m_StreamCurStatus.value(1).m_CurStatus)
 	{
-		m_CurStatus=IDeviceClient::STATUS_CONNECTED;
-		QVariantMap CurStatusParm;
-		CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_CONNECTED);
-		eventProcCall("CurrentStatus",CurStatusParm);
+		//如果原来状态不是连接状态，测抛出信号
+		if (m_CurStatus!=IDeviceClient::STATUS_CONNECTED)
+		{
+			QVariantMap CurStatusParm;
+			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_CONNECTED);
+			eventProcCall("CurrentStatus",CurStatusParm);
+		}
+			m_CurStatus=IDeviceClient::STATUS_CONNECTED;
 	}
 
 	//断开状态，两路都断开
 	if (IDeviceClient::STATUS_DISCONNECTED==m_StreamCurStatus.value(0).m_CurStatus&&IDeviceClient::STATUS_DISCONNECTED==m_StreamCurStatus.value(1).m_CurStatus)
 	{
-		if (IDeviceClient::STATUS_CONNECTED==m_CurStatus)
+		//如果是正在连接过程，都没有连接，信号，由connect函数抛出，此处不做处理
+		if (IDeviceClient::STATUS_CONNECTING==m_CurStatus)
+		{
+			return 0;
+		}
+		//如果原来不是断开状态，测抛出断开的信号
+		if (IDeviceClient::STATUS_DISCONNECTED!=m_CurStatus)
 		{
 			QVariantMap CurStatusParm;
 			CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
@@ -567,7 +590,7 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 	//原来状态为连接，一路断开，即断开所有的连接
 	if (IDeviceClient::STATUS_CONNECTED==m_CurStatus)
 	{
-		if (m_StreamCurStatus.value(0).m_CurStatus!=m_StreamCurStatus.value(1).m_CurStatus)
+		if (m_StreamCurStatus.value(0).m_CurStatus==IDeviceClient::STATUS_DISCONNECTED||m_StreamCurStatus.value(1).m_CurStatus==IDeviceClient::STATUS_DISCONNECTED)
 		{
 			if (false==bHadCallCloseAll)
 			{

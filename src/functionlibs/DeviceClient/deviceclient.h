@@ -93,6 +93,7 @@ private slots:
 private:
 	int m_nRef;
 	QMutex m_csRef;
+	QMutex m_csCloseAll;
 
 	QStringList m_EventList;
 	QMultiMap<QString,DeviceClientInfoItem> m_EventMap;

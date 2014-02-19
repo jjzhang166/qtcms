@@ -81,7 +81,6 @@ private:
 	DevCliSetInfo m_DevCliSetInfo;
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
-	//IDeviceClient *m_IDeviceClient;
 	IDeviceClient *m_IDeviceClientDecideByVendor;
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
