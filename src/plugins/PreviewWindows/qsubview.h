@@ -74,6 +74,9 @@ signals:
 	void SetCurrentWindSignl(QWidget *);
 	void CurrentStateChangeSignl(int statevalue,QWidget *);
 	void FreshWindow();
+	void Connectting();
+	void DisConnecting();
+	void DisConnected();
 	void RMousePressMenu();
 
 
@@ -87,10 +90,12 @@ private:
 	ISetRecordTime *m_pRecordTime;
 
 	QSubViewConnectStatus m_CurrentState;
+	QSubViewConnectStatus m_HistoryState;
 	int iInitWidth;
 	int iInitHeight;
 	bool bRendering;
 	bool m_bIsRecording;
+	bool bCloseFromUi;//true:from ui;false:from net;
 	QTime dieTime;
 	QTimer m_checkTime;
 
@@ -101,7 +106,8 @@ private:
 
 	QAction *m_QActionCloseView;
 
-
+	int CountDisConnecting;
+	int CountConnecting;
 private:
 	int cbInit();
 
@@ -118,10 +124,14 @@ public slots:
 	//void emitOnFreshWindow();
 	void OnRMousePressMenu();
 	void OnCloseFromMouseEv();
-
+	void OnConnectting();
+	void OnDisConnecting();
+	void OnDisConnected();
 	virtual void timerEvent( QTimerEvent * );
 
 	void OnCheckTime();
+private:
+	void AutoConnect();
 };
 
 

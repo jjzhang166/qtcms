@@ -272,22 +272,6 @@ void QPreviewWindows::CurrentStateChangePlugin(int statevalue,QWidget *WID)
 			break;
 		}
 	}
-	if (1==statevalue)
-	{
-		qDebug()<<"connecting";
-	}
-	if (0==statevalue)
-	{
-		qDebug()<<"connected";
-	}
-	if (3==statevalue)
-	{
-		qDebug()<<"disconnecting";
-	}
-	if (2==statevalue)
-	{
-		qDebug()<<"disconnected";
-	}
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"CurrentState",statevalue);
 	EP_ADD_PARAM(arg,"WPageId",j);

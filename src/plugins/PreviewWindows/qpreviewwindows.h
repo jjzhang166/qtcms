@@ -75,6 +75,7 @@ private:
 	int m_uiWndIndex;
 	volatile int m_CurrentWnd;
 
+	
 	QMutex m_mutex;
 
 };

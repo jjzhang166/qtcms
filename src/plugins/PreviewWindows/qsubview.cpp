@@ -20,7 +20,10 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsRecording(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
-	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED)
+	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
+	m_HistoryState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
+	CountConnecting(0),
+	CountDisConnecting(0)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -39,6 +42,9 @@ QSubView::QSubView(QWidget *parent)
 	connect(&m_checkTime, SIGNAL(timeout()), this, SLOT(OnCheckTime()));
 
 	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
+	connect(this,SIGNAL(DisConnecting()),this,SLOT(OnDisConnecting()),Qt::QueuedConnection);
+	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);
+	connect(this,SIGNAL(DisConnected()),this,SLOT(OnDisConnected()),Qt::QueuedConnection);
 	//修改成动态生成，此处去掉
 //	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
@@ -124,7 +130,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	QPen pen = QPen(LineColor);
 	pen.setWidth(2);
  	p.setPen(pen);
-
+	qDebug()<<this;
 	p.drawRect(rcClient);
 	if (this->hasFocus())
 	{
@@ -152,6 +158,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	int aw=400;
 	int ah=300;
 	aFontSize=awidth*FontSize/(aw);
+	qDebug()<<aFontSize<<":aFontSize";
 	QFont font(FontFamily, aFontSize, QFont::Bold);
 	
 	p.setFont(font);
@@ -159,15 +166,52 @@ void QSubView::paintEvent( QPaintEvent * e)
  	pen.setColor(FontColor);
 	
  	p.setPen(pen);
-
-	p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING)
+	{
+		QString m_text;
+		m_text.append(m_DevCliSetInfo.m_sEseeId);
+		m_text+=QString(": %1").arg(m_DevCliSetInfo.m_uiChannelId);
+		if (CountConnecting==4)
+		{
+			CountConnecting=0;
+		}
+		for (int i=0;i<CountConnecting;i++)
+		{
+			m_text+="..";
+		}
+		CountConnecting++;
+		qDebug()<<m_text;
+		p.drawText(rcClient, Qt::AlignCenter, m_text);
+	}
+	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTING)
+	{
+		QString m_text;
+		m_text.append(m_DevCliSetInfo.m_sEseeId);
+		m_text+=QString(": %1").arg(m_DevCliSetInfo.m_uiChannelId);
+		if (CountDisConnecting==0)
+		{
+			CountConnecting=4;
+		}
+		for (int i=0;i<CountConnecting-1;i++)
+		{
+			m_text+="..";
+		}
+		CountConnecting--;
+		qDebug()<<m_text;
+		p.drawText(rcClient, Qt::AlignCenter, m_text);
+	}
+	else{
+		p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	}
 
 }
 
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
 	emit mouseDoubleClick(this,ev);
-	if (this->parentWidget()->width()==this->width())
+	qDebug()<<this->parentWidget()->width();
+	qDebug()<<this->width();
+	if (this->parentWidget()->width()-this->width()<20)
 	{
 		if (NULL!=m_IDeviceClientDecideByVendor)
 		{
@@ -249,7 +293,6 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			}
 			return 1;
 		}
-	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_CONNECTING;
 	SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	m_QSubViewObject.OpenCameraInWnd();
@@ -260,7 +303,6 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 }
 int QSubView::CloseWndCamera()
 {
-	m_CurrentState=QSubView::QSubViewConnectStatus::STATUS_DISCONNECTING;
 	m_QSubViewObject.CloseWndCamera();
 	//释放动态生成的指针
 	if (NULL!=m_IDeviceClientDecideByVendor)
@@ -363,17 +405,36 @@ int QSubView::PrevPlay(QVariantMap evMap)
 }
 int QSubView::CurrentStateChange(QVariantMap evMap)
 {
-	if (evMap.value("CurrentStatus").toInt() == IDeviceClient::STATUS_DISCONNECTED)
-	{
-		emit FreshWindow();
-	}
+	//if (evMap.value("CurrentStatus").toInt() == IDeviceClient::STATUS_DISCONNECTED)
+	//{
+	//	emit FreshWindow();
+	//}
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+	if (1==m_CurrentState)
 	{
-		qDebug()<<m_CurrentState<<"disconnect";
+		emit Connectting();
+		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connecting";
+	}
+	if (0==m_CurrentState)
+	{
+		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connected";
+	}
+	if (3==m_CurrentState)
+	{
+		emit DisConnecting();
+		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnecting";
+	}
+	if (2==m_CurrentState)
+	{
+		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnected";
 	}
 	emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
-
+	if (QSubViewConnectStatus::STATUS_CONNECTED==m_HistoryState&&QSubViewConnectStatus::STATUS_DISCONNECTED==m_CurrentState)
+	{
+		//自动重连
+		AutoConnect();
+	}
+	m_HistoryState=m_CurrentState;
 	return 0;
 }
 int QSubView::PrevRender(QVariantMap evMap)
@@ -424,8 +485,18 @@ void QSubView::OnFreshWindow()
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
-	repaint(this->x(),this->y(),this->width(),this->height());
-	killTimer(ev->timerId());
+	qDebug()<<this<<m_DevCliSetInfo.m_uiChannelId;
+	update();
+	/*repaint(this->x(),this->y(),this->width(),this->height());*/
+	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
+	{
+		killTimer(ev->timerId());
+	}
+	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+	{
+		killTimer(ev->timerId());
+	}
+	/*killTimer(ev->timerId());*/
 }
 
 void QSubView::OnRMousePressMenu()
@@ -652,4 +723,24 @@ int QSubView::SetDeviceByVendor( const QString & sVendor )
 		}
 	}
 	return 1;
+}
+
+void QSubView::AutoConnect()
+{
+	//OpenCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
+}
+
+void QSubView::OnConnectting()
+{
+	startTimer(500);
+}
+
+void QSubView::OnDisConnecting()
+{
+	startTimer(500);
+}
+
+void QSubView::OnDisConnected()
+{
+	startTimer(500);
 }
