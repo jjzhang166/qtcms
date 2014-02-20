@@ -78,10 +78,11 @@ signals:
 	void DisConnecting();
 	void DisConnected();
 	void RMousePressMenu();
-
+	void RenderHistoryPix();
 
 private:
 	DevCliSetInfo m_DevCliSetInfo;
+	RenderInfo m_HistoryRenderInfo;
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClientDecideByVendor;
@@ -95,6 +96,7 @@ private:
 	int iInitHeight;
 	bool bRendering;
 	bool m_bIsRecording;
+	bool m_bIsRenderHistory;
 	bool bCloseFromUi;//true:from ui;false:from net;
 	QTime dieTime;
 	QTimer m_checkTime;
@@ -102,15 +104,18 @@ private:
 	Ui::titleview * ui;
 
 	QMutex m_MutexdoubleClick;
+	QMutex m_csRender;
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
 
 	int CountDisConnecting;
 	int CountConnecting;
+	int m_DisConnectingTimeId;
+	int m_DisConnectedTimeId;
+	int m_RenderTimeId;
 private:
 	int cbInit();
-
 public:
 	//»Øµ÷
 	int PrevPlay(QVariantMap evMap);
@@ -128,7 +133,7 @@ public slots:
 	void OnDisConnecting();
 	void OnDisConnected();
 	virtual void timerEvent( QTimerEvent * );
-
+	void OnRenderHistoryPix();
 	void OnCheckTime();
 private:
 	void AutoConnect();

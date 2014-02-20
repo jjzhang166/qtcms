@@ -17,4 +17,17 @@ typedef struct _tagDevCliSetInfo{
 	QString m_sCameraname;
 	QString m_sVendor;
 }DevCliSetInfo;
+typedef struct _tagRenderInfo{
+	char* pData;
+	char* pYdata;
+	char* pUdata;
+	char* pVdata;
+	int iWidth;
+	int iHeight;
+	int iYStride;
+	int iUVStride;
+	int iLineStride;
+	QString iPixeFormat;
+	int iFlags;
+}RenderInfo;
 #endif

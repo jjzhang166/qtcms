@@ -223,6 +223,7 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
 }
 int QPreviewWindows::SetCameraInWnd(unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname ,const QString & sVendor)
@@ -296,17 +297,20 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 
 int QPreviewWindows::StartRecord(int nWndID)
 {
+	qDebug()<<"StartRecord:"<<nWndID;
 	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
 	int nRet = 0;
+	
 	nRet = m_PreviewWnd[nWndID].StartRecord();
 	return nRet;
 }
 
 int QPreviewWindows::StopRecord(int nWndID)
 {
+	qDebug()<<"StopRecord:"<<nWndID;
 	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
@@ -319,6 +323,7 @@ int QPreviewWindows::StopRecord(int nWndID)
 
 int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndID)
 {
+	qDebug()<<"SetDevInfo"<<"devname:"<<devname<<"nChannelNum:"<<nChannelNum<<"nWndID:"<<nWndID;
 	if (nChannelNum < 0 || nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMutex>
 #include "qsubview.h"
+#include <QVariantMap>
 #include "qwfw.h"
 #include "PreviewWindowsGlobalSetting.h"
 #include "IWindowDivMode.h"
