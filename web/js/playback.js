@@ -337,18 +337,26 @@ var	nViewNum = 0,
 	//回放页面文件显示表格初始化
 	function PBrecFileTableInit(){
 		oSelected = [];
-		if($('div.dev_list li.sel span.channel').length != 0){
-			var oVideoList = $("#channelvideo").html('');
-			$('div.dev_list li.sel span.channel').each(function(index){
+		var odev = $('div.dev_list li.sel span.channel')
+		var oVideoList = $("#channelvideo").html('');
+		if(odev.length != 0){
+			odev.each(function(index){
 				var name = $(this).data('data').channel_name;
 				var str = index < 4 ? 'checked="checked"' : '';
-				$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
+				addRecFileTable(str,name);
 			})
 		}
-		
+		if(odev.length < 4){
+			for(var i=2;i<=4;i++)
+			addRecFileTable('disabled="disabled"','chl_'+i);
+		} 
+
 		setTables();
 
 		$("#channelvideo input:checkbox:checked").each(function(){
 			oSelected.push($(this));
 		});
+	}
+	function addRecFileTable(str,name){
+		$('<tr><td class="no_border"><input type="checkbox"'+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 	}
