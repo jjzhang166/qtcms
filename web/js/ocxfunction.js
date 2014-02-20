@@ -391,11 +391,13 @@ function setDevData2ocx(){
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 			var intoWindsChl = $("#channelvideo").find('input:checkbox');
 			if(intoWindsChl.length != 0){
+				var i= 0;
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
-						if(oPlayBack.AddChannelIntoPlayGroup(index,index)){
+						if(oPlayBack.AddChannelIntoPlayGroup(index,i)){
 							b = false;
 						};
+						i++;
 					}
 				});
 			}else{
