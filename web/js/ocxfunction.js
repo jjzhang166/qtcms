@@ -3,6 +3,7 @@ var oCommonLibrary,
 	bool = 0;
 	
 	$(function(){ 
+		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
 		//分组列表;
 		groupList2Ui();

@@ -5,7 +5,7 @@ var	nViewNum = 0,
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
-		oView = $('#playback_view')
+		oView = $('#playback_view');
 		oPlayBack = $('#playback')[0];
 		oPlaybackLocl = $('#playbackLocl')[0];
 		ViewMax();
@@ -34,7 +34,7 @@ var	nViewNum = 0,
 		})
 
 		var oSelected = [];
-		$('div.dev_list span.device').on('click',function(){
+		$('div.dev_list').on('click','span.device',function(){
 			var obj = $(this).parent('li');
 			$('div.dev_list li').not(obj).removeClass('sel');
 			obj.toggleClass('sel');
@@ -65,27 +65,22 @@ var	nViewNum = 0,
 			}
 		})*/
 
-		$('div.dev_list span.device').on({
-			click:function(){				
-				oSelected = [];
+		oDiv.on('click','span.device',function(){				
+			oSelected = [];
+			if($('div.dev_list li.sel span.channel').length != 0){
+				var oVideoList = $("#channelvideo").html('');
+				$('div.dev_list li.sel span.channel').each(function(index){
+					var name = $(this).data('data').channel_name;
+					var str = index < 4 ? 'checked="checked"' : '';
+					$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
+				})
+			}
+			
+			setTables();
 
-				if($('div.dev_list li.sel span.channel').length != 0){
-					var oVideoList = $("#channelvideo").html('');
-					$('div.dev_list li.sel span.channel').each(function(index){
-						var name = $(this).data('data').channel_name;
-						var str = index < 4 ? 'checked="checked"' : '';
-						$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
-					})
-				}
-				setTables();
-
-				$("#channelvideo input:checkbox:checked").each(function(){
-					oSelected.push($(this));
-				});
-			}/*,
-			dblclick:function(){
-				searchVideo();
-			}*/
+			$("#channelvideo input:checkbox:checked").each(function(){
+				oSelected.push($(this));
+			});
 		})
 
 		$("#channelvideo").on('click','input:checkbox',function(event){ 
@@ -110,6 +105,7 @@ var	nViewNum = 0,
 					dragStopMove();
 					oPlaybackLocl.GroupStop();
 					oPlayBack.GroupStop();
+					$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
 				}catch(e){
 					//alert('try:'+e);
 				};
@@ -146,7 +142,7 @@ var	nViewNum = 0,
 				$('#type span').attr('type',index);
 			})
 		})
-		$('#nowSearchType li').each(function(index){
+		$('#nowSearchType input:radio').each(function(index){
 			$(this).click(function(){
 				bool = index;
 			})
@@ -155,8 +151,36 @@ var	nViewNum = 0,
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 	})///
 
-	function playVideo(){ 
+	function togglePlay(){ 
+		var obj = $('#togglePlay');
+		var to = $('#togglePlay').attr('toggle'),
+			hasFile = $('#togglePlay').attr('hasFile');
+			speed = $('#togglePlay').attr('speed');
+		if(hasFile){
+			if(to){
+				/*if(speed){
+					alert('正常速度');
+					GroupSpeedNormal();
+				}else{*/
+					alert('继续');
+					playAction('GroupContinue');
+				//}
+			}else{
+				alert('暂停');
+				playAction('GroupPause')
+			}
+		}else{
+			alert('播放');
+			playVideo();		
+		}
+	}
+	function playVideo(){
 		try{
+			var obj = $('#togglePlay');
+				obj.attr({
+					toggle:'1',
+					hasFile:'1'
+				}).css('background-position','0px'+' '+(-obj.height())+'px');
 			dragStopMove();
 			oPlaybackLocl.GroupStop();
 			oPlayBack.GroupStop();
@@ -201,19 +225,7 @@ var	nViewNum = 0,
 		var show ='';
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
 		dragStopMove();
-		if(str == 'GroupSpeedFast' || str == 'GroupSpeedSlow'){
-			if(obj.id == 'playback'){
-				if(str == 'GroupSpeedFast'){
-					down = 1;
-					up = 2;
-					show = '2x';
-				}else{ 
-					down = 2;
-					up = 1;
-					show = '1/2x';
-				}		
-				obj[str]();
-			}else if(obj.id == 'playbackLocl'){
+			if(!bool){
 				var speed = 1;
 				if(str == 'GroupSpeedFast'){
 					down = 1;			
@@ -229,15 +241,35 @@ var	nViewNum = 0,
 				}		
 				show = show+speed+'x';			
 				obj[str](speed);
+			}else{
+				if(str == 'GroupSpeedFast'){
+					down = 1;
+					up = 2;
+					show = '2x';
+				}else{ 
+					down = 2;
+					up = 1;
+					show = '1/2x';
+				}		
+				obj[str]();
 			}
-		}else{ 
-			if(str == 'GroupSpeedNormal'){
-				up = 1;
-				down=1;			
-				show = '1x';
-			}
-			obj[str]();
-		}
+		$('#togglePlay').attr('speed','1');
+		palybackspeed(show);
+		dragStartMove();
+	}
+	function groupStop(){
+		$('#togglePlay').removeAttr('hasFile').css('background-position','0px 0px');
+		dragStopMove();
+		var obj = bool ? oPlaybackLocl : oPlayBack;
+		obj.GroupStop();
+	}
+	function GroupSpeedNormal(){
+		//$('#togglePlay').removeAttr('speed').css('background-position','0px 0px');
+		up = 1;
+		down=1;			
+		show = '1x';
+		var obj = bool ? oPlaybackLocl : oPlayBack;
+		obj.GroupSpeedNormal();
 		palybackspeed(show);
 		dragStartMove();
 	}

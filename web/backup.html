@@ -27,7 +27,7 @@ var oPlayBack,oBackup;
 
 		$('div.calendar').initCalendar();
 
-		$('div.dev_list span.device').on('click',function(){
+		$('div.dev_list').on('click','span.device',function(){
 			$('div.dev_list span.device').parent('li').removeClass('sel');
 			$(this).parent('li').toggleClass('sel');
 		})
@@ -47,7 +47,8 @@ var oPlayBack,oBackup;
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
-		$('<tr><td><input type="checkbox" /></td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
+		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
+		$('<tr><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
 	}
 	function contentMax(){
 		var H = $(window).height();
@@ -269,7 +270,7 @@ var oPlayBack,oBackup;
 	<div id="search_result" style="overflow:auto;">
 			<table>
 				<thead>
-					<tr><td>Check</td><td>Channel</td><td>Start Time</td><td>End Time</td><td style="width:300px;">Progess</td></tr>
+					<tr><td>Check</td><td>devname</td><td>Channel</td><td>Start Time</td><td>End Time</td><td style="width:300px;">Progess</td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
 					<!-- <tr><td><input type="checkbox" /></td><td>1</td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
@@ -277,7 +278,7 @@ var oPlayBack,oBackup;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Inverse</a><a class="hover" onclick="getDir();">Backup</a>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">All</a><a class="hover" href="javascript:;" id="tableAntiElection">Stop</a><a class="hover" onclick="getDir();">Backup</a>
 	</div>
 	<div id="foot"></div>
 </body>

@@ -16,6 +16,7 @@
 <style type="text/css">
 	#channelvideo tr{position: relative;}
 	#channelvideo .video{height:16px; position: absolute;top:1px;}
+	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
 </style>
 </head>
 
@@ -78,13 +79,13 @@
 		<!-- <div class="dev_list">
 			<ul class="filetree" id="group_0"></ul>	
 		</div> -->
-		<div style="background:#E4EBF4; width:224px; height:22px; padding:2px;">
-			<ul class="switchlist" id="nowSearchType">
-				<li class="switchlistAct">远程搜索</li>
-				<li>本地搜索</li>
-			</ul>
-		</div>
 		<div id="find_type">
+			<div id="nowSearchType">
+				<input type="radio" name="type" id="t_1" checked="checked" />
+				<label for="t_1">远程文件</label>
+				<input type="radio" name="type" id="t_2" />
+				<label for="t_2">本地文件</label>
+			</div>
 			<table>
 				<tr>
 					<td style="text-align:right">File Type:</td>
@@ -99,85 +100,86 @@
 						</ul>
 					</td>
 				<tr>
-				<tr>
-					<td style="text-align:right">Start Time:</td>
-					<td>
-						<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-						<!-- <ul class="option">
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-						</ul> -->
-					</td>
-				<tr>
-				<tr>
-					<td style="text-align:right">End Time:</td>
-					<td>
-						<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-						<!-- <ul class="option">
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-							<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
-						</ul> -->
-					</td>
-				<tr>	
+				<!-- <tr>
+						<td style="text-align:right">Start Time:</td>
+						<td>
+							<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+							<ul class="option">
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+							</ul>
+						</td>
+					<tr>
+					<tr>
+						<td style="text-align:right">End Time:</td>
+						<td>
+							<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+							<ul class="option">
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+							</ul>
+						</td>
+					<tr> -->	
 			</table>
 		</div>
-		<div class="calendar">
-			<div class="calendar_top">
-				<a class="hover" style="background-position: -240px -31px;" href="javascript:;"></a>
-				<a class="hover" style="background-position: -160px -31px;" href="javascript:;"></a>
-				<span class="nowDate"></span>
-				<a class="hover" style="background-position: -0px -31px;" href="javascript:;"></a>
-				<a class="hover" style="background-position: -80px -31px;" href="javascript:;"></a>
-			</div>
-			<div class="calendar_days">
-				<table>
-					<thead>
-						<tr><td style="color:red;">日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td style="color:red;">六</td></tr>
-					</thead>
-					<tbody>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="hover seek" onclick="searchVideo()">Search</div>
+	<div class="calendar">
+		<div class="calendar_top">
+			<a class="hover" style="background-position: -240px -31px;" href="javascript:;"></a>
+			<a class="hover" style="background-position: -160px -31px;" href="javascript:;"></a>
+			<span class="nowDate"></span>
+			<a class="hover" style="background-position: -0px -31px;" href="javascript:;"></a>
+			<a class="hover" style="background-position: -80px -31px;" href="javascript:;"></a>
 		</div>
+		<div class="calendar_days">
+			<table>
+				<thead>
+					<tr><td style="color:red;">日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td style="color:red;">六</td></tr>
+				</thead>
+				<tbody>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="hover seek" onclick="searchVideo()">Search</div>
 	</div>
+		</div> 
 	<div id="operating">
 		<div class="operat">
 			<ul>
-				<li class="hover" style="background-position: 0 0;" onclick="playVideo();"></li>
-				<li class="hover" style="background-position: -120px -72px;" onclick="playAction('GroupPause');"></li>
-				<li class="hover" style="background-position: 0 -36px;" onclick="playAction('GroupContinue');"></li>
-				<li class="hover" style="background-position: -120px -108px;" onclick="playAction('GroupSpeedSlow');"></li>
+				<li class="toggle hover" style="background-position: 0 0;" id="togglePlay" onclick="togglePlay();" title="播放/暂停"></li>
+				<li class="hover" style="background-position: -120px -72px;" onclick="groupStop();" title="停止"></li>
+				<!-- <li class="hover" style="background-position: 0 -36px;" onclick="playAction('GroupContinue');"></li>-->
+				<li class="hover" style="background-position: -120px -108px;" onclick="playAction('GroupSpeedSlow');" title="慢放"></li>
+				<!--
 				<li class="hover" style="background-position:  0 -72px;" onclick="playAction();"></li>
-				<li class="hover" style="background-position: -120px -144px;" onclick="playAction();"></li>
-				<li class="hover" style="background-position: 0 -108px;" onclick="playAction('GroupSpeedFast');"></li>
+				<li class="hover" style="background-position: -120px -144px;" onclick="playAction();"></li>-->
+				<li class="hover" style="background-position: 0 -108px;" onclick="playAction('GroupSpeedFast');" title="快进"></li><!--
 				<li class="hover" style="background-position: -120px -180px;" onclick="playAction('GroupSpeedNormal');"></li>
-				<li class="hover" style="background-position: 0 -144px;" onclick="playAction('GroupStop');"></li>
-				<li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1x</li>
-				<!-- 
+				<li class="hover" style="background-position: 0 -144px;" onclick="playAction('GroupPause');"></li>
+				--><li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1x</li>
+				<!--				
 				<li class="warn"><div style="background:#7BC345"></div>Time</li>
 				<li class="warn"><div style="background:#FFE62E"></div>Motion</li>
 				<li class="warn"><div style="background:#F00"></div>Sensor</li>
-				<li class="warn"><div style="background:#F78445"></div>Manual</li> -->
+				<li class="warn"><div style="background:#F78445"></div>Manual</li> 
 				<li class="hover" style="background-position: -120px -216px;"></li>
 				<li class="hover" style="background-position: 0 -180px"></li>
-				<!-- <li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li> -->
-				<li class="toggle hover" style="background-position: -120px 0;"></li>
+				li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li> -->
+				<li class="toggle hover" style="background-position: -120px 0;" title="声音"></li>
 				<li class="hover" style="background:0; width:70px; margin-right:30px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
-				<li class="hover" style="background-position: -120px -252px;"></li>
+				<!-- <li class="hover" style="background-position: -120px -252px;"></li>
 				<li class="setViewNum hover" style="background-position: 0 -252px;"></li>
-				<li class="setViewNum hover" style="background-position: -30px -216px;"></li>
+				<li class="setViewNum hover" style="background-position: -30px -216px;"></li> -->
 				<!-- <li class="setViewNum hover" style="background-position: 0 -288px;"></li> -->
-				<li class="hover" style="background-position: -120px -288px;"></li>
-				<li class="hover" style="background-position: 0 -324px;"></li>
+				<li class="hover" style="background-position: -120px -288px;" title="全屏"></li>
+				<li class="hover" style="background-position: 0 -324px;" title="截屏"></li>
 			</ul>
 		</div>
 		<div class="play_time"></div>

@@ -187,30 +187,12 @@ var oSearchOcx;
 
 		//搜索结果 设备列表tr委托部分事件;
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(event){
-			var devList = $('tbody.synCheckboxClick input:checked');
-			var oArea=$('div.dev_list:eq(0)')
-			if(!oArea.find('span.sel')[0]){
-				oArea.find('span').removeClass('sel');
-				oArea.find('span.area:first').addClass('sel');
-			}
-			var areaID = oArea.find('span.sel').data('data')['area_id'];
-			var str = '<devListInfo cut = "'+devList.length+'" area_id="'+areaID+'">';
-			devList.each(function(){ 
-				var data = $(this).parent('td').parent('tr').data('data');
-				var dataStr = '<dev username="admin" password="" ';
-				for(i in data){ 
-					dataStr+=i+'="'+data[i]+'" ';
-				}
-				dataStr+=' />';
-				str+=dataStr;
-			});
-			str+=' </devListInfo>';
-			$('#adddevicedouble_ID').val('').val(str);
-			//alert($('#adddevicedouble_ID').val());
 			var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
 			}
+			var devList = $('tbody.synCheckboxClick input:checked');
+			initDevIntoAreaXml(devList);
 		})
 		
 		//用户table下 tr委托部分事件
@@ -371,8 +353,37 @@ var oSearchOcx;
 		$('#recordtimedouble_ID').val(str);
 	}
 	function getrecrodxml(){ 
+		$('tbody.synCheckboxClick input:checkbox').each(function(){
+			$(this).click();
+		})
 		alert($('#recordtimedouble_ID').val());
 	}
+	// 一键添加
+	function addAlldevIntoArea(){
+		var devList = $('tbody.synCheckboxClick input').not(':disabled').prop('checked',true);
+			initDevIntoAreaXml(devList);
+	}
+	//初始化要添加到区域的XML信息
+	function initDevIntoAreaXml (obj){
+			var oArea=$('div.dev_list:eq(0)')
+			if(!oArea.find('span.sel')[0]){
+				oArea.find('span').removeClass('sel');
+				oArea.find('span.area:first').addClass('sel');
+			}
+			var areaID = oArea.find('span.sel').data('data')['area_id'];
+			var str = '<devListInfo cut = "'+obj.length+'" area_id="'+areaID+'">';
+			obj.each(function(){ 
+				var data = $(this).parent('td').parent('tr').data('data');
+				var dataStr = '<dev username="admin" password="" ';
+				for(i in data){ 
+					dataStr+=i+'="'+data[i]+'" ';
+				}
+				dataStr+=' />';
+				str+=dataStr;
+			});
+			str+=' </devListInfo>';
+			$('#adddevicedouble_ID').val(str);
+		}
 	function FillStorageParmData(){
 		var diskcheckbox = $('#StorageParm table table input:checkbox')
 		var disks = oCommonLibrary.getEnableDisks().split(':');

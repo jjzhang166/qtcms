@@ -39,50 +39,45 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			ViewMax('preview');
 		}
  		//打开通道
-		$('div.dev_list span.channel').each(function(){ 
-			$(this).click(function(){
-				//show($(this).data('data'));
-				var chlData = getChlFullInfo($(this));
-				if($(this).attr('state')){
-					CloseWind($(this).attr('wind'),chlData.dev_id);
-				}else{
-					openWind(oPreView.GetCurrentWnd(),chlData);
-				}
-			})
+		oDiv.on('click','span.channel',function(){ 
+			//show($(this).data('data'));
+			var chlData = getChlFullInfo($(this));
+			if($(this).attr('state')){
+				CloseWind($(this).attr('wind'),chlData.dev_id);
+			}else{
+				openWind(oPreView.GetCurrentWnd(),chlData);
+			}
 		})
 		//打开设备下的说所有通道
-		$('div.dev_list span.device').each(function(){ 
-			var oDevice = $(this);
-			oDevice.attr('bAllopen','0').click(function(){
-				var chlData;
-				var wind = oPreView.GetCurrentWnd();
-				if(oDevice.attr('bAllopen') == 1){
-					oDevice.next('ul').find('span.channel').each(function(){
-						chlData = getChlFullInfo($(this));	 
-						CloseWind($(this).attr('wind'),chlData.dev_id);
-					})
-				}else{
-					oDevice.next('ul').find('span.channel').each(function(){
+		oDiv.on('click','span.device',function(){ 
+			var oDevice = $(this).attr('bAllopen','0');
+			var chlData;
+			var wind = oPreView.GetCurrentWnd();
+			if(oDevice.attr('bAllopen') == 1){
+				oDevice.next('ul').find('span.channel').each(function(){
 					chlData = getChlFullInfo($(this));	 
-						if(!$(this).attr('wind')){
-							oDevice.attr('bAllopen','0');
-							var windState = oPreView.GetWindowConnectionStatus(wind);
-							var win = wind;
-							if(windState != 2){
-								win = getWind(wind);
-							}
-							openWind(win,chlData);
+					CloseWind($(this).attr('wind'),chlData.dev_id);
+				})
+			}else{
+				oDevice.next('ul').find('span.channel').each(function(){
+					chlData = getChlFullInfo($(this));	 
+					if(!$(this).attr('wind')){
+						oDevice.attr('bAllopen','0');
+						var windState = oPreView.GetWindowConnectionStatus(wind);
+						var win = wind;
+						if(windState != 2){
+							win = getWind(wind);
 						}
-					})
-				}
-				
-				if(oDevice.attr('bAllopen') == 1){ 
-					var str = getNowTime()+'   正在关闭设备:'+chlData.name;
-				}else{ 
-					var str = getNowTime()+'   正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
-				}
-				writeActionLog(str);
-			})
+					}	openWind(win,chlData);
+				})
+			}
+			
+			if(oDevice.attr('bAllopen') == 1){ 
+				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
+			}else{ 
+				var str = getNowTime()+'   正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
+			}
+			writeActionLog(str);
 		})
 		//显示分屏的文字
 		$('div.operat li.setViewNum').click(function(){ 

@@ -84,11 +84,11 @@
 		</div>
 		<div id="PTZ_control"> 
 			<ul class="ope_list">
-				<li class="act">PTZTrack</li>
-				<li style="margin:1px 5px;">PicAdjust</li>
+				<li class="act">PTZ</li>
+				<!-- <li style="margin:1px 5px;">PicAdjust</li>
 				<li>Cruise</li>
 				<li style="width:110px;">PTZCtrl</li>
-				<li style="width:110px;">PreSet</li>
+				<li style="width:110px;">PreSet</li> -->
 			</ul>
 			<div class="switch" style="display:block">
 				<div id="Dire_Control">
@@ -138,9 +138,9 @@
 	</div>
 	<div id="operating">
 		<div class="operat preview">
-			<ul style="width:440px;">
+			<ul style="width:410px;">
 				<li style="background:0;">
-					<div class="select" style="background: url(images/preview/operating_icon.png) no-repeat; background-position:  -30px -36px; height:36px; border:0;" id="setModel"></div>
+					<div class="select" style="background: url(images/preview/operating_icon.png) no-repeat; background-position:  -30px -36px; height:36px; border:0;" id="setModel" title="分屏设置"></div>
 					<ul class="option" style="top:0; width:432px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
 						<li class="setViewNum hover" style="background-position: 0 0;" onclick="setViewMod('div1_1')"></li>
 						<li class="setViewNum hover" style="background-position: -30px -36px;"onclick="setViewMod('div2_2')"></li>
@@ -156,16 +156,16 @@
 					</ul>
 				</li>
 				<li style="width:40px;text-align:center; background:0; line-height:36px; color:#FFF;" id="nowWinMod"></li>
-				<li class="hover" onclick="preNextPage(1)" style="background-position: -120px -324px;"></li>
-				<li class="hover" onclick="preNextPage(0)" style="background-position: -120px -360px"></li>
-				<li class="hover" style="background-position: -120px -72px;"></li>
-				<li class="hover" style="background-position: -120px -108px;" onclick="StopRecord();"></li>
-				<li class="hover" style="background-position: -120px -144px;" onclick="StartRecord();"></li>
-				<li class="hover" style="background-position: -120px -180px;"></li>
-				<li class="hover" style="background-position: -120px -216px;"></li>
-				<li class="hover" style="background-position: -120px -252px;"></li>
-				<li class="hover" style="background-position: -120px -288px;"></li>
-				<li class="toggle hover" style="background-position: -120px 0"></li>
+				<li class="hover" onclick="preNextPage(1)" style="background-position: -120px -324px;" title="上一页"></li>
+				<li class="hover" onclick="preNextPage(0)" style="background-position: -120px -360px" title="下一页"></li>
+				<li class="hover" style="background-position: -120px -72px;" title="关闭当前窗口"></li>
+				<!-- <li class="hover" style="background-position: -120px -108px;" onclick="StopRecord();" title="暂停录像"></li> -->
+				<li class="toggle hover" style="background-position: -120px -108px;" onclick="StartRecord();" title="录像"></li>
+				<li class="hover" style="background-position: -120px -180px;" title="截屏"></li>
+				<li class="toggle hover" style="background-position: -120px -216px;"></li>
+				<!-- <li class="hover" style="background-position: -120px -252px;"></li> -->
+				<li class="hover" style="background-position: -120px -288px;" title="全屏"></li>
+				<li class="toggle hover" title="声音" style="background-position: -120px 0"></li>
 				<li class="hover" style="background:0; width:70px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
 			</ul>
 		</div>

@@ -28,10 +28,13 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	}).mouseup(function(ev){
 		if(action == 'toggle'){
 			var H = obj.height();
-			if(top == 0){
-				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+			var a = obj.attr('toggle');
+			if(a){
+				obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
+				obj.removeAttr('toggle');
 			}else{
-				obj.css('background-position',left-width+'px'+' 0px');
+				obj.attr('toggle','1');
+				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
 			}	
 			top = parseInt(obj.css('backgroundPositionY')) || parseInt(obj.css('background-position').split('px')[1]);	
 		}else if(action == 'hover'){
@@ -39,7 +42,6 @@ function addMouseStyle(obj,action){  //按钮UI响应
 		}else{
 			if(action == "switch"){
 				var oSwitch = $('a.switch');
-
 			}else{
 				var ev = ev || window.event;
 				var oSwitch = $('div .setViewNum');	
@@ -62,7 +64,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 }
 
 function ViewMax(type){
-	var devListH = type == 'preview' ? 120 : 154 ;
+	var devListH = type == 'preview' ? 290 : 233 ;
 	var WinW = $(window).width();
 	var WinH = $(window).height();
 
@@ -78,15 +80,19 @@ function ViewMax(type){
 	}
 	oLeft.css({
 		left:oView.width(),
-		height:oView.height()+devListH
+		height:WinH-116
 	});
-	$('div.dev_list').height(oLeft.height()-315);
-	oBottom.width(oView.width());
+	$('div.dev_list').height(oLeft.height()-devListH)
+	oBottom.css({
+		width:oView.width(),
+		top:oView.height()+80
+	});
+
 	$('#foot').css({
 		top:oView.height()+212
 	})
 	if(type == 'preview'){
-		$('#actionLog').width(oView.width()-6);
+		$('#actionLog').width(oView.width()-10);
 	}else{
 		setTables();
 	}	
@@ -263,12 +269,12 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 			})
 
 			$('#tableSelectAll').on('click',function(){  // 全选
-				if($(this).attr('status') == 0){
-					warp.find('input:checkbox').not(':checked').click();	
-					$(this).attr('status',1);
+				if($(this).attr('status')){
+					warp.find('input:checkbox').not(':checked').prop('checked',true);
+					$(this).removeAttr('status');
 				}else{
 					warp.find('input:checkbox').prop('checked',false);
-					$(this).attr('status',0);
+					$(this).attr('status',1);
 				}
 				
 			})
