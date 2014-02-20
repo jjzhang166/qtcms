@@ -34,10 +34,15 @@ var	nViewNum = 0,
 		})
 
 		var oSelected = [];
-		$('div.dev_list').on('click','span.device',function(){
-			var obj = $(this).parent('li');
+		var listParent = $('#area_0').next('ul');
+		listParent.on('click','li:has(span.device)',function(){
+			var obj = $(this)
 			$('div.dev_list li').not(obj).removeClass('sel');
-			obj.toggleClass('sel');
+			obj.addClass('sel');
+			PBrecFileTableInit();
+		})
+		listParent.on('dblclick','li:has(span.device)',function(){
+			searchVideo();
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -64,26 +69,9 @@ var	nViewNum = 0,
 				obj.parent('ul').parent('li').removeClass('sel').find('span.device').removeClass('sel');
 			}
 		})*/
-
-		oDiv.on('click','span.device',function(){				
-			oSelected = [];
-			if($('div.dev_list li.sel span.channel').length != 0){
-				var oVideoList = $("#channelvideo").html('');
-				$('div.dev_list li.sel span.channel').each(function(index){
-					var name = $(this).data('data').channel_name;
-					var str = index < 4 ? 'checked="checked"' : '';
-					$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
-				})
-			}
-			
-			setTables();
-
-			$("#channelvideo input:checkbox:checked").each(function(){
-				oSelected.push($(this));
-			});
-		})
-
-		$("#channelvideo").on('click','input:checkbox',function(event){ 
+		
+		var channelvideo = $("#channelvideo")
+		channelvideo.on('click','input:checkbox',function(event){ 
 			event.stopPropagation();
 			if($(this).prop('checked')){
 				oSelected.push($(this));
@@ -95,11 +83,11 @@ var	nViewNum = 0,
 			}
 		})
 
-		$("#channelvideo").on('click','td.no_border',function(event){ 
+		channelvideo.on('click','td.no_border',function(event){ 
 			$(this).find('input:checkbox').click();
 		})
 
-		$("#channelvideo").on({ 
+		channelvideo.on({ 
 			mousedown:function(event){
 				try{
 					dragStopMove();
@@ -115,7 +103,7 @@ var	nViewNum = 0,
 			    	}
 				//event.stopPropagation();
 				$('div.play_time').css('left',left-2);
-				set_drag(2,79,$('#channelvideo').width()-2);
+				set_drag(2,79,channelvideo.width()-2);
 			}
 		})
 		$('div.play_time').on('dblclick',function(event){ 
@@ -162,15 +150,15 @@ var	nViewNum = 0,
 					alert('正常速度');
 					GroupSpeedNormal();
 				}else{*/
-					alert('继续');
+					//alert('继续');
 					playAction('GroupContinue');
 				//}
 			}else{
-				alert('暂停');
+				//alert('暂停');
 				playAction('GroupPause')
 			}
 		}else{
-			alert('播放');
+			//alert('播放');
 			playVideo();		
 		}
 	}
@@ -345,4 +333,22 @@ var	nViewNum = 0,
 	}
 	function dragStopMove(){
 		clearInterval(drag_timer);
+	}
+	//回放页面文件显示表格初始化
+	function PBrecFileTableInit(){
+		oSelected = [];
+		if($('div.dev_list li.sel span.channel').length != 0){
+			var oVideoList = $("#channelvideo").html('');
+			$('div.dev_list li.sel span.channel').each(function(index){
+				var name = $(this).data('data').channel_name;
+				var str = index < 4 ? 'checked="checked"' : '';
+				$('<tr><td class="no_border"><input type="checkbox" '+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo(oVideoList)	
+			})
+		}
+		
+		setTables();
+
+		$("#channelvideo input:checkbox:checked").each(function(){
+			oSelected.push($(this));
+		});
 	}

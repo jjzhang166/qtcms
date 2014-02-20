@@ -416,6 +416,7 @@ function setDevData2ocx(){
 		var seletDev = $('div.dev_list li.sel');
 		if(seletDev.length == 0){
 			$('div.dev_list li:eq(1)').addClass('sel');
+			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
 		  //cgi 请求数据

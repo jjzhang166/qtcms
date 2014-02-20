@@ -50,10 +50,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		})
 		//打开设备下的说所有通道
 		oDiv.on('click','span.device',function(){ 
-			var oDevice = $(this).attr('bAllopen','0');
+			var oDevice = $(this)
 			var chlData;
 			var wind = oPreView.GetCurrentWnd();
-			if(oDevice.attr('bAllopen') == 1){
+			if(oDevice.attr('bAllopen')){
 				oDevice.next('ul').find('span.channel').each(function(){
 					chlData = getChlFullInfo($(this));	 
 					CloseWind($(this).attr('wind'),chlData.dev_id);
@@ -62,7 +62,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				oDevice.next('ul').find('span.channel').each(function(){
 					chlData = getChlFullInfo($(this));	 
 					if(!$(this).attr('wind')){
-						oDevice.attr('bAllopen','0');
+						oDevice.attr('bAllopen','1');
 						var windState = oPreView.GetWindowConnectionStatus(wind);
 						var win = wind;
 						if(windState != 2){
@@ -72,7 +72,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				})
 			}
 			
-			if(oDevice.attr('bAllopen') == 1){ 
+			if(oDevice.attr('bAllopen')){ 
 				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
 			}else{ 
 				var str = getNowTime()+'   正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
@@ -125,6 +125,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
+	}
+	function closeCurrWind(){
+		CloseWind(oPreView.GetCurrentWnd());
 	}
 
 	function openWind(wind,data){
@@ -189,11 +192,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				bAllopen = 0;
 			};
 		})
-		oDev.attr('bAllopen',bAllopen);
-		//show(oDev.attr('bAllopen'))
-		if(oDev.attr('bAllopen') ==1){
+		if(bAllopen ==1){
+			oDev.attr('bAllopen',bAllopen);
 			oDev.addClass('device_1');
 		}else{ 
+			oDev.removeAttr('bAllopen');
 			oDev.removeClass('device_1');
 		}
 
@@ -249,7 +252,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		$('div.dev_list span.channel[wind]').each(function(){
 			var data = $(this).data('data'),
 				str = '';
-			if(!oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){ 
+			if(!oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
 				if(!oPreView.StartRecord($(this).attr('wind'))){
 					str = '设备'+data.name+' 下的通道'+data.channel_name+'开始录像!'	
 				}else{ 
@@ -273,4 +276,15 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 			writeActionLog(str);
 		})
+	}
+
+	function Record(){
+		var obj = $('#Record');
+		if(obj.attr('Record')){
+			StopRecord()
+			obj.removeAttr('Record');
+		}else{
+			StartRecord()
+			obj.attr('Record','1');
+		}
 	}

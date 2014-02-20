@@ -286,6 +286,7 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 	})
 })(jQuery)
 $(function(){
+	// 导航页面跳转
 	var url =['index.html','play_back.html','backup.html','device.html','log.html']
 	$('div.top_nav li').each(function(index){
 		$(this).on('click',function(){
@@ -306,17 +307,17 @@ $(function(){
 			window.status = '<pageaction SrcUrl="'+src+'" SrcAct="'+srcAct+'" DstUrl="'+dst+'" DstAct="'+dstAct+'"></pageaction>';
 		})
 	})
-		
+	//下拉菜单模拟	
 	$('div.select').each(function(){
 		$(this).toSelect()
 	});
-
+	//导航UI切换
 	$('#top div.top_nav li').mousedown(function(){ 
 		$(this).css('background-position','0 -52px');
 	}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
 	})
-	
+	//时间空间初始化
 	$('div.timeInput').each(function(index){ 	
 		if(index%2 ==0){ 
 			$(this).timeInput();
@@ -324,13 +325,30 @@ $(function(){
 			$(this).timeInput({'initTime':'23:59:59'});
 		}
 	})
-
+	//带表弟的表单切换控件.
 	$('ul.switchlist,.ope_list').each(function(){
 		$(this).toSwitch();
 	})
 	
+	//表单全选..
 	$('tbody.synCheckboxClick').SynchekboxClick();
+
+	//缩放事件同步。
 })
+function triggerOnclick(id,sEv){ 
+	try{
+        //非IE
+        var fireOnThis = document.getElementById(sEv);
+        var evObj = document.createEvent('HTMLEvents');
+        evObj.initEvent(sEv, true, false);
+        fireOnThis.dispatchEvent(evObj);
+    }
+    catch(e)
+    {
+        //IE
+        document.getElementById(id).fireEvent(sEv);
+    }
+}
 // 辅助方法.
 function del(str) {   //数组去除重复
 	var a = {}, c = [], l = str.length; 
@@ -355,6 +373,7 @@ function firstUp(str){  //字符串首字母大写
 	return a.join('');
 }
 function show(data){  // 在ID为test的div元素中打印对象数据
+	return false;
 	var index='default',
 		str = 'Null';
 		$('#test').html('');
