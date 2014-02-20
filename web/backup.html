@@ -27,13 +27,13 @@ var oPlayBack,oBackup;
 
 		$('div.calendar').initCalendar();
 
-		var listParent = $('#area_0').next('ul');
-		listParent.on('click','li:has(span.device)',function(){
+		var listParent = $('div.dev_list');
+		listParent.on('click','li:has(span.device):gt(0)',function(){
 			$('div.dev_list li').removeClass('sel');
 			$(this).addClass('sel');
 		})
 
-		listParent.on('dblclick','li:has(span.device)',function(){
+		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
 			searchVideo();
 		})
 

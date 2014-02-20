@@ -34,14 +34,14 @@ var	nViewNum = 0,
 		})
 
 		var oSelected = [];
-		var listParent = $('#area_0').next('ul');
-		listParent.on('click','li:has(span.device)',function(){
+		var listParent = $('div.dev_list');
+		listParent.on('click','li:has(span.device):gt(0)',function(){
 			var obj = $(this)
 			$('div.dev_list li').not(obj).removeClass('sel');
 			obj.addClass('sel');
 			PBrecFileTableInit();
 		})
-		listParent.on('dblclick','li:has(span.device)',function(){
+		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
 			searchVideo();
 		})
 
