@@ -484,7 +484,7 @@ void QSubView::OnFreshWindow()
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING||m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTING)
+	if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTED)
 	{
 		update();
 	}
