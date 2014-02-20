@@ -59,9 +59,9 @@ void settingsActivity::Active( QWebFrame * frame)
 	m_MainView->setMouseTracking(true);
 	QWFW_MSGMAP_BEGIN(frame);
 	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
-	QWFW_MSGMAP("top_act","mousedown","OnMouseDown()");
-	QWFW_MSGMAP("top_act","mouseup","OnMouseUp()");
-	QWFW_MSGMAP("top_act","mousemove","OnMouseMove()");
+	QWFW_MSGMAP("app_move","mousedown","OnMouseDown()");
+	QWFW_MSGMAP("app_move","mouseup","OnMouseUp()");
+	QWFW_MSGMAP("app_move","mousemove","OnMouseMove()");
 
 
 	QWFW_MSGMAP("app_maxsize","click","OnMaxClick()");
