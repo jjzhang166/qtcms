@@ -25,7 +25,7 @@
 
 			var warp = this;
 
-			this.find('tbody td').each(function(){
+			this.on('click','tbody td',function(){
 				warp.initDaysClick($(this));
 			})
 			
@@ -36,7 +36,7 @@
 			var warp = $(this);
 			warp.find('div.calendar_top a').each(function(index){
 				$(this).click(function(){
-					warp.find('td').css('backgroundColor','#ccc');
+					warp.find('tbody td').removeClass('nowDay');
 					switch(index){
 						case 0:
 							num  -= 12;
@@ -81,41 +81,37 @@
 			var fir_Num = [];
 			date.setDate(1);
 			fir_Num.push(date.getDay());
-			date.setMonth(date.getMonth() - 1);
+			date.setMonth(date.getMonth() + 1);
 			var lastDay = new Date(date - 3600000*24);
 			fir_Num.push(lastDay.getDate());
 			return fir_Num;
 		},
 		'initDaysData':function(date){ //当前月份的日期绑定到Dom中
 			var warp = this;			
-			var data = new Date()
+			var dd = this.find('span.nowDate').html().split('-');
 			var thisMonthData = this.getMonthdata(date);
 			warp.find('tbody td').html('').slice(thisMonthData[0]).each(function(index){
 				if(index == thisMonthData[1]){
 					return false;
 				}else{
 					$(this).html(index+1);
-					if(index+1 == data.getDate()){ 
-						$(this).css('backgroundColor','#B21E36');
+					if(index+1 == dd[2]){ 
+						$(this).addClass('nowDay');
 					}
 				}
 			})
-
 		},
 		'initDaysClick':function(obj){ //日期下每天的Dom对象点击事件
 			var warp = this;
 			if(!obj.html()){
 				return false;
 			}
-			obj.click(function(){
-				warp.find('tbody td').css('backgroundColor','#CCCCCC');
-				$(this).css('backgroundColor','#B21E36');
-				var newDay = $(this).html();
-				if(newDay != ''){
-					var nowDate = warp.getNewDay(newDay);
-					warp.defalut.showData(nowDate,warp.item);
-				}
-			})	
+			warp.find('tbody td').removeClass('nowDay');
+			obj.addClass('nowDay');
+			var nowDate = warp.getNewDay(obj.html());
+			warp.defalut.showData(nowDate,warp.item);
+
+
 		},
 		'getNewDay':function(newDay){
 			var warp = $(this);

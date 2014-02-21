@@ -394,7 +394,7 @@ function setDevData2ocx(){
 				var i= 0;
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
-						if(oPlayBack.AddChannelIntoPlayGroup(index,i)){
+						if(oPlayBack.AddChannelIntoPlayGroup(i,index)){
 							b = false;
 						};
 						i++;

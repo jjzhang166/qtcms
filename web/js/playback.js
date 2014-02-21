@@ -1,7 +1,8 @@
 var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl;
 var	nViewNum = 0,
 	NowMonth = 0,
-	drag_timer = null;
+	drag_timer = null,
+	oSelected = [];
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -33,7 +34,6 @@ var	nViewNum = 0,
 			closeMenu();
 		})
 
-		var oSelected = [];
 		var listParent = $('div.dev_list');
 		listParent.on('click','li:has(span.device):gt(0)',function(){
 			var obj = $(this)
@@ -80,6 +80,7 @@ var	nViewNum = 0,
 			}
 			if(oSelected.length>4){
 				oSelected.shift().prop('checked',false);
+				alert(oSelected.length);
 			}
 		})
 

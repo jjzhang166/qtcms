@@ -337,6 +337,9 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	height: 30px;
 	background: url(../images/playback/calender_icon.png) no-repeat 0 0;
 }
+.calendar .nowDay{
+	background: #B21E36;
+}
 #operating{
 	height: 130px; 
 	background: #1E1E1E;

@@ -73,9 +73,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 			
 			if(oDevice.attr('bAllopen')){ 
-				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
-			}else{ 
 				var str = getNowTime()+'   正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
+			}else{ 
+				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
 			}
 			writeActionLog(str);
 		})

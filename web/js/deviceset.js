@@ -14,6 +14,7 @@ var oSearchOcx;
 				return false;
 			}
 		}
+		
 		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
 			closeMenu();
 		})
