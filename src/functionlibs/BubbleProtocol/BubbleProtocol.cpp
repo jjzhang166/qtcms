@@ -395,10 +395,14 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 
 int BubbleProtocol::writeBuff(QByteArray &block, int nChannel, int nTypes, uint nStartTime, uint nEndTime)
 {
-    if (nChannel<0 || nChannel > 32)
-    {
-        return 2;
-    }
+    //if (nChannel<0 || nChannel > 32)
+    //{
+    //    return 2;
+    //}
+	if (nChannel<0)
+	{
+		return 2;
+	}
     char cBuff[50];
     uint nLength = 0;
     Bubble *bubble = NULL;
