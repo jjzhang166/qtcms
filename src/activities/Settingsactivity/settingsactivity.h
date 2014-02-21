@@ -15,8 +15,11 @@
 #include <ILocalSetting.h>
 #include <QMutex>
 #include <QObject>
+#include <QRect>
 #include <QPoint>
 #include <QtGui/QMessageBox>
+#include <QtGui/QApplication>
+#include <QtGui/qdesktopwidget.h>
 class settingsActivity : public QWebUiFWBase,
 	public IActivities
 {
