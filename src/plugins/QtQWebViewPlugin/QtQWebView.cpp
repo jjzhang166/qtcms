@@ -27,6 +27,12 @@ void QtQWebView::LoadNewPage( QString url )
 	{
 		ite->m_SubWebView->hide();
 	}
+	//获取当前page的大小和位置
+	QWidget *pa_size=this->parentWidget();
+	PageSize=((QWebView*)pa_size)->page()->view()->size();
+	QRect m_geometry=((QWebView*)pa_size)->page()->view()->geometry();
+	nX=m_geometry.x();
+	nY=m_geometry.y();
 
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
@@ -34,7 +40,9 @@ void QtQWebView::LoadNewPage( QString url )
 		
 		if (url==item->url)
 		{
-			item->m_SubWebView->showMaximized();
+			item->m_SubWebView->resize(PageSize);
+			item->m_SubWebView->move(nX,nY);
+			item->m_SubWebView->show();
 			item->m_SubWebView->OnRefressMessage();
 			//隐藏主页
 			QWidget *pa=this->parentWidget();
@@ -50,7 +58,10 @@ void QtQWebView::LoadNewPage( QString url )
 	}
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
-	m_tagViewPage.m_SubWebView->showMaximized();
+	/*m_tagViewPage.m_SubWebView->showMaximized();*/
+	m_tagViewPage.m_SubWebView->resize(PageSize);
+	m_tagViewPage.m_SubWebView->move(nX,nY);
+	m_tagViewPage.m_SubWebView->show();
 	//隐藏主页
 	QWidget *pa=this->parentWidget();
 	((QWebView*)pa)->hide();
@@ -69,7 +80,19 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	QString SrcAct=pageaction.toElement().attribute("SrcAct");
 	QString DstUrl=pageaction.toElement().attribute("DstUrl");
 	QString DstAct=pageaction.toElement().attribute("DstAct");
-
+	//获取当前显示窗口的大小
+	QList<tagViewPage>::const_iterator itSize;
+	for(itSize=m_ViewPageList.constBegin();itSize!=m_ViewPageList.constEnd();++itSize){
+		if (!itSize->m_SubWebView->isHidden())
+		{
+			itSize->m_SubWebView->size();
+			itSize->m_SubWebView->page()->view();
+			 PageSize=itSize->m_SubWebView->page()->view()->size();
+			 QRect m_geometry= itSize->m_SubWebView->page()->view()->geometry();
+			 nX=m_geometry.x();
+			 nY=m_geometry.y();
+		}
+	}
 	//跳转到主页
 	if ("index"==SrcAct)
 	{
@@ -88,10 +111,6 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	QList<tagViewPage>::const_iterator item;
 	for (item=m_ViewPageList.constBegin();item!=m_ViewPageList.constEnd();++item)
 	{
-		//if (SrcUrl==item->url)
-		//{
-		//	item->m_SubWebView->hide();
-		//}
 		if (SrcUrl==item->url&&SrcAct=="close")
 		{
 			item->m_SubWebView->close();
@@ -112,7 +131,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		{
 			if (DstUrl==it->url)
 			{
-				it->m_SubWebView->showMaximized();
+				it->m_SubWebView->page()->view()->resize(PageSize);
+				it->m_SubWebView->page()->view()->move(nX,nY);
+				it->m_SubWebView->show();
 				it->m_SubWebView->OnRefressMessage();
 				bExit=true;
 				break;
@@ -133,7 +154,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			{
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
-				m_tagViewPage.m_SubWebView->showMaximized();
+				m_tagViewPage.m_SubWebView->page()->view()->resize(PageSize);
+				m_tagViewPage.m_SubWebView->page()->view()->move(nX,nY);
+				m_tagViewPage.m_SubWebView->show();
 				m_tagViewPage.url.append(DstUrl);
 				m_ViewPageList.append(m_tagViewPage);
 			}

@@ -32,6 +32,9 @@ typedef struct _tagViewPage{
 		void OnRefressMessage();
 private:
 	QList<tagViewPage> m_ViewPageList;
+	int nX;
+	int nY;
+	QSize PageSize;
 public:
 	QString EventProcsScripte(QString sEvent,QVariantMap eventParam);
 };
