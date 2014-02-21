@@ -117,6 +117,7 @@ int RecordPlayer::GetCurrentWnd()
 
 int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
 {
+	qDebug()<<"RecordPlayer :searchDateByDeviceName:"<<sdevname;
 	if (sdevname.isEmpty())
 	{
 		return 1;
@@ -141,6 +142,7 @@ int RecordPlayer::searchVideoFile(const QString& sdevname,
 	const QString& sendtime,
 	const QString& schannellist)
 {
+	qDebug()<<"RecordPlayer :searchVideoFile:"<<sdevname<<sbegintime<<sendtime<<schannellist;
 	if (NULL == m_pLocalRecordSearch)
 	{
 		return 1;
@@ -214,6 +216,7 @@ int RecordPlayer::sortFileList(QStringList &fileList)
 
 int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
 {
+	qDebug()<<"RecordPlayer :AddFileIntoPlayGroup:"<<filelist<<nWndID<<startTime<<endTime;
 	if (NULL == m_pLocalPlayer || filelist.isEmpty() || nWndID <0 || nWndID >= ARRAY_SIZE(m_subRecPlayerView))
 	{
 		return 1;
@@ -254,6 +257,7 @@ int RecordPlayer::SetSynGroupNum(int num)
 }
 int RecordPlayer::GroupPlay()
 {
+	qDebug()<<"RecordPlayer :GroupPlay:";
 	if (NULL == m_pLocalPlayer)
 	{
 		return 1;
@@ -269,6 +273,7 @@ int RecordPlayer::GroupPlay()
 }
 int RecordPlayer::GroupPause()
 {
+	qDebug()<<"RecordPlayer :GroupPause:";
 	if (NULL == m_pLocalPlayer)
 	{
 		return 1;
@@ -284,6 +289,7 @@ int RecordPlayer::GroupPause()
 }
 int RecordPlayer::GroupContinue()
 {
+	qDebug()<<"RecordPlayer :GroupContinue:";
 	if (NULL == m_pLocalPlayer)
 	{
 		return 1;
@@ -299,6 +305,7 @@ int RecordPlayer::GroupContinue()
 }
 int RecordPlayer::GroupStop()
 {
+	qDebug()<<"RecordPlayer :GroupStop:";
 	if (NULL == m_pLocalPlayer)
 	{
 		return 1;
@@ -314,6 +321,7 @@ int RecordPlayer::GroupStop()
 }
 int RecordPlayer::GroupSpeedFast(int speed)
 {
+	qDebug()<<"RecordPlayer :GroupSpeedFast:"<<speed;
 	if (NULL == m_pLocalPlayer || speed < 0)
 	{
 		return 1;
@@ -329,6 +337,7 @@ int RecordPlayer::GroupSpeedFast(int speed)
 }
 int RecordPlayer::GroupSpeedSlow(int speed)
 {
+	qDebug()<<"RecordPlayer :GroupSpeedSlow:"<<speed;
 	if (NULL == m_pLocalPlayer || speed < 0)
 	{
 		return 1;
@@ -344,6 +353,7 @@ int RecordPlayer::GroupSpeedSlow(int speed)
 }
 int RecordPlayer::GroupSpeedNormal()
 {
+	qDebug()<<"RecordPlayer :GroupSpeedNormal:";
 	if (NULL == m_pLocalPlayer)
 	{
 		return 1;

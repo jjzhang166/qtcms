@@ -31,7 +31,11 @@ int RemotePlaybackThread::SetParm( QString m_nsUserName,QString m_nsUserPwd,uint
 
 int RemotePlaybackThread::SetIDeviceGroupRemotePlaybackParm( IDeviceGroupRemotePlayback *lpIDeviceGroupRemotePlayback )
 {
-	lpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceGroupRemotePlayback,(void**)&LpIDeviceGroupRemotePlayback);
+	if (NULL!=lpIDeviceGroupRemotePlayback)
+	{
+		lpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceGroupRemotePlayback,(void**)&LpIDeviceGroupRemotePlayback);
+	}
+
 	//LpIDeviceGroupRemotePlayback=lpIDeviceGroupRemotePlayback;
 	return 0;
 }

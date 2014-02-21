@@ -70,6 +70,7 @@ void  RPlaybackWnd::resizeEvent( QResizeEvent * ev)
 
 int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPort,const QString &eseeID)
 {
+	qDebug()<<"RPlaybackWnd setDeviceHostInfo"<<sAddress<<uiPort<<eseeID;
     if (!m_HostAddress.setAddress(sAddress) || uiPort > 65535)
     {
         return 1;
@@ -84,6 +85,7 @@ int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPo
 
 int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 {
+	qDebug()<<"RPlaybackWnd setDeviceVendor"<<vendor;
     if (vendor.isEmpty())
     {
         return 1;
@@ -94,6 +96,7 @@ int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 
 int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
 {
+	qDebug()<<"RPlaybackWnd AddChannelIntoPlayGroup"<<uiWndId<<uiChannel;
     if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || uiChannel > 32)
     {
         return -1;
@@ -150,12 +153,14 @@ int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
 
 void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString & sPassword)
 {
+	qDebug()<<"RPlaybackWnd setUserVerifyInfo"<<sUsername<<sPassword;
     m_sUserName = sUsername;
     m_sUserPwd  = sPassword;
 }
 
 int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime)
 {
+	qDebug()<<"RPlaybackWnd:"<<"nChannel"<<nChannel<<"nTypes"<<nTypes<<startTime<<endTime;
 	int nRet=1;
 	if (false==bIsInitFlags)
 	{
@@ -176,40 +181,7 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	return nRet;
 }
-//int  childThreadSearch(uint nNum, QString& start,QString& end, QList<QVariantMap> &selectedList)
-//{
-//    int nRet = -1;
-//    if (nNum != g_RecList.size())
-//    {
-//        QElapsedTimer t;
-//        t.start();
-//        while(t.elapsed()<2000)
-//            QCoreApplication::processEvents();
-//    }
-//    QVariantMap vMap;
-//    uint uiChannel = 0;
-//    uint uiType    = 0;
-//  	QList<TimeInfo> lstTimeInfo;
-//    analyze(g_RecList, lstTimeInfo);
-//    for (int i = 0; i < lstTimeInfo.size(); ++i)
-//    {
-//        uiChannel = lstTimeInfo.at(i).uiChannel;
-//        for (int j = 0; j < lstTimeInfo.at(i).lstTypeTime.size(); ++j)
-//        {
-//            uiType = lstTimeInfo.at(i).lstTypeTime.at(j).uiType;
-//            for (int k = 0; k < lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.size(); k+=2)
-//            {
-//                vMap.clear();
-//                vMap.insert("channel", uiChannel);
-//                vMap.insert("types", uiType);
-//                vMap.insert("start", lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k));
-//                vMap.insert("end",lstTimeInfo.at(i).lstTypeTime.at(j).timeSession.at(k+1));
-//                selectedList.append(vMap);
-//            }
-//        }
-//    }
-//	return nRet = 0;
-//}
+
 
  QString RPlaybackWnd::GetNowPlayedTime()
  {
@@ -226,6 +198,7 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 
 int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString & endTime)
 {
+	qDebug()<<"RPlaybackWnd GroupPlay"<<"nTypes"<<nTypes<<startTime<<endTime;
 	int nRet=1;
 	if (false==bIsInitFlags)
 	{
@@ -263,6 +236,7 @@ int   RPlaybackWnd::GroupContinue()
 }
 int   RPlaybackWnd::GroupStop()
 {
+	qDebug()<<"RPlaybackWnd:GroupStop";
     int nRet = -1;
     if (NULL != m_GroupPlayback)
     {
