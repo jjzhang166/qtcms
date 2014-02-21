@@ -18,12 +18,18 @@ QSubView::QSubView(QWidget *parent)
 	iInitWidth(0),
 	bRendering(false),
 	m_bIsRecording(false),
+	m_bStateAutoConnect(false),
+	m_bIsAutoConnecting(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
 	m_HistoryState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
 	CountConnecting(0),
-	CountDisConnecting(0)
+	CountDisConnecting(0),
+	m_DisConnectedTimeId(0),
+	m_DisConnectingTimeId(0),
+	m_RenderTimeId(0),
+	m_AutoConnectTimeId(0)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -41,11 +47,12 @@ QSubView::QSubView(QWidget *parent)
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&m_pRecordTime);
 	connect(&m_checkTime, SIGNAL(timeout()), this, SLOT(OnCheckTime()));
 
-	connect(this,SIGNAL(FreshWindow()),this,SLOT(OnFreshWindow()),Qt::QueuedConnection);
 	connect(this,SIGNAL(DisConnecting()),this,SLOT(OnDisConnecting()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);
 	connect(this,SIGNAL(DisConnected()),this,SLOT(OnDisConnected()),Qt::QueuedConnection);
 	connect(this,SIGNAL(RenderHistoryPix()),this,SLOT(OnRenderHistoryPix()),Qt::QueuedConnection);
+	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
+	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
 	//修改成动态生成，此处去掉
 //	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
@@ -65,11 +72,7 @@ QSubView::~QSubView()
 		m_IDeviceClientDecideByVendor->Release();
 		m_IDeviceClientDecideByVendor=NULL;
 	}
-	//动态释放，此处去掉
-	//if (NULL!=m_IDeviceClient)
-	//{
-	//	m_IDeviceClient->Release();
-	//}
+
 	if (NULL!=m_IVideoDecoder)
 	{
 		m_IVideoDecoder->Release();
@@ -277,6 +280,11 @@ int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QS
 }
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	//设置自动手动关闭标志位
+	if (m_bStateAutoConnect==true)
+	{
+		In_CloseAutoConnect();
+	}
 	//关闭上一次的连接
 	CloseWndCamera();
 	//生成设备组件
@@ -295,6 +303,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
+
 	m_QSubViewObject.OpenCameraInWnd();
 
 	m_checkTime.start(1000);
@@ -303,6 +312,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 }
 int QSubView::CloseWndCamera()
 {
+	In_CloseAutoConnect();
 	m_QSubViewObject.CloseWndCamera();
 	//释放动态生成的指针
 	if (NULL!=m_IDeviceClientDecideByVendor)
@@ -401,6 +411,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	if (0==m_CurrentState)
 	{
+		m_bIsAutoConnect=true;
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connected";
 	}
 	if (3==m_CurrentState)
@@ -414,11 +425,23 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnected";
 	}
 	emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
-	if (QSubViewConnectStatus::STATUS_CONNECTED==m_HistoryState&&QSubViewConnectStatus::STATUS_DISCONNECTED==m_CurrentState)
+	//自动重连
+	if (QSubViewConnectStatus::STATUS_DISCONNECTED==m_CurrentState&&QSubViewConnectStatus::STATUS_CONNECTED==m_HistoryState)
 	{
-		//自动重连
-		AutoConnect();
+		if (m_bIsAutoConnect==true)
+		{
+			if (m_bStateAutoConnect==false)
+			{
+				//开启自动重连时钟
+				emit CreateAutoConnectTimeSignals();
+				m_bStateAutoConnect=true;
+			}
+			else{
+
+			}
+		}
 	}
+
 	m_HistoryState=m_CurrentState;
 	return 0;
 }
@@ -472,15 +495,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 	return 0;
 }
 
-void QSubView::OnFreshWindow()
-{
-	startTimer(400);
-}
 
-//void QSubView::emitOnFreshWindow()
-//{
-//	emit FreshWindow();
-//}
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
@@ -495,26 +510,54 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		if (ev->timerId()==m_DisConnectedTimeId)
 		{
 			killTimer(ev->timerId());
+			m_DisConnectedTimeId=0;
 		}
 		else if (ev->timerId()==m_DisConnectingTimeId)
 		{
 			killTimer(ev->timerId());
+			m_DisConnectingTimeId=0;
 		}
 	}
 	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
 	{
-		if (ev->timerId()==m_DisConnectedTimeId||ev->timerId()==m_DisConnectingTimeId)
+		if (ev->timerId()==m_DisConnectedTimeId)
 		{
 			killTimer(ev->timerId());
+			m_DisConnectedTimeId=0;
+		}
+		else if (ev->timerId()==m_DisConnectingTimeId)
+		{
+			killTimer(ev->timerId());
+			m_DisConnectingTimeId=0;
 		}
 		if (ev->timerId()==m_RenderTimeId)
 		{
 			killTimer(ev->timerId());
+			m_RenderTimeId=0;
 		}
 	}
 	if (m_RenderTimeId==ev->timerId())
 	{
 		emit RenderHistoryPix();
+	}
+	//自动重连 时钟信号
+	if (m_AutoConnectTimeId==ev->timerId())
+	{
+		//关闭自动重连,设备连接上或者禁止自动重连
+		if (m_bIsAutoConnect==false||QSubViewConnectStatus::STATUS_CONNECTED==m_CurrentState)
+		{
+			killTimer(ev->timerId());
+			m_AutoConnectTimeId=0;
+			m_bStateAutoConnect=false;
+		}
+		else if (m_bIsAutoConnect==true)
+		{
+			if (QSubViewConnectStatus::STATUS_CONNECTED!=m_CurrentState&&false==m_bIsAutoConnecting)
+			{
+				qDebug()<<"AutoConnectSignals";
+				emit AutoConnectSignals();
+			}
+		}
 	}
 	/*killTimer(ev->timerId());*/
 }
@@ -745,9 +788,43 @@ int QSubView::SetDeviceByVendor( const QString & sVendor )
 	return 1;
 }
 
-void QSubView::AutoConnect()
+void QSubView::In_OpenAutoConnect()
 {
-	//OpenCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
+	//关闭上一次的连接
+	m_bIsAutoConnecting=true;
+	m_QSubViewObject.CloseWndCamera();
+	//释放动态生成的指针
+	if (NULL!=m_IDeviceClientDecideByVendor)
+	{
+		m_IDeviceClientDecideByVendor->Release();
+		m_IDeviceClientDecideByVendor=NULL;
+	}
+	//录像
+	if (m_bIsRecording && NULL != m_pRecorder)
+	{
+		m_pRecorder->Stop();
+		m_bIsRecording = false;
+	}
+	//生成设备组件
+	SetDeviceByVendor(m_DevCliSetInfo.m_sVendor);
+	//注册事件，需检测是否注册成功
+	if (1==cbInit())
+	{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			m_IDeviceClientDecideByVendor->Release();
+			m_IDeviceClientDecideByVendor=NULL;
+		}
+		return ;
+	}
+	m_QSubViewObject.SetCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
+	//0.5s检测一次是否需要刷新历史图片
+	m_RenderTimeId=startTimer(500);
+
+	m_QSubViewObject.OpenCameraInWnd();
+
+	m_checkTime.start(1000);
+	m_bIsAutoConnecting=false;
 }
 
 void QSubView::OnConnectting()
@@ -777,4 +854,22 @@ void QSubView::OnRenderHistoryPix()
 		}
 		m_bIsRenderHistory=true;
 	}
+}
+
+void QSubView::In_CloseAutoConnect()
+{
+	//关闭自动重连的时钟
+	if (m_AutoConnectTimeId!=0)
+	{
+		killTimer(m_AutoConnectTimeId);
+		m_AutoConnectTimeId=0;
+	}
+	//关闭连接
+	m_bStateAutoConnect=false;
+	m_bIsAutoConnect=false;
+}
+
+void QSubView::OnCreateAutoConnectTime()
+{
+	m_AutoConnectTimeId=startTimer(10000);
 }

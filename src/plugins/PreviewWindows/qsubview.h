@@ -67,37 +67,64 @@ public:
 		STATUS_DISCONNECTED,
 		STATUS_DISCONNECTING,
 	}QSubViewConnectStatus;
-signals:
-	void mouseDoubleClick(QWidget *,QMouseEvent *);
-	void mousePressEvent(QWidget *,QMouseEvent *);
-	void mouseLeftClick(QWidget *,QMouseEvent *);
-	void SetCurrentWindSignl(QWidget *);
-	void CurrentStateChangeSignl(int statevalue,QWidget *);
-	void FreshWindow();
-	void Connectting();
-	void DisConnecting();
-	void DisConnected();
-	void RMousePressMenu();
-	void RenderHistoryPix();
-
+public:
+	//回调
+	int PrevPlay(QVariantMap evMap);
+	int ForRecord(QVariantMap evMap);
+	int PrevRender(QVariantMap evMap);
+	int CurrentStateChange(QVariantMap evMap);
+	//////////////
+	int SetDeviceByVendor(const QString & sVendor);
 private:
-	DevCliSetInfo m_DevCliSetInfo;
-	RenderInfo m_HistoryRenderInfo;
+	int cbInit();
+	
+	void In_CloseAutoConnect();
+public slots:
+		void OnRMousePressMenu();
+		void OnCloseFromMouseEv();
+		void OnConnectting();
+		void OnDisConnecting();
+		void OnDisConnected();
+		virtual void timerEvent( QTimerEvent * );
+		void OnRenderHistoryPix();
+		void OnCheckTime();
+		void OnCreateAutoConnectTime();
+		void In_OpenAutoConnect();
+signals:
+		void mouseDoubleClick(QWidget *,QMouseEvent *);
+		void mousePressEvent(QWidget *,QMouseEvent *);
+		void mouseLeftClick(QWidget *,QMouseEvent *);
+		void SetCurrentWindSignl(QWidget *);
+		void CurrentStateChangeSignl(int statevalue,QWidget *);
+		void Connectting();
+		void DisConnecting();
+		void DisConnected();
+		void RMousePressMenu();
+		void RenderHistoryPix();
+		void AutoConnectSignals();
+		void CreateAutoConnectTimeSignals();
+private:
+	DevCliSetInfo m_DevCliSetInfo;//设备信息
+	RenderInfo m_HistoryRenderInfo;//上一帧图像的信息
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClientDecideByVendor;
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
 	ISetRecordTime *m_pRecordTime;
-
-	QSubViewConnectStatus m_CurrentState;
-	QSubViewConnectStatus m_HistoryState;
+	
+	QSubViewConnectStatus m_CurrentState;//设备当前的连接状态
+	QSubViewConnectStatus m_HistoryState;//设备上一次的连接状态
 	int iInitWidth;
 	int iInitHeight;
+	//标志位
 	bool bRendering;
 	bool m_bIsRecording;
 	bool m_bIsRenderHistory;
-	bool bCloseFromUi;//true:from ui;false:from net;
+	bool m_bIsAutoConnect;
+	bool m_bStateAutoConnect;
+	bool m_bIsAutoConnecting;
+
 	QTime dieTime;
 	QTimer m_checkTime;
 
@@ -108,35 +135,14 @@ private:
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
-
+	//正在连接和正在断开，刷新图片的计数
 	int CountDisConnecting;
 	int CountConnecting;
+	//时钟id
 	int m_DisConnectingTimeId;
 	int m_DisConnectedTimeId;
 	int m_RenderTimeId;
-private:
-	int cbInit();
-public:
-	//回调
-	int PrevPlay(QVariantMap evMap);
-	int ForRecord(QVariantMap evMap);
-	int PrevRender(QVariantMap evMap);
-	int CurrentStateChange(QVariantMap evMap);
-	//////////////
-	int SetDeviceByVendor(const QString & sVendor);
-public slots:
-	void OnFreshWindow();
-	//void emitOnFreshWindow();
-	void OnRMousePressMenu();
-	void OnCloseFromMouseEv();
-	void OnConnectting();
-	void OnDisConnecting();
-	void OnDisConnected();
-	virtual void timerEvent( QTimerEvent * );
-	void OnRenderHistoryPix();
-	void OnCheckTime();
-private:
-	void AutoConnect();
+	int m_AutoConnectTimeId;
 };
 
 
