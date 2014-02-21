@@ -14,6 +14,13 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 extern QMutex g_mtxPause;
 extern QWaitCondition g_waitConPause;
 
+typedef struct _tagPeriodTime{
+	uint start;
+	uint end;
+}PeriodTime;
+
+typedef void (*pcbTimeChange)(uint playTime, void* pUser);
+
 class PlayMgr :
 	public QThread
 {
@@ -21,13 +28,12 @@ class PlayMgr :
 public:
 	PlayMgr(void);
 	~PlayMgr(void);
-	void setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos);
+	void setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos, QVector<PeriodTime> &skipTime);
 	void setPlaySpeed(int speedRate);
+	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void pause(bool isPause);
 	void stop();
 	int prePlay(QVariantMap item);
-	int getPlayTime();
-
 
 private:
 	int initCb();
@@ -48,7 +54,13 @@ private:
 	int m_nStartPos;
 	QDateTime m_startTime;
 	QDateTime m_endTime;
-	QTime m_playTime;
+	QVector<PeriodTime> m_skipTime;
+	static uint m_playingTime;
+	pcbTimeChange m_pcbTimeChg;
+	void *m_pUser;
+	static bool m_bIsPickThread;
+	static bool m_bIsChange;
+	static void* m_who;
 
 	QMutex m_mutex;
 	QWaitCondition m_waitForPlay;

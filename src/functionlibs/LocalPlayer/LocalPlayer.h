@@ -10,6 +10,9 @@
 #include "IDisksSetting.h"
 #include "ILocalPlayer.h"
 
+
+void cbTimeChange(uint playTime, void* pUser);
+
 class LocalPlayer : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearch,
@@ -53,13 +56,15 @@ public:
 		PreviewEventCB proc;
 		void		*puser;
 	}ProcInfoItem;
+	void setPlayTime(uint &playTime);
+
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	int checkUsedDisk(QString &strDisk);
 	bool checkChannel(const QString& schannellist);
-	int checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime);
+	int checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec);
 	bool checkChannelInFileList(QStringList const filelist);
-
+	int countSkipTime();
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -71,6 +76,10 @@ private:
 	QMap<QWidget*, PrePlay> m_GroupMap;
 	int m_nGroupNum;
 	bool m_bIsGroupPlaying;
+
+	uint m_startTime;
+	uint m_endTime;
+	uint m_playTime;
 };
 
 #endif // LOCALPLAYER_H

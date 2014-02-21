@@ -8,6 +8,10 @@
 QMutex g_mtxPause;
 QWaitCondition g_waitConPause;
 
+uint PlayMgr::m_playingTime = 0;
+bool PlayMgr::m_bIsChange = false;
+void* PlayMgr::m_who = NULL;
+bool PlayMgr::m_bIsPickThread = false;
 
 PlayMgr::PlayMgr(void):
 	m_pRenderWnd(NULL),
@@ -34,7 +38,7 @@ PlayMgr::~PlayMgr(void)
 	m_bStop = true;
 	if(this->isRunning())
 	{
-		wait();
+		wait(1000);
 	}
 
 	m_pVedioDecoder->Release();
@@ -59,7 +63,16 @@ int PlayMgr::initCb()
 	return 0;
 }
 
-void PlayMgr::setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos)
+void PlayMgr::setCbTimeChange(pcbTimeChange pro, void* pUser)
+{
+	if (NULL != pro && NULL != pUser)
+	{
+		m_pcbTimeChg = pro;
+		m_pUser = pUser;
+	}
+}
+
+void PlayMgr::setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos, QVector<PeriodTime> &skipTime)
 {
 	if (fileList.isEmpty() || NULL == wnd)
 	{
@@ -71,6 +84,7 @@ void PlayMgr::setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start,
 	m_startTime = start;
 	m_endTime = end;
 	m_nStartPos = startPos;
+	m_skipTime = skipTime;
 
 	initCb();
 }
@@ -83,17 +97,17 @@ void PlayMgr::run()
 	QRegExp rx;
 	QDateTime fileStartTime;
 	QDateTime currentPlayTime;
+	QDateTime tempTime = m_startTime;
 	QDate date;
 	QTime time;
 	bool isPlayInMid = false;
 	bool isFirstKeyFrame = false;
 	qint64 timeOffset = 0;
+	int skipPos = 0;
 
 	m_bPlaying = true;
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
 	{
-		m_playTime.start();
-
 		//open file
 		filePath = m_lstfileList[i];
 		rx = QRegExp("([0-9]{4}-[0-9]{2}-[0-9]{2})");
@@ -114,7 +128,32 @@ void PlayMgr::run()
 		fileStartTime.setDate(date);
 		fileStartTime.setTime(time);
 
-		timeOffset = fileStartTime.toMSecsSinceEpoch() - m_startTime.toMSecsSinceEpoch();
+		timeOffset = fileStartTime.toMSecsSinceEpoch() - tempTime.toMSecsSinceEpoch();
+		if (!m_bIsChange)
+		{
+			m_who = (void*)this;
+			m_bIsChange = true;
+		}
+		for (int j = skipPos; j < m_skipTime.size(); ++j)
+		{
+			if (fileStartTime.toTime_t() >= m_skipTime[j].end)
+			{
+				timeOffset -= (m_skipTime[j].end - m_skipTime[j].start)*1000;
+				if (timeOffset < 0)
+				{
+					timeOffset = 0;
+				}
+				if (m_who == (void*)this)
+				{
+					m_playingTime += m_skipTime[j].end - m_skipTime[j].start;
+				}
+			}
+			else
+			{
+				skipPos = j;
+				break;
+			}
+		}
 		if (timeOffset > 0)
 		{
 			m_mutex.lock();
@@ -135,6 +174,8 @@ void PlayMgr::run()
 			int isKeyFrame = 0;
 			long length = 0;
 			QElapsedTimer frameTimer;
+			int lastTime = 0;
+			bool bIsPlayTimeChg = false;
 
 			char vedioBuff[1280*720];
 			memset(vedioBuff, 0 , sizeof(vedioBuff));
@@ -195,9 +236,31 @@ void PlayMgr::run()
 				frameTimer.start();
 				//count current play time;
 				currentPlayTime = fileStartTime.addSecs(frame/frameRate);
+				if (!m_bIsPickThread)
+				{
+					m_bIsPickThread = true;
+					bIsPlayTimeChg = true;
+				}
+				if (frame/frameRate - lastTime > 0)
+				{
+					lastTime = frame/frameRate;
+					if (bIsPlayTimeChg)
+					{
+						++m_playingTime;
+					}
+				}
+
+				if (NULL != m_pcbTimeChg)
+				{
+					m_pcbTimeChg(m_playingTime, m_pUser);
+				}
 			}
-			m_startTime = currentPlayTime;
+			tempTime = currentPlayTime;
 			AVI_close(file);
+			if (bIsPlayTimeChg)
+			{
+				m_bIsPickThread = false;
+			}
 		}
 		else
 		{
@@ -206,19 +269,7 @@ void PlayMgr::run()
 	}
 	m_nSpeedRate = 0;
 	m_bStop = false;
-}
-
-int PlayMgr::getPlayTime()
-{
-	if (!m_bPlaying)
-	{
-		return 0;
-	}
-	else
-	{
-		return m_playTime.elapsed();	
-	}
-
+	m_bIsChange = false;
 }
 
 void PlayMgr::setPlaySpeed(int speedRate)
@@ -243,6 +294,11 @@ void PlayMgr::stop()
 	m_nSpeedRate = 0;
 	m_pRenderWnd = NULL;
 	m_bPause = false;
+
+	m_playingTime = 0;
+	m_bIsChange = false;
+	m_who = NULL;
+	m_bIsPickThread = false;
 }
 
 

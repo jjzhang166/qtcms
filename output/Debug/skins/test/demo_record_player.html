@@ -4,9 +4,22 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>demo_record_player</title>
 <script language="javascript" src="js/qframework.js" ></script>
-<script language="javascript">
+<script language="javascript" >
+
+var timerID;
+
+function displayTime() {
+	var obj = document.getElementById('windows');
+    var playTime = document.getElementById('playTime');
+    var time = obj.GetNowPlayedTime();
+    playTime.value = time;
+	
+    timerID = setTimeout("displayTime()", 1000);
+}
+
 function Onload()
 {
+	startclock();
     var obj = document.getElementById('windows');
     obj.AddEventProc("GetRecordDate", "alert('GetRecordDate');");
     obj.AddEventProc("GetRecordDate", 'GetRecordDate(ev)');
@@ -126,11 +139,29 @@ function GetNowPlayedTime() {
 	alert(time);
 }
 
+function addFourChannel() {
+	var obj = document.getElementById('windows');
+	var fileList1 = "F:/JAREC/2014-01-14/1000/CHL01/095756.avi,F:/JAREC/2014-01-14/1000/CHL01/095820.avi,F:/JAREC/2014-01-14/1000/CHL01/175938.avi,F:/JAREC/2014-01-14/1000/CHL01/194612.avi";
+	var fileList2 = "F:/JAREC/2014-01-14/1000/CHL02/095816.avi,F:/JAREC/2014-01-14/1000/CHL02/095827.avi,F:/JAREC/2014-01-14/1000/CHL02/145417.avi,F:/JAREC/2014-01-14/1000/CHL02/145636.avi";
+	var fileList3 = "F:/JAREC/2014-01-14/1000/CHL03/145426.avi,F:/JAREC/2014-01-14/1000/CHL03/145437.avi,F:/JAREC/2014-01-14/1000/CHL03/145630.avi,F:/JAREC/2014-01-14/1000/CHL03/145646.avi";
+	var fileList4 = "F:/JAREC/2014-01-14/1000/CHL04/095813.avi,F:/JAREC/2014-01-14/1000/CHL04/095832.avi,F:/JAREC/2014-01-14/1000/CHL04/145419.avi,F:/JAREC/2014-01-14/1000/CHL04/145645.avi";
+	
+	alert("addFourChannel");
+	obj.AddFileIntoPlayGroup(fileList1, 0, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList2, 1, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList3, 2, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList4, 3, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+
+// 	var fileList1 = "F:/JAREC/2014-01-14/1000/CHL01/095756.avi,F:/JAREC/2014-01-14/1000/CHL01/095820.avi,F:/JAREC/2014-01-14/1000/CHL01/175938.avi,F:/JAREC/2014-01-14/1000/CHL01/194612.avi";
+// 	obj.AddFileIntoPlayGroup(fileList1, 0, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+
+}
+
 </script>
 </head>
 
 <body onload="Onload()">
-  <object type="application/cms-record-player" id="windows" style="width:800px; height:500px;"></object>
+  <object type="application/cms-record-player" id="windows" style="width:700px; height:450px;"></object>
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="75%">
@@ -148,6 +179,7 @@ function GetNowPlayedTime() {
 		<td>sSearchBeginTime</td>
 		<td><input type="text" id="sSearchBeginTime" value="00:00:00"/></td>
         <td></td>
+        <td><button onclick="addFourChannel()">addFourChannel</button></td>
 	</tr>
 	<tr>
 		<td>sSearchEndTime</td>
@@ -195,9 +227,10 @@ function GetNowPlayedTime() {
         <td><button onclick="GroupSpeedNormal()">GroupSpeedNormal</button></td>
 	</tr>
 	<tr>
-    	<td></td>
+    	<td><input type="text" id="playTime" value=""/></td>
 		<td></td>
         <td><button onclick="GetNowPlayedTime()">GetNowPlayedTime</button></td>
+		<td><button onclick="displayTime()">displayTime</button></td>
 	</tr>
 
 </table>

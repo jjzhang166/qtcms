@@ -9,6 +9,7 @@
 LocalPlayer::LocalPlayer() :
 m_nRef(0),
 m_nGroupNum(4),
+m_playTime(0),
 m_bIsGroupPlaying(false)
 {
 	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
@@ -217,7 +218,7 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	return ILocalRecordSearch::OK;
 }
 
-int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime)
+int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec)
 {
 	QString filePath;
 	QString dateStr;
@@ -226,11 +227,18 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 	QDate date;
 	QTime time;
 	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+	int firstFile = 0;
+	bool find = false;
+	PeriodTime perTime;
 	int aviFileLength = 0;
 	int totalFrames = 0;
 	int frameRate = 0;
 	avi_t *aviFile = NULL;
 
+	if (fileList.isEmpty())
+	{
+		return -1;
+	}
 	for(int pos = 0; pos < fileList.size(); pos++)
 	{
 		filePath = fileList[pos];
@@ -247,7 +255,7 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 
 		if (0 == fileInfo.size())
 		{
-			return -1;
+			continue;
 		}
 
 		aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
@@ -257,13 +265,30 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 
 		AVI_close(aviFile);
 
-		if (!((dateTime >= endTime) || (dateTime.addSecs(aviFileLength) <= startTime)))
+		if (!find && !((dateTime >= endTime) || (dateTime.addSecs(aviFileLength) <= startTime)))
 		{
-			return pos;
+			firstFile = pos;
+			find = true;
 		}
+		if (dateTime >= startTime && dateTime.addSecs(aviFileLength) <= endTime)
+		{
+			perTime.start = dateTime.toTime_t();
+			perTime.end = perTime.start + aviFileLength;
+		}
+		if (dateTime < startTime && dateTime.addSecs(aviFileLength) < endTime)
+		{
+			perTime.start = startTime.toTime_t();
+			perTime.end = perTime.start + aviFileLength;
+		}
+		if (dateTime < endTime && dateTime.addSecs(aviFileLength) > endTime)
+		{
+			perTime.start = dateTime.toTime_t();
+			perTime.end = endTime.toTime_t();
+		}
+		perTimeVec.append(perTime);
 	}
 
-	return -1;
+	return firstFile;
 }
 
 bool LocalPlayer::checkChannelInFileList(QStringList const filelist)
@@ -313,8 +338,9 @@ int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,co
 	{
 		return 2;
 	}
+	QVector<PeriodTime> vecPerTime;
 	//there is no file between start time and end time
-	int startPos = checkFileExist(filelist, start, end);
+	int startPos = checkFileExist(filelist, start, end, vecPerTime);
 	if (-1 == startPos)
 	{
 		return 3;
@@ -326,7 +352,11 @@ int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,co
 	prePlay.startTime = start;
 	prePlay.endTime = end;
 	prePlay.startPos = startPos;
+	prePlay.skipTime = vecPerTime;
 	
+	m_startTime = start.toTime_t();
+	m_endTime = end.toTime_t();
+
 	m_GroupMap.insert(wnd, prePlay);
 
 	return 0;
@@ -340,12 +370,109 @@ int LocalPlayer::SetSynGroupNum(int num)
 	m_nGroupNum = num;
 	return 0;
 }
+
+int LocalPlayer::countSkipTime()
+{
+	if (m_GroupMap.isEmpty())
+	{
+		return 1;
+	}
+
+	QVector<PeriodTime> skipTime;
+	PeriodTime perTime;
+	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.begin();
+	while (iter != m_GroupMap.end())
+	{
+		for (int i = 0; i < iter->skipTime.size(); ++i)
+		{
+ 			if (skipTime.isEmpty())
+ 			{
+				skipTime.append(iter->skipTime[i]);
+ 				continue;
+ 			}
+ 			int j = 0;
+ 			while(j < skipTime.size())
+ 			{ 
+ 				if (iter->skipTime[i].start == skipTime[j].start && iter->skipTime[i].end == skipTime[j].end)
+ 				{
+ 					break;
+ 				}
+ 				if (iter->skipTime[i].end < skipTime[j].start)
+ 				{
+					if ((j >= 1  && iter->skipTime[i].start > skipTime[j - 1].end))
+					{
+						skipTime.insert(j - 1, iter->skipTime[i]);
+						break;
+					}
+					else if (0 == j)
+					{
+						skipTime.prepend(iter->skipTime[i]);
+					}
+ 				}
+ 				if (iter->skipTime[i].start > skipTime[j].end)
+ 				{
+ 					if ((j + 1 < skipTime.size() && iter->skipTime[i].end < skipTime[j + 1].start) || (j + 1 == skipTime.size()))
+ 					{
+ 						skipTime.insert(j + 1, iter->skipTime[i]);
+ 						break;
+ 					}
+ 				}
+				if ((iter->skipTime[i].start < skipTime[j].start && iter->skipTime[i].end >= skipTime[j].start)|| (iter->skipTime[i].end > skipTime[j].end) && (iter->skipTime[i].start <= skipTime[j].end))
+				{
+					skipTime[j].start = qMin(skipTime[j].start, iter->skipTime[i].start);
+					skipTime[j].end = qMax(skipTime[j].end, iter->skipTime[i].end);
+					break;
+				}
+ 				++j;
+ 			}
+		}
+		++iter;
+	}
+
+	QVector<PeriodTime> result;
+	for (int i = 0 ; i <= skipTime.size(); ++i)
+	{
+		if (0 == i && skipTime[i].start != m_startTime)
+		{
+			perTime.start = m_startTime;
+			perTime.end = skipTime[i].start;
+			result.append(perTime);
+			continue;
+		}
+		else if (i == skipTime.size() && skipTime[i - 1].end != m_endTime)
+		{
+			perTime.start = skipTime[i - 1].end;
+			perTime.end = m_endTime;
+			result.append(perTime);
+			continue;
+		}
+		else
+		{
+			perTime.start = skipTime[i - 1].end;
+			perTime.end = skipTime[i].start;
+			result.append(perTime);
+		}
+
+	}
+
+	iter = m_GroupMap.begin();
+	while(iter != m_GroupMap.end())
+	{
+		iter->skipTime = result;
+		++iter;
+	}
+
+	return 0;
+}
+
 int LocalPlayer::GroupPlay()
 {
 	if (m_GroupMap.isEmpty())
 	{
 		return 1;
 	}
+
+	countSkipTime();
 
 	if (m_bIsGroupPlaying)
 	{
@@ -359,7 +486,8 @@ int LocalPlayer::GroupPlay()
 		{
 			continue;
 		}
-		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos);
+		iter->pPlayMgr->setCbTimeChange(cbTimeChange, this);
+		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos, iter->skipTime);
 		if (iter->pPlayMgr->isRunning())
 		{
 			iter->pPlayMgr->quit();
@@ -431,6 +559,7 @@ int LocalPlayer::GroupStop()
 
 	m_bIsGroupPlaying = false;
 	m_GroupMap.clear();
+	m_playTime = 0;
 	return 0;
 }
 int LocalPlayer::GroupSpeedFast(int speed)
@@ -495,28 +624,31 @@ QDateTime LocalPlayer::GetNowPlayedTime()
 	QDateTime time;
 	QTime secTime(0, 0, 0);
 
-	if (m_GroupMap.isEmpty())
-	{
-		return time;
-	}
+	time.setDate(QDate::currentDate());
+	time.setTime(secTime.addSecs(m_playTime));
 
-	QMap<QWidget*, PrePlay>::iterator it;
-	it = m_GroupMap.begin();
-
-	if (NULL == it->pPlayMgr)
-	{
-		return time;
-	}
-
-	int mSeconds = 0;
-	mSeconds = it->pPlayMgr->getPlayTime();
-	mSeconds=mSeconds/1000;
-	//time.setDate(QDate::currentDate());
-	//time.setTime(secTime.addMSecs(mSeconds));
-	time=QDateTime::fromTime_t(mSeconds);
 	return time;
 }
+void LocalPlayer::setPlayTime(uint &playTime)
+{
+	if (playTime < 0)
+	{
+		return;
+	}
 
+	if (m_playTime < playTime)
+	{
+		m_playTime = playTime;
+	}
+}
+
+void cbTimeChange(uint playTime, void* pUser)
+{
+	if (playTime >= 0 && pUser != NULL)
+	{
+		((LocalPlayer*)pUser)->setPlayTime(playTime);
+	}
+}
 
 QStringList LocalPlayer::eventList()
 {
