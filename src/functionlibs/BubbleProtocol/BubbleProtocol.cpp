@@ -124,6 +124,10 @@ void BubbleProtocol::finishReply()
 
     if (200 != statusCode.toInt())
     {
+		QVariantMap recordTotal;
+		recordTotal.insert("total", QString("%1").arg(0));
+		eventProcCall(QString("recFileSearchFinished"), recordTotal); 
+
         return;
     }
     int pos = m_block.indexOf("<");
