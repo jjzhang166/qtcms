@@ -71,6 +71,7 @@
 	.right_content,.confirm{ display: none;}
 	.timeInput{width: 90px; float:left; margin-right:6px;}
 	ul.groupAction li{float: left;}
+	.switch {top:50px;}
 
 </style>
 </head>
@@ -243,17 +244,34 @@
 			<object type="application/cms-dsview-windows" id="devSearch" width="0" height="0"></object>
 			<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
 			<div style="position:relative; display:block;" class="right_content">
-				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="width:760px; overflow:auto; position: absolute; left:0;">
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style=" overflow:auto; position: absolute; left:0; background:#abcdef;">
 					<thead class="thead">
 						<tr>
-							<td style="width:100px;">设备</td>
-							<td style="width:260px;">ID</td>
-							<td style="width:260px;">IP</td>
-							<td style="width:100px;">通道数</td>
+							<td style="width:140px;">设备</td>
+							<td>ID</td>
+							<td>IP</td>
+							<td style="width:60px;">通道数</td>
 						</tr>
 					</thead>
 					<tbody class="synCheckboxClick">
-									
+							<tr id="esee_100015721"><td><input type="checkbox"  /> JUAN DVR</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+							<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
 					</tbody>
 				</table>
 				<input type="hidden" id="adddevicedouble_ID" />
@@ -268,14 +286,14 @@
 						<li class="hover" onclick="searchFlush();">重新搜索</li>
 					</ul>
 				</div>
-				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px; width:760px;position: absolute;">
+				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px;position: absolute;">
 					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" id="tableSelectAll" status="0" />全选</td></tr></thead>
 					<tbody>
 						<tr>
-							<td style="width:100px;">设备IP</td>
-							<td style="width:260px;"><input type="text" /></td>
-							<td style="width:100px;">子网掩码</td>
-							<td style="width:260px;"><input type="text" /></td>
+							<td width="80px;">设备IP</td>
+							<td class="aa"><input type="text" /></td>
+							<td>子网掩码</td>
+							<td class="aa"><input type="text" /></td>
 						</tr>
 						<tr>
 							<td>网关</td>

@@ -468,14 +468,20 @@ var oSearchOcx;
 		if(now == 0){ 
 			var main = $('#SerachDevList');
 			main.css({ 
-				height:H-272
+				height:H-270,
+				width:W-600
 			})
+			main.find('thead td').not(':first,:last').width((main.width()-130)/2)
 			if(main.width()>760){ 
 				main.width(780);
 			}
 			$('#Allocation').css({
-				top:main.height()+2
-			})
+				top:main.height(),
+				width:main.width()
+			}).find('tbody .aa').width((main.width()-100)/2-20)
+
+			$('div.dev_list').height(H/2-94)
+
 			oWarp.find('div.action:eq(0)').css('left',main.width()-30);
 			$('#left_list').css('left',main.width()+136);
 		}
