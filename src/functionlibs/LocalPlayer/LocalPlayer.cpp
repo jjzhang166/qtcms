@@ -224,6 +224,7 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 	QString dateStr;
 	QFileInfo fileInfo(filePath);
 	QDateTime dateTime;
+	QDateTime fileEndTime;
 	QDate date;
 	QTime time;
 	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
@@ -262,25 +263,25 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 		totalFrames = AVI_video_frames(aviFile);
 		frameRate = AVI_frame_rate(aviFile);
 		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
-
 		AVI_close(aviFile);
 
-		if (!find && !((dateTime >= endTime) || (dateTime.addSecs(aviFileLength) <= startTime)))
+		fileEndTime = dateTime.addSecs(aviFileLength);
+		if (!find && !((dateTime >= endTime) || (fileEndTime <= startTime)))
 		{
 			firstFile = pos;
 			find = true;
 		}
-		if (dateTime >= startTime && dateTime.addSecs(aviFileLength) <= endTime)
+		if (dateTime >= startTime && fileEndTime <= endTime)
 		{
 			perTime.start = dateTime.toTime_t();
 			perTime.end = perTime.start + aviFileLength;
 		}
-		if (dateTime < startTime && dateTime.addSecs(aviFileLength) < endTime)
+		if (dateTime < startTime && fileEndTime < endTime)
 		{
 			perTime.start = startTime.toTime_t();
 			perTime.end = perTime.start + aviFileLength;
 		}
-		if (dateTime < endTime && dateTime.addSecs(aviFileLength) > endTime)
+		if (dateTime < endTime && fileEndTime > endTime)
 		{
 			perTime.start = dateTime.toTime_t();
 			perTime.end = endTime.toTime_t();
