@@ -594,7 +594,7 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 		{
 			if (false==bHadCallCloseAll)
 			{
-				closeAll();
+				//closeAll();
 			}
 		}
 	}
