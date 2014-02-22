@@ -49,19 +49,13 @@ public slots:
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname
 		,const QString & sVendor);
-
-	int SetCameraInWnd(unsigned int uiWndIndex
-		,const QString sAddress,unsigned int uiPort,const QString & sEseeId
-		,unsigned int uiChannelId,unsigned int uiStreamId
-		,const QString & sUsername,const QString & sPassword
-		,const QString & sCameraname
-		,const QString & sVendor);
+	int SetDevChannelInfo(unsigned int uiWndIndex,int ChannelId);
 
 	int CloseWndCamera(unsigned int uiWndIndex);
 
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 
-	void CurrentStateChangePlugin(int statevalue,QWidget *WID);
+	void CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID);
 
 	//
 	int StartRecord(int nWndID);

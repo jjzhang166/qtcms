@@ -11,6 +11,7 @@ typedef struct _tagDevCliSetInfo{
 	unsigned int m_uiPort;
 	QString m_sEseeId;
 	unsigned int m_uiChannelId;
+	int m_uiChannelIdInDataBase;
 	unsigned int m_uiStreamId;
 	QString m_sUsername;
 	QString m_sPassword;

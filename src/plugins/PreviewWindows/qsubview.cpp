@@ -48,7 +48,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(&m_checkTime, SIGNAL(timeout()), this, SLOT(OnCheckTime()));
 
 	connect(this,SIGNAL(DisConnecting()),this,SLOT(OnDisConnecting()),Qt::QueuedConnection);
-	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);
+	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);//Ui显示正在连接中
 	connect(this,SIGNAL(DisConnected()),this,SLOT(OnDisConnected()),Qt::QueuedConnection);
 	connect(this,SIGNAL(RenderHistoryPix()),this,SLOT(OnRenderHistoryPix()),Qt::QueuedConnection);
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
@@ -258,8 +258,10 @@ int QSubView::GetCurrentWnd()
 {
 	return 1;
 }
-int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
+
+int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	//保存设备信息
 	m_DevCliSetInfo.m_sAddress.clear();
 	m_DevCliSetInfo.m_sEseeId.clear();
 	m_DevCliSetInfo.m_sUsername.clear();
@@ -275,11 +277,6 @@ int QSubView::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QS
 	m_DevCliSetInfo.m_sPassword=sPassword;
 	m_DevCliSetInfo.m_sCameraname=sCameraname;
 	m_DevCliSetInfo.m_sVendor=sVendor;
-	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
-	return 0;
-}
-int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
-{
 	//设置自动手动关闭标志位
 	if (m_bStateAutoConnect==true)
 	{
@@ -299,7 +296,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			}
 			return 1;
 		}
-	SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	/*SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);*/
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
@@ -404,27 +401,49 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 {
 
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
+	
+	
 	if (1==m_CurrentState)
 	{
 		emit Connectting();
+		QVariantMap evMapToUi;
+		evMapToUi.insert("CurrentState",m_CurrentState);
+		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
+		emit CurrentStateChangeSignl(evMapToUi,this);
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connecting";
 	}
 	if (0==m_CurrentState)
 	{
 		m_bIsAutoConnect=true;
+		QVariantMap evMapToUi;
+		evMapToUi.insert("CurrentState",m_CurrentState);
+		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
+		emit CurrentStateChangeSignl(evMapToUi,this);
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connected";
 	}
 	if (3==m_CurrentState)
 	{
 		emit DisConnecting();
+		QVariantMap evMapToUi;
+		evMapToUi.insert("CurrentState",m_CurrentState);
+		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
+		emit CurrentStateChangeSignl(evMapToUi,this);
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnecting";
 	}
 	if (2==m_CurrentState)
 	{
+		//断开后，把历史图片数据清空
 		m_HistoryRenderInfo.pData=NULL;
+
+		QVariantMap evMapToUi;
+		evMapToUi.insert("CurrentState",m_CurrentState);
+		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
+		emit CurrentStateChangeSignl(evMapToUi,this);
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnected";
 	}
-	emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
+	
+	
+	/*emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);*/
 	//自动重连
 	if (QSubViewConnectStatus::STATUS_DISCONNECTED==m_CurrentState&&QSubViewConnectStatus::STATUS_CONNECTED==m_HistoryState)
 	{
@@ -504,7 +523,6 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		update();
 	}
 	
-	/*repaint(this->x(),this->y(),this->width(),this->height());*/
 	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
 	{
 		if (ev->timerId()==m_DisConnectedTimeId)
@@ -559,7 +577,6 @@ void QSubView::timerEvent( QTimerEvent * ev)
 			}
 		}
 	}
-	/*killTimer(ev->timerId());*/
 }
 
 void QSubView::OnRMousePressMenu()
@@ -872,4 +889,10 @@ void QSubView::In_CloseAutoConnect()
 void QSubView::OnCreateAutoConnectTime()
 {
 	m_AutoConnectTimeId=startTimer(10000);
+}
+
+int QSubView::SetDevChannelInfo( int ChannelId )
+{
+	m_DevCliSetInfo.m_uiChannelIdInDataBase=ChannelId;
+	return 0;
 }

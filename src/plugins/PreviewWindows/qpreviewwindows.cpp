@@ -21,7 +21,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(mousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowRmousePress(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
-		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(int,QWidget *)),this,SLOT(CurrentStateChangePlugin(int,QWidget *)));
+		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(QVariantMap,QWidget *)),this,SLOT(CurrentStateChangePlugin(QVariantMap,QWidget *)));
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
 
@@ -226,18 +226,7 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
 }
-int QPreviewWindows::SetCameraInWnd(unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname ,const QString & sVendor)
-{
-	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
-	{
-		return 1;
-	}
-	m_mutex.lock();
-	m_CurrentWnd=uiWndIndex;
-	m_mutex.unlock();
-	m_PreviewWnd[uiWndIndex].SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
-	return 0;
-}
+
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
 	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
@@ -263,7 +252,7 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
 }
 
-void QPreviewWindows::CurrentStateChangePlugin(int statevalue,QWidget *WID)
+void QPreviewWindows::CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID)
 {
 	int j;
 	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
@@ -273,10 +262,12 @@ void QPreviewWindows::CurrentStateChangePlugin(int statevalue,QWidget *WID)
 			break;
 		}
 	}
-	DEF_EVENT_PARAM(arg);
-	EP_ADD_PARAM(arg,"CurrentState",statevalue);
-	EP_ADD_PARAM(arg,"WPageId",j);
-	EventProcCall("CurrentStateChange",arg);
+	evMap.insert("WPageId",j);
+	EventProcCall("CurrentStateChange",evMap);
+	//DEF_EVENT_PARAM(arg);
+	//EP_ADD_PARAM(arg,"CurrentState",statevalue);
+	//EP_ADD_PARAM(arg,"WPageId",j);
+	//EventProcCall("CurrentStateChange",arg);
 	return ;
 }
 
@@ -350,4 +341,13 @@ int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndI
 	nRet = m_PreviewWnd[nWndID].SetDevInfo(devname, nChannelNum);
 
 	return nRet;
+}
+
+int QPreviewWindows::SetDevChannelInfo( unsigned int uiWndIndex,int ChannelId )
+{
+	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 1;
+	}
+	return m_PreviewWnd[uiWndIndex].SetDevChannelInfo(ChannelId);
 }

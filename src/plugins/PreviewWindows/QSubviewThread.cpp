@@ -58,21 +58,6 @@ void QSubviewThread::OpenCameraInWnd()
 	}
 	m_IDeviceClientOpenCameraInWnd->Release();
 	m_IDeviceClientOpenCameraInWnd=NULL;
-	//if (1==m_IDeviceClient->setChannelName(m_DevCliSetInfo.m_sCameraname))
-	//{
-	//	return;
-	//}
-	//int nRet=1;
-	//nRet=m_IDeviceClient->connectToDevice(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId);
-	//if (1==nRet)
-	//{
-	//	return;
-	//}
-	//if (1==m_IDeviceClient->liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true))
-	//{
-	//	return;
-	//}
-	//return;
 }
 
 int QSubviewThread::SetDeviceClient(IDeviceClient *parm)

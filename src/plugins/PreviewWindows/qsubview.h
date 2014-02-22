@@ -49,10 +49,7 @@ public:
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname,const QString & sVendor);
-	int SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
-		,unsigned int uiChannelId,unsigned int uiStreamId
-		,const QString & sUsername,const QString & sPassword
-		,const QString & sCameraname,const QString & sVendor);
+	int SetDevChannelInfo(int ChannelId);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
 
@@ -73,7 +70,7 @@ public:
 	int ForRecord(QVariantMap evMap);
 	int PrevRender(QVariantMap evMap);
 	int CurrentStateChange(QVariantMap evMap);
-	//////////////
+
 	int SetDeviceByVendor(const QString & sVendor);
 private:
 	int cbInit();
@@ -95,7 +92,7 @@ signals:
 		void mousePressEvent(QWidget *,QMouseEvent *);
 		void mouseLeftClick(QWidget *,QMouseEvent *);
 		void SetCurrentWindSignl(QWidget *);
-		void CurrentStateChangeSignl(int statevalue,QWidget *);
+		void CurrentStateChangeSignl(QVariantMap evMap,QWidget *);
 		void Connectting();
 		void DisConnecting();
 		void DisConnected();
