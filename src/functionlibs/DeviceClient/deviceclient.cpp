@@ -482,6 +482,10 @@ int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 			}
 		}
 	}
+	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED)
+	{
+		bCloseingFlags=true;
+	}
 	return 0;
 }
 void DeviceClient::eventProcCall(QString sEvent,QVariantMap param)
