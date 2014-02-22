@@ -76,9 +76,10 @@ void previewactivity::OnTopActDbClick()
 
 		// get screen size
 		QRect rcScreen = QApplication::desktop()->screenGeometry();
-
+		qDebug()<<rcScreen.width()<<rcScreen.height();
 		// get current size
-		QSize currentSize = m_MainView->size();
+		QSize currentSize=m_MainView->size();
+
 		if (currentSize.width() < 1072)
 		{
 			currentSize.setWidth(1072);

@@ -6,7 +6,6 @@
 #include <QObject>
 #include <QMutex>
 #include <qwfw.h>
-
 class previewactivity : public QWebUiFWBase,
 	public IActivities
 {

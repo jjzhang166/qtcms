@@ -121,14 +121,6 @@ void settingsActivity::OnTopActDbClick()
 		int nY=rcScreen.height()-currentSize.height();
 		m_MainView->move(nX/2,nY/2);
 	}
-	//if (m_MainView->isMaximized())
-	//{
-	//	m_MainView->showNormal();
-	//	if (m_MainView->frameGeometry().width() < 950)
-	//	{
-	//		m_MainView->setFixedWidth(950);
-	//	}
-	//}
 	else
 	{
 		m_MainView->showMaximized();
