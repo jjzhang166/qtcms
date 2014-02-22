@@ -127,7 +127,7 @@ void BubbleProtocol::finishReply()
 		QVariantMap recordTotal;
 		recordTotal.insert("total", QString("%1").arg(0));
 		eventProcCall(QString("recFileSearchFinished"), recordTotal); 
-
+		m_block.clear();
         return;
     }
     int pos = m_block.indexOf("<");
