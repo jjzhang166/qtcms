@@ -143,7 +143,12 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
-		try{oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);}
+		try{
+
+			oPreView.SetDevChannelInfo(wind,data.channel_id);
+
+			oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
+			}
 		catch(e){}
 	}
 
@@ -156,9 +161,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	}
 
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
-		var obj = $('div.dev_list span.channel').filter(function(){ 
+		var obj = $('#channel_'+ev.ChannelId);
+		/*$('div.dev_list span.channel').filter(function(){ 
 			return $(this).attr('wind') == ev.WPageId;
-		})
+		})*/
 		var chlData = getChlFullInfo(obj);
 		var str=getNowTime()+'   设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+ev.WPageId+' '+currentWinStateChange[ev.CurrentState];
 		if(ev.CurrentState == 2){			

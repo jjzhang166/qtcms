@@ -470,9 +470,9 @@ var oSearchOcx;
 			main.css({ 
 				height:H-272
 			})
-			/*if(main.width()>760){ 
+			if(main.width()>760){ 
 				main.width(780);
-			}*/
+			}
 			$('#Allocation').css({
 				top:main.height()+2
 			})

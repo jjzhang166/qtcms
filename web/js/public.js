@@ -373,7 +373,7 @@ function firstUp(str){  //字符串首字母大写
 	return a.join('');
 }
 function show(data){  // 在ID为test的div元素中打印对象数据
-	return false;
+	//return false;
 	var index='default',
 		str = 'Null';
 		$('#test').html('');
