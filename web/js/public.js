@@ -75,14 +75,14 @@ function ViewMax(type){
 	if(oView.width()<680){
 		oView.width(680);
 	}
-	if(oView.height()<450){
-		oView.height(450);
+	if(oView.height()<360){
+		oView.height(360);
 	}
 	oLeft.css({
 		left:oView.width(),
-		height:WinH-116
+		height:oView.height()+123
 	});
-	$('div.dev_list').height(oLeft.height()-devListH)
+	oDiv.height(oLeft.height()-devListH)
 	oBottom.css({
 		width:oView.width(),
 		top:oView.height()+80

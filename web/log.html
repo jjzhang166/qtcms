@@ -28,7 +28,7 @@
 		var W = $(window).width();
 		var H = $(window).height();
 		var mainView = $('#main .content');	
-		mainView.height(H - 198);
+		mainView.height(H - 162);
 		mainView.width(W - 124);
 		if(mainView.height()<330){
 			mainView.height(330);
@@ -37,8 +37,8 @@
 			mainView.width(630);
 		}
 		$('#top').width(mainView.width()+120);
-		$('#foot').css('top',mainView.height()+170);
-		$('#main .left').height(H - 198);
+		$('#foot').css('top',mainView.height()+134);
+		$('#main .left').height(H - 162);
 	}
 </script>
 <style type="text/css">
@@ -169,12 +169,13 @@
 					<li><div style=" border:0;height:18px; width:18px; background:url(./images/log/log.jpg);"></div><p style="text-indent:20px">WrinLog</p></li>
 				</ul>
 			</div>
-			<div class="content" style="left:120px;">
+			<div class="content" style="left:120px; overflow:auto;">
 				<table style="width:100%;">
 					<thead>
 						<tr height="16"><td>ServerName</td><td>ServerName</td><td>ServerName</td><td>OperatorName</td><td>Area Name</td><td>ServerName</td><td>ChannelName</td></tr>
 					</thead>
 					<tbody>
+						<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 						<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 						<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 						<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>

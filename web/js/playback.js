@@ -1,4 +1,4 @@
-var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl;
+var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,oDiv;
 var	nViewNum = 0,
 	NowMonth = 0,
 	drag_timer = null,
@@ -9,9 +9,10 @@ var	nViewNum = 0,
 		oView = $('#playback_view');
 		oPlayBack = $('#playback')[0];
 		oPlaybackLocl = $('#playbackLocl')[0];
+		oDiv = $('div.dev_list');
 		ViewMax();
-		var oAs = $('ul.dev_list_btn li'),
-			oDiv = $('div.dev_list');
+
+		var oAs = $('ul.dev_list_btn li');	
 	    
 	    $('ul.filetree').treeview();		
 		

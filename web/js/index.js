@@ -1,4 +1,4 @@
-var oLeft,oBottom,oView,oPreView;
+var oLeft,oBottom,oView,oPreView,oDiv;
 var	nViewNum = 0;
 var timer = null;
 var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
@@ -9,10 +9,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		oBottom = $('#operating');
 		oView = $('#playback_view');
 		oPreView= $('#previewWindows')[0];
-		setViewMod('div2_2')
+		oDiv = $('div.dev_list');
+		
+		setViewMod('div2_2');
 
 		var oAs = $('ul.dev_list_btn a');
-		var oDiv = $('div.dev_list');
 	    
 		$(window).off();
 
