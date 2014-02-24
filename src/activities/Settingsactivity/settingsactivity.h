@@ -51,6 +51,7 @@ public slots:
 	/*device module*/
 	void OnAddDevice();
 	void OnAddDeviceDouble();
+	void OnAddDeviceALL();
 	void OnRemoveDevice();
 	void OnModifyDevice();
 
