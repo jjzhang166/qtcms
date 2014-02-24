@@ -674,6 +674,9 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 function cleanDev(){  //清空设备
 	
 }
+function setIP(){ //设置IP
+	showdata('Allocation','设置IP');
+}
 //devinfo
 function disksSelectAll(){
 	$('#StorageParm input:checkbox:lt(22)').click();
