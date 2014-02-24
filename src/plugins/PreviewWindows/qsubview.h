@@ -121,6 +121,7 @@ private:
 	bool m_bIsAutoConnect;
 	bool m_bStateAutoConnect;
 	bool m_bIsAutoConnecting;
+	bool m_bIsStartRendering;
 
 	QTime dieTime;
 	QTimer m_checkTime;
