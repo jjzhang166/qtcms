@@ -20,6 +20,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
 	m_bIsAutoConnecting(false),
+	m_bIsStartRecording(false),
 	m_bIsAutoRecording(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
@@ -396,8 +397,6 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	{
 		return 1;
 	}
-
-	qDebug()<<"=======PrevPlay=======";
 	m_IVideoDecoder->decode(lpdata,nLength);
 	return 0;
 }
@@ -571,6 +570,16 @@ void QSubView::timerEvent( QTimerEvent * ev)
 			killTimer(ev->timerId());
 			m_AutoConnectTimeId=0;
 			m_bStateAutoConnect=false;
+			//判定是否需要重新录像
+			if (QSubViewConnectStatus::STATUS_CONNECTED==m_CurrentState&&true==m_bIsStartRecording)
+			{
+				if (NULL != m_pRecorder&&m_bIsAutoRecording==false)
+				{
+					m_bIsRecording = true;
+					m_pRecorder->SetDevInfo(m_RecordDevInfo.m_DevName,m_RecordDevInfo.m_ChannelNum);
+					m_pRecorder->Start();
+				}
+			}
 		}
 		else if (m_bIsAutoConnect==true)
 		{
@@ -663,7 +672,7 @@ int QSubView::StartRecord()
 	{
 		return 1;
 	}
-
+	m_bIsStartRecording=true;
 	m_bIsRecording = true;
 	int nRet = m_pRecorder->Start();
 	return nRet;
@@ -677,7 +686,7 @@ int QSubView::StopRecord()
 	}
 	int nRet = m_pRecorder->Stop();
 	m_bIsRecording = false;
-
+	m_bIsStartRecording=false;
 	return nRet;
 }
 
@@ -687,7 +696,9 @@ int QSubView::SetDevInfo(const QString &devname,int nChannelNum)
 	{
 		return 1;
 	}
-
+	m_RecordDevInfo.m_DevName.clear();
+	m_RecordDevInfo.m_ChannelNum=nChannelNum;
+	m_RecordDevInfo.m_DevName=devname;
 	int nRet = m_pRecorder->SetDevInfo(devname, nChannelNum);
 	return nRet;
 }

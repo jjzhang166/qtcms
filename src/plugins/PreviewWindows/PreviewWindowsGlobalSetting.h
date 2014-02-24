@@ -31,6 +31,11 @@ typedef struct _tagRenderInfo{
 	QString iPixeFormat;
 	int iFlags;
 }RenderInfo;
+typedef struct _tagRecordDevInfo{
+	QString m_DevName;
+	int m_ChannelNum;
+}RecordDevInfo;
+
 
 typedef struct _tagRecordTimeInfo{
 	int nEnable;

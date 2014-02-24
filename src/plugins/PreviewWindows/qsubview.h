@@ -102,6 +102,7 @@ signals:
 		void CreateAutoConnectTimeSignals();
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
+	RecordDevInfo m_RecordDevInfo;
 	RenderInfo m_HistoryRenderInfo;//上一帧图像的信息
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
@@ -121,7 +122,7 @@ private:
 	bool m_bIsAutoConnect;
 	bool m_bStateAutoConnect;
 	bool m_bIsAutoConnecting;
-	bool m_bIsStartRendering;
+	bool m_bIsStartRecording;
 	bool m_bIsAutoRecording;
 
 	QTime dieTime;
