@@ -20,6 +20,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
 	m_bIsAutoConnecting(false),
+	m_bIsAutoRecording(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
@@ -29,13 +30,14 @@ QSubView::QSubView(QWidget *parent)
 	m_DisConnectedTimeId(0),
 	m_DisConnectingTimeId(0),
 	m_RenderTimeId(0),
+	m_RecordFlushTime(0),
 	m_AutoConnectTimeId(0)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
-	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
-// 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+//	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+ 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
 	//申请DeviceClient接口,修改成动态生成，此处去掉
@@ -394,6 +396,8 @@ int QSubView::PrevPlay(QVariantMap evMap)
 	{
 		return 1;
 	}
+
+	qDebug()<<"=======PrevPlay=======";
 	m_IVideoDecoder->decode(lpdata,nLength);
 	return 0;
 }
@@ -655,7 +659,7 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 
 int QSubView::StartRecord()
 {
-	if (NULL == m_pRecorder)
+	if (NULL == m_pRecorder || m_bIsAutoRecording)
 	{
 		return 1;
 	}
@@ -667,7 +671,7 @@ int QSubView::StartRecord()
 
 int QSubView::StopRecord()
 {
-	if (NULL == m_pRecorder)
+	if (NULL == m_pRecorder || m_bIsAutoRecording)
 	{
 		return 1;
 	}
@@ -690,7 +694,7 @@ int QSubView::SetDevInfo(const QString &devname,int nChannelNum)
 
 void QSubView::OnCheckTime()
 {
-	if (NULL == m_pRecorder)
+	if (NULL == m_pRecorder || m_bIsRecording)
 	{
 		return;
 	}
@@ -705,31 +709,64 @@ void QSubView::OnCheckTime()
 		}
 	}
 
-	static bool recording = false;
-	QStringList recordIdList = m_pRecordTime->GetRecordTimeBydevId(m_DevCliSetInfo.m_uiChannelId);
-	for (int i = 0; i < recordIdList.size(); i++)
+	QTime currentTime; 
+	RecordTimeInfo recTimeInfo;
+	if (0 == m_RecordFlushTime%600)
 	{
-		QString recordID = recordIdList[i];
-		QVariantMap timeInfo = m_pRecordTime->GetRecordTimeInfo(recordID.toInt());
-		if (1 == timeInfo.value("enable").toInt())
+		m_RecordFlushTime = 0;
+		++m_RecordFlushTime;
+		m_lstReocrdTimeInfoList.clear();
+		QStringList recordIdList = m_pRecordTime->GetRecordTimeBydevId(m_DevCliSetInfo.m_uiChannelIdInDataBase);
+		for (int i = 0; i < recordIdList.size(); i++)
 		{
-			continue;
-		}
+			QString recordID = recordIdList[i];
+			QVariantMap timeInfo = m_pRecordTime->GetRecordTimeInfo(recordID.toInt());
+			recTimeInfo.nEnable = timeInfo.value("enable").toInt();
+			recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
+			int weekDay = QDate::currentDate().dayOfWeek();
+			if (0 == recTimeInfo.nEnable && weekDay != recTimeInfo.nWeekDay)
+			{
+				continue;
+			}
 
-		QDateTime currentTime = QDateTime::currentDateTime();
-		QDateTime timeStart = QDateTime::fromString(timeInfo.value("starttime").toString(), "yyyy-MM-dd hh:mm:ss");
-		QDateTime timeEnd = QDateTime::fromString(timeInfo.value("endtime").toString(), "yyyy-MM-dd hh:mm:ss");
-		if (currentTime >= timeStart && currentTime < timeEnd)
-		{
-			m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
-			m_pRecorder->Start();
-			recording = true;
-		}
+			currentTime = QTime::currentTime();
+			recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
+			recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
+			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime)
+			{
+				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				m_pRecorder->Start();
+				m_bIsAutoRecording = true;
+			}
 
-		if (currentTime >= timeEnd && recording)
+			if (m_bIsAutoRecording && currentTime >= recTimeInfo.endTime)
+			{
+				m_pRecorder->Stop();
+				m_bIsAutoRecording = false;
+			}
+			m_lstReocrdTimeInfoList.append(recTimeInfo);
+		}
+	}
+	else
+	{
+		for (int j = 0; j < m_lstReocrdTimeInfoList.size(); ++j)
 		{
-			m_pRecorder->Stop();
-			recording = false;
+			if (0 == m_lstReocrdTimeInfoList[j].nEnable && m_lstReocrdTimeInfoList[j].nWeekDay)
+			{
+				continue;
+			}
+			currentTime = QTime::currentTime();
+			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime)
+			{
+				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				m_pRecorder->Start();
+				m_bIsAutoRecording = true;
+			}
+			if (m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].endTime)
+			{
+				m_pRecorder->Stop();
+				m_bIsAutoRecording = false;
+			}
 		}
 	}
 }

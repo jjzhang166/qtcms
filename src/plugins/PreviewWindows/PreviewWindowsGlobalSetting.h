@@ -2,7 +2,7 @@
 #define _PREVIEWWINDOWSGLOBALSETTINGS_HEAD_FILE_
 #include <QMutex>
 #include <QString>
-
+#include <QTime>
 
 extern QMutex g_PreviewWindowsMutex;
 
@@ -31,4 +31,11 @@ typedef struct _tagRenderInfo{
 	QString iPixeFormat;
 	int iFlags;
 }RenderInfo;
+
+typedef struct _tagRecordTimeInfo{
+	int nEnable;
+	int nWeekDay;
+	QTime startTime;
+	QTime endTime;
+}RecordTimeInfo;
 #endif

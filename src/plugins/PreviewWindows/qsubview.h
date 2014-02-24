@@ -122,6 +122,7 @@ private:
 	bool m_bStateAutoConnect;
 	bool m_bIsAutoConnecting;
 	bool m_bIsStartRendering;
+	bool m_bIsAutoRecording;
 
 	QTime dieTime;
 	QTimer m_checkTime;
@@ -141,6 +142,10 @@ private:
 	int m_DisConnectedTimeId;
 	int m_RenderTimeId;
 	int m_AutoConnectTimeId;
+
+	//计划录像刷新时间
+	int m_RecordFlushTime;
+	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
 };
 
 
