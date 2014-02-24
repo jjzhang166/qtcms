@@ -1,6 +1,5 @@
 var oSearchOcx;
-	$(function(){
-			
+	$(function(){	
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -188,12 +187,20 @@ var oSearchOcx;
 
 		//搜索结果 设备列表tr委托部分事件;
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(event){
-			var sDevId = parseInt($(this).parent('td').next('td').html());
+			/*var sDevId = parseInt($(this).parent('td').next('td').html());
 			if( sDevId <= 0 || !sDevId){ 
 				return false;
+			}*/
+			initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
+		}).on('click','tr',function(){
+			var data = $(this).data('data');
+			if(data.SearchVendor_ID == 'JUAN IPC'){
+				for(i in data){
+					$('#'+i).val(data[i]);
+				}
 			}
-			var devList = $('tbody.synCheckboxClick input:checked');
-			initDevIntoAreaXml(devList);
+			$('tbody.synCheckboxClick').find('tr').removeClass('sel')
+			$(this).addClass('sel');
 		})
 		
 		//用户table下 tr委托部分事件
@@ -276,7 +283,7 @@ var oSearchOcx;
 		
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName','AddDeviceAll'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -357,23 +364,22 @@ var oSearchOcx;
 		$('tbody.synCheckboxClick input:checkbox').each(function(){
 			$(this).click();
 		})
-		alert($('#recordtimedouble_ID').val());
 	}
 	// 一键添加
 	function addAlldevIntoArea(){
-		var devList = $('tbody.synCheckboxClick input').not(':disabled').prop('checked',true);
-			initDevIntoAreaXml(devList);
+		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
+			initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
 	}
 	//初始化要添加到区域的XML信息
-	function initDevIntoAreaXml (obj){
+	function initDevIntoAreaXml (objList,obj){
 			var oArea=$('div.dev_list:eq(0)')
 			if(!oArea.find('span.sel')[0]){
 				oArea.find('span').removeClass('sel');
 				oArea.find('span.area:first').addClass('sel');
 			}
 			var areaID = oArea.find('span.sel').data('data')['area_id'];
-			var str = '<devListInfo cut = "'+obj.length+'" area_id="'+areaID+'">';
-			obj.each(function(){ 
+			var str = '<devListInfo cut = "'+objList.length+'" area_id="'+areaID+'">';
+			objList.each(function(){ 
 				var data = $(this).parent('td').parent('tr').data('data');
 				var dataStr = '<dev username="admin" password="" ';
 				for(i in data){ 
@@ -383,7 +389,7 @@ var oSearchOcx;
 				str+=dataStr;
 			});
 			str+=' </devListInfo>';
-			$('#adddevicedouble_ID').val(str);
+			obj.val(str);
 		}
 	function FillStorageParmData(){
 		var diskcheckbox = $('#StorageParm table table input:checkbox')
@@ -664,6 +670,9 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		obox.find('input.parent'+pObjType).val(data['area_name']);
 	}
 	objShowCenter(obox);
+}
+function cleanDev(){  //清空设备
+	
 }
 //devinfo
 function disksSelectAll(){

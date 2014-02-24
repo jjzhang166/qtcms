@@ -66,7 +66,7 @@ var oCommonLibrary,
 		$('#SerachDevList tbody tr').remove();	 
 		oSearchOcx.Start();
 		/*setTimeout(function(){
-			oSearchOcx.Stop();	+
+			oSearchOcx.Stop();
 		},5000)*/
 	}
 	//设备搜索回调函数
@@ -78,19 +78,17 @@ var oCommonLibrary,
 			}
 		})
 		$('div.dev_list:eq(0) span.device').each(function(){ 
-			if( $(this).data('data')['eseeid'] == oJson.SearchSeeId_ID){ 
+			if($(this).data('data')['eseeid'] == oJson.SearchSeeId_ID){ 
 				bUsed = false;
 			}
 		})
 
 		if(bUsed){
-			if(oJson.SearchSeeId_ID<=0 || oJson.SearchSeeId_ID == ''){
-				var act = 'disabled="disable"';
-			}else{
-				var act = '';
-			}
-			$('<tr id="esee_'+oJson.SearchSeeId_ID+'"><td><input type="checkbox" '+act+' />'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
-		}		
+			var id = oJson.SearchSeeId_ID > 1 ? oJson.SearchSeeId_ID : oJson.SearchIP_ID.replace(/\./g,'_');
+			$('<tr id="esee_'+id+'"><td><input type="checkbox" />'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
+			initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
+		}
+				
 	}
 	function AddAreaSuccess(data){
 		var name = $('#area_name_ID').val();
@@ -163,7 +161,7 @@ var oCommonLibrary,
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
 	}
-	function AddDeviceSuccess(data){
+	function AddDeviceSuccess(data){  //单个添加设备.. 菜单添加设备
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':data.deviceid,'parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){ 
 			if(dataIndex[i] == ''){
@@ -171,6 +169,9 @@ var oCommonLibrary,
 			}
 		}
 		adddev(dataIndex);	
+	}
+	function AddDeviceAllSuccess(data){
+		show(data);
 	}
 	function ModifyGroupChannelNameSuccess(data){
 		var id= $('#channel_id_ID').val();
@@ -197,7 +198,9 @@ var oCommonLibrary,
 		$('ul.filetree').treeview();
 		closeMenu();
 	}
-	function AddDeviceDoubleSuccess(data){
+
+	function AddDeviceDoubleSuccess(data){  //添加多个设备
+		data.name = data.name.replace(/\./g,'_'); // 用设备名做ID 名字中的.号转换
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
@@ -207,7 +210,8 @@ var oCommonLibrary,
 	}
 
 	function adddev(data){
-		Confirm(data.device_name+'AddSuccess!');
+		data.device_name = data.device_name.replace(/_/g,'.');  // 用设备名做ID 名字中的.号转换
+		//Confirm(data.device_name+'AddSuccess!');
 		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		add.find('span.device').data('data',data);
 		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
@@ -228,17 +232,15 @@ var oCommonLibrary,
 		if($('#g_channel_'+data.chlid)[0]){
 			return false;
 		}
-			var g_channel_name = $('#dev_'+$('#channel_'+data.chlid).data('data').dev_id).data('data').device_name+'_chl_'+(parseInt($('#channel_'+data.chlid).data('data').channel_number)+1);
 			var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true)
 			    .find('span.channel')
 			    .attr('id','g_channel_'+data.chlid)
-			    .html(g_channel_name)
+			    .html(data.channelname)
 			    .end()
 			    .appendTo(group.next('ul'));
 			add.find('span.channel').data('data')['r_chl_group_id'] = data.chlgroupid;
-			add.find('span.channel').data('data')['channel_name'] = g_channel_name;
-		$('ul.filetree').treeview({add:add});
-		$('ul.filetree').treeview();
+			add.find('span.channel').data('data')['channel_name'] =data.channelname;
+		$('ul.filetree').treeview({add:add}).treeview().find('span.channel').removeClass('sel');
 	}
 	function RemoveChannelFromGroupSuccess(data){ 
 		$('div.dev_list:eq(1) span.channel.sel').each(function(){
