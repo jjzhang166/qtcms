@@ -320,11 +320,17 @@ int QSubView::CloseWndCamera()
 		m_IDeviceClientDecideByVendor->Release();
 		m_IDeviceClientDecideByVendor=NULL;
 	}
-	//录像
+	//手动录像
 	if (m_bIsRecording && NULL != m_pRecorder)
 	{
 		m_pRecorder->Stop();
 		m_bIsRecording = false;
+	}
+	//计划录像
+	if (m_bIsAutoRecording && NULL != m_pRecorder)
+	{
+		m_pRecorder->Stop();
+		m_bIsAutoRecording = false;
 	}
 	return 0;
 }
