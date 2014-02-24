@@ -142,13 +142,16 @@ void DeviceSearchWindows::addItemMap(QVariantMap item)
 
 void DeviceSearchWindows::sendToHtml(QVariantMap item)
 {
-	
-
+	if (item.value("SearchSeeId_ID").toString()==NULL||item.value("SearchSeeId_ID").toInt()<1)
+	{
+		item.insert("SearchSeeId_ID",item.value("SearchIP_ID").toString());
+	}
 	EventProcCall("SearchDeviceSuccess",item);
 }
 
 void DeviceSearchWindows::sendInfoToUI(QVariantMap item)
 {
+
 	EventProcCall("SettingStatus",item);
 }
 
