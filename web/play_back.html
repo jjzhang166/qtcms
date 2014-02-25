@@ -48,13 +48,15 @@
 				<li><a style="width:36px;"></a>预览</li>
 				<li class="active"><a style="background-position: -36px 0;"></a>回放</li>
 				<li><a style="background-position: -62px 0;"></a>备份</li>
-				<li><a style="background-position: -88px 0; width:36px;"></a>设备</li>
+				<li><a style="background-position: -88px 0; width:36px;"></a>设置</li>
+
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
 				<li><a style="background-position: -124px 0;"></a>日志</li>
 			</ul>
-			<div>
+			<!-- <div>
 				<a href="javascript:;"></a>				
 				<p style="color:#000;">登陆用户:eddy</p>
+			</div> -->
 			</div>
 		</div>
 	</div>
@@ -126,11 +128,11 @@
 		</div>
 	<div class="calendar">
 		<div class="calendar_top">
-			<a class="hover" style="background-position: -240px -31px;" href="javascript:;"></a>
-			<a class="hover" style="background-position: -160px -31px;" href="javascript:;"></a>
-			<span class="nowDate"></span>
-			<a class="hover" style="background-position: -0px -31px;" href="javascript:;"></a>
-			<a class="hover" style="background-position: -80px -31px;" href="javascript:;"></a>
+			<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="上一年"></a>
+			<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="上一月"></a>
+			<span class="nowDate" title="搜索日期"></span>
+			<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="下一月"></a>
+			<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="下一年"></a>
 		</div>
 		<div class="calendar_days">
 			<table>
@@ -147,7 +149,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="hover seek" onclick="searchVideo()">搜索</div>
+		<div class="hover seek" onclick="searchVideo()" title="开始搜索">搜索</div>
 	</div>
 		</div> 
 	<div id="operating">
@@ -185,7 +187,7 @@
 		<div class="play_time"></div>
 		<table class="table" cellpadding="0" cellspacing="0" style="height:94px; overflow:auto;">
 			<thead>
-				<tr><td class="no_border" id="now_time" style="text-align:center;">00:00:00<td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+				<tr><td class="no_border" id="now_time" style="text-algin:center">00:00:00<td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
 			</thead>
 			<tbody id="channelvideo">		
 				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>

@@ -161,13 +161,12 @@ var oPlayBack,oBackup;
 
 </script>
 <style type="text/css">
-	#search_result{background: #1E1E1E;}
-	#file_bottom{ height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px;}
+	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto;}
+	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
 	#search_result table{ border-collapse:collapse; color: #BEBEBE;width: 100%;}
 	#search_result table td{ border: 1px solid #414141; text-align: center;}
-	#search_result table thead td{ height: 14px; background:url(./images/backup/backup_table_bg.png) repeat-x; font-size: 10px;}
-	#search_result .search_result tr{height: 20px;}
+	#search_result table thead td{ border: none; height: 16px; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;}
 	.switch{ position: relative;}
 
 	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
@@ -198,13 +197,14 @@ var oPlayBack,oBackup;
 				<li><a style="width:36px;"></a>预览</li>
 				<li><a style="background-position: -36px 0;"></a>回放</li>
 				<li class="active"><a style="background-position: -62px 0;"></a>备份</li>
-				<li><a style="background-position: -88px 0; width:36px;"></a>设备</li>
+				<li><a style="background-position: -88px 0; width:36px;"></a>设置</li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
-				<li><a style="background-position: -124px 0;"></a>Log</li>
+				<li><a style="background-position: -124px 0;"></a>日志</li>
 			</ul>
-			<div>
+			<!-- <div>
 				<a href="javascript:;"></a>				
 				<p style="color:#000;">登陆用户:eddy</p>
+			</div> -->
 			</div>
 		</div>
 	</div>
@@ -249,11 +249,11 @@ var oPlayBack,oBackup;
 		</div>
 		<div class="calendar">
 			<div class="calendar_top">
-				<a class="hover" style="background-position: -240px -31px;" href="javascript:;"></a>
-				<a class="hover" style="background-position: -160px -31px;" href="javascript:;"></a>
-				<span class="nowDate"></span>
-				<a class="hover" style="background-position: -0px -31px;" href="javascript:;"></a>
-				<a class="hover" style="background-position: -80px -31px;" href="javascript:;"></a></div>
+				<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="上一年"></a>
+				<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="上一月"></a>
+				<span class="nowDate" title="当前搜索日期"></span>
+				<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="下一年"></a>
+				<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="下一月"></a></div>
 			<div class="calendar_days">
 				<table>
 					<thead>
@@ -269,10 +269,10 @@ var oPlayBack,oBackup;
 					</tbody>
 				</table>
 			</div>
-			<div class="hover seek" onclick="searchVideo();">搜索</div>
+			<div class="hover seek" onclick="searchVideo();" title="开始搜索">搜索</div>
 		</div>
 	</div>
-	<div id="search_result" style="overflow:auto;">
+	<div id="search_result">
 			<table>
 				<thead>
 					<tr><td>检查</td><td>设备名</td><td>通道</td><td>开始时间</td><td>结束时间</td><td style="width:300px;">进度</td></tr>
@@ -283,7 +283,7 @@ var oPlayBack,oBackup;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">所有</a><a class="hover" href="javascript:;" id="tableAntiElection">停止</a><a class="hover" onclick="getDir();">备份</a>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" href="javascript:;" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
 	</div>
 	<div id="foot"></div>
 </body>

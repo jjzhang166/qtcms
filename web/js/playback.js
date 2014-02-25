@@ -110,7 +110,7 @@ var	nViewNum = 0,
 		})
 
 		$('div.play_time').on({
-			dblclick:function(event){ 
+			dblclick:function(event){
 				playVideo();
 			},
 			mousedown:function(){
@@ -183,10 +183,9 @@ var	nViewNum = 0,
 		}catch(e){
 			//alert('try:'+e);
 		};
-		var begin = getDragSart($('#channelvideo').width()-$('#channelvideo .no_border').width(),$('div.play_time').offset().left,$("div.calendar span.nowDate").html())
+		var begin = getDragSart($('#channelvideo').width()-2,$('div.play_time').offset().left,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
-			//show(begin+'//'+end);
 			setDevData2ocx();
 		if(bool){
 			$("#channelvideo").find('input:checkbox').each(function(index){
@@ -208,10 +207,7 @@ var	nViewNum = 0,
 		dragStartMove();
 	}
 	function getDragSart(X2,left,date){
-		var	X1 = 79,
-			sScond = parseInt(((left-X1)/(X2-1)*24*3600)),
-			begin = date+' '+returnTime(sScond);
-		return begin;
+		return  date+' '+returnTime((left-81)/(X2-81)*24*3600);
 	}
 	var up = 1,down=1;
 	function playAction(str){
@@ -323,17 +319,18 @@ var	nViewNum = 0,
 		//return false;
 		var oDrag=$('div.play_time');
 		var initleft = parseInt(oDrag.offset().left);
-		var p = ($('#channelvideo').width()-80)/(3600*24);
-		var max = $('#channelvideo').width()-2;
+		var max = $('#channelvideo').width();
+		var p = (max-79)/(3600*24);
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//快放:'+up+'//慢放:'+down);
-			if(left >= max){ 
-				left=max;
+			/*show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//快放:'+up+'//慢放:'+down);
+			if(left >= max-2){ 
+				left=max-2;
 				dragStopMove();
-			}
+			}*/
 			oDrag.css('left',left);
+			showNowPlayBackTime($('#now_time'),left,max)
 		},SynTimeUnits);
 	}
 	function dragStopMove(){

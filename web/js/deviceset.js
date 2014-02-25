@@ -1,8 +1,6 @@
 var oSearchOcx;
 	$(function(){
-	/*$('#Language_ID').click(function(){
-		alert($(this).attr('value'));
-	})	*/
+
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -496,7 +494,7 @@ var oSearchOcx;
 				height:H-270,
 				width:W-600
 			})
-			main.find('thead td').not(':first,:last').width((main.width()-130)/2)
+			main.find('thead td').not(':first,:last').width((main.width()-130)/2-2)
 			if(main.width()>760){ 
 				main.width(780);
 			}

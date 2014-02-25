@@ -223,14 +223,14 @@
 				<li><a style="width:36px;"></a>预览</li>
 				<li><a style="background-position: -36px 0;"></a>回放</li>
 				<li><a style="background-position: -62px 0;"></a>备份</li>
-				<li class="active"><a style="background-position: -88px 0; width:36px;"></a>设备</li>
+				<li class="active"><a style="background-position: -88px 0; width:36px;"></a>设置</li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> -->
-				<li><a style="background-position: -124px 0;"></a>Log</li>
+				<li><a style="background-position: -124px 0;"></a>日志</li>
 			</ul>
-			<div>
+			<!-- <div>
 				<a href="javascript:;"></a>
 				<p style="color:#000;">Login User:eddy</p>
-			</div>
+			</div> -->
 		</div></div>
 	<div id="set_content">
 		<div class="left">
@@ -245,7 +245,7 @@
 			<object type="application/cms-dsview-windows" id="devSearch" width="0" height="0"></object>
 			<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
 			<div style="position:relative; display:block;" class="right_content">
-				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style=" overflow:auto; position: absolute; left:0;">
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="overflow-x:hidden;overflow-y:auto; position: absolute; left:0;">
 					<thead class="thead">
 						<tr>
 							<td style="width:140px;">设备</td>
@@ -256,23 +256,7 @@
 					</thead>
 					<tbody class="synCheckboxClick">
 						<tr id="esee_100015721"><td><input type="checkbox"  /> JUAN DVR</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
-						<tr id="esee_100015721"><td><input type="checkbox"  />juanIPC</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+		
 					</tbody>
 				</table>
 				<input type="hidden" id="adddevicedouble_ID" />
@@ -1650,13 +1634,12 @@
 							<td>语言</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span class="Language"></span>
+									<span id="Language_ID" value=""></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
-									<input type="hidden" id="Language_ID" />
-									<li value="zh_CN"><a href="javascript:;">中文</a></li>
-									<!-- <li value="en_GB"><a href="javascript:;">English</a></li> -->
+									<li><a href="javascript:;">中文</a></li>
+									<li><a href="javascript:;">英文</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1666,20 +1649,19 @@
 							<td>默认屏幕分割模式</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span class="SplitScreenMode"></span>
+									<span id="SplitScreenMode_ID" value=""></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option" id="viewMod">
-									<input id="SplitScreenMode_ID" type="hidden" />
-									<li value="div1_1"><a>1分屏</a></li>
-									<li value="div2_2"><a>4分屏</a></li>
-									<li value="div6_1"><a>6分屏</a></li>
-									<li value="div8_1"><a>8分屏</a></li>
-									<li value="div3_3"><a>9分屏</a></li>
-									<li value="div4_4"><a>16分屏</a></li>
-									<li value="div5_5"><a>25分屏</a></li>
-									<li value="div7_7"><a>49分屏</a></li>
-									<li value="div8_8"><a>64分屏</a></li>
+									<li><a>1_1</a></li>
+									<li><a>2_2</a></li>
+									<li><a>3_3</a></li>
+									<li><a>4_4</a></li>
+									<li><a>5_5</a></li>
+									<li><a>6_1</a></li>
+									<li><a>7_7</a></li>
+									<li><a>8_1</a></li>
+									<li><a>8_8</a></li>
 								</ul>
 							</td>
 						</tr>
