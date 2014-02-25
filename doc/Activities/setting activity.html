@@ -25,6 +25,7 @@
   AddDeviceDouble_ok|<br />
   AddDeviceALL_ok|<br />
   RemoveDevice_ok|<br />
+  RemoveDeviceALL_ok|<br />
   ModifyDevice_ok|<br />
   @区域管理<br />
   AddArea_ok|<br />
@@ -69,6 +70,8 @@
   ModifyDeviceFail(fail)<br />
   RemoveDeviceSuccess(success)<br />
   RemoveDeviceFail(fail)<br />
+  RemoveDeviceAllSuccess(deviceid)
+  RemoveDeviceAllFail(fail,state,name)
   
   @区域管理<br />
   AddAreaSuccess(areaid)<br />
@@ -132,6 +135,7 @@ SettingRecordDoubleTimeParmFail(fail)<br />
   mask2_ID(未定义：0xFFFFFFFF（默认值）)|<br />
   
   @dev module<br />
+  removedeviceall_ID(清空设备ID)|
   adddeviceall_ID(一键添加设备列表ID)|</p>
 <p>格式如下：</p>
 <p> &quot;&lt;devListInfo cut = &quot;2&quot; area_id=&quot;0&quot;&gt;&lt;dev username=&quot;admin&quot; password=&quot;&quot; SearchChannelCount_ID=&quot;8&quot; <br />
