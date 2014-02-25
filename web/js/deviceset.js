@@ -293,7 +293,7 @@ var oSearchOcx;
 		
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName','AddDeviceAll'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName','AddDeviceAll','RemoveDeviceAll'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -689,7 +689,11 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	objShowCenter(obox);
 }
 function cleanDev(){  //清空设备
-	
+	var arr = [];
+	$('div.dev_list span.device').each(function(){
+		arr.push($(this).data('data').dev_id);
+	})
+	$('#removedeviceall_ID').val(arr.join(','))
 }
 function setIP(){ //设置IP
 	showdata('Allocation','设置IP');

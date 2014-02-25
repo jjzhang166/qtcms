@@ -261,6 +261,7 @@
 				</table>
 				<input type="hidden" id="adddevicedouble_ID" />
 				<input type="hidden" id="adddeviceall_ID" />
+				<input type="hidden" id="removedeviceall_ID" />
 				<div class="action" style="position: absolute;">
 					<ul>
 						<li class="hover" id="AddDeviceDouble_ok">添加→</li>
@@ -268,7 +269,7 @@
 						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
 						<li class="hover" onclick="showObjActBox('Add','device');">添加设备</li>
 						<li class="hover" onclick="showObjActBox('Modify','device');">修改设备</li>
-						<li class="hover" onclick="cleanDev()">清空设备</li>
+						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok">清空设备</li>
 						<li class="hover" onclick="showObjActBox('Add','group');">添加分组</li>
 						<li class="hover" onclick="searchFlush();">重新搜索</li>
 					</ul>

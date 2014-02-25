@@ -199,6 +199,10 @@ var oCommonLibrary,
 		closeMenu();
 	}
 
+	function RemoveDeviceAllSuccess(data){
+		alert(data);
+	}
+
 	function AddDeviceDoubleSuccess(data){  //添加多个设备
 		data.name = data.name.replace(/\./g,'_'); // 用设备名做ID 名字中的.号转换
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
