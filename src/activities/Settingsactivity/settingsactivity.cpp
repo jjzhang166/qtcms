@@ -1963,5 +1963,42 @@ void settingsActivity::OnRemoveDeviceALL()
 		return;
 	}
 	QVariant DevListFile=QueryValue("removedeviceall_ID");
+	QString DevString=DevListFile.toString();
+	int DevNum=DevString.count(",")+1;
+	for (int n=0;n<DevNum;n++)
+	{
+		int liDevId=DevString.section(",",n,n).toInt();
 
+
+		bool nRet_bool=false;
+		nRet_bool=Idevice->IsDeviceExist(liDevId);
+		if(false==nRet_bool){
+			arg.clear();
+			l_Content.clear();
+			l_Content.append("Dev_Id is not exist");
+			EP_ADD_PARAM(arg,"fail",l_Content);
+			//fix set state and name
+			EP_ADD_PARAM(arg,"state",l_state);
+			EP_ADD_PARAM(arg,"name",l_name);
+			EventProcCall("RemoveDeviceAllFail",arg);
+			continue;
+		}
+		int nRet_int=-1;
+		nRet_int=Idevice->RemoveDevice(liDevId);
+		if(0!=nRet_int){
+			arg.clear();
+			l_Content.clear();
+			l_Content.append("RemoveFail");
+			EP_ADD_PARAM(arg,"state",l_state);
+			EP_ADD_PARAM(arg,"name",l_name);
+			EP_ADD_PARAM(arg,"fail",l_Content);
+			EventProcCall("RemoveDeviceAllFail",arg);
+			continue;
+		}
+		arg.clear();
+		EP_ADD_PARAM(arg,"deviceid",liDevId);
+		EventProcCall("RemoveDeviceAllSuccess",arg);
+	}
+	Idevice->Release();
+	return;
 }
