@@ -79,6 +79,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("AddDeviceDouble_ok","click","OnAddDeviceDouble()");
 	QWFW_MSGMAP("AddDeviceALL_ok","click","OnAddDeviceALL()");
 	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
+	QWFW_MSGMAP("RemoveDeviceALL_ok","click","OnRemoveDeviceALL()");
 	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
 
 	QWFW_MSGMAP("AddGroup_ok","click","OnAddGroup()");
@@ -1942,4 +1943,25 @@ void settingsActivity::OnAddDeviceALL()
 
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
+}
+
+void settingsActivity::OnRemoveDeviceALL()
+{
+	IDeviceManager *Idevice=NULL;
+	qDebug()<<"OnRemoveDeviceALL";
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	DEF_EVENT_PARAM(arg);
+	QString l_Content;
+	QString l_state;
+	QString l_name;
+	if(NULL==Idevice){
+		l_Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",l_Content);
+		EP_ADD_PARAM(arg,"state",l_state);
+		EP_ADD_PARAM(arg,"name",l_name);
+		EventProcCall("RemoveDeviceAllFail",arg);
+		return;
+	}
+	QVariant DevListFile=QueryValue("removedeviceall_ID");
+
 }

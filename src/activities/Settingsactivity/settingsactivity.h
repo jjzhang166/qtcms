@@ -54,6 +54,7 @@ public slots:
 	void OnAddDeviceALL();
 	void OnRemoveDevice();
 	void OnModifyDevice();
+	void OnRemoveDeviceALL();
 
 	/*group module*/
 	void OnAddGroup();
