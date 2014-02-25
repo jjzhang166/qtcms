@@ -2,12 +2,17 @@
 #define DVRSEARCHWINDOWS_H
 
 #include <QtGui/QTableWidget>
-#include <QtNetwork/QUdpSocket> 
+#include <QtNetwork/QUdpSocket>
+#include <QtNetwork/QNetworkInterface>
+#include <QtNetwork/QNetworkAddressEntry>
 #include <QtCore/QVariantMap>
 #include <QtCore/QTime>
+#include <QDebug>
+#include <QVariant>
 #include "qwfw.h"
 #include "IDeviceSearch.h"
 #include "IDeviceNetModify.h"
+#include "DeviceSearchWindows_global.h"
 //#include "IEventRegister.h"
 
 class DeviceSearchWindows : public QTableWidget,
@@ -17,7 +22,12 @@ class DeviceSearchWindows : public QTableWidget,
 public:
 	DeviceSearchWindows(QWidget *parent = 0);
 	~DeviceSearchWindows(void);
-
+private:
+	int __GetNetworkInfo(QString &address,QString &netmask);
+	QVariant __QueryValue(QString sElementId);
+	int __GetInitAddress(QString address,QString netmask);
+	int __flushAddress();
+	int __ApplyAddress(QString &sAddress,QString lSAddress);
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 
@@ -34,7 +44,7 @@ public slots:
 		const QString &sPort,
 		const QString &sUsername,
 		const QString &sPassword);
-
+	int AutoSetNetworkInfo();
 	void addItemMap(QVariantMap item);
 	void sendToHtml(QVariantMap item);
 	void sendInfoToUI(QVariantMap item);
@@ -42,6 +52,10 @@ public slots:
 private:
 	QList<IDeviceSearch *> m_deviceList;
 	IDeviceNetModify *m_pDeviceNetModify;
+	DevNetworkInfo m_HistoryAddress;
+	DevNetworkInfo m_HistoryNetMask;
+	DevNetworkInfo m_HistoryGateWay;
+	
 signals:
 	void addItemToUI(QVariantMap item);
 };

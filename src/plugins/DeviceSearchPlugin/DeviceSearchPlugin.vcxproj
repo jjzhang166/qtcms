@@ -29,6 +29,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DeviceSearchWindows_global.h" />
     <ClInclude Include="dllmain.h" />
     <CustomBuild Include="DeviceSearchWindows.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
@@ -103,7 +104,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtNetwork4.lib;QtWebKitd4.lib;QtXmld4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtNetworkd4.lib;QtWebKitd4.lib;QtXmld4.lib;$(SolutionDir)..\libs\libpcom.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>DeviceSearchPlugin.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
