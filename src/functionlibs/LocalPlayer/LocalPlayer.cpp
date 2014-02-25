@@ -228,7 +228,7 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 	QDate date;
 	QTime time;
 	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
-	int firstFile = 0;
+	int firstFile = -1;
 	bool find = false;
 	PeriodTime perTime;
 	int aviFileLength = 0;
@@ -271,22 +271,12 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 			firstFile = pos;
 			find = true;
 		}
-		if (dateTime >= startTime && fileEndTime <= endTime)
+		perTime.start = qMax(dateTime.toTime_t(), startTime.toTime_t());
+		perTime.end = qMin(fileEndTime.toTime_t(), endTime.toTime_t());
+		if (perTime.end > perTime.start)
 		{
-			perTime.start = dateTime.toTime_t();
-			perTime.end = perTime.start + aviFileLength;
+			perTimeVec.append(perTime);
 		}
-		if (dateTime < startTime && fileEndTime < endTime)
-		{
-			perTime.start = startTime.toTime_t();
-			perTime.end = perTime.start + aviFileLength;
-		}
-		if (dateTime < endTime && fileEndTime > endTime)
-		{
-			perTime.start = dateTime.toTime_t();
-			perTime.end = endTime.toTime_t();
-		}
-		perTimeVec.append(perTime);
 	}
 
 	return firstFile;
@@ -433,27 +423,30 @@ int LocalPlayer::countSkipTime()
 	QVector<PeriodTime> result;
 	for (int i = 0 ; i <= skipTime.size(); ++i)
 	{
-		if (0 == i && skipTime[i].start != m_startTime)
+		if (0 == i && skipTime[i].start >= m_startTime)
 		{
 			perTime.start = m_startTime;
 			perTime.end = skipTime[i].start;
-			result.append(perTime);
-			continue;
 		}
 		else if (i == skipTime.size() && skipTime[i - 1].end != m_endTime)
 		{
 			perTime.start = skipTime[i - 1].end;
 			perTime.end = m_endTime;
-			result.append(perTime);
-			continue;
 		}
-		else
+		else if (i > 0 && i < skipTime.size())
 		{
 			perTime.start = skipTime[i - 1].end;
 			perTime.end = skipTime[i].start;
-			result.append(perTime);
+		}
+		else
+		{
+			//nothing
 		}
 
+		if (perTime.start < perTime.end)
+		{
+			result.append(perTime);
+		}
 	}
 
 	iter = m_GroupMap.begin();
