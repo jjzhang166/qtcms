@@ -378,8 +378,22 @@ function firstUp(str){  //字符串首字母大写
 	a[0] = a[0].toUpperCase();
 	return a.join('');
 }
+
+function addZero(num){   //数字小于0的时候用0补一位.
+	num = num.toString();
+	return num = num<10 ? '0'+num : num;
+}
+function showdata(id,type){  //显示表单下有ID的元素的val值
+	//return false;
+	var submit = $('#'+type).find('.confirm:visible').attr('id');
+	var str =submit+'/'+id +'/';
+	$('#'+type).find('[id]').each(function(){ 
+		str += $(this).attr('id')+':'+$(this).val()+'/';
+	})
+	show(str);
+}
 function show(data){  // 在ID为test的div元素中打印对象数据
-	return false;
+	//return false;
 	var index='default',
 		str = 'Null';
 	$('#test').html('');
@@ -393,19 +407,6 @@ function show(data){  // 在ID为test的div元素中打印对象数据
 		}
 		$('<hr />').prependTo('#test');
 	}
-}
-function addZero(num){   //数字小于0的时候用0补一位.
-	num = num.toString();
-	return num = num<10 ? '0'+num : num;
-}
-function showdata(id,type){  //显示表单下有ID的元素的val值
-	return false;
-	var submit = $('#'+type).find('.confirm:visible').attr('id');
-	var str =submit+'/'+id +'/';
-	$('#'+type).find('[id]').each(function(){ 
-		str += $(this).attr('id')+':'+$(this).val()+'/';
-	})
-	show(str);
 }
 //弹出框部分操作
 function closeMenu(){  

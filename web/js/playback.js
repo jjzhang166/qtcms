@@ -209,42 +209,41 @@ var	nViewNum = 0,
 	function getDragSart(X2,left,date){
 		return  date+' '+returnTime((left-81)/(X2-81)*24*3600);
 	}
-	var up = 1,down=1;
 	function playAction(str){
 		var show ='';
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
 		dragStopMove();
-			if(!bool){
-				var speed = 1;
-				if(str == 'GroupSpeedFast'){
-					down = 1;			
-					up *= 2;
-					up = up > 8 ? 8:up;
-					speed = up;
-				}else{
-					up = 1;
-					down *= 2;
-					down = down > 8 ? 8:down;
-					show = '1/';
-					speed = down;
-				}		
-				show = show+speed+'x';			
+			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){	
 				obj[str](speed);
-			}else{
-				if(str == 'GroupSpeedFast'){
-					down = 1;
-					up = 2;
-					show = '2x';
-				}else{ 
-					down = 2;
-					up = 1;
-					show = '1/2x';
-				}		
-				obj[str]();
 			}
-		$('#togglePlay').attr('speed','1');
-		palybackspeed(show);
+			obj[str]();
 		dragStartMove();
+	}
+	var nowSpeed = 1;
+	function playSpeed(str){
+		var show='';
+		var max = bool ? 8 : 2 ;
+		if(str){
+			nowSpeed = nowSpeed*2;
+			nowSpeed = nowSpeed > max ? max : nowSpeed;
+		}else{
+			nowSpeed = nowSpeed/2;
+			nowSpeed = nowSpeed < (1/max) ? (1/max) : nowSpeed;
+		}
+		if(nowSpeed == 1){
+			alert(nowSpeed);
+			playAction('GroupSpeedSlow');
+			show='1X';
+		}else if(nowSpeed<1){
+			alert(nowSpeed+'--');
+			playAction('GroupSpeedSlow');
+			show='1/'+(1/nowSpeed)+'X';
+		}else{
+			alert(nowSpeed+'++');
+			playAction('GroupSpeedFast');
+			show=nowSpeed+'X';
+		}
+		palybackspeed(show);
 	}
 	function groupStop(){
 		$('#togglePlay').removeAttr('hasFile').css('background-position','0px 0px');
@@ -252,16 +251,7 @@ var	nViewNum = 0,
 		var obj = bool ? oPlaybackLocl : oPlayBack;
 		obj.GroupStop();
 	}
-	function GroupSpeedNormal(){
-		//$('#togglePlay').removeAttr('speed').css('background-position','0px 0px');
-		up = 1;
-		down=1;			
-		show = '1x';
-		var obj = bool ? oPlaybackLocl : oPlayBack;
-		obj.GroupSpeedNormal();
-		palybackspeed(show);
-		dragStartMove();
-	}
+
 	function palybackspeed(str){
 		$('#palybackspeed').html(str);
 	}
@@ -314,7 +304,7 @@ var	nViewNum = 0,
 		return a - b;
 	}
 	function dragStartMove(){
-		var SynTimeUnits = up == 1 ? 1000*down:1000/up;
+		var SynTimeUnits = nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
 		var oPlay = bool ? oPlaybackLocl : oPlayBack;
 		//return false;
 		var oDrag=$('div.play_time');
@@ -324,11 +314,11 @@ var	nViewNum = 0,
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			/*show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//快放:'+up+'//慢放:'+down);
+			show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
 			if(left >= max-2){ 
 				left=max-2;
 				dragStopMove();
-			}*/
+			}
 			oDrag.css('left',left);
 			showNowPlayBackTime($('#now_time'),left,max)
 		},SynTimeUnits);

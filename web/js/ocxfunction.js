@@ -367,8 +367,6 @@ function setDevData2ocx(){
 		var oDevData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
 		var b = true;
 		try{
-			up = 1;
-			down=1;
 			palybackspeed('1x');
 		}catch(e){ 
 		
