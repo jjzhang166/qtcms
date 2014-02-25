@@ -55,7 +55,18 @@ int SetNetworkInfo(const QString &amp;sDeviceID,<br />
   const QString &amp;sPort,<br />
   const QString &amp;sUsername,<br />
 const QString &amp;sPassword);</p>
-<p><br />
+<p>接口说明：<br />
+//简介：一键设置ip<br />
+//输入参数：<br />
+// 无   ；</p>
+<p>//AutoSetNetworkInfoID(一键设置ip的设备信息id)，格式如下：  </p>
+<p> &lt;devnetworkInfo Num=&quot;2&quot;&gt;<br />
+  &lt;dev sDeviceID=&quot;&quot; sAddress=&quot;&quot; sMask=&quot;&quot; sGateway=&quot;&quot; sMac=&quot;&quot; sPort=&quot;&quot; sUsername=&quot;&quot; sPassword=&quot;&quot;/&gt;<br />
+  &lt;dev sDeviceID=&quot;&quot; sAddress=&quot;&quot; sMask=&quot;&quot; sGateway=&quot;&quot; sMac=&quot;&quot; sPort=&quot;&quot; sUsername=&quot;&quot; sPassword=&quot;&quot;/&gt;<br />
+  &lt;/devnetworkInfo&gt;<br />
+  //返回值：<br />
+  //      0:调用成功<br />
+  int AutoSetNetworkInfo();<br />
 </p>
 <p>插件抛出的事件：<br />
 @1<br />
