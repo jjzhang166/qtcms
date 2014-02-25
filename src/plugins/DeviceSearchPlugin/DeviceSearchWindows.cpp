@@ -115,6 +115,7 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 	const QString &sUsername,
 	const QString &sPassword)
 {
+	qDebug()<<"SetNetworkInfo"<<sAddress<<sMask<<sGateway<<sMac<<sPort<<sUsername<<sPassword;
 	if (sDeviceID.isEmpty() && sAddress.isEmpty() && sMask.isEmpty() && sGateway.isEmpty() && sMac.isEmpty() && sPort.isEmpty())
 	{
 		return 1;
@@ -208,7 +209,7 @@ int DeviceSearchWindows::AutoSetNetworkInfo()
 				qDebug()<<"sGateway"<<sGateway;
 				//Call SetNetworkInfo
 
-				SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
+				/*SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);*/
 			}
 		}
 	}else{
