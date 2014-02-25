@@ -467,10 +467,10 @@ function setDevData2ocx(){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
 		try{
-			dragStopMove();
+			$('tbody.search_result tr').remove();
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
-			$('tbody.search_result tr').remove();
+			dragStopMove();
 		}catch(e){
 			//alert('try:'+e);
 		}

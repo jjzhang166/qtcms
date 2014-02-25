@@ -1,5 +1,8 @@
 var oSearchOcx;
-	$(function(){	
+	$(function(){
+	/*$('#Language_ID').click(function(){
+		alert($(this).attr('value'));
+	})	*/
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		$('ul.filetree').treeview().find('span.channel').click(function(){
@@ -250,6 +253,7 @@ var oSearchOcx;
 		$('#AddChannelInGroupDouble_ok').click(function(){ 
 			SetChannelIntoGroupData();
 		});
+		 /*client_setting*/
 
 		//record setting  回放设置;
 		$('div.dev_list:eq(3)').on('click','span.channel',function(){
@@ -277,6 +281,14 @@ var oSearchOcx;
 			})
 		})
 
+		$('#Language_ID').nextAll('li').click(function(){
+		 	$('#Language_ID').val($(this).attr('value'));
+		})
+
+		$('#SplitScreenMode_ID').nextAll('li').click(function(){
+		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
+		})
+
 		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);
 		/*控件触发事件调用的元素事件绑定.*/
@@ -296,15 +308,22 @@ var oSearchOcx;
 	$(window).resize(function(){ 
 		set_contentMax();
 	})
+	var Language={'zh_CN':'中文','en_GB':'English'};
+	var SplitScreenMode={'div1_1':'1分屏','div2_2':'4分屏','div6_1':'6分屏','div8_1':'8分屏','div3_3':'9分屏','div4_4':'16分屏','div5_5':'25分屏','div7_7':'49分屏','div8_8':'64分屏'}
 	function FillCommonParmData(){ 
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
 			var obj = $('#'+item[i]+'_ID')
 			if(obj[0].nodeName != 'INPUT'){
-				obj.dataIntoHtml(str).dataIntoVal(str)
+				obj.dataIntoHtml(str)
 			}else{
 				obj.dataIntoSelected(str);
+			}
+
+			if(item[i] =='Language' || item[i] =='SplitScreenMode'){  //语言转换
+				$('span.'+item[i]).html(window[item[i]][str]);
+				obj.val(str);
 			}
 		}
 

@@ -10,8 +10,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		oView = $('#playback_view');
 		oPreView= $('#previewWindows')[0];
 		oDiv = $('div.dev_list');
-		
-		setViewMod('div2_2');
+		setViewMod(oCommonLibrary.getSplitScreenMode());
 
 		var oAs = $('ul.dev_list_btn a');
 	    

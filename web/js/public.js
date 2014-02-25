@@ -105,13 +105,16 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 		oTds.eq(0).width(80);		
 	})
 }
-function set_drag(disX,X1,X2){  // 回放页面的拖拽条
-	var oDrag=$('div.play_time')
+function set_drag(X1,X2){  // 回放页面的拖拽条
+	var oDrag=$('div.play_time');
+	var oNow=$('#now_time')
+	oNow.html(returnTime((oDrag.offset().left-81)/(X2-81)*24*3600));
 	$(document).mousemove(function(event){
-			var left = event.pageX - disX;
+			var left = event.pageX;
 		    left = left < X1 ? X1 : left;
 			left = left > X2 ? X2 : left;
-		oDrag.css('left',left+'px');	
+		oDrag.css('left',left-2+'px');
+		oNow.html(returnTime((left-81)/(X2-81)*24*3600));
 	}).mouseup(function(){
 		$(this).off();
 	})
@@ -152,7 +155,7 @@ function set_drag(disX,X1,X2){  // 回放页面的拖拽条
 				$(this).click(function(){
 					if($(this).attr('class') != 'hover'){
 						This.next('ul.option').hide();
-						This.find('span').html($(this).html())
+						This.find('span').html($(this).html());
 						//This.find('#vendor_ID').val($(this).html());
 						This.find('input:hidden').val($(this).attr('value'));
 					}
@@ -373,10 +376,10 @@ function firstUp(str){  //字符串首字母大写
 	return a.join('');
 }
 function show(data){  // 在ID为test的div元素中打印对象数据
-	//return false;
+	return false;
 	var index='default',
 		str = 'Null';
-		$('#test').html('');
+	$('#test').html('');
 	if(typeof(data) == 'number' || typeof(data) == 'string'){
 		$('<p><span>'+index+'</span>:<span>"'+data+'"/</span></p>').prependTo($('#test'));
 	}else{
@@ -393,7 +396,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	return num = num<10 ? '0'+num : num;
 }
 function showdata(id,type){  //显示表单下有ID的元素的val值
-	//return false;
+	return false;
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
 	$('#'+type).find('[id]').each(function(){ 
@@ -424,7 +427,7 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 	}).show();
 }
 function returnTime(sInt){  //
-	var H = sInt/3600;
+	var H = parseInt(sInt)/3600;
 		H = addZero(parseInt(H));
 	var M = (sInt-H*3600)/60
 		M = addZero(parseInt(M));

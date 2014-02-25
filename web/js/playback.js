@@ -105,11 +105,17 @@ var	nViewNum = 0,
 			    	}
 				//event.stopPropagation();
 				$('div.play_time').css('left',left-2);
-				set_drag(2,79,channelvideo.width()-2);
+				set_drag(81,channelvideo.width());
 			}
 		})
-		$('div.play_time').on('dblclick',function(event){ 
-			playVideo();
+
+		$('div.play_time').on({
+			dblclick:function(event){ 
+				playVideo();
+			},
+			mousedown:function(){
+				set_drag(81,channelvideo.width());
+			}	
 		});
 		
 		$(window).resize(function(){
@@ -177,7 +183,7 @@ var	nViewNum = 0,
 		}catch(e){
 			//alert('try:'+e);
 		};
-		var begin = getDragSart(),
+		var begin = getDragSart($('#channelvideo').width()-$('#channelvideo .no_border').width(),$('div.play_time').offset().left,$("div.calendar span.nowDate").html())
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
 			//show(begin+'//'+end);
@@ -201,11 +207,8 @@ var	nViewNum = 0,
 		}
 		dragStartMove();
 	}
-	function getDragSart(){
+	function getDragSart(X2,left,date){
 		var	X1 = 79,
-			X2 = $('#channelvideo').width()-$('#channelvideo .no_border').width(),
-			left = $('div.play_time').offset().left,
-			date = $("div.calendar span.nowDate").html(),
 			sScond = parseInt(((left-X1)/(X2-1)*24*3600)),
 			begin = date+' '+returnTime(sScond);
 		return begin;
