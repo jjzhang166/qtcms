@@ -746,8 +746,8 @@ void QSubView::OnCheckTime()
 			QVariantMap timeInfo = m_pRecordTime->GetRecordTimeInfo(recordID.toInt());
 			recTimeInfo.nEnable = timeInfo.value("enable").toInt();
 			recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
-			int weekDay = QDate::currentDate().dayOfWeek();
-			if (0 == recTimeInfo.nEnable && weekDay != recTimeInfo.nWeekDay)
+			int weekDay = QDate::currentDate().dayOfWeek() - 1;
+			if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
 			{
 				continue;
 			}
@@ -772,9 +772,10 @@ void QSubView::OnCheckTime()
 	}
 	else
 	{
+		++m_RecordFlushTime;
 		for (int j = 0; j < m_lstReocrdTimeInfoList.size(); ++j)
 		{
-			if (0 == m_lstReocrdTimeInfoList[j].nEnable && m_lstReocrdTimeInfoList[j].nWeekDay)
+			if (0 == m_lstReocrdTimeInfoList[j].nEnable || QDate::currentDate().dayOfWeek() - 1 != m_lstReocrdTimeInfoList[j].nWeekDay)
 			{
 				continue;
 			}
