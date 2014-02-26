@@ -707,10 +707,11 @@ function autoSetIP(){  //批量分配IP
 	var str = '<devnetworkInfo Num="'+ipcList.length+'">'
 	ipcList.each(function(){
 		var oIpcData = $(this).data('data');
-		str+='<dev sDeviceID="'+oIpcData.SearchDeviceId_ID+'" sAddress="'+oIpcData.SearchIP_ID+'" sMask="'+oIpcData.SearchMask_ID+'" sGateway="'+oIpcData.SearchGateway_ID+'" sMac="'+oIpcData.SearchMac_ID+'" sPort="'+oIpcData.SearchHttpport_ID+'" sUsername="" sPassword=""/>'
+		str+='<dev sDeviceID="'+oIpcData.SearchDeviceId_ID+'" sAddress="'+oIpcData.SearchIP_ID+'" sMask="'+oIpcData.SearchMask_ID+'" sGateway="'+oIpcData.SearchGateway_ID+'" sMac="'+oIpcData.SearchMac_ID+'" sPort="'+oIpcData.SearchHttpport_ID+'" sUsername="admin" sPassword=""/>'
 	})
 	str+='</devnetworkInfo>';
 	$('#AutoSetNetworkInfoID').val(str);
+	//alert($('#AutoSetNetworkInfoID').val());
 	oSearchOcx.AutoSetNetworkInfo();
 }
 function autoSetIPcallBack(data){
