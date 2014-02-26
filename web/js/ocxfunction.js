@@ -70,22 +70,23 @@ var oCommonLibrary,
 		},5000)*/
 	}
 	//设备搜索回调函数
-	function callback(oJson){
+	function callback(data){
 		var bUsed = true;
 		$('#SerachDevList tbody tr').each(function(){ 
-			if(parseInt($(this).find('td:eq(1)').html()) == oJson.SearchSeeId_ID || $(this).find('td:eq(2)').html() == oJson.SearchIP_ID){
+			if(parseInt($(this).find('td:eq(1)').html()) == data.SearchSeeId_ID || $(this).find('td:eq(2)').html() == data.SearchIP_ID){
 				bUsed = false;
 			}
 		})
 		$('div.dev_list:eq(0) span.device').each(function(){ 
-			if($(this).data('data')['eseeid'] == oJson.SearchSeeId_ID){ 
+			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
 				bUsed = false;
 			}
 		})
 
 		if(bUsed){
-			var id = oJson.SearchSeeId_ID > 1 ? oJson.SearchSeeId_ID : oJson.SearchIP_ID.replace(/\./g,'_');
-			$('<tr id="esee_'+id+'"><td><input type="checkbox" />'+oJson.SearchVendor_ID+'</td><td>'+oJson.SearchSeeId_ID+'</td><td>'+oJson.SearchIP_ID+'</td><td>'+oJson.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',oJson);
+			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace(/\./g,'-');
+			var sClass = data.SearchVendor_ID.split(' ')[1];
+			$('<tr id="esee_'+id+'" class="'+sClass+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
 				
@@ -171,7 +172,7 @@ var oCommonLibrary,
 		adddev(dataIndex);	
 	}
 	function AddDeviceAllSuccess(data){
-		show(data);
+		AddDeviceDoubleSuccess(data);
 	}
 	function ModifyGroupChannelNameSuccess(data){
 		var id= $('#channel_id_ID').val();
@@ -205,7 +206,6 @@ var oCommonLibrary,
 	}
 
 	function AddDeviceDoubleSuccess(data){  //添加多个设备
-		data.name = data.name.replace(/\./g,'_'); // 用设备名做ID 名字中的.号转换
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
@@ -215,15 +215,15 @@ var oCommonLibrary,
 	}
 
 	function adddev(data){
-		data.device_name = data.device_name.replace(/_/g,'.');  // 用设备名做ID 名字中的.号转换
+		data.device_name = data.device_name.replace(/\./g,'-');  // 用设备名做ID 名字中的.号转换
 		//Confirm(data.device_name+'AddSuccess!');
 		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		add.find('span.device').data('data',data);
 		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
 		for(i in chlList){
-			var chlNum = '';//oCommonLibrary.GetChannelNumber(chlList[i]);
-			var num =parseInt(i)+1;
-			var name = 'chl_'+num;
+			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
+			var chlNum = parseInt(chldata.number)+1;
+			var name = 'chl_'+chlNum;
 			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
 			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
 			addchl.find('span.channel').data('data',chldata);
@@ -232,7 +232,7 @@ var oCommonLibrary,
 		$('ul.filetree:eq(0)').treeview({add:add});
 	}
 	function AddChannelDoubleInGroupSuccess(data){
-		//Confirm(data.channelname+'AddSuccess');
+		data.channelname=data.channelname.replace(/-/g,'.');
 		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
 		if($('#g_channel_'+data.chlid)[0]){
 			return false;

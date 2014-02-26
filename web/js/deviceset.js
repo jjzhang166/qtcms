@@ -44,7 +44,7 @@ var oSearchOcx;
 				event.stopPropagation();	
 				var obj = $(event.target);
 				/*if(obj[0].nodeName == 'SPAN'){
-					show(obj.data('data'));
+					alert(obj.attr('id'));
 				}*/
 				if(event.which == 1){
 					if( obj[0].nodeName == 'SPAN'){
@@ -300,7 +300,8 @@ var oSearchOcx;
 		}
 
 		//搜索设备;
-		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(oJson);');
+		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
+		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
 		searchFlush();
 	})///
 	$(window).resize(function(){ 
@@ -385,7 +386,7 @@ var oSearchOcx;
 	// 一键添加
 	function addAlldevIntoArea(){
 		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
-			initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
+		initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
 	}
 	//初始化要添加到区域的XML信息
 	function initDevIntoAreaXml (objList,obj){
@@ -700,6 +701,20 @@ function setIP(){ //设置IP
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
 		alert('IP设置失败');
 	}
+}
+function autoSetIP(){  //批量分配IP
+	var ipcList= $('#SerachDevList tr.IPC')
+	var str = '<devnetworkInfo Num="'+ipcList.length+'">'
+	ipcList.each(function(){
+		var oIpcData = $(this).data('data');
+		str+='<dev sDeviceID="'+oIpcData.SearchDeviceId_ID+'" sAddress="'+oIpcData.SearchIP_ID+'" sMask="'+oIpcData.SearchMask_ID+'" sGateway="'+oIpcData.SearchGateway_ID+'" sMac="'+oIpcData.SearchMac_ID+'" sPort="'+oIpcData.SearchHttpport_ID+'" sUsername="" sPassword=""/>'
+	})
+	str+='</devnetworkInfo>';
+	$('#AutoSetNetworkInfoID').val(str);
+	//oSearchOcx.AutoSetNetworkInfo();
+}
+function autoSetIPcallBack(data){
+	show(data);
 }
 //devinfo
 function disksSelectAll(){

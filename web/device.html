@@ -258,6 +258,7 @@
 						<tr id="esee_100015721"><td><input type="checkbox"  /> JUAN DVR</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
 		
 					</tbody>
+					<input type="hidden" id="AutoSetNetworkInfoID" />
 				</table>
 				<input type="hidden" id="adddevicedouble_ID" />
 				<input type="hidden" id="adddeviceall_ID" />
@@ -275,7 +276,7 @@
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" id="tableSelectAll" status="0" onclick="addAlldevIntoArea();" />全选</td></tr></thead>
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" />全选</td></tr></thead>
 					<tbody>
 						<tr>
 							<td width="80px;">设备IP</td>
@@ -294,7 +295,7 @@
 							<td colspan="3"><input type="text" style="width:60px;" id="SearchHttpport_ID" /><input style="color:#ccc;" class="hover iput2" type="button" onclick="setIP()" value="设置"/></td>
 						</tr>
 						<tr>
-							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP"/></td>
+							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP" onclick="autoSetIP();" /></td>
 						</tr>
 					</tbody>
 				</table>
