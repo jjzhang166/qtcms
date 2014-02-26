@@ -68,7 +68,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 						if(windState != 2){
 							win = getWind(wind);
 						}
-					}	openWind(win,chlData);
+						openWind(win,chlData);
+					}	
 				})
 			}
 			
@@ -126,8 +127,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
 	}
-	function closeCurrWind(){
-		CloseWind(oPreView.GetCurrentWnd());
+
+	function openCloseAll(){
+		
 	}
 
 	function openWind(wind,data){

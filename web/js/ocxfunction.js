@@ -200,7 +200,8 @@ var oCommonLibrary,
 	}
 
 	function RemoveDeviceAllSuccess(data){
-		alert(data);
+		$('#dev_'+data.deviceid).parent('li').remove();
+		$('ul.filetree').treeview();
 	}
 
 	function AddDeviceDoubleSuccess(data){  //添加多个设备

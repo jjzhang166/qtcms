@@ -387,7 +387,7 @@ function showdata(id,type){  //显示表单下有ID的元素的val值
 	//return false;
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
-	$('#'+type).find('[id]').each(function(){ 
+	$('#'+type).find('input[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
 	show(str);
