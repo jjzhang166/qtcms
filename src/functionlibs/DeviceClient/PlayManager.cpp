@@ -10,7 +10,6 @@ PlayManager::PlayManager(void):
 m_nInitWidth(0),
 m_nInitHeight(0),
 m_ui64TSP(0),
-m_uiStartFrameTime(0),
 m_uiCurrentFrameTime(0),
 m_pRenderWnd(NULL),
 m_speed(SpeedNomal),
@@ -32,7 +31,7 @@ PlayManager::~PlayManager(void)
 	m_bStop = true;
 	if(this->isRunning())
 	{
-		wait();
+		wait(100);
 	}
 
 	m_pVedioDecoder->Release();
@@ -87,8 +86,7 @@ void PlayManager::setPlaySpeed(int types, int speedRate)
 
 int PlayManager::getPlayTime()
 {
-	/*return m_uiCurrentFrameTime;*/
-	return m_uiCurrentFrameTime - m_uiStartFrameTime;
+	return m_uiCurrentFrameTime;
 }
 
 void PlayManager::pause(bool isPause)
@@ -103,7 +101,6 @@ void PlayManager::stop()
 	m_nInitWidth = 0;
 	m_nInitHeight = 0;
 	m_ui64TSP = 0;
-	m_uiStartFrameTime = 0;
 	m_uiCurrentFrameTime = 0;
 	m_pRenderWnd = NULL;
 	m_speed = SpeedNomal;
@@ -147,7 +144,6 @@ void PlayManager::run()
 
 		if (m_bFirstFrame)
 		{
-			m_uiStartFrameTime = recVeStream.uiGenTime;
 			m_ui64TSP = recVeStream.ui64TSP;
 
 			if (NULL == m_pVedioDecoder)

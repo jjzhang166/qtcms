@@ -6,6 +6,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_pRemotePlayback(NULL),
 	m_nChannels(0),
 	m_nSpeedRate(0),
+	m_nStartTimeSeconds(0),
 	m_DeviceConnectonBubble(NULL),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
@@ -690,7 +691,7 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 	{
 		return 1;
 	}
-	
+	m_nStartTimeSeconds = start.toTime_t();
 	int nRet = m_pRemotePlayback->getPlaybackStreamByTime(m_nChannels, nTypes, start, end);
 	m_bGroupStop = false;
 
@@ -716,7 +717,12 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 
 	int seconds = 0;
 	seconds = it->playManager->getPlayTime();
+	seconds -= m_nStartTimeSeconds;
 	time.setDate(QDate::currentDate());
+	if (seconds < 0)
+	{
+		seconds = 0;
+	}
 	time.setTime(secTime.addSecs(seconds));
 	/*time=QDateTime::fromTime_t(seconds);*/
 	return time;
@@ -797,6 +803,7 @@ int DeviceClient::GroupStop()
 	m_nChannels = 0;
 	m_groupMap.clear();
 	m_bGroupStop = true;
+	m_nStartTimeSeconds = 0;
 
 	return nRet;
 }

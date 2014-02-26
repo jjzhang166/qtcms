@@ -41,7 +41,6 @@ private:
 	int m_nSpeedRate;
 	SpeedType m_speed;
 	quint64 m_ui64TSP;
-	uint m_uiStartFrameTime;
 	uint m_uiCurrentFrameTime;
 	IVideoDecoder *m_pVedioDecoder;
 	IVideoRender *m_pVedioRender;

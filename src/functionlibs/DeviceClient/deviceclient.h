@@ -117,6 +117,7 @@ private:
 	QMap<int, WndPlay> m_groupMap;
 	int m_nChannels;
 	int m_nSpeedRate;
+	int m_nStartTimeSeconds;
 	QString m_sUserName;
 	QString m_sPassWord;
 	bool m_bGroupStop;
