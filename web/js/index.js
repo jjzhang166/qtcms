@@ -85,6 +85,13 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			setViewNumNow();
 		})
 
+		//同步设置分屏UI
+		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
+			backPosition = indexLi.css('background-position').split(' ');
+			indexLi.css('background-position','-30px '+backPosition[1]);
+
+		$('#setModel').css('background-position',indexLi.css('background-position'));
+
 		setViewNumNow();
 		//绑定控件事件
 		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
@@ -126,10 +133,43 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
+		writeActionLog('通道'+wind+'已经关闭!');
 	}
 
-	function openCloseAll(){
-		
+	function openCloseAll(bool){  //打开关闭所有窗口
+		if(bool){
+			var wind = 0;
+
+			$('div.dev_list:visible span.channel').not('[wind]').each(function(){
+				wind = getWind(wind);
+				openWind(wind,getChlFullInfo($(this)));
+				wind++;
+			})
+
+			writeActionLog('正在打开当前列表下的所有通道');
+		}else{
+
+			$('div.dev_list:visible span.channel[wind]').each(function(){
+				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
+			})
+
+			writeActionLog('正在关闭当前列表下的所有通道');
+		}
+	}
+
+	function checkAllchannelOpen(){
+		var b = 1;
+		$('div.dev_list:visible span.channel').each(function(){
+			if(!$(this).attr('wind')){
+				b = 0;
+			}
+		})
+		var obj = $('#openAllchannel')
+		if(b){
+			obj.attr('toggle',1).css('background-position','0px'+' '+(-obj.height())+'px');
+		}else{
+			obj.removeAttr('toggle').css('background-position','0 0');
+		}	
 	}
 
 	function openWind(wind,data){
@@ -144,13 +184,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
-		try{
+		oPreView.SetDevChannelInfo(wind,data.channel_id);
 
-			oPreView.SetDevChannelInfo(wind,data.channel_id);
-
-			oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
-			}
-		catch(e){}
+		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
 	}
 
 	function WindCallback(ev){ 
@@ -171,8 +207,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
+			checkAllchannelOpen()
 		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
+			checkAllchannelOpen()
 			obj.addClass('channel_1');
 		}else{
 			str=''
@@ -207,7 +245,6 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			oDev.removeAttr('bAllopen');
 			oDev.removeClass('device_1');
 		}
-
 	}
 	function setViewMod(i){
 		oPreView.setDivMode(i);
@@ -256,43 +293,32 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		return H+':'+M+':'+S;	
 	}
 
-	function StartRecord(){ 
-		$('div.dev_list span.channel[wind]').each(function(){
-			var data = $(this).data('data'),
-				str = '';
-			if(!oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
-				if(!oPreView.StartRecord($(this).attr('wind'))){
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'开始录像!'	
+	function Record(bool){
+		if(bool){
+			$('div.dev_list span.channel[wind]').each(function(){
+				var data = $(this).data('data'),
+					str = '';
+				if(!oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
+					if(!oPreView.StartRecord($(this).attr('wind'))){
+						str = '设备'+data.name+' 下的通道'+data.channel_name+'开始录像!'	
+					}else{ 
+						str = '设备'+data.name+' 下的通道'+data.channel_name+'录像失败!'
+					}
 				}else{ 
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'录像失败!'
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'的录像数据绑定失败!'
 				}
-			}else{ 
-				str = '设备'+data.name+' 下的通道'+data.channel_name+'的录像数据绑定失败!'
-			}
-			writeActionLog(str);
-		})
-	}
-
-	function StopRecord(){ 
-		$('div.dev_list span.channel[wind]').each(function(){
-			var data = $(this).data('data'),
-				str = '';
-			if(!oPreView.StopRecord($(this).attr('wind'))){ 
-				str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像!'
-			}else{ 	
-				str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像失败!'
-			}
-			writeActionLog(str);
-		})
-	}
-
-	function Record(){
-		var obj = $('#Record');
-		if(obj.attr('Record')){
-			StopRecord()
-			obj.removeAttr('Record');
+				writeActionLog(str);
+			})
 		}else{
-			StartRecord()
-			obj.attr('Record','1');
+			$('div.dev_list span.channel[wind]').each(function(){
+				var data = $(this).data('data'),
+					str = '';
+				if(!oPreView.StopRecord($(this).attr('wind'))){ 
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像!'
+				}else{ 	
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像失败!'
+				}
+				writeActionLog(str);
+			})
 		}
 	}

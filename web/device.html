@@ -883,7 +883,9 @@
                             <input id="dvr_record_weekday_3" class="chk" type="checkbox" />周三
                             <input id="dvr_record_weekday_4" class="chk" type="checkbox" />周四
                             <input id="dvr_record_weekday_5" class="chk" type="checkbox" />周五
-                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" />周六</td></tr>
+                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" />周六
+                            </td>
+                        </tr>
 						<tr>
 							<td colspan="4" class="td4 dvr_record_chn_sel">
 							<div><input type="checkbox" /><span>1</span></div>
@@ -1635,12 +1637,13 @@
 							<td>语言</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span id="Language_ID" value=""></span>
+									<span class="Language"></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">中文</a></li>
-									<li><a href="javascript:;">英文</a></li>
+									<input type="hidden" id="Language_ID" />
+									<li value="zh_CN"><a href="javascript:;">中文</a></li>
+									<!-- <li value="en_GB"><a href="javascript:;">English</a></li> -->
 								</ul>
 							</td>
 						</tr>
@@ -1650,19 +1653,20 @@
 							<td>默认屏幕分割模式</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span id="SplitScreenMode_ID" value=""></span>
+									<span class="SplitScreenMode"></span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option" id="viewMod">
-									<li><a>1_1</a></li>
-									<li><a>2_2</a></li>
-									<li><a>3_3</a></li>
-									<li><a>4_4</a></li>
-									<li><a>5_5</a></li>
-									<li><a>6_1</a></li>
-									<li><a>7_7</a></li>
-									<li><a>8_1</a></li>
-									<li><a>8_8</a></li>
+									<input id="SplitScreenMode_ID" type="hidden" />
+									<li value="div1_1"><a>1分屏</a></li>
+									<li value="div2_2"><a>4分屏</a></li>
+									<li value="div6_1"><a>6分屏</a></li>
+									<li value="div8_1"><a>8分屏</a></li>
+									<li value="div3_3"><a>9分屏</a></li>
+									<li value="div4_4"><a>16分屏</a></li>
+									<li value="div5_5"><a>25分屏</a></li>
+									<li value="div7_7"><a>49分屏</a></li>
+									<li value="div8_8"><a>64分屏</a></li>
 								</ul>
 							</td>
 						</tr>
