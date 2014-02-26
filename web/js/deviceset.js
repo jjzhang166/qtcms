@@ -697,7 +697,7 @@ function cleanDev(){  //清空设备
 }
 function setIP(){ //设置IP
 	var oData = $('tbody.synCheckboxClick tr.sel').data('data')
-	if(!oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
+	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
 		alert('IP设置失败');
 	}
 }
