@@ -63,6 +63,7 @@ private:
 private:
 	int									m_nRef;
 	QMutex								m_csRef;
+	QMutex								m_csSetNetworkInfo;
 	volatile bool						m_bReceiving;
 	bool								m_bFlush;
 	bool								m_bEnd;

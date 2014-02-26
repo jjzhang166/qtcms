@@ -716,7 +716,9 @@ QDateTime DeviceClient::GroupGetPlayedTime()
 
 	int seconds = 0;
 	seconds = it->playManager->getPlayTime();
-	time=QDateTime::fromTime_t(seconds);
+	time.setDate(QDate::currentDate());
+	time.setTime(secTime.addSecs(seconds));
+	/*time=QDateTime::fromTime_t(seconds);*/
 	return time;
 }
 int DeviceClient::GroupPause()

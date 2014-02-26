@@ -22,6 +22,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 		connect(&m_PreviewWnd[i],SIGNAL(mousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowRmousePress(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
 		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(QVariantMap,QWidget *)),this,SLOT(CurrentStateChangePlugin(QVariantMap,QWidget *)));
+		
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
 
@@ -220,7 +221,7 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 		return 1;
 	}
 	m_mutex.lock();
-	m_CurrentWnd=uiWndIndex;
+	//m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
@@ -234,7 +235,7 @@ int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 		return 1;
 	}
 	m_mutex.lock();
-	m_CurrentWnd=uiWndIndex;
+	//m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].CloseWndCamera();
 	return 0;
@@ -247,8 +248,9 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 		return 0;
 	}
 	m_mutex.lock();
-	m_CurrentWnd=uiWndIndex;
+	//m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
+	qDebug()<<m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus()<<"uiWndIndex:"<<uiWndIndex;
 	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
 }
 
@@ -264,10 +266,6 @@ void QPreviewWindows::CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID)
 	}
 	evMap.insert("WPageId",j);
 	EventProcCall("CurrentStateChange",evMap);
-	//DEF_EVENT_PARAM(arg);
-	//EP_ADD_PARAM(arg,"CurrentState",statevalue);
-	//EP_ADD_PARAM(arg,"WPageId",j);
-	//EventProcCall("CurrentStateChange",arg);
 	return ;
 }
 
@@ -284,6 +282,16 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"Wid",j);
 	EventProcCall("CurrentWindows",arg);
+
+	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++)
+	{
+		if (&m_PreviewWnd[i]==Wid)
+		{
+			m_PreviewWnd[i].SetCurrentFocus(true);
+		}else{
+			m_PreviewWnd[i].SetCurrentFocus(false);
+		}
+	}
 }
 
 int QPreviewWindows::StartRecord(int nWndID)

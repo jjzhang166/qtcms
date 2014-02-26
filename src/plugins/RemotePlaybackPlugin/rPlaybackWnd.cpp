@@ -188,8 +188,16 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
      if (NULL != m_GroupPlayback )
      {
          QDateTime playedTime = m_GroupPlayback->GroupGetPlayedTime();
+
+		 //QString playedTimeTest;
+		 //playedTimeTest=playedTime.toString("yyyy-MM-dd hh:mm:ss");
+		 //qDebug()<<playedTimeTest;
+
+		 QDateTime pCurdate;
+		 pCurdate.setDate(QDate::currentDate());
 		 QString CurrentTime;
-		 CurrentTime=QString("%1").arg(playedTime.toTime_t());
+		 CurrentTime=QString("%1").arg(playedTime.toTime_t()-pCurdate.toTime_t());
+		 qDebug()<<CurrentTime;
 		 return CurrentTime;
      }
      else

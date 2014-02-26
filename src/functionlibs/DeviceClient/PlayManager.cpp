@@ -87,6 +87,7 @@ void PlayManager::setPlaySpeed(int types, int speedRate)
 
 int PlayManager::getPlayTime()
 {
+	/*return m_uiCurrentFrameTime;*/
 	return m_uiCurrentFrameTime - m_uiStartFrameTime;
 }
 

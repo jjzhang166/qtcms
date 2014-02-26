@@ -620,7 +620,6 @@ QDateTime LocalPlayer::GetNowPlayedTime()
 
 	time.setDate(QDate::currentDate());
 	time.setTime(secTime.addSecs(m_playTime));
-
 	return time;
 }
 void LocalPlayer::setPlayTime(uint &playTime)

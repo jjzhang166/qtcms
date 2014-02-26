@@ -101,8 +101,10 @@ void HiChipSearch::run()
 		msleep(500);
 		if (m_bSetNetInfo)
 		{
+			m_csSetNetworkInfo.lock();
 			m_Socket->writeDatagram(m_netInfo, QHostAddress(QString(MCASTADDR)), MCASTPORT);
 			m_bSetNetInfo = false;
+			m_csSetNetworkInfo.unlock();
 		}
 	}
 }
@@ -197,6 +199,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 
 	itemmap.insert("SearchMediaPort_ID", context);
 	itemmap.insert("SearchVendor_ID", "JUAN IPC");
+	
 
 }
 
@@ -251,7 +254,7 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 	QByteArray content;
 	int nCSeq = 2;
 	char buff[1024] = {0};
-
+	m_csSetNetworkInfo.lock();
 	m_netInfo.clear();
 	if (sAddress.size() > 0 || sMask.size() > 0 || sGateway.size() > 0 || sMac.size() > 0)
 	{
@@ -289,6 +292,7 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 		"\r\n"
 		"%s", nCSeq, sUsername.toLatin1().data(), sPassword.toLatin1().data(), sDeviceID.toLatin1().data(), content.size(), content.data());
 	m_netInfo.append(buff);
+	m_csSetNetworkInfo.unlock();
 	if (m_netInfo.isEmpty())
 	{
 		return IDeviceNetModify::E_SYSTEM_FAILED;

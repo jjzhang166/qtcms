@@ -73,6 +73,7 @@ private:
 	
 	QMutex m_mutex;
 
+
 };
 
 #endif // QPREVIEWWINDOWS_H

@@ -22,6 +22,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsAutoConnecting(false),
 	m_bIsStartRecording(false),
 	m_bIsAutoRecording(false),
+	m_bIsFocus(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
@@ -103,10 +104,7 @@ QSubView::~QSubView()
 void QSubView::paintEvent( QPaintEvent * e)
 {
 	QPainter p(this);
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
-	{
-		return;
-	}
+
 	QString image;
 	QColor LineColor;
 	QColor LineCurColor;
@@ -132,14 +130,20 @@ void QSubView::paintEvent( QPaintEvent * e)
  	bool ret = pix.load(PixPaht);
  
   	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-
- 	p.drawPixmap(rcClient,pix);
-
+	//±³¾°
+	if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+	{
+		p.drawPixmap(rcClient,pix);
+	}
+ 	/*p.drawPixmap(rcClient,pix);*/
+	//±ß¿ò
 	QPen pen = QPen(LineColor);
 	pen.setWidth(2);
  	p.setPen(pen);
 	p.drawRect(rcClient);
-	if (this->hasFocus())
+	//½¹µã
+
+	if (m_bIsFocus)
 	{
 		int x = 0;
 		int y = 0;
@@ -155,6 +159,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	{
 	 	p.drawRect(rcClient);
 	}
+	//
 	int awidth=0;
 	int bheight=0;
 	int ax=0;
@@ -204,7 +209,8 @@ void QSubView::paintEvent( QPaintEvent * e)
 		CountConnecting--;
 		p.drawText(rcClient, Qt::AlignCenter, m_text);
 	}
-	else{
+	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+	{
 		p.drawText(rcClient, Qt::AlignCenter, "No Video");
 	}
 
@@ -949,4 +955,10 @@ int QSubView::SetDevChannelInfo( int ChannelId )
 {
 	m_DevCliSetInfo.m_uiChannelIdInDataBase=ChannelId;
 	return 0;
+}
+
+void QSubView::SetCurrentFocus( bool focus)
+{
+	m_bIsFocus=focus;
+	update();
 }

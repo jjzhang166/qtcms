@@ -58,6 +58,7 @@ public:
 	int StopRecord();
 	int SetDevInfo(const QString&devname,int nChannelNum);
 
+	
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -72,21 +73,24 @@ public:
 	int CurrentStateChange(QVariantMap evMap);
 
 	int SetDeviceByVendor(const QString & sVendor);
+	void SetCurrentFocus(bool);
 private:
 	int cbInit();
 	
 	void In_CloseAutoConnect();
 public slots:
+		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
 		void OnCloseFromMouseEv();
 		void OnConnectting();
 		void OnDisConnecting();
 		void OnDisConnected();
-		virtual void timerEvent( QTimerEvent * );
+		
 		void OnRenderHistoryPix();
 		void OnCheckTime();
 		void OnCreateAutoConnectTime();
 		void In_OpenAutoConnect();
+		
 signals:
 		void mouseDoubleClick(QWidget *,QMouseEvent *);
 		void mousePressEvent(QWidget *,QMouseEvent *);
@@ -124,7 +128,7 @@ private:
 	bool m_bIsAutoConnecting;
 	bool m_bIsStartRecording;
 	bool m_bIsAutoRecording;
-
+	bool m_bIsFocus;
 	QTime dieTime;
 	QTimer m_checkTime;
 
