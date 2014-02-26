@@ -711,10 +711,10 @@ function autoSetIP(){  //批量分配IP
 	})
 	str+='</devnetworkInfo>';
 	$('#AutoSetNetworkInfoID').val(str);
-	//oSearchOcx.AutoSetNetworkInfo();
+	oSearchOcx.AutoSetNetworkInfo();
 }
 function autoSetIPcallBack(data){
-	show(data);
+	//show(data);
 }
 //devinfo
 function disksSelectAll(){
