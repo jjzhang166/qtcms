@@ -474,7 +474,7 @@ function setDevData2ocx(){
 		try{
 			$('tbody.search_result tr').filter(function(){
 				return !$(this).find(':checkbox').is(':checked');
-			}).remove();
+			}).remove();//远程备份中正在下载的文件不被删除.
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
 			dragStopMove();

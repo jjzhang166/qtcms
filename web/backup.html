@@ -55,7 +55,7 @@ var oPlayBack,oBackup;
 		var b = true;
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
 		var uid = sDevName+'_'+data.channel+'_'+data.start+'_'+data.end;
-			$('tbody.search_result tr').has(':checked').each(function(){
+			$('tbody.search_result tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
 				if(uid == $(this).attr('uid')){
 					b=false;
 				}
