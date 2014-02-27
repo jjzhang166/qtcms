@@ -130,7 +130,7 @@ var oPlayBack,oBackup;
 		var i=0;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').one('click',function(){
-				oBackup.stopBackup()
+				backupstop();
 				//show('当前第'+now+'个任务已被终止!');
 				return false;
 			})
@@ -167,6 +167,9 @@ var oPlayBack,oBackup;
 			//oBackup.stopBackup();
 			startDownload();
 		}
+	}
+	function backupstop(){
+			oBackup.stopBackup()
 	}
 
 </script>
@@ -293,7 +296,7 @@ var oPlayBack,oBackup;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" href="javascript:;" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" onclick="backupstop();" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
 	</div>
 	<div id="foot"></div>
 </body>
