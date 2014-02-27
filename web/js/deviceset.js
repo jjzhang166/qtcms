@@ -700,7 +700,7 @@ function setIP(){ //设置IP
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
 		alert('IP设置失败');
 	}else{
-		searchFlush();
+		setTimeout(searchFlush,2000);
 	}
 }
 function autoSetIP(){  //批量分配IP
@@ -714,7 +714,8 @@ function autoSetIP(){  //批量分配IP
 	$('#AutoSetNetworkInfoID').val(str);
 	//alert($('#AutoSetNetworkInfoID').val());
 	oSearchOcx.AutoSetNetworkInfo();
-	searchFlush();
+	setTimeout(searchFlush,2000);
+	
 }
 function autoSetIPcallBack(data){
 }
