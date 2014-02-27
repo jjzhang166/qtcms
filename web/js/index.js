@@ -39,7 +39,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			ViewMax('preview');
 		}
  		//打开通道
-		oDiv.on('click','span.channel',function(){ 
+		oDiv.on('dblclick','span.channel',function(){ 
 			//show($(this).data('data'));
 			var chlData = getChlFullInfo($(this));
 			if($(this).attr('state')){
@@ -48,8 +48,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				openWind(oPreView.GetCurrentWnd(),chlData);
 			}
 		})
+
 		//打开设备下的说所有通道
-		oDiv.on('click','span.device',function(){ 
+		oDiv.on('dblclick','span.device',function(){ 
 			var oDevice = $(this)
 			var chlData;
 			var wind = oPreView.GetCurrentWnd();
@@ -80,6 +81,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 			writeActionLog(str);
 		})
+
 		//显示分屏的文字
 		$('div.operat li.setViewNum').click(function(){ 
 			setViewNumNow();
@@ -209,8 +211,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			//checkAllchannelOpen()
 		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
-			//checkAllchannelOpen()
 			obj.addClass('channel_1');
+			//checkAllchannelOpen()
 		}else{
 			str=''
 			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
