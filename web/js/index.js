@@ -206,10 +206,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
-			checkAllchannelOpen()
+			//checkAllchannelOpen()
 		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
-			checkAllchannelOpen()
+			//checkAllchannelOpen()
 			obj.addClass('channel_1');
 		}else{
 			str=''
