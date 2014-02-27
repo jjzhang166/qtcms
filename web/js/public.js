@@ -394,7 +394,7 @@ function showdata(id,type){  //显示表单下有ID的元素的val值
 	show(str);
 }
 function show(data){  // 在ID为test的div元素中打印对象数据
-	//return false;
+	return false;
 	var index='default',
 		str = 'Null';
 	$('#test').html('');
