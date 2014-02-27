@@ -19,7 +19,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	},function(){
 		obj.css('background-position',left+'px'+' '+top+'px');
 	}).mousedown(function(){
-		$(window).off();
+		//$(window).off();
 		if(left == -width){
 			obj.css('background-position',left-width+'px'+' '+top+'px');
 		}else{
