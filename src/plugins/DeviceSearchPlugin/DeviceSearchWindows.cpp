@@ -209,7 +209,7 @@ int DeviceSearchWindows::AutoSetNetworkInfo()
 				qDebug()<<"sGateway"<<sGateway;
 				//Call SetNetworkInfo
 
-				SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
+				//SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
 			}
 		}
 	}else{
@@ -346,8 +346,8 @@ int DeviceSearchWindows::__ApplyAddress(QString &lSNewAddress ,QString lSAddress
 		return 1;
 	}
 	//判断该ip是否为主机ip
-	//lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
-	lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append("29").append(".").append(m_HistoryAddress.IpPart4);
+	lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
+	//lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append("29").append(".").append(m_HistoryAddress.IpPart4);
 	if (lSNewAddress==lSAddress)
 	{
 		if (__flushAddress()==1)

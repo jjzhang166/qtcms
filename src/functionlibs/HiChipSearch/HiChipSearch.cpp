@@ -7,7 +7,6 @@
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
-m_bSetNetInfo(false),
 m_nInterval(10000)
 {
 	m_bReceiving = false;
@@ -99,13 +98,12 @@ void HiChipSearch::run()
 		}
 		Receive();
 		msleep(500);
-		if (m_bSetNetInfo)
-		{
-			m_csSetNetworkInfo.lock();
-			m_Socket->writeDatagram(m_netInfo, QHostAddress(QString(MCASTADDR)), MCASTPORT);
-			m_bSetNetInfo = false;
-			m_csSetNetworkInfo.unlock();
-		}
+		//if (m_bSetNetInfo)
+		//{
+		//	qDebug()<<m_netInfo;
+		//	m_Socket->writeDatagram(m_netInfo, QHostAddress(QString(MCASTADDR)), MCASTPORT);
+		//	m_bSetNetInfo = false;
+		//}
 	}
 }
 
@@ -256,7 +254,6 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 	QByteArray content;
 	int nCSeq = 2;
 	char buff[1024] = {0};
-	m_csSetNetworkInfo.lock();
 	m_netInfo.clear();
 	if (sAddress.size() > 0 || sMask.size() > 0 || sGateway.size() > 0 || sMac.size() > 0)
 	{
@@ -294,13 +291,20 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 		"\r\n"
 		"%s", nCSeq, sUsername.toLatin1().data(), sPassword.toLatin1().data(), sDeviceID.toLatin1().data(), content.size(), content.data());
 	m_netInfo.append(buff);
-	m_csSetNetworkInfo.unlock();
 	if (m_netInfo.isEmpty())
 	{
 		return IDeviceNetModify::E_SYSTEM_FAILED;
 	}
+		qDebug()<<m_netInfo;
+		if (m_Socket==NULL)
+		{
+			return IDeviceNetModify::E_SYSTEM_FAILED;
+		}
+		m_Socket->writeDatagram(m_netInfo, QHostAddress(QString(MCASTADDR)), MCASTPORT);
+		
 	nCSeq++;
-	m_bSetNetInfo = true;
+
+	
 
 	return IDeviceNetModify::OK;
 }

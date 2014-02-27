@@ -63,11 +63,9 @@ private:
 private:
 	int									m_nRef;
 	QMutex								m_csRef;
-	QMutex								m_csSetNetworkInfo;
 	volatile bool						m_bReceiving;
 	bool								m_bFlush;
 	bool								m_bEnd;
-	bool								m_bSetNetInfo;
 	QUdpSocket							*m_Socket;
 	int									m_nInterval;
 	QMultiMap<QString, ProcInfoItem_t>	m_eventMap;
