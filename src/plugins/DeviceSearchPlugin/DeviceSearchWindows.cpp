@@ -147,17 +147,17 @@ void DeviceSearchWindows::sendToHtml(QVariantMap item)
 	//{
 	//	qDebug()<<item.value("SearchDeviceId_ID").toString();
 	//}
-	if (item.value("SearchSeeId_ID").toString()==NULL||item.value("SearchSeeId_ID").toInt()<1)
-	{
-		item.insert("SearchSeeId_ID",item.value("SearchIP_ID").toString());
-	}
+	//if (item.value("SearchSeeId_ID").toString()==NULL||item.value("SearchSeeId_ID").toInt()<1)
+	//{
+	//	item.insert("SearchSeeId_ID",item.value("SearchIP_ID").toString());
+	//}
 	EventProcCall("SearchDeviceSuccess",item);
 }
 
 void DeviceSearchWindows::sendInfoToUI(QVariantMap item)
 {
 
-	EventProcCall("SettingStatus",item);
+	/*EventProcCall("SettingStatus",item);*/
 }
 
 int DeviceSearchWindows::AutoSetNetworkInfo()
@@ -168,7 +168,7 @@ int DeviceSearchWindows::AutoSetNetworkInfo()
 	{
 		__GetInitAddress(lSAddress,lSNetmask);
 		//读入数据
-		QVariant lDevNetworkInfoFile=__QueryValue("AutomodificationID");
+		QVariant lDevNetworkInfoFile=__QueryValue("AutoSetNetworkInfoID");
 		QDomDocument lConfFile;
 		lConfFile.setContent(lDevNetworkInfoFile.toString());
 		QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
@@ -209,7 +209,7 @@ int DeviceSearchWindows::AutoSetNetworkInfo()
 				qDebug()<<"sGateway"<<sGateway;
 				//Call SetNetworkInfo
 
-				/*SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);*/
+				SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
 			}
 		}
 	}else{
@@ -346,7 +346,8 @@ int DeviceSearchWindows::__ApplyAddress(QString &lSNewAddress ,QString lSAddress
 		return 1;
 	}
 	//判断该ip是否为主机ip
-	lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
+	//lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
+	lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append("29").append(".").append(m_HistoryAddress.IpPart4);
 	if (lSNewAddress==lSAddress)
 	{
 		if (__flushAddress()==1)
