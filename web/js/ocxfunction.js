@@ -77,6 +77,7 @@ var oCommonLibrary,
 				bUsed = false;
 			}
 		})
+		
 		$('div.dev_list:eq(0) span.device').each(function(){ 
 			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
 				bUsed = false;

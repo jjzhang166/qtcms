@@ -187,13 +187,7 @@ var oSearchOcx;
 		})
 
 		//搜索结果 设备列表tr委托部分事件;
-		$('tbody.synCheckboxClick').on('click','input:checkbox',function(event){
-			/*var sDevId = parseInt($(this).parent('td').next('td').html());
-			if( sDevId <= 0 || !sDevId){ 
-				return false;
-			}*/
-			initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
-		}).on('click','tr',function(){
+		$('tbody.synCheckboxClick').on('click','tr',function(){
 			var data = $(this).data('data');
 			if(data.SearchVendor_ID == 'JUAN IPC'){
 				for(i in data){
@@ -387,6 +381,11 @@ var oSearchOcx;
 	function addAlldevIntoArea(){
 		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
 		initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
+	}
+	//添加多台设备
+	function adddoubdevIntoArea(){
+		var devList = $('tbody.synCheckboxClick input:checked');
+		initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
 	}
 	//初始化要添加到区域的XML信息
 	function initDevIntoAreaXml (objList,obj){
@@ -700,6 +699,8 @@ function setIP(){ //设置IP
 	var oData = $('tbody.synCheckboxClick tr.sel').data('data')
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
 		alert('IP设置失败');
+	}else{
+		searchFlush();
 	}
 }
 function autoSetIP(){  //批量分配IP
@@ -715,7 +716,7 @@ function autoSetIP(){  //批量分配IP
 	oSearchOcx.AutoSetNetworkInfo();
 }
 function autoSetIPcallBack(data){
-	//show(data);
+	searchFlush()
 }
 //devinfo
 function disksSelectAll(){
