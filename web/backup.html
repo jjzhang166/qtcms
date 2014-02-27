@@ -52,8 +52,18 @@ var oPlayBack,oBackup;
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
+		var b = true;
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
-		$('<tr><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
+		var uid = sDevName+'_'+data.channel+'_'+data.start+'_'+data.end;
+			$('tbody.search_result tr').has(':checked').each(function(){
+				if(uid == $(this).attr('uid')){
+					b=false;
+				}
+			})
+			if(b){
+				$('<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channel+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);	
+			}
+		
 	}
 	function contentMax(){
 		var H = $(window).height();

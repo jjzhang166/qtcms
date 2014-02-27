@@ -472,7 +472,9 @@ function setDevData2ocx(){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
 		try{
-			$('tbody.search_result tr').remove();
+			$('tbody.search_result tr').filter(function(){
+				return !$(this).find(':checkbox').is(':checked');
+			}).remove();
 			oPlayBack.GroupStop();
 			oPlaybackLocl.GroupStop();
 			dragStopMove();
