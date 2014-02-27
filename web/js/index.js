@@ -179,9 +179,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		if(windState != 2 ){ //该窗口不可用.
 			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+wind+',打开失败！  错误:当前窗口'+wind+' '+winState[windState];
 			writeActionLog(str);
-			return false;
 		}
-		
+		wind = getWind(wind);
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
 		oPreView.SetDevChannelInfo(wind,data.channel_id);
