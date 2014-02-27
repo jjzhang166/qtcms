@@ -170,6 +170,7 @@ var	nViewNum = 0,
 		}
 	}
 	function playVideo(){
+		dragStopMove();
 		try{
 			nowSpeed = 1;
 			var obj = $('#togglePlay');
@@ -177,7 +178,6 @@ var	nViewNum = 0,
 					toggle:'1',
 					hasFile:'1'
 				}).css('background-position','0px'+' '+(-obj.height())+'px');
-			dragStopMove();
 			oPlaybackLocl.GroupStop();
 			oPlayBack.GroupStop();
 		}catch(e){
@@ -211,14 +211,12 @@ var	nViewNum = 0,
 	}
 	function playAction(str){
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
-		dragStopMove();
-			alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
+			//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
 			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
 				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
 			}else{
 				obj[str]();
 			}
-		dragStartMove();
 	}
 	var nowSpeed = 1;
 	function playSpeed(str){
@@ -303,7 +301,7 @@ var	nViewNum = 0,
 		return a - b;
 	}
 	function dragStartMove(){
-		var SynTimeUnits = nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
+		var SynTimeUnits = 1000;//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
 		var oPlay = bool ? oPlaybackLocl : oPlayBack;
 		//return false;
 		var oDrag=$('div.play_time');

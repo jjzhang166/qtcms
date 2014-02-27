@@ -207,6 +207,7 @@ var oCommonLibrary,
 	}
 
 	function AddDeviceDoubleSuccess(data){  //添加多个设备
+		data.name = data.name.replace(/\./g,'-');  // 用设备名做ID 名字中的.号转换
 		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
 		var devData = $('#esee_'+data.name).data('data');
 		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
@@ -216,7 +217,7 @@ var oCommonLibrary,
 	}
 
 	function adddev(data){
-		data.device_name = data.device_name.replace(/\./g,'-');  // 用设备名做ID 名字中的.号转换
+		data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
 		//Confirm(data.device_name+'AddSuccess!');
 		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		add.find('span.device').data('data',data);
@@ -436,7 +437,7 @@ function setDevData2ocx(){
 		});
 		var type = parseInt($('#type span').attr('type'))
 			type = type == 0 ? 15 : 1 << type;
-		var date = $("div.calendar span.nowDate").html();
+		var date = $("div.calendar span.nowDate").html();dev
 		var begin = gettime($('div.timeInput:eq(0) input'));
 		var end = gettime( $('div.timeInput:eq(1) input'));
 		var url ='http://'+devData['address']+':'+devData['http'];
