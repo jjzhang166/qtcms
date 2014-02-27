@@ -714,9 +714,9 @@ function autoSetIP(){  //批量分配IP
 	$('#AutoSetNetworkInfoID').val(str);
 	//alert($('#AutoSetNetworkInfoID').val());
 	oSearchOcx.AutoSetNetworkInfo();
+	searchFlush();
 }
 function autoSetIPcallBack(data){
-	searchFlush()
 }
 //devinfo
 function disksSelectAll(){
