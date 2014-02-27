@@ -246,8 +246,8 @@ void DvrSearch::Recv()
         strListInfo.insert(4,QString(StrToOther.data()));
    
         m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("JUAN DVR"));
-        m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant("strListInfo.at(1))"));
-        m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant("strListInfo.at(1))"));
+        m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
+        m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(""));
         m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
         m_mEventCBParam.insert("SearchSeeId_ID"         ,QVariant(strListInfo.at(1)));
         m_mEventCBParam.insert("SearchChannelCount_ID"  ,QVariant(strListInfo.at(4)));
