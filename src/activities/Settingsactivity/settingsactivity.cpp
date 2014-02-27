@@ -522,18 +522,16 @@ void settingsActivity::OnAddDeviceDouble()
 		QString	PassWord_ID=item.toElement().attribute("password");
 		//设置默认参数
 		QString ConnectMethod="0";
-		/*SearchDeviceName_ID.clear();*/
-		if (SearchDeviceName_ID.size()==0)
+		SearchDeviceName_ID.clear();
+		if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
 		{
-			if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
-			{
-				SearchDeviceName_ID.append(SearchSeeId_ID);
-			}
-			else 
-			{
-				SearchDeviceName_ID.append(SearchIP_ID);
-			}
+			SearchDeviceName_ID.append(SearchSeeId_ID);
 		}
+		else 
+		{
+			SearchDeviceName_ID.append(SearchIP_ID);
+		}
+		
 
 		
 		if (0==UserName_ID.size()||UserName_ID.isNull())
@@ -561,6 +559,15 @@ void settingsActivity::OnAddDeviceDouble()
 		}
 		
 		//添加设备
+		//QString sDevname;
+		//if (SearchSeeId_ID.isEmpty())
+		//{
+		//	sDevname = SearchIP_ID;
+		//}
+		//else
+		//{
+		//	sDevname = SearchSeeId_ID;
+		//}
 		nRet_id=Idevice->AddDevice(Area_ID,SearchDeviceName_ID,SearchIP_ID,SearchMediaPort_ID.toInt(),SearchHttpport_ID.toInt(),SearchSeeId_ID,UserName_ID,PassWord_ID,SearchChannelCount_ID.toInt(),ConnectMethod.toInt(),SearchVendor_ID);
 		if(-1==nRet_id){
 			Content.clear();
