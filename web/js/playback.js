@@ -212,8 +212,8 @@ var	nViewNum = 0,
 	function playAction(str){
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
 		dragStopMove();
+			alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
 			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
-				//alert(str+'::'+nowSpeed);
 				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
 			}else{
 				obj[str]();
@@ -232,6 +232,7 @@ var	nViewNum = 0,
 			nowSpeed = nowSpeed < (1/max) ? (1/max) : nowSpeed;
 		}
 		if(nowSpeed == 1){
+			//alert(nowSpeed+'==');
 			playAction('GroupSpeedNormal');
 			show='1X';
 		}else if(nowSpeed<1){
@@ -312,7 +313,7 @@ var	nViewNum = 0,
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			//show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
+			show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
 			if(left >= max-2){ 
 				left=max-2;
 				dragStopMove();
