@@ -171,6 +171,7 @@ var	nViewNum = 0,
 	}
 	function playVideo(){
 		try{
+			nowSpeed = 1;
 			var obj = $('#togglePlay');
 				obj.attr({
 					toggle:'1',
@@ -212,7 +213,8 @@ var	nViewNum = 0,
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
 		dragStopMove();
 			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
-				obj[str](nowSpeed);
+				//alert(str+'::'+nowSpeed);
+				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
 			}else{
 				obj[str]();
 			}
@@ -310,13 +312,13 @@ var	nViewNum = 0,
 		drag_timer = setInterval(function(){
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			/*show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);*/
+			//show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
 			if(left >= max-2){ 
 				left=max-2;
 				dragStopMove();
 			}
 			oDrag.css('left',left);
-			showNowPlayBackTime($('#now_time'),left,max)
+			//showNowPlayBackTime($('#now_time'),left,max);
 		},SynTimeUnits);
 	}
 	function dragStopMove(){

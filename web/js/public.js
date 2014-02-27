@@ -108,18 +108,19 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 function set_drag(X1,X2){  // 回放页面的拖拽条
 	var oDrag=$('div.play_time');
 	var oNow=$('#now_time')
-	showNowPlayBackTime(oNow,oDrag.offset().left,X2);
+	//showNowPlayBackTime(oNow,oDrag.offset().left,X2);
 	$(document).mousemove(function(event){
 			var left = event.pageX;
 		    left = left < X1 ? X1 : left;
 			left = left > X2 ? X2 : left;
 		oDrag.css('left',left-2+'px');
-		showNowPlayBackTime(oNow,left,X2);
+		//showNowPlayBackTime(oNow,left,X2);
 	}).mouseup(function(){
 		$(this).off();
 	})
 }
 function showNowPlayBackTime(oNow,oleft,X2){
+	return false;
 	oNow.html(returnTime((oleft-81)/(X2-81)*24*3600));
 }
 (function($){   // 
