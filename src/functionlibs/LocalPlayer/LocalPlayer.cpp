@@ -191,6 +191,10 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
 					totalFrames = AVI_video_frames(aviFile);
 					frameRate = AVI_frame_rate(aviFile);
+					if (0 == totalFrames || 0 == frameRate)
+					{
+						continue;
+					}
 					aviFileLength = totalFrames/frameRate;//the length of avi file playing time
 
 					AVI_close(aviFile);
