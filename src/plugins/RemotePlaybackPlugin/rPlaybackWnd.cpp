@@ -197,7 +197,6 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 		 pCurdate.setDate(QDate::currentDate());
 		 QString CurrentTime;
 		 CurrentTime=QString("%1").arg(playedTime.toTime_t()-pCurdate.toTime_t());
-		 qDebug()<<CurrentTime;
 		 return CurrentTime;
      }
      else

@@ -378,7 +378,7 @@ QString RecordPlayer::GetNowPlayedTime()
 
 	QDateTime ptime = m_pLocalPlayer->GetNowPlayedTime();
 	playedTime = ptime.toString("yyyy-MM-dd hh:mm:ss");
-
+	qDebug()<<playedTime;
 	QDateTime pCurdate;
 	pCurdate.setDate(QDate::currentDate());
 	QString CurrentTime;

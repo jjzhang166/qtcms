@@ -793,13 +793,11 @@ int DeviceClient::GroupStop()
 		g_pause.wakeOne();
 		it->playManager->stop();
 		it->bufferManager->emptyBuff();
-
 		delete it->playManager;
 		it->playManager = NULL;
 		delete it->bufferManager;
 		it->bufferManager = NULL;
 	}
-
 	m_nChannels = 0;
 	m_groupMap.clear();
 	m_bGroupStop = true;

@@ -140,6 +140,8 @@ void HiChipSearch::Receive()
 		if (!netItem.isEmpty())
 		{
 			eventProcCall(QString("SettingStatus"),netItem);
+			qDebug()<<netItem;
+			qDebug()<<datagrm;
 			netItem.clear();
 		}
 	}

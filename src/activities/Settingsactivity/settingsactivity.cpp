@@ -5,7 +5,8 @@
 
 settingsActivity::settingsActivity():
 	m_nRef(0),
-	m_bMouseTrace(false)
+	m_bMouseTrace(false),
+	m_SettingThread(NULL)
 {
 
 }
@@ -521,16 +522,19 @@ void settingsActivity::OnAddDeviceDouble()
 		QString	PassWord_ID=item.toElement().attribute("password");
 		//设置默认参数
 		QString ConnectMethod="0";
-		SearchDeviceName_ID.clear();
+		/*SearchDeviceName_ID.clear();*/
+		if (SearchDeviceName_ID.size()==0)
+		{
+			if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
+			{
+				SearchDeviceName_ID.append(SearchSeeId_ID);
+			}
+			else 
+			{
+				SearchDeviceName_ID.append(SearchIP_ID);
+			}
+		}
 
-		if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
-		{
-			SearchDeviceName_ID.append(SearchSeeId_ID);
-		}
-		else 
-		{
-			SearchDeviceName_ID.append(SearchIP_ID);
-		}
 		
 		if (0==UserName_ID.size()||UserName_ID.isNull())
 		{
@@ -558,7 +562,6 @@ void settingsActivity::OnAddDeviceDouble()
 		
 		//添加设备
 		nRet_id=Idevice->AddDevice(Area_ID,SearchDeviceName_ID,SearchIP_ID,SearchMediaPort_ID.toInt(),SearchHttpport_ID.toInt(),SearchSeeId_ID,UserName_ID,PassWord_ID,SearchChannelCount_ID.toInt(),ConnectMethod.toInt(),SearchVendor_ID);
-//		nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
 		if(-1==nRet_id){
 			Content.clear();
 			arg.clear();
@@ -635,6 +638,17 @@ void settingsActivity::OnAddDevice()
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
+	}
+	//设备名为空时，使用易视网id填充，易视网为空时，使用ip地址填充
+	if (sDeviceName.Size==0)
+	{
+		if (sEseeId.isNull()==false)
+		{
+			sDeviceName=sEseeId;
+		}
+		else{
+			sDeviceName=sAddress;
+		}
 	}
 	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
 		Content.clear();
@@ -1790,6 +1804,7 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 void settingsActivity::OnAddDeviceALL()
 {
 	int nRet_id;
+	qDebug()<<"step in";
 	qDebug("========OnAddDeviceALL========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
@@ -1943,10 +1958,12 @@ void settingsActivity::OnAddDeviceALL()
 
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
+	qDebug()<<"step in";
 }
 
 void settingsActivity::OnRemoveDeviceALL()
 {
+	qDebug()<<"step in";
 	IDeviceManager *Idevice=NULL;
 	qDebug()<<"OnRemoveDeviceALL";
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -2000,5 +2017,8 @@ void settingsActivity::OnRemoveDeviceALL()
 		EventProcCall("RemoveDeviceAllSuccess",arg);
 	}
 	Idevice->Release();
+	qDebug()<<"step out";
 	return;
 }
+
+

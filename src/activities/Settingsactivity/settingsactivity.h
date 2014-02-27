@@ -17,9 +17,11 @@
 #include <QObject>
 #include <QRect>
 #include <QPoint>
+#include <QThread>
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 #include <QtGui/qdesktopwidget.h>
+#include "SettingsactivityThread.h"
 class settingsActivity : public QWebUiFWBase,
 	public IActivities
 {
@@ -89,7 +91,10 @@ private:
 	QMutex m_csRef;
  	bool m_bMouseTrace;
 	QPoint m_pos;
+	SettingsactivityThread *m_SettingThread;
 
+signals:
+	void DeleteAllDevSig();
 
 };
 

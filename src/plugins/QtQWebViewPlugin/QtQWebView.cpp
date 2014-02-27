@@ -88,6 +88,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			itSize->m_SubWebView->size();
 			itSize->m_SubWebView->page()->view();
 			 PageSize=itSize->m_SubWebView->page()->view()->size();
+			 qDebug()<<PageSize<<"get PageSize";
 			 QRect m_geometry= itSize->m_SubWebView->page()->view()->geometry();
 			 nX=m_geometry.x();
 			 nY=m_geometry.y();
@@ -98,6 +99,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	{
 		//ÏÔÊ¾Ö÷Ò³
 		QWidget *pa=this->parentWidget();
+		//qDebug()<<PageSize<<"index";
+		//((QWebView*)pa)->page()->view()->resize(PageSize);
+		//((QWebView*)pa)->page()->view()->move(nX,nY);
 		((QWebView*)pa)->show();
 		QList<tagViewPage>::const_iterator it;
 		for(it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it){

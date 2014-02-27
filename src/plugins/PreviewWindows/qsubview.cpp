@@ -57,8 +57,6 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(RenderHistoryPix()),this,SLOT(OnRenderHistoryPix()),Qt::QueuedConnection);
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
-	//修改成动态生成，此处去掉
-//	m_QSubViewObject.SetDeviceClient(m_IDeviceClient);
 
 	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
@@ -757,7 +755,13 @@ void QSubView::OnCheckTime()
 			recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
 			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime)
 			{
-				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				if (m_DevCliSetInfo.m_sEseeId.toInt()<1)
+				{
+					m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sAddress, m_DevCliSetInfo.m_uiChannelId);
+				}else{
+					m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				}
+				
 				m_pRecorder->Start();
 				m_bIsAutoRecording = true;
 			}
@@ -960,6 +964,10 @@ int QSubView::SetDevChannelInfo( int ChannelId )
 
 void QSubView::SetCurrentFocus( bool focus)
 {
+	if (m_bIsFocus==true)
+	{
+		update();
+	}
 	m_bIsFocus=focus;
-	update();
+	
 }
