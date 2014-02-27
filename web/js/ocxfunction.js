@@ -232,6 +232,7 @@ var oCommonLibrary,
 			$('ul.filetree:eq(0)').treeview({add:addchl});
 		}
 		$('ul.filetree:eq(0)').treeview({add:add});
+		closeMenu();
 	}
 	function AddChannelDoubleInGroupSuccess(data){
 		data.channelname=data.channelname.replace(/-/g,'.');
