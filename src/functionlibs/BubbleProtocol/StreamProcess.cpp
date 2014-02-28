@@ -76,7 +76,7 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 {
 	if ( NULL == m_tcpSocket )
 	{
-		m_tcpSocket = new QTcpSocket;
+		m_tcpSocket = new QTcpSocket(this);
 	}
 
     m_tcpSocket->abort();
@@ -104,7 +104,7 @@ void StreamProcess::stopStream()
 		m_bStop = true;
 
 		disconnect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
-
+		qDebug()<<m_tcpSocket->state();
 		m_tcpSocket->disconnectFromHost();
 
 		disconnect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));

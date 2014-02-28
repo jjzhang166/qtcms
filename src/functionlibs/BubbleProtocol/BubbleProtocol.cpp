@@ -39,10 +39,12 @@ m_streanCount(0)
 
 BubbleProtocol::~BubbleProtocol(void)
 {
-	m_pStreamProcess->stopStream();
+//	m_pStreamProcess->stopStream();
+	emit sigEndStream();
 
 	m_workerThread.quit();
 	m_workerThread.wait();
+	//delete m_pStreamProcess;
 }
 // inherited from IDeviceConnection  >>>>>
 int BubbleProtocol::setDeviceHost(const QString & sAddr)
@@ -322,10 +324,11 @@ int BubbleProtocol::disconnect()
 	//if has socket connecting, stop it
 	emit sigQuitThread();
 	emit sigEndStream();
+	//m_pStreamProcess->stopStream();
 
 	QTime time;
 	time.start();
-	while (time.elapsed() <= 100)
+	while (time.elapsed() <= 100&&CS_Connected==getCurrentStatus())
 	{
 	}
 

@@ -356,10 +356,7 @@ int IpcDeviceClient::closeAll()
 	}
 	//释放资源
 	DeInitProtocl();
-	//m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-	//CurStatusParm.clear();
-	//CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-	//eventProcCall("CurrentStatus",CurStatusParm);
+
 	m_CurStream=0;
 	m_csRefDelete.unlock();
 	bHadCallCloseAll=false;
@@ -387,6 +384,23 @@ int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 		eventProcCall("ForRecord",evmap);
 		evmap.insert("Stream","Primary");
 	}
+
+	// 切换码流
+	if (m_IfSwithStream != m_CurStream)
+	{
+		if (1 == evmap.value("frametype"))
+		{
+			if ("Primary" == evmap.value("Stream") && 0 == m_IfSwithStream)
+			{
+				m_CurStream = m_IfSwithStream;
+			}
+			else if ("Minor" == evmap.value("Stream") && 1 == m_IfSwithStream)
+			{
+				m_CurStream = m_IfSwithStream;
+			}
+		}
+	}
+
 	//预览码流
 	if (m_IfSwithStream==m_CurStream)
 	{
@@ -411,10 +425,12 @@ int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 		m_cscbLiveStream.unlock();
 		return 0;
 	}
-	if (m_IfSwithStream!=m_CurStream)
+/*	if (m_IfSwithStream!=m_CurStream)
 	{
 		//如果是I帧，则令m_IfSwithStream=m_CurStream，同时抛出I帧
-		if (1==evmap.value("frametype"))
+		if (1==evmap.value("frametype") 
+			&& ((evmap.value("Stream") == "Primary" && 0 == m_IfSwithStream)
+			|| (evmap.value("Stream") == "Minor" && 1 == m_IfSwithStream)))
 		{
 			evmap.remove("Stream");
 			eventProcCall("LiveStream",evmap);
@@ -445,7 +461,7 @@ int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 				}
 			}
 		}		
-	}
+	}*/
 	m_cscbLiveStream.unlock();
 	return 0;
 }
@@ -605,7 +621,7 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 
 int IpcDeviceClient::SwitchStream( int StreamNum )
 {
-	m_CurStream=StreamNum;
+	m_IfSwithStream=StreamNum;
 	return 0;
 }
 
@@ -613,21 +629,16 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 {
 	int mount=0;
 	IDeviceConnection *m_DeviceConnectProtocol=NULL;
+	if (true==bCloseingFlags)
+	{
+		return false;
+	}
 	while(mount<2){
 		pcomCreateInstance(clsid,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectProtocol);
 		if (NULL==m_DeviceConnectProtocol)
 		{
 			//释放资源
 			DeInitProtocl();
-			//QMultiMap<int,SingleConnect>::iterator it;
-			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			//{
-			//	if (NULL!=it->m_DeviceConnecton)
-			//	{
-			//		it->m_DeviceConnecton->Release();
-			//		it->m_DeviceConnecton=NULL;
-			//	}
-			//}
 			return false;
 		}
 		//save to struct 
@@ -641,15 +652,8 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		if (NULL==m_RegisterProc)
 		{
 			DeInitProtocl();
-			//QMultiMap<int,SingleConnect>::iterator it;
-			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			//{
-			//	if (NULL!=it->m_DeviceConnecton)
-			//	{
-			//		it->m_DeviceConnecton->Release();
-			//		it->m_DeviceConnecton=NULL;
-			//	}
-			//}
+			m_DeviceConnectProtocol->Release();
+			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
 		RegisterProc(m_RegisterProc,mount);
@@ -660,31 +664,17 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		{
 			//设置失败，释放资源，直接返回失败
 			DeInitProtocl();
-			//QMultiMap<int,SingleConnect>::iterator it;
-			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			//{
-			//	if (NULL!=it->m_DeviceConnecton)
-			//	{
-			//		it->m_DeviceConnecton->Release();
-			//		it->m_DeviceConnecton=NULL;
-			//	}
-			//}
+			m_DeviceConnectProtocol->Release();
+			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
 		if (true==bCloseingFlags)
 		{
 			//要求停止连接
 			//释放资源
-			//QMultiMap<int,SingleConnect>::iterator it;
-			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			//{
-			//	if (NULL!=it->m_DeviceConnecton)
-			//	{
-			//		it->m_DeviceConnecton->Release();
-			//		it->m_DeviceConnecton=NULL;
-			//	}
-			//}
 			DeInitProtocl();
+			m_DeviceConnectProtocol->Release();
+			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
 			//连接设备
@@ -692,16 +682,8 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		{
 			//连接失败，释放资源，直接返回
 			DeInitProtocl();
-			//QMultiMap<int,SingleConnect>::iterator it;
-			//for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
-			//{
-			//	if (NULL!=it->m_DeviceConnecton)
-			//	{
-			//		qDebug()<<"release======================"<<it->m_DeviceConnecton;
-			//		it->m_DeviceConnecton->Release();
-			//		it->m_DeviceConnecton=NULL;
-			//	}
-			//}
+			m_DeviceConnectProtocol->Release();
+			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
 		//连接成功

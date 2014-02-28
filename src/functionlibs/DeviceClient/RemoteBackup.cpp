@@ -265,6 +265,12 @@ bool RemoteBackup::createFile()
 		{
 			file.remove();
 		}
+		//QByteArray tochar;
+		//QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
+		//QTextCodec *codec=QTextCodec::codecForName("GB18030");
+		//QString touic=codec->fromUnicode(fullname);
+		//QString uic=codec->toUnicode(touic.toLatin1());
+		//AviFile = AVI_open_output_file(uic.toLatin1().data());
 		AviFile = AVI_open_output_file(fullname.toAscii().data());
 		if (NULL == AviFile) 
 			return false;

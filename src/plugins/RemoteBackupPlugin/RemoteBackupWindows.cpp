@@ -110,6 +110,7 @@ float RemoteBackupWindows::getProgress()
 void RemoteBackupWindows::sendToHtml(QVariantMap item)
 {
 	qDebug("BackupStatusChange");
+	qDebug()<<item;
 	EventProcCall("BackupStatusChange",item);
 }
 

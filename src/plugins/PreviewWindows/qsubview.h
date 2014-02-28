@@ -147,7 +147,7 @@ private:
 	int m_DisConnectedTimeId;
 	int m_RenderTimeId;
 	int m_AutoConnectTimeId;
-
+	int m_ConnectingTimeId;
 	//计划录像刷新时间
 	int m_RecordFlushTime;
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;

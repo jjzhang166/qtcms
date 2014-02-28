@@ -62,6 +62,7 @@ private:
 	QMutex m_csRef;
 	QMutex m_csDeInit;
 	QMutex m_cscbLiveStream;
+	
 
 	QMutex m_csRefDelete;
 	volatile int m_CurStream;

@@ -8,6 +8,7 @@
 #include "IRemotePlayback.h"
 #include "IEventRegister.h"
 #include "avilib.h"
+#include <QTextCodec>
 
 class RemoteBackup : public QThread
 {

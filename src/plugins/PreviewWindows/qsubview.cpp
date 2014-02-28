@@ -102,7 +102,10 @@ QSubView::~QSubView()
 void QSubView::paintEvent( QPaintEvent * e)
 {
 	QPainter p(this);
-
+	//if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
+	//{
+	//	return;
+	//}
 	QString image;
 	QColor LineColor;
 	QColor LineCurColor;
@@ -291,7 +294,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 		In_CloseAutoConnect();
 	}
 	//关闭上一次的连接
-	CloseWndCamera();
+	//CloseWndCamera();
 	//生成设备组件
 	SetDeviceByVendor(sVendor);
 	//注册事件，需检测是否注册成功
@@ -308,11 +311,8 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
-
 	m_QSubViewObject.OpenCameraInWnd();
-
 	m_checkTime.start(1000);
-
 	return 0;
 }
 int QSubView::CloseWndCamera()
@@ -448,7 +448,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	{
 		//断开后，把历史图片数据清空
 		m_HistoryRenderInfo.pData=NULL;
-
+		update();
 		QVariantMap evMapToUi;
 		evMapToUi.insert("CurrentState",m_CurrentState);
 		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
@@ -532,11 +532,22 @@ int QSubView::PrevRender(QVariantMap evMap)
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
-	if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTED)
+	//if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTED)
+	//{
+	//	update();
+	//}
+	if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTING)
 	{
-		update();
+		if (ev->timerId()==m_ConnectingTimeId)
+		{
+			killTimer(ev->timerId());
+			m_ConnectingTimeId=0;
+		}else if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING)
+		{
+			update();
+		}
 	}
-	
+
 	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
 	{
 		if (ev->timerId()==m_DisConnectedTimeId)
@@ -912,7 +923,7 @@ void QSubView::In_OpenAutoConnect()
 
 void QSubView::OnConnectting()
 {
-	startTimer(500);
+	m_ConnectingTimeId=startTimer(500);
 }
 
 void QSubView::OnDisConnecting()
