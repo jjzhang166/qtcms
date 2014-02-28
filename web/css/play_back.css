@@ -303,7 +303,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 }
 .calendar a{ border:0;}
 .calendar table{border-collapse:collapse; height: 115px; width:228px;}
-.calendar table td{border:1px solid #9B9EA2; width: 30px; text-align: center;}
+.calendar table td{border:1px solid #9B9EA2; width: 30px; text-align: center; cursor: default;}
 .calendar table thead{ height:18px;background: #757579;  font-size: 12px;}
 .calendar table tbody tr{height:10px; font-size: 10px; height: 16px;}
 .calendar table tbody td:hover{ background: #B21E36;}
@@ -482,7 +482,6 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	left: 0;
 	height:28px;
 	width: 100%;
-	-bottom: 0;
 }
 .dev_list ul.treeview .sel{background-color: #ABCDEF;}
 .dev_list ul.treeview .sel li{background-color: #ABCDEF;}
