@@ -104,7 +104,7 @@ var now = 0;
 	}
 
 	function startDownload(){
-		show('开始下载当前第'+now+'个文件!');
+		//show('开始下载当前第'+now+'个文件!');
 		var oList = $('#search_result input:checked')
 /*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
@@ -150,7 +150,7 @@ var now = 0;
 		//show('正在下载当前选中文件的第'+now+'个!');
 	}
 	function BackupStatusChangeCallback(data){
-		show('当前文件的下载状态'+data.types);
+		//show('当前文件的下载状态'+data.types);
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 		if(data.types == 'startBackup'){
 			syndownload();
