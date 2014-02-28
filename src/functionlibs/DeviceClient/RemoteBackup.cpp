@@ -83,8 +83,8 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 		clearbuffer();
 		if(0 == m_pRemotePlayback->getPlaybackStreamByTime(1<<nChannel,nTypes,startTime,endTime))
 		{
-			start();
 			callBackupStatus("startBackup");
+			start();
 			return 0;
 		}	
 	}
@@ -333,6 +333,8 @@ void RemoteBackup::run()
 	if (createFile())
 	{
 		m_backuping = true;
+	}else{
+		 callBackupStatus("noStream");
 	}
 	int timeout = 0;
 	RecFrame recframe;
