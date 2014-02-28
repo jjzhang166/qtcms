@@ -14,6 +14,7 @@
 <script type="text/javascript" src="js/ocxfunction.js"></script>
 <script type="text/javascript">
 var oPlayBack,oBackup;
+var now = 0;
 	$(function(){
 		
 		oPlayBack = $('#playback')[0];
@@ -103,6 +104,7 @@ var oPlayBack,oBackup;
 	}
 
 	function startDownload(){
+		show('开始下载当前第'+now+'个文件!');
 		var oList = $('#search_result input:checked')
 /*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
@@ -113,11 +115,11 @@ var oPlayBack,oBackup;
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
 		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path)){
-					//show('当前第'+now+'个文件下载失败!!');
-					now++;
+		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path) != 0){
+			alert('当前第'+now+'个文件下载失败!!');
+			now++;
+			startDownload();
 		}
-		syndownload();
 		/*oList = oList.filter(function(index){
 			if(index == 0){ 
 				var fileData = $(this).data('data');
@@ -148,15 +150,16 @@ var oPlayBack,oBackup;
 		//show('正在下载当前选中文件的第'+now+'个!');
 	}
 	function BackupStatusChangeCallback(data){
-		//show('当前文件的下载状态'+data.types);
-		if(data.types != 'startBackup'){
-			var oWarp = $('#search_result tr').has('input:checked').eq(now);
-			oWarp.find('a').off();
+		show('当前文件的下载状态'+data.types);
+		var oWarp = $('#search_result tr').has('input:checked').eq(now);
+		if(data.types == 'startBackup'){
+			syndownload();
+		}else{
 			if(data.types == 'backupFinished'){ 
 				oWarp.find('span').width('100%');
 			}
+			oWarp.find('a').off();
 			clearInterval(timer);
-			now++;
 			var oList = $('#search_result input:checked')
 			if(now >= oList.length){
 				//show('所有选择的文件下载完成!');
@@ -165,11 +168,12 @@ var oPlayBack,oBackup;
 				return false;
 			}
 			//oBackup.stopBackup();
+			now++;
 			startDownload();
 		}
 	}
 	function backupstop(){
-			oBackup.stopBackup()
+		oBackup.stopBackup()
 	}
 
 </script>
@@ -198,10 +202,10 @@ var oPlayBack,oBackup;
 			<h4>DVR 客户端</h4>
 			<div id="top_window_act">
 				<ul>
-					<li id="app_close_window"><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
-					<li id="app_maxsize"><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
-					<li id="app_minsize"><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
-					<li id="app_userlock"><a class="toggle hover" href="javascript:;"></a></li>
+					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
 				</ul>
 			</div>
 		</div>

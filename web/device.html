@@ -59,7 +59,7 @@
 	.switch{padding: 0 10px;}
 	table h5{ display: inline;}
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
-	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
+	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
 	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
 	.menu0 li:hover{ background:#C25451;}
 
@@ -211,10 +211,10 @@
 			<h4>DVR Client</h4>
 			<div id="top_window_act">
 				<ul>
-					<li id="app_close_window"><a class="hover" style="background-position: -336px -104px;" href="javascript:;"></a></li>
-					<li id="app_maxsize"><a class="hover" style="background-position: -336px -78px;" href="javascript:;"></a></li>
-					<li id="app_minsize"><a class="hover" style="background-position: -336px -52px;" href="javascript:;"></a></li>
-					<li id="app_userlock"><a class="toggle hover" href="javascript:;"></a></li>
+					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
 				</ul>
 			</div>
 		</div>
@@ -236,7 +236,7 @@
 		<div class="left">
 			<ul>
 				<li class="setViewNum hover" style="background-position:-250px 0;">设备管理</li>
-				<li class="setViewNum hover" style="background-position:0 -50px;">服务器设置</li>
+				<li class="setViewNum hover" style="background-position:0 -50px;">设备设置</li>
 				<li class="setViewNum hover" style="background-position:0 -100px;">客户端设置</li>
 				<!-- <li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li> -->
 			</ul>
@@ -1629,7 +1629,7 @@
 				<ul class="ope_list nav1">
 					<li class="ope_listAct" onclick="FillCommonParmData();">本地设置</li>
 					<li onclick="FillRecordTimeData();">录像设置</li>
-					<li onclick="FillStorageParmData();">热链接</li>
+					<li onclick="FillStorageParmData();">存储设置</li>
 				</ul>
 				<div id="CommonParm" class="switch" style="display:block;">
 					<table>
@@ -1768,7 +1768,7 @@
 						</tr>
 						<tr><td>文件大小</td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
 						<tr><td>循环录像</td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:10px" /></td></tr>
-						<tr><td>磁盘保留空间大小</td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td>磁盘预留空间</td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingStorageParm_ok">保存</div></td></tr>
 					</table>
 				</div>

@@ -75,7 +75,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 			
 			if(oDevice.attr('bAllopen')){ 
-				var str = getNowTime()+'   正在从当前点击的窗口'+wind+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
+				var str = getNowTime()+'   正在从当前点击的窗口'+(parseInt(wind)+1)+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
 			}else{ 
 				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
 			}
@@ -179,7 +179,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		//return false;
 		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
-			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+wind+',打开失败！  错误:当前窗口'+wind+' '+winState[windState];
+			var sWind = parseInt(wind)+1;
+			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+sWind+',打开失败！  错误:当前窗口'+sWind+' '+winState[windState];
 			writeActionLog(str);
 		}
 		wind = getWind(wind);
@@ -204,7 +205,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			return $(this).attr('wind') == ev.WPageId;
 		})*/
 		var chlData = getChlFullInfo(obj);
-		var str=getNowTime()+'   设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+ev.WPageId+' '+currentWinStateChange[ev.CurrentState];
+		var str=getNowTime()+'   设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+(parseInt(ev.WPageId)+1)+' '+currentWinStateChange[ev.CurrentState];
 		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
