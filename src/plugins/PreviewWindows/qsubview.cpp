@@ -122,7 +122,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	FontFamily = IniFile.value("font/font-family", NULL).toString();
 
  	QRect rcClient = contentsRect();
- 
+	this->geometry().center();
  	QPixmap pix;
 	QString PixPaht = sAppPath + image;
  	bool ret = pix.load(PixPaht);
@@ -178,8 +178,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING)
 	{
 		QString m_text;
-		m_text.append(m_DevCliSetInfo.m_sEseeId);
-		m_text+=QString(": %1").arg(m_DevCliSetInfo.m_uiChannelId+1);
+		QPoint dev_position=this->geometry().topLeft();
 		if (CountConnecting==4)
 		{
 			CountConnecting=0;
@@ -189,13 +188,14 @@ void QSubView::paintEvent( QPaintEvent * e)
 			m_text+="..";
 		}
 		CountConnecting++;
+		/*p.drawPixmap(rcClient,pix);*/
 		p.drawText(rcClient, Qt::AlignCenter, m_text);
+		/*p.drawText(rcClient, Qt::AlignTop, m_DevCliSetInfo.m_sCameraname);*/
 	}
 	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTING)
 	{
 		QString m_text;
-		m_text.append(m_DevCliSetInfo.m_sEseeId);
-		m_text+=QString(": %1").arg(m_DevCliSetInfo.m_uiChannelId+1);
+
 		if (CountDisConnecting==0)
 		{
 			CountConnecting=4;
@@ -205,6 +205,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 			m_text+="..";
 		}
 		CountConnecting--;
+		/*p.drawPixmap(rcClient,pix);*/
 		p.drawText(rcClient, Qt::AlignCenter, m_text);
 	}
 	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)

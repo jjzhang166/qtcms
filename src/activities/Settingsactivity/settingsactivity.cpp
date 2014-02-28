@@ -523,7 +523,7 @@ void settingsActivity::OnAddDeviceDouble()
 		//设置默认参数
 		QString ConnectMethod="0";
 		SearchDeviceName_ID.clear();
-		if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
+		if (0!=SearchSeeId_ID.size()&&SearchSeeId_ID.toInt()>2&&false==SearchSeeId_ID.isNull())
 		{
 			SearchDeviceName_ID.append(SearchSeeId_ID);
 		}
