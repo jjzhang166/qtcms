@@ -1,0 +1,3 @@
+LIBRARY "AudioDecoder.dll"
+EXPORTS
+	CreateInstance @1

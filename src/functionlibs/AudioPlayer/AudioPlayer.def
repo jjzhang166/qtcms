@@ -1,0 +1,3 @@
+LIBRARY "AudioPlayer.dll"
+EXPORTS
+	CreateInstance @1

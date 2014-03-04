@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IAudioPlayer.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="interface_des">
+    	<p>
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">SetMainWnd</span>(<span class="type">int</span> <span class="value">nWnd</span>) = 0;</div>
+   	  <div class="desc">设置播放窗口。<br />
+   	  </div>
+    </p>
+    </div>
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">SetAudioParam</span>(<span class="type">int</span> <span class="value">nChannel</span>,<span class="type">int</span> <span class="value">nSampleRate</span>,<span class="type">int</span> <span class="value">nSampleWidth</span>) = 0;</div>
+    <div class="desc">设置声道(nChannel)， 采样率(<span class="value">nSampleRate</span>)，采样位宽(<span class="value">nSampleWidth</span>)。</div>
+    <br/>
+ <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">SetVolume</span>(<span class="type">unsigned int</span> <span class="value">uiPersent</span>) = 0;</div>
+    <div class="desc">设置播放的音量。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">Play</span>(<span class="type">char</span> <span class="value">*pBuffer</span>,<span class="type">int</span> <span class="value">nSize</span>) = 0;</div>
+    <div class="desc">从缓冲区读取帧解码并播放。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">EnablePlay</span>(<span class="type">bool</span> <span class="value">bEnabled</span>) = 0;</div>
+    <div class="desc">声音播放开关, <span class="value">bEnabled</span>为true,声音打开,反之关闭。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">GetPlayStatus</span>() = 0;</div>
+    <div class="desc">获取当前声音开头状态。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">Stop</span>() = 0;</div>
+    <div class="desc">关闭声音播放,并释放设备资源。</div>
+  </div>
+</div>
+</body>
+</html>
