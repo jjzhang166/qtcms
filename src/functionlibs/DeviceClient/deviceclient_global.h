@@ -15,6 +15,8 @@ typedef struct _tagDeviceClientInfoItem{
 	void *puser;
 }DeviceClientInfoItem;
 
+
+
 typedef struct _tagRecordVedioStream{
 	uint uiLength;
 	char cFrameType;

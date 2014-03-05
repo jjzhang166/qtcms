@@ -111,11 +111,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceSearchPlugin", "..\sr
 		{4B75D5BE-42C9-4575-B118-75D9B975A61A} = {4B75D5BE-42C9-4575-B118-75D9B975A61A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemotePreview", "..\src\functionlibs\RemotePreview\RemotePreview.vcxproj", "{60294905-828F-4A3E-BDDE-95B8464554EF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "h264Decoder", "..\src\functionlibs\h264Decoder\h264Decoder.vcxproj", "{15480BDC-067C-45A0-B94F-9D0E0EBA3190}"
 	ProjectSection(ProjectDependencies) = postProject
 		{66E2A455-D15C-3931-B77A-FA4CDFE2FE90} = {66E2A455-D15C-3931-B77A-FA4CDFE2FE90}
@@ -161,6 +156,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoteBackupPlugin", "..\src\plugins\RemoteBackupPlugin\RemoteBackupPlugin.vcxproj", "{C15812CE-9889-4F6B-ADE0-BE285C64B3CD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtQWebViewPlugin", "..\src\plugins\QtQWebViewPlugin\QtQWebViewPlugin.vcxproj", "{F46A5BAE-AF81-4202-BF0C-F9CB571C30FA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hih264Decoder", "..\src\functionlibs\Hih264Decoder\Hih264Decoder.vcxproj", "{70DDD152-E4E0-41C7-938E-24D8213DD245}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IpcDeviceClient", "..\src\functionlibs\IpcDeviceClient\IpcDeviceClient.vcxproj", "{639D4D72-44E2-44C5-8533-EFE8857A96F3}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -247,10 +246,6 @@ Global
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Debug|Win32.Build.0 = Debug|Win32
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Release|Win32.ActiveCfg = Release|Win32
 		{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}.Release|Win32.Build.0 = Release|Win32
-		{60294905-828F-4A3E-BDDE-95B8464554EF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{60294905-828F-4A3E-BDDE-95B8464554EF}.Debug|Win32.Build.0 = Debug|Win32
-		{60294905-828F-4A3E-BDDE-95B8464554EF}.Release|Win32.ActiveCfg = Release|Win32
-		{60294905-828F-4A3E-BDDE-95B8464554EF}.Release|Win32.Build.0 = Release|Win32
 		{15480BDC-067C-45A0-B94F-9D0E0EBA3190}.Debug|Win32.ActiveCfg = Debug|Win32
 		{15480BDC-067C-45A0-B94F-9D0E0EBA3190}.Debug|Win32.Build.0 = Debug|Win32
 		{15480BDC-067C-45A0-B94F-9D0E0EBA3190}.Release|Win32.ActiveCfg = Release|Win32
@@ -311,14 +306,14 @@ Global
 		{F46A5BAE-AF81-4202-BF0C-F9CB571C30FA}.Debug|Win32.Build.0 = Debug|Win32
 		{F46A5BAE-AF81-4202-BF0C-F9CB571C30FA}.Release|Win32.ActiveCfg = Release|Win32
 		{F46A5BAE-AF81-4202-BF0C-F9CB571C30FA}.Release|Win32.Build.0 = Release|Win32
-		{544790DA-06AC-477F-8E19-9060D78D8BA6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{544790DA-06AC-477F-8E19-9060D78D8BA6}.Debug|Win32.Build.0 = Debug|Win32
-		{544790DA-06AC-477F-8E19-9060D78D8BA6}.Release|Win32.ActiveCfg = Release|Win32
-		{544790DA-06AC-477F-8E19-9060D78D8BA6}.Release|Win32.Build.0 = Release|Win32
-		{1432D606-2BD5-4095-8BFA-2F5F9C9D29A6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1432D606-2BD5-4095-8BFA-2F5F9C9D29A6}.Debug|Win32.Build.0 = Debug|Win32
-		{1432D606-2BD5-4095-8BFA-2F5F9C9D29A6}.Release|Win32.ActiveCfg = Release|Win32
-		{1432D606-2BD5-4095-8BFA-2F5F9C9D29A6}.Release|Win32.Build.0 = Release|Win32
+		{70DDD152-E4E0-41C7-938E-24D8213DD245}.Debug|Win32.ActiveCfg = Debug|Win32
+		{70DDD152-E4E0-41C7-938E-24D8213DD245}.Debug|Win32.Build.0 = Debug|Win32
+		{70DDD152-E4E0-41C7-938E-24D8213DD245}.Release|Win32.ActiveCfg = Release|Win32
+		{70DDD152-E4E0-41C7-938E-24D8213DD245}.Release|Win32.Build.0 = Release|Win32
+		{639D4D72-44E2-44C5-8533-EFE8857A96F3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{639D4D72-44E2-44C5-8533-EFE8857A96F3}.Debug|Win32.Build.0 = Debug|Win32
+		{639D4D72-44E2-44C5-8533-EFE8857A96F3}.Release|Win32.ActiveCfg = Release|Win32
+		{639D4D72-44E2-44C5-8533-EFE8857A96F3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

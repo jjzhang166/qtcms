@@ -129,6 +129,7 @@ private:
 	bool m_bIsStartRecording;
 	bool m_bIsAutoRecording;
 	bool m_bIsFocus;
+	bool m_bIsForbidConnect;
 	QTime dieTime;
 	QTimer m_checkTime;
 
@@ -148,6 +149,7 @@ private:
 	int m_RenderTimeId;
 	int m_AutoConnectTimeId;
 	int m_ConnectingTimeId;
+	int m_ForbidConnectTimeId;
 	//计划录像刷新时间
 	int m_RecordFlushTime;
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;

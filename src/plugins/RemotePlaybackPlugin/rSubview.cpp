@@ -90,7 +90,7 @@ void RSubView::paintEvent( QPaintEvent * e)
 	
  	p.setPen(pen);
 
-	p.drawText(rcClient, Qt::AlignCenter, "Pixmap");
+	p.drawText(rcClient, Qt::AlignCenter, "No Video");
 
 }
 

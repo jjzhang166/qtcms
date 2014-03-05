@@ -69,7 +69,7 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 	p.setFont(font);
 	pen.setColor(FontColor);
 	p.setPen(pen);
-	p.drawText(rcClient, Qt::AlignCenter, "Pixmap");
+	p.drawText(rcClient, Qt::AlignCenter, "No Video");
 }
 
 void RecordPlayerView::mouseDoubleClickEvent( QMouseEvent * ev)

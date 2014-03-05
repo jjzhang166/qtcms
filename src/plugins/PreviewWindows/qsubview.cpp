@@ -22,6 +22,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsAutoConnecting(false),
 	m_bIsStartRecording(false),
 	m_bIsAutoRecording(false),
+	m_bIsForbidConnect(false),
 	m_bIsFocus(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
@@ -38,8 +39,8 @@ QSubView::QSubView(QWidget *parent)
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
-//	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
- 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+ //	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
 	//申请DeviceClient接口,修改成动态生成，此处去掉
@@ -62,6 +63,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
 	//初始历史render的值
+	m_ForbidConnectTimeId=startTimer(2000);
 	m_HistoryRenderInfo.pData=NULL;
 }
 
@@ -95,6 +97,10 @@ QSubView::~QSubView()
 	{
 		m_pRecorder->Stop();
 		m_pRecorder->Release();
+	}
+	if (m_ForbidConnectTimeId!=0)
+	{
+		killTimer(m_ForbidConnectTimeId);
 	}
 }
 
@@ -272,6 +278,12 @@ int QSubView::GetCurrentWnd()
 
 int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
 {
+	//禁止频繁操作
+	if (m_bIsForbidConnect==true)
+	{
+		return 1;
+	}
+	m_bIsForbidConnect=true;
 	//保存设备信息
 	m_DevCliSetInfo.m_sAddress.clear();
 	m_DevCliSetInfo.m_sEseeId.clear();
@@ -536,6 +548,12 @@ void QSubView::timerEvent( QTimerEvent * ev)
 	//{
 	//	update();
 	//}
+	//频繁操作
+	if (m_ForbidConnectTimeId==ev->timerId())
+	{
+		m_bIsForbidConnect=false;
+	}
+	//连接ing
 	if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTING)
 	{
 		if (ev->timerId()==m_ConnectingTimeId)
