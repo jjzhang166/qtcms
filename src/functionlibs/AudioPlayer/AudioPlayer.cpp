@@ -51,13 +51,13 @@ int AudioPlayer::SetAudioParam(int nChannel,int nSampleRate,int nSampleWidth)
 	int nRet = m_pAudioDev->SetAudioParam(nChannel, nSampleRate, nSampleWidth);
 	return nRet;
 }
-int AudioPlayer::SetVolume(int nPersent)
+int AudioPlayer::SetVolume(unsigned int uiPersent)
 {
-	if (NULL == m_pAudioDev || nPersent <= 0)
+	if (NULL == m_pAudioDev || uiPersent < 0)
 	{
 		return 1;
 	}
-	return m_pAudioDev->SetVolume(nPersent);
+	return m_pAudioDev->SetVolume(uiPersent);
 }
 int AudioPlayer::Play(char *pBuffer,int nSize)
 {

@@ -65,6 +65,7 @@ int AudioDevice::PlayBuffer(char *pBuffer,int nSize)
 	m_bufferList.append(node);
 	m_mutexBufList.unlock();
 
+	m_waveDev.winWaveOutRestart(m_hWaveOut);
 	return 0;
 }
 int AudioDevice::Stop()

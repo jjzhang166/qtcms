@@ -17,7 +17,7 @@ public:
 
 	virtual int SetPlayWnd(int nWnd);
 	virtual int SetAudioParam(int nChannel,int nSampleRate,int nSampleWidth);
-	virtual int SetVolume(int nPersent);
+	virtual int SetVolume(unsigned int uiPersent);
 	virtual int Play(char *pBuffer,int nSize);
 	virtual int EnablePlay(bool bEnabled);
 	virtual int GetPlayStatus();
