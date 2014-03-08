@@ -49,9 +49,8 @@ int WaveDevice::winWaveOutOpen(void** hWaveOut, int nChannel,int nSampleRate,int
 	wfx.nChannels = nChannel;
 	wfx.cbSize = 0;
 	wfx.wFormatTag = WAVE_FORMAT_PCM;
-	wfx.nBlockAlign = (wfx.wBitsPerSample * wfx.nChannels) >> 3;
-	wfx.nAvgBytesPerSec = wfx.nBlockAlign * wfx.nSamplesPerSec;
-
+	wfx.nAvgBytesPerSec = wfx.nSamplesPerSec * (wfx.wBitsPerSample / 8);
+	wfx.nBlockAlign = wfx.wBitsPerSample / 8 * wfx.nChannels;
 
 	hr = waveOutOpen((LPHWAVEOUT)hWaveOut, WAVE_MAPPER, &wfx, (DWORD)::waveOutProc, (DWORD)this, CALLBACK_FUNCTION);
 

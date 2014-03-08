@@ -223,6 +223,8 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	m_mutex.lock();
 	//m_CurrentWnd=uiWndIndex;
 	m_mutex.unlock();
+	m_uiWndIndex = uiWndIndex;
+	m_PreviewWnd[uiWndIndex].SetPlayWnd(uiWndIndex);
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
@@ -359,3 +361,9 @@ int QPreviewWindows::SetDevChannelInfo( unsigned int uiWndIndex,int ChannelId )
 	}
 	return m_PreviewWnd[uiWndIndex].SetDevChannelInfo(ChannelId);
 }
+
+int QPreviewWindows::SetVolume(unsigned int uiPersent)
+{
+	return m_PreviewWnd[m_uiWndIndex].SetVolume(uiPersent);
+}
+

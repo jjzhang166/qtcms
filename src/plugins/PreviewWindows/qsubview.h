@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QMenu>
 #include <ISwitchStream.h>
+#include <IAudioPlayer.h>
 #include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
@@ -58,7 +59,10 @@ public:
 	int StopRecord();
 	int SetDevInfo(const QString&devname,int nChannelNum);
 
-	
+	//音频播放
+	int SetPlayWnd(int nWnd);
+	int SetVolume(unsigned int uiPersent);
+
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -85,6 +89,7 @@ public slots:
 		void OnConnectting();
 		void OnDisConnecting();
 		void OnDisConnected();
+		void OnOpenAudio();
 		
 		void OnRenderHistoryPix();
 		void OnCheckTime();
@@ -114,11 +119,14 @@ private:
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
 	ISetRecordTime *m_pRecordTime;
+	IAudioPlayer *m_pAudioPlayer;
 	
 	QSubViewConnectStatus m_CurrentState;//设备当前的连接状态
 	QSubViewConnectStatus m_HistoryState;//设备上一次的连接状态
 	int iInitWidth;
 	int iInitHeight;
+	int m_nSampleRate;
+	int m_nSampleWidth;
 	//标志位
 	bool bRendering;
 	bool m_bIsRecording;
@@ -130,6 +138,7 @@ private:
 	bool m_bIsAutoRecording;
 	bool m_bIsFocus;
 	bool m_bIsForbidConnect;
+	bool m_bIsAudioOpend;
 	QTime dieTime;
 	QTimer m_checkTime;
 
@@ -140,6 +149,7 @@ private:
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
+	QAction *m_QActionOpenAudio;
 	//正在连接和正在断开，刷新图片的计数
 	int CountDisConnecting;
 	int CountConnecting;

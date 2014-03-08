@@ -61,6 +61,9 @@ public slots:
 	int StartRecord(int nWndID);
 	int StopRecord(int nWndID);
 	int SetDevInfo(const QString&devname,int nChannelNum,int nWndID);
+
+	int SetVolume(unsigned int uiPersent);
+
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

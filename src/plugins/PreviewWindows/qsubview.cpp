@@ -14,8 +14,11 @@ QSubView::QSubView(QWidget *parent)
 	m_IDeviceClientDecideByVendor(NULL),
 	m_pRecorder(NULL),
 	m_pRecordTime(NULL),
+	m_pAudioPlayer(NULL),
 	iInitHeight(0),
 	iInitWidth(0),
+	m_nSampleRate(0),
+	m_nSampleWidth(0),
 	bRendering(false),
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
@@ -24,8 +27,10 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsAutoRecording(false),
 	m_bIsForbidConnect(false),
 	m_bIsFocus(false),
+	m_bIsAudioOpend(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
+	m_QActionOpenAudio(NULL),
 	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
 	m_HistoryState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
 	CountConnecting(0),
@@ -40,7 +45,7 @@ QSubView::QSubView(QWidget *parent)
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
 	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
- //	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
+// 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
 	//申请DeviceClient接口,修改成动态生成，此处去掉
@@ -62,6 +67,10 @@ QSubView::QSubView(QWidget *parent)
 	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
+
+	m_QActionOpenAudio = m_RMousePressMenu.addAction("open audio");
+	connect(m_QActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
+
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
 	m_HistoryRenderInfo.pData=NULL;
@@ -101,6 +110,12 @@ QSubView::~QSubView()
 	if (m_ForbidConnectTimeId!=0)
 	{
 		killTimer(m_ForbidConnectTimeId);
+	}
+	if (NULL != m_pAudioPlayer)
+	{
+		m_pAudioPlayer->Stop();
+		m_pAudioPlayer->Release();
+		m_pAudioPlayer = NULL;
 	}
 }
 
@@ -349,6 +364,12 @@ int QSubView::CloseWndCamera()
 		m_pRecorder->Stop();
 		m_bIsAutoRecording = false;
 	}
+	
+	m_nSampleRate = 0;
+	m_nSampleWidth = 0;
+	m_QActionOpenAudio->setText("open audio");
+	m_bIsAudioOpend = false;
+
 	return 0;
 }
 int QSubView::GetWindowConnectionStatus()
@@ -415,11 +436,26 @@ int QSubView::PrevPlay(QVariantMap evMap)
 {
 	unsigned int nLength=evMap.value("length").toUInt();
 	char * lpdata=(char *)evMap.value("data").toUInt();
+	int frameType = evMap.value("frametype").toUInt();
 
 	if (NULL==m_IVideoDecoder)
 	{
 		return 1;
 	}
+
+	if (NULL != m_pAudioPlayer && 0 == frameType)
+	{
+		int nSampleRate = evMap.value("samplerate").toUInt();
+		int nSampleWidth = evMap.value("samplewidth").toUInt();
+		if (nSampleRate != m_nSampleRate || nSampleWidth != m_nSampleWidth)
+		{
+			m_nSampleRate = nSampleRate;
+			m_nSampleWidth = nSampleWidth;
+			m_pAudioPlayer->SetAudioParam(1, m_nSampleRate, m_nSampleWidth);
+		}
+		m_pAudioPlayer->Play(lpdata, nLength);
+	}
+
 	m_IVideoDecoder->decode(lpdata,nLength);
 	return 0;
 }
@@ -642,6 +678,33 @@ void QSubView::OnCloseFromMouseEv()
 	CloseWndCamera();
 }
 
+void QSubView::OnOpenAudio()
+{
+	if (!m_bIsAudioOpend)
+	{
+		//申请IAudioPlayer接口
+		pcomCreateInstance(CLSID_AudioPlayer,NULL,IID_IAudioPlayer,(void **)&m_pAudioPlayer);
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->EnablePlay(true);
+		}
+		m_QActionOpenAudio->setText("close audio");
+		m_bIsAudioOpend = true;
+	}
+	else
+	{
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->Stop();
+			m_pAudioPlayer->Release();
+			m_pAudioPlayer = NULL;
+		}
+		m_QActionOpenAudio->setText("open audio");
+		m_bIsAudioOpend = false;
+		m_nSampleRate = 0;
+		m_nSampleWidth = 0;
+	}
+}
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 {
 	//检测数据包，把数据包扔给解码器
@@ -741,6 +804,24 @@ int QSubView::SetDevInfo(const QString &devname,int nChannelNum)
 	m_RecordDevInfo.m_DevName=devname;
 	int nRet = m_pRecorder->SetDevInfo(devname, nChannelNum);
 	return nRet;
+}
+int QSubView::SetPlayWnd(int nWnd)
+{
+	if (NULL == m_pAudioPlayer)
+	{
+		return 1;
+	}
+	m_pAudioPlayer->SetPlayWnd(nWnd);
+	return 0;
+}	
+int QSubView::SetVolume(unsigned int uiPersent)
+{
+	if (NULL == m_pAudioPlayer)
+	{
+		return 1;
+	}
+	m_pAudioPlayer->SetVolume(uiPersent);
+	return 0;
 }
 
 void QSubView::OnCheckTime()
