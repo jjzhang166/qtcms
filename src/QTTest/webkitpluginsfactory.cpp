@@ -52,18 +52,16 @@ QList<QWebPluginFactory::Plugin> WebkitPluginsFactory::plugins() const
 		// Get the node named as "plugin."
 		if (sItemName.left(strlen("plugin.")) == QString("plugin."))
 		{
-			// Get item classID
-			QString sItemClsid = itemElement.attribute("clsid");
-			GUID guidTemp = pcomString2GUID(sItemClsid);
+			QWebPluginFactory::MimeType mimeType;
+			mimeType.name = itemElement.attribute("mimetype");
+			mimeType.description=sItemName;
 
-			// append plugins
-			IWebPluginBase * webPluginBase = NULL;
-			pcomCreateInstance(guidTemp,NULL,IID_IWebPluginBase,(void **)&webPluginBase);
-			if (NULL != webPluginBase)
-			{
-				plugins.append(webPluginBase->plugins());
-				webPluginBase->Release();
-			}
+			QWebPluginFactory::Plugin pluginTemp;
+			pluginTemp.name = sItemName;
+			pluginTemp.description = sItemName;
+			pluginTemp.mimeTypes.append(mimeType);
+
+			plugins.insert(plugins.size(),pluginTemp);
 		}
 	}
 
