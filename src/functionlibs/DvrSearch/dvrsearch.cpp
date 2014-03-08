@@ -280,7 +280,7 @@ QByteArray DvrSearch::ParseSearch(const QString &content, const QString &index)
 	}
     if (QBRet.isEmpty()) //this item has no value
     {
-        QBRet.append("-1");
+        QBRet.append("");
     }
 	return QBRet;
 }
