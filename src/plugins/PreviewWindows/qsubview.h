@@ -62,6 +62,7 @@ public:
 	//音频播放
 	int SetPlayWnd(int nWnd);
 	int SetVolume(unsigned int uiPersent);
+	QSubView* getCurWind();
 
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
@@ -78,6 +79,7 @@ public:
 
 	int SetDeviceByVendor(const QString & sVendor);
 	void SetCurrentFocus(bool);
+	void ChangAudioHint(const QString &statement);
 private:
 	int cbInit();
 	
@@ -109,6 +111,7 @@ signals:
 		void RenderHistoryPix();
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
+		void ChangeAudioHint(QString, QSubView*);
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
 	RecordDevInfo m_RecordDevInfo;
@@ -119,7 +122,7 @@ private:
 	QSubViewObject m_QSubViewObject;
 	IRecorder *m_pRecorder;
 	ISetRecordTime *m_pRecordTime;
-	IAudioPlayer *m_pAudioPlayer;
+	static IAudioPlayer *m_pAudioPlayer;
 	
 	QSubViewConnectStatus m_CurrentState;//设备当前的连接状态
 	QSubViewConnectStatus m_HistoryState;//设备上一次的连接状态
@@ -138,7 +141,7 @@ private:
 	bool m_bIsAutoRecording;
 	bool m_bIsFocus;
 	bool m_bIsForbidConnect;
-	bool m_bIsAudioOpend;
+	static bool m_bIsAudioOpend;
 	QTime dieTime;
 	QTimer m_checkTime;
 
@@ -163,6 +166,8 @@ private:
 	//计划录像刷新时间
 	int m_RecordFlushTime;
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
+
+	static QSubView* m_pCurrView;
 };
 
 

@@ -8,13 +8,16 @@
 #include <QMouseEvent>
 #include <QtXml/QtXml>
 
+bool QSubView::m_bIsAudioOpend = false;
+IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
+QSubView* QSubView::m_pCurrView = NULL;
+
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),m_IVideoDecoder(NULL),
 	m_IVideoRender(NULL),
 	m_IDeviceClientDecideByVendor(NULL),
 	m_pRecorder(NULL),
 	m_pRecordTime(NULL),
-	m_pAudioPlayer(NULL),
 	iInitHeight(0),
 	iInitWidth(0),
 	m_nSampleRate(0),
@@ -27,7 +30,6 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsAutoRecording(false),
 	m_bIsForbidConnect(false),
 	m_bIsFocus(false),
-	m_bIsAudioOpend(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_QActionOpenAudio(NULL),
@@ -443,7 +445,7 @@ int QSubView::PrevPlay(QVariantMap evMap)
 		return 1;
 	}
 
-	if (NULL != m_pAudioPlayer && 0 == frameType)
+	if (NULL != m_pAudioPlayer && 0 == frameType && m_pCurrView == this)
 	{
 		int nSampleRate = evMap.value("samplerate").toUInt();
 		int nSampleWidth = evMap.value("samplewidth").toUInt();
@@ -690,20 +692,41 @@ void QSubView::OnOpenAudio()
 		}
 		m_QActionOpenAudio->setText("close audio");
 		m_bIsAudioOpend = true;
+		m_pCurrView = this;
 	}
 	else
 	{
-		if (NULL != m_pAudioPlayer)
+		if(m_pCurrView == this)
 		{
-			m_pAudioPlayer->Stop();
-			m_pAudioPlayer->Release();
-			m_pAudioPlayer = NULL;
+			if (NULL != m_pAudioPlayer)
+			{
+				m_pAudioPlayer->Stop();
+				m_pAudioPlayer->Release();
+				m_pAudioPlayer = NULL;
+			}
+			m_QActionOpenAudio->setText("open audio");
+			m_bIsAudioOpend = false;
+			m_nSampleRate = 0;
+			m_nSampleWidth = 0;
+			m_pCurrView = NULL;
 		}
-		m_QActionOpenAudio->setText("open audio");
-		m_bIsAudioOpend = false;
-		m_nSampleRate = 0;
-		m_nSampleWidth = 0;
+		else
+		{
+			emit ChangeAudioHint(QString("open audio"), m_pCurrView);
+
+			m_pCurrView = this;
+			m_QActionOpenAudio->setText("close audio");
+		}
 	}
+}
+QSubView* QSubView::getCurWind()
+{
+	return m_pCurrView;
+}
+
+void QSubView::ChangAudioHint(const QString &statement)
+{
+	m_QActionOpenAudio->setText(statement);
 }
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 {
