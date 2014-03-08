@@ -56,6 +56,7 @@ public slots:
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 
 	void CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID);
+	void ChangeAudioHint(QString, QSubView*);
 
 	//
 	int StartRecord(int nWndID);
