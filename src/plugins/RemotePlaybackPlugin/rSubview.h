@@ -64,6 +64,7 @@ public:
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 	void saveCacheImage();
+	bool AudioEnabled(bool bEnabled);
 	void SetCurConnectState(CConnectStatus::__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 signals:
