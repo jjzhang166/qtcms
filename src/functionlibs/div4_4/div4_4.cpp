@@ -68,6 +68,7 @@ void div4_4::parentWindowResize( QResizeEvent *ev )
 
 void div4_4::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
+    Q_UNUSED(ev);
 	//qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
 
 	if (!m_singeldisplay)
@@ -138,11 +139,11 @@ void div4_4::setTotalDisplay(QWidget * pSubWindow)
 		int index = getSubVindowIndex(pSubWindow);
 		if (index!=-1)
 		{
-			int subWidth = m_parentSize.width()/m_column;
-			int subHeight = m_parentSize.height()/m_row;
-			int indexfirst = m_PageSubCount*m_nCurrentPage;
+//			int subWidth = m_parentSize.width()/m_column;
+//			int subHeight = m_parentSize.height()/m_row;
+//			int indexfirst = m_PageSubCount*m_nCurrentPage;
 
-			int ii = index-indexfirst;
+//			int ii = index-indexfirst;
 
 			//QPropertyAnimation *ani=new QPropertyAnimation(pSubWindow,"geometry");
 			//ani->setStartValue(pSubWindow->geometry());
