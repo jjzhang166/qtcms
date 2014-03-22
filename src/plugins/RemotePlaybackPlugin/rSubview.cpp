@@ -27,6 +27,11 @@ RSubView::RSubView(QWidget *parent)
 
 	_curState=CONNECT_STATUS_DISCONNECTED;
 	_curPaint=PAINTEVENT_STATUS_NOVIDEO;
+
+	m_ActionOpenAudio = m_rMousePressMenu.addAction("open audio");
+	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
+	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
+
 }
 
 RSubView::~RSubView()
@@ -306,6 +311,10 @@ void RSubView::paintEventCache( QPaintEvent * )
 void RSubView::saveCacheImage()
 {
 	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+	if (ev->button()==Qt::RightButton)
+	{
+		emit RMousePressMenu();
+	}
 }
 
 void RSubView::_cacheLableShow()

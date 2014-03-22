@@ -895,6 +895,44 @@ int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 	}
 	return 0;
 }
+int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
+{
+	if (uiPersent < 0)
+	{
+		return 1;
+	}
+	QMap<int, WndPlay>::iterator it = m_groupMap.begin();
+	if (NULL == it->playManager)
+	{
+		return 1;
+	}
+
+	if (0xAECBCA == uiPersent)
+	{
+		while(it != m_groupMap.end())
+		{
+			if (it->wnd == pWnd)
+			{
+				break;
+			}
+			++it;
+		}
+		if (-1 != m_channelWithAudio)
+		{
+			WndPlay wnd = m_groupMap.value(m_channelWithAudio);
+			wnd.bufferManager->audioSwitch(false);
+		}
+		m_channelWithAudio = it.key();
+		it->playManager->setCurAudioWnd(it->playManager);
+		it->bufferManager->audioSwitch(true);
+
+	}
+	else
+	{
+		it->playManager->setVolume(uiPersent);
+	}
+	return 0;
+}
 int DeviceClient::GroupSpeedFast()
 {
 	if (m_groupMap.isEmpty())
