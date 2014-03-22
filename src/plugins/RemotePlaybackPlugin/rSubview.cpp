@@ -34,7 +34,7 @@ RSubView::RSubView(QWidget *parent)
 
 	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
 	connect(&m_cacheTime,SIGNAL(timeout()),this,SLOT(CacheStateSlotUpdate()));
-	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()));
+	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()),Qt::DirectConnection);
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
 	_curState=CONNECT_STATUS_DISCONNECTED;
