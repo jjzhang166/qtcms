@@ -55,6 +55,8 @@ void div1::parentWindowResize( QResizeEvent *ev )
 
 void div1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
+    Q_UNUSED(subWindow);
+    Q_UNUSED(ev);
 	return;
 }
 
