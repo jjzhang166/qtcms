@@ -167,10 +167,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioDevice", "..\src\funct
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioPlayer", "..\src\functionlibs\AudioPlayer\AudioPlayer.vcxproj", "{60033B64-DF7D-4E6E-81D8-8C1645102CC8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioDecoder", "..\src\functionlibs\AudioDecoder\AudioDecoder.vcxproj", "{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioDevice", "..\src\functionlibs\AudioDevice\AudioDevice.vcxproj", "{9D5FB092-BC88-4304-A90E-B14A346B1726}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
