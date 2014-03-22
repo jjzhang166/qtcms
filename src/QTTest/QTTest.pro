@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 QT       += webkit
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -12,15 +12,37 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QTTest
 TEMPLATE = app
 
-LIBS += ./libpcom.lib
+debug{
+    LIBS += -L../../mac/debug
+}else{
+    LIBS += -L../../mac/release
+}
+
+LIBS += -lpcom
 
 SOURCES += main.cpp \
-    qjawebview.cpp
+    qjawebview.cpp \
+    ../common/guid.cpp\
+    webkitpluginsfactory.cpp
 
 HEADERS  += \
-    qjawebview.h
+    qjawebview.h \
+    webkitpluginsfactory.h
 
 FORMS    +=
 
-INCLUDEPATH += ../include
+debug{
+    OBJECTS_DIR = ./objs/Debug
+    MOC_DIR = ./moc/Debug
+    DESTDIR = ../../mac/debug
+}else{
+    OBJECTS_DIR = ./objs/Release
+    MOC_DIR = ./moc/Release
+    DESTDIR = ../../mac/release
+}
+
+INCLUDEPATH += ../../include
+
+
+
 

@@ -44,6 +44,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
     connect(this,SIGNAL(loadFinished(bool)),this,SLOT(OnLoad(bool)));
 	connect(this,SIGNAL(urlChanged(const QUrl &)),this,SLOT(OnurlChanged(const QUrl &)));
 	connect(this,SIGNAL(statusBarMessage(const QString &)),this,SLOT(OnstatusBarMessage(const QString &)));
+
     // Read Main ini file
     QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
     QString sTheme = MainIniFile.value(QString("Configure/Theme")).toString();
@@ -157,6 +158,7 @@ void QJaWebView::OnLoad( bool bOk )
 			{
 				// To fix the title
 				QString sItemTitle = item.toElement().attribute("title");
+                qDebug() << MainFrame->title();
 				if (sItemTitle == MainFrame->title())
 				{
 					// find the activity and the make it work
@@ -194,7 +196,7 @@ void QJaWebView::OnurlChanged( const QUrl & url )
 
 void QJaWebView::OnstatusBarMessage( const QString &text )
 {
-	
+    Q_UNUSED(text);
 }
 
 QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )
@@ -202,5 +204,6 @@ QWebView * QJaWebView::createWindow( QWebPage::WebWindowType type )
 	QWebView * ret = new QJaWebView(false,NULL);
 	ret->move(0,0);
 	ret->showMaximized();
+    Q_UNUSED(type);
 	return ret;
 }
