@@ -19,7 +19,7 @@ m_bIsEnd(false)
 AudioDevice::~AudioDevice()
 {
 	m_bIsEnd = true;
-	while(m_bIsRunning || m_nBufferCount < WAVEDEV_BLOCK_COUNT)
+	while(m_bIsRunning)
 	{
 		msleep(10);
 	}
@@ -65,11 +65,17 @@ int AudioDevice::PlayBuffer(char *pBuffer,int nSize)
 	m_bufferList.append(node);
 	m_mutexBufList.unlock();
 
-	m_waveDev.winWaveOutRestart(m_hWaveOut);
+// 	m_waveDev.winWaveOutRestart(m_hWaveOut);
 	return 0;
 }
 int AudioDevice::Stop()
 {
+	m_bIsEnd = true;
+	while(m_bIsRunning)
+	{
+		msleep(10);
+	}
+
 	m_waveDev.winWaveOutReset(m_hWaveOut);
 	m_waveDev.winWaveOutClose(m_hWaveOut);
 
