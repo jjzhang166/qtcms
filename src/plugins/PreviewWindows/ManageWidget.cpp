@@ -5,7 +5,10 @@
 
 ManageWidget::ManageWidget(QWidget *parent):QWidget(parent),
 	_recordItem(NULL),
+<<<<<<< HEAD
 	_audioItem(NULL),
+=======
+>>>>>>> 补充录像提示的文件
 	_widgetForVideo(NULL)
 {
 	QWidget *parentWidget=(QWidget*)this->parent();
@@ -20,8 +23,14 @@ ManageWidget::ManageWidget(QWidget *parent):QWidget(parent),
 
 	__createWidgetForvideo();
 	__createRecordItem();
+<<<<<<< HEAD
 	__createAudioItem();
 	
+=======
+
+
+
+>>>>>>> 补充录像提示的文件
 }
 
 
@@ -37,11 +46,15 @@ ManageWidget::~ManageWidget(void)
 		delete _recordItem;
 		_recordItem=NULL;
 	}
+<<<<<<< HEAD
 	if (NULL!=_audioItem)
 	{
 		delete _audioItem;
 		_audioItem=NULL;
 	}
+=======
+
+>>>>>>> 补充录像提示的文件
 }
 
 void ManageWidget::resizeEvent( QResizeEvent *event )
@@ -52,6 +65,7 @@ void ManageWidget::resizeEvent( QResizeEvent *event )
 	}
 	if (NULL!=_recordItem)
 	{
+<<<<<<< HEAD
 		_recordItem->setNewPos(1.5,1);
 		_recordItem->resize(this->size()/20);
 	}
@@ -59,6 +73,9 @@ void ManageWidget::resizeEvent( QResizeEvent *event )
 	{
 		_audioItem->setNewPos(this->width()-_recordItem->width()*4,_recordItem->height());
 		_audioItem->resize(this->size()/10);
+=======
+		_recordItem->resize(this->size()/10);
+>>>>>>> 补充录像提示的文件
 	}
 }
 
@@ -80,9 +97,13 @@ void ManageWidget::__createWidgetForvideo()
 
 void ManageWidget::__createRecordItem()
 {
+<<<<<<< HEAD
 	QString dir=QApplication::applicationDirPath();
 	dir.append("/qq.png");
 	_recordItem=new Qqwidget(this,dir);
+=======
+	_recordItem=new Qqwidget(this);
+>>>>>>> 补充录像提示的文件
 	_recordItem->raise();
 	_recordItem->hide();
 }
@@ -94,7 +115,11 @@ QWidget * ManageWidget::GetRecordItem()
 
 void ManageWidget::RecordState(bool flag)
 {
+<<<<<<< HEAD
 	if (NULL!=_recordItem&&NULL!=_audioItem)
+=======
+	if (NULL!=_recordItem)
+>>>>>>> 补充录像提示的文件
 	{
 		if (false==flag)
 		{
@@ -104,6 +129,7 @@ void ManageWidget::RecordState(bool flag)
 		}
 	}
 }
+<<<<<<< HEAD
 
 void ManageWidget::__createAudioItem()
 {
@@ -113,3 +139,5 @@ void ManageWidget::__createAudioItem()
 	_audioItem->raise();
 	_audioItem->hide();
 }
+=======
+>>>>>>> 补充录像提示的文件

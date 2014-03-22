@@ -26,10 +26,16 @@ private:
 
 	widgetforvideo *_widgetForVideo;
 	Qqwidget *_recordItem;
+<<<<<<< HEAD
 	Qqwidget *_audioItem;
 private:
 	void __createWidgetForvideo();
 	void __createRecordItem();
 	void __createAudioItem();
+=======
+private:
+	void __createWidgetForvideo();
+	void __createRecordItem();
+>>>>>>> 补充录像提示的文件
 };
 
