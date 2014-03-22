@@ -6,8 +6,6 @@
 #include "rSubview.h"
 #include <QTime>
 
-RSubView* RSubView::m_pCurView = NULL;
-bool RSubView::m_bLocalAudioStatus = false;
 bool RSubView::m_bGlobalAudioStatus = false;
 
 RSubView::RSubView(QWidget *parent)
@@ -21,11 +19,6 @@ RSubView::RSubView(QWidget *parent)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
-
-
-	m_ActionOpenAudio = m_rMousePressMenu.addAction("open audio");
-	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
-	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
 
 	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
 
@@ -67,9 +60,9 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
-	if (ev->button()==Qt::RightButton)
+	if (ev->button() == Qt::LeftButton && m_bGlobalAudioStatus && NULL != m_pRemotePlayBack)
 	{
-		emit RMousePressMenu();
+		m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
 	}
 }
 
@@ -84,71 +77,15 @@ void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
 	return;
 }
 
-void RSubView::OnRMousePressMenu()
-{
-	m_rMousePressMenu.exec(QCursor::pos());
-}
-
-void RSubView::OnOpenAudio()
-{
-	if (!m_bGlobalAudioStatus)
-	{
-		return;
-	}
-	if (!m_bLocalAudioStatus)
-	{
-		if (NULL == m_pRemotePlayBack)
-		{
-			return;
-		}
-		m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
-		m_pRemotePlayBack->GroupEnableAudio(true);
-
-		m_ActionOpenAudio->setText("close audio");
-		m_bLocalAudioStatus = true;
-		m_pCurView = this;
-	}
-	else if (NULL != m_pCurView)
-	{
-		if (m_pCurView == this)
-		{
-			if (NULL == m_pRemotePlayBack)
-			{
-				return;
-			}
-			m_pRemotePlayBack->GroupEnableAudio(false);
-
-			m_ActionOpenAudio->setText("open audio");
-			m_bLocalAudioStatus = false;
-			m_pCurView = NULL;
-		}
-		else
-		{
-			emit ChangeAudioHint(QString("open audio"), m_pCurView);
-			m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
-			m_pCurView = this;
-			m_ActionOpenAudio->setText("close audio");
-		}
-	}
-}
-
-void RSubView::setAudioHint(QString &statement)
-{
-	m_ActionOpenAudio->setText(statement);
-}
-
 bool RSubView::AudioEnabled(bool bEnabled)
 {
-	m_bGlobalAudioStatus = bEnabled;
-	if (!bEnabled && NULL != m_pRemotePlayBack && m_bLocalAudioStatus)
+	if (NULL == m_pRemotePlayBack)
 	{
-		emit ChangeAudioHint(QString("open audio"), m_pCurView);
-
-		m_pRemotePlayBack->GroupEnableAudio(false);
-		m_bLocalAudioStatus = false;
-		m_pCurView = NULL;
+		return false;
 	}
-	
+	m_pRemotePlayBack->GroupEnableAudio(bEnabled);
+	m_bGlobalAudioStatus = bEnabled;
+		
 	return true;
 }
 

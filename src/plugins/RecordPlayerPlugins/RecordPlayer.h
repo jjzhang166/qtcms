@@ -53,7 +53,6 @@ public slots:
 	QString GetNowPlayedTime();
 	int GroupSetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
-	void ChangeAudioHint(QString, RecordPlayerView*);
 
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);

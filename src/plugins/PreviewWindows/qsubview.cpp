@@ -287,7 +287,7 @@ void QSubView::mousePressEvent(QMouseEvent *ev)
 	}
 	emit mousePressEvent(this,ev);
 	emit SetCurrentWindSignl(this);
-	if (m_bIsAudioOpend)
+	if (m_bIsAudioOpend && ev->button() == Qt::LeftButton)
 	{
 		m_pCurrView = this;
 	}
