@@ -22,11 +22,12 @@ QCommonPlugin::QCommonPlugin(QWidget *parent)
 	m_csRandSeed.unlock();
 
 	m_sDbConnectionName = QString("jacms") + QString::number(nConnectionSerialId);
-	m_db = QSqlDatabase::addDatabase("QSQLITE",m_sDbConnectionName);
+	QSqlDatabase temp = QSqlDatabase::addDatabase("QSQLITE",m_sDbConnectionName);
+	m_db = new QSqlDatabase(temp);
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString sDatabasePath = sAppPath + "/system.db";
-	m_db.setDatabaseName(sDatabasePath);
-	if (!m_db.open())
+	m_db->setDatabaseName(sDatabasePath);
+	if (!m_db->open())
 	{
 		qDebug("InitDatabase failed!!!");	
 	}
@@ -34,7 +35,8 @@ QCommonPlugin::QCommonPlugin(QWidget *parent)
 
 QCommonPlugin::~QCommonPlugin()
 {
-	m_db.close();
+	m_db->close();
+	delete m_db;
 	QSqlDatabase::removeDatabase(m_sDbConnectionName);
 }
 
@@ -46,7 +48,7 @@ int QCommonPlugin::AddUser( const QString & sUsername,const QString & sPassword,
 		return IUserManager::E_USER_EXISTS;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	_query.prepare("insert into user_infomation(username,password,level,mask1,mask2) values(:username,:password,:level,:mask1,:mask2)");
 	_query.bindValue(":username",sUsername);
 	_query.bindValue(":password",QString(QCryptographicHash::hash(sPassword.toLatin1(),QCryptographicHash::Md5).toHex()));
@@ -67,7 +69,7 @@ int QCommonPlugin::RemoveUser( const QString & sUsername )
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("delete from user_infomation where username='%1'").arg(sUsername);
 	if (!QString::compare(sUsername,QString("admin")))
 	{
@@ -87,7 +89,7 @@ int QCommonPlugin::ModifyUserPassword( const QString & sUsername,const QString &
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update user_infomation set password='%1' where username='%2'").arg(QCryptographicHash::hash(sNewPassword.toLatin1(),QCryptographicHash::Md5).toHex().data()).arg(sUsername);
 	_query.exec(command);
 
@@ -103,7 +105,7 @@ int QCommonPlugin::ModifyUserLevel( const QString & sUsername,int nLevel )
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update user_infomation set level='%1' where username='%2'").arg(nLevel).arg(sUsername);
 	if (nLevel < 0 || nLevel > 3)
 	{
@@ -123,7 +125,7 @@ int QCommonPlugin::ModifyUserAuthorityMask( const QString & sUsername,int nAutho
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update user_infomation set mask1='%1',mask2='%2' where username='%3'").arg(nAuthorityMask1).arg(nAuthorityMask2).arg(sUsername);
 	_query.exec(command);
 	
@@ -133,7 +135,7 @@ int QCommonPlugin::ModifyUserAuthorityMask( const QString & sUsername,int nAutho
 //判断用户是否存在,存在返回true 
 bool QCommonPlugin::IsUserExists( const QString & sUsername )
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
 
@@ -149,7 +151,7 @@ bool QCommonPlugin::CheckUser( const QString & sUsername,const QString & sPasswo
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select password from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
 	while(_query.next())
@@ -183,7 +185,7 @@ int QCommonPlugin::GetUserLevel( const QString & sUsername,int & nLevel )
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select level from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
 	while(_query.next())
@@ -219,7 +221,7 @@ int QCommonPlugin::GetUserAuthorityMask( const QString & sUsername,int & nAuthor
 		return IUserManager::E_USER_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select mask1,mask2 from user_infomation where username='%1'").arg(sUsername);
 	_query.exec(command);
 	while(_query.next())
@@ -234,7 +236,7 @@ int QCommonPlugin::GetUserAuthorityMask( const QString & sUsername,int & nAuthor
 int QCommonPlugin::GetUserCount()
 {
 	int nCount = 0;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from user_infomation");
 	_query.exec(command);
 	while(_query.next())
@@ -248,7 +250,7 @@ int QCommonPlugin::GetUserCount()
 QStringList QCommonPlugin::GetUserList()
 {
 	QStringList listRet;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select username from user_infomation");
 	_query.exec(command);
 
@@ -272,14 +274,14 @@ int QCommonPlugin::AddGroup(QString sName)
 	//fix me
 	Group_lock.lock();
 	int group_id=-1;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	_query.prepare("insert into dev_group(name) values(:name)");
 	_query.bindValue(":name",sName);
 	_query.exec();
 
 	if(_query.isActive()){
 		QString command=QString("select max(id) as id from dev_group");
-		QSqlQuery query2(m_db);
+		QSqlQuery query2(*m_db);
 		bool bRet = query2.exec(command);
 		int id_index=query2.record().indexOf("id");
 		if(query2.isActive()){
@@ -299,7 +301,7 @@ int QCommonPlugin::RemoveGroup(int group_ip)
 	//fix me
 	Group_lock.lock();
 	if(IsGroupExists(group_ip)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command = QString("delete from dev_group where id=%1").arg(group_ip);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -317,7 +319,7 @@ int QCommonPlugin::ModifyGroupName(int group_id,QString sName)
 	//fix me
 	Group_lock.lock();
 	if(IsGroupExists(group_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command = QString("update dev_group set name='%1' where id=%2").arg(sName).arg(group_id);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -335,7 +337,7 @@ int QCommonPlugin::GetGroupCount()
 	//fix me
 	Group_lock.lock();
 	int nCount=0;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command=QString("select * from dev_group");
 	_query.exec(command);
 	while(_query.next()){
@@ -352,7 +354,7 @@ QStringList QCommonPlugin::GetGroupList()
 	QStringList CGrouplist;
 	CGrouplist.clear();
 	int index=0;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command=QString("select * from dev_group");
 	_query.exec(command);
 	int id_num=_query.record().indexOf("id");
@@ -369,7 +371,7 @@ int QCommonPlugin::GetGroupName(int group_id,QString &sName)
 	//fix me
 	Group_lock.lock();
 	if(IsGroupExists(group_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("select * from dev_group where id=%1").arg(group_id);
 		_query.exec(command);
 		bool isActive=_query.isActive();
@@ -395,7 +397,7 @@ QString QCommonPlugin::GetGroupName(int group_id)
 	QString CGroup;
 	CGroup.clear();
 	if(IsGroupExists(group_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("select * from dev_group where id=%1").arg(group_id);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -414,7 +416,7 @@ QString QCommonPlugin::GetGroupName(int group_id)
 bool QCommonPlugin::IsGroupExists(int group_id)
 {
 	//fix me
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from dev_group where id=%1").arg(group_id);
 	_query.exec(command);
 	if(_query.isActive()){
@@ -428,7 +430,7 @@ bool QCommonPlugin::IsGroupExists(int group_id)
 bool QCommonPlugin::IsChannelExists(int chl_id)
 {
 	//fix me
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from chl where id=%1").arg(chl_id);
 	_query.exec(command);
 	if(_query.first()){
@@ -441,7 +443,7 @@ bool QCommonPlugin::IsChannelExists(int chl_id)
 bool QCommonPlugin::IsR_Channel_GroupExist(int rgc_id)
 {
 	//fixme
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(command);
 	if(_query.first()){
@@ -457,7 +459,7 @@ int QCommonPlugin::AddChannelInGroup(int group_id,int chl_id,QString sName)
 	Group_lock.lock();
 	if(IsGroupExists(group_id)){
 		if(IsChannelExists(chl_id)){
-			QSqlQuery _query(m_db);
+			QSqlQuery _query(*m_db);
 			QString command_all=QString("select *from r_chl_group");
 			_query.exec(command_all);
 			if (_query.isActive())
@@ -511,7 +513,7 @@ int QCommonPlugin::RemoveChannelFromGroup(int rgc_id)
 	//fix me
 	Group_lock.lock();
 	if(IsR_Channel_GroupExist(rgc_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command = QString("delete from r_chl_group where id=%1").arg(rgc_id);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -530,7 +532,7 @@ int QCommonPlugin:: ModifyGroupChannelName(int rgc_id,QString sName)
 	//fix me
 	Group_lock.lock();
 	if(IsR_Channel_GroupExist(rgc_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 
 		QString command_all=QString("select *from r_chl_group");
 		_query.exec(command_all);
@@ -574,7 +576,7 @@ int QCommonPlugin::MoveChannelToGroup(int rgc_id,int group_id)
 		Group_lock.unlock();
 		return IGroupManager::E_GROUP_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update r_chl_group set group_id=%1 where id=%2").arg(group_id).arg(rgc_id);
 	_query.exec(command);
 	if(_query.isActive()){
@@ -588,7 +590,7 @@ int QCommonPlugin::MoveChannelToGroup(int rgc_id,int group_id)
 int QCommonPlugin::GetGroupChannelCount(int group_id)
 {
 	//fix me
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where group_id=%1").arg(group_id);
 	_query.exec(Command);
 	int Count=0;
@@ -607,7 +609,7 @@ QStringList QCommonPlugin::GetGroupChannelList(int group_id)
 	QStringList i_result;
 	i_result.clear();
 	if(IsGroupExists(group_id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString Command=QString("select * from r_chl_group where group_id=%1").arg(group_id);
 		_query.exec(Command);
 		if(_query.isActive()){
@@ -628,7 +630,7 @@ int QCommonPlugin::GetGroupChannelName(int rgc_id,QString & sName)
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return IGroupManager::E_CHANNEL_NOT_IN_GROUP;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -648,7 +650,7 @@ QString QCommonPlugin::GetGroupChannelName(int rgc_id)
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return sName;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -667,7 +669,7 @@ int QCommonPlugin::GetChannelIdFromGroup(int rgc_id)
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return IGroupManager::E_CHANNEL_NOT_IN_GROUP;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -687,7 +689,7 @@ int QCommonPlugin::GetChannelIdFromGroup(int rgc_id,int &chl_id)
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return IGroupManager::E_CHANNEL_NOT_IN_GROUP;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -706,7 +708,7 @@ int QCommonPlugin::GetChannelInfoFromGroup(int rgc_id,int & chl_id,int & group_i
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return IGroupManager::E_CHANNEL_NOT_IN_GROUP;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -731,7 +733,7 @@ QVariantMap QCommonPlugin::GetChannelInfoFromGroup(int rgc_id)
 	if(false==IsR_Channel_GroupExist(rgc_id)){
 		return i_result;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString Command=QString("select * from r_chl_group where id=%1").arg(rgc_id);
 	_query.exec(Command);
 	if(_query.isActive()){
@@ -752,7 +754,7 @@ QVariantMap QCommonPlugin::GetChannelInfoFromGroup(int rgc_id)
 int QCommonPlugin::AddArea(int nPid,QString sName)
 {
 	Area_lock.lock();
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	int area_id=-1;
 	if(false==IsAreaNameExist(sName)){
 		if(0==nPid){
@@ -825,7 +827,7 @@ int QCommonPlugin::RemoveAreaById(int nId)
 {
 	Area_lock.lock();
 	if(IsAreaIdExist(nId)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("delete from area where path like ((select path from area where id =%1 ) || '%')").arg(nId);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -844,7 +846,7 @@ bool QCommonPlugin::IsAreaIdExist(int nid)
 	if(0==nid){
 		return true;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command=QString("select id from area where id=%1").arg(nid);
 	_query.exec(command);
 	if(_query.isActive()){
@@ -858,7 +860,7 @@ int QCommonPlugin::RemoveAreaByName(QString sName)
 {
 	Area_lock.lock();
 	if(IsAreaNameExist(sName)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("delete from area where path like ((select path from area where name ='%1' ) || '%')").arg(sName);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -876,7 +878,7 @@ int QCommonPlugin::SetAreaName(int nId,QString sName)
 {
 	Area_lock.lock();
 	if(IsAreaIdExist(nId)&&IsAreaNameExist(sName)==false){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("update area set name='%1' where id=%2").arg(sName).arg(nId);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -892,7 +894,7 @@ int QCommonPlugin::SetAreaName(int nId,QString sName)
 
 bool QCommonPlugin::IsAreaNameExist(QString sName)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command=QString("select name from area where name='%1'").arg(sName);
 	_query.exec(command);
 	if(_query.isActive()){
@@ -905,7 +907,7 @@ bool QCommonPlugin::IsAreaNameExist(QString sName)
 
 int QCommonPlugin::GetAreaCount()
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	int Id_Num=0;
 	QString command=QString("select * from area");
 	_query.exec(command);
@@ -920,7 +922,7 @@ int QCommonPlugin::GetAreaCount()
 
 QStringList QCommonPlugin::GetAreaList()
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QStringList S_List;
 	S_List.clear();
 	QString command=QString("select * from area");
@@ -940,7 +942,7 @@ QStringList QCommonPlugin::GetSubArea(int nId)
 	QStringList S_List;
 	S_List.clear();
 	if(IsAreaIdExist(nId)){
-		QSqlQuery _qurey(m_db);
+		QSqlQuery _qurey(*m_db);
 		QString command=QString("select * from area where path like ((select path from area where id =%1 ) || '%')").arg(nId);
 		_qurey.exec(command);
 		if(_qurey.isActive()){
@@ -960,7 +962,7 @@ int QCommonPlugin::GetAreaPid(int id)
 {
 	int Pid=-1;
 	if(IsAreaIdExist(id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("select * from area where id=%1").arg(id);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -980,7 +982,7 @@ QString QCommonPlugin::GetAreaName(int id)
 	QString sName;
 	sName.clear();
 	if(IsAreaIdExist(id)){
-		QSqlQuery _query(m_db);
+		QSqlQuery _query(*m_db);
 		QString command=QString("select * from area where id=%1").arg(id);
 		_query.exec(command);
 		if(_query.isActive()){
@@ -1020,7 +1022,7 @@ QVariantMap QCommonPlugin::GetAreaInfo(int nId)
 /*IDeviceManager Module*/
 bool QCommonPlugin::IsDeviceExist(int dev_id)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select * from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1038,7 +1040,7 @@ bool QCommonPlugin::IsDeviceExist(int dev_id)
 //判断指定区域内的设备是否存在
 int QCommonPlugin::IsDevExistsInArea(int area_id, QString sDeviceName)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select id from (select * from dev where area_id='%1')where name='%2'").arg(area_id).arg(sDeviceName);
 	_query.exec(command);
 
@@ -1072,7 +1074,7 @@ int QCommonPlugin::AddDevice(int area_id,
 		return -1;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	int dev_id = 0;
 	QString command;
 
@@ -1112,7 +1114,7 @@ int QCommonPlugin::RemoveDevice(int dev_id)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("delete from dev where id='%1'").arg(dev_id);
 
 	_query.exec(command);
@@ -1129,7 +1131,7 @@ int QCommonPlugin::ModifyDeviceName(int dev_id,QString sDeviceName)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set name='%1' where id='%2'").arg(sDeviceName).arg(dev_id);
 	_query.exec(command);
 
@@ -1149,7 +1151,7 @@ int QCommonPlugin::ModifyDeviceHost(int dev_id,QString sAddress, int port, int h
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set address='%1',port='%2',http='%3' where id='%4'").arg(sAddress).arg(port).arg(http).arg(dev_id);
 	_query.exec(command);
 
@@ -1165,7 +1167,7 @@ int QCommonPlugin::ModifyDeviceEseeId(int dev_id,QString sEseeId)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set eseeid='%1' where id='%2'").arg(sEseeId).arg(dev_id);
 	_query.exec(command);
 
@@ -1180,7 +1182,7 @@ int QCommonPlugin::ModifyDeviceAuthority(int dev_id,QString sUsername,QString sP
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set username='%1',password='%2' where id='%3'").arg(sUsername).arg(sPassword).arg(dev_id);
 	_query.exec(command);
 
@@ -1200,7 +1202,7 @@ int QCommonPlugin::ModifyDeviceChannelCount(int dev_id,int chlCount)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set channel_count='%1' where id='%2'").arg(chlCount).arg(dev_id);
 	_query.exec(command);
 
@@ -1221,7 +1223,7 @@ int QCommonPlugin::ModifyDeviceConnectMethod(int dev_id,int connectMethod)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set connect_method='%1' where id='%2'").arg(connectMethod).arg(dev_id);
 	_query.exec(command);
 
@@ -1236,7 +1238,7 @@ int QCommonPlugin::ModifyDeviceVendor(int dev_id,QString sVendor)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set vendor='%1' where id='%2'").arg(sVendor).arg(dev_id);
 	_query.exec(command);
 
@@ -1251,7 +1253,7 @@ int QCommonPlugin::GetDeviceCount(int area_id)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select count(*) from dev where area_id='%1'").arg(area_id);
 	_query.exec(command);
 
@@ -1277,7 +1279,7 @@ QStringList QCommonPlugin::GetDeviceList(int area_id)
 		return dev_list;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select id from dev where area_id='%1'").arg(area_id);
 	_query.exec(command);
 
@@ -1299,7 +1301,7 @@ int QCommonPlugin::GetDeviceName(int dev_id,QString & sName)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select name from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1325,7 +1327,7 @@ int QCommonPlugin::GetDeviceHost(int dev_id,QString & sAddress,int & nPort,int &
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select address,port,http from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1355,7 +1357,7 @@ int QCommonPlugin::GetDeviceEseeId(int dev_id,QString & sEseeid)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select eseeid from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1381,7 +1383,7 @@ int QCommonPlugin::GetDeviceLoginInfo(int dev_id,QString &sUsername,QString & sP
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select username,password from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1409,7 +1411,7 @@ int QCommonPlugin::GetDeviceConnectMethod(int dev_id,int & connectMethod)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select connect_method from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1435,7 +1437,7 @@ int QCommonPlugin::GetDevicdVendor(int dev_id,QString & sVendor)
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select vendor from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1470,7 +1472,7 @@ int QCommonPlugin::GetDeviceInfo(int dev_id,
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select name,address,port,http,eseeid,username,password,connect_method,vendor from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1524,7 +1526,7 @@ QVariantMap QCommonPlugin::GetDeviceInfo(int dev_id)
 		return dev_info;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select name,address,port,http,eseeid,username,password,connect_method,vendor from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 
@@ -1554,7 +1556,7 @@ int QCommonPlugin::ModifyChannelName(int chl_id, QString sName)
 	{
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update chl set name='%1' where id='%2'").arg(sName).arg(chl_id);
 	_query.exec(command);
 	return IChannelManager::OK;
@@ -1568,7 +1570,7 @@ int QCommonPlugin::ModifyChannelStream(int chl_id,int nStream)
 	{
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("update chl set stream_id='%1' where id='%2'").arg(nStream).arg(chl_id);
 	_query.exec(command);
 	return IChannelManager::OK;
@@ -1577,7 +1579,7 @@ int QCommonPlugin::ModifyChannelStream(int chl_id,int nStream)
 // 获取设备dev_id下的通道数。
 int QCommonPlugin::GetChannelCount(int dev_id) 
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select channel_count from dev where id='%1'").arg(dev_id);
 	_query.exec(command);
 	int channel_count = -1;
@@ -1592,7 +1594,7 @@ int QCommonPlugin::GetChannelCount(int dev_id)
 QStringList QCommonPlugin::GetChannelList(int dev_id) 
 {
 	//QStringList listRet;
-	//QSqlQuery _query(m_db);
+	//QSqlQuery _query(*m_db);
 	//QString command = QString("select id from chl where dev_id = '%1' group by dev_id").arg(dev_id);
 	//_query.exec(command);
 
@@ -1611,7 +1613,7 @@ QStringList QCommonPlugin::GetChannelList(int dev_id)
 
 	//qDebug("%d",listRet.count());
 	//return listRet;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QStringList S_List;
 	S_List.clear();
 //	QString command= QString("select * from chl where dev_id = '%1' group by dev_id").arg(dev_id);
@@ -1635,7 +1637,7 @@ int QCommonPlugin::GetChannelName(int chl_id,QString & sName)
 	{
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select name from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
 
@@ -1655,7 +1657,7 @@ int QCommonPlugin::GetChannelStream(int chl_id,int & nStream)
 	{
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select stream_id from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
 
@@ -1674,7 +1676,7 @@ int QCommonPlugin::GetChannelNumber(int chl_id,int & nChannelNum)
 	{
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select channel_number from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
 
@@ -1695,7 +1697,7 @@ int QCommonPlugin::GetChannelInfo(int chl_id,QString &sName,int &nStream,int &nC
 		return IChannelManager::E_CHANNEL_NOT_FOUND;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select name,stream_id,channel_number from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
 	while(_query.next())
@@ -1722,7 +1724,7 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 		return chl_info;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 
 	QString command = QString("select name,stream_id,channel_number,dev_id from chl where id='%1'").arg(chl_id);
 	_query.exec(command);
@@ -1759,7 +1761,7 @@ int QCommonPlugin::setUseDisks(const QString & sDisks)
 		}
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='storage_usedisks'");
 	_query.exec(coomandConut);
 
@@ -1788,7 +1790,7 @@ int QCommonPlugin::setUseDisks(const QString & sDisks)
 //获取录像使用的磁盘(格式为"X:X:X:..."  X为D E F....)
 int QCommonPlugin::getUseDisks(QString & sDisks)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_usedisks'");
 	_query.exec(command);
 	if (_query.next())
@@ -1806,7 +1808,7 @@ int QCommonPlugin::getUseDisks(QString & sDisks)
 QString QCommonPlugin::getUseDisks()
 {
 	QString sDisks("");
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_usedisks'");
 	_query.exec(command);
 	if (_query.next())
@@ -1878,7 +1880,7 @@ int QCommonPlugin::setFilePackageSize(const int filesize)
 		return IDisksSetting::E_PARAMETER_ERROR;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='storage_filesize'");
 	_query.exec(coomandConut);
 
@@ -1907,7 +1909,7 @@ int QCommonPlugin::setFilePackageSize(const int filesize)
 //读取录像文件包大小(单位m)
 int QCommonPlugin::getFilePackageSize(int& filesize)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_filesize'");
 	_query.exec(command);
 	if (_query.next())
@@ -1925,7 +1927,7 @@ int QCommonPlugin::getFilePackageSize(int& filesize)
 int QCommonPlugin::getFilePackageSize()
 {
 	int filesize = 0;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_filesize'");
 	_query.exec(command);
 	if (_query.next())
@@ -1945,7 +1947,7 @@ int QCommonPlugin::setLoopRecording(bool loop)
 		strBool = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='storage_cover'");
 	_query.exec(coomandConut);
 
@@ -1975,7 +1977,7 @@ int QCommonPlugin::setLoopRecording(bool loop)
 bool QCommonPlugin::getLoopRecording()
 {
 	bool loop = true;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_cover'");
 	_query.exec(command);
 	if (_query.next())
@@ -1997,7 +1999,7 @@ int QCommonPlugin::setDiskSpaceReservedSize(const int spacereservedsize)
 	{
 		return IDisksSetting::E_PARAMETER_ERROR;
 	}
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='storage_reservedsize'");
 	_query.exec(coomandConut);
 
@@ -2026,7 +2028,7 @@ int QCommonPlugin::setDiskSpaceReservedSize(const int spacereservedsize)
 //读取磁盘剩余空间(单位m)
 int QCommonPlugin::getDiskSpaceReservedSize(int& spacereservedsize)
 {
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_reservedsize'");
 	_query.exec(command);
 	if (_query.next())
@@ -2045,7 +2047,7 @@ int QCommonPlugin::getDiskSpaceReservedSize(int& spacereservedsize)
 int QCommonPlugin::getDiskSpaceReservedSize()
 {
 	int spacereservedsize = 0;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_reservedsize'");
 	_query.exec(command);
 	if (_query.next())
@@ -2090,7 +2092,7 @@ int QCommonPlugin::ModifyRecordTime( int recordtime_id,QString starttime,QString
 	}
 
 	// check record id
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString sSql = QString("select id from recordtime where id=") + QString::number(recordtime_id);
 	if ( !_query.exec(sSql))
 	{
@@ -2123,7 +2125,7 @@ QStringList QCommonPlugin::GetRecordTimeBydevId( int chl_id )
 	ret.clear();
 
 	// check channel identifier
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString sSql;
 	sSql = QString("select id from chl where id=") + QString::number(chl_id);
 	if ( !_query.exec(sSql) )
@@ -2165,7 +2167,7 @@ QVariantMap QCommonPlugin::GetRecordTimeInfo( int recordtime_id )
 	ret.clear();
 
 	// SQL select
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString sSql;
 	sSql = QString("select * from recordtime where id=") + QString::number(recordtime_id);
 	if ( !_query.exec(sSql) )
@@ -2213,7 +2215,7 @@ int QCommonPlugin::setLanguage(const QString & sLanguage)
 		return ILocalSetting::E_PARAMETER_ERROR;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_slanguage'");
 	_query.exec(coomandConut);
 
@@ -2243,7 +2245,7 @@ int QCommonPlugin::setLanguage(const QString & sLanguage)
 QString QCommonPlugin::getLanguage()
 {
 	QString sLanguage("en_GB");
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_slanguage'");
 	_query.exec(command);
 
@@ -2263,7 +2265,7 @@ int QCommonPlugin::setAutoPollingTime(int aptime)
 		return ILocalSetting::E_PARAMETER_ERROR;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_aptime'");
 	_query.exec(coomandConut);
 
@@ -2293,7 +2295,7 @@ int QCommonPlugin::setAutoPollingTime(int aptime)
 int QCommonPlugin::getAutoPollingTime()
 {
 	int aptime = 30;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_aptime'");
 	_query.exec(command);
 	if (_query.next())
@@ -2318,7 +2320,7 @@ int QCommonPlugin::setSplitScreenMode(const QString & smode)
 		return ILocalSetting::E_PARAMETER_ERROR;
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_smode'");
 	_query.exec(coomandConut);
 
@@ -2349,7 +2351,7 @@ int QCommonPlugin::setSplitScreenMode(const QString & smode)
 QString QCommonPlugin::getSplitScreenMode()
 {
 	QString smode("div4_4");
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_smode'");
 	_query.exec(command);
 
@@ -2370,7 +2372,7 @@ int QCommonPlugin::setAutoLogin(bool alogin)
 		strLogin = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_alogin'");
 	_query.exec(coomandConut);
 
@@ -2400,7 +2402,7 @@ int QCommonPlugin::setAutoLogin(bool alogin)
 bool QCommonPlugin::getAutoLogin()
 {
 	bool autoLogin = false;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_alogin'");
 	_query.exec(command);
 
@@ -2424,7 +2426,7 @@ int QCommonPlugin::setAutoSyncTime(bool synctime)
 		strSycTime = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_synctime'");
 	_query.exec(coomandConut);
 
@@ -2453,7 +2455,7 @@ int QCommonPlugin::setAutoSyncTime(bool synctime)
 bool QCommonPlugin::getAutoSyncTime()
 {
 	bool bSycTime = false;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_synctime'");
 	_query.exec(command);
 
@@ -2477,7 +2479,7 @@ int QCommonPlugin::setAutoConnect(bool aconnect)
 		strAutoConnect = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_aconnent'");
 	_query.exec(coomandConut);
@@ -2507,7 +2509,7 @@ int QCommonPlugin::setAutoConnect(bool aconnect)
 bool QCommonPlugin::getAutoConnect()
 {
 	bool bAutoConnect = false;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_aconnent'");
 	_query.exec(command);
 
@@ -2531,7 +2533,7 @@ int QCommonPlugin::setAutoFullscreen(bool afullscreen)
 		strAutoFullScreen = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_afullscreen'");
 	_query.exec(coomandConut);
@@ -2560,7 +2562,7 @@ int QCommonPlugin::setAutoFullscreen(bool afullscreen)
 bool QCommonPlugin::getAutoFullscreen()
 {
 	bool bAutoFullScreen = false;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_afullscreen'");
 	_query.exec(command);
 
@@ -2584,7 +2586,7 @@ int QCommonPlugin::setBootFromStart(bool bootstart)
 		strBootFromStart = "true";
 	}
 
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 
 	QString coomandConut = QString("select count(*) from general_setting where name='misc_bootstart'");
 	_query.exec(coomandConut);
@@ -2613,7 +2615,7 @@ int QCommonPlugin::setBootFromStart(bool bootstart)
 bool QCommonPlugin::getBootFromStart()
 {
 	bool bBootFromStart = false;
-	QSqlQuery _query(m_db);
+	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='misc_bootstart'");
 	_query.exec(command);
 

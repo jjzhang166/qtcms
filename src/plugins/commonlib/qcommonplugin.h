@@ -16,7 +16,7 @@ public:
 	~QCommonPlugin();
 
 private:
-	QSqlDatabase m_db;
+	QSqlDatabase * m_db;
 	static QMutex Group_lock;
 	QString m_sDbConnectionName;
 	static QMutex Area_lock;
