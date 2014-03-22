@@ -44,6 +44,7 @@ QObject * PreviewWindows::create( const QString& mimeType, const QUrl&, const QS
 	QPreviewWindows * previewWindows= new QPreviewWindows();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);
+    Q_UNUSED(mimeType);
 	return previewWindows;
 }
 

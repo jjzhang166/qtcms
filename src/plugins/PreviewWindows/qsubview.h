@@ -133,7 +133,7 @@ private:
 	int m_nSampleRate;
 	int m_nSampleWidth;
 	//标志位
-	bool bRendering;
+	bool m_bRendering;
 	bool m_bIsRecording;
 	bool m_bIsRenderHistory;
 	bool m_bIsAutoConnect;
@@ -144,7 +144,6 @@ private:
 	bool m_bIsFocus;
 	bool m_bIsForbidConnect;
 	static bool m_bIsAudioOpend;
-	QTime dieTime;
 	QTimer m_checkTime;
 
 	Ui::titleview * ui;
@@ -156,8 +155,8 @@ private:
 	QAction *m_QActionCloseView;
 	QAction *m_QActionOpenAudio;
 	//正在连接和正在断开，刷新图片的计数
-	int CountDisConnecting;
-	int CountConnecting;
+	int m_nCountDisConnecting;
+	int m_CountConnecting;
 	//时钟id
 	int m_DisConnectingTimeId;
 	int m_DisConnectedTimeId;

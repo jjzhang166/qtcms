@@ -14,7 +14,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 	m_uiWndIndex(0),
 	m_CurrentWnd(0)
 {
-	int i;
+    unsigned int i;
 	for (i = 0; i < ARRAY_SIZE(m_PreviewWnd); i ++)
 	{
 		m_PreviewWnd[i].setParent(this);
@@ -196,7 +196,7 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 
 void QPreviewWindows::SetCurrentWind(QWidget *wind)
 {
-	int j;
+    unsigned int j;
 	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
 	{
 		if (&m_PreviewWnd[j]==wind)
@@ -217,7 +217,7 @@ int QPreviewWindows::GetCurrentWnd()
 
 int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
-	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+    if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
@@ -233,7 +233,7 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
-	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+    if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
@@ -246,7 +246,7 @@ int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 
 int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 {
-	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+    if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 0;
 	}
@@ -259,7 +259,7 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 
 void QPreviewWindows::CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID)
 {
-	int j;
+    unsigned int j;
 	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
 	{
 		if (&m_PreviewWnd[j]==WID)
@@ -274,7 +274,8 @@ void QPreviewWindows::CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID)
 
 void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 {
-	int j;
+    Q_UNUSED(ev);
+    unsigned int j;
 	for (j=0;j<ARRAY_SIZE(m_PreviewWnd);j++)
 	{
 		if (&m_PreviewWnd[j]==Wid)
@@ -286,7 +287,8 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 	EP_ADD_PARAM(arg,"Wid",j);
 	EventProcCall("CurrentWindows",arg);
 
-	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++)
+    unsigned int i;
+    for (i=0;i<ARRAY_SIZE(m_PreviewWnd);i++)
 	{
 		if (&m_PreviewWnd[i]==Wid)
 		{
@@ -300,7 +302,7 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 int QPreviewWindows::StartRecord(int nWndID)
 {
 	qDebug()<<"StartRecord:"<<nWndID;
-	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
+    if (nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
@@ -313,7 +315,7 @@ int QPreviewWindows::StartRecord(int nWndID)
 int QPreviewWindows::StopRecord(int nWndID)
 {
 	qDebug()<<"StopRecord:"<<nWndID;
-	if (nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
+    if (nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
@@ -326,7 +328,7 @@ int QPreviewWindows::StopRecord(int nWndID)
 int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndID)
 {
 	qDebug()<<"SetDevInfo"<<"devname:"<<devname<<"nChannelNum:"<<nChannelNum<<"nWndID:"<<nWndID;
-	if (nChannelNum < 0 || nWndID < 0 || nWndID >= ARRAY_SIZE(m_PreviewWnd))
+    if (nChannelNum < 0 || nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}
@@ -356,7 +358,7 @@ int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndI
 
 int QPreviewWindows::SetDevChannelInfo( unsigned int uiWndIndex,int ChannelId )
 {
-	if (uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+    if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
 	}

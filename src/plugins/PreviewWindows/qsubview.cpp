@@ -12,35 +12,36 @@ IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
 
 QSubView::QSubView(QWidget *parent)
-	: QWidget(parent),m_IVideoDecoder(NULL),
+	: QWidget(parent),
 	m_IVideoRender(NULL),
+	m_IVideoDecoder(NULL),
 	m_IDeviceClientDecideByVendor(NULL),
 	m_pRecorder(NULL),
 	m_pRecordTime(NULL),
-	iInitHeight(0),
+	m_CurrentState(QSubView::STATUS_DISCONNECTED),
+	m_HistoryState(QSubView::STATUS_DISCONNECTED),
 	iInitWidth(0),
+	iInitHeight(0),
 	m_nSampleRate(0),
 	m_nSampleWidth(0),
-	bRendering(false),
+	m_bRendering(false),
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
 	m_bIsAutoConnecting(false),
 	m_bIsStartRecording(false),
 	m_bIsAutoRecording(false),
-	m_bIsForbidConnect(false),
 	m_bIsFocus(false),
+	m_bIsForbidConnect(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_QActionOpenAudio(NULL),
-	m_CurrentState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
-	m_HistoryState(QSubView::QSubViewConnectStatus::STATUS_DISCONNECTED),
-	CountConnecting(0),
-	CountDisConnecting(0),
-	m_DisConnectedTimeId(0),
+	m_nCountDisConnecting(0),
+	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
+	m_DisConnectedTimeId(0),
 	m_RenderTimeId(0),
-	m_RecordFlushTime(0),
-	m_AutoConnectTimeId(0)
+	m_AutoConnectTimeId(0),
+	m_RecordFlushTime(0)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -126,6 +127,7 @@ QSubView::~QSubView()
 
 void QSubView::paintEvent( QPaintEvent * e)
 {
+    Q_UNUSED(e);
 	QPainter p(this);
 	//if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
 	//{
@@ -142,22 +144,22 @@ void QSubView::paintEvent( QPaintEvent * e)
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
-	image = IniFile.value("background/background-image", NULL).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
-	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", NULL).toString());
-	FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
-	FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
-	FontFamily = IniFile.value("font/font-family", NULL).toString();
+    image = IniFile.value("background/background-image", QVariant("")).toString();
+    LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+    LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
+    FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+    FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
+    FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
 
  	QRect rcClient = contentsRect();
 	this->geometry().center();
  	QPixmap pix;
 	QString PixPaht = sAppPath + image;
- 	bool ret = pix.load(PixPaht);
+    pix.load(PixPaht);
  
   	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 	//背景
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+    if (m_CurrentState==STATUS_DISCONNECTED)
 	{
 		p.drawPixmap(rcClient,pix);
 	}
@@ -194,7 +196,7 @@ void QSubView::paintEvent( QPaintEvent * e)
 	rcClient.getCoords(&ax, &ay, &awidth, &bheight);
 	int aFontSize=10;
 	int aw=400;
-	int ah=300;
+//	int ah=300;
 	aFontSize=awidth*FontSize/(aw);
 	QFont font(FontFamily, aFontSize, QFont::Bold);
 	
@@ -203,40 +205,40 @@ void QSubView::paintEvent( QPaintEvent * e)
  	pen.setColor(FontColor);
 	
  	p.setPen(pen);
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING)
+    if (m_CurrentState==STATUS_CONNECTING)
 	{
 		QString m_text;
 		QPoint dev_position=this->geometry().topLeft();
-		if (CountConnecting==4)
+		if (m_CountConnecting==4)
 		{
-			CountConnecting=0;
+			m_CountConnecting=0;
 		}
-		for (int i=0;i<CountConnecting;i++)
+		for (int i=0;i<m_CountConnecting;i++)
 		{
 			m_text+="..";
 		}
-		CountConnecting++;
+		m_CountConnecting++;
 		/*p.drawPixmap(rcClient,pix);*/
 		p.drawText(rcClient, Qt::AlignCenter, m_text);
 		/*p.drawText(rcClient, Qt::AlignTop, m_DevCliSetInfo.m_sCameraname);*/
 	}
-	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTING)
+    else if (m_CurrentState==STATUS_DISCONNECTING)
 	{
 		QString m_text;
 
-		if (CountDisConnecting==0)
+		if (m_nCountDisConnecting==0)
 		{
-			CountConnecting=4;
+			m_CountConnecting=4;
 		}
-		for (int i=0;i<CountConnecting-1;i++)
+		for (int i=0;i<m_CountConnecting-1;i++)
 		{
 			m_text+="..";
 		}
-		CountConnecting--;
+		m_CountConnecting--;
 		/*p.drawPixmap(rcClient,pix);*/
 		p.drawText(rcClient, Qt::AlignCenter, m_text);
 	}
-	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+    else if (m_CurrentState==STATUS_DISCONNECTED)
 	{
 		p.drawText(rcClient, Qt::AlignCenter, "No Video");
 	}
@@ -523,7 +525,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	
 	/*emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);*/
 	//自动重连
-	if (QSubViewConnectStatus::STATUS_DISCONNECTED==m_CurrentState&&QSubViewConnectStatus::STATUS_CONNECTED==m_HistoryState)
+    if (STATUS_DISCONNECTED==m_CurrentState&&STATUS_CONNECTED==m_HistoryState)
 	{
 		if (m_bIsAutoConnect==true)
 		{
@@ -572,7 +574,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
 	}
-	bRendering=true;
+	m_bRendering=true;
 	m_csRender.lock();
 	m_HistoryRenderInfo.pData=pData;
 	m_HistoryRenderInfo.pYdata=pYdata;
@@ -588,7 +590,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 	m_bIsRenderHistory=false;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	m_csRender.unlock();
-	bRendering=false;
+	m_bRendering=false;
 	return 0;
 }
 
@@ -606,19 +608,19 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		m_bIsForbidConnect=false;
 	}
 	//连接ing
-	if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTING)
+    if (m_CurrentState!=STATUS_CONNECTING)
 	{
 		if (ev->timerId()==m_ConnectingTimeId)
 		{
 			killTimer(ev->timerId());
 			m_ConnectingTimeId=0;
-		}else if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTING)
+        }else if (m_CurrentState==STATUS_CONNECTING)
 		{
 			update();
 		}
 	}
 
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
+    if (m_CurrentState==STATUS_CONNECTED)
 	{
 		if (ev->timerId()==m_DisConnectedTimeId)
 		{
@@ -631,7 +633,7 @@ void QSubView::timerEvent( QTimerEvent * ev)
 			m_DisConnectingTimeId=0;
 		}
 	}
-	else if (m_CurrentState==QSubViewConnectStatus::STATUS_DISCONNECTED)
+    else if (m_CurrentState==STATUS_DISCONNECTED)
 	{
 		if (ev->timerId()==m_DisConnectedTimeId)
 		{
@@ -657,13 +659,13 @@ void QSubView::timerEvent( QTimerEvent * ev)
 	if (m_AutoConnectTimeId==ev->timerId())
 	{
 		//关闭自动重连,设备连接上或者禁止自动重连
-		if (m_bIsAutoConnect==false||QSubViewConnectStatus::STATUS_CONNECTED==m_CurrentState)
+        if (m_bIsAutoConnect==false||STATUS_CONNECTED==m_CurrentState)
 		{
 			killTimer(ev->timerId());
 			m_AutoConnectTimeId=0;
 			m_bStateAutoConnect=false;
 			//判定是否需要重新录像
-			if (QSubViewConnectStatus::STATUS_CONNECTED==m_CurrentState&&true==m_bIsStartRecording)
+            if (STATUS_CONNECTED==m_CurrentState&&true==m_bIsStartRecording)
 			{
 				if (NULL != m_pRecorder&&m_bIsAutoRecording==false)
 				{
@@ -675,7 +677,7 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		}
 		else if (m_bIsAutoConnect==true)
 		{
-			if (QSubViewConnectStatus::STATUS_CONNECTED!=m_CurrentState&&false==m_bIsAutoConnecting)
+            if (STATUS_CONNECTED!=m_CurrentState&&false==m_bIsAutoConnecting)
 			{
 				qDebug()<<"AutoConnectSignals";
 				emit AutoConnectSignals();
@@ -779,6 +781,8 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
 {
+    Q_UNUSED(evName);
+    Q_UNUSED(pUser);
 	qDebug()<<"cbConnectError";
 
 	QVariantMap::const_iterator it;
@@ -1083,17 +1087,17 @@ void QSubView::OnConnectting()
 
 void QSubView::OnDisConnecting()
 {
-	int m_DisConnectingTimeId=startTimer(500);
+    m_DisConnectingTimeId=startTimer(500);
 }
 
 void QSubView::OnDisConnected()
 {
-	int m_DisConnectedTimeId=startTimer(500);
+    m_DisConnectedTimeId=startTimer(500);
 }
 
 void QSubView::OnRenderHistoryPix()
 {
-	if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
+    if (m_CurrentState==STATUS_CONNECTED)
 	{
 		if (NULL!=m_IVideoRender&&NULL!=m_HistoryRenderInfo.pData&&true==m_bIsRenderHistory)
 		{
