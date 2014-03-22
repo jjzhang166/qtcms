@@ -8,16 +8,18 @@ QT       += xml
 
 QT       -= gui
 
-TARGET = libpcom
+VERSION = 1.0.0
+
+TARGET = pcom
 TEMPLATE = lib
 
 DEFINES += LIBPCOM_LIBRARY
 
 SOURCES += libpcom.cpp
 
-HEADERS +=
+HEADERS += libpcom.h
 
-INCLUDEPATH += ../include
+INCLUDEPATH += ../../include
 
 unix:!symbian {
     maemo5 {
@@ -28,8 +30,18 @@ unix:!symbian {
     INSTALLS += target
 }
 
+debug {
+    OBJECTS_DIR = ./objs/Debug
+    MOC_DIR = ./moc/Debug
+    DESTDIR = ../../mac/debug
+} else {
+    OBJECTS_DIR = ./objs/Release
+    MOC_DIR = ./moc/Release
+    DESTDIR = ../../mac/release
+}
+
 OTHER_FILES += \
     pcom_config.xml
 
-DESTDIR = ../libs
+
 

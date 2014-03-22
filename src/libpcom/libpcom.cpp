@@ -63,7 +63,7 @@ char * pcomGUID2String(const GUID &guid)
 	static char sRet[64] = {0};
     QString sGuid;
     sGuid.sprintf("%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-                  guid.Data1,
+                  (unsigned int)guid.Data1,
                   guid.Data2,
                   guid.Data3,
                   *((unsigned char *)guid.Data4),
