@@ -8,6 +8,7 @@
 #include <QDebug>
 #include "IRecorder.h"
 #include "StorageMgr.h"
+#include <IEventRegister.h>
 
 //#define REC_SYS_DATA					0x11
 #define AVENC_IDR		0x01
@@ -15,7 +16,8 @@
 #define AVENC_AUDIO		0x00
 
 class Recorder : public QThread,
-	public IRecorder
+	public IRecorder,
+	public IEventRegister
 {
 public:
 	Recorder();
@@ -34,6 +36,10 @@ public:
 
 	virtual unsigned long __stdcall AddRef();
 	virtual unsigned long __stdcall Release();
+
+	virtual QStringList eventList();
+	virtual int queryEvent(QString eventName,QStringList& eventParams);
+	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 
 	/*typedef struct _tagFrameInfo{
 	char * pData;
@@ -64,6 +70,7 @@ private:
 	bool CreateSavePath(QString& sSavePath);
 	bool CreateDir(QString fullname);
 	void cleardata();
+	void enventProcCall(QString sEvent,QVariantMap parm);
 	int m_nRef;
 	QMutex m_csRef;
 
@@ -86,6 +93,9 @@ private:
 	QQueue<RecBufferNode> m_dataqueue;
 
 	StorageMgr m_StorageMgr;
+	//proc
+	QStringList m_eventList;
+	QMultiMap<QString, ProcInfoItem> m_eventMap;
 };
 
 #endif // RECORDER_H

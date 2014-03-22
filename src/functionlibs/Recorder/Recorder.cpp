@@ -25,6 +25,7 @@ m_bFinish(true)
 {
 	m_nFrameCount = 0;
 	m_nLastTicket = 0;
+	m_eventList<<"RecordState";
 }
 
 Recorder::~Recorder()
@@ -133,6 +134,9 @@ void Recorder::run()
 	int nLoopCount = 0;
 	bool bAudioBeSet;
 	bool bThreadRunning = true;
+	QVariantMap parm;
+	parm.insert("RecordState",true);
+	enventProcCall("RecordState",parm);
 	while (bThreadRunning)
 	{
 		msleep(10);
@@ -358,7 +362,9 @@ void Recorder::run()
 		}
 	}
 	m_bFinish = true;
-	
+	parm.clear();
+	parm.insert("RecordState",false);
+	enventProcCall("RecordState",parm);
 }
 
 void Recorder::cleardata()
@@ -420,6 +426,10 @@ long __stdcall Recorder::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IEventRegister==iid)
+	{
+		*ppv=static_cast<IEventRegister*>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -450,4 +460,48 @@ unsigned long __stdcall Recorder::Release()
 		delete this;
 	}
 	return nRet;
+}
+
+QStringList Recorder::eventList()
+{
+	return m_eventList;
+}
+
+int Recorder::queryEvent( QString eventName,QStringList& eventParams )
+{
+	if (!m_eventList.contains(eventName))
+	{
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}
+	if ("RecordState" == eventName)
+	{
+		eventParams<<"RecordState";
+	}
+	return IEventRegister::OK;
+}
+
+int Recorder::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
+{
+	if (!m_eventList.contains(eventName))
+	{
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}
+	ProcInfoItem proInfo;
+	proInfo.proc=proc;
+	proInfo.puser=pUser;
+
+	m_eventMap.insert(eventName,proInfo);
+	return IEventRegister::OK;
+}
+
+void Recorder::enventProcCall( QString sEvent,QVariantMap parm )
+{
+	if (m_eventList.contains(sEvent))
+	{
+		ProcInfoItem eventDes=m_eventMap.value(sEvent);
+		if (NULL!=eventDes.proc)
+		{
+			eventDes.proc(sEvent,parm,eventDes.puser);
+		}
+	}
 }

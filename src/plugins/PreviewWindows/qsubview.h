@@ -23,14 +23,13 @@
 #include "QSubViewObject.h"
 #include <QLineEdit>
 #include "ui_TitleView.h"
-
-
+#include "ManageWidget.h"
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbForRecord(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
-
+int cbRecordState(QString evName,QVariantMap evMap,void*pUser);
 class QSubView :public QWidget
 {
 	Q_OBJECT
@@ -43,7 +42,7 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 
 	virtual void mousePressEvent(QMouseEvent *);
-
+	virtual void resizeEvent(QResizeEvent *);
 
 	int GetCurrentWnd();
 	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
@@ -79,11 +78,13 @@ public:
 
 	int SetDeviceByVendor(const QString & sVendor);
 	void SetCurrentFocus(bool);
+	void RecordState(QVariantMap evMap);
 	void ChangAudioHint(const QString &statement);
 private:
 	int cbInit();
 	
 	void In_CloseAutoConnect();
+
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
@@ -111,6 +112,7 @@ signals:
 		void RenderHistoryPix();
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
+		void RecordStateSignals(bool );
 		void ChangeAudioHint(QString, QSubView*);
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
@@ -168,6 +170,8 @@ private:
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
 
 	static QSubView* m_pCurrView;
+	//test
+	ManageWidget *_manageWidget;
 };
 
 

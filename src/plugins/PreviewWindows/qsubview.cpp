@@ -75,6 +75,9 @@ QSubView::QSubView(QWidget *parent)
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
 	m_HistoryRenderInfo.pData=NULL;
+	//test
+	_manageWidget=new ManageWidget(this);
+	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
 }
 
 QSubView::~QSubView()
@@ -427,10 +430,22 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	if (0!=m_IVideoRender->setRenderWnd(this))
+	if (0!=m_IVideoRender->setRenderWnd(_manageWidget->GetWidgetForVideo()))
 	{
 		return 1;
 	}
+	//设置录像状态回到函数
+	if (NULL!=m_pRecorder)
+	{
+		m_pRecorder->QueryInterface(IID_IEventRegister,(void**)&pRegist);
+		if (NULL!=pRegist)
+		{
+			pRegist->registerEvent("RecordState",cbRecordState,this);
+			pRegist->Release();
+			pRegist=NULL;
+		}
+	}
+
 	return 0;
 }
 int QSubView::PrevPlay(QVariantMap evMap)
@@ -791,6 +806,17 @@ int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 	return 1;
 }
 
+int cbRecordState( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="RecordState")
+	{
+		((QSubView*)pUser)->RecordState(evMap);
+		return 0;
+	}
+	else
+		return 1;
+}
+
 int QSubView::StartRecord()
 {
 	if (NULL == m_pRecorder || m_bIsAutoRecording)
@@ -860,6 +886,14 @@ void QSubView::OnCheckTime()
 		if (NULL == m_pRecordTime)
 		{
 			return;
+		}else{
+			IEventRegister *registe=NULL;
+			m_pRecordTime->QueryInterface(IID_IEventRegister,(void**)&registe);
+			if (NULL!=registe)
+			{
+				registe->registerEvent("RecordState",cbRecordState,this);
+				registe->Release();
+			}
 		}
 	}
 
@@ -917,7 +951,7 @@ void QSubView::OnCheckTime()
 				continue;
 			}
 			currentTime = QTime::currentTime();
-			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime)
+			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime&&m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
 			{
 				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
@@ -1104,3 +1138,24 @@ void QSubView::SetCurrentFocus( bool focus)
 	m_bIsFocus=focus;
 	
 }
+
+void QSubView::resizeEvent( QResizeEvent * )
+{
+	_manageWidget->resize(this->size());
+}
+
+void QSubView::RecordState( QVariantMap evMap )
+{
+	if (_manageWidget->GetRecordItem()!=NULL)
+	{
+		if (evMap.value("RecordState").toBool()==true)
+		{
+			emit RecordStateSignals(true);
+		}
+		else{
+			emit RecordStateSignals(false);
+		}
+	}
+}
+
+

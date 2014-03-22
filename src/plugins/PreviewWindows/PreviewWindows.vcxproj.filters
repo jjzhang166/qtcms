@@ -89,6 +89,21 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QSubViewObject.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ManageWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ManageWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ManageWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Qqwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="widgetforvideo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="previewwindows_global.h">
@@ -109,6 +124,12 @@
     <ClInclude Include="PreviewWindowsGlobalSetting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Qqwidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="widgetforvideo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="previewwindows.h">
@@ -127,6 +148,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="QSubViewObject.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ManageWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
