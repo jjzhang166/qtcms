@@ -1,3 +1,0 @@
-LIBRARY "previewwindowstest.dll"
-EXPORTS
-	CreateInstance @1
