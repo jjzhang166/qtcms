@@ -271,7 +271,9 @@ bool RemoteBackup::createFile()
 		//QString touic=codec->fromUnicode(fullname);
 		//QString uic=codec->toUnicode(touic.toLatin1());
 		//AviFile = AVI_open_output_file(uic.toLatin1().data());
-		AviFile = AVI_open_output_file(fullname.toAscii().data());
+		QTextCodec * codec = QTextCodec::codecForLocale();
+		QByteArray byAyFullName = codec->fromUnicode(fullname);
+		AviFile = AVI_open_output_file(byAyFullName.data());
 		if (NULL == AviFile) 
 			return false;
 
