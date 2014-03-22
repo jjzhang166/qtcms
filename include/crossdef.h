@@ -6,6 +6,7 @@
 #define __cdecl
 #endif
 
+<<<<<<< HEAD
 #ifndef EXTERN_C
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
@@ -14,4 +15,6 @@
 #endif
 #endif
 
+=======
+>>>>>>> Add cross definations.
 #endif // CROSSDEF_H
