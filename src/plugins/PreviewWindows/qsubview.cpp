@@ -2,7 +2,6 @@
 #include <guid.h>
 #include <QtGui/QPainter>
 #include <QPoint>
-
 #include <QtCore>
 #include <QSettings>
 #include <QMouseEvent>
