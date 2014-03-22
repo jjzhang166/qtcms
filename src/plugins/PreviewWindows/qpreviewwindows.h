@@ -64,6 +64,7 @@ public slots:
 	int SetDevInfo(const QString&devname,int nChannelNum,int nWndID);
 
 	int SetVolume(unsigned int uiPersent);
+	int AudioEnabled(bool bEnabled);
 
 private:
 	QSubView m_PreviewWnd[64];

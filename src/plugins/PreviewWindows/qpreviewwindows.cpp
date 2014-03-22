@@ -377,3 +377,9 @@ int QPreviewWindows::SetVolume(unsigned int uiPersent)
 	int index = m_PreviewWnd[m_CurrentWnd].getCurWind() - m_PreviewWnd;
 	return m_PreviewWnd[index].SetVolume(uiPersent);
 }
+
+int QPreviewWindows::AudioEnabled(bool bEnabled)
+{
+	int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);
+	return nRet;
+}

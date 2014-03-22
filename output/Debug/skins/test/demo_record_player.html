@@ -141,22 +141,50 @@ function GetNowPlayedTime() {
 
 function addFourChannel() {
 	var obj = document.getElementById('windows');
-	var fileList1 = "F:/JAREC/2014-01-14/1000/CHL01/095756.avi,F:/JAREC/2014-01-14/1000/CHL01/095820.avi,F:/JAREC/2014-01-14/1000/CHL01/175938.avi,F:/JAREC/2014-01-14/1000/CHL01/194612.avi";
-	var fileList2 = "F:/JAREC/2014-01-14/1000/CHL02/095816.avi,F:/JAREC/2014-01-14/1000/CHL02/095827.avi,F:/JAREC/2014-01-14/1000/CHL02/145417.avi,F:/JAREC/2014-01-14/1000/CHL02/145636.avi";
-	var fileList3 = "F:/JAREC/2014-01-14/1000/CHL03/145426.avi,F:/JAREC/2014-01-14/1000/CHL03/145437.avi,F:/JAREC/2014-01-14/1000/CHL03/145630.avi,F:/JAREC/2014-01-14/1000/CHL03/145646.avi";
-	var fileList4 = "F:/JAREC/2014-01-14/1000/CHL04/095813.avi,F:/JAREC/2014-01-14/1000/CHL04/095832.avi,F:/JAREC/2014-01-14/1000/CHL04/145419.avi,F:/JAREC/2014-01-14/1000/CHL04/145645.avi";
+	var fileList1 = "D:/JAREC/2014-03-18/224043861/CHL01/141628.avi";
+	var fileList2 = "D:/JAREC/2014-03-18/224043861/CHL02/141625.avi";
+	var fileList3 = "D:/JAREC/2014-03-18/224043861/CHL03/141628.avi";
+	var fileList4 = "D:/JAREC/2014-03-18/224043861/CHL04/141628.avi";
 	
 	alert("addFourChannel");
-	obj.AddFileIntoPlayGroup(fileList1, 0, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
-	obj.AddFileIntoPlayGroup(fileList2, 1, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
-	obj.AddFileIntoPlayGroup(fileList3, 2, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
-	obj.AddFileIntoPlayGroup(fileList4, 3, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList1, 0, "2014-03-18 14:16:28", "2014-03-18 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList2, 1, "2014-03-18 14:16:28", "2014-03-18 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList3, 2, "2014-03-18 14:16:28", "2014-03-18 23:59:59");
+	obj.AddFileIntoPlayGroup(fileList4, 3, "2014-03-18 14:16:28", "2014-03-18 23:59:59");
 
 // 	var fileList1 = "F:/JAREC/2014-01-14/1000/CHL01/095756.avi,F:/JAREC/2014-01-14/1000/CHL01/095820.avi,F:/JAREC/2014-01-14/1000/CHL01/175938.avi,F:/JAREC/2014-01-14/1000/CHL01/194612.avi";
 // 	obj.AddFileIntoPlayGroup(fileList1, 0, "2014-01-14 00:00:00", "2014-01-14 23:59:59");
 
 }
 
+function SetVolume(){
+	var obj = document.getElementById('windows');
+	var uiVolume = document.getElementById('volume');
+	
+	alert('SetVolume');
+	obj.GroupSetVolume(parseInt(uiVolume.value));
+}
+
+var bOpened = false;
+function AudioEnabled(){
+	var obj = document.getElementById('windows');
+	var auButton = document.getElementById('audioSwitch');
+	
+	if(bOpened)
+	{
+		alert("close audio");
+		auButton.value = "open audio";
+		bOpened = false;
+	}
+	else
+	{
+		alert("open audio");
+		auButton.value = "close audio";
+		bOpened = true;
+	}
+	
+	obj.AudioEnabled(bOpened);
+}
 </script>
 </head>
 
@@ -185,11 +213,13 @@ function addFourChannel() {
 		<td>sSearchEndTime</td>
 		<td><input type="text" id="sSearchEndTime" value="23:59:59"/></td>
         <td><button onclick="SetSynGroupNum()">SetSynGroupNum</button></td>
+        <td><button onclick="SetVolume()">SetVolume</button></td>
 	</tr>
 	<tr>
 		<td>schannellist</td>
 		<td><input type="text" id="schannellist" value="1;"/></td>
         <td><button onclick="AddFileIntoPlayGroup()">AddFileIntoPlayGroup</button></td>
+		<td><input type="button" id="audioSwitch" onclick="AudioEnabled()" value="open audio"/></td>
 	</tr>
 	<tr>
 		<td>fileList</td>
@@ -222,8 +252,8 @@ function addFourChannel() {
         <td><button onclick="GroupSpeedSlow()">GroupSpeedSlow</button></td>
 	</tr>
 	<tr>
-    	<td></td>
-		<td></td>
+    	<td>volume</td>
+		<td><input type="text" id="volume" value="100"/></td>
         <td><button onclick="GroupSpeedNormal()">GroupSpeedNormal</button></td>
 	</tr>
 	<tr>

@@ -62,6 +62,7 @@ public:
 	int SetPlayWnd(int nWnd);
 	int SetVolume(unsigned int uiPersent);
 	QSubView* getCurWind();
+	int AudioEnabled(bool bEnabled);
 
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,

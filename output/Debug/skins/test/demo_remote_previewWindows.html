@@ -104,8 +104,29 @@ function setVolum(){
 	
 	alert(volume);
 	obj.SetVolume(parseInt(volume.value));
-
 }
+
+var bOpened = false;
+function AudioEnabled(){
+	var obj = document.getElementById('windows');
+	var auButton = document.getElementById('audioSwitch');
+	
+	if(bOpened)
+	{
+		alert("close audio");
+		auButton.value = "open audio";
+		bOpened = false;
+	}
+	else
+	{
+		alert("open audio");
+		auButton.value = "close audio";
+		bOpened = true;
+	}
+	
+	obj.AudioEnabled(bOpened);
+}
+
 </script>
 
 </head>
@@ -172,6 +193,7 @@ function setVolum(){
     <td>volume</td>
     <td><input type="text" id="volume" value="0"/></td>
     <td><button onclick="StartRecord()">StartRecord</button></td>
+    <td><input type="button" id="audioSwitch" onclick="AudioEnabled()" value="open audio"/></td>
 	<td><button onclick="setVolum()">setVolum</button></td>
   </tr>
   <tr>

@@ -6,8 +6,8 @@
 #include "rSubview.h"
 
 RSubView* RSubView::m_pCurView = NULL;
-bool RSubView::m_bIsAudioOpen = false;
-
+bool RSubView::m_bLocalAudioStatus = false;
+bool RSubView::m_bGlobalAudioStatus = false;
 
 RSubView::RSubView(QWidget *parent)
 	: QWidget(parent),
@@ -84,7 +84,11 @@ void RSubView::OnRMousePressMenu()
 
 void RSubView::OnOpenAudio()
 {
-	if (!m_bIsAudioOpen)
+	if (!m_bGlobalAudioStatus)
+	{
+		return;
+	}
+	if (!m_bLocalAudioStatus)
 	{
 		if (NULL == m_pRemotePlayBack)
 		{
@@ -94,10 +98,10 @@ void RSubView::OnOpenAudio()
 		m_pRemotePlayBack->GroupEnableAudio(true);
 
 		m_ActionOpenAudio->setText("close audio");
-		m_bIsAudioOpen = true;
+		m_bLocalAudioStatus = true;
 		m_pCurView = this;
 	}
-	else
+	else if (NULL != m_pCurView)
 	{
 		if (m_pCurView == this)
 		{
@@ -108,7 +112,7 @@ void RSubView::OnOpenAudio()
 			m_pRemotePlayBack->GroupEnableAudio(false);
 
 			m_ActionOpenAudio->setText("open audio");
-			m_bIsAudioOpen = false;
+			m_bLocalAudioStatus = false;
 			m_pCurView = NULL;
 		}
 		else
@@ -124,6 +128,21 @@ void RSubView::OnOpenAudio()
 void RSubView::setAudioHint(QString &statement)
 {
 	m_ActionOpenAudio->setText(statement);
+}
+
+bool RSubView::AudioEnabled(bool bEnabled)
+{
+	m_bGlobalAudioStatus = bEnabled;
+	if (!bEnabled && NULL != m_pRemotePlayBack && m_bLocalAudioStatus)
+	{
+		emit ChangeAudioHint(QString("open audio"), m_pCurView);
+
+		m_pRemotePlayBack->GroupEnableAudio(false);
+		m_bLocalAudioStatus = false;
+		m_pCurView = NULL;
+	}
+	
+	return true;
 }
 
 void RSubView::SetCurConnectState( CConnectStatus::__enConnectStatus parm )

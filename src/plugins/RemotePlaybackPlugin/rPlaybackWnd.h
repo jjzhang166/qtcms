@@ -41,7 +41,7 @@ public slots:
     int   GroupPause();
     int   GroupContinue();
     int   GroupStop();
-//    bool  GroupEnableAudio(bool bEnable);
+   bool  GroupEnableAudio(bool bEnable);
 	int   GroupSetVolume(const unsigned int &uiPersent);
     int   GroupSpeedFast() ;
     int   GroupSpeedSlow();
