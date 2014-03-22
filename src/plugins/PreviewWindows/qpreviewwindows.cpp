@@ -22,7 +22,6 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 		connect(&m_PreviewWnd[i],SIGNAL(mousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowRmousePress(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
 		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(QVariantMap,QWidget *)),this,SLOT(CurrentStateChangePlugin(QVariantMap,QWidget *)));
-		connect(&m_PreviewWnd[i], SIGNAL(ChangeAudioHint(QString, QSubView*)), this, SLOT(ChangeAudioHint(QString, QSubView*)));
 
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);
 	}
@@ -365,11 +364,6 @@ int QPreviewWindows::SetDevChannelInfo( unsigned int uiWndIndex,int ChannelId )
 	return m_PreviewWnd[uiWndIndex].SetDevChannelInfo(ChannelId);
 }
 
-void QPreviewWindows::ChangeAudioHint(QString statement, QSubView* wind)
-{
-	int index = wind - m_PreviewWnd;
-	m_PreviewWnd[index].ChangAudioHint(statement);
-}
 
 
 int QPreviewWindows::SetVolume(unsigned int uiPersent)

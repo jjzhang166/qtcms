@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 #include <QtXml/QtXml>
 
-bool QSubView::m_bIsAudioOpend = true;
+bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
 
@@ -34,7 +34,6 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsForbidConnect(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
-	m_QActionOpenAudio(NULL),
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
@@ -70,8 +69,6 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
 
-	m_QActionOpenAudio = m_RMousePressMenu.addAction("open audio");
-	connect(m_QActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
 
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
@@ -290,6 +287,10 @@ void QSubView::mousePressEvent(QMouseEvent *ev)
 	}
 	emit mousePressEvent(this,ev);
 	emit SetCurrentWindSignl(this);
+	if (m_bIsAudioOpend)
+	{
+		m_pCurrView = this;
+	}
 }
 
 int QSubView::GetCurrentWnd()
@@ -373,8 +374,7 @@ int QSubView::CloseWndCamera()
 	
 	m_nSampleRate = 0;
 	m_nSampleWidth = 0;
-	m_QActionOpenAudio->setText("open audio");
-	m_bIsAudioOpend = true;
+	m_bIsAudioOpend = false;
 
 	return 0;
 }
@@ -696,9 +696,13 @@ void QSubView::OnCloseFromMouseEv()
 	CloseWndCamera();
 }
 
-void QSubView::OnOpenAudio()
+QSubView* QSubView::getCurWind()
 {
-	if (!m_bIsAudioOpend)
+	return m_pCurrView;
+}
+int QSubView::AudioEnabled(bool bEnabled)
+{
+	if (bEnabled)
 	{
 		//申请IAudioPlayer接口
 		pcomCreateInstance(CLSID_AudioPlayer,NULL,IID_IAudioPlayer,(void **)&m_pAudioPlayer);
@@ -706,58 +710,22 @@ void QSubView::OnOpenAudio()
 		{
 			m_pAudioPlayer->EnablePlay(true);
 		}
-		m_QActionOpenAudio->setText("close audio");
 		m_bIsAudioOpend = true;
-		m_pCurrView = this;
 	}
-	else if (NULL != m_pCurrView)
+	else
 	{
-		if(m_pCurrView == this)
+		if (NULL != m_pAudioPlayer)
 		{
-			if (NULL != m_pAudioPlayer)
-			{
-				m_pAudioPlayer->Stop();
-				m_pAudioPlayer->Release();
-				m_pAudioPlayer = NULL;
-			}
-			m_QActionOpenAudio->setText("open audio");
+			m_pAudioPlayer->Stop();
+			m_pAudioPlayer->Release();
+			m_pAudioPlayer = NULL;
 			m_bIsAudioOpend = false;
+			m_pCurrView = NULL;
 			m_nSampleRate = 0;
 			m_nSampleWidth = 0;
-			m_pCurrView = NULL;
 		}
-		else
-		{
-			emit ChangeAudioHint(QString("open audio"), m_pCurrView);
-
-			m_pCurrView = this;
-			m_QActionOpenAudio->setText("close audio");
-		}
-	}
-}
-QSubView* QSubView::getCurWind()
-{
-	return m_pCurrView;
-}
-int QSubView::AudioEnabled(bool bEnabled)
-{
-	if (bEnabled && !m_bIsAudioOpend)
-	{
-		return 1;
-	}
-	m_bIsAudioOpend = bEnabled ? false : true;
-	if (!bEnabled && NULL != m_pAudioPlayer)
-	{
-		m_pAudioPlayer->Stop();
-		m_pAudioPlayer->Release();
-		m_pAudioPlayer = NULL;
-		emit ChangeAudioHint(QString("open audio"), m_pCurrView);
 	}
 	return 0;
-}
-void QSubView::ChangAudioHint(const QString &statement)
-{
-	m_QActionOpenAudio->setText(statement);
 }
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 {

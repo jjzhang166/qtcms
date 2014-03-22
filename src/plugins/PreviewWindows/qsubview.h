@@ -80,7 +80,6 @@ public:
 	int SetDeviceByVendor(const QString & sVendor);
 	void SetCurrentFocus(bool);
 	void RecordState(QVariantMap evMap);
-	void ChangAudioHint(const QString &statement);
 private:
 	int cbInit();
 	
@@ -93,7 +92,6 @@ public slots:
 		void OnConnectting();
 		void OnDisConnecting();
 		void OnDisConnected();
-		void OnOpenAudio();
 		
 		void OnRenderHistoryPix();
 		void OnCheckTime();
@@ -114,7 +112,6 @@ signals:
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
 		void RecordStateSignals(bool );
-		void ChangeAudioHint(QString, QSubView*);
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
 	RecordDevInfo m_RecordDevInfo;
@@ -154,7 +151,6 @@ private:
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
-	QAction *m_QActionOpenAudio;
 	//正在连接和正在断开，刷新图片的计数
 	int m_nCountDisConnecting;
 	int m_CountConnecting;
