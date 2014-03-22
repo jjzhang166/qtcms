@@ -6,6 +6,7 @@
 
 #include <QDebug>
 
+
 IAudioPlayer* PlayManager::m_pAudioPlayer = NULL;
 PlayManager* PlayManager::m_pCurView = NULL;
 
@@ -20,7 +21,7 @@ m_ui64TSP(0),
 m_uiCurrentFrameTime(0),
 m_pRenderWnd(NULL),
 m_speed(SpeedNomal),
-m_nSpeedRate(1),
+m_nSpeedRate(0),
 m_bPause(false),
 m_bFirstFrame(true),
 m_bRendFinished(false),
@@ -84,17 +85,18 @@ void PlayManager::setPlaySpeed(int types, int speedRate)
 	if (1 == types)
 	{
 		m_speed = SpeedFast;
+		m_nSpeedRate = 0;
 	}
 	else if (2 == types)
 	{
 		m_speed = SpeedSlow;
+		m_nSpeedRate = speedRate;
 	}
 	else
 	{
 		m_speed = SpeedNomal;
+		m_nSpeedRate = 0;
 	}
-
-	m_nSpeedRate = speedRate;
 }
 
 int PlayManager::getPlayTime()
@@ -117,6 +119,7 @@ void PlayManager::stop()
 	m_uiCurrentFrameTime = 0;
 	m_pRenderWnd = NULL;
 	m_speed = SpeedNomal;
+	m_nSpeedRate = 0;
 	m_bPause = false;
 	m_bFirstFrame = true;
 
@@ -127,6 +130,7 @@ void PlayManager::run()
 	QElapsedTimer frameTimer;
 	unsigned int nLength = 0;
 	char * lpdata = NULL;
+	qint64 spend = 0;
 
 	while(!m_bStop)
 	{
@@ -190,27 +194,13 @@ void PlayManager::run()
 		}
 
 		m_uiCurrentFrameTime = recStream.uiGenTime;
-		int waitSeconds = 0;
-		if (SpeedNomal == m_speed)
+
+		int offsets = 1000000/recStream.uiFrameRate;
+		qint64 waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
+		qint64 before = frameTimer.nsecsElapsed()/1000;
+		if (SpeedFast != m_speed && waitSeconds > 0)
 		{
-			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000;
-			if (waitSeconds > 0)
-			{
-				usleep(waitSeconds);
-			}
-		}
-		else if (SpeedSlow == m_speed)
-		{
-			int offsets = 1000000/recStream.uiFrameRate;
-			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
-			if (waitSeconds > 0)
-			{
-				usleep(waitSeconds);
-			}
-		}
-		else
-		{
-			//fast play
+			usleep(waitSeconds - frameTimer.nsecsElapsed()/1000 + before - spend);
 		}
 
 		m_ui64TSP = recStream.ui64TSP;
@@ -220,11 +210,14 @@ void PlayManager::run()
 		{
 			return;
 		}
+
+		spend = frameTimer.nsecsElapsed()/1000 - before - waitSeconds;
+
 		m_pVedioDecoder->decode(lpdata, nLength);
+		frameTimer.start();
+
 		delete lpdata;
 		lpdata = NULL;
-
-		frameTimer.start();
 	}
 
 	m_bStop = false;

@@ -182,6 +182,7 @@ void PlayMgr::run()
 			QElapsedTimer frameTimer;
 			int lastTime = 0;
 			bool bIsPlayTimeChg = false;
+			qint64 spend = 0;
 
 			char vedioBuff[1280*720];
 			memset(vedioBuff, 0 , sizeof(vedioBuff));
@@ -219,20 +220,6 @@ void PlayMgr::run()
 
 				AVI_set_video_position(file, frame);
 				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
-				//play audio
-				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
-				{
-					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
-					{
-						m_nAudioChl = nAudioChl;
-						m_nSampleRate = nSampleRate;
-						m_nSampleWidth = nSampleWidth;
-						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
-					}
-					bytes = AVI_audio_size(file, frame);
-					AVI_read_audio(file, audioBuff, bytes);
-					m_pAudioPlayer->Play(audioBuff, (int)bytes);
-				}
 
 				if (0 == isKeyFrame && isPlayInMid)
 				{
@@ -254,13 +241,30 @@ void PlayMgr::run()
 					continue;
 				}
 
+				//play audio
+				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
+				{
+					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
+					{
+						m_nAudioChl = nAudioChl;
+						m_nSampleRate = nSampleRate;
+						m_nSampleWidth = nSampleWidth;
+						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
+					}
+					bytes = AVI_audio_size(file, frame);
+					AVI_read_audio(file, audioBuff, bytes);
+					m_pAudioPlayer->Play(audioBuff, (int)bytes);
+				}
+
 				int waitmilliSeconds = 0;
 				waitmilliSeconds = 1000000/frameRate - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*10*1000;
-				if (waitmilliSeconds > 0)
+				qint64 before = frameTimer.nsecsElapsed()/1000;
+				if (waitmilliSeconds - spend > 0)
 				{
-					usleep(waitmilliSeconds);
+					usleep(waitmilliSeconds - spend);
 				}
-				
+				spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
+
 				m_pVedioDecoder->decode(vedioBuff, length);
 				frameTimer.start();
 				//count current play time;
