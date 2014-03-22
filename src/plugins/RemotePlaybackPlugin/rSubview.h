@@ -13,11 +13,11 @@
 #include <IDeviceConnection.h>
 #include <IDeviceRemotePlayback.h>
 #include <QTimer>
-
+#include <QPixmap>
 
 #include <QMenu>
 #include <QAction>
-
+#include <QLabel>
 
 class RSubView :public QWidget
 {
@@ -48,7 +48,7 @@ public:
 	bool AudioEnabled(bool bEnabled);
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
-
+	void saveCacheImage();
 
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
@@ -76,7 +76,7 @@ public slots:
 	void connecttingUpdateSlot();
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
-	void CacheStateSlotUpdate();
+	
 private:
 	static RSubView* m_pCurView;
 	static bool m_bLocalAudioStatus;
@@ -87,11 +87,16 @@ private:
 	QAction *m_ActionOpenAudio;
 
 	int _curCache;
-
+	QPixmap _cacheBackImage;
+	bool _bSaveCacheImage;
+	QLabel *_cacheLable;
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
+	void _cacheLableShow();
+	
+	
 };
 
 

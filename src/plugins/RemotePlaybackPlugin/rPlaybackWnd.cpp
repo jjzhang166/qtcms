@@ -236,6 +236,10 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 	}
 	_curConnectType=TYPE_STREAM;
 	nRet=m_RemotePlaybackObject.GroupPlay(nTypes,startTime,endTime);
+	QList<int>::Iterator it;
+	for(it=_widList.begin();it!=_widList.end();it++){
+		m_PlaybackWnd[*it].saveCacheImage();
+	}
 	return nRet;
 }
 

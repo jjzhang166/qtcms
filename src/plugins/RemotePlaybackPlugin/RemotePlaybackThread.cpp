@@ -110,6 +110,7 @@ void RemotePlaybackThread::GroupPlaySlots( int nTypes,const QString & startTime,
 		return;
 	}
 	nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
+	qDebug()<<nRet;
 	if (1==nRet)
 	{
 		m_nIDeviceClient->Release();
