@@ -146,12 +146,14 @@ void PlayManager::run()
 		RecordStreamFrame recStream;
 		memset(&recStream, 0, sizeof(RecordStreamFrame));
 
-
 		if (1 == m_pBufferManager->readStream(recStream))
 		{
-			m_pBufferManager->removeItem(&recStream);
+// 			qDebug()<<"---------- read error!";
+// 			m_pBufferManager->removeItem(&recStream);
 			continue;
 		}
+
+// 		qDebug("=====play===== pData: %p, length: %d, gmt: %d", recStream.pData, recStream.uiLength, recStream.ui64TSP);
 
 		if (0 == recStream.cFrameType && NULL != m_pAudioPlayer && m_pCurView == this)
 		{
@@ -198,13 +200,43 @@ void PlayManager::run()
 		}
 
 		m_uiCurrentFrameTime = recStream.uiGenTime;
+// 		qint64 waitSeconds = 0;
+// 		if (SpeedNomal == m_speed)
+// 		{
+// 			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000;
+// 			
+// 			qDebug()<<" =======preTSP:"<<m_ui64TSP<<" curTSP:"<<recStream.ui64TSP<<" waitS:"<<waitSeconds;
+// 			qint64 before = frameTimer.nsecsElapsed();
+// 			if (waitSeconds > 0)
+// 			{
+// 				usleep(waitSeconds);
+// 			}
+// 			spend = (frameTimer.nsecsElapsed() - before)/1000;
+// 			qDebug()<<" ----------- sleep spend :"<<spend<<" diff: "<<spend - temp;
+// 		}
+// 		else if (SpeedSlow == m_speed)
+// 		{
+// 			int offsets = 1000000/recStream.uiFrameRate;
+// 			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
+// 			if (waitSeconds > 0)
+// 			{
+// 				usleep(waitSeconds);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			//fast play
+// 		}
 
 		int offsets = 1000000/recStream.uiFrameRate;
 		qint64 waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
 		qint64 before = frameTimer.nsecsElapsed()/1000;
+// 		qDebug()<<"==== waitSeconds:"<<waitSeconds;
 		if (SpeedFast != m_speed && waitSeconds > 0)
 		{
-			usleep(waitSeconds - frameTimer.nsecsElapsed()/1000 + before - spend);
+			qint64 sec = waitSeconds - frameTimer.nsecsElapsed()/1000 + before - spend;
+			usleep( sec >= 0 ? sec : 0);
+// 			usleep(waitSeconds);
 		}
 
 		m_ui64TSP = recStream.ui64TSP;
@@ -216,6 +248,7 @@ void PlayManager::run()
 		}
 
 		spend = frameTimer.nsecsElapsed()/1000 - before - waitSeconds;
+// 		qDebug()<<"============== spend :"<<spend<<"  diff: "<<spend - waitSeconds;
 
 		m_pVedioDecoder->decode(lpdata, nLength);
 		frameTimer.start();

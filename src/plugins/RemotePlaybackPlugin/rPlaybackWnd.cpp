@@ -185,6 +185,7 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	{
 		goto finishSearch;
 	}
+	_curConnectType=TYPE_SEARCH;
 	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	return nRet;
 finishSearch:
@@ -233,6 +234,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 	{
 		return nRet;
 	}
+	_curConnectType=TYPE_STREAM;
 	nRet=m_RemotePlaybackObject.GroupPlay(nTypes,startTime,endTime);
 	return nRet;
 }
@@ -372,7 +374,7 @@ int  RPlaybackWnd::cbInit()
      pRegist->registerEvent(evName,cbRecFileSearchFinished,this);
      pRegist->Release();
 	 evName.clear();
-	 evName.append("CacheState");
+	 evName.append("bufferStatus");
 	 pRegist->registerEvent(evName,cbCacheState,this);
      pRegist=NULL;
 
@@ -466,7 +468,7 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 
  int cbCacheState(QString evName,QVariantMap evMap,void*pUser)
  {
-		 if (evName=="CacheState")
+		 if (evName=="bufferStatus")
 		 {
 			 ((RPlaybackWnd*)pUser)->CacheState(evMap);
 		 }
