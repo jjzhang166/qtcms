@@ -33,6 +33,7 @@ int cbFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 int cbSocketError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
+int cbCacheState(QString evName,QVariantMap evMap,void*pUser);
 
 //int  childThreadSearch(uint uiRecNum, QString& start,QString& end, QList<QVariantMap> &selectedList);
 

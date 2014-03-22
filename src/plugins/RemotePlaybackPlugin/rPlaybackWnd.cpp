@@ -21,7 +21,9 @@ m_uiRecFileSearched(0),
 m_DivMode(NULL),
 m_GroupPlayback(NULL),
 bIsInitFlags(false),
-bIsCaseInitFlags(false)
+bIsCaseInitFlags(false),
+_curConnectState(STATUS_DISCONNECTED),
+_curConnectType(TYPE_NULL)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -147,7 +149,8 @@ int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
     if (NULL != m_GroupPlayback)
     {
         nRet = m_GroupPlayback->AddChannelIntoPlayGroup(uiChannel, &m_PlaybackWnd[uiWndId]);
-    }
+		_widList<<uiWndId;
+	}
     else
     {
         bIsCaseInitFlags = false;
@@ -362,12 +365,15 @@ int  RPlaybackWnd::cbInit()
      }
      pRegist->registerEvent(evName,cbFoundFile,this);
      evName.clear();
-     evName.append("StateChangeed");
+     evName.append("CurrentStatus");
      pRegist->registerEvent(evName,cbStateChange,this);
      evName.clear();
      evName.append("recFileSearchFinished");
      pRegist->registerEvent(evName,cbRecFileSearchFinished,this);
      pRegist->Release();
+	 evName.clear();
+	 evName.append("CacheState");
+	 pRegist->registerEvent(evName,cbCacheState,this);
      pRegist=NULL;
 
      bIsInitFlags=true;
@@ -393,7 +399,26 @@ void RPlaybackWnd::SocketError( QVariantMap evMap )
 
 void RPlaybackWnd::StateChange( QVariantMap evMap )
 {
-
+	qDebug()<<evMap;
+	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
+	if (_curConnectState==STATUS_DISCONNECTED)
+	{
+		_widList.clear();
+	}
+	if (_curConnectType==TYPE_STREAM)
+	{
+		QList<int>::Iterator it;
+		for(it=_widList.begin();it!=_widList.end();it++){
+			m_PlaybackWnd[*it].SetCurConnectState((CConnectStatus::__enConnectStatus)_curConnectState);
+		}
+	}
+}
+void RPlaybackWnd::CacheState( QVariantMap evMap )
+{
+	QList<int>::iterator it;
+	for(it=_widList.begin();it!=_widList.end();it++){
+		m_PlaybackWnd[*it].CacheState(evMap);
+	}
 }
 
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
@@ -420,104 +445,33 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
 
  int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
  {
-     if (evName=="StateChangeed")
-     {
-		 ((RPlaybackWnd*)pUser)->StateChange(evMap);
-     }
-     return 1;
- }
- /*int checkChannel(QList<TimeInfo>& lstTimeInfo, uint& uiChannel)
- {
-	 int i = 0;
-     int nTmp = lstTimeInfo.size();
-	 while(i < nTmp)
+	 if (evName=="CurrentStatus")
 	 {
-		 if (lstTimeInfo[i].uiChannel == uiChannel)
-		 {
-			 return i;
-		 }
-		 i++;
+		 ((RPlaybackWnd*)pUser)->StateChange(evMap);
 	 }
-	 return 0;
- }*/
- /*int checkType(QList<Session>& lstTypeTime, uint& uiType)
- {
- int i = 0;
- int nTmp = lstTypeTime.size();
- while(i < nTmp)
- {
- if (lstTypeTime[i].uiType == uiType)
- {
- return i;
+	 return 1;
  }
- i++;
- }
- return 0;
- }*/
-// void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo)
-// {
-//     QDateTime start, end;
-//	 for (int i = 0; i < lstInfo.size(); ++i)
-//	 {
-//		 RecordInfo record = lstInfo.at(i);
-//		 int index = checkChannel(lstTimeInfo, record.uiChannel);
-//		 if (0 == index)
-//		 {
-//			 TimeInfo ti;
-//			 Session se;
-//			 ti.uiChannel = record.uiChannel;
-//			 se.uiType = record.uiTypes;
-//			 se.timeSession<<record.sStartTime<<record.sEndTime;
-//			 ti.lstTypeTime.append(se);
-//			 lstTimeInfo.append(ti);
-//			 continue;
-//		 }
-//		 else
-//		 {
-//			 int in = checkType(lstTimeInfo[index].lstTypeTime, record.uiTypes);
-//			 if (0 == in)
-//			 {
-//				 Session se;
-//				 se.uiType = record.uiTypes;
-//				 se.timeSession<<record.sStartTime<<record.sEndTime;
-//				 lstTimeInfo[index].lstTypeTime.append(se);
-//				 continue;
-//			 }
-//			 else
-//			 {
-//                 bool bExistFlag = false;
-//                 for (int j = 0; j < lstTimeInfo[index].lstTypeTime[in].timeSession.size(); j+=2)
-//                 {
-//                     start = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j);
-//                     end   = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j + 1);
-//                     if (end.addSecs(1) == record.sStartTime)
-//                     {
-//                         bExistFlag = false;
-//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j + 1, record.sEndTime);
-//                         break;
-//                     }
-//                     else if (record.sEndTime.addSecs(1) == start)
-//                     {
-//                         bExistFlag = false;
-//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j, record.sStartTime);
-//                         break;
-//                     }
-//                     else 
-//                     {
-//                         bExistFlag = true;
-//                     }
-//                 }
-//                 if (bExistFlag)
-//                 {
-//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sStartTime);
-//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sEndTime);
-//                 }
-//			 }
-//		 }
-//	 }
-//}
+ 
 
 
+
+
+
+
+
+
+
+
+
+
+ int cbCacheState(QString evName,QVariantMap evMap,void*pUser)
+ {
+		 if (evName=="CacheState")
+		 {
+			 ((RPlaybackWnd*)pUser)->CacheState(evMap);
+		 }
+		 return 1;
+ }
 void RPlaybackWnd::ChangeAudioHint(QString statement, RSubView* pWind)
 {
 	int index = pWind - m_PlaybackWnd;

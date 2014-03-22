@@ -56,6 +56,23 @@ public:
 	void  RecFileSearchFinished(QVariantMap evMap);
 	void  SocketError(QVariantMap evMap);
 	void  StateChange(QVariantMap evMap);
+	void  CacheState(QVariantMap evMap);
+
+	typedef enum __enConnectStatus{
+		STATUS_CONNECTED,
+		STATUS_CONNECTING,
+		STATUS_DISCONNECTED,
+		STATUS_DISCONNECTING,
+	}ConnectStatus;
+	typedef enum __enConnectType{
+		TYPE_NULL,
+		TYPE_SEARCH,
+		TYPE_STREAM,
+	}ConnectType;
+public:
+	ConnectStatus _curConnectState;
+	ConnectType _curConnectType;
+	QList<int> _widList;
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
