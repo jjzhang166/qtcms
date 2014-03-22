@@ -1090,7 +1090,7 @@ void QSubView::OnRenderHistoryPix()
 			m_IVideoRender->render(m_HistoryRenderInfo.pData,m_HistoryRenderInfo.pYdata,m_HistoryRenderInfo.pUdata,m_HistoryRenderInfo.pVdata,m_HistoryRenderInfo.iWidth,m_HistoryRenderInfo.iHeight,m_HistoryRenderInfo.iYStride,m_HistoryRenderInfo.iUVStride,m_HistoryRenderInfo.iLineStride,m_HistoryRenderInfo.iPixeFormat,m_HistoryRenderInfo.iFlags);
 			m_csRender.unlock();
 		}
-		m_bIsRenderHistory=true;
+		/*m_bIsRenderHistory=true;*/
 	}
 }
 

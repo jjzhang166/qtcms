@@ -270,12 +270,12 @@ int   RPlaybackWnd::GroupStop()
     } 
     return nRet;
 }
-bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
+bool  RPlaybackWnd::AudioEnabled(bool bEnable)
 {
     bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
     return bRet;
 }
-int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
+int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 {
     bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
     return bRet;
