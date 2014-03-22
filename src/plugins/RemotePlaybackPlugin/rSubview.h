@@ -109,9 +109,12 @@ private:
 	
 	
 
+	int _curCache;
+
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
+	void paintEventCache(QPaintEvent *);
 };
 
 
