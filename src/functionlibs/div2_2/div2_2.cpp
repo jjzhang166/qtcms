@@ -12,8 +12,8 @@ m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
 m_nTotalWindowsCount(0),
-m_nRow(2),
 m_nColumn(2),
+m_nRow(2),
 m_bIsMax(false)
 {
 
@@ -164,6 +164,7 @@ void div2_2::parentWindowResize( QResizeEvent *ev )
 
 void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
+    Q_UNUSED(ev);
 	int j ;
 	for ( j = 0; j < m_nSubWindowCount;j++)
 	{
