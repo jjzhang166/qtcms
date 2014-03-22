@@ -21,14 +21,16 @@ m_uiRecFileSearched(0),
 m_DivMode(NULL),
 m_GroupPlayback(NULL),
 bIsInitFlags(false),
-bIsCaseInitFlags(false),
-m_DeviceClient(NULL)
+bIsCaseInitFlags(false)
+// m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
 	{
 		m_PlaybackWnd[i].setParent(this);
 		connect(&m_PlaybackWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PlaybackWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_PlaybackWnd[i], SIGNAL(ChangeAudioHint(QString, RSubView*)), this, SLOT(ChangeAudioHint(QString, RSubView*)));
+
 		m_PlaybackWndList.insert(m_PlaybackWndList.size(),&m_PlaybackWnd[i]);
 	}
 
@@ -48,11 +50,11 @@ RPlaybackWnd::~RPlaybackWnd()
  		m_DivMode->Release();
  		m_DivMode = NULL;
  	}
-    if (m_DeviceClient != NULL)
-    {
-        m_DeviceClient->Release();
-        m_DeviceClient = NULL;
-    }
+//     if (m_DeviceClient != NULL)
+//     {
+//         m_DeviceClient->Release();
+//         m_DeviceClient = NULL;
+//     }
     if (m_GroupPlayback != NULL)
     {
         m_GroupPlayback->Release();
@@ -132,6 +134,7 @@ int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
 				{
 					m_PlaybackWnd[i].SetLpClient(m_GroupPlayback);
 				}
+
 				m_RemotePlaybackObject.SetIDeviceGroupRemotePlaybackParm(m_GroupPlayback);
                 bIsCaseInitFlags = true;
                 break;
@@ -251,14 +254,23 @@ int   RPlaybackWnd::GroupStop()
     } 
     return nRet;
 }
-bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
+// bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
+// {
+//     bool bRet = false;
+//     if (NULL != m_GroupPlayback)
+//     {
+//         bRet = m_GroupPlayback->GroupEnableAudio(bEnable);
+//     } 
+//     return bRet;
+// }
+int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
 {
-    bool bRet = false;
-    if (NULL != m_GroupPlayback)
-    {
-        bRet = m_GroupPlayback->GroupEnableAudio(bEnable);
-    } 
-    return bRet;
+	int nRet = -1;
+	if (NULL != m_GroupPlayback)
+	{
+		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, NULL);
+	}
+	return 0;
 }
 int   RPlaybackWnd::GroupSpeedFast() 
 {
@@ -496,3 +508,10 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
 //		 }
 //	 }
 //}
+
+
+void RPlaybackWnd::ChangeAudioHint(QString statement, RSubView* pWind)
+{
+	int index = pWind - m_PlaybackWnd;
+	m_PlaybackWnd[index].setAudioHint(statement);
+}

@@ -57,7 +57,7 @@ int AudioPlayer::SetVolume(unsigned int uiPersent)
 	{
 		return 1;
 	}
-	unsigned int volume = uiPersent * 0xFFFFFFFF /100;
+	unsigned int volume = uiPersent*(qint64)0xFFFFFFFF/100;
 	return m_pAudioDev->SetVolume(volume);
 }
 int AudioPlayer::Play(char *pBuffer,int nSize)
@@ -74,7 +74,7 @@ int AudioPlayer::Play(char *pBuffer,int nSize)
 	{
 		return 2;
 	}
-	char buffer[1024*128];
+	char buffer[1024*4];
 	memset(buffer, 0, sizeof(buffer));
 	int nLength = m_pAudioDec->Decode(buffer, pBuffer, nSize);
 	int nRet = m_pAudioDev->PlayBuffer(buffer, nLength);

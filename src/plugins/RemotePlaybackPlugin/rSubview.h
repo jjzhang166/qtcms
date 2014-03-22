@@ -13,6 +13,8 @@
 #include <IDeviceConnection.h>
 #include <IDeviceRemotePlayback.h>
 
+#include <QMenu>
+#include <QAction>
 
 class RSubView :public QWidget
 {
@@ -27,13 +29,28 @@ public:
 	virtual void mousePressEvent(QMouseEvent *);
 public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
+	void setAudioHint(QString&);
 
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
+	void RMousePressMenu();
+	void ChangeAudioHint(QString, RSubView*);
+
 public:    
 	Ui::titleview * ui;
 	IDeviceClient *m_LpClient;
+public slots:
+	void OnOpenAudio();
+	void OnRMousePressMenu();
+
+private:
+	static RSubView* m_pCurView;
+	static bool m_bIsAudioOpen;
+
+	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
+	QMenu m_rMousePressMenu;
+	QAction *m_ActionOpenAudio;
 };
 
 

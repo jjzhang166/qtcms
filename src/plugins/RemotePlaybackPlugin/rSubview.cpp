@@ -5,9 +5,14 @@
 #include <guid.h>
 #include "rSubview.h"
 
+RSubView* RSubView::m_pCurView = NULL;
+bool RSubView::m_bIsAudioOpen = false;
+
+
 RSubView::RSubView(QWidget *parent)
 	: QWidget(parent),
 	m_LpClient(NULL),
+	m_pRemotePlayBack(NULL),
 	ui(new Ui::titleview)
 {
 	this->lower();
@@ -16,6 +21,11 @@ RSubView::RSubView(QWidget *parent)
 	//QVBoxLayout *layout = new QVBoxLayout;
 	//layout->addWidget(ui->gridLayoutWidget);
 	//setLayout(layout);
+
+	m_ActionOpenAudio = m_rMousePressMenu.addAction("open audio");
+	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
+	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
+
 }
 
 RSubView::~RSubView()
@@ -103,6 +113,10 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
+	if (ev->button()==Qt::RightButton)
+	{
+		emit RMousePressMenu();
+	}
 }
 
 void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
@@ -112,6 +126,55 @@ void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
 		return;
 	}
 	m_GroupPlayback->QueryInterface(IID_IDeviceClient,(void**)&m_LpClient);
+	m_pRemotePlayBack = m_GroupPlayback;
 	return;
 }
 
+void RSubView::OnRMousePressMenu()
+{
+	m_rMousePressMenu.exec(QCursor::pos());
+}
+
+void RSubView::OnOpenAudio()
+{
+	if (!m_bIsAudioOpen)
+	{
+		if (NULL == m_pRemotePlayBack)
+		{
+			return;
+		}
+		m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
+		m_pRemotePlayBack->GroupEnableAudio(true);
+
+		m_ActionOpenAudio->setText("close audio");
+		m_bIsAudioOpen = true;
+		m_pCurView = this;
+	}
+	else
+	{
+		if (m_pCurView == this)
+		{
+			if (NULL == m_pRemotePlayBack)
+			{
+				return;
+			}
+			m_pRemotePlayBack->GroupEnableAudio(false);
+
+			m_ActionOpenAudio->setText("open audio");
+			m_bIsAudioOpen = false;
+			m_pCurView = NULL;
+		}
+		else
+		{
+			emit ChangeAudioHint(QString("open audio"), m_pCurView);
+			m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
+			m_pCurView = this;
+			m_ActionOpenAudio->setText("close audio");
+		}
+	}
+}
+
+void RSubView::setAudioHint(QString &statement)
+{
+	m_ActionOpenAudio->setText(statement);
+}

@@ -41,6 +41,25 @@ typedef struct _tagRecordAudioStream{
 	QByteArray sData;
 }RecordAudioStream;
 
-
+typedef struct _tagRecordStreamFrame{
+	uint uiLength;
+	char cFrameType;
+	char cChannel;
+	union{
+		uint uiAudioSampleRate;
+		uint uiWidth;
+	};
+	union{
+		char cAudioFormat[8];
+		uint uiHeight;
+	};
+	union{
+		uint uiAudioDataWidth;
+		uint uiFrameRate;
+	};
+	quint64 ui64TSP;
+	uint uiGenTime;
+	char* pData;
+}RecordStreamFrame;
 
 #endif // DEVICECLIENT_GLOBAL_H

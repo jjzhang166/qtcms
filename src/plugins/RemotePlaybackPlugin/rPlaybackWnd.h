@@ -41,7 +41,8 @@ public slots:
     int   GroupPause();
     int   GroupContinue();
     int   GroupStop();
-    bool  GroupEnableAudio(bool bEnable);
+//    bool  GroupEnableAudio(bool bEnable);
+	int   GroupSetVolume(const unsigned int &uiPersent);
     int   GroupSpeedFast() ;
     int   GroupSpeedSlow();
     int   GroupSpeedNormal();
@@ -58,12 +59,13 @@ public:
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
+	void ChangeAudioHint(QString, RSubView*);
 
 private:
 	RSubView         m_PlaybackWnd[4];
 	IWindowDivMode * m_DivMode;
     IDeviceGroupRemotePlayback * m_GroupPlayback;
-    IDeviceClient *  m_DeviceClient;
+//     IDeviceClient *  m_DeviceClient;
 	QList<QWidget *> m_PlaybackWndList;
     QList<QVariantMap>m_SelectedRecList;
 	RemotePlaybackObject m_RemotePlaybackObject;

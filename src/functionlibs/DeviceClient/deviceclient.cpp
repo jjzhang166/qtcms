@@ -7,6 +7,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_nChannels(0),
 	m_nSpeedRate(0),
 	m_nStartTimeSeconds(0),
+	m_channelWithAudio(-1),
 	m_DeviceConnectonBubble(NULL),
 	m_DeviceConnectonHole(NULL),
 	m_DeviceConnectonTurn(NULL),
@@ -813,19 +814,60 @@ bool DeviceClient::GroupEnableAudio(bool bEnable)
 	}
 
 	bool preStatus = false;
-	QMap<int, WndPlay>::iterator it;
-	for (it = m_groupMap.begin(); it != m_groupMap.end(); it++)
+	QMap<int, WndPlay>::iterator it = m_groupMap.find(m_channelWithAudio);
+	if (NULL == it->bufferManager || NULL == it->playManager)
 	{
-		BufferManager *pBuffer = it->bufferManager;
-		if (NULL == pBuffer)
-		{
-			continue;
-		}
-		preStatus = pBuffer->getAudioStatus();
-		pBuffer->audioSwitch(bEnable);
+		return false;
+	}
+	preStatus = it->bufferManager->getAudioStatus();
+// 	it->bufferManager->audioSwitch(bEnable);
+	it->playManager->AudioSwitch(bEnable);
+
+	if (!bEnable)
+	{	
+		it->bufferManager->audioSwitch(false);
+		m_channelWithAudio = -1;
 	}
 
 	return preStatus;
+}
+int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
+{
+	if (uiPersent < 0)
+	{
+		return 1;
+	}
+	QMap<int, WndPlay>::iterator it = m_groupMap.begin();
+	if (NULL == it->playManager)
+	{
+		return 1;
+	}
+
+	if (0xAECBCA == uiPersent)
+	{
+		while(it != m_groupMap.end())
+		{
+			if (it->wnd == pWnd)
+			{
+				break;
+			}
+			++it;
+		}
+		if (-1 != m_channelWithAudio)
+		{
+			WndPlay wnd = m_groupMap.value(m_channelWithAudio);
+			wnd.bufferManager->audioSwitch(false);
+		}
+		m_channelWithAudio = it.key();
+		it->playManager->setCurAudioWnd(it->playManager);
+		it->bufferManager->audioSwitch(true);
+
+	}
+	else
+	{
+		it->playManager->setVolume(uiPersent);
+	}
+	return 0;
 }
 int DeviceClient::GroupSpeedFast()
 {
@@ -902,14 +944,7 @@ int DeviceClient::recordFrame(QVariantMap &evMap)
 	{
 		return 1;
 	}
-	if (0 == evMap.value("frametype").toInt()  && pBuffer->getAudioStatus())
-	{
-		nRet = pBuffer->recordAudioStream(evMap);
-	}
-	else
-	{
-		nRet = pBuffer->recordVedioStream(evMap);
-	}
+	nRet = pBuffer->recordStream(evMap);
 
 	return nRet;
 }

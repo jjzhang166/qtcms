@@ -19,6 +19,9 @@
 #include <IEventRegister.h>
 #include <IRemoteBackup.h>
 #include "RemoteBackup.h"
+
+
+
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser);
@@ -67,6 +70,7 @@ public:
 	virtual int GroupContinue();
 	virtual int GroupStop();
 	virtual bool GroupEnableAudio(bool bEnable);
+	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd);
 	virtual int GroupSpeedFast();
 	virtual int GroupSpeedSlow();
 	virtual int GroupSpeedNormal();
@@ -123,6 +127,7 @@ private:
 	bool m_bGroupStop;
 	
 	RemoteBackup m_RemoteBackup;
+	int m_channelWithAudio;
 
 private:
 	int cbInit();

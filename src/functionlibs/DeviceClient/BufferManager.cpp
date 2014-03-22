@@ -2,6 +2,8 @@
 #include "GlobalSettings.h"
 #include <QDebug>
 
+
+
 BufferManager::BufferManager(void):
 m_bVedioBufferIsFull(false),
 m_bStopAudio(false)
@@ -11,71 +13,95 @@ m_bStopAudio(false)
 
 BufferManager::~BufferManager(void)
 {
-	if (!m_vedioStreamBuffer.isEmpty())
+	if (!m_StreamBuffer.isEmpty())
 	{
-		m_vedioStreamBuffer.clear();
+		emptyBuff();
 	}
 }
 
-int BufferManager::recordAudioStream(QVariantMap &evMap)
-{
-	//´ý¶¨
-	return 0;
-}
+// int BufferManager::recordAudioStream(QVariantMap &evMap)
+// {
+// 	//´ý¶¨
+// 	return 0;
+// }
 
-int BufferManager::recordVedioStream(QVariantMap &evMap)
+int BufferManager::recordStream(QVariantMap &evMap)
 {
 	if (evMap.isEmpty())
 	{
 		return 1;
 	}
 
-	if (100 == m_vedioStreamBuffer.size())
+	if (100 == m_StreamBuffer.size())
 	{
 		emit action(QString("StartPlay"), this);
 	}
 
-	if (1000 <= m_vedioStreamBuffer.size() && !m_bVedioBufferIsFull)
+	if (1000 <= m_StreamBuffer.size() && !m_bVedioBufferIsFull)
 	{
 		m_bVedioBufferIsFull = true;
 		emit action(QString("Pause"), this);
 	}
 
-	RecordVedioStream recVeStream;
-	recVeStream.uiLength = evMap.value("length").toUInt();
-	recVeStream.cFrameType = evMap.value("frametype").toUInt();
-	recVeStream.cChannel = evMap.value("channel").toUInt();
-	recVeStream.uiWidth = evMap.value("width").toInt();
-	recVeStream.uiHeight = evMap.value("height").toUInt();
-	recVeStream.uiFrameRate = evMap.value("framerate").toUInt();
-	recVeStream.ui64TSP = evMap.value("pts").toULongLong();
-	recVeStream.uiGenTime = evMap.value("gentime").toUInt();
-	recVeStream.sData.append((char*)evMap.value("data").toUInt(), recVeStream.uiLength);
+	RecordStreamFrame recStream;
+	int frameType = evMap["frametype"].toUInt();
+	if (0 == frameType)
+	{
+		if (!getAudioStatus())
+		{
+			return 0;
+		}
+		recStream.uiLength = evMap["length"].toUInt();
+		recStream.cFrameType = frameType;
+		recStream.cChannel = evMap["channel"].toUInt();
+		recStream.uiAudioSampleRate = evMap["audioSampleRate"].toUInt();
+// 		memcpy(recStream.cAudioFormat, (char*)(evMap["audioFormat"].toUInt()), sizeof(recStream.cAudioFormat));
+		recStream.uiAudioDataWidth = evMap["audioDataWidth"].toUInt();
+		recStream.ui64TSP = evMap["pts"].toULongLong();
+		recStream.uiGenTime = evMap["gentime"].toUInt();
 
-	m_vedioStreamBuffer.enqueue(recVeStream);
+		recStream.pData = new char[recStream.uiLength];
+		memcpy(recStream.pData, (char*)evMap["data"].toUInt(), recStream.uiLength);
+	}
+	else if (1 == frameType || 2 == frameType)
+	{
+		recStream.uiLength = evMap.value("length").toUInt();
+		recStream.cFrameType = evMap.value("frametype").toUInt();
+		recStream.cChannel = evMap.value("channel").toUInt();
+		recStream.uiWidth = evMap.value("width").toInt();
+		recStream.uiHeight = evMap.value("height").toUInt();
+		recStream.uiFrameRate = evMap.value("framerate").toUInt();
+		recStream.ui64TSP = evMap.value("pts").toULongLong();
+		recStream.uiGenTime = evMap.value("gentime").toUInt();
+		recStream.pData = new char[recStream.uiLength];
+		memcpy(recStream.pData, (char*)evMap["data"].toUInt(), recStream.uiLength);
+	}
+
+
+	m_StreamBuffer.enqueue(recStream);
 
 	return 0;
 }
 
-int BufferManager::readVedioStream(RecordVedioStream &streamInfo)
+int BufferManager::readStream(RecordStreamFrame &streamInfo)
 {
-	if (!m_vedioStreamBuffer.isEmpty())
+	if (!m_StreamBuffer.isEmpty())
 	{
-		if (1 == m_vedioStreamBuffer.size())
+		if (1 == m_StreamBuffer.size())
 		{
 			QMutex mutex;
 			mutex.lock();
-			streamInfo = m_vedioStreamBuffer.first();
-			m_vedioStreamBuffer.removeFirst();
+			streamInfo = m_StreamBuffer.first();
+			m_StreamBuffer.removeFirst();
 			mutex.unlock();
 		}
 		else
 		{
-			streamInfo = m_vedioStreamBuffer.first();
-			m_vedioStreamBuffer.removeFirst();
+			streamInfo = m_StreamBuffer.first();
+			m_StreamBuffer.removeFirst();
 		}
 
-		if (200 == m_vedioStreamBuffer.size() && m_bVedioBufferIsFull)
+		if (200 == m_StreamBuffer.size() && m_bVedioBufferIsFull)
 		{
 			m_bVedioBufferIsFull = false;
 			emit action(QString("Continue"), this);
@@ -90,9 +116,13 @@ int BufferManager::readVedioStream(RecordVedioStream &streamInfo)
 
 int BufferManager::emptyBuff()
 {
-	m_vedioStreamBuffer.clear();
-
-
+	RecordStreamFrame streamInfo;
+	while(!m_StreamBuffer.isEmpty())
+	{
+		streamInfo = m_StreamBuffer.takeAt(0);
+		delete streamInfo.pData;
+		streamInfo.pData = NULL;
+	}
 	return 0;
 }
 
@@ -108,5 +138,5 @@ bool BufferManager::getAudioStatus()
 
 int BufferManager::getVedioBufferSize()
 {
-	return m_vedioStreamBuffer.size();
+	return m_StreamBuffer.size();
 }

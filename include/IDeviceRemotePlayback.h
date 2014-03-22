@@ -39,6 +39,9 @@ interface IDeviceGroupRemotePlayback : IPComBase
 	// 返回值：返回之前的音频开关状态
 	virtual bool GroupEnableAudio(bool bEnable) = 0;
 
+	//设定指定窗口的音量
+	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd) = 0;
+
 	// 快放
 	virtual int GroupSpeedFast() = 0;
 

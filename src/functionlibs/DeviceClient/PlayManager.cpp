@@ -6,9 +6,16 @@
 
 #include <QDebug>
 
+IAudioPlayer* PlayManager::m_pAudioPlayer = NULL;
+PlayManager* PlayManager::m_pCurView = NULL;
+
+
+
 PlayManager::PlayManager(void):
 m_nInitWidth(0),
 m_nInitHeight(0),
+m_nSampleRate(0),
+m_nSampleWidth(0),
 m_ui64TSP(0),
 m_uiCurrentFrameTime(0),
 m_pRenderWnd(NULL),
@@ -16,6 +23,7 @@ m_speed(SpeedNomal),
 m_nSpeedRate(1),
 m_bPause(false),
 m_bFirstFrame(true),
+m_bRendFinished(false),
 m_bStop(false)
 {
 	//申请解码器接口
@@ -37,6 +45,10 @@ PlayManager::~PlayManager(void)
 
 	m_pVedioDecoder->Release();
 	m_pVedioDecoder = NULL;
+	if (!m_bRendFinished)
+	{
+		msleep(10);
+	}
 	m_pVedioRender->Release();
 	m_pVedioRender = NULL;
 }
@@ -112,8 +124,6 @@ void PlayManager::stop()
 
 void PlayManager::run()
 {
-	RecordAudioStream recAuStream;
-	RecordVedioStream recVeStream;
 	QElapsedTimer frameTimer;
 	unsigned int nLength = 0;
 	char * lpdata = NULL;
@@ -129,40 +139,61 @@ void PlayManager::run()
 			continue;
 		}
 
-		RecordVedioStream recVeStream;
-		recVeStream.sData.clear();
-		if (1 == m_pBufferManager->readVedioStream(recVeStream))
-		{
-			continue;
-		}
-		if (recVeStream.sData.isEmpty())
+		RecordStreamFrame recStream;
+		memset(&recStream, 0, sizeof(RecordStreamFrame));
+
+
+		if (1 == m_pBufferManager->readStream(recStream))
 		{
 			continue;
 		}
 
-		nLength = recVeStream.uiLength;
-		lpdata = recVeStream.sData.data();
+		if (0 == recStream.cFrameType && NULL != m_pAudioPlayer && m_pCurView == this)
+		{
+			int nSampleWidth = recStream.uiAudioDataWidth;
+			int nSampleRate = recStream.uiAudioSampleRate;
+			if (m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
+			{
+				m_nSampleWidth = nSampleWidth;
+				m_nSampleRate = nSampleRate;
+				m_pAudioPlayer->SetAudioParam(1, m_nSampleRate, m_nSampleWidth);
+			}
+			m_pAudioPlayer->Play(recStream.pData, recStream.uiLength);
+			delete recStream.pData;
+			recStream.pData = NULL;
+			continue;
+		}
+		if (NULL == recStream.pData)
+		{
+			continue;
+		}
+
+		nLength = recStream.uiLength;
+		lpdata = recStream.pData;
 
 		if (m_bFirstFrame)
 		{
-			m_ui64TSP = recVeStream.ui64TSP;
+			m_ui64TSP = recStream.ui64TSP;
 
 			if (NULL == m_pVedioDecoder)
 			{
 				return;
 			}
 			m_pVedioDecoder->decode(lpdata, nLength);//解码播放
+			delete lpdata;
+			lpdata = NULL;
+
 			m_bFirstFrame = false;
 
 			frameTimer.start();
 			continue;
 		}
 
-		m_uiCurrentFrameTime = recVeStream.uiGenTime;
+		m_uiCurrentFrameTime = recStream.uiGenTime;
 		int waitSeconds = 0;
 		if (SpeedNomal == m_speed)
 		{
-			waitSeconds = recVeStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000;
+			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000;
 			if (waitSeconds > 0)
 			{
 				usleep(waitSeconds);
@@ -170,8 +201,8 @@ void PlayManager::run()
 		}
 		else if (SpeedSlow == m_speed)
 		{
-			int offsets = 1000000/recVeStream.uiFrameRate;
-			waitSeconds = recVeStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
+			int offsets = 1000000/recStream.uiFrameRate;
+			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
 			if (waitSeconds > 0)
 			{
 				usleep(waitSeconds);
@@ -182,7 +213,7 @@ void PlayManager::run()
 			//fast play
 		}
 
-		m_ui64TSP = recVeStream.ui64TSP;
+		m_ui64TSP = recStream.ui64TSP;
 
 		//解码播放
 		if (NULL == m_pVedioDecoder)
@@ -190,6 +221,9 @@ void PlayManager::run()
 			return;
 		}
 		m_pVedioDecoder->decode(lpdata, nLength);
+		delete lpdata;
+		lpdata = NULL;
+
 		frameTimer.start();
 	}
 
@@ -203,6 +237,7 @@ int PlayManager::prePlay(QVariantMap item)
 		return 1;
 	}
 
+	m_bRendFinished = false;
 	char* pData=(char*)item.value("data").toUInt();
 	char* pYdata=(char*)item.value("Ydata").toUInt();
 	char* pUdata=(char*)item.value("Udata").toUInt();
@@ -224,8 +259,9 @@ int PlayManager::prePlay(QVariantMap item)
 
 	m_pVedioRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	
-	return 0;
+	m_bRendFinished = true;
 
+	return 0;
 }
 
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
@@ -237,4 +273,47 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 	}
 	else
 		return 1;
+}
+
+void PlayManager::AudioSwitch(bool enabled)
+{
+	if (enabled)
+	{
+		pcomCreateInstance(CLSID_AudioPlayer,NULL,IID_IAudioPlayer,(void **)&m_pAudioPlayer);
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->EnablePlay(true);
+			m_pCurView = this;
+		}
+	}
+	else
+	{
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->Stop();
+			m_pAudioPlayer->Release();
+			m_pAudioPlayer = NULL;
+			m_pCurView = NULL;
+			m_nSampleRate = 0;
+			m_nSampleWidth = 0;
+		}
+	}
+}
+
+int PlayManager::setVolume(unsigned int &uiPersent)
+{
+	if (NULL == m_pAudioPlayer || uiPersent < 0)
+	{
+		return 1;
+	}
+
+	return m_pAudioPlayer->SetVolume(uiPersent);
+}
+
+void PlayManager::setCurAudioWnd(PlayManager* curWnd)
+{
+	if (NULL != curWnd)
+	{
+		m_pCurView = curWnd;
+	}
 }

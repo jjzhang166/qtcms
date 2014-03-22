@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>settings</title>
+<title>demo_remote_playback</title>
 <script language="javascript" src="js/qframework.js" ></script>
 <script language="javascript">
 function Onload()
@@ -44,75 +44,44 @@ function GroupContinue() {
     alert('GroupContinue');
     obj.GroupContinue();
 }
-function AddChannelIntoPlayGroup() {
-    var obj = document.getElementById('windows');
-	var uiWndIndex=document.getElementById('uiWndIndex');
-	var sAddress=document.getElementById('sAddress');
-	var uiPort=document.getElementById('uiPort');
-	var sEseeId=document.getElementById('sEseeId');
-	var uiChannelId=document.getElementById('uiChannelId');
-	var uiStreamId=document.getElementById('uiStreamId');
-	var sUsername=document.getElementById('sUsername');
-	var sPassword = document.getElementById('sPassword');
-
-	alert('AddChannelIntoPlayGroup');
-	obj.AddChannelIntoPlayGroup(sAddress.value, parseInt(uiPort.value), sEseeId.value, parseInt(uiChannelId.value), parseInt(uiWndIndex.value));
+function setDeviceHostInfo(){
+        alert("setDeviceHostInfo");
+        var obj = document.getElementById('windows');
+        var sAddress=document.getElementById('sAddress');
+		var uiPort=document.getElementById('uiPort');
+		var sEseeId=document.getElementById('sEseeId');
+		obj.setDeviceHostInfo(sAddress.value,parseInt(uiPort.value),sEseeId.value);
+}
+function setDeviceVendor(){
+        alert("setDeviceVendor");
+        var obj = document.getElementById('windows');
+		var sVendor = document.getElementById('sVendor');
+		obj.setDeviceVendor(sVendor.value);
+}
+function setUserVerifyInfo(){
+        alert("setUserVerifyInfo");
+        var obj = document.getElementById('windows');
+		var sUsername=document.getElementById('sUsername');
+	    var sPassword = document.getElementById('sPassword');
+		obj.setUserVerifyInfo(sUsername.value,sPassword.value );
+}
+ function AddChannelIntoPlayGroup() {
+	    alert("AddChannelIntoPlayGroup");
+        var obj = document.getElementById('windows');
+		var uiWndIndex=document.getElementById('uiWndIndex');
+		var uiChannelId=document.getElementById('uiChannelId');
+		obj.AddChannelIntoPlayGroup(parseInt(uiWndIndex.value),parseInt(uiChannelId.value));
 }
 
-function OpenCamraInWnd() {
-    var obj = document.getElementById('windows');
-    var uiWndIndex = document.getElementById('uiWndIndex');
-    var sAddress = document.getElementById('sAddress');
-    var uiPort = document.getElementById('uiPort');
-    var sEseeId = document.getElementById('sEseeId');
-    var uiChannelId = document.getElementById('uiChannelId');
-    var uiStreamId = document.getElementById('uiStreamId');
-    var sUsername = document.getElementById('sUsername');
-    var sPassword = document.getElementById('sPassword');
-    var sCameraname = document.getElementById('sCameraname');
-    var sVendor = document.getElementById('sVendor');
-    alert(parseInt(uiWndIndex.value));
-    obj.OpenCameraInWnd(sAddress.value, parseInt(uiPort.value), sEseeId.value, parseInt(uiChannelId.value), parseInt(uiStreamId.value), sUsername.value, sPassword.value, sCameraname.value, sVendor.value);
-}
-function CloseWndCamera() {
-    var obj = document.getElementById('windows');
-    var uiWndIndex = document.getElementById('uiWndIndex');
-    alert('CloseWndCamera');
-    obj.CloseWndCamera(parseInt(uiWndIndex.value));
-}
 function startSearchRecFile() {
     var obj = document.getElementById('windows');
+	var uiChannelId = document.getElementById('uiChannelId');
     var nType = document.getElementById('nType');
     var startTime = document.getElementById('startTime');
     var endTime = document.getElementById('endTime');
 
-    var channels = 15;
-
     alert('startSearchRecFile');
-    obj.startSearchRecFile(parseInt(channels), parseInt(nType.value), startTime.value, endTime.value);
-}
-
-var timerID = null;
-var timerRunning = false;
-
-function startclock() {
-    stopclock();
-    GroupGetPlayedTime();
-}
-
-function stopclock() {
-    if (timerRunning)
-        clearTimeout(timerID);
-    timerRunning = false;
-}
-function GroupGetPlayedTime() {
-    var obj = document.getElementById('windows');
-   alert('GroupGetPlayedTime');
-    var timeValue;
-    obj.getGroupPlayedTime();
-    document.clock.playTime.value = timeValue;
-    timerID = setTimeout("GroupGetPlayedTime()", 1000);
-    timerRunning = true;
+    obj.startSearchRecFile(parseInt(uiChannelId), parseInt(nType.value), startTime.value, endTime.value);
 }
 
 function GroupPlay() {
@@ -122,39 +91,68 @@ function GroupPlay() {
     var endTime = document.getElementById('endTime');
 
     alert('GroupPlay');
-    obj.GroupPlay(parseInt(uiWndIndex.value), startTime, endTime);
+    obj.GroupPlay(parseInt(nType.value), startTime.value, endTime.value);
 }
 function GroupPause() {
     var obj = document.getElementById('windows');
     alert('GroupPause');
     obj.GroupPause();
 }
+
+function AddFourChannels(){
+        var obj = document.getElementById('windows');
+		var uiWndIndex=document.getElementById('uiWndIndex');
+		var uiChannelId=document.getElementById('uiChannelId');
+
+	alert('AddFourChannels');
+	obj.AddChannelIntoPlayGroup(parseInt(0),parseInt(1));
+	obj.AddChannelIntoPlayGroup(parseInt(1),parseInt(2));
+	obj.AddChannelIntoPlayGroup(parseInt(2),parseInt(3));
+	obj.AddChannelIntoPlayGroup(parseInt(3),parseInt(4));
+
+}
+
+function SetVolume(){
+	var obj = document.getElementById('windows');
+	var uiVolume = document.getElementById('uiVolume');
+	
+	alert('SetVolume');
+	obj.GroupSetVolume(parseInt(uiVolume.value));
+}
+
+
 </script>
 </head>
 
 <body onload="Onload()">
-  <object type="application/cms-remote-playback" id="windows" style="width:800; height:1000;"></object>
+  <object type="application/cms-remote-playback" id="windows" style="width:700px; height:500px;"></object>
 
 
-<table border="0" cellspacing="0" cellpadding="0" width="50%">
+<table border="0" cellspacing="0" cellpadding="0" width="75%">
 	<tr>
 		<td>uiWndIndex</td>
 		<td><input type="text" id="uiWndIndex" value="0"/></td>
         <td><button onclick="AddChannelIntoPlayGroup()">add channel into group</button></td>
+		<td></td>
+		<td></td>
+		<td><button onclick="AddFourChannels()">add four channels</button></td>
 	</tr>
 	<tr>
 		<td>sAddress</td>
-		<td><input type="text" id="sAddress" value="192.168.2.134"/></td>
+		<td><input type="text" id="sAddress" value="192.168.1.172"/></td>
         <td><button onclick="GroupPlay()">group play</button></td>
+		<td></td>
+		<td></td>
+		<td><button onclick="SetVolume()">set volume</button></td>
 	</tr>
 	<tr>
 		<td>uiPort</td>
-		<td><input type="text" id="uiPort" value="8785"/></td>
+		<td><input type="text" id="uiPort" value="80"/></td>
         <td><button onclick="GroupPause()">group pause</button></td>
 	</tr>
 	<tr>
 		<td>sEseeId</td>
-		<td><input type="text" id="sEseeId" value="0"/></td>
+		<td><input type="text" id="sEseeId" value="144565114"/></td>
         <td><button onclick="GroupContinue()">group continue</button></td>
 	</tr>
 	<tr>
@@ -163,8 +161,8 @@ function GroupPause() {
         <td><button onclick="GroupStop()">group stop</button></td>
 	</tr>
 	<tr>
-		<td>uiStreamId</td>
-		<td><input type="text" id="uiStreamId" value="0"/></td>
+		<td>uiVolume</td>
+		<td><input type="text" id="uiVolume" value="100"/></td>
         <td><button onclick="GroupSpeedFast()">group speed fast</button></td>
 	</tr>
 	<tr>
@@ -178,29 +176,30 @@ function GroupPause() {
         <td><button onclick="GroupSpeedNormal()">group speed normal</button></td>
 	</tr>
     <tr>
-		<td>sCameraname</td>
-		<td><input type="text" id="sCameraname" value="test"/></td>
-        <td><button onclick="OpenCamraInWnd()">open camera in wnd</button></td>
+		<td></td>
+		<td></td>
+        <td><button onclick="startSearchRecFile()">start search record file</button></td>
 	</tr>
     <tr>
 		<td>sVendor</td>
-		<td><input type="text" id="sVendor" value="JUAN IPC"/></td>
-        <td><button onclick="CloseWndCamera()">close wnd camera</button></td>
+		<td><input type="text" id="sVendor" value="JUAN DVR"/></td>
+        <td><button onclick="setDeviceVendor()">set Device Vendor</button></td>
 	</tr>
     <tr>
 		<td>nType</td>
 		<td><input type="text" id="nType" value="15"/></td>
-        <td><button onclick="startSearchRecFile()">start search record file</button></td>
+        <td><button onclick="setDeviceHostInfo()">set Device Host Info</button></td>
 	</tr>
 	<tr>
 		<td>startTime</td>
-		<td><input type="text" id="startTime" value="2013-12-20 08:00:00"/></td>
+		<td><input type="text" id="startTime" value="2014-03-10 14:30:00"/></td>
         <td><button onclick="GroupGetPlayedTime()">get play time</button></td>
         <td><form name="clock"><input type="text" name="playTime" size=20 value=""/></form></td>
 	</tr>
 	<tr>
 		<td>endTime</td>
-		<td><input type="text" id="endTime" value="2013-12-20 23:00:00"/></td>
+		<td><input type="text" id="endTime" value="2014-03-10 15:00:00"/></td>
+        <td><button onclick="setUserVerifyInfo()">set User Verify Info</button></td>
 	</tr>
 
 </table>

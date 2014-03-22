@@ -13,9 +13,9 @@ public:
 	BufferManager(void);
 	~BufferManager(void);
 
-	int recordAudioStream(QVariantMap &evMap);
-	int recordVedioStream(QVariantMap &evMap);
-	int readVedioStream(RecordVedioStream &streamInfo);
+// 	int recordAudioStream(QVariantMap &evMap);
+	int recordStream(QVariantMap &evMap);
+	int readStream(RecordStreamFrame &streamInfo);
 	void audioSwitch(bool mode);
 	bool getAudioStatus();
 	int getVedioBufferSize();
@@ -25,8 +25,8 @@ signals:
 public slots:
 
 private:
-	QQueue<RecordVedioStream> m_vedioStreamBuffer;
-	QQueue<RecordAudioStream> m_audioStreamBuffer;
+	QQueue<RecordStreamFrame> m_StreamBuffer;
+// 	QQueue<RecordAudioStream> m_audioStreamBuffer;
 	bool m_bVedioBufferIsFull;
 	bool m_bStopAudio;
 };

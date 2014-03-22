@@ -5,9 +5,10 @@
 #include "IVideoDecoder.h"
 #include "IVideoRender.h"
 #include "BufferManager.h"
-
+#include "IAudioPlayer.h"
 
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
+
 
 class PlayManager :
 	public QThread
@@ -22,6 +23,9 @@ public:
 	void stop();
 	int prePlay(QVariantMap item);
 	int getPlayTime();
+	void AudioSwitch(bool);
+	int setVolume(unsigned int &uiPersent);
+	void setCurAudioWnd(PlayManager* curWnd);
 
 	enum SpeedType{
 		SpeedNomal,
@@ -36,9 +40,13 @@ private:
 	bool m_bPause;
 	bool m_bStop;
 	bool m_bFirstFrame;
+	bool m_bRendFinished;
 	int m_nInitHeight;
 	int m_nInitWidth;
 	int m_nSpeedRate;
+	int m_nSampleRate;
+	int m_nSampleWidth;
+
 	SpeedType m_speed;
 	quint64 m_ui64TSP;
 	uint m_uiCurrentFrameTime;
@@ -46,6 +54,10 @@ private:
 	IVideoRender *m_pVedioRender;
 	BufferManager *m_pBufferManager;
 	QWidget* m_pRenderWnd;
+
+	static IAudioPlayer* m_pAudioPlayer;
+	static PlayManager* m_pCurView;
+
 private:
 	int initCb();
 
