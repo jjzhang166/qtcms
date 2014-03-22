@@ -5,17 +5,16 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QResizeEvent>
-Qqwidget::Qqwidget(QWidget *parent):QWidget(parent)
+Qqwidget::Qqwidget(QWidget *parent,QString pixdir):QWidget(parent),_pixdir(pixdir)
 {
 	setWindowFlags(Qt::FramelessWindowHint);
 	QPalette p=palette();
 	p.setColor(QPalette::WindowText,Qt::green);
 	setPalette(p);
 	
-	QString dir=QApplication::applicationDirPath();
-	dir.append("/qq.png");
-	bgpix.load(dir,0,Qt::AvoidDither|Qt::ThresholdDither|Qt::ThresholdAlphaDither); 
-	resize(bgpix.size());  
+
+	bgpix.load(pixdir,0,Qt::AvoidDither|Qt::ThresholdDither|Qt::ThresholdAlphaDither); 
+	resize(parent->size()/15);
 	setMask(QBitmap(bgpix.mask())); 
 	_parent=parent;
 }
@@ -28,17 +27,15 @@ Qqwidget::~Qqwidget(void)
 void Qqwidget::paintEvent( QPaintEvent* aEvent )
 {
 	QPainter painter(this);  
-	QString dir=QApplication::applicationDirPath();
-	dir.append("/qq.png");
-	painter.drawPixmap(0,0,QPixmap(dir).scaled(this->size()/2));  
+	QPixmap newbgpix=bgpix.scaled(this->width(),this->height());
+	painter.drawPixmap(0,0,newbgpix);  
 }
 
 void Qqwidget::resizeEvent( QResizeEvent *event )
 {
-	QPixmap newbgpix=bgpix.scaled(event->size()/2);
+	QPixmap newbgpix=bgpix.scaled(this->width(),this->height());
 	setMask(QBitmap(newbgpix.mask())); 
-	QSize parentSize=_parent->size();
-	move(parentSize.width()-this->width(),this->height());
+	move(_parent->width()-this->width()*_width,this->height());
 }
 
 void Qqwidget::mousePressEvent( QMouseEvent * event)
@@ -61,4 +58,10 @@ void Qqwidget::mouseMoveEvent( QMouseEvent *event )
 		/*move(event->globalPos()-dragPosition);	*/
 		event->accept();
 	}
+}
+
+void Qqwidget::setNewPos( qreal w,qreal h )
+{
+	_width=w;
+	_height=h;
 }

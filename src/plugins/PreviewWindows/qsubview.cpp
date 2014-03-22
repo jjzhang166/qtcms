@@ -556,7 +556,8 @@ int QSubView::PrevRender(QVariantMap evMap)
 	{
 		return 1;
 	}
-	char* pData=(char*)evMap.value("data").toUInt();
+
+	char* pData=(char*)evMap.value("data").toUInt();	
 	char* pYdata=(char*)evMap.value("Ydata").toUInt();
 	char* pUdata=(char*)evMap.value("Udata").toUInt();
 	char* pVdata=(char*)evMap.value("Vdata").toUInt();
@@ -576,6 +577,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 	}
 	m_bRendering=true;
 	m_csRender.lock();
+	
 	m_HistoryRenderInfo.pData=pData;
 	m_HistoryRenderInfo.pYdata=pYdata;
 	m_HistoryRenderInfo.pUdata=pUdata;

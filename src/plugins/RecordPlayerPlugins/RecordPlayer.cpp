@@ -380,12 +380,10 @@ QString RecordPlayer::GetNowPlayedTime()
 
 	QDateTime ptime = m_pLocalPlayer->GetNowPlayedTime();
 	playedTime = ptime.toString("yyyy-MM-dd hh:mm:ss");
-	qDebug()<<playedTime;
 	QDateTime pCurdate;
 	pCurdate.setDate(QDate::currentDate());
 	QString CurrentTime;
 	CurrentTime=QString("%1").arg(ptime.toTime_t()-pCurdate.toTime_t());
-	qDebug()<<CurrentTime;
 	return CurrentTime;
 }
 int RecordPlayer::AudioEnabled(bool bEnabled)

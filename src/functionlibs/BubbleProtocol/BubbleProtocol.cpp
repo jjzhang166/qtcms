@@ -15,6 +15,7 @@ m_bIsPreviewPaused(false),
 m_bIsPreviewStopped(true),
 m_bIsPlaybackPaused(false),
 m_bIsPlaybackStopped(true),
+m_bIsResearch(false),
 m_nRecordNum(0),
 m_bIsPostSuccessed(false),
 m_channelNum(0),
@@ -166,14 +167,18 @@ void BubbleProtocol::extractRecordInfo(QDomDocument* dom)
 
     QDomNodeList searchNodeList = dom->elementsByTagName("recsearch");
     QDomNode subnode = searchNodeList.at(0);
-
+	int toalnum=subnode.toElement().attribute("session_total").toInt();
     QDomNodeList recordList = dom->elementsByTagName("s");
 	m_nRecordNum = recordList.size();
 
     QVariantMap recordTotal;
-    recordTotal.insert("total", QString("%1").arg(m_nRecordNum));
-    eventProcCall(QString("recFileSearchFinished"), recordTotal); 
-
+   /* recordTotal.insert("total", QString("%1").arg(m_nRecordNum));*/
+	 recordTotal.insert("total", QString("%1").arg(toalnum));
+	if (m_ReSearchInfo.session_index==0)
+	{
+		 eventProcCall(QString("recFileSearchFinished"), recordTotal); 
+	}
+  
     for (int i = 0; i < m_nRecordNum; i++)
     {
         Record record;
@@ -191,9 +196,12 @@ void BubbleProtocol::extractRecordInfo(QDomDocument* dom)
         recordInfo.insert("start", record.StartTime.toString("yyyy-MM-dd hh:mm:ss"));
         recordInfo.insert("end", record.EndTime.toString("yyyy-MM-dd hh:mm:ss"));
         recordInfo.insert("filename", record.sFileName);
+		recordInfo.insert("index",m_ReSearchInfo.session_index+i);
 
         eventProcCall(QString("foundFile"), recordInfo);
     }
+	//save reserchInfo
+	m_ReSearchInfo.session_total=toalnum;
 }
 
 void BubbleProtocol::setRecordInfo(Record& record, QStringList strList)
@@ -368,29 +376,46 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 {
     m_bIsPreviewStopped  = true;
     m_bIsPlaybackStopped = false;
-    if (nChannel < 0 || nTypes < 0 || startTime > endTime)
+    if (nChannel < 0 || nTypes < 0 || startTime > endTime||m_bIsResearch==true)
     {
         return 2;
     }
+	//save researchinfo
+	m_ReSearchInfo.session_count=99;
+	m_ReSearchInfo.session_index=0;
+	m_ReSearchInfo.session_total=0;
+	// research
+	bool bSearch=true;
+	while(bSearch){
+		m_bIsResearch=true;
+		QUrl url;
+		url.setScheme(QLatin1String("http"));
+		url.setHost(m_hostAddress.toString());
+		url.setPath("cgi-bin/gw.cgi");
+		url.setPort(m_ports["media"].toInt());
 
-    QUrl url;
-    url.setScheme(QLatin1String("http"));
-    url.setHost(m_hostAddress.toString());
-    url.setPath("cgi-bin/gw.cgi");
-    url.setPort(m_ports["media"].toInt());
+		QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg(nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
 
-    QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg(nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(0).arg(100));
+		QNetworkRequest request;
+		request.setUrl(url);
+		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		m_reply = m_manager->post(request, sndData.toUtf8());
+		connect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()));
 
-    QNetworkRequest request;
-    request.setUrl(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    m_reply = m_manager->post(request, sndData.toUtf8());
-    connect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()));
+		QEventLoop loop;
+		connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
+		QTimer::singleShot(5000,&loop, SLOT(quit()));
+		loop.exec();
+		//reSearch
+		if (m_ReSearchInfo.session_total-1>m_ReSearchInfo.session_index+100)
+		{
+			m_ReSearchInfo.session_index+=100;
+		}else{
+			m_bIsResearch=false;
+			bSearch=false;
+		}
+	}
 
-    QEventLoop loop;
-    connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
-    QTimer::singleShot(500,&loop, SLOT(quit()));
-    loop.exec();
 
 	if (m_lstRecordList.isEmpty())
 	{
@@ -881,3 +906,5 @@ void BubbleProtocol::eventProcCall( QString sEvent,QVariantMap param )
         }
     }
 }
+
+

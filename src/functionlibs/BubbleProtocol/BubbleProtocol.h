@@ -108,6 +108,7 @@ private:
     bool   m_bIsPreviewStopped;
     bool   m_bIsPlaybackPaused;
     bool   m_bIsPlaybackStopped;
+	bool   m_bIsResearch;
 	int    m_channelNum;
 	int    m_streamNum;
 	int    m_streanCount;
@@ -116,7 +117,7 @@ private:
 
 	int	   m_nRef;
 	QMutex m_csRef;
-
+	ReSearchInfo m_ReSearchInfo;
 };
 
 #endif

@@ -123,6 +123,11 @@ typedef struct _tagAuthorityBack{
 	char sReversed[3];
 	char sAuth[13];
 }AuthorityBack;
+typedef struct _tagReSearchInfo{
+	int session_index;
+	int session_count;
+	int session_total;
+}ReSearchInfo;
 #pragma pack()
 typedef int (__cdecl *PreviewEventCB)(QString name, QVariantMap info, void* pUser);
 typedef struct _tagProcInfoItem
