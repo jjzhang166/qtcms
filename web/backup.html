@@ -187,6 +187,12 @@ var now = 0;
 	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
 	.progess span{ background: #abcdef; height: 14px; width:0px; display: block;}
 	.progess a{height:14px; width: 14px; display: block; background: red; float:left; margin:1px 8px;}
+	/* 下载进度 */
+	#fileRec{float: right; line-height: 30px; width:auto; margin-right: 26px; display: none;}
+	#fileRec *{border: 1px solid #ccc; float: right; height: 12px;}
+	#fileRec p{ margin: 9px 0; width: 100px;}
+	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
+	#fileRec h5{ border: none; line-height: 32px;}
 </style>
 </head>
 
@@ -298,6 +304,7 @@ var now = 0;
 			</table>
 	</div>
 	<div id="file_bottom">
+		<div id="fileRec">当前下载进度:<h5>10.00%</h5><p><span></span></p></div>
 		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" onclick="backupstop();" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
 	</div>
 	<div id="foot"></div>
