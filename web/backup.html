@@ -44,6 +44,7 @@ var now = 0;
 
 		contentMax();
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
+		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
 
@@ -62,7 +63,7 @@ var now = 0;
 			if(b){
 				$('<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+(parseInt(data.channel)+1)+'</td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);	
 			}
-		
+		showRecProgress(parseInt(data.index)+1);
 	}
 	function contentMax(){
 		var H = $(window).height();

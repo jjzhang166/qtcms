@@ -121,7 +121,10 @@ var	nViewNum = 0,
 			})
 		})
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
+		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
+		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
+
 	})///
 
 	function togglePlay(){ 
@@ -269,6 +272,7 @@ var	nViewNum = 0,
 		}
 		//alert(data.type+'+'+data.channel);
 		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
+		showRecProgress(parseInt(data.index)+1);
 		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
 
 	}
@@ -324,6 +328,7 @@ var	nViewNum = 0,
 			oSelected.push($(this));
 		});
 	}
+
 	function addRecFileTable(str,name){
 		$('<tr><td class="no_border"><input type="checkbox"'+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 	}

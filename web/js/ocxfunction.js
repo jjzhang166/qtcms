@@ -1,6 +1,7 @@
 
 var oCommonLibrary,
-	bool = 0; //本地远程回放控制  0为远程 1为本地
+	bool = 0, //本地远程回放控制  0为远程 1为本地
+	recTotal = 0;  //文件检索总数。
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
@@ -428,7 +429,6 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
-		$('#fileRec').show();
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -473,6 +473,7 @@ function setDevData2ocx(){
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
 		try{
+			recTotal = 0;
 			$('tbody.search_result tr').filter(function(){
 				return !$(this).find(':checkbox').is(':checked');
 			}).remove();//远程备份中正在下载的文件不被删除.
@@ -517,4 +518,18 @@ function setDevData2ocx(){
 				alert('控件检索设备'+devData.name+'的'+typeHint[type]+'录像失败');
 			}		
 		}
+	}
+	function showRecProgress(now){
+		//show(now+'//'+recTotal);
+		if(recTotal != 0){
+			var p = now/recTotal*100;
+			/*if(now == recTotal ){
+				p = 100;
+				//pre = '100%';
+			}*/
+			$('#fileRec').show().find('span').width(p-2).end().find('h5').html(now+'/'+recTotal);
+		}
+	}
+	function RecfinishCallback(data){
+		recTotal = data.total;
 	}
