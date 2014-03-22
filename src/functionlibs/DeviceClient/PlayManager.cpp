@@ -216,10 +216,10 @@ void PlayManager::run()
 		spend = frameTimer.nsecsElapsed()/1000 - before - waitSeconds;
 
 		m_pVedioDecoder->decode(lpdata, nLength);
+		frameTimer.start();
+
 		delete lpdata;
 		lpdata = NULL;
-
-		frameTimer.start();
 		m_pBufferManager->removeItem(&recStream);
 
 	}
