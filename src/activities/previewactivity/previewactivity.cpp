@@ -1,6 +1,8 @@
 #include "previewactivity.h"
+#include <qdebug.h>
 #include <guid.h>
-#include <QtWebKit/QtWebKit>
+//#include <QtWebKit/QtWebKit>
+#include <QtWebKit/QWebFrame>
 #include <QtWebKit/QWebElementCollection>
 #include <QtCore/QSize>
 #include <QtGui/QDesktopWidget>

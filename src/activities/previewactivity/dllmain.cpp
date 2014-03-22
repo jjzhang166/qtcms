@@ -2,7 +2,7 @@
 #include <IActivities.h>
 #include "previewactivity.h"
 
-IPcomBase * CreateInstance()
+EXTERN_C IPcomBase * CreateInstance()
 {
 	previewactivity * pInstance = new previewactivity;
 	IPcomBase * pBase = static_cast<IActivities *>(pInstance);
