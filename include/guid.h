@@ -1,3 +1,5 @@
+#ifndef _GUID_HEAD_FILE_SADJF9FSADF__
+#define _GUID_HEAD_FILE_SADJF9FSADF__
 #include <libpcom.h>
 
 extern const CLSID CLSID_PreviewActivity;
@@ -85,3 +87,5 @@ extern const IID IID_IAudioPlayer;
 extern const CLSID CLSID_AudioDecoder;
 extern const CLSID CLSID_AudioDevice;
 extern const CLSID CLSID_AudioPlayer;
+
+#endif

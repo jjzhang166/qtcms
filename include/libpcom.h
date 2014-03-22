@@ -1,6 +1,6 @@
 #ifndef LIBPCOM_H
 #define LIBPCOM_H
-
+#include "crossdef.h"
 #include "libpcom_global.h"
 // GUID
 #ifndef GUID_DEFINED
@@ -18,6 +18,7 @@ typedef GUID IID;
 typedef GUID UUID;
 
 #define interface struct
+
 
 interface IPcomBase{
     virtual long __stdcall QueryInterface(const IID & iid,void **ppv) = 0;
