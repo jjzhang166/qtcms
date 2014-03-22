@@ -91,14 +91,16 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 		{
 			QMutex mutex;
 			mutex.lock();
-			streamInfo = m_StreamBuffer.first();
-			m_StreamBuffer.removeFirst();
+			streamInfo = m_StreamBuffer.takeFirst();
+// 			m_StreamBuffer.removeFirst();
 			mutex.unlock();
 		}
 		else
 		{
-			streamInfo = m_StreamBuffer.first();
-			m_StreamBuffer.removeFirst();
+			m_mutex.lock();
+			streamInfo = m_StreamBuffer.takeFirst();
+// 			m_StreamBuffer.removeFirst();
+			m_mutex.unlock();
 		}
 
 		if (200 == m_StreamBuffer.size() && m_bVedioBufferIsFull)
@@ -119,9 +121,11 @@ int BufferManager::emptyBuff()
 	RecordStreamFrame streamInfo;
 	while(!m_StreamBuffer.isEmpty())
 	{
+		m_mutex.lock();
 		streamInfo = m_StreamBuffer.takeAt(0);
 		delete streamInfo.pData;
 		streamInfo.pData = NULL;
+		m_mutex.unlock();
 	}
 	return 0;
 }
@@ -139,4 +143,12 @@ bool BufferManager::getAudioStatus()
 int BufferManager::getVedioBufferSize()
 {
 	return m_StreamBuffer.size();
+}
+
+void BufferManager::removeItem(RecordStreamFrame* item)
+{
+	if (NULL != item && NULL != item->pData)
+	{
+		delete item->pData;
+	}
 }

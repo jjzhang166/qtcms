@@ -149,6 +149,7 @@ void PlayManager::run()
 
 		if (1 == m_pBufferManager->readStream(recStream))
 		{
+			m_pBufferManager->removeItem(&recStream);
 			continue;
 		}
 
@@ -163,8 +164,9 @@ void PlayManager::run()
 				m_pAudioPlayer->SetAudioParam(1, m_nSampleRate, m_nSampleWidth);
 			}
 			m_pAudioPlayer->Play(recStream.pData, recStream.uiLength);
-			delete recStream.pData;
-			recStream.pData = NULL;
+			m_pBufferManager->removeItem(&recStream);
+// 			delete recStream.pData;
+// 			recStream.pData = NULL;
 			continue;
 		}
 		if (NULL == recStream.pData)
@@ -184,8 +186,10 @@ void PlayManager::run()
 				return;
 			}
 			m_pVedioDecoder->decode(lpdata, nLength);//½âÂë²¥·Å
-			delete lpdata;
-			lpdata = NULL;
+			m_pBufferManager->removeItem(&recStream);
+
+// 			delete lpdata;
+// 			lpdata = NULL;
 
 			m_bFirstFrame = false;
 
@@ -215,9 +219,10 @@ void PlayManager::run()
 
 		m_pVedioDecoder->decode(lpdata, nLength);
 		frameTimer.start();
+		m_pBufferManager->removeItem(&recStream);
 
-		delete lpdata;
-		lpdata = NULL;
+// 		delete lpdata;
+// 		lpdata = NULL;
 	}
 
 	m_bStop = false;

@@ -4,7 +4,7 @@
 #include "deviceclient_global.h"
 #include <QThread>
 #include <QQueue>
-
+#include <QMutex>
 
 class BufferManager : public QThread
 {
@@ -20,6 +20,7 @@ public:
 	bool getAudioStatus();
 	int getVedioBufferSize();
 	int emptyBuff();
+	void removeItem(RecordStreamFrame*);
 signals:
 	void action(QString option, BufferManager* pBuffer);
 public slots:
@@ -29,6 +30,8 @@ private:
 // 	QQueue<RecordAudioStream> m_audioStreamBuffer;
 	bool m_bVedioBufferIsFull;
 	bool m_bStopAudio;
+
+	QMutex m_mutex;
 };
 
 #endif
