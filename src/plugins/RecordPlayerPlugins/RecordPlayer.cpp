@@ -408,11 +408,6 @@ int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
 	}
 	return nRet;
 }
-void RecordPlayer::ChangeAudioHint(QString statement, RecordPlayerView* pWnd)
-{
-	int index = pWnd - m_subRecPlayerView;
-	m_subRecPlayerView[index].setAudioHint(statement);
-}
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser)
 {
 	RecordPlayer *pRecordPlayer = (RecordPlayer*)pUser;

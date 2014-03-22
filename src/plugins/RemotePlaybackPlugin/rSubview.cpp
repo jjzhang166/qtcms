@@ -27,11 +27,6 @@ RSubView::RSubView(QWidget *parent)
 
 	_curState=CONNECT_STATUS_DISCONNECTED;
 	_curPaint=PAINTEVENT_STATUS_NOVIDEO;
-
-	m_ActionOpenAudio = m_rMousePressMenu.addAction("open audio");
-	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
-	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
-
 	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
 
 	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()),Qt::DirectConnection);
