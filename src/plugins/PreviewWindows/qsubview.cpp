@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 #include <QtXml/QtXml>
 
-bool QSubView::m_bIsAudioOpend = true;
+bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
 
@@ -714,7 +714,7 @@ int QSubView::AudioEnabled(bool bEnabled)
 		}
 		m_bIsAudioOpend = true;
 	}
-	else if (NULL != m_pCurrView)
+	else
 	{
 		if (NULL != m_pAudioPlayer)
 		{
