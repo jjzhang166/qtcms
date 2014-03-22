@@ -32,6 +32,13 @@ RSubView::RSubView(QWidget *parent)
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
 
+	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
+	connect(&m_cacheTime,SIGNAL(timeout()),this,SLOT(CacheStateSlotUpdate()));
+	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()));
+	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
+
+	_curState=CConnectStatus::STATUS_DISCONNECTED;
+	_curPaint=CPaintEventStatus::STATUS_NOVIDEO;
 }
 
 RSubView::~RSubView()
