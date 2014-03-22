@@ -17,6 +17,7 @@
 
 #include <QLabel>
 
+#include <QLabel>
 
 class RSubView :public QWidget
 {
@@ -51,7 +52,6 @@ public:
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 
-
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -77,7 +77,7 @@ public slots:
 	void connecttingUpdateSlot();
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
-	void CacheStateSlotUpdate();
+	
 private:
 	static bool m_bGlobalAudioStatus;
 
@@ -101,6 +101,9 @@ private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
+	void _cacheLableShow();
+	
+	
 };
 
 
