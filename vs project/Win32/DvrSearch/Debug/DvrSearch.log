@@ -1,0 +1,22 @@
+﻿生成启动时间为 2014/3/18 10:18:28。
+     1>项目“F:\project\cms-git-work\src\functionlibs\DvrSearch\DvrSearch.vcxproj”在节点 5 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“F:\project\cms-git-work\vs project\Win32\DvrSearch\Debug\DvrSearch.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+       Link:
+         所有输出均为最新。
+         DvrSearch.vcxproj -> F:\project\cms-git-work\vs project\..\libs\DvrSearch.dll
+       PostBuildEvent:
+         copy  "F:\project\cms-git-work\vs project\..\libs\DvrSearch.dll" "F:\project\cms-git-work\vs project\..\output\Debug"
+         
+         :VCEnd
+         已复制         1 个文件。
+       FinalizeBuildStatus:
+         正在删除文件“F:\project\cms-git-work\vs project\Win32\DvrSearch\Debug\DvrSearch.unsuccessfulbuild”。
+         正在对“F:\project\cms-git-work\vs project\Win32\DvrSearch\Debug\DvrSearch.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\project\cms-git-work\src\functionlibs\DvrSearch\DvrSearch.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.30

@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<link rel="stylesheet" type="text/css" href="css/play_back.css">
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/qframework.js" ></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/calendar.js"></script>	
+<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
+<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
+<script type="text/javascript" src="js/ocxfunction.js"></script>
+<script type="text/javascript" src="js/playback.js"></script>
+<style type="text/css">
+	#channelvideo tr{position: relative;}
+	#channelvideo .video{height:16px; position: absolute;top:1px;}
+	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
+</style>
+</head>
+
+<body>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
+<div id="confirm" class="menu">
+	<p><span></span><a class="hover close" href="javascript:;"></a></p>
+	<div style="padding:10px;">
+		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
+		<table style="margin:0 auto;">
+			<tr class="tdBtn"><td><div class="hover close">确认</div></td><td><div class="hover close" >取消</div></tr>
+		</table>
+	</div>
+</div>
+<div id="test"></div>
+	<div id="top">
+		<div class="top_act" id="app_top">
+			<h4>DVR 客户端</h4>
+			<div id="top_window_act">
+				<ul>
+					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
+				</ul>
+			</div>
+		</div>
+		<div class="top_nav">
+			<ul>
+				<li><a style="width:36px;"></a>预览</li>
+				<li class="active"><a style="background-position: -36px 0;"></a>回放</li>
+				<li><a style="background-position: -62px 0;"></a>备份</li>
+				<li><a style="background-position: -88px 0; width:36px;"></a>设置</li>
+
+				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li> 
+				<li><a style="background-position: -124px 0;"></a>日志</li>-->
+			</ul>
+			<!-- <div>
+				<a href="javascript:;"></a>				
+				<p style="color:#000;">登陆用户:eddy</p>
+			</div> -->
+			</div>
+		</div>
+	</div>
+	<div id="playback_view">
+		<object type="application/cms-remote-playback" id="playback" style="width:100%;height:0;"></object>
+		<object type="application/cms-record-player" id="playbackLocl" style="width:100%;height:100%;"></object>
+	</div>
+	<div id="search_device">
+		<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
+		<ul class="switchlist">
+			<li class="switchlistAct">区域</li>
+			<!-- <li>Group</li> -->
+		</ul>
+		<div class="dev_list">
+			<ul class="filetree" id="area_root">
+				<li>
+					<span class="area" id="area_0">区域_root</span>
+					<ul></ul>
+				</li>	
+			</ul>	
+		</div>
+		<!-- <div class="dev_list">
+			<ul class="filetree" id="group_0"></ul>	
+		</div> -->
+		<div id="find_type">
+			<div id="nowSearchType">
+				<input type="radio" name="type" id="t_1" checked="checked" />
+				<label for="t_1">远程文件</label>
+				<input type="radio" name="type" id="t_2" />
+				<label for="t_2">本地文件</label>
+			</div>
+			<table>
+				<tr>
+					<td style="text-align:right">文件类型:</td>
+					<td>
+						<div id="type" class="select" style="width:133px;"><span type="0">所有</span><a class="hover" href="javascript:;"></a></div>
+						<ul class="option">
+							<li><a href="javascript:;">所有</a></li>
+							<li><a href="javascript:;">定时</a></li>
+							<li><a href="javascript:;">移动</a></li>
+							<li><a href="javascript:;">传感器</a></li>
+							<li><a href="javascript:;">手动</a></li>						
+						</ul>
+					</td>
+				<tr>
+				<!-- <tr>
+						<td style="text-align:right">Start Time:</td>
+						<td>
+							<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+							<ul class="option">
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+							</ul>
+						</td>
+					<tr>
+					<tr>
+						<td style="text-align:right">End Time:</td>
+						<td>
+							<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+							<ul class="option">
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+								<li><a href="javascript:;">2013-07-15 00:00:00</a></li>
+							</ul>
+						</td>
+					<tr> -->	
+			</table>
+		</div>
+	<div class="calendar">
+		<div class="calendar_top">
+			<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="上一年"></a>
+			<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="上一月"></a>
+			<span class="nowDate" title="搜索日期"></span>
+			<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="下一月"></a>
+			<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="下一年"></a>
+		</div>
+		<div class="calendar_days">
+			<table>
+				<thead>
+					<tr><td style="color:red;">日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td style="color:red;">六</td></tr>
+				</thead>
+				<tbody>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="hover seek" onclick="searchVideo()" title="开始搜索">搜索</div>
+	</div>
+		</div> 
+	<div id="operating">
+		<div class="operat">
+			<ul>
+				<li class="toggle hover" style="background-position: 0 0;" id="togglePlay" onclick="togglePlay();" title="播放/暂停"></li>
+				<li class="hover" style="background-position: -120px -72px;" onclick="groupStop();" title="停止"></li>
+				<!-- <li class="hover" style="background-position: 0 -36px;" onclick="playAction('GroupContinue');"></li>-->
+				<li class="hover" style="background-position: -120px -108px;" onclick="playSpeed(0);" title="慢放"></li>
+				<!--
+				<li class="hover" style="background-position:  0 -72px;" onclick="playAction();"></li>
+				<li class="hover" style="background-position: -120px -144px;" onclick="playAction();"></li>-->
+				<li class="hover" style="background-position: 0 -108px;" onclick="playSpeed(1);" title="快进"></li><!--
+				<li class="hover" style="background-position: -120px -180px;" onclick="playAction('GroupSpeedNormal');"></li>
+				<li class="hover" style="background-position: 0 -144px;" onclick="playAction('GroupPause');"></li>
+				--><li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF;">1x</li>
+				<!--				
+				<li class="warn"><div style="background:#7BC345"></div>Time</li>
+				<li class="warn"><div style="background:#FFE62E"></div>Motion</li>
+				<li class="warn"><div style="background:#F00"></div>Sensor</li>
+				<li class="warn"><div style="background:#F78445"></div>Manual</li> 
+				<li class="hover" style="background-position: -120px -216px;"></li>
+				<li class="hover" style="background-position: 0 -180px"></li>
+				li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li> -->
+				<li class="toggle hover" style="background-position: -120px 0;" title="声音"></li>
+				<li class="hover" style="background:0; width:70px; margin-right:30px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
+				<!-- <li class="hover" style="background-position: -120px -252px;"></li>
+				<li class="setViewNum hover" style="background-position: 0 -252px;"></li>
+				<li class="setViewNum hover" style="background-position: -30px -216px;"></li> -->
+				<!-- <li class="setViewNum hover" style="background-position: 0 -288px;"></li> -->
+				<li class="hover" style="background-position: -120px -288px;" title="全屏"></li>
+				<li class="hover" style="background-position: 0 -324px;" title="截屏"></li>
+			</ul>
+		</div>
+		<div class="play_time"></div>
+		<table class="table" cellpadding="0" cellspacing="0" style="height:94px; overflow:auto;">
+			<thead>
+				<tr><td class="no_border" id="now_time" style="text-algin:center"><!-- 00:00:00 --><td>00</td></td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+			</thead>
+			<tbody id="channelvideo">		
+				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 01</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 02</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 03</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div id="foot"></div>
+</body>
+</html>

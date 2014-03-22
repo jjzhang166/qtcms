@@ -1,0 +1,33 @@
+﻿生成启动时间为 2014/3/18 9:14:24。
+     1>项目“F:\project\cms-git-work\src\QTTest\QTTest.vcxproj”在节点 4 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“F:\project\cms-git-work\vs project\Win32\QTTest\Debug\QTTest.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Qt\4.8.5\include\QtCore /IC:\Qt\4.8.5\include\QtGui /IC:\Qt\4.8.5\include\QtWebKit /IC:\Qt\4.8.5\include /I..\include /Idebug /IC:\Qt\4.8.5\mkspecs\default /I"F:\project\cms-git-work\vs project\..\include\\" /I.\ /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D QT_DLL /D QT_WEBKIT_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D QT_HAVE_MMX /D QT_HAVE_3DNOW /D QT_HAVE_SSE /D QT_HAVE_MMXEXT /D QT_HAVE_SSE2 /D QT_THREAD_SUPPORT /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /GR /Fo"F:\project\cms-git-work\vs project\Win32\QTTest\Debug\\" /Fd"F:\project\cms-git-work\vs project\Win32\QTTest\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\common\guid.cpp GeneratedFiles\Debug\moc_qjawebview.cpp main.cpp qjawebview.cpp webkitpluginsfactory.cpp -Zm200 -w34100 -w34189 
+         guid.cpp
+         moc_qjawebview.cpp
+         main.cpp
+         qjawebview.cpp
+         webkitpluginsfactory.cpp
+         正在生成代码...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\project\cms-git-work\vs project\..\output\Debug\\QTTest.exe" /NOLOGO /LIBPATH:C:\Qt\4.8.5\lib /LIBPATH:C:\Qt\4.8.5\lib C:\Qt\4.8.5\lib\qtmaind.lib C:\Qt\4.8.5\lib\QtWebKitd4.lib C:\Qt\4.8.5\lib\QtGuid4.lib C:\Qt\4.8.5\lib\QtCored4.lib C:\Qt\4.8.5\lib\QtXmld4.lib "F:\project\cms-git-work\vs project\..\libs\libpcom.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"F:\project\cms-git-work\vs project\Win32\QTTest\Debug\QTTest.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"F:\project\cms-git-work\output\Debug\QTTest.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\guid.obj"
+         "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\moc_qjawebview.obj"
+         "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\moc_webkitpluginsfactory.obj"
+         "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\main.obj"
+         "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\qjawebview.obj"
+         "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\webkitpluginsfactory.obj" "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" 
+         LINK : 没有找到 F:\project\cms-git-work\vs project\..\output\Debug\\QTTest.exe 或上一个增量链接没有生成它；正在执行完全链接
+         QTTest.vcxproj -> F:\project\cms-git-work\vs project\..\output\Debug\QTTest.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"F:\project\cms-git-work\vs project\..\output\Debug\\QTTest.exe;#1" /manifest "F:\project\cms-git-work\vs project\Win32\QTTest\Debug\QTTest.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         正在删除文件“F:\project\cms-git-work\vs project\Win32\QTTest\Debug\QTTest.unsuccessfulbuild”。
+         正在对“F:\project\cms-git-work\vs project\Win32\QTTest\Debug\QTTest.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\project\cms-git-work\src\QTTest\QTTest.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:05.63
