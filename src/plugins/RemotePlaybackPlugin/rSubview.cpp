@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <guid.h>
 #include "rSubview.h"
+#include <QTime>
 
 RSubView* RSubView::m_pCurView = NULL;
 bool RSubView::m_bLocalAudioStatus = false;
@@ -26,7 +27,7 @@ RSubView::RSubView(QWidget *parent)
 
 	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
 	connect(&m_cacheTime,SIGNAL(timeout()),this,SLOT(CacheStateSlotUpdate()));
-	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()));
+	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()),Qt::DirectConnection);
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
 	_curState=CONNECT_STATUS_DISCONNECTED;
@@ -42,7 +43,6 @@ RSubView::~RSubView()
 	}
 	m_checkTime.stop();
 	m_cacheTime.stop();
-
 }
 
 void RSubView::paintEvent( QPaintEvent * e)
@@ -149,7 +149,7 @@ bool RSubView::AudioEnabled(bool bEnabled)
 void RSubView::SetCurConnectState( __enConnectStatus parm  )
 {
 	_curState=parm;
-	emit connecttingUpdateSig();
+	/*emit connecttingUpdateSig();*/
 }
 
 void RSubView::CacheState( QVariantMap evMap )
