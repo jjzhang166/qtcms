@@ -2,14 +2,14 @@
 #include <guid.h>
 
 div3_3::div3_3() :
-m_nRef(0),
-m_nSubWindowCount(0),
-m_parentOfSubWindows(NULL),
-m_nCurrentPage(0),
-m_nRow(3),
-m_nCloum(3),
-m_bIsLastPage(false),
-m_nIndexPerPage(0)
+    m_nRef(0)
+    ,m_nSubWindowCount(0)
+    ,m_parentOfSubWindows(NULL)
+    ,m_nCurrentPage(0)
+    ,m_nCloum(3)
+    ,m_nRow(3)
+    ,m_nIndexPerPage(0)
+    ,m_bIsLastPage(false)
 {
 	m_nWindowsPerPage = m_nCloum * m_nRow;
 }
@@ -93,11 +93,13 @@ void div3_3::flush()
 
 void div3_3::parentWindowResize( QResizeEvent *ev )
 {
+    Q_UNUSED(ev);
 	ChangePosition();
 }
 
 void div3_3::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 {
+    Q_UNUSED(ev);
 	if ( m_nWindowsPerPage > 1)
 	{
 		m_nWindowsPerPage = 1;
