@@ -89,6 +89,13 @@
   //0：调用成功<br />
   //1：调用失败<br />
   int GroupSpeedNormal();</p>
+<p>//简介：设置音量大小<br />
+//输入参数：<br/>
+//uiPersent: 音量大小，范围从0到100，0为静音，默认为最大音量<br/>
+//返回值： <br />
+//  -1: 音量设置失败 <br />
+//  0： 音量设置成功 <br />
+int   GroupSetVolume(const unsigned int &amp;uiPersent);</p>
 <p>插件抛出的事件：<br />
   @1<br />
   事件名称：GetRecordDate<br />

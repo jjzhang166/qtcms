@@ -92,18 +92,28 @@ int   GroupPause();</p>
   //  0： 组件中GroupStop()函数返回调用成功 <br />
   //    1:  组件中实例未创建或者创建失败 <br />
   int   GroupStop();</p>
-<p align="left">//简介：播放的视频开启音频 <br />
+<p align="left">
+++++++++++++++由于音频开关做在窗口上，不需要提供此接口+++++++++++++<br/>
+//简介：播放的视频开启音频 <br />
   //输入参数:<br />
   //   bEnable:  开启或者关闭 <br />
   //返回值： <br />
   //  bool值: 返回之前的音频状态 <br />
   //  附加说明： 返回false可能是播放的实例创建失败 <br />
-  bool  GroupEnableAudio(bool  bEnable);</p>
-<p align="left">//简介：快速播放视频 <br />
+  bool  GroupEnableAudio(bool  bEnable);<br/>
+++++++++++++++由于音频开关做在窗口上，不需要提供此接口+++++++++++++</p>
+<p align="left">//简介：设置音量大小<br />
+//输入参数：<br/>
+//uiPersent: 音量大小，范围从0到100，0为静音，默认为最大音量<br/>
+  //返回值： <br />
+  //  -1: 音量设置失败 <br />
+  //  0： 音量设置成功 <br />
+  int   GroupSetVolume(const unsigned int &uiPersent);</p>
+  <p align="left">//简介：快速播放视频 <br />
   //返回值： <br />
   //  -1: 播放的实例创建失败 <br />
   //  0： 组件中GroupSpeedFast函数返回调用成功 <br />
-  int   GroupSpeedFast() ;</p>
+int   GroupSpeedFast() ;</p>
 <p align="left">//简介：慢速播放视频 <br />
   //返回值： <br />
   //  -1: 播放的实例创建失败 <br />
