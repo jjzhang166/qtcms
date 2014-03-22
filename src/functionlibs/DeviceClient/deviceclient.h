@@ -93,7 +93,7 @@ public:
 
 private slots:
 	void action(QString options, BufferManager*);
-
+	void bufferStatus(int persent, BufferManager* pBuff);
 private:
 	int m_nRef;
 	QMutex m_csRef;

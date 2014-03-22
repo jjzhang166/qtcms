@@ -189,7 +189,7 @@
   //      获取当前设备录像的记录条目数<br />
   //  parameters:<br />
   //     &quot;total&quot;:总共的录像记录条目数</p>
-    // @6  name:&quot;ForRecord&quot;<br />
+    <p>// @6  name:&quot;ForRecord&quot;<br />
   //abstract:<br />
   //      获取到设备的预览码流信息进行录像<br />
   //  parameters：<br />
@@ -205,8 +205,15 @@
   //     &quot;samplewidth&quot;:音频采样位宽，如果是视频帧，不传递该参数<br />
   //     &quot;audiochannel&quot;:音频的采样通道数，如果是视频帧，不传递该参数<br />
   //     &quot;acodec&quot;:音频编码格式，当前定义值：&quot;G711&quot;，如果是视频帧，不传递该参数</p>
+    </p>
+    <p>// @7  name &quot;bufferStatus&quot;<br />
+//abstracts:<br />
+// 传出当前缓冲的状态      <br />
+//  parameters:<br />
+//     &quot;wind&quot;:正在缓冲的窗口 <br/>
+//     &quot;Persent&quot;:已经缓冲的百分比，从0到100 </p>
 <p>接口调用时序：<br />
-  //@1 预览功能</p>
+//@1 预览功能</p>
 <p><img src="Preview.png" alt="预览调用时序" width="551" height="834" /><br />
   //@2 搜索回放录像索引<br />
   <img src="search_playback_info.png" alt="搜索回放录像时序" width="525" height="902" /><br />

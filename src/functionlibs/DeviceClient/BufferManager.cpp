@@ -6,7 +6,8 @@
 
 BufferManager::BufferManager(void):
 m_bVedioBufferIsFull(false),
-m_bStopAudio(false)
+m_bStopAudio(false),
+m_bStopBuff(false)
 {
 }
 
@@ -32,8 +33,13 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		return 1;
 	}
 
+	if (m_StreamBuffer.size() <= 100 && !m_bStopBuff)
+	{
+		emit bufferStatus(m_StreamBuffer.size(), this);
+	}
 	if (100 == m_StreamBuffer.size())
 	{
+		m_bStopBuff = true;
 		emit action(QString("StartPlay"), this);
 	}
 
@@ -118,6 +124,7 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 
 int BufferManager::emptyBuff()
 {
+	m_bStopBuff = false;
 	RecordStreamFrame streamInfo;
 	while(!m_StreamBuffer.isEmpty())
 	{

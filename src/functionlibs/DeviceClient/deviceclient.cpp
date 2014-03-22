@@ -19,7 +19,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus";
 
 	DeviceClientInfoItem devcliInfo;
 
@@ -170,6 +170,10 @@ int DeviceClient::queryEvent(QString eventName,QStringList& eventParams)
 	if ("recFileSearchFinished" == eventName)
 	{
 		eventParams<<"total";
+	}
+	if ("bufferStatus" == eventName)
+	{
+		eventParams<<"wind"<<"Persent";
 	}
 	return IEventRegister::OK;
 }
@@ -604,6 +608,30 @@ void DeviceClient::action(QString options, BufferManager *pBuffer)
 	}
 }
 
+void DeviceClient::bufferStatus(int persent, BufferManager* pBuff)
+{
+	if (m_groupMap.isEmpty() || NULL == pBuff)
+	{
+		return;
+	}
+
+	QMap<int, WndPlay>::iterator iter = m_groupMap.begin();
+	while (iter != m_groupMap.end())
+	{
+		if (iter->bufferManager = pBuff)
+		{
+			break;
+		}
+	}
+// 	void* wind = (void*)iter->wnd;
+	int *wind = reinterpret_cast<int*>(iter->wnd);
+
+	QVariantMap item;
+	item.insert("Persent", persent);
+	item.insert("wind", *wind);
+
+	eventProcCall(QString("bufferStatus"), item);
+}
 bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 {
 	QMap<int, WndPlay>::iterator it;
@@ -671,6 +699,7 @@ int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 
 		QObject::connect(wndPlay.bufferManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
 		QObject::connect(wndPlay.playManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
+		QObject::connect(wndPlay.bufferManager, SIGNAL(bufferStatus(int,BufferManager*)), this, SLOT(bufferStatus(int, BufferManager*)));
 
 		m_groupMap.insert(nChannel, wndPlay);
 	}

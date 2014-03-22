@@ -23,6 +23,7 @@ public:
 	void removeItem(RecordStreamFrame*);
 signals:
 	void action(QString option, BufferManager* pBuffer);
+	void bufferStatus(int persent, BufferManager* pBuffer);
 public slots:
 
 private:
@@ -30,6 +31,7 @@ private:
 // 	QQueue<RecordAudioStream> m_audioStreamBuffer;
 	bool m_bVedioBufferIsFull;
 	bool m_bStopAudio;
+	bool m_bStopBuff;
 
 	QMutex m_mutex;
 };
