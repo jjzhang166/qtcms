@@ -17,23 +17,6 @@
 
 #include <QLabel>
 
-class CPaintEventStatus{
-public:
-	enum __enPaintEventStatus{
-		STATUS_NOVIDEO,
-		STATUS_CONNECTING,
-		STATUS_CACHE,
-	};
-};
-class CConnectStatus{
-public:
-	enum __enConnectStatus{
-		STATUS_CONNECTED,
-		STATUS_CONNECTING,
-		STATUS_DISCONNECTED,
-		STATUS_DISCONNECTING,
-	};
-};
 
 class RSubView :public QWidget
 {
@@ -65,8 +48,10 @@ public:
 	void CacheState(QVariantMap evMap);
 	void saveCacheImage();
 	bool AudioEnabled(bool bEnabled);
-	void SetCurConnectState(CConnectStatus::__enConnectStatus parm);
+	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
+
+
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);

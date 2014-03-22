@@ -37,8 +37,8 @@ RSubView::RSubView(QWidget *parent)
 	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()));
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
-	_curState=CConnectStatus::STATUS_DISCONNECTED;
-	_curPaint=CPaintEventStatus::STATUS_NOVIDEO;
+	_curState=CONNECT_STATUS_DISCONNECTED;
+	_curPaint=PAINTEVENT_STATUS_NOVIDEO;
 }
 
 RSubView::~RSubView()
