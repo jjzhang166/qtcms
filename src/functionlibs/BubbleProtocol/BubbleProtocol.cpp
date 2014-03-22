@@ -394,10 +394,10 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 
 	if (m_lstRecordList.isEmpty())
 	{
-		return 1;
+		return 0;
 	}
 	else
-	    return 0;
+	    return 1;
 }
 
 int BubbleProtocol::writeBuff(QByteArray &block, int nChannel, int nTypes, uint nStartTime, uint nEndTime)

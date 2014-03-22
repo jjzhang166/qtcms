@@ -45,22 +45,25 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 	int nRet=1;
 	if (NULL==LpIDeviceGroupRemotePlayback||startTime.isEmpty()||endTime.isEmpty())
 	{
+		goto finishRearch;
 		return;
 	}
 	IDeviceClient *m_nIDeviceClient=NULL;
 	LpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceClient,(void**)&m_nIDeviceClient);
 	if (NULL==m_nIDeviceClient)
 	{
+		goto finishRearch;
 		return;
 	}
 	m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
 	if (IDeviceClient::STATUS_CONNECTED!=m_nIDeviceClient->getConnectStatus())
 	{
+		//start search
 		nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
 		if (1==nRet)
 		{
 			m_nIDeviceClient->Release();
-			return;
+			goto finishRearch;
 		}
 	}
 	m_nIDeviceClient->Release();
@@ -68,16 +71,22 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 	LpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
 	if (NULL==m_DeviceSearchRecord)
 	{
-		return;
+		goto finishRearch;
 	}
-	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
-	QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
-	nRet =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
+	{
+		QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+		QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
+		nRet =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
+	}	
 	if(0!=nRet){
 		m_DeviceSearchRecord->Release();
-		return;
+		goto finishRearch;
 	}
 	m_DeviceSearchRecord->Release();
+	return;
+finishRearch:
+	emit finishSearchRecFileSig();
+	return;
 }
 
 void RemotePlaybackThread::GroupPlaySlots( int nTypes,const QString & startTime,const QString & endTime )

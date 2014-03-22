@@ -26,5 +26,7 @@ private:
 public slots:
 	void startSearchRecFileSlots(int nChannel,int nTypes,const QString & startTime,const QString & endTime);
 	void GroupPlaySlots(int nTypes,const QString & startTime,const QString & endTime);
+signals:
+	void finishSearchRecFileSig();
 };
 

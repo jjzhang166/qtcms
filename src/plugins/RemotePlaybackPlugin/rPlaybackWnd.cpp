@@ -41,6 +41,7 @@ bIsCaseInitFlags(false)
   		m_DivMode->setSubWindows(m_PlaybackWndList,ARRAY_SIZE(m_PlaybackWnd));
   		m_DivMode->flush();
  	}
+	m_RemotePlaybackObject.SetrPlaybackWnd(this);
 }
 
 RPlaybackWnd::~RPlaybackWnd()
@@ -169,19 +170,26 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	{
 		if (1==cbInit())
 		{
-			return nRet;
+			goto finishSearch;
 		}
 	}
 	if (NULL==m_GroupPlayback)
 	{
-		return nRet;
+		goto finishSearch;
 	}
 	nRet=m_RemotePlaybackObject.SetParm(m_sUserName,m_sUserPwd,m_uiPort,m_sHostAddress,m_sEseeId);
 	if (1==nRet)
 	{
-		return nRet;
+		goto finishSearch;
 	}
 	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	return nRet;
+finishSearch:
+	{
+	QVariantMap item;
+	item.insert("total",0);
+	RecFileSearchFinished(item);
+	}
 	return nRet;
 }
 
