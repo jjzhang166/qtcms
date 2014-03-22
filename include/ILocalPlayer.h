@@ -69,5 +69,19 @@ interface ILocalPlayer:IPComBase
 	//返回值：
 	//当前播放的时间
 	virtual QDateTime GetNowPlayedTime()=0;
+	//声音播放开关
+	//输入参数：
+	//bEnable：音频开关
+	//返回值：
+	//当前开关状态
+	virtual bool GroupEnableAudio(bool bEnable) = 0;
+	//设置声音音量
+	//输入参数：
+	//uiPersent：音量大小，从0～100，0为静音
+	//pWnd：播放声音的窗口
+	//返回值：
+	//0：调用成功
+	//1：调用失败
+	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd) = 0;
 };
 #endif

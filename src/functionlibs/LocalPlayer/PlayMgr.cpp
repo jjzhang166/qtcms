@@ -12,6 +12,7 @@ uint PlayMgr::m_playingTime = 0;
 bool PlayMgr::m_bIsChange = false;
 void* PlayMgr::m_who = NULL;
 bool PlayMgr::m_bIsPickThread = false;
+IAudioPlayer* PlayMgr::m_pAudioPlayer = NULL;
 
 PlayMgr::PlayMgr(void):
 	m_pRenderWnd(NULL),
@@ -21,12 +22,17 @@ PlayMgr::PlayMgr(void):
 	m_nInitWidth(0),
 	m_nSpeedRate(0),
 	m_nStartPos(0),
+	m_nAudioChl(1),
+	m_nSampleRate(0),
+	m_nSampleWidth(0),
+	m_bIsAudioOpen(false),
 	m_bPlaying(false),
 	m_bStop(false),
 	m_bPause(false)
 {
 	//ÉêÇë½âÂëÆ÷½Ó¿Ú
-	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pVedioDecoder);
+// 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pVedioDecoder);
+	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pVedioDecoder);
 	//ÉêÇëäÖÈ¾Æ÷½Ó¿Ú
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_pVedioRender);
 
@@ -180,6 +186,15 @@ void PlayMgr::run()
 			char vedioBuff[1280*720];
 			memset(vedioBuff, 0 , sizeof(vedioBuff));
 
+			char audioBuff[1024*4];
+			memset(audioBuff, 0, sizeof(audioBuff));
+
+			//audio info
+			int nAudioChl = AVI_audio_channels(file);
+			int nSampleRate = AVI_audio_rate(file);
+			int nSampleWidth = AVI_audio_bits(file);
+			long bytes = 0;
+
 			//find start point
 			if (AVI_seek_start(file))
 			{
@@ -204,6 +219,20 @@ void PlayMgr::run()
 
 				AVI_set_video_position(file, frame);
 				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
+				//play audio
+				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
+				{
+					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
+					{
+						m_nAudioChl = nAudioChl;
+						m_nSampleRate = nSampleRate;
+						m_nSampleWidth = nSampleWidth;
+						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
+					}
+					bytes = AVI_audio_size(file, frame);
+					AVI_read_audio(file, audioBuff, bytes);
+					m_pAudioPlayer->Play(audioBuff, (int)bytes);
+				}
 
 				if (0 == isKeyFrame && isPlayInMid)
 				{
@@ -301,6 +330,41 @@ void PlayMgr::stop()
 	m_bIsPickThread = false;
 }
 
+void PlayMgr::OpneAudio(bool bEnabled)
+{
+	m_bIsAudioOpen = bEnabled;
+}
+int PlayMgr::setVolume(unsigned int &uiPersent)
+{
+	if (NULL == m_pAudioPlayer || uiPersent < 0)
+	{
+		return 1;
+	}
+	return m_pAudioPlayer->SetVolume(uiPersent);
+}
+void PlayMgr::AudioSwitch(bool bOpen)
+{
+	if (bOpen)
+	{
+		pcomCreateInstance(CLSID_AudioPlayer,NULL,IID_IAudioPlayer,(void **)&m_pAudioPlayer);
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->EnablePlay(true);
+		}
+	}
+	else
+	{
+		if (NULL != m_pAudioPlayer)
+		{
+			m_pAudioPlayer->Stop();
+			m_pAudioPlayer->Release();
+			m_pAudioPlayer = NULL;
+			m_nAudioChl = 1;
+			m_nSpeedRate = 0;
+			m_nSampleWidth = 0;
+		}
+	}
+}
 
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 {

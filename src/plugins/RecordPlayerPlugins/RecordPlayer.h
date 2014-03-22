@@ -52,6 +52,7 @@ public slots:
 	int GroupSpeedNormal();
 	QString GetNowPlayedTime();
 
+	void ChangeAudioHint(QString, RecordPlayerView*);
 
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);

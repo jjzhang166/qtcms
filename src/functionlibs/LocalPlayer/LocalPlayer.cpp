@@ -10,7 +10,8 @@ LocalPlayer::LocalPlayer() :
 m_nRef(0),
 m_nGroupNum(4),
 m_playTime(0),
-m_bIsGroupPlaying(false)
+m_bIsGroupPlaying(false),
+m_pCurView(NULL)
 {
 	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
 
@@ -637,6 +638,45 @@ void LocalPlayer::setPlayTime(uint &playTime)
 	{
 		m_playTime = playTime;
 	}
+}
+
+bool LocalPlayer::GroupEnableAudio(bool bEnable)
+{
+	if(m_GroupMap.isEmpty())
+	{
+		return false;
+	}
+	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(m_pCurView);
+	if (!bEnable)
+	{
+		iter->pPlayMgr->OpneAudio(false);
+		m_pCurView = NULL;
+	}
+	iter->pPlayMgr->AudioSwitch(bEnable);
+	return bEnable;
+}
+int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
+{
+	if (uiPersent < 0)
+	{
+		return 1;
+	}
+	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(pWnd);
+	if (0xAECBCA == uiPersent)
+	{
+		if (NULL != m_pCurView)
+		{
+			PrePlay play = m_GroupMap[m_pCurView];
+			play.pPlayMgr->OpneAudio(false);
+		}
+		m_pCurView = pWnd;
+		iter->pPlayMgr->OpneAudio(true);
+	}
+	else
+	{
+		iter->pPlayMgr->setVolume(uiPersent);
+	}
+	return 0;
 }
 
 void cbTimeChange(uint playTime, void* pUser)

@@ -82,5 +82,21 @@
   0：调用成功<br />
   1：调用失败<br />
   virtual int GroupSpeedNormal() = 0;</p>
+<p>@10<br />
+简介：声音播放开关<br />
+  输入参数：<br />
+  bEnable：音频开关<br />
+  返回值：<br />
+  当前开关状态<br />
+virtual bool GroupEnableAudio(bool bEnable) = 0;</p>
+<p>@11<br />
+简介：设置声音音量<br />
+  输入参数：<br />
+  uiPersent：音量大小，从0～100，0为静音<br />
+  pWnd：播放声音的窗口<br />
+返回值：<br />
+0：调用成功<br />
+1：调用失败<br />
+virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd) = 0;</p>
 </body>
 </html>

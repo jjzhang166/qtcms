@@ -26,6 +26,9 @@ m_currentWindID(0)
 		connect(&m_subRecPlayerView[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_subRecPlayerView[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
 		m_lstRecordPlayerWndList.insert(i,&m_subRecPlayerView[i]);
+
+		m_subRecPlayerView[i].setLocalPlayer(m_pLocalPlayer);
+		connect(&m_subRecPlayerView[i], SIGNAL(ChangeAudioHint(QString, RecordPlayerView*)), this, SLOT(ChangeAudioHint(QString, RecordPlayerView*)));
 	}
 
 	if (m_pWindowDivMode != NULL)
@@ -387,6 +390,11 @@ QString RecordPlayer::GetNowPlayedTime()
 	return CurrentTime;
 }
 
+void RecordPlayer::ChangeAudioHint(QString statement, RecordPlayerView* pWnd)
+{
+	int index = pWnd - m_subRecPlayerView;
+	m_subRecPlayerView[index].setAudioHint(statement);
+}
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser)
 {
 	RecordPlayer *pRecordPlayer = (RecordPlayer*)pUser;

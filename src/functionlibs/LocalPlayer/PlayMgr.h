@@ -8,6 +8,7 @@
 #include <QTime>
 #include <QMutex>
 #include <QWaitCondition>
+#include "IAudioPlayer.h"
 
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 
@@ -34,7 +35,9 @@ public:
 	void pause(bool isPause);
 	void stop();
 	int prePlay(QVariantMap item);
-
+	void OpneAudio(bool bEnabled);
+	int setVolume(unsigned int &uiPersent);
+	void AudioSwitch(bool bOpen);
 private:
 	int initCb();
 
@@ -47,11 +50,15 @@ private:
 	bool m_bStop;
 	bool m_bPause;
 	bool m_bPlaying;
+	bool m_bIsAudioOpen;
 	QStringList m_lstfileList;
 	int m_nInitHeight;
 	int m_nInitWidth;
 	int m_nSpeedRate;
 	int m_nStartPos;
+	int m_nAudioChl;
+	int m_nSampleRate;
+	int m_nSampleWidth;
 	QDateTime m_startTime;
 	QDateTime m_endTime;
 	QVector<PeriodTime> m_skipTime;
@@ -61,6 +68,7 @@ private:
 	static bool m_bIsPickThread;
 	static bool m_bIsChange;
 	static void* m_who;
+	static IAudioPlayer* m_pAudioPlayer;
 
 	QMutex m_mutex;
 	QWaitCondition m_waitForPlay;

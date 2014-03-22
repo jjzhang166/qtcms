@@ -44,6 +44,9 @@ public:
 	virtual int GroupSpeedSlow(int speed);
 	virtual int GroupSpeedNormal();
 	virtual QDateTime GetNowPlayedTime();
+	virtual bool GroupEnableAudio(bool bEnable);
+	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd);
+
 
 	//IEventRegister
 	virtual QStringList eventList();
@@ -80,6 +83,8 @@ private:
 	uint m_startTime;
 	uint m_endTime;
 	uint m_playTime;
+
+	QWidget* m_pCurView;
 };
 
 #endif // LOCALPLAYER_H
