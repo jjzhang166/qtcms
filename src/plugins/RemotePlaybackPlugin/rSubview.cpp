@@ -29,8 +29,8 @@ RSubView::RSubView(QWidget *parent)
 	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()));
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
-	_curState=CConnectStatus::STATUS_DISCONNECTED;
-	_curPaint=CPaintEventStatus::STATUS_NOVIDEO;
+	_curState=CONNECT_STATUS_DISCONNECTED;
+	_curPaint=PAINTEVENT_STATUS_NOVIDEO;
 }
 
 RSubView::~RSubView()
@@ -42,6 +42,7 @@ RSubView::~RSubView()
 	}
 	m_checkTime.stop();
 	m_cacheTime.stop();
+
 }
 
 void RSubView::paintEvent( QPaintEvent * e)
@@ -145,7 +146,7 @@ bool RSubView::AudioEnabled(bool bEnabled)
 	return true;
 }
 
-void RSubView::SetCurConnectState( CConnectStatus::__enConnectStatus parm )
+void RSubView::SetCurConnectState( __enConnectStatus parm  )
 {
 	_curState=parm;
 	emit connecttingUpdateSig();
@@ -162,7 +163,7 @@ void RSubView::CacheState( QVariantMap evMap )
 
 void RSubView::connecttingUpdateSlot()
 {
-	if (_curState==CConnectStatus::STATUS_CONNECTING)
+	if (_curState==CONNECT_STATUS_CONNECTING)
 	{
 		m_checkTime.start(1000);
 		_countConnecting=3;
@@ -176,32 +177,26 @@ void RSubView::connecttingUpdateSlot()
 
 void RSubView::connecttingUpdate()
 {
-	_curPaint=CPaintEventStatus::STATUS_CONNECTING;
+	_curPaint= PAINTEVENT_STATUS_CONNECTING;
 	update();
 }
 
 void RSubView::CacheStateSlot( QVariantMap evMap )
 {
-	//if (evMap.value("cacheStatus")=="begin")
-	//{
-	//	m_cacheTime.start(500);
-	//}else if(evMap.value("cacheStatus")=="end"){
-	//	m_cacheTime.stop();
-	//}
-	_curPaint=CPaintEventStatus::STATUS_CACHE;
+	_curPaint=PAINTEVENT_STATUS_CACHE;
 	_curCache=evMap.value("Persent").toInt();
 	update();
 }
 
 void RSubView::CacheStateSlotUpdate()
 {
-	_curPaint=CPaintEventStatus::STATUS_CACHE;
+	_curPaint=PAINTEVENT_STATUS_CACHE;
 	update();
 }
 
 void RSubView::paintEventNoVideo( QPaintEvent * )
 {
-	if (_curPaint==CPaintEventStatus::STATUS_NOVIDEO)
+	if (_curPaint==PAINTEVENT_STATUS_NOVIDEO)
 	{
 		//
 		QPainter p(this);
@@ -264,7 +259,7 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 
 void RSubView::paintEventConnecting( QPaintEvent * )
 {
-	if (_curPaint==CPaintEventStatus::STATUS_CONNECTING)
+	if (_curPaint==PAINTEVENT_STATUS_CONNECTING)
 	{
 		QPainter p(this);
 
@@ -319,7 +314,7 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		pen.setColor(FontColor);
 
 		p.setPen(pen);
-		if (_curState==CConnectStatus::STATUS_CONNECTING)
+		if (_curState==CONNECT_STATUS_CONNECTING)
 		{
 			QString m_test;
 			if (_countConnecting==3)
@@ -339,7 +334,7 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 
 void RSubView::paintEventCache( QPaintEvent * )
 {
-	if (_curPaint==CPaintEventStatus::STATUS_CACHE)
+	if (_curPaint==PAINTEVENT_STATUS_CACHE)
 	{
 		QPainter p(this);
 
@@ -400,3 +395,5 @@ void RSubView::paintEventCache( QPaintEvent * )
 		p.drawText(rcClient, Qt::AlignCenter, cachePercent);
 	}
 }
+
+

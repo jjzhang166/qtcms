@@ -407,7 +407,7 @@ void RPlaybackWnd::StateChange( QVariantMap evMap )
 	{
 		QList<int>::Iterator it;
 		for(it=_widList.begin();it!=_widList.end();it++){
-			m_PlaybackWnd[*it].SetCurConnectState((CConnectStatus::__enConnectStatus)_curConnectState);
+			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
 		}
 	}
 }
