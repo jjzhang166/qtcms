@@ -1,0 +1,38 @@
+﻿生成启动时间为 2014/3/18 9:13:18。
+     1>项目“F:\project\cms-git-work\src\functionlibs\Recorder\Recorder.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\4.8.5\include /I.\GeneratedFiles\Debug /IC:\Qt\4.8.5\include\QtCore /I"F:\project\cms-git-work\vs project\..\include\\" /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D QT_DLL /D QT_CORE_LIB /D DIV1_LIB /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /Fo"F:\project\cms-git-work\vs project\Win32\Recorder\Debug\\" /Fd"F:\project\cms-git-work\vs project\Win32\Recorder\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\common\guid.cpp Recorder.cpp StorageMgr.cpp dllmain.cpp
+         guid.cpp
+         Recorder.cpp
+         StorageMgr.cpp
+         dllmain.cpp
+         正在生成代码...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\project\cms-git-work\vs project\..\libs\\Recorder.dll" /NOLOGO /LIBPATH:C:\Qt\4.8.5\lib qtmaind.lib QtCored4.lib QtGuid4.lib "F:\project\cms-git-work\vs project\..\libs\libpcom.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"Recorder.def" /MANIFEST /ManifestFile:"F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"F:\project\cms-git-work\libs\Recorder.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\project\cms-git-work\vs project\..\libs\Recorder.lib" /MACHINE:X86 /DLL "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\guid.obj"
+         "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\avilib.obj"
+         "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\dllmain.obj"
+         "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.obj"
+         "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\StorageMgr.obj"
+         netlib.lib(netlib.obj) : 找到 MSIL .netmodule 或使用 /GL 编译的模块；正在使用 /LTCG 重新启动链接；将 /LTCG 添加到链接命令行以改进链接器性能
+            正在创建库 F:\project\cms-git-work\vs project\..\libs\Recorder.lib 和对象 F:\project\cms-git-work\vs project\..\libs\Recorder.exp
+     1>MSVCRTD.lib(cinitexe.obj) : warning LNK4098: 默认库“libcmt.lib”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
+         正在生成代码
+         已完成代码的生成
+     1>netlib.lib(netlib.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“netlib.lib(netlib.obj)”或在“F:\project\cms-git-work\libs\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+         Recorder.vcxproj -> F:\project\cms-git-work\vs project\..\libs\Recorder.dll
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"F:\project\cms-git-work\vs project\..\libs\\Recorder.dll;#2" /manifest "F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.dll.intermediate.manifest"
+       PostBuildEvent:
+         copy  "F:\project\cms-git-work\vs project\..\libs\Recorder.dll" "F:\project\cms-git-work\vs project\..\output\Debug\"
+         :VCEnd
+         已复制         1 个文件。
+       FinalizeBuildStatus:
+         正在删除文件“F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.unsuccessfulbuild”。
+         正在对“F:\project\cms-git-work\vs project\Win32\Recorder\Debug\Recorder.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\project\cms-git-work\src\functionlibs\Recorder\Recorder.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:18.29
