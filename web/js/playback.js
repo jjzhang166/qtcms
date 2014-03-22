@@ -12,7 +12,7 @@ var	nViewNum = 0,
 		oDiv = $('div.dev_list');
 		ViewMax();
 
-		var oAs = $('ul.dev_list_btn li');	
+
 	    
 	    $('ul.filetree').treeview();		
 		
@@ -23,26 +23,15 @@ var	nViewNum = 0,
 			addMouseStyle($(this),action);
 		})
 
-		oAs.each(function(index){
-			$(this).on('click',function(){
-				$(window).off();
-				oDiv.hide();
-				oDiv.eq(index).show();
-			})
-		})
-
-		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
-			closeMenu();
-		})
-
 		var listParent = $('div.dev_list');
-		listParent.on('click','li:has(span.device):gt(0)',function(){
+		listParent.on('click','li:has(span.device):gt(0)',function(){  //设备单击初始化部分样式
 			var obj = $(this)
 			$('div.dev_list li').not(obj).removeClass('sel');
 			obj.addClass('sel');
 			PBrecFileTableInit();
 		})
-		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
+
+		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
 			searchVideo();
 		})
 
@@ -72,7 +61,7 @@ var	nViewNum = 0,
 		})*/
 		
 		var channelvideo = $("#channelvideo")
-		channelvideo.on('click','input:checkbox',function(event){ 
+		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 			if($(this).prop('checked')){
 				oSelected.push($(this));
@@ -88,7 +77,7 @@ var	nViewNum = 0,
 			$(this).find('input:checkbox').click();
 		})
 
-		channelvideo.on({ 
+		channelvideo.on({  //整个搜索的文件列表事件
 			mousedown:function(event){
 				try{
 					dragStopMove();
@@ -103,41 +92,30 @@ var	nViewNum = 0,
 			    		return false;
 			    	}
 				//event.stopPropagation();
-				$('div.play_time').css('left',left-2);
-				set_drag(81,channelvideo.width());
+				var moveObj = $('div.play_time').css('left',left-2);
+				set_drag(81,$(this).width(),moveObj);
 			}
 		})
 
-		$('div.play_time').on({
+		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
 			dblclick:function(event){
 				playVideo();
 			},
 			mousedown:function(){
-				set_drag(81,channelvideo.width());
+				set_drag(81,channelvideo.width(),$('div.play_time'));
 			}	
 		});
 		
-		$(window).resize(function(){
+		$(window).resize(function(){  //窗口自适应大小
 			ViewMax();	
 		})
 
-		oView.on({
-			mouseover:function(){
-				$(this).addClass('view_hover');
-			},
-			mouseleave:function(){
-				$(this).removeClass('view_hover');
-			}
-		},'div');
-
-		$('div.calendar').initCalendar();
-
-		$('#type').next('ul').find('a').each(function(index){ 
+		$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
 			$(this).click(function(){
 				$('#type span').attr('type',index);
 			})
 		})
-		$('#nowSearchType input:radio').each(function(index){
+		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
 				bool = index;
 			})

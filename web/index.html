@@ -37,7 +37,7 @@
 	<object type="application/cms-qwebview" id="winCon" style="width:0px;height:0px;"></object>
 	<div id="top">
 		<div class="top_act" id="app_top">
-			<h4>DVR Client</h4>
+			<h4>DVR 客户端</h4>
 			<div id="top_window_act">
 				<ul>
 					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
@@ -138,10 +138,10 @@
 	</div>
 	<div id="operating">
 		<div class="operat preview">
-			<ul style="width:410px;">
+			<ul style="width:450px;">
 				<li style="background:0;">
 					<div class="select" style="background: url(images/preview/operating_icon.png) no-repeat; height:36px; border:0;" id="setModel" title="分屏设置"></div>
-					<ul class="option" style="top:0; width:432px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
+					<ul class="option" style="top:0; width:450px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
 						<li class="setViewNum hover" style="background-position: 0 -72px;" onclick="setViewMod('div1_1')"></li>
 						<li class="setViewNum hover" style="background-position: 0 -108px;"onclick="setViewMod('div2_2')"></li>
 						<li class="setViewNum hover" style="background-position: 0 -144px;" onclick="setViewMod('div6_1')"></li>
@@ -166,8 +166,12 @@
 				<li class="toggle hover" style="background-position: -120px -180px;" title="轮循"></li>
 				<!-- <li class="hover" style="background-position: -120px -252px;"></li> -->
 				<li class="hover" style="background-position: -120px -252px;" title="全屏"></li>
-				<li class="toggle hover" title="声音" style="background-position: -120px 0"></li>
-				<li class="hover" style="background:0; width:70px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
+				<li class="toggle hover" onmouseup="sound($(this));" title="声音" style="background-position: -120px 0;"></li>
+				<li id="sound" class="hover" style="background:0; width:100px; margin:0 4px; position: relative;">
+					<div class="now_sound forbidden"></div>
+					<p style="z-index:1; width:50px;" class="forbidden"></p>
+					<p style="width:100px; background:#969696;"></p>
+				</li>
 			</ul>
 		</div>
 		<div id="actionLog">

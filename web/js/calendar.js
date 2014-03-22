@@ -1,35 +1,20 @@
 
 (function($){
 	$.fn.extend({
-		'initCalendar':function(obj,item){ //初始化日历
-			var date = this.defalut.Today
-			var dateStr = this.getdate(date);
-			this.item = 0;
-			if(item != null && item){
-				this.item = item*2;
-			}
-			
-			for(var key in obj){
-				for(var item in this.defalut ){
-					if(key == item){
-						this.defalut.showDataDom.push(obj[key]);
-					}
-				}
-			}
-
-			this.defalut.showDataDom.push(this.find('span.nowDate'));
-
-			this.defalut.showData(dateStr);
-			
-			this.initDaysData(date);
-
+		'initCalendar':function(obj){ //初始化日历\
 			var warp = this;
+			var date = new Date()
+			var dateStr = this.getdate(date);
 
-			this.on('click','tbody td',function(){
+			warp.defalut.showData($('span.nowDate'),dateStr);
+			
+			warp.initDaysData(date);
+
+			warp.on('click','tbody td',function(){
 				warp.initDaysClick($(this));
 			})
 			
-			this.init_next_prev();
+			warp.init_next_prev();
 		},
 		'init_next_prev':function(){  //上一月,下一月,上一年,下一年 按钮事件绑定
 			var num = 0;
@@ -109,9 +94,7 @@
 			warp.find('tbody td').removeClass('nowDay');
 			obj.addClass('nowDay');
 			var nowDate = warp.getNewDay(obj.html());
-			warp.defalut.showData(nowDate,warp.item);
-
-
+			warp.defalut.showData(warp.find('span.nowDate'),nowDate);
 		},
 		'getNewDay':function(newDay){
 			var warp = $(this);
@@ -121,8 +104,8 @@
 			return oldDate[0]+'-'+oldDate[1]+'-'+newDay;
 		},
 		'defalut':{      //显示日期。
-			'showDataDom':[],
-			'showData':function(str,num){
+			'showDataDom':{},
+			/*'showData':function(str,num){
 				var obj = this.showDataDom;
 				if(num != null){
 					obj[num].html(str);
@@ -134,8 +117,10 @@
 						obj[i].html(str);
 					}
 				}
-			},
-			'Today': new Date()
+			}*/
+			'showData':function(obj,str){
+				obj.html(str)
+			}
 		}
 	});
 })(jQuery);

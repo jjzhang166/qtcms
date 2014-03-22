@@ -105,15 +105,19 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 		oTds.eq(0).width(80);		
 	})
 }
-function set_drag(X1,X2){  // 回放页面的拖拽条
-	var oDrag=$('div.play_time');
-	var oNow=$('#now_time')
+function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
+	//var oNow=$('#now_time');
 	//showNowPlayBackTime(oNow,oDrag.offset().left,X2);
 	$(document).mousemove(function(event){
 			var left = event.pageX;
 		    left = left < X1 ? X1 : left;
 			left = left > X2 ? X2 : left;
-		oDrag.css('left',left-2+'px');
+		if(oDrag.hasClass('now_sound')){
+			left=left-$('#sound').offset().left;
+			$('#sound').find('p:eq(0)').width(oDrag.offset().left-$('#sound').offset().left+3)
+			getAudioObj().SetVolume(left);
+		}
+		oDrag.css('left',left-(parseInt(oDrag.width())/2)+'px');
 		//showNowPlayBackTime(oNow,left,X2);
 	}).mouseup(function(){
 		$(this).off();
@@ -340,7 +344,9 @@ $(function(){
 	//表单全选..
 	$('tbody.synCheckboxClick').SynchekboxClick();
 
-	//缩放事件同步。
+	$('div.calendar').each(function(index){
+		$(this).initCalendar();
+	})
 })
 function triggerOnclick(id,sEv){ 
 	try{
@@ -489,4 +495,46 @@ function checkHasObj(oSil,obj){
 		}
 	})
 	return b;
+}
+function addSoundMove() {  //添加滑动块移动
+	$('#sound').on({
+		mousedown:function(event){
+			var left = event.pageX-$(this).offset().left;
+			//event.stopPropagation();
+			var moveObj = $(this).find('div.now_sound').css('left',left-3);		
+			$(this).find('p:eq(0)').width(moveObj.offset().left-$(this).offset().left+3);
+			set_drag($(this).offset().left,($(this).offset().left+$(this).width()),moveObj);
+		}
+	})
+}
+function sound(obj){
+	var type = obj.attr('soundOn'),
+	oNext = $('#sound'),
+	oView =getAudioObj(),
+	enable = false;
+	if(type){
+		oNext.children().addClass('forbidden');
+		oNext.off();
+		obj.removeAttr('soundOn');
+		enable = false;
+	}else{
+		oNext.children().removeClass('forbidden');
+		addSoundMove();
+		obj.attr('soundOn',1);
+		enable = true;
+	}
+	//alert('当前控件'+$(oView).attr('id')+'//声音状态为:'+enable+'跟新状态为://'+oView.AudioEnabled(enable));
+}
+function getAudioObj(){   //返回当前页面可控制音量的控件对象。
+	var oAudioObj = {};
+	if($('#previewWindows')[0]){
+		oAudioObj = $('#previewWindows')[0];
+	}else{
+		if(bool){
+			oAudioObj = $('#playback')[0];
+		}else{
+			oAudioObj = $('#playbackLocl')[0];
+		}
+	}
+	return oAudioObj;
 }

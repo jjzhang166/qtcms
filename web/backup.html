@@ -6,9 +6,9 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/calendar.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
 <script type="text/javascript" src="js/qframework.js" ></script>
-<script type="text/javascript" src="js/calendar.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 <script type="text/javascript" src="js/ocxfunction.js"></script>
@@ -25,8 +25,6 @@ var now = 0;
 		})
 		
 		$('ul.filetree').treeview();
-
-		$('div.calendar').initCalendar();
 
 		var listParent = $('div.dev_list');
 		listParent.on('click','li:has(span.device):gt(0)',function(){

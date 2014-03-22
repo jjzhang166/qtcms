@@ -375,7 +375,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	display: block;
 	background: #FFF;
 	float: left;
-	background: url(../images/playback/operating_icon.jpg) no-repeat;
+	background: url(../images/playback/operating_icon.png) no-repeat;
 }
 .operat li.warn{
 	line-height: 50px;
@@ -398,13 +398,26 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 .preview li{
 	background: url(../images/preview/operating_icon.png) no-repeat;
 }
-.operat p{
+#sound p{
 	top:13px;
 	position: absolute;
 	border-radius: 4px;
-	width: 70px;
 	height: 10px;
-	background:#969696;
+	width:0px;
+	background:#00B1FF;
+}
+#sound .now_sound{
+	position: absolute;
+	top: 8px;
+	left: 47px;
+	z-index: 2;
+	height: 20px;
+	width: 6px;
+	border-radius: 4px;
+	background: #B21E36;
+}
+#sound .forbidden{
+	background: #ccc;
 }
 #operating .table{
 	display: block;

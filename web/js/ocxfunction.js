@@ -1,7 +1,6 @@
 
 var oCommonLibrary,
-	bool = 0;
-	
+	bool = 0; //本地远程回放控制  0为远程 1为本地
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');

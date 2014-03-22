@@ -6,18 +6,19 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/qframework.js" ></script>
-<script type="text/javascript" src="js/public.js"></script>
 <script type="text/javascript" src="js/calendar.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$('div.calendar').each(function(index){
-			$(this).initCalendar({
-				showData:$(this).parent('ul.option').prev('div.select').find('span.nowDate')
-			},index);
-		})
+
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
+		})
+
+		$('div.calendar').on('click','tbody td',function(){
+			var warp = $(this).parentsUntil('div.calendar').prev('div.calendar_top')
+			warp.parent('div.calendar').parent('ul').prev('div').find('span.nowDate').html(warp.find('span.nowDate').html());
 		})
 		mianViewMax();
 	})
@@ -86,7 +87,7 @@
 				<tr>
 					<td width="62px"><h5>开始时间<h5></td>
 					<td width="120">
-						<div class="select" style="width:120px; text-align:center;"><span class="nowDate"></span><a class="hover" href="javascript:;"></a></div>
+						<div class="select" style="width:120px; text-align:center;"><span class="nowDate"></span><a class="hover"></a></div>
 						<ul class="option" style="position: absolute;">
 						<div class="calendar">
 						<div class="calendar_top">
@@ -125,7 +126,7 @@
 					<td width="100"><a class="hover" href="javascript:;" class="search">检查日志</a></td>
 				</tr>
 				<tr>
-					<td><h5 style="float:right;">结束时间<h5></td>
+					<td><h5>结束时间<h5></td>
 					<td>
 						<div class="select" style="width:120px; text-align:center;"><span class="nowDate"></span><a class="hover" href="javascript:;"></a></div>
 						<ul class="option" style="position: absolute;">

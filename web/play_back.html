@@ -7,8 +7,8 @@
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/qframework.js" ></script>
-<script type="text/javascript" src="js/public.js"></script>
 <script type="text/javascript" src="js/calendar.js"></script>	
+<script type="text/javascript" src="js/public.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 <script type="text/javascript" src="js/ocxfunction.js"></script>
@@ -175,8 +175,12 @@
 				<li class="hover" style="background-position: -120px -216px;"></li>
 				<li class="hover" style="background-position: 0 -180px"></li>
 				li class="hover" style="width:70px;background:0; margin:0 30px;"><h5 style="width:52px; height:16px; float:left;background:url(images/playback/select_bg.png) repeat-x 0 -16px; margin-top:11px; text-indent:2px; color:#000;">5/16</h5><span class="hover" style=" float:right;display:block; height:18px; width:18px; margin-top:10px; background: url(images/playback/operating_icon.jpg) no-repeat -168px -324px;"></span></li> -->
-				<li class="toggle hover" style="background-position: -120px 0;" title="声音"></li>
-				<li class="hover" style="background:0; width:70px; margin-right:30px;"><p style="width:36px; background:#00B1FF;z-index:1;"></p><p style=""></p></li>
+				<li class="toggle hover" style="background-position: -120px 0;" title="声音" onmouseup="sound($(this));"></li>
+				<li id="sound" class="hover" style="background:0; width:100px; margin:0 4px; position: relative;">
+					<div class="now_sound forbidden"></div>
+					<p style="z-index:1; width:50px;" class="forbidden"></p>
+					<p style="width:100px; background:#969696;"></p>
+				</li>
 				<!-- <li class="hover" style="background-position: -120px -252px;"></li>
 				<li class="setViewNum hover" style="background-position: 0 -252px;"></li>
 				<li class="setViewNum hover" style="background-position: -30px -216px;"></li> -->

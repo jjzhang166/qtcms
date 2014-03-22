@@ -87,22 +87,10 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			setViewNumNow();
 		})
 
-		//同步设置分屏UI
-		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
-			backPosition = indexLi.css('background-position').split(' ');
-			indexLi.css('background-position','-30px '+backPosition[1]);
-
-		$('#setModel').css('background-position',indexLi.css('background-position'));
-
-		setViewNumNow();
-		//绑定控件事件
-		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
-
-		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
 		//日志区域右键从菜单
 		$('#actionLog').mouseup(function(){
 			if(event.which == 3){
-				var l = event.pageX > $(this).width() - 64 ? $(this).width() - 64 : event.pageX;
+				var l = event.pageX > $(this).width() - 60 ? $(this).width() - 60 : event.pageX;
 				var t = event.pageY - $(this).offset().top 
 					t = t > $(this).height() - 19 ? $(this).height() - 19: t;
 				$(this).find('a.emptyAct').css({ 
@@ -115,6 +103,19 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				})
 			}
 		})
+
+		//同步设置分屏UI
+		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
+			backPosition = indexLi.css('background-position').split(' ');
+			indexLi.css('background-position','-30px '+backPosition[1]);
+
+		$('#setModel').css('background-position',indexLi.css('background-position'));
+
+		setViewNumNow();
+		//绑定控件事件
+		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
+
+		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
@@ -175,8 +176,6 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	}
 
 	function openWind(wind,data){
-		//show(data);
-		//return false;
 		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
