@@ -217,9 +217,10 @@ void PlayManager::run()
 
 		m_pVedioDecoder->decode(lpdata, nLength);
 		frameTimer.start();
+		m_pBufferManager->removeItem(&recStream);
 
-		delete lpdata;
-		lpdata = NULL;
+// 		delete lpdata;
+// 		lpdata = NULL;
 		m_pBufferManager->removeItem(&recStream);
 
 	}
