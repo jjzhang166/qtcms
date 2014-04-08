@@ -427,8 +427,12 @@ void QPreviewWindows::showEvent( QShowEvent * )
 	}
 	//…Ë÷√”Ô—‘
 	QString languageLabel=GetLanguageLabel();
-	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
-		m_PreviewWnd[i].LoadLanguage(languageLabel);
+	if (hisLanguageLabel!=languageLabel)
+	{
+		for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
+			m_PreviewWnd[i].LoadLanguage(languageLabel);
+		}
+		hisLanguageLabel=languageLabel;
 	}
 }
 

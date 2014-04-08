@@ -88,6 +88,7 @@ private:
 	bool m_bIsOpenAudio;
 	
 	QMutex m_mutex;
+	QString hisLanguageLabel;
 
 
 };
