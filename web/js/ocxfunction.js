@@ -15,6 +15,19 @@ var oCommonLibrary,
 		groupList2Ui();
 		//区域列表;
 		areaList2Ui('0');
+		//跳转同步播放控件的状态到备列表和
+		if(data.Dsturl == 'null'){
+			for(var i=0;i<64;i++){
+				var oWinInfo = oPreView.GetWindowInfo(i);
+				debugData(oWinInfo);
+				/*var chlData = $('#channel_'+oWinInfo.chlId).attr({
+					wind:i,
+					state:oWinInfo.currentState
+				}).addClass('sel').data('data');
+				checkDevAllOpen(chlData.dev_id);*/
+			}
+			
+		}
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];
 	
@@ -501,7 +514,6 @@ function setDevData2ocx(){
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
-		alert(type);
 		setDevData2ocx();
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
