@@ -52,8 +52,6 @@ QSubView::QSubView(QWidget *parent)
 // 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
-	//申请DeviceClient接口,修改成动态生成，此处去掉
-	/*pcomCreateInstance(CLSID_DeviceClient,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);*/
 	//申请IRecorder接口
 	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void **)&m_pRecorder);
 
@@ -867,6 +865,14 @@ void QSubView::OnCheckTime()
 				m_bIsAutoRecording = false;
 			}
 		}
+		if (!m_lstReocrdTimeInfoList.size())
+		{
+			if (m_bIsAutoRecording)
+			{
+				m_pRecorder->Stop();
+				m_bIsAutoRecording = false;
+			}
+		}
 	}
 }
 
@@ -1359,6 +1365,13 @@ void QSubView::initDeviceInfo()
 	m_DevCliSetInfo.m_uiChannelIdInDataBase=-1;
 	m_DevCliSetInfo.m_uiPort=-1;
 	m_DevCliSetInfo.m_uiStreamId=-1;
+}
+
+void QSubView::ResetState()
+{
+	//设置ipc同步
+	//设置计划录像同步
+	m_RecordFlushTime=0;
 }
 
 

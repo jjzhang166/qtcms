@@ -418,11 +418,11 @@ void QPreviewWindows::showEvent( QShowEvent * )
 			}
 		}
 	}
-	//设置ipc自动同步
 	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
 		QVariantMap item=m_PreviewWnd[i].GetWindowInfo();
 		if (ChlIsExit(item.value("chlId").toInt())==true)
 		{
+			m_PreviewWnd[i].ResetState();
 		}
 	}
 }
