@@ -4,10 +4,12 @@
 #include <QFile>
 #include <QtXml/QtXml>
 #include "ISwitchStream.h"
+#include <QtCore/QtCore>
 
 
 QSubviewThread::QSubviewThread(void):m_IDeviceClient(NULL)
 {
+
 }
 
 

@@ -262,7 +262,8 @@ int QSubView::CloseWndCamera()
 		m_pRecorder->Stop();
 		m_bIsAutoRecording = false;
 	}
-	
+	m_checkTime.stop();
+	m_RecordFlushTime=0;
 	m_nSampleRate = 0;
 	m_nSampleWidth = 0;
 	m_bIsAudioOpend = false;
@@ -391,6 +392,8 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 		evMapToUi.insert("CurrentState",m_CurrentState);
 		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
 		emit CurrentStateChangeSignl(evMapToUi,this);
+		
+
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"connected";
 	}
 	if (3==m_CurrentState)
@@ -411,6 +414,21 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 		evMapToUi.insert("CurrentState",m_CurrentState);
 		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
 		emit CurrentStateChangeSignl(evMapToUi,this);
+
+		//手动录像
+		if (m_bIsRecording && NULL != m_pRecorder)
+		{
+			m_pRecorder->Stop();
+			m_bIsRecording = false;
+		}
+		//计划录像
+		if (m_bIsAutoRecording && NULL != m_pRecorder)
+		{
+			m_pRecorder->Stop();
+			m_bIsAutoRecording = false;
+		}
+		m_checkTime.stop();
+		m_RecordFlushTime=0;
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnected";
 	}
 	
@@ -1197,7 +1215,6 @@ void QSubView::saveCacheImage()
 	if (m_CurrentState==STATUS_CONNECTED)
 	{
 		_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
-		_cacheBackImage.save("12.jpg");
 	}
 	
 }

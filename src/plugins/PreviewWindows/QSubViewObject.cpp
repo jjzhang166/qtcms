@@ -51,7 +51,7 @@ IDeviceClient* QSubViewObject::SetDeviceByVendor( QString sVendor,QWidget *wnd )
 
 	m_QSubviewProcess->SetCreateDeviceFlags(false);
 	while(!m_QSubviewProcess->GetCreateDeviceFlags()){
-		msleep(10);
+		msleep(100);
 	}
 	return m_QSubviewProcess->GetDeviceClient();
 	
