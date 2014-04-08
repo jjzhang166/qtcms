@@ -8,13 +8,13 @@ var oCommonLibrary,
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
-		areaList2Ui('0');
+		areaList2Ui(0);
 	})
 	function refresh(data){ 
 		//分组列表;
 		groupList2Ui();
 		//区域列表;
-		areaList2Ui('0');
+		areaList2Ui(0);
 		//跳转同步播放控件的状态到备列表和
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
@@ -273,11 +273,11 @@ var oCommonLibrary,
 	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num){ //区域菜单输出
-		$('div.dev_list span.area').parent('li').remove();
-		var obj = $('ul.filetree:eq('+num+')')
-		var add = $('<li><span class="area" id="area_0">区域_root</span><ul></ul</li>').appendTo(obj);
+		//$('div.dev_list span.area').parent('li').remove();
+		var obj = $('ul.filetree').not('[id]').html('').eq(num);
+		var add = $('<li><span class="area" id="area_0">区域</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':'区域','pid':'0','pareaname':'root'})
+				  .end().appendTo(obj);
 		obj.treeview({add:add});
-		add.find('span.area:first').data('data',{'area_id':'0','area_name':'区域_root','pid':'0','pareaname':'root'});
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();
@@ -285,7 +285,7 @@ var oCommonLibrary,
 			var id = areaList[n];
 			var name = oCommonLibrary.GetAreaName(areaList[n]);
 			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
-			var pareaname = pid == 0 ? '区域_root' : oCommonLibrary.GetAreaName(pid);
+			var pareaname = pid == 0 ? '区域' : oCommonLibrary.GetAreaName(pid);
 			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
 			pidList.push(pid);
 
@@ -314,7 +314,7 @@ var oCommonLibrary,
 			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
-			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域_root';
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || '区域';
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});	
@@ -344,7 +344,7 @@ var oCommonLibrary,
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var groupList = oCommonLibrary.GetGroupList();
-		$('#group_0').data('data',{'group_id':'0','group_name':'分组_root','pid':'0','pareaname':'root'}).html('');
+		$('#group_0').data('data',{'group_id':'0','group_name':'分组','pid':'0','pareaname':'root'}).html('');
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
@@ -363,20 +363,22 @@ var oCommonLibrary,
 			data['r_chl_group_id'] = id;
 			data['channel_id'] = oCommonLibrary.GetChannelIdFromGroup(id);
 			var chldata2 = oCommonLibrary.GetChannelInfo(data['channel_id']);
-			data['channel_number'] = chldata2['number']
+			data['channel_number'] = chldata2['number'];
 			data['stream_id'] = chldata2['stream'];
 			data['dev_id'] = chldata2['dev_id'];
 			data['channel_name'] = chldata['name'];
-			data['group_id'] = chldata['group_id']
+			data['group_id'] = chldata['group_id'];
 			data['r_chl_group_name'] = ['name'];
 			var add = $('<li><span class="channel" id="g_channel_'+data['channel_id']+'" >'+chldata['name']+'</span></li>').appendTo($('#group_'+groupId).next('ul'));
 			add.find('span.channel').data('data',data);
 			$('ul.filetree:eq(1)').treeview({add:add});
 		}
 	}
+
 	function SettingCommonParmSuccess(data){
 		//alert(data);
 	}
+
 	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
@@ -391,19 +393,12 @@ var oCommonLibrary,
 function setDevData2ocx(){
 		var oDevData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
 		var b = true;
-		try{
-			palybackspeed('1x');
-		}catch(e){ 
-		
-		}
 		if(bool){
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
 				alert('同步组数量设置失败');
 				b = false
 			}
 		}else{
-			oPlayBack.GroupStop();
-			oPlayBack.GroupSpeedNormal();
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert('IP地址设置失败或者端口不合法!');
 				b = false;
@@ -426,10 +421,6 @@ function setDevData2ocx(){
 					}
 				});
 			}else{
-				try{
-					oPlaybackLocl.GroupStop();
-					oPlaybackLocl.GroupSpeedNormal();
-				}catch(e){}
 				for(var i=0;i<oDevData.channel_count;i++){
 					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
 						b = false;
@@ -447,43 +438,6 @@ function setDevData2ocx(){
 			$('#fileRec').hide();
 		}
   	}
-	function searchVideo(){
-		
-		  //cgi 请求数据
-		/*var channels = 0;   
-		$('#channelvideo input:checkbox').each(function(index){ 
-			if($(this).is(':checked')){
-				channels += 1 << index;
-			}
-		});
-		var type = parseInt($('#type span').attr('type'))
-			type = type == 0 ? 15 : 1 << type;
-		var date = $("div.calendar span.nowDate").html();dev
-		var begin = gettime($('div.timeInput:eq(0) input'));
-		var end = gettime( $('div.timeInput:eq(1) input'));
-		var url ='http://'+devData['address']+':'+devData['http'];
-		var num=0;
-		var page = 100;
-		getVideoData(num);
-
-		function getVideoData(num){ 
-			var xmlstr = '<juan ver="0" squ="fastweb" dir="0"><recsearch usr="' + devData['username'] + '" pwd="' + devData['password'] + '" channels="' + channels + '" 	types="' + type + '" date="' + date + '" begin="' + begin + '" end="' + end + '" session_index="'+num+'" session_count="'+page+'" /></juan>';
-			$.ajax({ 
-			type:"GET",
-			url: url + "/cgi-bin/gw.cgi?f=j",
-			data: "xml=" + xmlstr, 
-			dataType: 'jsonp',
-			jsonp: 'jsoncallback',
-			success: function(data, textStatus){
-				VideoData2Ui($('s',data.xml))
-				if($('recsearch',data.xml).attr('session_total')>(num+page)){
-					num += page;
-					getVideoData(num);
-				}
-			}
-		});	
-		}*/
-	}
 	var typeHint = [];
 		typeHint[1] = '定时';
 		typeHint[2] = '运动';
@@ -509,8 +463,6 @@ function setDevData2ocx(){
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
-			oPlayBack.style.height='0px';
-			oPlaybackLocl.style.height='100%';
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
@@ -522,10 +474,6 @@ function setDevData2ocx(){
 			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
 		}else{
 			var chl = 0;
-			try{
-				oPlaybackLocl.style.height='0px';
-				oPlayBack.style.height='100%';
-			}catch(e){}
 
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
@@ -542,8 +490,8 @@ function setDevData2ocx(){
 			con = '检索完成:';
 		}
 		$('#fileRec').find('span').width(p-2)
-			             .end().find('h5').html(now+'/'+recTotal)
-			             .end().find('h4').html(con);
+		             .end().find('h5').html(now+'/'+recTotal)
+		             .end().find('h4').html(con);
 	}
 	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	

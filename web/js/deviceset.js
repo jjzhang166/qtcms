@@ -88,10 +88,10 @@ var oSearchOcx;
 					$('div.dev_list span.device').parent('li').remove();
 					searchFlush();
 					//区域列表;
-					areaList2Ui('0');
+					areaList2Ui(0);
 				}else if(index == 1){
 					$('ul.filetree:eq(2)').find('li').remove();
-					areaList2Ui('2');
+					areaList2Ui(1);
 					$('div.dev_list span.channel').parent('li').remove();
 						
 						$('ul.filetree:eq(2) span.device').each(function(device_index){
@@ -335,7 +335,7 @@ var oSearchOcx;
 		})
 	}
 	function FillRecordTimeData(){
-		areaList2Ui('3');
+		areaList2Ui(2);
 		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){

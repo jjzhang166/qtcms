@@ -5,8 +5,7 @@ var	nViewNum = 0,
 	oSelected = [],
 	recFile=[],
 	bNoResize=true;
-	/*oplaybackvolset={'obj':'playback','enable':false,'vol':50},   //远程回放声音初始状态
-	oplaybackLoclvolset={'obj':'playbackLocl','enable':false,'vol':50};//本地回放声音初始状态*/
+	
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
@@ -21,7 +20,7 @@ var	nViewNum = 0,
 
 		oDiv = $('div.dev_list');
 
-		$('#sound').prev('li').prop('soundOn',true);
+		//$('#sound').prev('li').prop('soundOn',true);
 
 		ViewMax();
 	    
@@ -407,11 +406,25 @@ var	nViewNum = 0,
 		},200);
 	}
 	function playBackSerchFile(){
-		recFile=[];
-		PBrecFileTableInit();
+		palybackspeed('1X');
 		$('#channelvideo div.video').remove();
-		oPlayBack.GroupStop();
-		oPlaybackLocl.GroupStop();
+		recFile=[];
+
+		if(bool){
+			oPlayBack.style.height='0px';
+			oPlaybackLocl.style.height='100%';
+		}else{
+			oPlaybackLocl.style.height='0px';
+			oPlayBack.style.height='100%';
+		}
+
 		dragStopMove();
+		PBrecFileTableInit();
+
+		oPlayBack.GroupStop();
+		oPlayBack.GroupSpeedNormal();
+		oPlaybackLocl.GroupStop();
+		oPlaybackLocl.GroupSpeedNormal();
+
 		ocxsearchVideo();
 	}
