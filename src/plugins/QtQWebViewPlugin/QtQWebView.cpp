@@ -1,6 +1,7 @@
 #include "QtQWebView.h"
 #include <QFileDialog>
 #include <QMap>
+#include <QEventLoop>
 
 
 QtQWebView::QtQWebView():QWebPluginFWBase(this)
@@ -45,6 +46,9 @@ void QtQWebView::LoadNewPage( QString url )
 			item->m_SubWebView->show();
 			item->m_SubWebView->OnRefressMessage();
 			//Òþ²ØÖ÷Ò³
+			QEventLoop eventloop;
+			QTimer::singleShot(10,&eventloop,SLOT(quit()));
+			eventloop.exec();
 			QWidget *pa=this->parentWidget();
 			((QWebView*)pa)->hide();
 			return;
@@ -61,6 +65,9 @@ void QtQWebView::LoadNewPage( QString url )
 	/*m_tagViewPage.m_SubWebView->showMaximized();*/
 	m_tagViewPage.m_SubWebView->resize(PageSize);
 	m_tagViewPage.m_SubWebView->move(nX,nY);
+	QEventLoop eventloop;
+	QTimer::singleShot(500,&eventloop,SLOT(quit()));
+	eventloop.exec();
 	m_tagViewPage.m_SubWebView->show();
 	//Òþ²ØÖ÷Ò³
 	QWidget *pa=this->parentWidget();
@@ -99,10 +106,10 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	{
 		//ÏÔÊ¾Ö÷Ò³
 		QWidget *pa=this->parentWidget();
-		//qDebug()<<PageSize<<"index";
-		//((QWebView*)pa)->page()->view()->resize(PageSize);
-		//((QWebView*)pa)->page()->view()->move(nX,nY);
 		((QWebView*)pa)->show();
+		QEventLoop eventloop;
+		QTimer::singleShot(10,&eventloop,SLOT(quit()));
+		eventloop.exec();
 		QList<tagViewPage>::const_iterator it;
 		for(it=m_ViewPageList.constBegin();it!=m_ViewPageList.constEnd();++it){
 			it->m_SubWebView->hide();
@@ -139,17 +146,15 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 				it->m_SubWebView->page()->view()->move(nX,nY);
 				it->m_SubWebView->show();
 				it->m_SubWebView->OnRefressMessage();
+				QEventLoop eventloop;
+				QTimer::singleShot(10,&eventloop,SLOT(quit()));
+				eventloop.exec();
 				bExit=true;
 				break;
 			}
 		}
 		QList<tagViewPage>::const_iterator ite;
-		for(ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite){
-			if (DstUrl!=ite->url)
-			{
-				ite->m_SubWebView->hide();
-			}
-		}
+
 		if (false==bExit)
 		{
 			tagViewPage m_tagViewPage;
@@ -160,9 +165,18 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
 				m_tagViewPage.m_SubWebView->page()->view()->resize(PageSize);
 				m_tagViewPage.m_SubWebView->page()->view()->move(nX,nY);
+				QEventLoop eventloop;
+				QTimer::singleShot(500,&eventloop,SLOT(quit()));
+				eventloop.exec();
 				m_tagViewPage.m_SubWebView->show();
 				m_tagViewPage.url.append(DstUrl);
 				m_ViewPageList.append(m_tagViewPage);
+			}
+		}
+		for(ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite){
+			if (DstUrl!=ite->url)
+			{
+				ite->m_SubWebView->hide();
 			}
 		}
 		return;
