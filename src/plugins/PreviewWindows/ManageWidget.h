@@ -26,8 +26,10 @@ private:
 
 	widgetforvideo *_widgetForVideo;
 	Qqwidget *_recordItem;
+	Qqwidget *_audioItem;
 private:
 	void __createWidgetForvideo();
 	void __createRecordItem();
+	void __createAudioItem();
 };
 
