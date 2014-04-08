@@ -33,7 +33,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 				obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
 				obj.removeAttr('toggle');
 			}else{
-				obj.attr('toggle','1');
+				obj.attr('toggle',1);
 				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
 			}	
 			top = parseInt(obj.css('backgroundPositionY')) || parseInt(obj.css('background-position').split('px')[1]);	
@@ -108,19 +108,21 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 	/*var oNow=$('#now_time');
 	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/
-	var b=oDrag.hasClass('now_sound');
+	var b=oDrag.hasClass('now_sound'),
+		left;
 	if(b){
 		var veiwObj = getAudioObj();
 		var oWarpLeft = $('#sound');
 	}	
 	$(document).mousemove(function(event){
-			var left = event.pageX;
+			left = event.pageX;
 		    left = left < X1 ? X1 : left;
 			left = left > X2 ? X2 : left;
 		if(b){
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
+			veiwObj.vol = left;
 		}/*else{
 			showNowPlayBackTime(oNow,left,X2);
 		}*/
@@ -165,15 +167,13 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					}
 				});
 			})
-			option.find('a').each(function(index){
-				$(this).click(function(){
-					if($(this).attr('class') != 'hover'){
-						This.next('ul.option').hide();
-						This.find('span').html($(this).html());
-						//This.find('#vendor_ID').val($(this).html());
-						This.find('input:hidden').val($(this).attr('value'));
-					}
-				})
+			option.on('click','a',function(){
+				if($(this).attr('class') != 'hover'){
+					This.next('ul.option').hide();
+					This.find('span').html($(this).html()).attr('value',$(this).attr('value'));
+					//This.find('#vendor_ID').val($(this).html());
+					This.find('input:hidden').val($(this).attr('value'));
+				}
 			})
 		},
 		'timeInput':function(options){  //时间输入框
@@ -516,33 +516,35 @@ function addSoundMove() {  //添加滑动块移动
 	})
 }
 function sound(obj){
-	var type = obj.attr('soundOn'),
-	oNext = $('#sound'),
+	var type = obj.prop('soundOn'),
 	oView =getAudioObj(),
-	enable = false,
 	str='';
-	if(type){
-		oNext.children().addClass('forbidden');
-		oNext.off();
-		obj.removeAttr('soundOn');
-		enable = false;
-	}else{
-		oNext.children().removeClass('forbidden');
-		addSoundMove();
-		obj.attr('soundOn',1);
-		enable = true;
-	}
-	//show('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+enable+'对象切换状态为'+oView.AudioEnabled(enable));
-	if(oView.AudioEnabled(enable)){
+	//show('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));
+	if(oView.AudioEnabled(type)){
 		str='声音开关操作失败!';
 	}else{
-		if(enable){
+		if(type){
 			str='打开声音';
 		}else{
 			str='关闭声音';
 		}
 	}
+	oView.enable = type;
+
+	SyncSoundSli(type);
+	
 	writeActionLog(str);
+}
+function SyncSoundSli(type){
+	var oNext = $('#sound');
+	oNext.prev('li').prop('soundOn',!type);
+	if(type){
+		oNext.children().removeClass('forbidden');
+		addSoundMove();
+	}else{
+		oNext.children().addClass('forbidden');
+		oNext.off();
+	}
 }
 function getAudioObj(){   //返回当前页面可控制音量的控件对象。
 	var oAudioObj = {};

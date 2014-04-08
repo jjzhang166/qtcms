@@ -19,7 +19,7 @@
 	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
 
 	/* 下载进度 */
-	#fileRec{float: right; line-height: 36px; width:auto; margin-right: 26px; display: none;}
+	#fileRec{float: right; line-height: 36px; width:auto; margin-right:6px; display: none;}
 	#fileRec *{border: 1px solid #ccc; float: right; height: 12px;}
 	#fileRec p{ margin: 12px 0; width: 100px;}
 	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
@@ -162,7 +162,7 @@
 		</div> 
 	<div id="operating">
 		<div class="operat">
-			<div id="fileRec">当前下载进度:<h5>10.00%</h5><p><span></span></p></div>
+			<div id="fileRec">正在检索:<h5>0/0</h5><p><span></span></p></div>
 			<ul>
 				<li class="toggle hover" style="background-position: 0 0;" id="togglePlay" onclick="togglePlay();" title="播放/暂停"></li>
 				<li class="hover" style="background-position: -120px -72px;" onclick="groupStop();" title="停止"></li>
@@ -197,7 +197,7 @@
 				<li class="hover" style="background-position: 0 -324px;" title="截屏"></li>
 			</ul>
 		</div>
-		<div style="position: relative;height:96px; overflow:auto; top:38px;" id="recFile">
+<!-- 		<div style=" z-index:2; position: relative;height:96px; overflow:auto; top:38px;" id="recFile"> -->
 		<div class="play_time"></div>
 		<table class="table" cellpadding="0" cellspacing="0">
 			<thead>
@@ -210,7 +210,7 @@
 				<tr><td class="no_border"><input type="checkbox" checked="checked">窗口 04</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
 			</tbody>
 		</table>
-	</div>
+<!-- 	</div> -->
 	</div>
 	<div id="foot"></div>
 </body>

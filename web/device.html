@@ -77,7 +77,6 @@
 </style>
 </head>
 <body>
-<div id="test"></div>
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 <div id="menusList">
 <div id="menu0" class="menu menu0">
@@ -209,6 +208,7 @@
 	<div id="top">
 		<div class="top_act" id="app_top">
 			<h4>DVR 客户端</h4>
+			<div id="test" style="float:left;"></div>
 			<div id="top_window_act">
 				<ul>
 					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
@@ -873,7 +873,7 @@
                             <input id="dvr_record_types_3_2" class="chk1" type="checkbox"/>
                         </table>
 						</td></tr>
-						<tr class="title"><td colspan="4"><h5>拷至</h5></td></tr>
+						<tr class="title"><td colspan="4"><h5>拷贝至</h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
 						<tr><td style="width:582px;" colspan="4">
@@ -1689,17 +1689,17 @@
 							<td class="td1" style="text-align:right;">周</td>
 							<td class="td2">
 								<div class="select" style="width:60px;">
-									<span id="week" value="">星期一</span>
+									<span id="week" value="0">星期一</span>
 									<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option week">
-									<li><a>星期一</a></li>
-									<li><a>星期二</a></li>
-									<li><a>星期三</a></li>
-									<li><a>星期四</a></li>
-									<li><a>星期五</a></li>
-									<li><a>星期六</a></li>
-									<li><a>星期日</a></li>
+									<li><a value="0">星期一</a></li>
+									<li><a value="1">星期二</a></li>
+									<li><a value="2">星期三</a></li>
+									<li><a value="3">星期四</a></li>
+									<li><a value="4">星期五</a></li>
+									<li><a value="5">星期六</a></li>
+									<li><a value="6">星期日</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1708,21 +1708,23 @@
 						<tr><td class="td1"><input type="checkbox">时间3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr><td class="td1"><input type="checkbox">时间4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
-							<td class="td1">拷至</td>
-							<td class="td2">
+							<td class="td1">拷贝至</td>
+							<td class="td2 copyTo">
 								<div class="select" style="width:133px;">
 										<span></span>
 										<a class="hover" href="javascript:;"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
+									<li><a class="all">所有</a></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordDoubleTimeParm_ok">保存</div><div class="hover">取消</div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok">保存</div><div class="hover">取消</div></td></tr>
 					</table>
 				</div>
 				<div id="StorageParm" class="switch">

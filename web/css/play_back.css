@@ -352,7 +352,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	position:absolute;
 	background: #B21E36;
 	left: 79px;
-	top: 2px;
+	top: 40px;
 	z-index: 1;
 }
 .operat{ 
@@ -423,6 +423,10 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	display: block;
 	width: 100%;
 	border-collapse: collapse;
+	position: relative;
+	height:96px; 
+	overflow:auto; 
+	top:38px;
 }
 .table tr{
 	display: block;

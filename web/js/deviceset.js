@@ -248,25 +248,41 @@ var oSearchOcx;
 		 /*client_setting*/
 
 		//record setting  回放设置;
-		$('div.dev_list:eq(3)').on('click','span.channel',function(){
-			SettingRecordDoubleTimeParmSuccess();
-			$('ul.week.option li').removeData();
+		var weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
+		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
+			SettingRecordDoubleTimeParmSuccess();  //清空回放表单的数据
+			//通道选中状态唯一
 			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 			$(this).addClass('sel');
+			//填充完拷贝至其他通道的下拉菜单
+			$('td.copyTo li:gt(0)').remove();			
+			var allChlID = [];  //所有通道ID
+			$(this).parent('li').siblings().each(function(){
+				var chlData = $(this).find('.channel').data('data');
+				$('<li><a value="'+chlData.channel_id+'">'+chlData.channel_name+'</a></li>').appendTo($('td.copyTo ul'));
+				allChlID.push(chlData.channel_id);
+			})
+
+			$('td.copyTo a.all').attr('value',allChlID.join(',')); //拷贝到所有通道选项的value写入;
+
 			var chlData = $(this).data('data');
-			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id);
+
+			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
 			for(var i in sTimeID){
-				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]);
-				$('#week').attr('chl',chlData.channel_id);
+				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
+				$('#week').attr('chl',chlData.channel_id); //当前星期的关联的通道
+				//时间段数据和对应的星期关联
 				for(var j in weeks){
 					if(j == sTimeIDdata.weekday){
 						$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
 					}
 				}
 			}
-			initChannlrecTime($('ul.week.option li:eq(0)'));
-			$('#week').html('星期一');
+
+			initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
 		})
+
+
 		$('ul.week.option li').each(function(index){
 			$(this).on('click',function(){
 				initChannlrecTime($(this));
@@ -281,8 +297,8 @@ var oSearchOcx;
 		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
 		})
 
-		$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
-		$('#RecordTime').on('click','input:checkbox',initRecrodxml);
+		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
+		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
 		
 
@@ -320,14 +336,14 @@ var oSearchOcx;
 			}
 		}
 
-		$('#CommonParm input:checkbox').each(function(){ 
+		$('#CommonParm input:checkbox').each(function(){
 			$(this).toCheck();
 		})
+
 		$('#viewMod a').click(function(){
 			$('#SplitScreenMode_ID').val('div'+$(this).html());
 		})
 	}
-	var weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 	function FillRecordTimeData(){
 		areaList2Ui('3');
 		SettingRecordDoubleTimeParmSuccess();
@@ -340,14 +356,13 @@ var oSearchOcx;
 	function initChannlrecTime(obj){
 		var oTimes=$('#recordtime tr:lt(5)');
 		var str = '<recordtime num="4">';
-		var n = 0;
 		for(i in obj.data()){ 
-			n++;
 			var data = obj.data()[i];
 			var timeid = i.split('_')[1];
 			var start = data.starttime.split(' ')[1];
 			var end = data.endtime.split(' ')[1]
 			var enable = Boolean(data.enable);
+			var n = data.schedle_id+1;
 			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
 			oTimes.eq(n).find('input.timeid').val(timeid);
 			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
@@ -357,26 +372,42 @@ var oSearchOcx;
 		str +='</recordtime>';
 		$('#recordtimedouble_ID').val(str);
 	}
-	function initRecrodxml(){
-		var str = '<recordtime num="4">';
-		$('#RecordTime div.timeInput input').each(function(index){ 
-			var warp = $(this).parent('div.timeInput').parent('td.td2');
-			if(index%6 == 0){
-				var timeid = warp.find('input:hidden').val();
-				var start = warp.find('div.timeInput:eq(0)').gettime();
-				var end = warp.find('div.timeInput:eq(1)').gettime();
-				var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
-				str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+	//添加前获取要修改的时间ID的类容XML;
+	function getRecrodxml(){
+		var copyTo = [$('#RecordTime span.channel.sel').data('data').channel_id], // 初始的通道ID
+			copyID = $('#RecordTime td.copyTo span').attr('value').split(','), // 要拷贝到的通道ID
+			nowWeek = $('#week').attr('value'),
+			nowWeekTimeID = [];
+		if(copyID[0] != '')
+			copyTo = copyTo.concat(copyID);  // 要修改的通道的ID
+		show('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
+		// 返回符合当天星期的时间ID
+		for(i in copyTo){ 
+			var timeID = oCommonLibrary.GetRecordTimeBydevId(copyTo[i]);
+			for(j in timeID){
+				var timeinfo = oCommonLibrary.GetRecordTimeInfo(timeID[j])
+				if(timeinfo.weekday == nowWeek){
+					nowWeekTimeID.push(timeID[j]);
+				}
 			}
-		})
+		}
+		var str = '<recordtime num="'+nowWeekTimeID.length*4+'">';
+		for( i in nowWeekTimeID){
+			$('#RecordTime div.timeInput input').each(function(index){ 
+				var warp = $(this).parent('div.timeInput').parent('td.td2');
+				if(index%6 == 0){
+					var timeid = nowWeekTimeID[i];
+					var start = warp.find('div.timeInput:eq(0)').gettime();
+					var end = warp.find('div.timeInput:eq(1)').gettime();
+					var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
+					str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+				}
+			})
+		}
 		str +='</recordtime>';
 		$('#recordtimedouble_ID').val(str);
 	}
-	function getrecrodxml(){ 
-		$('tbody.synCheckboxClick input:checkbox').each(function(){
-			$(this).click();
-		})
-	}
+
 	// 一键添加
 	function addAlldevIntoArea(){
 		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);

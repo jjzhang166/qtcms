@@ -3,13 +3,22 @@ var	nViewNum = 0,
 	NowMonth = 0,
 	drag_timer = null,
 	oSelected = [];
+	/*oplaybackvolset={'obj':'playback','enable':false,'vol':50},   //远程回放声音初始状态
+	oplaybackLoclvolset={'obj':'playbackLocl','enable':false,'vol':50};//本地回放声音初始状态*/
 	$(function(){
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
 		oView = $('#playback_view');
 		oPlayBack = $('#playback')[0];
+		oPlayBack.volEnable = false;
+		oPlayBack.vol = 50;
 		oPlaybackLocl = $('#playbackLocl')[0];
+		oPlaybackLocl.volEnable = false;
+		oPlaybackLocl.vol = 50;
 		oDiv = $('div.dev_list');
+
+		$('#sound').prev('li').prop('soundOn',true);
+
 		ViewMax();
 	    
 	    $('ul.filetree').treeview();		
@@ -75,7 +84,7 @@ var	nViewNum = 0,
 			$(this).find('input:checkbox').click();
 		})
 
-		$('#recFile').on({  //整个搜索的文件列表事件
+		channelvideo.on({  //整个搜索的文件列表事件
 			mousedown:function(event){
 				try{
 					dragStopMove();
@@ -89,23 +98,26 @@ var	nViewNum = 0,
 			    	if(left < 81){
 			    		return false;
 			    	}
+			    	if(left > channelvideo.width()){ 
+			    		return false;
+			    	}
 				//event.stopPropagation();
 				var moveObj = $('div.play_time').css('left',left-2);
-				set_drag(81,$(this).width()-81,moveObj);
+				set_drag(81,channelvideo.width(),moveObj);
 			},
-			dblclick:function(event){
+			dblclick:function(){
 				playVideo(event);
 			}
 		})
 
-		/*$('div.play_time').on({  //文件搜索的下的事件滑动条事件
-			dblclick:function(event){
-				playVideo();
+		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
+			dblclick:function(){
+				playVideo(event);
 			},
 			mousedown:function(){
 				set_drag(81,channelvideo.width(),$('div.play_time'));
 			}	
-		});*/
+		});
 		
 		$(window).resize(function(){  //窗口自适应大小
 			ViewMax();	
@@ -116,16 +128,34 @@ var	nViewNum = 0,
 				$('#type span').attr('type',index);
 			})
 		})
+
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
 				bool = index;
+				var oView = getAudioObj();
+				var oSound = $('#sound');
+				var obtonbackPos = oSound.prev('li').css('background-position').split(' ');
+				
+				if(oView.enable){
+					var top = '-36px';
+					oSound.prev('li').attr('toggle',1);
+				}else{
+					var top = '0px';
+					oSound.prev('li').removeAttr('toggle');
+				}
+			
+				oSound.prop('soundOn',oView.type)
+					  .prev('li').css('background-position',obtonbackPos[0]+' '+top)
+					  .end().find('p:last').width(oView.vol)
+					  .end().find('.now_sound').css('left',oView.vol-2);
+
+				SyncSoundSli(oView.enable);
 			})
 		})
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
-
 	})///
 
 	function togglePlay(){ 

@@ -362,10 +362,12 @@ var oCommonLibrary,
 	function SettingCommonParmSuccess(data){
 		//alert(data);
 	}
-	function SettingRecordDoubleTimeParmSuccess(data){ 
+	function SettingRecordDoubleTimeParmSuccess(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
-		$('#week').html('').val('');
+		$('ul.week.option li').removeData();
+		$('#week').html('星期一').attr('value','0');
+		$('#recordtime td.copyTo').find('a,span').attr('value','').not('a.all').html('');
 	}
 	function SettingStorageParmSuccess(data){
 		//alert(data);
