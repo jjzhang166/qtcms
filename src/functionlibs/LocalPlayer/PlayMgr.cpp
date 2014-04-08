@@ -222,20 +222,6 @@ void PlayMgr::run()
 
 				AVI_set_video_position(file, frame);
 				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
-				//play audio
-				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
-				{
-					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
-					{
-						m_nAudioChl = nAudioChl;
-						m_nSampleRate = nSampleRate;
-						m_nSampleWidth = nSampleWidth;
-						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
-					}
-					bytes = AVI_audio_size(file, frame);
-					AVI_read_audio(file, audioBuff, bytes);
-					m_pAudioPlayer->Play(audioBuff, (int)bytes);
-				}
 
 				if (0 == isKeyFrame && isPlayInMid)
 				{
@@ -273,10 +259,43 @@ void PlayMgr::run()
 					m_pVedioDecoder->decode(vedioBuff, length);
 					frameTimer.start();
 
-					//count current play time;
-					currentPlayTime = fileStartTime.addSecs(frame/frameRate);
+				//play audio
+				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
+				{
+					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
+					{
+						m_nAudioChl = nAudioChl;
+						m_nSampleRate = nSampleRate;
+						m_nSampleWidth = nSampleWidth;
+						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
+					}
+					bytes = AVI_audio_size(file, frame);
+					AVI_read_audio(file, audioBuff, bytes);
+					m_pAudioPlayer->Play(audioBuff, (int)bytes);
+				}
 
-					if (!m_bIsPickThread)
+				int waitmilliSeconds = 0;
+				waitmilliSeconds = 1000000/frameRate - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*10*1000;
+				qint64 before = frameTimer.nsecsElapsed()/1000;
+				if (waitmilliSeconds - spend > 0)
+				{
+					usleep(waitmilliSeconds - spend);
+				}
+				spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
+
+				m_pVedioDecoder->decode(vedioBuff, length);
+				frameTimer.start();
+				//count current play time;
+				currentPlayTime = fileStartTime.addSecs(frame/frameRate);
+				if (!m_bIsPickThread)
+				{
+					m_bIsPickThread = true;
+					bIsPlayTimeChg = true;
+				}
+				if (frame/frameRate - lastTime > 0)
+				{
+					lastTime = frame/frameRate;
+					if (bIsPlayTimeChg)
 					{
 						m_bIsPickThread = true;
 						bIsPlayTimeChg = true;
