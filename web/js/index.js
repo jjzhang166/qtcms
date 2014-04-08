@@ -132,7 +132,37 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			})
 		})
 
-		return false;
+		// 云台方向控制;
+		$('#Dire_Control div:lt(4)').on({
+			mousedown:function(){
+				writeActionLog('开始PTZ');
+				PTZcontrol($(this).attr('PTZ',1).index());
+			},
+			mouseup:function(){
+				writeActionLog('停止PTZ');
+				oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
+			},
+			mouseleave:function(){
+				if($(this).attr('PTZ')){
+					writeActionLog('鼠标移开停止PTZ');
+					oPreView.ClosePTZ($(this).index());	
+				}
+			}
+		})
+		$('#Dire_Control div:last').on({
+			mouseup:function(){
+				if($(this).attr('PTZ')){
+					writeActionLog('停止自动PTZ');
+					$(this).removeAttr('PTZ');
+					oPreView.ClosePTZ($(this).index());
+				}else{
+					writeActionLog('开始自动PTZ');
+					$(this).attr('PTZ',1);
+					PTZcontrol($(this).attr('PTZ',1).index());		
+				}
+			}
+		})
+		//return false;
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
@@ -398,7 +428,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		writeActionLog(str);
 	}
 
-	function PTZcontrol(code,speed){
-		oPreView.OpenPTZ(code)
+	function PTZcontrol(code){
+		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
+			alert('云台操作失败');
+		};
 	}
 

@@ -100,15 +100,15 @@
 			</ul>
 			<div class="switch" style="display:block">
 				<div id="Dire_Control">
-					<div class="hover" style="height:11px; width:18px; top:8px; left:55px; background-position: 0 -66px;"></div>
-					<div class="hover" style="height:11px; width:18px; top:110px; left:55px; background-position: -72px -66px;"></div>
-					<div class="hover" style="height:18px; width:11px; top:55px; left:8px; background-position: -144px -66px;"></div>
-					<div class="hover" style="height:18px; width:11px; top:55px; left:108px; background-position: -188px -66px;"></div>
+					<div class="hover" style="height:11px; width:18px; top:8px; left:55px; background-position: 0 -66px;" title="上"></div>
+					<div class="hover" style="height:11px; width:18px; top:110px; left:55px; background-position: -72px -66px;" title="下"></div>
+					<div class="hover" style="height:18px; width:11px; top:55px; left:8px; background-position: -144px -66px;" title="左"></div>
+					<div class="hover" style="height:18px; width:11px; top:55px; left:108px; background-position: -188px -66px;" title="右"></div>
 					<!-- <div class="hover small" style="top:26px; left:26px; background-position: -64px -77px;"></div>
 					<div class="hover small" style="top:26px; left:94px; background-position: 0 -77px;"></div>
 					<div class="hover small" style="top:94px; left:26px; background-position: -96px -77px;"></div>
 					<div class="hover small" style="top:94px; left:94px; background-position: -32px  -77px;"></div> -->
-					<div class="hover" style="top:30px; left:32px;" id="app_ptz_auto"></div>
+					<div class="hover" style="top:30px; left:32px;" title="自动"></div>
 				</div>			
 				<div class="ptz_speed" title="云台控制速度">
 					<span style="border:none; width:32px;" class="act"></span>
@@ -120,12 +120,12 @@
 					<span></span>
 				</div>
 				<ul class="para_Control">
-					<li class="hover" style="background-position: 0 -128px;" title="变倍大"></li>
-					<li class="hover" style="background-position: 0 -150px;" title="变倍小"></li>
-					<li class="hover" style="background-position: -128px 0;" title="近焦"></li>
-					<li class="hover" style="background-position: -128px -22px;" title="远焦"></li>
-					<li class="hover" style="background-position: -128px -44px;" title="光圈关"></li>
-					<li class="hover" style="background-position: -128px -66px;" title="光圈开"></li>
+					<li class="hover" style="background-position: 0 -128px;" title="变倍大" onclick="PTZcontrol(8)"></li>
+					<li class="hover" style="background-position: 0 -150px;" title="变倍小" onclick="PTZcontrol(7)"></li>
+					<li class="hover" style="background-position: -128px 0;" title="近焦" onclick="PTZcontrol(6)"></li>
+					<li class="hover" style="background-position: -128px -22px;" title="远焦" onclick="PTZcontrol(5)"></li>
+					<li class="hover" style="background-position: -128px -44px;" title="光圈关" onclick="PTZcontrol(10)"></li>
+					<li class="hover" style="background-position: -128px -66px;" title="光圈开" onclick="PTZcontrol(9);"></li>
 				</ul>
 				
 				<!-- <div class="others">
