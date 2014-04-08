@@ -511,7 +511,8 @@ function sound(obj){
 	var type = obj.attr('soundOn'),
 	oNext = $('#sound'),
 	oView =getAudioObj(),
-	enable = false;
+	enable = false,
+	str='';
 	if(type){
 		oNext.children().addClass('forbidden');
 		oNext.off();
@@ -523,7 +524,16 @@ function sound(obj){
 		obj.attr('soundOn',1);
 		enable = true;
 	}
-	//alert('当前控件'+$(oView).attr('id')+'//声音状态为:'+enable+'跟新状态为://'+oView.AudioEnabled(enable));
+	if(oView.AudioEnabled(enable)){
+		str='声音开关操作失败!';
+	}else{
+		if(enable){
+			str='打开声音';
+		}else{
+			str='关闭声音';
+		}
+	}
+	writeActionLog(str);
 }
 function getAudioObj(){   //返回当前页面可控制音量的控件对象。
 	var oAudioObj = {};

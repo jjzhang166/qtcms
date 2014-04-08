@@ -428,6 +428,7 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
+		$('#fileRec').show();
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
