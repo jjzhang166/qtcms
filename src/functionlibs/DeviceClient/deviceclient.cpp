@@ -596,6 +596,7 @@ void DeviceClient::action(QString options, BufferManager *pBuffer)
 	}
 	else if ("Pause" == options)
 	{
+		qDebug()<<"============= puase ============== ";
 		m_pRemotePlayback->pausePlaybackStream(true);
 	}
 	else if ("Continue" == options)
@@ -699,7 +700,7 @@ int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 		wndPlay.wnd = wnd;
 
 		QObject::connect(wndPlay.bufferManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
-		QObject::connect(wndPlay.playManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
+// 		QObject::connect(wndPlay.playManager, SIGNAL(action(QString, BufferManager*)), this, SLOT(action(QString, BufferManager*)));
 		QObject::connect(wndPlay.bufferManager, SIGNAL(bufferStatus(int,BufferManager*)), this, SLOT(bufferStatus(int, BufferManager*)));
 
 		m_groupMap.insert(nChannel, wndPlay);
