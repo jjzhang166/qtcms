@@ -327,6 +327,8 @@ int AVI_set_audio_track(avi_t *AVI, int track);
 int AVI_get_audio_track(avi_t *AVI);
 int AVI_audio_tracks(avi_t *AVI);
 
+int AVI_seek_pos(avi_t *AVI, int frame);//¨°??¡¥???t????¦Ì?¦Ì¨²frame??
+
 //extern HI_U32 aHeight;
 //extern HI_U32 aWidth;
 

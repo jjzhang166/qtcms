@@ -207,7 +207,7 @@ void PlayMgr::run()
 			if (isPlayInMid)
 			{
 				startframe = qAbs(timeOffset)*frameRate/1000;
-				AVI_set_video_position(file, startframe);
+				AVI_seek_pos(file, startframe);
 			}
 			int nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);
 			while(0 != nRet && !m_bStop && currentPlayTime < m_endTime)

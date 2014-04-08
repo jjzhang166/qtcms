@@ -1935,3 +1935,13 @@ uint64_t AVI_max_size()
 {
   return((uint64_t) AVI_MAX_LEN);
 }
+
+int AVI_seek_pos( avi_t *AVI, int frame )
+{
+	int video_pos = AVI->video_index[frame].pos - 8;
+	if (lseek(AVI->fdes, video_pos, SEEK_SET) < 0)
+	{
+		return -1;
+	}
+	return 0;
+}
