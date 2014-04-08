@@ -16,10 +16,9 @@ QSubviewThread::QSubviewThread(void):m_IDeviceClient(NULL),
 
 QSubviewThread::~QSubviewThread(void)
 {
-	if (NULL!=m_IDeviceClient)
-	{
-		m_IDeviceClient->Release();
-		m_IDeviceClient=NULL;
+	CloseAll();
+	while(m_bIsClosing==true){
+		msleep(100);
 	}
 }
 
@@ -85,6 +84,12 @@ void QSubviewThread::OpenCameraInWnd()
 
 void QSubviewThread::CloseAll()
 {
+	//防止多线程同时调用
+	if (m_bIsClosing==true)
+	{
+		return;
+	}
+
 	m_bIsClosing=true;
 	if (NULL==m_IDeviceClient)
 	{

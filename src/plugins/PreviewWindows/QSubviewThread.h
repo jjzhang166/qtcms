@@ -30,7 +30,7 @@ public slots:
 	int SetDeviceByVendor(QString sVendor, QWidget *pWnd);
 private:
 	IDeviceClient *m_IDeviceClient;
-	bool m_bIsClosing;
+	volatile bool m_bIsClosing;
 
 };
 

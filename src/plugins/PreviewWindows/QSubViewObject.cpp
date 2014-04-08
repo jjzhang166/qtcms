@@ -35,7 +35,7 @@ int QSubViewObject::OpenCameraInWnd()
 }
 int QSubViewObject::CloseWndCamera()
  {
-	 if (bIsOpen)
+	 if (bIsOpen&&m_QSubviewProcess->isFinished()==false)
 	 {
 		  QFuture<void>ret=QtConcurrent::run(m_QSubviewProcess,&QSubviewThread::CloseAll);
 	 }

@@ -884,6 +884,7 @@ void QSubView::In_OpenAutoConnect()
 			m_IDeviceClientDecideByVendor->Release();
 			m_IDeviceClientDecideByVendor=NULL;
 		}
+		m_bIsAutoConnecting=false;
 		return ;
 	}
 	m_QSubViewObject.SetCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
