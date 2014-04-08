@@ -33,7 +33,7 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		return 1;
 	}
 
-	if (100 == m_StreamBuffer.size())
+	if (m_StreamBuffer.size() <= 100 && !m_bStopBuff)
 	{
 		emit bufferStatus(m_StreamBuffer.size(), this);
 	}
@@ -124,6 +124,7 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 
 int BufferManager::emptyBuff()
 {
+	m_bStopBuff = false;
 	RecordStreamFrame streamInfo;
 	while(!m_StreamBuffer.isEmpty())
 	{

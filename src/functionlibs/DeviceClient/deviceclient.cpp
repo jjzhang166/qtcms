@@ -618,11 +618,10 @@ void DeviceClient::bufferStatus(int persent, BufferManager* pBuff)
 	QMap<int, WndPlay>::iterator iter = m_groupMap.begin();
 	while (iter != m_groupMap.end())
 	{
-		if (pBuff == iter->bufferManager)
+		if (iter->bufferManager = pBuff)
 		{
 			break;
 		}
-		++iter;
 	}
 // 	void* wind = (void*)iter->wnd;
 	int *wind = reinterpret_cast<int*>(iter->wnd);
