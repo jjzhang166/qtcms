@@ -25,6 +25,9 @@
 #include <QPixmap>
 #include "ui_TitleView.h"
 #include "ManageWidget.h"
+#include <QTranslator>
+#include <QDomDocument>
+#include <QDomNode>
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbForRecord(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
@@ -72,6 +75,7 @@ public:
 		STATUS_DISCONNECTING,
 	}QSubViewConnectStatus;
 	void ResetState();
+	virtual void changeEvent(QEvent *);
 public:
 	//»Øµ÷
 	int PrevPlay(QVariantMap evMap);
@@ -82,6 +86,7 @@ public:
 	int SetDeviceByVendor(const QString & sVendor);
 	void SetCurrentFocus(bool);
 	void RecordState(QVariantMap evMap);
+	void LoadLanguage(QString label);
 private:
 	int cbInit();
 	
@@ -92,6 +97,8 @@ private:
 	void saveCacheImage();
 	int GetDeviceInfo(int chlId);
 	void initDeviceInfo();
+	void translateUi();
+	QString GetlanguageLable(QString);
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
@@ -173,10 +180,12 @@ private:
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
 
 	static QSubView* m_pCurrView;
-	//test
+
 	ManageWidget *_manageWidget;
 	QPixmap _cacheBackImage;
 	QPixmap _ScreenShotImage;
+
+	QTranslator *_translator;
 };
 
 

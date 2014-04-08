@@ -425,6 +425,11 @@ void QPreviewWindows::showEvent( QShowEvent * )
 			m_PreviewWnd[i].ResetState();
 		}
 	}
+	//…Ë÷√”Ô—‘
+	QString languageLabel=GetLanguageLabel();
+	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
+		m_PreviewWnd[i].LoadLanguage(languageLabel);
+	}
 }
 
 void QPreviewWindows::hideEvent( QHideEvent * )
@@ -459,4 +464,17 @@ bool QPreviewWindows::ChlIsExit( int chlId )
 		pChannelManager->Release();
 	}
 	return flags;
+}
+
+QString QPreviewWindows::GetLanguageLabel()
+{
+	ILocalSetting *pLocalSetting=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void**)&pLocalSetting);
+	if (pLocalSetting!=NULL)
+	{
+		return pLocalSetting->getLanguage();
+	}
+	else{
+		return "en_GB";
+	}
 }

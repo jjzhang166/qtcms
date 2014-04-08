@@ -9,6 +9,7 @@
 #include "PreviewWindowsGlobalSetting.h"
 #include "IWindowDivMode.h"
 #include <IChannelManager.h>
+#include <ILocalSetting.h>
 
 
 
@@ -75,6 +76,7 @@ public slots:
 	virtual void hideEvent(QHideEvent *);
 private:
 	bool ChlIsExit(int chlId);
+	QString GetLanguageLabel();
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

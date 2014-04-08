@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root ver="1.0">
+	<CLSID>
+		<item name="en_GB" file="english"/>
+		<item name="zh_CN" file="chinese"/>
+	</CLSID>
+</root>

@@ -10,6 +10,7 @@
 #include <IDeviceManager.h>
 #include <QDir>
 #include <QDateTime>
+#include <QApplication>
 bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
@@ -38,6 +39,7 @@ QSubView::QSubView(QWidget *parent)
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_QActionSwitchStream(NULL),
+	_translator(NULL),
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
@@ -65,8 +67,8 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnected()),Qt::QueuedConnection);
-	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
-	m_QActionSwitchStream=m_RMousePressMenu.addAction("Switch Stream");
+	m_QActionCloseView=m_RMousePressMenu.addAction(tr("close preview"));
+	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
 	connect(m_QActionSwitchStream,SIGNAL(triggered(bool)),this,SLOT(OnSwitchStreamFromMouseEv()));
@@ -78,6 +80,8 @@ QSubView::QSubView(QWidget *parent)
 	_manageWidget=new ManageWidget(this);
 	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
 	initDeviceInfo();
+	_translator=new QTranslator();
+	QApplication::installTranslator(_translator);
 }
 
 QSubView::~QSubView()
@@ -121,12 +125,16 @@ QSubView::~QSubView()
 		m_pAudioPlayer->Release();
 		m_pAudioPlayer = NULL;
 	}
+	if (NULL!=_translator)
+	{
+		delete _translator;
+		_translator=NULL;
+	}	
 }
 
 
 void QSubView::paintEvent( QPaintEvent * e)
 {
-	/*saveCacheImage();*/
 	paintEventCache(e);
 	paintEventConnecting(e);
 	paintEventNoVideo(e);
@@ -192,6 +200,7 @@ int QSubView::GetCurrentWnd()
 int QSubView::OpenCameraInWnd(int chlId)
 {
 	//½ûÖ¹Æµ·±²Ù×÷
+	
 	if (m_bIsForbidConnect==true)
 	{
 		return 1;
@@ -337,7 +346,6 @@ int QSubView::cbInit()
 			pRegist=NULL;
 		}
 	}
-
 	return 0;
 }
 int QSubView::PrevPlay(QVariantMap evMap)
@@ -575,9 +583,9 @@ void QSubView::OnRMousePressMenu()
 {
 	if (m_DevCliSetInfo.m_uiStreamId==0)
 	{
-		m_QActionSwitchStream->setText("Switch to subStream");
+		m_QActionSwitchStream->setText(tr("Switch to subStream"));
 	}else{
-		m_QActionSwitchStream->setText("Switch to MainStream");
+		m_QActionSwitchStream->setText(tr("Switch to MainStream"));
 	}
 	m_RMousePressMenu.exec(QCursor::pos());
 }
@@ -1374,4 +1382,56 @@ void QSubView::ResetState()
 	m_RecordFlushTime=0;
 }
 
+void QSubView::changeEvent( QEvent * e)
+{
+	if (e->type()==QEvent::LanguageChange)
+	{
+		translateUi();
+	}
+}
+
+void QSubView::translateUi()
+{
+	if (m_QActionCloseView!=NULL)
+	{
+		m_QActionCloseView->setText(tr("close preview"));
+	}
+	if (m_QActionSwitchStream!=NULL)
+	{
+		m_QActionSwitchStream->setText(tr("Switch Stream"));
+	}
+}
+
+void QSubView::LoadLanguage(QString label)
+{
+	if (_translator!=NULL)
+	{
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QString path = sAppPath + "/LocalSetting";
+
+		_translator->load(GetlanguageLable(label),path);
+	}
+}
+QString QSubView::GetlanguageLable(QString label)
+{
+	QString sAppPath=QCoreApplication::applicationDirPath();
+	sAppPath+="/LocalSetting";
+	QDomDocument ConFile;
+	QFile *file=new QFile(sAppPath+"/language.xml");
+	file->open(QIODevice::ReadOnly);
+	ConFile.setContent(file);
+	QDomNode clsidNode = ConFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	QString sFileName="en_GB";
+	for (int n = 0; n < itemList.count(); n++)
+	{
+		QDomNode item = itemList.at(n);
+		QString slanguage = item.toElement().attribute("name");
+		if(slanguage == label){
+			sFileName =item.toElement().attribute("file");
+			break;
+		}
+	}
+	return sFileName;
+}
 
