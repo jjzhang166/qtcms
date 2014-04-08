@@ -76,7 +76,6 @@ public:
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
-	void ChangeAudioHint(QString, RSubView*);
 
 private:
 	RSubView         m_PlaybackWnd[4];

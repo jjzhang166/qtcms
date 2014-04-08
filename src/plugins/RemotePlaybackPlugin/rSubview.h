@@ -15,8 +15,6 @@
 #include <QTimer>
 #include <QPixmap>
 
-#include <QMenu>
-#include <QAction>
 #include <QLabel>
 
 class RSubView :public QWidget
@@ -44,7 +42,6 @@ public:
 	}ConnectStatus;
 public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
-	void setAudioHint(QString&);
 	bool AudioEnabled(bool bEnabled);
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
@@ -53,8 +50,6 @@ public:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
-	void RMousePressMenu();
-	void ChangeAudioHint(QString, RSubView*);
 
 	void connecttingUpdateSig();
 	void CacheStateSig(QVariantMap evMap);
@@ -69,22 +64,14 @@ public:
 	QTimer m_checkTime;
 	QTimer m_cacheTime;
 public slots:
-	void OnOpenAudio();
-	void OnRMousePressMenu();
-
-
 	void connecttingUpdateSlot();
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
 	
 private:
-	static RSubView* m_pCurView;
-	static bool m_bLocalAudioStatus;
 	static bool m_bGlobalAudioStatus;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
-	QMenu m_rMousePressMenu;
-	QAction *m_ActionOpenAudio;
 
 	int _curCache;
 	QPixmap _cacheBackImage;

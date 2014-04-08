@@ -28,7 +28,6 @@ m_currentWindID(0)
 		m_lstRecordPlayerWndList.insert(i,&m_subRecPlayerView[i]);
 
 		m_subRecPlayerView[i].setLocalPlayer(m_pLocalPlayer);
-		connect(&m_subRecPlayerView[i], SIGNAL(ChangeAudioHint(QString, RecordPlayerView*)), this, SLOT(ChangeAudioHint(QString, RecordPlayerView*)));
 	}
 
 	if (m_pWindowDivMode != NULL)
@@ -399,20 +398,6 @@ int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
 		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, NULL);
 	}
 	return nRet;
-}
-int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
-{
-	int nRet = -1;
-	if (NULL != m_pLocalPlayer)
-	{
-		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, NULL);
-	}
-	return nRet;
-}
-void RecordPlayer::ChangeAudioHint(QString statement, RecordPlayerView* pWnd)
-{
-	int index = pWnd - m_subRecPlayerView;
-	m_subRecPlayerView[index].setAudioHint(statement);
 }
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser)
 {

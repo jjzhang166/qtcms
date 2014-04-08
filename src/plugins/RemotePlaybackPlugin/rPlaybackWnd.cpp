@@ -31,7 +31,6 @@ _curConnectType(TYPE_NULL)
 		m_PlaybackWnd[i].setParent(this);
 		connect(&m_PlaybackWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PlaybackWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
-		connect(&m_PlaybackWnd[i], SIGNAL(ChangeAudioHint(QString, RSubView*)), this, SLOT(ChangeAudioHint(QString, RSubView*)));
 
 		m_PlaybackWndList.insert(m_PlaybackWndList.size(),&m_PlaybackWnd[i]);
 	}
@@ -488,8 +487,3 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 		 }
 		 return 1;
  }
-void RPlaybackWnd::ChangeAudioHint(QString statement, RSubView* pWind)
-{
-	int index = pWind - m_PlaybackWnd;
-	m_PlaybackWnd[index].setAudioHint(statement);
-}

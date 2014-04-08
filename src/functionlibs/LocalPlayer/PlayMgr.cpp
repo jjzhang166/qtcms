@@ -219,11 +219,7 @@ void PlayMgr::run()
 					g_waitConPause.wait(&g_mtxPause);
 					g_mtxPause.unlock();
 				}
-
-				AVI_set_video_position(file, frame);
-				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
-
-				if (0 == isKeyFrame && isPlayInMid)
+				if (2 == nRet)//play audio
 				{
 					if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
 					{
@@ -259,43 +255,10 @@ void PlayMgr::run()
 					m_pVedioDecoder->decode(vedioBuff, length);
 					frameTimer.start();
 
-				//play audio
-				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
-				{
-					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
-					{
-						m_nAudioChl = nAudioChl;
-						m_nSampleRate = nSampleRate;
-						m_nSampleWidth = nSampleWidth;
-						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
-					}
-					bytes = AVI_audio_size(file, frame);
-					AVI_read_audio(file, audioBuff, bytes);
-					m_pAudioPlayer->Play(audioBuff, (int)bytes);
-				}
+					//count current play time;
+					currentPlayTime = fileStartTime.addSecs(frame/frameRate);
 
-				int waitmilliSeconds = 0;
-				waitmilliSeconds = 1000000/frameRate - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*10*1000;
-				qint64 before = frameTimer.nsecsElapsed()/1000;
-				if (waitmilliSeconds - spend > 0)
-				{
-					usleep(waitmilliSeconds - spend);
-				}
-				spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
-
-				m_pVedioDecoder->decode(vedioBuff, length);
-				frameTimer.start();
-				//count current play time;
-				currentPlayTime = fileStartTime.addSecs(frame/frameRate);
-				if (!m_bIsPickThread)
-				{
-					m_bIsPickThread = true;
-					bIsPlayTimeChg = true;
-				}
-				if (frame/frameRate - lastTime > 0)
-				{
-					lastTime = frame/frameRate;
-					if (bIsPlayTimeChg)
+					if (!m_bIsPickThread)
 					{
 						m_bIsPickThread = true;
 						bIsPlayTimeChg = true;
@@ -313,9 +276,17 @@ void PlayMgr::run()
 					{
 						m_pcbTimeChg(m_playingTime, m_pUser);
 					}
-				}
+					if (frame/frameRate - lastTime > 0)
+					{
+						lastTime = frame/frameRate;
+						if (bIsPlayTimeChg)
+						{
+							++m_playingTime;
+						}
+					}
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
 			}
+
 
 			tempTime = currentPlayTime;
 			AVI_close(file);
