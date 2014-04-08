@@ -3,7 +3,7 @@ var oCommonLibrary,
 	bool = 0, //本地远程回放控制  0为远程 1为本地
 	recTotal = 0;  //文件检索总数。
 	$(function(){ 
-		//return false;
+		return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
 		//分组列表;
 		groupList2Ui();

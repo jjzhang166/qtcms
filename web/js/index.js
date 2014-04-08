@@ -125,6 +125,15 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 		})
 
+		//云台控制速度
+		$('#PTZ_control .ptz_speed span').each(function(index){
+			$(this).click(function(){
+				$('#PTZ_control .ptz_speed span').removeClass('act').slice(0,index+1).addClass('act');
+			})
+		})
+
+		return false;
+
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
@@ -371,7 +380,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		})*/
 	}
 
-	function SwithStream(){
+	function SwithStream(){  // 切换码流
 		var oChlData = $('#search_device span.channel.sel').data('data'),
 			currWin = oPreView.GetCurrentWnd(),
 			str = '通道'+oChlData.channel_name+'在窗口'+(currWin+1)+'下切换码流';
@@ -387,5 +396,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 		}
 		writeActionLog(str);
+	}
+
+	function PTZcontrol(code,speed){
+		oPreView.OpenPTZ(code)
 	}
 

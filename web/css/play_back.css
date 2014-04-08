@@ -254,18 +254,25 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	background: url(../images/preview/PTZ_ctrl_button.png);
 	overflow: hidden;
 }
-#PTZ_control .speed{
+#PTZ_control .ptz_speed{
 	position: relative;
 	background:#C8C8C8;
-	width: 220px;
+	width: 224px;
 	height: 4px;
 	border:1px solid #000;
 	margin: 8px 2px;
 }
-#PTZ_control .speed span{
+#PTZ_control .ptz_speed span{
 	display: block;
-	width: 100px;
+	width: 31px;
 	height: 4px;
+	-background:#00B1FF;
+	border-left: 1px solid #000;
+	border-bottom: 0;
+	border-top: 0;
+	float: left;
+}
+#PTZ_control .ptz_speed span.act{
 	background:#00B1FF;
 }
 #PTZ_control .others ul{
