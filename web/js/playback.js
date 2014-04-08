@@ -307,7 +307,9 @@ var	nViewNum = 0,
 		}
 		//alert(data.type+'+'+data.channel);
 		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
-		showRecProgress(parseInt(data.index)+1);
+		if(!bool){
+			showRecProgress(parseInt(data.index)+1);	
+		}
 		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
 
 	}

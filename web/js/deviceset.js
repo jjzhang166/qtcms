@@ -250,7 +250,7 @@ var oSearchOcx;
 		//record setting  回放设置;
 		var weeks = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日']
 		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
-			SettingRecordDoubleTimeParmSuccess();  //清空回放表单的数据
+			SettingRecordDoubleTimeParm();  //清空回放表单的数据
 			//通道选中状态唯一
 			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 			$(this).addClass('sel');
@@ -344,7 +344,7 @@ var oSearchOcx;
 	}
 	function FillRecordTimeData(){
 		areaList2Ui('3');
-		SettingRecordDoubleTimeParmSuccess();
+		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
 				$('#week').html($(this).html());

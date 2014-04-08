@@ -362,7 +362,7 @@ var oCommonLibrary,
 	function SettingCommonParmSuccess(data){
 		//alert(data);
 	}
-	function SettingRecordDoubleTimeParmSuccess(data){ //清空回放时间表单的数据
+	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week.option li').removeData();
@@ -431,7 +431,7 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
-		$('#fileRec').find('span').width(0).end().find('h5').html('0/0');
+		$('#fileRec').hide().find('span').width(0).end().find('h5').html('0/0');
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
