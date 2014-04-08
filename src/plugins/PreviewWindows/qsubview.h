@@ -47,13 +47,15 @@ public:
 	virtual void resizeEvent(QResizeEvent *);
 
 	int GetCurrentWnd();
-	int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
-		,unsigned int uiChannelId,unsigned int uiStreamId
-		,const QString & sUsername,const QString & sPassword
-		,const QString & sCameraname,const QString & sVendor);
+	//int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
+	//	,unsigned int uiChannelId,unsigned int uiStreamId
+	//	,const QString & sUsername,const QString & sPassword
+	//	,const QString & sCameraname,const QString & sVendor);
+	int OpenCameraInWnd(int chlId);
 	int SetDevChannelInfo(int ChannelId);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
+	QVariantMap GetWindowInfo();
 	int liveStreamRequire(int nChannel,int nStream,bool bOpen);
 	//ÊÖ¶¯Â¼Ïñ
 	int StartRecord();
@@ -91,6 +93,7 @@ private:
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
 	void saveCacheImage();
+	int GetDeviceInfo(int chlId);
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();

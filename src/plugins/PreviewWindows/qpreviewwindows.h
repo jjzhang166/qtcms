@@ -51,11 +51,13 @@ public slots:
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname
 		,const QString & sVendor);
+	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
 	int SetDevChannelInfo(unsigned int uiWndIndex,int ChannelId);
 
 	int CloseWndCamera(unsigned int uiWndIndex);
 
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
+	QVariantMap GetWindowInfo(unsigned int uiWndIndex);
 
 	void CurrentStateChangePlugin(QVariantMap evMap,QWidget *WID);
 

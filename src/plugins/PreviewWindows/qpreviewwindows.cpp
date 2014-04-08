@@ -5,6 +5,8 @@
 #include <QtCore/QtCore>
 #include <QtXml/QtXml>
 #include <libpcom.h>
+
+
 #include <guid.h>
 #include "IDisplayWindowsManager.h"
 
@@ -218,6 +220,7 @@ int QPreviewWindows::GetCurrentWnd()
 
 int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor )
 {
+
     if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
@@ -227,11 +230,24 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	m_mutex.unlock();
 	m_uiWndIndex = uiWndIndex;
 	m_PreviewWnd[uiWndIndex].SetPlayWnd(uiWndIndex);
-	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(uiChannelId);
 	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
 }
-
+int QPreviewWindows::OpenCameraInWnd(unsigned int uiWndIndex,int chlId)
+{
+	if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
+	{
+		return 1;
+	}
+	m_mutex.lock();
+	//m_CurrentWnd=uiWndIndex;
+	m_mutex.unlock();
+	m_uiWndIndex = uiWndIndex;
+	m_PreviewWnd[uiWndIndex].SetPlayWnd(uiWndIndex);
+	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(chlId);
+	return 0;
+}
 int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 {
     if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))
@@ -391,4 +407,9 @@ void QPreviewWindows::showEvent( QShowEvent * )
 void QPreviewWindows::hideEvent( QHideEvent * )
 {
 	m_PreviewWnd[0].AudioEnabled(false);
+}
+
+QVariantMap QPreviewWindows::GetWindowInfo( unsigned int uiWndIndex )
+{
+	return m_PreviewWnd[uiWndIndex].GetWindowInfo();
 }

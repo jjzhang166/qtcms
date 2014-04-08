@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QMouseEvent>
 #include <QtXml/QtXml>
+#include <IChannelManager.h>
+#include <IDeviceManager.h>
 
 bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
@@ -187,7 +189,7 @@ int QSubView::GetCurrentWnd()
 	return 1;
 }
 
-int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)
+int QSubView::OpenCameraInWnd(int chlId)
 {
 	//禁止频繁操作
 	if (m_bIsForbidConnect==true)
@@ -195,22 +197,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 		return 1;
 	}
 	m_bIsForbidConnect=true;
-	//保存设备信息
-	//m_DevCliSetInfo.m_sAddress.clear();
-	//m_DevCliSetInfo.m_sEseeId.clear();
-	//m_DevCliSetInfo.m_sUsername.clear();
-	//m_DevCliSetInfo.m_sPassword.clear();
-	//m_DevCliSetInfo.m_sCameraname.clear();
-	//m_DevCliSetInfo.m_sVendor.clear();
-	m_DevCliSetInfo.m_sAddress=sAddress;
-	m_DevCliSetInfo.m_uiPort=uiPort;
-	m_DevCliSetInfo.m_sEseeId=sEseeId;
-	m_DevCliSetInfo.m_uiChannelId=uiChannelId;
-	m_DevCliSetInfo.m_uiStreamId=uiStreamId;
-	m_DevCliSetInfo.m_sUsername=sUsername;
-	m_DevCliSetInfo.m_sPassword=sPassword;
-	m_DevCliSetInfo.m_sCameraname=sCameraname;
-	m_DevCliSetInfo.m_sVendor=sVendor;
+
 	//设置自动手动关闭标志位
 	if (m_bStateAutoConnect==true)
 	{
@@ -219,7 +206,7 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	//关闭上一次的连接
 	//CloseWndCamera();
 	//生成设备组件
-	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(sVendor,this);
+	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(m_DevCliSetInfo.m_sVendor,this);
 	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
 	{
 		iDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientDecideByVendor);
@@ -234,7 +221,20 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			}
 			return 1;
 		}
-	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
+	m_QSubViewObject.SetCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
+	//IPC Time Synchronization
+	if ("JUAN IPC" == m_DevCliSetInfo.m_sVendor)
+	{
+		ILocalSetting *pLocalSetting = NULL;
+		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalSetting);
+		if (NULL != pLocalSetting)
+		{
+			bool syncTime = pLocalSetting->getAutoSyncTime();
+			pLocalSetting->Release();
+			m_QSubViewObject.SetAutoSyncTime(syncTime);
+		}
+	}
+
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
 	m_QSubViewObject.OpenCameraInWnd();
@@ -963,6 +963,7 @@ void QSubView::OnCreateAutoConnectTime()
 int QSubView::SetDevChannelInfo( int ChannelId )
 {
 	m_DevCliSetInfo.m_uiChannelIdInDataBase=ChannelId;
+	GetDeviceInfo(ChannelId);
 	return 0;
 }
 
@@ -1254,4 +1255,44 @@ int QSubView::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 		mLiveStreamRequire=NULL;
 	}
 	return 0;
+}
+
+int QSubView::GetDeviceInfo( int chlId )
+{
+	IChannelManager *pChannelManager=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&pChannelManager);
+	if (pChannelManager!=NULL)
+	{
+		QVariantMap channelInfo=pChannelManager->GetChannelInfo(chlId);
+		m_DevCliSetInfo.m_uiStreamId=channelInfo.value("stream").toInt();
+		m_DevCliSetInfo.m_uiChannelId=channelInfo.value("number").toInt();
+		m_DevCliSetInfo.m_sCameraname=channelInfo.value("name").toString();
+		int dev_id=channelInfo.value("dev_id").toInt();
+		pChannelManager->Release();
+		IDeviceManager *pDeviceManager=NULL;
+		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void **)&pDeviceManager);
+		if (pDeviceManager!=NULL)
+		{
+			QVariantMap deviceInfo=pDeviceManager->GetDeviceInfo(dev_id);
+			m_DevCliSetInfo.m_sVendor=deviceInfo.value("vendor").toString();
+			m_DevCliSetInfo.m_sPassword=deviceInfo.value("password").toString();
+			m_DevCliSetInfo.m_sUsername=deviceInfo.value("username").toString();
+			m_DevCliSetInfo.m_sEseeId=deviceInfo.value("eseeid").toString();
+			m_DevCliSetInfo.m_sAddress=deviceInfo.value("address").toString();
+			m_DevCliSetInfo.m_uiPort=deviceInfo.value("port").toInt();
+			m_DevCliSetInfo.m_uiChannelIdInDataBase=chlId;
+			pDeviceManager->Release();
+			return 0;
+		}
+	}
+	return 1;
+}
+
+QVariantMap QSubView::GetWindowInfo()
+{
+	QVariantMap windowInfo;
+	windowInfo.insert("focus",m_bIsFocus);
+	windowInfo.insert("currentState",m_CurrentState);
+	windowInfo.insert("chlId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
+	return windowInfo;
 }
