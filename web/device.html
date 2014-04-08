@@ -96,7 +96,7 @@
 			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" /></td></tr>
 			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" /></td></tr>
 			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" /></td></tr>
-			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
+			<tr class="tr1"><td class="td1">易视网ID</td><td><input type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
 			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" /></td></tr>
 			<tr><td class="td1">密码</td><td><input type="text" id="password_ID" value="" /></td></tr>
 			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" /></td></tr>
@@ -1703,10 +1703,17 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1"><input type="checkbox">时间1</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox">时间2</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox">时间3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox">时间4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr>
+							<td class="td1"><input type="checkbox">时间1</td>
+							<td class="td2 schedle_id">
+							<input type="hidden" value="" class="timeid" />
+								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+							</td>
+						</tr>
+						<tr><td class="td1"><input type="checkbox">时间2</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">时间3</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">时间4</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
 							<td class="td1">拷贝至</td>
 							<td class="td2 copyTo">
@@ -1724,7 +1731,7 @@
 							</td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok">保存</div><div class="hover">取消</div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" >保存</div><div class="hover">取消</div></td></tr>
 					</table>
 				</div>
 				<div id="StorageParm" class="switch">
@@ -1814,17 +1821,23 @@
 			</table>
 			</div> -->
 			<div style="position: relative;" class="right_content">
-			<table class="tb2" style="margin:10px;">
+			<div class="switch" style="display:block;top:0;">
+					<table>
+						<tr><td>当前版本:</td><td><input disabled="disabled" type="text" value="cms_v1.1_beta" /></td></tr>
+						<tr><td>发布日期:</td><td><input disabled="disabled" type="text" value="2014/3/26" /></td></tr>
+					</table>
+				</div>
+			<!-- <table class="tb2" style="margin:10px;">
 			<tbody>
 				<tr>
 					<td colspan="4" class="td4">当前版本:</td><td colspan="4" class="td4">cms_v1.1_beta</td>
 				</tr>		
 				<tr>
-					<td colspan="4" class="td4">上个版本:</td><td colspan="4" class="td4">cms_v1.0_beta</td>
+					<td colspan="4" class="td4">发布日期:</td><td colspan="4" class="td4">cms_v1.0_beta</td>
 				</tr>
 			</tbody>
-			</table>
-			</div>
+			</table> -->
+		</div>
 		</div>
 	</div>
 	<div id="foot"></div>

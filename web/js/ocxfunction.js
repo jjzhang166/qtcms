@@ -526,14 +526,13 @@ function setDevData2ocx(){
 		//show(now+'//'+recTotal);
 		if(recTotal != 0){
 			var p = now/recTotal*100;
-			/*if(now == recTotal ){
-				$('#fileRec').show().find('span').css('background','green');
-			}else{
-				$('#fileRec').show().find('span').css('background','#ccc');
-			}*/
-			$('#fileRec').show().find('span').width(p-2).end().find('h5').html(now+'/'+recTotal);
+			var con = now == recTotal ?'检索完成:':'正在检索:';
+			$('#fileRec').show().find('span').width(p-2)
+			             .end().find('h5').html(now+'/'+recTotal)
+			             .end().find('h4').html(con);
 		}
 	}
 	function RecfinishCallback(data){
-		recTotal = data.total;
+		recTotal = data.total ? data.total : 0;	
+		
 	}

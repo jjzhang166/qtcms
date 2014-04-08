@@ -26,9 +26,9 @@ var oSearchOcx;
 				var oSwitch = $('#device tr').slice(2,6);
 				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
 				if(index == 0){
-					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
+					oSwitch.slice(3,4).addClass('tr1').find('input').removeProp('disabled');
 				}else{
-					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
+					oSwitch.slice(0,3).addClass('tr1').find('input').removeProp('disabled');
 				}
 			})
 		})
@@ -270,7 +270,6 @@ var oSearchOcx;
 			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
 			for(var i in sTimeID){
 				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
-				$('#week').attr('chl',chlData.channel_id); //当前星期的关联的通道
 				//时间段数据和对应的星期关联
 				for(var j in weeks){
 					if(j == sTimeIDdata.weekday){
@@ -278,7 +277,6 @@ var oSearchOcx;
 					}
 				}
 			}
-
 			initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
 		})
 
@@ -380,29 +378,25 @@ var oSearchOcx;
 			nowWeekTimeID = [];
 		if(copyID[0] != '')
 			copyTo = copyTo.concat(copyID);  // 要修改的通道的ID
-		show('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
+		//show('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
 		// 返回符合当天星期的时间ID
-		for(i in copyTo){ 
+		for(var i in copyTo){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copyTo[i]);
 			for(j in timeID){
 				var timeinfo = oCommonLibrary.GetRecordTimeInfo(timeID[j])
 				if(timeinfo.weekday == nowWeek){
-					nowWeekTimeID.push(timeID[j]);
+					nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
 				}
 			}
 		}
-		var str = '<recordtime num="'+nowWeekTimeID.length*4+'">';
+		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
-			$('#RecordTime div.timeInput input').each(function(index){ 
-				var warp = $(this).parent('div.timeInput').parent('td.td2');
-				if(index%6 == 0){
-					var timeid = nowWeekTimeID[i];
-					var start = warp.find('div.timeInput:eq(0)').gettime();
-					var end = warp.find('div.timeInput:eq(1)').gettime();
-					var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
-					str+='<num'+(parseInt(index/6)+1)+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
-				}
-			})
+			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')')
+			var timeid = nowWeekTimeID[i][0];
+			var start = warp.find('div.timeInput:eq(0)').gettime();
+			var end = warp.find('div.timeInput:eq(1)').gettime();
+			var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
+			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
 		}
 		str +='</recordtime>';
 		$('#recordtimedouble_ID').val(str);

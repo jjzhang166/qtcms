@@ -16,7 +16,6 @@
 var oPlayBack,oBackup;
 var now = 0;
 	$(function(){
-		
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
 		$('.hover').each(function(){
@@ -194,6 +193,7 @@ var now = 0;
 	#fileRec p{ margin: 9px 0; width: 100px;}
 	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
 	#fileRec h5{ border: none; line-height: 32px;}
+	#fileRec h4{float: left; border: none;}
 </style>
 </head>
 
@@ -305,7 +305,7 @@ var now = 0;
 			</table>
 	</div>
 	<div id="file_bottom">
-		<div id="fileRec">正在检索:<h5>0/0</h5><p><span></span></p></div>
+		<div id="fileRec"><h4>正在检索:</h4><h5>0/0</h5><p><span></span></p></div>
 		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" onclick="backupstop();" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
 	</div>
 	<div id="foot"></div>
