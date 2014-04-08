@@ -17,14 +17,16 @@ var oCommonLibrary,
 		areaList2Ui('0');
 		//跳转同步播放控件的状态到备列表和
 		if(data.Dsturl == 'null'){
+			$('span.channel').removeClass('channel_1');
 			for(var i=0;i<64;i++){
 				var oWinInfo = oPreView.GetWindowInfo(i);
-				debugData(oWinInfo);
-				/*var chlData = $('#channel_'+oWinInfo.chlId).attr({
-					wind:i,
-					state:oWinInfo.currentState
-				}).addClass('sel').data('data');
-				checkDevAllOpen(chlData.dev_id);*/
+				if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
+					var chlData = $('#channel_'+oWinInfo.chlId).attr({
+						wind:i,
+						state:oWinInfo.currentState
+					}).addClass('channel_1').data('data');
+					checkDevAllOpen(chlData.dev_id);
+				}
 			}
 			
 		}

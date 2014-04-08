@@ -41,7 +41,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		})
  		//打开通道
 		oDiv.on('dblclick','span.channel',function(){ 
-			debugData($(this).data('data'));
+			/*debugData($(this).data('data'));*/
 			var chlData = getChlFullInfo($(this));
 			if($(this).attr('state')){
 				CloseWind($(this).attr('wind'),chlData.dev_id);
