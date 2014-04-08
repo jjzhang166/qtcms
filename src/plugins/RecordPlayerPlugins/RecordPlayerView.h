@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "ILocalPlayer.h"
-
+#include <QVariantMap>
 class RecordPlayerView :
 	public QWidget
 {
@@ -19,7 +19,7 @@ public:
 
 	void setLocalPlayer(ILocalPlayer* pPlayer);
 	int AudioEnabled(bool bEnabled);
-	void ScreenShot();
+	QVariantMap ScreenShot();
 	void SetFocus(bool flags);
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);

@@ -52,7 +52,7 @@ public:
     void  SocketErrorPlugin(int stateValue);
     int   GetRecFileNum(uint uiNum);
 	
-	void ScreenShot();
+	QVariantMap ScreenShot();
 
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);

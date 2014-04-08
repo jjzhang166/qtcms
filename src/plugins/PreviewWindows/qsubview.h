@@ -63,7 +63,7 @@ public:
 	int SetVolume(unsigned int uiPersent);
 	QSubView* getCurWind();
 	int AudioEnabled(bool bEnabled);
-	void ScreenShot();
+	QVariantMap ScreenShot();
 	int SwitchStream(int chlId);
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,

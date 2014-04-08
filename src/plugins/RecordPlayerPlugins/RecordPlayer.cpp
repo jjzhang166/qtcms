@@ -484,7 +484,7 @@ void RecordPlayer::hideEvent( QHideEvent * )
 	m_subRecPlayerView[0].AudioEnabled(false);
 }
 
-void RecordPlayer::ScreenShot()
+QVariantMap RecordPlayer::ScreenShot()
 {
-	m_subRecPlayerView[m_currentWindID].ScreenShot();
+	return m_subRecPlayerView[m_currentWindID].ScreenShot();
 }

@@ -415,7 +415,7 @@ void RSubView::_cacheLableShow()
 	_cacheLable->move(this->width()/2,this->height()-35);
 }
 
-void RSubView::ScreenShot()
+QVariantMap RSubView::ScreenShot()
 {
 	_ScreenShotImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
 	QString dir=QCoreApplication::applicationDirPath();
@@ -434,6 +434,10 @@ void RSubView::ScreenShot()
 	imageName+=QString::number(mutime);
 	imageName+=".jpg";
 	_ScreenShotImage.save(imageName);
+	QVariantMap item;
+	item.insert("imageName",QString::number(mutime).append(".jpg"));
+	item.insert("path",dir);
+	return item;
 }
 
 void RSubView::SetFoucs( bool flags )

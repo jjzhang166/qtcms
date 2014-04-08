@@ -124,7 +124,7 @@ int RecordPlayerView::AudioEnabled(bool bEnabled)
 	return 0;
 }
 
-void RecordPlayerView::ScreenShot()
+QVariantMap RecordPlayerView::ScreenShot()
 {
 	_ScreenShotImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
 	QString dir=QCoreApplication::applicationDirPath();
@@ -143,6 +143,10 @@ void RecordPlayerView::ScreenShot()
 	imageName+=QString::number(mutime);
 	imageName+=".jpg";
 	_ScreenShotImage.save(imageName);
+	QVariantMap item;
+	item.insert("imageName",QString::number(mutime).append(".jpg"));
+	item.insert("path",dir);
+	return item;
 }
 
 void RecordPlayerView::SetFocus( bool flags )

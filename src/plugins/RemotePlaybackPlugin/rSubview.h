@@ -30,7 +30,7 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
-	void ScreenShot();
+	QVariantMap ScreenShot();
 
 	enum __enConnectStatus{
 		CONNECT_STATUS_CONNECTED,
