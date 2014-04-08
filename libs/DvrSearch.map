@@ -1,0 +1,695 @@
+ DvrSearch
+
+ Timestamp is 53279d89 (Tue Mar 18 09:12:41 2014)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00006ac6H .text                   CODE
+ 0001:00006ad0 000017fdH .text$x                 CODE
+ 0002:00000000 00000104H .CRT$XCA                DATA
+ 0002:00000104 00000104H .CRT$XCZ                DATA
+ 0002:00000208 00000104H .CRT$XIA                DATA
+ 0002:0000030c 00000104H .CRT$XIAA               DATA
+ 0002:00000410 00000104H .CRT$XIZ                DATA
+ 0002:00000520 00000ee4H .rdata                  DATA
+ 0002:00001404 00000150H .rdata$debug            DATA
+ 0002:00001554 00000571H .rdata$r                DATA
+ 0002:00001ad0 00000169H .rdata$sxdata           DATA
+ 0002:00001c3c 00000104H .rtc$IAA                DATA
+ 0002:00001d40 00000104H .rtc$IZZ                DATA
+ 0002:00001e44 00000104H .rtc$TAA                DATA
+ 0002:00001f48 00000104H .rtc$TZZ                DATA
+ 0002:00002050 00000cd0H .xdata$x                DATA
+ 0002:00002d20 0000015eH .edata                  DATA
+ 0003:00000000 0000024eH .data                   DATA
+ 0003:00000250 00000368H .bss                    DATA
+ 0004:00000000 00000064H .idata$2                DATA
+ 0004:00000064 00000014H .idata$3                DATA
+ 0004:00000078 00000394H .idata$4                DATA
+ 0004:0000040c 00000394H .idata$5                DATA
+ 0004:000007a0 0000156bH .idata$6                DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000016       ___safe_se_handler_count   00000016     <absolute>
+ 0000:00000000       ___ImageBase               10000000     <linker-defined>
+ 0001:00000380       ?CreateInstance@@YAPAUIPcomBase@@XZ 10001380 f   dllmain.obj
+ 0001:00000490       ??0DvrSearch@@QAE@XZ       10001490 f   dvrsearch.obj
+ 0001:00000620       ??1DvrSearch@@UAE@XZ       10001620 f   dvrsearch.obj
+ 0001:00000720       ?QueryInterface@DvrSearch@@UAGJABU_GUID@@PAPAX@Z 10001720 f   dvrsearch.obj
+ 0001:00000840       ?AddRef@DvrSearch@@UAGKXZ  10001840 f   dvrsearch.obj
+ 0001:00000880       ?Release@DvrSearch@@UAGKXZ 10001880 f   dvrsearch.obj
+ 0001:00000900       ?Start@DvrSearch@@UAEHXZ   10001900 f   dvrsearch.obj
+ 0001:000009e0       ?Stop@DvrSearch@@UAEHXZ    100019e0 f   dvrsearch.obj
+ 0001:00000a60       ?Flush@DvrSearch@@UAEHXZ   10001a60 f   dvrsearch.obj
+ 0001:00000af0       ?run@DvrSearch@@MAEXXZ     10001af0 f   dvrsearch.obj
+ 0001:00000c70       ?setInterval@DvrSearch@@UAEHH@Z 10001c70 f   dvrsearch.obj
+ 0001:00000ca0       ?QueryEventRegister@DvrSearch@@UAEPAUIEventRegister@@XZ 10001ca0 f   dvrsearch.obj
+ 0001:00000ce0       ?eventList@DvrSearch@@UAE?AVQStringList@@XZ 10001ce0 f   dvrsearch.obj
+ 0001:00000d20       ?queryEvent@DvrSearch@@UAEHVQString@@AAVQStringList@@@Z 10001d20 f   dvrsearch.obj
+ 0001:00000fd0       ?registerEvent@DvrSearch@@UAEHVQString@@P6AH0V?$QMap@VQString@@VQVariant@@@@PAX@Z2@Z 10001fd0 f   dvrsearch.obj
+ 0001:00001090       ?eventProcCall@DvrSearch@@AAEXVQString@@V?$QMap@VQString@@VQVariant@@@@@Z 10002090 f   dvrsearch.obj
+ 0001:00001170       ?Recv@DvrSearch@@AAEXXZ    10002170 f   dvrsearch.obj
+ 0001:00001cd0       ?ParseSearch@DvrSearch@@AAE?AVQByteArray@@ABVQString@@0@Z 10002cd0 f   dvrsearch.obj
+ 0001:00002460       ??0QStringList@@QAE@XZ     10003460 f i dvrsearch.obj
+ 0001:00002480       ??1QStringList@@QAE@XZ     10003480 f i dvrsearch.obj
+ 0001:000024a0       ??_EDvrSearch@@UAEPAXI@Z   100034a0 f i dvrsearch.obj
+ 0001:000024a0       ??_GDvrSearch@@UAEPAXI@Z   100034a0 f i dvrsearch.obj
+ 0001:000024e0       ??0IPcomBase@@QAE@XZ       100034e0 f i dvrsearch.obj
+ 0001:00002500       ??0IDeviceSearch@@QAE@XZ   10003500 f i dvrsearch.obj
+ 0001:00002560       ??0IEventRegister@@QAE@XZ  10003560 f i dvrsearch.obj
+ 0001:000025c0       ??1?$QMultiMap@VQString@@U__tagEventCB@@@@QAE@XZ 100035c0 f i dvrsearch.obj
+ 0001:000025e0       ??_GQUdpSocket@@UAEPAXI@Z  100035e0 f i dvrsearch.obj
+ 0001:000025e0       ??_EQUdpSocket@@UAEPAXI@Z  100035e0 f i dvrsearch.obj
+ 0001:00002620       ??0QStringList@@QAE@ABV0@@Z 10003620 f i dvrsearch.obj
+ 0001:00002650       ??BQBool@@QBEPBXXZ         10003650 f i dvrsearch.obj
+ 0001:00002670       ??8@YA_NPBDABVQString@@@Z  10003670 f i dvrsearch.obj
+ 0001:00002690       ?qStringComparisonHelper@@YA_NABVQString@@PBD@Z 10003690 f i dvrsearch.obj
+ 0001:00002760       ??6QStringList@@QAEAAV0@ABVQString@@@Z 10003760 f i dvrsearch.obj
+ 0001:00002790       ?contains@QStringList@@QBE?AVQBool@@ABVQString@@W4CaseSensitivity@Qt@@@Z 10003790 f i dvrsearch.obj
+ 0001:000027d0       ??0?$QMap@VQString@@VQVariant@@@@QAE@XZ 100037d0 f i dvrsearch.obj
+ 0001:00002800       ??0?$QMap@VQString@@VQVariant@@@@QAE@ABV0@@Z 10003800 f i dvrsearch.obj
+ 0001:00002850       ??1?$QMap@VQString@@VQVariant@@@@QAE@XZ 10003850 f i dvrsearch.obj
+ 0001:000028a0       ??0?$QFlags@W4BindFlag@QUdpSocket@@@@QAE@W4BindFlag@QUdpSocket@@@Z 100038a0 f i dvrsearch.obj
+ 0001:000028c0       ??0?$QList@VQString@@@@QAE@XZ 100038c0 f i dvrsearch.obj
+ 0001:000028f0       ??0?$QList@VQString@@@@QAE@ABV0@@Z 100038f0 f i dvrsearch.obj
+ 0001:00002940       ??0?$QMultiMap@VQString@@U__tagEventCB@@@@QAE@XZ 10003940 f i dvrsearch.obj
+ 0001:00002960       ?insert@?$QMultiMap@VQString@@U__tagEventCB@@@@QAE?AViterator@?$QMap@VQString@@U__tagEventCB@@@@ABVQString@@ABU__tagEventCB@@@Z 10003960 f i dvrsearch.obj
+ 0001:00002990       ??1?$QMap@VQString@@U__tagEventCB@@@@QAE@XZ 10003990 f i dvrsearch.obj
+ 0001:000029e0       ?detach@?$QMap@VQString@@VQVariant@@@@QAEXXZ 100039e0 f i dvrsearch.obj
+ 0001:00002a20       ??0?$QMap@VQString@@U__tagEventCB@@@@QAE@XZ 10003a20 f i dvrsearch.obj
+ 0001:00002a50       ?insert@?$QMap@VQString@@VQVariant@@@@QAE?AViterator@1@ABVQString@@ABVQVariant@@@Z 10003a50 f i dvrsearch.obj
+ 0001:00002af0       ?concrete@?$QMap@VQString@@VQVariant@@@@CAPAU?$QMapNode@VQString@@VQVariant@@@@PAUNode@QMapData@@@Z 10003af0 f i dvrsearch.obj
+ 0001:00002b10       ??0iterator@?$QMap@VQString@@VQVariant@@@@QAE@PAUNode@QMapData@@@Z 10003b10 f i dvrsearch.obj
+ 0001:00002b30       ?payload@?$QMap@VQString@@VQVariant@@@@CAHXZ 10003b30 f i dvrsearch.obj
+ 0001:00002b40       ?detach_helper@?$QMap@VQString@@VQVariant@@@@AAEXXZ 10003b40 f i dvrsearch.obj
+ 0001:00002cc0       ?freeData@?$QMap@VQString@@VQVariant@@@@AAEXPAUQMapData@@@Z 10003cc0 f i dvrsearch.obj
+ 0001:00002d60       ??1?$QList@VQString@@@@QAE@XZ 10003d60 f i dvrsearch.obj
+ 0001:00002da0       ?at@?$QList@VQString@@@@QBEABVQString@@H@Z 10003da0 f i dvrsearch.obj
+ 0001:00002e30       ?qt_noop@@YAXXZ            10003e30 f i dvrsearch.obj
+ 0001:00002e40       ?append@?$QList@VQString@@@@QAEXABVQString@@@Z 10003e40 f i dvrsearch.obj
+ 0001:00003010       ?insert@?$QList@VQString@@@@QAEXHABVQString@@@Z 10004010 f i dvrsearch.obj
+ 0001:000031e0       ?detach_helper@?$QList@VQString@@@@AAEXXZ 100041e0 f i dvrsearch.obj
+ 0001:00003210       ?value@?$QMap@VQString@@U__tagEventCB@@@@QBE?BU__tagEventCB@@ABVQString@@@Z 10004210 f i dvrsearch.obj
+ 0001:000032a0       ?insertMulti@?$QMap@VQString@@U__tagEventCB@@@@QAE?AViterator@1@ABVQString@@ABU__tagEventCB@@@Z 100042a0 f i dvrsearch.obj
+ 0001:00003300       ?freeData@?$QMap@VQString@@U__tagEventCB@@@@AAEXPAUQMapData@@@Z 10004300 f i dvrsearch.obj
+ 0001:00003390       ??_GQString@@QAEPAXI@Z     10004390 f i dvrsearch.obj
+ 0001:000033d0       ??_GQVariant@@QAEPAXI@Z    100043d0 f i dvrsearch.obj
+ 0001:00003410       ?alignment@?$QMap@VQString@@VQVariant@@@@CAHXZ 10004410 f i dvrsearch.obj
+ 0001:00003450       ?payload@?$QMap@VQString@@U__tagEventCB@@@@CAHXZ 10004450 f i dvrsearch.obj
+ 0001:00003460       ?concrete@?$QMap@VQString@@U__tagEventCB@@@@CAPAU?$QMapNode@VQString@@U__tagEventCB@@@@PAUNode@QMapData@@@Z 10004460 f i dvrsearch.obj
+ 0001:00003480       ?detach@?$QMap@VQString@@U__tagEventCB@@@@QAEXXZ 10004480 f i dvrsearch.obj
+ 0001:000034c0       ??0iterator@?$QMap@VQString@@U__tagEventCB@@@@QAE@PAUNode@QMapData@@@Z 100044c0 f i dvrsearch.obj
+ 0001:000034e0       ?t@Node@?$QList@VQString@@@@QAEAAVQString@@XZ 100044e0 f i dvrsearch.obj
+ 0001:00003510       ?mutableFindNode@?$QMap@VQString@@VQVariant@@@@ABEPAUNode@QMapData@@QAPAU23@ABVQString@@@Z 10004510 f i dvrsearch.obj
+ 0001:00003600       ?node_create@?$QMap@VQString@@VQVariant@@@@AAEPAUNode@QMapData@@PAU3@QAPAU23@ABVQString@@ABVQVariant@@@Z 10004600 f i dvrsearch.obj
+ 0001:000037d0       ??2@YAPAXIPAX@Z            100047d0 f i dvrsearch.obj
+ 0001:000037e0       ??3@YAXPAX0@Z              100047e0 f i dvrsearch.obj
+ 0001:000037f0       ?detach_helper_grow@?$QList@VQString@@@@AAEPAUNode@1@HH@Z 100047f0 f i dvrsearch.obj
+ 0001:000039f0       ?detach_helper@?$QList@VQString@@@@AAEXH@Z 100049f0 f i dvrsearch.obj
+ 0001:00003b10       ?free@?$QList@VQString@@@@AAEXPAUData@QListData@@@Z 10004b10 f i dvrsearch.obj
+ 0001:00003b60       ?node_construct@?$QList@VQString@@@@AAEXPAUNode@1@ABVQString@@@Z 10004b60 f i dvrsearch.obj
+ 0001:00003c90       ?node_destruct@?$QList@VQString@@@@AAEXPAUNode@1@@Z 10004c90 f i dvrsearch.obj
+ 0001:00003d00       ?node_copy@?$QList@VQString@@@@AAEXPAUNode@1@00@Z 10004d00 f i dvrsearch.obj
+ 0001:00003f90       ??$qMapLessThanKey@VQString@@@@YA_NABVQString@@0@Z 10004f90 f i dvrsearch.obj
+ 0001:00003fb0       ?detach_helper@?$QMap@VQString@@U__tagEventCB@@@@AAEXXZ 10004fb0 f i dvrsearch.obj
+ 0001:00004130       ?findNode@?$QMap@VQString@@U__tagEventCB@@@@ABEPAUNode@QMapData@@ABVQString@@@Z 10005130 f i dvrsearch.obj
+ 0001:00004210       ?mutableFindNode@?$QMap@VQString@@U__tagEventCB@@@@ABEPAUNode@QMapData@@QAPAU23@ABVQString@@@Z 10005210 f i dvrsearch.obj
+ 0001:00004300       ?node_create@?$QMap@VQString@@U__tagEventCB@@@@AAEPAUNode@QMapData@@PAU3@QAPAU23@ABVQString@@ABU__tagEventCB@@@Z 10005300 f i dvrsearch.obj
+ 0001:000044c0       ??$qMax@I@@YAABIABI0@Z     100054c0 f i dvrsearch.obj
+ 0001:00004500       ?alignment@?$QMap@VQString@@U__tagEventCB@@@@CAHXZ 10005500 f i dvrsearch.obj
+ 0001:00004540       ?node_destruct@?$QList@VQString@@@@AAEXPAUNode@1@0@Z 10005540 f i dvrsearch.obj
+ 0001:000045e0       ?QueryInterface@DvrSearch@@$4PPPPPPPM@A@AGJABU_GUID@@PAPAX@Z 100055e0 f i dvrsearch.obj
+ 0001:00004600       ?Release@DvrSearch@@$4PPPPPPPM@A@AGKXZ 10005600 f i dvrsearch.obj
+ 0001:00004620       ?AddRef@DvrSearch@@$4PPPPPPPM@A@AGKXZ 10005620 f i dvrsearch.obj
+ 0001:00004634       ??1QMutex@@QAE@XZ          10005634 f   QtCored4:QtCored4.dll
+ 0001:0000463a       ??1QThread@@UAE@XZ         1000563a f   QtCored4:QtCored4.dll
+ 0001:00004640       ??1QString@@QAE@XZ         10005640 f   QtCored4:QtCored4.dll
+ 0001:00004646       ??0QString@@QAE@PBD@Z      10005646 f   QtCored4:QtCored4.dll
+ 0001:0000464c       ??0QMutex@@QAE@W4RecursionMode@0@@Z 1000564c f   QtCored4:QtCored4.dll
+ 0001:00004652       ??0QThread@@QAE@PAVQObject@@@Z 10005652 f   QtCored4:QtCored4.dll
+ 0001:00004658       ?metaObject@QThread@@UBEPBUQMetaObject@@XZ 10005658 f   QtCored4:QtCored4.dll
+ 0001:0000465e       ?qt_metacast@QThread@@UAEPAXPBD@Z 1000565e f   QtCored4:QtCored4.dll
+ 0001:00004664       ?qt_metacall@QThread@@UAEHW4Call@QMetaObject@@HPAPAX@Z 10005664 f   QtCored4:QtCored4.dll
+ 0001:0000466a       ?event@QObject@@UAE_NPAVQEvent@@@Z 1000566a f   QtCored4:QtCored4.dll
+ 0001:00004670       ?eventFilter@QObject@@UAE_NPAV1@PAVQEvent@@@Z 10005670 f   QtCored4:QtCored4.dll
+ 0001:00004676       ?timerEvent@QObject@@MAEXPAVQTimerEvent@@@Z 10005676 f   QtCored4:QtCored4.dll
+ 0001:0000467c       ?childEvent@QObject@@MAEXPAVQChildEvent@@@Z 1000567c f   QtCored4:QtCored4.dll
+ 0001:00004682       ?customEvent@QObject@@MAEXPAVQEvent@@@Z 10005682 f   QtCored4:QtCored4.dll
+ 0001:00004688       ?connectNotify@QObject@@MAEXPBD@Z 10005688 f   QtCored4:QtCored4.dll
+ 0001:0000468e       ?disconnectNotify@QObject@@MAEXPBD@Z 1000568e f   QtCored4:QtCored4.dll
+ 0001:00004694       ?exit@QThread@@QAEXH@Z     10005694 f   QtCored4:QtCored4.dll
+ 0001:0000469a       ?isRunning@QThread@@QBE_NXZ 1000569a f   QtCored4:QtCored4.dll
+ 0001:000046a0       ?unlock@QMutex@@QAEXXZ     100056a0 f   QtCored4:QtCored4.dll
+ 0001:000046a6       ?lock@QMutex@@QAEXXZ       100056a6 f   QtCored4:QtCored4.dll
+ 0001:000046ac       ?start@QThread@@QAEXW4Priority@1@@Z 100056ac f   QtCored4:QtCored4.dll
+ 0001:000046b2       ?open@QIODevice@@UAE_NV?$QFlags@W4OpenModeFlag@QIODevice@@@@@Z 100056b2 f   QtCored4:QtCored4.dll
+ 0001:000046b8       ?pos@QIODevice@@UBE_JXZ    100056b8 f   QtCored4:QtCored4.dll
+ 0001:000046be       ?size@QIODevice@@UBE_JXZ   100056be f   QtCored4:QtCored4.dll
+ 0001:000046c4       ?seek@QIODevice@@UAE_N_J@Z 100056c4 f   QtCored4:QtCored4.dll
+ 0001:000046ca       ?reset@QIODevice@@UAE_NXZ  100056ca f   QtCored4:QtCored4.dll
+ 0001:000046d0       ?deleteLater@QObject@@QAEXXZ 100056d0 f   QtCored4:QtCored4.dll
+ 0001:000046d6       ?wait@QThread@@QAE_NK@Z    100056d6 f   QtCored4:QtCored4.dll
+ 0001:000046dc       ?msleep@QThread@@KAXK@Z    100056dc f   QtCored4:QtCored4.dll
+ 0001:000046e2       ?elapsed@QElapsedTimer@@QBE_JXZ 100056e2 f   QtCored4:QtCored4.dll
+ 0001:000046e8       ?start@QElapsedTimer@@QAEXXZ 100056e8 f   QtCored4:QtCored4.dll
+ 0001:000046ee       ??8QString@@QBE_NABVQLatin1String@@@Z 100056ee f   QtCored4:QtCored4.dll
+ 0001:000046f4       ??0QLatin1String@@QAE@PBD@Z 100056f4 f   QtCored4:QtCored4.dll
+ 0001:000046fa       ??8QString@@QBE_NABV0@@Z   100056fa f   QtCored4:QtCored4.dll
+ 0001:00004700       ?fromAscii@QString@@SA?AV1@PBDH@Z 10005700 f   QtCored4:QtCored4.dll
+ 0001:00004706       ?QStringList_contains@QtPrivate@@YA?AVQBool@@PBVQStringList@@ABVQString@@W4CaseSensitivity@Qt@@@Z 10005706 f   QtCored4:QtCored4.dll
+ 0001:0000470c       ??0QString@@QAE@ABV0@@Z    1000570c f   QtCored4:QtCored4.dll
+ 0001:00004712       ??0QVariant@@QAE@ABVQString@@@Z 10005712 f   QtCored4:QtCored4.dll
+ 0001:00004718       ??1QVariant@@QAE@XZ        10005718 f   QtCored4:QtCored4.dll
+ 0001:0000471e       ??0QVariant@@QAE@PBD@Z     1000571e f   QtCored4:QtCored4.dll
+ 0001:00004724       ??4QByteArray@@QAEAAV0@$$QAV0@@Z 10005724 f   QtCored4:QtCored4.dll
+ 0001:0000472a       ??1QByteArray@@QAE@XZ      1000572a f   QtCored4:QtCored4.dll
+ 0001:00004730       ?contains@QByteArray@@QBE?AVQBool@@PBD@Z 10005730 f   QtCored4:QtCored4.dll
+ 0001:00004736       ??4QString@@QAEAAV0@$$QAV0@@Z 10005736 f   QtCored4:QtCored4.dll
+ 0001:0000473c       ?toUpper@QString@@QBE?AV1@XZ 1000573c f   QtCored4:QtCored4.dll
+ 0001:00004742       ?data@QByteArray@@QAEPADXZ 10005742 f   QtCored4:QtCored4.dll
+ 0001:00004748       ?size@QByteArray@@QBEHXZ   10005748 f   QtCored4:QtCored4.dll
+ 0001:0000474e       ?resize@QByteArray@@QAEXH@Z 1000574e f   QtCored4:QtCored4.dll
+ 0001:00004754       ??0QByteArray@@QAE@XZ      10005754 f   QtCored4:QtCored4.dll
+ 0001:0000475a       ??0QByteArray@@QAE@ABV0@@Z 1000575a f   QtCored4:QtCored4.dll
+ 0001:00004760       ?append@QByteArray@@QAEAAV1@PBD@Z 10005760 f   QtCored4:QtCored4.dll
+ 0001:00004766       ?isEmpty@QByteArray@@QBE_NXZ 10005766 f   QtCored4:QtCored4.dll
+ 0001:0000476c       ?truncate@QByteArray@@QAEXH@Z 1000576c f   QtCored4:QtCored4.dll
+ 0001:00004772       ?indexOf@QByteArray@@QBEHDH@Z 10005772 f   QtCored4:QtCored4.dll
+ 0001:00004778       ?toLatin1@QString@@QBE?AVQByteArray@@XZ 10005778 f   QtCored4:QtCored4.dll
+ 0001:0000477e       ?mid@QString@@QBE?AV1@HH@Z 1000577e f   QtCored4:QtCored4.dll
+ 0001:00004784       ?length@QString@@QBEHXZ    10005784 f   QtCored4:QtCored4.dll
+ 0001:0000478a       ??0QByteArray@@QAE@PBD@Z   1000578a f   QtCored4:QtCored4.dll
+ 0001:00004790       ?indexOf@QString@@QBEHABV1@HW4CaseSensitivity@Qt@@@Z 10005790 f   QtCored4:QtCored4.dll
+ 0001:00004796       ?ref@QBasicAtomicInt@@QAE_NXZ 10005796 f   QtCored4:QtCored4.dll
+ 0001:0000479c       ?deref@QBasicAtomicInt@@QAE_NXZ 1000579c f   QtCored4:QtCored4.dll
+ 0001:000047a2       ??9QBasicAtomicInt@@QBE_NH@Z 100057a2 f   QtCored4:QtCored4.dll
+ 0001:000047a8       ??4QVariant@@QAEAAV0@ABV0@@Z 100057a8 f   QtCored4:QtCored4.dll
+ 0001:000047ae       ?createData@QMapData@@SAPAU1@H@Z 100057ae f   QtCored4:QtCored4.dll
+ 0001:000047b4       ?continueFreeData@QMapData@@QAEXH@Z 100057b4 f   QtCored4:QtCored4.dll
+ 0001:000047ba       ?at@QListData@@QBEPAPAXH@Z 100057ba f   QtCored4:QtCored4.dll
+ 0001:000047c0       ?qt_assert_x@@YAXPBD00H@Z  100057c0 f   QtCored4:QtCored4.dll
+ 0001:000047c6       ?size@QListData@@QBEHXZ    100057c6 f   QtCored4:QtCored4.dll
+ 0001:000047cc       ?append@QListData@@QAEPAPAXXZ 100057cc f   QtCored4:QtCored4.dll
+ 0001:000047d2       ?insert@QListData@@QAEPAPAXH@Z 100057d2 f   QtCored4:QtCored4.dll
+ 0001:000047d8       ?remove@QListData@@QAEXH@Z 100057d8 f   QtCored4:QtCored4.dll
+ 0001:000047de       ?node_delete@QMapData@@QAEXQAPAUNode@1@HPAU21@@Z 100057de f   QtCored4:QtCored4.dll
+ 0001:000047e4       ??0QVariant@@QAE@ABV0@@Z   100057e4 f   QtCored4:QtCored4.dll
+ 0001:000047ea       ?node_create@QMapData@@QAEPAUNode@1@QAPAU21@HH@Z 100057ea f   QtCored4:QtCored4.dll
+ 0001:000047f0       ?end@QListData@@QBEPAPAXXZ 100057f0 f   QtCored4:QtCored4.dll
+ 0001:000047f6       ?qFree@@YAXPAX@Z           100057f6 f   QtCored4:QtCored4.dll
+ 0001:000047fc       ?detach_grow@QListData@@QAEPAUData@1@PAHH@Z 100057fc f   QtCored4:QtCored4.dll
+ 0001:00004802       ?begin@QListData@@QBEPAPAXXZ 10005802 f   QtCored4:QtCored4.dll
+ 0001:00004808       ?detach@QListData@@QAEPAUData@1@H@Z 10005808 f   QtCored4:QtCored4.dll
+ 0001:0000480e       ??MQString@@QBE_NABV0@@Z   1000580e f   QtCored4:QtCored4.dll
+ 0001:00004814       ?bind@QUdpSocket@@QAE_NGV?$QFlags@W4BindFlag@QUdpSocket@@@@@Z 10005814 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000481a       ??0QUdpSocket@@QAE@PAVQObject@@@Z 1000581a f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004820       ?metaObject@QUdpSocket@@UBEPBUQMetaObject@@XZ 10005820 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004826       ?qt_metacast@QUdpSocket@@UAEPAXPBD@Z 10005826 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000482c       ?qt_metacall@QUdpSocket@@UAEHW4Call@QMetaObject@@HPAPAX@Z 1000582c f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004832       ?isSequential@QAbstractSocket@@UBE_NXZ 10005832 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004838       ?close@QAbstractSocket@@UAEXXZ 10005838 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000483e       ?atEnd@QAbstractSocket@@UBE_NXZ 1000583e f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004844       ?bytesAvailable@QAbstractSocket@@UBE_JXZ 10005844 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000484a       ?bytesToWrite@QAbstractSocket@@UBE_JXZ 1000584a f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004850       ?canReadLine@QAbstractSocket@@UBE_NXZ 10005850 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004856       ?waitForReadyRead@QAbstractSocket@@UAE_NH@Z 10005856 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000485c       ?waitForBytesWritten@QAbstractSocket@@UAE_NH@Z 1000585c f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004862       ?readData@QAbstractSocket@@MAE_JPAD_J@Z 10005862 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004868       ?readLineData@QAbstractSocket@@MAE_JPAD_J@Z 10005868 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000486e       ?writeData@QAbstractSocket@@MAE_JPBD_J@Z 1000586e f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004874       ??1QUdpSocket@@UAE@XZ      10005874 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000487a       ??1QHostAddress@@QAE@XZ    1000587a f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004880       ?writeDatagram@QUdpSocket@@QAE_JPBD_JABVQHostAddress@@G@Z 10005880 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004886       ??0QHostAddress@@QAE@W4SpecialAddress@0@@Z 10005886 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000488c       ?readDatagram@QUdpSocket@@QAE_JPAD_JPAVQHostAddress@@PAG@Z 1000588c f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004892       ?pendingDatagramSize@QUdpSocket@@QBE_JXZ 10005892 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:00004898       ?hasPendingDatagrams@QUdpSocket@@QBE_NXZ 10005898 f   QtNetworkd4:QtNetworkd4.dll
+ 0001:0000489e       ??8@YA_NABU_GUID@@0@Z      1000589e f   libpcom:libpcom.dll
+ 0001:000048a4       ??3@YAXPAX@Z               100058a4 f   MSVCRTD:MSVCR100D.dll
+ 0001:000048aa       ??2@YAPAXI@Z               100058aa f   MSVCRTD:MSVCR100D.dll
+ 0001:000048b0       ___CxxFrameHandler3        100058b0 f   MSVCRTD:MSVCR100D.dll
+ 0001:000048c0       @__security_check_cookie@4 100058c0 f   MSVCRTD:secchk.obj
+ 0001:000048d0       ??0type_info@@AAE@ABV0@@Z  100058d0 f   MSVCRTD:ti_inst.obj
+ 0001:000048f0       ??_Etype_info@@UAEPAXI@Z   100058f0 f i MSVCRTD:ti_inst.obj
+ 0001:00004960       ??4type_info@@AAEAAV0@ABV0@@Z 10005960 f   MSVCRTD:ti_inst.obj
+ 0001:00004972       __purecall                 10005972 f   MSVCRTD:MSVCR100D.dll
+ 0001:00004978       _strlen                    10005978 f   MSVCRTD:MSVCR100D.dll
+ 0001:0000497e       __CxxThrowException@8      1000597e f   MSVCRTD:MSVCR100D.dll
+ 0001:00004984       _memcpy                    10005984 f   MSVCRTD:MSVCR100D.dll
+ 0001:00004a10       __CRT_INIT@12              10005a10 f   MSVCRTD:crtdll.obj
+ 0001:00004d00       _NtCurrentTeb              10005d00 f i MSVCRTD:crtdll.obj
+ 0001:00004d10       __DllMainCRTStartup@12     10005d10 f   MSVCRTD:crtdll.obj
+ 0001:00004f10       ___report_gsfailure        10005f10 f   MSVCRTD:gs_report.obj
+ 0001:00005020       ??_M@YGXPAXIHP6EX0@Z@Z     10006020 f   MSVCRTD:ehvecdtr.obj
+ 0001:000050e0       ?__ArrayUnwind@@YGXPAXIHP6EX0@Z@Z 100060e0 f   MSVCRTD:ehvecdtr.obj
+ 0001:000051a0       ___clean_type_info_names   100061a0 f   MSVCRTD:tncleanup.obj
+ 0001:000051c0       __onexit                   100061c0 f   MSVCRTD:atonexit.obj
+ 0001:000052c0       _atexit                    100062c0 f   MSVCRTD:atonexit.obj
+ 0001:000052e0       __RTC_Initialize           100062e0 f   MSVCRTD:_initsect_.obj
+ 0001:00005310       __RTC_Terminate            10006310 f   MSVCRTD:_initsect_.obj
+ 0001:00005336       __malloc_dbg               10006336 f   MSVCRTD:MSVCR100D.dll
+ 0001:0000533c       __free_dbg                 1000633c f   MSVCRTD:MSVCR100D.dll
+ 0001:00005342       __encoded_null             10006342 f   MSVCRTD:MSVCR100D.dll
+ 0001:00005348       __CrtSetCheckCount         10006348 f   MSVCRTD:MSVCR100D.dll
+ 0001:00005350       __ValidateImageBase        10006350 f   MSVCRTD:pesect.obj
+ 0001:000053b0       __FindPESection            100063b0 f   MSVCRTD:pesect.obj
+ 0001:00005430       __IsNonwritableInCurrentImage 10006430 f   MSVCRTD:pesect.obj
+ 0001:00005542       __initterm                 10006542 f   MSVCRTD:MSVCR100D.dll
+ 0001:00005548       __initterm_e               10006548 f   MSVCRTD:MSVCR100D.dll
+ 0001:0000554e       __amsg_exit                1000654e f   MSVCRTD:MSVCR100D.dll
+ 0001:00005560       ___security_init_cookie    10006560 f   MSVCRTD:gs_support.obj
+ 0001:00005640       ___CppXcptFilter           10006640 f   MSVCRTD:MSVCR100D.dll
+ 0001:00005650       _DllMain@12                10006650 f   MSVCRTD:dllmain.obj
+ 0001:00005680       __except_handler4          10006680 f   MSVCRTD:chandler4gs.obj
+ 0001:000056aa       __crt_debugger_hook        100066aa f   MSVCRTD:MSVCR100D.dll
+ 0001:000056b0       ?terminate@@YAXXZ          100066b0 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056b6       ??1type_info@@UAE@XZ       100066b6 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056b6       ?_type_info_dtor_internal_method@type_info@@QAEXXZ 100066b6 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056bc       ___clean_type_info_names_internal 100066bc f   MSVCRTD:MSVCR100D.dll
+ 0001:000056c2       __unlock                   100066c2 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056c8       ___dllonexit               100066c8 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056ce       __lock                     100066ce f   MSVCRTD:MSVCR100D.dll
+ 0001:000056d4       __except_handler4_common   100066d4 f   MSVCRTD:MSVCR100D.dll
+ 0001:000056da       _EncodePointer@4           100066da f   kernel32:KERNEL32.dll
+ 0001:000056e0       _DecodePointer@4           100066e0 f   kernel32:KERNEL32.dll
+ 0001:000056e6       _InterlockedExchange@8     100066e6 f   kernel32:KERNEL32.dll
+ 0001:000056ec       _Sleep@4                   100066ec f   kernel32:KERNEL32.dll
+ 0001:000056f2       _InterlockedCompareExchange@12 100066f2 f   kernel32:KERNEL32.dll
+ 0001:000056f8       _TerminateProcess@8        100066f8 f   kernel32:KERNEL32.dll
+ 0001:000056fe       _GetCurrentProcess@0       100066fe f   kernel32:KERNEL32.dll
+ 0001:00005704       _UnhandledExceptionFilter@4 10006704 f   kernel32:KERNEL32.dll
+ 0001:0000570a       _SetUnhandledExceptionFilter@4 1000670a f   kernel32:KERNEL32.dll
+ 0001:00005710       _IsDebuggerPresent@0       10006710 f   kernel32:KERNEL32.dll
+ 0001:00005716       _QueryPerformanceCounter@4 10006716 f   kernel32:KERNEL32.dll
+ 0001:0000571c       _GetTickCount@0            1000671c f   kernel32:KERNEL32.dll
+ 0001:00005722       _GetCurrentThreadId@0      10006722 f   kernel32:KERNEL32.dll
+ 0001:00005728       _GetCurrentProcessId@0     10006728 f   kernel32:KERNEL32.dll
+ 0001:0000572e       _GetSystemTimeAsFileTime@4 1000672e f   kernel32:KERNEL32.dll
+ 0001:00005734       _DisableThreadLibraryCalls@4 10006734 f   kernel32:KERNEL32.dll
+ 0002:00000000       ___xc_a                    1000a000     MSVCRTD:cinitexe.obj
+ 0002:00000104       ___xc_z                    1000a104     MSVCRTD:cinitexe.obj
+ 0002:00000208       ___xi_a                    1000a208     MSVCRTD:cinitexe.obj
+ 0002:00000410       ___xi_z                    1000a410     MSVCRTD:cinitexe.obj
+ 0002:0000053c       ?value@?$integral_constant@_N$0A@@tr1@std@@2_NB 1000a53c     guid.obj
+ 0002:0000053d       ?value@?$integral_constant@_N$00@tr1@std@@2_NB 1000a53d     guid.obj
+ 0002:00000540       ?value@?$integral_constant@I$0A@@tr1@std@@2IB 1000a540     guid.obj
+ 0002:00000544       ?_Rank@?$_Arithmetic_traits@_N@std@@2HB 1000a544     guid.obj
+ 0002:00000548       ?_Rank@?$_Arithmetic_traits@D@std@@2HB 1000a548     guid.obj
+ 0002:0000054c       ?_Rank@?$_Arithmetic_traits@C@std@@2HB 1000a54c     guid.obj
+ 0002:00000550       ?_Rank@?$_Arithmetic_traits@E@std@@2HB 1000a550     guid.obj
+ 0002:00000554       ?_Rank@?$_Arithmetic_traits@F@std@@2HB 1000a554     guid.obj
+ 0002:00000558       ?_Rank@?$_Arithmetic_traits@G@std@@2HB 1000a558     guid.obj
+ 0002:0000055c       ?_Rank@?$_Arithmetic_traits@H@std@@2HB 1000a55c     guid.obj
+ 0002:00000560       ?_Rank@?$_Arithmetic_traits@I@std@@2HB 1000a560     guid.obj
+ 0002:00000564       ?_Rank@?$_Arithmetic_traits@J@std@@2HB 1000a564     guid.obj
+ 0002:00000568       ?_Rank@?$_Arithmetic_traits@K@std@@2HB 1000a568     guid.obj
+ 0002:0000056c       ?_Rank@?$_Arithmetic_traits@_J@std@@2HB 1000a56c     guid.obj
+ 0002:00000570       ?_Rank@?$_Arithmetic_traits@_K@std@@2HB 1000a570     guid.obj
+ 0002:00000574       ?_Rank@?$_Arithmetic_traits@M@std@@2HB 1000a574     guid.obj
+ 0002:00000578       ?_Rank@?$_Arithmetic_traits@N@std@@2HB 1000a578     guid.obj
+ 0002:0000057c       ?_Rank@?$_Arithmetic_traits@O@std@@2HB 1000a57c     guid.obj
+ 0002:00000580       ?CLSID_PreviewActivity@@3U_GUID@@B 1000a580     guid.obj
+ 0002:00000590       ?IID_IActivities@@3U_GUID@@B 1000a590     guid.obj
+ 0002:000005a0       ?IID_IPcomBase@@3U_GUID@@B 1000a5a0     guid.obj
+ 0002:000005b0       ?CLSID_ViewWndPlugin@@3U_GUID@@B 1000a5b0     guid.obj
+ 0002:000005c0       ?IID_IWebPluginBase@@3U_GUID@@B 1000a5c0     guid.obj
+ 0002:000005d0       ?CLSID_FfmpegVideoPlugin@@3U_GUID@@B 1000a5d0     guid.obj
+ 0002:000005e0       ?IID_IUserManager@@3U_GUID@@B 1000a5e0     guid.obj
+ 0002:000005f0       ?CLSID_CommonLibPlugin@@3U_GUID@@B 1000a5f0     guid.obj
+ 0002:00000600       ?CLSID_SettingsActivity@@3U_GUID@@B 1000a600     guid.obj
+ 0002:00000610       ?CLSID_PreviewWindowsPlugin@@3U_GUID@@B 1000a610     guid.obj
+ 0002:00000620       ?IID_IGroupManager@@3U_GUID@@B 1000a620     guid.obj
+ 0002:00000630       ?IID_IAreaManager@@3U_GUID@@B 1000a630     guid.obj
+ 0002:00000640       ?IID_IDisplayWindowsManager@@3U_GUID@@B 1000a640     guid.obj
+ 0002:00000650       ?IID_IWindowDivMode@@3U_GUID@@B 1000a650     guid.obj
+ 0002:00000660       ?CLSID_DivMode1@@3U_GUID@@B 1000a660     guid.obj
+ 0002:00000670       ?CLSID_Test_activity@@3U_GUID@@B 1000a670     guid.obj
+ 0002:00000680       ?CLSID_test_plugin@@3U_GUID@@B 1000a680     guid.obj
+ 0002:00000690       ?IID_IChannelManager@@3U_GUID@@B 1000a690     guid.obj
+ 0002:000006a0       ?IID_IDeviceManager@@3U_GUID@@B 1000a6a0     guid.obj
+ 0002:000006b0       ?CLSID_DivMode4_4@@3U_GUID@@B 1000a6b0     guid.obj
+ 0002:000006c0       ?CLSID_DivMode8_1@@3U_GUID@@B 1000a6c0     guid.obj
+ 0002:000006d0       ?CLSID_DivMode7_7@@3U_GUID@@B 1000a6d0     guid.obj
+ 0002:000006e0       ?CLSID_DivMode2_2@@3U_GUID@@B 1000a6e0     guid.obj
+ 0002:000006f0       ?CLSID_DivMode5_5@@3U_GUID@@B 1000a6f0     guid.obj
+ 0002:00000700       ?CLSID_DivMode3_3@@3U_GUID@@B 1000a700     guid.obj
+ 0002:00000710       ?CLSID_DivMode8_8@@3U_GUID@@B 1000a710     guid.obj
+ 0002:00000720       ?CLSID_DivMode6_1@@3U_GUID@@B 1000a720     guid.obj
+ 0002:00000730       ?IID_IDeviceSearch@@3U_GUID@@B 1000a730     guid.obj
+ 0002:00000740       ?IID_IEventRegister@@3U_GUID@@B 1000a740     guid.obj
+ 0002:00000750       ?CLSID_TestDvrSearch@@3U_GUID@@B 1000a750     guid.obj
+ 0002:00000760       ?CLSID_TestDeviceSearchPlugin@@3U_GUID@@B 1000a760     guid.obj
+ 0002:00000770       ?CLSID_TestIpcamSearch@@3U_GUID@@B 1000a770     guid.obj
+ 0002:00000780       ?CLSID_DvrSearch@@3U_GUID@@B 1000a780     guid.obj
+ 0002:00000790       ?CLSID_HiChipSearch@@3U_GUID@@B 1000a790     guid.obj
+ 0002:000007a0       ?CLSID_DeviceSearchPlugin@@3U_GUID@@B 1000a7a0     guid.obj
+ 0002:000007b0       ?CLSID_TestffmpegVideoplugin@@3U_GUID@@B 1000a7b0     guid.obj
+ 0002:000007c0       ?CLSID_TestBubble@@3U_GUID@@B 1000a7c0     guid.obj
+ 0002:000007d0       ?IID_IDeviceConnection@@3U_GUID@@B 1000a7d0     guid.obj
+ 0002:000007e0       ?IID_IRemotePreview@@3U_GUID@@B 1000a7e0     guid.obj
+ 0002:000007f0       ?CLSID_RemotePreview@@3U_GUID@@B 1000a7f0     guid.obj
+ 0002:00000800       ?IID_IVideoDecoder@@3U_GUID@@B 1000a800     guid.obj
+ 0002:00000810       ?IID_IVideoRender@@3U_GUID@@B 1000a810     guid.obj
+ 0002:00000820       ?CLSID_H264Playerplugin@@3U_GUID@@B 1000a820     guid.obj
+ 0002:00000830       ?CLSID_h264Decoder@@3U_GUID@@B 1000a830     guid.obj
+ 0002:00000840       ?CLSID_SDLRender@@3U_GUID@@B 1000a840     guid.obj
+ 0002:00000850       ?CLSID_BubbleProtocol@@3U_GUID@@B 1000a850     guid.obj
+ 0002:00000860       ?CLSID_FsmPlay@@3U_GUID@@B 1000a860     guid.obj
+ 0002:00000870       ?IID_IFsmPlay@@3U_GUID@@B  1000a870     guid.obj
+ 0002:00000880       ?IID_IDeviceClient@@3U_GUID@@B 1000a880     guid.obj
+ 0002:00000890       ?CLSID_DeviceClient@@3U_GUID@@B 1000a890     guid.obj
+ 0002:000008a0       ?IID_IRemotePlayback@@3U_GUID@@B 1000a8a0     guid.obj
+ 0002:000008b0       ?CLSID_RemotePlayback@@3U_GUID@@B 1000a8b0     guid.obj
+ 0002:000008c0       ?CLSID_DDrawRender@@3U_GUID@@B 1000a8c0     guid.obj
+ 0002:000008d0       ?CLSID_Hole@@3U_GUID@@B    1000a8d0     guid.obj
+ 0002:000008e0       ?CLSID_Turn@@3U_GUID@@B    1000a8e0     guid.obj
+ 0002:000008f0       ?IID_IDeviceSearchRecord@@3U_GUID@@B 1000a8f0     guid.obj
+ 0002:00000900       ?IID_IDeviceGroupRemotePlayback@@3U_GUID@@B 1000a900     guid.obj
+ 0002:00000910       ?CLSID_RemotePlaybackPlugin@@3U_GUID@@B 1000a910     guid.obj
+ 0002:00000920       ?IID_IDiskSetting@@3U_GUID@@B 1000a920     guid.obj
+ 0002:00000930       ?IID_ILocalSetting@@3U_GUID@@B 1000a930     guid.obj
+ 0002:00000940       ?IID_IRecorder@@3U_GUID@@B 1000a940     guid.obj
+ 0002:00000950       ?IID_ISetRecordTime@@3U_GUID@@B 1000a950     guid.obj
+ 0002:00000960       ?CLSID_Recorder@@3U_GUID@@B 1000a960     guid.obj
+ 0002:00000970       ?IID_IRemoteBackup@@3U_GUID@@B 1000a970     guid.obj
+ 0002:00000980       ?IID_ILocalPlayer@@3U_GUID@@B 1000a980     guid.obj
+ 0002:00000990       ?CLSID_TestPreviewWindowsPlugin@@3U_GUID@@B 1000a990     guid.obj
+ 0002:000009a0       ?CLSID_LocalPlayer@@3U_GUID@@B 1000a9a0     guid.obj
+ 0002:000009b0       ?IID_ILocalRecordSearch@@3U_GUID@@B 1000a9b0     guid.obj
+ 0002:000009c0       ?CLSID_RecordPlayerPlugin@@3U_GUID@@B 1000a9c0     guid.obj
+ 0002:000009d0       ?CLSID_RemoteBackupPlugin@@3U_GUID@@B 1000a9d0     guid.obj
+ 0002:000009e0       ?CLSID_QtQWebViewPlugin@@3U_GUID@@B 1000a9e0     guid.obj
+ 0002:000009f0       ?CLSID_HiH264Decoder@@3U_GUID@@B 1000a9f0     guid.obj
+ 0002:00000a00       ?CLSID_IpcDeviceClient@@3U_GUID@@B 1000aa00     guid.obj
+ 0002:00000a10       ?IID_ISwitchStream@@3U_GUID@@B 1000aa10     guid.obj
+ 0002:00000a20       ?IID_IDeviceNetModify@@3U_GUID@@B 1000aa20     guid.obj
+ 0002:00000a30       ?IID_IAudioDecoder@@3U_GUID@@B 1000aa30     guid.obj
+ 0002:00000a40       ?CLSID_AudioDecoder@@3U_GUID@@B 1000aa40     guid.obj
+ 0002:00000a50       ?IID_IAudioDevice@@3U_GUID@@B 1000aa50     guid.obj
+ 0002:00000a60       ?CLSID_AudioDevice@@3U_GUID@@B 1000aa60     guid.obj
+ 0002:00000a70       ?IID_IAudioPlayer@@3U_GUID@@B 1000aa70     guid.obj
+ 0002:00000a80       ?CLSID_AudioPlayer@@3U_GUID@@B 1000aa80     guid.obj
+ 0002:00000b94       ?collate@?$_Locbase@H@std@@2HB 1000ab94     dllmain.obj
+ 0002:00000b98       ?ctype@?$_Locbase@H@std@@2HB 1000ab98     dllmain.obj
+ 0002:00000b9c       ?monetary@?$_Locbase@H@std@@2HB 1000ab9c     dllmain.obj
+ 0002:00000ba0       ?numeric@?$_Locbase@H@std@@2HB 1000aba0     dllmain.obj
+ 0002:00000ba4       ?time@?$_Locbase@H@std@@2HB 1000aba4     dllmain.obj
+ 0002:00000ba8       ?messages@?$_Locbase@H@std@@2HB 1000aba8     dllmain.obj
+ 0002:00000bac       ?all@?$_Locbase@H@std@@2HB 1000abac     dllmain.obj
+ 0002:00000bb0       ?none@?$_Locbase@H@std@@2HB 1000abb0     dllmain.obj
+ 0002:00000bb4       ?skipws@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abb4     dllmain.obj
+ 0002:00000bb8       ?unitbuf@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abb8     dllmain.obj
+ 0002:00000bbc       ?uppercase@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abbc     dllmain.obj
+ 0002:00000bc0       ?showbase@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abc0     dllmain.obj
+ 0002:00000bc4       ?showpoint@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abc4     dllmain.obj
+ 0002:00000bc8       ?showpos@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abc8     dllmain.obj
+ 0002:00000bcc       ?left@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abcc     dllmain.obj
+ 0002:00000bd0       ?right@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abd0     dllmain.obj
+ 0002:00000bd4       ?internal@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abd4     dllmain.obj
+ 0002:00000bd8       ?dec@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abd8     dllmain.obj
+ 0002:00000bdc       ?oct@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abdc     dllmain.obj
+ 0002:00000be0       ?hex@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abe0     dllmain.obj
+ 0002:00000be4       ?scientific@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abe4     dllmain.obj
+ 0002:00000be8       ?fixed@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abe8     dllmain.obj
+ 0002:00000bec       ?hexfloat@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abec     dllmain.obj
+ 0002:00000bf0       ?boolalpha@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abf0     dllmain.obj
+ 0002:00000bf4       ?_Stdio@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abf4     dllmain.obj
+ 0002:00000bf8       ?adjustfield@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abf8     dllmain.obj
+ 0002:00000bfc       ?basefield@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000abfc     dllmain.obj
+ 0002:00000c00       ?floatfield@?$_Iosb@H@std@@2W4_Fmtflags@12@B 1000ac00     dllmain.obj
+ 0002:00000c04       ?goodbit@?$_Iosb@H@std@@2W4_Iostate@12@B 1000ac04     dllmain.obj
+ 0002:00000c08       ?eofbit@?$_Iosb@H@std@@2W4_Iostate@12@B 1000ac08     dllmain.obj
+ 0002:00000c0c       ?failbit@?$_Iosb@H@std@@2W4_Iostate@12@B 1000ac0c     dllmain.obj
+ 0002:00000c10       ?badbit@?$_Iosb@H@std@@2W4_Iostate@12@B 1000ac10     dllmain.obj
+ 0002:00000c14       ?_Hardfail@?$_Iosb@H@std@@2W4_Iostate@12@B 1000ac14     dllmain.obj
+ 0002:00000c18       ?in@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac18     dllmain.obj
+ 0002:00000c1c       ?out@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac1c     dllmain.obj
+ 0002:00000c20       ?ate@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac20     dllmain.obj
+ 0002:00000c24       ?app@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac24     dllmain.obj
+ 0002:00000c28       ?trunc@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac28     dllmain.obj
+ 0002:00000c2c       ?_Nocreate@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac2c     dllmain.obj
+ 0002:00000c30       ?_Noreplace@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac30     dllmain.obj
+ 0002:00000c34       ?binary@?$_Iosb@H@std@@2W4_Openmode@12@B 1000ac34     dllmain.obj
+ 0002:00000c38       ?beg@?$_Iosb@H@std@@2W4_Seekdir@12@B 1000ac38     dllmain.obj
+ 0002:00000c3c       ?cur@?$_Iosb@H@std@@2W4_Seekdir@12@B 1000ac3c     dllmain.obj
+ 0002:00000c40       ?end@?$_Iosb@H@std@@2W4_Seekdir@12@B 1000ac40     dllmain.obj
+ 0002:00000fec       ??_7DvrSearch@@6BIPcomBase@@@ 1000afec     dvrsearch.obj
+ 0002:00001000       ??_7DvrSearch@@6BIEventRegister@@@ 1000b000     dvrsearch.obj
+ 0002:00001014       ??_7DvrSearch@@6BIDeviceSearch@@@ 1000b014     dvrsearch.obj
+ 0002:00001030       ??_7DvrSearch@@6B@         1000b030     dvrsearch.obj
+ 0002:0000106c       ??_8DvrSearch@@7BIEventRegister@@@ 1000b06c     dvrsearch.obj
+ 0002:00001078       ??_8DvrSearch@@7BIDeviceSearch@@@ 1000b078     dvrsearch.obj
+ 0002:00001088       ??_7IPcomBase@@6B@         1000b088     dvrsearch.obj
+ 0002:0000109c       ??_7IDeviceSearch@@6BIPcomBase@@@ 1000b09c     dvrsearch.obj
+ 0002:000010b0       ??_7IDeviceSearch@@6B0@@   1000b0b0     dvrsearch.obj
+ 0002:000010c8       ??_8IDeviceSearch@@7B@     1000b0c8     dvrsearch.obj
+ 0002:000010d8       ??_7IEventRegister@@6BIPcomBase@@@ 1000b0d8     dvrsearch.obj
+ 0002:000010ec       ??_7IEventRegister@@6B0@@  1000b0ec     dvrsearch.obj
+ 0002:000010fc       ??_8IEventRegister@@7B@    1000b0fc     dvrsearch.obj
+ 0002:0000110c       ??_SQUdpSocket@@6B@        1000b10c     dvrsearch.obj
+ 0002:00001190       ??_C@_0N@MHJPOBEL@QList?$DMT?$DO?3?3at?$AA@ 1000b190     dvrsearch.obj
+ 0002:000011a0       ??_C@_0BD@ILOGJALA@index?5out?5of?5range?$AA@ 1000b1a0     dvrsearch.obj
+ 0002:000011b8       ??_C@_0DL@CHFNKAN@c?3?2qt?24?48?45?2include?2qtcore?2?4?4?1?4?4@ 1000b1b8     dvrsearch.obj
+ 0002:00001204       ??_7type_info@@6B@         1000b204     MSVCRTD:ti_inst.obj
+ 0002:00001208       __pRawDllMain              1000b208     MSVCRTD:crtdll.obj
+ 0002:00001208       __pDefaultRawDllMain       1000b208     MSVCRTD:crtdll.obj
+ 0002:0000120c       ??_C@_0DA@FJPPCPEH@f?3?2dd?2vctools?2crt_bld?2self_x86?2c@ 1000b20c     MSVCRTD:crtdll.obj
+ 0002:00001244       ?ProcessDetach@NativeDll@<CrtImplementationDetails>@@0IB 1000b244     MSVCRTD:tncleanup.obj
+ 0002:00001248       ?ProcessAttach@NativeDll@<CrtImplementationDetails>@@0IB 1000b248     MSVCRTD:tncleanup.obj
+ 0002:0000124c       ?ThreadAttach@NativeDll@<CrtImplementationDetails>@@0IB 1000b24c     MSVCRTD:tncleanup.obj
+ 0002:00001250       ?ThreadDetach@NativeDll@<CrtImplementationDetails>@@0IB 1000b250     MSVCRTD:tncleanup.obj
+ 0002:00001254       ?ProcessVerifier@NativeDll@<CrtImplementationDetails>@@0IB 1000b254     MSVCRTD:tncleanup.obj
+ 0002:00001258       __load_config_used         1000b258     MSVCRTD:loadcfg.obj
+ 0002:00001554       ??_R4DvrSearch@@6B@        1000b554     dvrsearch.obj
+ 0002:0000156c       ??_R3DvrSearch@@8          1000b56c     dvrsearch.obj
+ 0002:00001580       ??_R2DvrSearch@@8          1000b580     dvrsearch.obj
+ 0002:000015a4       ??_R1A@?0A@EA@DvrSearch@@8 1000b5a4     dvrsearch.obj
+ 0002:000015c8       ??_R1A@?0A@EA@QThread@@8   1000b5c8     dvrsearch.obj
+ 0002:000015ec       ??_R3QThread@@8            1000b5ec     dvrsearch.obj
+ 0002:00001600       ??_R2QThread@@8            1000b600     dvrsearch.obj
+ 0002:0000160c       ??_R1A@?0A@EA@QObject@@8   1000b60c     dvrsearch.obj
+ 0002:00001630       ??_R3QObject@@8            1000b630     dvrsearch.obj
+ 0002:00001644       ??_R2QObject@@8            1000b644     dvrsearch.obj
+ 0002:0000164c       ??_R17?0A@EA@IDeviceSearch@@8 1000b64c     dvrsearch.obj
+ 0002:00001670       ??_R3IDeviceSearch@@8      1000b670     dvrsearch.obj
+ 0002:00001684       ??_R2IDeviceSearch@@8      1000b684     dvrsearch.obj
+ 0002:00001690       ??_R1A@?0A@EA@IDeviceSearch@@8 1000b690     dvrsearch.obj
+ 0002:000016b4       ??_R1A@33FA@IPcomBase@@8   1000b6b4     dvrsearch.obj
+ 0002:000016d8       ??_R3IPcomBase@@8          1000b6d8     dvrsearch.obj
+ 0002:000016ec       ??_R2IPcomBase@@8          1000b6ec     dvrsearch.obj
+ 0002:000016f4       ??_R1A@?0A@EA@IPcomBase@@8 1000b6f4     dvrsearch.obj
+ 0002:00001718       ??_R1A@M@3FA@IPcomBase@@8  1000b718     dvrsearch.obj
+ 0002:0000173c       ??_R1BA@?0A@EA@IEventRegister@@8 1000b73c     dvrsearch.obj
+ 0002:00001760       ??_R3IEventRegister@@8     1000b760     dvrsearch.obj
+ 0002:00001774       ??_R2IEventRegister@@8     1000b774     dvrsearch.obj
+ 0002:00001780       ??_R1A@?0A@EA@IEventRegister@@8 1000b780     dvrsearch.obj
+ 0002:000017a4       ??_R4DvrSearch@@6BIDeviceSearch@@@ 1000b7a4     dvrsearch.obj
+ 0002:000017bc       ??_R4DvrSearch@@6BIEventRegister@@@ 1000b7bc     dvrsearch.obj
+ 0002:000017d4       ??_R4DvrSearch@@6BIPcomBase@@@ 1000b7d4     dvrsearch.obj
+ 0002:000017ec       ??_R4IPcomBase@@6B@        1000b7ec     dvrsearch.obj
+ 0002:00001804       ??_R4IDeviceSearch@@6B0@@  1000b804     dvrsearch.obj
+ 0002:0000181c       ??_R4IDeviceSearch@@6BIPcomBase@@@ 1000b81c     dvrsearch.obj
+ 0002:00001834       ??_R4IEventRegister@@6B0@@ 1000b834     dvrsearch.obj
+ 0002:0000184c       ??_R4IEventRegister@@6BIPcomBase@@@ 1000b84c     dvrsearch.obj
+ 0002:00001864       ??_R4QUdpSocket@@6B@       1000b864     dvrsearch.obj
+ 0002:0000187c       ??_R3QUdpSocket@@8         1000b87c     dvrsearch.obj
+ 0002:00001890       ??_R2QUdpSocket@@8         1000b890     dvrsearch.obj
+ 0002:000018a4       ??_R1A@?0A@EA@QUdpSocket@@8 1000b8a4     dvrsearch.obj
+ 0002:000018c8       ??_R1A@?0A@EA@QAbstractSocket@@8 1000b8c8     dvrsearch.obj
+ 0002:000018ec       ??_R3QAbstractSocket@@8    1000b8ec     dvrsearch.obj
+ 0002:00001900       ??_R2QAbstractSocket@@8    1000b900     dvrsearch.obj
+ 0002:00001910       ??_R1A@?0A@EA@QIODevice@@8 1000b910     dvrsearch.obj
+ 0002:00001934       ??_R3QIODevice@@8          1000b934     dvrsearch.obj
+ 0002:00001948       ??_R2QIODevice@@8          1000b948     dvrsearch.obj
+ 0002:00001954       ??_R4type_info@@6B@        1000b954     MSVCRTD:ti_inst.obj
+ 0002:00001968       ??_R3type_info@@8          1000b968     MSVCRTD:ti_inst.obj
+ 0002:00001978       ??_R2type_info@@8          1000b978     MSVCRTD:ti_inst.obj
+ 0002:00001980       ??_R1A@?0A@EA@type_info@@8 1000b980     MSVCRTD:ti_inst.obj
+ 0002:00001ad0       ___safe_se_handler_table   1000bad0     <linker-defined>
+ 0002:00001c3c       ___rtc_iaa                 1000bc3c     MSVCRTD:_initsect_.obj
+ 0002:00001d40       ___rtc_izz                 1000bd40     MSVCRTD:_initsect_.obj
+ 0002:00001e44       ___rtc_taa                 1000be44     MSVCRTD:_initsect_.obj
+ 0002:00001f48       ___rtc_tzz                 1000bf48     MSVCRTD:_initsect_.obj
+ 0003:00000000       ??_R0?AVDvrSearch@@@8      1000d000     dvrsearch.obj
+ 0003:0000001c       ??_R0?AVQThread@@@8        1000d01c     dvrsearch.obj
+ 0003:00000038       ??_R0?AVQObject@@@8        1000d038     dvrsearch.obj
+ 0003:00000054       ??_R0?AUIDeviceSearch@@@8  1000d054     dvrsearch.obj
+ 0003:00000078       ??_R0?AUIPcomBase@@@8      1000d078     dvrsearch.obj
+ 0003:00000094       ??_R0?AUIEventRegister@@@8 1000d094     dvrsearch.obj
+ 0003:000000b8       ??_R0?AVQUdpSocket@@@8     1000d0b8     dvrsearch.obj
+ 0003:000000d8       ??_R0?AVQAbstractSocket@@@8 1000d0d8     dvrsearch.obj
+ 0003:000000fc       ??_R0?AVQIODevice@@@8      1000d0fc     dvrsearch.obj
+ 0003:00000118       ___security_cookie         1000d118     MSVCRTD:gs_cookie.obj
+ 0003:0000011c       ___security_cookie_complement 1000d11c     MSVCRTD:gs_cookie.obj
+ 0003:00000120       ??_R0?AVtype_info@@@8      1000d120     MSVCRTD:ti_inst.obj
+ 0003:00000138       ___native_dllmain_reason   1000d138     MSVCRTD:natstart.obj
+ 0003:0000013c       ___native_vcclrit_reason   1000d13c     MSVCRTD:natstart.obj
+ 0003:0000057c       ?__type_info_root_node@@3U__type_info_node@@A 1000d57c     MSVCRTD:tncleanup.obj
+ 0003:00000584       ___native_startup_state    1000d584     <common>
+ 0003:00000594       ___native_startup_lock     1000d594     <common>
+ 0003:00000598       ___onexitend               1000d598     <common>
+ 0003:000005a8       ___onexitbegin             1000d5a8     <common>
+ 0003:000005ac       ___dyn_tls_init_callback   1000d5ac     <common>
+ 0004:00000000       __IMPORT_DESCRIPTOR_QtCored4 1000e000     QtCored4:QtCored4.dll
+ 0004:00000014       __IMPORT_DESCRIPTOR_QtNetworkd4 1000e014     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000028       __IMPORT_DESCRIPTOR_libpcom 1000e028     libpcom:libpcom.dll
+ 0004:0000003c       __IMPORT_DESCRIPTOR_MSVCR100D 1000e03c     MSVCRTD:MSVCR100D.dll
+ 0004:00000050       __IMPORT_DESCRIPTOR_KERNEL32 1000e050     kernel32:KERNEL32.dll
+ 0004:00000064       __NULL_IMPORT_DESCRIPTOR   1000e064     QtCored4:QtCored4.dll
+ 0004:0000040c       __imp__GetSystemTimeAsFileTime@4 1000e40c     kernel32:KERNEL32.dll
+ 0004:00000410       __imp__GetCurrentProcessId@0 1000e410     kernel32:KERNEL32.dll
+ 0004:00000414       __imp__GetCurrentThreadId@0 1000e414     kernel32:KERNEL32.dll
+ 0004:00000418       __imp__GetTickCount@0      1000e418     kernel32:KERNEL32.dll
+ 0004:0000041c       __imp__QueryPerformanceCounter@4 1000e41c     kernel32:KERNEL32.dll
+ 0004:00000420       __imp__IsDebuggerPresent@0 1000e420     kernel32:KERNEL32.dll
+ 0004:00000424       __imp__SetUnhandledExceptionFilter@4 1000e424     kernel32:KERNEL32.dll
+ 0004:00000428       __imp__UnhandledExceptionFilter@4 1000e428     kernel32:KERNEL32.dll
+ 0004:0000042c       __imp__GetCurrentProcess@0 1000e42c     kernel32:KERNEL32.dll
+ 0004:00000430       __imp__TerminateProcess@8  1000e430     kernel32:KERNEL32.dll
+ 0004:00000434       __imp__InterlockedCompareExchange@12 1000e434     kernel32:KERNEL32.dll
+ 0004:00000438       __imp__Sleep@4             1000e438     kernel32:KERNEL32.dll
+ 0004:0000043c       __imp__InterlockedExchange@8 1000e43c     kernel32:KERNEL32.dll
+ 0004:00000440       __imp__DecodePointer@4     1000e440     kernel32:KERNEL32.dll
+ 0004:00000444       __imp__EncodePointer@4     1000e444     kernel32:KERNEL32.dll
+ 0004:00000448       __imp__DisableThreadLibraryCalls@4 1000e448     kernel32:KERNEL32.dll
+ 0004:0000044c       \177KERNEL32_NULL_THUNK_DATA 1000e44c     kernel32:KERNEL32.dll
+ 0004:00000484       __imp_?terminate@@YAXXZ    1000e484     MSVCRTD:MSVCR100D.dll
+ 0004:00000488       __imp_?_type_info_dtor_internal_method@type_info@@QAEXXZ 1000e488     MSVCRTD:MSVCR100D.dll
+ 0004:0000048c       __imp____clean_type_info_names_internal 1000e48c     MSVCRTD:MSVCR100D.dll
+ 0004:00000490       __imp___crt_debugger_hook  1000e490     MSVCRTD:MSVCR100D.dll
+ 0004:00000494       __imp____dllonexit         1000e494     MSVCRTD:MSVCR100D.dll
+ 0004:00000498       __imp___lock               1000e498     MSVCRTD:MSVCR100D.dll
+ 0004:0000049c       __imp___onexit             1000e49c     MSVCRTD:MSVCR100D.dll
+ 0004:000004a0       __imp___except_handler4_common 1000e4a0     MSVCRTD:MSVCR100D.dll
+ 0004:000004a4       __imp_??3@YAXPAX@Z         1000e4a4     MSVCRTD:MSVCR100D.dll
+ 0004:000004a8       __imp_??2@YAPAXI@Z         1000e4a8     MSVCRTD:MSVCR100D.dll
+ 0004:000004ac       __imp____CxxFrameHandler3  1000e4ac     MSVCRTD:MSVCR100D.dll
+ 0004:000004b0       __imp___purecall           1000e4b0     MSVCRTD:MSVCR100D.dll
+ 0004:000004b4       __imp__strlen              1000e4b4     MSVCRTD:MSVCR100D.dll
+ 0004:000004b8       __imp___CxxThrowException@8 1000e4b8     MSVCRTD:MSVCR100D.dll
+ 0004:000004bc       __imp__memcpy              1000e4bc     MSVCRTD:MSVCR100D.dll
+ 0004:000004c0       __imp___malloc_dbg         1000e4c0     MSVCRTD:MSVCR100D.dll
+ 0004:000004c4       __imp___free_dbg           1000e4c4     MSVCRTD:MSVCR100D.dll
+ 0004:000004c8       __imp___encoded_null       1000e4c8     MSVCRTD:MSVCR100D.dll
+ 0004:000004cc       __imp___CrtSetCheckCount   1000e4cc     MSVCRTD:MSVCR100D.dll
+ 0004:000004d0       __imp___initterm           1000e4d0     MSVCRTD:MSVCR100D.dll
+ 0004:000004d4       __imp___initterm_e         1000e4d4     MSVCRTD:MSVCR100D.dll
+ 0004:000004d8       __imp___amsg_exit          1000e4d8     MSVCRTD:MSVCR100D.dll
+ 0004:000004dc       __imp___unlock             1000e4dc     MSVCRTD:MSVCR100D.dll
+ 0004:000004e0       __imp____CppXcptFilter     1000e4e0     MSVCRTD:MSVCR100D.dll
+ 0004:000004e4       \177MSVCR100D_NULL_THUNK_DATA 1000e4e4     MSVCRTD:MSVCR100D.dll
+ 0004:00000520       __imp_??1QByteArray@@QAE@XZ 1000e520     QtCored4:QtCored4.dll
+ 0004:00000524       __imp_?contains@QByteArray@@QBE?AVQBool@@PBD@Z 1000e524     QtCored4:QtCored4.dll
+ 0004:00000528       __imp_??4QString@@QAEAAV0@$$QAV0@@Z 1000e528     QtCored4:QtCored4.dll
+ 0004:0000052c       __imp_?toUpper@QString@@QBE?AV1@XZ 1000e52c     QtCored4:QtCored4.dll
+ 0004:00000530       __imp_?data@QByteArray@@QAEPADXZ 1000e530     QtCored4:QtCored4.dll
+ 0004:00000534       __imp_?size@QByteArray@@QBEHXZ 1000e534     QtCored4:QtCored4.dll
+ 0004:00000538       __imp_?resize@QByteArray@@QAEXH@Z 1000e538     QtCored4:QtCored4.dll
+ 0004:0000053c       __imp_??0QByteArray@@QAE@XZ 1000e53c     QtCored4:QtCored4.dll
+ 0004:00000540       __imp_??0QByteArray@@QAE@ABV0@@Z 1000e540     QtCored4:QtCored4.dll
+ 0004:00000544       __imp_?append@QByteArray@@QAEAAV1@PBD@Z 1000e544     QtCored4:QtCored4.dll
+ 0004:00000548       __imp_?isEmpty@QByteArray@@QBE_NXZ 1000e548     QtCored4:QtCored4.dll
+ 0004:0000054c       __imp_?truncate@QByteArray@@QAEXH@Z 1000e54c     QtCored4:QtCored4.dll
+ 0004:00000550       __imp_?indexOf@QByteArray@@QBEHDH@Z 1000e550     QtCored4:QtCored4.dll
+ 0004:00000554       __imp_?toLatin1@QString@@QBE?AVQByteArray@@XZ 1000e554     QtCored4:QtCored4.dll
+ 0004:00000558       __imp_?mid@QString@@QBE?AV1@HH@Z 1000e558     QtCored4:QtCored4.dll
+ 0004:0000055c       __imp_?length@QString@@QBEHXZ 1000e55c     QtCored4:QtCored4.dll
+ 0004:00000560       __imp_??0QByteArray@@QAE@PBD@Z 1000e560     QtCored4:QtCored4.dll
+ 0004:00000564       __imp_?indexOf@QString@@QBEHABV1@HW4CaseSensitivity@Qt@@@Z 1000e564     QtCored4:QtCored4.dll
+ 0004:00000568       __imp_?ref@QBasicAtomicInt@@QAE_NXZ 1000e568     QtCored4:QtCored4.dll
+ 0004:0000056c       __imp_?shared_null@QMapData@@2U1@A 1000e56c     QtCored4:QtCored4.dll
+ 0004:00000570       __imp_??4QByteArray@@QAEAAV0@$$QAV0@@Z 1000e570     QtCored4:QtCored4.dll
+ 0004:00000574       __imp_?shared_null@QListData@@2UData@1@A 1000e574     QtCored4:QtCored4.dll
+ 0004:00000578       __imp_??9QBasicAtomicInt@@QBE_NH@Z 1000e578     QtCored4:QtCored4.dll
+ 0004:0000057c       __imp_??4QVariant@@QAEAAV0@ABV0@@Z 1000e57c     QtCored4:QtCored4.dll
+ 0004:00000580       __imp_?createData@QMapData@@SAPAU1@H@Z 1000e580     QtCored4:QtCored4.dll
+ 0004:00000584       __imp_?continueFreeData@QMapData@@QAEXH@Z 1000e584     QtCored4:QtCored4.dll
+ 0004:00000588       __imp_?at@QListData@@QBEPAPAXH@Z 1000e588     QtCored4:QtCored4.dll
+ 0004:0000058c       __imp_?qt_assert_x@@YAXPBD00H@Z 1000e58c     QtCored4:QtCored4.dll
+ 0004:00000590       __imp_?size@QListData@@QBEHXZ 1000e590     QtCored4:QtCored4.dll
+ 0004:00000594       __imp_?append@QListData@@QAEPAPAXXZ 1000e594     QtCored4:QtCored4.dll
+ 0004:00000598       __imp_?insert@QListData@@QAEPAPAXH@Z 1000e598     QtCored4:QtCored4.dll
+ 0004:0000059c       __imp_?remove@QListData@@QAEXH@Z 1000e59c     QtCored4:QtCored4.dll
+ 0004:000005a0       __imp_?node_delete@QMapData@@QAEXQAPAUNode@1@HPAU21@@Z 1000e5a0     QtCored4:QtCored4.dll
+ 0004:000005a4       __imp_??0QVariant@@QAE@ABV0@@Z 1000e5a4     QtCored4:QtCored4.dll
+ 0004:000005a8       __imp_?node_create@QMapData@@QAEPAUNode@1@QAPAU21@HH@Z 1000e5a8     QtCored4:QtCored4.dll
+ 0004:000005ac       __imp_?end@QListData@@QBEPAPAXXZ 1000e5ac     QtCored4:QtCored4.dll
+ 0004:000005b0       __imp_?qFree@@YAXPAX@Z     1000e5b0     QtCored4:QtCored4.dll
+ 0004:000005b4       __imp_?detach_grow@QListData@@QAEPAUData@1@PAHH@Z 1000e5b4     QtCored4:QtCored4.dll
+ 0004:000005b8       __imp_?begin@QListData@@QBEPAPAXXZ 1000e5b8     QtCored4:QtCored4.dll
+ 0004:000005bc       __imp_?detach@QListData@@QAEPAUData@1@H@Z 1000e5bc     QtCored4:QtCored4.dll
+ 0004:000005c0       __imp_??MQString@@QBE_NABV0@@Z 1000e5c0     QtCored4:QtCored4.dll
+ 0004:000005c4       __imp_??0QVariant@@QAE@PBD@Z 1000e5c4     QtCored4:QtCored4.dll
+ 0004:000005c8       __imp_??1QVariant@@QAE@XZ  1000e5c8     QtCored4:QtCored4.dll
+ 0004:000005cc       __imp_??0QVariant@@QAE@ABVQString@@@Z 1000e5cc     QtCored4:QtCored4.dll
+ 0004:000005d0       __imp_??0QString@@QAE@ABV0@@Z 1000e5d0     QtCored4:QtCored4.dll
+ 0004:000005d4       __imp_?QStringList_contains@QtPrivate@@YA?AVQBool@@PBVQStringList@@ABVQString@@W4CaseSensitivity@Qt@@@Z 1000e5d4     QtCored4:QtCored4.dll
+ 0004:000005d8       __imp_?codecForCStrings@QString@@0PAVQTextCodec@@A 1000e5d8     QtCored4:QtCored4.dll
+ 0004:000005dc       __imp_?fromAscii@QString@@SA?AV1@PBDH@Z 1000e5dc     QtCored4:QtCored4.dll
+ 0004:000005e0       __imp_??8QString@@QBE_NABV0@@Z 1000e5e0     QtCored4:QtCored4.dll
+ 0004:000005e4       __imp_??0QLatin1String@@QAE@PBD@Z 1000e5e4     QtCored4:QtCored4.dll
+ 0004:000005e8       __imp_??8QString@@QBE_NABVQLatin1String@@@Z 1000e5e8     QtCored4:QtCored4.dll
+ 0004:000005ec       __imp_?start@QElapsedTimer@@QAEXXZ 1000e5ec     QtCored4:QtCored4.dll
+ 0004:000005f0       __imp_?elapsed@QElapsedTimer@@QBE_JXZ 1000e5f0     QtCored4:QtCored4.dll
+ 0004:000005f4       __imp_?msleep@QThread@@KAXK@Z 1000e5f4     QtCored4:QtCored4.dll
+ 0004:000005f8       __imp_?wait@QThread@@QAE_NK@Z 1000e5f8     QtCored4:QtCored4.dll
+ 0004:000005fc       __imp_?deleteLater@QObject@@QAEXXZ 1000e5fc     QtCored4:QtCored4.dll
+ 0004:00000600       __imp_?reset@QIODevice@@UAE_NXZ 1000e600     QtCored4:QtCored4.dll
+ 0004:00000604       __imp_?seek@QIODevice@@UAE_N_J@Z 1000e604     QtCored4:QtCored4.dll
+ 0004:00000608       __imp_?size@QIODevice@@UBE_JXZ 1000e608     QtCored4:QtCored4.dll
+ 0004:0000060c       __imp_?pos@QIODevice@@UBE_JXZ 1000e60c     QtCored4:QtCored4.dll
+ 0004:00000610       __imp_?open@QIODevice@@UAE_NV?$QFlags@W4OpenModeFlag@QIODevice@@@@@Z 1000e610     QtCored4:QtCored4.dll
+ 0004:00000614       __imp_?start@QThread@@QAEXW4Priority@1@@Z 1000e614     QtCored4:QtCored4.dll
+ 0004:00000618       __imp_?lock@QMutex@@QAEXXZ 1000e618     QtCored4:QtCored4.dll
+ 0004:0000061c       __imp_?unlock@QMutex@@QAEXXZ 1000e61c     QtCored4:QtCored4.dll
+ 0004:00000620       __imp_?isRunning@QThread@@QBE_NXZ 1000e620     QtCored4:QtCored4.dll
+ 0004:00000624       __imp_?exit@QThread@@QAEXH@Z 1000e624     QtCored4:QtCored4.dll
+ 0004:00000628       __imp_?disconnectNotify@QObject@@MAEXPBD@Z 1000e628     QtCored4:QtCored4.dll
+ 0004:0000062c       __imp_?connectNotify@QObject@@MAEXPBD@Z 1000e62c     QtCored4:QtCored4.dll
+ 0004:00000630       __imp_?customEvent@QObject@@MAEXPAVQEvent@@@Z 1000e630     QtCored4:QtCored4.dll
+ 0004:00000634       __imp_?childEvent@QObject@@MAEXPAVQChildEvent@@@Z 1000e634     QtCored4:QtCored4.dll
+ 0004:00000638       __imp_?timerEvent@QObject@@MAEXPAVQTimerEvent@@@Z 1000e638     QtCored4:QtCored4.dll
+ 0004:0000063c       __imp_?eventFilter@QObject@@UAE_NPAV1@PAVQEvent@@@Z 1000e63c     QtCored4:QtCored4.dll
+ 0004:00000640       __imp_?event@QObject@@UAE_NPAVQEvent@@@Z 1000e640     QtCored4:QtCored4.dll
+ 0004:00000644       __imp_?qt_metacall@QThread@@UAEHW4Call@QMetaObject@@HPAPAX@Z 1000e644     QtCored4:QtCored4.dll
+ 0004:00000648       __imp_?qt_metacast@QThread@@UAEPAXPBD@Z 1000e648     QtCored4:QtCored4.dll
+ 0004:0000064c       __imp_?metaObject@QThread@@UBEPBUQMetaObject@@XZ 1000e64c     QtCored4:QtCored4.dll
+ 0004:00000650       __imp_??0QThread@@QAE@PAVQObject@@@Z 1000e650     QtCored4:QtCored4.dll
+ 0004:00000654       __imp_??0QMutex@@QAE@W4RecursionMode@0@@Z 1000e654     QtCored4:QtCored4.dll
+ 0004:00000658       __imp_??0QString@@QAE@PBD@Z 1000e658     QtCored4:QtCored4.dll
+ 0004:0000065c       __imp_??1QString@@QAE@XZ   1000e65c     QtCored4:QtCored4.dll
+ 0004:00000660       __imp_??1QThread@@UAE@XZ   1000e660     QtCored4:QtCored4.dll
+ 0004:00000664       __imp_?deref@QBasicAtomicInt@@QAE_NXZ 1000e664     QtCored4:QtCored4.dll
+ 0004:00000668       __imp_??1QMutex@@QAE@XZ    1000e668     QtCored4:QtCored4.dll
+ 0004:0000066c       \177QtCored4_NULL_THUNK_DATA 1000e66c     QtCored4:QtCored4.dll
+ 0004:000006d8       __imp_?bind@QUdpSocket@@QAE_NGV?$QFlags@W4BindFlag@QUdpSocket@@@@@Z 1000e6d8     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006dc       __imp_?hasPendingDatagrams@QUdpSocket@@QBE_NXZ 1000e6dc     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006e0       __imp_?pendingDatagramSize@QUdpSocket@@QBE_JXZ 1000e6e0     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006e4       __imp_?readDatagram@QUdpSocket@@QAE_JPAD_JPAVQHostAddress@@PAG@Z 1000e6e4     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006e8       __imp_??0QHostAddress@@QAE@W4SpecialAddress@0@@Z 1000e6e8     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006ec       __imp_?writeDatagram@QUdpSocket@@QAE_JPBD_JABVQHostAddress@@G@Z 1000e6ec     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006f0       __imp_??1QHostAddress@@QAE@XZ 1000e6f0     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006f4       __imp_??1QUdpSocket@@UAE@XZ 1000e6f4     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006f8       __imp_?writeData@QAbstractSocket@@MAE_JPBD_J@Z 1000e6f8     QtNetworkd4:QtNetworkd4.dll
+ 0004:000006fc       __imp_?readLineData@QAbstractSocket@@MAE_JPAD_J@Z 1000e6fc     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000700       __imp_?readData@QAbstractSocket@@MAE_JPAD_J@Z 1000e700     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000704       __imp_?waitForBytesWritten@QAbstractSocket@@UAE_NH@Z 1000e704     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000708       __imp_?waitForReadyRead@QAbstractSocket@@UAE_NH@Z 1000e708     QtNetworkd4:QtNetworkd4.dll
+ 0004:0000070c       __imp_?canReadLine@QAbstractSocket@@UBE_NXZ 1000e70c     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000710       __imp_?bytesToWrite@QAbstractSocket@@UBE_JXZ 1000e710     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000714       __imp_?bytesAvailable@QAbstractSocket@@UBE_JXZ 1000e714     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000718       __imp_?atEnd@QAbstractSocket@@UBE_NXZ 1000e718     QtNetworkd4:QtNetworkd4.dll
+ 0004:0000071c       __imp_?close@QAbstractSocket@@UAEXXZ 1000e71c     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000720       __imp_?isSequential@QAbstractSocket@@UBE_NXZ 1000e720     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000724       __imp_?qt_metacall@QUdpSocket@@UAEHW4Call@QMetaObject@@HPAPAX@Z 1000e724     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000728       __imp_?qt_metacast@QUdpSocket@@UAEPAXPBD@Z 1000e728     QtNetworkd4:QtNetworkd4.dll
+ 0004:0000072c       __imp_?metaObject@QUdpSocket@@UBEPBUQMetaObject@@XZ 1000e72c     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000730       __imp_??0QUdpSocket@@QAE@PAVQObject@@@Z 1000e730     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000734       \177QtNetworkd4_NULL_THUNK_DATA 1000e734     QtNetworkd4:QtNetworkd4.dll
+ 0004:00000770       __imp_??8@YA_NABU_GUID@@0@Z 1000e770     libpcom:libpcom.dll
+ 0004:00000774       \177libpcom_NULL_THUNK_DATA 1000e774     libpcom:libpcom.dll
+
+ entry point at        0001:00004d10
+

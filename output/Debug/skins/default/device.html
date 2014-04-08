@@ -1,0 +1,1819 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<link rel="stylesheet" type="text/css" href="css/play_back.css">
+<link rel="stylesheet" href="treeview/jquery.treeview.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/qframework.js"></script>
+<script type="text/javascript" src="js/deviceset.js"></script>
+<script type="text/javascript" src="js/ocxfunction.js"></script>
+<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
+<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
+<script type="text/javascript" src="js/swfupload.js"></script>
+<script type="text/javascript" src="js/jquery.swfupload.js"></script>
+<script type="text/javascript" src="js/swfobject.js" ></script>
+<script type="text/javascript" src="js/base64.js"></script>
+<script type="text/javascript" src="js/xml2json.js"></script>
+<script type="text/javascript" src="js/ipc.js"></script>
+<script type="text/javascript" src="js/dvr.js"></script>
+<style type="text/css">
+	#set_content .left { background: #1E1E1E; width: 250px; float: left;}
+	#set_content .right { background: #282828; position:absolute;left: 250px;}
+	#set_content .left li{
+		display: block;
+		height: 50px;
+		width: 250px;
+		text-align: left;
+		line-height: 50px;
+		text-indent: 70px;
+		background: url(images/device_set_nav.png) no-repeat;
+		background-position: 0 0;
+	}
+	table{background: #fff; border-collapse: collapse;}
+	table .select1{ width: 130px;}
+	tr{ background: #282828; height: auto; text-align: left;}
+	td{ width: 168px; font-size: 14px; padding-left:4px; height: 28px; }
+	table input{ height: 16px; margin-right:6px; border: 0; background: url(images/top_icon.png) no-repeat -440px 0;}
+	table .td1{ width: 110px;}
+	table .td2{ width: 228px;}
+	table .td4{ width: auto;}
+	table .td4 div{ width: 34px; float: left; margin: 0 4px; height: 16px;}
+	table .td4 input{margin:0; float: left;}
+	table .td4 span{margin-left: 2px; float: left; display: block; width: 16px; height: 16px; text-indent: 0px; }
+	table .chk{margin:0 4px;}
+	table .chk1{margin:0 52px 0 14px;}
+	table .iput{float: right; margin-right: 6px;}
+	table .iput1{float: left; width:78px;}
+	table .iput2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0;}
+	.title{color: #FF6400;}
+	.tb1 td,.tb2,td{width:auto;}
+	.tb1 {display: block; background: #282828; float: left;}
+	.tb1 tr{background: #323232;}
+	.tb2 tbody td{border:1px solid #EDF1F7;}
+	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
+	.tb2 thead td{ text-align:center; background:#282828;}
+	.nav1 li{width: auto; padding: 0 4px; height: auto; margin:0;}
+	.switch{padding: 0 10px;}
+	table h5{ display: inline;}
+	#set_content .action{ width:100px;margin:0 40px; height:450px;}
+	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
+	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
+	.menu0 li:hover{ background:#C25451;}
+
+	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
+	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
+	.user div{ float: left;}
+	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
+	.dev_list ul.treeview span.sel{background-color: #ABCDEF;}
+	.right_content,.confirm{ display: none;}
+	.timeInput{width: 90px; float:left; margin-right:6px;}
+	ul.groupAction li{float: left;}
+	.switch {top:50px;}
+	.synCheckboxClick tr.sel{background: #4A911C};
+
+</style>
+</head>
+<body>
+<div id="test"></div>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
+<div id="menusList">
+<div id="menu0" class="menu menu0">
+	<ul>
+		<li onclick="showObjActBox('Add','group');">添加分组</li>
+		<li onclick="showObjActBox('Add','area');">添加区域</li>
+		<li onclick="showObjActBox('Add','device');">添加设备</li>
+		<li>修改</li>
+		<li>删除</li>
+	</ul>
+</div>
+<div id="device" class="menu">
+		<p><span>修改设备</span><a class="hover close"></a></p>
+		<table>
+			<tr><td colspan="2">设备连接方式</td></tr>
+			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" />IP地址链接</td><td><input style="width:18px;" type="radio" name="Connection" value="1" />易视网链接</td></tr>
+			<tr><td class="td1">设备地址</td><td><input type="text" id="address_ID" /></td></tr>
+			<tr><td class="td1">设备端口</td><td><input type="text" id="port_ID" /></td></tr>
+			<tr><td class="td1">Http端口</td><td><input type="text" id="http_ID" /></td></tr>
+			<tr class="tr1"><td class="td1">易视网ID</td><td><input readonly="readonly" type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
+			<tr><td class="td1">用户名</td><td><input type="text" id="username_ID" /></td></tr>
+			<tr><td class="td1">密码</td><td><input type="text" id="password_ID" value="" /></td></tr>
+			<tr><td class="td1">设备名</td><td><input type="text" id="device_name_ID" /></td></tr>
+			<tr><td class="td1">通道数</td><td><input   type="text" id="channel_count_ID" /></td></tr>
+			<tr><td class="td1">所在区域</td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
+			<tr>
+				<td class="td1">设备类型</td>
+				<td>
+					<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
+						<span>DVR</span>
+						<input type="hidden" id="vendor_ID" value="DVR"></input>
+						<a class="hover" href="javascript:;"></a>
+					</div>
+					<ul class="option">
+						<li><a style="width:154px;" href="javascript:;">DVR</a></li>
+						<li><a style="width:154px;" href="javascript:;">NVR</a></li>
+						<li><a style="width:154px;" href="javascript:;">IPC</a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm">确定</div><div id="ModifyDevice_ok" class="hover confirm">确定</div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;">取消</div></td></tr>
+		</table>
+</div>
+<div id="area" class="menu">
+	<p><span>添加区域</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>区域名</td><td><input type="text" id="area_name_ID"/></td></tr>
+		<tr><td>主区域</td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok">确认</div><div class="hover confirm" id="AddArea_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;">取消</div></td></tr>
+	</table>
+</div>
+<div id="group" class="menu">
+	<p><span>添加分组</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>分组名</td><td><input type="text" id="group_name_ID"/></td></tr>
+		<!-- <tr><td>主组名</td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
+		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok">确认</div><div class="hover confirm" id="ModifyGroup_ok">确认</div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;">取消</div></td></tr>
+	</table>
+</div>
+<div id="channel" class="menu">
+	<p><span>修改通道</span><a class="hover close" href="javascript:;"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td>通道名:</td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
+		<tr><td colspan="2" style="height:10px;"></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok">确认</div><div class="hover confirm" id="ModifyGroupChannelName_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;">取消</div></td></tr>
+	</table>
+</div>
+<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
+<input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
+<div id="menu2" class="menu">
+	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
+	<table>
+		<tr><td>用户名</td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr><td>确认密码</td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_add_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr>
+			<td>用户权限等级</td>
+			<td>
+				<div class="select" style="width:60px;">
+					<span>游客</span>
+					<a class="hover" href="javascript:;"></a>
+					<input type="hidden" value="3" id="level_add_ID"/>
+				</div>
+				<ul class="option">
+					<li><a style="width:59px;" value="3">游客</a></li>
+					<li><a style="width:59px;" value="2">用户</a></li>
+					<li><a style="width:59px;" value="1">管理员</a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover" id="AddUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')">取消</div></td></tr>
+	</table>
+</div>
+<div id="menu3" class="menu">
+	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
+	<table>
+		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
+		<tr><td>旧密码</td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
+		<tr><td>新密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_user_ID"/></td></tr>
+		<tr><td>确认密码</td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_again_user_ID"/></td></tr>
+		<tr>
+			<td>用户权限等级</td>
+			<td>
+				<div class="select" style="width:60px;">
+				<span>游客</span>
+				<a class="hover" href="javascript:;"></a>
+				<input type="hidden" value="3" id="level_modify_ID"/>
+				</div>
+				<ul class="option">
+					<li><a style="width:59px;" value="3">游客</a></li>
+					<li><a style="width:59px;" value="2">用户</a></li>
+					<li><a style="width:59px;" value="1">管理员</a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok">确认</div></td><td><div class="hover close" onclick="showdata('修改用户','menu3')">取消</div></td></tr>
+	</table>
+</div>
+<div id="confirm" class="menu">
+	<p><span></span><a class="hover close" href="javascript:;"></a></p>
+	<div style="padding:10px;">
+		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
+		<table style="margin:0 auto;">
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" >确认</div><div class="hover confirm" id="RemoveArea_ok">确认</div><div class="hover confirm" id="RemoveGroup_ok" >确认</div><div class="hover close">取消</div></td></tr>
+		</table>
+	</div>
+</div>
+</div>
+	<div id="top">
+		<div class="top_act" id="app_top">
+			<h4>DVR Client</h4>
+			<div id="top_window_act">
+				<ul>
+					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
+				</ul>
+			</div>
+		</div>
+		<div class="top_nav">
+			<ul>
+				<li><a style="width:36px;"></a>预览</li>
+				<li><a style="background-position: -36px 0;"></a>回放</li>
+				<li><a style="background-position: -62px 0;"></a>备份</li>
+				<li class="active"><a style="background-position: -88px 0; width:36px;"></a>设置</li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
+				<li><a style="background-position: -124px 0;"></a>日志</li> -->
+			</ul>
+			<!-- <div>
+				<a href="javascript:;"></a>
+				<p style="color:#000;">Login User:eddy</p>
+			</div> -->
+		</div></div>
+	<div id="set_content">
+		<div class="left">
+			<ul>
+				<li class="setViewNum hover" style="background-position:-250px 0;">设备管理</li>
+				<li class="setViewNum hover" style="background-position:0 -50px;">设备设置</li>
+				<li class="setViewNum hover" style="background-position:0 -100px;">客户端设置</li>
+				<!-- <li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li> -->
+			</ul>
+		</div>
+		<div class="right">
+			<object type="application/cms-dsview-windows" id="devSearch" width="0" height="0"></object>
+			<object type="application/cms-common-library" id="commonLibrary" width="0" height="0"></object>
+			<div style="position:relative; display:block;" class="right_content">
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="overflow-x:hidden;overflow-y:auto; position: absolute; left:0;">
+					<thead class="thead">
+						<tr>
+							<td style="width:140px;">设备</td>
+							<td>ID</td>
+							<td>IP</td>
+							<td style="width:60px;">通道数</td>
+						</tr>
+					</thead>
+					<tbody class="synCheckboxClick">
+						<tr id="esee_100015721"><td><input type="checkbox"  /> JUAN DVR</td><td>100015721</td><td>192.168.2.1</td><td>4</td></tr>	
+		
+					</tbody>
+					<input type="hidden" id="AutoSetNetworkInfoID" />
+				</table>
+				<input type="hidden" id="adddevicedouble_ID" />
+				<input type="hidden" id="adddeviceall_ID" />
+				<input type="hidden" id="removedeviceall_ID" />
+				<div class="action" style="position: absolute;">
+					<ul>
+						<li class="hover" onclick="adddoubdevIntoArea();" id="AddDeviceDouble_ok">添加→</li>
+						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok">一键添加</li>
+						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
+						<li class="hover" onclick="showObjActBox('Add','device');">添加设备</li>
+						<li class="hover" onclick="showObjActBox('Modify','device');">修改设备</li>
+						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok">清空设备</li>
+						<li class="hover" onclick="showObjActBox('Add','group');">添加分组</li>
+						<li class="hover" onclick="searchFlush();">重新搜索</li>
+					</ul>
+				</div>
+				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="clear:both; height:146px;position: absolute;">
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" />全选</td></tr></thead>
+					<tbody>
+						<tr>
+							<td width="80px;">设备IP</td>
+							<td class="aa"><input type="text" id="SearchIP_ID" /></td>
+							<td>子网掩码</td>
+							<td class="aa"><input type="text" id="SearchMask_ID" /></td>
+						</tr>
+						<tr>
+							<td>网关</td>
+							<td><input type="text" id="SearchGateway_ID" /></td>
+							<td>MAC地址</td>
+							<td><input type="text" id="SearchMac_ID" readonly="readonly" /></td>
+						</tr>
+						<tr>
+							<td>端口</td>
+							<td colspan="3"><input type="text" style="width:60px;" id="SearchHttpport_ID" /><input style="color:#ccc;" class="hover iput2" type="button" onclick="setIP()" value="设置"/></td>
+						</tr>
+						<tr>
+							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="批量分配IP" onclick="autoSetIP();" /></td>
+						</tr>
+					</tbody>
+				</table>
+					<div id="left_list" style="position: absolute;">
+					<div class="dev_list" style="height:300px;">
+						<ul class="filetree">
+							<!-- <li><span class="area" id="area_0">区域_root</span>
+								<ul>
+									<li><span class="device" id="dev_1" >device</span>
+										<ul>
+											<li><span class="channel">Channel01</span></li>
+											<li><span class="channel">Channel02</span></li>
+											<li><span class="channel">Channel03</span></li>
+											<li><span class="channel">Channel04</span></li>
+										</ul>
+									</li>
+									<li><span id="area_1" class="area">Area2</span>
+										<ul>
+											<li><span class="device" >device</span>
+												<ul>
+													<li><span class="channel">Channel01</span></li>
+													<li><span class="channel">Channel02</span></li>
+													<li><span class="channel">Channel03</span></li>
+													<li><span class="channel">Channel04</span></li>
+													<li><span class="channel">Channel05</span></li>
+													<li><span class="channel">Channel06</span></li>
+													<li><span class="channel">Channel07</span></li>
+													<li><span class="channel">Channel08</span></li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li> -->
+						</ul>
+						<input type="hidden" id="addchannelingroupdouble_ID" value="">
+					</div>
+					<div class="action" style="height:42px; width:228px;margin:10px 6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;">添加至分组</li><li id="RemoveChannelFromGroup_ok" class="hover">移出分组</li></ul></div>
+					<div class="dev_list" style="height:300px;">
+						<input type="hidden" id="r_chl_group_id_ID" value="" />
+						<ul class="filetree" id="group_0">
+							<!-- <li><span class="group" id="group_0">Group_root</span>
+										<ul>
+										<li><span class="cam">Channel01</span></li>
+										<li><span class="cam">Channel02</span></li>
+										<li><span class="cam">Channel03</span></li>
+										<li><span class="cam">Channel04</span></li>
+										</ul>
+										<li><span class="group" id="group_1">Group2</span>
+											<ul>
+												<li><span class="cam">Channel01</span></li>
+												<li><span class="cam">Channel02</span></li>
+												<li><span class="cam">Channel03</span></li>
+												<li><span class="cam">Channel04</span></li>
+												<li><span class="cam">Channel05</span></li>
+												<li><span class="cam">Channel06</span></li>
+												<li><span class="cam">Channel07</span></li>
+												<li><span class="cam">Channel08</span></li>
+											</ul>
+										</li>
+										</ul>
+									</li> -->		
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="right_content">
+				<ul class="ope_list nav1 dvr_list0" style="margin-right:300px;">
+					<li class="ope_listAct">设备信息</li>
+					<li>常规设置</li>
+					<li>网络设置</li>
+					<li>编码设置</li>
+					<li>视频设置</li>
+					<li>屏幕设置</li>
+					<li>视频检测设置</li>
+					<li>PTZ 设置</li>
+					<li>报警设置</li>
+				</ul>
+				<div class="switch dvr_list"  style="display:block;">
+					<table>
+						<tr><td>设备名</td><td><input type="text" id="Dvr_Device_name" /></td></tr>
+						<tr><td>设备型号</td><td><input type="text" id="Dvr_Device_model" /></td></tr>
+						<tr><td>硬件版本</td><td><input type="text" id="Dvr_Hardware_version" /></td></tr>
+						<tr><td>软件版本</td><td><input type="text" id="Dvr_Software_version" /></td></tr>
+						<tr><td>生成时间</td><td><input type="text" id="Dvr_Build_time" /></td></tr>
+						<tr><td>通道总数</td><td><input type="text" id="Dvr_Sum_of_channels" /></td></tr>
+						<tr><td>通道声音</td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
+						<tr><td>警报输入</td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
+						<tr><td>警报输出</td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+					<table>
+						<tr>
+							<td>日期格式</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_common_date_format"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">YYYY/MM/DD</a></li>
+									<li><a href="javascript:;">MM/DD/YYYY</a></li>
+									<li><a href="javascript:;">DD/MM/YYYY</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td><input id="dvr_common_keypad" type="checkbox" />键盘锁</td><td><input id="dvr_common_key_sound" type="checkbox" />按键音</td></tr>
+						<tr>
+							<td>录像系统</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_common_standard"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">PAL</a></li>
+									<li><a href="javascript:;">NTST</a></li>
+								</ul></td>
+						</tr>
+						<tr>
+							<td>远程控制 No.</td>
+							<td><input type="text" id="dvr_common_dvrid" /></td>
+						</tr>
+						<tr>
+							<td><input id="dvr_common_over_harddisk" type="checkbox" />覆写硬盘</td><td></td>
+						</tr>
+						<tr>
+							<td>OSD 透明度</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_common_OSD_alpha"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+                                    <li><a href="javascript:;">0</a></li>                          
+									<li><a href="javascript:;">1</a></li>
+									<li><a href="javascript:;">2</a></li>
+									<li><a href="javascript:;">3</a></li>
+                                    <li><a href="javascript:;">4</a></li>
+									<li><a href="javascript:;">5</a></li>
+									<li><a href="javascript:;">6</a></li>
+                                    <li><a href="javascript:;">7</a></li>
+									<li><a href="javascript:;">8</a></li>
+									<li><a href="javascript:;">9</a></li>
+                                    <li><a href="javascript:;">10</a></li>
+									<li><a href="javascript:;">11</a></li>
+									<li><a href="javascript:;">12</a></li>
+                                    <li><a href="javascript:;">13</a></li>
+									<li><a href="javascript:;">14</a></li>
+									<li><a href="javascript:;">15</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="2"><input id="dvr_common_autoswi" type="checkbox" />自动轮巡</td></tr>
+						<tr>
+							<td>自动轮巡间隔</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_common_autoswiinterval"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">2s</a></li>
+									<li><a href="javascript:;">3s</a></li>
+									<li><a href="javascript:;">4s</a></li>
+                                    <li><a href="javascript:;">5s</a></li>
+									<li><a href="javascript:;">8s</a></li>
+									<li><a href="javascript:;">10s</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>自动轮巡类型</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_common_autoswimode"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">全屏</a></li>
+									<li><a href="javascript:;">屏幕分割</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover">取消</div><div class="hover" onclick="dvr_common_save_content();">保存</div></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+					<table>
+						<tr><td>MAC 地址</td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
+						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" />OpenDH</td></tr>
+							 		<tr><td >IP 地址</td><td><input id="dvr_ip_addr" type="text"/></td></tr>
+							 		<tr><td>子网掩码</td><td><input id="dvr_subnet_mask" type="text"/></td></tr>
+							 		<tr><td>网络地址</td><td><input id="dvr_network_addr" type="text"/></td></tr>
+							 		<tr><td>DNS 地址</td><td><input id="dvr_dns_addr" type="text"/></td></tr>
+								</table>
+							</td>
+							<td colspan="2" style="padding-left:30px;">
+								<table class="tb1">
+						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" />OpenDD</td></tr>
+						 			<tr><td>提供商</td><td><input id="dvr_supplier" type="text"/></td></tr>
+						 			<tr><td>域名</td><td><input id="dvr_domain" type="text"/></td></tr>
+						 			<tr><td>用户名</td><td><input id="dvr_user_DD" type="text"/></td></tr>
+						 			<tr><td>密码</td><td><input id="dvr_password_DD" type="text"/></td></tr>
+							 	</table>
+							</td>
+						</tr>
+						<tr class="title"><td colspan="2" ><h5>端口</h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+									<tr><td style="width:84px;">网络端口</td><td><input id="dvr_web_port" type="text" /></td></tr>
+									<tr><td style="width:84px;">客户端口</td><td><input id="dvr_client_port" type="text" /></td></tr>
+									<tr><td style="width:84px;">手机端口</td><td><input type="text" /></td></tr>
+								</table>
+							</td>
+							<td colspan="2" style="padding-left:30px;">
+								<table class="tb1">
+									<tr><td colspan="2"><input type="checkbox" />打开PPPOE</td></tr>
+									<tr><td>用户名</td><td><input type="text" /></td></tr>
+									<tr><td>密码</td><td><input type="text" /></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+									<tr style="background:#282828;"><td>易视网ID</td><td><input id="dvr_eseeID" type="text" /></tr>
+								</table>
+							</td>
+							<td colspan="2"></td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="dvr_network_save_content();">保存</div></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+					<table>
+						<tr>
+							<td>通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_enc_chn_sel0"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="dvr_enc_chn_sel" class="option">
+								
+								</ul>
+							</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="title"><td colspan="2"><h5>主码流</h5></td><td style="padding-left:40px;" colspan="2"><h5>子码流</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+								<tr>
+									<td>编码模式</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_main_mode"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">视频流</a></li>
+											<li><a href="javascript:;">音视频流</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>编码格式</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_main_format"><li></li></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul id="dvr_enc_main_format_sel" class="option">
+											<li value="0"><a href="javascript:;">QCIP</a></li>
+											<li value="1"><a href="javascript:;">CIF</a></li>
+											<li value="2"><a href="javascript:;">HD1</a></li>
+                                            <li value="3"><a href="javascript:;">D1</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>图像质量</td>
+									<td>
+										<div class="select" style="width:133px;">
+										<span id="dvr_enc_main_image"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">最高</a></li>
+											<li><a href="javascript:;">高</a></li>
+											<li><a href="javascript:;">适中</a></li>
+                                            <li><a href="javascript:;">低</a></li>
+											<li><a href="javascript:;">最低</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>码流控制</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_main_bitmode"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">可变码率</a></li>
+											<li><a href="javascript:;">固定码率</a></li>
+											<li><a href="javascript:;">适中码率</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>流比特率</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_main_bitvalue"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">64kbps</a></li>
+											<li><a href="javascript:;">128kbps</a></li>
+											<li><a href="javascript:;">256kbps</a></li>
+                                            <li><a href="javascript:;">384kbps</a></li>
+											<li><a href="javascript:;">512kbps</a></li>
+                                            <li><a href="javascript:;">768kbps</a></li>
+                                            <li><a href="javascript:;">1Mbps</a></li>
+                                            <li><a href="javascript:;">1.5Mbps</a></li>
+                                            <li><a href="javascript:;">2Mbps</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>流帧率</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_main_framerate"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">1FPS</a></li>
+											<li><a href="javascript:;">2FPS</a></li>
+											<li><a href="javascript:;">3FPS</a></li>
+                                            <li><a href="javascript:;">5FPS</a></li>
+											<li><a href="javascript:;">8FPS</a></li>
+											<li><a href="javascript:;">10FPS</a></li>
+                                            <li><a href="javascript:;">12FPS</a></li>
+											<li><a href="javascript:;">15FPS</a></li>
+											<li><a href="javascript:;">20FPS</a></li>
+                                            <li><a href="javascript:;">25FPS</a></li>
+										</ul>
+									</td>
+								</tr>
+								</table>
+							</td>
+							<td colspan="2" style="padding-left:40px;">
+								<table class="tb1">
+									<tr>
+										<td>编码模式</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_sub_mode"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">视频流</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>编码格式</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_sub_format"><li></li></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul id="dvr_enc_main_format_sel" class="option">
+											<li><a href="javascript:;">QCIP</a></li>
+											<li><a href="javascript:;">CIF</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>图像质量</td>
+									<td>
+										<div class="select" style="width:133px;">
+										<span id="dvr_enc_sub_image"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">最高</a></li>
+											<li><a href="javascript:;">高</a></li>
+											<li><a href="javascript:;">适中</a></li>
+                                            <li><a href="javascript:;">低</a></li>
+											<li><a href="javascript:;">最低</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>码流控制</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_sub_bitmode"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">可变码率</a></li>
+											<li><a href="javascript:;">固定码率</a></li>
+											<li><a href="javascript:;">适中码率</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>码流比特率</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_sub_bitvalue"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">64kbps</a></li>
+											<li><a href="javascript:;">128kbps</a></li>
+											<li><a href="javascript:;">256kbps</a></li>
+                                            <li><a href="javascript:;">384kbps</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>码流帧率</td>
+									<td>
+										<div class="select" style="width:133px;">
+											<span id="dvr_enc_sub_framerate"></span>
+											<a class="hover" href="javascript:;"></a>
+										</div>
+										<ul class="option">
+											<li><a href="javascript:;">1FPS</a></li>
+											<li><a href="javascript:;">2FPS</a></li>
+											<li><a href="javascript:;">3FPS</a></li>
+                                            <li><a href="javascript:;">5FPS</a></li>
+											<li><a href="javascript:;">8FPS</a></li>
+											<li><a href="javascript:;">10FPS</a></li>
+                                            <li><a href="javascript:;">12FPS</a></li>
+										</ul>
+									</td>
+								</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+						<tr class="title"><td colspan="4"><h5>拷至其它通道</h5></td></tr>
+						<tr>
+						<td colspan="4">
+							<table class="tb1">
+								<tr>
+									<td colspan="4" class="td4 dvr_enc_chn_sel">
+                                        <div><input type="checkbox" /><span>1</span></div>
+                                        <div><input type="checkbox" /><span>2</span></div>
+                                        <div><input type="checkbox" /><span>3</span></div>
+                                        <div><input type="checkbox" /><span>4</span></div>
+                                        <div><input type="checkbox" /><span>5</span></div>
+                                        <div><input type="checkbox" /><span>6</span></div>
+                                        <div><input type="checkbox" /><span>7</span></div>
+                                        <div><input type="checkbox" /><span>8</span></div>
+                                    </td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4 dvr_enc_chn_sel">
+                                        <div><input type="checkbox" /><span>9</span></div>
+                                        <div><input type="checkbox" /><span>10</span></div>
+                                        <div><input type="checkbox" /><span>11</span></div>
+                                        <div><input type="checkbox" /><span>12</span></div>
+                                        <div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+                                    </td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4 dvr_enc_chn_sel">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+                                   </td>
+								</tr>
+								<tr>
+									<td colspan="4" class="td4 dvr_enc_chn_sel">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+									</td>
+								</tr>
+								<tr><td colspan="3"><input class="chk_all" class="chk_all" style="margin:0 4px;" type="checkbox" />所有<td class="tdBtn"><div class="hover chk_all_btn">拷至所有</div></td></tr>
+							</table>
+						</td>
+						</tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');">保存</div></td><td></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+				<table>
+					<tr class="title"><td><h5>常规设置</h5></td><td></td><td></td><td></td></tr>
+					<tr><td colspan="4">
+					<table class="tb1">
+						<tr>
+							<td class="td1">通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span id="dvr_record_chn_sel0"></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul id="dvr_record_chn_sel" class="option">
+                                
+								</ul>
+							</td>
+							<td class="td1">周</td>
+							<td style="width:244px;">
+								<div class="select" style="width:133px;">
+									<span id="dvr_record_week"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="dvr_record_week_sel" class="option" >
+
+								</ul>
+							</td>
+						</tr>
+						<tr><td class="td1"></td><td style="width:200px;">开始时间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结束时间</td><td colspan="2">计时<span style="margin-left:40px;">移动</span><span style="margin-left:40px;">警报</span></td></tr>
+						<tr><td class="td1">时间段 1</td>
+                        <td>
+                            <input id="dvr_record_begin_0" type="text" class="iput1" />
+                            <input id="dvr_record_end_0" type="text" class="iput1" />
+                        </td>
+                        <td colspan="2">
+                            <input id="dvr_record_types_0_0" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox"/>
+                        </td></tr>
+						<tr><td class="td1">时间段 2</td>
+                        <td>
+                            <input id="dvr_record_begin_1" type="text" style="float: left;width:78px;" />
+                            <input id="dvr_record_end_1" type="text" class="iput1" /></td>
+                        <td colspan="2">
+                            <input id="dvr_record_types_1_0" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_1_1" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_1_2" class="chk1" type="checkbox"/></td></tr>
+						<tr><td class="td1">时间段 3</td>
+                        <td>
+                            <input id="dvr_record_begin_2" type="text" style="float: left;width:78px;" />
+                            <input id="dvr_record_end_2" type="text" class="iput1" />
+                        </td>
+                        <td colspan="2">
+                            <input id="dvr_record_types_2_0" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_2_1" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_2_2" class="chk1" type="checkbox"/>
+                        </td></tr>
+						<tr><td class="td1">时间段 4</td>
+                        <td>
+                            <input id="dvr_record_begin_3" type="text" style="float: left;width:78px;" />
+                            <input id="dvr_record_end_3" type="text" class="iput1" />
+                        </td>
+                        <td colspan="2">
+                            <input id="dvr_record_types_3_0" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_3_1" class="chk1" type="checkbox"/>
+                            <input id="dvr_record_types_3_2" class="chk1" type="checkbox"/>
+                        </table>
+						</td></tr>
+						<tr class="title"><td colspan="4"><h5>拷至</h5></td></tr>
+						<tr><td colspan="4">
+						<table class="tb1">
+						<tr><td style="width:582px;" colspan="4">
+                            <input id="dvr_record_weekday_0" class="chk" type="checkbox"/>周日
+                            <input id="dvr_record_weekday_1" class="chk" type="checkbox" />周一
+                            <input id="dvr_record_weekday_2" class="chk" type="checkbox" />周二
+                            <input id="dvr_record_weekday_3" class="chk" type="checkbox" />周三
+                            <input id="dvr_record_weekday_4" class="chk" type="checkbox" />周四
+                            <input id="dvr_record_weekday_5" class="chk" type="checkbox" />周五
+                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" />周六
+                            </td>
+                        </tr>
+						<tr>
+							<td colspan="4" class="td4 dvr_record_chn_sel">
+							<div><input type="checkbox" /><span>1</span></div>
+							<div><input type="checkbox" /><span>2</span></div>
+							<div><input type="checkbox" /><span>3</span></div>
+							<div><input type="checkbox" /><span>4</span></div>
+							<div><input type="checkbox" /><span>5</span></div>
+							<div><input type="checkbox" /><span>6</span></div>
+							<div><input type="checkbox" /><span>7</span></div>
+							<div><input type="checkbox" /><span>8</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4 dvr_record_chn_sel">
+							<div><input type="checkbox" /><span>9</span></div>
+							<div><input type="checkbox" /><span>10</span></div>
+							<div><input type="checkbox" /><span>11</span></div>
+							<div><input type="checkbox" /><span>12</span></div>
+							<div><input type="checkbox" /><span>13</span></div>
+							<div><input type="checkbox" /><span>14</span></div>
+							<div><input type="checkbox" /><span>15</span></div>
+							<div><input type="checkbox" /><span>16</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4 dvr_record_chn_sel">
+							<div><input type="checkbox" /><span>17</span></div>
+							<div><input type="checkbox" /><span>18</span></div>
+							<div><input type="checkbox" /><span>19</span></div>
+							<div><input type="checkbox" /><span>20</span></div>
+							<div><input type="checkbox" /><span>21</span></div>
+							<div><input type="checkbox" /><span>22</span></div>
+							<div><input type="checkbox" /><span>23</span></div>
+							<div><input type="checkbox" /><span>24</span></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="td4 dvr_record_chn_sel">
+							<div><input type="checkbox" /><span>25</span></div>
+							<div><input type="checkbox" /><span>26</span></div>
+							<div><input type="checkbox" /><span>27</span></div>
+							<div><input type="checkbox" /><span>28</span></div>
+							<div><input type="checkbox" /><span>29</span></div>
+							<div><input type="checkbox" /><span>30</span></div>
+							<div><input type="checkbox" /><span>31</span></div>
+							<div><input type="checkbox" /><span>32</span></div>
+							</td>
+						</tr>
+                        <tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" />所有<td class="tdBtn"><div class="hover chk_all_btn">拷至所有</div></td></tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_record_chn_sel');">保存</div></td></tr>
+					</table>
+					</td></tr>
+
+				</table>
+				</div>
+				<div class="switch dvr_list">
+					<table>
+						<tr>
+							<td>通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span id="dvr_screen_chn_sel0"></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul id="dvr_screen_chn_sel" class="option">
+							
+								</ul>
+							</td>
+						</tr>
+						<tr><td>名字</td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
+						<tr><td colspan="2" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="dvr_screen_save_content()">保存</div></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+					<table class="tb1">
+						<tr>
+							<td>通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_ptz_chn_sel0"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="dvr_ptz_chn_sel" class="option">
+
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td>设备地址</td><td colspan="2"><input id="dvr_ptz_device_addr" type="text"  style="width:133px;"/></td></tr>
+						<tr>
+							<td>协议</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span id="dvr_ptz_agreement"></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">pelco-D</a></li>
+									<li><a href="javascript:;">pelco-P</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>波特率</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span id="dvr_ptz_baud_rate"></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;">2400</a></li>
+									<li><a href="javascript:;">4800</a></li>
+									<li><a href="javascript:;">9600</a></li>
+                                    <li><a href="javascript:;">19200</a></li>
+									<li><a href="javascript:;">38400</a></li>
+									<li><a href="javascript:;">57600</a></li>
+                                    <li><a href="javascript:;">115200</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
+						<tr class="title"><td colspan="4"><h5>拷至其它通道</h5></td></tr>
+						<tr>
+							<td colspan="4">
+								<table class="tb1">
+									<tr>
+										<td colspan="4" class="td4 dvr_ptz_chn_sel">
+										<div><input type="checkbox" /><span>1</span></div>
+										<div><input type="checkbox" /><span>2</span></div>
+										<div><input type="checkbox" /><span>3</span></div>
+										<div><input type="checkbox" /><span>4</span></div>
+										<div><input type="checkbox" /><span>5</span></div>
+										<div><input type="checkbox" /><span>6</span></div>
+										<div><input type="checkbox" /><span>7</span></div>
+										<div><input type="checkbox" /><span>8</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_ptz_chn_sel">
+										<div><input type="checkbox" /><span>9</span></div>
+										<div><input type="checkbox" /><span>10</span></div>
+										<div><input type="checkbox" /><span>11</span></div>
+										<div><input type="checkbox" /><span>12</span></div>
+										<div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_ptz_chn_sel">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_ptz_chn_sel">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+										</td>
+									</tr>
+									<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" />所有<td></td><td class="tdBtn"><div class="hover chk_all_btn">拷至所有</div></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>数据率</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
+						<tr>
+							<td>停止位</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>奇偶校验</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_ptz_chn_sel');">保存</div></td></tr>
+					</table>
+				</div>
+				<div class="switch dvr_list">
+					<table>
+						<tr>
+							<td class="td1">通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+								<span id="dvr_detect_chn_sel0"></span>
+								<a class="hover" href="javascript:;"></a></div>
+								<ul id="dvr_detect_chn_sel" class="option">
+									
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="td1">灵敏度</td>
+								<td style="width:278px;">
+                                    <div class="select" style="width:133px;">
+                                    <span id="dvr_detect_sens"></span>
+                                    <a class="hover" href="javascript:;"></a></div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">最高</a></li>
+                                        <li><a href="javascript:;">高</a></li>
+                                        <li><a href="javascript:;">适中</a></li>
+                                        <li><a href="javascript:;">低</a></li>
+                                        <li><a href="javascript:;">最低</a></li>
+                                    </ul>
+                                </td>
+							<td></td>
+						</tr>
+						<tr class="title"><td colspan="3"><h5>移动侦测</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1">持续时间</td>
+									<td style="width:278px;">
+										<div class="select" style="width:133px;">
+										<span id="dvr_detect_mduration"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">1s</a></li>
+											<li><a href="javascript:;">2s</a></li>
+											<li><a href="javascript:;">3s</a></li>
+                                            <li><a href="javascript:;">4s</a></li>
+											<li><a href="javascript:;">5s</a></li>
+											<li><a href="javascript:;">8s</a></li>
+                                            <li><a href="javascript:;">10s</a></li>
+											<li><a href="javascript:;">连续</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_mAlarm" type="checkbox" />警报<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" />蜂鸣器<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/>屏幕显示</td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="title"><h5>视频丢失</h5></td></tr>
+						<tr><td colspan="3">
+							<table class="tb1">
+								<tr>
+									<td class="td1">持续时间</td>
+									<td style="width:262px;">
+										<div class="select" style="width:133px;">
+										<span id="dvr_detect_vduration"></span>
+										<a class="hover" href="javascript:;"></a></div>
+										<ul class="option">
+											<li><a href="javascript:;">1s</a></li>
+											<li><a href="javascript:;">2s</a></li>
+											<li><a href="javascript:;">3s</a></li>
+                                            <li><a href="javascript:;">4s</a></li>
+											<li><a href="javascript:;">5s</a></li>
+											<li><a href="javascript:;">8s</a></li>
+                                            <li><a href="javascript:;">10s</a></li>
+											<li><a href="javascript:;">连续</a></li>
+										</ul>
+									</td>
+								</tr>
+								<tr><td colspan="3" style="text-indent:16px;"><input id="dvr_detect_vAlarm" type="checkbox" />警报<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" />蜂鸣器<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/>屏幕显示</td></tr>
+							</table>
+						</td></tr>
+						<tr class="title"><td colspan="4"><h5>拷至其它</h5></td></tr>
+						<tr><td colspan="3">
+								<table class="tb1">
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>1</span></div>
+									<div><input type="checkbox" /><span>2</span></div>
+									<div><input type="checkbox" /><span>3</span></div>
+									<div><input type="checkbox" /><span>4</span></div>
+									<div><input type="checkbox" /><span>5</span></div>
+									<div><input type="checkbox" /><span>6</span></div>
+									<div><input type="checkbox" /><span>7</span></div>
+									<div><input type="checkbox" /><span>8</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>9</span></div>
+									<div><input type="checkbox" /><span>10</span></div>
+									<div><input type="checkbox" /><span>11</span></div>
+									<div><input type="checkbox" /><span>12</span></div>
+									<div><input type="checkbox" /><span>13</span></div>
+									<div><input type="checkbox" /><span>14</span></div>
+									<div><input type="checkbox" /><span>15</span></div>
+									<div><input type="checkbox" /><span>16</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>17</span></div>
+									<div><input type="checkbox" /><span>18</span></div>
+									<div><input type="checkbox" /><span>19</span></div>
+									<div><input type="checkbox" /><span>20</span></div>
+									<div><input type="checkbox" /><span>21</span></div>
+									<div><input type="checkbox" /><span>22</span></div>
+									<div><input type="checkbox" /><span>23</span></div>
+									<div><input type="checkbox" /><span>24</span></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="td4 dvr_detect_chn_sel">
+									<div><input type="checkbox" /><span>25</span></div>
+									<div><input type="checkbox" /><span>26</span></div>
+									<div><input type="checkbox" /><span>27</span></div>
+									<div><input type="checkbox" /><span>28</span></div>
+									<div><input type="checkbox" /><span>29</span></div>
+									<div><input type="checkbox" /><span>30</span></div>
+									<div><input type="checkbox" /><span>31</span></div>
+									<div><input type="checkbox" /><span>32</span></div>
+									</td>
+								</tr>
+								<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" />所有<td></td><td class="tdBtn"><div class="hover chk_all_btn">拷至所有</div></td></tr>
+							</table>
+						</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');">保存</div></td></tr>
+					</table>
+				</div>	
+				<div class="switch dvr_list">
+					<table class="tb1">
+						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" />警报</td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/>蜂鸣器</td></tr>
+						<tr>
+							<td>通道</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="dvr_alarm_chn_sel0"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="dvr_alarm_chn_sel" class="option">
+									
+								</ul>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>操作模式</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+                                    <span id="dvr_alarm_opermode"></span>
+                                    <a class="hover" href="javascript:;"></a></div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">关闭</a></li>
+                                        <li><a href="javascript:;">正常打开</a></li>
+                                        <li><a href="javascript:;">正常关闭</a></li>
+                                    </ul>
+                                </td>
+						</tr>
+						<tr>
+							<td>警报持续时间</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span id="dvr_alarm_duration"></span>
+                                    <a class="hover" href="javascript:;"></a></div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">1s</a></li>
+                                        <li><a href="javascript:;">2s</a></li>
+                                        <li><a href="javascript:;">3s</a></li>
+                                        <li><a href="javascript:;">4s</a></li>
+                                        <li><a href="javascript:;">5s</a></li>
+                                        <li><a href="javascript:;">8s</a></li>
+                                        <li><a href="javascript:;">10s</a></li>
+                                        <li><a href="javascript:;">连续</a></li>
+                                    </ul>
+                                </td>
+						</tr>
+						<tr><td><input type="checkbox" />SOD</td><td colspan="2"><input type="checkbox"/>邮件警报</td></tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
+						<tr class="title"><td colspan="4"><h5>拷至其它通道</h5></td></tr>
+						<tr>
+							<td colspan="4">
+								<table class="tb1">
+									<tr>
+										<td colspan="4" class="td4 dvr_alarm_chn_sel">
+										<div><input type="checkbox" /><span>1</span></div>
+										<div><input type="checkbox" /><span>2</span></div>
+										<div><input type="checkbox" /><span>3</span></div>
+										<div><input type="checkbox" /><span>4</span></div>
+										<div><input type="checkbox" /><span>5</span></div>
+										<div><input type="checkbox" /><span>6</span></div>
+										<div><input type="checkbox" /><span>7</span></div>
+										<div><input type="checkbox" /><span>8</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_alarm_chn_sel">
+										<div><input type="checkbox" /><span>9</span></div>
+										<div><input type="checkbox" /><span>10</span></div>
+										<div><input type="checkbox" /><span>11</span></div>
+										<div><input type="checkbox" /><span>12</span></div>
+										<div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_alarm_chn_sel">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4 dvr_alarm_chn_sel">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+										</td>
+									</tr>
+									<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" />所有<td></td><td class="tdBtn"><div class="hover chk_all_btn">拷至所有</div></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');">保存</div></td></tr>
+					</table>
+				</div>
+				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
+					<ul class="filetree">
+						<!-- <li><span class="device">dvr</span>
+							<ul>
+								<li><span class="channel">Channel01</span></li>
+								<li><span class="channel">Channel02</span></li>
+								<li><span class="channel">Channel03</span></li>
+								<li><span class="channel">Channel04</span></li>
+							</ul>
+						</li>
+						<li><span class="device" >ipc</span>
+							<ul>
+								<li><span class="channel">Channel01</span></li>
+								<li><span class="channel">Channel02</span></li>
+								<li><span class="channel">Channel03</span></li>
+								<li><span class="channel">Channel04</span></li>
+								<li><span class="channel">Channel05</span></li>
+								<li><span class="channel">Channel06</span></li>
+								<li><span class="channel">Channel07</span></li>
+								<li><span class="channel">Channel08</span></li>
+							</ul>
+						</li>-->
+					</ul>
+				</div>
+				<ul class="ope_list nav1 ipc_list0" style="margin-right:300px; display:none;">
+					<li class="ope_listAct">设备信息</li>
+					<li>编码设置</li>
+					<li>网络设置</li>
+					<li>用户设置</li>
+					<li>时间设置</li>
+                    <li>初始化设置</li>
+				</ul>
+                <div class="switch ipc_list"  style="display:none;">
+					<table>
+						<tr><td>设备名</td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>设备型号</td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>硬件版本</td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>软件版本</td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>生成时间</td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>警报数</td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td>SD 数</td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
+					</table>
+				</div>
+                <div class="switch ipc_list">
+					<table>
+						<tr>
+							<td>码流</td>
+							<td>
+								<div class="select" style="width:133px;" id="encode_id">
+									<span id="ipc_enc_stream">101</span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_stream_sel" class="option">
+									<li><a href="javascript:;">101</a></li>
+									<li><a href="javascript:;">102</a></li>
+									<li><a href="javascript:;">103</a></li>
+								</ul>
+							</td><td></td>
+						</tr>
+						<tr><td>通道名</td><td><input id="ipc_enc_channelname" onKeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><div onClick="deviceName_load();" class="hover">拷贝</div></td></tr>
+                        <tr>
+							<td>分辨率</td>
+							<td id="ipc_enc_freeResolution_0">
+								<div class="select" style="width:133px;">
+									<span id="ipc_enc_resolution"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_resolution_sel" class="option">
+									
+								</ul>
+							</td>
+                            <td id="ipc_enc_freeResolution_1" style="display:none;">
+								<input id="ipc_enc_resolutionWidth" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />X   
+                                <input id="ipc_enc_resolutionHeight" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />
+							</td>
+                            <td><input id="ipc_enc_freeResolution" type="checkbox" />定义分辨率</td></td>
+						</tr>
+                    	<tr>
+							<td>比特率控制类型</td>
+							<td>
+								<div class="select" style="width:133px;">
+									<span id="ipc_enc_BitRateControlType"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul id="ipc_enc_BitRateControlType_sel" class="option">
+									<li><a href="javascript:;">不变</a></li>
+									<li><a href="javascript:;">可变</a></li>
+								</ul>
+							</td><td></td>
+						</tr>
+                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
+                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
+                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover">取消</div><div class="hover" onclick="encode_save_content();">保存</div></td></tr>
+                        </table>
+                  </div>
+                <div class="switch ipc_list">
+                	<table>
+                    	<tr><td>MAC 地址</td><td><input id="network_mac" type="text" onFocus="save_mac_value()" onChange="is_valid_mac()"/></td><td></td><td></td></tr>
+						<tr class="title"><td colspan="2"><h5>本地</h5></td><td style="padding-left:30px;" colspan="2"><h5>远程</h5></td></tr>
+						<tr>
+							<td colspan="2">
+								<table class="tb1">
+                                	
+							 		<tr><td>DHCP 状态</td><td>
+                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" />打开
+                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked />关闭</td></tr>
+                                    <tr><td>易视网状态</td><td>
+                                    <input name="esee" type="radio" id="network_esee_1" />打开
+                                    <input name="esee" type="radio" id="network_esee_0" checked />关闭</td></tr>
+							 		<tr><td >IP 地址</td>
+                                    <td><input id="network_ip" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/>
+                                    </td></tr>
+							 		<tr><td>网关</td>
+                                    <td><input id="network_gateway" type="text" onChange="is_valid_ip('network_gateway')" onFocus="save_ipaddr('network_gateway')"/></td></tr>
+							 		<tr><td>网络掩码</td>
+                                    <td><input id="network_submask" type="text" onChange="is_valid_ip('network_submask')" onFocus="save_ipaddr('network_submask')"/></td></tr>
+							 		<tr><td>优先 DNS</td>
+                                    <td><input id="network_dns" type="text" onChange="is_valid_ip('network_dns')" onFocus="save_ipaddr('network_dns')"/></td></tr>
+                                    <tr><td>备用 DNS</td>
+                                    <td><input id="network_dns2" type="text" onChange="is_valid_ip('network_dns2')" onFocus="save_ipaddr('network_dns2')"/></td></tr>
+                                    <tr><td>端口</td>
+                                    <td><input id="network_port" type="text" onChange="is_valid_port()" onFocus="save_port()"/></td></tr>
+								</table>
+							</td>
+							<td colspan="2" style="padding-left:30px;">
+								<table class="tb1">
+						 			<tr><td>DDNS 状态</td><td>
+                                    <input name="ddns" type="radio" id="network_ddns_1" onClick="remote_change();" />打开
+                                    <input name="ddns" type="radio" id="network_ddns_0" onClick="remote_change();" checked />关闭
+                                    </td></tr>
+						 			<tr><td>服务器</td><td>
+                                    <div class="select" style="width:149px;">
+                                        <span id="remote_provider">dyndns</span>
+                                        <a class="hover" href="javascript:;"></a>
+                                    </div>
+                                    <ul class="option">
+                                        <li><a href="javascript:;">dyndns</a></li>
+                                        <li><a href="javascript:;">noip</a></li>
+                                        <li><a href="javascript:;">3322</a></li>
+                                        <li><a href="javascript:;">changeip</a></li>
+                                        <li><a href="javascript:;">popdvr</a></li>
+                                        <li><a href="javascript:;">skybest</a></li>
+                                        <li><a href="javascript:;">dvrtop</a></li>  
+                                    </ul>
+                                    </td></tr>
+						 			<tr><td>域名</td><td><input type="text" id="networkddns_url" /></td></tr>
+						 			<tr><td>用户名</td><td><input type="text" id="networkddns_usr" /></td></tr>
+						 			<tr><td>密码</td><td><input type="text" id="networkddns_pwd" /></td></tr>
+                                    <tr><td>PPPoE 状态</td><td>
+                                    <input name="pppoe" type="radio" id="network_pppoe__1" onClick="remote_change();" />打开
+                                    <input name="pppoe" type="radio" id="network_pppoe__0" onClick="remote_change();" checked />关闭
+                                    </td></tr>
+                                    <tr><td>用户名</td><td><input type="text" id="network_ppoe_usr"/></td></tr>
+						 			<tr><td>密码</td><td><input type="text" id="network_ppoe_pwd"/></td></tr>
+							 	</table>
+							</td>
+						</tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="remote_save_content();">保存</div></td></tr>
+					</table>
+                </div>
+                <div class="switch ipc_list">
+                    <table id="tbl_user_manage">
+                        <tr><td>用户名</td><td>权限</td><td>操作</td></tr>
+                    </table>
+                            <table id="tbl_user_manage1">
+                            <tr>
+                                <td class="tdBtn">
+                                    <div class="hover" onClick="user_management_load_content()">update_list</div>
+                                    <div class="hover" id="add_user_button" onClick="user_management_prepare_add()">adduser</div>
+                                    <div class="hover" onClick="user_management_prepare_modify()">changepwd</div>	
+                                        
+                            <table id="tbl_add_user" class="add_tb">
+                            <tr>
+                                <td>用户名</td>
+                                <td><input type="text" id="txt_new_usr"  onBlur="user_management_save_new_usr()"/></td>
+                            </tr>
+                            <tr>
+                                <td>密码</td>
+                                <td><input type="password" id="txt_new_pwd" /></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="hover" onClick="user_management_save_new_usr()">保存</div>
+                                    <div class="hover" onClick="user_management_prepare_cancel()">取消</div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tbl_modify_pwd" class="add_tb">
+                            <tr><td>旧密码</td><td><input type="password" id="txt_old_pwd" /></td></tr>
+                            <tr><td>新密码</td><td><input type="password" id="txt_modify_pwd" /></td> </tr>
+                            <tr><td>确认密码</td><td><input type="password" id="txt_repeat_pwd" /> </td></tr>
+                            <tr><td colspan="2">
+                                    <div class="hover" onClick="user_management_prepare_save_modify_usr()">保存</div>
+                                    <div class="hover" onClick="user_management_prepare_cancel()">取消</div></td></tr>
+                        </table>						
+                        </td>
+                    </tr>
+                </table>
+                </div>
+	
+                <div class="switch ipc_list">
+				<table>
+					<tr><td>设备时间</td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
+                    <tr><td>时间格式</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span class="date_form" onChange="showtime();"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">YMD: xxxx xx xx</a></li>
+									<li><a href="javascript:;">MDY: xx xx xxxx</a></li>
+									<li><a href="javascript:;">DMY: xx xx xxxx</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>时间分隔符</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="date_break" onChange="showtime();"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">xxxx-xx-xx</a></li>
+									<li><a href="javascript:;">xxxx/xx/xx</a></li>
+									<li><a href="javascript:;">xxxx.xx.xx</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>时区</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="time_zone">GMT-12:00</span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">1</a></li>
+									<li><a href="javascript:;">2</a></li>
+									<li><a href="javascript:;">1</a></li>
+									<li><a href="javascript:;">2</a></li>
+									<li><a href="javascript:;">3</a></li>
+                                    <li><a href="javascript:;">3</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td>夏令时</td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
+                    <tr><td>手动设置</td><td></td><td></td></tr>
+                    <tr><td>日期</td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
+                    <tr><td>时间</td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()">好</div></td></tr>
+                    <tr><td>本地时间同步</td><td></td><td></td></tr>
+                    <tr><td>计算机时间</td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()">同步</div></td></tr>
+                    <tr><td>Internet时间同步</td><td></td><td></td></tr>
+                    <tr><td>Internet服务器同步状态</td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" />打开<input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked />关闭</td><td></td></tr>
+                    <tr><td>Internet服务器</td><td>
+                    	<div class="select" style="width:149px;">
+                                <span id="time_ntp__server" name="ntp_server"></span>
+                                <a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" >
+									<li><a href="javascript:;">time.window.com</a></li>
+									<li><a href="javascript:;">time.nist.gov</a></li>
+								</ul>
+                    </td><td></td></tr>
+                    <tr><td colspan="4" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="time_save_content();">保存</div></td></tr>
+				</table>
+                </div>
+                <div class="switch ipc_list">
+					<table>
+						<tr><td>点击下面的按钮来重启IP 摄像机.</td><td  class="tdBtn"><div class="hover" onClick="reboot()">正在重启...</div></td></tr>
+                        <tr><td>点击下面的按钮来恢复出厂设置.注意:它将自动重启!</td><td class="tdBtn"><div class="hover" onClick="default_setting()">还原</div></td></tr>
+                       <!-- <tr><td>Please click button below to select Upgrade File and then perform upgrade</td>
+                        <td>
+                        <div id="swfupload-control"></div>
+                            <span id="txt_status"></span><span id="txt_progress"></span><input type="button" id="button_upload" /><br />
+                            <span id="txt_upgrade_status"></span><span id="txt_upgrade_progress"></span>
+                        </td></tr>-->
+                    </table>
+                </div>
+			</div>
+			<div class="right_content">
+				<ul class="ope_list nav1">
+					<li class="ope_listAct" onclick="FillCommonParmData();">本地设置</li>
+					<li onclick="FillRecordTimeData();">录像设置</li>
+					<li onclick="FillStorageParmData();">存储设置</li>
+				</ul>
+				<div id="CommonParm" class="switch" style="display:block;">
+					<table>
+						<tr><td></td><td></td><td></td></tr>
+						<tr>
+							<td>语言</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+									<span class="Language"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<input type="hidden" id="Language_ID" />
+									<li value="zh_CN"><a href="javascript:;">中文</a></li>
+									<!-- <li value="en_GB"><a href="javascript:;">English</a></li> -->
+								</ul>
+							</td>
+						</tr>
+						<tr><td>自动轮巡时间</td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
+						<!-- <tr><td>Screenshot save location</td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
+						<tr>
+							<td>默认屏幕分割模式</td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+									<span class="SplitScreenMode"></span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option" id="viewMod">
+									<input id="SplitScreenMode_ID" type="hidden" />
+									<li value="div1_1"><a>1分屏</a></li>
+									<li value="div2_2"><a>4分屏</a></li>
+									<li value="div6_1"><a>6分屏</a></li>
+									<li value="div8_1"><a>8分屏</a></li>
+									<li value="div3_3"><a>9分屏</a></li>
+									<li value="div4_4"><a>16分屏</a></li>
+									<li value="div5_5"><a>25分屏</a></li>
+									<li value="div7_7"><a>49分屏</a></li>
+									<li value="div8_8"><a>64分屏</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoLogin_ID">自动登录</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoSyncTime_ID">自动同步时间</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID">自动连接设备</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID">自动全屏</td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID">开机启动</td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok">保存</div></td></tr>
+					</table>
+				</div>
+				<div id="RecordTime" class="switch">
+					<div style="height:400px; width:230px; overflow: auto; background:#E4EBF4; float:left; margin-right:20px;" class="dev_list" >
+						<ul class="filetree">
+						</ul>	
+
+					</div>
+					<table style="float:left" id="recordtime">
+						<tr>
+							<td class="td1" style="text-align:right;">周</td>
+							<td class="td2">
+								<div class="select" style="width:60px;">
+									<span id="week" value="">星期一</span>
+									<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option week">
+									<li><a>星期一</a></li>
+									<li><a>星期二</a></li>
+									<li><a>星期三</a></li>
+									<li><a>星期四</a></li>
+									<li><a>星期五</a></li>
+									<li><a>星期六</a></li>
+									<li><a>星期日</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr><td class="td1"><input type="checkbox">时间1</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">时间2</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">时间3</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox">时间4</td><td class="td2"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr>
+							<td class="td1">拷至</td>
+							<td class="td2">
+								<div class="select" style="width:133px;">
+										<span></span>
+										<a class="hover" href="javascript:;"></a>
+								</div>
+								<ul class="option">
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+									<li><a href="javascript:;"></a></li>
+								</ul>
+							</td>
+							<input type="hidden" value="" id="recordtimedouble_ID" />
+						</tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingRecordDoubleTimeParm_ok">保存</div><div class="hover">取消</div></td></tr>
+					</table>
+				</div>
+				<div id="StorageParm" class="switch">
+					<table><tr><td class="td1">磁盘</td><td style="width:450px;"><table class="tb1" style="padding:10px">
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" value="D" disabled="disable" /><span>D</span></div>
+										<div><input type="checkbox" value="E" disabled="disable"/><span>E</span></div>
+										<div><input type="checkbox" value="F" disabled="disable"/><span>F</span></div>
+										<div><input type="checkbox" value="G" disabled="disable"/><span>G</span></div>
+										<div><input type="checkbox" value="H" disabled="disable"/><span>H</span></div>
+										<div><input type="checkbox" value="I" disabled="disable"/><span>I</span></div>
+										<div><input type="checkbox" value="J" disabled="disable"/><span>J</span></div>
+										<div><input type="checkbox" value="K" disabled="disable"/><span>K</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" value="L" disabled="disable"/><span>L</span></div>
+										<div><input type="checkbox" value="M" disabled="disable"/><span>M</span></div>
+										<div><input type="checkbox" value="N" disabled="disable"/><span>N</span></div>
+										<div><input type="checkbox" value="O" disabled="disable"/><span>O</span></div>
+										<div><input type="checkbox" value="P" disabled="disable"/><span>P</span></div>
+										<div><input type="checkbox" value="Q" disabled="disable"/><span>Q</span></div>
+										<div><input type="checkbox" value="R" disabled="disable"/><span>R</span></div>
+										<div><input type="checkbox" value="S" disabled="disable"/><span>S</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4" class="td4">
+										<div><input type="checkbox" value="T" disabled="disable"/><span>T</span></div>
+										<div><input type="checkbox" value="U" disabled="disable"/><span>U</span></div>
+										<div><input type="checkbox" value="V" disabled="disable"/><span>V</span></div>
+										<div><input type="checkbox" value="X" disabled="disable"/><span>X</span></div>
+										<div><input type="checkbox" value="Y" disabled="disable"/><span>Y</span></div>
+										<div><input type="checkbox" value="Z" disabled="disable"/><span>Z</span></div>
+										</td>
+									</tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" onclick="disksSelectAll()" />所有<td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr><td>文件大小</td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td>循环录像</td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:10px" /></td></tr>
+						<tr><td>磁盘预留空间</td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingStorageParm_ok">保存</div></td></tr>
+					</table>
+				</div>
+			</div>
+			<div style="position: relative;" class="right_content">
+			<table id="UserMan">
+				<tr>
+					<td style="width:300px;">
+						<table class="tb2 UserMan" style="position: absolute; top:0; left:0; margin:6px;">
+							<thead>
+								<tr><td style="width:30px;">序号</td><td style="width:110px;">用户名</td><td style="width:144px;">权限等级</td></tr>
+							</thead>
+							<tbody>
+								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="username_list_ID"/></td></tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<div class="userManagement">
+							<ul>
+								<li>NetMonitor</li>
+								<li>PTZcontrol</li>
+								<li>videoePlayBack</li>
+								<li>LocalRecord</li>
+								<li>LogSearch</li>
+								<li>VOIP</li>
+								<li>RemoteParam</li>
+							</ul>
+						</div>
+					</td>
+					</tr>
+				<tr>
+					<td></td>
+					<td>
+						<ul class="tdBtn user">
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')">添加用户</div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')">修改用户</div></li>
+							<li><div class="hover" id="DeleteUser_ok">删除用户</div></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<div id="foot"></div>
+</body>
+</html>
