@@ -417,14 +417,13 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 		str = 'Null';
 	$('#test').html('');
 	if(typeof(data) == 'number' || typeof(data) == 'string'){
-		$('<p><span>'+index+'</span>:<span>"'+data+'"/</span></p>').prependTo($('#test'));
+		$('<span>'+index+'</span>:<span>"'+data+'"/</span>').prependTo($('#test'));
 	}else{
 		for(i in data){ 
 			index = i;
 			str = data[i];
-			$('<p>'+index+'</span>:<span>'+str+'/</span></p>').prependTo($('#test'));
+			$('<p>'+index+'</span>:<span>'+str+'/</span></p><hr />').prependTo($('#test'));
 		}
-		$('<hr />').prependTo('#test');
 	}
 }
 //弹出框部分操作

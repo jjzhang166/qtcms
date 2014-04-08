@@ -38,8 +38,8 @@ var	nViewNum = 0,
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
 			berorSerchShowHint($(this));
-			searchVideo();
 			PBrecFileTableInit();
+			searchVideo();
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -220,6 +220,7 @@ var	nViewNum = 0,
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
+			//debugData(begin+'//'+end);
 			setDevData2ocx();
 		if(bool){
 			$("#channelvideo").find('input:checkbox').each(function(index){
@@ -323,13 +324,10 @@ var	nViewNum = 0,
 				filepathArr.sort(SortByfileTime).join(',');
 			oChannel.data('filepath',filepathArr);			
 		}
-		//alert(data.type+'+'+data.channel);
 		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 		if(!bool){
 			showRecProgress(parseInt(data.index)+1);	
 		}
-		/*$('<div class="video" style="background:#F78445;left:100px; width:60px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(data.channel))+')');*/
-
 	}
 	function SortByfileTime(a,b){  //文件路径时间升序排列
 		var reg = /.*?(\d{6})\.avi/g;

@@ -559,5 +559,4 @@ function setDevData2ocx(){
 	}
 	function RecfinishCallback(data){
 		recTotal = data.total ? data.total : 0;	
-		
 	}
