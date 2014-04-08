@@ -99,6 +99,7 @@ private:
 	void initDeviceInfo();
 	void translateUi();
 	QString GetlanguageLable(QString);
+	void SaveToDatobase();
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();

@@ -602,9 +602,11 @@ void QSubView::OnSwitchStreamFromMouseEv()
 		{
 			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,1,true);
 			m_DevCliSetInfo.m_uiStreamId=1;
+			SaveToDatobase();
 		}else{
 			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,0,true);
 			m_DevCliSetInfo.m_uiStreamId=0;
+			SaveToDatobase();
 	}
 	}
 }
@@ -1408,7 +1410,6 @@ void QSubView::LoadLanguage(QString label)
 	{
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QString path = sAppPath + "/LocalSetting";
-
 		_translator->load(GetlanguageLable(label),path);
 	}
 }
@@ -1433,5 +1434,17 @@ QString QSubView::GetlanguageLable(QString label)
 		}
 	}
 	return sFileName;
+}
+
+void QSubView::SaveToDatobase()
+{
+	IChannelManager *pChannelManager=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void**)&pChannelManager);
+	if (NULL!=pChannelManager)
+	{
+		pChannelManager->ModifyChannelStream(m_DevCliSetInfo.m_uiChannelIdInDataBase,m_DevCliSetInfo.m_uiStreamId);
+		pChannelManager->Release();
+		pChannelManager=NULL;
+	}
 }
 
