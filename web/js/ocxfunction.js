@@ -439,23 +439,16 @@ function setDevData2ocx(){
 		}
 		return b;
 	}
-  	function berorSerchShowHint(obj) {
+  	function berorSerchShowHint() {
   		$('#fileRec').show().find('span').width(0)
 					 .end().find('h5').html('0/0')
 					 .end().find('h4').html('正在检索:');
-		$('div.dev_list li').removeClass('sel');
-		obj.addClass('sel');
 		if(getAudioObj().id=='playbackLocl'){
 			$('#fileRec').hide();
 		}
   	}
 	function searchVideo(){
-		var seletDev = $('div.dev_list li.sel');
-		if(seletDev.length == 0){
-			$('div.dev_list li:eq(1)').addClass('sel');
-			try{PBrecFileTableInit();}catch(e){}
-		}
-		$('#channelvideo div.video').remove();
+		
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -490,7 +483,6 @@ function setDevData2ocx(){
 			}
 		});	
 		}*/
-		ocxsearchVideo();
 	}
 	var typeHint = [];
 		typeHint[1] = '定时';
@@ -499,17 +491,14 @@ function setDevData2ocx(){
 		typeHint[8] = '手动';
 		typeHint[15] = '全部';
 	function ocxsearchVideo(){
-		try{
-			recTotal = 0;
-			$('tbody.search_result tr').filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-			oPlayBack.GroupStop();
-			oPlaybackLocl.GroupStop();
-			dragStopMove();
-		}catch(e){
-			//alert('try:'+e);
+		recTotal = 0;
+		
+		berorSerchShowHint();
+		
+		if(!$('div.dev_list li.sel')[0]){
+			$('div.dev_list li:eq(1)').addClass('sel');
 		}
+
 		var devData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
 		var type = $('#type span').attr('value') || 0;
 			type = type == 0 ? 15 : 1 << type;

@@ -35,14 +35,10 @@ var	nViewNum = 0,
 		})
 
 		var listParent = $('div.dev_list');
-		/*listParent.on('click','li:has(span.device):gt(0)',function(){  //设备单击初始化部分样式
-		})*/
+
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
-			recFile=[];
-			berorSerchShowHint($(this));
-			PBrecFileTableInit();
-			searchVideo();
+			playBackSerchFile()
 		})
 
 		listParent.on('click','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
@@ -409,4 +405,13 @@ var	nViewNum = 0,
 			bNoResize=true;
 			dragStartMove();
 		},200);
+	}
+	function playBackSerchFile(){
+		recFile=[];
+		PBrecFileTableInit();
+		$('#channelvideo div.video').remove();
+		oPlayBack.GroupStop();
+		oPlaybackLocl.GroupStop();
+		dragStopMove();
+		ocxsearchVideo();
 	}

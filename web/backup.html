@@ -32,8 +32,12 @@ var now = 0;
 		})*/
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
-			berorSerchShowHint($(this));
-			searchVideo();
+			backupSearchFile();
+		})
+		
+		listParent.on('click','li:has(span.device):gt(0)',function(){
+			listParent.find('li:has(span.device):gt(0)').removeClass('sel');
+			$(this).addClass('sel');
 		})
 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
@@ -175,6 +179,12 @@ var now = 0;
 	function backupstop(){
 		oBackup.stopBackup()
 	}
+	function backupSearchFile(){
+		$('tbody.search_result tr').filter(function(){
+			return !$(this).find(':checkbox').is(':checked');
+		}).remove();//远程备份中正在下载的文件不被删除.
+		ocxsearchVideo();
+	}
 
 </script>
 <style type="text/css">
@@ -293,7 +303,7 @@ var now = 0;
 					</tbody>
 				</table>
 			</div>
-			<div class="hover seek" onclick="searchVideo();" title="开始搜索">搜索</div>
+			<div class="hover seek" onclick="backupSearchFile();" title="开始搜索">搜索</div>
 		</div>
 	</div>
 	<div id="search_result">
