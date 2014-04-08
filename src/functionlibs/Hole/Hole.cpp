@@ -292,6 +292,10 @@ long __stdcall Hole::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IProtocolPTZ == iid)
+	{
+		*ppv = static_cast<IProtocolPTZ *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -623,4 +627,64 @@ void Hole::CallBackStatus(_enConnectionStatus status)
 	QVariantMap cState;
 	cState.insert("status",(int)m_cStatus);
 	applyEventProc("StateChangeed",cState);
+}
+
+int Hole::PTZUp( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "up", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZDown( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "down", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZLeft( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "left", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZRight( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "right", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "iris_o", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "iris_c", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "focus_f", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "focus_n", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "zoom_i", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "zoom_o", (char)nSpeed, 0)?1:0;
+}
+
+int Hole::PTZAuto( const int &nChl, bool bOpend )
+{
+	return m_soup.PtzCtrl(nChl, "auto", bOpend, 0)?1:0;
+}
+
+int Hole::PTZStop( const int &nChl, const int &nCmd )
+{
+	return m_soup.PtzCtrl(nChl, "stop", 0, 0)?1:0;
 }

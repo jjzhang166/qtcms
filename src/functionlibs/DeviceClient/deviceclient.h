@@ -19,7 +19,8 @@
 #include <IEventRegister.h>
 #include <IRemoteBackup.h>
 #include "RemoteBackup.h"
-
+#include "IPTZControl.h"
+#include "IProtocolPTZ.h"
 
 
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
@@ -34,6 +35,7 @@ class  DeviceClient:public QThread,
 	public IEventRegister,
 	public IDeviceSearchRecord,
 	public IDeviceGroupRemotePlayback,
+	public IPTZControl,
 	public IRemoteBackup
 {
 	Q_OBJECT
@@ -91,6 +93,20 @@ public:
 	virtual int stopBackup();
 	virtual float getProgress();
 
+	//ptz control
+	virtual int ControlPTZUp(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZDown(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZLeft(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZRight(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZAuto(const int &nChl, bool bOpend);
+	virtual int ControlPTZStop(const int &nChl, const int &nCmd);
+
 private slots:
 	void action(QString options, BufferManager*);
 	void bufferStatus(int persent, BufferManager* pBuff);
@@ -128,6 +144,8 @@ private:
 	
 	RemoteBackup m_RemoteBackup;
 	int m_channelWithAudio;
+
+	IProtocolPTZ *m_pProtocolPTZ;
 
 private:
 	int cbInit();

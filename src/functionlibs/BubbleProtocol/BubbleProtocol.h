@@ -15,11 +15,13 @@
 #include "IDeviceConnection.h"
 #include "IEventRegister.h"
 #include "StreamProcess.h"
+#include "IProtocolPTZ.h"
 
 class BubbleProtocol : public QObject,
 	public IEventRegister,
 	public IRemotePreview,
     public IRemotePlayback,
+	public IProtocolPTZ,
 	public IDeviceConnection
 {
 	Q_OBJECT
@@ -64,6 +66,20 @@ public:
  	virtual int queryEvent(QString eventName,QStringList& eventParams);
  	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 
+	//interface for protocol ptz
+	virtual int PTZUp(const int &nChl, const int &nSpeed);
+	virtual int PTZDown(const int &nChl, const int &nSpeed);
+	virtual int PTZLeft(const int &nChl, const int &nSpeed);
+	virtual int PTZRight(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int PTZAuto(const int &nChl, bool bOpend);
+	virtual int PTZStop(const int &nChl, const int &nCmd);
+
 public:
 	//Custom Functions
 	void sendRequire(bool bSwitch);
@@ -84,6 +100,7 @@ private:
     int  writeBuff(QByteArray &, int, int, uint, uint);
     void setRecordInfo(Record&, QStringList);
     int  isFileExist(QString);
+	int OperatePTZ( const unsigned int &uiChl, const int &nCmd, const int &nSpeed, bool bStart);
 
 private:
 	//member variable about device connection

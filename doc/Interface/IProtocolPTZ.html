@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<link href="../css/interface.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="div_body">
+  <div class="top"><a href="../Index.html">返回</a></div>
+  <div>
+    <p>包含文件</p>
+    <div class="code">#include &lt;IProtocolPTZ.h&gt;</div>
+    <p>&nbsp;</p>
+  </div>
+  <div>
+    <p>函数定义</p>
+    <div class="interface_des">
+    	<p>
+      <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZUp</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+   	  <div class="desc"> 控制云台向上运动，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。<br />
+   	  </div>
+    </p>
+    </div>
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZDown</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制云台向下运动，nChl为通道号， nSpeed为运动速度，取值从0到7 。当函数调用成功时返回0，失败时，返回1。</div>
+    <br/>
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZLeft</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制云台向左运动，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZRight</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制云台向右运动，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">bool</span> <span class="functionname">PTZIrisOpen</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制光圈打开，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZIrisClose</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制光圈关闭，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZFocusFar</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制调整远焦，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZFocusNear</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制调整近焦，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZZoomIn</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制调整变倍大，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div>
+    <br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZZoomOut</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nSpeed</span>) = 0;</div>
+    <div class="desc">控制调整变倍小，nChl为通道号， nSpeed为运动速度，取值从0到7。当函数调用成功时返回0，失败时，返回1。</div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZAuto</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">bool</span> <span class="value">bOpend</span>) = 0;</div>
+    <div class="desc">控制自动水平旋转，nChl为通道号， bOpend为开启或停止自动。当函数调用成功时返回0，失败时，返回1。
+
+    </div><br />
+
+    <div class="code"><span class="key">virtual</span> <span class="type">int</span> <span class="functionname">PTZStop</span>(<span class="type">const int</span> <span class="value">&amp;nChl</span>,<span class="type">const int</span> <span class="value">&amp;nCmd</span>) = 0;</div>
+    <div class="desc">停止云台运动, nChl为通道号,nCmd为控制指令。当函数调用成功时返回0，失败时，返回1。</div>
+  </div>
+  <div>
+	<p><br /></p>
+
+    
+  </div>
+</div>
+</body>
+</html>

@@ -8,6 +8,10 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_csRefDelete(QMutex::Recursive),
 	bHadCallCloseAll(false),
 	bCloseingFlags(false),
+	m_bIsSycTime(false),
+	m_tcpSocket(NULL),
+	m_pProtocolPTZ(NULL),
+	m_steps(0),
 	m_IfSwithStream(0)
 {
 	//设置本组件支持的回调函数事件名称
@@ -75,6 +79,10 @@ long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_ISwitchStream==iid)
 	{
 		*ppv=static_cast<ISwitchStream*>(this);
+	}
+	else if (IID_IPTZControl == iid)
+	{
+		*ppv=static_cast<IPTZControl*>(this);
 	}
 	else 
 	{
@@ -341,6 +349,13 @@ int IpcDeviceClient::closeAll()
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTING);
 	eventProcCall("CurrentStatus",CurStatusParm);
+	//释放云台控制相关资源
+	if (NULL != m_pProtocolPTZ)
+	{
+		m_pProtocolPTZ->Release();
+		m_pProtocolPTZ = NULL;
+	}
+
 	QMultiMap<int,SingleConnect>::iterator it;
 	for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
 	{
@@ -649,6 +664,12 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
+		//使用次码流的连接发送云台控制命令
+		if (1 == mount)
+		{
+			m_DeviceConnectProtocol->QueryInterface(IID_IProtocolPTZ, (void**)&m_pProtocolPTZ);
+		}
+
 		//连接成功
 		m_DeviceConnectProtocol->Release();
 		m_DeviceConnectProtocol=NULL;
@@ -842,6 +863,116 @@ void IpcDeviceClient::Reveived()
 		}
 	}
 }
+
+int IpcDeviceClient::ControlPTZUp( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZUp(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZDown( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZDown(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZLeft( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZLeft(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZRight( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZRight(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZIrisOpen(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZIrisClose(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZFocusFar(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZFocusNear(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZZoomIn(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZZoomOut(nChl, nSpeed);
+}
+
+int IpcDeviceClient::ControlPTZAuto( const int &nChl, bool bOpend )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZAuto(nChl, bOpend);
+}
+
+int IpcDeviceClient::ControlPTZStop( const int &nChl, const int &nCmd )
+{
+	if (NULL == m_pProtocolPTZ || nChl < 0 || nChl > 64 || nCmd < 0 || nCmd > 10)
+	{
+		return 1;
+	}
+	return m_pProtocolPTZ->PTZStop(nChl, nCmd);
+}
+
+
 int cbLiveStreamFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)

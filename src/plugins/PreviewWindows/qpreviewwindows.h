@@ -74,6 +74,10 @@ public slots:
 	QVariantMap ScreenShot();
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
+
+	//ptz control
+	int OpenPTZ(int nCmd, int nSpeed);
+	int ClosePTZ(int nCmd);
 private:
 	bool ChlIsExit(int chlId);
 	QString GetLanguageLabel();

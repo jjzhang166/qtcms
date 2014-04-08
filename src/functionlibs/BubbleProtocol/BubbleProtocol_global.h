@@ -45,6 +45,13 @@ typedef struct _tagMessage{
 	char pParameters[1]; 
 }Message;
 
+typedef struct _tagPTZControl{
+	char cChannel;
+	char cAction;
+	char cStart;
+	char cSpeed;
+}PTZControl;
+
 typedef struct _tagLiveStream{
 	unsigned int uiLength;
 	char cType;

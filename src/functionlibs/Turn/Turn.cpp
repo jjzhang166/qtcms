@@ -300,6 +300,10 @@ long __stdcall Turn::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IProtocolPTZ == iid)
+	{
+		*ppv = static_cast<IProtocolPTZ *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -664,4 +668,64 @@ int Turn::DataProc(CRudpSession::EventType type,LPVOID pData,int nDataSize)
 	}
 	pRecvData->bProduced = true;
 	return 0;
+}
+
+int Turn::PTZUp( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "up", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZDown( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "down", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZLeft( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "left", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZRight( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "right", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "iris_o", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "iris_c", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "focus_f", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "focus_n", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "zoom_i", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	return m_soup.PtzCtrl(nChl, "zoom_o", (char)nSpeed, 0)?1:0;
+}
+
+int Turn::PTZAuto( const int &nChl, bool bOpend )
+{
+	return m_soup.PtzCtrl(nChl, "auto", bOpend, 0)?1:0;
+}
+
+int Turn::PTZStop( const int &nChl, const int &nCmd )
+{
+	return m_soup.PtzCtrl(nChl, "stop", 0, 0)?1:0;
 }

@@ -22,6 +22,7 @@ QSubView::QSubView(QWidget *parent)
 	m_IDeviceClientDecideByVendor(NULL),
 	m_pRecorder(NULL),
 	m_pRecordTime(NULL),
+	m_pPTZControl(NULL),
 	m_CurrentState(QSubView::STATUS_DISCONNECTED),
 	m_HistoryState(QSubView::STATUS_DISCONNECTED),
 	iInitWidth(0),
@@ -36,6 +37,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsAutoRecording(false),
 	m_bIsFocus(false),
 	m_bIsForbidConnect(false),
+	m_bIsPTZAutoOpened(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
 	m_QActionSwitchStream(NULL),
@@ -1446,5 +1448,85 @@ void QSubView::SaveToDatobase()
 		pChannelManager->Release();
 		pChannelManager=NULL;
 	}
+}
+
+int QSubView::OpenPTZ( int nCmd, int nSpeed )
+{
+	if (NULL == m_IDeviceClientDecideByVendor)
+	{
+		return 1;
+	}
+	m_IDeviceClientDecideByVendor->QueryInterface(IID_IPTZControl, (void**)&m_pPTZControl);
+	if (NULL == m_pPTZControl)
+	{
+		return 1;
+	}
+
+	int nRet = 1;
+	int nChl = m_DevCliSetInfo.m_uiChannelId;
+	switch (nCmd)
+	{
+		case 0:
+			nRet = m_pPTZControl->ControlPTZUp(nChl, nSpeed);
+			break;
+		case 1:
+			nRet = m_pPTZControl->ControlPTZDown(nChl, nSpeed);
+			break;
+		case 2:
+			nRet = m_pPTZControl->ControlPTZLeft(nChl, nSpeed);
+			break;
+		case 3:
+			nRet = m_pPTZControl->ControlPTZRight(nChl, nSpeed);
+			break;
+		case 4:
+			{
+				if (!m_bIsPTZAutoOpened)
+				{
+					m_bIsPTZAutoOpened = true;
+					nRet = m_pPTZControl->ControlPTZAuto(nChl, true);
+				}
+				else
+				{
+					m_bIsPTZAutoOpened = false;
+					nRet = m_pPTZControl->ControlPTZAuto(nChl, false);
+				}
+				break;
+			}
+		case 5:
+			nRet = m_pPTZControl->ControlPTZFocusFar(nChl, nSpeed);
+			break;
+		case 6:
+			nRet = m_pPTZControl->ControlPTZFocusNear(nChl, nSpeed);
+			break;
+		case 7:
+			nRet = m_pPTZControl->ControlPTZZoomIn(nChl, nSpeed);
+			break;
+		case 8:
+			nRet = m_pPTZControl->ControlPTZZoomOut(nChl, nSpeed);
+			break;
+		case 9:
+			nRet = m_pPTZControl->ControlPTZIrisOpen(nChl, nSpeed);
+			break;
+		case 10:
+			nRet = m_pPTZControl->ControlPTZIrisClose(nChl, nSpeed);
+			break;
+		default:
+			break;
+	}
+	return nRet;
+}
+
+int QSubView::ClosePTZ( int nCmd )
+{
+	if (NULL == m_pPTZControl)
+	{
+		return 1;
+	}
+	int nRet = 1;
+	if (4 != nCmd)
+	{
+		nRet = m_pPTZControl->ControlPTZStop(m_DevCliSetInfo.m_uiChannelId, nCmd);
+	}
+	return nRet;
 }
 

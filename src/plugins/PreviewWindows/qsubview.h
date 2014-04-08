@@ -28,6 +28,8 @@
 #include <QTranslator>
 #include <QDomDocument>
 #include <QDomNode>
+#include "IPTZControl.h"
+
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbForRecord(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
@@ -68,6 +70,11 @@ public:
 	int AudioEnabled(bool bEnabled);
 	QVariantMap ScreenShot();
 	int SwitchStream(int chlId);
+
+	//ÔÆÌ¨¿ØÖÆ
+	int OpenPTZ(int nCmd, int nSpeed);
+	int ClosePTZ(int nCmd);
+
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -156,6 +163,7 @@ private:
 	bool m_bIsAutoRecording;
 	bool m_bIsFocus;
 	bool m_bIsForbidConnect;
+	bool m_bIsPTZAutoOpened;//ptz auto
 	static bool m_bIsAudioOpend;
 	QTimer m_checkTime;
 
@@ -187,6 +195,7 @@ private:
 	QPixmap _ScreenShotImage;
 
 	QTranslator *_translator;
+	IPTZControl *m_pPTZControl;
 };
 
 

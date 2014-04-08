@@ -863,6 +863,10 @@ long __stdcall BubbleProtocol::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDeviceConnection *>(this);
 	}
+	else if (IID_IProtocolPTZ == iid)
+	{
+		*ppv = static_cast<IProtocolPTZ *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -906,3 +910,120 @@ void BubbleProtocol::eventProcCall( QString sEvent,QVariantMap param )
         }
     }
 }
+
+int BubbleProtocol::OperatePTZ( const unsigned int &uiChl, const int &nCmd, const int &nSpeed, bool bStart )
+{
+	if (uiChl > 64 || nCmd < 0 || nCmd > 10 || nSpeed < 0 || nSpeed > 7)
+	{
+		return 1;
+	}
+
+	char buff[50];
+	QByteArray block;
+	qint64 nlength = 0;
+	Bubble *pBubble = NULL;
+	Message *msgParam = NULL;
+	PTZControl *ptzControl = NULL;
+
+	memset(buff, 0, sizeof(buff));
+
+	//write head
+	pBubble = (Bubble *)buff;
+	pBubble->cHead = (char)0xaa;
+	pBubble->cCmd = (char)0x00;
+
+	QDateTime time = QDateTime::currentDateTime();
+	pBubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch()*1000));
+
+	msgParam = (Message *)pBubble->pLoad;
+	msgParam->cMessage = 0x02;
+	memset(msgParam->cReverse, 0x00, 3);
+	msgParam->uiLength = sizeof(Message) + sizeof(PTZControl) - sizeof(msgParam->uiLength) - sizeof(msgParam->pParameters);
+	msgParam->uiLength = qToBigEndian(msgParam->uiLength);
+
+	ptzControl = (PTZControl *)msgParam->pParameters;
+	ptzControl->cChannel = uiChl;
+	ptzControl->cAction = nCmd;
+	if (bStart)
+	{
+		ptzControl->cStart = 0x01;
+		ptzControl->cSpeed = nSpeed;
+	}
+	else
+	{
+		ptzControl->cStart = 0x00;
+		ptzControl->cSpeed = 0x00;
+	}
+
+	pBubble->uiLength = sizeof(Bubble) + sizeof(Message) + sizeof(PTZControl) - sizeof(msgParam->pParameters)\
+		- sizeof(pBubble->cHead) - sizeof(pBubble->uiLength) - sizeof(pBubble->pLoad);
+
+	nlength = pBubble->uiLength + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
+	pBubble->uiLength = qToBigEndian(pBubble->uiLength);
+
+	block.append(buff, nlength);
+	emit sigWriteSocket(block);
+
+	return 0;
+}
+
+int BubbleProtocol::PTZUp( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 0, nSpeed, true);
+}
+
+int BubbleProtocol::PTZDown( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 1, nSpeed, true);
+}
+
+int BubbleProtocol::PTZLeft( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 2, nSpeed, true);
+}
+
+int BubbleProtocol::PTZRight( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 3, nSpeed, true);
+}
+
+int BubbleProtocol::PTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 9, nSpeed, true);
+}
+
+int BubbleProtocol::PTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 10, nSpeed, true);
+}
+
+int BubbleProtocol::PTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 5, nSpeed, true);
+}
+
+int BubbleProtocol::PTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 6, nSpeed, true);
+}
+
+int BubbleProtocol::PTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 7, nSpeed, true);
+}
+
+int BubbleProtocol::PTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	return OperatePTZ(nChl, 8, nSpeed, true);
+}
+
+int BubbleProtocol::PTZAuto( const int &nChl, bool bOpend )
+{
+	return OperatePTZ(nChl, 4, 0, bOpend);
+}
+
+int BubbleProtocol::PTZStop( const int &nChl, const int &nCmd )
+{
+	return OperatePTZ(nChl, nCmd, 0, false);
+}
+

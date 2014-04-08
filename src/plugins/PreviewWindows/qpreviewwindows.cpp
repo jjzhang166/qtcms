@@ -482,3 +482,13 @@ QString QPreviewWindows::GetLanguageLabel()
 		return "en_GB";
 	}
 }
+
+int QPreviewWindows::OpenPTZ( int nCmd, int nSpeed )
+{
+	return m_PreviewWnd[m_CurrentWnd].OpenPTZ(nCmd, nSpeed);
+}
+
+int QPreviewWindows::ClosePTZ( int nCmd )
+{
+	return m_PreviewWnd[m_CurrentWnd].ClosePTZ(nCmd);
+}

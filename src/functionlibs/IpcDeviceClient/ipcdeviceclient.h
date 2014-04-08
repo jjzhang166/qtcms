@@ -8,6 +8,11 @@
 #include <IRemotePreview.h>
 #include <ISwitchStream.h>
 #include <IDeviceConnection.h>
+#include <QtNetwork/QTcpSocket>
+#include "IAutoSycTime.h"
+#include "IPTZControl.h"
+#include "IProtocolPTZ.h"
+
 //主码流的回调函数
 int cbLiveStreamFrompPotocol_Primary(QString evName,QVariantMap evMap,void*pUser);//预览码流
 int cbSocketErrorFrompPotocol_Primary(QString evName,QVariantMap evMap,void*pUser);//连接错误
@@ -20,6 +25,7 @@ int cbStateChangeFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser)
 class IpcDeviceClient:public QThread,
 	public IDeviceClient,
 	public IEventRegister,
+	public IPTZControl,
 	public ISwitchStream
 {
 public:
@@ -45,6 +51,21 @@ public:
 
 	//ISwitchStream
 	virtual int SwitchStream(int StreamNum);
+
+	//IPTZControl
+	virtual int ControlPTZUp(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZDown(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZLeft(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZRight(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZAuto(const int &nChl, bool bOpend);
+	virtual int ControlPTZStop(const int &nChl, const int &nCmd);
+
 
 	public:
 	void eventProcCall(QString sEvent,QVariantMap param);
@@ -78,5 +99,7 @@ private:
 	DeviceInfo m_DeviceInfo;
 	volatile bool bCloseingFlags;
 	volatile bool bHadCallCloseAll;
+
+	IProtocolPTZ *m_pProtocolPTZ;
 };
 

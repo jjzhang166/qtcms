@@ -10,10 +10,12 @@
 #include "IRemotePreview.h"
 #include "EseeXml.h"
 #include "SoupXml.h"
+#include "IProtocolPTZ.h"
 
 class Hole :
 	public IDeviceConnection,
 	public IRemotePreview,
+	public IProtocolPTZ,
 	public IEventRegister
 {
 public:
@@ -49,6 +51,21 @@ public:
 	virtual int pauseStream(bool bPaused);
 	virtual int getStreamCount();
 	virtual int getStreamInfo(int nStreamId,QVariantMap &streamInfo);
+
+	//-----------ptz-----------
+	virtual int PTZUp(const int &nChl, const int &nSpeed);
+	virtual int PTZDown(const int &nChl, const int &nSpeed);
+	virtual int PTZLeft(const int &nChl, const int &nSpeed);
+	virtual int PTZRight(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int PTZAuto(const int &nChl, bool bOpend);
+	virtual int PTZStop(const int &nChl, const int &nCmd);
+
 
 	typedef int (__cdecl *eventcallback)(QString,QVariantMap,void *);
 	virtual QStringList eventList();
