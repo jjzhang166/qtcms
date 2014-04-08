@@ -559,6 +559,7 @@ int LocalPlayer::GroupStop()
 	m_bIsGroupPlaying = false;
 	m_GroupMap.clear();
 	m_playTime = 0;
+	
 	return 0;
 }
 int LocalPlayer::GroupSpeedFast(int speed)
@@ -646,13 +647,17 @@ bool LocalPlayer::GroupEnableAudio(bool bEnable)
 	{
 		return false;
 	}
-	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(m_pCurView);
-	if (!bEnable)
+	if (NULL!=m_pCurView)
 	{
-		iter->pPlayMgr->OpneAudio(false);
-		m_pCurView = NULL;
+		QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(m_pCurView);
+		if (!bEnable)
+		{
+			iter->pPlayMgr->OpneAudio(false);
+			m_pCurView = NULL;
+		}
+		iter->pPlayMgr->AudioSwitch(bEnable);
 	}
-	iter->pPlayMgr->AudioSwitch(bEnable);
+
 	return bEnable;
 }
 int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
@@ -660,6 +665,11 @@ int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 	if (uiPersent < 0)
 	{
 		return 1;
+	}
+	if (0xAECBCB==uiPersent&&m_pCurView==NULL)
+	{
+		m_pCurView=pWnd;
+		return 0;
 	}
 	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(pWnd);
 	if (0xAECBCA == uiPersent)
@@ -789,4 +799,6 @@ void LocalPlayer::eventProcCall( QString sEvent,QVariantMap param )
 		}
 	}
 }
+
+
 

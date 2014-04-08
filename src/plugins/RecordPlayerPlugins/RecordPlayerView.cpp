@@ -107,7 +107,7 @@ int RecordPlayerView::AudioEnabled(bool bEnabled)
 	{
 		return 1;
 	}
-
+	m_pLocalPlayer->GroupSetVolume(0xAECBCB,this);
 	m_pLocalPlayer->GroupEnableAudio(bEnabled);
 	m_bGlobalAudioStatus = bEnabled;
 

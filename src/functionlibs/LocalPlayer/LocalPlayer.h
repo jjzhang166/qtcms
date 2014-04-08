@@ -60,7 +60,6 @@ public:
 		void		*puser;
 	}ProcInfoItem;
 	void setPlayTime(uint &playTime);
-
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	int checkUsedDisk(QString &strDisk);

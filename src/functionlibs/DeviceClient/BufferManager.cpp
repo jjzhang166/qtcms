@@ -53,10 +53,10 @@ int BufferManager::recordStream(QVariantMap &evMap)
 	int frameType = evMap["frametype"].toUInt();
 	if (0 == frameType)
 	{
-		if (!getAudioStatus())
-		{
-			return 0;
-		}
+		//if (!getAudioStatus())
+		//{
+		//	return 0;
+		//}
 		recStream.uiLength = evMap["length"].toUInt();
 		recStream.cFrameType = frameType;
 		recStream.cChannel = evMap["channel"].toUInt();
