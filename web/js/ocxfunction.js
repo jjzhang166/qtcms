@@ -1,6 +1,7 @@
 
 var oCommonLibrary,
-	bool = 0; //本地远程回放控制  0为远程 1为本地
+	bool = 0, //本地远程回放控制  0为远程 1为本地
+	recTotal = 0;  //文件检索总数。
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
@@ -428,7 +429,6 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
-		$('#fileRec').show();
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
