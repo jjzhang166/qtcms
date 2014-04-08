@@ -9,6 +9,7 @@ QSubViewObject::QSubViewObject(void):m_IDeviceClient(NULL),
 	connect(&m_workerThread, SIGNAL(finished()), m_QSubviewProcess, SLOT(deleteLater()));
 	connect(this,SIGNAL(OpenCameraInWndSignl()),m_QSubviewProcess,SLOT(OpenCameraInWnd()),Qt::QueuedConnection);
 	connect(this,SIGNAL(m_workerThreadQuitSignal()),this,SLOT(m_workerThreadQuit()),Qt::QueuedConnection);
+	connect(this,SIGNAL(SetDeviceByVendorSignal(QString, QWidget *)),m_QSubviewProcess,SLOT(SetDeviceByVendor(QString, QWidget *)),Qt::QueuedConnection);
 	m_QSubviewProcess->SetDeviceClient(m_IDeviceClient);
 	m_workerThread.start();
 }
@@ -46,4 +47,16 @@ void QSubViewObject::m_workerThreadQuit()
 	
 	m_workerThread.quit();
 	m_workerThread.wait();
+}
+
+IDeviceClient* QSubViewObject::SetDeviceByVendor( QString sVendor,QWidget *wnd )
+{
+	emit SetDeviceByVendorSignal(sVendor, wnd);
+
+	m_QSubviewProcess->SetCreateDeviceFlags(false);
+	while(!m_QSubviewProcess->GetCreateDeviceFlags()){
+		msleep(10);
+	}
+	return m_QSubviewProcess->GetDeviceClient();
+	
 }

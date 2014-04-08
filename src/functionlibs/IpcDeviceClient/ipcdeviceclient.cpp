@@ -726,6 +726,159 @@ void IpcDeviceClient::DeInitProtocl()
 
 
 
+	m_tcpSocket->write(block);
+	if (m_tcpSocket->waitForBytesWritten(500))
+	{
+		return 0;
+	}
+	else
+		return 1;
+}
+int IpcDeviceClient::sndGetLocalSystemTime()
+{
+	QByteArray block;
+	block += "GET /netsdk/system/time/localtime HTTP/1.1\r\n";
+	block += "Authorization: Basic YWRtaW46\r\n";
+	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
+	block += "X-Requested-With: XMLHttpRequest\r\n";
+	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
+	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
+	block += "DNT: 1\r\n";
+	block += "Connection: Keep-Alive\r\n";
+	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
+	block += "\r\n";
+	m_tcpSocket->write(block);
+	if (m_tcpSocket->waitForBytesWritten(500))
+	{
+		return 0;
+	}
+	else
+		return 1;
+}
+int IpcDeviceClient::sndSyncTimeCmd()
+{
+	QByteArray block;
+	block += "PUT /netsdk/system/time/localtime HTTP/1.1\r\n";
+	block += "Authorization: Basic YWRtaW46\r\n";
+	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
+	block += "X-Requested-With: XMLHttpRequest\r\n";
+	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
+	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
+	block += "DNT: 1\r\n";
+	block += "Content-Length: 27Connection: Keep-Alive\r\n";
+	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
+	block += "\r\n";
+
+	QDateTime curTime = QDateTime::currentDateTime();
+	QString timeStr = curTime.toString("yyyy-MM-ddThh:mm:ss") + m_timeZone;
+	block += "\"" + timeStr.toLatin1() + "\"";
+	m_tcpSocket->write(block);
+	if (m_tcpSocket->waitForBytesWritten(500))
+	{
+		return 0;
+	}
+	else
+		return 1;
+}
+void IpcDeviceClient::SyncTime()
+{
+	if (m_DeviceInfo.m_sAddr.isEmpty() || m_DeviceInfo.m_ports.isEmpty())
+	{
+		return;
+	}
+
+	m_tcpSocket = new QTcpSocket;
+	connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(Reveived()));
+
+	m_tcpSocket->connectToHost(QHostAddress(m_DeviceInfo.m_sAddr), (quint16)m_DeviceInfo.m_ports["media"].toUInt());
+	if (m_tcpSocket->waitForConnected(1000))
+	{
+		//get version info
+		sndGetVesionInfo();
+		m_steps = 1;
+	}
+}
+void IpcDeviceClient::Reveived()
+{
+	QVariantMap item;
+	if (m_tcpSocket->bytesAvailable() > 0)
+	{
+		QByteArray buffer = m_tcpSocket->readAll();
+		if (buffer.contains("HTTP/1.1 200 OK"))
+		{
+			if (1 == m_steps)
+			{
+				int posStart = buffer.indexOf("software_version") + qstrlen("software_version=\\\"");
+				int posEnd = buffer.indexOf("\\\"", posStart);
+
+				QByteArray ms = buffer.mid(posStart);
+
+				m_softwareVersion = buffer.mid(posStart, posEnd - posStart);
+				if (m_softwareVersion.left(5) <= "1.1.3")
+				{
+					sndSyncTimeForPreVersion();
+					m_steps = 2;
+				}
+				else
+				{
+					sndGetLocalSystemTime();
+					m_steps = 3;
+				}
+			}
+			else if (2 == m_steps)
+			{
+				//sync time over
+				item.insert("statusCode", 0);
+				item.insert("statusMsg", "OK");
+				eventProcCall("SyncTimeMsg", item);
+
+				m_steps = 0;
+				m_tcpSocket->deleteLater();
+				return;
+			}
+			else if (3 == m_steps)
+			{
+				int posStart = buffer.indexOf("\"") + 1;
+				int posEnd = buffer.lastIndexOf("\"");
+				QByteArray localSysTime = buffer.mid(posStart, posEnd - posStart);
+				m_timeZone = localSysTime.right(6);
+				sndSyncTimeCmd();
+				m_steps = 4;
+			}
+			else if (4 == m_steps)
+			{
+				QString status;
+				int code;
+				QRegExp rx("[a-zA-Z]+");
+				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusMessage") + qstrlen("statusMessage")))
+				{
+					status = rx.cap(0);
+				}
+				rx = QRegExp("\\d+");
+				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusCode") + qstrlen("statusCode")))
+				{
+					code = rx.cap(0).toUInt();
+				}
+
+				item.insert("statusCode", code);
+				item.insert("statusMsg", status);
+				eventProcCall("SyncTimeMsg", item);
+
+				m_steps = 0;
+				m_tcpSocket->deleteLater();
+			}
+		}
+		else
+		{
+			item.insert("statusCode", -1);
+			item.insert("statusMsg", "failure");
+			eventProcCall("SyncTimeMsg", item);
+
+			m_steps = 0;
+			m_tcpSocket->deleteLater();
+		}
+	}
+}
 int cbLiveStreamFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)

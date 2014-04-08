@@ -330,7 +330,12 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	//关闭上一次的连接
 	//CloseWndCamera();
 	//生成设备组件
-	SetDeviceByVendor(sVendor);
+	/*SetDeviceByVendor(sVendor);*/
+	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(sVendor,this);
+	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
+	{
+		iDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientDecideByVendor);
+	}
 	//注册事件，需检测是否注册成功
 		if (1==cbInit())
 		{
@@ -940,7 +945,7 @@ void QSubView::OnCheckTime()
 				continue;
 			}
 			currentTime = QTime::currentTime();
-			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime&&m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
+			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime&&m_CurrentState==STATUS_CONNECTED)
 			{
 				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
@@ -1146,5 +1151,3 @@ void QSubView::RecordState( QVariantMap evMap )
 		}
 	}
 }
-
-

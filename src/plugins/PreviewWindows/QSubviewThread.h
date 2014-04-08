@@ -17,15 +17,19 @@ public:
 		,const QString & sCameraname,const QString & sVendor);
 
 	int SetDeviceClient(IDeviceClient *m_IDeviceClient);
-
+	IDeviceClient* GetDeviceClient();
+	bool GetCreateDeviceFlags();
+	void SetCreateDeviceFlags(bool flags);
 public:
 	DevCliSetInfo m_DevCliSetInfo;
+	bool bCreateDeviceFlags;
 
 public slots:
 	void OpenCameraInWnd();
 	void CloseAll();
-
+	int SetDeviceByVendor(QString sVendor, QWidget *pWnd);
 private:
 	IDeviceClient *m_IDeviceClient;
+
 };
 

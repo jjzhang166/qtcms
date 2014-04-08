@@ -20,9 +20,13 @@ public:
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname,const QString & sVendor);
 	int SetDeviceClient(IDeviceClient *m_IDeviceClient);
+	void SetAutoSyncTime(bool bEnabled);
+	IDeviceClient *SetDeviceByVendor(QString sVendor,QWidget *wnd);
+
 signals:
 	void OpenCameraInWndSignl();
 	void m_workerThreadQuitSignal();
+	void SetDeviceByVendorSignal(QString ,QWidget *);
 private:
 	IDeviceClient *m_IDeviceClient;
 	QSubviewThread *m_QSubviewProcess;

@@ -906,5 +906,3 @@ void BubbleProtocol::eventProcCall( QString sEvent,QVariantMap param )
         }
     }
 }
-
-

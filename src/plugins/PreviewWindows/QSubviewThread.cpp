@@ -1,4 +1,9 @@
 #include "QSubviewThread.h"
+#include <QCoreApplication>
+#include <QWidget>
+#include <QFile>
+#include <QDomDocument>
+#include "ISwitchStream.h"
 
 
 QSubviewThread::QSubviewThread(void):m_IDeviceClient(NULL)
@@ -106,4 +111,81 @@ void QSubviewThread::CloseAll()
 	m_IDeviceClient->Release();
 	m_IDeviceClient=NULL;
 	return;
+}
+
+int QSubviewThread::SetDeviceByVendor(QString sVendor, QWidget *pWnd)
+{
+	QString sAppPath=QCoreApplication::applicationDirPath();
+	QFile *file=new QFile(sAppPath+"/pcom_config.xml");
+	file->open(QIODevice::ReadOnly);
+	QDomDocument ConFile;
+	ConFile.setContent(file);
+	QDomNode clsidNode=ConFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList=clsidNode.childNodes();
+	int n;
+	for (n=0;n<itemList.count();n++)
+	{
+		QDomNode item=itemList.at(n);
+		QString sItemName=item.toElement().attribute("vendor");
+		if (sItemName==sVendor)
+		{
+			CLSID DeviceVendorClsid=pcomString2GUID(item.toElement().attribute("clsid"));
+			if (NULL!=m_IDeviceClient)
+			{
+				m_IDeviceClient->Release();
+				m_IDeviceClient=NULL;
+			}
+			pcomCreateInstance(DeviceVendorClsid,NULL,IID_IDeviceClient,(void**)&m_IDeviceClient);
+			if (NULL!=m_IDeviceClient)
+			{
+				//设置主次码流
+				if (pWnd->parentWidget()->width() == pWnd->width())
+				{
+					if (NULL!=m_IDeviceClient)
+					{
+						ISwitchStream *m_SwitchStream=NULL;
+						m_IDeviceClient->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+						if (NULL!=m_SwitchStream)
+						{
+							m_SwitchStream->SwitchStream(0);
+							m_SwitchStream->Release();
+							m_SwitchStream=NULL;
+						}
+					}
+				}
+				else{
+					if (NULL!=m_IDeviceClient)
+					{
+						ISwitchStream *m_SwitchStream=NULL;
+						m_IDeviceClient->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+						if (NULL!=m_SwitchStream)
+						{
+							m_SwitchStream->SwitchStream(1);
+							m_SwitchStream->Release();
+							m_SwitchStream=NULL;
+						}
+					}
+				}	
+				bCreateDeviceFlags = true;
+				return 0;
+			}		
+		}
+	}
+	bCreateDeviceFlags = true;
+	return 1;
+}
+
+IDeviceClient* QSubviewThread::GetDeviceClient()
+{
+	return m_IDeviceClient;
+}
+
+bool QSubviewThread::GetCreateDeviceFlags()
+{
+	return bCreateDeviceFlags;
+}
+
+void QSubviewThread::SetCreateDeviceFlags( bool flags )
+{
+	bCreateDeviceFlags = flags;
 }
