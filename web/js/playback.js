@@ -45,6 +45,11 @@ var	nViewNum = 0,
 			searchVideo();
 		})
 
+		listParent.on('click','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
+			listParent.find('li:has(span.device):gt(0)').removeClass('sel');
+			$(this).addClass('sel');
+		})
+
 		/*$('div.dev_list span.channel').on('click',function(){
 			var b = true;
 			var obj = $(this).parent('li')
