@@ -21,9 +21,7 @@ m_uiRecFileSearched(0),
 m_DivMode(NULL),
 m_GroupPlayback(NULL),
 bIsInitFlags(false),
-bIsCaseInitFlags(false),
-_curConnectState(STATUS_DISCONNECTED),
-_curConnectType(TYPE_NULL)
+bIsCaseInitFlags(false)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -31,6 +29,7 @@ _curConnectType(TYPE_NULL)
 		m_PlaybackWnd[i].setParent(this);
 		connect(&m_PlaybackWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PlaybackWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_PlaybackWnd[i], SIGNAL(ChangeAudioHint(QString, RSubView*)), this, SLOT(ChangeAudioHint(QString, RSubView*)));
 
 		m_PlaybackWndList.insert(m_PlaybackWndList.size(),&m_PlaybackWnd[i]);
 	}
@@ -270,10 +269,23 @@ int   RPlaybackWnd::GroupStop()
     } 
     return nRet;
 }
-bool  RPlaybackWnd::AudioEnabled(bool bEnable)
+// bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
+// {
+//     bool bRet = false;
+//     if (NULL != m_GroupPlayback)
+//     {
+//         bRet = m_GroupPlayback->GroupEnableAudio(bEnable);
+//     } 
+//     return bRet;
+// }
+int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
 {
-    bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
-    return bRet;
+	int nRet = -1;
+	if (NULL != m_GroupPlayback)
+	{
+		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, NULL);
+	}
+	return 0;
 }
 int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 {
@@ -478,3 +490,76 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 		 }
 		 return 1;
  }
+ i++;
+ }
+ return 0;
+ }*/
+// void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo)
+// {
+//     QDateTime start, end;
+//	 for (int i = 0; i < lstInfo.size(); ++i)
+//	 {
+//		 RecordInfo record = lstInfo.at(i);
+//		 int index = checkChannel(lstTimeInfo, record.uiChannel);
+//		 if (0 == index)
+//		 {
+//			 TimeInfo ti;
+//			 Session se;
+//			 ti.uiChannel = record.uiChannel;
+//			 se.uiType = record.uiTypes;
+//			 se.timeSession<<record.sStartTime<<record.sEndTime;
+//			 ti.lstTypeTime.append(se);
+//			 lstTimeInfo.append(ti);
+//			 continue;
+//		 }
+//		 else
+//		 {
+//			 int in = checkType(lstTimeInfo[index].lstTypeTime, record.uiTypes);
+//			 if (0 == in)
+//			 {
+//				 Session se;
+//				 se.uiType = record.uiTypes;
+//				 se.timeSession<<record.sStartTime<<record.sEndTime;
+//				 lstTimeInfo[index].lstTypeTime.append(se);
+//				 continue;
+//			 }
+//			 else
+//			 {
+//                 bool bExistFlag = false;
+//                 for (int j = 0; j < lstTimeInfo[index].lstTypeTime[in].timeSession.size(); j+=2)
+//                 {
+//                     start = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j);
+//                     end   = lstTimeInfo[index].lstTypeTime[in].timeSession.at(j + 1);
+//                     if (end.addSecs(1) == record.sStartTime)
+//                     {
+//                         bExistFlag = false;
+//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j + 1, record.sEndTime);
+//                         break;
+//                     }
+//                     else if (record.sEndTime.addSecs(1) == start)
+//                     {
+//                         bExistFlag = false;
+//                         lstTimeInfo[index].lstTypeTime[in].timeSession.replace(j, record.sStartTime);
+//                         break;
+//                     }
+//                     else 
+//                     {
+//                         bExistFlag = true;
+//                     }
+//                 }
+//                 if (bExistFlag)
+//                 {
+//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sStartTime);
+//                     lstTimeInfo[index].lstTypeTime[in].timeSession.append(record.sEndTime);
+//                 }
+//			 }
+//		 }
+//	 }
+//}
+
+
+void RPlaybackWnd::ChangeAudioHint(QString statement, RSubView* pWind)
+{
+	int index = pWind - m_PlaybackWnd;
+	m_PlaybackWnd[index].setAudioHint(statement);
+}

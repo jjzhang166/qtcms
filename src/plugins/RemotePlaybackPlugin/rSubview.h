@@ -15,7 +15,8 @@
 #include <QTimer>
 #include <QPixmap>
 
-#include <QLabel>
+#include <QMenu>
+#include <QAction>
 
 #include <QLabel>
 
@@ -44,66 +45,28 @@ public:
 	}ConnectStatus;
 public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
-	bool AudioEnabled(bool bEnabled);
-	void SetCurConnectState(__enConnectStatus parm);
-	void CacheState(QVariantMap evMap);
-	void saveCacheImage();
-	bool AudioEnabled(bool bEnabled);
-	void SetCurConnectState(__enConnectStatus parm);
-	void CacheState(QVariantMap evMap);
+	void setAudioHint(QString&);
 
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
-
-	void connecttingUpdateSig();
-	void CacheStateSig(QVariantMap evMap);
+	void RMousePressMenu();
+	void ChangeAudioHint(QString, RSubView*);
 
 public:    
 	Ui::titleview * ui;
 	IDeviceClient *m_LpClient;
-
-	__enConnectStatus _curState;
-	__enPaintEventStatus _curPaint;
-	int _countConnecting;
-	QTimer m_checkTime;
-	QTimer m_cacheTime;
 public slots:
-	void connecttingUpdateSlot();
-	void connecttingUpdate();
-	void CacheStateSlot(QVariantMap evMap);
-	
+	void OnOpenAudio();
+	void OnRMousePressMenu();
 
-	void connecttingUpdateSlot();
-	void connecttingUpdate();
-	void CacheStateSlot(QVariantMap evMap);
-	
 private:
-	static bool m_bGlobalAudioStatus;
+	static RSubView* m_pCurView;
+	static bool m_bIsAudioOpen;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
-
-	int _curCache;
-	QPixmap _cacheBackImage;
-	bool _bSaveCacheImage;
-	QLabel *_cacheLable;
-private:
-	void paintEventNoVideo( QPaintEvent * );
-	void paintEventConnecting( QPaintEvent * );
-	void paintEventCache(QPaintEvent *);
-	void _cacheLableShow();
-	
-	
-
-	int _curCache;
-
-private:
-	void paintEventNoVideo( QPaintEvent * );
-	void paintEventConnecting( QPaintEvent * );
-	void paintEventCache(QPaintEvent *);
-	void _cacheLableShow();
-	
-	
+	QMenu m_rMousePressMenu;
+	QAction *m_ActionOpenAudio;
 };
 
 

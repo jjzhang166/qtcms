@@ -100,13 +100,15 @@ function GroupPause() {
 }
 
 function AddFourChannels(){
-    var obj = document.getElementById('windows');
+        var obj = document.getElementById('windows');
+		var uiWndIndex=document.getElementById('uiWndIndex');
+		var uiChannelId=document.getElementById('uiChannelId');
 
 	alert('AddFourChannels');
-	obj.AddChannelIntoPlayGroup(parseInt(0),parseInt(0));
-	obj.AddChannelIntoPlayGroup(parseInt(1),parseInt(1));
-	obj.AddChannelIntoPlayGroup(parseInt(2),parseInt(2));
-	obj.AddChannelIntoPlayGroup(parseInt(3),parseInt(3));
+	obj.AddChannelIntoPlayGroup(parseInt(0),parseInt(1));
+	obj.AddChannelIntoPlayGroup(parseInt(1),parseInt(2));
+	obj.AddChannelIntoPlayGroup(parseInt(2),parseInt(3));
+	obj.AddChannelIntoPlayGroup(parseInt(3),parseInt(4));
 
 }
 
@@ -118,33 +120,12 @@ function SetVolume(){
 	obj.GroupSetVolume(parseInt(uiVolume.value));
 }
 
-var bOpened = false;
-function AudioEnabled(){
-	var obj = document.getElementById('windows');
-	var auButton = document.getElementById('audioSwitch');
-	
-	if(bOpened)
-	{
-		alert("close audio");
-		auButton.value = "open audio";
-		bOpened = false;
-	}
-	else
-	{
-		alert("open audio");
-		auButton.value = "close audio";
-		bOpened = true;
-	}
-	
-	obj.GroupEnableAudio(bOpened);
-}
-
 
 </script>
 </head>
 
 <body onload="Onload()">
-  <object type="application/cms-remote-playback" id="windows" style="width:500px; height:400px;"></object>
+  <object type="application/cms-remote-playback" id="windows" style="width:700px; height:500px;"></object>
 
 
 <table border="0" cellspacing="0" cellpadding="0" width="75%">
@@ -158,7 +139,7 @@ function AudioEnabled(){
 	</tr>
 	<tr>
 		<td>sAddress</td>
-		<td><input type="text" id="sAddress" value="192.168.2.117"/></td>
+		<td><input type="text" id="sAddress" value="192.168.1.172"/></td>
         <td><button onclick="GroupPlay()">group play</button></td>
 		<td></td>
 		<td></td>
@@ -166,7 +147,7 @@ function AudioEnabled(){
 	</tr>
 	<tr>
 		<td>uiPort</td>
-		<td><input type="text" id="uiPort" value="8899"/></td>
+		<td><input type="text" id="uiPort" value="80"/></td>
         <td><button onclick="GroupPause()">group pause</button></td>
 		<td></td>
 		<td></td>
@@ -174,7 +155,7 @@ function AudioEnabled(){
 	</tr>
 	<tr>
 		<td>sEseeId</td>
-		<td><input type="text" id="sEseeId" value="224043861"/></td>
+		<td><input type="text" id="sEseeId" value="144565114"/></td>
         <td><button onclick="GroupContinue()">group continue</button></td>
 	</tr>
 	<tr>
@@ -214,13 +195,13 @@ function AudioEnabled(){
 	</tr>
 	<tr>
 		<td>startTime</td>
-		<td><input type="text" id="startTime" value="2014-03-18 14:30:00"/></td>
+		<td><input type="text" id="startTime" value="2014-03-10 14:30:00"/></td>
         <td><button onclick="GroupGetPlayedTime()">get play time</button></td>
         <td><form name="clock"><input type="text" name="playTime" size=20 value=""/></form></td>
 	</tr>
 	<tr>
 		<td>endTime</td>
-		<td><input type="text" id="endTime" value="2014-03-18 15:00:00"/></td>
+		<td><input type="text" id="endTime" value="2014-03-10 15:00:00"/></td>
         <td><button onclick="setUserVerifyInfo()">set User Verify Info</button></td>
 	</tr>
 

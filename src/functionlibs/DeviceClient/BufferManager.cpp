@@ -33,7 +33,7 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		return 1;
 	}
 
-	if (m_StreamBuffer.size() <= 100 && !m_bStopBuff)
+	if (100 == m_StreamBuffer.size())
 	{
 		emit bufferStatus(m_StreamBuffer.size(), this);
 	}
@@ -97,16 +97,14 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 		{
 			QMutex mutex;
 			mutex.lock();
-			streamInfo = m_StreamBuffer.takeFirst();
-// 			m_StreamBuffer.removeFirst();
+			streamInfo = m_StreamBuffer.first();
+			m_StreamBuffer.removeFirst();
 			mutex.unlock();
 		}
 		else
 		{
-			m_mutex.lock();
-			streamInfo = m_StreamBuffer.takeFirst();
-// 			m_StreamBuffer.removeFirst();
-			m_mutex.unlock();
+			streamInfo = m_StreamBuffer.first();
+			m_StreamBuffer.removeFirst();
 		}
 
 		if (200 == m_StreamBuffer.size() && m_bVedioBufferIsFull)
@@ -124,15 +122,12 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 
 int BufferManager::emptyBuff()
 {
-	m_bStopBuff = false;
 	RecordStreamFrame streamInfo;
 	while(!m_StreamBuffer.isEmpty())
 	{
-		m_mutex.lock();
 		streamInfo = m_StreamBuffer.takeAt(0);
 		delete streamInfo.pData;
 		streamInfo.pData = NULL;
-		m_mutex.unlock();
 	}
 	return 0;
 }

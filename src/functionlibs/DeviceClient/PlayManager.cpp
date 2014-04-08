@@ -6,7 +6,6 @@
 
 #include <QDebug>
 
-
 IAudioPlayer* PlayManager::m_pAudioPlayer = NULL;
 PlayManager* PlayManager::m_pCurView = NULL;
 
@@ -146,6 +145,7 @@ void PlayManager::run()
 		RecordStreamFrame recStream;
 		memset(&recStream, 0, sizeof(RecordStreamFrame));
 
+
 		if (1 == m_pBufferManager->readStream(recStream))
 		{
 			m_pBufferManager->removeItem(&recStream);
@@ -163,7 +163,8 @@ void PlayManager::run()
 				m_pAudioPlayer->SetAudioParam(1, m_nSampleRate, m_nSampleWidth);
 			}
 			m_pAudioPlayer->Play(recStream.pData, recStream.uiLength);
-			m_pBufferManager->removeItem(&recStream);
+			delete recStream.pData;
+			recStream.pData = NULL;
 			continue;
 		}
 		if (NULL == recStream.pData)
@@ -183,10 +184,8 @@ void PlayManager::run()
 				return;
 			}
 			m_pVedioDecoder->decode(lpdata, nLength);//½âÂë²¥·Å
-			m_pBufferManager->removeItem(&recStream);
-
-// 			delete lpdata;
-// 			lpdata = NULL;
+			delete lpdata;
+			lpdata = NULL;
 
 			m_bFirstFrame = false;
 
@@ -195,14 +194,27 @@ void PlayManager::run()
 		}
 
 		m_uiCurrentFrameTime = recStream.uiGenTime;
-
-		int offsets = 1000000/recStream.uiFrameRate;
-		qint64 waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
-		qint64 before = frameTimer.nsecsElapsed()/1000;
-		if (SpeedFast != m_speed && waitSeconds > 0)
+		int waitSeconds = 0;
+		if (SpeedNomal == m_speed)
 		{
-			qint64 sec = waitSeconds - frameTimer.nsecsElapsed()/1000 + before - spend;
-			usleep( sec >= 0 ? sec : 0);
+			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000;
+			if (waitSeconds > 0)
+			{
+				usleep(waitSeconds);
+			}
+		}
+		else if (SpeedSlow == m_speed)
+		{
+			int offsets = 1000000/recStream.uiFrameRate;
+			waitSeconds = recStream.ui64TSP - m_ui64TSP - frameTimer.nsecsElapsed()/1000 + m_nSpeedRate*offsets;
+			if (waitSeconds > 0)
+			{
+				usleep(waitSeconds);
+			}
+		}
+		else
+		{
+			//fast play
 		}
 
 		m_ui64TSP = recStream.ui64TSP;
@@ -216,6 +228,9 @@ void PlayManager::run()
 		spend = frameTimer.nsecsElapsed()/1000 - before - waitSeconds;
 
 		m_pVedioDecoder->decode(lpdata, nLength);
+		delete lpdata;
+		lpdata = NULL;
+
 		frameTimer.start();
 		m_pBufferManager->removeItem(&recStream);
 
@@ -279,7 +294,7 @@ void PlayManager::AudioSwitch(bool enabled)
 		if (NULL != m_pAudioPlayer)
 		{
 			m_pAudioPlayer->EnablePlay(true);
-// 			m_pCurView = this;
+			m_pCurView = this;
 		}
 	}
 	else
