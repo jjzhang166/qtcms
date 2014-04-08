@@ -715,7 +715,12 @@ int QSubView::StartRecord()
 {
 	if (NULL == m_pRecorder || m_bIsAutoRecording)
 	{
-		return 1;
+		if (m_bIsAutoRecording)
+		{
+			return 2;
+		}else{
+			return 1;
+		}
 	}
 	m_bIsStartRecording=true;
 	m_bIsRecording = true;
@@ -727,7 +732,12 @@ int QSubView::StopRecord()
 {
 	if (NULL == m_pRecorder || m_bIsAutoRecording)
 	{
-		return 1;
+		if (m_bIsAutoRecording)
+		{
+			return 2;
+		}else{
+			return 1;
+		}
 	}
 	int nRet = m_pRecorder->Stop();
 	m_bIsRecording = false;
