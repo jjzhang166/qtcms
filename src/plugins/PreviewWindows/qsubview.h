@@ -54,7 +54,7 @@ public:
 	int SetDevChannelInfo(int ChannelId);
 	int CloseWndCamera();
 	int GetWindowConnectionStatus();
-
+	int liveStreamRequire(int nChannel,int nStream,bool bOpen);
 	//手动录像
 	int StartRecord();
 	int StopRecord();
@@ -95,6 +95,7 @@ public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
 		void OnCloseFromMouseEv();
+		void OnSwitchStreamFromMouseEv();
 		void OnConnectting();
 		void OnDisConnecting();
 		void OnConnected();
@@ -156,6 +157,7 @@ private:
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
+	QAction *m_QActionSwitchStream;
 	//正在连接和正在断开，刷新图片的计数
 	int m_nCountDisConnecting;
 	int m_CountConnecting;

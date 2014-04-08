@@ -390,6 +390,10 @@ QString RecordPlayer::GetNowPlayedTime()
 int RecordPlayer::AudioEnabled(bool bEnabled)
 {
 	m_bIsOpenAudio=bEnabled;
+	if (NULL != m_pLocalPlayer)
+	{
+		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
+	}
 	return m_subRecPlayerView[0].AudioEnabled(bEnabled);
 }
 int RecordPlayer::SetVolume(const unsigned int &uiPersent)
@@ -397,7 +401,7 @@ int RecordPlayer::SetVolume(const unsigned int &uiPersent)
 	int nRet = -1;
 	if (NULL != m_pLocalPlayer)
 	{
-		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, NULL);
+		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, &m_subRecPlayerView[m_currentWindID]);
 	}
 	return nRet;
 }
@@ -465,6 +469,10 @@ void RecordPlayer::transSearchStop(QVariantMap &evMap)
 
 void RecordPlayer::showEvent( QShowEvent * )
 {
+	if (NULL != m_pLocalPlayer)
+	{
+		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
+	}
 	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
 }
 

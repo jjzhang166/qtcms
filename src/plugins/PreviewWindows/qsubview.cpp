@@ -34,6 +34,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsForbidConnect(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
+	m_QActionSwitchStream(NULL),
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
@@ -64,9 +65,10 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnected()),Qt::QueuedConnection);
 	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
+	m_QActionSwitchStream=m_RMousePressMenu.addAction("Switch Stream");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
-
+	connect(m_QActionSwitchStream,SIGNAL(triggered(bool)),this,SLOT(OnSwitchStreamFromMouseEv()));
 
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
@@ -194,12 +196,12 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	}
 	m_bIsForbidConnect=true;
 	//保存设备信息
-	m_DevCliSetInfo.m_sAddress.clear();
-	m_DevCliSetInfo.m_sEseeId.clear();
-	m_DevCliSetInfo.m_sUsername.clear();
-	m_DevCliSetInfo.m_sPassword.clear();
-	m_DevCliSetInfo.m_sCameraname.clear();
-	m_DevCliSetInfo.m_sVendor.clear();
+	//m_DevCliSetInfo.m_sAddress.clear();
+	//m_DevCliSetInfo.m_sEseeId.clear();
+	//m_DevCliSetInfo.m_sUsername.clear();
+	//m_DevCliSetInfo.m_sPassword.clear();
+	//m_DevCliSetInfo.m_sCameraname.clear();
+	//m_DevCliSetInfo.m_sVendor.clear();
 	m_DevCliSetInfo.m_sAddress=sAddress;
 	m_DevCliSetInfo.m_uiPort=uiPort;
 	m_DevCliSetInfo.m_sEseeId=sEseeId;
@@ -217,7 +219,6 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 	//关闭上一次的连接
 	//CloseWndCamera();
 	//生成设备组件
-	/*SetDeviceByVendor(sVendor);*/
 	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(sVendor,this);
 	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
 	{
@@ -572,12 +573,32 @@ void QSubView::timerEvent( QTimerEvent * ev)
 
 void QSubView::OnRMousePressMenu()
 {
+	if (m_DevCliSetInfo.m_uiStreamId==0)
+	{
+		m_QActionSwitchStream->setText("Switch to subStream");
+	}else{
+		m_QActionSwitchStream->setText("Switch to MainStream");
+	}
 	m_RMousePressMenu.exec(QCursor::pos());
 }
 
 void QSubView::OnCloseFromMouseEv()
 {
 	CloseWndCamera();
+}
+void QSubView::OnSwitchStreamFromMouseEv()
+{
+	if (m_CurrentState==STATUS_CONNECTED)
+	{
+		if (m_DevCliSetInfo.m_uiStreamId==0)
+		{
+			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,1,true);
+			m_DevCliSetInfo.m_uiStreamId=1;
+		}else{
+			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,0,true);
+			m_DevCliSetInfo.m_uiStreamId=0;
+	}
+	}
 }
 
 QSubView* QSubView::getCurWind()
@@ -1217,4 +1238,20 @@ void QSubView::saveCacheImage()
 		_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
 	}
 	
+}
+
+int QSubView::liveStreamRequire( int nChannel,int nStream,bool bOpen )
+{
+	IDeviceClient *mLiveStreamRequire=NULL;
+	if (m_IDeviceClientDecideByVendor!=NULL)
+	{
+		m_IDeviceClientDecideByVendor->QueryInterface(IID_IDeviceClient,(void**)&mLiveStreamRequire);
+	}
+	if (NULL!=mLiveStreamRequire)
+	{
+		mLiveStreamRequire->liveStreamRequire(nChannel,nStream,bOpen);
+		mLiveStreamRequire->Release();
+		mLiveStreamRequire=NULL;
+	}
+	return 0;
 }
