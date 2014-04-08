@@ -2,7 +2,7 @@
 #include <QCoreApplication>
 #include <QWidget>
 #include <QFile>
-#include <QDomDocument>
+#include <QtXml/QtXml>
 #include "ISwitchStream.h"
 
 
@@ -78,24 +78,7 @@ void QSubviewThread::OpenCameraInWnd()
 	m_IDeviceClientOpenCameraInWnd=NULL;
 }
 
-int QSubviewThread::SetDeviceClient(IDeviceClient *parm)
-{
-	if (NULL==parm)
-	{
-		return 1;
-	}
-	if (NULL!=m_IDeviceClient)
-	{
-		m_IDeviceClient->Release();
-		m_IDeviceClient=NULL;
-	}
-	parm->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClient);
-	if (NULL==m_IDeviceClient)
-	{
-		return 1;
-	}
-	return 0;
-}
+
 void QSubviewThread::CloseAll()
 {
 	if (NULL==m_IDeviceClient)

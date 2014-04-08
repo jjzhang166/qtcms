@@ -22,6 +22,7 @@
 #include <IAudioPlayer.h>
 #include "QSubViewObject.h"
 #include <QLineEdit>
+#include <QPixmap>
 #include "ui_TitleView.h"
 #include "ManageWidget.h"
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
@@ -70,6 +71,7 @@ public:
 		STATUS_DISCONNECTED,
 		STATUS_DISCONNECTING,
 	}QSubViewConnectStatus;
+
 public:
 	//»Øµ÷
 	int PrevPlay(QVariantMap evMap);
@@ -84,15 +86,17 @@ private:
 	int cbInit();
 	
 	void In_CloseAutoConnect();
-
+	void paintEventNoVideo( QPaintEvent * );
+	void paintEventConnecting( QPaintEvent * );
+	void paintEventCache(QPaintEvent *);
+	void saveCacheImage();
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
 		void OnCloseFromMouseEv();
 		void OnConnectting();
 		void OnDisConnecting();
-		void OnDisConnected();
-		
+		void OnConnected();
 		void OnRenderHistoryPix();
 		void OnCheckTime();
 		void OnCreateAutoConnectTime();
@@ -105,8 +109,8 @@ signals:
 		void SetCurrentWindSignl(QWidget *);
 		void CurrentStateChangeSignl(QVariantMap evMap,QWidget *);
 		void Connectting();
+		void Connected();
 		void DisConnecting();
-		void DisConnected();
 		void RMousePressMenu();
 		void RenderHistoryPix();
 		void AutoConnectSignals();
@@ -156,7 +160,6 @@ private:
 	int m_CountConnecting;
 	//Ê±ÖÓid
 	int m_DisConnectingTimeId;
-	int m_DisConnectedTimeId;
 	int m_RenderTimeId;
 	int m_AutoConnectTimeId;
 	int m_ConnectingTimeId;
@@ -168,6 +171,7 @@ private:
 	static QSubView* m_pCurrView;
 	//test
 	ManageWidget *_manageWidget;
+	QPixmap _cacheBackImage;
 };
 
 

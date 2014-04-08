@@ -16,7 +16,7 @@ public:
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname,const QString & sVendor);
 
-	int SetDeviceClient(IDeviceClient *m_IDeviceClient);
+	//int SetDeviceClient(IDeviceClient *m_IDeviceClient);
 	IDeviceClient* GetDeviceClient();
 	bool GetCreateDeviceFlags();
 	void SetCreateDeviceFlags(bool flags);

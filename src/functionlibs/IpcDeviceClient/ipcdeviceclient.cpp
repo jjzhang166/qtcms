@@ -425,43 +425,6 @@ int IpcDeviceClient::cbLiveStream( QVariantMap &evmap )
 		m_cscbLiveStream.unlock();
 		return 0;
 	}
-/*	if (m_IfSwithStream!=m_CurStream)
-	{
-		//如果是I帧，则令m_IfSwithStream=m_CurStream，同时抛出I帧
-		if (1==evmap.value("frametype") 
-			&& ((evmap.value("Stream") == "Primary" && 0 == m_IfSwithStream)
-			|| (evmap.value("Stream") == "Minor" && 1 == m_IfSwithStream)))
-		{
-			evmap.remove("Stream");
-			eventProcCall("LiveStream",evmap);
-			m_IfSwithStream=m_CurStream;
-			m_cscbLiveStream.unlock();
-			return 0;
-		}
-		//如果不是I帧，则抛出m_IfSwithStream码流
-		else{
-			if (m_IfSwithStream==0)
-			{
-				if ("Primary"==evmap.value("Stream"))
-				{
-					evmap.remove("Stream");
-					eventProcCall("LiveStream",evmap);
-					m_cscbLiveStream.unlock();
-					return 0;
-				}
-			}
-			else if (m_IfSwithStream==1)
-			{
-				if ("Minor"==evmap.value("Stream"))
-				{
-					evmap.remove("Stream");
-					eventProcCall("LiveStream",evmap);
-					m_cscbLiveStream.unlock();
-					return 0;
-				}
-			}
-		}		
-	}*/
 	m_cscbLiveStream.unlock();
 	return 0;
 }

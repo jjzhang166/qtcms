@@ -37,7 +37,6 @@ QSubView::QSubView(QWidget *parent)
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
-	m_DisConnectedTimeId(0),
 	m_RenderTimeId(0),
 	m_AutoConnectTimeId(0),
 	m_RecordFlushTime(0)
@@ -60,11 +59,10 @@ QSubView::QSubView(QWidget *parent)
 
 	connect(this,SIGNAL(DisConnecting()),this,SLOT(OnDisConnecting()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);//Ui显示正在连接中
-	connect(this,SIGNAL(DisConnected()),this,SLOT(OnDisConnected()),Qt::QueuedConnection);
 	connect(this,SIGNAL(RenderHistoryPix()),this,SLOT(OnRenderHistoryPix()),Qt::QueuedConnection);
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
-
+	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnected()),Qt::QueuedConnection);
 	m_QActionCloseView=m_RMousePressMenu.addAction("close preview");
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
@@ -124,122 +122,10 @@ QSubView::~QSubView()
 
 void QSubView::paintEvent( QPaintEvent * e)
 {
-    Q_UNUSED(e);
-	QPainter p(this);
-	//if (m_CurrentState==QSubViewConnectStatus::STATUS_CONNECTED)
-	//{
-	//	return;
-	//}
-	QString image;
-	QColor LineColor;
-	QColor LineCurColor;
-	QColor FontColor;
-	int FontSize;
-	QString FontFamily;
-
-	QString sAppPath = QCoreApplication::applicationDirPath();
-	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
-	QSettings IniFile(path, QSettings::IniFormat, 0);
-
-    image = IniFile.value("background/background-image", QVariant("")).toString();
-    LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
-    LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-    FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
-    FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
-    FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
-
- 	QRect rcClient = contentsRect();
-	this->geometry().center();
- 	QPixmap pix;
-	QString PixPaht = sAppPath + image;
-    pix.load(PixPaht);
- 
-  	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-	//背景
-    if (m_CurrentState==STATUS_DISCONNECTED)
-	{
-		p.drawPixmap(rcClient,pix);
-	}
- 	/*p.drawPixmap(rcClient,pix);*/
-	//边框
-	QPen pen = QPen(LineColor);
-	pen.setWidth(2);
- 	p.setPen(pen);
-	p.drawRect(rcClient);
-	//焦点
-
-	if (m_bIsFocus)
-	{
-		int x = 0;
-		int y = 0;
-		int width = 0;
-		int height = 0;
-		rcClient.getCoords(&x, &y, &width, &height);
-		pen.setWidth(5);
-		pen.setColor(LineCurColor);
-		p.setPen(pen);
-		p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
-	}
-	else
-	{
-	 	p.drawRect(rcClient);
-	}
-	//
-	int awidth=0;
-	int bheight=0;
-	int ax=0;
-	int ay=0;
-
-	rcClient.getCoords(&ax, &ay, &awidth, &bheight);
-	int aFontSize=10;
-	int aw=400;
-//	int ah=300;
-	aFontSize=awidth*FontSize/(aw);
-	QFont font(FontFamily, aFontSize, QFont::Bold);
-	
-	p.setFont(font);
-
- 	pen.setColor(FontColor);
-	
- 	p.setPen(pen);
-    if (m_CurrentState==STATUS_CONNECTING)
-	{
-		QString m_text;
-		QPoint dev_position=this->geometry().topLeft();
-		if (m_CountConnecting==4)
-		{
-			m_CountConnecting=0;
-		}
-		for (int i=0;i<m_CountConnecting;i++)
-		{
-			m_text+="..";
-		}
-		m_CountConnecting++;
-		/*p.drawPixmap(rcClient,pix);*/
-		p.drawText(rcClient, Qt::AlignCenter, m_text);
-		/*p.drawText(rcClient, Qt::AlignTop, m_DevCliSetInfo.m_sCameraname);*/
-	}
-    else if (m_CurrentState==STATUS_DISCONNECTING)
-	{
-		QString m_text;
-
-		if (m_nCountDisConnecting==0)
-		{
-			m_CountConnecting=4;
-		}
-		for (int i=0;i<m_CountConnecting-1;i++)
-		{
-			m_text+="..";
-		}
-		m_CountConnecting--;
-		/*p.drawPixmap(rcClient,pix);*/
-		p.drawText(rcClient, Qt::AlignCenter, m_text);
-	}
-    else if (m_CurrentState==STATUS_DISCONNECTED)
-	{
-		p.drawText(rcClient, Qt::AlignCenter, "No Video");
-	}
-
+	/*saveCacheImage();*/
+	paintEventCache(e);
+	paintEventConnecting(e);
+	paintEventNoVideo(e);
 }
 
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
@@ -281,6 +167,7 @@ void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
+	saveCacheImage();
 	if (ev->button()==Qt::RightButton)
 	{
 		emit RMousePressMenu();
@@ -346,7 +233,6 @@ int QSubView::OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const Q
 			}
 			return 1;
 		}
-	/*SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);*/
 	m_QSubViewObject.SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
@@ -499,6 +385,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	if (0==m_CurrentState)
 	{
+		emit Connected();
 		m_bIsAutoConnect=true;
 		QVariantMap evMapToUi;
 		evMapToUi.insert("CurrentState",m_CurrentState);
@@ -605,58 +492,31 @@ int QSubView::PrevRender(QVariantMap evMap)
 
 void QSubView::timerEvent( QTimerEvent * ev)
 {
-	//if (m_CurrentState!=QSubViewConnectStatus::STATUS_CONNECTED)
-	//{
-	//	update();
-	//}
+
 	//频繁操作
 	if (m_ForbidConnectTimeId==ev->timerId())
 	{
 		m_bIsForbidConnect=false;
 	}
 	//连接ing
-    if (m_CurrentState!=STATUS_CONNECTING)
+	if (m_CurrentState==STATUS_CONNECTING&&ev->timerId()==m_ConnectingTimeId)
 	{
-		if (ev->timerId()==m_ConnectingTimeId)
-		{
-			killTimer(ev->timerId());
-			m_ConnectingTimeId=0;
-        }else if (m_CurrentState==STATUS_CONNECTING)
-		{
-			update();
-		}
+		update();
+	}else if (m_CurrentState!=STATUS_CONNECTING&&ev->timerId()==m_ConnectingTimeId)
+	{
+		killTimer(ev->timerId());
+		m_ConnectingTimeId=0;
 	}
 
-    if (m_CurrentState==STATUS_CONNECTED)
+	if (m_CurrentState!=STATUS_DISCONNECTING&&ev->timerId()==m_DisConnectingTimeId)
 	{
-		if (ev->timerId()==m_DisConnectedTimeId)
-		{
-			killTimer(ev->timerId());
-			m_DisConnectedTimeId=0;
-		}
-		else if (ev->timerId()==m_DisConnectingTimeId)
-		{
-			killTimer(ev->timerId());
-			m_DisConnectingTimeId=0;
-		}
+		killTimer(ev->timerId());
+		m_DisConnectingTimeId=0;
 	}
-    else if (m_CurrentState==STATUS_DISCONNECTED)
+	if (m_CurrentState!=STATUS_CONNECTED&&ev->timerId()==m_RenderTimeId)
 	{
-		if (ev->timerId()==m_DisConnectedTimeId)
-		{
-			killTimer(ev->timerId());
-			m_DisConnectedTimeId=0;
-		}
-		else if (ev->timerId()==m_DisConnectingTimeId)
-		{
-			killTimer(ev->timerId());
-			m_DisConnectingTimeId=0;
-		}
-		if (ev->timerId()==m_RenderTimeId)
-		{
-			killTimer(ev->timerId());
-			m_RenderTimeId=0;
-		}
+		killTimer(ev->timerId());
+		m_RenderTimeId=0;
 	}
 	if (m_RenderTimeId==ev->timerId())
 	{
@@ -687,6 +547,8 @@ void QSubView::timerEvent( QTimerEvent * ev)
             if (STATUS_CONNECTED!=m_CurrentState&&false==m_bIsAutoConnecting)
 			{
 				qDebug()<<"AutoConnectSignals";
+				killTimer(ev->timerId());
+				m_AutoConnectTimeId=startTimer(10000);
 				emit AutoConnectSignals();
 			}
 		}
@@ -969,67 +831,7 @@ int QSubView::ForRecord( QVariantMap evMap )
 	return 0;
 }
 
-int QSubView::SetDeviceByVendor( const QString & sVendor )
-{
-	QString sAppPath=QCoreApplication::applicationDirPath();
-	QFile *file=new QFile(sAppPath+"/pcom_config.xml");
-	file->open(QIODevice::ReadOnly);
-	QDomDocument ConFile;
-	ConFile.setContent(file);
-	QDomNode clsidNode=ConFile.elementsByTagName("CLSID").at(0);
-	QDomNodeList itemList=clsidNode.childNodes();
-	int n;
-	for (n=0;n<itemList.count();n++)
-	{
-		QDomNode item=itemList.at(n);
-		QString sItemName=item.toElement().attribute("vendor");
-		if (sItemName==sVendor)
-		{
-			CLSID DeviceVendorClsid=pcomString2GUID(item.toElement().attribute("clsid"));
-			if (NULL!=m_IDeviceClientDecideByVendor)
-			{
-				m_IDeviceClientDecideByVendor->Release();
-				m_IDeviceClientDecideByVendor=NULL;
-			}
-			pcomCreateInstance(DeviceVendorClsid,NULL,IID_IDeviceClient,(void**)&m_IDeviceClientDecideByVendor);
-			if (NULL!=m_IDeviceClientDecideByVendor)
-			{
-				//设置主次码流
-				if (this->parentWidget()->width()==this->width())
-				{
-					if (NULL!=m_IDeviceClientDecideByVendor)
-					{
-						ISwitchStream *m_SwitchStream=NULL;
-						m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-						if (NULL!=m_SwitchStream)
-						{
-							m_SwitchStream->SwitchStream(0);
-							m_SwitchStream->Release();
-							m_SwitchStream=NULL;
-						}
-					}
-				}
-				else{
-					if (NULL!=m_IDeviceClientDecideByVendor)
-					{
-						ISwitchStream *m_SwitchStream=NULL;
-						m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-						if (NULL!=m_SwitchStream)
-						{
-							m_SwitchStream->SwitchStream(1);
-							m_SwitchStream->Release();
-							m_SwitchStream=NULL;
-						}
-					}
-				}
 
-				m_QSubViewObject.SetDeviceClient(m_IDeviceClientDecideByVendor);				
-				return 0;
-			}		
-		}
-	}
-	return 1;
-}
 
 void QSubView::In_OpenAutoConnect()
 {
@@ -1049,7 +851,13 @@ void QSubView::In_OpenAutoConnect()
 		m_bIsRecording = false;
 	}
 	//生成设备组件
-	SetDeviceByVendor(m_DevCliSetInfo.m_sVendor);
+	//SetDeviceByVendor(m_DevCliSetInfo.m_sVendor);
+
+	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(m_DevCliSetInfo.m_sVendor,this);
+	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
+	{
+		iDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientDecideByVendor);
+	}
 	//注册事件，需检测是否注册成功
 	if (1==cbInit())
 	{
@@ -1061,8 +869,6 @@ void QSubView::In_OpenAutoConnect()
 		return ;
 	}
 	m_QSubViewObject.SetCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
-	//0.5s检测一次是否需要刷新历史图片
-	m_RenderTimeId=startTimer(500);
 
 	m_QSubViewObject.OpenCameraInWnd();
 
@@ -1079,11 +885,11 @@ void QSubView::OnDisConnecting()
 {
     m_DisConnectingTimeId=startTimer(500);
 }
-
-void QSubView::OnDisConnected()
+void QSubView::OnConnected()
 {
-    m_DisConnectedTimeId=startTimer(500);
+	m_RenderTimeId=startTimer(500);
 }
+
 
 void QSubView::OnRenderHistoryPix()
 {
@@ -1114,7 +920,7 @@ void QSubView::In_CloseAutoConnect()
 
 void QSubView::OnCreateAutoConnectTime()
 {
-	m_AutoConnectTimeId=startTimer(10000);
+	m_AutoConnectTimeId=startTimer(1000);
 }
 
 int QSubView::SetDevChannelInfo( int ChannelId )
@@ -1150,4 +956,248 @@ void QSubView::RecordState( QVariantMap evMap )
 			emit RecordStateSignals(false);
 		}
 	}
+}
+
+void QSubView::paintEventNoVideo( QPaintEvent * e)
+{
+	if (m_CurrentState==STATUS_DISCONNECTED)
+	{
+		Q_UNUSED(e);
+		QPainter p(this);
+		QString image;
+		QColor LineColor;
+		QColor LineCurColor;
+		QColor FontColor;
+		int FontSize;
+		QString FontFamily;
+
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+		QSettings IniFile(path, QSettings::IniFormat, 0);
+
+		image = IniFile.value("background/background-image", QVariant("")).toString();
+		LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
+		FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+		FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
+		FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+
+		QRect rcClient = contentsRect();
+		this->geometry().center();
+		QPixmap pix;
+		QString PixPaht = sAppPath + image;
+		pix.load(PixPaht);
+
+		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		//背景
+		p.drawPixmap(rcClient,pix);
+		//边框
+		QPen pen = QPen(LineColor);
+		pen.setWidth(2);
+		p.setPen(pen);
+		p.drawRect(rcClient);
+		//焦点
+
+		if (m_bIsFocus)
+		{
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int height = 0;
+			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(5);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
+			p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
+		}
+		else
+		{
+			p.drawRect(rcClient);
+		}
+		//
+		int awidth=0;
+		int bheight=0;
+		int ax=0;
+		int ay=0;
+
+		rcClient.getCoords(&ax, &ay, &awidth, &bheight);
+		int aFontSize=10;
+		int aw=400;
+		//	int ah=300;
+		aFontSize=awidth*FontSize/(aw);
+		QFont font(FontFamily, aFontSize, QFont::Bold);
+
+		p.setFont(font);
+
+		pen.setColor(FontColor);
+
+		p.setPen(pen);
+
+		p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	}
+	
+
+}
+
+void QSubView::paintEventConnecting( QPaintEvent * e)
+{
+	if (m_CurrentState==STATUS_CONNECTING)
+	{
+		Q_UNUSED(e);
+		QPainter p(this);
+		QString image;
+		QColor LineColor;
+		QColor LineCurColor;
+		QColor FontColor;
+		int FontSize;
+		QString FontFamily;
+
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+		QSettings IniFile(path, QSettings::IniFormat, 0);
+
+		image = IniFile.value("background/background-image", QVariant("")).toString();
+		LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
+		FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+		FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
+		FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+
+		QRect rcClient = contentsRect();
+		this->geometry().center();
+		QPixmap pix;
+		QString PixPaht = sAppPath + image;
+		pix.load(PixPaht);
+
+		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		//背景
+		p.drawPixmap(rcClient,pix);
+		//边框
+		QPen pen = QPen(LineColor);
+		pen.setWidth(2);
+		p.setPen(pen);
+		p.drawRect(rcClient);
+		//焦点
+
+		if (m_bIsFocus)
+		{
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int height = 0;
+			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(5);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
+			p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
+		}
+		else
+		{
+			p.drawRect(rcClient);
+		}
+		//
+		int awidth=0;
+		int bheight=0;
+		int ax=0;
+		int ay=0;
+
+		rcClient.getCoords(&ax, &ay, &awidth, &bheight);
+		int aFontSize=10;
+		int aw=400;
+		//	int ah=300;
+		aFontSize=awidth*FontSize/(aw);
+		QFont font(FontFamily, aFontSize, QFont::Bold);
+
+		p.setFont(font);
+
+		pen.setColor(FontColor);
+
+		p.setPen(pen);
+
+		QString m_text;
+		QPoint dev_position=this->geometry().topLeft();
+		if (m_CountConnecting==4)
+		{
+			m_CountConnecting=0;
+		}
+		for (int i=0;i<m_CountConnecting;i++)
+		{
+			m_text+="..";
+		}
+		m_CountConnecting++;
+		p.drawText(rcClient, Qt::AlignCenter, m_text);
+	}
+}
+
+void QSubView::paintEventCache( QPaintEvent *e )
+{
+	if (m_CurrentState==STATUS_CONNECTED)
+	{
+		Q_UNUSED(e);
+		QPainter p(this);
+		QString image;
+		QColor LineColor;
+		QColor LineCurColor;
+		QColor FontColor;
+		int FontSize;
+		QString FontFamily;
+
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+		QSettings IniFile(path, QSettings::IniFormat, 0);
+
+		image = IniFile.value("background/background-image", QVariant("")).toString();
+		LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
+		FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+		FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
+		FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+
+		QRect rcClient = contentsRect();
+		this->geometry().center();
+		QPixmap pix;
+		QString PixPaht = sAppPath + image;
+		pix.load(PixPaht);
+
+		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		//背景
+		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		p.drawPixmap(rcClient,m_cacheImage);
+		qDebug()<<m_cacheImage.width()<<m_cacheImage.height()<<"==========";
+		qDebug()<<rcClient.width()<<rcClient.height();
+		m_cacheImage.save("123.jpg");
+		//边框
+		QPen pen = QPen(LineColor);
+		pen.setWidth(2);
+		p.setPen(pen);
+		p.drawRect(rcClient);
+		//焦点
+
+		if (m_bIsFocus)
+		{
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int height = 0;
+			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(5);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
+			p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
+		}
+		else
+		{
+			p.drawRect(rcClient);
+		}
+	}
+}
+
+void QSubView::saveCacheImage()
+{
+	if (m_CurrentState==STATUS_CONNECTED)
+	{
+		_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+		_cacheBackImage.save("12.jpg");
+	}
+	
 }

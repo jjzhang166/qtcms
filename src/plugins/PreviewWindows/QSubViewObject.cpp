@@ -10,7 +10,7 @@ QSubViewObject::QSubViewObject(void):m_IDeviceClient(NULL),
 	connect(this,SIGNAL(OpenCameraInWndSignl()),m_QSubviewProcess,SLOT(OpenCameraInWnd()),Qt::QueuedConnection);
 	connect(this,SIGNAL(m_workerThreadQuitSignal()),this,SLOT(m_workerThreadQuit()),Qt::QueuedConnection);
 	connect(this,SIGNAL(SetDeviceByVendorSignal(QString, QWidget *)),m_QSubviewProcess,SLOT(SetDeviceByVendor(QString, QWidget *)),Qt::QueuedConnection);
-	m_QSubviewProcess->SetDeviceClient(m_IDeviceClient);
+	/*m_QSubviewProcess->SetDeviceClient(m_IDeviceClient);*/
 	m_workerThread.start();
 }
 
@@ -36,11 +36,7 @@ int QSubViewObject::SetCameraInWnd(const QString sAddress,unsigned int uiPort,co
 	m_QSubviewProcess->SetCameraInWnd(sAddress,uiPort,sEseeId,uiChannelId,uiStreamId,sUsername,sPassword,sCameraname,sVendor);
 	return 0;
 }
-int QSubViewObject::SetDeviceClient(IDeviceClient *m_IDeviceClient)
-{
-	m_QSubviewProcess->SetDeviceClient(m_IDeviceClient);
-	return 0;
-}
+
 
 void QSubViewObject::m_workerThreadQuit()
 {
