@@ -15,7 +15,7 @@ Qqwidget::Qqwidget(QWidget *parent,QString pixdir):QWidget(parent),_pixdir(pixdi
 	
 
 	bgpix.load(pixdir,0,Qt::AvoidDither|Qt::ThresholdDither|Qt::ThresholdAlphaDither); 
-	resize(parent->size()/15);
+	resize(parent->size().height()/15,parent->size().height()/15);
 
 	setMask(QBitmap(bgpix.mask())); 
 	_parent=parent;

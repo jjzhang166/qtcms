@@ -57,7 +57,8 @@ public:
 	void  SocketError(QVariantMap evMap);
 	void  StateChange(QVariantMap evMap);
 	void  CacheState(QVariantMap evMap);
-
+	virtual void hideEvent(QHideEvent *);
+	virtual void showEvent(QShowEvent *);
 	typedef enum __enConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -98,6 +99,7 @@ private:
 private:
     bool bIsInitFlags;
     bool bIsCaseInitFlags;
+	bool bIsOpenAudio;
     int  cbInit();
 };
 

@@ -55,7 +55,7 @@ void ManageWidget::resizeEvent( QResizeEvent *event )
 	if (NULL!=_recordItem)
 	{
 		_recordItem->setNewPos(1.5,1);
-		_recordItem->resize(this->size()/20);
+		_recordItem->resize(this->size().height()/20,this->size().height()/20);
 
 	}
 	if (NULL!=_audioItem)

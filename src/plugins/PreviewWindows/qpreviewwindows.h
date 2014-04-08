@@ -66,7 +66,8 @@ public slots:
 
 	int SetVolume(unsigned int uiPersent);
 	int AudioEnabled(bool bEnabled);
-
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;
@@ -75,7 +76,7 @@ private:
 
 	int m_uiWndIndex;
 	volatile int m_CurrentWnd;
-
+	bool m_bIsOpenAudio;
 	
 	QMutex m_mutex;
 

@@ -11,7 +11,8 @@ QWebPluginFWBase(this),
 m_pLocalRecordSearch(NULL),
 m_pLocalPlayer(NULL),
 m_pWindowDivMode(NULL),
-m_currentWindID(0)
+m_currentWindID(0),
+m_bIsOpenAudio(false)
 {
 	//…Í«ÎILocalRecordSearchΩ”ø⁄
 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
@@ -388,6 +389,7 @@ QString RecordPlayer::GetNowPlayedTime()
 }
 int RecordPlayer::AudioEnabled(bool bEnabled)
 {
+	m_bIsOpenAudio=bEnabled;
 	return m_subRecPlayerView[0].AudioEnabled(bEnabled);
 }
 int RecordPlayer::SetVolume(const unsigned int &uiPersent)
@@ -459,4 +461,14 @@ void RecordPlayer::transSearchStop(QVariantMap &evMap)
 	EP_ADD_PARAM(arg,"stopevent",evMap["stopevent"].toString());
 
 	EventProcCall("SearchStop",arg);
+}
+
+void RecordPlayer::showEvent( QShowEvent * )
+{
+	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
+}
+
+void RecordPlayer::hideEvent( QHideEvent * )
+{
+	m_subRecPlayerView[0].AudioEnabled(false);
 }

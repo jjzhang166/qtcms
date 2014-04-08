@@ -30,7 +30,8 @@ public:
 	void transRecordDate(QVariantMap &evMap);
 	void transRecordFiles(QVariantMap &evMap);
 	void transSearchStop(QVariantMap &evMap);
-
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 	//ILocalRecordSearch
@@ -73,7 +74,7 @@ private:
 
 	RecordPlayerView m_subRecPlayerView[4];
 	int m_currentWindID;
-
+	bool m_bIsOpenAudio;
 };
 
 

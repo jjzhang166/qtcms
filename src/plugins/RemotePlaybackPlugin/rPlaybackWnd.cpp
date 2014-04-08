@@ -23,7 +23,8 @@ m_GroupPlayback(NULL),
 bIsInitFlags(false),
 bIsCaseInitFlags(false),
 _curConnectState(STATUS_DISCONNECTED),
-_curConnectType(TYPE_NULL)
+_curConnectType(TYPE_NULL),
+bIsOpenAudio(false)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -273,6 +274,11 @@ int   RPlaybackWnd::GroupStop()
 bool  RPlaybackWnd::AudioEnabled(bool bEnable)
 {
     bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
+	bIsOpenAudio=bEnable;
+	if (NULL != m_GroupPlayback)
+	{
+		m_GroupPlayback->GroupSetVolume(0xAECBCA, &m_PlaybackWnd[m_nCurrentWnd]);
+	}
     return bRet;
 }
 int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
@@ -280,7 +286,7 @@ int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 	int nRet = -1;
 	if (NULL != m_GroupPlayback)
 	{
-		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, NULL);
+		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, &m_PlaybackWnd[m_nCurrentWnd]);
 	}
 	return nRet;
 }
@@ -433,6 +439,20 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 	QList<int>::iterator it;
 	for(it=_widList.begin();it!=_widList.end();it++){
 		m_PlaybackWnd[*it].CacheState(evMap);
+	}
+}
+
+void RPlaybackWnd::hideEvent( QHideEvent * )
+{
+	m_PlaybackWnd[0].AudioEnabled(false);
+}
+
+void RPlaybackWnd::showEvent( QShowEvent * )
+{
+	m_PlaybackWnd[0].AudioEnabled(bIsOpenAudio);
+	if (NULL != m_GroupPlayback)
+	{
+		 m_GroupPlayback->GroupSetVolume(0xAECBCA, &m_PlaybackWnd[m_nCurrentWnd]);
 	}
 }
 

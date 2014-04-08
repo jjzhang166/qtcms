@@ -12,7 +12,8 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 	: QWidget(parent),
 	QWebPluginFWBase(this),
 	m_uiWndIndex(0),
-	m_CurrentWnd(0)
+	m_CurrentWnd(0),
+	m_bIsOpenAudio(false)
 {
     unsigned int i;
 	for (i = 0; i < ARRAY_SIZE(m_PreviewWnd); i ++)
@@ -376,6 +377,18 @@ int QPreviewWindows::SetVolume(unsigned int uiPersent)
 int QPreviewWindows::AudioEnabled(bool bEnabled)
 {
 	int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);
+	m_bIsOpenAudio=bEnabled;
 	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);
 	return nRet;
+}
+
+void QPreviewWindows::showEvent( QShowEvent * )
+{
+	m_PreviewWnd[0].AudioEnabled(m_bIsOpenAudio);
+	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);
+}
+
+void QPreviewWindows::hideEvent( QHideEvent * )
+{
+	m_PreviewWnd[0].AudioEnabled(false);
 }
