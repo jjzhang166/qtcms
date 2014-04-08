@@ -51,7 +51,7 @@ public slots:
 	int GroupSpeedSlow(int speed);
 	int GroupSpeedNormal();
 	QString GetNowPlayedTime();
-	int GroupSetVolume(const unsigned int &uiPersent);
+	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
 
 private slots:
