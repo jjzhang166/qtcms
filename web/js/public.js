@@ -175,7 +175,9 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				if($(this).attr('class') != 'hover'){
 					This.next('ul.option').hide();
 					This.find('span').html($(this).html()).attr('value',$(this).attr('value'));
-					//This.find('#vendor_ID').val($(this).html());
+					if(This.find('ul[action]')){
+						This.find('#'+This.find('ul[action]').attr('action')).val($(this).attr('value'));
+					}
 					This.find('input:hidden').val($(this).attr('value'));
 				}
 			})
@@ -407,9 +409,9 @@ function showdata(id,type){  //显示表单下有ID的元素的val值
 	$('#'+type).find('input[id]').each(function(){ 
 		str += $(this).attr('id')+':'+$(this).val()+'/';
 	})
-	show(str);
+	debugData(str);
 }
-function show(data){  // 在ID为test的div元素中打印对象数据
+function debugData(data){  // 在ID为test的div元素中打印对象数据
 	//return false;
 	var index='default',
 		str = 'Null';
@@ -426,11 +428,11 @@ function show(data){  // 在ID为test的div元素中打印对象数据
 	}
 }
 //弹出框部分操作
-function closeMenu(){  
+function closeMenu(){ 
+	$('#confirm h4').html('');
 	$('#iframe,div.confirm, div.menu').hide();
 	$('#menusList div.menu input.data').remove();
 	$('#menusList div.menu input:text').val('');
-	$('#confirm h4').html('');
 	$('div.menue').each(function(){ 
 		$(this).find('div.close:last').html('取消');
 	})

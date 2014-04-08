@@ -378,7 +378,7 @@ var oSearchOcx;
 			nowWeekTimeID = [];
 		if(copyID[0] != '')
 			copyTo = copyTo.concat(copyID);  // 要修改的通道的ID
-		//show('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
+		//debugData('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
 		// 返回符合当天星期的时间ID
 		for(var i in copyTo){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copyTo[i]);

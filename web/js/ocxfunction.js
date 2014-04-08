@@ -192,7 +192,7 @@ var oCommonLibrary,
 		closeMenu();
 	}
 	function RemoveDeviceSuccess(){ 
-		var id = $('#confirm #dev_id_ID').val();
+		var id = $('#dev_id_ID').val();
 		$('div.dev_list:eq(0) #dev_'+id).parent('li').remove();
 		$('ul.filetree:eq(1) span.channel').filter(function(){ 
 			return $(this).data('data')['dev_id'] == id;
@@ -496,11 +496,12 @@ function setDevData2ocx(){
 			//alert('try:'+e);
 		}
 		var devData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
-		var type = $('#type span').attr('type') || 0;
+		var type = $('#type span').attr('value') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
+		alert(type);
 		setDevData2ocx();
 		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/

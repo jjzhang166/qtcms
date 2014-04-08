@@ -126,6 +126,7 @@ var	nViewNum = 0,
 
 			ViewMax();
 
+			// 窗口缩放同步搜索文件UI
 			p = (oP.width()-81)/p;
 
 			oPlay_time.css('left',(parseInt(oPlay_time.css('left')) - 79)*p+79);
@@ -138,11 +139,11 @@ var	nViewNum = 0,
 			})
 		})
 
-		$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
+		/*$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
 			$(this).click(function(){
 				$('#type span').attr('type',index);
 			})
-		})
+		})*/
 
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
@@ -231,7 +232,7 @@ var	nViewNum = 0,
 			});
 			oPlaybackLocl.GroupPlay();
 		}else{
-			var type = parseInt($('#type span').attr('type')),
+			var type = parseInt($('#type span').attr('value')),
 			type = type == 0 ? 15 : 1 << type;
 			oPlayBack.GroupPlay(type,begin,end);
 		}
