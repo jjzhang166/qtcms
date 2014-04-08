@@ -15,7 +15,9 @@ RSubView::RSubView(QWidget *parent)
 	m_LpClient(NULL),
 	m_pRemotePlayBack(NULL),
 	ui(new Ui::titleview),
-	_curCache(0)
+	_curCache(0),
+	_bSaveCacheImage(false),
+	_cacheLable(NULL)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -26,7 +28,7 @@ RSubView::RSubView(QWidget *parent)
 	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
 
 	connect(&m_checkTime,SIGNAL(timeout()),this,SLOT(connecttingUpdate()));
-	connect(&m_cacheTime,SIGNAL(timeout()),this,SLOT(CacheStateSlotUpdate()));
+
 	connect(this,SIGNAL(connecttingUpdateSig()),this,SLOT(connecttingUpdateSlot()),Qt::DirectConnection);
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
@@ -43,6 +45,10 @@ RSubView::~RSubView()
 	}
 	m_checkTime.stop();
 	m_cacheTime.stop();
+	if (NULL!=_cacheLable)
+	{
+		delete _cacheLable;
+	}
 }
 
 void RSubView::paintEvent( QPaintEvent * e)
@@ -222,13 +228,10 @@ void RSubView::CacheStateSlot( QVariantMap evMap )
 	_curPaint=PAINTEVENT_STATUS_CACHE;
 	_curCache=evMap.value("Persent").toInt();
 	update();
+	_cacheLableShow();
 }
 
-void RSubView::CacheStateSlotUpdate()
-{
-	_curPaint=PAINTEVENT_STATUS_CACHE;
-	update();
-}
+
 
 void RSubView::paintEventNoVideo( QPaintEvent * )
 {
@@ -392,44 +395,45 @@ void RSubView::paintEventCache( QPaintEvent * )
 
 		QRect rcClient = contentsRect();
 
-		QPixmap pix;
-		QString PixPaht = sAppPath + image;
-		bool ret = pix.load(PixPaht);
 
-		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		p.drawPixmap(rcClient,_cacheBackImage);
 
-		p.drawPixmap(rcClient,pix);
-
-		QPen pen = QPen(LineColor, 2);
-		p.setPen(pen);
-
-		p.drawRect(rcClient);
-		if (this->hasFocus())
-		{
-			int x = 0;
-			int y = 0;
-			int width = 0;
-			int height = 0;
-			rcClient.getCoords(&x, &y, &width, &height);
-			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
-		}
-		else
-		{
-			p.drawRect(rcClient);
-		}
-
-		QFont font(FontFamily, FontSize, QFont::Bold);
-
-		p.setFont(font);
-
-		pen.setColor(FontColor);
-
-		p.setPen(pen);
-
-		QString cachePercent = QString("%1").arg(_curCache);
-		cachePercent.append("%");
-		p.drawText(rcClient, Qt::AlignCenter, cachePercent);
 	}
+}
+
+void RSubView::saveCacheImage()
+{
+	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+}
+
+void RSubView::_cacheLableShow()
+{
+	if (_cacheLable==NULL)
+	{
+		_cacheLable=new QLabel(this);
+		_cacheLable->setParent(this);
+		QPalette pa;
+		pa.setColor(QPalette::WindowText,Qt::red);
+		_cacheLable->setPalette(pa);
+		QFont ft;
+		ft.setPointSize(20);
+		_cacheLable->setFont(ft);
+	}
+	if (_cacheLable->isHidden())
+	{
+		_cacheLable->show();
+
+	}else if (_curCache==100)
+	{
+		_cacheLable->hide();
+	}
+	QString cachePercent("load  ");
+	cachePercent+=QString("%1").arg(_curCache);
+	cachePercent.append("%");
+	_cacheLable->setText(cachePercent);
+	_cacheLable->adjustSize();
+	_cacheLable->move(this->width()/2,this->height()-35);
 }
 
 
