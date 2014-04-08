@@ -79,6 +79,7 @@ QSubView::QSubView(QWidget *parent)
 	//test
 	_manageWidget=new ManageWidget(this);
 	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
+	initDeviceInfo();
 }
 
 QSubView::~QSubView()
@@ -1329,4 +1330,18 @@ int QSubView::SwitchStream( int chlId)
 		liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true);
 	}
 	return 0;
+}
+
+void QSubView::initDeviceInfo()
+{
+	m_DevCliSetInfo.m_sAddress="";
+	m_DevCliSetInfo.m_sCameraname="";
+	m_DevCliSetInfo.m_sEseeId="";
+	m_DevCliSetInfo.m_sPassword="";
+	m_DevCliSetInfo.m_sUsername="";
+	m_DevCliSetInfo.m_sVendor="";
+	m_DevCliSetInfo.m_uiChannelId=-1;
+	m_DevCliSetInfo.m_uiChannelIdInDataBase=-1;
+	m_DevCliSetInfo.m_uiPort=-1;
+	m_DevCliSetInfo.m_uiStreamId=-1;
 }

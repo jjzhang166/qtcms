@@ -91,6 +91,7 @@ private:
 	void paintEventCache(QPaintEvent *);
 	void saveCacheImage();
 	int GetDeviceInfo(int chlId);
+	void initDeviceInfo();
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
