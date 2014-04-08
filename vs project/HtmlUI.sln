@@ -163,6 +163,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IpcDeviceClient", "..\src\f
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioDevice", "..\src\functionlibs\AudioDevice\AudioDevice.vcxproj", "{9D5FB092-BC88-4304-A90E-B14A346B1726}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioPlayer", "..\src\functionlibs\AudioPlayer\AudioPlayer.vcxproj", "{60033B64-DF7D-4E6E-81D8-8C1645102CC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioDecoder", "..\src\functionlibs\AudioDecoder\AudioDecoder.vcxproj", "{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -320,6 +324,14 @@ Global
 		{9D5FB092-BC88-4304-A90E-B14A346B1726}.Debug|Win32.Build.0 = Debug|Win32
 		{9D5FB092-BC88-4304-A90E-B14A346B1726}.Release|Win32.ActiveCfg = Release|Win32
 		{9D5FB092-BC88-4304-A90E-B14A346B1726}.Release|Win32.Build.0 = Release|Win32
+		{60033B64-DF7D-4E6E-81D8-8C1645102CC8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{60033B64-DF7D-4E6E-81D8-8C1645102CC8}.Debug|Win32.Build.0 = Debug|Win32
+		{60033B64-DF7D-4E6E-81D8-8C1645102CC8}.Release|Win32.ActiveCfg = Release|Win32
+		{60033B64-DF7D-4E6E-81D8-8C1645102CC8}.Release|Win32.Build.0 = Release|Win32
+		{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}.Debug|Win32.Build.0 = Debug|Win32
+		{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}.Release|Win32.ActiveCfg = Release|Win32
+		{EFB016D5-869A-4037-8D0D-3C7DEEEDADCE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
