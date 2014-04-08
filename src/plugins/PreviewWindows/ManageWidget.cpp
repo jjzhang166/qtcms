@@ -22,6 +22,7 @@ ManageWidget::ManageWidget(QWidget *parent):QWidget(parent),
 	__createRecordItem();
 	__createAudioItem();
 	
+
 }
 
 
@@ -42,6 +43,7 @@ ManageWidget::~ManageWidget(void)
 		delete _audioItem;
 		_audioItem=NULL;
 	}
+
 }
 
 void ManageWidget::resizeEvent( QResizeEvent *event )
@@ -54,6 +56,7 @@ void ManageWidget::resizeEvent( QResizeEvent *event )
 	{
 		_recordItem->setNewPos(1.5,1);
 		_recordItem->resize(this->size()/20);
+
 	}
 	if (NULL!=_audioItem)
 	{
@@ -83,6 +86,7 @@ void ManageWidget::__createRecordItem()
 	QString dir=QApplication::applicationDirPath();
 	dir.append("/qq.png");
 	_recordItem=new Qqwidget(this,dir);
+
 	_recordItem->raise();
 	_recordItem->hide();
 }
@@ -95,6 +99,7 @@ QWidget * ManageWidget::GetRecordItem()
 void ManageWidget::RecordState(bool flag)
 {
 	if (NULL!=_recordItem&&NULL!=_audioItem)
+
 	{
 		if (false==flag)
 		{
