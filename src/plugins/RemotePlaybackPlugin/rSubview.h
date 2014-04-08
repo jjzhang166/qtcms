@@ -18,23 +18,6 @@
 #include <QMenu>
 #include <QAction>
 
-class CPaintEventStatus{
-public:
-	enum __enPaintEventStatus{
-		STATUS_NOVIDEO,
-		STATUS_CONNECTING,
-		STATUS_CACHE,
-	};
-};
-class CConnectStatus{
-public:
-	enum __enConnectStatus{
-		STATUS_CONNECTED,
-		STATUS_CONNECTING,
-		STATUS_DISCONNECTED,
-		STATUS_DISCONNECTING,
-	};
-};
 
 class RSubView :public QWidget
 {
@@ -63,8 +46,10 @@ public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
 	void setAudioHint(QString&);
 	bool AudioEnabled(bool bEnabled);
-	void SetCurConnectState(CConnectStatus::__enConnectStatus parm);
+	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
+
+
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -73,12 +58,13 @@ signals:
 
 	void connecttingUpdateSig();
 	void CacheStateSig(QVariantMap evMap);
+
 public:    
 	Ui::titleview * ui;
 	IDeviceClient *m_LpClient;
 
-	CConnectStatus::__enConnectStatus _curState;
-	CPaintEventStatus::__enPaintEventStatus _curPaint;
+	__enConnectStatus _curState;
+	__enPaintEventStatus _curPaint;
 	int _countConnecting;
 	QTimer m_checkTime;
 	QTimer m_cacheTime;
