@@ -34,6 +34,7 @@ QSubView::QSubView(QWidget *parent)
 	m_bIsForbidConnect(false),
 	ui(new Ui::titleview),
 	m_QActionCloseView(NULL),
+	m_QActionOpenAudio(NULL),
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
