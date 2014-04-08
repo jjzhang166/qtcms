@@ -413,3 +413,8 @@ QVariantMap QPreviewWindows::GetWindowInfo( unsigned int uiWndIndex )
 {
 	return m_PreviewWnd[uiWndIndex].GetWindowInfo();
 }
+
+void QPreviewWindows::ScreenShot()
+{
+	return m_PreviewWnd[m_CurrentWnd].ScreenShot();
+}

@@ -67,7 +67,7 @@ public:
 	int SetVolume(unsigned int uiPersent);
 	QSubView* getCurWind();
 	int AudioEnabled(bool bEnabled);
-
+	void ScreenShot();
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,
@@ -178,6 +178,7 @@ private:
 	//test
 	ManageWidget *_manageWidget;
 	QPixmap _cacheBackImage;
+	QPixmap _ScreenShotImage;
 };
 
 

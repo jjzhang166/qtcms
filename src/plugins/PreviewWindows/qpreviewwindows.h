@@ -68,6 +68,7 @@ public slots:
 
 	int SetVolume(unsigned int uiPersent);
 	int AudioEnabled(bool bEnabled);
+	void ScreenShot();
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
 private:

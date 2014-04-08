@@ -8,7 +8,8 @@
 #include <QtXml/QtXml>
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
-
+#include <QDir>
+#include <QDateTime>
 bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
@@ -1205,7 +1206,6 @@ void QSubView::paintEventCache( QPaintEvent *e )
 		//±³¾°
 		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		p.drawPixmap(rcClient,m_cacheImage);
-		qDebug()<<rcClient.width()<<rcClient.height();
 		//±ß¿ò
 		QPen pen = QPen(LineColor);
 		pen.setWidth(2);
@@ -1295,4 +1295,25 @@ QVariantMap QSubView::GetWindowInfo()
 	windowInfo.insert("currentState",m_CurrentState);
 	windowInfo.insert("chlId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
 	return windowInfo;
+}
+
+void QSubView::ScreenShot()
+{
+	_ScreenShotImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+	QString dir=QCoreApplication::applicationDirPath();
+	dir.append("/temp");
+	QDir temp;
+	bool exist=temp.exists(dir);
+	if (exist==false)
+	{
+		temp.mkdir(dir);
+	}
+	QDateTime mtime=QDateTime::currentDateTime();
+	uint mutime=mtime.toTime_t();
+	QString imageName;
+	imageName.append(dir);
+	imageName+="/";
+	imageName+=QString::number(mutime);
+	imageName+=".jpg";
+	_ScreenShotImage.save(imageName);
 }

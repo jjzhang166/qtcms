@@ -480,3 +480,8 @@ void RecordPlayer::hideEvent( QHideEvent * )
 {
 	m_subRecPlayerView[0].AudioEnabled(false);
 }
+
+void RecordPlayer::ScreenShot()
+{
+
+}
