@@ -54,9 +54,11 @@ public slots:
 	void OnAddDevice();
 	void OnAddDeviceDouble();
 	void OnAddDeviceALL();
+	void OnAddDeviceALLThread();
 	void OnRemoveDevice();
 	void OnModifyDevice();
 	void OnRemoveDeviceALL();
+	void OnRemoveDeviceALLThread();
 
 	/*group module*/
 	void OnAddGroup();
@@ -92,7 +94,8 @@ private:
  	bool m_bMouseTrace;
 	QPoint m_pos;
 	SettingsactivityThread *m_SettingThread;
-
+	bool m_bIsAdding;
+	bool m_bIsRemoving;
 signals:
 	void DeleteAllDevSig();
 

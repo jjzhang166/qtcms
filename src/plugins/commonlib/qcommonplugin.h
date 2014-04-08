@@ -18,6 +18,7 @@ public:
 private:
 	QSqlDatabase * m_db;
 	static QMutex Group_lock;
+	static QMutex Device_lock;
 	QString m_sDbConnectionName;
 	static QMutex Area_lock;
 

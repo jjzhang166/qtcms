@@ -11,6 +11,7 @@
 
 QMutex QCommonPlugin::Group_lock;
 QMutex QCommonPlugin::Area_lock;
+QMutex QCommonPlugin::Device_lock;
 int QCommonPlugin::m_randSeed = 0;
 QMutex QCommonPlugin::m_csRandSeed;
 QCommonPlugin::QCommonPlugin(QWidget *parent)
@@ -1077,7 +1078,7 @@ int QCommonPlugin::AddDevice(int area_id,
 	QSqlQuery _query(*m_db);
 	int dev_id = 0;
 	QString command;
-
+	Device_lock.lock();
 	_query.prepare("insert into dev(area_id,address,port,http,eseeid,username,password,name,channel_count,connect_method,vendor) values(:area_id,:address,:port,:http,:eseeid,:username,:password,:name,:channel_count,:connect_method,:vendor)");
 	_query.bindValue(":area_id",area_id);
 	_query.bindValue(":address",sAddress);
@@ -1103,14 +1104,17 @@ int QCommonPlugin::AddDevice(int area_id,
 		_query.bindValue(":stream_id",1);
 		_query.exec();
 	}
+	Device_lock.unlock();
 	return dev_id;
 }
 
 //删除设备dev_id的所有信息
 int QCommonPlugin::RemoveDevice(int dev_id)
 {
+	Device_lock.lock();
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
@@ -1120,41 +1124,47 @@ int QCommonPlugin::RemoveDevice(int dev_id)
 	_query.exec(command);
 	QString command_chl=QString("delete from chl where id='%1'").arg(dev_id);
 	_query.exec(command_chl);
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //修改设备dev_id的名称
 int QCommonPlugin::ModifyDeviceName(int dev_id,QString sDeviceName)
 {
+	Device_lock.lock();
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set name='%1' where id='%2'").arg(sDeviceName).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //修改设备dev_id的IP信息
 int QCommonPlugin::ModifyDeviceHost(int dev_id,QString sAddress, int port, int http)
 {
+	Device_lock.lock();
 	if ( port < 0 && http < 0 )
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_SYSTEM_FAILED;
 	}
 
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set address='%1',port='%2',http='%3' where id='%4'").arg(sAddress).arg(port).arg(http).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 
 }
@@ -1162,50 +1172,57 @@ int QCommonPlugin::ModifyDeviceHost(int dev_id,QString sAddress, int port, int h
 //修改设备dev_id的易视网信息
 int QCommonPlugin::ModifyDeviceEseeId(int dev_id,QString sEseeId)
 {
+	Device_lock.lock();
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set eseeid='%1' where id='%2'").arg(sEseeId).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //修改设备dev_id的登录用户信息
 int QCommonPlugin::ModifyDeviceAuthority(int dev_id,QString sUsername,QString sPassword)
 {
+	Device_lock.lock();
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set username='%1',password='%2' where id='%3'").arg(sUsername).arg(sPassword).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //将设备dev_id的最大通道数更新为chlCount
 int QCommonPlugin::ModifyDeviceChannelCount(int dev_id,int chlCount)
 {
+	Device_lock.lock();
 	if ( chlCount < 0 )
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_SYSTEM_FAILED;
 	}
 
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set channel_count='%1' where id='%2'").arg(chlCount).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 
 }
@@ -1213,43 +1230,50 @@ int QCommonPlugin::ModifyDeviceChannelCount(int dev_id,int chlCount)
 //将设备dev_id的连接方式修改为connectMethod
 int QCommonPlugin::ModifyDeviceConnectMethod(int dev_id,int connectMethod)
 {
+	Device_lock.lock();
 	if ( connectMethod < 0 )
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_SYSTEM_FAILED;
 	}
 
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set connect_method='%1' where id='%2'").arg(connectMethod).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //获取设备dev_id的厂商信息
 int QCommonPlugin::ModifyDeviceVendor(int dev_id,QString sVendor)
 {
+	Device_lock.lock();
 	if (!IsDeviceExist(dev_id))
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
 	QSqlQuery _query(*m_db);
 	QString command = QString("update dev set vendor='%1' where id='%2'").arg(sVendor).arg(dev_id);
 	_query.exec(command);
-
+	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
 
 //获取区域area_id下的设备总数
 int QCommonPlugin::GetDeviceCount(int area_id)
 {
+	Device_lock.lock();
 	if ( !IsAreaIdExist(area_id) )
 	{
+		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
 	}
 
@@ -1260,11 +1284,12 @@ int QCommonPlugin::GetDeviceCount(int area_id)
 	if (_query.next())
 	{
 		int dev_num = _query.value(0).toInt();
-
+		Device_lock.unlock();
 		return dev_num;
 	}
 	else
 	{
+		Device_lock.unlock();
 		return 0;
 	}
 }

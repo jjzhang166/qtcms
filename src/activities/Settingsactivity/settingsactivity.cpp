@@ -2,11 +2,14 @@
 #include <guid.h>
 #include <QDebug>
 #include <QString>
+#include <qtconcurrentrun.h>
 
 settingsActivity::settingsActivity():
 	m_nRef(0),
 	m_bMouseTrace(false),
-	m_SettingThread(NULL)
+	m_SettingThread(NULL),
+	m_bIsRemoving(false),
+	m_bIsAdding(false)
 {
 
 }
@@ -78,9 +81,9 @@ void settingsActivity::Active( QWebFrame * frame)
 
 	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
 	QWFW_MSGMAP("AddDeviceDouble_ok","click","OnAddDeviceDouble()");
-	QWFW_MSGMAP("AddDeviceALL_ok","click","OnAddDeviceALL()");
+	QWFW_MSGMAP("AddDeviceALL_ok","click","OnAddDeviceALLThread()");
 	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
-	QWFW_MSGMAP("RemoveDeviceALL_ok","click","OnRemoveDeviceALL()");
+	QWFW_MSGMAP("RemoveDeviceALL_ok","click","OnRemoveDeviceALLThread()");
 	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
 
 	QWFW_MSGMAP("AddGroup_ok","click","OnAddGroup()");
@@ -703,7 +706,9 @@ void settingsActivity::OnAddDevice()
 			return;
 		}
 		 nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-		if(0!=nRet_id){
+		if(nRet_id>0){
+			goto end1;
+		}else{
 			Content.clear();
 			arg.clear();
 			Content.append("AddDeviceFail");
@@ -713,7 +718,7 @@ void settingsActivity::OnAddDevice()
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
 		}
-		goto end1;
+
 	}
 
 	Content.clear();
@@ -1830,6 +1835,7 @@ void settingsActivity::OnAddDeviceALL()
 		EventProcCall("AddDeviceAllFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
+		m_bIsAdding=false;
 		return;
 	}
 
@@ -1849,6 +1855,7 @@ void settingsActivity::OnAddDeviceALL()
 		EventProcCall("AddDeviceAllFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
+		m_bIsAdding=false;
 		return;
 	}
 	int n;
@@ -1866,6 +1873,7 @@ void settingsActivity::OnAddDeviceALL()
 		EventProcCall("AddDeviceAllFail",arg);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
+		m_bIsAdding=false;
 		return;
 	}
 
@@ -1886,7 +1894,7 @@ void settingsActivity::OnAddDeviceALL()
 		QString SearchGateway_ID=item.toElement().attribute("SearchGateway_ID");
 		QString SearchHttpport_ID=item.toElement().attribute("SearchHttpport_ID");
 		QString SearchMediaPort_ID=item.toElement().attribute("SearchMediaPort_ID");
-
+		qDebug()<<SearchIP_ID;
 		//添加的默认参数
 
 		QString	UserName_ID=item.toElement().attribute("username");
@@ -1965,12 +1973,28 @@ void settingsActivity::OnAddDeviceALL()
 
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
-	qDebug()<<"step in";
+	m_bIsAdding=false;
 }
-
+void settingsActivity::OnAddDeviceALLThread()
+{
+	//if (m_bIsAdding!=true)
+	//{
+	//	IDeviceManager *Idevice=NULL;
+	//	IAreaManager *Iarea=NULL;
+	//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
+	//	m_bIsAdding=true;
+	//	QFuture<void>ret=QtConcurrent::run(this,&settingsActivity::OnAddDeviceALL,Idevice,Iarea);
+	//}
+	OnAddDeviceALL();
+}
+void settingsActivity::OnRemoveDeviceALLThread()
+{
+	OnRemoveDeviceALL();
+	/*QFuture<void>ret=QtConcurrent::run(this,&settingsActivity::OnRemoveDeviceALL);*/
+}
 void settingsActivity::OnRemoveDeviceALL()
 {
-	qDebug()<<"step in";
 	IDeviceManager *Idevice=NULL;
 	qDebug()<<"OnRemoveDeviceALL";
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -1992,7 +2016,7 @@ void settingsActivity::OnRemoveDeviceALL()
 	for (int n=0;n<DevNum;n++)
 	{
 		int liDevId=DevString.section(",",n,n).toInt();
-
+		qDebug()<<liDevId;
 
 		bool nRet_bool=false;
 		nRet_bool=Idevice->IsDeviceExist(liDevId);
@@ -2024,7 +2048,6 @@ void settingsActivity::OnRemoveDeviceALL()
 		EventProcCall("RemoveDeviceAllSuccess",arg);
 	}
 	Idevice->Release();
-	qDebug()<<"step out";
 	return;
 }
 

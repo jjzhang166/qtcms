@@ -110,7 +110,7 @@ void QSubviewThread::CloseAll()
 
 int QSubviewThread::SetDeviceByVendor(QString sVendor, QWidget *pWnd)
 {
-	if (m_bIsClosing==false)
+	if (m_bIsClosing==false&&sVendor.isEmpty()==false)
 	{
 		QString sAppPath=QCoreApplication::applicationDirPath();
 		QFile *file=new QFile(sAppPath+"/pcom_config.xml");
