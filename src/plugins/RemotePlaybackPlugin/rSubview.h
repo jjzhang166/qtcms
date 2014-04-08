@@ -62,6 +62,7 @@ public:
 public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
 	void setAudioHint(QString&);
+	bool AudioEnabled(bool bEnabled);
 	void SetCurConnectState(CConnectStatus::__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 signals:
@@ -92,7 +93,8 @@ public slots:
 	void CacheStateSlotUpdate();
 private:
 	static RSubView* m_pCurView;
-	static bool m_bIsAudioOpen;
+	static bool m_bLocalAudioStatus;
+	static bool m_bGlobalAudioStatus;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
 	QMenu m_rMousePressMenu;

@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 #include <QtXml/QtXml>
 
-bool QSubView::m_bIsAudioOpend = false;
+bool QSubView::m_bIsAudioOpend = true;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
 
@@ -375,6 +375,7 @@ int QSubView::CloseWndCamera()
 	
 	m_nSampleRate = 0;
 	m_nSampleWidth = 0;
+	m_QActionOpenAudio->setText("open audio");
 	m_bIsAudioOpend = true;
 
 	return 0;
@@ -715,7 +716,7 @@ int QSubView::AudioEnabled(bool bEnabled)
 		}
 		m_bIsAudioOpend = true;
 	}
-	else
+	else if (NULL != m_pCurrView)
 	{
 		if (NULL != m_pAudioPlayer)
 		{
@@ -729,6 +730,30 @@ int QSubView::AudioEnabled(bool bEnabled)
 		}
 	}
 	return 0;
+}
+QSubView* QSubView::getCurWind()
+{
+	return m_pCurrView;
+}
+int QSubView::AudioEnabled(bool bEnabled)
+{
+	if (bEnabled && !m_bIsAudioOpend)
+	{
+		return 1;
+	}
+	m_bIsAudioOpend = bEnabled ? false : true;
+	if (!bEnabled && NULL != m_pAudioPlayer)
+	{
+		m_pAudioPlayer->Stop();
+		m_pAudioPlayer->Release();
+		m_pAudioPlayer = NULL;
+		emit ChangeAudioHint(QString("open audio"), m_pCurrView);
+	}
+	return 0;
+}
+void QSubView::ChangAudioHint(const QString &statement)
+{
+	m_QActionOpenAudio->setText(statement);
 }
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser)
 {

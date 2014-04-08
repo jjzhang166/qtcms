@@ -6,7 +6,8 @@
 
 
 RecordPlayerView* RecordPlayerView::m_pCurView = NULL;
-bool RecordPlayerView::m_bIsAudioOpen = false;
+bool RecordPlayerView::m_bLocalAudioStatus = false;
+bool RecordPlayerView::m_bGlobalAudioStatus = false;
 
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
@@ -112,7 +113,11 @@ void RecordPlayerView::setLocalPlayer(ILocalPlayer* pPlayer)
 
 void RecordPlayerView::OnOpenAudio()
 {
-	if (!m_bIsAudioOpen)
+	if (!m_bGlobalAudioStatus)
+	{
+		return;
+	}
+	if (!m_bLocalAudioStatus)
 	{
 		if (NULL == m_pLocalPlayer)
 		{
@@ -122,10 +127,10 @@ void RecordPlayerView::OnOpenAudio()
 		m_pLocalPlayer->GroupEnableAudio(true);
 
 		m_ActionOpenAudio->setText("close audio");
-		m_bIsAudioOpen = true;
+		m_bLocalAudioStatus = true;
 		m_pCurView = this;
 	}
-	else
+	else if (NULL != m_pCurView)
 	{
 		if (m_pCurView == this)
 		{
@@ -136,7 +141,7 @@ void RecordPlayerView::OnOpenAudio()
 			m_pLocalPlayer->GroupEnableAudio(false);
 
 			m_ActionOpenAudio->setText("open audio");
-			m_bIsAudioOpen = false;
+			m_bLocalAudioStatus = false;
 			m_pCurView = NULL;
 		}
 		else
@@ -153,4 +158,18 @@ void RecordPlayerView::OnOpenAudio()
 void RecordPlayerView::setAudioHint(QString &statement)
 {
 	m_ActionOpenAudio->setText(statement);
+}
+
+int RecordPlayerView::AudioEnabled(bool bEnabled)
+{
+	m_bGlobalAudioStatus = bEnabled;
+	if (!bEnabled && NULL != m_pLocalPlayer && m_bLocalAudioStatus)
+	{
+		emit ChangeAudioHint(QString("open audio"), m_pCurView);
+
+		m_pLocalPlayer->GroupEnableAudio(false);
+		m_bLocalAudioStatus = false;
+		m_pCurView = NULL;
+	}
+	return 0;
 }

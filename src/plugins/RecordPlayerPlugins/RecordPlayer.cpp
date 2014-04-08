@@ -391,15 +391,6 @@ int RecordPlayer::AudioEnabled(bool bEnabled)
 {
 	return m_subRecPlayerView[0].AudioEnabled(bEnabled);
 }
-int RecordPlayer::SetVolume(const unsigned int &uiPersent)
-{
-	int nRet = -1;
-	if (NULL != m_pLocalPlayer)
-	{
-		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, NULL);
-	}
-	return nRet;
-}
 int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
 {
 	int nRet = -1;

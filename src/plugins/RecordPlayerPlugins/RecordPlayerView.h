@@ -21,6 +21,8 @@ public:
 
 	void setAudioHint(QString&);
 	void setLocalPlayer(ILocalPlayer* pPlayer);
+	int AudioEnabled(bool bEnabled);
+
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -34,7 +36,8 @@ private:
 	QAction *m_ActionOpenAudio;
 
 	static RecordPlayerView* m_pCurView;
-	static bool m_bIsAudioOpen;
+	static bool m_bLocalAudioStatus;
+	static bool m_bGlobalAudioStatus;
 
 	ILocalPlayer* m_pLocalPlayer;
 };

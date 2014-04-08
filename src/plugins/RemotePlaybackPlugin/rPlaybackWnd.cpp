@@ -271,15 +271,11 @@ int   RPlaybackWnd::GroupStop()
     } 
     return nRet;
 }
-// bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
-// {
-//     bool bRet = false;
-//     if (NULL != m_GroupPlayback)
-//     {
-//         bRet = m_GroupPlayback->GroupEnableAudio(bEnable);
-//     } 
-//     return bRet;
-// }
+bool  RPlaybackWnd::GroupEnableAudio(bool bEnable)
+{
+    bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
+    return bRet;
+}
 int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
 {
 	int nRet = -1;
