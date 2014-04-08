@@ -26,12 +26,13 @@ var now = 0;
 		$('ul.filetree').treeview();
 
 		var listParent = $('div.dev_list');
-		listParent.on('click','li:has(span.device):gt(0)',function(){
+		/*listParent.on('click','li:has(span.device):gt(0)',function(){
 			$('div.dev_list li').removeClass('sel');
 			$(this).addClass('sel');
-		})
+		})*/
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
+			berorSerchShowHint($(this));
 			searchVideo();
 		})
 

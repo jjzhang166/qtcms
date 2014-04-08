@@ -31,15 +31,13 @@ var	nViewNum = 0,
 		})
 
 		var listParent = $('div.dev_list');
-		listParent.on('click','li:has(span.device):gt(0)',function(){  //设备单击初始化部分样式
-			var obj = $(this)
-			$('div.dev_list li').not(obj).removeClass('sel');
-			obj.addClass('sel');
-			PBrecFileTableInit();
-		})
+		/*listParent.on('click','li:has(span.device):gt(0)',function(){  //设备单击初始化部分样式
+		})*/
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
+			berorSerchShowHint($(this));
 			searchVideo();
+			PBrecFileTableInit();
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){

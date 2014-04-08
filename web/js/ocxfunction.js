@@ -424,6 +424,13 @@ function setDevData2ocx(){
 		}
 		return b;
 	}
+  	function berorSerchShowHint(obj) {
+  		$('#fileRec').show().find('span').width(0)
+					 .end().find('h5').html('0/0')
+					 .end().find('h4').html('正在检索:');
+		$('div.dev_list li').removeClass('sel');
+		obj.addClass('sel');
+  	}
 	function searchVideo(){
 		var seletDev = $('div.dev_list li.sel');
 		if(seletDev.length == 0){
@@ -431,9 +438,6 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
-		$('#fileRec').show().find('span').width(0)
-					 .end().find('h5').html('0/0')
-					 .end().find('h4').hmtl('正在检索:');
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -525,11 +529,10 @@ function setDevData2ocx(){
 		}
 	}
 	function showRecProgress(now){
-		var con = '正在检索:'
 		//show(now+'//'+recTotal);
-		if(recTotal != 0){
-			var p = now/recTotal*100;
-		}else{
+		var con = '正在检索:',
+			p =now/recTotal*100;
+		if(recTotal == now){
 			con = '检索完成:';
 		}
 		$('#fileRec').find('span').width(p-2)
@@ -537,7 +540,6 @@ function setDevData2ocx(){
 			             .end().find('h4').html(con);
 	}
 	function RecfinishCallback(data){
-		alert(data.total);
 		recTotal = data.total ? data.total : 0;	
 		
 	}
