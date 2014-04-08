@@ -2,7 +2,9 @@ var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,oDiv;
 var	nViewNum = 0,
 	NowMonth = 0,
 	drag_timer = null,
-	oSelected = [];
+	oSelected = [],
+	recFile=[],
+	bNoResize=true;
 	/*oplaybackvolset={'obj':'playback','enable':false,'vol':50},   //远程回放声音初始状态
 	oplaybackLoclvolset={'obj':'playbackLocl','enable':false,'vol':50};//本地回放声音初始状态*/
 	$(function(){
@@ -37,6 +39,7 @@ var	nViewNum = 0,
 		})*/
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
+			recFile=[];
 			berorSerchShowHint($(this));
 			PBrecFileTableInit();
 			searchVideo();
@@ -67,7 +70,7 @@ var	nViewNum = 0,
 			}
 		})*/
 		
-		var channelvideo = $("#channelvideo")
+		var channelvideo = $("#channelvideo");
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 			if($(this).prop('checked')){
@@ -132,13 +135,9 @@ var	nViewNum = 0,
 
 			oPlay_time.css('left',(parseInt(oPlay_time.css('left')) - 79)*p+79);
 			
-			oP.find('div.video').each(function(){
-				$(this).css({
-					left:(parseInt($(this).css('left'))-81)*p+81,
-					width:$(this).width()*p
-				})
-			})
-			dragStartMove();
+			if(bNoResize){
+				noResize();
+			}
 		})
 
 		/*$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
@@ -170,6 +169,7 @@ var	nViewNum = 0,
 				SyncSoundSli(oView.enable);
 			})
 		})
+		//return false;
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
@@ -220,7 +220,6 @@ var	nViewNum = 0,
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
-			//debugData(begin+'//'+end);
 			setDevData2ocx();
 		if(bool){
 			$("#channelvideo").find('input:checkbox').each(function(index){
@@ -294,7 +293,7 @@ var	nViewNum = 0,
 		color[2] = '#FFE62E';
 		color[4] = '#F00';
 		color[8] = '#F78445';
-	function VideoData2Ui(obj){  // CGI 数据填充.
+	/*function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
 			var startDate = $('div.calendar span.nowDate').html().split('-');
@@ -304,9 +303,13 @@ var	nViewNum = 0,
 			var left = start*p+81;
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
 		})		
-	}
+	}*/
 
 	function RecFileInfoCallback(data){
+		recFile.push(data);
+		RecFileInfo2UI(data);
+	}
+	function RecFileInfo2UI(data){
 		var start = data.start || data.startTime;
 			start=time2Sec(start.split(' ')[1]);
 		var end = data.end || data.stopTime;
@@ -326,8 +329,8 @@ var	nViewNum = 0,
 		}
 		$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 		if(!bool){
-			showRecProgress(parseInt(data.index)+1);	
-		}
+			showRecProgress(parseInt(data.index)+1);
+		}		
 	}
 	function SortByfileTime(a,b){  //文件路径时间升序排列
 		var reg = /.*?(\d{6})\.avi/g;
@@ -384,4 +387,21 @@ var	nViewNum = 0,
 
 	function addRecFileTable(str,name){
 		$('<tr><td class="no_border"><input type="checkbox"'+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+	}
+	function noResize(){
+		bNoResize=false;
+		$('#channelvideo div.video').remove();
+		var winW = $(window).width(),
+			winH = $(window).height();
+		setTimeout(function(){
+			if($(window).width() == winW && $(window).height() == winH){
+				if(recFile){
+					for(i in recFile){
+						RecFileInfo2UI(recFile[i]);
+					}
+				}
+			}
+			bNoResize=true;
+			dragStartMove();
+		},200);
 	}

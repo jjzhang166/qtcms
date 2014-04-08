@@ -547,7 +547,6 @@ function setDevData2ocx(){
 		}
 	}
 	function showRecProgress(now){  //回访检索文件进度
-		//show(now+'//'+recTotal);
 		var con = '正在检索:',
 			p =now/recTotal*100;
 		if(recTotal == now){
