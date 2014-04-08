@@ -51,8 +51,7 @@ public slots:
 	int GroupSpeedSlow(int speed);
 	int GroupSpeedNormal();
 	QString GetNowPlayedTime();
-	int SetVolume(const unsigned int &uiPersent);
-	int AudioEnabled(bool bEnabled);
+	int GroupSetVolume(const unsigned int &uiPersent);
 
 	void ChangeAudioHint(QString, RecordPlayerView*);
 

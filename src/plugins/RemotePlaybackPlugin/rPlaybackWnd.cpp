@@ -285,7 +285,7 @@ int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
 	{
 		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, NULL);
 	}
-	return 0;
+	return nRet;
 }
 int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 {

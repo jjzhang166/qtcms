@@ -409,6 +409,15 @@ int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
 	}
 	return nRet;
 }
+int RecordPlayer::GroupSetVolume(const unsigned int &uiPersent)
+{
+	int nRet = -1;
+	if (NULL != m_pLocalPlayer)
+	{
+		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, NULL);
+	}
+	return nRet;
+}
 void RecordPlayer::ChangeAudioHint(QString statement, RecordPlayerView* pWnd)
 {
 	int index = pWnd - m_subRecPlayerView;
