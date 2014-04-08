@@ -37,6 +37,7 @@ int AudioDevice::SetAudioParam(int nChannel,int nSampleRate,int nSampleWidth)
 {
 	if (NULL != m_hWaveOut)
 	{
+		m_waveDev.winWaveOutReset(m_hWaveOut);
 		m_waveDev.winWaveOutClose(m_hWaveOut);
 		m_hWaveOut = NULL;
 	}

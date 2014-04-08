@@ -44,8 +44,8 @@ private:
 	int m_nInitHeight;
 	int m_nInitWidth;
 	int m_nSpeedRate;
-	int m_nSampleRate;
-	int m_nSampleWidth;
+	static int m_nSampleRate;
+	static int m_nSampleWidth;
 
 	SpeedType m_speed;
 	quint64 m_ui64TSP;

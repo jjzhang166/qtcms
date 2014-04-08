@@ -16,8 +16,6 @@ public:
 // 	int recordAudioStream(QVariantMap &evMap);
 	int recordStream(QVariantMap &evMap);
 	int readStream(RecordStreamFrame &streamInfo);
-	void audioSwitch(bool mode);
-	bool getAudioStatus();
 	int getVedioBufferSize();
 	int emptyBuff();
 	void removeItem(RecordStreamFrame*);
@@ -30,7 +28,6 @@ private:
 	QQueue<RecordStreamFrame> m_StreamBuffer;
 // 	QQueue<RecordAudioStream> m_audioStreamBuffer;
 	bool m_bVedioBufferIsFull;
-	bool m_bStopAudio;
 	bool m_bStopBuff;
 
 	QMutex m_mutex;

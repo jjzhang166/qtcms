@@ -6,7 +6,6 @@
 
 BufferManager::BufferManager(void):
 m_bVedioBufferIsFull(false),
-m_bStopAudio(false),
 m_bStopBuff(false)
 {
 }
@@ -137,15 +136,6 @@ int BufferManager::emptyBuff()
 	return 0;
 }
 
-void BufferManager::audioSwitch(bool mode)
-{
-	m_bStopAudio = mode;
-}
-
-bool BufferManager::getAudioStatus()
-{
-	return m_bStopAudio;
-}
 
 int BufferManager::getVedioBufferSize()
 {

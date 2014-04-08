@@ -264,9 +264,6 @@ int QSubView::CloseWndCamera()
 	}
 	m_checkTime.stop();
 	m_RecordFlushTime=0;
-	m_nSampleRate = 0;
-	m_nSampleWidth = 0;
-	m_bIsAudioOpend = false;
 
 	return 0;
 }

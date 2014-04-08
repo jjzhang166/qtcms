@@ -9,14 +9,13 @@
 
 IAudioPlayer* PlayManager::m_pAudioPlayer = NULL;
 PlayManager* PlayManager::m_pCurView = NULL;
-
+int PlayManager::m_nSampleRate = 0;
+int PlayManager::m_nSampleWidth = 0;
 
 
 PlayManager::PlayManager(void):
 m_nInitWidth(0),
 m_nInitHeight(0),
-m_nSampleRate(0),
-m_nSampleWidth(0),
 m_ui64TSP(0),
 m_uiCurrentFrameTime(0),
 m_pRenderWnd(NULL),

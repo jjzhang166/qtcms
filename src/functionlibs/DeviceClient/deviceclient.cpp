@@ -852,7 +852,6 @@ bool DeviceClient::GroupEnableAudio(bool bEnable)
 	if (!bEnable&&m_channelWithAudio!=-1)
 	{	
 		it = m_groupMap.find(m_channelWithAudio);
-		it->bufferManager->audioSwitch(false);
 		m_channelWithAudio = -1;
 	}
 
@@ -880,14 +879,8 @@ int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 			}
 			++it;
 		}
-		if (-1 != m_channelWithAudio)
-		{
-			WndPlay wnd = m_groupMap.value(m_channelWithAudio);
-			wnd.bufferManager->audioSwitch(false);
-		}
 		m_channelWithAudio = it.key();
 		it->playManager->setCurAudioWnd(it->playManager);
-		it->bufferManager->audioSwitch(true);
 
 	}
 	else
