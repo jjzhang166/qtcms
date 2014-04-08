@@ -10,7 +10,8 @@ bool RecordPlayerView::m_bGlobalAudioStatus = false;
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
 	: QWidget(parent),
-	m_pLocalPlayer(NULL)
+	m_pLocalPlayer(NULL),
+	_bIsFocus(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -29,6 +30,7 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 
 	QString image;
 	QColor LineColor;
+	QColor LineCurColor;
 	QColor FontColor;
 	int FontSize;
 	QString FontFamily;
@@ -39,6 +41,7 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 
 	image = IniFile.value("background/background-image", NULL).toString();
 	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 	FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 	FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", NULL).toString();
@@ -57,14 +60,17 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 	p.setPen(pen);
 
 	p.drawRect(rcClient);
-	if (this->hasFocus())
+	if (_bIsFocus)
 	{
 		int x = 0;
 		int y = 0;
 		int width = 0;
 		int height = 0;
 		rcClient.getCoords(&x, &y, &width, &height);
-		p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+		pen.setWidth(2);
+		pen.setColor(LineCurColor);
+		p.setPen(pen);
+		p.drawRect(QRect(x,y ,width , height));
 	}
 	else
 	{
@@ -72,9 +78,13 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 	}
 
 	QFont font(FontFamily, FontSize, QFont::Bold);
+
 	p.setFont(font);
+
 	pen.setColor(FontColor);
+
 	p.setPen(pen);
+
 	p.drawText(rcClient, Qt::AlignCenter, "No Video");
 }
 
@@ -133,4 +143,14 @@ void RecordPlayerView::ScreenShot()
 	imageName+=QString::number(mutime);
 	imageName+=".jpg";
 	_ScreenShotImage.save(imageName);
+}
+
+void RecordPlayerView::SetFocus( bool flags )
+{
+	bool history=_bIsFocus;
+	_bIsFocus=flags;
+	if (_bIsFocus==true||history==true)
+	{
+		update();
+	}
 }

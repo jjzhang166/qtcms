@@ -29,12 +29,9 @@ public:
 	virtual void paintEvent( QPaintEvent * );
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
+	virtual void resizeEvent(QResizeEvent *);
 	void ScreenShot();
-	enum __enPaintEventStatus{
-		PAINTEVENT_STATUS_NOVIDEO,
-		PAINTEVENT_STATUS_CONNECTING,
-		PAINTEVENT_STATUS_CACHE,
-	}PaintEventStatus;
+
 	enum __enConnectStatus{
 		CONNECT_STATUS_CONNECTED,
 		CONNECT_STATUS_CONNECTING,
@@ -47,7 +44,7 @@ public:
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 	void saveCacheImage();
-
+	void SetFoucs(bool flags);
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -60,7 +57,6 @@ public:
 	IDeviceClient *m_LpClient;
 
 	__enConnectStatus _curState;
-	__enPaintEventStatus _curPaint;
 	int _countConnecting;
 	QTimer m_checkTime;
 	QTimer m_cacheTime;
@@ -80,13 +76,12 @@ private:
 	bool _bSaveCacheImage;
 	QLabel *_cacheLable;
 	QPixmap _ScreenShotImage;
+	bool _bIsFocus;
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
 	void _cacheLableShow();
-	
-	
 };
 
 

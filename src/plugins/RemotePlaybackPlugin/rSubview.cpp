@@ -15,7 +15,8 @@ RSubView::RSubView(QWidget *parent)
 	ui(new Ui::titleview),
 	_curCache(0),
 	_bSaveCacheImage(false),
-	_cacheLable(NULL)
+	_cacheLable(NULL),
+	_bIsFocus(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -26,7 +27,6 @@ RSubView::RSubView(QWidget *parent)
 	connect(this,SIGNAL(CacheStateSig(QVariantMap)),this,SLOT(CacheStateSlot(QVariantMap)));
 
 	_curState=CONNECT_STATUS_DISCONNECTED;
-	_curPaint=PAINTEVENT_STATUS_NOVIDEO;
 }
 
 RSubView::~RSubView()
@@ -81,7 +81,9 @@ void RSubView::paintEventCache( QPaintEvent * )
 
 	}
 }
-
+void RSubView::resizeEvent(QResizeEvent *e)
+{
+}
 void RSubView::saveCacheImage()
 {
 	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
@@ -128,10 +130,7 @@ int RSubView::AudioEnabled(bool bEnabled)
 void RSubView::SetCurConnectState( __enConnectStatus parm  )
 {
 	_curState=parm;
-	if (_curState==CONNECT_STATUS_DISCONNECTED)
-	{
-		_curPaint=PAINTEVENT_STATUS_NOVIDEO;
-	}
+
 	/*emit connecttingUpdateSig();*/
 }
 
@@ -160,13 +159,11 @@ void RSubView::connecttingUpdateSlot()
 
 void RSubView::connecttingUpdate()
 {
-	_curPaint= PAINTEVENT_STATUS_CONNECTING;
 	update();
 }
 
 void RSubView::CacheStateSlot( QVariantMap evMap )
 {
-	_curPaint=PAINTEVENT_STATUS_CACHE;
 	_curCache=evMap.value("Persent").toInt();
 	update();
 	_cacheLableShow();
@@ -176,13 +173,14 @@ void RSubView::CacheStateSlot( QVariantMap evMap )
 
 void RSubView::paintEventNoVideo( QPaintEvent * )
 {
-	if (_curPaint==PAINTEVENT_STATUS_NOVIDEO)
+	if (_curState==CONNECT_STATUS_DISCONNECTED)
 	{
 		//
 		QPainter p(this);
 
 		QString image;
 		QColor LineColor;
+		QColor LineCurColor;
 		QColor FontColor;
 		int FontSize;
 		QString FontFamily;
@@ -193,6 +191,7 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 
 		image = IniFile.value("background/background-image", NULL).toString();
 		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
@@ -211,13 +210,16 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 		p.setPen(pen);
 
 		p.drawRect(rcClient);
-		if (this->hasFocus())
+		if (_bIsFocus)
 		{
 			int x = 0;
 			int y = 0;
 			int width = 0;
 			int height = 0;
 			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(2);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
 			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
 		}
 		else
@@ -239,12 +241,13 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 
 void RSubView::paintEventConnecting( QPaintEvent * )
 {
-	if (_curPaint==PAINTEVENT_STATUS_CONNECTING)
+	if (_curState==CONNECT_STATUS_CONNECTING)
 	{
 		QPainter p(this);
 
 		QString image;
 		QColor LineColor;
+		QColor LineCurColor;
 		QColor FontColor;
 		int FontSize;
 		QString FontFamily;
@@ -255,6 +258,7 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 
 		image = IniFile.value("background/background-image", NULL).toString();
 		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
@@ -273,13 +277,16 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		p.setPen(pen);
 
 		p.drawRect(rcClient);
-		if (this->hasFocus())
+		if (_bIsFocus)
 		{
 			int x = 0;
 			int y = 0;
 			int width = 0;
 			int height = 0;
 			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(2);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
 			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
 		}
 		else
@@ -314,12 +321,13 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 
 void RSubView::paintEventCache( QPaintEvent * )
 {
-	if (_curPaint==PAINTEVENT_STATUS_CACHE)
+	if (_curState==CONNECT_STATUS_CONNECTED)
 	{
 		QPainter p(this);
 
 		QString image;
 		QColor LineColor;
+		QColor LineCurColor;
 		QColor FontColor;
 		int FontSize;
 		QString FontFamily;
@@ -330,16 +338,45 @@ void RSubView::paintEventCache( QPaintEvent * )
 
 		image = IniFile.value("background/background-image", NULL).toString();
 		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
 
 		QRect rcClient = contentsRect();
+		this->geometry().center();
+		QPixmap pix;
+		QString PixPaht = sAppPath + image;
+		pix.load(PixPaht);
 
+		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		//±³¾°
+		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+		p.drawPixmap(rcClient,m_cacheImage);
+		//±ß¿ò
+		QPen pen = QPen(LineColor);
+		pen.setWidth(2);
+		p.setPen(pen);
 
-		_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-		p.drawPixmap(rcClient,_cacheBackImage);
+		p.drawRect(rcClient);
+		//½¹µã
 
+		if (_bIsFocus)
+		{
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int height = 0;
+			rcClient.getCoords(&x, &y, &width, &height);
+			pen.setWidth(2);
+			pen.setColor(LineCurColor);
+			p.setPen(pen);
+			p.drawRect(QRectF(x,y,width, height));
+		}
+		else
+		{
+			p.drawRect(rcClient);
+		}
 	}
 }
 
@@ -354,6 +391,7 @@ void RSubView::_cacheLableShow()
 	{
 		_cacheLable=new QLabel(this);
 		_cacheLable->setParent(this);
+		_cacheLable->raise();
 		QPalette pa;
 		pa.setColor(QPalette::WindowText,Qt::red);
 		_cacheLable->setPalette(pa);
@@ -397,5 +435,16 @@ void RSubView::ScreenShot()
 	imageName+=".jpg";
 	_ScreenShotImage.save(imageName);
 }
+
+void RSubView::SetFoucs( bool flags )
+{
+	bool bhistory=_bIsFocus;
+	_bIsFocus=flags;
+	if (_bIsFocus==true||bhistory==true)
+	{
+		update();
+	}
+}
+
 
 

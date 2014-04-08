@@ -20,6 +20,7 @@ public:
 	void setLocalPlayer(ILocalPlayer* pPlayer);
 	int AudioEnabled(bool bEnabled);
 	void ScreenShot();
+	void SetFocus(bool flags);
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -28,6 +29,7 @@ private:
 
 	ILocalPlayer* m_pLocalPlayer;
 	QPixmap _ScreenShotImage;
+	bool _bIsFocus;
 };
 
 

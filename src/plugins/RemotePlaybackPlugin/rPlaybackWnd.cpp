@@ -35,7 +35,7 @@ bIsOpenAudio(false)
 
 		m_PlaybackWndList.insert(m_PlaybackWndList.size(),&m_PlaybackWnd[i]);
 	}
-
+	m_PlaybackWnd[0].SetFoucs(true);
 	pcomCreateInstance(CLSID_DivMode2_2,NULL,IID_IWindowDivMode,(void **)&m_DivMode);
  	if (m_DivMode != NULL)
  	{
@@ -354,10 +354,12 @@ void  RPlaybackWnd::SetCurrentWind(QWidget *wind)
     {
         if (&m_PlaybackWnd[j]==wind)
         {
-            break;
-        }
-    }
-    m_nCurrentWnd=j;
+			m_PlaybackWnd[j].SetFoucs(true);
+            m_nCurrentWnd=j;
+		}else{
+			m_PlaybackWnd[j].SetFoucs(false);
+		}		
+    }   
 }
       
 void  RPlaybackWnd::CurrentStateChangePlugin(int statevalue)
@@ -421,18 +423,20 @@ void RPlaybackWnd::SocketError( QVariantMap evMap )
 
 void RPlaybackWnd::StateChange( QVariantMap evMap )
 {
-	qDebug()<<evMap;
 	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
-	if (_curConnectState==STATUS_DISCONNECTED)
-	{
-		_widList.clear();
-	}
 	if (_curConnectType==TYPE_STREAM)
 	{
+		qDebug()<<evMap;
 		QList<int>::Iterator it;
 		for(it=_widList.begin();it!=_widList.end();it++){
 			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
 		}
+	}
+	if (_curConnectState==STATUS_DISCONNECTED)
+	{
+		_mutexWidList.lock();
+		_widList.clear();
+		_mutexWidList.unlock();
 	}
 }
 void RPlaybackWnd::CacheState( QVariantMap evMap )

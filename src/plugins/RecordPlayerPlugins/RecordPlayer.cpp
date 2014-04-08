@@ -30,7 +30,7 @@ m_bIsOpenAudio(false)
 
 		m_subRecPlayerView[i].setLocalPlayer(m_pLocalPlayer);
 	}
-
+	m_subRecPlayerView[0].SetFocus(true);
 	if (m_pWindowDivMode != NULL)
 	{
 		m_pWindowDivMode->setParentWindow(this);
@@ -107,10 +107,13 @@ void  RecordPlayer::SetCurrentWind(QWidget *wind)
 	{
 		if (&m_subRecPlayerView[j] == wind)
 		{
-			break;
+			m_subRecPlayerView[j].SetFocus(true);
+			m_currentWindID = j;
+		}else{
+			m_subRecPlayerView[j].SetFocus(false);
 		}
 	}
-	m_currentWindID = j;
+
 }
 
 int RecordPlayer::GetCurrentWnd()

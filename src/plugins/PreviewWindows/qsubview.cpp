@@ -1221,10 +1221,11 @@ void QSubView::paintEventCache( QPaintEvent *e )
 			int width = 0;
 			int height = 0;
 			rcClient.getCoords(&x, &y, &width, &height);
-			pen.setWidth(2);
+			pen.setWidth(5);
 			pen.setColor(LineCurColor);
 			p.setPen(pen);
-			p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));
+			p.drawRect(QRectF(x,y,width, height));
+			/*p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));*/
 		}
 		else
 		{

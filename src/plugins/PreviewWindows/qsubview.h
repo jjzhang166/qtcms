@@ -47,10 +47,6 @@ public:
 	virtual void resizeEvent(QResizeEvent *);
 
 	int GetCurrentWnd();
-	//int OpenCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId
-	//	,unsigned int uiChannelId,unsigned int uiStreamId
-	//	,const QString & sUsername,const QString & sPassword
-	//	,const QString & sCameraname,const QString & sVendor);
 	int OpenCameraInWnd(int chlId);
 	int SetDevChannelInfo(int ChannelId);
 	int CloseWndCamera();
