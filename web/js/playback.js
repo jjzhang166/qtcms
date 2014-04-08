@@ -11,8 +11,6 @@ var	nViewNum = 0,
 		oPlaybackLocl = $('#playbackLocl')[0];
 		oDiv = $('div.dev_list');
 		ViewMax();
-
-
 	    
 	    $('ul.filetree').treeview();		
 		
@@ -77,7 +75,7 @@ var	nViewNum = 0,
 			$(this).find('input:checkbox').click();
 		})
 
-		channelvideo.on({  //整个搜索的文件列表事件
+		$('#recFile').on({  //整个搜索的文件列表事件
 			mousedown:function(event){
 				try{
 					dragStopMove();
@@ -88,23 +86,26 @@ var	nViewNum = 0,
 					//alert('try:'+e);
 				};
 				var left = event.pageX
-			    	if(left < 79){
+			    	if(left < 81){
 			    		return false;
 			    	}
 				//event.stopPropagation();
 				var moveObj = $('div.play_time').css('left',left-2);
-				set_drag(81,$(this).width(),moveObj);
+				set_drag(81,$(this).width()-81,moveObj);
+			},
+			dblclick:function(event){
+				playVideo(event);
 			}
 		})
 
-		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
+		/*$('div.play_time').on({  //文件搜索的下的事件滑动条事件
 			dblclick:function(event){
 				playVideo();
 			},
 			mousedown:function(){
 				set_drag(81,channelvideo.width(),$('div.play_time'));
 			}	
-		});
+		});*/
 		
 		$(window).resize(function(){  //窗口自适应大小
 			ViewMax();	
@@ -147,10 +148,14 @@ var	nViewNum = 0,
 			}
 		}else{
 			//alert('播放');
-			playVideo();		
+			playVideo(event);		
 		}
 	}
-	function playVideo(){
+	function playVideo(event){
+		//alert(event.pageX);
+		if(event.pageX<81){
+			return false;
+		}
 		dragStopMove();
 		try{
 			nowSpeed = 1;
@@ -164,7 +169,7 @@ var	nViewNum = 0,
 		}catch(e){
 			//alert('try:'+e);
 		};
-		var begin = getDragSart($('#channelvideo').width()-2,$('div.play_time').offset().left,$("div.calendar span.nowDate").html()),
+		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
 			setDevData2ocx();

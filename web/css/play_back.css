@@ -12,7 +12,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	background: url(../images/top_icon.png) no-repeat -440px 0;
 	float:left;
 	width:149px;
-	border:0px solid #7F9DB9;	
+	border:0px solid #7F9DB9;
 }
 .add_tb{
 	background: #282828;
@@ -352,7 +352,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	position:absolute;
 	background: #B21E36;
 	left: 79px;
-	top: 40px;
+	top: 2px;
 	z-index: 1;
 }
 .operat{ 
@@ -409,10 +409,10 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 #sound .now_sound{
 	position: absolute;
 	top: 8px;
-	left: 47px;
+	left: 48px;
 	z-index: 2;
 	height: 20px;
-	width: 6px;
+	width: 4px;
 	border-radius: 4px;
 	background: #B21E36;
 }
@@ -421,10 +421,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 }
 #operating .table{
 	display: block;
-	position:absolute;
-	top:38px;
 	width: 100%;
-	bottom: 0px;
 	border-collapse: collapse;
 }
 .table tr{

@@ -106,19 +106,25 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 	})
 }
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
-	//var oNow=$('#now_time');
-	//showNowPlayBackTime(oNow,oDrag.offset().left,X2);
+	/*var oNow=$('#now_time');
+	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/
+	var b=oDrag.hasClass('now_sound');
+	if(b){
+		var veiwObj = getAudioObj();
+		var oWarpLeft = $('#sound');
+	}	
 	$(document).mousemove(function(event){
 			var left = event.pageX;
 		    left = left < X1 ? X1 : left;
 			left = left > X2 ? X2 : left;
-		if(oDrag.hasClass('now_sound')){
-			left=left-$('#sound').offset().left;
-			$('#sound').find('p:eq(0)').width(oDrag.offset().left-$('#sound').offset().left+3)
-			getAudioObj().SetVolume(left);
-		}
-		oDrag.css('left',left-(parseInt(oDrag.width())/2)+'px');
-		//showNowPlayBackTime(oNow,left,X2);
+		if(b){
+			left=left-oWarpLeft.offset().left;
+			oWarpLeft.find('p:last').width(left);
+			veiwObj.SetVolume(left);
+		}/*else{
+			showNowPlayBackTime(oNow,left,X2);
+		}*/
+		oDrag.css('left',left-2);
 	}).mouseup(function(){
 		$(this).off();
 	})
@@ -500,10 +506,12 @@ function addSoundMove() {  //添加滑动块移动
 	$('#sound').on({
 		mousedown:function(event){
 			var left = event.pageX-$(this).offset().left;
-			//event.stopPropagation();
-			var moveObj = $(this).find('div.now_sound').css('left',left-3);		
-			$(this).find('p:eq(0)').width(moveObj.offset().left-$(this).offset().left+3);
+			left = left < 0 ? 0 : left;
+			left = left > 100 ? 100 : left;
+			var moveObj = $(this).find('div.now_sound').css('left',left-2);		
+			$(this).find('p:last').width(left+2);
 			set_drag($(this).offset().left,($(this).offset().left+$(this).width()),moveObj);
+			getAudioObj().SetVolume(left);
 		}
 	})
 }
@@ -524,6 +532,7 @@ function sound(obj){
 		obj.attr('soundOn',1);
 		enable = true;
 	}
+	//show('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+enable+'对象切换状态为'+oView.AudioEnabled(enable));
 	if(oView.AudioEnabled(enable)){
 		str='声音开关操作失败!';
 	}else{
@@ -541,9 +550,9 @@ function getAudioObj(){   //返回当前页面可控制音量的控件对象。
 		oAudioObj = $('#previewWindows')[0];
 	}else{
 		if(bool){
-			oAudioObj = $('#playback')[0];
-		}else{
 			oAudioObj = $('#playbackLocl')[0];
+		}else{
+			oAudioObj = $('#playback')[0];	
 		}
 	}
 	return oAudioObj;

@@ -429,6 +429,7 @@ function setDevData2ocx(){
 			try{PBrecFileTableInit();}catch(e){}
 		}
 		$('#channelvideo div.video').remove();
+		$('#fileRec').find('span').width(0).end().find('h5').html('0/0');
 		  //cgi 请求数据
 		/*var channels = 0;   
 		$('#channelvideo input:checkbox').each(function(index){ 
@@ -524,8 +525,9 @@ function setDevData2ocx(){
 		if(recTotal != 0){
 			var p = now/recTotal*100;
 			/*if(now == recTotal ){
-				p = 100;
-				//pre = '100%';
+				$('#fileRec').show().find('span').css('background','green');
+			}else{
+				$('#fileRec').show().find('span').css('background','#ccc');
 			}*/
 			$('#fileRec').show().find('span').width(p-2).end().find('h5').html(now+'/'+recTotal);
 		}

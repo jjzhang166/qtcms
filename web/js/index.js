@@ -35,9 +35,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		//控件最大化
 		ViewMax('preview');
 		
-		$('body')[0].onresize=function(){
+		$(window).resize(function(){
 			ViewMax('preview');
-		}
+		})
  		//打开通道
 		oDiv.on('dblclick','span.channel',function(){ 
 			//show($(this).data('data'));
