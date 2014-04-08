@@ -392,7 +392,7 @@ int  RPlaybackWnd::cbInit()
      pRegist->registerEvent(evName,cbRecFileSearchFinished,this);
      pRegist->Release();
 	 evName.clear();
-	 evName.append("CacheState");
+	 evName.append("bufferStatus");
 	 pRegist->registerEvent(evName,cbCacheState,this);
      pRegist=NULL;
 
@@ -486,7 +486,7 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 
  int cbCacheState(QString evName,QVariantMap evMap,void*pUser)
  {
-		 if (evName=="CacheState")
+		 if (evName=="bufferStatus")
 		 {
 			 ((RPlaybackWnd*)pUser)->CacheState(evMap);
 		 }

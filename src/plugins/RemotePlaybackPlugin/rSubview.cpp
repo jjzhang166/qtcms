@@ -14,7 +14,8 @@ RSubView::RSubView(QWidget *parent)
 	: QWidget(parent),
 	m_LpClient(NULL),
 	m_pRemotePlayBack(NULL),
-	ui(new Ui::titleview)
+	ui(new Ui::titleview),
+	_curCache(0)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -48,63 +49,7 @@ void RSubView::paintEvent( QPaintEvent * e)
 {
 	paintEventConnecting(e);
 	paintEventNoVideo(e);
-		image = IniFile.value("background/background-image", NULL).toString();
-		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
-		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
-		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
-		FontFamily = IniFile.value("font/font-family", NULL).toString();
-
-		QRect rcClient = contentsRect();
-
-		QPixmap pix;
-		QString PixPaht = sAppPath + image;
-		bool ret = pix.load(PixPaht);
-
-		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-
-		p.drawPixmap(rcClient,pix);
-
-		QPen pen = QPen(LineColor, 2);
-		p.setPen(pen);
-
-		p.drawRect(rcClient);
-		if (this->hasFocus())
-		{
-			int x = 0;
-			int y = 0;
-			int width = 0;
-			int height = 0;
-			rcClient.getCoords(&x, &y, &width, &height);
-			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
-		}
-		else
-		{
-			p.drawRect(rcClient);
-		}
-
-		QFont font(FontFamily, FontSize, QFont::Bold);
-
-		p.setFont(font);
-
-		pen.setColor(FontColor);
-
-		p.setPen(pen);
-		if (_curState==CONNECT_STATUS_CONNECTING)
-		{
-			QString m_test;
-			if (_countConnecting==3)
-			{
-				_countConnecting=0;
-			}
-
-			for (int i=0;i<_countConnecting;i++)
-			{
-				m_test+="..";
-			}
-			_countConnecting++;
-			p.drawText(rcClient, Qt::AlignCenter, m_test);
-		}
-	}
+	paintEventCache(e);
 }
 
 void RSubView::paintEventCache( QPaintEvent * )
@@ -226,7 +171,11 @@ void RSubView::SetCurConnectState( CConnectStatus::__enConnectStatus parm )
 
 void RSubView::CacheState( QVariantMap evMap )
 {
-	emit CacheStateSig(evMap);
+	int *wind = reinterpret_cast<int*>(this);
+	if (evMap.value("wind").toInt()==*wind)
+	{
+		emit CacheStateSig(evMap);
+	}
 }
 
 void RSubView::connecttingUpdateSlot()
@@ -251,12 +200,15 @@ void RSubView::connecttingUpdate()
 
 void RSubView::CacheStateSlot( QVariantMap evMap )
 {
-	if (evMap.value("cacheStatus")=="begin")
-	{
-		m_cacheTime.start(500);
-	}else if(evMap.value("cacheStatus")=="end"){
-		m_cacheTime.stop();
-	}
+	//if (evMap.value("cacheStatus")=="begin")
+	//{
+	//	m_cacheTime.start(500);
+	//}else if(evMap.value("cacheStatus")=="end"){
+	//	m_cacheTime.stop();
+	//}
+	_curPaint=CPaintEventStatus::STATUS_CACHE;
+	_curCache=evMap.value("Persent").toInt();
+	update();
 }
 
 void RSubView::CacheStateSlotUpdate()
@@ -400,5 +352,69 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 			_countConnecting++;
 			p.drawText(rcClient, Qt::AlignCenter, m_test);
 		}
+	}
+}
+
+void RSubView::paintEventCache( QPaintEvent * )
+{
+	if (_curPaint==CPaintEventStatus::STATUS_CACHE)
+	{
+		QPainter p(this);
+
+		QString image;
+		QColor LineColor;
+		QColor FontColor;
+		int FontSize;
+		QString FontFamily;
+
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+		QSettings IniFile(path, QSettings::IniFormat, 0);
+
+		image = IniFile.value("background/background-image", NULL).toString();
+		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
+		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
+		FontFamily = IniFile.value("font/font-family", NULL).toString();
+
+		QRect rcClient = contentsRect();
+
+		QPixmap pix;
+		QString PixPaht = sAppPath + image;
+		bool ret = pix.load(PixPaht);
+
+		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+
+		p.drawPixmap(rcClient,pix);
+
+		QPen pen = QPen(LineColor, 2);
+		p.setPen(pen);
+
+		p.drawRect(rcClient);
+		if (this->hasFocus())
+		{
+			int x = 0;
+			int y = 0;
+			int width = 0;
+			int height = 0;
+			rcClient.getCoords(&x, &y, &width, &height);
+			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+		}
+		else
+		{
+			p.drawRect(rcClient);
+		}
+
+		QFont font(FontFamily, FontSize, QFont::Bold);
+
+		p.setFont(font);
+
+		pen.setColor(FontColor);
+
+		p.setPen(pen);
+
+		QString cachePercent = QString("%1").arg(_curCache);
+		cachePercent.append("%");
+		p.drawText(rcClient, Qt::AlignCenter, cachePercent);
 	}
 }

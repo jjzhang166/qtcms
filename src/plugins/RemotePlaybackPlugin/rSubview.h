@@ -98,9 +98,12 @@ private:
 	QMenu m_rMousePressMenu;
 	QAction *m_ActionOpenAudio;
 
+	int _curCache;
+
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
+	void paintEventCache(QPaintEvent *);
 };
 
 
