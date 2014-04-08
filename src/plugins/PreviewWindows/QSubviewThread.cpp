@@ -41,6 +41,19 @@ void QSubviewThread::OpenCameraInWnd()
 	{
 		return;
 	}
+
+	if ("JUAN IPC" == m_DevCliSetInfo.m_sVendor)
+	{
+		IAutoSycTime *pAutoSycTime = NULL;
+		m_IDeviceClient->QueryInterface(IID_IAutoSycTime, (void**)&pAutoSycTime);
+		if (NULL != pAutoSycTime)
+		{
+			pAutoSycTime->SetAutoSycTime(m_bIsSysTime);
+			pAutoSycTime->Release();
+		}
+	}
+	m_IDeviceClient->checkUser(m_DevCliSetInfo.m_sUsername, m_DevCliSetInfo.m_sPassword);
+
 	//申请接口使用
 	IDeviceClient * m_IDeviceClientOpenCameraInWnd=NULL;
 	m_IDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientOpenCameraInWnd);
