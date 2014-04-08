@@ -31,6 +31,7 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordState(QString evName,QVariantMap evMap,void*pUser);
+
 class QSubView :public QWidget
 {
 	Q_OBJECT

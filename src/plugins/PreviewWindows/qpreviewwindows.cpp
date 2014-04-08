@@ -206,6 +206,7 @@ void QPreviewWindows::SetCurrentWind(QWidget *wind)
 	m_mutex.lock();
 	m_CurrentWnd=j;
 	m_mutex.unlock();
+
 	return ;
 }
 
@@ -375,5 +376,6 @@ int QPreviewWindows::SetVolume(unsigned int uiPersent)
 int QPreviewWindows::AudioEnabled(bool bEnabled)
 {
 	int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);
+	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);
 	return nRet;
 }

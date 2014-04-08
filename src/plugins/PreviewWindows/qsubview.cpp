@@ -950,9 +950,13 @@ void QSubView::SetCurrentFocus( bool focus)
 	if (m_bIsFocus==true)
 	{
 		update();
+		
 	}
 	m_bIsFocus=focus;
-	
+	if (focus==true&&m_bIsAudioOpend)
+	{
+		m_pCurrView = this;
+	}
 }
 
 void QSubView::resizeEvent( QResizeEvent * )

@@ -9,6 +9,8 @@
 #include "PreviewWindowsGlobalSetting.h"
 #include "IWindowDivMode.h"
 
+
+
 class QPreviewWindows : public QWidget,
 	public QWebPluginFWBase
 {

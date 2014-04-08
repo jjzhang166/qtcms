@@ -3,6 +3,7 @@
 #include <guid.h>
 #include "PreviewWindowsGlobalSetting.h"
 #include <IDeviceClient.h>
+
 class QSubviewThread:public QThread
 {
 	Q_OBJECT
@@ -23,7 +24,6 @@ public:
 public:
 	DevCliSetInfo m_DevCliSetInfo;
 	bool bCreateDeviceFlags;
-
 public slots:
 	void OpenCameraInWnd();
 	void CloseAll();
