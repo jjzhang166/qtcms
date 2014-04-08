@@ -347,13 +347,14 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	left: 0;
 }
 .play_time{ 
-	height: 90px;
-	width: 4px;
+	height: 86px;
+	width: 3px;
 	position:absolute;
 	background: #B21E36;
 	left: 79px;
 	top: 40px;
 	z-index: 1;
+	border-radius: 3px;
 }
 .operat{ 
 	background: #fff;
@@ -401,7 +402,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 #sound p{
 	top:13px;
 	position: absolute;
-	border-radius: 4px;
+	border-radius: 3px;
 	height: 10px;
 	width:0px;
 	background:#00B1FF;
@@ -412,8 +413,8 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	left: 48px;
 	z-index: 2;
 	height: 20px;
-	width: 4px;
-	border-radius: 4px;
+	width: 3px;
+	border-radius: 3px;
 	background: #B21E36;
 }
 #sound .forbidden{
@@ -426,6 +427,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 	position: relative;
 	height:96px; 
 	overflow:auto; 
+	overflow-x:hidden;
 	top:38px;
 }
 .table tr{

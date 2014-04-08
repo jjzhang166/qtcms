@@ -82,11 +82,14 @@ function ViewMax(type){
 		left:oView.width(),
 		height:oView.height()+123
 	});
-	oDiv.height(oLeft.height()-devListH)
+
+	oDiv.height(oLeft.height()-devListH);
+
 	oBottom.css({
 		width:oView.width(),
 		top:oView.height()+80
 	});
+	
 
 	$('#foot').css({
 		top:oView.height()+212
@@ -100,9 +103,10 @@ function ViewMax(type){
 function setTables(){   // 回放页面底部表格最大化相应调整
 	$('table.table tr').each(function(index){
 		var oTds = $(this).find('td');
-		var W =  $('table.table').width() -50;
-		oTds.width((W-80)/24);
-		oTds.eq(0).width(80);		
+		var W =  $('table.table').width()-120;
+
+		oTds.width((W)/24);
+		oTds.eq(0).width(80);
 	})
 }
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
@@ -126,7 +130,7 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 		}/*else{
 			showNowPlayBackTime(oNow,left,X2);
 		}*/
-		oDrag.css('left',left-2);
+		oDrag.css('left',left-1);
 	}).mouseup(function(){
 		$(this).off();
 	})
@@ -508,8 +512,8 @@ function addSoundMove() {  //添加滑动块移动
 			var left = event.pageX-$(this).offset().left;
 			left = left < 0 ? 0 : left;
 			left = left > 100 ? 100 : left;
-			var moveObj = $(this).find('div.now_sound').css('left',left-2);		
-			$(this).find('p:last').width(left+2);
+			var moveObj = $(this).find('div.now_sound').css('left',left-1);		
+			$(this).find('p:last').width(left+1);
 			set_drag($(this).offset().left,($(this).offset().left+$(this).width()),moveObj);
 			getAudioObj().SetVolume(left);
 		}

@@ -302,12 +302,12 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 					str = '';
 				if(!oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
 					if(!oPreView.StartRecord($(this).attr('wind'))){
-						str = '设备'+data.name+' 下的通道'+data.channel_name+'开始录像!'	
+						str = '设备'+data.name+' 下的通道'+data.channel_name+'开始手动录像!'	
 					}else{ 
-						str = '设备'+data.name+' 下的通道'+data.channel_name+'录像失败!'
+						str = '设备'+data.name+' 下的通道'+data.channel_name+'手动录像失败!'
 					}
 				}else{ 
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'的录像数据绑定失败!'
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'的手动录像数据绑定失败!'
 				}
 				writeActionLog(str);
 			})
@@ -316,9 +316,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				var data = $(this).data('data'),
 					str = '';
 				if(!oPreView.StopRecord($(this).attr('wind'))){ 
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像!'
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像!'
 				}else{ 	
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭录像失败!'
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像失败!'
 				}
 				writeActionLog(str);
 			})

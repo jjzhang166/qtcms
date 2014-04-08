@@ -430,6 +430,9 @@ function setDevData2ocx(){
 					 .end().find('h4').html('正在检索:');
 		$('div.dev_list li').removeClass('sel');
 		obj.addClass('sel');
+		if(getAudioObj().id=='playbackLocl'){
+			$('#fileRec').hide();
+		}
   	}
 	function searchVideo(){
 		var seletDev = $('div.dev_list li.sel');

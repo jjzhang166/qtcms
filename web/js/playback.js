@@ -9,12 +9,14 @@ var	nViewNum = 0,
 		oLeft = $('#search_device');
 		oBottom = $('#operating');
 		oView = $('#playback_view');
+		//初始回放对象的声音状态,
 		oPlayBack = $('#playback')[0];
 		oPlayBack.volEnable = false;
 		oPlayBack.vol = 50;
 		oPlaybackLocl = $('#playbackLocl')[0];
 		oPlaybackLocl.volEnable = false;
 		oPlaybackLocl.vol = 50;
+
 		oDiv = $('div.dev_list');
 
 		$('#sound').prev('li').prop('soundOn',true);
@@ -100,8 +102,8 @@ var	nViewNum = 0,
 			    		return false;
 			    	}
 				//event.stopPropagation();
-				var moveObj = $('div.play_time').css('left',left-2);
-				set_drag(81,channelvideo.width(),moveObj);
+				var moveObj = $('div.play_time').css('left',left-1);
+				set_drag(80,channelvideo.width()-1,moveObj);
 			},
 			dblclick:function(){
 				playVideo(event);
@@ -113,12 +115,27 @@ var	nViewNum = 0,
 				playVideo(event);
 			},
 			mousedown:function(){
-				set_drag(81,channelvideo.width(),$('div.play_time'));
+				set_drag(80,channelvideo.width()-1,$('div.play_time'));
 			}	
 		});
 		
 		$(window).resize(function(){  //窗口自适应大小
-			ViewMax();	
+			var oPlay_time = $('#operating div.play_time'),
+				oP = $('#channelvideo'),
+				p = oP.width()-81;
+
+			ViewMax();
+
+			p = (oP.width()-81)/p;
+
+			oPlay_time.css('left',(parseInt(oPlay_time.css('left')) - 79)*p+79);
+			
+			oP.find('div.video').each(function(){
+				$(this).css({
+					left:(parseInt($(this).css('left'))-81)*p+81,
+					width:$(this).width()*p
+				})
+			})
 		})
 
 		$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
@@ -257,7 +274,7 @@ var	nViewNum = 0,
 		palybackspeed(show);
 	}
 	function groupStop(){
-		$('#togglePlay').removeAttr('hasFile').css('background-position','0px 0px');
+		$('#togglePlay').removeAttr('hasFile').removeAttr('toggle').css('background-position','0px 0px');
 		dragStopMove();
 		var obj = bool ? oPlaybackLocl : oPlayBack;
 		obj.GroupStop();
