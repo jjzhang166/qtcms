@@ -334,6 +334,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		}
 	}
 	function ScreenShot(){  // 截屏
-		oPreView.ScreenShot();
-		
+		var data =oPreView.ScreenShot(),str
+		if(data.path){
+			str = '当前窗口'+(oPreView.GetCurrentWnd()+1)+'截图成功. 已经保存为'+data.path+'/'+data.imageName;
+		}
+		writeActionLog(str);
 	}
