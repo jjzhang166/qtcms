@@ -41,7 +41,7 @@ public slots:
     int   GroupPause();
     int   GroupContinue();
     int   GroupStop();
-   bool  AudioEnabled(bool bEnable);
+    int  AudioEnabled(bool bEnable);
 	int   SetVolume(const unsigned int &uiPersent);
     int   GroupSpeedFast() ;
     int   GroupSpeedSlow();
@@ -103,6 +103,7 @@ private:
     bool bIsCaseInitFlags;
 	bool bIsOpenAudio;
     int  cbInit();
+	QMutex _mutexWidList;
 };
 
 

@@ -218,9 +218,6 @@ void PlayManager::run()
 		frameTimer.start();
 		m_pBufferManager->removeItem(&recStream);
 
-		m_pBufferManager->removeItem(&recStream);
-
-		m_pBufferManager->removeItem(&recStream);
 
 	}
 

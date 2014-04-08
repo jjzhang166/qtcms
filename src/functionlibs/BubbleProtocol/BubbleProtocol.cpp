@@ -476,6 +476,7 @@ int BubbleProtocol::getPlaybackStreamByTime(int nChannel,int nTypes,const QDateT
 {
     m_bIsPreviewStopped  = true;
     m_bIsPlaybackStopped = false;
+	m_bIsPlaybackPaused=false;
     if (nChannel < 0 || nTypes < 0 || startTime > endTime )
     {
         return 2;

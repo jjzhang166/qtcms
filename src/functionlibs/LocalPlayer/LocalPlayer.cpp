@@ -662,7 +662,7 @@ bool LocalPlayer::GroupEnableAudio(bool bEnable)
 }
 int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 {
-	if (uiPersent < 0)
+	if (uiPersent < 0 || m_GroupMap.isEmpty())
 	{
 		return 1;
 	}

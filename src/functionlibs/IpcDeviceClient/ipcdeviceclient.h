@@ -25,9 +25,11 @@ int cbStateChangeFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser)
 class IpcDeviceClient:public QThread,
 	public IDeviceClient,
 	public IEventRegister,
+	public IAutoSycTime,
 	public IPTZControl,
 	public ISwitchStream
 {
+	Q_OBJECT
 public:
 	IpcDeviceClient(void);
 	~IpcDeviceClient(void);
@@ -51,6 +53,9 @@ public:
 
 	//ISwitchStream
 	virtual int SwitchStream(int StreamNum);
+
+	//IAutoSycTime
+	virtual int SetAutoSycTime(bool bEnabled);
 
 	//IPTZControl
 	virtual int ControlPTZUp(const int &nChl, const int &nSpeed);
@@ -78,6 +83,19 @@ public:
 	void DeInitProtocl();
 
 	int RegisterProc(IEventRegister *m_RegisterProc,int m_Stream);
+
+private:
+// 	void SyncTime();
+	int sndGetVesionInfo();
+	int sndSyncTimeForPreVersion();
+	int sndGetLocalSystemTime();
+	int sndSyncTimeCmd();
+signals:
+	void sigSyncTime();
+private slots:
+	void Reveived();
+	void SyncTime();
+
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -99,6 +117,12 @@ private:
 	DeviceInfo m_DeviceInfo;
 	volatile bool bCloseingFlags;
 	volatile bool bHadCallCloseAll;
+
+	bool m_bIsSycTime;
+	QTcpSocket *m_tcpSocket;
+	QByteArray m_timeZone;
+	QByteArray m_softwareVersion;
+	int m_steps;
 
 	IProtocolPTZ *m_pProtocolPTZ;
 };

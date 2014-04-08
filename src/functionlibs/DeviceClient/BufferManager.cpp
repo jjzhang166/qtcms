@@ -2,7 +2,7 @@
 #include "GlobalSettings.h"
 #include <QDebug>
 
-
+#include <QDateTime>
 
 BufferManager::BufferManager(void):
 m_bVedioBufferIsFull(false),
@@ -41,6 +41,7 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		m_bStopBuff = true;
 		emit action(QString("StartPlay"), this);
 	}
+
 
 	if (1000 <= m_StreamBuffer.size() && !m_bVedioBufferIsFull)
 	{

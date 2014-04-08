@@ -49,7 +49,10 @@ int QSubViewObject::SetCameraInWnd(const QString sAddress,unsigned int uiPort,co
 	return 0;
 }
 
-
+void QSubViewObject::SetAutoSyncTime(bool bEnabled)
+{
+	m_QSubviewProcess->SetAutoSyncTime(bEnabled);
+}
 void QSubViewObject::m_workerThreadQuit()
 {
 	m_workerThread.quit();

@@ -276,17 +276,9 @@ void PlayMgr::run()
 					{
 						m_pcbTimeChg(m_playingTime, m_pUser);
 					}
-					if (frame/frameRate - lastTime > 0)
-					{
-						lastTime = frame/frameRate;
-						if (bIsPlayTimeChg)
-						{
-							++m_playingTime;
-						}
-					}
+				}
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
 			}
-
 
 			tempTime = currentPlayTime;
 			AVI_close(file);

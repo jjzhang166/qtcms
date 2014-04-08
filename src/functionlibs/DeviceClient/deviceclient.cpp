@@ -889,6 +889,7 @@ int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 
 	if (0xAECBCA == uiPersent)
 	{
+
 		while(it != m_groupMap.end())
 		{
 			if (it->wnd == pWnd)
@@ -907,6 +908,7 @@ int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 	}
 	return 0;
 }
+
 int DeviceClient::GroupSpeedFast()
 {
 	if (m_groupMap.isEmpty())

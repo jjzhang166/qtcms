@@ -87,6 +87,7 @@ extern const IID IID_IAudioPlayer;
 extern const CLSID CLSID_AudioDecoder;
 extern const CLSID CLSID_AudioDevice;
 extern const CLSID CLSID_AudioPlayer;
+extern const IID IID_IAutoSycTime;
 extern const IID IID_IPTZControl;
 extern const IID IID_IProtocolPTZ;
 #endif

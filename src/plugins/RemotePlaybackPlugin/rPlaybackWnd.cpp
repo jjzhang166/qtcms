@@ -236,9 +236,14 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 	}
 	_curConnectType=TYPE_STREAM;
 	nRet=m_RemotePlaybackObject.GroupPlay(nTypes,startTime,endTime);
-	QList<int>::Iterator it;
-	for(it=_widList.begin();it!=_widList.end();it++){
-		m_PlaybackWnd[*it].saveCacheImage();
+	if (_widList.isEmpty()==false)
+	{
+		_mutexWidList.lock();
+		QList<int>::Iterator it;
+		for(it=_widList.begin();it!=_widList.end();it++){
+			m_PlaybackWnd[*it].saveCacheImage();
+		}
+		_mutexWidList.unlock();
 	}
 	SetVolume(0xAECBCA);
 	return nRet;
@@ -269,12 +274,13 @@ int   RPlaybackWnd::GroupStop()
     if (NULL != m_GroupPlayback)
     {
         nRet = m_GroupPlayback->GroupStop();
+		_widList.clear();
     } 
     return nRet;
 }
-bool  RPlaybackWnd::AudioEnabled(bool bEnable)
+int  RPlaybackWnd::AudioEnabled(bool bEnable)
 {
-    bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
+    int bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
 	bIsOpenAudio=bEnable;
 	if (NULL != m_GroupPlayback)
 	{
@@ -288,20 +294,6 @@ int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 	if (NULL != m_GroupPlayback)
 	{
 		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, &m_PlaybackWnd[m_nCurrentWnd]);
-	}
-	return nRet;
-}
-int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
-{
-    bool bRet = m_PlaybackWnd[0].AudioEnabled(bEnable);
-    return bRet;
-}
-int   RPlaybackWnd::GroupSetVolume(const unsigned int &uiPersent)
-{
-	int nRet = -1;
-	if (NULL != m_GroupPlayback)
-	{
-		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, NULL);
 	}
 	return nRet;
 }

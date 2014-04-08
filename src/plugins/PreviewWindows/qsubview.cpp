@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QMouseEvent>
 #include <QtXml/QtXml>
+#include "ILocalSetting.h"
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
 #include <QDir>
@@ -495,7 +496,6 @@ int QSubView::PrevRender(QVariantMap evMap)
 	}
 	m_bRendering=true;
 	m_csRender.lock();
-	
 	m_HistoryRenderInfo.pData=pData;
 	m_HistoryRenderInfo.pYdata=pYdata;
 	m_HistoryRenderInfo.pUdata=pUdata;

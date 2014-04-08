@@ -1,4 +1,5 @@
 #include "QSubviewThread.h"
+#include "IAutoSycTime.h"
 #include <QCoreApplication>
 #include <QWidget>
 #include <QFile>
@@ -42,6 +43,7 @@ int QSubviewThread::SetCameraInWnd(const QString sAddress,unsigned int uiPort,co
 	return 0;
 }
 
+
 void QSubviewThread::OpenCameraInWnd()
 {
 
@@ -80,7 +82,10 @@ void QSubviewThread::OpenCameraInWnd()
 	m_IDeviceClientOpenCameraInWnd->Release();
 	m_IDeviceClientOpenCameraInWnd=NULL;
 }
-
+void QSubviewThread::SetAutoSyncTime(bool bEnabled)
+{
+	m_bIsSysTime = bEnabled;
+}
 
 void QSubviewThread::CloseAll()
 {
@@ -104,6 +109,8 @@ void QSubviewThread::CloseAll()
 	m_IDeviceClientCloseAll=NULL;
 	m_IDeviceClient->Release();
 	m_IDeviceClient=NULL;
+
+	m_bIsSysTime = false;
 	m_bIsClosing=false;
 	return;
 }

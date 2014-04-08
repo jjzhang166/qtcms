@@ -51,64 +51,28 @@ void RSubView::paintEvent( QPaintEvent * e)
 	paintEventCache(e);
 }
 
-void RSubView::paintEventCache( QPaintEvent * )
+void RSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
-	if (_curPaint==PAINTEVENT_STATUS_CACHE)
-	{
-		QPainter p(this);
-
-		QString image;
-		QColor LineColor;
-		QColor FontColor;
-		int FontSize;
-		QString FontFamily;
-
-		QString sAppPath = QCoreApplication::applicationDirPath();
-		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
-		QSettings IniFile(path, QSettings::IniFormat, 0);
-
-		image = IniFile.value("background/background-image", NULL).toString();
-		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
-		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
-		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
-		FontFamily = IniFile.value("font/font-family", NULL).toString();
-
-		QRect rcClient = contentsRect();
-
-
-		_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-		p.drawPixmap(rcClient,_cacheBackImage);
-
-	}
+	emit mouseDoubleClick(this,ev);
 }
 void RSubView::resizeEvent(QResizeEvent *e)
 {
 }
-void RSubView::saveCacheImage()
+void RSubView::mousePressEvent(QMouseEvent *ev)
 {
-	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+	setFocus(Qt::MouseFocusReason);
+	emit SetCurrentWindSignl(this);
 	if (ev->button() == Qt::LeftButton && m_bGlobalAudioStatus && NULL != m_pRemotePlayBack)
 	{
 		m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
 	}
-	if (ev->button()==Qt::RightButton)
-	{
-		emit RMousePressMenu();
-	}
 }
 
-void RSubView::_cacheLableShow()
+void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
 {
-	if (_cacheLable==NULL)
+	if (NULL==m_GroupPlayback)
 	{
-		_cacheLable=new QLabel(this);
-		_cacheLable->setParent(this);
-		QPalette pa;
-		pa.setColor(QPalette::WindowText,Qt::red);
-		_cacheLable->setPalette(pa);
-		QFont ft;
-		ft.setPointSize(20);
-		_cacheLable->setFont(ft);
+		return;
 	}
 	m_GroupPlayback->QueryInterface(IID_IDeviceClient,(void**)&m_LpClient);
 	m_pRemotePlayBack = m_GroupPlayback;
@@ -383,6 +347,7 @@ void RSubView::paintEventCache( QPaintEvent * )
 void RSubView::saveCacheImage()
 {
 	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
+
 }
 
 void RSubView::_cacheLableShow()

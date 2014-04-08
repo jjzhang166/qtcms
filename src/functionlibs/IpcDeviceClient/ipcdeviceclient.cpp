@@ -1,6 +1,9 @@
 #include "IpcDeviceClient.h"
 #include <guid.h>
-
+#include "ILocalSetting.h"
+#include <QDateTime>
+#include <QHostAddress>
+#include <QUrl>
 
 IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED),
@@ -15,7 +18,7 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_IfSwithStream(0)
 {
 	//设置本组件支持的回调函数事件名称
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg";
 	//设置主次码流的初始连接状态
 	CurStatusInfo m_statusInfo;
 	m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -80,6 +83,10 @@ long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv=static_cast<ISwitchStream*>(this);
 	}
+	else if (IID_IAutoSycTime == iid)
+	{
+		*ppv=static_cast<IAutoSycTime*>(this);
+	}
 	else if (IID_IPTZControl == iid)
 	{
 		*ppv=static_cast<IPTZControl*>(this);
@@ -138,6 +145,10 @@ int IpcDeviceClient::queryEvent( QString eventName,QStringList& eventParams )
 	{
 		eventParams<<"total";
 	}
+	if ("SyncTimeMsg")
+	{
+		eventParams<<"statusCode"<<"statusMsg";
+	}
 	return IEventRegister::OK;
 }
 
@@ -170,6 +181,12 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	m_DeviceInfo.m_ports.insert("media",uiPort);
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
+
+	if (m_bIsSycTime)
+	{
+		connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
+		emit sigSyncTime();//同步时间
+	}
 	//断开上一次的连接
 	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED||m_CurStatus==IDeviceClient::STATUS_DISCONNECTING||m_CurStatus==IDeviceClient::STATUS_CONNECTING)
 	{
@@ -602,7 +619,11 @@ int IpcDeviceClient::SwitchStream( int StreamNum )
 	m_IfSwithStream=StreamNum;
 	return 0;
 }
-
+int IpcDeviceClient::SetAutoSycTime(bool bEnabled)
+{
+	m_bIsSycTime = bEnabled;
+	return 0;
+}
 bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 {
 	int mount=0;
@@ -708,7 +729,32 @@ void IpcDeviceClient::DeInitProtocl()
 	m_csDeInit.unlock();
 }
 
+int IpcDeviceClient::sndGetVesionInfo()
+{
+	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=%3Cjuan%20ver%3D%22%22%20seq%3D%22%22%3E%3Cconf%20type%3D%22read%22%20user%3D%22admin%22%20password%3D%22%22%3E%3Cspec%20vin%3D%22%22%20ain%3D%22%22%20io_sensor%3D%22%22%20io_alarm%3D%22%22%20hdd%3D%22%22%20sd_card%3D%22%22%20%2F%3E%3Cinfo%20device_name%3D%22%22%20device_model%3D%22%22%20device_sn%3D%22%22%20hardware_version%3D%22%22%20software_version%3D%22%22%20build_date%3D%22%22%20build_time%3D%22%22%20%2F%3E%3C%2Fconf%3E%3C%2Fjuan%3E HTTP/1.1\r\n";
+	block += "Connection: Keep-Alive\r\n";
+	block += "\r\n";
+	m_tcpSocket->write(block);
+	if (m_tcpSocket->waitForBytesWritten(500))
+	{
+		return 0;
+	}
+	else
+		return 1;
+}
+int IpcDeviceClient::sndSyncTimeForPreVersion()
+{
+	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=";
+	QDateTime time = QDateTime::currentDateTime();
 
+	QString xmlStr = "<juan ver=\"\" seq=\"\"><setup type=\"write\" user=\"";
+	xmlStr += m_DeviceInfo.m_sUserName + "\"" + " password=\"" + m_DeviceInfo.m_sPassword + "\">";
+	xmlStr += "<time value=\"" + QString::number(time.toTime_t()) + "\" /></setup></juan>";
+	
+	block += QUrl::toPercentEncoding(xmlStr, "", "");
+	block += " HTTP/1.1\r\n";
+	block += "Connection: keep-alive\r\n";
+	block += "\r\n";
 
 	m_tcpSocket->write(block);
 	if (m_tcpSocket->waitForBytesWritten(500))

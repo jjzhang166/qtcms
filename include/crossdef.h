@@ -6,6 +6,8 @@
 #define __cdecl
 #endif
 
+
+
 #ifndef EXTERN_C
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
@@ -13,5 +15,7 @@
 #define EXTERN_C extern
 #endif
 #endif
+
+
 
 #endif // CROSSDEF_H
