@@ -417,7 +417,7 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 	}
 
 
-	if (m_lstRecordList.isEmpty())
+	if (!m_lstRecordList.isEmpty())
 	{
 		return 0;
 	}
