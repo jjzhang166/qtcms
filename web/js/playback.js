@@ -120,6 +120,7 @@ var	nViewNum = 0,
 		});
 		
 		$(window).resize(function(){  //窗口自适应大小
+			dragStopMove();
 			var oPlay_time = $('#operating div.play_time'),
 				oP = $('#channelvideo'),
 				p = oP.width()-81;
@@ -137,6 +138,7 @@ var	nViewNum = 0,
 					width:$(this).width()*p
 				})
 			})
+			dragStartMove();
 		})
 
 		/*$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
@@ -341,14 +343,14 @@ var	nViewNum = 0,
 		//return false;
 		var oDrag=$('div.play_time');
 		var initleft = parseInt(oDrag.offset().left);
-		var max = $('#channelvideo').width();
-		var p = (max-79)/(3600*24);
 		drag_timer = setInterval(function(){
+			var max = $('#channelvideo').width();
+			var p = (max-79)/(3600*24);
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
 			//show(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
-			if(left >= max-2){ 
-				left=max-2;
+			if(left >= max-1){ 
+				left=max-1;
 				dragStopMove();
 			}
 			oDrag.css('left',left);
