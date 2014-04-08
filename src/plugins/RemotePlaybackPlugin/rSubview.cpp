@@ -128,6 +128,10 @@ bool RSubView::AudioEnabled(bool bEnabled)
 void RSubView::SetCurConnectState( __enConnectStatus parm  )
 {
 	_curState=parm;
+	if (_curState==CONNECT_STATUS_DISCONNECTED)
+	{
+		_curPaint=PAINTEVENT_STATUS_NOVIDEO;
+	}
 	/*emit connecttingUpdateSig();*/
 }
 
