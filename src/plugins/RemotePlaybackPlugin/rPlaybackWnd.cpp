@@ -240,6 +240,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 	for(it=_widList.begin();it!=_widList.end();it++){
 		m_PlaybackWnd[*it].saveCacheImage();
 	}
+	SetVolume(0xAECBCA);
 	return nRet;
 }
 

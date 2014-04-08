@@ -68,6 +68,7 @@ public:
 	QSubView* getCurWind();
 	int AudioEnabled(bool bEnabled);
 	void ScreenShot();
+	int SwitchStream(int chlId);
 	typedef enum __enQSubViewConnectStatus{
 		STATUS_CONNECTED,
 		STATUS_CONNECTING,

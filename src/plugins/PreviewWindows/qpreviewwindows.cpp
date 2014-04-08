@@ -234,6 +234,10 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
 }
+int QPreviewWindows::SwithStream(unsigned int uiWndIndex,int chlId)
+{
+	return m_PreviewWnd[uiWndIndex].SwitchStream(chlId);
+}
 int QPreviewWindows::OpenCameraInWnd(unsigned int uiWndIndex,int chlId)
 {
 	if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_PreviewWnd))

@@ -52,6 +52,7 @@ public slots:
 		,const QString & sCameraname
 		,const QString & sVendor);
 	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
+	int SwithStream(unsigned int uiWndIndex,int chlId);
 	int SetDevChannelInfo(unsigned int uiWndIndex,int ChannelId);
 
 	int CloseWndCamera(unsigned int uiWndIndex);

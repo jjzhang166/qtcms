@@ -1317,3 +1317,14 @@ void QSubView::ScreenShot()
 	imageName+=".jpg";
 	_ScreenShotImage.save(imageName);
 }
+
+int QSubView::SwitchStream( int chlId)
+{
+	int preStream=m_DevCliSetInfo.m_uiStreamId;
+	GetDeviceInfo(chlId);
+	if (chlId==m_DevCliSetInfo.m_uiChannelIdInDataBase&&m_CurrentState==STATUS_CONNECTED&&preStream!=m_DevCliSetInfo.m_uiStreamId)
+	{
+		liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true);
+	}
+	return 0;
+}

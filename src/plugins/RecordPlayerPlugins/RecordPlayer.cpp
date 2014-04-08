@@ -255,7 +255,7 @@ int RecordPlayer::SetSynGroupNum(int num)
 	{
 		return 1;
 	}
-
+	
 	return 0;
 }
 int RecordPlayer::GroupPlay()
@@ -271,7 +271,7 @@ int RecordPlayer::GroupPlay()
 	{
 		return 1;
 	}
-
+	SetVolume(0xAECBCA);
 	return 0;
 }
 int RecordPlayer::GroupPause()
