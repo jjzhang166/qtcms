@@ -546,7 +546,7 @@ function setDevData2ocx(){
 			}		
 		}
 	}
-	function showRecProgress(now){
+	function showRecProgress(now){  //回访检索文件进度
 		//show(now+'//'+recTotal);
 		var con = '正在检索:',
 			p =now/recTotal*100;
@@ -557,6 +557,13 @@ function setDevData2ocx(){
 			             .end().find('h5').html(now+'/'+recTotal)
 			             .end().find('h4').html(con);
 	}
-	function RecfinishCallback(data){
+	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	
+	}
+	function ScreenShot(){  // 截屏
+		var data =getAudioObj().ScreenShot(),str;
+		if(data.path){
+			str = '当前窗口'+(oPreView.GetCurrentWnd()+1)+'截图成功. 已经保存为'+data.path+'/'+data.imageName;
+		}
+		writeActionLog(str);
 	}
