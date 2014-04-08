@@ -54,6 +54,8 @@ public slots:
 	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
 
+	void ChangeAudioHint(QString, RecordPlayerView*);
+
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);

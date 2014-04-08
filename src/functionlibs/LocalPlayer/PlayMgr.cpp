@@ -219,7 +219,25 @@ void PlayMgr::run()
 					g_waitConPause.wait(&g_mtxPause);
 					g_mtxPause.unlock();
 				}
-				if (2 == nRet)//play audio
+
+				AVI_set_video_position(file, frame);
+				length = AVI_read_frame(file, vedioBuff, &isKeyFrame);
+				//play audio
+				if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
+				{
+					if (m_nAudioChl != nAudioChl || m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)
+					{
+						m_nAudioChl = nAudioChl;
+						m_nSampleRate = nSampleRate;
+						m_nSampleWidth = nSampleWidth;
+						m_pAudioPlayer->SetAudioParam(m_nAudioChl, m_nSampleRate, m_nSampleWidth);
+					}
+					bytes = AVI_audio_size(file, frame);
+					AVI_read_audio(file, audioBuff, bytes);
+					m_pAudioPlayer->Play(audioBuff, (int)bytes);
+				}
+
+				if (0 == isKeyFrame && isPlayInMid)
 				{
 					if (NULL != m_pAudioPlayer && m_bIsAudioOpen)
 					{

@@ -2,6 +2,8 @@
 #define _RECORDPLAYERVIEW_HEAD_FILE_H_
 
 #include <QWidget>
+#include <QMenu>
+#include <QAction>
 #include "ILocalPlayer.h"
 
 class RecordPlayerView :
@@ -17,14 +19,22 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
 
+	void setAudioHint(QString&);
 	void setLocalPlayer(ILocalPlayer* pPlayer);
-	int AudioEnabled(bool bEnabled);
-
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
+	void RMousePressMenu();
+	void ChangeAudioHint(QString, RecordPlayerView*);
+public slots:
+	void OnOpenAudio();
+	void OnRMousePressMenu();
 private:
-	static bool m_bGlobalAudioStatus;
+	QMenu m_rMousePressMenu;
+	QAction *m_ActionOpenAudio;
+
+	static RecordPlayerView* m_pCurView;
+	static bool m_bIsAudioOpen;
 
 	ILocalPlayer* m_pLocalPlayer;
 };

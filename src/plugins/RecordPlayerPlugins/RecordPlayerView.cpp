@@ -5,7 +5,8 @@
 #include <QMouseEvent>
 
 
-bool RecordPlayerView::m_bGlobalAudioStatus = false;
+RecordPlayerView* RecordPlayerView::m_pCurView = NULL;
+bool RecordPlayerView::m_bIsAudioOpen = false;
 
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
@@ -15,6 +16,9 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 
+	m_ActionOpenAudio = m_rMousePressMenu.addAction("open audio");
+	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
+	connect(m_ActionOpenAudio, SIGNAL(triggered(bool)), this, SLOT(OnOpenAudio()));
 }
 
 
@@ -87,10 +91,15 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
-	if (m_bGlobalAudioStatus && NULL != m_pLocalPlayer && ev->button() == Qt::LeftButton)
+	if (ev->button()==Qt::RightButton)
 	{
-		m_pLocalPlayer->GroupSetVolume(0xAECBCA, this);
+		emit RMousePressMenu();
 	}
+}
+
+void RecordPlayerView::OnRMousePressMenu()
+{
+	m_rMousePressMenu.exec(QCursor::pos());
 }
 
 void RecordPlayerView::setLocalPlayer(ILocalPlayer* pPlayer)
@@ -101,15 +110,47 @@ void RecordPlayerView::setLocalPlayer(ILocalPlayer* pPlayer)
 	}
 }
 
-int RecordPlayerView::AudioEnabled(bool bEnabled)
+void RecordPlayerView::OnOpenAudio()
 {
-	if (NULL == m_pLocalPlayer)
+	if (!m_bIsAudioOpen)
 	{
-		return 1;
+		if (NULL == m_pLocalPlayer)
+		{
+			return;
+		}
+		m_pLocalPlayer->GroupSetVolume(0xAECBCA, this);
+		m_pLocalPlayer->GroupEnableAudio(true);
+
+		m_ActionOpenAudio->setText("close audio");
+		m_bIsAudioOpen = true;
+		m_pCurView = this;
 	}
+	else
+	{
+		if (m_pCurView == this)
+		{
+			if (NULL == m_pLocalPlayer)
+			{
+				return;
+			}
+			m_pLocalPlayer->GroupEnableAudio(false);
 
-	m_pLocalPlayer->GroupEnableAudio(bEnabled);
-	m_bGlobalAudioStatus = bEnabled;
+			m_ActionOpenAudio->setText("open audio");
+			m_bIsAudioOpen = false;
+			m_pCurView = NULL;
+		}
+		else
+		{
+			emit ChangeAudioHint(QString("open audio"), m_pCurView);
 
-	return 0;
+			m_pLocalPlayer->GroupSetVolume(0xAECBCA, this);
+			m_pCurView = this;
+			m_ActionOpenAudio->setText("close audio");
+		}
+	}
+}
+
+void RecordPlayerView::setAudioHint(QString &statement)
+{
+	m_ActionOpenAudio->setText(statement);
 }
