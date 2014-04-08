@@ -2,7 +2,8 @@
 
 
 QSubViewObject::QSubViewObject(void):m_IDeviceClient(NULL),
-	m_QSubviewProcess(NULL)
+	m_QSubviewProcess(NULL),
+	bIsOpen(false)
 {
 	m_QSubviewProcess=new QSubviewThread;
 	m_QSubviewProcess->moveToThread(&m_workerThread);
@@ -10,25 +11,36 @@ QSubViewObject::QSubViewObject(void):m_IDeviceClient(NULL),
 	connect(this,SIGNAL(OpenCameraInWndSignl()),m_QSubviewProcess,SLOT(OpenCameraInWnd()),Qt::QueuedConnection);
 	connect(this,SIGNAL(m_workerThreadQuitSignal()),this,SLOT(m_workerThreadQuit()),Qt::QueuedConnection);
 	connect(this,SIGNAL(SetDeviceByVendorSignal(QString, QWidget *)),m_QSubviewProcess,SLOT(SetDeviceByVendor(QString, QWidget *)),Qt::QueuedConnection);
-	/*m_QSubviewProcess->SetDeviceClient(m_IDeviceClient);*/
+
 	m_workerThread.start();
 }
 
 
 QSubViewObject::~QSubViewObject(void)
 {
-	CloseWndCamera();
+	/*CloseWndCamera();*/
+	if (bIsOpen)
+	{
+		CloseWndCamera();
+	}
+	
 	m_workerThread.quit();
 	m_workerThread.wait();
 }
 int QSubViewObject::OpenCameraInWnd()
 {
+	bIsOpen=true;
 	emit OpenCameraInWndSignl();
 	return 0;
 }
 int QSubViewObject::CloseWndCamera()
  {
-	m_QSubviewProcess->CloseAll();
+	 if (bIsOpen)
+	 {
+		  QFuture<void>ret=QtConcurrent::run(m_QSubviewProcess,&QSubviewThread::CloseAll);
+	 }
+	
+	bIsOpen=false;
 	return 0;
 }
 int QSubViewObject::SetCameraInWnd(const QString sAddress,unsigned int uiPort,const QString & sEseeId ,unsigned int uiChannelId,unsigned int uiStreamId ,const QString & sUsername,const QString & sPassword ,const QString & sCameraname,const QString & sVendor)

@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <IDeviceClient.h>
 #include "QSubviewThread.h"
+#include <qtconcurrentrun.h>
 class QSubViewObject:public QThread
 {
 	Q_OBJECT
@@ -33,5 +34,7 @@ private:
 
 public slots:
 	void m_workerThreadQuit();
+private:
+	bool bIsOpen;
 };
 

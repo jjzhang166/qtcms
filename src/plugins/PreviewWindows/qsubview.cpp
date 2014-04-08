@@ -1181,9 +1181,7 @@ void QSubView::paintEventCache( QPaintEvent *e )
 		//±³¾°
 		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		p.drawPixmap(rcClient,m_cacheImage);
-		qDebug()<<m_cacheImage.width()<<m_cacheImage.height()<<"==========";
 		qDebug()<<rcClient.width()<<rcClient.height();
-		m_cacheImage.save("123.jpg");
 		//±ß¿ò
 		QPen pen = QPen(LineColor);
 		pen.setWidth(2);
