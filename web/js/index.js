@@ -168,7 +168,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				b = 0;
 			}
 		})
-		var obj = $('#openAllchannel')
+		var obj = $('#openAllchannel');
 		if(b){
 			obj.attr('toggle',1).css('background-position','0px'+' '+(-obj.height())+'px');
 		}else{
@@ -232,6 +232,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			return i;
 		}
 	}
+	// 检车该设备是否全开.
 	function checkDevAllOpen(dev_id){ 
 		var bAllopen = 1;
 		var oDev =$('#dev_'+dev_id);
@@ -248,13 +249,16 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			oDev.removeClass('device_1');
 		}
 	}
+
 	function setViewMod(i){
 		oPreView.setDivMode(i);
 	}
+
 	function setViewNumNow(){     //显示当前分屏模式和当前第级分屏
 		var str = (oPreView.getCurrentPage()+1)+'/'+oPreView.getPages();
 		$('#nowWinMod').html('').html(str);
 	}
+
 	function preNextPage(type){ 
 		if(type){ 
 			oPreView.prePage();
@@ -263,19 +267,24 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		}
 		setViewNumNow();
 	}
+
+	//日志信息操作
 	function writeActionLog(str){ 
 		if(str){
 			$('<p>'+str+'</p>').prependTo('#actionLog');
 		}
 	}
+
 	function showEmptyAction(){ 
 		$('#actionLog a.emptyAct').show();
 	}
+
 	function emptyLog(){
 		$('#actionLog p').remove();	
 		$('#actionLog a.emptyAct').hide();
 	}
-	function getChlFullInfo(oChl){ 
+
+	function getChlFullInfo(oChl){  // 获取通道的所有信息包裹所属设备信息
 		var dev_id = oChl.data('data').dev_id;
 		var devData = $('#dev_'+dev_id).data('data');
 		var chlData = oChl.data('data');
@@ -284,7 +293,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		}
 		return chlData;
 	}
-	function getNowTime(){
+	function getNowTime(){  // 获取当前时间
 		var now = new Date();
 		var H = now.getHours();
 			H = H<10 ? '0'+H:H;
@@ -295,7 +304,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		return H+':'+M+':'+S;	
 	}
 
-	function Record(bool){
+	function Record(bool){ //录像
 		if(bool){
 			$('div.dev_list span.channel[wind]').each(function(){
 				var data = $(this).data('data'),
@@ -323,4 +332,8 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				writeActionLog(str);
 			})
 		}
+	}
+	function ScreenShot(){  // 截屏
+		oPreView.ScreenShot();
+		
 	}
