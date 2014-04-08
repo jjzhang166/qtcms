@@ -18,7 +18,7 @@ QSubViewObject::QSubViewObject(void):m_IDeviceClient(NULL),
 
 QSubViewObject::~QSubViewObject(void)
 {
-	/*CloseWndCamera();*/
+	m_QSubviewProcess->SetCreateDeviceFlags(true);
 	if (bIsOpen)
 	{
 		CloseWndCamera();
@@ -52,7 +52,6 @@ int QSubViewObject::SetCameraInWnd(const QString sAddress,unsigned int uiPort,co
 
 void QSubViewObject::m_workerThreadQuit()
 {
-	
 	m_workerThread.quit();
 	m_workerThread.wait();
 }

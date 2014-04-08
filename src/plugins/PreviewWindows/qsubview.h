@@ -71,7 +71,6 @@ public:
 		STATUS_DISCONNECTED,
 		STATUS_DISCONNECTING,
 	}QSubViewConnectStatus;
-
 public:
 	//»Øµ÷
 	int PrevPlay(QVariantMap evMap);

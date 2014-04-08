@@ -404,8 +404,27 @@ int QPreviewWindows::AudioEnabled(bool bEnabled)
 
 void QPreviewWindows::showEvent( QShowEvent * )
 {
+	//设置声音
 	m_PreviewWnd[0].AudioEnabled(m_bIsOpenAudio);
 	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);
+	//设置视频开关
+	for(int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
+		QVariantMap item=m_PreviewWnd[i].GetWindowInfo();
+		if (item.value("chlId").toInt()!=-1)
+		{
+			if (ChlIsExit(item.value("chlId").toInt())==false)
+			{
+				m_PreviewWnd[i].CloseWndCamera();
+			}
+		}
+	}
+	//设置ipc自动同步
+	for (int i=0;i<ARRAY_SIZE(m_PreviewWnd);i++){
+		QVariantMap item=m_PreviewWnd[i].GetWindowInfo();
+		if (ChlIsExit(item.value("chlId").toInt())==true)
+		{
+		}
+	}
 }
 
 void QPreviewWindows::hideEvent( QHideEvent * )
@@ -421,4 +440,23 @@ QVariantMap QPreviewWindows::GetWindowInfo( unsigned int uiWndIndex )
 QVariantMap QPreviewWindows::ScreenShot()
 {
 	return m_PreviewWnd[m_CurrentWnd].ScreenShot();
+}
+
+bool QPreviewWindows::ChlIsExit( int chlId )
+{
+	bool flags=false;
+	IChannelManager *pChannelManager=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&pChannelManager);
+	if (pChannelManager!=NULL)
+	{
+		QVariantMap channelInfo=pChannelManager->GetChannelInfo(chlId);
+		if (channelInfo.value("dev_id").toInt()==-1)
+		{
+			flags=false;
+		}else{
+			flags=true;
+		}
+		pChannelManager->Release();
+	}
+	return flags;
 }

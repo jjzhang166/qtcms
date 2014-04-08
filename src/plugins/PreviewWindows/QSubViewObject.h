@@ -20,7 +20,7 @@ public:
 		,unsigned int uiChannelId,unsigned int uiStreamId
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname,const QString & sVendor);
-	//int SetDeviceClient(IDeviceClient *m_IDeviceClient);
+
 	void SetAutoSyncTime(bool bEnabled);
 	IDeviceClient *SetDeviceByVendor(QString sVendor,QWidget *wnd);
 

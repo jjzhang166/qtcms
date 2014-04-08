@@ -8,6 +8,7 @@
 #include "qwfw.h"
 #include "PreviewWindowsGlobalSetting.h"
 #include "IWindowDivMode.h"
+#include <IChannelManager.h>
 
 
 
@@ -72,6 +73,8 @@ public slots:
 	QVariantMap ScreenShot();
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
+private:
+	bool ChlIsExit(int chlId);
 private:
 	QSubView m_PreviewWnd[64];
 	IWindowDivMode * m_DivMode;

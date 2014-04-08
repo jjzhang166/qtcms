@@ -1014,7 +1014,8 @@ void QSubView::RecordState( QVariantMap evMap )
 
 void QSubView::paintEventNoVideo( QPaintEvent * e)
 {
-	if (m_CurrentState==STATUS_DISCONNECTED)
+
+	if (m_CurrentState==STATUS_DISCONNECTED||m_CurrentState==STATUS_DISCONNECTING)
 	{
 		Q_UNUSED(e);
 		QPainter p(this);
@@ -1359,3 +1360,5 @@ void QSubView::initDeviceInfo()
 	m_DevCliSetInfo.m_uiPort=-1;
 	m_DevCliSetInfo.m_uiStreamId=-1;
 }
+
+
