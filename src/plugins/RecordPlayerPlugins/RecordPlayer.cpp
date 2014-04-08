@@ -477,11 +477,13 @@ void RecordPlayer::showEvent( QShowEvent * )
 		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
 	}
 	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
+	GroupContinue();
 }
 
 void RecordPlayer::hideEvent( QHideEvent * )
 {
 	m_subRecPlayerView[0].AudioEnabled(false);
+	GroupPause();
 }
 
 QVariantMap RecordPlayer::ScreenShot()

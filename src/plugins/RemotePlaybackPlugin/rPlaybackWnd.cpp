@@ -450,6 +450,7 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 void RPlaybackWnd::hideEvent( QHideEvent * )
 {
 	m_PlaybackWnd[0].AudioEnabled(false);
+	GroupPause();
 }
 
 void RPlaybackWnd::showEvent( QShowEvent * )
@@ -459,6 +460,7 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 	{
 		 m_GroupPlayback->GroupSetVolume(0xAECBCA, &m_PlaybackWnd[m_nCurrentWnd]);
 	}
+	GroupContinue();
 }
 
 QVariantMap RPlaybackWnd::ScreenShot()
