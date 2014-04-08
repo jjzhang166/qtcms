@@ -6,6 +6,7 @@ class Qqwidget:public QWidget
 {
 public:
 	Qqwidget(QWidget *parent,QString pixdir);
+
 	~Qqwidget();
 	void paintEvent( QPaintEvent* aEvent );
 	virtual void resizeEvent(QResizeEvent *);
