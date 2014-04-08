@@ -849,7 +849,7 @@ bool DeviceClient::GroupEnableAudio(bool bEnable)
 		it->playManager->AudioSwitch(bEnable);
 	}
 
-	if (!bEnable)
+	if (!bEnable&&m_channelWithAudio!=-1)
 	{	
 		it = m_groupMap.find(m_channelWithAudio);
 		it->bufferManager->audioSwitch(false);
