@@ -17,6 +17,7 @@
 
 #include <QLabel>
 
+
 class RSubView :public QWidget
 {
 	Q_OBJECT
@@ -42,7 +43,7 @@ public:
 	}ConnectStatus;
 public:
 	void SetLpClient(IDeviceGroupRemotePlayback *m_GroupPlayback);
-	bool AudioEnabled(bool bEnabled);
+	int AudioEnabled(bool bEnabled);
 	void SetCurConnectState(__enConnectStatus parm);
 	void CacheState(QVariantMap evMap);
 	void saveCacheImage();
@@ -67,6 +68,7 @@ public slots:
 	void connecttingUpdateSlot();
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
+	
 	
 private:
 	static bool m_bGlobalAudioStatus;

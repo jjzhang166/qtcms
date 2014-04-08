@@ -113,16 +113,16 @@ void RSubView::_cacheLableShow()
 	return;
 }
 
-bool RSubView::AudioEnabled(bool bEnabled)
+int RSubView::AudioEnabled(bool bEnabled)
 {
 	if (NULL == m_pRemotePlayBack)
 	{
-		return false;
+		return 1;
 	}
 	m_pRemotePlayBack->GroupEnableAudio(bEnabled);
 	m_bGlobalAudioStatus = bEnabled;
 		
-	return true;
+	return 0;
 }
 
 void RSubView::SetCurConnectState( __enConnectStatus parm  )
