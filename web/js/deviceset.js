@@ -8,12 +8,6 @@ var oSearchOcx;
 		});
 		oTreeWarp.hide();
 		$('#iframe').hide();
-		document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
-			var e = e || window.event;
-			if(e.target.tagName != 'BODY'){
-				return false;
-			}
-		}
 		
 		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
 			closeMenu();
@@ -47,16 +41,14 @@ var oSearchOcx;
 					alert(obj.attr('id'));
 				}*/
 				if(event.which == 1){
-					if( obj[0].nodeName == 'SPAN'){
-						if(obj.hasClass('channel')){
-							This.find('span').not('span.channel').removeClass('sel');
-							if(!$('div.dev_list:eq(1) span.sel.group')[0]){
-								$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
-							}
-						}else{ 
-							This.find('span').removeClass('sel');
+					if(obj.hasClass('channel') && obj[0].nodeName == 'SPAN'){
+						This.find('span').not('span.channel').removeClass('sel');
+						if(!$('div.dev_list:eq(1) span.sel.group')[0]){
+							$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
 						}
 						obj.toggleClass('sel');
+					}else{ 
+						This.find('span').removeClass('sel');
 					}
 					//SetChannelIntoGroupData();
 				}

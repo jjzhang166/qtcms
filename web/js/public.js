@@ -359,6 +359,12 @@ $(function(){
 	$('div.calendar').each(function(index){
 		$(this).initCalendar();
 	})
+	document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
+		var e = e || window.event;
+		if(e.target.tagName != 'BODY'){
+			return false;
+		}
+	}
 })
 function triggerOnclick(id,sEv){ 
 	try{
@@ -428,8 +434,8 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 }
 //弹出框部分操作
 function closeMenu(){ 
+	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm h4').html('');
-	$('#iframe,div.confirm, div.menu').hide();
 	$('#menusList div.menu input.data').remove();
 	$('#menusList div.menu input:text').val('');
 	$('div.menue').each(function(){ 

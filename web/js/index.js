@@ -11,7 +11,6 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		oPreView= $('#previewWindows')[0];
 		$('#sound').prev('li').prop('soundOn',true);
 		oDiv = $('div.dev_list');
-		setViewMod(oCommonLibrary.getSplitScreenMode());
 
 		var oAs = $('ul.dev_list_btn a');
 	    
@@ -89,22 +88,44 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		})
 
 		//日志区域右键从菜单
-		$('#actionLog').mouseup(function(){
+		$('#actionLog').mouseup(function(event){
 			if(event.which == 3){
-				var l = event.pageX > $(this).width() - 60 ? $(this).width() - 60 : event.pageX;
+				var l = event.pageX > $(this).width() - 84 ? $(this).width() - 84 : event.pageX;
 				var t = event.pageY - $(this).offset().top 
 					t = t > $(this).height() - 19 ? $(this).height() - 19: t;
-				$(this).find('a.emptyAct').css({ 
+				$(this).find('div.emptyAct').css({ 
 					left:l,
 					top:t
 				}).show();
 				$(document).click(function(){ 
-					$(this).find('a.emptyAct').hide();
+					closeMenu();
 					$(document).off();
 				})
 			}
 		})
+		//切换码流右键菜单
+		$('div.dev_list').mouseup(function(event){
+			var target = $(event.target),
+				oMenu = $('div.menu0');
+			if(event.which == 3 && target.hasClass('channel')){
+				$('div.dev_list span.channel').removeClass('sel');
+				target.addClass('sel');
+				var l = event.pageX > $(window).width() - 80 ? $(window).width() - 80 : event.pageX;
+				var t = event.pageY > $(this).offset().top+$(this).height() - 24 ? $(this).offset().top+$(this).height() - 24 :event.pageY;
+				oMenu.css({ 
+					left:l,
+					top:t
+				}).show();
+				$(document).click(function(){ 
+					$('div.dev_list span.channel').removeClass('sel');
+					closeMenu();
+					$(document).off();
+				})
+			}
 
+		})
+
+		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
 			backPosition = indexLi.css('background-position').split(' ');
@@ -304,16 +325,22 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		return H+':'+M+':'+S;	
 	}
 
-	function Record(bool){ //录像
-		if(bool){
+	function Record(obj){ //录像
+		var str = '',
+		backStatus= 0,
+		data = {};
+		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
-				var data = $(this).data('data'),
-					str = '';
+				data = $(this).data('data');
 				if(oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
 					str = '设备'+data.name+' 下的通道'+data.channel_name+'的手动录像数据绑定失败!'
-				}else{ 
-					if(oPreView.StartRecord($(this).attr('wind'))){
+				}else{
+					backStatus = oPreView.StartRecord($(this).attr('wind'))
+					if(backStatus){
 						str = '设备'+data.name+' 下的通道'+data.channel_name+'手动录像失败!';
+						if(backStatus == 2){
+							str = '设备'+data.name+' 下的通道'+data.channel_name+'已经处于计划录像状态!';
+						}
 					}else{ 
 						str = '设备'+data.name+' 下的通道'+data.channel_name+'开始手动录像!';
 					}
@@ -322,16 +349,26 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			})
 		}else{
 			$('div.dev_list span.channel[wind]').each(function(){
-				var data = $(this).data('data'),
-					str = '';
-				if(!oPreView.StopRecord($(this).attr('wind'))){ 
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像!'
-				}else{ 	
+				data = $(this).data('data'),
+				backStatus = oPreView.StopRecord($(this).attr('wind'));
+				if(backStatus){ 
 					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像失败!'
+					if(backStatus == 2){
+						str = '设备'+data.name+' 下的通道'+data.channel_name+'已经处于计划录像状态!';
+					}
+				}else{ 	
+					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像!'	
 				}
 				writeActionLog(str);
-			})
+			})	
 		}
+		/*obj.blur(function(){
+			if(backStatus){
+				obj.attr('toggle',1).css('background-position','-120px -108px');
+			}else{
+				obj.removeAttr('toggle').css('background-position','-120px -72px');
+			}
+		})*/
 	}
 	function ScreenShot(){  // 截屏
 		var data =oPreView.ScreenShot(),str
@@ -340,3 +377,22 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		}
 		writeActionLog(str);
 	}
+
+	function SwithStream(){
+		var oChlData = $('#search_device span.channel.sel').data('data'),
+			currWin = oPreView.GetCurrentWnd(),
+			str = '通道'+oChlData.channel_name+'在窗口'+(currWin+1)+'下切换码流';
+			stream = oChlData.stream_id ? 0 : 1;
+		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
+			str += '失败';
+		}else{
+			oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
+			if(oPreView.SwithStream(currWin,oChlData.channel_id)){
+				str += '失败';
+			}else{
+				str += '成功';
+			}
+		}
+		writeActionLog(str);
+	}
+

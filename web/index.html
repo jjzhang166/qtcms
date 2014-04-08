@@ -30,9 +30,21 @@
 		background: #EB343D;
 		position: absolute;
 	}
+	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
+	.menu0 li:hover{ background:#C25451;}
 </style>
 </head>
 <body>
+<div class="menu menu0">
+	<ul>
+		<li onclick="SwithStream()">切换码流</li>
+		<!-- <li onclick="showObjActBox('Add','group');">添加分组</li>
+		<li onclick="showObjActBox('Add','area');">添加区域</li>
+		<li onclick="showObjActBox('Add','device');">添加设备</li>
+		<li>修改</li>
+		<li>删除</li> -->
+	</ul>
+</div>
 	<object type="application/cms-qwebview" id="winCon" style="width:0px;height:0px;"></object>
 	<div id="top">
 		<div class="top_act" id="app_top">
@@ -161,7 +173,7 @@
 				<li class="hover" style="background-position: 0 0;" onclick="openCloseAll(1);" id="openAllchannel" title="全部打开"></li>
 				<li class="hover" style="background-position: 0 -36px;" onclick="openCloseAll();" id="openAllchannel" title="全部关闭"></li>
 				<!-- <li class="hover" style="background-position: -120px -108px;" onclick="StopRecord();" title="暂停录像"></li> -->
-				<li class="toggle hover" style="background-position: -120px -72px;" onclick="Record($(this).attr('toggle'));" title="录像"></li>
+				<li class="toggle hover" style="background-position: -120px -72px;" onclick="Record($(this));" title="录像"></li>
 				<li class="hover" style="background-position: -120px -144px;" title="截屏" onclick="ScreenShot();"></li>
 				<li class="toggle hover" style="background-position: -120px -180px;" title="轮循"></li>
 				<!-- <li class="hover" style="background-position: -120px -252px;"></li> -->
@@ -175,7 +187,7 @@
 			</ul>
 		</div>
 		<div id="actionLog">
-		<a href="javascript:;" class="emptyAct" onclick="emptyLog();">清空日志</a>
+		<div class="menu emptyAct" onclick="emptyLog();">清空日志</div>
 		</div>
 	</div>
 <div id="foot">
