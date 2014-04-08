@@ -80,7 +80,6 @@ public:
 	int SetDeviceByVendor(const QString & sVendor);
 	void SetCurrentFocus(bool);
 	void RecordState(QVariantMap evMap);
-	void ChangAudioHint(const QString &statement);
 private:
 	int cbInit();
 	
@@ -113,7 +112,6 @@ signals:
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
 		void RecordStateSignals(bool );
-		void ChangeAudioHint(QString, QSubView*);
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
 	RecordDevInfo m_RecordDevInfo;
