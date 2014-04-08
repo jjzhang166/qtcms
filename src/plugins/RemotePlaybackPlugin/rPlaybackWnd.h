@@ -51,6 +51,8 @@ public:
     void  CurrentStateChangePlugin(int stateValue);
     void  SocketErrorPlugin(int stateValue);
     int   GetRecFileNum(uint uiNum);
+	
+	void ScreenShot();
 
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);

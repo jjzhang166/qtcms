@@ -54,7 +54,7 @@ public slots:
 	QString GetNowPlayedTime();
 	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
-
+	void ScreenShot();
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);

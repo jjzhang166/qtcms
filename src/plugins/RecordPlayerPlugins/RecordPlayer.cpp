@@ -483,5 +483,5 @@ void RecordPlayer::hideEvent( QHideEvent * )
 
 void RecordPlayer::ScreenShot()
 {
-
+	m_subRecPlayerView[m_currentWindID].ScreenShot();
 }

@@ -29,7 +29,7 @@ public:
 	virtual void paintEvent( QPaintEvent * );
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
-
+	void ScreenShot();
 	enum __enPaintEventStatus{
 		PAINTEVENT_STATUS_NOVIDEO,
 		PAINTEVENT_STATUS_CONNECTING,
@@ -79,6 +79,7 @@ private:
 	QPixmap _cacheBackImage;
 	bool _bSaveCacheImage;
 	QLabel *_cacheLable;
+	QPixmap _ScreenShotImage;
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );

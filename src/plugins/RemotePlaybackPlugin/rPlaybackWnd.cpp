@@ -456,6 +456,11 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 	}
 }
 
+void RPlaybackWnd::ScreenShot()
+{
+	m_PlaybackWnd[m_nCurrentWnd].ScreenShot();
+}
+
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
