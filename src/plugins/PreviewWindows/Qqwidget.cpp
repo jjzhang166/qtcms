@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QResizeEvent>
 Qqwidget::Qqwidget(QWidget *parent,QString pixdir):QWidget(parent),_pixdir(pixdir)
+
 {
 	setWindowFlags(Qt::FramelessWindowHint);
 	QPalette p=palette();
@@ -15,6 +16,7 @@ Qqwidget::Qqwidget(QWidget *parent,QString pixdir):QWidget(parent),_pixdir(pixdi
 
 	bgpix.load(pixdir,0,Qt::AvoidDither|Qt::ThresholdDither|Qt::ThresholdAlphaDither); 
 	resize(parent->size()/15);
+
 	setMask(QBitmap(bgpix.mask())); 
 	_parent=parent;
 }
@@ -29,6 +31,7 @@ void Qqwidget::paintEvent( QPaintEvent* aEvent )
 	QPainter painter(this);  
 	QPixmap newbgpix=bgpix.scaled(this->width(),this->height());
 	painter.drawPixmap(0,0,newbgpix);  
+
 }
 
 void Qqwidget::resizeEvent( QResizeEvent *event )
@@ -36,6 +39,7 @@ void Qqwidget::resizeEvent( QResizeEvent *event )
 	QPixmap newbgpix=bgpix.scaled(this->width(),this->height());
 	setMask(QBitmap(newbgpix.mask())); 
 	move(_parent->width()-this->width()*_width,this->height());
+
 }
 
 void Qqwidget::mousePressEvent( QMouseEvent * event)
