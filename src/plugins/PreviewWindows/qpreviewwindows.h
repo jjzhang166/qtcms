@@ -78,6 +78,11 @@ public slots:
 	//ptz control
 	int OpenPTZ(int nCmd, int nSpeed);
 	int ClosePTZ(int nCmd);
+
+	//login
+	QVariantMap CheckLoginInof(const QString &sUsername, const QString &sPassword, const QString &sLanguageLabel, bool bAutoLogin);
+	int ModifyPassword(const QString &sUsername, const QString &sOldPassword, const QString &sNewPassword);
+
 private:
 	bool ChlIsExit(int chlId);
 	QString GetLanguageLabel();

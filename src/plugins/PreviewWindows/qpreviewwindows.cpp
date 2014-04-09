@@ -5,6 +5,7 @@
 #include <QtCore/QtCore>
 #include <QtXml/QtXml>
 #include <libpcom.h>
+#include "IUserManager.h"
 
 
 #include <guid.h>
@@ -491,4 +492,81 @@ int QPreviewWindows::OpenPTZ( int nCmd, int nSpeed )
 int QPreviewWindows::ClosePTZ( int nCmd )
 {
 	return m_PreviewWnd[m_CurrentWnd].ClosePTZ(nCmd);
+}
+
+QVariantMap QPreviewWindows::CheckLoginInof( const QString &sUsername, const QString &sPassword, const QString &sLanguageLabel, bool bAutoLogin)
+{
+	QVariantMap item;
+	if (sUsername.isEmpty() || sPassword.isEmpty())
+	{
+		item.insert("errorCode", -3);
+		return item;
+	}
+	IUserManager *pUserManager = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void**)&pUserManager);
+	if (NULL == pUserManager)
+	{
+		item.insert("errorCode", -4);
+		return item;
+	}
+	bool bIsUserExists = pUserManager->IsUserExists(sUsername);
+	if (!bIsUserExists)
+	{
+		item.insert("errorCode", -2);
+		return item;
+	}
+	bool bIsAccountOk = pUserManager->CheckUser(sUsername, sPassword);
+	if (!bIsAccountOk)
+	{
+		item.insert("errorCode", -1);
+		return item;
+	}
+	int level = 0;
+	int mask1 = 0;
+	int mask2 = 0;
+	pUserManager->GetUserLevel(sUsername, level);
+	pUserManager->GetUserAuthorityMask(sUsername, mask1, mask2);
+
+	ILocalSetting *pLocalSetting = NULL;
+	pUserManager->QueryInterface(IID_ILocalSetting, (void**)&pLocalSetting);
+	if (NULL == pLocalSetting)
+	{
+		item.insert("errorCode", -4);
+		return item;
+	}
+	pLocalSetting->setAutoLogin(bAutoLogin);
+	pLocalSetting->setLanguage(sLanguageLabel);
+
+	pLocalSetting->Release();
+	pUserManager->Release();
+
+	item.insert("errorCode", 0);
+	item.insert("accountLevel", level);
+	item.insert("authorityMask1", mask1);
+	item.insert("authorityMask2", mask2);
+	return item;
+}
+
+int QPreviewWindows::ModifyPassword( const QString &sUsername, const QString &sOldPassword, const QString &sNewPassword )
+{
+	if (sUsername.isEmpty() || sOldPassword.isEmpty())
+	{
+		return 1;
+	}
+	IUserManager *pUserManager = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void**)&pUserManager);
+	if (NULL == pUserManager)
+	{
+		return 1;
+	}
+	bool bIsAccountOk = pUserManager->CheckUser(sUsername, sOldPassword);
+	if (!bIsAccountOk)
+	{
+		return 1;
+	}
+
+	int nRet = pUserManager->ModifyUserPassword(sUsername, sNewPassword);
+	pUserManager->Release();
+
+	return nRet;
 }
