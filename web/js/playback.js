@@ -255,7 +255,7 @@ var	nViewNum = 0,
 	var nowSpeed = 1;
 	function playSpeed(str){
 		var show='';
-		var max = bool ? 8 : 2 ;
+		var max = 2;//bool ? 8 : 2 ;
 		if(str){
 			nowSpeed = nowSpeed*2;
 			nowSpeed = nowSpeed > max ? max : nowSpeed;
