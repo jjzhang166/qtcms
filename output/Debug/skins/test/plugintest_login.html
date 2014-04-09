@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>settings</title>
+<script language="javascript" src="js/qframework.js" ></script>
+<script language="javascript">
+
+function Login(){
+	var obj = document.getElementById('login');
+	var sUsername = document.getElementById('username_add_ID');
+	var sPassword = document.getElementById('password_add_ID');
+	var sLanguage = document.getElementById('choose_language');
+	var sautoLogin = document.getElementById('autoLogin');
+	var autoLog = false;
+	if(sautoLogin.checked)
+	{
+		autoLog = true;	
+	}
+	
+	var str = obj.CheckLoginInof(sUsername.value, sPassword.value, sLanguage.value, autoLog);
+	var result = str.errorCode;
+	if(0 == result)
+	{
+		result = str.errorCode + "\n" + "user level:" + str.accountLevel;
+	}
+	alert(result);
+}
+
+function ModifyPassword(){
+	var obj = document.getElementById('login');
+	var sUsername = document.getElementById('username_add_ID');
+	var sOldPass = document.getElementById('old_password');
+	var sNewPass = document.getElementById('new_password');
+	
+	
+	var res = obj.ModifyPassword(sUsername.value, sOldPass.value, sNewPass.value);
+	alert(res);
+}
+
+function cancel_login(){
+	var sUsername = document.getElementById('username_add_ID');
+	var sPassword = document.getElementById('password_add_ID');
+	var sLauguage = document.getElementById('choose_language');
+	
+	sUsername.value = "";
+	sPassword.value = "";
+	sLanguage.value = "zh_CN";
+}
+
+function cancel_modify(){
+	var sOldPass = document.getElementById('old_password');
+	var sNewPass = document.getElementById('new_password');
+	var sConfirmPass = document.getElementById('confirm_password');
+	
+	sOldPass.value = "";
+	sNewPass.value = "";
+	sConfirmPass.value = "";
+}
+
+</script>
+</head>
+
+<body >
+  <object type="application/cms-preview-windows" id="login" style="width:0; height:0"></object>
+ 
+<div id="menu2" class="menu" >
+	<p>用户登录<a class="hover close" href="javascript:;"></a></p>
+	<table>
+		<tr><td>用户名</td><td><input type="text" id="username_add_ID" value="" /></td></tr>
+		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" value="" /></td></tr>
+		<tr><td>选择语言</td>
+			<td><form>
+			<select id="choose_language">
+				<option value="en_GB">english</option>
+				<option value="zh_CN">简体中文</option>
+			</select>
+			</form></td>
+			<td><form><input id="autoLogin" type="checkbox" />auto login</form></td></tr>
+		<tr><td><input id="login_ok" type="button" value="login" onclick="Login();"/></td>
+    		<td><input id="login_cancel" type="button" value="cancel" onclick="cancel_login();"/></td>
+		</tr>
+        <tr><td>原始密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="old_password" value="" /></td></tr>
+		<tr><td>新密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="new_password" value="" /></td></tr>
+		<tr><td>确认密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="confirm_password" value="" /></td></tr>
+		<tr><td><input id="modify_password_ok" type="button" value="modify password" onclick="ModifyPassword();"/></td>
+    		<td><input id="modify_password_cancel" type="button" value="cancel" onclick="cancel_modify();"/></td>
+		</tr>
+
+	</table>
+</div>
+
+</body>
+</html>
