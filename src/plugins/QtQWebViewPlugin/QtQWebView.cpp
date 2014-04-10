@@ -107,6 +107,8 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		//ÏÔÊ¾Ö÷Ò³
 		QWidget *pa=this->parentWidget();
 		((QWebView*)pa)->show();
+		pa->resize(PageSize);
+		((QWebView*)pa)->move(nX,nY);
 		QEventLoop eventloop;
 		QTimer::singleShot(10,&eventloop,SLOT(quit()));
 		eventloop.exec();
