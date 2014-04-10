@@ -1741,7 +1741,7 @@ QVariantMap QCommonPlugin::GetChannelInfo(int chl_id)
 	chl_info.insert("name"  , "");
 	chl_info.insert("stream", 0);
 	chl_info.insert("number", 0);
-	chl_info.insert("dev_id",0);
+	chl_info.insert("dev_id",-1);
 
 	// check if channel exists
 	if (!IsChannelExists(chl_id))
