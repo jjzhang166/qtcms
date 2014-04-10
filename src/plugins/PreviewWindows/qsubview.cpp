@@ -70,7 +70,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnected()),Qt::QueuedConnection);
-	m_QActionCloseView=m_RMousePressMenu.addAction(tr("close preview"));
+	m_QActionCloseView=m_RMousePressMenu.addAction(tr("Close Preview"));
 	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
 	connect(m_QActionCloseView,SIGNAL(triggered(bool)),this,SLOT(OnCloseFromMouseEv()));
@@ -585,7 +585,7 @@ void QSubView::OnRMousePressMenu()
 {
 	if (m_DevCliSetInfo.m_uiStreamId==0)
 	{
-		m_QActionSwitchStream->setText(tr("Switch to subStream"));
+		m_QActionSwitchStream->setText(tr("Switch to SubStream"));
 	}else{
 		m_QActionSwitchStream->setText(tr("Switch to MainStream"));
 	}
@@ -1398,7 +1398,7 @@ void QSubView::translateUi()
 {
 	if (m_QActionCloseView!=NULL)
 	{
-		m_QActionCloseView->setText(tr("close preview"));
+		m_QActionCloseView->setText(tr("Close Preview"));
 	}
 	if (m_QActionSwitchStream!=NULL)
 	{
