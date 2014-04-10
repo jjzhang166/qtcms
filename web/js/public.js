@@ -67,17 +67,19 @@ function ViewMax(type){
 	var devListH = type == 'preview' ? 290 : 233 ;
 	var WinW = $(window).width();
 	var WinH = $(window).height();
+		WinW = WinW <= 1000 ?1000: WinW
+		WinH = WinH <= 600 ?600: WinH
 
 	oView.css({
 		width:WinW-oLeft.width()-8,
 		height:WinH-oBottom.height()-110
 	});
-	if(oView.width()<680){
+	/*if(oView.width()<680){
 		oView.width(680);
 	}
 	if(oView.height()<360){
 		oView.height(360);
-	}
+	}*/
 	oLeft.css({
 		left:oView.width(),
 		height:oView.height()+123

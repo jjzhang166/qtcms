@@ -72,13 +72,15 @@ var now = 0;
 	function contentMax(){
 		var H = $(window).height();
 		var W = $(window).width();
+			W = W <=1000 ? 1000 : W;
+			H = H <=600 ? 600 : H;
 		var main = $('#search_result');
-		if(main.width()<830){
+		/*if(main.width()<830){
 			main.width(830);
 		}
 		if(main.height()<450){
 			main.height(450);
-		}
+		}*/
 		main.css({
 			height: H - 136,
 			width: W - 238

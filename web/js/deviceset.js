@@ -494,6 +494,8 @@ var oSearchOcx;
 			H = $(window).height(),
 			now =0,
 			oWarp ={};
+			W = W<=1000?1000:W;
+			H = H<=600?600:H;
 		$('#set_content div.right').css({ 
 			width:W - 250,
 			height:H - 106
@@ -523,7 +525,7 @@ var oSearchOcx;
 			$('div.dev_list').height(H/2-94)
 
 			oWarp.find('div.action:eq(0)').css('left',main.width()-30);
-			$('#left_list').css('left',main.width()+136);
+			$('#left_list').css('left',main.width()+120);
 		}
 		$('#foot').css('top',H-28)
 	}
