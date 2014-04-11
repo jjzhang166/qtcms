@@ -836,10 +836,10 @@ function user_management_data2ui(dvr_data)
 			permit_playback = "checked";
 		}
 		str = "";
-                    str += "<input type=\"checkbox\" id=\"permit_admin\" " + permit_admin + "/>permit_admin";
+                    str += "<input type=\"checkbox\" id=\"permit_admin\" " + permit_admin + "/>允许管理";
             //		str += "<input type=\"checkbox\" id=\"permit_live\" " + permit_live + ">permit_live";
-                    str += "<input type=\"checkbox\" id=\"permit_setting\" " + permit_setting + "/>permit_setting";
-                    str += "<input type=\"checkbox\" id=\"permit_playback\" " + permit_playback + "/>playback";
+                    str += "<input type=\"checkbox\" id=\"permit_setting\" " + permit_setting + "/>允许设置";
+                    str += "<input type=\"checkbox\" id=\"permit_playback\" " + permit_playback + "/>回放";
                     td.innerHTML = str;
 		
 		td = tr.insertCell(tr.cells.length);
@@ -860,8 +860,8 @@ function user_management_data2ui(dvr_data)
 //			set_pass = "disabled";
 //		}
 		str = "";
-		str += "<button type=\"button\" id=\"edit_user\" " + edit_user + " onclick=\"user_management_target='" + eval("dvr_data.user.user_list.user" + i + ".name") + "';user_management_save_edit_usr()\">save</button>";
-		str += "<button type=\"button\" id=\"del_user\" " + del_user + " onclick=\"user_management_target='" + eval("dvr_data.user.user_list.user" + i + ".name") + "';user_management_prepare_rm()\">del_user</button>";
+		str += "<button type=\"button\" id=\"edit_user\" " + edit_user + " onclick=\"user_management_target='" + eval("dvr_data.user.user_list.user" + i + ".name") + "';user_management_save_edit_usr()\">保存</button>";
+		str += "<button type=\"button\" id=\"del_user\" " + del_user + " onclick=\"user_management_target='" + eval("dvr_data.user.user_list.user" + i + ".name") + "';user_management_prepare_rm()\">删除</button>";
 //		str += "<input type=\"button\" id=\"set_pass\" value=\"设置\" " + set_pass + ">";
 		td.innerHTML = str;
 	}

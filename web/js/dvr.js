@@ -1008,8 +1008,9 @@ function dvr_screen_load_content()
 		}
 	});	
 }
-function dvr_screen_save_content(chk_chn)
+function dvr_screen_save_content()
 {
+	var chk_chn = $("#dvr_screen_chn_sel0").html()-1;
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0" enc="1">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
