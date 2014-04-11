@@ -8,10 +8,11 @@ class SubWebView: public QWebView
 {
 	Q_OBJECT
 public:
-	explicit SubWebView(QString nurl,QWidget *parent = 0);
+	explicit SubWebView(QString nurl,QSize mSize,QWidget *parent = 0);
 	virtual ~SubWebView(void);
 public:
 	QString EventProcsScripte(QString sEvent,QVariantMap eventParam);
+	bool IsLoad;
 protected:
 	virtual void keyPressEvent(QKeyEvent* ev);
 signals:
@@ -26,9 +27,10 @@ private:
 	QString m_sApplicationPath;
 	QString m_url;
 	QString statusBarMessage;
+	
 private:
 	IActivities *m_Activity;
-
+	QSize m_Size;
 };
 
 

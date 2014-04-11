@@ -47,7 +47,7 @@ void QtQWebView::LoadNewPage( QString url )
 			item->m_SubWebView->OnRefressMessage();
 			//Òþ²ØÖ÷Ò³
 			QEventLoop eventloop;
-			QTimer::singleShot(10,&eventloop,SLOT(quit()));
+			QTimer::singleShot(50,&eventloop,SLOT(quit()));
 			eventloop.exec();
 			QWidget *pa=this->parentWidget();
 			((QWebView*)pa)->hide();
@@ -55,7 +55,7 @@ void QtQWebView::LoadNewPage( QString url )
 		}
 	}
 	tagViewPage m_tagViewPage;
-	m_tagViewPage.m_SubWebView=new SubWebView(url);
+	m_tagViewPage.m_SubWebView=new SubWebView(url,PageSize);
 	if (NULL==m_tagViewPage.m_SubWebView)
 	{
 		return;
@@ -65,12 +65,18 @@ void QtQWebView::LoadNewPage( QString url )
 	/*m_tagViewPage.m_SubWebView->showMaximized();*/
 	m_tagViewPage.m_SubWebView->resize(PageSize);
 	m_tagViewPage.m_SubWebView->move(nX,nY);
-	QEventLoop eventloop;
-	QTimer::singleShot(500,&eventloop,SLOT(quit()));
-	eventloop.exec();
+	while(m_tagViewPage.m_SubWebView->IsLoad==false){
+		QEventLoop eventloop;
+		QTimer::singleShot(5,&eventloop,SLOT(quit()));
+		eventloop.exec();
+	}
+	QWidget *pa=this->parentWidget();
 	m_tagViewPage.m_SubWebView->show();
 	//Òþ²ØÖ÷Ò³
-	QWidget *pa=this->parentWidget();
+	QEventLoop eventloop;
+	QTimer::singleShot(10,&eventloop,SLOT(quit()));
+	eventloop.exec();
+	
 	((QWebView*)pa)->hide();
 	m_tagViewPage.url = url;
 	m_ViewPageList.append(m_tagViewPage);
@@ -160,17 +166,22 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		if (false==bExit)
 		{
 			tagViewPage m_tagViewPage;
-			m_tagViewPage.m_SubWebView=new SubWebView(DstUrl);
+			m_tagViewPage.m_SubWebView=new SubWebView(DstUrl,PageSize);
 			if (NULL!=m_tagViewPage.m_SubWebView)
 			{
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
 				connect(m_tagViewPage.m_SubWebView,SIGNAL(CloseAllPage()),this,SLOT(CloseAllPage()));
 				m_tagViewPage.m_SubWebView->page()->view()->resize(PageSize);
 				m_tagViewPage.m_SubWebView->page()->view()->move(nX,nY);
-				QEventLoop eventloop;
-				QTimer::singleShot(500,&eventloop,SLOT(quit()));
-				eventloop.exec();
+				while(m_tagViewPage.m_SubWebView->IsLoad==false){
+					QEventLoop eventloop;
+					QTimer::singleShot(5,&eventloop,SLOT(quit()));
+					eventloop.exec();
+				}
 				m_tagViewPage.m_SubWebView->show();
+				QEventLoop eventloop;
+				QTimer::singleShot(10,&eventloop,SLOT(quit()));
+				eventloop.exec();
 				m_tagViewPage.url.append(DstUrl);
 				m_ViewPageList.append(m_tagViewPage);
 			}

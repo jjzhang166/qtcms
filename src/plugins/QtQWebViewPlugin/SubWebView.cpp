@@ -6,8 +6,9 @@
 #include <QSettings>
 
 
-SubWebView::SubWebView(QString nurl,QWidget *parent):QWebView(parent),
+SubWebView::SubWebView(QString nurl,QSize mSize,QWidget *parent):QWebView(parent),
 	m_url(nurl),
+	IsLoad(false),
 	m_Activity(NULL)
 {
 	// Window styles
@@ -15,7 +16,7 @@ SubWebView::SubWebView(QString nurl,QWidget *parent):QWebView(parent),
 
 	// Set object name
 	setObjectName("QtWebKitFW");
-
+	resize(mSize);
 	// Enable Javascript and plugins
 	settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
 	settings()->setAttribute(QWebSettings::PluginsEnabled,true);
@@ -108,6 +109,7 @@ void SubWebView::OnLoad( bool bOk )
 		}
 		file->close();
 	}
+	IsLoad=true;
 }
 
 void SubWebView::OnstatusBarMessage( const QString &text )

@@ -9,7 +9,6 @@
 #include <QWidget>
 #include <QObject>
 
-
 class QtQWebView:public QWidget,
 	public QWebPluginFWBase
 {
