@@ -397,7 +397,8 @@ int QPreviewWindows::SetVolume(unsigned int uiPersent)
 
 int QPreviewWindows::AudioEnabled(bool bEnabled)
 {
-	int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);
+	/*int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);*/
+	int nRet = m_PreviewWnd[m_CurrentWnd].AudioEnabled(bEnabled);
 	m_bIsOpenAudio=bEnabled;
 	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);
 	return nRet;

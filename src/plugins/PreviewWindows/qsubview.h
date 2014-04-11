@@ -150,8 +150,8 @@ private:
 	QSubViewConnectStatus m_HistoryState;//设备上一次的连接状态
 	int iInitWidth;
 	int iInitHeight;
-	int m_nSampleRate;
-	int m_nSampleWidth;
+	static int m_nSampleRate;
+	static int m_nSampleWidth;
 	//标志位
 	bool m_bRendering;
 	bool m_bIsRecording;

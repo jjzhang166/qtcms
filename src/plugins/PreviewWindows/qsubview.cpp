@@ -15,6 +15,8 @@
 bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
+int QSubView::m_nSampleRate=0;
+int QSubView::m_nSampleWidth=0;
 
 QSubView::QSubView(QWidget *parent)
 	: QWidget(parent),
@@ -28,8 +30,6 @@ QSubView::QSubView(QWidget *parent)
 	m_HistoryState(QSubView::STATUS_DISCONNECTED),
 	iInitWidth(0),
 	iInitHeight(0),
-	m_nSampleRate(0),
-	m_nSampleWidth(0),
 	m_bRendering(false),
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
