@@ -210,7 +210,7 @@ int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 	{
 		nRet = m_GroupPlayback->AddChannelIntoPlayGroup(m_DevCliSetInfo.m_uiChannelId, &m_PlaybackWnd[uiWndId]);
 		_widList<<uiWndId;
-		_widInfo[uiWndId]=m_DevCliSetInfo.m_uiChannelIdInDataBase;
+		_widInfo.insert(uiWndId,m_DevCliSetInfo.m_uiChannelIdInDataBase);
 	}
 	else
 	{
