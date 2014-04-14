@@ -363,15 +363,15 @@
 			</div>
 			<div class="right_content">
 				<ul class="ope_list nav1 dvr_list0" style="margin-right:300px;">
-					<li class="ope_listAct">设备信息</li>
-					<li>常规设置</li>
-					<li>网络设置</li>
-					<li>编码设置</li>
-					<li>视频设置</li>
-					<li>屏幕设置</li>
-					<li>PTZ 设置</li>
-					<li>视频检测设置</li>
-					<li>报警设置</li>
+					<li class="ope_listAct" onclick="dvr_devinfo_load_content();">设备信息</li>
+					<li onclick="dvr_common_load_content();">常规设置</li>
+					<li onclick="dvr_network_load_content();">网络设置</li>
+					<li onclick="dvr_load('dvr_enc_chn_sel');">编码设置</li>
+					<li onclick="dvr_load('dvr_record_chn_sel');">视频设置</li>
+					<li onclick="dvr_load('dvr_screen_chn_sel');">屏幕设置</li>
+					<li onclick="dvr_load('dvr_detect_chn_sel');">PTZ 设置</li>
+					<li onclick="dvr_load('dvr_ptz_chn_sel');">视频检测设置</li>
+					<li onclick="dvr_load('dvr_alarm_chn_sel');">报警设置</li>
 				</ul>
 				<div class="switch dvr_list"  style="display:block;">
 					<table>
@@ -1376,11 +1376,11 @@
 					</ul>
 				</div>
 				<ul class="ope_list nav1 ipc_list0" style="margin-right:300px; display:none;">
-					<li class="ope_listAct">设备信息</li>
-					<li>编码设置</li>
-					<li>网络设置</li>
-					<li>用户设置</li>
-					<li>时间设置</li>
+					<li class="ope_listAct" onclick="devinfo_load_content(true);">设备信息</li>
+					<li onclick="encode_load_content();">编码设置</li>
+					<li onclick="network_load_content();">网络设置</li>
+					<li onclick="user_management_load_content();">用户设置</li>
+					<li onclick="time_load_content();">时间设置</li>
                     <li>初始化设置</li>
 				</ul>
                 <div class="switch ipc_list"  style="display:none;">

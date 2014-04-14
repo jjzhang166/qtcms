@@ -136,8 +136,9 @@ var oSearchOcx;
 					warp.show();
 					$('ul.ipc_list0').hide();
 				})
-				warp.find('li').each(function(index){
+			/*	warp.find('li').each(function(index){
 					$(this).click(function(){
+						alert(index)
 						switch(index)
 						{
 							case 0: dvr_devinfo_load_content();break;
@@ -152,7 +153,7 @@ var oSearchOcx;
 							default:break;
 						}		
 					})
-				})
+				})*/
 			});
 
 			$('ul.ipc_list0').each(function(){//ipc
@@ -161,8 +162,9 @@ var oSearchOcx;
 					warp.show();
 					$('ul.dvr_list0').hide();
 				})
-				warp.find('li').each(function(index){
+				/*$('ul.ipc_list0 li').each(function(index){
 					$(this).click(function(){
+						alert(index);
 						switch(index)
 						{
 							case 0: devinfo_load_content(true);break;
@@ -174,7 +176,7 @@ var oSearchOcx;
 							default:break;
 						}			
 					})
-				})
+				})*/
 			});
 		})
 

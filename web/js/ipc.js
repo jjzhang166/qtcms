@@ -91,6 +91,25 @@ function check(){
 		}
 	}
 }
+function incoming_load_fbase()
+{
+	var auth = "Basic " + base64.encode('admin:');
+	$.ajax({
+			type:"GET",
+			url:ipc_url + '/netsdk/video/input/channel/1',
+			dataType:"json",
+			beforeSend : function(req){ 
+			req .setRequestHeader('Authorization', auth);
+			},
+			success:function(data){	
+				$('#encode_Fbase').val(data.powerLineFrequencyMode);
+				encode_load();
+			},
+			error:function(a,b,c){ 
+				alert(b);
+			}
+		});
+}
 function deviceName_load()
 {
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
@@ -115,7 +134,7 @@ function encode_load_content()
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
 	var id = $('#ipc_enc_stream').html();
-		$.ajax({
+		 $.ajax({
 				type:"GET",
 				url:ipc_url + '/netsdk/video/encode/channel/'+id+'/properties',
 				dataType:"json",
@@ -123,13 +142,12 @@ function encode_load_content()
 				req .setRequestHeader('Authorization', auth);
 				},
 				success:function(data){
-					//alert(11)
 					$('#ipc_enc_resolution_sel').find('li').remove();
 					for(i=0;i<data.resolutionProperty.opt.length;i++)
 					{
 						$('#ipc_enc_resolution_sel').append('<li class="add_li_2"><a href="javascript:;">'+data.resolutionProperty.opt[i]+'</a></li>');
 					}
-					encode_load();
+					incoming_load_fbase();
 				},
 				error:function(a,b,c){ 
 					//alert(b);
