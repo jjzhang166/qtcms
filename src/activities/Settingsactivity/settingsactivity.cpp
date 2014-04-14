@@ -120,16 +120,29 @@ void settingsActivity::OnTopActDbClick()
 		QRect rcScreen = QApplication::desktop()->screenGeometry();
 		
 		QSize currentSize=m_MainView->size();
-		currentSize.setHeight(rcScreen.height()*2/3);
-		currentSize.setWidth(rcScreen.width()*2/3);
+		if (rcScreen.height()*2/3>600)
+		{
+			currentSize.setHeight(rcScreen.height()*2/3);
+		}else{
+			currentSize.setHeight(600);
+		}
+		if (rcScreen.width()*2/3>1000)
+		{
+			currentSize.setWidth(rcScreen.width()*2/3);
+		}
+		else{
+			currentSize.setWidth(1000);
+		}
 		m_MainView->resize(currentSize);
+		qDebug()<<m_MainView;
 		int nX=rcScreen.width()-currentSize.width();
 		int nY=rcScreen.height()-currentSize.height();
 		m_MainView->move(nX/2,nY/2);
 	}
 	else
 	{
-		m_MainView->showMaximized();
+		/*m_MainView->showMaximized();*/
+		m_MainView->showFullScreen();
 	}
 }
 

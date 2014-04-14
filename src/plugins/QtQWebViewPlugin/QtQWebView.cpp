@@ -150,9 +150,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		{
 			if (DstUrl==it->url)
 			{
+				it->m_SubWebView->show();
 				it->m_SubWebView->page()->view()->resize(PageSize);
 				it->m_SubWebView->page()->view()->move(nX,nY);
-				it->m_SubWebView->show();
 				it->m_SubWebView->OnRefressMessage();
 				QEventLoop eventloop;
 				QTimer::singleShot(10,&eventloop,SLOT(quit()));
