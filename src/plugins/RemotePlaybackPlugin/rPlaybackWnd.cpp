@@ -99,63 +99,125 @@ int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
     return 0;
 }
 
-int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
+//int   RPlaybackWnd::AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel)
+//{
+//	qDebug()<<"RPlaybackWnd AddChannelIntoPlayGroup"<<uiWndId<<uiChannel;
+//    if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || uiChannel > 32)
+//    {
+//        return -1;
+//    }
+//    int nRet = 2;
+//
+//    if (!bIsCaseInitFlags)
+//    {
+//        QString sAppPath = QCoreApplication::applicationDirPath();
+//        QFile * file = new QFile(sAppPath + "/pcom_config.xml");
+//        file->open(QIODevice::ReadOnly);
+//        QDomDocument ConfFile;
+//        ConfFile.setContent(file);
+//
+//        QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+//        QDomNodeList itemList = clsidNode.childNodes();
+//
+//        for (int n = 0; n < itemList.count(); n++)
+//        {
+//            QDomNode item = itemList.at(n);
+//            QString sItemName = item.toElement().attribute("vendor");
+//
+//            if (sItemName == m_sVendor)
+//            {
+//                if (NULL != m_GroupPlayback)
+//                {
+//                    m_GroupPlayback->Release();
+//                    m_GroupPlayback = NULL;
+//                }
+//                CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
+//                pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)&m_GroupPlayback);
+//				for (int i=0;i< ARRAY_SIZE(m_PlaybackWnd); ++i)
+//				{
+//					m_PlaybackWnd[i].SetLpClient(m_GroupPlayback);
+//				}
+//
+//				m_RemotePlaybackObject.SetIDeviceGroupRemotePlaybackParm(m_GroupPlayback);
+//                bIsCaseInitFlags = true;
+//                break;
+//            }
+//        }
+//        file->close();
+//        delete file;
+//    }
+//    if (NULL != m_GroupPlayback)
+//    {
+//        nRet = m_GroupPlayback->AddChannelIntoPlayGroup(uiChannel, &m_PlaybackWnd[uiWndId]);
+//		_widList<<uiWndId;
+//	}
+//    else
+//    {
+//        bIsCaseInitFlags = false;
+//    }
+//    return nRet;
+//}
+
+int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 {
-	qDebug()<<"RPlaybackWnd AddChannelIntoPlayGroup"<<uiWndId<<uiChannel;
-    if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || uiChannel > 32)
-    {
-        return -1;
-    }
-    int nRet = 2;
+	qDebug()<<"RPlaybackWnd AddChannelIntoPlayGroup"<<uiWndId<<uiChannelId;
+	GetDeviceInfo(uiChannelId);
+	if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || m_DevCliSetInfo.m_uiChannelId > 32)
+	{
+		return -1;
+	}
+	int nRet = 2;
 
-    if (!bIsCaseInitFlags)
-    {
-        QString sAppPath = QCoreApplication::applicationDirPath();
-        QFile * file = new QFile(sAppPath + "/pcom_config.xml");
-        file->open(QIODevice::ReadOnly);
-        QDomDocument ConfFile;
-        ConfFile.setContent(file);
+	if (!bIsCaseInitFlags)
+	{
+		QString sAppPath = QCoreApplication::applicationDirPath();
+		QFile * file = new QFile(sAppPath + "/pcom_config.xml");
+		file->open(QIODevice::ReadOnly);
+		QDomDocument ConfFile;
+		ConfFile.setContent(file);
 
-        QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
-        QDomNodeList itemList = clsidNode.childNodes();
+		QDomNode clsidNode = ConfFile.elementsByTagName("CLSID").at(0);
+		QDomNodeList itemList = clsidNode.childNodes();
 
-        for (int n = 0; n < itemList.count(); n++)
-        {
-            QDomNode item = itemList.at(n);
-            QString sItemName = item.toElement().attribute("vendor");
+		for (int n = 0; n < itemList.count(); n++)
+		{
+			QDomNode item = itemList.at(n);
+			QString sItemName = item.toElement().attribute("vendor");
 
-            if (sItemName == m_sVendor)
-            {
-                if (NULL != m_GroupPlayback)
-                {
-                    m_GroupPlayback->Release();
-                    m_GroupPlayback = NULL;
-                }
-                CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
-                pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)&m_GroupPlayback);
+			if (sItemName == m_sVendor)
+			{
+				if (NULL != m_GroupPlayback)
+				{
+					m_GroupPlayback->Release();
+					m_GroupPlayback = NULL;
+				}
+				CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
+				pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)&m_GroupPlayback);
 				for (int i=0;i< ARRAY_SIZE(m_PlaybackWnd); ++i)
 				{
 					m_PlaybackWnd[i].SetLpClient(m_GroupPlayback);
 				}
 
 				m_RemotePlaybackObject.SetIDeviceGroupRemotePlaybackParm(m_GroupPlayback);
-                bIsCaseInitFlags = true;
-                break;
-            }
-        }
-        file->close();
-        delete file;
-    }
-    if (NULL != m_GroupPlayback)
-    {
-        nRet = m_GroupPlayback->AddChannelIntoPlayGroup(uiChannel, &m_PlaybackWnd[uiWndId]);
-		_widList<<uiWndId;
+				bIsCaseInitFlags = true;
+				break;
+			}
+		}
+		file->close();
+		delete file;
 	}
-    else
-    {
-        bIsCaseInitFlags = false;
-    }
-    return nRet;
+	if (NULL != m_GroupPlayback)
+	{
+		nRet = m_GroupPlayback->AddChannelIntoPlayGroup(m_DevCliSetInfo.m_uiChannelId, &m_PlaybackWnd[uiWndId]);
+		_widList<<uiWndId;
+		_widInfo[uiWndId]=m_DevCliSetInfo.m_uiChannelIdInDataBase;
+	}
+	else
+	{
+		bIsCaseInitFlags = false;
+	}
+	return nRet;
+	return 0;
 }
 
 void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString & sPassword)
@@ -458,6 +520,46 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 QVariantMap RPlaybackWnd::ScreenShot()
 {
 	return m_PlaybackWnd[m_nCurrentWnd].ScreenShot();
+}
+
+int RPlaybackWnd::GetDeviceInfo( int chlId )
+{
+	if (chlId==m_DevCliSetInfo.m_uiChannelIdInDataBase)
+	{
+		return 1;
+	}
+	IChannelManager *pChannelManager=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&pChannelManager);
+	if (pChannelManager!=NULL)
+	{
+		QVariantMap channelInfo=pChannelManager->GetChannelInfo(chlId);
+		m_DevCliSetInfo.m_uiStreamId=channelInfo.value("stream").toInt();
+		m_DevCliSetInfo.m_uiChannelId=channelInfo.value("number").toInt();
+		m_DevCliSetInfo.m_sCameraname=channelInfo.value("name").toString();
+		int dev_id=channelInfo.value("dev_id").toInt();
+		pChannelManager->Release();
+		IDeviceManager *pDeviceManager=NULL;
+		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void **)&pDeviceManager);
+		if (pDeviceManager!=NULL)
+		{
+			QVariantMap deviceInfo=pDeviceManager->GetDeviceInfo(dev_id);
+			m_DevCliSetInfo.m_sVendor=deviceInfo.value("vendor").toString();
+			m_DevCliSetInfo.m_sPassword=deviceInfo.value("password").toString();
+			m_DevCliSetInfo.m_sUsername=deviceInfo.value("username").toString();
+			m_DevCliSetInfo.m_sEseeId=deviceInfo.value("eseeid").toString();
+			m_DevCliSetInfo.m_sAddress=deviceInfo.value("address").toString();
+			m_DevCliSetInfo.m_uiPort=deviceInfo.value("port").toInt();
+			m_DevCliSetInfo.m_uiChannelIdInDataBase=chlId;
+			pDeviceManager->Release();
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int RPlaybackWnd::GetWndInfo( int uiWndId )
+{
+	return _widInfo[uiWndId];
 }
 
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)

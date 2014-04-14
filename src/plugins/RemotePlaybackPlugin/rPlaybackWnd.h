@@ -10,6 +10,20 @@
 #include "IDeviceRemotePlayback.h"
 #include "IDeviceClient.h"
 #include "rSubview.h"
+#include <IChannelManager.h>
+#include <IDeviceManager.h>
+typedef struct _tagDevCliSetInfo{
+	QString m_sAddress;
+	unsigned int m_uiPort;
+	QString m_sEseeId;
+	unsigned int m_uiChannelId;
+	int m_uiChannelIdInDataBase;
+	unsigned int m_uiStreamId;
+	QString m_sUsername;
+	QString m_sPassword;
+	QString m_sCameraname;
+	QString m_sVendor;
+}DevCliSetInfo;
 
 class RPlaybackWnd : public QWidget,
 	public QWebPluginFWBase
@@ -30,8 +44,9 @@ public slots:
     // 设置设备厂商信息
     int setDeviceVendor(const QString & vendor);
     // 设置回放同步组
-    int AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel);
-
+    //int AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel);
+	int AddChannelIntoPlayGroup(uint uiWndId,int uiChannelId);
+	int GetWndInfo(int uiWndId );
     void setUserVerifyInfo(const QString & sUsername,const QString & sPassword);
 
 	int startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime);
@@ -76,6 +91,8 @@ public:
 	ConnectStatus _curConnectState;
 	ConnectType _curConnectType;
 	QList<int> _widList;
+	QList<int >_widInfo;
+	
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
@@ -98,12 +115,16 @@ private:
     uint          m_uiPort;
     int           m_nCurrentWnd;
     uint          m_uiRecFileSearched;
-private:
+
     bool bIsInitFlags;
     bool bIsCaseInitFlags;
 	bool bIsOpenAudio;
-    int  cbInit();
+   
 	QMutex _mutexWidList;
+	DevCliSetInfo m_DevCliSetInfo;
+	private:
+	int  cbInit();
+	int GetDeviceInfo(int chlId);
 };
 
 
