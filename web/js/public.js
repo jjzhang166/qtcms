@@ -67,8 +67,8 @@ function ViewMax(type){
 	var devListH = type == 'preview' ? 290 : 233 ;
 	var WinW = $(window).width();
 	var WinH = $(window).height();
-		WinW = WinW <= 1000 ?1000: WinW
-		WinH = WinH <= 600 ?600: WinH
+		WinW = WinW <= 1000 ? 1000: WinW
+		WinH = WinH <= 600 ? 600: WinH
 
 	oView.css({
 		width:WinW-oLeft.width()-8,
@@ -367,6 +367,8 @@ $(function(){
 			return false;
 		}
 	}
+	//初始化声音按钮的初始值
+	$('#sound').prev('li').prop('soundOn',true);
 })
 function triggerOnclick(id,sEv){ 
 	try{
@@ -420,7 +422,7 @@ function showdata(id,type){  //显示表单下有ID的元素的val值
 	debugData(str);
 }
 function debugData(data){  // 在ID为test的div元素中打印对象数据
-	return false;
+	//return false;
 	var index='default',
 		str = 'Null';
 	$('#test').html('');
@@ -532,7 +534,7 @@ function sound(obj){
 	var type = obj.prop('soundOn'),
 	oView =getAudioObj(),
 	str='';
-	//show('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));
+	//debugData('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));
 	if(oView.AudioEnabled(type)){
 		str='声音开关操作失败!';
 	}else{

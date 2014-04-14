@@ -496,8 +496,8 @@ var oSearchOcx;
 			H = $(window).height(),
 			now =0,
 			oWarp ={};
-			W = W<=1000?1000:W;
-			H = H<=600?600:H;
+			W = W<1000?1000:W;
+			H = H<600?600:H;
 		$('#set_content div.right').css({ 
 			width:W - 250,
 			height:H - 106
@@ -508,11 +508,11 @@ var oSearchOcx;
 			}
 		})
 
-		$('#set_content div.left').height(H - 106);
+		$('#set_content div.left').height(H - 90);
 		if(now == 0){ 
 			var main = $('#SerachDevList');
 			main.css({ 
-				height:H-270,
+				height:H-252,
 				width:W-600
 			})
 			main.find('thead td').not(':first,:last').width((main.width()-130)/2-2)
@@ -522,14 +522,15 @@ var oSearchOcx;
 			$('#Allocation').css({
 				top:main.height(),
 				width:main.width()
-			}).find('tbody .aa').width((main.width()-100)/2-20)
+			}).find('tbody .aa').width((main.width()-176)/2)
 
 			$('div.dev_list').height(H/2-94)
 
 			oWarp.find('div.action:eq(0)').css('left',main.width()-30);
 			$('#left_list').css('left',main.width()+120);
 		}
-		$('#foot').css('top',H-28)
+		debugData(main.height()+226);
+		$('#foot').css('top',main.height()+226)
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){

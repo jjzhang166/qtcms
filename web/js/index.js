@@ -9,7 +9,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		oBottom = $('#operating');
 		oView = $('#playback_view');
 		oPreView= $('#previewWindows')[0];
-		$('#sound').prev('li').prop('soundOn',true);
+		
 		oDiv = $('div.dev_list');
 
 		var oAs = $('ul.dev_list_btn a');
@@ -162,7 +162,6 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				}
 			}
 		})
-		//return false;
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI

@@ -20,7 +20,6 @@ var	nViewNum = 0,
 
 		oDiv = $('div.dev_list');
 
-		//$('#sound').prev('li').prop('soundOn',true);
 
 		ViewMax();
 	    
@@ -204,19 +203,17 @@ var	nViewNum = 0,
 		if(event.pageX<81){
 			return false;
 		}
+		
 		dragStopMove();
-		try{
-			nowSpeed = 1;
-			var obj = $('#togglePlay');
-				obj.attr({
-					toggle:'1',
-					hasFile:'1'
-				}).css('background-position','0px'+' '+(-obj.height())+'px');
-			oPlaybackLocl.GroupStop();
-			oPlayBack.GroupStop();
-		}catch(e){
-			//alert('try:'+e);
-		};
+		nowSpeed = 1;
+		var obj = $('#togglePlay');
+			obj.attr({
+				toggle:'1',
+				hasFile:'1'
+			}).css('background-position','0px'+' '+(-obj.height())+'px');
+		oPlaybackLocl.GroupStop();
+		oPlayBack.GroupStop();
+
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';

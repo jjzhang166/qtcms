@@ -27,8 +27,7 @@ var oCommonLibrary,
 					}).addClass('channel_1').data('data');
 					checkDevAllOpen(chlData.dev_id);
 				}
-			}
-			
+			}	
 		}
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];
