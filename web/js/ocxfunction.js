@@ -76,7 +76,7 @@ var oCommonLibrary,
 			str +=data.name+': ';
 		}
 		str += data.fail
-		Confirm(str);
+		Confirm("操作失败");
 	}
 
 	//搜索设备控件方法.
