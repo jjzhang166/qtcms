@@ -513,7 +513,7 @@ var oSearchOcx;
 		if(now == 0){ 
 			var main = $('#SerachDevList');
 			main.css({ 
-				height:H-238,
+				height:H-252,
 				width:W-600
 			})
 			main.find('thead td').not(':first,:last').width((main.width()-130)/2-2)
@@ -531,7 +531,7 @@ var oSearchOcx;
 			$('#left_list').css('left',main.width()+120);
 		}
 
-		$('#foot').css('top',$('#set_content div.right').height()+94);
+		$('#foot').css('top',$('#set_content div.right').height()+94)
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){

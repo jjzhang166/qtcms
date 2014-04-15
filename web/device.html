@@ -62,7 +62,7 @@
 	#set_content .span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
 	#set_content .action li{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
 	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
-	.menu0 li:hover{ background:#C25451;}
+	.menu0 li:hover{ background:#C25451; cursor: default;}
 
 	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
 	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
@@ -267,7 +267,7 @@
 				<input type="hidden" id="removedeviceall_ID" />
 				<div class="action" style="position: absolute;">
 					<ul>
-						<li class="hover" onclick="adddoubdevIntoArea();" id="AddDeviceDouble_ok">添加→</li>
+						<li class="hover" onclick="$('#confirm span').html('添加设备');adddoubdevIntoArea();" id="AddDeviceDouble_ok">添加→</li>
 						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok">一键添加</li>
 						<li class="hover" onclick="showObjActBox('Add','area');">添加区域</li>
 						<li class="hover" onclick="showObjActBox('Add','device');">添加设备</li>
@@ -335,7 +335,7 @@
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
-					<div class="action" style="height:42px; width:228px;margin:10px 6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;">添加至分组</li><li id="RemoveChannelFromGroup_ok" class="hover">移出分组</li></ul></div>
+					<div class="action" style="height:42px; width:auto;margin:6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;">添加至分组</li><li id="RemoveChannelFromGroup_ok" class="hover">移出分组</li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<input type="hidden" id="r_chl_group_id_ID" value="" />
 						<ul class="filetree" id="group_0">

@@ -444,7 +444,7 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 //弹出框部分操作
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
-	$('#confirm h4').html('');
+	$('#confirm').find('h4,span').html('');
 	$('#menusList div.menu input.data').remove();
 	$('#menusList div.menu input:text').val('');
 	$('div.menue').each(function(){ 
