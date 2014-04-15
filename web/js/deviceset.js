@@ -517,9 +517,9 @@ var oSearchOcx;
 				width:W-600
 			})
 			main.find('thead td').not(':first,:last').width((main.width()-130)/2-2)
-			if(main.width()>760){ 
+			/*if(main.width()>760){ 
 				main.width(780);
-			}
+			}*/
 			$('#Allocation').css({
 				top:main.height(),
 				width:main.width()
@@ -531,7 +531,7 @@ var oSearchOcx;
 			$('#left_list').css('left',main.width()+120);
 		}
 
-		$('#foot').css('top',$('#set_content div.right').height()+96);
+		$('#foot').css('top',$('#set_content div.right').height()+94);
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){

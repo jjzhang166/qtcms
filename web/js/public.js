@@ -128,7 +128,12 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			veiwObj.vol = left;
+			if(oView.id == 'playback'){
+				document.getElementById('playbackLocl').SetVolume(left);
+			}else if(oView.id == 'playbackLocl'){
+				document.getElementById('playback').SetVolume(left);
+			}
+			//veiwObj.vol = left;
 		}/*else{
 			showNowPlayBackTime(oNow,left,X2);
 		}*/
@@ -534,7 +539,7 @@ function sound(obj){
 	var type = obj.prop('soundOn'),
 	oView =getAudioObj(),
 	str='';
-	//debugData('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));
+	/*debugData('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));*/
 	if(oView.AudioEnabled(type)){
 		str='声音开关操作失败!';
 	}else{
@@ -544,7 +549,13 @@ function sound(obj){
 			str='关闭声音';
 		}
 	}
-	oView.enable = type;
+	if(oView.id == 'playback'){
+		document.getElementById('playbackLocl').AudioEnabled(type);
+	}else if(oView.id == 'playbackLocl'){
+		document.getElementById('playback').AudioEnabled(type);
+	}
+
+	//oView.enable = type;
 
 	SyncSoundSli(type);
 	

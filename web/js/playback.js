@@ -12,11 +12,11 @@ var	nViewNum = 0,
 		oView = $('#playback_view');
 		//初始回放对象的声音状态,
 		oPlayBack = $('#playback')[0];
-		oPlayBack.volEnable = false;
-		oPlayBack.vol = 50;
+/*		oPlayBack.volEnable = false;
+		oPlayBack.vol = 50;*/
 		oPlaybackLocl = $('#playbackLocl')[0];
-		oPlaybackLocl.volEnable = false;
-		oPlaybackLocl.vol = 50;
+/*		oPlaybackLocl.volEnable = false;
+		oPlaybackLocl.vol = 50;*/
 
 		oDiv = $('div.dev_list');
 
@@ -42,7 +42,6 @@ var	nViewNum = 0,
 		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
 			listParent.find('li').removeClass('sel');
 			getAudioObj().nowDevID=$(this).addClass('sel').find('span.device').data('data').dev_id;
-
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -149,8 +148,8 @@ var	nViewNum = 0,
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
 				bool = index;
-				var oView = getAudioObj();
-				var oSound = $('#sound');
+				/*var oView = getAudioObj();
+				var oSound = $('#sound'),
 				var obtonbackPos = oSound.prev('li').css('background-position').split(' ');
 				
 				if(oView.enable){
@@ -166,8 +165,9 @@ var	nViewNum = 0,
 					  .end().find('p:last').width(oView.vol)
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
-				SyncSoundSli(oView.enable);
+				SyncSoundSli(oView.enable);*/
 
+				//保存当前选中的设备
 				getAudioObj().nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
@@ -412,19 +412,18 @@ var	nViewNum = 0,
 
 		if(bool){
 			oPlayBack.style.height='0px';
+			oPlayBack.GroupStop();
+			oPlayBack.GroupSpeedNormal();
 			oPlaybackLocl.style.height='100%';
 		}else{
 			oPlaybackLocl.style.height='0px';
+			oPlaybackLocl.GroupStop();
+			oPlaybackLocl.GroupSpeedNormal();
 			oPlayBack.style.height='100%';
 		}
 
 		dragStopMove();
 		PBrecFileTableInit();
-
-		oPlayBack.GroupStop();
-		oPlayBack.GroupSpeedNormal();
-		oPlaybackLocl.GroupStop();
-		oPlaybackLocl.GroupSpeedNormal();
 
 		ocxsearchVideo();
 	}
