@@ -122,7 +122,7 @@
 		</table>
 </div>
 <div id="area" class="menu">
-	<p><span>添加区域</span><a class="hover close" href="javascript:;"></a></p>
+	<p><span>添加区域</span><a class="hover close"></a></p>
 	<table style="margin-top:10px;">
 		<tr><td>区域名</td><td><input type="text" id="area_name_ID"/></td></tr>
 		<tr><td>主区域</td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
@@ -130,7 +130,7 @@
 	</table>
 </div>
 <div id="group" class="menu">
-	<p><span>添加分组</span><a class="hover close" href="javascript:;"></a></p>
+	<p><span>添加分组</span><a class="hover close"></a></p>
 	<table style="margin-top:10px;">
 		<tr><td>分组名</td><td><input type="text" id="group_name_ID"/></td></tr>
 		<!-- <tr><td>主组名</td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
@@ -138,7 +138,7 @@
 	</table>
 </div>
 <div id="channel" class="menu">
-	<p><span>修改通道</span><a class="hover close" href="javascript:;"></a></p>
+	<p><span>修改通道</span><a class="hover close"></a></p>
 	<table style="margin-top:10px;">
 		<tr><td>通道名:</td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
 		<tr><td colspan="2" style="height:10px;"></td></tr>
@@ -148,7 +148,7 @@
 <input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
 <input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
 <div id="menu2" class="menu">
-	<p>添加用户<a class="hover close" href="javascript:;"></a></p>
+	<p>添加用户<a class="hover close"></a></p>
 	<table>
 		<tr><td>用户名</td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
 		<tr><td>密码</td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
@@ -158,7 +158,7 @@
 			<td>
 				<div class="select" style="width:60px;">
 					<span>游客</span>
-					<a class="hover" href="javascript:;"></a>
+					<a class="hover"></a>
 					<input type="hidden" value="3" id="level_add_ID"/>
 				</div>
 				<ul class="option">
@@ -172,7 +172,7 @@
 	</table>
 </div>
 <div id="menu3" class="menu">
-	<p>修改用户<a class="hover close" href="javascript:;"></a></p>
+	<p>修改用户<a class="hover close"></a></p>
 	<table>
 		<tr><td>用户名</td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
 		<tr><td>旧密码</td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
@@ -183,7 +183,7 @@
 			<td>
 				<div class="select" style="width:60px;">
 				<span>游客</span>
-				<a class="hover" href="javascript:;"></a>
+				<a class="hover"></a>
 				<input type="hidden" value="3" id="level_modify_ID"/>
 				</div>
 				<ul class="option">
@@ -212,10 +212,10 @@
 			<div id="test" style="float:left;"></div>
 			<div id="top_window_act">
 				<ul>
-					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
-					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
-					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
-					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
+					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;"></a></li>
+					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户"></a></li> -->
 				</ul>
 			</div>
 		</div>
@@ -225,11 +225,11 @@
 				<li><a style="background-position: -36px 0;"></a>回放</li>
 				<li><a style="background-position: -62px 0;"></a>备份</li>
 				<li class="active"><a style="background-position: -88px 0; width:36px;"></a>设置</li>
-				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li>
 				<li><a style="background-position: -124px 0;"></a>日志</li> -->
 			</ul>
 			<!-- <div>
-				<a href="javascript:;"></a>
+				<a></a>
 				<p style="color:#000;">Login User:eddy</p>
 			</div> -->
 		</div></div>
@@ -394,12 +394,12 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_date_format"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">YYYY/MM/DD</a></li>
-									<li><a href="javascript:;">MM/DD/YYYY</a></li>
-									<li><a href="javascript:;">DD/MM/YYYY</a></li>
+									<li><a>YYYY/MM/DD</a></li>
+									<li><a>MM/DD/YYYY</a></li>
+									<li><a>DD/MM/YYYY</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -409,11 +409,11 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_standard"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">PAL</a></li>
-									<li><a href="javascript:;">NTST</a></li>
+									<li><a>PAL</a></li>
+									<li><a>NTST</a></li>
 								</ul></td>
 						</tr>
 						<tr>
@@ -428,25 +428,25 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_OSD_alpha"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
-                                    <li><a href="javascript:;">0</a></li>                          
-									<li><a href="javascript:;">1</a></li>
-									<li><a href="javascript:;">2</a></li>
-									<li><a href="javascript:;">3</a></li>
-                                    <li><a href="javascript:;">4</a></li>
-									<li><a href="javascript:;">5</a></li>
-									<li><a href="javascript:;">6</a></li>
-                                    <li><a href="javascript:;">7</a></li>
-									<li><a href="javascript:;">8</a></li>
-									<li><a href="javascript:;">9</a></li>
-                                    <li><a href="javascript:;">10</a></li>
-									<li><a href="javascript:;">11</a></li>
-									<li><a href="javascript:;">12</a></li>
-                                    <li><a href="javascript:;">13</a></li>
-									<li><a href="javascript:;">14</a></li>
-									<li><a href="javascript:;">15</a></li>
+                                    <li><a>0</a></li>                          
+									<li><a>1</a></li>
+									<li><a>2</a></li>
+									<li><a>3</a></li>
+                                    <li><a>4</a></li>
+									<li><a>5</a></li>
+									<li><a>6</a></li>
+                                    <li><a>7</a></li>
+									<li><a>8</a></li>
+									<li><a>9</a></li>
+                                    <li><a>10</a></li>
+									<li><a>11</a></li>
+									<li><a>12</a></li>
+                                    <li><a>13</a></li>
+									<li><a>14</a></li>
+									<li><a>15</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -456,15 +456,15 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_autoswiinterval"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">2s</a></li>
-									<li><a href="javascript:;">3s</a></li>
-									<li><a href="javascript:;">4s</a></li>
-                                    <li><a href="javascript:;">5s</a></li>
-									<li><a href="javascript:;">8s</a></li>
-									<li><a href="javascript:;">10s</a></li>
+									<li><a>2s</a></li>
+									<li><a>3s</a></li>
+									<li><a>4s</a></li>
+                                    <li><a>5s</a></li>
+									<li><a>8s</a></li>
+									<li><a>10s</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -473,11 +473,11 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_autoswimode"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">全屏</a></li>
-									<li><a href="javascript:;">屏幕分割</a></li>
+									<li><a>全屏</a></li>
+									<li><a>屏幕分割</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -543,7 +543,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_enc_chn_sel0"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="dvr_enc_chn_sel" class="option">
 								
@@ -561,11 +561,11 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_mode"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">视频流</a></li>
-											<li><a href="javascript:;">音视频流</a></li>
+											<li><a>视频流</a></li>
+											<li><a>音视频流</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -574,13 +574,13 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_format"><li></li></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li value="0"><a href="javascript:;">QCIP</a></li>
-											<li value="1"><a href="javascript:;">CIF</a></li>
-											<li value="2"><a href="javascript:;">HD1</a></li>
-                                            <li value="3"><a href="javascript:;">D1</a></li>
+											<li value="0"><a>QCIP</a></li>
+											<li value="1"><a>CIF</a></li>
+											<li value="2"><a>HD1</a></li>
+                                            <li value="3"><a>D1</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -589,13 +589,13 @@
 									<td>
 										<div class="select" style="width:133px;">
 										<span id="dvr_enc_main_image"></span>
-										<a class="hover" href="javascript:;"></a></div>
+										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a href="javascript:;">最高</a></li>
-											<li><a href="javascript:;">高</a></li>
-											<li><a href="javascript:;">适中</a></li>
-                                            <li><a href="javascript:;">低</a></li>
-											<li><a href="javascript:;">最低</a></li>
+											<li><a>最高</a></li>
+											<li><a>高</a></li>
+											<li><a>适中</a></li>
+                                            <li><a>低</a></li>
+											<li><a>最低</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -604,12 +604,12 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_bitmode"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">可变码率</a></li>
-											<li><a href="javascript:;">固定码率</a></li>
-											<li><a href="javascript:;">适中码率</a></li>
+											<li><a>可变码率</a></li>
+											<li><a>固定码率</a></li>
+											<li><a>适中码率</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -618,18 +618,18 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_bitvalue"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">64kbps</a></li>
-											<li><a href="javascript:;">128kbps</a></li>
-											<li><a href="javascript:;">256kbps</a></li>
-                                            <li><a href="javascript:;">384kbps</a></li>
-											<li><a href="javascript:;">512kbps</a></li>
-                                            <li><a href="javascript:;">768kbps</a></li>
-                                            <li><a href="javascript:;">1Mbps</a></li>
-                                            <li><a href="javascript:;">1.5Mbps</a></li>
-                                            <li><a href="javascript:;">2Mbps</a></li>
+											<li><a>64kbps</a></li>
+											<li><a>128kbps</a></li>
+											<li><a>256kbps</a></li>
+                                            <li><a>384kbps</a></li>
+											<li><a>512kbps</a></li>
+                                            <li><a>768kbps</a></li>
+                                            <li><a>1Mbps</a></li>
+                                            <li><a>1.5Mbps</a></li>
+                                            <li><a>2Mbps</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -638,19 +638,19 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_framerate"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">1FPS</a></li>
-											<li><a href="javascript:;">2FPS</a></li>
-											<li><a href="javascript:;">3FPS</a></li>
-                                            <li><a href="javascript:;">5FPS</a></li>
-											<li><a href="javascript:;">8FPS</a></li>
-											<li><a href="javascript:;">10FPS</a></li>
-                                            <li><a href="javascript:;">12FPS</a></li>
-											<li><a href="javascript:;">15FPS</a></li>
-											<li><a href="javascript:;">20FPS</a></li>
-                                            <li><a href="javascript:;">25FPS</a></li>
+											<li><a>1FPS</a></li>
+											<li><a>2FPS</a></li>
+											<li><a>3FPS</a></li>
+                                            <li><a>5FPS</a></li>
+											<li><a>8FPS</a></li>
+											<li><a>10FPS</a></li>
+                                            <li><a>12FPS</a></li>
+											<li><a>15FPS</a></li>
+											<li><a>20FPS</a></li>
+                                            <li><a>25FPS</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -663,10 +663,10 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_mode"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">视频流</a></li>
+											<li><a>视频流</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -675,11 +675,11 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_format"><li></li></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li><a href="javascript:;">QCIP</a></li>
-											<li><a href="javascript:;">CIF</a></li>
+											<li><a>QCIP</a></li>
+											<li><a>CIF</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -688,13 +688,13 @@
 									<td>
 										<div class="select" style="width:133px;">
 										<span id="dvr_enc_sub_image"></span>
-										<a class="hover" href="javascript:;"></a></div>
+										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a href="javascript:;">最高</a></li>
-											<li><a href="javascript:;">高</a></li>
-											<li><a href="javascript:;">适中</a></li>
-                                            <li><a href="javascript:;">低</a></li>
-											<li><a href="javascript:;">最低</a></li>
+											<li><a>最高</a></li>
+											<li><a>高</a></li>
+											<li><a>适中</a></li>
+                                            <li><a>低</a></li>
+											<li><a>最低</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -703,12 +703,12 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_bitmode"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">可变码率</a></li>
-											<li><a href="javascript:;">固定码率</a></li>
-											<li><a href="javascript:;">适中码率</a></li>
+											<li><a>可变码率</a></li>
+											<li><a>固定码率</a></li>
+											<li><a>适中码率</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -717,13 +717,13 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_bitvalue"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">64kbps</a></li>
-											<li><a href="javascript:;">128kbps</a></li>
-											<li><a href="javascript:;">256kbps</a></li>
-                                            <li><a href="javascript:;">384kbps</a></li>
+											<li><a>64kbps</a></li>
+											<li><a>128kbps</a></li>
+											<li><a>256kbps</a></li>
+                                            <li><a>384kbps</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -732,16 +732,16 @@
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_framerate"></span>
-											<a class="hover" href="javascript:;"></a>
+											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a href="javascript:;">1FPS</a></li>
-											<li><a href="javascript:;">2FPS</a></li>
-											<li><a href="javascript:;">3FPS</a></li>
-                                            <li><a href="javascript:;">5FPS</a></li>
-											<li><a href="javascript:;">8FPS</a></li>
-											<li><a href="javascript:;">10FPS</a></li>
-                                            <li><a href="javascript:;">12FPS</a></li>
+											<li><a>1FPS</a></li>
+											<li><a>2FPS</a></li>
+											<li><a>3FPS</a></li>
+                                            <li><a>5FPS</a></li>
+											<li><a>8FPS</a></li>
+											<li><a>10FPS</a></li>
+                                            <li><a>12FPS</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -818,7 +818,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_record_chn_sel0"></span>
-								<a class="hover" href="javascript:;"></a></div>
+								<a class="hover"></a></div>
 								<ul id="dvr_record_chn_sel" class="option">
                                 
 								</ul>
@@ -827,7 +827,7 @@
 							<td style="width:244px;">
 								<div class="select" style="width:133px;">
 									<span id="dvr_record_week"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="dvr_record_week_sel" class="option" >
 
@@ -949,7 +949,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_screen_chn_sel0"></span>
-								<a class="hover" href="javascript:;"></a></div>
+								<a class="hover"></a></div>
 								<ul id="dvr_screen_chn_sel" class="option">
 							
 								</ul>
@@ -966,7 +966,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_ptz_chn_sel0"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="dvr_ptz_chn_sel" class="option">
 
@@ -980,11 +980,11 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_ptz_agreement"></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">pelco-D</a></li>
-									<li><a href="javascript:;">pelco-P</a></li>
+									<li><a>pelco-D</a></li>
+									<li><a>pelco-P</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -993,16 +993,16 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_ptz_baud_rate"></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;">2400</a></li>
-									<li><a href="javascript:;">4800</a></li>
-									<li><a href="javascript:;">9600</a></li>
-                                    <li><a href="javascript:;">19200</a></li>
-									<li><a href="javascript:;">38400</a></li>
-									<li><a href="javascript:;">57600</a></li>
-                                    <li><a href="javascript:;">115200</a></li>
+									<li><a>2400</a></li>
+									<li><a>4800</a></li>
+									<li><a>9600</a></li>
+                                    <li><a>19200</a></li>
+									<li><a>38400</a></li>
+									<li><a>57600</a></li>
+                                    <li><a>115200</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1068,12 +1068,12 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1083,12 +1083,12 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1097,12 +1097,12 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
-									<li><a href="javascript:;"></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1116,7 +1116,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_detect_chn_sel0"></span>
-								<a class="hover" href="javascript:;"></a></div>
+								<a class="hover"></a></div>
 								<ul id="dvr_detect_chn_sel" class="option">
 									
 								</ul>
@@ -1128,13 +1128,13 @@
 								<td style="width:278px;">
                                     <div class="select" style="width:133px;">
                                     <span id="dvr_detect_sens"></span>
-                                    <a class="hover" href="javascript:;"></a></div>
+                                    <a class="hover"></a></div>
                                     <ul class="option">
-                                        <li><a href="javascript:;">最高</a></li>
-                                        <li><a href="javascript:;">高</a></li>
-                                        <li><a href="javascript:;">适中</a></li>
-                                        <li><a href="javascript:;">低</a></li>
-                                        <li><a href="javascript:;">最低</a></li>
+                                        <li><a>最高</a></li>
+                                        <li><a>高</a></li>
+                                        <li><a>适中</a></li>
+                                        <li><a>低</a></li>
+                                        <li><a>最低</a></li>
                                     </ul>
                                 </td>
 							<td></td>
@@ -1147,16 +1147,16 @@
 									<td style="width:278px;">
 										<div class="select" style="width:133px;">
 										<span id="dvr_detect_mduration"></span>
-										<a class="hover" href="javascript:;"></a></div>
+										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a href="javascript:;">1s</a></li>
-											<li><a href="javascript:;">2s</a></li>
-											<li><a href="javascript:;">3s</a></li>
-                                            <li><a href="javascript:;">4s</a></li>
-											<li><a href="javascript:;">5s</a></li>
-											<li><a href="javascript:;">8s</a></li>
-                                            <li><a href="javascript:;">10s</a></li>
-											<li><a href="javascript:;">连续</a></li>
+											<li><a>1s</a></li>
+											<li><a>2s</a></li>
+											<li><a>3s</a></li>
+                                            <li><a>4s</a></li>
+											<li><a>5s</a></li>
+											<li><a>8s</a></li>
+                                            <li><a>10s</a></li>
+											<li><a>连续</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -1171,16 +1171,16 @@
 									<td style="width:262px;">
 										<div class="select" style="width:133px;">
 										<span id="dvr_detect_vduration"></span>
-										<a class="hover" href="javascript:;"></a></div>
+										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a href="javascript:;">1s</a></li>
-											<li><a href="javascript:;">2s</a></li>
-											<li><a href="javascript:;">3s</a></li>
-                                            <li><a href="javascript:;">4s</a></li>
-											<li><a href="javascript:;">5s</a></li>
-											<li><a href="javascript:;">8s</a></li>
-                                            <li><a href="javascript:;">10s</a></li>
-											<li><a href="javascript:;">连续</a></li>
+											<li><a>1s</a></li>
+											<li><a>2s</a></li>
+											<li><a>3s</a></li>
+                                            <li><a>4s</a></li>
+											<li><a>5s</a></li>
+											<li><a>8s</a></li>
+                                            <li><a>10s</a></li>
+											<li><a>连续</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -1252,7 +1252,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_alarm_chn_sel0"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="dvr_alarm_chn_sel" class="option">
 									
@@ -1265,11 +1265,11 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
                                     <span id="dvr_alarm_opermode"></span>
-                                    <a class="hover" href="javascript:;"></a></div>
+                                    <a class="hover"></a></div>
                                     <ul class="option">
-                                        <li><a href="javascript:;">关闭</a></li>
-                                        <li><a href="javascript:;">正常打开</a></li>
-                                        <li><a href="javascript:;">正常关闭</a></li>
+                                        <li><a>关闭</a></li>
+                                        <li><a>正常打开</a></li>
+                                        <li><a>正常关闭</a></li>
                                     </ul>
                                 </td>
 						</tr>
@@ -1278,16 +1278,16 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_alarm_duration"></span>
-                                    <a class="hover" href="javascript:;"></a></div>
+                                    <a class="hover"></a></div>
                                     <ul class="option">
-                                        <li><a href="javascript:;">1s</a></li>
-                                        <li><a href="javascript:;">2s</a></li>
-                                        <li><a href="javascript:;">3s</a></li>
-                                        <li><a href="javascript:;">4s</a></li>
-                                        <li><a href="javascript:;">5s</a></li>
-                                        <li><a href="javascript:;">8s</a></li>
-                                        <li><a href="javascript:;">10s</a></li>
-                                        <li><a href="javascript:;">连续</a></li>
+                                        <li><a>1s</a></li>
+                                        <li><a>2s</a></li>
+                                        <li><a>3s</a></li>
+                                        <li><a>4s</a></li>
+                                        <li><a>5s</a></li>
+                                        <li><a>8s</a></li>
+                                        <li><a>10s</a></li>
+                                        <li><a>连续</a></li>
                                     </ul>
                                 </td>
 						</tr>
@@ -1352,7 +1352,7 @@
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover">取消</div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');">保存</div></td></tr>
 					</table>
 				</div>
-				<div class="dev_list" style="height:600px;  position: absolute; right:80px;">
+				<div class="dev_list" style="height:600px;  position: absolute; right:300px;">
 					<ul class="filetree">
 						<!-- <li><span class="device">dvr</span>
 							<ul>
@@ -1402,12 +1402,12 @@
 							<td>
 								<div class="select" style="width:133px;" id="encode_id">
 									<span id="ipc_enc_stream">101</span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_stream_sel" class="option">
-									<li><a href="javascript:;">101</a></li>
-									<li><a href="javascript:;">102</a></li>
-									<li><a href="javascript:;">103</a></li>
+									<li><a>101</a></li>
+									<li><a>102</a></li>
+									<li><a>103</a></li>
 								</ul>
 							</td><td></td>
 						</tr>
@@ -1417,7 +1417,7 @@
 							<td id="ipc_enc_freeResolution_0">
 								<div class="select" style="width:133px;">
 									<span id="ipc_enc_resolution"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_resolution_sel" class="option">
 									
@@ -1434,11 +1434,11 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="ipc_enc_BitRateControlType"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_BitRateControlType_sel" class="option">
-									<li><a href="javascript:;">不变</a></li>
-									<li><a href="javascript:;">可变</a></li>
+									<li><a>不变</a></li>
+									<li><a>可变</a></li>
 								</ul>
 							</td><td></td>
 						</tr>
@@ -1485,16 +1485,16 @@
 						 			<tr><td>服务器</td><td>
                                     <div class="select" style="width:149px;">
                                         <span id="remote_provider">dyndns</span>
-                                        <a class="hover" href="javascript:;"></a>
+                                        <a class="hover"></a>
                                     </div>
                                     <ul class="option">
-                                        <li><a href="javascript:;">dyndns</a></li>
-                                        <li><a href="javascript:;">noip</a></li>
-                                        <li><a href="javascript:;">3322</a></li>
-                                        <li><a href="javascript:;">changeip</a></li>
-                                        <li><a href="javascript:;">popdvr</a></li>
-                                        <li><a href="javascript:;">skybest</a></li>
-                                        <li><a href="javascript:;">dvrtop</a></li>  
+                                        <li><a>dyndns</a></li>
+                                        <li><a>noip</a></li>
+                                        <li><a>3322</a></li>
+                                        <li><a>changeip</a></li>
+                                        <li><a>popdvr</a></li>
+                                        <li><a>skybest</a></li>
+                                        <li><a>dvrtop</a></li>  
                                     </ul>
                                     </td></tr>
 						 			<tr><td>域名</td><td><input type="text" id="networkddns_url" /></td></tr>
@@ -1558,37 +1558,37 @@
                     <tr><td>时间格式</td><td>
                     	<div class="select" style="width:149px;">
                                 <span class="date_form" onChange="showtime();"></span>
-                                <a class="hover" href="javascript:;"></a>
+                                <a class="hover"></a>
 								</div>
 								<ul class="option" >
-									<li><a href="javascript:;">YMD: xxxx xx xx</a></li>
-									<li><a href="javascript:;">MDY: xx xx xxxx</a></li>
-									<li><a href="javascript:;">DMY: xx xx xxxx</a></li>
+									<li><a>YMD: xxxx xx xx</a></li>
+									<li><a>MDY: xx xx xxxx</a></li>
+									<li><a>DMY: xx xx xxxx</a></li>
 								</ul>
                     </td><td></td></tr>
                     <tr><td>时间分隔符</td><td>
                     	<div class="select" style="width:149px;">
                                 <span id="date_break" onChange="showtime();"></span>
-                                <a class="hover" href="javascript:;"></a>
+                                <a class="hover"></a>
 								</div>
 								<ul class="option" >
-									<li><a href="javascript:;">xxxx-xx-xx</a></li>
-									<li><a href="javascript:;">xxxx/xx/xx</a></li>
-									<li><a href="javascript:;">xxxx.xx.xx</a></li>
+									<li><a>xxxx-xx-xx</a></li>
+									<li><a>xxxx/xx/xx</a></li>
+									<li><a>xxxx.xx.xx</a></li>
 								</ul>
                     </td><td></td></tr>
                     <tr><td>时区</td><td>
                     	<div class="select" style="width:149px;">
                                 <span id="time_zone">GMT-12:00</span>
-                                <a class="hover" href="javascript:;"></a>
+                                <a class="hover"></a>
 								</div>
 								<ul class="option" >
-									<li><a href="javascript:;">1</a></li>
-									<li><a href="javascript:;">2</a></li>
-									<li><a href="javascript:;">1</a></li>
-									<li><a href="javascript:;">2</a></li>
-									<li><a href="javascript:;">3</a></li>
-                                    <li><a href="javascript:;">3</a></li>
+									<li><a>1</a></li>
+									<li><a>2</a></li>
+									<li><a>1</a></li>
+									<li><a>2</a></li>
+									<li><a>3</a></li>
+                                    <li><a>3</a></li>
 								</ul>
                     </td><td></td></tr>
                     <tr><td>夏令时</td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
@@ -1602,11 +1602,11 @@
                     <tr><td>Internet服务器</td><td>
                     	<div class="select" style="width:149px;">
                                 <span id="time_ntp__server" name="ntp_server"></span>
-                                <a class="hover" href="javascript:;"></a>
+                                <a class="hover"></a>
 								</div>
 								<ul class="option" >
-									<li><a href="javascript:;">time.window.com</a></li>
-									<li><a href="javascript:;">time.nist.gov</a></li>
+									<li><a>time.window.com</a></li>
+									<li><a>time.nist.gov</a></li>
 								</ul>
                     </td><td></td></tr>
                     <tr><td colspan="4" class="tdBtn"><div class="hover">取消</div><div class="hover" onclick="time_save_content();">保存</div></td></tr>
@@ -1639,12 +1639,12 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<span class="Language"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option">
 									<input type="hidden" id="Language_ID" />
-									<li value="zh_CN"><a href="javascript:;">中文</a></li>
-									<!-- <li value="en_GB"><a href="javascript:;">English</a></li> -->
+									<li value="zh_CN"><a>中文</a></li>
+									<!-- <li value="en_GB"><a>English</a></li> -->
 								</ul>
 							</td>
 						</tr>
@@ -1655,7 +1655,7 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<span class="SplitScreenMode"></span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option" id="viewMod">
 									<input id="SplitScreenMode_ID" type="hidden" />
@@ -1691,7 +1691,7 @@
 							<td class="td2">
 								<div class="select" style="width:60px;">
 									<span id="week" value="0">星期一</span>
-									<a class="hover" href="javascript:;"></a>
+									<a class="hover"></a>
 								</div>
 								<ul class="option week">
 									<li><a value="0">星期一</a></li>
@@ -1720,7 +1720,7 @@
 							<td class="td2 copyTo">
 								<div class="select" style="width:133px;">
 										<span></span>
-										<a class="hover" href="javascript:;"></a>
+										<a class="hover"></a>
 								</div>
 								<ul class="option">
 									<li><a class="all">所有</a></li>

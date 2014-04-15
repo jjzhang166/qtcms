@@ -39,9 +39,10 @@ var	nViewNum = 0,
 			playBackSerchFile()
 		})
 
-		listParent.on('click','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
-			listParent.find('li:has(span.device):gt(0)').removeClass('sel');
-			$(this).addClass('sel');
+		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
+			listParent.find('li').removeClass('sel');
+			getAudioObj().nowDevID=$(this).addClass('sel').find('span.device').data('data').dev_id;
+
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -166,6 +167,8 @@ var	nViewNum = 0,
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
 				SyncSoundSli(oView.enable);
+
+				getAudioObj().nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
 		//return false;

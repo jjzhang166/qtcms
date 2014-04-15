@@ -85,15 +85,16 @@ var oSearchOcx;
 				oTreeWarp.show();
 				set_contentMax();
 				if(index == 0){
-					$('div.dev_list span.device').parent('li').remove();
+
 					searchFlush();
 					//区域列表;
 					areaList2Ui(0);
 				}else if(index == 1){
-					$('ul.filetree:eq(2)').find('li').remove();
+					
 					areaList2Ui(1);
-					$('div.dev_list span.channel').parent('li').remove();
-						
+
+					$('ul.filetree:eq(2) span.channel').parent('li').remove();
+
 						$('ul.filetree:eq(2) span.device').each(function(device_index){
 							$(this).click(function(){
 								var oDevData = $(this).data('data');
@@ -125,7 +126,7 @@ var oSearchOcx;
 				}else if(index == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}else if(index == 3){ 
-					userList2Ui();
+					//userList2Ui();
 				}
 			})
 
@@ -512,7 +513,7 @@ var oSearchOcx;
 		if(now == 0){ 
 			var main = $('#SerachDevList');
 			main.css({ 
-				height:H-252,
+				height:H-238,
 				width:W-600
 			})
 			main.find('thead td').not(':first,:last').width((main.width()-130)/2-2)
@@ -529,8 +530,8 @@ var oSearchOcx;
 			oWarp.find('div.action:eq(0)').css('left',main.width()-30);
 			$('#left_list').css('left',main.width()+120);
 		}
-		debugData(main.height()+226);
-		$('#foot').css('top',main.height()+226)
+
+		$('#foot').css('top',$('#set_content div.right').height()+96);
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){

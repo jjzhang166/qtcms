@@ -28,6 +28,8 @@ var oCommonLibrary,
 					checkDevAllOpen(chlData.dev_id);
 				}
 			}	
+		}else if(data.Dsturl.indexOf('play_back') != -1){
+			$('#dev_'+getAudioObj().nowDevID).parent('li').addClass('sel');
 		}
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];
@@ -272,7 +274,7 @@ var oCommonLibrary,
 	}
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num){ //区域菜单输出
-		//$('div.dev_list span.area').parent('li').remove();
+	
 		var obj = $('ul.filetree').not('[id]').html('').eq(num);
 		var add = $('<li><span class="area" id="area_0">区域</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':'区域','pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
@@ -390,7 +392,9 @@ var oCommonLibrary,
 	}
 	//搜索远程录像
 function setDevData2ocx(){
-		var oDevData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
+		var oChannel =$('div.dev_list li.sel span.channel'),
+			oDevData=$('div.dev_list li.sel span.device').data('data');
+
 		var b = true;
 		if(bool){
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
@@ -413,7 +417,7 @@ function setDevData2ocx(){
 				var i= 0;
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
-						if(oPlayBack.AddChannelIntoPlayGroup(i,index)){
+						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(index).data('data').channel_id)){
 							b = false;
 						};
 						i++;
@@ -421,7 +425,7 @@ function setDevData2ocx(){
 				});
 			}else{
 				for(var i=0;i<oDevData.channel_count;i++){
-					if(oPlayBack.AddChannelIntoPlayGroup(i,i)){
+					if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(i).data('data').channel_id)){
 						b = false;
 					}
 				}
@@ -452,7 +456,7 @@ function setDevData2ocx(){
 			$('div.dev_list li:eq(1)').addClass('sel');
 		}
 
-		var devData = $('#dev_'+$('div.dev_list li.sel span.channel').data('data').dev_id).data('data');
+		var devData = $('div.dev_list li.sel span.device').data('data');
 		var type = $('#type span').attr('value') || 0;
 			type = type == 0 ? 15 : 1 << type;
 		var date = $("div.calendar span.nowDate").html();

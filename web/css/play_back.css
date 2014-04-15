@@ -3,6 +3,7 @@ body{background:#323232; font-family:Arial, Helvetica, sans-serif;color: #B4B4B4
 #top{
 	height: 78px;
 }
+.hover{ cursor: pointer;}
 
 .in{
 	background: url(../images/top_icon.png) no-repeat -450px 0;
