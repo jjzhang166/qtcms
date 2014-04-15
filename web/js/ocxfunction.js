@@ -33,6 +33,7 @@ var oCommonLibrary,
 			$('#dev_'+getAudioObj().nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
 			searchFlush();
+			areaList2Ui($('#set_content div.right_content:visible').index()-2);
 		}
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];
