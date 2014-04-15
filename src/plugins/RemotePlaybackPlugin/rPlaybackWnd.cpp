@@ -24,7 +24,8 @@ bIsInitFlags(false),
 bIsCaseInitFlags(false),
 _curConnectState(STATUS_DISCONNECTED),
 _curConnectType(TYPE_NULL),
-bIsOpenAudio(false)
+bIsOpenAudio(false),
+m_uiPersent(50)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -307,7 +308,9 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 		}
 		_mutexWidList.unlock();
 	}
-	SetVolume(0xAECBCA);
+	/*SetVolume(0xAECBCA);*/
+	AudioEnabled(bIsOpenAudio);
+	SetVolume(m_uiPersent);
 	return nRet;
 }
 
@@ -353,6 +356,7 @@ int  RPlaybackWnd::AudioEnabled(bool bEnable)
 int   RPlaybackWnd::SetVolume(const unsigned int &uiPersent)
 {
 	int nRet = -1;
+	m_uiPersent=uiPersent;
 	if (NULL != m_GroupPlayback)
 	{
 		nRet = m_GroupPlayback->GroupSetVolume(uiPersent, &m_PlaybackWnd[m_nCurrentWnd]);

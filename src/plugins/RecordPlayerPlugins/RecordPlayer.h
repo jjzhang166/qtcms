@@ -75,6 +75,7 @@ private:
 	RecordPlayerView m_subRecPlayerView[4];
 	int m_currentWindID;
 	bool m_bIsOpenAudio;
+	unsigned int m_uiPersent;
 };
 
 

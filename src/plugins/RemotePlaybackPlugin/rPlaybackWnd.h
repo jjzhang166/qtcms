@@ -115,6 +115,7 @@ private:
     uint          m_uiPort;
     int           m_nCurrentWnd;
     uint          m_uiRecFileSearched;
+	unsigned int  m_uiPersent;
 
     bool bIsInitFlags;
     bool bIsCaseInitFlags;

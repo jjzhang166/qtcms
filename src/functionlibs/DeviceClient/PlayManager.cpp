@@ -277,6 +277,8 @@ void PlayManager::AudioSwitch(bool enabled)
 		if (NULL != m_pAudioPlayer)
 		{
 			m_pAudioPlayer->EnablePlay(true);
+			m_nSampleRate = 0;
+			m_nSampleWidth = 0;
 // 			m_pCurView = this;
 		}
 	}

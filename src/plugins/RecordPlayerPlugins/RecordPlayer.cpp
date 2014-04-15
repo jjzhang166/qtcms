@@ -12,7 +12,8 @@ m_pLocalRecordSearch(NULL),
 m_pLocalPlayer(NULL),
 m_pWindowDivMode(NULL),
 m_currentWindID(0),
-m_bIsOpenAudio(false)
+m_bIsOpenAudio(false),
+m_uiPersent(50)
 {
 	//ÉêÇëILocalRecordSearch½Ó¿Ú
 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
@@ -274,7 +275,9 @@ int RecordPlayer::GroupPlay()
 	{
 		return 1;
 	}
-	SetVolume(0xAECBCA);
+	/*SetVolume(0xAECBCA);*/
+	AudioEnabled(m_bIsOpenAudio);
+	SetVolume(m_uiPersent);
 	return 0;
 }
 int RecordPlayer::GroupPause()
@@ -402,6 +405,7 @@ int RecordPlayer::AudioEnabled(bool bEnabled)
 int RecordPlayer::SetVolume(const unsigned int &uiPersent)
 {
 	int nRet = -1;
+	m_uiPersent=uiPersent;
 	if (NULL != m_pLocalPlayer)
 	{
 		nRet = m_pLocalPlayer->GroupSetVolume(uiPersent, &m_subRecPlayerView[m_currentWindID]);
