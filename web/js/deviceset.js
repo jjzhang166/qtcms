@@ -78,6 +78,14 @@ var oSearchOcx;
 			var action = $(this).attr('class').split(' ')[0];
 			addMouseStyle($(this),action);
 		})
+
+		$('#top_nav li').each(function(index){
+			$(this).click(function(){
+				if(index != 3){
+					oSearchOcx.Stop();
+				}
+			})
+		})
 		
 		$('#set_content div.left li').each(function(index){
 			$(this).click(function(){

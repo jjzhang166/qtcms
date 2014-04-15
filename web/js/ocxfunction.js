@@ -16,7 +16,7 @@ var oCommonLibrary,
 		//区域列表;
 		areaList2Ui(0);
 		//跳转同步播放控件的状态到备列表和
-		try{oSearchOcx.Stop()}catch(e){};
+
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
 			for(var i=0;i<64;i++){
