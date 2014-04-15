@@ -59,7 +59,8 @@
 	.switch{padding: 0 10px;}
 	table h5{ display: inline;}
 	#set_content .action{ width:100px; margin:0 40px; height:450px;}
-	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
+	#set_content .span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
+	#set_content .action li{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; }
 	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
 	.menu0 li:hover{ background:#C25451;}
 
@@ -73,6 +74,7 @@
 	.timeInput{width: 90px; float:left; margin-right:6px;}
 	ul.groupAction li{float: left;}
 	.switch {top:50px;}
+	.switch table td{cursor:default}
 	.synCheckboxClick tr.sel{background: #4A911C};
 
 </style>
@@ -276,22 +278,22 @@
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="height:146px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" />全选</td></tr></thead>
+					<thead><tr><td colspan="4" style=" text-align:left; cursor:default"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" />全选</td></tr></thead>
 					<tbody>
 						<tr>
-							<td style="width:70px;">设备IP</td>
+							<td style="width:70px; cursor:default">设备IP</td>
 							<td class="aa"><input type="text" id="SearchIP_ID" style="width:124px;" /></td>
-							<td style="width:100px;">子网掩码</td>
+							<td style="width:100px; cursor:default">子网掩码</td>
 							<td class="aa"><input type="text" id="SearchMask_ID" style="width:124px;"/></td>
 						</tr>
 						<tr>
-							<td>网关</td>
+							<td style="cursor: default">网关</td>
 							<td><input type="text" id="SearchGateway_ID" style="width:124px;" /></td>
-							<td>MAC地址</td>
+							<td style="cursor:default">MAC地址</td>
 							<td><input type="text" id="SearchMac_ID" readonly="readonly" style="width:124px;" /></td>
 						</tr>
 						<tr>
-							<td>端口</td>
+							<td style=" cursor:default">端口</td>
 							<td colspan="3"><input type="text" style="width:60px;" id="SearchHttpport_ID" /><input style="color:#ccc;" class="hover iput2" type="button" onclick="setIP()" value="设置"/></td>
 						</tr>
 						<tr>
@@ -1635,7 +1637,7 @@
 					<table>
 						<tr><td></td><td></td><td></td></tr>
 						<tr>
-							<td>语言</td>
+							<td >语言</td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<span class="Language"></span>
