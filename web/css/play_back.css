@@ -178,6 +178,9 @@ h4{
 	height: 16px;
 	float: right;
 }
+.select span{
+	cursor:default
+}
 .option a{
 	border: 1px solid #646465;
 	font-size:14px;
@@ -200,6 +203,7 @@ h4{
 }
 .option li{
 	/* clear: both; */
+	cursor:default
 }
 #PTZ_control{
 	position: relative;
@@ -344,6 +348,7 @@ h4{
 	font-size:14px; 
 	width:132px;
 	text-align: center;
+	cursor:default;
 }
 .calendar .seek{
 	text-indent: 102px;
@@ -462,6 +467,10 @@ h4{
 	border: 0;
 	text-align: left;
 	text-indent: 4px;
+	cursor:default;
+}
+.table thead td{
+	cursor:default
 }
 /*.table .thead{
 	height: 24px;
@@ -544,3 +553,9 @@ h4{
 .menu table .tr1 input{background: 0;}
 .tdBtn div{float: left; margin-right: 6px; width: 100px; background: url(../images/backup/botton.png) no-repeat; height: 22px; color: #ccc; text-align: center; line-height: 22px; background-position: 0 0;}
 .week a{ width: 59px;}
+#search_result table thead td{
+	cursor:default
+}
+#fileRec h5{
+	cursor:default
+}
