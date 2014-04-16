@@ -95,6 +95,7 @@ var oSearchOcx,key=0;
 				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
 				oTreeWarp.show();
 				set_contentMax();
+				areaList2Ui(key);
 				if(index == 1){
 
 					$('ul.filetree:eq(2) span.channel').parent('li').remove();
@@ -341,7 +342,6 @@ var oSearchOcx,key=0;
 		})
 	}
 	function FillRecordTimeData(){
-		areaList2Ui(key);
 		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
