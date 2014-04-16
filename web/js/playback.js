@@ -178,7 +178,7 @@ var	nViewNum = 0,
 			H = $(window).height();
 			W = W <= 1000 ? 1000: W;
 			H = H <= 600 ? 600: H;
-			debugData(W);
+
 		var oView = $('#playback_view').css({
 			width:W-236,
 			height:H-oBottom.height()-110

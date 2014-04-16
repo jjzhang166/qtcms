@@ -193,7 +193,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		var H = $(window).height();
 			W = W <= 1000 ? 1000: W;
 			H = H <= 600 ? 600: H;
-			debugData(W);
+
 		var oView = $('#playback_view').css({
 			width:W-236,
 			height:H-240
