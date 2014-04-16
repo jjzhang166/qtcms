@@ -63,45 +63,6 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	})
 }
 
-function ViewMax(type){
-	var devListH = type == 'preview' ? 290 : 233 ;
-	var WinW = $(window).width();
-	var WinH = $(window).height();
-		WinW = WinW <= 1000 ? 1000: WinW
-		WinH = WinH <= 600 ? 600: WinH
-
-	oView.css({
-		width:WinW-oLeft.width()-8,
-		height:WinH-oBottom.height()-110
-	});
-	/*if(oView.width()<680){
-		oView.width(680);
-	}
-	if(oView.height()<360){
-		oView.height(360);
-	}*/
-	oLeft.css({
-		left:oView.width(),
-		height:oView.height()+123
-	});
-
-	oDiv.height(oLeft.height()-devListH);
-
-	oBottom.css({
-		width:oView.width(),
-		top:oView.height()+80
-	});
-	
-
-	$('#foot').css({
-		top:oView.height()+212
-	})
-	if(type == 'preview'){
-		$('#actionLog').width(oView.width()-10);
-	}else{
-		setTables();
-	}	
-}
 function setTables(){   // 回放页面底部表格最大化相应调整
 	$('table.table tr').each(function(index){
 		var oTds = $(this).find('td');

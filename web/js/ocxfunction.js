@@ -32,8 +32,8 @@ var oCommonLibrary,
 		}else if(data.Dsturl.indexOf('play_back') != -1){
 			$('#dev_'+getAudioObj().nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
-			searchFlush();
-			areaList2Ui($('#set_content div.right_content:visible').index()-2);
+			set_contentMax();
+			areaList2Ui(key);
 		}
 	}
 	var userLev = ['超级管理员','管理员','用户','游客'];

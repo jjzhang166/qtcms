@@ -82,17 +82,17 @@ var now = 0;
 			main.height(450);
 		}*/
 		main.css({
-			height: H - 136,
+			height: H - 138,
 			width: W - 238
 		});
 		$('#search_device').css({
-			left:main.width()
+			left:main.width()+2
 		})
 		$('#foot').css({
-			top:main.height() + 108
+			top:main.height() + 110
 		})
 		$('#top').width(main.width()+238);
-		$('div.dev_list').height(main.height() - $('.calendar').height()+5);
+		$('div.dev_list').height(main.height()-161);
 		$('#file_bottom').width(main.width());
 	}
 
@@ -245,6 +245,10 @@ var now = 0;
 		</div>
 	</div>
 	<div id="search_device">
+		<ul class="switchlist">
+			<li class="switchlistAct">区域</li>
+			<!-- <li>Group</li> -->
+		</ul>
 		<div class="dev_list">
 			<ul class="filetree">			
 			</ul>

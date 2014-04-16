@@ -1,13 +1,10 @@
-var oLeft,oBottom,oView,oPreView,oDiv;
+var oPreView,oDiv;
 var	nViewNum = 0;
 var timer = null;
 var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
 var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在关闭!'];
 	$(function(){
 		
-		oLeft = $('#search_device');
-		oBottom = $('#operating');
-		oView = $('#playback_view');
 		oPreView= $('#previewWindows')[0];
 		
 		oDiv = $('div.dev_list');
@@ -33,11 +30,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			})
 		})
 		//控件最大化
-		ViewMax('preview');
+		ViewMax();
 		
-		$(window).resize(function(){
-			ViewMax('preview');
-		})
+		$(window).resize(ViewMax)
  		//打开通道
 		oDiv.on('dblclick','span.channel',function(){ 
 			/*debugData($(this).data('data'));*/
@@ -193,6 +188,31 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
+	function ViewMax(){
+		var W = $(window).width();
+		var H = $(window).height();
+			W = W <= 1000 ? 1000: W;
+			H = H <= 600 ? 600: H;
+			debugData(W);
+		var oView = $('#playback_view').css({
+			width:W-236,
+			height:H-240
+		});
+		var oLeft= $('#search_device').css({
+			left:oView.width(),
+			height:oView.height()+123
+		});
+
+		oDiv.height(oLeft.height()-240);
+
+		$('#operating').css({
+			width:oView.width(),
+			top:oView.height()+80
+		});
+		
+		$('#actionLog').width(oView.width()-10);
+		$('#foot').css('top',oView.height()+212)
+	}
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);

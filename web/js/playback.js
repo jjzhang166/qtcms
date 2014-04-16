@@ -1,4 +1,4 @@
-var oLeft,oBottom,oView,oPlayBack,oPlaybacKLocl,oDiv;
+var oBottom,oPlayBack,oPlaybacKLocl;
 var	nViewNum = 0,
 	NowMonth = 0,
 	drag_timer = null,
@@ -7,9 +7,7 @@ var	nViewNum = 0,
 	bNoResize=true;
 	
 	$(function(){
-		oLeft = $('#search_device');
 		oBottom = $('#operating');
-		oView = $('#playback_view');
 		//初始回放对象的声音状态,
 		oPlayBack = $('#playback')[0];
 /*		oPlayBack.volEnable = false;
@@ -18,14 +16,11 @@ var	nViewNum = 0,
 /*		oPlaybackLocl.volEnable = false;
 		oPlaybackLocl.vol = 50;*/
 
-		oDiv = $('div.dev_list');
-
-
 		ViewMax();
 	    
 	    $('ul.filetree').treeview();		
 		
-		oDiv.eq(1).hide();
+		$('div.dev_list').eq(1).hide();
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 			var action = $(this).attr('class').split(' ')[0];
@@ -177,6 +172,36 @@ var	nViewNum = 0,
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
 	})///
+
+	function ViewMax(){
+		var W = $(window).width(),
+			H = $(window).height();
+			W = W <= 1000 ? 1000: W;
+			H = H <= 600 ? 600: H;
+			debugData(W);
+		var oView = $('#playback_view').css({
+			width:W-236,
+			height:H-oBottom.height()-110
+		});
+
+		var oLeft = $('#search_device').css({
+			left:oView.width(),
+			height:oView.height()+113
+		});
+
+		$('div.dev_list').height(oLeft.height()-222);
+
+		oBottom.css({
+			width:oView.width(),
+			top:oView.height()+80
+		});
+		
+		setTables();
+		$('#foot').css({
+			top:oView.height()+212
+		})
+		playback.style.height='100%';
+	}
 
 	function togglePlay(){ 
 		var obj = $('#togglePlay');

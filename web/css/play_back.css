@@ -208,7 +208,7 @@ h4{
 #PTZ_control{
 	position: relative;
 	width: 228px;
-	height: 270px;
+	height: 220px;
 	top: 4px;
 }
 .ope_list li{
@@ -222,19 +222,14 @@ h4{
 	float: left;
 	background: url(../images/preview/PTZ_list_bg.png) repeat-x;
 }
-.ope_list{
-	position: absolute;
-	height: 24px;
-	width: auto;
-}
+.ope_list{ position: absolute; width: auto;}
+
 .ope_list .ope_listAct{
 	background-position:0 -16px;
 }
 #PTZ_control .switch{
 	left: 0;
-	top: 28px;
-	height: 236px;
-	width: 228px;
+	top: 16px;
 }
 .switch{ position: absolute; display: none;}
 #Dire_Control{
