@@ -1,8 +1,6 @@
 var oPreView,oDiv;
-var	nViewNum = 0;
-var timer = null;
-var winState=['已经接入了连接!','正在连接!','断开连接!','正在断开连接!'];
-var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在关闭!'];
+var winState=[lang_trans.Have_access_to_the_connection,lang_trans.Connecting,lang_trans.Disconnected,lang_trans.Being_disconnected];
+var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_trans.Off,lang_trans.Shutting_down];
 	$(function(){
 		
 		oPreView= $('#previewWindows')[0];
@@ -70,9 +68,9 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			}
 			
 			if(oDevice.attr('bAllopen')){ 
-				var str = getNowTime()+'   正在从当前点击的窗口'+(parseInt(wind)+1)+', 开始往后依次打开设备:'+chlData.name+'下的所有通道';
+				var str = getNowTime()+lang_trans.Moving_from_the_current_window_click+(parseInt(wind)+1)+lang_trans.Began_to_turn_back_to_open_the_device+chlData.name+lang_trans.All_channels_under;
 			}else{ 
-				var str = getNowTime()+'   正在关闭设备:'+chlData.name;
+				var str = getNowTime()+lang_trans.Shutting_down_device+chlData.name;
 			}
 			writeActionLog(str);
 		})
@@ -130,16 +128,16 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		// 云台方向控制;
 		$('#Dire_Control div:lt(4)').on({
 			mousedown:function(){
-				writeActionLog('开始PTZ');
+				//writeActionLog('开始PTZ');
 				PTZcontrol($(this).attr('PTZ',1).index());
 			},
 			mouseup:function(){
-				writeActionLog('停止PTZ');
+				//writeActionLog('停止PTZ');
 				oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
 			},
 			mouseleave:function(){
 				if($(this).attr('PTZ')){
-					writeActionLog('鼠标移开停止PTZ');
+					//writeActionLog('鼠标移开停止PTZ');
 					oPreView.ClosePTZ($(this).index());	
 				}
 			}
@@ -147,11 +145,11 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		$('#Dire_Control div:last').on({
 			mouseup:function(){
 				if($(this).attr('PTZ')){
-					writeActionLog('停止自动PTZ');
+					//writeActionLog('停止自动PTZ');
 					$(this).removeAttr('PTZ');
 					oPreView.ClosePTZ($(this).index());
 				}else{
-					writeActionLog('开始自动PTZ');
+					//writeActionLog('开始自动PTZ');
 					$(this).attr('PTZ',1);
 					PTZcontrol($(this).attr('PTZ',1).index());		
 				}
@@ -216,7 +214,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
-		writeActionLog('通道'+wind+'已经关闭!');
+		writeActionLog(lang_trans.Channel+wind+lang_trans.Off);
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
@@ -229,14 +227,14 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				wind++;
 			})
 
-			writeActionLog('正在打开当前列表下的所有通道');
+			writeActionLog(lang_trans.All_channelsare_open_under_the_current_list);
 		}else{
 
 			$('div.dev_list:visible span.channel[wind]').each(function(){
 				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
 			})
 
-			writeActionLog('正在关闭当前列表下的所有通道');
+			writeActionLog(lang_trans.The_current_list_of_all_channels_are_closed_under);
 		}
 	}
 
@@ -259,7 +257,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
-			var str = getNowTime()+'   设备:'+data.name+' 下的通道:'+data.channel_name+' 在窗口'+sWind+',打开失败！  错误:当前窗口'+sWind+' '+winState[windState];
+			var str = getNowTime()+lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Window+sWind+lang_trans.Open_failed_Error_The_current_window+sWind+' '+winState[windState];
 			writeActionLog(str);
 		}
 		wind = getWind(wind);
@@ -284,7 +282,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			return $(this).attr('wind') == ev.WPageId;
 		})*/
 		var chlData = getChlFullInfo(obj);
-		var str=getNowTime()+'   设备:'+chlData.name+' 下的通道'+chlData.channel_name+'在窗口'+(parseInt(ev.WPageId)+1)+' '+currentWinStateChange[ev.CurrentState];
+		var str=getNowTime()+lang_trans.Device_+chlData.name+lang_trans.Device_+chlData.channel_name+lang_trans.Device_+(parseInt(ev.WPageId)+1)+' '+currentWinStateChange[ev.CurrentState];
 		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
@@ -391,16 +389,16 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 			$('div.dev_list span.channel[wind]').each(function(){
 				data = $(this).data('data');
 				if(oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'的手动录像数据绑定失败!'
+					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Manual_recording_of_data_binding_failed
 				}else{
 					backStatus = oPreView.StartRecord($(this).attr('wind'))
 					if(backStatus){
-						str = '设备'+data.name+' 下的通道'+data.channel_name+'手动录像失败!';
+						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Manual_recording_failed;
 						if(backStatus == 2){
-							str = '设备'+data.name+' 下的通道'+data.channel_name+'已经处于计划录像状态!';
+							str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Is_already_in_the_planning_record_status;
 						}
 					}else{ 
-						str = '设备'+data.name+' 下的通道'+data.channel_name+'开始手动录像!';
+						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Start_manual_recording;
 					}
 				}
 				writeActionLog(str);
@@ -410,12 +408,12 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 				data = $(this).data('data'),
 				backStatus = oPreView.StopRecord($(this).attr('wind'));
 				if(backStatus){ 
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像失败!'
+					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Close_the_manual_recording_failed
 					if(backStatus == 2){
-						str = '设备'+data.name+' 下的通道'+data.channel_name+'已经处于计划录像状态!';
+						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Is_already_in_the_planning_record_status;
 					}
 				}else{ 	
-					str = '设备'+data.name+' 下的通道'+data.channel_name+'关闭手动录像!'	
+					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Close_the_manual_recording	
 				}
 				writeActionLog(str);
 			})	
@@ -432,16 +430,16 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 	function SwithStream(){  // 切换码流
 		var oChlData = $('#search_device span.channel.sel').data('data'),
 			currWin = oPreView.GetCurrentWnd(),
-			str = '通道'+oChlData.channel_name+'在窗口'+(currWin+1)+'下切换码流';
+			str = lang_trans.Channel+oChlData.channel_name+lang_trans.Window+(currWin+1)+lang_trans.Under_stream_switching;
 			stream = oChlData.stream_id ? 0 : 1;
 		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
-			str += '失败';
+			str += lang_trans.Failed;
 		}else{
 			oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
 			if(oPreView.SwithStream(currWin,oChlData.channel_id)){
-				str += '失败';
+				str += lang_trans.Failed;
 			}else{
-				str += '成功';
+				str += lang_trans.Success;
 			}
 		}
 		writeActionLog(str);
@@ -449,7 +447,7 @@ var currentWinStateChange = ['已连接!','正在连接!','已关闭!','正在�
 
 	function PTZcontrol(code){
 		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
-			alert('云台操作失败');
+			alert(lang_trans.PTZ_operation_failed);
 		};
 	}
 

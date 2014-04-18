@@ -3,15 +3,140 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>settings</title>
+<object type="application/cms-common-library" id="commonLibrary" style="position: absolute;width:0; height:0" ></object>
+
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
+<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/calendar.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
-<script type="text/javascript" src="js/qframework.js" ></script>
+<script type="text/javascript" src="js/calendar.js"></script>
+
 <script type="text/javascript" src="treeview/jquery.treeview.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
+
 <script type="text/javascript" src="js/ocxfunction.js"></script>
+<script type="text/javascript" src="js/searchPlayBckFile.js"></script>
+<style type="text/css">
+	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto;}
+	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px;}
+	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
+	#search_result table{ border-collapse:collapse; color: #BEBEBE;width: 100%;}
+	#search_result table td{ border: 1px solid #414141; text-align: center;}
+	#search_result table thead td{ border: none; height: 16px; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;}
+	.switch{ position: relative;}
+
+	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
+	.progess span{ background: #abcdef; height: 14px; width:0px; display: block;}
+	.progess a{height:14px; width: 14px; display: block; background: red; float:left; margin:1px 8px;}
+	/* 下载进度 */
+	#fileRec{float: right; line-height: 30px; width:auto; margin-right: 26px; display: none;}
+	#fileRec *{border: 1px solid #ccc; float: right; height: 12px;}
+	#fileRec p{ margin: 9px 0; width: 100px;}
+	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
+	#fileRec h5{ border: none; line-height: 32px;}
+	#fileRec h4{float: left; border: none;}
+</style>
+</head>
+
+<body>
+<object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
+<object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
+	<div id="top">
+		<div class="top_act" id="app_top">
+			<h4><script>translate("DVR_client")</script></h4>
+			<div id="test" style="float:left;"></div> 	
+			<div id="top_window_act">
+				<ul>
+					<li id="app_close_window"><a class="hover" title="close" style="background-position: -336px -104px;" href="javascript:;"></a></li>
+					<li id="app_maxsize"><a class="hover" title="max" style="background-position: -336px -78px;" href="javascript:;"></a></li>
+					<li id="app_minsize"><a class="hover" title="min" style="background-position: -336px -52px;" href="javascript:;"></a></li>
+					<!-- <li id="app_userlock"><a class="toggle hover" title="lock" href="javascript:;"></a></li> -->
+				</ul>
+			</div>
+		</div>
+		<div class="top_nav">
+			<ul>
+				<li><a style="width:36px;"></a><script>translate("Preview")</script></li>
+				<li><a style="background-position: -36px 0;"></a><script>translate("Playback")</script></li>
+				<li class="active"><a style="background-position: -62px 0;"></a><script>translate("Backup")</script></li>
+				<li><a style="background-position: -88px 0; width:36px;"></a><script>translate("Set_up")</script></li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
+				<li><a style="background-position: -124px 0;"></a><script>translate("log")</script></li> -->
+			</ul>
+			<!-- <div>
+				<a href="javascript:;"></a>				
+				<p style="color:#000;"><span><script>translate("Login_account")</script></span>eddy</p>
+			</div> -->
+			</div>
+		</div>
+	</div>
+	<div id="search_device">
+		<ul class="switchlist">
+			<li class="switchlistAct"><script>translate("Area")</script></li>
+			<!-- <li>Group</li> -->
+		</ul>
+		<div class="dev_list">
+			<ul class="filetree">			
+			</ul>
+		</div>
+		<div class="calendar">
+			<div class="calendar_top">
+				<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="Prev_year"></a>
+				<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="Prev_Month"></a>
+				<span class="nowDate" title="Current_search_date"></span>
+				<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="Next_year"></a>
+				<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="Next_Month"></a></div>
+			<div class="calendar_days">
+				<table>
+					<thead>
+						<tr>
+						<td style="color:red;"><script>translate("Sun")</script></td>
+						<td><script>translate("Mon")</script></td>
+						<td><script>translate("Tues")</script></td>
+						<td><script>translate("Wend")</script></td>
+						<td><script>translate("Thur")</script></td>
+						<td><script>translate("Fir")</script></td>
+						<td style="color:red;"><script>translate("Satu")</script></td></tr>
+					</thead>
+					<tbody>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="hover seek" onclick="backupSearchFile();" title="Start_Search"><script>translate("Start_Search")</script></div>
+		</div>
+	</div>
+	<div id="search_result">
+			<table>
+				<thead>
+					<tr>
+						<td><script>translate("Inspection")</script></td>
+						<td><script>translate("Device_name")</script></td>
+						<td><script>translate("Channel")</script></td>
+						<td><script>translate("Star_Time")</script></td>
+						<td><script>translate("End_Time")</script></td>
+						<td style="width:300px;"><script>translate("Progress")</script></td></tr>
+				</thead>
+				<tbody class="search_result synCheckboxClick">
+					<!-- <tr><td><input type="checkbox" /></td><td>1</td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
+				</tbody>
+			</table>
+	</div>
+	<div id="file_bottom">
+		<div id="fileRec"><h4><script>translate("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll"><script>translate("Select")</script></a>
+		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>translate("Stop_backup")</script></a>
+		<a class="hover" onclick="getDir();"><script>translate("Start_Backup")</script></a>
+	</div>
+	<div id="foot"></div>
+</body>
+</html>
 <script type="text/javascript">
 var oPlayBack,oBackup;
 var now = 0;
@@ -102,6 +227,7 @@ var now = 0;
 	var path = '',
 		now = 0,
 		timer = null;
+	
 	function getDirCallback(data){ 
 		now = 0;
 		path = data.path;
@@ -121,7 +247,7 @@ var now = 0;
 		var fileData = oList.eq(now).data('data');
 		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
 		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path) != 0){
-			alert('当前第'+now+'个文件下载失败!!');
+			alert(lang_trans.Current+now+lang_trans.File_download_failed);
 			now++;
 			startDownload();
 		}
@@ -187,111 +313,4 @@ var now = 0;
 		}).remove();//远程备份中正在下载的文件不被删除.
 		ocxsearchVideo();
 	}
-
 </script>
-<style type="text/css">
-	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto;}
-	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px;}
-	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
-	#search_result table{ border-collapse:collapse; color: #BEBEBE;width: 100%;}
-	#search_result table td{ border: 1px solid #414141; text-align: center;}
-	#search_result table thead td{ border: none; height: 16px; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;}
-	.switch{ position: relative;}
-
-	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
-	.progess span{ background: #abcdef; height: 14px; width:0px; display: block;}
-	.progess a{height:14px; width: 14px; display: block; background: red; float:left; margin:1px 8px;}
-	/* 下载进度 */
-	#fileRec{float: right; line-height: 30px; width:auto; margin-right: 26px; display: none;}
-	#fileRec *{border: 1px solid #ccc; float: right; height: 12px;}
-	#fileRec p{ margin: 9px 0; width: 100px;}
-	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
-	#fileRec h5{ border: none; line-height: 32px;}
-	#fileRec h4{float: left; border: none;}
-</style>
-</head>
-
-<body>
-<object type="application/cms-common-library" id="commonLibrary" style="width:100%;height:0px;"></object>
-<object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
-<object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
-	<div id="top">
-		<div class="top_act" id="app_top">
-			<h4>DVR 客户端</h4>
-			<div id="test" style="float:left;"></div> 	
-			<div id="top_window_act">
-				<ul>
-					<li id="app_close_window"><a class="hover" title="关闭" style="background-position: -336px -104px;" href="javascript:;"></a></li>
-					<li id="app_maxsize"><a class="hover" title="最大化" style="background-position: -336px -78px;" href="javascript:;"></a></li>
-					<li id="app_minsize"><a class="hover" title="最小化" style="background-position: -336px -52px;" href="javascript:;"></a></li>
-					<!-- <li id="app_userlock"><a class="toggle hover" title="锁定用户" href="javascript:;"></a></li> -->
-				</ul>
-			</div>
-		</div>
-		<div class="top_nav">
-			<ul>
-				<li><a style="width:36px;"></a>预览</li>
-				<li><a style="background-position: -36px 0;"></a>回放</li>
-				<li class="active"><a style="background-position: -62px 0;"></a>备份</li>
-				<li><a style="background-position: -88px 0; width:36px;"></a>设置</li>
-				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
-				<li><a style="background-position: -124px 0;"></a>日志</li> -->
-			</ul>
-			<!-- <div>
-				<a href="javascript:;"></a>				
-				<p style="color:#000;">登陆用户:eddy</p>
-			</div> -->
-			</div>
-		</div>
-	</div>
-	<div id="search_device">
-		<ul class="switchlist">
-			<li class="switchlistAct">区域</li>
-			<!-- <li>Group</li> -->
-		</ul>
-		<div class="dev_list">
-			<ul class="filetree">			
-			</ul>
-		</div>
-		<div class="calendar">
-			<div class="calendar_top">
-				<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="上一年"></a>
-				<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="上一月"></a>
-				<span class="nowDate" title="当前搜索日期"></span>
-				<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="下一年"></a>
-				<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="下一月"></a></div>
-			<div class="calendar_days">
-				<table>
-					<thead>
-						<tr><td style="color:red;">日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td style="color:red;">六</td></tr>
-					</thead>
-					<tbody>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="hover seek" onclick="backupSearchFile();" title="开始搜索">搜索</div>
-		</div>
-	</div>
-	<div id="search_result">
-			<table>
-				<thead>
-					<tr><td>检查</td><td>设备名</td><td>通道</td><td>开始时间</td><td>结束时间</td><td style="width:300px;">进度</td></tr>
-				</thead>
-				<tbody class="search_result synCheckboxClick">
-					<!-- <tr><td><input type="checkbox" /></td><td>1</td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
-				</tbody>
-			</table>
-	</div>
-	<div id="file_bottom">
-		<div id="fileRec"><h4>正在检索:</h4><h5>0/0</h5><p><span></span></p></div>
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll">全选</a><a class="hover" onclick="backupstop();" id="tableAntiElection">停止备份</a><a class="hover" onclick="getDir();">开始备份</a>
-	</div>
-	<div id="foot"></div>
-</body>
-</html>

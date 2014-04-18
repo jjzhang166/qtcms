@@ -1,11 +1,9 @@
 var oBottom,oPlayBack,oPlaybacKLocl;
-var	nViewNum = 0,
-	NowMonth = 0,
-	drag_timer = null,
-	oSelected = [],
-	recFile=[],
-	bNoResize=true;
-	
+var	drag_timer = null, //播放时间拖拽的定时器
+	oSelected = [], //
+	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
+	bNoResize=true;   //当前窗口是否在改变
+
 	$(function(){
 		oBottom = $('#operating');
 		//初始回放对象的声音状态,
