@@ -42,7 +42,7 @@ QWebPluginFWBase(this)
 				IEventRegister* pEventInstance = p_deviceSearch->QueryEventRegister();
 				pEventInstance->registerEvent("SearchDeviceSuccess",DeviceSearchProc,this);
 
-				if (QString("ipcsearch") == sItemType)
+				if (QString("winipcsearch") == sItemType)
 				{
 					p_deviceSearch->QueryInterface(IID_IDeviceNetModify, (void**)&m_pDeviceNetModify);
 					pEventInstance->registerEvent("SettingStatus", DeviceSetNetInfoProc, this);
@@ -71,6 +71,9 @@ DeviceSearchWindows::~DeviceSearchWindows(void)
 
 int DeviceSearchWindows::Start()
 {
+	m_DeviceItemMutex.lock();
+	m_DeviceItem.clear();
+	m_DeviceItemMutex.unlock();
 	for (QList<IDeviceSearch*>::iterator iter=m_deviceList.begin();iter != m_deviceList.end(); iter++)
 	{
 		(*iter)->Start();
@@ -138,7 +141,13 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 
 void DeviceSearchWindows::addItemMap(QVariantMap item)
 {
-	emit addItemToUI(item);
+	if (!m_DeviceItem.contains(item.value("SearchIP_ID").toString()))
+	{
+		m_DeviceItemMutex.lock();
+		m_DeviceItem.insert(item.value("SearchIP_ID").toString(),item);
+		m_DeviceItemMutex.unlock();
+		emit addItemToUI(item);
+	}
 }
 
 void DeviceSearchWindows::sendToHtml(QVariantMap item)

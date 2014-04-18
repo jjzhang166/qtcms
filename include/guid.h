@@ -90,4 +90,7 @@ extern const CLSID CLSID_AudioPlayer;
 extern const IID IID_IAutoSycTime;
 extern const IID IID_IPTZControl;
 extern const IID IID_IProtocolPTZ;
+extern const IID IID_ILogin;
+extern const CLSID CLSID_Login;
+extern const CLSID CLSID_WinIpcSearch;
 #endif

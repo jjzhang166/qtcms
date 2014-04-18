@@ -13,6 +13,7 @@
 #include "IDeviceSearch.h"
 #include "IDeviceNetModify.h"
 #include "DeviceSearchWindows_global.h"
+#include <QMutex>
 //#include "IEventRegister.h"
 
 class DeviceSearchWindows : public QTableWidget,
@@ -55,6 +56,8 @@ private:
 	DevNetworkInfo m_HistoryAddress;
 	DevNetworkInfo m_HistoryNetMask;
 	DevNetworkInfo m_HistoryGateWay;
+	QVariantMap m_DeviceItem;
+	QMutex m_DeviceItemMutex;
 	
 signals:
 	void addItemToUI(QVariantMap item);
