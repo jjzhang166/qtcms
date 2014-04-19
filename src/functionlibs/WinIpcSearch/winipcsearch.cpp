@@ -24,6 +24,10 @@ long __stdcall WinIpcSearch::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDeviceSearch*>(this);
 	}
+	else if (IID_IDeviceNetModify == iid)
+	{
+		*ppv = static_cast<IDeviceNetModify *>(this);
+	}
 	else if (IID_IEventRegister == iid)
 	{
 		*ppv = static_cast<IEventRegister*>(this);
@@ -136,5 +140,6 @@ void WinIpcSearch::eventProcCall(QString sEvent,QVariantMap param)
 
 int WinIpcSearch::SetNetworkInfo( const QString &sDeviceID, const QString &sAddress, const QString &sMask, const QString &sGateway, const QString &sMac, const QString &sPort, const QString &sUsername, const QString &sPassword )
 {
+	m_WinIpcSock.SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
 	return 0;
 }

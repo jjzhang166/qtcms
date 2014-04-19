@@ -203,6 +203,12 @@ static HiChipSearchItem_t parseSearchAck(CHAR*ack){
 	return item;
 }
 int GetAck(HiChipSearchItem_t *ret_item,HiChipSetupStatusItem_t *status_item){
+
+	char *p="";
+	strncpy(status_item->status,p,sizeof(status_item->status));
+	char *flag="";
+	strncpy(status_item->flag,flag,sizeof(status_item->flag));
+
 	int ret=0;
 	CHAR recvbuf[BUFSIZE];
 	struct sockaddr_in from_addr;
