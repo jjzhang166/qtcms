@@ -178,7 +178,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			W = W <= 1000 ? 1000: W;
 			H = H <= 600 ? 600: H;
 
-		var oView = $('#playback_view').css({
+		var oView = $('#viewWarp').css({
 			width:W-236,
 			height:H-oBottom.height()-110
 		});

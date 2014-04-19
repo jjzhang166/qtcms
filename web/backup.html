@@ -18,8 +18,8 @@
 <script type="text/javascript" src="js/ocxfunction.js"></script>
 <script type="text/javascript" src="js/searchPlayBckFile.js"></script>
 <style type="text/css">
-	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto;}
-	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px;}
+	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto; position: absolute; top: 78px;}
+	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
 	#search_result table{ border-collapse:collapse; color: #BEBEBE;width: 100%;}
 	#search_result table td{ border: 1px solid #414141; text-align: center;}
@@ -218,7 +218,10 @@ var now = 0;
 		})
 		$('#top').width(main.width()+238);
 		$('div.dev_list').height(main.height()-161);
-		$('#file_bottom').width(main.width());
+		$('#file_bottom').css({
+			width:main.width(),
+			top:main.height()+78
+		});
 	}
 
 	function getDir(){ 

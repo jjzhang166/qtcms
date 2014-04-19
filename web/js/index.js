@@ -156,7 +156,6 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 				}
 			}
 		})
-
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
@@ -193,7 +192,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 			W = W <= 1000 ? 1000: W;
 			H = H <= 600 ? 600: H;
 
-		var oView = $('#playback_view').css({
+		var oView = $('#viewWarp').css({
 			width:W-236,
 			height:H-240
 		});

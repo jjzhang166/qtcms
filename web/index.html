@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>settings</title>
-<object type="application/cms-common-library" id="commonLibrary" style="position: absolute;width:0; height:0" ></object>
+<object type="application/cms-common-library" id="commonLibrary" style="position:absolute;width:0; height:0" ></object>
+<object type="application/cms-qwebview" id="winCon" style="position:absolute;width:0; height:0"></object>
 <script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
 
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
@@ -38,8 +39,7 @@
 	.menu0 li:hover{ background:#C25451;}
 </style>
 </head>
-<body>
-<object type="application/cms-qwebview" id="winCon" style="width:0px;height:0px;"></object>
+<body style="position: relative;heigth:100%;width:100%;">
 	<div id="top">
 		<div class="top_act" id="app_top">
 			<h4><script>T("DVR_client")</script></h4>
@@ -68,8 +68,8 @@
 			</div> -->
 		</div>
 	</div>
-	<div id="playback_view">
-	<object type="application/cms-preview-windows" id="previewWindows" style="width:100%;height:100%;"></object>
+	<div id="viewWarp">
+		<object type="application/cms-preview-windows" id="previewWindows" style="width:100%;height:100%;"></object>
 	</div>
 	<div id="search_device">
 		<ul class="switchlist">
@@ -173,7 +173,7 @@
 				<li class="hover" style="background-position: -120px -144px;" title="Screenshot" onclick="ScreenShot();"></li>
 				<li class="toggle hover" style="background-position: -120px -180px;" title="Polling"></li>
 				<!-- <li class="hover" style="background-position: -120px -252px;"></li> -->
-				<li class="hover" style="background-position: -120px -252px;" title="Full_screen"></li>
+				<li class="hover" style="background-position: -120px -252px;" onclick="viewFullScreen()" title="Full_screen"></li>
 				<li class="toggle hover" onmouseup="sound($(this));" title="sound" style="background-position: -120px 0;"></li>
 				<li id="sound" class="hover" style="background:0; width:100px; margin:0 4px; position: relative;">
 					<div class="now_sound forbidden"></div>

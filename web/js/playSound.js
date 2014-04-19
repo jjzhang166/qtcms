@@ -58,3 +58,18 @@ function ScreenShot(){  // 截屏
 	}
 	writeActionLog(str);
 }
+function viewFullScreen(){
+	var obj = $('#viewWarp');
+	if(obj.css('top') == '0px'){
+		obj.css({
+			top:'78px'
+		})
+		ViewMax();
+	}else{
+		obj.css({
+			top:'0',
+			width:'100%',
+			height:$(window).height()
+		})
+	}
+}
