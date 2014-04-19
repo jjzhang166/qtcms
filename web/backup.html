@@ -44,7 +44,7 @@
 <object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
 	<div id="top">
 		<div class="top_act" id="app_top">
-			<h4><script>translate("DVR_client")</script></h4>
+			<h4><script>T("DVR_client")</script></h4>
 			<div id="test" style="float:left;"></div> 	
 			<div id="top_window_act">
 				<ul>
@@ -57,23 +57,23 @@
 		</div>
 		<div class="top_nav">
 			<ul>
-				<li><a style="width:36px;"></a><script>translate("Preview")</script></li>
-				<li><a style="background-position: -36px 0;"></a><script>translate("Playback")</script></li>
-				<li class="active"><a style="background-position: -62px 0;"></a><script>translate("Backup")</script></li>
-				<li><a style="background-position: -88px 0; width:36px;"></a><script>translate("Set_up")</script></li>
+				<li><a style="width:36px;"></a><script>T("Preview")</script></li>
+				<li><a style="background-position: -36px 0;"></a><script>T("Playback")</script></li>
+				<li class="active"><a style="background-position: -62px 0;"></a><script>T("Backup")</script></li>
+				<li><a style="background-position: -88px 0; width:36px;"></a><script>T("Set_up")</script></li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
-				<li><a style="background-position: -124px 0;"></a><script>translate("log")</script></li> -->
+				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li> -->
 			</ul>
 			<!-- <div>
 				<a href="javascript:;"></a>				
-				<p style="color:#000;"><span><script>translate("Login_account")</script></span>eddy</p>
+				<p style="color:#000;"><span><script>T("Login_account")</script></span>eddy</p>
 			</div> -->
 			</div>
 		</div>
 	</div>
 	<div id="search_device">
 		<ul class="switchlist">
-			<li class="switchlistAct"><script>translate("Area")</script></li>
+			<li class="switchlistAct"><script>T("Area")</script></li>
 			<!-- <li>Group</li> -->
 		</ul>
 		<div class="dev_list">
@@ -91,13 +91,13 @@
 				<table>
 					<thead>
 						<tr>
-						<td style="color:red;"><script>translate("Sun")</script></td>
-						<td><script>translate("Mon")</script></td>
-						<td><script>translate("Tues")</script></td>
-						<td><script>translate("Wend")</script></td>
-						<td><script>translate("Thur")</script></td>
-						<td><script>translate("Fir")</script></td>
-						<td style="color:red;"><script>translate("Satu")</script></td></tr>
+						<td style="color:red;"><script>T("Sun")</script></td>
+						<td><script>T("Mon")</script></td>
+						<td><script>T("Tues")</script></td>
+						<td><script>T("Wend")</script></td>
+						<td><script>T("Thur")</script></td>
+						<td><script>T("Fir")</script></td>
+						<td style="color:red;"><script>T("Satu")</script></td></tr>
 					</thead>
 					<tbody>
 						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
@@ -109,19 +109,19 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="hover seek" onclick="backupSearchFile();" title="Start_Search"><script>translate("Start_Search")</script></div>
+			<div class="hover seek" onclick="backupSearchFile();" title="Start_Search"><script>T("Start_Search")</script></div>
 		</div>
 	</div>
 	<div id="search_result">
 			<table>
 				<thead>
 					<tr>
-						<td><script>translate("Inspection")</script></td>
-						<td><script>translate("Device_name")</script></td>
-						<td><script>translate("Channel")</script></td>
-						<td><script>translate("Star_Time")</script></td>
-						<td><script>translate("End_Time")</script></td>
-						<td style="width:300px;"><script>translate("Progress")</script></td></tr>
+						<td><script>T("Inspection")</script></td>
+						<td><script>T("Device_name")</script></td>
+						<td><script>T("Channel")</script></td>
+						<td><script>T("Star_Time")</script></td>
+						<td><script>T("End_Time")</script></td>
+						<td style="width:300px;"><script>T("Progress")</script></td></tr>
 				</thead>
 				<tbody class="search_result synCheckboxClick">
 					<!-- <tr><td><input type="checkbox" /></td><td>1</td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
@@ -129,10 +129,10 @@
 			</table>
 	</div>
 	<div id="file_bottom">
-		<div id="fileRec"><h4><script>translate("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll"><script>translate("Select")</script></a>
-		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>translate("Stop_backup")</script></a>
-		<a class="hover" onclick="getDir();"><script>translate("Start_Backup")</script></a>
+		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
+		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll"><script>T("Select")</script></a>
+		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>T("Stop_backup")</script></a>
+		<a class="hover" onclick="getDir();"><script>T("Start_Backup")</script></a>
 	</div>
 	<div id="foot"></div>
 </body>
@@ -247,7 +247,7 @@ var now = 0;
 		var fileData = oList.eq(now).data('data');
 		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
 		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path) != 0){
-			alert(lang_trans.Current+now+lang_trans.File_download_failed);
+			alert(T('File_download_failed',now));
 			now++;
 			startDownload();
 		}

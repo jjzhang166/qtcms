@@ -33,14 +33,8 @@ var str = document.getElementById('commonLibrary').getLanguage();
 
 var oScript = document.createElement('script');
 	oScript.type='text/javascript';
-	oScript.src = 'lang/trans_'+str+'.js';
+	oScript.src = 'lang/'+str+'.js';
+	//oScript.src = 'lang/zh_CN.js';
 
 var node = document.getElementById('add_lang');
 node.parentNode.insertBefore(oScript,node.nextSibling);
-
-function translate(key){//语言切换
-	var str = key;
-		str = lang_trans ? lang_trans[key] : key;
-	document.write(str);
-}
-

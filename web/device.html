@@ -3,11 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>settings</title>
-<object type="application/cms-dsview-windows" id="devSearch" style="width:0; height:0;position: absolute;"></object>
 <object type="application/cms-common-library" id="commonLibrary" style="width:0; height:0; position: absolute;"></object>
+<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
+
+<object type="application/cms-dsview-windows" id="devSearch" style="width:0; height:0;position: absolute;"></object>
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />
-<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
 
@@ -15,6 +16,17 @@
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 
 <script type="text/javascript" src="js/ocxfunction.js"></script>
+
+<!--设备设置相关文件-->
+<script type="text/javascript" src="js/devicesetting/swfupload.js"></script>
+<script type="text/javascript" src="js/devicesetting/jquery.swfupload.js"></script>
+<script type="text/javascript" src="js/devicesetting/swfobject.js" ></script>
+<script type="text/javascript" src="js/devicesetting/base64.js"></script>
+<script type="text/javascript" src="js/devicesetting/xml2json.js"></script>
+<script type="text/javascript" src="js/devicesetting/ipc.js"></script>
+<script type="text/javascript" src="js/devicesetting/dvr.js"></script>
+
+<script type="text/javascript" src="js/deviceset.js"></script>
 
 <style type="text/css">
 	#set_content .left {background:#1E1E1E;width: 250px; float: left;}
@@ -44,7 +56,7 @@
 	table .chk1{margin:0 52px 0 14px;}
 	table .iput{float: right; margin-right: 6px;}
 	table .iput1{float: left; width:78px;}
-	table .iput2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0;}
+	table .inpt2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; line-height: 22px; text-align: center;}
 	.title{color: #FF6400;}
 	.tb1 td,.tb2,td{width:auto;}
 	.tb1 {display: block; background: #282828; float: left;}
@@ -53,7 +65,7 @@
 	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
 	.tb2 thead td{ text-align:center; background:#282828;}
 	.nav1 li{width: auto; padding: 0 4px; height: auto; margin:0;}
-	.switch{padding: 0 10px;}
+	.switch{padding: 0 10px; top:32px;}
 	table h5{ display: inline;}
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
@@ -70,143 +82,14 @@
 	
 	.timeInput{width: 90px; float:left; margin-right:6px;}
 	ul.groupAction li{float: left;}
-	.switch {top:50px;}
-	.synCheckboxClick tr.sel{background: #4A911C};
 
+	.synCheckboxClick tr.sel{background: #4A911C};
 </style>
 </head>
 <body style="background:#282828;">
-<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
-<div id="menusList">
-<div id="menu0" class="menu menu0">
-	<ul>
-		<li onclick="showObjActBox('Add','group');"><script>translate("add_group")</script></li>
-		<li onclick="showObjActBox('Add','area');"><script>translate("add_area")</script></li>
-		<li onclick="showObjActBox('Add','device');"><script>translate("add_device")</script></li>
-		<li><script>translate("modify")</script></li>
-		<li><script>translate("delete")</script></li>
-	</ul>
-</div>
-<div id="device" class="menu">
-		<p><span><script>translate("Modified_device")</script></span><a class="hover close"></a></p>
-		<table>
-			<tr><td colspan="2"><script>translate("Device_Connection")</script></td></tr>
-			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" /><script>translate("IP_addresses_link")</script></td><td><input style="width:18px;" type="radio" name="Connection" value="1" /><script>translate("Easy_Link_Watch")</script></td></tr>
-			<tr><td class="td1"><script>translate("Device_Address")</script></td><td><input type="text" id="address_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Device_port")</script></td><td><input type="text" id="port_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Http_port")</script></td><td><input type="text" id="http_ID" /></td></tr>
-			<tr class="tr1"><td class="td1"><script>translate("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Username")</script></td><td><input type="text" id="username_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Password")</script></td><td><input type="text" id="password_ID" value="" /></td></tr>
-			<tr><td class="td1"><script>translate("Device_name")</script></td><td><input type="text" id="device_name_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Channels")</script></td><td><input   type="text" id="channel_count_ID" /></td></tr>
-			<tr><td class="td1"><script>translate("Current_Area")</script></td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
-			<tr>
-				<td class="td1"><script>translate("Device_Type")</script></td>
-				<td>
-					<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
-						<span>DVR</span>
-						<input type="hidden" id="vendor_ID" value="JUAN DVR"></input>
-						<a class="hover"></a>
-					</div>
-					<ul class="option" action="vendor_ID">
-						<li><a style="width:154px;" value="JUAN DVR">DVR</a></li>
-						<!-- <li><a style="width:154px;" value="NVR">NVR</a></li> -->
-						<li><a style="width:154px;" value="JUAN IPC">IPC</a></li>
-					</ul>
-				</td>
-			</tr>
-			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>translate("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>translate("Cancel")</script></div></td></tr>
-		</table>
-</div>
-<div id="area" class="menu">
-	<p><span><script>translate("add_area")</script></span><a class="hover close"></a></p>
-	<table style="margin-top:10px;">
-		<tr><td><script>translate("Zone_name")</script></td><td><input type="text" id="area_name_ID"/></td></tr>
-		<tr><td><script>translate("Main_area")</script></td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>translate("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;"><script>translate("Confirm")</script></div></td></tr>
-	</table>
-</div>
-<div id="group" class="menu">
-	<p><span><script>translate("add_group")</script></span><a class="hover close"></a></p>
-	<table style="margin-top:10px;">
-		<tr><td><script>translate("Group_name")</script></td><td><input type="text" id="group_name_ID"/></td></tr>
-		<!-- <tr><td><script>translate("Primary_group")</script></td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
-		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>translate("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;"><script>translate("Confirm")</script></div></td></tr>
-	</table>
-</div>
-<div id="channel" class="menu">
-	<p><span><script>translate("Change_Channel")</script></span><a class="hover close"></a></p>
-	<table style="margin-top:10px;">
-		<tr><td><script>translate("Channel_name")</script></td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
-		<tr><td colspan="2" style="height:10px;"></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>translate("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;"><script>translate("Confirm")</script></div></td></tr>
-	</table>
-</div>
-<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
-<input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
-<div id="menu2" class="menu">
-	<p><script>translate("Add_User")</script><a class="hover close"></a></p>
-	<table>
-		<tr><td><script>translate("Username")</script></td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
-		<tr><td><script>translate("Password")</script></td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
-		<tr><td><script>translate("Confirm_Password")</script></td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_add_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
-		<tr>
-			<td><script>translate("User_privilege_level")</script></td>
-			<td>
-				<div class="select" style="width:60px;">
-					<span><script>translate("Tourists")</script></span>
-					<a class="hover"></a>
-					<input type="hidden" value="3" id="level_add_ID"/>
-				</div>
-				<ul class="option">
-					<li><a style="width:59px;" value="3"><script>translate("Tourists")</script></a></li>
-					<li><a style="width:59px;" value="2"><script>translate("User")</script></a></li>
-					<li><a style="width:59px;" value="1"><script>translate("Administrator")</script></a></li>
-				</ul>
-			</td>
-		</tr>
-		<tr class="tdBtn"><td><div class="hover" id="AddUser_ok"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')"><script>translate("Confirm")</script></div></td></tr>
-	</table>
-</div>
-<div id="menu3" class="menu">
-	<p><script>translate("Modify_user")</script><a class="hover close"></a></p>
-	<table>
-		<tr><td><script>translate("Username")</script></td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
-		<tr><td><script>translate("Old_Password")</script></td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
-		<tr><td><script>translate("New_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_user_ID"/></td></tr>
-		<tr><td><script>translate("Confirm_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_again_user_ID"/></td></tr>
-		<tr>
-			<td><script>translate("User_privilege_level")</script></td>
-			<td>
-				<div class="select" style="width:60px;">
-				<span><script>translate("Tourists")</script></span>
-				<a class="hover"></a>
-				<input type="hidden" value="3" id="level_modify_ID"/>
-				</div>
-				<ul class="option">
-					<li><a style="width:59px;" value="3"><script>translate("Tourists")</script></a></li>
-					<li><a style="width:59px;" value="2"><script>translate("User")</script></a></li>
-					<li><a style="width:59px;" value="1"><script>translate("Administrator")</script></a></li>
-				</ul>
-			</td>
-		</tr>
-		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok"><script>translate("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改用户','menu3')"><script>translate("Confirm")</script></div></td></tr>
-	</table>
-</div>
-<div id="confirm" class="menu">
-	<p><span></span><a class="hover close"></a></p>
-	<div style="padding:10px;">
-		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
-		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>translate("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>translate("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>translate("Confirm")</script></div><div class="hover close"><script>translate("Confirm")</script></div></td></tr>
-		</table>
-	</div>
-</div>
-</div>
 	<div id="top">
 		<div class="top_act" id="app_top">
-			<h4><script>translate("DVR_client")</script></h4>
+			<h4><script>T("DVR_client")</script></h4>
 			<div id="test" style="float:left;"></div>
 			<div id="top_window_act">
 				<ul>
@@ -219,12 +102,12 @@
 		</div>
 		<div class="top_nav">
 			<ul>
-				<li><a style="width:36px;"></a><script>translate("Preview")</script></li>
-				<li><a style="background-position: -36px 0;"></a><script>translate("Playback")</script></li>
-				<li><a style="background-position: -62px 0;"></a><script>translate("Backup")</script></li>
-				<li class="active"><a style="background-position: -88px 0; width:36px;"></a><script>translate("Set_up")</script></li>
+				<li><a style="width:36px;"></a><script>T("Preview")</script></li>
+				<li><a style="background-position: -36px 0;"></a><script>T("Playback")</script></li>
+				<li><a style="background-position: -62px 0;"></a><script>T("Backup")</script></li>
+				<li class="active"><a style="background-position: -88px 0; width:36px;"></a><script>T("Set_up")</script></li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li>
-				<li><a style="background-position: -124px 0;"></a><script>translate("log")</script></li> -->
+				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li> -->
 			</ul>
 			<!-- <div>
 				<a></a>
@@ -234,11 +117,11 @@
 	<div id="set_content">
 		<div class="left">
 			<ul>
-				<li class="setViewNum hover" style="background-position:-250px 0;"><script>translate("Device_Manager")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -50px;"><script>translate("Device_Settings")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -100px;"><script>translate("Client_settings")</script></li>
+				<li class="setViewNum hover" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
+				<li class="setViewNum hover" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
+				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Client_settings")</script></li>
 				<!-- <li class="setViewNum hover" style="background-position:0 -150px;">User Manage</li> -->
-				<li class="setViewNum hover" style="background-position:0 -200px;"><script>translate("Version")</script></li>
+				<li class="setViewNum hover" style="background-position:0 -200px;"><script>T("Version")</script></li>
 			</ul>
 		</div>
 		<div class="right">
@@ -246,10 +129,10 @@
 				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="overflow-x:hidden;overflow-y:auto; position: absolute; left:0;">
 					<thead class="thead">
 						<tr>
-							<td style="width:140px;"><script>translate("Device")</script></td>
+							<td style="width:140px;"><script>T("Device")</script></td>
 							<td>ID</td>
 							<td>IP</td>
-							<td style="width:60px;"><script>translate("Channels")</script></td>
+							<td style="width:60px;"><script>T("Channels")</script></td>
 						</tr>
 					</thead>
 					<tbody class="synCheckboxClick">
@@ -262,37 +145,37 @@
 
 				<div class="action" style="position: absolute;">
 					<ul>
-						<li class="hover" onclick="$('#confirm span').html('添加设备');adddoubdevIntoArea();" id="AddDeviceDouble_ok"><script>translate("Add_")</script></li>
-						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok"><script>translate("One_button_to_add")</script></li>
-						<li class="hover" onclick="showObjActBox('Add','area');"><script>translate("add_area")</script></li>
-						<li class="hover" onclick="showObjActBox('Add','device');"><script>translate("add_device")</script></li>
-						<li class="hover" onclick="showObjActBox('Modify','device');"><script>translate("Modified_device")</script></li>
-						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok"><script>translate("Empty_Equipment")</script></li>
-						<li class="hover" onclick="showObjActBox('Add','group');"><script>translate("add_group")</script></li>
-						<li class="hover" onclick="searchFlush();"><script>translate("Re_search")</script></li>
+						<li class="hover" onclick="$('#confirm span').html('添加设备');adddoubdevIntoArea();" id="AddDeviceDouble_ok"><script>T("Add_")</script></li>
+						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok"><script>T("One_button_to_add")</script></li>
+						<li class="hover" onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
+						<li class="hover" onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
+						<li class="hover" onclick="showObjActBox('Modify','device');"><script>T("Modified_device")</script></li>
+						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok"><script>T("Empty_Equipment")</script></li>
+						<li class="hover" onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
+						<li class="hover" onclick="searchFlush();"><script>T("Re_search")</script></li>
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="height:146px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" /><script>translate("Select")</script></td></tr></thead>
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" /><script>T("Select")</script></td></tr></thead>
 					<tbody>
 						<tr>
-							<td style="width:70px;"><script>translate("Device_IP")</script></td>
+							<td style="width:70px;"><script>T("Device_IP")</script></td>
 							<td class="aa"><input type="text" id="SearchIP_ID" style="width:124px;" /></td>
-							<td style="width:100px;"><script>translate("Subnet_Mask")</script></td>
+							<td style="width:100px;"><script>T("Subnet_Mask")</script></td>
 							<td class="aa"><input type="text" id="SearchMask_ID" style="width:124px;"/></td>
 						</tr>
 						<tr>
-							<td><script>translate("Gateway")</script></td>
+							<td><script>T("Gateway")</script></td>
 							<td><input type="text" id="SearchGateway_ID" style="width:124px;" /></td>
-							<td><script>translate("MAC_address")</script></td>
+							<td><script>T("MAC_address")</script></td>
 							<td><input type="text" id="SearchMac_ID" readonly="readonly" style="width:124px;" /></td>
 						</tr>
 						<tr>
-							<td><script>translate("Port")</script></td>
-							<td colspan="3"><input type="text" style="width:60px;" id="SearchHttpport_ID" /><input style="color:#ccc;" class="hover iput2" type="button" onclick="setIP()" value="Set_up"/></td>
+							<td><script>T("Port")</script></td>
+							<td colspan="3"><input type="text" style="width:60px; float:left;" id="SearchHttpport_ID" /><div class="hover inpt2" onclick="setIP()"><script>T("Set_up")</script></div></td>
 						</tr>
 						<tr>
-							<td colspan="4"><input class="hover iput2"  style="margin-left:0px; color:#ccc;" type="button" value="Batch_assign_IP" onclick="autoSetIP();" /></td>
+							<td colspan="4"><div class="hover inpt2" style="margin-left:0;"  onclick="autoSetIP();"><script>T("Batch_assign_IP")</script></div></td>
 						</tr>
 					</tbody>
 				</table>
@@ -302,7 +185,7 @@
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
-					<div class="action" style="height:42px; width:auto;margin:6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;"><script>translate("Add_to_Group")</script></li><li id="RemoveChannelFromGroup_ok" class="hover"><script>translate("Add_to_Group")</script></li></ul></div>
+					<div class="action" style="height:42px; width:auto;margin:6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;"><script>T("Add_to_Group")</script></li><li id="RemoveChannelFromGroup_ok" class="hover"><script>T("Add_to_Group")</script></li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<input type="hidden" id="r_chl_group_id_ID" value="" />
 						<ul class="filetree" id="group_0">	
@@ -312,33 +195,33 @@
 			</div>
 			<div class="right_content">
 				<ul class="ope_list nav1 dvr_list0">
-					<li class="ope_listAct" onclick="dvr_devinfo_load_content();"><script>translate("Device_info")</script></li>
-					<li onclick="dvr_common_load_content();"><script>translate("General_Settings")</script></li>
-					<li onclick="dvr_network_load_content();"><script>translate("Network_Settings")</script></li>
-					<li onclick="dvr_load('dvr_enc_chn_sel');"><script>translate("Encoding_settings")</script></li>
-					<li onclick="dvr_load('dvr_record_chn_sel');"><script>translate("Video_settings")</script></li>
-					<li onclick="dvr_load('dvr_screen_chn_sel');"><script>translate("Screen_settings")</script></li>
-					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>translate("Video_detection_settings")</script></li>
-					<li onclick="dvr_load('dvr_ptz_chn_sel');"><script>translate("Video_detection_settings")</script></li>
-					<li onclick="dvr_load('dvr_alarm_chn_sel');"><script>translate("Alarm_settings")</script></li>
+					<li class="ope_listAct" onclick="dvr_devinfo_load_content();"><script>T("Device_info")</script></li>
+					<li onclick="dvr_common_load_content();"><script>T("General_Settings")</script></li>
+					<li onclick="dvr_network_load_content();"><script>T("Network_Settings")</script></li>
+					<li onclick="dvr_load('dvr_enc_chn_sel');"><script>T("Encoding_settings")</script></li>
+					<li onclick="dvr_load('dvr_record_chn_sel');"><script>T("Video_settings")</script></li>
+					<li onclick="dvr_load('dvr_screen_chn_sel');"><script>T("Screen_settings")</script></li>
+					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>T("Video_detection_settings")</script></li>
+					<li onclick="dvr_load('dvr_ptz_chn_sel');"><script>T("Video_detection_settings")</script></li>
+					<li onclick="dvr_load('dvr_alarm_chn_sel');"><script>T("Alarm_settings")</script></li>
 				</ul>
 				<div class="switch dvr_list"  style="display:block;">
 					<table>
-						<tr><td><script>translate("Device_name")</script></td><td><input type="text" id="Dvr_Device_name" /></td></tr>
-						<tr><td><script>translate("Model")</script></td><td><input type="text" id="Dvr_Device_model" /></td></tr>
-						<tr><td><script>translate("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" /></td></tr>
-						<tr><td><script>translate("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" /></td></tr>
-						<tr><td><script>translate("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" /></td></tr>
-						<tr><td><script>translate("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" /></td></tr>
-						<tr><td><script>translate("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
-						<tr><td><script>translate("Alarm_input")</script></td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
-						<tr><td><script>translate("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr>
+						<tr><td><script>T("Device_name")</script></td><td><input type="text" id="Dvr_Device_name" /></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" id="Dvr_Device_model" /></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" /></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" /></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" /></td></tr>
+						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" /></td></tr>
+						<tr><td><script>T("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
+						<tr><td><script>T("Alarm_input")</script></td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
+						<tr><td><script>T("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 					<table>
 						<tr>
-							<td><script>translate("Date_Format")</script></td>
+							<td><script>T("Date_Format")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_date_format"></span>
@@ -351,9 +234,9 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><input id="dvr_common_keypad" type="checkbox" /><script>translate("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox" /><script>translate("Keypad_Lock")</script></td></tr>
+						<tr><td><input id="dvr_common_keypad" type="checkbox" /><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox" /><script>T("Keypad_Lock")</script></td></tr>
 						<tr>
-							<td><script>translate("Recording_system")</script></td>
+							<td><script>T("Recording_system")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_standard"></span>
@@ -365,14 +248,14 @@
 								</ul></td>
 						</tr>
 						<tr>
-							<td><script>translate("Remote_Control_No")</script></td>
+							<td><script>T("Remote_Control_No")</script></td>
 							<td><input type="text" id="dvr_common_dvrid" /></td>
 						</tr>
 						<tr>
-							<td><input id="dvr_common_over_harddisk" type="checkbox" /><script>translate("Overwrite_the_hard_drive")</script></td><td></td>
+							<td><input id="dvr_common_over_harddisk" type="checkbox" /><script>T("Overwrite_the_hard_drive")</script></td><td></td>
 						</tr>
 						<tr>
-							<td><script>translate("OSD_Transparency")</script></td>
+							<td><script>T("OSD_Transparency")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_OSD_alpha"></span>
@@ -398,9 +281,9 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2"><input id="dvr_common_autoswi" type="checkbox" /><script>translate("Automatic_round_robin")</script></td></tr>
+						<tr><td colspan="2"><input id="dvr_common_autoswi" type="checkbox" /><script>T("Automatic_round_robin")</script></td></tr>
 						<tr>
-							<td><script>translate("Automatic_polling_interval")</script></td>
+							<td><script>T("Automatic_polling_interval")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_autoswiinterval"></span>
@@ -417,77 +300,77 @@
 							</td>
 						</tr>
 						<tr>
-							<td><script>translate("Automatic_round_robin_type")</script></td>
+							<td><script>T("Automatic_round_robin_type")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_autoswimode"></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a><script>translate("Full_screen")</script></a></li>
-									<li><a><script>translate("Split_screen")</script></a></li>
+									<li><a><script>T("Full_screen")</script></a></li>
+									<li><a><script>T("Split_screen")</script></a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="dvr_common_save_content();"><script>translate("Confirm")</script></div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_common_save_content();"><script>T("Confirm")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 					<table>
-						<tr><td><script>translate("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
+						<tr><td><script>T("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
 						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
 							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" />OpenDH</td></tr>
-							 		<tr><td ><script>translate("IP_address")</script></td><td><input id="dvr_ip_addr" type="text"/></td></tr>
-							 		<tr><td><script>translate("Subnet_Mask")</script></td><td><input id="dvr_subnet_mask" type="text"/></td></tr>
-							 		<tr><td><script>translate("Network_Address")</script></td><td><input id="dvr_network_addr" type="text"/></td></tr>
-							 		<tr><td><script>translate("DNS_address")</script></td><td><input id="dvr_dns_addr" type="text"/></td></tr>
+							 		<tr><td ><script>T("IP_address")</script></td><td><input id="dvr_ip_addr" type="text"/></td></tr>
+							 		<tr><td><script>T("Subnet_Mask")</script></td><td><input id="dvr_subnet_mask" type="text"/></td></tr>
+							 		<tr><td><script>T("Network_Address")</script></td><td><input id="dvr_network_addr" type="text"/></td></tr>
+							 		<tr><td><script>T("DNS_address")</script></td><td><input id="dvr_dns_addr" type="text"/></td></tr>
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
 						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" />OpenDD</td></tr>
-						 			<tr><td><script>translate("Provider")</script></td><td><input id="dvr_supplier" type="text"/></td></tr>
-						 			<tr><td><script>translate("Domain")</script></td><td><input id="dvr_domain" type="text"/></td></tr>
-						 			<tr><td><script>translate("Username")</script></td><td><input id="dvr_user_DD" type="text"/></td></tr>
-						 			<tr><td><script>translate("Password")</script></td><td><input id="dvr_password_DD" type="text"/></td></tr>
+						 			<tr><td><script>T("Provider")</script></td><td><input id="dvr_supplier" type="text"/></td></tr>
+						 			<tr><td><script>T("Domain")</script></td><td><input id="dvr_domain" type="text"/></td></tr>
+						 			<tr><td><script>T("Username")</script></td><td><input id="dvr_user_DD" type="text"/></td></tr>
+						 			<tr><td><script>T("Password")</script></td><td><input id="dvr_password_DD" type="text"/></td></tr>
 							 	</table>
 							</td>
 						</tr>
-						<tr class="title"><td colspan="2" ><h5><script>translate("Port")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
+						<tr class="title"><td colspan="2" ><h5><script>T("Port")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr><td style="width:84px;"><script>translate("Network_port")</script></td><td><input id="dvr_web_port" type="text" /></td></tr>
-									<tr><td style="width:84px;"><script>translate("Client_port")</script></td><td><input id="dvr_client_port" type="text" /></td></tr>
-									<tr><td style="width:84px;"><script>translate("Phone_port")</script></td><td><input type="text" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Network_port")</script></td><td><input id="dvr_web_port" type="text" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Client_port")</script></td><td><input id="dvr_client_port" type="text" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Phone_port")</script></td><td><input type="text" /></td></tr>
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
-									<tr><td colspan="2"><input type="checkbox" />打开PPPOE</td></tr>
-									<tr><td><script>translate("Username")</script></td><td><input type="text" /></td></tr>
-									<tr><td><script>translate("Password")</script></td><td><input type="text" /></td></tr>
+									<tr><td colspan="2"><input type="checkbox" /><script>T("Open_PPPOE")</script></td></tr>
+									<tr><td><script>T("Username")</script></td><td><input type="text" /></td></tr>
+									<tr><td><script>T("Password")</script></td><td><input type="text" /></td></tr>
 								</table>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr style="background:#282828;"><td>易视网ID</td><td><input id="dvr_eseeID" type="text" /></tr>
+									<tr style="background:#282828;"><td><script>T("Esee_ID")</script></td><td><input id="dvr_eseeID" type="text" /></tr>
 								</table>
 							</td>
 							<td colspan="2"></td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="dvr_network_save_content();"><script>translate("Cancel")</script></div></td></tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_network_save_content();"><script>T("Confirm")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 					<table>
 						<tr>
-							<td><script>translate("Channel")</script></td>
+							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_enc_chn_sel0"></span>
@@ -500,25 +383,25 @@
 							<td></td>
 							<td></td>
 						</tr>
-						<tr class="title"><td colspan="2"><h5><script>translate("Main_stream")</script></h5></td><td style="padding-left:40px;" colspan="2"><h5><script>translate("Main_stream")</script></h5></td></tr>
+						<tr class="title"><td colspan="2"><h5><script>T("Main_stream")</script></h5></td><td style="padding-left:40px;" colspan="2"><h5><script>T("Main_stream")</script></h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
 								<tr>
-									<td><script>translate("Coding_mode")</script></td>
+									<td><script>T("Coding_mode")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_mode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>translate("Video_streaming")</script></a></li>
-											<li><a><script>translate("Audio_and_video_streaming")</script></a></li>
+											<li><a><script>T("Video_streaming")</script></a></li>
+											<li><a><script>T("Audio_and_video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Encoding_format")</script></td>
+									<td><script>T("Encoding_format")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_format"><li></li></span>
@@ -533,36 +416,36 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Image_quality")</script></td>
+									<td><script>T("Image_quality")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 										<span id="dvr_enc_main_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a><script>translate("Highest")</script></a></li>
-											<li><a><script>translate("High")</script></a></li>
-											<li><a><script>translate("Moderate")</script></a></li>
-			                                <li><a><script>translate("Low")</script></a></li>
-											<li><a><script>translate("Minimum")</script></a></li>
+											<li><a><script>T("Highest")</script></a></li>
+											<li><a><script>T("High")</script></a></li>
+											<li><a><script>T("Moderate")</script></a></li>
+			                                <li><a><script>T("Low")</script></a></li>
+											<li><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_control")</script></td>
+									<td><script>T("Stream_control")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_bitmode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>translate("Variable_rate")</script></a></li>
-											<li><a><script>translate("Fixed_rate")</script></a></li>
-											<li><a><script>translate("Moderate_rate")</script></a></li>
+											<li><a><script>T("Variable_rate")</script></a></li>
+											<li><a><script>T("Fixed_rate")</script></a></li>
+											<li><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_bit_rate")</script></td>
+									<td><script>T("Stream_bit_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_bitvalue"></span>
@@ -582,7 +465,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_frame_rate")</script></td>
+									<td><script>T("Stream_frame_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_framerate"></span>
@@ -607,19 +490,19 @@
 							<td colspan="2" style="padding-left:40px;">
 								<table class="tb1">
 									<tr>
-										<td><script>translate("Coding_mode")</script></td>
+										<td><script>T("Coding_mode")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_mode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>translate("Video_streaming")</script></a></li>
+											<li><a><script>T("Video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Encoding_format")</script></td>
+									<td><script>T("Encoding_format")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_format"><li></li></span>
@@ -632,36 +515,36 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Image_quality")</script></td>
+									<td><script>T("Image_quality")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 										<span id="dvr_enc_sub_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a><script>translate("Highest")</script></a></li>
-											<li><a><script>translate("High")</script></a></li>
-											<li><a><script>translate("Moderate")</script></a></li>
-			                                <li><a><script>translate("Low")</script></a></li>
-											<li><a><script>translate("Minimum")</script></a></li>
+											<li><a><script>T("Highest")</script></a></li>
+											<li><a><script>T("High")</script></a></li>
+											<li><a><script>T("Moderate")</script></a></li>
+			                                <li><a><script>T("Low")</script></a></li>
+											<li><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_control")</script></td>
+									<td><script>T("Stream_control")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_bitmode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>translate("Variable_rate")</script></a></li>
-											<li><a><script>translate("Fixed_rate")</script></a></li>
-											<li><a><script>translate("Moderate_rate")</script></a></li>
+											<li><a><script>T("Variable_rate")</script></a></li>
+											<li><a><script>T("Fixed_rate")</script></a></li>
+											<li><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_bit_rate")</script></td>
+									<td><script>T("Stream_bit_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_bitvalue"></span>
@@ -676,7 +559,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>translate("Stream_frame_rate")</script></td>
+									<td><script>T("Stream_frame_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_framerate"></span>
@@ -697,7 +580,7 @@
 							</td>
 						</tr>
 						<tr>
-						<tr class="title"><td colspan="4"><h5><script>translate("Copy_to_other_channels")</script></h5></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
 						<tr>
 						<td colspan="4">
 							<table class="tb1">
@@ -749,21 +632,21 @@
 										<div><input type="checkbox" /><span>32</span></div>
 									</td>
 								</tr>
-								<tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>translate("All")</script>
-								<td class="tdBtn"><div class="hover chk_all_btn"><script>translate("Copy_to_all")</script></div></td></tr>
+								<tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script>
+								<td class="tdBtn"><div class="hover chk_all_btn"><script>T("Copy_to_all")</script></div></td></tr>
 							</table>
 						</td>
 						</tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');"><script>translate("Confirm")</script></div></td><td></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');"><script>T("Confirm")</script></div></td><td></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 				<table>
-					<tr class="title"><td><h5><script>translate("General_Settings")</script></h5></td><td></td><td></td><td></td></tr>
+					<tr class="title"><td><h5><script>T("General_Settings")</script></h5></td><td></td><td></td><td></td></tr>
 					<tr><td colspan="4">
 					<table class="tb1">
 						<tr>
-							<td class="td1"><script>translate("Channel")</script></td>
+							<td class="td1"><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_record_chn_sel0"></span>
@@ -772,7 +655,7 @@
 			                                
 								</ul>
 							</td>
-							<td class="td1"><script>translate("Week")</script></td>
+							<td class="td1"><script>T("Week")</script></td>
 							<td style="width:244px;">
 								<div class="select" style="width:133px;">
 									<span id="dvr_record_week"></span>
@@ -783,8 +666,8 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1"></td><td style="width:200px;">开始时间&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结束时间</td><td colspan="2"><script>translate("Timing")</script><span style="margin-left:40px;"><script>translate("Timing")</script></span><span style="margin-left:40px;"><script>translate("Timing")</script></span></td></tr>
-						<tr><td class="td1"><span><script>translate("Time")</script></span> 1</td>
+						<tr><td class="td1"></td><td style="width:200px;"><script>T("Start_Time")</script>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>T("End_Time")</script></td><td colspan="2"><script>T("Timing")</script><span style="margin-left:40px;"><script>T("Timing")</script></span><span style="margin-left:40px;"><script>T("Timing")</script></span></td></tr>
+						<tr><td class="td1"><span><script>T("Time")</script></span> 1</td>
 			                        <td>
 			                            <input id="dvr_record_begin_0" type="text" class="iput1" />
 			                            <input id="dvr_record_end_0" type="text" class="iput1" />
@@ -794,7 +677,7 @@
 			                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox"/>
 			                        </td></tr>
-						<tr><td class="td1"><span><script>translate("Time")</script></span> 2</td>
+						<tr><td class="td1"><span><script>T("Time")</script></span> 2</td>
 			                        <td>
 			                            <input id="dvr_record_begin_1" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_1" type="text" class="iput1" /></td>
@@ -802,7 +685,7 @@
 			                            <input id="dvr_record_types_1_0" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_2" class="chk1" type="checkbox"/></td></tr>
-						<tr><td class="td1"><span><script>translate("Time")</script></span> 3</td>
+						<tr><td class="td1"><span><script>T("Time")</script></span> 3</td>
 			                        <td>
 			                            <input id="dvr_record_begin_2" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_2" type="text" class="iput1" />
@@ -812,7 +695,7 @@
 			                            <input id="dvr_record_types_2_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_2_2" class="chk1" type="checkbox"/>
 			                        </td></tr>
-						<tr><td class="td1"><span><script>translate("Time")</script></span> 4</td>
+						<tr><td class="td1"><span><script>T("Time")</script></span> 4</td>
 			                        <td>
 			                            <input id="dvr_record_begin_3" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_3" type="text" class="iput1" />
@@ -823,17 +706,17 @@
 			                            <input id="dvr_record_types_3_2" class="chk1" type="checkbox"/>
 			                        </table>
 						</td></tr>
-						<tr class="title"><td colspan="4"><h5><script>translate("Copy_to")</script></h5></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to")</script></h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
-						<tr><td style="width:582px;" colspan="4">
-			                            <input id="dvr_record_weekday_0" class="chk" type="checkbox"/>周日
-			                            <input id="dvr_record_weekday_1" class="chk" type="checkbox" />周一
-			                            <input id="dvr_record_weekday_2" class="chk" type="checkbox" />周二
-			                            <input id="dvr_record_weekday_3" class="chk" type="checkbox" />周三
-			                            <input id="dvr_record_weekday_4" class="chk" type="checkbox" />周四
-			                            <input id="dvr_record_weekday_5" class="chk" type="checkbox" />周五
-			                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" />周六
+						<tr><td colspan="4">
+			                            <input id="dvr_record_weekday_0" class="chk" type="checkbox"/><script>T("Monday")</script>
+			                            <input id="dvr_record_weekday_1" class="chk" type="checkbox" /><script>T("Tuesday")</script>
+			                            <input id="dvr_record_weekday_2" class="chk" type="checkbox" /><script>T("Wednesday")</script>
+			                            <input id="dvr_record_weekday_3" class="chk" type="checkbox" /><script>T("Thursday")</script>
+			                            <input id="dvr_record_weekday_4" class="chk" type="checkbox" /><script>T("Friday")</script>
+			                            <input id="dvr_record_weekday_5" class="chk" type="checkbox" /><script>T("Saturday")</script>
+			                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" /><script>T("Sunday")</script>
 			                            </td>
 			                        </tr>
 						<tr>
@@ -884,10 +767,10 @@
 							<div><input type="checkbox" /><span>32</span></div>
 							</td>
 						</tr>
-			                 <tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>translate("All")</script><td class="tdBtn"><div class="hover chk_all_btn"><script>translate("All")</script></div></td></tr>
+			                 <tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
 							<tr><td colspan="4" class="tdBtn" style="background:#282828;">
-								<div class="hover"><script>translate("Cancel")</script></div>
-								<div class="hover" onclick="dvr_save('dvr_record_chn_sel');"><script>translate("Save")</script></div>
+								<div class="hover"><script>T("Cancel")</script></div>
+								<div class="hover" onclick="dvr_save('dvr_record_chn_sel');"><script>T("Save")</script></div>
 							</td></tr>
 					</table>
 					</td></tr>
@@ -897,7 +780,7 @@
 				<div class="switch dvr_list">
 					<table>
 						<tr>
-							<td><script>translate("Channel")</script></td>
+							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_screen_chn_sel0"></span>
@@ -907,16 +790,16 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><script>translate("Name")</script></td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
+						<tr><td><script>T("Name")</script></td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
 						<tr><td colspan="2" class="tdBtn">
-							<div class="hover"><script>translate("Cancel")</script></div>
-							<div class="hover" onclick="dvr_screen_save_content()"><script>translate("Save")</script></div></td></tr>
+							<div class="hover"><script>T("Cancel")</script></div>
+							<div class="hover" onclick="dvr_screen_save_content()"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 					<table class="tb1">
 						<tr>
-							<td><script>translate("Channel")</script></td>
+							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_ptz_chn_sel0"></span>
@@ -928,9 +811,9 @@
 							</td>
 							<td></td>
 						</tr>
-						<tr><td><script>translate("Device_Address")</script></td><td colspan="2"><input id="dvr_ptz_device_addr" type="text"  style="width:133px;"/></td></tr>
+						<tr><td><script>T("Device_Address")</script></td><td colspan="2"><input id="dvr_ptz_device_addr" type="text"  style="width:133px;"/></td></tr>
 						<tr>
-							<td><script>translate("Protocol")</script></td>
+							<td><script>T("Protocol")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_ptz_agreement"></span>
@@ -943,7 +826,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><script>translate("Baud_rate")</script></td>
+							<td><script>T("Baud_rate")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_ptz_baud_rate"></span>
@@ -961,7 +844,7 @@
 							</td>
 						</tr>
 						<tr style="background:#282828;"><td colspan="4"></td></tr>
-						<tr class="title"><td colspan="4"><h5><script>translate("Copy_to_other_channels")</script></h5></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
 						<tr>
 							<td colspan="4">
 								<table class="tb1">
@@ -1013,12 +896,12 @@
 										<div><input type="checkbox" /><span>32</span></div>
 										</td>
 									</tr>
-									<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>translate("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>translate("All")</script></div></td></tr>
+									<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
 								</table>
 							</td>
 						</tr>
 						<tr>
-							<td><script>translate("Data_rate")</script></td>
+							<td><script>T("Data_rate")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
@@ -1033,7 +916,7 @@
 						</tr>
 						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr>
-							<td><script>translate("Stop_bits")</script></td>
+							<td><script>T("Stop_bits")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
@@ -1047,7 +930,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><script>translate("Parity")</script></td>
+							<td><script>T("Parity")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span></span>
@@ -1061,14 +944,14 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;">
-							<div class="hover"><script>translate("Cancel")</script></div>
-							<div class="hover" onclick="dvr_save('dvr_ptz_chn_sel');"><script>translate("Save")</script></div></td></tr>
+							<div class="hover"><script>T("Cancel")</script></div>
+							<div class="hover" onclick="dvr_save('dvr_ptz_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
 					<table>
 						<tr>
-							<td class="td1"><script>translate("Channel")</script></td>
+							<td class="td1"><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 								<span id="dvr_detect_chn_sel0"></span>
@@ -1080,26 +963,26 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td class="td1"><script>translate("Sensitivity")</script></td>
+							<td class="td1"><script>T("Sensitivity")</script></td>
 								<td style="width:278px;">
 			                                    <div class="select" style="width:133px;">
 			                                    <span id="dvr_detect_sens"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-			                                        <li><a><script>translate("Highest")</script></a></li>
-			                                        <li><a><script>translate("High")</script></a></li>
-			                                        <li><a><script>translate("Moderate")</script></a></li>
-			                                        <li><a><script>translate("Low")</script></a></li>
-			                                        <li><a><script>translate("Minimum")</script></a></li>
+			                                        <li><a><script>T("Highest")</script></a></li>
+			                                        <li><a><script>T("High")</script></a></li>
+			                                        <li><a><script>T("Moderate")</script></a></li>
+			                                        <li><a><script>T("Low")</script></a></li>
+			                                        <li><a><script>T("Minimum")</script></a></li>
 			                                    </ul>
 			                                </td>
 							<td></td>
 						</tr>
-						<tr class="title"><td colspan="3"><h5><script>translate("Motion_detection")</script></h5></td></tr>
+						<tr class="title"><td colspan="3"><h5><script>T("Motion_detection")</script></h5></td></tr>
 						<tr><td colspan="3">
 							<table class="tb1">
 								<tr>
-									<td class="td1"><script>translate("Duration")</script></td>
+									<td class="td1"><script>T("Duration")</script></td>
 									<td style="width:278px;">
 										<div class="select" style="width:133px;">
 										<span id="dvr_detect_mduration"></span>
@@ -1112,21 +995,21 @@
 											<li><a>5s</a></li>
 											<li><a>8s</a></li>
 			                                <li><a>10s</a></li>
-											<li><a><script>translate("Continuous")</script></a></li>
+											<li><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;">
-								<input id="dvr_detect_mAlarm" type="checkbox" /><script>translate("Alert")</script>
-								<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" /><script>translate("Buzzer")</script>
-								<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/><script>translate("Screen_Display")</script></td></tr>
+								<input id="dvr_detect_mAlarm" type="checkbox" /><script>T("Alert")</script>
+								<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" /><script>T("Buzzer")</script>
+								<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/><script>T("Screen_Display")</script></td></tr>
 							</table>
 						</td></tr>
-						<tr><td colspan="3" class="title"><h5><script>translate("Video_loss")</script></h5></td></tr>
+						<tr><td colspan="3" class="title"><h5><script>T("Video_loss")</script></h5></td></tr>
 						<tr><td colspan="3">
 							<table class="tb1">
 								<tr>
-									<td class="td1"><script>translate("Duration")</script></td>
+									<td class="td1"><script>T("Duration")</script></td>
 									<td style="width:262px;">
 										<div class="select" style="width:133px;">
 										<span id="dvr_detect_vduration"></span>
@@ -1139,17 +1022,17 @@
 											<li><a>5s</a></li>
 											<li><a>8s</a></li>
 			                                <li><a>10s</a></li>
-											<li><a><script>translate("Continuous")</script></a></li>
+											<li><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;">
-								<input id="dvr_detect_vAlarm" type="checkbox" /><script>translate("Alert")</script>
-								<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" /><script>translate("Buzzer")</script>
-								<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/><script>translate("Screen_Display")</script></td></tr>
+								<input id="dvr_detect_vAlarm" type="checkbox" /><script>T("Alert")</script>
+								<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" /><script>T("Buzzer")</script>
+								<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/><script>T("Screen_Display")</script></td></tr>
 							</table>
 						</td></tr>
-						<tr class="title"><td colspan="4"><h5><script>translate("Copy_to_other")</script></h5></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other")</script></h5></td></tr>
 						<tr><td colspan="3">
 								<table class="tb1">
 								<tr>
@@ -1201,17 +1084,17 @@
 									</td>
 								</tr>
 								<tr><td>
-								<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>translate("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>translate("All")</script></div></td></tr>
+								<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
 							</table>
 						</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');"><script>translate("Cancel")</script></div></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>	
 				<div class="switch dvr_list">
 					<table class="tb1">
-						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" /><script>translate("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/><script>translate("Alert")</script></td></tr>
+						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/><script>T("Alert")</script></td></tr>
 						<tr>
-							<td><script>translate("Channel")</script></td>
+							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_alarm_chn_sel0"></span>
@@ -1224,20 +1107,20 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td><script>translate("Operating_mode")</script></td>
+							<td><script>T("Operating_mode")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 			                                    <span id="dvr_alarm_opermode"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-			                                        <li><a><script>translate("close")</script></a></li>
-			                                        <li><a><script>translate("Normally_open")</script></a></li>
-			                                        <li><a><script>translate("Normally_closed")</script></a></li>
+			                                        <li><a><script>T("close")</script></a></li>
+			                                        <li><a><script>T("Normally_open")</script></a></li>
+			                                        <li><a><script>T("Normally_closed")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>
 						<tr>
-							<td><script>translate("Alarm_duration")</script></td>
+							<td><script>T("Alarm_duration")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 										<span id="dvr_alarm_duration"></span>
@@ -1250,15 +1133,15 @@
 			                                        <li><a>5s</a></li>
 			                                        <li><a>8s</a></li>
 			                                        <li><a>10s</a></li>
-			                                        <li><a><script>translate("Continuous")</script></a></li>
+			                                        <li><a><script>T("Continuous")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>
 						<tr><td>
 							<input type="checkbox" />SOD</td><td colspan="2">
-							<input type="checkbox"/><script>translate("Email_alerts")</script></td></tr>
+							<input type="checkbox"/><script>T("Email_alerts")</script></td></tr>
 						<tr style="background:#282828;"><td colspan="4"></td></tr>
-						<tr class="title"><td colspan="4"><h5><script>translate("Copy_to_other_channels")</script></h5></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
 						<tr>
 							<td colspan="4">
 								<table class="tb1">
@@ -1311,17 +1194,17 @@
 										</td>
 									</tr>
 									<tr><td>
-										<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>translate("All")</script><td></td>
-										<td class="tdBtn"><div class="hover chk_all_btn"><script>translate("Copy_to_all")</script></div></td></tr>
+										<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td>
+										<td class="tdBtn"><div class="hover chk_all_btn"><script>T("Copy_to_all")</script></div></td></tr>
 								</table>
 							</td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');"><script>translate("Confirm")</script></div></td></tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
-				<div class="dev_list" style="height:600px;  position: absolute; right:50px;">
+				<div class="dev_list" style="height:600px;  position: absolute; top:32px;">
 					<ul class="filetree">
-						<li><span class="device">dvr</span>
+						<!-- <li><span class="device">dvr</span>
 							<ul>
 								<li><span class="channel">Channel01</span></li>
 								<li><span class="channel">Channel02</span></li>
@@ -1340,32 +1223,32 @@
 								<li><span class="channel">Channel07</span></li>
 								<li><span class="channel">Channel08</span></li>
 							</ul>
-						</li>
+						</li> -->
 					</ul>
 				</div>
 				<ul class="ope_list nav1 ipc_list0" style="display:none;">
-					<li class="ope_listAct" onclick="devinfo_load_content(true);"><script>translate("Device_info")</script></li>
-					<li onclick="encode_load_content();"><script>translate("Encoding_settings")</script></li>
-					<li onclick="network_load_content();"><script>translate("Network_Settings")</script></li>
-					<li onclick="user_management_load_content();"><script>translate("User_Settings")</script></li>
-					<li onclick="time_load_content();"><script>translate("Time_Set")</script></li>
-			                    <li><script>translate("Initial_setup")</script></li>
+					<li class="ope_listAct" onclick="devinfo_load_content(true);"><script>T("Device_info")</script></li>
+					<li onclick="encode_load_content();"><script>T("Encoding_settings")</script></li>
+					<li onclick="network_load_content();"><script>T("Network_Settings")</script></li>
+					<li onclick="user_management_load_content();"><script>T("User_Settings")</script></li>
+					<li onclick="time_load_content();"><script>T("Time_Set")</script></li>
+			                    <li><script>T("Initial_setup")</script></li>
 				</ul>
 			                <div class="switch ipc_list"  style="display:none;">
 					<table>
-						<tr><td><script>translate("Device_name")</script></td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("Model")</script></td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("Hardware_version")</script></td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("Software_Version")</script></td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("Generation_time")</script></td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("Alarm_number")</script></td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
-						<tr><td><script>translate("SD_number")</script></td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Device_name")</script></td><td><input  type="text" id="Ipc_Device_name" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" id="Ipc_Device_model" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Ipc_Hardware_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Ipc_Software_version" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Ipc_Build_time" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("Alarm_number")</script></td><td><input type="text" id="Ipc_Alarm_numbers" value="" readonly disabled="disabled" /></td></tr>
+						<tr><td><script>T("SD_number")</script></td><td><input type="text" id="Ipc_SD_numbers" value="" readonly disabled="disabled" /></td></tr>
 					</table>
 				</div>
 			                <div class="switch ipc_list">
 					<table>
 						<tr>
-							<td><script>translate("Stream")</script></td>
+							<td><script>T("Stream")</script></td>
 							<td>
 								<div class="select" style="width:133px;" id="encode_id">
 									<span id="ipc_enc_stream">101</span>
@@ -1378,9 +1261,9 @@
 								</ul>
 							</td><td></td>
 						</tr>
-						<tr><td><script>translate("Channel_name")</script></td><td><input id="ipc_enc_channelname" onKeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><div onClick="deviceName_load();" class="hover"><script>translate("Copy")</script></div></td></tr>
+						<tr><td><script>T("Channel_name")</script></td><td><input id="ipc_enc_channelname" onKeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><div onClick="deviceName_load();" class="hover"><script>T("Copy")</script></div></td></tr>
 			                        <tr>
-							<td><script>translate("Resolution")</script></td>
+							<td><script>T("Resolution")</script></td>
 							<td id="ipc_enc_freeResolution_0">
 								<div class="select" style="width:133px;">
 									<span id="ipc_enc_resolution"></span>
@@ -1394,63 +1277,63 @@
 								<input id="ipc_enc_resolutionWidth" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />X   
 			                                <input id="ipc_enc_resolutionHeight" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" style="width:57px;" />
 							</td>
-			                            <td><input id="ipc_enc_freeResolution" type="checkbox" /><script>translate("Custom_resolution")</script></td></td>
+			                            <td><input id="ipc_enc_freeResolution" type="checkbox" /><script>T("Custom_resolution")</script></td></td>
 						</tr>
 			                    	<tr>
-							<td><script>translate("Bit_rate_control_type")</script></td>
+							<td><script>T("Bit_rate_control_type")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="ipc_enc_BitRateControlType"></span>
 									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_BitRateControlType_sel" class="option">
-									<li><a><script>translate("Unchanged")</script></a></li>
-									<li><a><script>translate("Variable")</script></a></li>
+									<li><a><script>T("Unchanged")</script></a></li>
+									<li><a><script>T("Variable")</script></a></li>
 								</ul>
 							</td><td></td>
 						</tr>
 			                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
 			                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
-			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="encode_save_content();"><script>translate("Cancel")</script></div></td></tr>
+			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="encode_save_content();"><script>T("Save")</script></div></td></tr>
 			                        </table>
 			                  </div>
 			                <div class="switch ipc_list">
 			                	<table>
-			                    	<tr><td><script>translate("MAC_address")</script></td><td><input id="network_mac" type="text" onFocus="save_mac_value()" onChange="is_valid_mac()"/></td><td></td><td></td></tr>
-						<tr class="title"><td colspan="2"><h5><script>translate("Local")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5><script>translate("Local")</script></h5></td></tr>
+			                    	<tr><td><script>T("MAC_address")</script></td><td><input id="network_mac" type="text" onFocus="save_mac_value()" onChange="is_valid_mac()"/></td><td></td><td></td></tr>
+						<tr class="title"><td colspan="2"><h5><script>T("Local")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5><script>T("Local")</script></h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
 			                                	
-							 		<tr><td><script>translate("DHCP_status")</script></td><td>
-			                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" /><script>translate("Open")</script>
-			                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked /><script>translate("close")</script></td></tr>
-			                                    <tr><td><script>translate("Easy_as_the_network_state")</script></td><td>
-			                                    <input name="esee" type="radio" id="network_esee_1" /><script>translate("Open")</script>
-			                                    <input name="esee" type="radio" id="network_esee_0" checked /><script>translate("close")</script></td></tr>
-							 		<tr><td ><script>translate("IP_address")</script></td>
+							 		<tr><td><script>T("DHCP_status")</script></td><td>
+			                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" /><script>T("Open")</script>
+			                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked /><script>T("close")</script></td></tr>
+			                                    <tr><td><script>T("Easy_as_the_network_state")</script></td><td>
+			                                    <input name="esee" type="radio" id="network_esee_1" /><script>T("Open")</script>
+			                                    <input name="esee" type="radio" id="network_esee_0" checked /><script>T("close")</script></td></tr>
+							 		<tr><td ><script>T("IP_address")</script></td>
 			                                    <td><input id="network_ip" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/>
 			                                    </td></tr>
-							 		<tr><td><script>translate("Gateway")</script></td>
+							 		<tr><td><script>T("Gateway")</script></td>
 			                                    <td><input id="network_gateway" type="text" onChange="is_valid_ip('network_gateway')" onFocus="save_ipaddr('network_gateway')"/></td></tr>
-							 		<tr><td><script>translate("Network_Mask")</script></td>
+							 		<tr><td><script>T("Network_Mask")</script></td>
 			                                    <td><input id="network_submask" type="text" onChange="is_valid_ip('network_submask')" onFocus="save_ipaddr('network_submask')"/></td></tr>
 							 		<tr><td>优先 DNS</td>
 			                                    <td><input id="network_dns" type="text" onChange="is_valid_ip('network_dns')" onFocus="save_ipaddr('network_dns')"/></td></tr>
 			                                    <tr><td>备用 DNS</td>
 			                                    <td><input id="network_dns2" type="text" onChange="is_valid_ip('network_dns2')" onFocus="save_ipaddr('network_dns2')"/></td></tr>
-			                                    <tr><td><script>translate("Port")</script></td>
+			                                    <tr><td><script>T("Port")</script></td>
 			                                    <td><input id="network_port" type="text" onChange="is_valid_port()" onFocus="save_port()"/></td></tr>
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
 						 			<tr>
-						 				<td><script>translate("DDNS_status")</script></td>
-						 				<td><input name="ddns" type="radio" id="network_ddns_1" onClick="remote_change();" />打开
-			                                <input name="ddns" type="radio" id="network_ddns_0" onClick="remote_change();" checked />关闭
+						 				<td><script>T("DDNS_status")</script></td>
+						 				<td><input name="ddns" type="radio" id="network_ddns_1" onClick="remote_change();" /><script type="text/javascript">T("Open")</script>
+			                                <input name="ddns" type="radio" id="network_ddns_0" onClick="remote_change();" checked="checked" /><script type="text/javascript">T("Close")</script>
 			                            </td></tr>
-						 			<tr><td><script>translate("Server")</script></td><td>
+						 			<tr><td><script>T("Server")</script></td><td>
 			                                    <div class="select" style="width:149px;">
 			                                        <span id="remote_provider">dyndns</span>
 			                                        <a class="hover"></a>
@@ -1465,63 +1348,63 @@
 			                                        <li><a>dvrtop</a></li>  
 			                                    </ul>
 			                                    </td></tr>
-						 			<tr><td><script>translate("Domain")</script></td><td><input type="text" id="networkddns_url" /></td></tr>
-						 			<tr><td><script>translate("Username")</script></td><td><input type="text" id="networkddns_usr" /></td></tr>
-						 			<tr><td><script>translate("Password")</script></td><td><input type="text" id="networkddns_pwd" /></td></tr>
-			                       	<tr><td><script>translate("PPPoE_status")</script></td>
+						 			<tr><td><script>T("Domain")</script></td><td><input type="text" id="networkddns_url" /></td></tr>
+						 			<tr><td><script>T("Username")</script></td><td><input type="text" id="networkddns_usr" /></td></tr>
+						 			<tr><td><script>T("Password")</script></td><td><input type="text" id="networkddns_pwd" /></td></tr>
+			                       	<tr><td><script>T("PPPoE_status")</script></td>
 			                       		<td>
-			                            	<input name="pppoe" type="radio" id="network_pppoe__1" onClick="remote_change();" /><script>translate("Open")</script>
-			                                <input name="pppoe" type="radio" id="network_pppoe__0" onClick="remote_change();" checked /><script>translate("Close")</script>
+			                            	<input name="pppoe" type="radio" id="network_pppoe__1" onClick="remote_change();" /><script>T("Open")</script>
+			                                <input name="pppoe" type="radio" id="network_pppoe__0" onClick="remote_change();" checked /><script>T("Close")</script>
 			                            </td>
 			                        </tr>
-			                        <tr><td><script>translate("Username")</script></td><td><input type="text" id="network_ppoe_usr"/></td></tr>
-						 			<tr><td><script>translate("Password")</script></td><td><input type="text" id="network_ppoe_pwd"/></td></tr>
+			                        <tr><td><script>T("Username")</script></td><td><input type="text" id="network_ppoe_usr"/></td></tr>
+						 			<tr><td><script>T("Password")</script></td><td><input type="text" id="network_ppoe_pwd"/></td></tr>
 							 	</table>
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn">
-						<div class="hover"><script>translate("Cancel")</script></div>
-						<div class="hover" onclick="remote_save_content();"><script>translate("Save")</script></div></td></tr>
+						<div class="hover"><script>T("Cancel")</script></div>
+						<div class="hover" onclick="remote_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 			                </div>
 			                <div class="switch ipc_list">
 			                    <table id="tbl_user_manage">
 			                        <tr>
-			                        	<td><script>translate("Username")</script></td>
-			                        	<td><script>translate("Competence")</script></td>
-			                        	<td><script>translate("Operating")</script></td>
+			                        	<td><script>T("Username")</script></td>
+			                        	<td><script>T("Competence")</script></td>
+			                        	<td><script>T("Operating")</script></td>
 			                        </tr>
 			                    </table>
 			                            <table id="tbl_user_manage1">
 			                            <tr>
 			                                <td class="tdBtn">
-			                                    <div class="hover" onClick="user_management_load_content()">update_list</div>
-			                                    <div class="hover" id="add_user_button" onClick="user_management_prepare_add()">adduser</div>
-			                                    <div class="hover" onClick="user_management_prepare_modify()">changepwd</div>	
+			                                    <div class="hover" onClick="user_management_load_content()"><script>T("update_list")</script></div>
+			                                    <div class="hover" id="add_user_button" onClick="user_management_prepare_add()"><script>T("adduser")</script></div>
+			                                    <div class="hover" onClick="user_management_prepare_modify()"><script>T("changepwd")</script></div>	
 			                                        
 			                            <table id="tbl_add_user" class="add_tb">
 			                            <tr>
-			                                <td><script>translate("Username")</script></td>
+			                                <td><script>T("Username")</script></td>
 			                                <td><input type="text" id="txt_new_usr"  onBlur="user_management_save_new_usr()"/></td>
 			                            </tr>
 			                            <tr>
-			                                <td><script>translate("Password")</script></td>
+			                                <td><script>T("Password")</script></td>
 			                                <td><input type="password" id="txt_new_pwd" /></td>
 			                            </tr>
 			                            <tr>
 			                                <td colspan="2">
-			                                    <div class="hover" onClick="user_management_save_new_usr()"><script>translate("Save")</script></div>
-			                                    <div class="hover" onClick="user_management_prepare_cancel()"><script>translate("Cancel")</script></div>
+			                                    <div class="hover" onClick="user_management_save_new_usr()"><script>T("Save")</script></div>
+			                                    <div class="hover" onClick="user_management_prepare_cancel()"><script>T("Cancel")</script></div>
 			                                </td>
 			                            </tr>
 			                        </table>
 			                        <table id="tbl_modify_pwd" class="add_tb">
-			                            <tr><td><script>translate("Old_Password")</script></td><td><input type="password" id="txt_old_pwd" /></td></tr>
-			                            <tr><td><script>translate("New_Password")</script></td><td><input type="password" id="txt_modify_pwd" /></td> </tr>
-			                            <tr><td><script>translate("Confirm_Password")</script></td><td><input type="password" id="txt_repeat_pwd" /> </td></tr>
+			                            <tr><td><script>T("Old_Password")</script></td><td><input type="password" id="txt_old_pwd" /></td></tr>
+			                            <tr><td><script>T("New_Password")</script></td><td><input type="password" id="txt_modify_pwd" /></td> </tr>
+			                            <tr><td><script>T("Confirm_Password")</script></td><td><input type="password" id="txt_repeat_pwd" /> </td></tr>
 			                            <tr><td colspan="2">
-			                                    <div class="hover" onClick="user_management_prepare_save_modify_usr()"><script>translate("Save")</script></div>
-			                                    <div class="hover" onClick="user_management_prepare_cancel()"><script>translate("Cancel")</script></div></td></tr>
+			                                    <div class="hover" onClick="user_management_prepare_save_modify_usr()"><script>T("Save")</script></div>
+			                                    <div class="hover" onClick="user_management_prepare_cancel()"><script>T("Cancel")</script></div></td></tr>
 			                        </table>						
 			                        </td>
 			                    </tr>
@@ -1530,8 +1413,8 @@
 				
 			                <div class="switch ipc_list">
 				<table>
-					<tr><td><script>translate("Device_Time")</script></td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
-			                    <tr><td><script>translate("Time_Format")</script></td><td>
+					<tr><td><script>T("Device_Time")</script></td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
+			                    <tr><td><script>T("Time_Format")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span class="date_form" onChange="showtime();"></span>
 			                                <a class="hover"></a>
@@ -1542,7 +1425,7 @@
 									<li><a>DMY: xx xx xxxx</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td><script>translate("Time_separator")</script></td><td>
+			                    <tr><td><script>T("Time_separator")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span id="date_break" onChange="showtime();"></span>
 			                                <a class="hover"></a>
@@ -1553,7 +1436,7 @@
 									<li><a>xxxx.xx.xx</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td><script>translate("Time_Zone")</script></td><td>
+			                    <tr><td><script>T("Time_Zone")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span id="time_zone">GMT-12:00</span>
 			                                <a class="hover"></a>
@@ -1567,15 +1450,15 @@
 			                                    <li><a>3</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td><script>translate("Daylight_Saving_Time")</script></td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
-			                    <tr><td><script>translate("Manual_settings")</script></td><td></td><td></td></tr>
-			                    <tr><td><script>translate("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
-			                    <tr><td><script>translate("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>translate("OK")</script></div></td></tr>
-			                    <tr><td><script>translate("Local_time_synchronization")</script></td><td></td><td></td></tr>
-			                    <tr><td><script>translate("Computer_time")</script></td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()"><script>translate("Computer_time")</script></div></td></tr>
-			                    <tr><td><script>translate("Internet_time_synchronization")</script></td><td></td><td></td></tr>
-			                    <tr><td><script>translate("Internet_server_ynchronization_status")</script></td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" /><script>translate("Open")</script><input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked /><script>translate("Open")</script></td><td></td></tr>
-			                    <tr><td><script>translate("nternet_server")</script></td><td>
+			                    <tr><td><script>T("Daylight_Saving_Time")</script></td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
+			                    <tr><td><script>T("Manual_settings")</script></td><td></td><td></td></tr>
+			                    <tr><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
+			                    <tr><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
+			                    <tr><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>
+			                    <tr><td><script>T("Computer_time")</script></td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()"><script>T("Computer_time")</script></div></td></tr>
+			                    <tr><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr>
+			                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" /><script>T("Open")</script><input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked /><script>T("Open")</script></td><td></td></tr>
+			                    <tr><td><script>T("nternet_server")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span id="time_ntp__server" name="ntp_server"></span>
 			                                <a class="hover"></a>
@@ -1585,14 +1468,14 @@
 									<li><a>time.nist.gov</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>translate("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>translate("Cancel")</script></div></td></tr>
+			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>T("Cancel")</script></div></td></tr>
 				</table>
 			                </div>
 			                <div class="switch ipc_list">
 					<table>
-						<tr><td>点击下面的按钮来重启IP 摄像机.</td><td  class="tdBtn"><div class="hover" onClick="reboot()">正在重启...</div></td></tr>
-			                        <tr><td>点击下面的按钮来恢复出厂设置.注意:它将自动重启!</td><td class="tdBtn"><div class="hover" onClick="default_setting()"><script>translate("Restore")</script></div></td></tr>
-			                       <tr><td>Please click button below to select Upgrade File and then perform upgrade</td>
+						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onClick="reboot()"><script>T("Restarting")</script></div></td></tr>
+			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onClick="default_setting()"><script>T("Restore")</script></div></td></tr>
+			                       <tr><td><script>T("Select_the_upgrade_file")</script></td>
 			                        <td>
 			                        <div id="swfupload-control"></div>
 			                            <span id="txt_status"></span><span id="txt_progress"></span><input type="button" id="button_upload" /><br />
@@ -1603,15 +1486,14 @@
 			</div>
 			<div class="right_content">
 				<ul class="ope_list nav1">
-					<li class="ope_listAct" onclick="FillCommonParmData();"><script>translate("Local_Settings")</script></li>
-					<li onclick="FillRecordTimeData();"><script>translate("Video_settings")</script></li>
-					<li onclick="FillStorageParmData();"><script>translate("Storage_Settings")</script></li>
+					<li class="ope_listAct" onclick="FillCommonParmData();"><script>T("Local_Settings")</script></li>
+					<li onclick="FillRecordTimeData();"><script>T("Video_settings")</script></li>
+					<li onclick="FillStorageParmData();"><script>T("Storage_Settings")</script></li>
 				</ul>
 				<div id="CommonParm" class="switch" style="display:block;">
 					<table>
-						<tr><td></td><td></td><td></td></tr>
 						<tr>
-							<td><script>translate("Language")</script></td>
+							<td><script>T("Language")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<span class="Language"></span>
@@ -1624,10 +1506,10 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><script>translate("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
+						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
 						<tr><td>Screenshot save location</td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr>
 						<tr>
-							<td><script>translate("Default_screen_split_mode")</script></td>
+							<td><script>T("Default_screen_split_mode")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<span class="SplitScreenMode"></span>
@@ -1635,24 +1517,24 @@
 								</div>
 								<ul class="option" id="viewMod">
 									<input id="SplitScreenMode_ID" type="hidden" />
-									<li value="div1_1"><a>1<span><script>translate("Screen")</script></span></a></li>
-									<li value="div2_2"><a>4<span><script>translate("Screen")</script></span></a></li>
-									<li value="div6_1"><a>6<span><script>translate("Screen")</script></span></a></li>
-									<li value="div8_1"><a>8<span><script>translate("Screen")</script></span></a></li>
-									<li value="div3_3"><a>9<span><script>translate("Screen")</script></span></a></li>
-									<li value="div4_4"><a>16<span><script>translate("Screen")</script></span></a></li>
-									<li value="div5_5"><a>25<span><script>translate("Screen")</script></span></a></li>
-									<li value="div7_7"><a>49<span><script>translate("Screen")</script></span></a></li>
-									<li value="div8_8"><a>64<span><script>translate("Screen")</script></span></a></li>
+									<li value="div1_1"><a>1<span><script>T("Screen")</script></span></a></li>
+									<li value="div2_2"><a>4<span><script>T("Screen")</script></span></a></li>
+									<li value="div6_1"><a>6<span><script>T("Screen")</script></span></a></li>
+									<li value="div8_1"><a>8<span><script>T("Screen")</script></span></a></li>
+									<li value="div3_3"><a>9<span><script>T("Screen")</script></span></a></li>
+									<li value="div4_4"><a>16<span><script>T("Screen")</script></span></a></li>
+									<li value="div5_5"><a>25<span><script>T("Screen")</script></span></a></li>
+									<li value="div7_7"><a>49<span><script>T("Screen")</script></span></a></li>
+									<li value="div8_8"><a>64<span><script>T("Screen")</script></span></a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="3"><input type="checkbox" id="AutoLogin_ID"><script>translate("Auto_Login")</script></td></tr>
-						<tr><td colspan="3"><input type="checkbox" id="AutoSyncTime_ID"><script>translate("Automatically_synchronize_time")</script></td></tr>
-						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID"><script>translate("Automatically_connected_devices")</script></td></tr>
-						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID"><script>translate("Automatic_full_screen")</script></td></tr>
-						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID"><script>translate("Boot")</script></td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok"><script>translate("Save")</script></div></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoLogin_ID"><script>T("Auto_Login")</script></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoSyncTime_ID"><script>T("Automatically_synchronize_time")</script></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID"><script>T("Automatically_connected_devices")</script></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="AutoFullscreen_ID"><script>T("Automatic_full_screen")</script></td></tr>
+						<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID"><script>T("Boot")</script></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div id="RecordTime" class="switch">
@@ -1663,43 +1545,43 @@
 					</div>
 					<table style="float:left" id="recordtime">
 						<tr>
-							<td class="td1" style="text-align:right;"><script>translate("Week")</script></td>
+							<td class="td1" style="text-align:right;"><script>T("Week")</script></td>
 							<td class="td2">
 								<div class="select" style="width:60px;">
-									<span id="week" value="0"><script>translate("Monday")</script></span>
+									<span id="week" value="0"><script>T("Monday")</script></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option week">
-									<li><a value="0"><script>translate("Monday")</script></a></li>
-									<li><a value="1"><script>translate("Tuesday")</script></a></li>
-									<li><a value="2"><script>translate("Wednesday")</script></a></li>
-									<li><a value="3"><script>translate("Thursday")</script></a></li>
-									<li><a value="4"><script>translate("Friday")</script></a></li>
-									<li><a value="5"><script>translate("Saturday")</script></a></li>
-									<li><a value="6"><script>translate("Sunday")</script></a></li>
+									<li><a value="0"><script>T("Monday")</script></a></li>
+									<li><a value="1"><script>T("Tuesday")</script></a></li>
+									<li><a value="2"><script>T("Wednesday")</script></a></li>
+									<li><a value="3"><script>T("Thursday")</script></a></li>
+									<li><a value="4"><script>T("Friday")</script></a></li>
+									<li><a value="5"><script>T("Saturday")</script></a></li>
+									<li><a value="6"><script>T("Sunday")</script></a></li>
 								</ul>
 							</td>
 						</tr>
 						<tr>
-							<td class="td1"><input type="checkbox"><span><script>translate("Time")</script></span>1</td>
+							<td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>1</td>
 							<td class="td2 schedle_id">
 							<input type="hidden" value="" class="timeid" />
 								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
 								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
 							</td>
 						</tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>translate("Time")</script></span>2</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>translate("Time")</script></span>3</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>translate("Time")</script></span>4</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>2</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>3</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>4</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
 						<tr>
-							<td class="td1"><script>translate("Copy_to")</script></td>
+							<td class="td1"><script>T("Copy_to")</script></td>
 							<td class="td2 copyTo">
 								<div class="select" style="width:133px;">
 										<span></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a class="all"><script>translate("All")</script></a></li>
+									<li><a class="all"><script>T("All")</script></a></li>
 									<li><a></a></li>
 									<li><a></a></li>
 									<li><a></a></li>
@@ -1709,12 +1591,12 @@
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
 						<tr><td colspan="2" class="td3 tdBtn">
-						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>translate("Save")</script></div>
-						<div class="hover"><script>translate("Cancel")</script></div></td></tr>
+						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>T("Save")</script></div>
+						<div class="hover"><script>T("Cancel")</script></div></td></tr>
 					</table>
 				</div>
 				<div id="StorageParm" class="switch">
-					<table><tr><td class="td1"><script>translate("Disk")</script></td><td style="width:450px;"><table class="tb1" style="padding:10px">
+					<table><tr><td class="td1"><script>T("Disk")</script></td><td style="width:450px;"><table class="tb1" style="padding:10px">
 									<tr>
 										<td colspan="4" class="td4">
 										<div><input type="checkbox" value="D" disabled="disable" /><span>D</span></div>
@@ -1749,14 +1631,14 @@
 										<div><input type="checkbox" value="Z" disabled="disable"/><span>Z</span></div>
 										</td>
 									</tr>
-									<tr><td><input style="margin:0 4px;" type="checkbox" onclick="disksSelectAll()" /><script>translate("All")</script><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>
+									<tr><td><input style="margin:0 4px;" type="checkbox" onclick="disksSelectAll()" /><script>T("All")</script><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>
 								</table>
 							</td>
 						</tr>
-						<tr><td><script>translate("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
-						<tr><td><script>translate("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:10px" /></td></tr>
-						<tr><td><script>translate("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingStorageParm_ok"><script>translate("Save")</script></div></td></tr>
+						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:10px" /></td></tr>
+						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 			</div>
@@ -1766,7 +1648,7 @@
 					<td style="width:300px;">
 						<table class="tb2 UserMan" style="position: absolute; top:0; left:0; margin:6px;">
 							<thead>
-								<tr><td style="width:30px;"><script>translate("No.")</script></td><td style="width:110px;"><script>translate("No.")</script></td><td style="width:144px;"><script>translate("No.")</script></td></tr>
+								<tr><td style="width:30px;"><script>T("No.")</script></td><td style="width:110px;"><script>T("No.")</script></td><td style="width:144px;"><script>T("No.")</script></td></tr>
 							</thead>
 							<tbody>
 								<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="username_list_ID"/></td></tr>
@@ -1791,9 +1673,9 @@
 					<td></td>
 					<td>
 						<ul class="tdBtn user">
-							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')"><script>translate("Add_User")</script></div></li>
-							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')"><script>translate("Modify_user")</script></div></li>
-							<li><div class="hover" id="DeleteUser_ok"><script>translate("Delete_users")</script></div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu2')"><script>T("Add_User")</script></div></li>
+							<li><div class="hover" onclick="ShowUserOperateMenu('menu3')"><script>T("Modify_user")</script></div></li>
+							<li><div class="hover" id="DeleteUser_ok"><script>T("Delete_users")</script></div></li>
 						</ul>
 					</td>
 				</tr>
@@ -1802,17 +1684,17 @@
 			<div style="position: relative;" class="right_content">
 			<div class="switch" style="display:block;top:0;">
 					<table>
-						<tr><td><script>translate("The_current_version")</script></td><td><input disabled="disabled" type="text" value="cms_v1.1.2" /></td></tr>
-						<tr><td><script>translate("Release_Date")</script></td><td><input disabled="disabled" type="text" value="2014/4/15" /></td></tr>
+						<tr><td><script>T("The_current_version")</script></td><td><input disabled="disabled" type="text" value="cms_v1.1.2" /></td></tr>
+						<tr><td><script>T("Release_Date")</script></td><td><input disabled="disabled" type="text" value="2014/4/15" /></td></tr>
 					</table>
 				</div>
 			<!-- <table class="tb2" style="margin:10px;">
 			<tbody>
 				<tr>
-					<td colspan="4" class="td4"><script>translate("The_current_version")</script></td><td colspan="4" class="td4">cms_v1.1_beta</td>
+					<td colspan="4" class="td4"><script>T("The_current_version")</script></td><td colspan="4" class="td4">cms_v1.1_beta</td>
 				</tr>		
 				<tr>
-					<td colspan="4" class="td4"><script>translate("Release_Date")</script></td><td colspan="4" class="td4">cms_v1.0_beta</td>
+					<td colspan="4" class="td4"><script>T("Release_Date")</script></td><td colspan="4" class="td4">cms_v1.0_beta</td>
 				</tr>
 			</tbody>
 			</table> -->
@@ -1820,15 +1702,131 @@
 		</div>
 	</div>
 <div id="foot"></div>
+<div id="menu0" class="menu menu0">
+	<ul>
+		<li onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
+		<li onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
+		<li onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
+		<li><script>T("modify")</script></li>
+		<li><script>T("delete")</script></li>
+	</ul>
+</div>
+<div id="device" class="menu">
+		<p><span><script>T("Modified_device")</script></span><a class="hover close"></a></p>
+		<table>
+			<tr><td colspan="2"><script>T("Device_Connection")</script></td></tr>
+			<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" /><script>T("IP_addresses_link")</script></td><td><input style="width:18px;" type="radio" name="Connection" value="1" /><script>T("Easy_Link_Watch")</script></td></tr>
+			<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" /></td></tr>
+			<tr class="tr1"><td class="td1"><script>T("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Username")</script></td><td><input type="text" id="username_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Password")</script></td><td><input type="text" id="password_ID" value="" /></td></tr>
+			<tr><td class="td1"><script>T("Device_name")</script></td><td><input type="text" id="device_name_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Channels")</script></td><td><input   type="text" id="channel_count_ID" /></td></tr>
+			<tr><td class="td1"><script>T("Current_Area")</script></td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
+			<tr>
+				<td class="td1"><script>T("Device_Type")</script></td>
+				<td>
+					<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
+						<span>DVR</span>
+						<input type="hidden" id="vendor_ID" value="JUAN DVR"></input>
+						<a class="hover"></a>
+					</div>
+					<ul class="option" action="vendor_ID">
+						<li><a style="width:154px;" value="JUAN DVR">DVR</a></li>
+						<!-- <li><a style="width:154px;" value="NVR">NVR</a></li> -->
+						<li><a style="width:154px;" value="JUAN IPC">IPC</a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+		</table>
+</div>
+<div id="area" class="menu">
+	<p><span><script>T("add_area")</script></span><a class="hover close"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td><script>T("Zone_name")</script></td><td><input type="text" id="area_name_ID"/></td></tr>
+		<tr><td><script>T("Main_area")</script></td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+	</table>
+</div>
+<div id="group" class="menu">
+	<p><span><script>T("add_group")</script></span><a class="hover close"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td><script>T("Group_name")</script></td><td><input type="text" id="group_name_ID"/></td></tr>
+		<!-- <tr><td><script>T("Primary_group")</script></td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
+		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+	</table>
+</div>
+<div id="channel" class="menu">
+	<p><span><script>T("Change_Channel")</script></span><a class="hover close"></a></p>
+	<table style="margin-top:10px;">
+		<tr><td><script>T("Channel_name")</script></td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
+		<tr><td colspan="2" style="height:10px;"></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+	</table>
+</div>
+<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
+<input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
+<div id="menu2" class="menu">
+	<p><script>T("Add_User")</script><a class="hover close"></a></p>
+	<table>
+		<tr><td><script>T("Username")</script></td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
+		<tr><td><script>T("Password")</script></td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr><td><script>T("Confirm_Password")</script></td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_add_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
+		<tr>
+			<td><script>T("User_privilege_level")</script></td>
+			<td>
+				<div class="select" style="width:60px;">
+					<span><script>T("Tourists")</script></span>
+					<a class="hover"></a>
+					<input type="hidden" value="3" id="level_add_ID"/>
+				</div>
+				<ul class="option">
+					<li><a style="width:59px;" value="3"><script>T("Tourists")</script></a></li>
+					<li><a style="width:59px;" value="2"><script>T("User")</script></a></li>
+					<li><a style="width:59px;" value="1"><script>T("Administrator")</script></a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover" id="AddUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')"><script>T("Confirm")</script></div></td></tr>
+	</table>
+</div>
+<div id="menu3" class="menu">
+	<p><script>T("Modify_user")</script><a class="hover close"></a></p>
+	<table>
+		<tr><td><script>T("Username")</script></td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
+		<tr><td><script>T("Old_Password")</script></td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
+		<tr><td><script>T("New_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_user_ID"/></td></tr>
+		<tr><td><script>T("Confirm_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_again_user_ID"/></td></tr>
+		<tr>
+			<td><script>T("User_privilege_level")</script></td>
+			<td>
+				<div class="select" style="width:60px;">
+				<span><script>T("Tourists")</script></span>
+				<a class="hover"></a>
+				<input type="hidden" value="3" id="level_modify_ID"/>
+				</div>
+				<ul class="option">
+					<li><a style="width:59px;" value="3"><script>T("Tourists")</script></a></li>
+					<li><a style="width:59px;" value="2"><script>T("User")</script></a></li>
+					<li><a style="width:59px;" value="1"><script>T("Administrator")</script></a></li>
+				</ul>
+			</td>
+		</tr>
+		<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改用户','menu3')"><script>T("Confirm")</script></div></td></tr>
+	</table>
+</div>
+<div id="confirm" class="menu">
+	<p><span></span><a class="hover close"></a></p>
+	<div style="padding:10px;">
+		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
+		<table style="margin:0 auto;">
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close"><script>T("Confirm")</script></div></td></tr>
+		</table>
+	</div>
+</div>
+<iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 </body>
 </html>
-<script type="text/javascript" src="js/deviceset.js"></script>
-
-<!--设备设置相关文件-->
-<script type="text/javascript" src="js/devicesetting/swfupload.js"></script>
-<script type="text/javascript" src="js/devicesetting/jquery.swfupload.js"></script>
-<script type="text/javascript" src="js/devicesetting/swfobject.js" ></script>
-<script type="text/javascript" src="js/devicesetting/base64.js"></script>
-<script type="text/javascript" src="js/devicesetting/xml2json.js"></script>
-<script type="text/javascript" src="js/devicesetting/ipc.js"></script>
-<script type="text/javascript" src="js/devicesetting/dvr.js"></script>

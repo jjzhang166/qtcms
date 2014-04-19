@@ -3,6 +3,7 @@ var oSearchOcx,key=0;
 
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
+		
 		$('ul.filetree').treeview().find('span.channel').click(function(){
 			$(this).toggleClass('channel_1')
 		});
@@ -96,41 +97,44 @@ var oSearchOcx,key=0;
 				oTreeWarp.show();
 				set_contentMax();
 				areaList2Ui(key);
-				if(index == 1){
 
-					$('ul.filetree:eq(2) span.channel').parent('li').remove();
+				if(key == 0){
+					searchFlush();
+				}else{
+					oSearchOcx.Stop();
+				}
+				if(key == 1){
 
-						$('ul.filetree:eq(2) span.device').each(function(device_index){
-							$(this).click(function(){
-								var oDevData = $(this).data('data');
-								var _url = 'http://'+oDevData.address+':'+oDevData.port;
-								var _usr = oDevData.username;
-								var _pwd = oDevData.password;
-								var _chn = oDevData.channel_count;				
-								$('ul.ipc_list0').hide().nextUntil('div.dev_list').hide();
-								$('ul.dvr_list0').hide().nextUntil('div.dev_list').hide();
-								if(oDevData.vendor == 'JUAN IPC'){//如果选中设备为ipc
-									$('ul.ipc_list0 li').removeClass('ope_listAct');
-									$('ul.ipc_list0 li').eq(0).addClass('ope_listAct');
-									$('.ipc_list0').show();	
-									$('.ipc_list').eq(0).show();
-									ipc(_url,_usr,_pwd);
-									devinfo_load_content(true);										
-								}
-							    if(oDevData.vendor == 'JUAN DVR')//如果选中设备为dvr
-								{
-									$('ul.dvr_list0 li').removeClass('ope_listAct');
-									$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
-									$('.dvr_list0').show()
-									$('.dvr_list').eq(0).show();
-									dvr(_url,_usr,_pwd,_chn);
-									dvr_devinfo_load_content();	
-								}	
-							})
-					    })
-				}else if(index == 2){
+					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
+
+						var oDevData = $(this).data('data');
+
+						var _url = 'http://'+oDevData.address+':'+oDevData.port;
+
+						$('ul.ipc_list0').hide().nextUntil('div.dev_list').hide();
+						$('ul.dvr_list0').hide().nextUntil('div.dev_list').hide();
+						if(oDevData.vendor == 'JUAN IPC'){//如果选中设备为ipc
+							$('ul.ipc_list0 li').removeClass('ope_listAct');
+							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct');
+							$('.ipc_list0').show();	
+							$('.ipc_list').eq(0).show();
+							ipc(_url,oDevData.username,oDevData.password);
+							devinfo_load_content(true);										
+						}
+					    if(oDevData.vendor == 'JUAN DVR')//如果选中设备为dvr
+						{
+							$('ul.dvr_list0 li').removeClass('ope_listAct');
+							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
+							$('.dvr_list0').show()
+							$('.dvr_list').eq(0).show();
+							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
+							dvr_devinfo_load_content();	
+						}
+			 	   }).next('ul').remove();
+
+				}else if(key == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
-				}else if(index == 3){ 
+				}else if(key == 3){ 
 					//userList2Ui();
 				}
 			})
@@ -534,6 +538,13 @@ var oSearchOcx,key=0;
 			$('#left_list').css('left',main.width()+120);
 
 			searchFlush();
+
+		}else if(key == 1){
+			var devLeft=0;
+			warp.find('div.switch').each(function(){
+				devLeft = $(this).width()>devLeft ? $(this).width(): devLeft + 2;
+			})
+			warp.find('div.dev_list').css('left',devLeft);
 		}
 		
 		$('#foot').css('top',$('#set_content div.right').height()+78);

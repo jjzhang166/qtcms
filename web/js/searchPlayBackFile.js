@@ -81,7 +81,7 @@ function setDevData2ocx(){
 				chl+=i+';';
 			};
 			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){
-				alert(lang_trans.Device+devData.name+lang_trans.No_local_video+oPlaybacKLocl.searchDateByDeviceName(devData.name));
+				alert(T('devData.name',devData.name));
 				return false;
 			}
 			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
@@ -92,7 +92,7 @@ function setDevData2ocx(){
 				chl += 1 << i;
 			};
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
-				alert(lang_trans.Controls_retrieval_equipment+devData.name+lang_trans.s+typeHint[type]+lang_trans.Video_failure);
+				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}		
 		}
 	}
@@ -106,13 +106,21 @@ function setDevData2ocx(){
 		             .end().find('h5').html(now+'/'+recTotal)
 		             .end().find('h4').html(con);
 	}
+
 	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	
 	}
-	function ScreenShot(){  // 截屏
-		var data =getAudioObj().ScreenShot(),str;
-		if(data.path){
-			str = lang_trans.Current_window+(oPreView.GetCurrentWnd()+1)+lang_trans.Screenshot_success_Has_been_saved_to+data.path+'/'+data.imageName;
+	
+	function getAudioObj(){   //返回当前页面播放的插件对象。
+		var oAudioObj = {};
+		if($('#previewWindows')[0]){
+			oAudioObj = $('#previewWindows')[0];
+		}else{
+			if(bool){
+				oAudioObj = $('#playbackLocl')[0];
+			}else{
+				oAudioObj = $('#playback')[0];	
+			}
 		}
-		writeActionLog(str);
+		return oAudioObj;
 	}

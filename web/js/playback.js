@@ -2,7 +2,8 @@ var oBottom,oPlayBack,oPlaybacKLocl;
 var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
-	bNoResize=true;   //当前窗口是否在改变
+	bNoResize=true,   //当前窗口是否在改变
+	nowDevID=null; //当前选中设备ID
 
 	$(function(){
 		oBottom = $('#operating');
@@ -34,7 +35,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
 			listParent.find('li').removeClass('sel');
-			getAudioObj().nowDevID=$(this).addClass('sel').find('span.device').data('data').dev_id;
+			nowDevID=$(this).addClass('sel').find('span.device').data('data').dev_id;
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -161,7 +162,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				SyncSoundSli(oView.enable);*/
 
 				//保存当前选中的设备
-				getAudioObj().nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
+				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
 		//return false;

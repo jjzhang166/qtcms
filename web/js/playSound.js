@@ -50,16 +50,11 @@ function SyncSoundSli(type){
 		oNext.off();
 	}
 }
-function getAudioObj(){   //返回当前页面可控制音量的控件对象。
-	var oAudioObj = {};
-	if($('#previewWindows')[0]){
-		oAudioObj = $('#previewWindows')[0];
-	}else{
-		if(bool){
-			oAudioObj = $('#playbackLocl')[0];
-		}else{
-			oAudioObj = $('#playback')[0];	
-		}
+
+function ScreenShot(){  // 截屏
+	var data =getAudioObj().ScreenShot(),str;
+	if(data.path){
+		str =T('window_Screenshot_success',(oPreView.GetCurrentWnd()+1))+data.path+'/'+data.imageName;
 	}
-	return oAudioObj;
+	writeActionLog(str);
 }

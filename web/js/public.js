@@ -484,3 +484,22 @@ function checkHasObj(oSil,obj){
 	})
 	return b;
 }
+
+
+function T(){//语言切换
+	var str = lang_trans ? lang_trans[arguments[0]] : arguments[0];
+	if(arguments.length ==1){
+		document.write(str);
+	}else{
+		str = hintTrans(arguments);
+	};
+	return str;
+}
+
+function hintTrans(obj){ //操作提示语言转换.
+	var str=lang_trans[obj[0]];
+	for(var i=1;i<obj.length;i++){
+		str = str.replace(/_V_/,obj[i]);
+	}
+	return str;		
+}

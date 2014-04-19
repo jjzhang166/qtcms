@@ -67,10 +67,11 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 				})
 			}
 			
+			var str = '';
 			if(oDevice.attr('bAllopen')){ 
-				var str = getNowTime()+lang_trans.Moving_from_the_current_window_click+(parseInt(wind)+1)+lang_trans.Began_to_turn_back_to_open_the_device+chlData.name+lang_trans.All_channels_under;
+				str = T('open_device',(parseInt(wind)+1),chlData.name);
 			}else{ 
-				var str = getNowTime()+lang_trans.Shutting_down_device+chlData.name;
+				str = lang_trans.Shutting_down_device+chlData.name;
 			}
 			writeActionLog(str);
 		})
@@ -214,7 +215,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
-		writeActionLog(lang_trans.Channel+wind+lang_trans.Off);
+		//writeActionLog(T('window_closed',wind));
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
@@ -257,8 +258,8 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
-			var str = getNowTime()+lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Window+sWind+lang_trans.Open_failed_Error_The_current_window+sWind+' '+winState[windState];
-			writeActionLog(str);
+			/*var str = getNowTime()+lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Window+sWind+lang_trans.Open_failed_Error_The_current_window+sWind+' '+winState[windState];
+			writeActionLog(str);*/
 		}
 		wind = getWind(wind);
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
@@ -282,7 +283,9 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 			return $(this).attr('wind') == ev.WPageId;
 		})*/
 		var chlData = getChlFullInfo(obj);
-		var str=getNowTime()+lang_trans.Device_+chlData.name+lang_trans.Device_+chlData.channel_name+lang_trans.Device_+(parseInt(ev.WPageId)+1)+' '+currentWinStateChange[ev.CurrentState];
+		
+		var str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
+
 		if(ev.CurrentState == 2){			
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
@@ -348,7 +351,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 	//日志信息操作
 	function writeActionLog(str){ 
 		if(str){
-			$('<p>'+str+'</p>').prependTo('#actionLog');
+			$('<p>'+getNowTime()+'  '+str+'</p>').prependTo('#actionLog');
 		}
 	}
 
@@ -382,42 +385,41 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 	}
 
 	function Record(obj){ //录像
-		var str = '',
+		var transKey = '',
 		backStatus= 0,
 		data = {};
 		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
 				data = $(this).data('data');
 				if(oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
-					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Manual_recording_of_data_binding_failed
+					transKey = 'channel_Manual_recording_data_binding_failed'
 				}else{
 					backStatus = oPreView.StartRecord($(this).attr('wind'))
 					if(backStatus){
-						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Manual_recording_failed;
+						transKey = 'channel_Manual_recording_fail';
 						if(backStatus == 2){
-							str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Is_already_in_the_planning_record_status;
+							transKey = 'channel_has_been_in_the_planning_Video_state';
 						}
 					}else{ 
-						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Start_manual_recording;
+						transKey = 'Start_manual_recording';
 					}
 				}
-				writeActionLog(str);
 			})
 		}else{
 			$('div.dev_list span.channel[wind]').each(function(){
 				data = $(this).data('data'),
 				backStatus = oPreView.StopRecord($(this).attr('wind'));
 				if(backStatus){ 
-					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Close_the_manual_recording_failed
+					transKey = 'Close_the_manual_recording_failed'
 					if(backStatus == 2){
-						str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Is_already_in_the_planning_record_status;
+						transKey = 'channel_has_been_in_the_planning_Video_state';
 					}
-				}else{ 	
-					str = lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Close_the_manual_recording	
+				}else{ 
+					transKey = 'Close_the_manual_recording';
 				}
-				writeActionLog(str);
 			})	
 		}
+		writeActionLog(T(transKey,data.name,data.channel_name));
 		/*obj.blur(function(){
 			if(backStatus){
 				obj.attr('toggle',1).css('background-position','-120px -108px');
@@ -430,7 +432,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 	function SwithStream(){  // 切换码流
 		var oChlData = $('#search_device span.channel.sel').data('data'),
 			currWin = oPreView.GetCurrentWnd(),
-			str = lang_trans.Channel+oChlData.channel_name+lang_trans.Window+(currWin+1)+lang_trans.Under_stream_switching;
+			str = T('channel_switch_Stream',(currWin+1));
 			stream = oChlData.stream_id ? 0 : 1;
 		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
 			str += lang_trans.Failed;

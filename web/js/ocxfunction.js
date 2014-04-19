@@ -32,10 +32,15 @@ var oCommonLibrary;
 				}
 			}	
 		}else if(data.Dsturl.indexOf('play_back') != -1){
-			$('#dev_'+getAudioObj().nowDevID).parent('li').addClass('sel');
+			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
 			set_contentMax();
 			areaList2Ui(key);
+			if(key == 0){
+				searchFlush();
+			}else{
+				oSearchOcx.Stop();
+			}
 		}
 	}
 	
