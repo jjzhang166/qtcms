@@ -139,7 +139,7 @@ lang_trans={
 	'General_Settings':'常规设置',
 	'Network_Settings':'网络设置',
 	'Encoding_settings':'编码设置',
-	'Video_settings':'视频设置',
+	'Video_settings':'录像设置',
 	'Screen_settings':'屏幕设置',
 	'Video_detection_settings':'视频检测设置',
 	'Alarm_settings':'报警设置',
