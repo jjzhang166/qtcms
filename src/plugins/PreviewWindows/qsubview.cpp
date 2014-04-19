@@ -146,35 +146,6 @@ void QSubView::paintEvent( QPaintEvent * e)
 void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 {
 	emit mouseDoubleClick(this,ev);
-	//ÇÐ»»ipcÖ÷´ÎÂëÁ÷
-	if (this->parentWidget()->width()-this->width()<20)
-	{
-		if (NULL!=m_IDeviceClientDecideByVendor)
-		{
-			ISwitchStream *m_SwitchStream=NULL;
-			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-			if (NULL!=m_SwitchStream)
-			{
-				m_SwitchStream->SwitchStream(0);
-				m_SwitchStream->Release();
-				m_SwitchStream=NULL;
-			}
-		}
-	}
-	else{
-		if (NULL!=m_IDeviceClientDecideByVendor)
-		{
-			ISwitchStream *m_SwitchStream=NULL;
-			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-			if (NULL!=m_SwitchStream)
-			{
-				m_SwitchStream->SwitchStream(1);
-				m_SwitchStream->Release();
-				m_SwitchStream=NULL;
-			}
-		}
-	}
-
 }
 
 
@@ -588,6 +559,15 @@ void QSubView::OnRMousePressMenu()
 		m_QActionSwitchStream->setText(tr("Switch to SubStream"));
 	}else{
 		m_QActionSwitchStream->setText(tr("Switch to MainStream"));
+	}
+
+	if (m_CurrentState==STATUS_DISCONNECTED)
+	{
+		m_QActionCloseView->setDisabled(true);
+		m_QActionSwitchStream->setDisabled(true);
+	}else{
+		m_QActionCloseView->setEnabled(true);
+		m_QActionSwitchStream->setEnabled(true);
 	}
 	m_RMousePressMenu.exec(QCursor::pos());
 }
@@ -1014,6 +994,35 @@ void QSubView::SetCurrentFocus( bool focus)
 void QSubView::resizeEvent( QResizeEvent * )
 {
 	_manageWidget->resize(this->size());
+	if (this->parentWidget()->width()-this->width()<20)
+	{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(0);
+				m_DevCliSetInfo.m_uiStreamId=0;
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
+	else{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(1);
+				m_DevCliSetInfo.m_uiStreamId=1;
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
 }
 
 void QSubView::RecordState( QVariantMap evMap )
@@ -1032,7 +1041,6 @@ void QSubView::RecordState( QVariantMap evMap )
 
 void QSubView::paintEventNoVideo( QPaintEvent * e)
 {
-
 	if (m_CurrentState==STATUS_DISCONNECTED||m_CurrentState==STATUS_DISCONNECTING)
 	{
 		Q_UNUSED(e);
@@ -1286,6 +1294,19 @@ int QSubView::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 		mLiveStreamRequire->Release();
 		mLiveStreamRequire=NULL;
 	}
+
+
+	if (NULL!=m_IDeviceClientDecideByVendor)
+	{
+		ISwitchStream *m_SwitchStream=NULL;
+		m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+		if (NULL!=m_SwitchStream)
+		{
+			m_SwitchStream->SwitchStream(nStream);
+			m_SwitchStream->Release();
+			m_SwitchStream=NULL;
+		}
+	}
 	return 0;
 }
 
@@ -1361,8 +1382,10 @@ int QSubView::SwitchStream( int chlId)
 	if (chlId==m_DevCliSetInfo.m_uiChannelIdInDataBase&&m_CurrentState==STATUS_CONNECTED&&preStream!=m_DevCliSetInfo.m_uiStreamId)
 	{
 		liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true);
+		return 0;
+	}else{
+		return 1;
 	}
-	return 0;
 }
 
 void QSubView::initDeviceInfo()
