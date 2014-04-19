@@ -531,7 +531,7 @@ var oSearchOcx,key=0;
 				width:main.width()
 			}).find('tbody .aa').width((main.width()-176)/2)
 
-			$('div.dev_list').height((warp.height()-54)/2)
+			warp.find('div.dev_list').height((warp.height()-54)/2)
 
 			warp.find('div.action:eq(0)').css('left',main.width()-30);
 
@@ -539,13 +539,13 @@ var oSearchOcx,key=0;
 
 			searchFlush();
 
-		}else if(key == 1){
+		}/*else if(key == 1){
 			var devLeft=0;
 			warp.find('div.switch').each(function(){
 				devLeft = $(this).width()>devLeft ? $(this).width(): devLeft + 2;
 			})
 			warp.find('div.dev_list').css('left',devLeft);
-		}
+		}*/
 		
 		$('#foot').css('top',$('#set_content div.right').height()+78);
 	}

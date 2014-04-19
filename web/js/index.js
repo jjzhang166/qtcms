@@ -215,7 +215,6 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 
 	function CloseWind(wind,dev_id){ 
 		oPreView.CloseWndCamera(wind);
-		//writeActionLog(T('window_closed',wind));
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
@@ -258,8 +257,8 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 		var windState = oPreView.GetWindowConnectionStatus(wind);
 		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
-			/*var str = getNowTime()+lang_trans.Device_+data.name+lang_trans.Under_the_channel+data.channel_name+lang_trans.Window+sWind+lang_trans.Open_failed_Error_The_current_window+sWind+' '+winState[windState];
-			writeActionLog(str);*/
+			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)+'  '+winState[windState];
+			writeActionLog(str);
 		}
 		wind = getWind(wind);
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
@@ -286,7 +285,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 		
 		var str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
 
-		if(ev.CurrentState == 2){			
+		if(ev.CurrentState == 2){
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
 			//checkAllchannelOpen()

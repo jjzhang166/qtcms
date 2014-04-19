@@ -34,7 +34,7 @@ var str = document.getElementById('commonLibrary').getLanguage();
 var oScript = document.createElement('script');
 	oScript.type='text/javascript';
 	oScript.src = 'lang/'+str+'.js';
-	//oScript.src = 'lang/zh_CN.js';
+//	oScript.src = 'lang/zh_CN.js';
 
 var node = document.getElementById('add_lang');
 node.parentNode.insertBefore(oScript,node.nextSibling);
