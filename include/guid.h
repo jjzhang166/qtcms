@@ -93,4 +93,6 @@ extern const IID IID_IProtocolPTZ;
 extern const IID IID_ILogin;
 extern const CLSID CLSID_Login;
 extern const CLSID CLSID_WinIpcSearch;
+extern const CLSID CLSID_PlaybackActivity;
+extern const CLSID CLSID_BackUpActivity;
 #endif
