@@ -1,4 +1,4 @@
-lang_trans={
+var zh_CN={
 	'Stream_Switch':'切换码流',
 	'DVR_client':'DVR 客户端',
 	'Preview':'预览',

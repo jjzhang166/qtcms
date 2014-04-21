@@ -3,20 +3,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>settings</title>
-<object type="application/cms-common-library" id="commonLibrary" style="position:absolute;width:0; height:0" ></object>
-<object type="application/cms-qwebview" id="winCon" style="position:absolute;width:0; height:0"></object>
-<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
 
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />
+
+<script type="text/javascript" src="lang/en_GB.js"></script>
+<script type="text/javascript" src="lang/zh_CN.js"></script>
+
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/qframework.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
 
-<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
-<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
-
-<script type="text/javascript" src="js/ocxfunction.js"></script>
-<script type="text/javascript" src="js/playSound.js"></script>
 <style type="text/css">
 	#actionLog{ 
 		padding:2px;
@@ -40,6 +37,11 @@
 </style>
 </head>
 <body style="position: relative;heigth:100%;width:100%;">
+<object type="application/cms-common-library" id="commonLibrary" style="position:absolute;width:0; height:0" ></object>
+<script type="text/javascript">
+	lang = window[document.getElementById('commonLibrary').getLanguage()];
+</script>
+<object type="application/cms-qwebview" id="winCon" style="position:absolute;width:0; height:0"></object>
 	<div id="top">
 		<div class="top_act">
 			<h4><script>T("DVR_client")</script></h4>
@@ -69,7 +71,7 @@
 		</div>
 	</div>
 	<div id="viewWarp">
-		<object type="application/cms-preview-windows" id="previewWindows" style="width:100%;height:100%;"></object>
+		<object type="application/cms-preview-windows" id="previewWindows"  style="width:100%;height:100%;"></object>
 	</div>
 	<div id="search_device">
 		<ul class="switchlist">
@@ -197,6 +199,12 @@
 		<li><script>T("delete")</script></li> -->
 	</ul>
 </div>
+
+<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
+<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
+
+<script type="text/javascript" src="js/ocxfunction.js"></script>
+<script type="text/javascript" src="js/playSound.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>
-<script type="text/javascript" src="js/index.js"></script>

@@ -1,6 +1,6 @@
 var oPreView,oDiv;
-var winState=[lang_trans.Have_access_to_the_connection,lang_trans.Connecting,lang_trans.Disconnected,lang_trans.Being_disconnected];
-var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_trans.Off,lang_trans.Shutting_down];
+var winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnected,lang.Being_disconnected];
+var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down];
 	$(function(){
 		
 		oPreView= $('#previewWindows')[0];
@@ -71,7 +71,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 			if(oDevice.attr('bAllopen')){ 
 				str = T('open_device',(parseInt(wind)+1),chlData.name);
 			}else{ 
-				str = lang_trans.Shutting_down_device+chlData.name;
+				str = lang.Shutting_down_device+chlData.name;
 			}
 			writeActionLog(str);
 		})
@@ -194,7 +194,8 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 
 		var oView = $('#viewWarp').css({
 			width:W-236,
-			height:H-240
+			height:H-240,
+			top:78
 		});
 		var oLeft= $('#search_device').css({
 			left:oView.width(),
@@ -226,14 +227,14 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 				wind++;
 			})
 
-			writeActionLog(lang_trans.All_channelsare_open_under_the_current_list);
+			writeActionLog(lang.All_channelsare_open_under_the_current_list);
 		}else{
 
 			$('div.dev_list:visible span.channel[wind]').each(function(){
 				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
 			})
 
-			writeActionLog(lang_trans.The_current_list_of_all_channels_are_closed_under);
+			writeActionLog(lang.The_current_list_of_all_channels_are_closed_under);
 		}
 	}
 
@@ -433,13 +434,13 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 			str = T('channel_switch_Stream',(currWin+1));
 			stream = oChlData.stream_id ? 0 : 1;
 		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
-			str += lang_trans.Failed;
+			str += lang.Failed;
 		}else{
 			oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
 			if(oPreView.SwithStream(currWin,oChlData.channel_id)){
-				str += lang_trans.Failed;
+				str += lang.Failed;
 			}else{
-				str += lang_trans.Success;
+				str += lang.Success;
 			}
 		}
 		writeActionLog(str);
@@ -447,7 +448,7 @@ var currentWinStateChange = [lang_trans.Connected,lang_trans.Connecting,lang_tra
 
 	function PTZcontrol(code){
 		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
-			alert(lang_trans.PTZ_operation_failed);
+			alert(lang.PTZ_operation_failed);
 		};
 	}
 

@@ -1,4 +1,4 @@
-lang_trans={
+var en_GB={
 	'Stream_Switching':'Stream Switching',
 	'DVR_client':'DVR client',
 	'Preview':'Preview',

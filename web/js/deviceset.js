@@ -250,7 +250,7 @@ var oSearchOcx,key=0;
 		 /*client_setting*/
 
 		//record setting  回放设置;
-		var weeks = [lang_trans.Monday,lang_trans.Tuesday,lang_trans.Wednesday,lang_trans.Thursday,lang_trans.Friday,lang_trans.Saturday,lang_trans.Sunday];
+		var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
 		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
 			SettingRecordDoubleTimeParm();  //清空回放表单的数据
 			//通道选中状态唯一
@@ -321,7 +321,7 @@ var oSearchOcx,key=0;
 	var Language={'zh_CN':'中文','en_GB':'English'};
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
 		for(i in SplitScreenMode){
-			SplitScreenMode[i]=SplitScreenMode[i]+lang_trans.Screen
+			SplitScreenMode[i]=SplitScreenMode[i]+lang.Screen
 		}
 	function FillCommonParmData(){ 
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
@@ -584,7 +584,7 @@ var oSearchOcx,key=0;
 	function pwdTest(obj){
 		var str = obj.val();
 		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
-			Confirm(lang_trans.Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6);
+			Confirm(lang.Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6);
 		}else{
 			obj.attr('enable','1');
 			valueIsSame($('#add_again_passwd'),$('#add_passwd'));
@@ -595,7 +595,7 @@ var oSearchOcx,key=0;
 		if(obj.val() && obj2.val() && obj.val() != obj2.val()){ 
 			obj.attr('enable','0');
 			obj2.attr('enable','0');
-			Confirm(lang_trans.twice_the_password_is_not_the_same);
+			Confirm(lang.twice_the_password_is_not_the_same);
 			return;
 		}else{ 
 			obj.attr('enable','1')
@@ -659,7 +659,7 @@ function showContextMenu(y,x,obj){
 }
 
 //遮罩层和弹出框方法.
-var trance = {'area':lang_trans.Area,'device':lang_trans.Device,'channel':lang_trans.channel,'group':lang_trans.Grouping,'Add':lang_trans.Add,'Remove':lang_trans.delete,'Modify':lang_trans.modify,'GroupChannelName':lang_trans.Channel_under_the_device_name};
+var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -687,7 +687,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
 	//show(data);
 	if(!data){ 
-		Confirm(lang_trans.Please_select_a_device);
+		Confirm(lang.Please_select_a_device);
 		return false;
 	}
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
@@ -705,7 +705,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}*/
 	for(i in data){
 		if(i.match(objclass+'_name') && action == 'Remove'){
-			$('#confirm h4').attr('id',i+'_ID').html(lang_trans.delete+data[i]);
+			$('#confirm h4').attr('id',i+'_ID').html(lang.delete+data[i]);
 		}
 		var str = ''
 		if(data[i] != ''){ 
@@ -737,7 +737,7 @@ function cleanDev(){  //清空设备
 function setIP(){ //设置IP
 	var oData = $('tbody.synCheckboxClick tr.sel').data('data')
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
-		Confirm(lang_trans.IP_setup_failed);
+		Confirm(lang.IP_setup_failed);
 	}else{
 		setTimeout(searchFlush,2000);
 	}
@@ -765,7 +765,7 @@ function disksSelectAll(){
 
 
 //// oCommonLibrary, 操作做数据库回调方法.
-var userLev = [lang_trans.Super_Admin,lang_trans.Admin,lang_trans.User,lang_trans.Tourists];
+var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	
 	function AddUserSuccess(ev){
 		var name =$('#username_add_ID').val();
@@ -1013,7 +1013,7 @@ var userLev = [lang_trans.Super_Admin,lang_trans.Admin,lang_trans.User,lang_tran
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week.option li').removeData();
-		$('#week').html(lang_trans.Monday).attr('value','0');
+		$('#week').html(lang.Monday).attr('value','0');
 		$('#recordtime td.copyTo').find('a,span').attr('value','').not('a.all').html('');
 	}
 	function SettingStorageParmSuccess(data){

@@ -29,7 +29,7 @@ function subViewMsg(msg,param){
 		alert(e);
 	};
 }
-var str = document.getElementById('commonLibrary').getLanguage();
+/*var str = document.getElementById('commonLibrary').getLanguage();
 
 var oScript = document.createElement('script');
 	oScript.type='text/javascript';
@@ -37,4 +37,4 @@ var oScript = document.createElement('script');
 	//oScript.src = 'lang/zh_CN.js';
 
 var node = document.getElementById('add_lang');
-node.parentNode.insertBefore(oScript,node.nextSibling);
+node.parentNode.insertBefore(oScript,node.nextSibling);*/

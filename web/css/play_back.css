@@ -101,7 +101,8 @@ h4{
 #viewWarp{
 	position: absolute;
 	top:78px;
-	height: 0;
+	height: 400px;
+	width: 600px;
 }
 /* #playback_view div{
 	float: left;

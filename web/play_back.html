@@ -3,21 +3,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>settings</title>
-<object type="application/cms-common-library" id="commonLibrary" style="position: absolute;width:0; height:0" ></object>
 
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />
-<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
+
+<script type="text/javascript" src="lang/en_GB.js"></script>
+<script type="text/javascript" src="lang/zh_CN.js"></script>
+
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/qframework.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
-<script type="text/javascript" src="js/calendar.js"></script>	
 
-<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
-<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
-<script type="text/javascript" src="js/searchPlayBckFile.js"></script>
-<script type="text/javascript" src="js/playSound.js"></script>
 
-<script type="text/javascript" src="js/ocxfunction.js"></script>
 <style type="text/css">
 	#channelvideo tr{position: relative;}
 	#channelvideo .video{height:16px; position: absolute;top:1px;}
@@ -34,6 +31,10 @@
 </head>
 
 <body>
+<object type="application/cms-common-library" id="commonLibrary" style="position: absolute;width:0; height:0" ></object>
+<script type="text/javascript">
+	lang = window[document.getElementById('commonLibrary').getLanguage()];
+</script>
 <!-- <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 <div id="confirm" class="menu">
 	<p><span></span><a class="hover close"></a></p>
@@ -223,6 +224,14 @@
 <!-- 	</div> -->
 	</div>
 	<div id="foot"></div>
+	<script type="text/javascript" src="js/calendar.js"></script>	
+
+	<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
+	<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
+	<script type="text/javascript" src="js/searchPlayBckFile.js"></script>
+	<script type="text/javascript" src="js/playSound.js"></script>
+
+	<script type="text/javascript" src="js/ocxfunction.js"></script>
+	<script type="text/javascript" src="js/playback.js"></script>
 </body>
 </html>
-<script type="text/javascript" src="js/playback.js"></script>

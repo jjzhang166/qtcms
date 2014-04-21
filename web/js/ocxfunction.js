@@ -9,7 +9,7 @@ var oCommonLibrary;
 		areaList2Ui(0);
 		//多语言提示转换
 		$('li[title],div[title],a[title],span[title]').each(function(){
-			$(this).attr('title',lang_trans[$(this).attr('title')]);
+			$(this).attr('title',lang[$(this).attr('title')]);
 		})
 	})
 	function refresh(data){ 
@@ -48,7 +48,7 @@ var oCommonLibrary;
 	function areaList2Ui(num){ //区域菜单输出
 	
 		var obj = $('ul.filetree').not('[id]').html('').eq(num);
-		var add = $('<li><span class="area" id="area_0">'+lang_trans.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang_trans.Area,'pid':'0','pareaname':'root'})
+		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
 		obj.treeview({add:add});
 		var areaListArrar=[];
@@ -58,7 +58,7 @@ var oCommonLibrary;
 			var id = areaList[n];
 			var name = oCommonLibrary.GetAreaName(areaList[n]);
 			var pid = oCommonLibrary.GetAreaPid(areaList[n]);
-			var pareaname = pid == 0 ? lang_trans.Area : oCommonLibrary.GetAreaName(pid);
+			var pareaname = pid == 0 ? lang.Area : oCommonLibrary.GetAreaName(pid);
 			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
 			pidList.push(pid);
 
@@ -87,7 +87,7 @@ var oCommonLibrary;
 			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
-			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang_trans.Area;
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});	
@@ -117,7 +117,7 @@ var oCommonLibrary;
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var groupList = oCommonLibrary.GetGroupList();
-		$('#group_0').data('data',{'group_id':'0','group_name':lang_trans.Grouping,'pid':'0','pareaname':'root'}).html('');
+		$('#group_0').data('data',{'group_id':'0','group_name':lang.Grouping,'pid':'0','pareaname':'root'}).html('');
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);

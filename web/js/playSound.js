@@ -19,12 +19,12 @@ function sound(obj){
 	str='';
 	/*debugData('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));*/
 	if(oView.AudioEnabled(type)){
-		str=lang_trans.Voice_switch_fails;
+		str=lang.Voice_switch_fails;
 	}else{
 		if(type){
-			str=lang_trans.Open_sound;
+			str=lang.Open_sound;
 		}else{
-			str=lang_trans.Turn_off_the_sound;
+			str=lang.Turn_off_the_sound;
 		}
 	}
 	if(oView.id == 'playback'){

@@ -8,17 +8,17 @@ function setDevData2ocx(){
 		var b = true;
 		if(bool){
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
-				alert(lang_trans.Failed_to_set_the_number_of_synchronization_group);
+				alert(lang.Failed_to_set_the_number_of_synchronization_group);
 				b = false
 			}
 		}else{
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
-				alert(lang_trans.Failed_to_set_the_IP_address_or_port_is_not_legal);
+				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
 				b = false;
 			}
 
 			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
-				alert(lang_trans.Failed_to_set_vendor_is_empty);
+				alert(lang.Failed_to_set_vendor_is_empty);
 				b = false;
 			}
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
@@ -46,17 +46,17 @@ function setDevData2ocx(){
   	function berorSerchShowHint() {
   		$('#fileRec').show().find('span').width(0)
 					 .end().find('h5').html('0/0')
-					 .end().find('h4').html(lang_trans.Retrieving);
+					 .end().find('h4').html(lang.Retrieving);
 		if(getAudioObj().id=='playbackLocl'){
 			$('#fileRec').hide();
 		}
   	}
 	var typeHint = [];
-		typeHint[1] = lang_trans.Time;
-		typeHint[2] = lang_trans.Move;
-		typeHint[4] = lang_trans.Warning;
-		typeHint[8] = lang_trans.Manual;
-		typeHint[15] = lang_trans.All;
+		typeHint[1] = lang.Time;
+		typeHint[2] = lang.Move;
+		typeHint[4] = lang.Warning;
+		typeHint[8] = lang.Manual;
+		typeHint[15] = lang.All;
 	function ocxsearchVideo(){
 		recTotal = 0;
 		
@@ -97,10 +97,10 @@ function setDevData2ocx(){
 		}
 	}
 	function showRecProgress(now){  //回访检索文件进度
-		var con = lang_trans.Retrieving,
+		var con = lang.Retrieving,
 			p =now/recTotal*100;
 		if(recTotal == now){
-			con = lang_trans.Retrieval_completed;
+			con = lang.Retrieval_completed;
 		}
 		$('#fileRec').find('span').width(p-2)
 		             .end().find('h5').html(now+'/'+recTotal)
