@@ -92,7 +92,8 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_DLL;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy  "$(LocalDebuggerWorkingDirectory)chinese.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"</Command>
+      <Command>copy  "$(LocalDebuggerWorkingDirectory)chinese.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
+copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -176,6 +177,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\default" "-I$(SolutionDir)..\include" "-I."</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="chinese.ts" />
+    <None Include="english.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
