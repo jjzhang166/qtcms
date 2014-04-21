@@ -70,7 +70,7 @@ int LocalPlayer::searchDateByDeviceName(const QString& sdevname)
 	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 	for (int i = 0; i < sltUsedDisk.size(); i++)
 	{
-		QString rootDir = QString(sltUsedDisk[i] + ":/JAREC/");
+		QString rootDir = QString(sltUsedDisk[i] + ":/REC/");
 		QDir dir = QDir(rootDir);
 		dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
@@ -168,7 +168,7 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	QStringList sltChannels = schannellist.split(";", QString::SkipEmptyParts);
 	for (int i = 0; i < sltUsedDisk.size(); i++)
 	{
-		QString root = sltUsedDisk[i] + ":/JAREC/" + sdate + "/" + sdevname;
+		QString root = sltUsedDisk[i] + ":/REC/" + sdate + "/" + sdevname;
 		for (int j = 0; j < sltChannels.size(); j++)
 		{
 			QString channel = sltChannels[j].toInt() > 9 ? sltChannels[j] : "0" + sltChannels[j];

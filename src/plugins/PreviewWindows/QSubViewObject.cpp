@@ -61,9 +61,8 @@ void QSubViewObject::m_workerThreadQuit()
 
 IDeviceClient* QSubViewObject::SetDeviceByVendor( QString sVendor,QWidget *wnd )
 {
-	emit SetDeviceByVendorSignal(sVendor, wnd);
-
 	m_QSubviewProcess->SetCreateDeviceFlags(false);
+	emit SetDeviceByVendorSignal(sVendor, wnd);
 	while(!m_QSubviewProcess->GetCreateDeviceFlags()){
 		msleep(100);
 	}

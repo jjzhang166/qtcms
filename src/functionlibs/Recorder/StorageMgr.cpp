@@ -72,7 +72,7 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum)
 	QString udisk = getUsableDisk();
 	if ("0" != udisk)
 	{
-		filesavepath = udisk + ":/JAREC";
+		filesavepath = udisk + ":/REC";
 		QDateTime datetime = QDateTime::currentDateTime();//获取系统现在的时间
 		filesavepath += "/"+datetime.toString("yyyy-MM-dd"); 
 
