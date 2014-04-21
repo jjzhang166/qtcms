@@ -30,6 +30,9 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 	// Disable context menu
 	setContextMenuPolicy(Qt::NoContextMenu);
+#ifdef __USE_WEB_DEBUGER__
+	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
+#endif
 
 	// Set web plugin factory
 	page()->setPluginFactory(new WebkitPluginsFactory(this));
@@ -119,7 +122,20 @@ void QJaWebView::keyPressEvent(QKeyEvent *ev)
             close();
         }
         break;
-    }
+#ifdef __USE_WEB_DEBUGER__
+	case Qt::Key_F12:
+		{
+			m_webinspector.setPage(page());
+			m_webinspector.show();
+		}
+		break;
+	case Qt::Key_F5:
+		{
+			reload();
+		}
+		break;
+#endif
+	}
     QWebView::keyPressEvent(ev);
 }
 

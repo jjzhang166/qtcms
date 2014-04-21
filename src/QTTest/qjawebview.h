@@ -3,6 +3,9 @@
 
 #include <QtWebKit/QtWebKit>
 #include <IActivities.h>
+#include <QWebInspector>
+
+//#define __USE_WEB_DEBUGER__
 
 class QJaWebView : public QWebView
 {
@@ -28,6 +31,9 @@ public slots:
 	virtual QWebView * createWindow( QWebPage::WebWindowType type );
 private:
 	IActivities * m_Activity;
+#ifdef __USE_WEB_DEBUGER__
+	QWebInspector m_webinspector;
+#endif
 };
 
 #endif // QJAWEBVIEW_H
