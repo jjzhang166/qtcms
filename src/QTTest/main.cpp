@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	QApplication::addLibraryPath(sExternLib);
 	QJaWebView view;
 	QEventLoop eventloop;
-	QTimer::singleShot(500,&eventloop,SLOT(quit()));
+	QTimer::singleShot(1000,&eventloop,SLOT(quit()));
 	eventloop.exec();
     view.showMaximized();
     return a.exec();
