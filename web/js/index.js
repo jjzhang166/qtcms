@@ -119,7 +119,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 
 		})
 
-		//云台控制速度
+		/*//云台控制速度
 		$('#PTZ_control .ptz_speed span').each(function(index){
 			$(this).click(function(){
 				$('#PTZ_control .ptz_speed span').removeClass('act').slice(0,index+1).addClass('act');
@@ -155,7 +155,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 					PTZcontrol($(this).attr('PTZ',1).index());		
 				}
 			}
-		})
+		})*/
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),

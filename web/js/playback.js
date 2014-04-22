@@ -161,6 +161,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 				SyncSoundSli(oView.enable);*/
 
+				if(index){
+					$('#type').next('ul.option').find('li:gt(1)').hide();
+				}else{
+					$('#type').next('ul.option').find('li').show();	
+				}	
 				//保存当前选中的设备
 				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})

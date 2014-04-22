@@ -128,8 +128,8 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var option = This.next('ul.option');
 			This.click(function(event){
 				event.stopPropagation();
-				$('ul.option').hide();
 				if(option.is(':hidden')){ 
+					$('ul.option').hide();
 					option.show();
 					$(document).bind('click',function(e){
 						/*if($(e.target).attr('class') == 'hover'){ 
