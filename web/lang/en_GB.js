@@ -134,6 +134,7 @@ var en_GB={
 'Subnet_Mask':'Subnet Mask',
 'Gateway':'Gateway',
 'Add_to_Group':'Add to Group',
+'Remove_out_Group':'Remove out Group',
 'All':'All',
 'Copy_to_all':'Copy to all',
 'General_Settings':'General Settings',

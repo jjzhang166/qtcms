@@ -134,6 +134,7 @@ var zh_CN={
 	'Subnet_Mask':'子网掩码',
 	'Gateway':'网关',
 	'Add_to_Group':'添加至分组',
+	'Remove_out_Group':'移出分组',
 	'All':'所有',
 	'Copy_to_all':'拷至所有',
 	'General_Settings':'常规设置',
