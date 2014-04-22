@@ -125,31 +125,35 @@ function showNowPlayBackTime(oNow,oleft,X2){
 		},
 		'toSelect':function(){ //模拟HTML下拉选择框 JQ插件形式
 			var This = this;
-			var option = this.next('ul.option');
-			this.click(function(){
-				option.toggle(1,function(){ 
-					if(option.is(':visible')){ 
-						$(document).bind('click',function(e){
-							if($(e.target).attr('class') == 'hover'){ 
-								return false;
-							}
-							option.hide();	
-							$(document).off();						
-						})
-					}
-				});
+			var option = This.next('ul.option');
+			This.click(function(event){
+				event.stopPropagation();
+				$('ul.option').hide();
+				if(option.is(':hidden')){ 
+					option.show();
+					$(document).bind('click',function(e){
+						/*if($(e.target).attr('class') == 'hover'){ 
+							return false;
+						}*/
+						option.hide();	
+						$(document).off();						
+					})
+				}else{
+					$('ul.option').hide();
+				}
 			})
 			option.on('click','a',function(){
-				if($(this).attr('class') != 'hover'){
+				//if($(this).attr('class') != 'hover'){
 					This.next('ul.option').hide();
 					This.find('span').html($(this).html()).attr('value',$(this).attr('value'));
 					if(This.find('ul[action]')){
 						This.find('#'+This.find('ul[action]').attr('action')).val($(this).attr('value'));
 					}
 					This.find('input:hidden').val($(this).attr('value'));
-				}
+				//}
 			})
 		},
+
 		'timeInput':function(options){  //时间输入框
 			$(this).html('');
 			var warp = $(this);
@@ -212,7 +216,8 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				return obj.val();
 			}
 		},
-		'gettime':function (){  // 初始化好的事件控件    的相应获取事件方法。
+
+		'gettime':function (){  // 初始化好的时间控件    的相应获时间件方法。
 			if($(this).attr('class') == 'timeInput'){
 				var time = []
 				$(this).find('input').each(function(){ 
