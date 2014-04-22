@@ -30,7 +30,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 
 		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
-			playBackSerchFile()
+			playBackSerchFile();
 		})
 
 		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
@@ -430,8 +430,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},200);
 	}
 	function playBackSerchFile(){
+
 		palybackspeed('1X');
+
 		$('#channelvideo div.video').remove();
+
 		recFile=[];
 
 		if(bool){
@@ -447,6 +450,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		}
 
 		dragStopMove();
+
 		PBrecFileTableInit();
 
 		ocxsearchVideo();

@@ -192,7 +192,7 @@
 					<li onclick="dvr_network_load_content();"><script>T("Network_Settings")</script></li>
 					<li onclick="dvr_load('dvr_enc_chn_sel');"><script>T("Encoding_settings")</script></li>
 					<li onclick="dvr_load('dvr_record_chn_sel');"><script>T("Video_settings")</script></li>
-					<li onclick="dvr_load('dvr_screen_chn_sel');"><script>T("Screen_settings")</script></li>
+					<li onclick="dvr_load('dvr_screen_chn_sel');"style="clear:both;"><script>T("Screen_settings")</script></li>
 					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>T("Video_detection_settings")</script></li>
 					<li onclick="dvr_load('dvr_ptz_chn_sel');"><script>T("Video_detection_settings")</script></li>
 					<li onclick="dvr_load('dvr_alarm_chn_sel');"><script>T("Alarm_settings")</script></li>
@@ -1312,10 +1312,10 @@
 			                                	
 							 		<tr><td><script>T("DHCP_status")</script></td><td>
 			                                    <input name="dhcp" type="radio" id="network_dhcp_1" onClick="ip_config_change();" /><script>T("Open")</script>
-			                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked /><script>T("close")</script></td></tr>
+			                                    <input name="dhcp" type="radio" id="network_dhcp_0" onClick="ip_config_change();" checked /><script>T("Close")</script></td></tr>
 			                                    <tr><td><script>T("Easy_as_the_network_state")</script></td><td>
 			                                    <input name="esee" type="radio" id="network_esee_1" /><script>T("Open")</script>
-			                                    <input name="esee" type="radio" id="network_esee_0" checked /><script>T("close")</script></td></tr>
+			                                    <input name="esee" type="radio" id="network_esee_0" checked /><script>T("Close")</script></td></tr>
 							 		<tr><td ><script>T("IP_address")</script></td>
 			                                    <td><input id="network_ip" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/>
 			                                    </td></tr>
@@ -1478,7 +1478,7 @@
 			                </div>
 			                <div class="switch ipc_list">
 					<table>
-						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onClick="reboot()"><script>T("Restarting")</script></div></td></tr>
+						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onClick="reboot()"><script>T("Restart")</script></div></td></tr>
 			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onClick="default_setting()"><script>T("Restore")</script></div></td></tr>
 			                       <!--<tr><td><script>T("Select_the_upgrade_file")</script></td>
 			                        <td>
@@ -1743,7 +1743,7 @@
 	<table style="margin-top:10px;">
 		<tr><td><script>T("Zone_name")</script></td><td><input type="text" id="area_name_ID"/></td></tr>
 		<tr><td><script>T("Main_area")</script></td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 	</table>
 </div>
 <div id="group" class="menu">
@@ -1751,7 +1751,7 @@
 	<table style="margin-top:10px;">
 		<tr><td><script>T("Group_name")</script></td><td><input type="text" id="group_name_ID"/></td></tr>
 		<!-- <tr><td><script>T("Primary_group")</script></td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
-		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 	</table>
 </div>
 <div id="channel" class="menu">
@@ -1759,7 +1759,7 @@
 	<table style="margin-top:10px;">
 		<tr><td><script>T("Channel_name")</script></td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
 		<tr><td colspan="2" style="height:10px;"></td></tr>
-		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;"><script>T("Confirm")</script></div></td></tr>
+		<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 	</table>
 </div>
 <input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
@@ -1818,7 +1818,7 @@
 	<div style="padding:10px;">
 		<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 		<table style="margin:0 auto;">
-			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close"><script>T("Confirm")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 </div>

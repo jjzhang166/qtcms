@@ -1,5 +1,4 @@
 //sound
-
 function addSoundMove() {  //添加滑动块移动
 	$('#sound').on({
 		mousedown:function(event){

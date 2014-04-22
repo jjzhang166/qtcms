@@ -1,5 +1,5 @@
-var bool = 0, //本地远程回放控制  0为远程 1为本地
-	recTotal = 0;  //文件检索总数。
+	var bool = 0, //本地远程回放控制  0为远程 1为本地
+		recTotal = 0;  //文件检索总数。
 //搜索远程录像
 function setDevData2ocx(){
 		var oChannel =$('div.dev_list li.sel span.channel'),
@@ -58,6 +58,7 @@ function setDevData2ocx(){
 		typeHint[8] = lang.Manual;
 		typeHint[15] = lang.All;
 	function ocxsearchVideo(){
+
 		recTotal = 0;
 		
 		berorSerchShowHint();

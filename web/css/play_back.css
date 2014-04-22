@@ -41,7 +41,7 @@ h4{
 }
 #top h4{ 
 	float: left;
-	width: 120px;
+	width: auto;
 }
 #top_window_act{
 	width: auto;
@@ -223,7 +223,6 @@ h4{
 	cursor: pointer;
 	text-align: center;
 	font-size: 12px;
-	margin: 1px;
 	display: block;
 	height: 16px;
 	width: 100%;

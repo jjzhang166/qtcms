@@ -147,7 +147,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					var str = $(this).html();
 					str = str.match(/<\/?\w+>/g) ? str.replace(/(\d*)[<\/?\w+>|T\(\"\w+\"\)]*(\w*)*/g,"$1$2") : str;
 					$('ul.option').hide();
-					This.find('span[value]').html(str).attr('value',$(this).attr('value'));
+					This.find('span').html(str).attr('value',$(this).attr('value'));
 					if(This.find('ul[action]')){
 						This.find('#'+This.find('ul[action]').attr('action')).val($(this).attr('value'));
 					}
@@ -494,7 +494,7 @@ function checkHasObj(oSil,obj){
 
 
 function T(){//语言切换
-	var str = lang ? lang[arguments[0]] : arguments[0];
+	var str = lang ? lang[arguments[0]] : arguments[0].replace('_',' ');
 	if(arguments.length ==1){
 		document.write(str);
 	}else{
