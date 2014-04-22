@@ -144,8 +144,10 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			})
 			option.on('click','a',function(){
 				//if($(this).attr('class') != 'hover'){
-					This.next('ul.option').hide();
-					This.find('span').html($(this).html()).attr('value',$(this).attr('value'));
+					var str = $(this).html();
+					str = str.match(/<\/?\w+>/g) ? str.replace(/(\d*)[<\/?\w+>|T\(\"\w+\"\)]*(\w*)*/g,"$1$2") : str;
+					$('ul.option').hide();
+					This.find('span[value]').html(str).attr('value',$(this).attr('value'));
 					if(This.find('ul[action]')){
 						This.find('#'+This.find('ul[action]').attr('action')).val($(this).attr('value'));
 					}
@@ -507,4 +509,18 @@ function hintTrans(obj){ //操作提示语言转换.
 		str = str.replace(/_V_/,obj[i]);
 	}
 	return str;		
+}
+
+function getAudioObj(){   //返回当前页面播放的插件对象。
+	var oAudioObj = {};
+	if($('#previewWindows')[0]){
+		oAudioObj = $('#previewWindows')[0];
+	}else{
+		if(bool){
+			oAudioObj = $('#playbackLocl')[0];
+		}else{
+			oAudioObj = $('#playback')[0];	
+		}
+	}
+	return oAudioObj;
 }

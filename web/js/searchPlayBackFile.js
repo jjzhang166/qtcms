@@ -110,17 +110,3 @@ function setDevData2ocx(){
 	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	
 	}
-	
-	function getAudioObj(){   //返回当前页面播放的插件对象。
-		var oAudioObj = {};
-		if($('#previewWindows')[0]){
-			oAudioObj = $('#previewWindows')[0];
-		}else{
-			if(bool){
-				oAudioObj = $('#playbackLocl')[0];
-			}else{
-				oAudioObj = $('#playback')[0];	
-			}
-		}
-		return oAudioObj;
-	}
