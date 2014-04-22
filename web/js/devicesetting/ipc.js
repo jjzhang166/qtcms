@@ -106,7 +106,7 @@ function incoming_load_fbase()
 				encode_load();
 			},
 			error:function(a,b,c){ 
-				alert(b);
+				//alert(b);
 			}
 		});
 }
@@ -133,7 +133,7 @@ function encode_load_content()
 {
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
-	var id = $('#ipc_enc_stream').html();
+	var id = $('#ipc_enc_stream_ID').val();
 		 $.ajax({
 				type:"GET",
 				url:ipc_url + '/netsdk/video/encode/channel/'+id+'/properties',
@@ -156,12 +156,12 @@ function encode_load_content()
 }
 function encode_load()
 {
+	var id = $('#ipc_enc_stream_ID').val();
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
-	var id = $('#ipc_enc_stream').html();
 	$.ajax({
 			type:"GET",
-			url:ipc_url + '/netsdk/video/encode/channel/'+ id,
+			url:ipc_url + '/netsdk/video/encode/channel/'+id,
 			dataType:"json",
 			beforeSend : function(req){ 
         	req .setRequestHeader('Authorization', auth);
@@ -173,7 +173,12 @@ function encode_load()
 				$('#ipc_enc_resolution').html(data.resolution);
 				$('#ipc_enc_resolutionWidth').val(data.resolutionWidth);
 				$('#ipc_enc_resolutionHeight').val(data.resolutionHeight);
-				$('#ipc_enc_BitRateControlType').html(data.bitRateControlType);
+				if(data.bitRateControlType == 'CBR'){
+					$('#ipc_enc_BitRateControlType').html('不变');
+					}else{
+					$('#ipc_enc_BitRateControlType').html('可变');
+						}
+				//$('#ipc_enc_BitRateControlType').html(data.bitRateControlType);
 				$('#ipc_enc_bps').val(data.constantBitRate);
 				$('#ipc_enc_fps').val(data.frameRate);
 				$('#ipc_enc_freeResolution')[0].onclick = function(){
@@ -204,19 +209,19 @@ function encode_data2ui()
 			case 'false': $('#id_freeresolution_0')[0].checked = 1; break;
 			default: break;
 		}
-		$('#ipc_enc_stream_sel li a').each(function(index) {
-			$(this).click(function(){
-						$('#ipc_enc_stream').html($(this)[0].innerHTML);
-						encode_load_content();
-				})
-		});
+		$('#ipc_enc_stream_ID').nextAll('li').click(function(){
+		 	$('#ipc_enc_stream_ID').val($(this).attr('value'));
+		})
+		$('#ipc_enc_BitRateControlType_ID').nextAll('li').click(function(){
+		 	$('#ipc_enc_BitRateControlType_ID').val($(this).attr('value'));
+		})
 }
 function encode_save_content()
 {	
-	var id = $('#ipc_enc_stream').html();
-	var ipc_enc_channelname = $('.ipc_enc_channelname').val();
+	var id = $('#ipc_enc_stream_ID').val();
+	var ipc_enc_channelname = $('#ipc_enc_channelname').val();
 	var ipc_enc_resolution =$('#ipc_enc_resolution').html();
-	var ipc_enc_BitRateControlType =$('#ipc_enc_BitRateControlType').html();
+	var ipc_enc_BitRateControlType =$('#ipc_enc_BitRateControlType_ID').val();
 	var ipc_enc_freeResolution;
 	var ipc_enc_resolutionWidth = $('#ipc_enc_resolutionWidth').val();
 	var ipc_enc_resolutionHeight = $('#ipc_enc_resolutionHeight').val();
@@ -435,7 +440,6 @@ function network_save_content()
 			//alert("error:" + textStatus);
 		}
 	});	
-	remote_save_content();
 }
 //remote
 function remote_data2ui(dvr_data)
@@ -542,7 +546,6 @@ function remote_save_content()
 		beforeSend: function(XMLHttpRequest){
 		},
 		success: function(data, textStatus){
-			//alert(11);
 			//alert("recv:" + data.xml);
 		network_save_content();
 		},
@@ -1307,6 +1310,7 @@ function ntp_change()
 //reboot
 function reboot()
 {
+	$('#reboot_span').html('正在重启...');
 	var xmlstr = '';
 	xmlstr += '<juan ver="1.0" seq="0">';
 	xmlstr += '<setup type="write" user="admin" password="">';
@@ -1325,17 +1329,17 @@ function reboot()
 //		dataType: 'jsonp',
 //		jsonp: 'jsoncallback',
 
-
 		beforeSend: function(XMLHttpRequest){
 		},
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
 			var dvr_data = xml2json.parser(data, "", false);
-	
+			$('#reboot_span').html('成功！');
 		},
 		complete: function(XMLHttpRequest, textStatus){
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$('#reboot_span').html('重启失败！');
 			//alert(textStatus);
 		}
 	});	
@@ -1343,6 +1347,7 @@ function reboot()
 //default_setting
 function default_setting()
 {
+	$('#default_setting_span').html('正在还原...');
 	var xmlstr = '';
 	xmlstr += '<juan ver="1.0" seq="0">';
 	xmlstr += '<setup type="write" user="admin" password="">';
@@ -1367,10 +1372,12 @@ function default_setting()
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
 			var dvr_data = xml2json.parser(data, "", false);
+			$('#default_setting_span').html('成功！');
 		},
 		complete: function(XMLHttpRequest, textStatus){
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$('#default_setting_span').html('还原失败！');
 			//	alert(textStatus);
 		}
 	});	
@@ -1508,4 +1515,37 @@ function get_upgrade_rate()
 	{
 		alert('upgrade_success');
 	}
+}
+function is_valid_ip(id)
+{
+	var ip_obj=document.getElementById(id);
+	var re=/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;//正则表达嶿  
+	if(re.test(ip_obj.value))     
+	{     
+	   if( RegExp.$1<256 && RegExp.$2<256 && RegExp.$3<256 && RegExp.$4<256)   
+	   return true;     
+	}     
+	alert(langstr.format_wrong+"192.168.1.234");     
+	ip_obj.value=default_ip;
+	return false;   
+}
+function save_ipaddr(id)
+{
+	var ipaddr_obj=document.getElementById(id);
+	default_ip=ipaddr_obj.value;
+}
+function save_port()
+{
+	var port_obj=document.getElementById('local_network_port');
+	default_port=port_obj.value;
+}
+function is_valid_port()
+{
+	var port_obj=document.getElementById('local_network_port');
+	if(isNaN(port_obj.value)==true)
+	{
+		alert(langstr.port_wrong);
+		port_obj.value=default_port;
+	}
+	return true;
 }

@@ -209,15 +209,19 @@ function dvr_common_data2ui()
 		case 2:	$("#dvr_common_autoswiinterval")[0].innerHTML = '4s';break;
 		case 3: $("#dvr_common_autoswiinterval")[0].innerHTML = '5s';break;
 		case 4:	$("#dvr_common_autoswiinterval")[0].innerHTML = '8s';break;
-		case 5: $("#dvr_common_autoswiinterval")[0].innerHTML = '10s';break;;
+		case 5: $("#dvr_common_autoswiinterval")[0].innerHTML = '10s';break;
 		default: break;
 	}
+	$('#dvr_common_autoswimode_ID').val(dvr_data.juan.envload.misc.autoswimode);
 	switch(dvr_data.juan.envload.misc.autoswimode)
 	{
-		case 0:	$("#dvr_common_autoswimode")[0].innerHTML = 'full screen';break;
-		case 1: $("#dvr_common_autoswimode")[0].innerHTML = 'split screen';break;
+		case 0:	$("#dvr_common_autoswimode")[0].innerHTML = lang.Full_screen;break;
+		case 1: $("#dvr_common_autoswimode")[0].innerHTML = lang.Split_screen;break;
 		default: break;
 	}
+	$('#dvr_common_autoswimode_ID').nextAll('li').click(function(){
+		 	$('#dvr_common_autoswimode_ID').val($(this).attr('value'));
+		})
 }
 function dvr_common_load_content()
 {
@@ -290,12 +294,6 @@ function dvr_common_save_content()
 		case '10s': dvr_common_autoswiinterval = 5;break;
 		default: break;
 	}
-	switch($("#dvr_common_autoswimode")[0].innerHTML)
-	{
-		case 'full screen':	dvr_common_autoswimode = 0;break;
-		case 'split screen': dvr_common_autoswimode = 1;break;
-		default: break;
-	}
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
@@ -309,7 +307,7 @@ function dvr_common_save_content()
 	xmlstr += ' alpha="' + $("#dvr_common_OSD_alpha")[0].innerHTML + '"';
 	xmlstr += ' autoswi="' + dvr_common_autoswi + '"';
 	xmlstr += ' autoswiinterval="' + dvr_common_autoswiinterval + '"';
-	xmlstr += ' autoswimode="' + dvr_common_autoswimode + '"';
+	xmlstr += ' autoswimode="' + $("#dvr_common_autoswimode_ID")[0].value + '"';
 	xmlstr += ' />';
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
@@ -516,12 +514,16 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 {
 	$("#dvr_enc_chn_sel0").html(dvr_selected_chn+1);
 	//main_stream
+	$('#dvr_enc_main_mode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].mode);
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].mode)
 	{
-		case 0:	$("#dvr_enc_main_mode")[0].innerHTML = 'Vedio';break;
-		case 1:	$("#dvr_enc_main_mode")[0].innerHTML = 'Audio and Vedio';break;
+		case 0:	$("#dvr_enc_main_mode")[0].innerHTML = lang.Video_streaming;break;
+		case 1:	$("#dvr_enc_main_mode")[0].innerHTML = lang.Audio_and_video_streaming;break;
 		default: break;
 	}
+	$('#dvr_enc_main_mode_ID').nextAll('li').click(function(){
+		 	$('#dvr_enc_main_mode_ID').val($(this).attr('value'));
+		})
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].fmt)
 	{
 		case 0:	$("#dvr_enc_main_format")[0].innerHTML = 'QCIP';break;
@@ -539,22 +541,30 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 				})
 			});
 		}	
+	$('#dvr_enc_main_image_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].piclv);
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].piclv)
 	{
-		case 0:	$("#dvr_enc_main_image")[0].innerHTML = 'Highest';break;
-		case 1:	$("#dvr_enc_main_image")[0].innerHTML = 'High';break;
-		case 2:	$("#dvr_enc_main_image")[0].innerHTML = 'Moderato';break;
-		case 3:	$("#dvr_enc_main_image")[0].innerHTML = 'Low';break;
-		case 4:	$("#dvr_enc_main_image")[0].innerHTML = 'Lowest';break;
+		case 0:	$("#dvr_enc_main_image")[0].innerHTML = lang.Highest;break;
+		case 1:	$("#dvr_enc_main_image")[0].innerHTML = lang.High;break;
+		case 2:	$("#dvr_enc_main_image")[0].innerHTML = lang.Moderate;break;
+		case 3:	$("#dvr_enc_main_image")[0].innerHTML = lang.Low;break;
+		case 4:	$("#dvr_enc_main_image")[0].innerHTML = lang.Minimum;break;
 		default: break;
 	}
+	$('#dvr_enc_main_image_ID').nextAll('li').click(function(){
+		 	$('#dvr_enc_main_image_ID').val($(this).attr('value'));
+		})
+	$('#dvr_enc_main_bitmode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = 'Variable Stream';break;
-		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = 'Fix Stream';break;
-		case 2:	$("#dvr_enc_main_bitmode")[0].innerHTML = 'Moderato Stream';break;
+		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Variable_rate;break;
+		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 2:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}
+	$('#dvr_enc_main_bitmode_ID').nextAll('li').click(function(){
+		 	$('#dvr_enc_main_bitmode_ID').val($(this).attr('value'));
+		})
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].bitvalue)
 	{
 		case 0:	$("#dvr_enc_main_bitvalue")[0].innerHTML = '64kbps';break;
@@ -585,7 +595,7 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 	//sub_stream
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].mode)
 	{
-		case 0:	$("#dvr_enc_sub_mode")[0].innerHTML = 'Vedio';break;
+		case 0:	$("#dvr_enc_sub_mode")[0].innerHTML = lang.Video_streaming;break;
 		default: break;
 	}
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].fmt)
@@ -594,22 +604,30 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 		case 1:	$("#dvr_enc_sub_format")[0].innerHTML = 'CIF';break;
 		default: break;
 	}
+	$('#dvr_enc_sub_image_ID').val(dvr_data.juan.envload.encodesub[dvr_selected_chn].piclv);
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].piclv)
 	{
-		case 0:	$("#dvr_enc_sub_image")[0].innerHTML = 'Highest';break;
-		case 1:	$("#dvr_enc_sub_image")[0].innerHTML = 'High';break;
-		case 2:	$("#dvr_enc_main_image")[0].innerHTML = 'Moderato';break;
-		case 3:	$("#dvr_enc_sub_image")[0].innerHTML = 'Low';break;
-		case 4:	$("#dvr_enc_main_image")[0].innerHTML = 'Lowest';break;
+		case 0:	$("#dvr_enc_sub_image")[0].innerHTML = lang.Highest;break;
+		case 1:	$("#dvr_enc_sub_image")[0].innerHTML = lang.High;break;
+		case 2:	$("#dvr_enc_sub_image")[0].innerHTML = lang.Moderate;break;
+		case 3:	$("#dvr_enc_sub_image")[0].innerHTML = lang.Low;break;
+		case 4:	$("#dvr_enc_sub_image")[0].innerHTML = lang.Minimum;break;
 		default: break;
 	}
+	$('#dvr_enc_sub_image_ID').nextAll('li').click(function(){
+		 	$('#dvr_enc_sub_image_ID').val($(this).attr('value'));
+		})
+	$('#dvr_enc_sub_bitmode_ID').val(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = 'Variable Stream';break;
-		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = 'Fix Stream';break;
-		case 2:	$("#dvr_enc_sub_bitmode")[0].innerHTML = 'Moderato Stream';break;
+		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Variable_rate;break;
+		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 2:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}
+	$('#dvr_enc_sub_bitmode_ID').nextAll('li').click(function(){
+		 	$('#dvr_enc_sub_bitmode_ID').val($(this).attr('value'));
+		})
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitvalue)
 	{
 		case 0:	$("#dvr_enc_sub_bitvalue")[0].innerHTML = '64kbps';break;
@@ -649,13 +667,7 @@ function dvr_encoding_load_content()
 function dvr_encoding_save_content(chk_chn)
 {
 	//main_stream
-	var dvr_enc_main_mode,dvr_enc_main_format,dvr_enc_main_image,dvr_enc_main_bitmode,dvr_enc_main_bitvalue,dvr_enc_main_framerate;
-	switch($("#dvr_enc_main_mode")[0].innerHTML)
-	{
-		case 'Vedio': dvr_enc_main_mode = 0;break;
-		case 'Audio and Vedio': dvr_enc_main_mode = 1;break;
-		default: break;
-	}
+	var dvr_enc_main_format,dvr_enc_main_bitvalue,dvr_enc_main_framerate;
 	switch($("#dvr_enc_main_format")[0].innerHTML)
 	{
 		case 'QCIP': dvr_enc_main_format = 0;break;
@@ -664,22 +676,6 @@ function dvr_encoding_save_content(chk_chn)
 		case 'D1': dvr_enc_main_format = 3;break;
 		case 'WCIF': dvr_enc_main_format = 4;break;
 		case '960H': dvr_enc_main_format = 5;break;
-		default: break;
-	}
-	switch($("#dvr_enc_main_image")[0].innerHTML)
-	{
-		case 'Highest':	dvr_enc_main_image = 0;break;
-		case 'High': dvr_enc_main_image = 1;break;
-		case 'Moderato': dvr_enc_main_image = 2;break;
-		case 'Low':	dvr_enc_main_image = 3;break;
-		case 'Lowest': dvr_enc_main_image = 4;break;
-		default: break;
-	}
-	switch($("#dvr_enc_main_bitmode")[0].innerHTML)
-	{
-		case 'Variable Stream':	dvr_enc_main_bitmode = 0;break;
-		case 'Fix Stream': dvr_enc_main_bitmode = 1;break;
-		case 'Moderato Stream':	dvr_enc_main_bitmode = 2;break;
 		default: break;
 	}
 	switch($("#dvr_enc_main_bitvalue")[0].innerHTML)
@@ -710,32 +706,11 @@ function dvr_encoding_save_content(chk_chn)
 		default: break;
 	}
 	//sub_stream
-	var dvr_enc_sub_mode,dvr_enc_sub_format,dvr_enc_sub_image,dvr_enc_sub_bitmode,dvr_enc_sub_bitvalue,dvr_enc_sub_framerate;
-	switch($("#dvr_enc_sub_mode")[0].innerHTML)
-	{
-		case 'Vedio': dvr_enc_sub_mode = 0;break;
-		default: break;
-	}
+	var dvr_enc_sub_format,dvr_enc_sub_bitvalue,dvr_enc_sub_framerate;
 	switch($("#dvr_enc_sub_format")[0].innerHTML)
 	{
 		case 'QCIP': dvr_enc_sub_format = 0;break;
 		case 'CIF':	dvr_enc_sub_format = 1;break;
-		default: break;
-	}
-	switch($("#dvr_enc_sub_image")[0].innerHTML)
-	{
-		case 'Highest':	dvr_enc_sub_image = 0;break;
-		case 'High': dvr_enc_sub_image = 1;break;
-		case 'Moderato': dvr_enc_sub_image = 2;break;
-		case 'Low':	dvr_enc_sub_image = 3;break;
-		case 'Lowest': dvr_enc_sub_image = 4;break;
-		default: break;
-	}
-	switch($("#dvr_enc_sub_bitmode")[0].innerHTML)
-	{
-		case 'Variable Stream':	dvr_enc_sub_bitmode = 0;break;
-		case 'Fix Stream': dvr_enc_sub_bitmode = 1;break;
-		case 'Moderato Stream':	dvr_enc_sub_bitmode = 2;break;
 		default: break;
 	}
 	switch($("#dvr_enc_sub_bitvalue")[0].innerHTML)
@@ -762,19 +737,19 @@ function dvr_encoding_save_content(chk_chn)
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
 	xmlstr += '<encode';
 	xmlstr += ' chn="' + chk_chn + '"';
-	xmlstr += ' mode="' + dvr_enc_main_mode + '"';
+	xmlstr += ' mode="' + $("#dvr_enc_main_mode_ID")[0].value + '"';
 	xmlstr += ' fmt="' + dvr_enc_main_format + '"';
-	xmlstr += ' piclv="' + dvr_enc_main_image + '"';
-	xmlstr += ' bitmode="' + dvr_enc_main_bitmode + '"';
+	xmlstr += ' piclv="' + $("#dvr_enc_main_image_ID")[0].value + '"';
+	xmlstr += ' bitmode="' + $("#dvr_enc_main_bitmode_ID")[0].value + '"';
 	xmlstr += ' bitvalue="' + dvr_enc_main_bitvalue + '"';
 	xmlstr += ' framerate="' + dvr_enc_main_framerate + '"';
 	xmlstr += ' />';
 	xmlstr += '<encodesub';
-	xmlstr += ' chn="' + chn + '"';
-	xmlstr += ' mode="' + dvr_enc_sub_mode + '"';
+	xmlstr += ' chn="' + chk_chn + '"';
+	xmlstr += ' mode="' + $("#dvr_enc_sub_mode_ID")[0].value + '"';
 	xmlstr += ' fmt="' + dvr_enc_sub_format + '"';
-	xmlstr += ' piclv="' + dvr_enc_sub_image + '"';
-	xmlstr += ' bitmode="' + dvr_enc_sub_bitmode + '"';
+	xmlstr += ' piclv="' + $("#dvr_enc_sub_image_ID")[0].value + '"';
+	xmlstr += ' bitmode="' + $("#dvr_enc_sub_bitmode_ID")[0].value + '"';
 	xmlstr += ' bitvalue="' + dvr_enc_sub_bitvalue + '"';
 	xmlstr += ' framerate="' + dvr_enc_sub_framerate + '"';
 	xmlstr += ' />';
@@ -1057,15 +1032,20 @@ function dvr_screen_save_content()
 function dvr_detect_data2ui(dvr_selected_chn)
 {
 	$("#dvr_detect_chn_sel0").html(dvr_selected_chn+1);
+	$('#dvr_detect_sens_ID').val(dvr_data.juan.envload.detection[dvr_selected_chn].sens);
 	switch(dvr_data.juan.envload.detection[dvr_selected_chn].sens)
 	{
-		case 0:	$("#dvr_detect_sens")[0].innerHTML = 'Highest';break;
-		case 1:	$("#dvr_detect_sens")[0].innerHTML = 'High';break;
-		case 2:	$("#dvr_detect_sens")[0].innerHTML = 'Moderato';break;
-		case 3:	$("#dvr_detect_sens")[0].innerHTML = 'Low';break;
-		case 4:	$("#dvr_detect_sens")[0].innerHTML = 'Lowest';break;
+		case 0:	$("#dvr_detect_sens")[0].innerHTML = lang.Highest;break;
+		case 1:	$("#dvr_detect_sens")[0].innerHTML = lang.High;break;
+		case 2:	$("#dvr_detect_sens")[0].innerHTML = lang.Moderate;break;
+		case 3:	$("#dvr_detect_sens")[0].innerHTML = lang.Low;break;
+		case 4:	$("#dvr_detect_sens")[0].innerHTML = lang.Minimum;break;
 		default: break;
 	}
+	$('#dvr_detect_sens_ID').nextAll('li').click(function(){
+		 	$('#dvr_detect_sens_ID').val($(this).attr('value'));
+		})
+	$('#dvr_detect_mduration_ID').val(dvr_data.juan.envload.detection[dvr_selected_chn].mdalarmduration);
 	switch(dvr_data.juan.envload.detection[dvr_selected_chn].mdalarmduration)
 	{
 		case 0:	$("#dvr_detect_mduration")[0].innerHTML = '1s';break;
@@ -1075,9 +1055,12 @@ function dvr_detect_data2ui(dvr_selected_chn)
 		case 4:	$("#dvr_detect_mduration")[0].innerHTML = '5s';break;
 		case 5:	$("#dvr_detect_mduration")[0].innerHTML = '8s';break;
 		case 6:	$("#dvr_detect_mduration")[0].innerHTML = '10s';break;
-		case 7:	$("#dvr_detect_mduration")[0].innerHTML = 'continuous';break;
+		case 7:	$("#dvr_detect_mduration")[0].innerHTML = lang.Continuous;break;
 		default: break;
 	}
+	$('#dvr_detect_mduration_ID').nextAll('li').click(function(){
+		 	$('#dvr_detect_mduration_ID').val($(this).attr('value'));
+		})
 	if(dvr_data.juan.envload.detection[dvr_selected_chn].mdalarm == 1){
 		$('#dvr_detect_mAlarm').prop('checked',true);
 	}else{
@@ -1088,6 +1071,7 @@ function dvr_detect_data2ui(dvr_selected_chn)
 	}else{
 		$('#dvr_detect_mBuzzer').prop('checked',false);
 	}
+	$('#dvr_detect_vduration_ID').val(dvr_data.juan.envload.detection[dvr_selected_chn].vlalarmduration);
 	switch(dvr_data.juan.envload.detection[dvr_selected_chn].vlalarmduration)
 	{
 		case 0:	$("#dvr_detect_vduration")[0].innerHTML = '1s';break;
@@ -1097,9 +1081,12 @@ function dvr_detect_data2ui(dvr_selected_chn)
 		case 4:	$("#dvr_detect_vduration")[0].innerHTML = '5s';break;
 		case 5:	$("#dvr_detect_vduration")[0].innerHTML = '8s';break;
 		case 6:	$("#dvr_detect_vduration")[0].innerHTML = '10s';break;
-		case 7:	$("#dvr_detect_vduration")[0].innerHTML = 'continuous';break;
+		case 7:	$("#dvr_detect_vduration")[0].innerHTML = lang.Continuous;break;
 		default: break;
 	}
+	$('#dvr_detect_vduration_ID').nextAll('li').click(function(){
+		 	$('#dvr_detect_vduration_ID').val($(this).attr('value'));
+		})
 	if(dvr_data.juan.envload.detection[dvr_selected_chn].vlalarm == 1){
 		$('#dvr_detect_vAlarm').prop('checked',true);
 	}else{
@@ -1160,41 +1147,8 @@ function dvr_detect_load_content()
 function dvr_detect_save_content(chk_chn)
 {
 	var dvr_detect_sens,dvr_detect_mduration,dvr_detect_vduration;
-	switch($("#dvr_detect_sens")[0].innerHTML)
-	{
-		case 'Highest':	dvr_detect_sens = 0;break;
-		case 'High': dvr_detect_sens = 1;break;
-		case 'Moderato': dvr_detect_sens = 2;break;
-		case 'Low':	dvr_detect_sens = 3;break;
-		case 'Lowest': dvr_detect_sens = 4;break;
-		default: break;
-	}
-	switch($("#dvr_detect_mduration")[0].innerHTML)
-	{
-		case '1s': dvr_detect_mduration = 0;break;
-		case '2s': dvr_detect_mduration = 1;break;
-		case '3s': dvr_detect_mduration = 2;break;
-		case '4s': dvr_detect_mduration = 3;break;
-		case '5s': dvr_detect_mduration = 4;break;
-		case '8s': dvr_detect_mduration = 5;break;
-		case '10s': dvr_detect_mduration = 6;break;
-		case 'continuous': dvr_detect_mduration = 7;break;
-		default: break;
-	}
 	var dvr_detect_mAlarm = $('#dvr_detect_mAlarm').prop('checked') ?1:0;
 	var dvr_detect_mBuzzer = $("#dvr_detect_mBuzzer").prop('checked') ?1:0;
-	switch($("#dvr_detect_vduration")[0].innerHTML)
-	{
-		case '1s': dvr_detect_vduration = 0;break;
-		case '2s': dvr_detect_vduration = 1;break;
-		case '3s': dvr_detect_vduration = 2;break;
-		case '4s': dvr_detect_vduration = 3;break;
-		case '5s': dvr_detect_vduration = 4;break;
-		case '8s': dvr_detect_vduration = 5;break;
-		case '10s': dvr_detect_vduration = 6;break;
-		case 'continuous': dvr_detect_vduration = 7;break;
-		default: break;
-	}
 	var dvr_detect_vAlarm = $('#dvr_detect_vAlarm').prop('checked') ?1:0;
 	var dvr_detect_vBuzzer = $("#dvr_detect_vBuzzer").prop('checked') ?1:0;
 	//
@@ -1204,11 +1158,11 @@ function dvr_detect_save_content(chk_chn)
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
 	xmlstr += '<detection';
 	xmlstr += ' chn="' + chk_chn + '"';
-	xmlstr += ' sens="' + dvr_detect_sens + '"';
-	xmlstr += ' mdalarmduration="' + dvr_detect_mduration + '"';
+	xmlstr += ' sens="' + $("#dvr_detect_sens_ID")[0].value + '"';
+	xmlstr += ' mdalarmduration="' + $("#dvr_detect_mduration_ID")[0].value + '"';
 	xmlstr += ' mdalarm="' + dvr_detect_mAlarm + '"';
 	xmlstr += ' mdbuzzer="' + dvr_detect_mBuzzer + '"';
-	xmlstr += ' vlalarmduration="' + dvr_detect_vduration + '"';
+	xmlstr += ' vlalarmduration="' + $("#dvr_detect_vduration_ID")[0].value + '"';
 	xmlstr += ' vlalarm="' + dvr_detect_vAlarm + '"';
 	xmlstr += ' vlbuzzer="' + dvr_detect_vBuzzer + '"';
 	xmlstr += ' />';
@@ -1411,13 +1365,18 @@ function dvr_alarm_data2ui(dvr_selected_chn)
 	}else{
 		$('#dvr_alarm_Buzzer').prop('checked',false);
 	}
+	$('#dvr_alarm_opermode_ID').val(dvr_data.juan.envload.sensor[dvr_selected_chn].mode);
 	switch(dvr_data.juan.envload.sensor[dvr_selected_chn].mode)
 	{
-		case 0:	$("#dvr_alarm_opermode")[0].innerHTML = 'close';break;
-		case 1:	$("#dvr_alarm_opermode")[0].innerHTML = 'normal open';break;
-		case 2:	$("#dvr_alarm_opermode")[0].innerHTML = 'normal close';break;
+		case 0:	$("#dvr_alarm_opermode")[0].innerHTML = lang._close;break;
+		case 1:	$("#dvr_alarm_opermode")[0].innerHTML = lang.Normally_open;break;
+		case 2:	$("#dvr_alarm_opermode")[0].innerHTML = lang.Normally_closed;break;
 		default: break;
 	}
+	$('#dvr_alarm_opermode_ID').nextAll('li').click(function(){
+		 	$('#dvr_alarm_opermode_ID').val($(this).attr('value'));
+		})
+	$('#dvr_alarm_duration_ID').val(dvr_data.juan.envload.sensor[dvr_selected_chn].alarmduration);
 	switch(dvr_data.juan.envload.sensor[dvr_selected_chn].alarmduration)
 	{
 		case 0:	$("#dvr_alarm_duration")[0].innerHTML = '1s';break;
@@ -1427,9 +1386,12 @@ function dvr_alarm_data2ui(dvr_selected_chn)
 		case 4:	$("#dvr_alarm_duration")[0].innerHTML = '5s';break;
 		case 5:	$("#dvr_alarm_duration")[0].innerHTML = '8s';break;
 		case 6:	$("#dvr_alarm_duration")[0].innerHTML = '10s';break;
-		case 7:	$("#dvr_alarm_duration")[0].innerHTML = 'continuous';break;
+		case 7:	$("#dvr_alarm_duration")[0].innerHTML = lang.Continuous;break;
 		default: break;
 	}
+	$('#dvr_alarm_duration_ID').nextAll('li').click(function(){
+		 	$('#dvr_alarm_duration_ID').val($(this).attr('value'));
+		})
 }
 function dvr_alarm_load_content()
 {
@@ -1482,33 +1444,14 @@ function dvr_alarm_save_content(chk_chn)
 	var dvr_alarm_opermode,dvr_alarm_duration;
 	var dvr_alarm_Alarm = $('#dvr_alarm_Alarm').prop('checked') ?1:0;
 	var dvr_alarm_Buzzer = $("#dvr_alarm_Buzzer").prop('checked') ?1:0;
-	switch($("#dvr_alarm_opermode")[0].innerHTML)
-	{
-		case 'close': dvr_alarm_opermode = 0;break;
-		case 'normal open':	dvr_alarm_opermode = 1;break;
-		case 'normal close': dvr_alarm_opermode = 2;break;
-		default: break;
-	}
-	switch($("#dvr_alarm_duration")[0].innerHTML)
-	{
-		case '1s': dvr_alarm_duration = 0;break;
-		case '2s': dvr_alarm_duration = 1;break;
-		case '3s': dvr_alarm_duration = 2;break;
-		case '4s': dvr_alarm_duration = 3;break;
-		case '5s': dvr_alarm_duration = 4;break;
-		case '8s': dvr_alarm_duration = 5;break;
-		case '10s': dvr_alarm_duration = 6;break;
-		case 'continuous': dvr_alarm_duration = 7;break;
-		default: break;
-	}
 
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
 	xmlstr += '<sensor';
 	xmlstr += ' chn="' + chk_chn + '"';
-	xmlstr += ' mode="' + dvr_alarm_opermode + '"';
-	xmlstr += ' alarmduration="' + dvr_alarm_duration + '"';
+	xmlstr += ' mode="' + $("#dvr_alarm_opermode_ID")[0].value + '"';
+	xmlstr += ' alarmduration="' + $("#dvr_alarm_duration_ID")[0].value + '"';
 	xmlstr += ' alarm="' + dvr_alarm_Alarm + '"';
 	xmlstr += ' buzzer="' + dvr_alarm_Buzzer + '"';
 	xmlstr += ' />';

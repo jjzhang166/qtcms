@@ -299,8 +299,9 @@
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a><script>T("Full_screen")</script></a></li>
-									<li><a><script>T("Split_screen")</script></a></li>
+                                	<input type="hidden" id="dvr_common_autoswimode_ID" value="">
+									<li value="0"><a><script>T("Full_screen")</script></a></li>
+									<li value="1"><a><script>T("Split_screen")</script></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -387,8 +388,9 @@
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>T("Video_streaming")</script></a></li>
-											<li><a><script>T("Audio_and_video_streaming")</script></a></li>
+                                        	<input type="hidden" id="dvr_enc_main_mode_ID" value="">
+											<li value="0"><a><script>T("Video_streaming")</script></a></li>
+											<li value="1"><a><script>T("Audio_and_video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -414,11 +416,12 @@
 										<span id="dvr_enc_main_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a><script>T("Highest")</script></a></li>
-											<li><a><script>T("High")</script></a></li>
-											<li><a><script>T("Moderate")</script></a></li>
-			                                <li><a><script>T("Low")</script></a></li>
-											<li><a><script>T("Minimum")</script></a></li>
+                                        	<input type="hidden" id="dvr_enc_main_image_ID" value="">
+											<li value="0"><a><script>T("Highest")</script></a></li>
+											<li value="1"><a><script>T("High")</script></a></li>
+											<li value="2"><a><script>T("Moderate")</script></a></li>
+			                                <li value="3"><a><script>T("Low")</script></a></li>
+											<li value="4"><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -430,9 +433,10 @@
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>T("Variable_rate")</script></a></li>
-											<li><a><script>T("Fixed_rate")</script></a></li>
-											<li><a><script>T("Moderate_rate")</script></a></li>
+											<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">
+                                            <li value="0"><a><script>T("Variable_rate")</script></a></li>
+											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -489,7 +493,8 @@
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>T("Video_streaming")</script></a></li>
+                                        	<input type="hidden" id="dvr_enc_sub_mode_ID" value="0">
+											<li value="0"><a><script>T("Video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -513,11 +518,12 @@
 										<span id="dvr_enc_sub_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a><script>T("Highest")</script></a></li>
-											<li><a><script>T("High")</script></a></li>
-											<li><a><script>T("Moderate")</script></a></li>
-			                                <li><a><script>T("Low")</script></a></li>
-											<li><a><script>T("Minimum")</script></a></li>
+                                        	<input type="hidden" id="dvr_enc_sub_image_ID" value="">
+											<li value="0"><a><script>T("Highest")</script></a></li>
+											<li value="1"><a><script>T("High")</script></a></li>
+											<li value="2"><a><script>T("Moderate")</script></a></li>
+			                                <li value="3"><a><script>T("Low")</script></a></li>
+											<li value="4"><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -529,9 +535,10 @@
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><a><script>T("Variable_rate")</script></a></li>
-											<li><a><script>T("Fixed_rate")</script></a></li>
-											<li><a><script>T("Moderate_rate")</script></a></li>
+                                        	<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">
+											<li value="0"><a><script>T("Variable_rate")</script></a></li>
+											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -961,11 +968,12 @@
 			                                    <span id="dvr_detect_sens"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-			                                        <li><a><script>T("Highest")</script></a></li>
-			                                        <li><a><script>T("High")</script></a></li>
-			                                        <li><a><script>T("Moderate")</script></a></li>
-			                                        <li><a><script>T("Low")</script></a></li>
-			                                        <li><a><script>T("Minimum")</script></a></li>
+                                                	<input type="hidden" id="dvr_detect_sens_ID" value="" />
+			                                        <li value="0"><a><script>T("Highest")</script></a></li>
+			                                        <li value="1"><a><script>T("High")</script></a></li>
+			                                        <li value="2"><a><script>T("Moderate")</script></a></li>
+			                                        <li value="3"><a><script>T("Low")</script></a></li>
+			                                        <li value="4"><a><script>T("Minimum")</script></a></li>
 			                                    </ul>
 			                                </td>
 							<td></td>
@@ -980,14 +988,15 @@
 										<span id="dvr_detect_mduration"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a>1s</a></li>
-											<li><a>2s</a></li>
-											<li><a>3s</a></li>
-			                                <li><a>4s</a></li>
-											<li><a>5s</a></li>
-											<li><a>8s</a></li>
-			                                <li><a>10s</a></li>
-											<li><a><script>T("Continuous")</script></a></li>
+                                        	<input type="hidden" id="dvr_detect_mduration_ID" value="" />
+											<li value="0"><a>1s</a></li>
+											<li value="1"><a>2s</a></li>
+											<li value="2"><a>3s</a></li>
+			                                <li value="3"><a>4s</a></li>
+											<li value="4"><a>5s</a></li>
+											<li value="5"><a>8s</a></li>
+			                                <li value="6"><a>10s</a></li>
+											<li value="7"><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -1007,14 +1016,15 @@
 										<span id="dvr_detect_vduration"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-											<li><a>1s</a></li>
-											<li><a>2s</a></li>
-											<li><a>3s</a></li>
-			                                <li><a>4s</a></li>
-											<li><a>5s</a></li>
-											<li><a>8s</a></li>
-			                                <li><a>10s</a></li>
-											<li><a><script>T("Continuous")</script></a></li>
+                                        	<input type="hidden" id="dvr_detect_vduration_ID" value="" />
+											<li value="0"><a>1s</a></li>
+											<li value="1"><a>2s</a></li>
+											<li value="2"><a>3s</a></li>
+			                                <li value="3"><a>4s</a></li>
+											<li value="4"><a>5s</a></li>
+											<li value="5"><a>8s</a></li>
+			                                <li value="6"><a>10s</a></li>
+											<li value="7"><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -1105,9 +1115,10 @@
 			                                    <span id="dvr_alarm_opermode"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-			                                        <li><a><script>T("close")</script></a></li>
-			                                        <li><a><script>T("Normally_open")</script></a></li>
-			                                        <li><a><script>T("Normally_closed")</script></a></li>
+                                                	<input type="hidden" id="dvr_alarm_opermode_ID" value="" />
+			                                        <li value="0"><a><script>T("_close")</script></a></li>
+			                                        <li value="1"><a><script>T("Normally_open")</script></a></li>
+			                                        <li value="2"><a><script>T("Normally_closed")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>
@@ -1118,14 +1129,15 @@
 										<span id="dvr_alarm_duration"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-			                                        <li><a>1s</a></li>
-			                                        <li><a>2s</a></li>
-			                                        <li><a>3s</a></li>
-			                                        <li><a>4s</a></li>
-			                                        <li><a>5s</a></li>
-			                                        <li><a>8s</a></li>
-			                                        <li><a>10s</a></li>
-			                                        <li><a><script>T("Continuous")</script></a></li>
+                                                	<input type="hidden" id="dvr_alarm_duration_ID" value="" />
+			                                        <li value="0"><a>1s</a></li>
+			                                        <li value="1"><a>2s</a></li>
+			                                        <li value="2"><a>3s</a></li>
+			                                        <li value="3"><a>4s</a></li>
+			                                        <li value="4"><a>5s</a></li>
+			                                        <li value="5"><a>8s</a></li>
+			                                        <li value="6"><a>10s</a></li>
+			                                        <li value="7"><a><script>T("Continuous")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>
@@ -1243,13 +1255,14 @@
 							<td><script>T("Stream")</script></td>
 							<td>
 								<div class="select" style="width:133px;" id="encode_id">
-									<span id="ipc_enc_stream">101</span>
+									<span id="ipc_enc_stream">主码流</span>
 									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_stream_sel" class="option">
-									<li><a>101</a></li>
-									<li><a>102</a></li>
-									<li><a>103</a></li>
+                                	<input id="ipc_enc_stream_ID" value="101" type="hidden" />
+									<li value="101"><a onclick="encode_load_content();" href="javascript:;">主码流</a></li>
+									<li value="102"><a onclick="encode_load_content();" href="javascript:;">辅码流1</a></li>
+									<li value="103"><a onclick="encode_load_content();" href="javascript:;">辅码流2（手机）</a></li>
 								</ul>
 							</td><td></td>
 						</tr>
@@ -1460,19 +1473,19 @@
 									<li><a>time.nist.gov</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>T("Cancel")</script></div></td></tr>
+			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>T("Save")</script></div></td></tr>
 				</table>
 			                </div>
 			                <div class="switch ipc_list">
 					<table>
 						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onClick="reboot()"><script>T("Restarting")</script></div></td></tr>
 			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onClick="default_setting()"><script>T("Restore")</script></div></td></tr>
-			                       <tr><td><script>T("Select_the_upgrade_file")</script></td>
+			                       <!--<tr><td><script>T("Select_the_upgrade_file")</script></td>
 			                        <td>
 			                        <div id="swfupload-control"></div>
 			                            <span id="txt_status"></span><span id="txt_progress"></span><input type="button" id="button_upload" /><br />
 			                            <span id="txt_upgrade_status"></span><span id="txt_upgrade_progress"></span>
-			                        </td></tr>
+			                        </td></tr>-->
 			                    </table>
 			                </div>
 			</div>
