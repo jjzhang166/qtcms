@@ -52,7 +52,7 @@
 	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
 	.tb2 thead td{ text-align:center; background:#282828;}
 	.nav1 li{width: auto; padding: 0 4px; height: auto; margin:1px;}
-	.switch{padding: 0 10px; top:34px;}
+	.switch{padding: 0 10px; top:40px;}
 	table h5{ display: inline;}
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
@@ -85,7 +85,7 @@
 			<div id="test" style="float:left;"></div> 	
 			<div id="top_window_act">
 				<ul>
-					<li id="app_close_window"><a class="hover" title="close" style="background-position: -336px -104px;"></a></li>
+					<li id="app_close_window"><a class="hover" title="Close" style="background-position: -336px -104px;"></a></li>
 					<!-- <li id="app_maxsize"><a class="hover" title="max" style="background-position: -336px -78px;"></a></li> -->
 					<li id="app_minsize"><a class="hover" title="min" style="background-position: -336px -52px;"></a></li>
 					<!-- <li id="app_userlock"><a class="toggle hover" title="lock"></a></li> -->
@@ -112,7 +112,7 @@
 				<li class="setViewNum hover" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
 				<li class="setViewNum hover" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
 				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Client_settings")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li>
+				<!-- <li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> -->
 				<li class="setViewNum hover" style="background-position:0 -200px;"><script>T("Version")</script></li>
 			</ul>
 		</div>
@@ -193,7 +193,7 @@
 					<li onclick="dvr_load('dvr_enc_chn_sel');"><script>T("Encoding_settings")</script></li>
 					<li onclick="dvr_load('dvr_record_chn_sel');"><script>T("Video_settings")</script></li>
 					<li onclick="dvr_load('dvr_screen_chn_sel');"style="clear:both;"><script>T("Screen_settings")</script></li>
-					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>T("Video_detection_settings")</script></li>
+					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>T("PTZ_settings")</script></li>
 					<li onclick="dvr_load('dvr_ptz_chn_sel');"><script>T("Video_detection_settings")</script></li>
 					<li onclick="dvr_load('dvr_alarm_chn_sel');"><script>T("Alarm_settings")</script></li>
 				</ul>
@@ -205,9 +205,9 @@
 						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" /></td></tr>
 						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" /></td></tr>
 						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" /></td></tr>
-						<tr><td><script>T("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
+						<!-- <tr><td><script>T("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
 						<tr><td><script>T("Alarm_input")</script></td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
-						<tr><td><script>T("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr>
+						<tr><td><script>T("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr> -->
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -226,9 +226,9 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><input id="dvr_common_keypad" type="checkbox" /><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox" /><script>T("Keypad_Lock")</script></td></tr>
+						<tr><td><input id="dvr_common_keypad" type="checkbox" /><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox" /><script>T("Keypad_sound")</script></td></tr>
 						<tr>
-							<td><script>T("Recording_system")</script></td>
+							<td><script>T("Video_Format")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
 									<span id="dvr_common_standard"></span>
@@ -315,7 +315,7 @@
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" />OpenDH</td></tr>
+							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" /><script>T("Open_DHCP")</script></td></tr>
 							 		<tr><td ><script>T("IP_address")</script></td><td><input id="dvr_ip_addr" type="text"/></td></tr>
 							 		<tr><td><script>T("Subnet_Mask")</script></td><td><input id="dvr_subnet_mask" type="text"/></td></tr>
 							 		<tr><td><script>T("Network_Address")</script></td><td><input id="dvr_network_addr" type="text"/></td></tr>
@@ -324,7 +324,7 @@
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
-						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" />OpenDD</td></tr>
+						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" /><script>T("Open_DD")</script></td></tr>
 						 			<tr><td><script>T("Provider")</script></td><td><input id="dvr_supplier" type="text"/></td></tr>
 						 			<tr><td><script>T("Domain")</script></td><td><input id="dvr_domain" type="text"/></td></tr>
 						 			<tr><td><script>T("Username")</script></td><td><input id="dvr_user_DD" type="text"/></td></tr>
@@ -441,7 +441,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>T("Stream_bit_rate")</script></td>
+									<td><script>T("Stream_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_main_bitvalue"></span>
@@ -543,7 +543,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><script>T("Stream_bit_rate")</script></td>
+									<td><script>T("Stream_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
 											<span id="dvr_enc_sub_bitvalue"></span>
@@ -665,8 +665,13 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td class="td1"></td><td style="width:200px;"><script>T("Start_Time")</script>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>T("End_Time")</script></td><td colspan="2"><script>T("Timing")</script><span style="margin-left:40px;"><script>T("Timing")</script></span><span style="margin-left:40px;"><script>T("Timing")</script></span></td></tr>
-						<tr><td class="td1"><span><script>T("Time")</script></span> 1</td>
+						<tr><td class="td1"></td>
+						<td style="width:200px;"><script>T("Start_Time")</script>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>T("End_Time")</script></td>
+						<td colspan="2">
+							<script>T("Timing")</script>
+							<span style="margin-left:60px;"><script>T("Mobile")</script></span>
+							<span style="margin-left:50px;"><script>T("Warning")</script></span></td></tr>
+						<tr><td class="td1"><span><script>T("Time_d")</script></span> 1</td>
 			                        <td>
 			                            <input id="dvr_record_begin_0" type="text" class="iput1" />
 			                            <input id="dvr_record_end_0" type="text" class="iput1" />
@@ -676,7 +681,7 @@
 			                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox"/>
 			                        </td></tr>
-						<tr><td class="td1"><span><script>T("Time")</script></span> 2</td>
+						<tr><td class="td1"><span><script>T("Time_d")</script></span> 2</td>
 			                        <td>
 			                            <input id="dvr_record_begin_1" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_1" type="text" class="iput1" /></td>
@@ -684,7 +689,7 @@
 			                            <input id="dvr_record_types_1_0" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_2" class="chk1" type="checkbox"/></td></tr>
-						<tr><td class="td1"><span><script>T("Time")</script></span> 3</td>
+						<tr><td class="td1"><span><script>T("Time_d")</script></span> 3</td>
 			                        <td>
 			                            <input id="dvr_record_begin_2" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_2" type="text" class="iput1" />
@@ -694,7 +699,7 @@
 			                            <input id="dvr_record_types_2_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_2_2" class="chk1" type="checkbox"/>
 			                        </td></tr>
-						<tr><td class="td1"><span><script>T("Time")</script></span> 4</td>
+						<tr><td class="td1"><span><script>T("Time_d")</script></span> 4</td>
 			                        <td>
 			                            <input id="dvr_record_begin_3" type="text" style="float: left;width:78px;" />
 			                            <input id="dvr_record_end_3" type="text" class="iput1" />
@@ -1094,7 +1099,7 @@
 				</div>	
 				<div class="switch dvr_list">
 					<table class="tb1">
-						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/><script>T("Alert")</script></td></tr>
+						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/><script>T("Buzzer")</script></td></tr>
 						<tr>
 							<td><script>T("Channel")</script></td>
 							<td>
@@ -1116,7 +1121,7 @@
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
                                                 	<input type="hidden" id="dvr_alarm_opermode_ID" value="" />
-			                                        <li value="0"><a><script>T("_close")</script></a></li>
+			                                        <li value="0"><a><script>T("Close")</script></a></li>
 			                                        <li value="1"><a><script>T("Normally_open")</script></a></li>
 			                                        <li value="2"><a><script>T("Normally_closed")</script></a></li>
 			                                    </ul>
@@ -1462,7 +1467,7 @@
 			                    <tr><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>
 			                    <tr><td><script>T("Computer_time")</script></td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()"><script>T("Computer_time")</script></div></td></tr>
 			                    <tr><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr>
-			                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" /><script>T("Open")</script><input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked /><script>T("Open")</script></td><td></td></tr>
+			                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" /><script>T("Open")</script><input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked /><script>T("Close")</script></td><td></td></tr>
 			                    <tr><td><script>T("nternet_server")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span id="time_ntp__server" name="ntp_server"></span>
@@ -1647,7 +1652,7 @@
 					</table>
 				</div>
 			</div>
-<div style="position: relative;" class="right_content">
+<!-- <div style="position: relative;" class="right_content">
 <table id="UserMan">
 	<tr>
 		<td style="width:300px;">
@@ -1686,7 +1691,7 @@
 	</tr>
 </table>
 </div> -->
-			<div style="position: relative;" class="right_content">
+	<div style="position: relative;" class="right_content">
 			<div class="switch" style="display:block;top:0;">
 				<table>
 					<tr><td><script>T("The_current_version")</script></td><td><input disabled="disabled" type="text" value="cms_v1.1.4" /></td></tr>

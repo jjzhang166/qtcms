@@ -222,7 +222,6 @@ h4{
 .ope_list li{
 	cursor: pointer;
 	text-align: center;
-	font-size: 12px;
 	display: block;
 	width: 100%;
 	float: left;
@@ -231,7 +230,7 @@ h4{
 .ope_list{ position: absolute; width: auto;}
 
 .ope_list .ope_listAct{
-	background-position:0 -16px;
+	background-position:0 -24px;
 }
 #PTZ_control .switch{
 	left: 0;

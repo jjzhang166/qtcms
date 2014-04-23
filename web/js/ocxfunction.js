@@ -3,8 +3,6 @@ var oCommonLibrary;
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
-		//分组列表;
-		groupList2Ui();
 		//区域列表;
 		areaList2Ui(0);
 		//多语言提示转换
@@ -13,12 +11,9 @@ var oCommonLibrary;
 		})
 	})
 	function refresh(data){ 
-		//分组列表;
-		groupList2Ui();
 		//区域列表;
-		areaList2Ui(0);
-		//跳转同步播放控件的状态到备列表和
-
+		try{areaList2Ui(key ? key : 0);}catch(e){}
+		
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
 			for(var i=0;i<64;i++){
@@ -32,10 +27,13 @@ var oCommonLibrary;
 				}
 			}	
 		}else if(data.Dsturl.indexOf('play_back') != -1){
+
 			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
+			//分组列表;
+			groupList2Ui();
+
 			set_contentMax();
-			areaList2Ui(key);
 			if(key == 0){
 				searchFlush();
 			}else{
@@ -46,7 +44,6 @@ var oCommonLibrary;
 	
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num){ //区域菜单输出
-	
 		var obj = $('ul.filetree').not('[id]').html('').eq(num);
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
@@ -75,6 +72,7 @@ var oCommonLibrary;
 				}
 			}
 		}
+		obj.treeview();
 	}
 	
 	function deviceList2Ui(areaid,num){ //设备菜单输出
@@ -116,16 +114,18 @@ var oCommonLibrary;
 		}
 	}
 	function groupList2Ui(){   //分组菜单输出
+		var obj = $('#group_0').html('');
 		var groupList = oCommonLibrary.GetGroupList();
 		$('#group_0').data('data',{'group_id':'0','group_name':lang.Grouping,'pid':'0','pareaname':'root'}).html('');
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
-			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo('#group_0');
+			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo(obj);
 			add.find('span.group').data('data',{'group_id':id,'group_name':name});
-			$('ul.filetree:eq(1)').treeview({add:add});
+			obj.treeview({add:add});
 			groupChannelList2Ui(id);
 		}
+		obj.treeview();
 	}
 	function groupChannelList2Ui(groupId){  //分组下通道菜单输出
 		var chlList = oCommonLibrary.GetGroupChannelList(groupId);

@@ -17,9 +17,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		ViewMax();
 	    
-	    $('ul.filetree').treeview();		
+	   //$('ul.filetree').treeview();		
 		
-		$('div.dev_list').eq(1).hide();
+		//$('div.dev_list').eq(1).hide();
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 			var action = $(this).attr('class').split(' ')[0];
@@ -160,12 +160,20 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
 				SyncSoundSli(oView.enable);*/
-
 				if(index){
+					oPlayBack.style.height='0px';
+					oPlayBack.GroupStop();
+					oPlayBack.GroupSpeedNormal();
+					oPlaybackLocl.style.height='100%';
 					$('#type').next('ul.option').find('li:gt(1)').hide();
 				}else{
-					$('#type').next('ul.option').find('li').show();	
-				}	
+					oPlaybackLocl.style.height='0px';
+					oPlaybackLocl.GroupStop();
+					oPlaybackLocl.GroupSpeedNormal();
+					oPlayBack.style.height='100%';
+					$('#type').next('ul.option').find('li').show();
+				}
+
 				//保存当前选中的设备
 				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
@@ -441,18 +449,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		$('#channelvideo div.video').remove();
 
 		recFile=[];
-
-		if(bool){
-			oPlayBack.style.height='0px';
-			oPlayBack.GroupStop();
-			oPlayBack.GroupSpeedNormal();
-			oPlaybackLocl.style.height='100%';
-		}else{
-			oPlaybackLocl.style.height='0px';
-			oPlaybackLocl.GroupStop();
-			oPlaybackLocl.GroupSpeedNormal();
-			oPlayBack.style.height='100%';
-		}
 
 		dragStopMove();
 

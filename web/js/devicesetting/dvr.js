@@ -1368,7 +1368,7 @@ function dvr_alarm_data2ui(dvr_selected_chn)
 	$('#dvr_alarm_opermode_ID').val(dvr_data.juan.envload.sensor[dvr_selected_chn].mode);
 	switch(dvr_data.juan.envload.sensor[dvr_selected_chn].mode)
 	{
-		case 0:	$("#dvr_alarm_opermode")[0].innerHTML = lang._close;break;
+		case 0:	$("#dvr_alarm_opermode")[0].innerHTML = lang.Close;break;
 		case 1:	$("#dvr_alarm_opermode")[0].innerHTML = lang.Normally_open;break;
 		case 2:	$("#dvr_alarm_opermode")[0].innerHTML = lang.Normally_closed;break;
 		default: break;

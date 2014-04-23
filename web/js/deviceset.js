@@ -1,12 +1,15 @@
 var oSearchOcx,key=0;
 	$(function(){
 
+		//分组列表;
+		groupList2Ui();
+		
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 		
-		$('ul.filetree').treeview().find('span.channel').click(function(){
+		/*$('ul.filetree').treeview().find('span.channel').click(function(){
 			$(this).toggleClass('channel_1')
-		});
+		});*/
 
 		oTreeWarp.hide();
 
@@ -214,7 +217,7 @@ var oSearchOcx,key=0;
 			$('#username_list_ID').val(oSelected.join(','));
 		})
 			
-		$('ul.filetree:eq(2)').each(function(){ 
+		$('ul.filetree').each(function(){ 
 			var warp = $(this)
 			$(this).on('click','span.device',function(){ 
 				warp.find('span.device').removeClass('sel');

@@ -3,15 +3,18 @@ var winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnect
 var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down];
 	$(function(){
 		
+		//分组列表;
+		groupList2Ui();
+
 		oPreView= $('#previewWindows')[0];
 		
 		oDiv = $('div.dev_list');
 
 		var oAs = $('ul.dev_list_btn a');
 	    
-		$(window).off();
+		//$(window).off();
 
-	    $('ul.filetree').treeview().not(':eq(0)').parent('div.dev_list').hide();
+	    $('div.dev_list:eq(1)').hide();
 		
 		$('.hover').each(function(){
 			var action = $(this).attr('class').split(' ')[0];
