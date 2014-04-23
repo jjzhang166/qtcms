@@ -922,6 +922,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			}
 		}
 		adddev(dataIndex);	
+		$('ul.filetree').treeview();
 	}
 	function AddDeviceAllSuccess(data){
 		AddDeviceDoubleSuccess(data);
@@ -965,6 +966,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		adddev(devData2);
 		$('#esee_'+data.name).remove();
 		$('#adddevicedouble_ID').val('');
+		$('ul.filetree').treeview();
 	}
 
 	function adddev(data){

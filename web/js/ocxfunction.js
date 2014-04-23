@@ -90,8 +90,10 @@ var oCommonLibrary;
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
 			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
-			$('ul.filetree:eq('+num+')').treeview({add:add});	
-			devChannelList2Ui(id,num);
+			$('ul.filetree:eq('+num+')').treeview({add:add});
+			if(num != 1){
+				devChannelList2Ui(id,num);
+			}
 		}
 	}
 	function devChannelList2Ui(devid,num){ //设备下通道菜单输出
