@@ -16,6 +16,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		oPlaybackLocl.vol = 50;*/
 
 		ViewMax();
+
+		bFullScreen = false;
 	    
 	   //$('ul.filetree').treeview();		
 		

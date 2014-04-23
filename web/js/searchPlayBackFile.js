@@ -94,7 +94,7 @@ function setDevData2ocx(){
 			};
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
-			}		
+			}
 		}
 	}
 	function showRecProgress(now){  //回访检索文件进度

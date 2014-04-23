@@ -57,7 +57,9 @@ function ScreenShot(){  // 截屏
 	}
 	writeActionLog(str);
 }
-var bFullScreen=oCommonLibrary.getAutoFullscreen();
+
+var bFullScreen = false;
+
 function viewFullScreen(){
 	var obj = $('#viewWarp');
 	if(bFullScreen){

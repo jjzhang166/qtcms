@@ -1,4 +1,3 @@
-
 var oCommonLibrary;
 	$(function(){ 
 		//return false;
@@ -16,8 +15,8 @@ var oCommonLibrary;
 	})
 	function refresh(data){ 
 		//区域列表;
-		try{areaList2Ui(key ? key : 0);}catch(e){}
-		
+		areaList2Ui(0);
+
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
 			for(var i=0;i<64;i++){
@@ -31,11 +30,11 @@ var oCommonLibrary;
 				}
 			}	
 		}else if(data.Dsturl.indexOf('play_back') != -1){
-
 			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
 			//分组列表;
 			groupList2Ui();
+			areaList2Ui(key);
 
 			set_contentMax();
 			if(key == 0){
