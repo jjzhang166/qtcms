@@ -5,6 +5,10 @@ var oCommonLibrary;
 		oCommonLibrary = document.getElementById('commonLibrary');
 		//区域列表;
 		areaList2Ui(0);
+		//分组列表;
+		groupList2Ui();
+
+		$('ul.filetree').treeview();
 		//多语言提示转换
 		$('li[title],div[title],a[title],span[title]').each(function(){
 			$(this).attr('title',lang[$(this).attr('title')]);
@@ -72,7 +76,6 @@ var oCommonLibrary;
 				}
 			}
 		}
-		obj.treeview();
 	}
 	
 	function deviceList2Ui(areaid,num){ //设备菜单输出
@@ -115,6 +118,9 @@ var oCommonLibrary;
 	}
 	function groupList2Ui(){   //分组菜单输出
 		var obj = $('#group_0').html('');
+		if(!obj[0]){
+			return;
+		}
 		var groupList = oCommonLibrary.GetGroupList();
 		$('#group_0').data('data',{'group_id':'0','group_name':lang.Grouping,'pid':'0','pareaname':'root'}).html('');
 		for( i in groupList){
@@ -125,7 +131,6 @@ var oCommonLibrary;
 			obj.treeview({add:add});
 			groupChannelList2Ui(id);
 		}
-		obj.treeview();
 	}
 	function groupChannelList2Ui(groupId){  //分组下通道菜单输出
 		var chlList = oCommonLibrary.GetGroupChannelList(groupId);

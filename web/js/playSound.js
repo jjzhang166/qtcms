@@ -57,18 +57,21 @@ function ScreenShot(){  // 截屏
 	}
 	writeActionLog(str);
 }
+var bFullScreen=oCommonLibrary.getAutoFullscreen();
 function viewFullScreen(){
 	var obj = $('#viewWarp');
-	if(obj.css('top') == '0px'){
+	if(bFullScreen){
 		obj.css({
 			top:'78px'
 		})
 		ViewMax();
+		bFullScreen = false;
 	}else{
 		obj.css({
 			top:'0',
 			width:'100%',
-			height:$(window).height()
+			height:'100%'
 		})
+		bFullScreen = true;
 	}
 }

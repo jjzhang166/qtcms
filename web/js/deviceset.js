@@ -1,8 +1,5 @@
 var oSearchOcx,key=0;
 	$(function(){
-
-		//分组列表;
-		groupList2Ui();
 		
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
@@ -38,7 +35,7 @@ var oSearchOcx,key=0;
 			$(this).css('background','#ccc');
 		})
 
-		$('div.dev_list:lt(2)').each(function(index){
+		$('div.dev_list:lt(3)').each(function(index){
 			var This = $(this);
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
@@ -47,14 +44,16 @@ var oSearchOcx,key=0;
 					alert(obj.attr('id'));
 				}*/
 				if(event.which == 1){
-					if(obj.hasClass('channel') && obj[0].nodeName == 'SPAN'){
-						This.find('span').not('span.channel').removeClass('sel');
-						if(!$('div.dev_list:eq(1) span.sel.group')[0]){
-							$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
-						}
+					if(obj[0].nodeName == 'SPAN'){
 						obj.toggleClass('sel');
-					}else{ 
-						This.find('span').removeClass('sel');
+						if(obj.hasClass('channel')){
+							This.find('span').not('span.channel').removeClass('sel');
+							if(!$('div.dev_list:eq(1) span.sel.group')[0]){
+								$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
+							}
+						}else{ 
+							This.find('span').not(obj).removeClass('sel');
+						}	
 					}
 					//SetChannelIntoGroupData();
 				}
@@ -217,13 +216,13 @@ var oSearchOcx,key=0;
 			$('#username_list_ID').val(oSelected.join(','));
 		})
 			
-		$('ul.filetree').each(function(){ 
+		/*$('ul.filetree').each(function(){ 
 			var warp = $(this)
-			$(this).on('click','span.device',function(){ 
+			$(this).on('click','span.device,span.group',function(){ 
 				warp.find('span.device').removeClass('sel');
 				$(this).addClass('sel');
 			})
-		})
+		})*/
 
 		/*$('#group_0 span.channel').click(function(){
 			var groupOutChlID =[];

@@ -3,9 +3,6 @@ var winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnect
 var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down];
 	$(function(){
 		
-		//分组列表;
-		groupList2Ui();
-
 		oPreView= $('#previewWindows')[0];
 		
 		oDiv = $('div.dev_list');
@@ -30,10 +27,6 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 				oDiv.eq(index).show();
 			})
 		})
-		//控件最大化
-		ViewMax();
-		
-		$(window).resize(ViewMax)
  		//打开通道
 		oDiv.on('dblclick','span.channel',function(){ 
 			/*debugData($(this).data('data'));*/
@@ -121,7 +114,6 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			}
 
 		})
-
 		/*//云台控制速度
 		$('#PTZ_control .ptz_speed span').each(function(index){
 			$(this).click(function(){
@@ -159,6 +151,16 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 				}
 			}
 		})*/
+		
+				//控件最大化
+		ViewMax();
+		
+		//$(window).resize(ViewMax);
+
+		if(bFullScreen){
+			viewFullScreen();
+		}
+
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
@@ -200,6 +202,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			height:H-240,
 			top:78
 		});
+
 		var oLeft= $('#search_device').css({
 			left:oView.width(),
 			height:oView.height()+123
@@ -213,7 +216,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		});
 		
 		$('#actionLog').width(oView.width()-10);
-		$('#foot').css('top',oView.height()+212)
+		$('#foot').css('top',oView.height()+212);
 	}
 
 	function CloseWind(wind,dev_id){ 
