@@ -481,7 +481,7 @@ void settingsActivity::OnAddDeviceDouble()
 	if(NULL==Idevice||NULL==Iarea){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 
@@ -494,7 +494,7 @@ void settingsActivity::OnAddDeviceDouble()
 	if(0==itemList.count()){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
@@ -507,7 +507,7 @@ void settingsActivity::OnAddDeviceDouble()
 	if(false==nRet_bool){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
@@ -585,7 +585,7 @@ void settingsActivity::OnAddDeviceDouble()
 	if(NULL!=Iarea){Iarea->Release();}
 	EP_ADD_PARAM(bcitem,"total",total);
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
-	EventProcCall("AddDeviceFeedBack",bcitem);
+	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 }
 //void settingsActivity::OnAddDeviceDouble()
 //{
@@ -903,7 +903,7 @@ void settingsActivity::OnAddDevice()
 	if(NULL==Idevice||NULL==Iarea){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
@@ -928,7 +928,7 @@ void settingsActivity::OnAddDevice()
 	if(false==nRet_bool){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccessSuccess",bcitem);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
@@ -947,7 +947,7 @@ void settingsActivity::OnAddDevice()
 	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		if(NULL!=Idevice){Idevice->Release();}
 		if(NULL!=Iarea){Iarea->Release();}
 		return;
@@ -956,7 +956,7 @@ void settingsActivity::OnAddDevice()
 		if(sAddress.isNull()||port.isNull()||http.isNull()){
 			EP_ADD_PARAM(bcitem,"total",total);
 			EP_ADD_PARAM(bcitem,"succeedId",devId);
-			EventProcCall("AddDeviceFeedBack",bcitem);
+			EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 			if(NULL!=Idevice){Idevice->Release();}
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
@@ -965,7 +965,7 @@ void settingsActivity::OnAddDevice()
 		if(-1==nRet_id){
 			EP_ADD_PARAM(bcitem,"total",total);
 			EP_ADD_PARAM(bcitem,"succeedId",devId);
-			EventProcCall("AddDeviceFeedBack",bcitem);
+			EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 			if(NULL!=Idevice){Idevice->Release();}
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
@@ -976,7 +976,7 @@ void settingsActivity::OnAddDevice()
 		if(sEseeId.isNull()){
 			EP_ADD_PARAM(bcitem,"total",total);
 			EP_ADD_PARAM(bcitem,"succeedId",devId);
-			EventProcCall("AddDeviceFeedBack",bcitem);
+			EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 			if(NULL!=Idevice){Idevice->Release();}
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
@@ -987,7 +987,7 @@ void settingsActivity::OnAddDevice()
 		}else{
 			EP_ADD_PARAM(bcitem,"total",total);
 			EP_ADD_PARAM(bcitem,"succeedId",devId);
-			EventProcCall("AddDeviceFeedBack",bcitem);
+			EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 			if(NULL!=Idevice){Idevice->Release();}
 			if(NULL!=Iarea){Iarea->Release();}
 			return;
@@ -996,16 +996,15 @@ void settingsActivity::OnAddDevice()
 
 	EP_ADD_PARAM(bcitem,"total",total);
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
-	EventProcCall("AddDeviceFeedBack",bcitem);
+	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
 	return;
 end1:
 	devId.append(QString("%1").arg(nRet_id));
-
 	EP_ADD_PARAM(bcitem,"total",1);
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
-	EventProcCall("AddDeviceFeedBack",bcitem);
+	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 	if(NULL!=Idevice){Idevice->Release();}
 	if(NULL!=Iarea){Iarea->Release();}
 	return;
@@ -2103,7 +2102,7 @@ void settingsActivity::OnAddDeviceALL()
 		m_bIsAdding=false;
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 
@@ -2119,7 +2118,7 @@ void settingsActivity::OnAddDeviceALL()
 		m_bIsAdding=false;
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 	int n;
@@ -2133,7 +2132,7 @@ void settingsActivity::OnAddDeviceALL()
 		m_bIsAdding=false;
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
-		EventProcCall("AddDeviceFeedBack",bcitem);
+		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 	total=itemList.count();
@@ -2199,7 +2198,7 @@ void settingsActivity::OnAddDeviceALL()
 	m_bIsAdding=false;
 	EP_ADD_PARAM(bcitem,"total",total);
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
-	EventProcCall("AddDeviceFeedBack",bcitem);
+	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 }
 //void settingsActivity::OnAddDeviceALL()
 //{
