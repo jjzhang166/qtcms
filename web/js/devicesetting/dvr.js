@@ -790,7 +790,11 @@ function dvr_encoding_save_content(chk_chn)
 function dvr_record_data2ui(dvr_selected_chn)
 {
 	$("#dvr_record_chn_sel0").html(dvr_selected_chn+1);
-	$("#dvr_record_week")[0].innerHTML = dvr_selected_weekday+1;
+	if(dvr_selected_weekday == 0){
+		$("#dvr_record_week")[0].innerHTML = 7;
+	}else{
+		$("#dvr_record_week")[0].innerHTML = dvr_selected_weekday;	
+	}
 	$('#dvr_record_weekday_'+dvr_selected_weekday).prop('checked',true);
 	for(var i = 0; i < 4; i++)
 	{
@@ -815,13 +819,22 @@ function dvr_record_load_content(dvr_selected_chn)
 	$('#dvr_record_week_sel').find('li').remove();
 	for(var i = 0; i < 7; i++)
 	{
-		var week =  i+1;
+		var week;
+		if(i == 0){
+			week = 7;	
+		}else{
+			week = i;
+			}
 		$('#dvr_record_week_sel').append('<li class="add_li_2"><a href="javascript:;">'+week+'</a></li>');
 	}
 	$('.add_li_2 a').each(function(index) {
 			$(this).click(function(){
 						$('#dvr_record_week').html($(this)[0].innerHTML);
-						dvr_selected_weekday = $(this)[0].innerHTML-1;
+						if($(this)[0].innerHTML == 7){
+							dvr_selected_weekday = 0;	
+						}else{
+							dvr_selected_weekday = $(this)[0].innerHTML;
+						}					
 						$('.chk').prop('checked',false);
 						$('#dvr_record_weekday_'+dvr_selected_weekday).prop('checked',true);
 						dvr_record_load_content(dvr_selected_chn);
