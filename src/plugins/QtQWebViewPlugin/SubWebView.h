@@ -13,6 +13,7 @@ public:
 public:
 	QString EventProcsScripte(QString sEvent,QVariantMap eventParam);
 	bool IsLoad;
+	static volatile bool bIsbuilding;
 protected:
 	virtual void keyPressEvent(QKeyEvent* ev);
 signals:

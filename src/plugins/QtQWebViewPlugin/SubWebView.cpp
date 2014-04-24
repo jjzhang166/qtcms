@@ -5,7 +5,7 @@
 #include <libpcom.h>
 #include <QSettings>
 
-
+volatile bool SubWebView::bIsbuilding=false;
 SubWebView::SubWebView(QString nurl,QSize mSize,QWidget *parent):QWebView(parent),
 	m_url(nurl),
 	IsLoad(false),
@@ -117,6 +117,10 @@ void SubWebView::OnstatusBarMessage( const QString &text )
 	qDebug()<<text;
 	statusBarMessage.clear();
 	statusBarMessage.append(text);
+	if (text.size()<5||bIsbuilding==true)
+	{
+		return;
+	}
 	emit LoadOrChangeUrl(text);
 }
 

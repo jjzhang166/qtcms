@@ -8,6 +8,7 @@
 #include <QDomDocument>
 #include <QWidget>
 #include <QObject>
+#include <QMutex>
 
 class QtQWebView:public QWidget,
 	public QWebPluginFWBase

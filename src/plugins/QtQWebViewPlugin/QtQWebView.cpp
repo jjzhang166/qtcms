@@ -23,6 +23,11 @@ QtQWebView::~QtQWebView()
 
 void QtQWebView::LoadNewPage( QString url )
 {
+	if (SubWebView::bIsbuilding==true)
+	{
+		return;
+	}
+	SubWebView::bIsbuilding=true;
 	QList<tagViewPage>::const_iterator ite;
 	for (ite=m_ViewPageList.constBegin();ite!=m_ViewPageList.constEnd();++ite)
 	{
@@ -51,6 +56,7 @@ void QtQWebView::LoadNewPage( QString url )
 			eventloop.exec();
 			QWidget *pa=this->parentWidget();
 			((QWebView*)pa)->hide();
+			SubWebView::bIsbuilding=false;
 			return;
 		}
 	}
@@ -58,6 +64,7 @@ void QtQWebView::LoadNewPage( QString url )
 	m_tagViewPage.m_SubWebView=new SubWebView(url,PageSize);
 	if (NULL==m_tagViewPage.m_SubWebView)
 	{
+		SubWebView::bIsbuilding=false;
 		return;
 	}
 	connect(m_tagViewPage.m_SubWebView,SIGNAL(LoadOrChangeUrl(const QString &)),this,SLOT(LoadNewPageFromViewSignal(const QString &)));
@@ -80,12 +87,12 @@ void QtQWebView::LoadNewPage( QString url )
 	((QWebView*)pa)->hide();
 	m_tagViewPage.url = url;
 	m_ViewPageList.append(m_tagViewPage);
-
+	SubWebView::bIsbuilding=false;
 	return;
 }
 
 void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
-{
+{	SubWebView::bIsbuilding=true;
 	QDomDocument ConFile;
 	ConFile.setContent(text);
 	QDomNode pageaction=ConFile.elementsByTagName("pageaction").at(0);
@@ -123,6 +130,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			it->m_SubWebView->hide();
 		}
 		OnRefressMessage();
+		SubWebView::bIsbuilding=false;
 		return;
 	}
 
@@ -137,6 +145,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			QWidget *pa=this->parentWidget();
 			((QWebView*)pa)->show();
 			OnRefressMessage();
+			SubWebView::bIsbuilding=false;
 			return;
 		}
 	}
@@ -192,6 +201,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 				ite->m_SubWebView->hide();
 			}
 		}
+		SubWebView::bIsbuilding=false;
 		return;
 	}
 	//当前页面重新加载目的页面
@@ -210,6 +220,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			}
 		}
 	}
+	SubWebView::bIsbuilding=false;
 	return;
 }
 
