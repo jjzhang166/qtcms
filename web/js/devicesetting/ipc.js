@@ -174,9 +174,9 @@ function encode_load()
 				$('#ipc_enc_resolutionWidth').val(data.resolutionWidth);
 				$('#ipc_enc_resolutionHeight').val(data.resolutionHeight);
 				if(data.bitRateControlType == 'CBR'){
-					$('#ipc_enc_BitRateControlType').html('不变');
+					$('#ipc_enc_BitRateControlType').html(lang.Unchanged);
 					}else{
-					$('#ipc_enc_BitRateControlType').html('可变');
+					$('#ipc_enc_BitRateControlType').html(lang.Variable);
 						}
 				//$('#ipc_enc_BitRateControlType').html(data.bitRateControlType);
 				$('#ipc_enc_bps').val(data.constantBitRate);
