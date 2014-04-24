@@ -469,7 +469,7 @@ void settingsActivity::OnAddDeviceDouble()
 	//==================
 	DEF_EVENT_PARAM(bcitem);
 	int total=0;
-	QStringList devId;
+	QString devId;
 
 	//==================
 
@@ -578,6 +578,7 @@ void settingsActivity::OnAddDeviceDouble()
 		}
 
 		devId.append(QString("%1").arg(nRet_id));
+		devId.append(";");
 		continue;
 	}
 
@@ -897,7 +898,7 @@ void settingsActivity::OnAddDevice()
 	//==================
 	DEF_EVENT_PARAM(bcitem);
 	int total=0;
-	QStringList devId;
+	QString devId;
 
 	//==================
 	if(NULL==Idevice||NULL==Iarea){
@@ -2092,7 +2093,7 @@ void settingsActivity::OnAddDeviceALL()
 	//==================
 	DEF_EVENT_PARAM(bcitem);
 	int total=0;
-	QStringList devId;
+	QString devId;
 
 	//==================
 
@@ -2190,6 +2191,7 @@ void settingsActivity::OnAddDeviceALL()
 			continue;
 		}
 		devId.append(QString("%1").arg(nRet_id));
+		devId.append(";");
 		continue;
 	}
 
