@@ -62,7 +62,15 @@ void div8_1::parentWindowResize( QResizeEvent *ev )
 		m_subWindows[i].move(subWidth*(ii%m_column),subHeight*(ii/m_row));
 		m_subWindows[i].resize(subWidth-1,subHeight-1);
 	}*/
-	setTotalDisplay();
+
+	if (m_singeldisplay)
+	{
+		setSingelDiaplay(NULL);
+	}
+	else
+	{
+		setTotalDisplay();
+	}
 }
 
 void div8_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
@@ -72,6 +80,7 @@ void div8_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 
 	if (!m_singeldisplay)
 	{
+		m_nCurrentPage = getSubVindowIndex(subWindow);
 		setSingelDiaplay(subWindow);
 	}
 	else
@@ -112,7 +121,7 @@ void div8_1::setSingelDiaplay(QWidget * pSubWindows)
 	m_PageSubCount = 1;
 	//m_currSubWindows = pSubWindows;
 	m_singeldisplay = true;
-	m_nCurrentPage = getSubVindowIndex(pSubWindows);
+// 	m_nCurrentPage = getSubVindowIndex(pSubWindows);
 
 	flush();
 }

@@ -192,6 +192,7 @@ void div2_2::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 			m_subWindows.at(i)->hide();
 		}
 		m_bIsMax             = true;
+		m_nCurrentPage = j;
 		m_nTotalWindowsCount = m_nSubWindowCount;
 		subWindow->setGeometry(0,
 			                    0,

@@ -94,7 +94,8 @@ void div3_3::flush()
 void div3_3::parentWindowResize( QResizeEvent *ev )
 {
     Q_UNUSED(ev);
-	ChangePosition();
+//	ChangePosition();
+	flush();
 }
 
 void div3_3::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )

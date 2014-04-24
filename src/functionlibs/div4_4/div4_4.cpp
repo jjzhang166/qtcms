@@ -63,7 +63,15 @@ void div4_4::parentWindowResize( QResizeEvent *ev )
 		m_subWindows[i].move(subWidth*(ii%m_column),subHeight*(ii/m_row));
 		m_subWindows[i].resize(subWidth-1,subHeight-1);
 	}*/
-	setTotalDisplay(NULL);
+
+	if (m_singeldisplay)
+	{
+		setSingelDiaplay(NULL);
+	}
+	else
+	{
+		setTotalDisplay(NULL);
+	}
 }
 
 void div4_4::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
@@ -73,6 +81,7 @@ void div4_4::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 
 	if (!m_singeldisplay)
 	{
+		m_nCurrentPage = getSubVindowIndex(subWindow);
 		setSingelDiaplay(subWindow);
 	}
 	else
@@ -114,7 +123,7 @@ void div4_4::setSingelDiaplay(QWidget * pSubWindows)
 	m_PageSubCount = 1;
 	//m_currSubWindows = pSubWindows;
 	m_singeldisplay = true;
-	m_nCurrentPage = getSubVindowIndex(pSubWindows);
+// 	m_nCurrentPage = getSubVindowIndex(pSubWindows);
 
 	//QState state1 ;
 	//state1.assignProperty(pSubWindows,"geometry",QRect(0,0,m_parentSize.width(),m_parentSize.height()));
@@ -134,11 +143,11 @@ void div4_4::setTotalDisplay(QWidget * pSubWindow)
 	//m_currSubWindows = NULL;
 	m_singeldisplay = false;
 	m_nCurrentPage = m_nCurrentPage/m_PageSubCount;
-	if(pSubWindow)
-	{
-		int index = getSubVindowIndex(pSubWindow);
-		if (index!=-1)
-		{
+// 	if(pSubWindow)
+// 	{
+// 		int index = getSubVindowIndex(pSubWindow);
+// 		if (index!=-1)
+// 		{
 //			int subWidth = m_parentSize.width()/m_column;
 //			int subHeight = m_parentSize.height()/m_row;
 //			int indexfirst = m_PageSubCount*m_nCurrentPage;
@@ -151,9 +160,9 @@ void div4_4::setTotalDisplay(QWidget * pSubWindow)
 			//ani->setDuration(300);
 			//ani->setEasingCurve(QEasingCurve::OutSine);
 			//ani->start(QAbstractAnimation::DeleteWhenStopped);
-		}
+// 		}
 		
-	}
+//	}
 	
 
 	flush();

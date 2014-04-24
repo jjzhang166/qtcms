@@ -56,6 +56,7 @@ private:
 	bool m_singeldisplay;
 	QSize m_parentSize;
 	//QWidget * m_currSubWindows;
+	int m_keyPage;
 
 	int getSubVindowIndex(QWidget * pSubWindow);
 	//void adjustSubWindow(int index);

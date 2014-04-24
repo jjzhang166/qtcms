@@ -113,8 +113,6 @@ void div5_5::parentWindowResize( QResizeEvent *ev )
 {
 	if (m_nTotalWindowsCount == m_nSubWindowCount)
 	{
-		m_subWindows.at(m_nCurrentPage)->resize(ev->size());
-		m_subWindows.at(m_nCurrentPage)->show();
 		
 		for (int i = 0; i < m_nSubWindowCount ; i++)
 		{
@@ -125,6 +123,9 @@ void div5_5::parentWindowResize( QResizeEvent *ev )
 			else
 				continue;
 		}
+
+		m_subWindows.at(m_nCurrentPage)->resize(ev->size());
+		m_subWindows.at(m_nCurrentPage)->show();
 	}
 	else
 	{
