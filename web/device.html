@@ -1301,8 +1301,8 @@
 								</ul>
 							</td><td></td>
 						</tr>
-			                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
-			                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
+			                        <tr><td><script>T("BPS")</script></td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
+			                        <tr><td><script>T("FPS")</script></td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
 			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="encode_save_content();"><script>T("Save")</script></div></td></tr>
 			                        </table>
 			                  </div>
@@ -1516,7 +1516,7 @@
 							</td>
 						</tr>
 						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
-						<tr><td>Screenshot save location</td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr>
+						<!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
 						<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
 							<td colspan="2">

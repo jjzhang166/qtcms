@@ -3,7 +3,7 @@ var oCommonLibrary;
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
 		//区域列表;
-		areaList2Ui(0);
+		areaList2Ui();
 		//分组列表;
 		groupList2Ui();
 
@@ -15,7 +15,7 @@ var oCommonLibrary;
 	})
 	function refresh(data){ 
 		//区域列表;
-		areaList2Ui(0);
+		areaList2Ui();
 
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
@@ -29,6 +29,8 @@ var oCommonLibrary;
 					checkDevAllOpen(chlData.dev_id);
 				}
 			}	
+		}else if(data.Dsturl.indexOf('backup') != -1){
+			areaList2Ui(0,true);
 		}else if(data.Dsturl.indexOf('play_back') != -1){
 			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
@@ -46,7 +48,8 @@ var oCommonLibrary;
 	}
 	
 	//区域分组,属性菜单输出.
-	function areaList2Ui(num){ //区域菜单输出
+	function areaList2Ui(num,bool){ //区域菜单输出
+		num = num ? num : 0;
 		var obj = $('ul.filetree').not('[id]').html('').eq(num);
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
@@ -64,20 +67,21 @@ var oCommonLibrary;
 
 		}
 		var arr =del(pidList.sort(sortNumber)); //  返回pid升序的PID数组
-		deviceList2Ui('0',num);
+		deviceList2Ui('0',num,bool);
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		
 					var add = $('<li><span class="area" id="area_'+areaListArrar[k]['area_id']+'">'+areaListArrar[k]['area_name']+'</span><ul></ul></li>').appendTo($('#area_'+arr[j]).next('ul'));
 					add.find('span.area').data('data',areaListArrar[k]);
 					obj.treeview({add:add});
-					deviceList2Ui(areaListArrar[k]['area_id'],num);
+					deviceList2Ui(areaListArrar[k]['area_id'],num,bool);
 				}
 			}
 		}
 	}
 	
-	function deviceList2Ui(areaid,num){ //设备菜单输出
+	function deviceList2Ui(areaid,num,bool){ //设备菜单输出
+		bool = num > 0 ? true : bool;
 		var devList = oCommonLibrary.GetDeviceList(areaid);
 		for (i in devList){
 			var id=devList[i];
@@ -88,7 +92,7 @@ var oCommonLibrary;
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
-			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(num == 1 ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
+			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});
 			if(num != 1){
