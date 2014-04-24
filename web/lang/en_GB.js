@@ -346,4 +346,13 @@ var en_GB={
 'twice_the_password_is_not_the_same':'twice the password is not the same',
 'IP_setup_failed':'IP setup failed',
 'Please_select_a_device':'Please select a device',
+
+'Sun':'Sunday',
+'Mon':'Monday',
+'Tue':'Tuesday',
+'Wed':'Wednesday',
+'Thu':'Thursday',
+'Fri':'Friday',
+'Sat':'Saturday'
+
 }

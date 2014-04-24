@@ -1,4 +1,4 @@
-var zh_CN={
+﻿var zh_CN={
 	'Stream_Switch':'切换码流',
 	'DVR_client':'视频监控客户端',
 	'Preview':'预览',
@@ -350,5 +350,13 @@ var zh_CN={
 	'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'请用下划线数字字母组合且长度大于6位!',
 	'twice_the_password_is_not_the_same':'2次密码不一样!',
 	'IP_setup_failed':'IP设置失败!',
-	'Please_select_a_device':'请选择一台设备!'
+	'Please_select_a_device':'请选择一台设备!',
+	
+	'Sun':'星期日',
+	'Mon':'星期一',
+	'Tue':'星期二',
+	'Wed':'星期三',
+	'Thu':'星期四',
+	'Fri':'星期五',
+	'Sat':'星期六'
 }

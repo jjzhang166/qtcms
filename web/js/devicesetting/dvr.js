@@ -94,7 +94,7 @@ function dvr_load(id_chn)
 	switch(id_chn)
 	{
 		case 'dvr_screen_chn_sel':dvr_screen_load_content();break;
-		case 'dvr_record_chn_sel':dvr_record_load_content(dvr_selected_chn);break;
+		case 'dvr_record_chn_sel':dvr_record_load_content(dvr_selected_chn,dvr_selected_weekday);break;
 		case 'dvr_enc_chn_sel':dvr_encoding_load_content();break;
 		case 'dvr_ptz_chn_sel':dvr_ptz_load_content();break;
 		case 'dvr_detect_chn_sel':dvr_detect_load_content();break;
@@ -357,6 +357,11 @@ function dvr_network_data2ui()
 	}else{
 		$('#dvr_openDD').prop('checked',false);
 	}
+	if(dvr_data.juan.envload.network.pppoe == 1){
+		$('#dvr_Open_PPPOE').prop('checked',true);
+	}else{
+		$('#dvr_Open_PPPOE').prop('checked',false);
+	}
 	$("#dvr_mac_addr")[0].value = dvr_data.juan.envload.network.mac;
 	switch(dvr_data.juan.envload.network.ddnsprovider)
 	{
@@ -377,13 +382,15 @@ function dvr_network_data2ui()
 	$("#dvr_domain")[0].value = dvr_data.juan.envload.network.ddnsurl;
 	$("#dvr_user_DD")[0].value = dvr_data.juan.envload.network.ddnsusr;
 	$("#dvr_password_DD")[0].value = dvr_data.juan.envload.network.ddnspwd;
+	$("#dvr_user_PPPOE")[0].value = dvr_data.juan.envload.network.pppoeusr;
+	$("#dvr_password_PPPOE")[0].value = dvr_data.juan.envload.network.pppoepwd;
 }
 function dvr_network_load_content()
 {
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="0" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
-	xmlstr += '<network dhcp="" mac="" ip="" submask="" gateway="" dns="" httpport="" clientport="" enetid="" ddns="" ddnsprovider="" ddnsurl="" ddnsusr="" ddnspwd="" />';
+	xmlstr += '<network dhcp="" mac="" ip="" submask="" gateway="" dns="" httpport="" clientport="" enetid="" ddns="" ddnsprovider="" ddnsurl="" ddnsusr="" ddnspwd="" pppoe="" pppoeusr="" pppoepwd="" />';
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
 	//alert(xmlstr);
@@ -424,6 +431,7 @@ function dvr_network_save_content()
 {
 	var dvr_openDH = $('#dvr_openDH').prop('checked') ?1:0;
 	var dvr_openDD = $("#dvr_openDD").prop('checked') ?1:0;
+	var dvr_OpenPPPOE = $("#dvr_Open_PPPOE").prop('checked') ?1:0;
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
@@ -442,6 +450,9 @@ function dvr_network_save_content()
 	xmlstr += ' ddnsurl="' + $("#dvr_domain")[0].value + '"';
 	xmlstr += ' ddnsusr="' + $("#dvr_user_DD")[0].value + '"';
 	xmlstr += ' ddnspwd="' + $("#dvr_password_DD")[0].value + '"';
+	xmlstr += ' pppoe="' + dvr_OpenPPPOE + '"';
+	xmlstr += ' pppoeusr="' + $("#dvr_user_PPPOE")[0].value + '"';
+	xmlstr += ' pppoepwd="' + $("#dvr_password_PPPOE")[0].value + '"';
 	xmlstr += ' />';
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
@@ -462,6 +473,7 @@ function dvr_network_save_content()
 		},
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
+
 			var ret_data = xml2json.parser(data.xml, "", false)
 			if(ret_data.juan.envload.errno != 0)
 			{
@@ -787,14 +799,20 @@ function dvr_encoding_save_content(chk_chn)
 }
 
 //record or(video)
-function dvr_record_data2ui(dvr_selected_chn)
+function dvr_record_data2ui(dvr_selected_chn,dvr_selected_weekday)
 {
 	$("#dvr_record_chn_sel0").html(dvr_selected_chn+1);
-	if(dvr_selected_weekday == 0){
-		$("#dvr_record_week")[0].innerHTML = 7;
-	}else{
-		$("#dvr_record_week")[0].innerHTML = dvr_selected_weekday;	
-	}
+	$('#dvr_record_week_ID').val(dvr_selected_weekday);
+	switch(dvr_selected_weekday){
+		case 0:$("#dvr_record_week")[0].innerHTML = lang.Sun;break;
+		case 1:$("#dvr_record_week")[0].innerHTML = lang.Mon;break;
+		case 2:$("#dvr_record_week")[0].innerHTML = lang.Tue;break;
+		case 3:$("#dvr_record_week")[0].innerHTML = lang.Wed;break;
+		case 4:$("#dvr_record_week")[0].innerHTML = lang.Thu;break;
+		case 5:$("#dvr_record_week")[0].innerHTML = lang.Fri;break;
+		case 6:$("#dvr_record_week")[0].innerHTML = lang.Sat;break;
+		default:break;
+		}
 	$('#dvr_record_weekday_'+dvr_selected_weekday).prop('checked',true);
 	for(var i = 0; i < 4; i++)
 	{
@@ -814,30 +832,40 @@ function dvr_record_data2ui(dvr_selected_chn)
 		}
 	}
 }
-function dvr_record_load_content(dvr_selected_chn)
+function dvr_record_load_content(dvr_selected_chn,dvr_selected_weekday)
 {
 	$('#dvr_record_week_sel').find('li').remove();
 	for(var i = 0; i < 7; i++)
 	{
 		var week;
-		if(i == 0){
-			week = 7;	
-		}else{
-			week = i;
-			}
-		$('#dvr_record_week_sel').append('<li class="add_li_2"><a href="javascript:;">'+week+'</a></li>');
+		switch(i){
+			case 0:week = lang.Sun;break;break;
+			case 1:week = lang.Mon;break;break;
+			case 2:week = lang.Tue;break;break;
+			case 3:week = lang.Wed;break;break;
+			case 4:week = lang.Thu;break;break;
+			case 5:week = lang.Fri;break;break;
+			case 6:week = lang.Sat;break;break;
+			default:break;
+		}
+		$('#dvr_record_week_sel').append('<li value="'+i+'" class="add_li_2"><a href="javascript:;">'+week+'</a></li>');
 	}
 	$('.add_li_2 a').each(function(index) {
 			$(this).click(function(){
-						$('#dvr_record_week').html($(this)[0].innerHTML);
-						if($(this)[0].innerHTML == 7){
-							dvr_selected_weekday = 0;	
-						}else{
-							dvr_selected_weekday = $(this)[0].innerHTML;
-						}					
+						$('#dvr_record_week_ID').val(index);
+						switch(dvr_selected_chn){
+							case 0:$("#dvr_record_week")[0].innerHTML = lang.Sun;break;
+							case 1:$("#dvr_record_week")[0].innerHTML = lang.Mon;break;
+							case 2:$("#dvr_record_week")[0].innerHTML = lang.Tue;break;
+							case 3:$("#dvr_record_week")[0].innerHTML = lang.Wed;break;
+							case 4:$("#dvr_record_week")[0].innerHTML = lang.Thu;break;
+							case 5:$("#dvr_record_week")[0].innerHTML = lang.Fri;break;
+							case 6:$("#dvr_record_week")[0].innerHTML = lang.Sat;break;
+							default:break;
+						}				
 						$('.chk').prop('checked',false);
-						$('#dvr_record_weekday_'+dvr_selected_weekday).prop('checked',true);
-						dvr_record_load_content(dvr_selected_chn);
+						$('#dvr_record_weekday_'+index).prop('checked',true);
+						dvr_record_load_content(dvr_selected_chn,index);
 				})
 		});
 	var xmlstr = '';
@@ -874,7 +902,7 @@ function dvr_record_load_content(dvr_selected_chn)
 				return;
 			}
 
-			dvr_record_data2ui(dvr_selected_chn);
+			dvr_record_data2ui(dvr_selected_chn,dvr_selected_weekday);
 		},
 		complete: function(XMLHttpRequest, textStatus){
 //			alert("complete:" + textStatus);
@@ -887,7 +915,7 @@ function dvr_record_load_content(dvr_selected_chn)
 
 function dvr_record_save_content(chk_chn)
 {
-	var weekday = $("#dvr_record_week")[0].innerHTML - 1;
+	var weekday = $('#dvr_record_week_ID').val();
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
