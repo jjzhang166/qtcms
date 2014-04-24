@@ -5,21 +5,21 @@ function setDevData2ocx(){
 		var oChannel =$('div.dev_list li.sel span.channel'),
 			oDevData=$('div.dev_list li.sel span.device').data('data');
 
-		var b = true;
+		var b = 1;
 		if(bool){
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
 				alert(lang.Failed_to_set_the_number_of_synchronization_group);
-				b = false
+				b = 0
 			}
 		}else{
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
-				b = false;
+				b = 0;
 			}
 
 			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
 				alert(lang.Failed_to_set_vendor_is_empty);
-				b = false;
+				b = 0;
 			}
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
 			var intoWindsChl = $("#channelvideo").find('input:checkbox');
@@ -28,7 +28,7 @@ function setDevData2ocx(){
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
 						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(index).data('data').channel_id)){
-							b = false;
+							b = 0;
 						};
 						i++;
 					}
@@ -36,7 +36,7 @@ function setDevData2ocx(){
 			}else{
 				for(var i=0;i<oDevData.channel_count;i++){
 					if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(i).data('data').channel_id)){
-						b = false;
+						b = 0;
 					}
 				}
 			}
@@ -83,7 +83,7 @@ function setDevData2ocx(){
 			};
 			if(oPlaybackLocl.searchDateByDeviceName(devData.name)){
 				alert(T('devData.name',devData.name));
-				return false;
+				return;
 			}
 			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
 		}else{

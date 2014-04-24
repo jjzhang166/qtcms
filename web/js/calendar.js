@@ -77,7 +77,7 @@
 			var thisMonthData = this.getMonthdata(date);
 			warp.find('tbody td').html('').slice(thisMonthData[0]).each(function(index){
 				if(index == thisMonthData[1]){
-					return false;
+					return;
 				}else{
 					$(this).html(index+1);
 					if(index+1 == dd[2]){ 
@@ -89,7 +89,7 @@
 		'initDaysClick':function(obj){ //日期下每天的Dom对象点击事件
 			var warp = this;
 			if(!obj.html()){
-				return false;
+				return;
 			}
 			warp.find('tbody td').removeClass('nowDay');
 			obj.addClass('nowDay');

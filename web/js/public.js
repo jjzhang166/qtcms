@@ -104,7 +104,7 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 	})
 }
 function showNowPlayBackTime(oNow,oleft,X2){
-	return false;
+	return;
 	oNow.html(returnTime((oleft-81)/(X2-81)*24*3600));
 }
 (function($){   // 
@@ -255,7 +255,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 		'SynchekboxClick':function(){
 			var warp = $(this);
 			if(warp.length == 0 || warp[0].nodeName != 'TBODY'){
-				return false;
+				return;
 			}
 
 			warp.on('click','tr',function(){
@@ -293,7 +293,7 @@ $(function(){
 				dstAct = 'new';
 			var dst = url[index];
 			if(dst == src){
-				return false;
+				return;
 			}
 			if(dst == 'index.html'){ 
 				srcAct = 'index';
@@ -337,7 +337,7 @@ $(function(){
 	document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
 		var e = e || window.event;
 		if(e.target.tagName != 'BODY'){
-			return false;
+			return;
 		}
 	}
 	//初始化声音按钮的初始值
@@ -387,7 +387,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	return num = num<10 ? '0'+num : num;
 }
 function showdata(id,type){  //显示表单下有ID的元素的val值
-	return false;
+	return;
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
 	$('#'+type).find('input[id]').each(function(){ 
@@ -483,10 +483,10 @@ function fuckParseInt(str){
 	}
 } 
 function checkHasObj(oSil,obj){
-	var b = false;			
+	var b = 0;			
 	oSil.each(function(){
 		if($(this).is(obj)){
-			return b=true;
+			return b=1;
 		}
 	})
 	return b;

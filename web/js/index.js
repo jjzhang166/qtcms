@@ -184,7 +184,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		$('div.top_nav li').each(function(index){
 			$(this).click(function(){ 
 				if(index == 0){
-					return false;
+					return;
 				}
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[index]);
 			})	
@@ -209,7 +209,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			height:oView.height()+123
 		});
 
-		oDiv.height(oLeft.height()-240);
+		oDiv.height(oLeft.height()-266);
 
 		$('#operating').css({
 			width:oView.width(),
@@ -289,7 +289,6 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			return $(this).attr('wind') == ev.WPageId;
 		})*/
 		var chlData = getChlFullInfo(obj);
-		
 		var str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
 
 		if(ev.CurrentState == 2){
@@ -453,9 +452,9 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		writeActionLog(str);
 	}
 
-	function PTZcontrol(code){
+	/*function PTZcontrol(code){
 		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
 			alert(lang.PTZ_operation_failed);
 		};
-	}
+	}*/
 

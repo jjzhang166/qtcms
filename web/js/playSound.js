@@ -58,7 +58,7 @@ function ScreenShot(){  // 截屏
 	writeActionLog(str);
 }
 
-var bFullScreen = false;
+var bFullScreen = 0;
 
 function viewFullScreen(){
 	var obj = $('#viewWarp');
@@ -67,13 +67,13 @@ function viewFullScreen(){
 			top:'78px'
 		})
 		ViewMax();
-		bFullScreen = false;
+		bFullScreen = 0;
 	}else{
 		obj.css({
 			top:'0',
 			width:'100%',
 			height:'100%'
 		})
-		bFullScreen = true;
+		bFullScreen = 1;
 	}
 }

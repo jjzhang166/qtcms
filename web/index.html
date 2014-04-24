@@ -34,6 +34,7 @@
 	}
 	.menu0{ background:#282828; width:70px;}
 	.menu0 li:hover{ background:#C25451;}
+	#close_open_all a{font-size: 14px; display: block; line-height: 22px; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:2px 6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
 </style>
 </head>
 <body style="position: relative;heigth:100%;width:100%;">
@@ -84,6 +85,10 @@
 		</div>
 		<div class="dev_list">
 			<ul class="filetree" id="group_0"></ul>	
+		</div>
+		<div id="close_open_all" style="background:#E4EBF4;width:auto; height:26px; margin:0 atuo;">
+			<a class="hover" onclick="openCloseAll(1);"><script>T("All_Open")</script></a>
+			<a class="hover" onclick="openCloseAll();"><script>T("All_close")</script></a>
 		</div>
 		<div id="PTZ_control"> 
 			<ul class="ope_list" style="width:100%;">
@@ -140,18 +145,18 @@
 					<h3 style="font-weight:100; color:#fff; float:right; height:20px;">AUX<h3>
 				</div> -->
 			</div>
-			<div class="switch">PicAdjust</div>
+			<!-- <div class="switch">PicAdjust</div>
 			<div class="switch">Cruise</div>
 			<div class="switch">PTZCtrl</div>
-			<div class="switch">PreSet</div><br />
+			<div class="switch">PreSet</div><br /> -->
 		</div>
 	</div>
 	<div id="operating">
 		<div class="operat preview">
-			<ul style="width:450px;">
+			<ul style="width:390px;">
 				<li style="background:0;">
 					<div class="select" style="background: url(images/preview/operating_icon.png) no-repeat; height:36px; border:0; cursor:pointer" id="setModel" title="Split_screen_setting"></div>
-					<ul class="option" style="top:0; width:450px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
+					<ul class="option" style="top:0; width:390px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
 						<li class="setViewNum hover" style="background-position: 0 -72px;" onclick="setViewMod('div1_1')"></li>
 						<li class="setViewNum hover" style="background-position: 0 -108px;" onclick="setViewMod('div2_2')"></li>
 						<li class="setViewNum hover" style="background-position: 0 -144px;" onclick="setViewMod('div6_1')"></li>
@@ -168,8 +173,8 @@
 				<li style="width:40px;text-align:center; background:0; line-height:36px; color:#FFF; cursor:default" id="nowWinMod"></li>
 				<li class="hover" onclick="preNextPage(1)" style="background-position: -120px -288px;" title="prev_page"></li>
 				<li class="hover" onclick="preNextPage(0)" style="background-position: -120px -324px" title="next_page"></li>
-				<li class="hover" style="background-position: 0 0;" onclick="openCloseAll(1);" id="openAllchannel" title="All_Open"></li>
-				<li class="hover" style="background-position: 0 -36px;" onclick="openCloseAll();" id="openAllchannel" title="All_close"></li>
+				<!-- <li class="hover" style="background-position: 0 0;" onclick="openCloseAll(1);" id="openAllchannel" title="All_Open"></li>
+				<li class="hover" style="background-position: 0 -36px;" onclick="openCloseAll();" id="openAllchannel" title="All_close"></li> -->
 				<!-- <li class="hover" style="background-position: -120px -108px;" onclick="StopRecord();" title="Pause_Video"></li> -->
 				<li class="toggle hover" style="background-position: -120px -72px;" onclick="Record($(this));" title="video"></li>
 				<li class="hover" style="background-position: -120px -144px;" title="Screenshot" onclick="ScreenShot();"></li>

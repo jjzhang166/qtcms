@@ -172,12 +172,12 @@ var now = 0;
 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
 			if(oBackup.getProgress() != 0){
-				return false;
+				return;
 			}
 		})
 
 		contentMax();
-		areaList2Ui(0,true);
+		areaList2Ui(0,1);
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
@@ -187,12 +187,12 @@ var now = 0;
 
 	$(window).resize(contentMax);
 	function RecFileInfoCallback(data){
-		var b = true;
+		var b = 1;
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
 		var uid = sDevName+'_'+data.channel+'_'+data.start+'_'+data.end;
 			$('tbody.search_result tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
 				if(uid == $(this).attr('uid')){
-					b=false;
+					b=0;
 				}
 			})
 			if(b){
@@ -274,7 +274,7 @@ var now = 0;
 			oWarp.find('a').one('click',function(){
 				backupstop();
 				//show('当前第'+now+'个任务已被终止!');
-				return false;
+				return;
 			})
 		timer = setInterval(function(){
 			i++;
@@ -306,7 +306,7 @@ var now = 0;
 				//show('所有选择的文件下载完成!');
 				now=0;
 				$('#search_result input:checked').prop('checked',false);
-				return false;
+				return;
 			}
 			//oBackup.stopBackup();
 			now++;

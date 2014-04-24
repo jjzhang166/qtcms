@@ -1,4 +1,5 @@
-var oSearchOcx,key=0;
+var oSearchOcx,
+	key=0; //当前菜单选项
 	$(function(){
 		
 		oSearchOcx = document.getElementById('devSearch');
@@ -574,7 +575,7 @@ var oSearchOcx,key=0;
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
 				Confirm('please select user!!!');
-				return false;
+				return;
 			}
 			if(obj == 'menu3'){
 				node.find('input:first').val(str[0]);
@@ -690,7 +691,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	//show(data);
 	if(!data){ 
 		Confirm(lang.Please_select_a_device);
-		return false;
+		return ;
 	}
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
 	if(pObj.attr('id')=='g_channel_'+data.channel_id){
@@ -822,16 +823,16 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	//设备搜索回调函数
 	function callback(data){
-		var bUsed = true;
+		var bUsed = 1;
 		$('#SerachDevList tbody tr').each(function(){ 
 			if(parseInt($(this).find('td:eq(1)').html()) == data.SearchSeeId_ID || $(this).find('td:eq(2)').html() == data.SearchIP_ID){
-				bUsed = false;
+				bUsed =0;
 			}
 		})
 		
 		$('div.dev_list:eq(0) span.device').each(function(){ 
 			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
-				bUsed = false;
+				bUsed = 0;
 			}
 		})
 
@@ -991,7 +992,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		data.channelname=data.channelname.replace(/-/g,'.');
 		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
 		if($('#g_channel_'+data.chlid)[0]){
-			return false;
+			return;
 		}
 			var add = $('div.dev_list:eq(0) #channel_'+data.chlid).parent('li').clone(true)
 			    .find('span.channel')

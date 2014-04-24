@@ -2,7 +2,7 @@ var oBottom,oPlayBack,oPlaybacKLocl;
 var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
-	bNoResize=true,   //当前窗口是否在改变
+	bNoResize=1,   //当前窗口是否在改变
 	nowDevID=null; //当前选中设备ID
 
 	$(function(){
@@ -17,7 +17,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		ViewMax();
 
-		bFullScreen = false;
+		bFullScreen = 0;
 	    
 	   //$('ul.filetree').treeview();		
 		
@@ -94,10 +94,10 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				};
 				var left = event.pageX
 			    	if(left < 81){
-			    		return false;
+			    		return;
 			    	}
 			    	if(left > channelvideo.width()){ 
-			    		return false;
+			    		return;
 			    	}
 				//event.stopPropagation();
 				var moveObj = $('div.play_time').css('left',left-1);
@@ -162,6 +162,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
 				SyncSoundSli(oView.enable);*/
+				dragStopMove();
+
 				if(index){
 					oPlayBack.style.height='0px';
 					oPlayBack.GroupStop();
@@ -243,7 +245,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	function playVideo(event){
 		//alert(event.pageX);
 		if(event.pageX<81){
-			return false;
+			return;
 		}
 		
 		dragStopMove();
@@ -266,7 +268,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					var filepath = $('div.dev_list li.sel').find('span.channel').eq(index).data('filepath');
 					if(filepath){
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
-							b = false;
+							b = 0;
 						};
 					}
 				}
@@ -428,7 +430,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		$('<tr><td class="no_border"><input type="checkbox"'+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 	}
 	function noResize(){
-		bNoResize=false;
+		bNoResize=0;
 		$('#channelvideo div.video').remove();
 		var winW = $(window).width(),
 			winH = $(window).height();
@@ -440,17 +442,16 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					}
 				}
 			}
-			bNoResize=true;
+			bNoResize=1;
 			dragStartMove();
 		},200);
 	}
 	function playBackSerchFile(){
+		recFile=[];
 
 		palybackspeed('1X');
 
 		$('#channelvideo div.video').remove();
-
-		recFile=[];
 
 		dragStopMove();
 
