@@ -72,6 +72,8 @@ private:
 	QStringList							m_eventList;
 	QByteArray							m_portInfo;
 	QByteArray							m_netInfo;
+
+	volatile bool						m_running;
 };
 
 

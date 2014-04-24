@@ -7,27 +7,22 @@
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
-m_nInterval(10000)
+m_nInterval(10000),
+m_running(false)
 {
 	m_bReceiving = false;
 	m_bFlush = false;
-
-	m_Socket = new QUdpSocket();
-
 	m_eventList << "SearchDeviceSuccess"<<"SettingStatus";
-	
 
 }
 
 HiChipSearch::~HiChipSearch()
 {
-	if (m_Socket)
-	{
-		m_Socket->close();
-		delete m_Socket;
+	m_running=false;
+	while(QThread::isRunning()){
+		msleep(10);
 	}
 }
-
 QString HiChipSearch::GetHostAddress()
 {
 	QString address;
@@ -43,39 +38,35 @@ QString HiChipSearch::GetHostAddress()
 	}
 	return address;
 }
-
-int HiChipSearch::Start()
-{
+int HiChipSearch::Start(){
 	if (!QThread::isRunning())
 	{
-		QString address = GetHostAddress();
-		if (address.isEmpty())
-		{
-			return -1;
-		}
-
-// 		bool Ret = m_Socket->bind(MCASTPORT, QUdpSocket::ShareAddress);
-		bool Ret = m_Socket->bind(QHostAddress(address),MCASTPORT, QUdpSocket::ShareAddress);
- 		Ret &= m_Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
-
-		if (!Ret)
-		{
-			return -1;
-		}
-
-		m_bEnd = false;
-
 		QThread::start();
-
-		return 0;
 	}
-
-	return -1;
-
+	m_running=true;
+	return 0;
 }
 
 void HiChipSearch::run()
 {
+	m_Socket = new QUdpSocket();
+	QString address = GetHostAddress();
+	if (address.isEmpty())
+	{
+		m_Socket->close();
+		delete m_Socket;
+		return;
+	}
+	bool Ret = m_Socket->bind(QHostAddress(address),MCASTPORT, QUdpSocket::ShareAddress);
+	Ret &= m_Socket->joinMulticastGroup(QHostAddress(MCASTADDR));
+
+	if (!Ret)
+	{
+		m_Socket->close();
+		delete m_Socket;
+		return;
+	}
+	//
 	QByteArray arr;
 	arr += "SEARCH * HDS/1.0\r\n";
 	arr += "CSeq:1\r\n";
@@ -88,7 +79,7 @@ void HiChipSearch::run()
 	timeStart.start();
 	m_Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
 
-	while(!m_bEnd)
+	while(m_running)
 	{
 		if (timeStart.elapsed() >= m_nInterval || m_bFlush)
 		{
@@ -98,14 +89,11 @@ void HiChipSearch::run()
 		}
 		Receive();
 		msleep(500);
-		//if (m_bSetNetInfo)
-		//{
-		//	qDebug()<<m_netInfo;
-		//	m_Socket->writeDatagram(m_netInfo, QHostAddress(QString(MCASTADDR)), MCASTPORT);
-		//	m_bSetNetInfo = false;
-		//}
 	}
+	m_Socket->close();
+	delete m_Socket;
 }
+
 
 void HiChipSearch::Receive()
 {
@@ -217,25 +205,10 @@ int HiChipSearch::Flush()
 	return 0;
 }
 
-int HiChipSearch::Stop()
-{
-	if (m_bEnd)
-	{
-		return -1;
-	}
-	while(m_bReceiving)
-	{
-		//wait for receive info
-	}
-	m_bEnd = true;
-
-	m_Socket->close();
-
-	wait();
-
+int HiChipSearch::Stop(){
+	m_running=false;
 	return 0;
 }
-
 
 int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 	const QString &sAddress,
