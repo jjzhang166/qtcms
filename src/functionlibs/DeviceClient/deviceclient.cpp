@@ -435,20 +435,21 @@ int DeviceClient::closeAll()
 	if (IDeviceClient::STATUS_DISCONNECTED==m_CurStatus)
 	{
 		m_csCloseAll.unlock();
-		return 0;
+		goto end;
 	}
 	//设置正在断开的状态，并抛出
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
+	{
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	eventProcCall("CurrentStatus",CurStatusParm);
-
+	}
 	//申请断开的接口
 	IDeviceConnection *m_CloseAllConnect=NULL;
 	if (NULL==m_DeviceConnecton)
 	{
 		m_csCloseAll.unlock();
-		return 0;
+		goto end;
 	}
 	//释放云台控制相关资源
 	if (NULL != m_pProtocolPTZ)
@@ -464,6 +465,8 @@ int DeviceClient::closeAll()
 		m_CloseAllConnect->Release();
 	}
 	m_csCloseAll.unlock();
+end:
+	bCloseingFlags=false;
 	return 0;
 }
 
