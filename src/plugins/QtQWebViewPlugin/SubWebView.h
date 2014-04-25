@@ -4,6 +4,7 @@
 
 #include <QtWebKit/QtWebKit>
 #include <qwfw.h>
+#include <QWebInspector>
 class SubWebView: public QWebView
 {
 	Q_OBJECT
@@ -32,6 +33,10 @@ private:
 private:
 	IActivities *m_Activity;
 	QSize m_Size;
+
+#ifdef __USE_WEB_DEBUGER__
+	QWebInspector m_webinspector;
+#endif
 };
 
 
