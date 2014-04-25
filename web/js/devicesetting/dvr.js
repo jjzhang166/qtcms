@@ -155,6 +155,7 @@ function dvr_devinfo_load_content()
 			$("#Dvr_Hardware_version")[0].value = dvr_data.juan.devinfo.hwver;
 			$("#Dvr_Software_version")[0].value = dvr_data.juan.devinfo.swver;//
 			$("#Dvr_Build_time")[0].value = dvr_data.juan.devinfo.reldatetime;	
+			$('#Dvr_Sum_of_channels')[0].value = dvr_data.juan.devinfo.camcnt;
 		},
 		complete: function(XMLHttpRequest, textStatus){
 //			alert("complete:" + textStatus);
