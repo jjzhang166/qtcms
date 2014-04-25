@@ -206,48 +206,7 @@ void settingsActivity::OnMouseMove()
 	}
 }
 
-//void settingsActivity::OnAddUserOk()
-//{
-//	IUserManager *Iuser = NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
-//	if (NULL == Iuser)
-//	{
-//		return;
-//	}
-//	QVariant sUserName = QueryValue("add_username");
-//	if (Iuser->IsUserExists(sUserName.toString()))
-//	{
-//		DEF_EVENT_PARAM(arg);
-//		EP_ADD_PARAM(arg,"username",sUserName.toString());
-//		EventProcCall("AddFaild",arg);
-//		return;
-//	}
-//
-//	QVariant sPassWd = QueryValue("add_passwd");
-//	QVariant sPassWd2 = QueryValue("add_again_passwd");
-//	QVariant sLevel = QueryValue("add_level");
-//	int nLevel = sLevel.toInt();
-//	int nMask1 = 0xFFFFFFFF;
-//	int nMask2 = 0xFFFFFFFF;
-//	bool bRes = Iuser->AddUser(sUserName.toString(),sPassWd.toString(),nLevel,nMask1,nMask2);
-//	
-//	if (!bRes)
-//	{
-//		DEF_EVENT_PARAM(arg);
-//		EP_ADD_PARAM(arg,"username",sUserName.toString());
-//		EP_ADD_PARAM(arg,"level",nLevel);
-//		EventProcCall("AddSuccess",arg);
-//	}
-//	else
-//	{
-//		DEF_EVENT_PARAM(arg);
-//		EP_ADD_PARAM(arg,"username",sUserName.toString());
-//		EP_ADD_PARAM(arg,"level",nLevel);
-//		EventProcCall("AddFaild",arg);
-//	}
-//	
-//	Iuser->Release();
-//}
+
 void settingsActivity::OnAddUserOk()
 {
 	IUserManager *Iuser = NULL;
@@ -292,64 +251,7 @@ void settingsActivity::OnAddUserOk()
 
 	Iuser->Release();
 }
-//void settingsActivity::OnModifyUserOk()
-//{
-//	IUserManager *Iuser = NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
-//	if (NULL == Iuser)
-//	{
-//		return;
-//	}
-//	QVariant sUserName = QueryValue("user");
-//	QVariant sOldPassWd = QueryValue("modify_oldpasswd");
-//	//检查输入密码是否正确
-// 	if (Iuser->CheckUser(sUserName.toString(),sOldPassWd.toString()))
-// 	{
-//		QVariant sNewPassWd = QueryValue("modify_newpasswd");
-//		QVariant sNewPassWd2 = QueryValue("modify_again_passwd");
-//		//获取combox里的权限值，修改权限
-//		QVariant sLevel = QueryValue("modify_level");
-//		int nLevel = sLevel.toInt();
-//		if (!(sNewPassWd.toString().isEmpty() || sNewPassWd2.toString().isEmpty()))
-//		{
-//			bool bRes2 = Iuser->ModifyUserPassword(sUserName.toString(),sNewPassWd.toString());	
-//			if (!bRes2)
-//			{
-//				DEF_EVENT_PARAM(arg);
-//				EP_ADD_PARAM(arg,"username",sUserName.toString());
-//				EventProcCall("ModifyUserPasswdSuccess",arg);
-//			}else
-//			{
-//				DEF_EVENT_PARAM(arg);
-//				EP_ADD_PARAM(arg,"username",sUserName.toString());
-//				EventProcCall("ModifyUserPasswdFaild",arg);
-//			}
-//		}
-//		bool bRes = Iuser->ModifyUserLevel(sUserName.toString(),nLevel);
-//		if (!bRes)
-//		{
-//			DEF_EVENT_PARAM(arg);
-//			EP_ADD_PARAM(arg,"username",sUserName.toString());
-//			EP_ADD_PARAM(arg,"level",nLevel);
-//			EventProcCall("ModifyUserLevelSuccess",arg);
-//		}else
-//		{
-//			DEF_EVENT_PARAM(arg);
-//			EP_ADD_PARAM(arg,"username",sUserName.toString());
-//			EP_ADD_PARAM(arg,"level",nLevel);
-//			EventProcCall("ModifyUserLevelFaild",arg);
-//		}	
-//	}
-//	else
-//	{
-//		//event
-//		DEF_EVENT_PARAM(arg);
-//		EP_ADD_PARAM(arg,"username",sUserName);
-//		EP_ADD_PARAM(arg,"password",sOldPassWd);
-//		EventProcCall("ErrorPasswd",arg);
-//	}
-//	Iuser->Release();
-//}
+
 void settingsActivity::OnModifyUserOk()
 {
 	IUserManager *Iuser = NULL;
@@ -405,31 +307,7 @@ void settingsActivity::OnModifyUserOk()
 	}
 	Iuser->Release();
 }
-//void settingsActivity::OnDeleteUserOk()
-//{
-//	IUserManager *Iuser = NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void **)&Iuser);
-//	//获取用户列表
-//	QVariant sUser = QueryValue("user");
-//	QStringList user_list = sUser.toString().split(",");
-//	for (int i = 0;i<user_list.size();i++)
-//	{
-//		sUser = user_list.at(i).toLatin1().data();
-//		bool bRes = Iuser->RemoveUser(sUser.toString());
-//		if (!bRes)
-//		{
-//			DEF_EVENT_PARAM(arg);
-//			EP_ADD_PARAM(arg,"username",sUser.toString());
-//			EventProcCall("DeleteSuccess",arg);
-//		}else
-//		{
-//			DEF_EVENT_PARAM(arg);
-//			EP_ADD_PARAM(arg,"username",sUser.toString());
-//			EventProcCall("DeleteFaild",arg);
-//		}
-//	}
-//	Iuser->Release();
-//}
+
 void settingsActivity::OnDeleteUserOk()
 {
 	IUserManager *Iuser = NULL;
@@ -561,16 +439,6 @@ void settingsActivity::OnAddDeviceDouble()
 			continue;
 		}
 
-		//添加设备
-		//QString sDevname;
-		//if (SearchSeeId_ID.isEmpty())
-		//{
-		//	sDevname = SearchIP_ID;
-		//}
-		//else
-		//{
-		//	sDevname = SearchSeeId_ID;
-		//}
 		nRet_id=Idevice->AddDevice(Area_ID,SearchDeviceName_ID,SearchIP_ID,SearchMediaPort_ID.toInt(),SearchHttpport_ID.toInt(),SearchSeeId_ID,UserName_ID,PassWord_ID,SearchChannelCount_ID.toInt(),ConnectMethod.toInt(),SearchVendor_ID);
 		if(-1==nRet_id){
 
@@ -588,305 +456,7 @@ void settingsActivity::OnAddDeviceDouble()
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
 	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 }
-//void settingsActivity::OnAddDeviceDouble()
-//{
-//	int nRet_id;
-//	qDebug("========OnAddDeviceDouble========");
-//	IDeviceManager *Idevice=NULL;
-//	IAreaManager *Iarea=NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
-//
-//	DEF_EVENT_PARAM(arg);
-//	QString Content="system fail";
-//	QString State_num="0";
-//	QString sDevice_Name="0";
-//
-//	if(NULL==Idevice||NULL==Iarea){
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceDoubleFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//
-//	QVariant DevListFile=QueryValue("adddevicedouble_ID");
-//	QDomDocument ConfFile;
-//	ConfFile.setContent(DevListFile.toString());
-//
-//	QDomNode DevListInfoNode=ConfFile.elementsByTagName("devListInfo").at(0);
-//	QDomNodeList itemList=DevListInfoNode.childNodes();
-//	if(0==itemList.count()){
-//		arg.clear();
-//		Content.clear();
-//		Content.append("please choose the device");
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceDoubleFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//	int n;
-//	//判断添加的区域是否存在
-//	int Area_ID=ConfFile.firstChild().toElement().attribute("area_id").toInt();
-//	bool nRet_bool=false;
-//	nRet_bool=Iarea->IsAreaIdExist(Area_ID);
-//	if(false==nRet_bool){
-//		Content.clear();
-//		arg.clear();
-//		Content.append("AreaID is not exist");
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceDoubleFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//
-//	for (n=0;n<itemList.count();n++)
-//	{
-//		QDomNode item;
-//		item= itemList.at(n);
-//		//搜索返回的参数
-//		QString SearchVendor_ID=item.toElement().attribute("SearchVendor_ID");
-//		QString SearchDeviceName_ID=item.toElement().attribute("SearchDeviceName_ID");
-//		QString SearchDeviceId_ID=item.toElement().attribute("SearchDeviceId_ID");
-//		QString SearchDeviceModelId_ID=item.toElement().attribute("SearchDeviceModelId_ID");
-//		QString SearchSeeId_ID=item.toElement().attribute("SearchSeeId_ID");
-//		QString SearchChannelCount_ID=item.toElement().attribute("SearchChannelCount_ID");
-//		QString SearchIP_ID=item.toElement().attribute("SearchIP_ID");
-//		QString SearchMask_ID=item.toElement().attribute("SearchMask_ID");
-//		QString SearchMac_ID=item.toElement().attribute("SearchMac_ID");
-//		QString SearchGateway_ID=item.toElement().attribute("SearchGateway_ID");
-//		QString SearchHttpport_ID=item.toElement().attribute("SearchHttpport_ID");
-//		QString SearchMediaPort_ID=item.toElement().attribute("SearchMediaPort_ID");
-//
-//		//添加的默认参数
-//	
-//		QString	UserName_ID=item.toElement().attribute("username");
-//		QString	PassWord_ID=item.toElement().attribute("password");
-//		//设置默认参数
-//		QString ConnectMethod="0";
-//		SearchDeviceName_ID.clear();
-//		if (0!=SearchSeeId_ID.size()&&SearchSeeId_ID.toInt()>2&&false==SearchSeeId_ID.isNull())
-//		{
-//			SearchDeviceName_ID.append(SearchSeeId_ID);
-//		}
-//		else 
-//		{
-//			SearchDeviceName_ID.append(SearchIP_ID);
-//		}
-//		
-//
-//		
-//		if (0==UserName_ID.size()||UserName_ID.isNull())
-//		{
-//			UserName_ID.append("admin");
-//		}
-//
-//
-//		//默认IP模式连接，判断ip模式连接的参数是否齐全
-//
-//		if(SearchIP_ID.isNull()||SearchHttpport_ID.isNull()||SearchMediaPort_ID.isNull()){
-//			Content.clear();
-//			arg.clear();
-//			State_num.clear();
-//			sDevice_Name.clear();
-//			QString Num=QString("%1").arg(n);
-//			sDevice_Name.append(SearchDeviceName_ID);
-//			Content.append(Num);
-//			Content.append("AddDeviceDoubleFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EP_ADD_PARAM(arg,"name",sDevice_Name);
-//			EP_ADD_PARAM(arg,"state",State_num);
-//			EventProcCall("AddDeviceDoubleFail",arg);
-//			continue;
-//		}
-//		
-//		//添加设备
-//		//QString sDevname;
-//		//if (SearchSeeId_ID.isEmpty())
-//		//{
-//		//	sDevname = SearchIP_ID;
-//		//}
-//		//else
-//		//{
-//		//	sDevname = SearchSeeId_ID;
-//		//}
-//		nRet_id=Idevice->AddDevice(Area_ID,SearchDeviceName_ID,SearchIP_ID,SearchMediaPort_ID.toInt(),SearchHttpport_ID.toInt(),SearchSeeId_ID,UserName_ID,PassWord_ID,SearchChannelCount_ID.toInt(),ConnectMethod.toInt(),SearchVendor_ID);
-//		if(-1==nRet_id){
-//			Content.clear();
-//			arg.clear();
-//			State_num.clear();
-//			sDevice_Name.clear();
-//			sDevice_Name.append(SearchDeviceName_ID);
-//			QString Num=QString("%1").arg(n);
-//			Content.append(Num);
-//			Content.append("AddDeviceDoubleFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EP_ADD_PARAM(arg,"name",sDevice_Name);
-//			EP_ADD_PARAM(arg,"state",State_num);
-//			EventProcCall("AddDeviceDoubleFail",arg);
-//			continue;
-//		}
-//
-//		Content.clear();
-//		arg.clear();
-//		sDevice_Name.clear();
-//		State_num.clear();
-//		sDevice_Name.append(SearchDeviceName_ID);
-//		QString Num=QString("%1").arg(n);
-//		State_num.append(Num);
-//		QString nSret=QString("%1").arg(nRet_id);
-//		Content.append(nSret);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EP_ADD_PARAM(arg,"deviceid",Content);
-//		EventProcCall("AddDeviceDoubleSuccess",arg);
-//		continue;
-//	}
-//
-//	if(NULL!=Idevice){Idevice->Release();}
-//	if(NULL!=Iarea){Iarea->Release();}
-//}
-//void settingsActivity::OnAddDevice()
-//{	
-//	int nRet_id;
-//	qDebug("========OnAddDevice========");
-//	IDeviceManager *Idevice=NULL;
-//	IAreaManager *Iarea=NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
-//	if(NULL==Idevice||NULL==Iarea){
-//		DEF_EVENT_PARAM(arg);
-//		QString Content="system fail";
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EventProcCall("AddDeviceFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//	QVariant Area_Id=QueryValue("area_id_ID");
-//	QVariant sDeviceName=QueryValue("device_name_ID");
-//	QVariant sAddress=QueryValue("address_ID");
-//	QVariant port=QueryValue("port_ID");
-//	QVariant http=QueryValue("http_ID");
-//	QVariant sEseeId=QueryValue("eseeid_ID");
-//	QVariant sUserName=QueryValue("username_ID");
-//	QVariant sPassWord=QueryValue("password_ID");
-//	QVariant chlCount=QueryValue("channel_count_ID");
-//	QVariant ConnectMethod=QueryValue("connect_method_ID");
-//	QVariant sVendor=QueryValue("vendor_ID");
-//
-//	DEF_EVENT_PARAM(arg);
-//	QString Content;
-//
-//	bool nRet_bool=false;
-//	nRet_bool=Iarea->IsAreaIdExist(Area_Id.toInt());
-//	if(false==nRet_bool){
-//		Content="AreaID is not exist";
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EventProcCall("AddDeviceFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//	//设备名为空时，使用易视网id填充，易视网为空时，使用ip地址填充
-//	if (sDeviceName.Size==0)
-//	{
-//		if (sEseeId.isNull()==false)
-//		{
-//			sDeviceName=sEseeId;
-//		}
-//		else{
-//			sDeviceName=sAddress;
-//		}
-//	}
-//	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
-//		Content.clear();
-//		arg.clear();
-//		Content.append("the params are not complete");
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EventProcCall("AddDeviceFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		return;
-//	}
-//	if("0"==ConnectMethod.toString()){
-//		if(sAddress.isNull()||port.isNull()||http.isNull()){
-//			Content.clear();
-//			arg.clear();
-//			Content.append("the params are not complete");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EventProcCall("AddDeviceFail",arg);
-//			if(NULL!=Idevice){Idevice->Release();}
-//			if(NULL!=Iarea){Iarea->Release();}
-//			return;
-//		}
-//		nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-//		if(-1==nRet_id){
-//			Content.clear();
-//			arg.clear();
-//			Content.append("AddDeviceFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EventProcCall("AddDeviceFail",arg);
-//			if(NULL!=Idevice){Idevice->Release();}
-//			if(NULL!=Iarea){Iarea->Release();}
-//			return;
-//		}
-//		goto end1;
-//	}
-//	else if("1"==ConnectMethod.toString()){
-//		if(sEseeId.isNull()){
-//			Content.clear();
-//			arg.clear();
-//			Content.append("the params are not complete");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EventProcCall("AddDeviceFail",arg);
-//			if(NULL!=Idevice){Idevice->Release();}
-//			if(NULL!=Iarea){Iarea->Release();}
-//			return;
-//		}
-//		 nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-//		if(nRet_id>0){
-//			goto end1;
-//		}else{
-//			Content.clear();
-//			arg.clear();
-//			Content.append("AddDeviceFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EventProcCall("AddDeviceFail",arg);
-//			if(NULL!=Idevice){Idevice->Release();}
-//			if(NULL!=Iarea){Iarea->Release();}
-//			return;
-//		}
-//
-//	}
-//
-//	Content.clear();
-//	arg.clear();
-//	Content.append("ConnectMethod fail");
-//	EP_ADD_PARAM(arg,"fail",Content);
-//	EventProcCall("AddDeviceFail",arg);
-//	if(NULL!=Idevice){Idevice->Release();}
-//	if(NULL!=Iarea){Iarea->Release();}
-//	return;
-//end1:
-//	Content.clear();
-//	arg.clear();
-//	QString nSret=QString("%1").arg(nRet_id);
-//	Content.append(nSret);
-//	EP_ADD_PARAM(arg,"deviceid",Content);
-//	EventProcCall("AddDeviceSuccess",arg);
-//	if(NULL!=Idevice){Idevice->Release();}
-//	if(NULL!=Iarea){Iarea->Release();}
-//	return;
-//}
+
 void settingsActivity::OnAddDevice()
 {	
 	int nRet_id;
@@ -899,7 +469,6 @@ void settingsActivity::OnAddDevice()
 	DEF_EVENT_PARAM(bcitem);
 	int total=0;
 	QString devId;
-
 	//==================
 	if(NULL==Idevice||NULL==Iarea){
 		EP_ADD_PARAM(bcitem,"total",total);
@@ -1014,12 +583,18 @@ void settingsActivity::OnRemoveDevice()
 {
 	IDeviceManager *Idevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	//
+	DEF_EVENT_PARAM(bcitem);
+	int total=0;
+	QString devId;
+	//
+
 	DEF_EVENT_PARAM(arg);
 	QString Content;
 	if(NULL==Idevice){
-		Content.append("system fail");
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("RemoveDeviceFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 
@@ -1028,30 +603,26 @@ void settingsActivity::OnRemoveDevice()
 	bool nRet_bool=false;
 	nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
 	if(false==nRet_bool){
-		arg.clear();
-		Content.clear();
-		Content.append("Dev_Id is not exist");
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("RemoveDeviceFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 		Idevice->Release();
 		return;
 	}
 	int nRet_int=-1;
 	nRet_int=Idevice->RemoveDevice(Dev_Id.toInt());
 	if(0!=nRet_int){
-		arg.clear();
-		Content.clear();
-		Content.append("RemoveFail");
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("RemoveDeviceFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 		Idevice->Release();
 		return;
 	}
-	arg.clear();
-	Content.clear();
-	Content.append("Remove Success");
-	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("RemoveDeviceSuccess",arg);
+
+	devId.append(QString("%1").arg(Dev_Id.toInt()));
+	EP_ADD_PARAM(bcitem,"total",1);
+	EP_ADD_PARAM(bcitem,"succeedId",devId);
+	EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 	Idevice->Release();
 	return;
 }
@@ -1060,22 +631,25 @@ void settingsActivity::OnModifyDevice()
 {
 	IDeviceManager *Idevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
-	DEF_EVENT_PARAM(arg);
-	QString Content="system fail";
+	//==================
+	DEF_EVENT_PARAM(bcitem);
+	int total=0;
+	QString devId;
+	//==================
+
 	if(NULL==Idevice){
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("ModifyDeviceFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 
 	QVariant Dev_Id=QueryValue("dev_id_ID");
 	bool nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
 	if(false==nRet_bool){
-		arg.clear();
-		Content.clear();
-		Content.append("Dev_Id is not exist");
-		EP_ADD_PARAM(arg,"fail",Content);
-		EventProcCall("ModifyDeviceFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 		Idevice->Release();
 		return;
 	}
@@ -1084,10 +658,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==Dev_Id.isNull()&&false==sDeviceName.isNull()){
 		int nRet_int=Idevice->ModifyDeviceName(Dev_Id.toInt(),sDeviceName.toString());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1098,10 +671,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==sUsername.isNull()){
 		int nRet_int=Idevice->ModifyDeviceAuthority(Dev_Id.toInt(),sUsername.toString(),sPassword.toString());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1111,10 +683,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==chlCount.isNull()){
 		int nRet_int=Idevice->ModifyDeviceChannelCount(Dev_Id.toInt(),chlCount.toInt());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1124,10 +695,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==sVentor.isNull()){
 		int nRet_int=Idevice->ModifyDeviceVendor(Dev_Id.toInt(),sVentor.toString());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1137,10 +707,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==sEseeId.isNull()){
 		int nRet_int=Idevice->ModifyDeviceEseeId(Dev_Id.toInt(),sEseeId.toString());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1152,10 +721,9 @@ void settingsActivity::OnModifyDevice()
 	if(false==sAddress.isNull()&&false==port.isNull()&&false==http.isNull()){
 		int nRet_int=Idevice->ModifyDeviceHost(Dev_Id.toInt(),sAddress.toString(),port.toInt(),http.toInt());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
@@ -1166,19 +734,18 @@ void settingsActivity::OnModifyDevice()
 	{
 		int nRet_int=Idevice->ModifyDeviceConnectMethod(Dev_Id.toInt(),connect_method.toInt());
 		if(0!=nRet_int){
-			arg.clear();
-			Content.clear();
-			EP_ADD_PARAM(arg,"fail",Content);
-			EventProcCall("ModifyDeviceFail",arg);
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 			Idevice->Release();
 			return;
 		}
 	}
-	arg.clear();
-	Content.clear();
-	Content.append("modify success");
-	EP_ADD_PARAM(arg,"success",Content);
-	EventProcCall("ModifyDeviceSuccess",arg);
+
+	EP_ADD_PARAM(bcitem,"total",1);
+	devId.append(QString("%1").arg(Dev_Id.toInt()));
+	EP_ADD_PARAM(bcitem,"succeedId",devId);
+	EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
 	Idevice->Release();
 	return;
 }
@@ -1697,24 +1264,6 @@ void settingsActivity::OnRemoveChannelFromGroup()
 	EventProcCall("RemoveChannelFromGroupSuccess",arg);
 	IGroup->Release();
 	return;
-	//int nRet=-1;
-	//nRet=IGroup->RemoveChannelFromGroup(R_Chl_Group_id_ID.toInt());
-	//if(-1==nRet){
-	//	arg.clear();
-	//	Content.clear();
-	//	Content.append("RemoveChannelFromGroup fail");
-	//	EP_ADD_PARAM(arg,"fail",Content);
-	//	EventProcCall("RemoveChannelFromFail",arg);
-	//	IGroup->Release();
-	//	return;
-	//}
-	//arg.clear();
-	//Content.clear();
-	//Content.append("RemoveChannelFromGroup success");
-	//EP_ADD_PARAM(arg,"success",Content);
-	//EventProcCall("RemoveChannelFromSuccess",arg);
-	//IGroup->Release();
-	//return;
 }
 
 void settingsActivity::OnModifyGroupChannelName()
@@ -2202,168 +1751,7 @@ void settingsActivity::OnAddDeviceALL()
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
 	EventProcCall("AddDeviceFeedBackSuccess",bcitem);
 }
-//void settingsActivity::OnAddDeviceALL()
-//{
-//	int nRet_id;
-//	qDebug()<<"step in";
-//	qDebug("========OnAddDeviceALL========");
-//	IDeviceManager *Idevice=NULL;
-//	IAreaManager *Iarea=NULL;
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
-//	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
-//
-//	DEF_EVENT_PARAM(arg);
-//	QString Content="system fail";
-//	QString State_num="0";
-//	QString sDevice_Name="0";
-//
-//	if(NULL==Idevice||NULL==Iarea){
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceAllFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		m_bIsAdding=false;
-//		return;
-//	}
-//
-//	QVariant DevListFile=QueryValue("adddeviceall_ID");
-//	QDomDocument ConfFile;
-//	ConfFile.setContent(DevListFile.toString());
-//
-//	QDomNode DevListInfoNode=ConfFile.elementsByTagName("devListInfo").at(0);
-//	QDomNodeList itemList=DevListInfoNode.childNodes();
-//	if(0==itemList.count()){
-//		arg.clear();
-//		Content.clear();
-//		Content.append("please choose the device");
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceAllFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		m_bIsAdding=false;
-//		return;
-//	}
-//	int n;
-//	//判断添加的区域是否存在
-//	int Area_ID=ConfFile.firstChild().toElement().attribute("area_id").toInt();
-//	bool nRet_bool=false;
-//	nRet_bool=Iarea->IsAreaIdExist(Area_ID);
-//	if(false==nRet_bool){
-//		Content.clear();
-//		arg.clear();
-//		Content.append("AreaID is not exist");
-//		EP_ADD_PARAM(arg,"fail",Content);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EventProcCall("AddDeviceAllFail",arg);
-//		if(NULL!=Idevice){Idevice->Release();}
-//		if(NULL!=Iarea){Iarea->Release();}
-//		m_bIsAdding=false;
-//		return;
-//	}
-//
-//	for (n=0;n<itemList.count();n++)
-//	{
-//		QDomNode item;
-//		item= itemList.at(n);
-//		//搜索返回的参数
-//		QString SearchVendor_ID=item.toElement().attribute("SearchVendor_ID");
-//		QString SearchDeviceName_ID=item.toElement().attribute("SearchDeviceName_ID");
-//		QString SearchDeviceId_ID=item.toElement().attribute("SearchDeviceId_ID");
-//		QString SearchDeviceModelId_ID=item.toElement().attribute("SearchDeviceModelId_ID");
-//		QString SearchSeeId_ID=item.toElement().attribute("SearchSeeId_ID");
-//		QString SearchChannelCount_ID=item.toElement().attribute("SearchChannelCount_ID");
-//		QString SearchIP_ID=item.toElement().attribute("SearchIP_ID");
-//		QString SearchMask_ID=item.toElement().attribute("SearchMask_ID");
-//		QString SearchMac_ID=item.toElement().attribute("SearchMac_ID");
-//		QString SearchGateway_ID=item.toElement().attribute("SearchGateway_ID");
-//		QString SearchHttpport_ID=item.toElement().attribute("SearchHttpport_ID");
-//		QString SearchMediaPort_ID=item.toElement().attribute("SearchMediaPort_ID");
-//		qDebug()<<SearchIP_ID;
-//		//添加的默认参数
-//
-//		QString	UserName_ID=item.toElement().attribute("username");
-//		QString	PassWord_ID=item.toElement().attribute("password");
-//		//设置默认参数
-//		QString ConnectMethod="0";
-//		SearchDeviceName_ID.clear();
-//
-//		if (0!=SearchSeeId_ID.size()&&-1!=SearchSeeId_ID.toInt()&&false==SearchSeeId_ID.isNull())
-//		{
-//			SearchDeviceName_ID.append(SearchSeeId_ID);
-//		}
-//		else 
-//		{
-//			SearchDeviceName_ID.append(SearchIP_ID);
-//		}
-//
-//		if (0==UserName_ID.size()||UserName_ID.isNull())
-//		{
-//			UserName_ID.append("admin");
-//		}
-//
-//
-//		//默认IP模式连接，判断ip模式连接的参数是否齐全
-//
-//		if(SearchIP_ID.isNull()||SearchHttpport_ID.isNull()||SearchMediaPort_ID.isNull()){
-//			Content.clear();
-//			arg.clear();
-//			State_num.clear();
-//			sDevice_Name.clear();
-//			QString Num=QString("%1").arg(n);
-//			sDevice_Name.append(SearchDeviceName_ID);
-//			Content.append(Num);
-//			Content.append("AddDeviceAllFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EP_ADD_PARAM(arg,"name",sDevice_Name);
-//			EP_ADD_PARAM(arg,"state",State_num);
-//			EventProcCall("AddDeviceAllFail",arg);
-//			continue;
-//		}
-//
-//		//添加设备
-//		nRet_id=Idevice->AddDevice(Area_ID,SearchDeviceName_ID,SearchIP_ID,SearchMediaPort_ID.toInt(),SearchHttpport_ID.toInt(),SearchSeeId_ID,UserName_ID,PassWord_ID,SearchChannelCount_ID.toInt(),ConnectMethod.toInt(),SearchVendor_ID);
-//		//		nRet_id=Idevice->AddDevice(Area_Id.toInt(),sDeviceName.toString(),sAddress.toString(),port.toInt(),http.toInt(),sEseeId.toString(),sUserName.toString(),sPassWord.toString(),chlCount.toInt(),ConnectMethod.toInt(),sVendor.toString());
-//		if(-1==nRet_id){
-//			Content.clear();
-//			arg.clear();
-//			State_num.clear();
-//			sDevice_Name.clear();
-//			sDevice_Name.append(SearchDeviceName_ID);
-//			QString Num=QString("%1").arg(n);
-//			Content.append(Num);
-//			Content.append("AddDeviceAllFail");
-//			EP_ADD_PARAM(arg,"fail",Content);
-//			EP_ADD_PARAM(arg,"name",sDevice_Name);
-//			EP_ADD_PARAM(arg,"state",State_num);
-//			EventProcCall("AddDeviceAllFail",arg);
-//			continue;
-//		}
-//
-//		Content.clear();
-//		arg.clear();
-//		sDevice_Name.clear();
-//		State_num.clear();
-//		sDevice_Name.append(SearchDeviceName_ID);
-//		QString Num=QString("%1").arg(n);
-//		State_num.append(Num);
-//		QString nSret=QString("%1").arg(nRet_id);
-//		Content.append(nSret);
-//		EP_ADD_PARAM(arg,"state",State_num);
-//		EP_ADD_PARAM(arg,"name",sDevice_Name);
-//		EP_ADD_PARAM(arg,"deviceid",Content);
-//		EventProcCall("AddDeviceAllSuccess",arg);
-//		continue;
-//	}
-//
-//	if(NULL!=Idevice){Idevice->Release();}
-//	if(NULL!=Iarea){Iarea->Release();}
-//	m_bIsAdding=false;
-//}
+
 void settingsActivity::OnAddDeviceALLThread()
 {
 	//if (m_bIsAdding!=true)
@@ -2387,16 +1775,16 @@ void settingsActivity::OnRemoveDeviceALL()
 	IDeviceManager *Idevice=NULL;
 	qDebug()<<"OnRemoveDeviceALL";
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
-	DEF_EVENT_PARAM(arg);
-	QString l_Content;
-	QString l_state;
-	QString l_name;
+
+	//==================
+	DEF_EVENT_PARAM(bcitem);
+	int total=0;
+	QString devId;
+	//==================
 	if(NULL==Idevice){
-		l_Content.append("system fail");
-		EP_ADD_PARAM(arg,"fail",l_Content);
-		EP_ADD_PARAM(arg,"state",l_state);
-		EP_ADD_PARAM(arg,"name",l_name);
-		EventProcCall("RemoveDeviceAllFail",arg);
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 		return;
 	}
 	QVariant DevListFile=QueryValue("removedeviceall_ID");
@@ -2410,33 +1798,22 @@ void settingsActivity::OnRemoveDeviceALL()
 		bool nRet_bool=false;
 		nRet_bool=Idevice->IsDeviceExist(liDevId);
 		if(false==nRet_bool){
-			arg.clear();
-			l_Content.clear();
-			l_Content.append("Dev_Id is not exist");
-			EP_ADD_PARAM(arg,"fail",l_Content);
-			//fix set state and name
-			EP_ADD_PARAM(arg,"state",l_state);
-			EP_ADD_PARAM(arg,"name",l_name);
-			EventProcCall("RemoveDeviceAllFail",arg);
 			continue;
 		}
 		int nRet_int=-1;
 		nRet_int=Idevice->RemoveDevice(liDevId);
 		if(0!=nRet_int){
-			arg.clear();
-			l_Content.clear();
-			l_Content.append("RemoveFail");
-			EP_ADD_PARAM(arg,"state",l_state);
-			EP_ADD_PARAM(arg,"name",l_name);
-			EP_ADD_PARAM(arg,"fail",l_Content);
-			EventProcCall("RemoveDeviceAllFail",arg);
 			continue;
 		}
-		arg.clear();
-		EP_ADD_PARAM(arg,"deviceid",liDevId);
-		EventProcCall("RemoveDeviceAllSuccess",arg);
+		devId.append(QString("%1").arg(liDevId));
+		devId.append(";");
+		total++;
 	}
 	Idevice->Release();
+
+	EP_ADD_PARAM(bcitem,"total",total);
+	EP_ADD_PARAM(bcitem,"succeedId",devId);
+	EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 	return;
 }
 

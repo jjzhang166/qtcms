@@ -67,12 +67,12 @@
   AddDeviceAllSuccess(deviceid,state,name)<br />
   AddDeviceAllFail(fail,state,name)<br />
   AddDeviceFail(fail)*/改用AddDeviceFeedBackSuccess（total，succeedId），其中total为添加成功的总数，succeedId为设备在数据库中的id<br />
-  ModifyDeviceSuccess(success)<br />
-  ModifyDeviceFail(fail)<br />
-  RemoveDeviceSuccess(success)<br />
+  /*ModifyDeviceSuccess(success)<br />
+  ModifyDeviceFail(fail)*/改用ModifyDeviceFeedBackSuccess（total，succeedId），其中total为修改成功的总数，succeedId为设备在数据库中的id<br />
+  /*RemoveDeviceSuccess(success)<br />
   RemoveDeviceFail(fail)<br />
   RemoveDeviceAllSuccess(deviceid)
-  RemoveDeviceAllFail(fail,state,name)  </p>
+  RemoveDeviceAllFail(fail,state,name) */改用 RemoveDeviceFeedBackSuccess（total，succeedId）其中total为删除成功的总数，succeedId为设备在数据库中的id</p>
 <p>@区域管理<br />
   AddAreaSuccess(areaid)<br />
   AddAreaFail(fail)<br />
