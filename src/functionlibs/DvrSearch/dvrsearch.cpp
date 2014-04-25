@@ -5,21 +5,17 @@
 DvrSearch::DvrSearch():
 m_nRef(0),
 m_nTimeInterval(10),
-m_bFlush(false),
-m_nStopped(-1),
-m_bThreadRunning(false)
+m_bFlush(false)
 {
     m_sEventList.insert(0, QString("SearchDeviceSuccess"));
 }
 
-DvrSearch::~DvrSearch()
-{ 
-     while(this->isRunning())
-     {
-         this->exit();
-     }
+DvrSearch::~DvrSearch(){
+	m_running=false;
+	while(QThread::isRunning()){
+		msleep(10);
+	}
 }
-
 
 long __stdcall DvrSearch::QueryInterface( const IID & iid,void **ppv )
 {
@@ -67,72 +63,34 @@ unsigned long __stdcall DvrSearch::Release()
 	return nRet;
 }
 
-
 int DvrSearch::Start()
 {
-     if (0 == m_nStopped )
-     {
-         return -1;
-     }  
-    m_nStopped   = 0;
-    m_pUdpSocket = new QUdpSocket;
-    m_pUdpSocket->bind(UDP_PORT, QUdpSocket::ShareAddress);
-    start();
-   
-    return 0;
+	if (!QThread::isRunning())
+	{
+		QThread::start();
+	}
+	m_running=true;
+	return 0;
 }
-
-int DvrSearch::Stop()
-{
-    if (1 == m_nStopped || -1 == m_nStopped)
-    {
-        return -1;
-    }
-    m_nStopped   = 1;
-    
-    while (m_bThreadRunning)
-    {
-        wait();
-    }
-    m_pUdpSocket->close();
-    m_pUdpSocket->deleteLater();
-    m_pUdpSocket = NULL;
+int DvrSearch::Stop(){
+	m_running=false;
 	return 0;
 }
 
-int DvrSearch::Flush()
-{
-    int nRet = 0;
-    if (2 == m_nStopped || -1 == m_nStopped)
-    {
-        nRet = -1;
-    }
-    else if (0 == m_nStopped)
-    {
-        m_bFlush    = true;
-        m_nStopped  = 2;
-        nRet = 0;
-    }
-    else if (1 == m_nStopped)
-    {
-        m_bFlush    = true;
-        m_nStopped  = 2;
-        Start();
-        nRet = 1;
-    }
-	return nRet;
+int DvrSearch::Flush(){
+	m_bFlush=true;
+	return 0;
 }
 
 
-void DvrSearch::run()
-{
+void DvrSearch::run(){
+    m_pUdpSocket = new QUdpSocket;
+    m_pUdpSocket->bind(UDP_PORT, QUdpSocket::ShareAddress);
     QElapsedTimer timer;
     timer.start();
     qint64 nLen = m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
-    while (0 == m_nStopped || 2 == m_nStopped)
+    while (m_running)
 	{
-        m_bThreadRunning = true;
-        m_nStopped = 0;
         if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
         {
             timer.start();
@@ -142,7 +100,8 @@ void DvrSearch::run()
         Recv(); 
         msleep(10);
 	} 
-    m_bThreadRunning = false;
+	m_pUdpSocket->close();
+	delete m_pUdpSocket;
 }
 
 int DvrSearch::setInterval(int nInterval)

@@ -48,13 +48,11 @@ private:
 	QUdpSocket *    m_pUdpSocket;
 	int             m_nTimeInterval;
 	volatile  bool  m_bFlush;
-    int             m_nStopped;// -1 before start 0 already start(not stopped)
-    // 1 after stopped 2 flush 
-    volatile  bool  m_bThreadRunning;
     QStringList     m_sEventList;
 
 	QMultiMap<QString,   EventCBInfo>m_mEventCBMap;
 	QVariantMap     m_mEventCBParam;   
+	volatile bool	m_running;
 };
 
 #endif // DVRSEARCH_H
