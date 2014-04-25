@@ -50,9 +50,6 @@ var oSearchOcx,
 						obj.toggleClass('sel');
 						if(obj.hasClass('channel')){
 							This.find('span').not('span.channel').removeClass('sel');
-							if(!$('div.dev_list:eq(1) span.sel.group')[0]){
-								$('div.dev_list:eq(1) span.group:eq(0)').addClass('sel');
-							}
 						}else{ 
 							This.find('span').not(obj).removeClass('sel');
 						}
@@ -251,6 +248,7 @@ var oSearchOcx,
 		})
 
 		$('#AddChannelInGroupDouble_ok').click(function(){ 
+			selectEdparent('group')
 			SetChannelIntoGroupData();
 		});
 		 /*client_setting*/
@@ -310,7 +308,7 @@ var oSearchOcx,
 		/*控件触发事件调用的元素事件绑定.*/
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDevice',/*'RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDeviceFeedBack',/*'ModifyDevice','RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -415,13 +413,13 @@ var oSearchOcx,
 
 	// 全选
 	function addAlldevIntoArea(){
-		selectEdArea();
+		selectEdparent('area');
 		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
 		initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
 	}
 	//添加多台设备
 	function adddoubdevIntoArea(){
-		selectEdArea();
+		selectEdparent('area');
 		var devList = $('tbody.synCheckboxClick input:checked');
 		initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
 	}
@@ -429,12 +427,12 @@ var oSearchOcx,
 	function (){
 
 	}*/
-	//自动补全没没选中的区域
-	function selectEdArea(){
-		var obj = $('ul.filetree:eq(0)');
-		if(!obj.find('span.area.sel')[0]){
+	//自动补全没没选中的对象    //针对  区域和分组
+	function selectEdparent(sClass){
+		var obj = $('ul.filetree:eq('+(sClass == 'group' ? 1 : 0)+')');
+		if(!obj.find('span.'+sClass+'.sel')[0]){
 			obj.find('span').removeClass('sel');
-			obj.find('span.area:first').addClass('sel');
+			obj.find('span.'+sClass+':first').addClass('sel');
 		}
 	}
 	//初始化要添加到区域的XML信息
@@ -1017,14 +1015,23 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
 	}
-	function ModifyDeviceSuccess(){
+	function ModifyDeviceFeedBackSuccess(data){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
-		for(i in dataIndex){ 
+		for(i in dataIndex){
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);
 		closeMenu();
 	}
+	/*function ModifyDeviceSuccess(data){
+		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
+		debugData(dataIndex);
+		for(i in dataIndex){ 
+			dataIndex[i] = $('#'+i+'_ID').val();
+		}
+		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);
+		closeMenu();
+	}*/
 	/*function RemoveDeviceSuccess(){ 
 		var id = $('#dev_id_ID').val();
 		$('ul.filetree:eq(1) span.channel').each(function(){ 

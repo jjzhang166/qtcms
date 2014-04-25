@@ -387,7 +387,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	return num = num<10 ? '0'+num : num;
 }
 function showdata(id,type){  //显示表单下有ID的元素的val值
-	return;
+	//return;
 	var submit = $('#'+type).find('.confirm:visible').attr('id');
 	var str =submit+'/'+id +'/';
 	$('#'+type).find('input[id]').each(function(){ 
@@ -414,8 +414,8 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm').find('h4,span').html('');
-	$('#menusList div.menu').find('input')
-		.find('.data').remove()
+	$('#menusList div.menu').find('input.data')
+		.remove()
 		.end().find(':text').val('');
 		/*.end().end().each(function(){
 			$(this).find('div.close:last').html(lang.Cancel);	

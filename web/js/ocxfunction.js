@@ -50,11 +50,18 @@ var oCommonLibrary;
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool){ //区域菜单输出
 		num = num ? num : 0;
-		var obj = $('ul.filetree').not('[id]').eq(num);
-			obj.treeview({remove:obj.find('li:first')});
+		var obj = $('ul.filetree').not('[id]');
+
+			obj.each(function(){
+				$(this).treeview({remove:$(this).find('li:first')});	
+			})
+			obj = obj.eq(num);
+
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
+
 		obj.treeview({add:add});
+
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();

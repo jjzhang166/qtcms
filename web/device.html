@@ -140,7 +140,7 @@
 						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok"><script>T("One_button_to_add")</script></li>
 						<li class="hover" onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
 						<li class="hover" onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
-						<li class="hover" onclick="showObjActBox('Modify','device');"><script>T("Modified_device")</script></li>
+						<li class="hover" onclick="selectEdparent('device');showObjActBox('Modify','device');"><script>T("Modified_device")</script></li>
 						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok"><script>T("Empty_Equipment")</script></li>
 						<li class="hover" onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
 						<li class="hover" onclick="searchFlush();"><script>T("Re_search")</script></li>
@@ -1743,7 +1743,7 @@
 						</ul>
 					</td>
 				</tr>
-				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 			</table>
 	</div>
 	<div id="area" class="menu">

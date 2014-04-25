@@ -353,11 +353,11 @@
 	'IP_setup_failed':'IP设置失败!',
 	'Please_select_a_device':'请选择一台设备!',
 	
-	'Sun':'星期日',
-	'Mon':'星期一',
-	'Tue':'星期二',
-	'Wed':'星期三',
-	'Thu':'星期四',
-	'Fri':'星期五',
-	'Sat':'星期六'
+	'Sun':'日',
+	'Mon':'一',
+	'Tue':'二',
+	'Wed':'三',
+	'Thu':'四',
+	'Fri':'五',
+	'Sat':'六'
 }
