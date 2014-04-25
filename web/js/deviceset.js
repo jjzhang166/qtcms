@@ -413,27 +413,34 @@ var oSearchOcx,
 		$('#recordtimedouble_ID').val(str);
 	}
 
-	// 一键添加
+	// 全选
 	function addAlldevIntoArea(){
+		selectEdArea();
 		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
 		initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
 	}
 	//添加多台设备
 	function adddoubdevIntoArea(){
-		if(!$('ul.filetree:eq(0) span.area.sel')[0]){
-			$('ul.filetree:eq(0) span.area:eq(0)').addClass('sel');
-		}
+		selectEdArea();
 		var devList = $('tbody.synCheckboxClick input:checked');
 		initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
+	}
+	/*//一键添加
+	function (){
+
+	}*/
+	//自动补全没没选中的区域
+	function selectEdArea(){
+		var obj = $('ul.filetree:eq(0)');
+		if(!obj.find('span.area.sel')[0]){
+			obj.find('span').removeClass('sel');
+			obj.find('span.area:first').addClass('sel');
+		}
 	}
 	//初始化要添加到区域的XML信息
 	function initDevIntoAreaXml (objList,obj){
 			var oArea=$('div.dev_list:eq(0)')
-			if(!oArea.find('span.sel')[0]){
-				oArea.find('span').removeClass('sel');
-				oArea.find('span.area:first').addClass('sel');
-			}
-			var areaID = oArea.find('span.sel').data('data')['area_id'];
+			var areaID = oArea.find('span.sel').data('data')['area_id'] || 0;
 			var str = '<devListInfo cut = "'+objList.length+'" area_id="'+areaID+'">';
 			objList.each(function(){ 
 				var data = $(this).parent('td').parent('tr').data('data');
@@ -500,7 +507,7 @@ var oSearchOcx,
 			var data = $(this).data('data')
 			for(i in data){ 
 				if(i == 'channel_name'){
-					sChl+='channel_name_ID="'+$('#dev_'+data.dev_id).data('data').eseeid+'_chl_'+(parseInt(data.channel_number)+1)+'" ';	
+					sChl+='channel_name_ID="'+$('#dev_'+data.dev_id).data('data').name+'_chl_'+(parseInt(data.channel_number)+1)+'" ';	
 				}else{
 					sChl+=i+'_ID="'+data[i]+'" ';
 				}
@@ -846,7 +853,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace(/\./g,'-');
 			var sClass = data.SearchVendor_ID.split(' ')[1];
 			$('<tr id="esee_'+id+'" class="'+sClass+'"><td><input type="checkbox" />'+data.SearchVendor_ID.split(' ')[1]+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
-			initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
+			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
 				
 	}
@@ -868,14 +875,15 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			$('#area_'+id).next('ul').find('span.device').each(function(){
 				devList.push($(this).data('data')['dev_id']);
 			});
-			$('div.dev_list').find('#area_'+id).parent('li').remove();
+			$('ul.filetree:eq(0)').treeview({remove:$('#area_'+id).parent('li')});
 		}
 		for(i in devList){
-			$('ul.filetree:eq(1) span.channel').filter(function(){ 
-				return $(this).data('data')['dev_id'] == devList[i];
-			}).parent('li').remove();
+			$('ul.filetree:eq(1) span.channel').each(function(){ 
+				if($(this).data('data')['dev_id'] == devList[i]){
+					$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
+				}	
+			})
 		}
-		$('ul.filetree').treeview();
 		closeMenu();
 	}
 
@@ -901,8 +909,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			var add = $(this).parent('li').appendTo($('div.dev_list:eq(0) #dev_'+devid).next('ul'));
 			$('ul.filetree').treeview({add:add});
 		})*/
-		$('#group_'+id).parent('li').remove();
-		$('ul.filetree').treeview();
+		$('ul.filetree').treeview({remove:$('#group_'+id).parent('li')});
 		closeMenu();
 	}
 	function ModifyGroupSuccess(data){
@@ -922,6 +929,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		closeMenu();
 	}
 	function AddDeviceFeedBackSuccess(data){
+		// /areaList2Ui(0);
 		$('#SerachDevList tbody tr').filter(function(){
 			return $(this).find('input').is(':checked');
 		}).remove();
@@ -931,16 +939,20 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				adddev(succeedId[i])
 			}
 		}
+		closeMenu();
 	}
 	function RemoveDeviceFeedBackSuccess(data){
+		//areaList2Ui(0);
 		var succeedId = data.succeedId.split(';');
 		for(i in succeedId){
-			$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
-			$('ul.filetree:eq(1) span.channel').each(function(){ 
-				if($(this).data('data')['dev_id'] == succeedId[i]){
-					$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
-				}
-			})
+			if(succeedId[i]){
+				$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
+				$('ul.filetree:eq(1) span.channel').each(function(){ 
+					if($(this).data('data')['dev_id'] == succeedId[i]){
+						$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
+					}
+				})
+			}
 		}
 		closeMenu();
 	}
@@ -949,12 +961,20 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
 		//Confirm(data.device_name+'AddSuccess!');
 		var obj = $('ul.filetree:eq(0)');
-		var data = {'device_name':oCommonLibrary.GetDeviceInfo(devID).name,'area_id':obj.find('span.area.sel').data('data').area_id,'dev_id':devID};
-		
-		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo(obj.find('span.area.sel').next('ul'));
+
+		var chlList = oCommonLibrary.GetChannelList(devID);
+
+		var data = oCommonLibrary.GetDeviceInfo(devID);
+			data.device_name = data.name;
+			data.area_id = obj.find('span.area.sel').data('data').area_id;
+			data.dev_id=devID;
+			data.channel_count=chlList.length;
+			data.parea_name = obj.find('span.area.sel').data('data').area_name;
+
+		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
 		obj.treeview({add:add});
 		add.find('span.device').data('data',data);
-		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
+
 		for(i in chlList){
 			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
 			var chlNum = parseInt(chldata.number)+1;
@@ -964,7 +984,6 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			addchl.find('span.channel').data('data',chldata);
 			obj.treeview({add:addchl});
 		}
-		//closeMenu();
 	}
 	/*function AddDeviceSuccess(data){  //单个添加设备.. 菜单添加设备
 		alert(data);
@@ -1037,7 +1056,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			    .appendTo(group.next('ul'));
 			add.find('span.channel').data('data')['r_chl_group_id'] = data.chlgroupid;
 			add.find('span.channel').data('data')['channel_name'] =data.channelname;
-		$('ul.filetree').treeview({add:add}).treeview().find('span.channel').removeClass('sel');
+		$('ul.filetree').treeview({add:add}).find('span.channel').removeClass('sel');
 	}
 	function RemoveChannelFromGroupSuccess(data){ 
 		$('div.dev_list:eq(1) span.channel.sel').each(function(){

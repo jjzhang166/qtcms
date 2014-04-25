@@ -133,10 +133,11 @@ function group_cam_option(group_id,remarks,name,cam_info){
 				.find(">.hitarea").replaceClass(CLASSES.expandableHitarea, CLASSES.lastExpandableHitarea).end()
 				.filter("." + CLASSES.collapsable).replaceClass(CLASSES.last, CLASSES.lastCollapsable).end()
 				.find(">.hitarea").replaceClass(CLASSES.collapsableHitarea, CLASSES.lastCollapsableHitarea);
-			if (parent.is(":not(:has(>))") && parent[0] != this) {
+			//当li删除完之后 他会继续删除li的父级ul然后继续初始化UI. 影响下一次添加 li
+			/*if (parent.is(":not(:has(>))") && parent[0] != this) { 
 				parent.parent().removeClass(CLASSES.collapsable).removeClass(CLASSES.expandable)
 				parent.siblings(".hitarea").andSelf().remove();
-			}
+			}*/
 		});
 	};
 	

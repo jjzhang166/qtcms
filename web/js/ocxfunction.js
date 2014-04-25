@@ -50,7 +50,8 @@ var oCommonLibrary;
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool){ //区域菜单输出
 		num = num ? num : 0;
-		var obj = $('ul.filetree').not('[id]').html('').eq(num);
+		var obj = $('ul.filetree').not('[id]').eq(num);
+			obj.treeview({remove:obj.find('li:first')});
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
 				  .end().appendTo(obj);
 		obj.treeview({add:add});
@@ -122,7 +123,8 @@ var oCommonLibrary;
 		}
 	}
 	function groupList2Ui(){   //分组菜单输出
-		var obj = $('#group_0').html('');
+		var obj = $('#group_0')
+		$('ul.filetree:eq(1)').treeview({remove:obj.find('li')})
 		if(!obj[0]){
 			return;
 		}

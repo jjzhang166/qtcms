@@ -414,11 +414,17 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm').find('h4,span').html('');
-	$('#menusList div.menu input.data').remove();
+	$('#menusList div.menu').find('input')
+		.find('.data').remove()
+		.end().find(':text').val('');
+		/*.end().end().each(function(){
+			$(this).find('div.close:last').html(lang.Cancel);	
+		})*/
+	/*$('#menusList div.menu input.data').remove();
 	$('#menusList div.menu input:text').val('');
-	$('div.menue').each(function(){ 
+	$('div.menu').each(function(){ 
 		$(this).find('div.close:last').html(lang.Cancel);
-	})
+	})*/
 	
 }
 function Confirm(str){
