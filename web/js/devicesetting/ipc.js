@@ -417,7 +417,6 @@ function network_save_content()
 	xml += '</network>';
 	xml += '</conf>';
 	xml += '</juan>';
-//	alert(xml);
 
 	dvr_ajax = $.ajax({ 
 		type:"GET",

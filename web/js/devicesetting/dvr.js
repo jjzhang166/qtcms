@@ -13,6 +13,7 @@ dvr_chn = _chn;
 //*****************************           dvr's  common code. (Don't Compile Here!!!!)         **********************
 function mk_chn_content(_id, _chn)
 {
+	//alert(_chn)
 	$('#'+_id).find('li').remove();
 	for(var i = 0; i < _chn; i++)
 	{
@@ -73,19 +74,21 @@ function mk_chn_content(_id, _chn)
 }
 function dvr_save(s_id)
 {
-	for(var chk_chn = 0; chk_chn < 32; chk_chn++)
+	var ret = 0;
+	for(var chk_chn = 0; chk_chn < dvr_chn; chk_chn++)
 	{
 		if($('.'+s_id+' div input').eq(chk_chn).prop('checked') == true){
-			switch(s_id)
-			{
-				case 'dvr_record_chn_sel':dvr_record_save_content(chk_chn);break;
-				case 'dvr_enc_chn_sel':dvr_encoding_save_content(chk_chn);break;
-				case 'dvr_ptz_chn_sel':dvr_ptz_save_content(chk_chn);break;
-				case 'dvr_detect_chn_sel':dvr_detect_save_content(chk_chn);break;
-				case 'dvr_alarm_chn_sel':dvr_alarm_save_content(chk_chn);break;
-				default: break;
-			}
+			ret += Math.pow(2, chk_chn);
 		}
+	}
+	switch(s_id)
+	{
+		case 'dvr_record_chn_sel':dvr_record_save_content(ret);break;
+		case 'dvr_enc_chn_sel':dvr_encoding_save_content(ret);break;
+		case 'dvr_ptz_chn_sel':dvr_ptz_save_content(ret);break;
+		case 'dvr_detect_chn_sel':dvr_detect_save_content(ret);break;
+		case 'dvr_alarm_chn_sel':dvr_alarm_save_content(ret);break;
+		default: break;
 	}
 }
 function dvr_load(id_chn)
@@ -677,9 +680,10 @@ function dvr_encoding_load_content()
 //	alert(xmlstr);
 }
 
-function dvr_encoding_save_content(chk_chn)
+function dvr_encoding_save_content(ret)
 {
 	//main_stream
+	var chk_chn = $("#dvr_enc_chn_sel0")[0].innerHTML-1;
 	var dvr_enc_main_format,dvr_enc_main_bitvalue,dvr_enc_main_framerate;
 	switch($("#dvr_enc_main_format")[0].innerHTML)
 	{
@@ -766,6 +770,22 @@ function dvr_encoding_save_content(chk_chn)
 	xmlstr += ' bitvalue="' + dvr_enc_sub_bitvalue + '"';
 	xmlstr += ' framerate="' + dvr_enc_sub_framerate + '"';
 	xmlstr += ' />';
+	if(ret > 0)
+	{
+		xmlstr += '<copyg';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' type="1"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' />';
+	}
+	if(ret > 0)
+	{
+		xmlstr += '<copyg';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' type="6"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' />';
+	}
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
 	//alert(xmlstr);
@@ -914,8 +934,9 @@ function dvr_record_load_content(dvr_selected_chn,dvr_selected_weekday)
 	});	
 }
 
-function dvr_record_save_content(chk_chn)
+function dvr_record_save_content(ret)
 {
+	var chk_chn = $('#dvr_record_chn_sel0').html()-1;
 	var weekday = $('#dvr_record_week_ID').val();
 	var xmlstr = '';
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
@@ -937,6 +958,15 @@ function dvr_record_save_content(chk_chn)
 			}
 		}
 		xmlstr += ' types="' + types + '"';
+		xmlstr += ' />';
+	}
+	if(ret > 0)
+	{
+		xmlstr += '<copyrec';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' weekday="' + weekday + '"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' weekdays="' + (1 << weekday) + '"';
 		xmlstr += ' />';
 	}
 	xmlstr += '</envload>';
@@ -1186,8 +1216,9 @@ function dvr_detect_load_content()
 	});	
 }
 
-function dvr_detect_save_content(chk_chn)
+function dvr_detect_save_content(ret)
 {
+	var chk_chn = $('#dvr_detect_chn_sel0').html()-1;
 	var dvr_detect_sens,dvr_detect_mduration,dvr_detect_vduration;
 	var dvr_detect_mAlarm = $('#dvr_detect_mAlarm').prop('checked') ?1:0;
 	var dvr_detect_mBuzzer = $("#dvr_detect_mBuzzer").prop('checked') ?1:0;
@@ -1208,6 +1239,14 @@ function dvr_detect_save_content(chk_chn)
 	xmlstr += ' vlalarm="' + dvr_detect_vAlarm + '"';
 	xmlstr += ' vlbuzzer="' + dvr_detect_vBuzzer + '"';
 	xmlstr += ' />';
+	if(ret > 0)
+	{
+		xmlstr += '<copyg';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' type="2"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' />';
+	}
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
 	//alert(xmlstr);
@@ -1328,8 +1367,9 @@ function dvr_ptz_load_content()
 		}
 	});	
 }
-function dvr_ptz_save_content(chk_chn)
+function dvr_ptz_save_content(ret)
 {
+	var chk_chn = $('#dvr_ptz_chn_sel0').html()-1;
 	var dvr_ptz_agreement,dvr_ptz_baud_rate;
 	switch($("#dvr_ptz_agreement")[0].innerHTML)
 	{
@@ -1358,9 +1398,17 @@ function dvr_ptz_save_content(chk_chn)
 	xmlstr += ' protocal="' + dvr_ptz_baud_rate + '"';
 	xmlstr += ' baudrate="' + dvr_ptz_baud_rate + '"';
 	xmlstr += ' />';
+	if(ret > 0)
+	{
+		xmlstr += '<copyg';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' type="3"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' />';
+	}
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
-//	alert(xmlstr);
+	//alert(xmlstr);
 
 	dvr_ajax = $.ajax({ 
 		type:"GET",
@@ -1481,8 +1529,9 @@ function dvr_alarm_load_content()
 	});	
 }
 
-function dvr_alarm_save_content(chk_chn)
+function dvr_alarm_save_content(ret)
 {
+	var chk_chn = $('#dvr_alarm_chn_sel0').html()-1;
 	var dvr_alarm_opermode,dvr_alarm_duration;
 	var dvr_alarm_Alarm = $('#dvr_alarm_Alarm').prop('checked') ?1:0;
 	var dvr_alarm_Buzzer = $("#dvr_alarm_Buzzer").prop('checked') ?1:0;
@@ -1497,6 +1546,14 @@ function dvr_alarm_save_content(chk_chn)
 	xmlstr += ' alarm="' + dvr_alarm_Alarm + '"';
 	xmlstr += ' buzzer="' + dvr_alarm_Buzzer + '"';
 	xmlstr += ' />';
+	if(ret > 0)
+	{
+		xmlstr += '<copyg';
+		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' type="4"';
+		xmlstr += ' channels="' + ret + '"';
+		xmlstr += ' />';
+	}
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
 	//alert(xmlstr);
