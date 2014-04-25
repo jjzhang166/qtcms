@@ -138,8 +138,8 @@
 					<ul>
 						<li class="hover" onclick="$('#confirm span').html(lang.add_device);adddoubdevIntoArea();" id="AddDeviceDouble_ok"><script>T("Add_")</script></li>
 						<li class="hover" onclick="addAlldevIntoArea();" id="AddDeviceALL_ok"><script>T("One_button_to_add")</script></li>
-						<li class="hover" onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
-						<li class="hover" onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
+						<li class="hover" onclick="selectEdparent('area');showObjActBox('Add','area');"><script>T("add_area")</script></li>
+						<li class="hover" onclick="selectEdparent('area');showObjActBox('Add','device');"><script>T("add_device")</script></li>
 						<li class="hover" onclick="selectEdparent('device');showObjActBox('Modify','device');"><script>T("Modified_device")</script></li>
 						<li class="hover" onclick="cleanDev()" id="RemoveDeviceALL_ok"><script>T("Empty_Equipment")</script></li>
 						<li class="hover" onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
@@ -1718,7 +1718,13 @@
 			<p><span><script>T("Modified_device")</script></span><a class="hover close"></a></p>
 			<table>
 				<tr><td colspan="2"><script>T("Device_Connection")</script></td></tr>
-				<tr style="background:#969696;"><td class="td1"><input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" /><script>T("IP_addresses_link")</script></td><td><input style="width:18px;" type="radio" name="Connection" value="1" /><script>T("Easy_Link_Watch")</script></td></tr>
+				<tr style="background:#969696;">
+				<td class="td1">
+					<input style="width:18px;" id="connect_method_ID" type="radio" name="Connection" checked="checked" value="0" /><script>T("IP_addresses_link")</script>
+				</td>
+				<td><input style="width:18px;" type="radio" name="Connection" value="1" />
+					<script>T("Easy_Link_Watch")</script></td>
+				</tr>
 				<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" /></td></tr>
 				<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" /></td></tr>
 				<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" /></td></tr>
