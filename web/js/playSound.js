@@ -61,6 +61,7 @@ function ScreenShot(){  // 截屏
 var bFullScreen = 0;
 
 function viewFullScreen(){
+	return;
 	var obj = $('#viewWarp');
 	if(bFullScreen){
 		obj.css({

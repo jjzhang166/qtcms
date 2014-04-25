@@ -406,7 +406,7 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 		for(i in data){ 
 			index = i;
 			str = data[i];
-			$('<p>'+index+'</span>:<span>'+str+'/</span></p><hr />').prependTo($('#test'));
+			$('<span>'+index+'</span>:<span>'+str+'</span>/').prependTo($('#test'));
 		}
 	}
 }

@@ -525,7 +525,7 @@ h4{
 	height:28px;
 	width: 100%;
 }
-.dev_list ul.filetree .sel{background-color: #ABCDEF;}
+.dev_list ul.filetree span.sel{background-color: #ABCDEF;}
 #group_0 .sel{background-color: #ABCDEF;}
 .dev_list ul.filetree .sel li{background-color: #ABCDEF;}
 

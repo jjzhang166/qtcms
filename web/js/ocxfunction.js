@@ -81,7 +81,7 @@ var oCommonLibrary;
 	}
 	
 	function deviceList2Ui(areaid,num,bool){ //设备菜单输出
-		bool = num > 0 ? true : bool;
+		bool = num == 1 ? true : bool;
 		var devList = oCommonLibrary.GetDeviceList(areaid);
 		for (i in devList){
 			var id=devList[i];

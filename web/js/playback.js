@@ -216,7 +216,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		$('#foot').css({
 			top:oView.height()+212
 		})
-		playback.style.height='100%';
 	}
 
 	function togglePlay(){ 

@@ -31,11 +31,12 @@ var oSearchOcx,
 			})
 		})
 		
-		$('ul.filetree span.areaName').click(function(){
+		/*$('ul.filetree span.areaName').click(function(){
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
-		})
+		})*/
 
+		// 添加设备下的 设备列表下的鼠标事件
 		$('div.dev_list:lt(3)').each(function(index){
 			var This = $(this);
 			This.mouseup(function(event){ 
@@ -54,7 +55,7 @@ var oSearchOcx,
 							}
 						}else{ 
 							This.find('span').not(obj).removeClass('sel');
-						}	
+						}
 					}
 					//SetChannelIntoGroupData();
 				}
@@ -85,6 +86,7 @@ var oSearchOcx,
 			addMouseStyle($(this),action);
 		})
 
+		//跳转其他页面之前 先关闭搜索。
 		$('#top_nav li').each(function(index){
 			$(this).click(function(){
 				if(index != 3){
@@ -93,6 +95,7 @@ var oSearchOcx,
 			})
 		})
 		
+		//左侧二级菜单
 		$('#set_content div.left li').each(function(index){
 			$(this).click(function(){
 				key = index;
@@ -307,7 +310,7 @@ var oSearchOcx,
 		/*控件触发事件调用的元素事件绑定.*/
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel','AddDevice','ModifyDevice','RemoveDevice','AddDeviceDouble','AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName','AddDeviceAll','RemoveDeviceAll'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDevice','RemoveDevice',/*'AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll'*/,'RemoveDeviceAll','AddDeviceFeedBack'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -319,7 +322,7 @@ var oSearchOcx,
 
 	})///
 
-	$(window).resize(set_contentMax)
+	//$(window).resize(set_contentMax)
 
 	var Language={'zh_CN':'中文','en_GB':'English'};
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
@@ -417,6 +420,9 @@ var oSearchOcx,
 	}
 	//添加多台设备
 	function adddoubdevIntoArea(){
+		if(!$('ul.filetree:eq(0) span.area.sel')[0]){
+			$('ul.filetree:eq(0) span.area:eq(0)').addClass('sel');
+		}
 		var devList = $('tbody.synCheckboxClick input:checked');
 		initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
 	}
@@ -915,7 +921,58 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
 	}
-	function AddDeviceSuccess(data){  //单个添加设备.. 菜单添加设备
+	function AddDeviceFeedBackSuccess(data){
+		$('#SerachDevList tbody tr').filter(function(){
+			return $(this).find('input').is(':checked');
+		}).remove();
+		var succeedId = data.succeedId.split(';')
+		for(i in succeedId){
+			if(succeedId[i]){
+				adddev(succeedId[i])
+			}
+		}
+	}
+	/*function adddev(dev_id){
+		//data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
+		//Confirm(data.device_name+'AddSuccess!');
+		var obj = $('ul.filetree:eq(0)');
+		var add = $('<li><span class="device" id="dev_'+dev_id+'" >123123</span><ul></ul></li>').appendTo($('#area_0').next('ul'));
+		//add.find('span.device').data('data',data);
+		var chlList = oCommonLibrary.GetChannelList(dev_id);
+		for(i in chlList){
+			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
+			var chlNum = parseInt(chldata.number)+1;
+			var name = 'chl_'+chlNum;
+			var chldata={'channel_id':chlList[i],'dev_id':dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
+			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">123123</span></li>').appendTo(add.find('ul'));
+			//addchl.find('span.channel').data('data',chldata);
+			obj.treeview({add:addchl});
+		}
+		obj.treeview({add:add});
+	}*/
+	function adddev(devID){
+		//data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
+		//Confirm(data.device_name+'AddSuccess!');
+		var obj = $('ul.filetree:eq(0)');
+		var data = {'device_name':oCommonLibrary.GetDeviceInfo(devID).name,'area_id':obj.find('span.area.sel').data('data').area_id,'dev_id':devID};
+		
+		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo(obj.find('span.area.sel').next('ul'));
+		obj.treeview({add:add});
+		add.find('span.device').data('data',data);
+		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
+		for(i in chlList){
+			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
+			var chlNum = parseInt(chldata.number)+1;
+			var name = 'chl_'+chlNum;
+			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
+			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+name+'</span></li>').appendTo(add.find('ul'));
+			addchl.find('span.channel').data('data',chldata);
+			obj.treeview({add:addchl});
+		}
+		//closeMenu();
+	}
+	/*function AddDeviceSuccess(data){  //单个添加设备.. 菜单添加设备
+		alert(data);
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':data.deviceid,'parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){ 
 			if(dataIndex[i] == ''){
@@ -928,6 +985,16 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function AddDeviceAllSuccess(data){
 		AddDeviceDoubleSuccess(data);
 	}
+	function AddDeviceDoubleSuccess(data){  //添加多个设备
+		data.name = data.name.replace(/\./g,'-');  // 用设备名做ID 名字中的.号转换
+		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
+		var devData = $('#esee_'+data.name).data('data');
+		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
+		adddev(devData2);
+		$('#esee_'+data.name).remove();
+		$('#adddevicedouble_ID').val('');
+		$('ul.filetree').treeview();
+	}*/
 	function ModifyGroupChannelNameSuccess(data){
 		var id= $('#channel_id_ID').val();
 		var oChannel=$('#g_channel_'+id)
@@ -946,48 +1013,21 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	function RemoveDeviceSuccess(){ 
 		var id = $('#dev_id_ID').val();
-		$('div.dev_list:eq(0) #dev_'+id).parent('li').remove();
-		$('ul.filetree:eq(1) span.channel').filter(function(){ 
-			return $(this).data('data')['dev_id'] == id;
-		}).parent('li').remove();
-		$('ul.filetree').treeview();
+		$('ul.filetree:eq(1) span.channel').each(function(){ 
+			if($(this).data('data')['dev_id'] == id){
+				$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
+			}
+		})
+		$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+id).parent('li')});
 		closeMenu();
 	}
 
 	function RemoveDeviceAllSuccess(data){
-		$('#dev_'+data.deviceid).parent('li').remove();
-		$('ul.filetree').treeview();
+		$('ul.filetree:eq(0) span.device').each(function(){
+			$('ul.filetree:eq(0)').treeview({remove:$(this).parent('li')});
+		})		
 	}
 
-	function AddDeviceDoubleSuccess(data){  //添加多个设备
-		data.name = data.name.replace(/\./g,'-');  // 用设备名做ID 名字中的.号转换
-		var area = $('div.dev_list:eq(0) span.sel:eq(0)').hasClass('area') ? $('div.dev_list:eq(0) span.sel:eq(0)') : $('div.dev_list:eq(0) span.area:eq(0)');
-		var devData = $('#esee_'+data.name).data('data');
-		var devData2={'area_id':area.data('data')['area_id'],'address':devData['SearchIP_ID'],'port':devData['SearchHttpport_ID'],'http':devData['SearchHttpport_ID'],'eseeid':data.name,'username':'admin','password':'','device_name':data.name,'channel_count':devData['SearchChannelCount_ID'],'connect_method':'0','vendor':devData['SearchVendor_ID'],'dev_id':data.deviceid,'parea_name':area.data('data')['area_name']};
-		adddev(devData2);
-		$('#esee_'+data.name).remove();
-		$('#adddevicedouble_ID').val('');
-		$('ul.filetree').treeview();
-	}
-
-	function adddev(data){
-		data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
-		//Confirm(data.device_name+'AddSuccess!');
-		var add = $('<li><span class="device" id="dev_'+data.dev_id+'" >'+data.device_name+'</span><ul></ul></li>').appendTo($('#area_'+data.area_id).next('ul'));
-		add.find('span.device').data('data',data);
-		var chlList = oCommonLibrary.GetChannelList(data.dev_id);
-		for(i in chlList){
-			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
-			var chlNum = parseInt(chldata.number)+1;
-			var name = 'chl_'+chlNum;
-			var chldata={'channel_id':chlList[i],'dev_id':data.dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
-			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">'+name+'</span></li>').appendTo($('#dev_'+data.dev_id).next('ul'));
-			addchl.find('span.channel').data('data',chldata);
-			$('ul.filetree:eq(0)').treeview({add:addchl});
-		}
-		$('ul.filetree:eq(0)').treeview({add:add});
-		closeMenu();
-	}
 	function AddChannelDoubleInGroupSuccess(data){
 		data.channelname=data.channelname.replace(/-/g,'.');
 		var group = $('div.dev_list:eq(1) span.sel:eq(0)').hasClass('group') ? $('div.dev_list:eq(1) span.sel:eq(0)') : $('div.dev_list:eq(1) span.group:eq(0)');
