@@ -110,6 +110,9 @@ var oSearchOcx,
 
 					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
 
+						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
+						$(this).addClass('sel')
+
 						var oDevData = $(this).data('data');
 
 						var _url = 'http://'+oDevData.address+':'+oDevData.port;
@@ -133,7 +136,7 @@ var oSearchOcx,
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();	
 						}
-			 	   }).next('ul').remove();
+			 	   });
 
 				}else if(key == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();

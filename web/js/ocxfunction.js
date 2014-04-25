@@ -30,7 +30,7 @@ var oCommonLibrary;
 				}
 			}	
 		}else if(data.Dsturl.indexOf('backup') != -1){
-			areaList2Ui(0,true);
+			areaList2Ui(0,1);
 		}else if(data.Dsturl.indexOf('play_back') != -1){
 			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
@@ -100,12 +100,10 @@ var oCommonLibrary;
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
-			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
+			var add = $('<li class="'+(bool ? 'closed':'')+'"><span class="device" id="dev_'+id+'" >'+devData['name']+'</span><ul></ul></li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});
-			if(num != 1){
-				devChannelList2Ui(id,num);
-			}
+			devChannelList2Ui(id,num);
 		}
 	}
 	function devChannelList2Ui(devid,num){ //设备下通道菜单输出

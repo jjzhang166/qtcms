@@ -143,6 +143,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
+				
 				bool = index;
 				/*var oView = getAudioObj();
 				var oSound = $('#sound'),
@@ -162,6 +163,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
 				SyncSoundSli(oView.enable);*/
+				recFile=[];
+
+				palybackspeed('1X');
+
+				$('#channelvideo div.video').remove();
+
 				dragStopMove();
 
 				if(index){
