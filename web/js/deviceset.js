@@ -310,7 +310,7 @@ var oSearchOcx,
 		/*控件触发事件调用的元素事件绑定.*/
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDevice','RemoveDevice',/*'AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll'*/,'RemoveDeviceAll','AddDeviceFeedBack'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDevice',/*'RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack'];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -925,31 +925,26 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		$('#SerachDevList tbody tr').filter(function(){
 			return $(this).find('input').is(':checked');
 		}).remove();
-		var succeedId = data.succeedId.split(';')
+		var succeedId = data.succeedId.split(';');
 		for(i in succeedId){
 			if(succeedId[i]){
 				adddev(succeedId[i])
 			}
 		}
 	}
-	/*function adddev(dev_id){
-		//data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
-		//Confirm(data.device_name+'AddSuccess!');
-		var obj = $('ul.filetree:eq(0)');
-		var add = $('<li><span class="device" id="dev_'+dev_id+'" >123123</span><ul></ul></li>').appendTo($('#area_0').next('ul'));
-		//add.find('span.device').data('data',data);
-		var chlList = oCommonLibrary.GetChannelList(dev_id);
-		for(i in chlList){
-			var chldata = oCommonLibrary.GetChannelInfo(chlList[i]);
-			var chlNum = parseInt(chldata.number)+1;
-			var name = 'chl_'+chlNum;
-			var chldata={'channel_id':chlList[i],'dev_id':dev_id,'channel_number':chlNum,'channel_name':name,'stream_id':'0'};
-			var addchl = $('<li><span class="channel" id="channel_'+chlList[i]+'">123123</span></li>').appendTo(add.find('ul'));
-			//addchl.find('span.channel').data('data',chldata);
-			obj.treeview({add:addchl});
+	function RemoveDeviceFeedBackSuccess(data){
+		var succeedId = data.succeedId.split(';');
+		for(i in succeedId){
+			$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
+			$('ul.filetree:eq(1) span.channel').each(function(){ 
+				if($(this).data('data')['dev_id'] == succeedId[i]){
+					$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
+				}
+			})
 		}
-		obj.treeview({add:add});
-	}*/
+		closeMenu();
+	}
+
 	function adddev(devID){
 		//data.device_name = data.device_name.replace(/-/g,'.');  // 用设备名做ID 名字中的.号转换
 		//Confirm(data.device_name+'AddSuccess!');
@@ -1011,7 +1006,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);
 		closeMenu();
 	}
-	function RemoveDeviceSuccess(){ 
+	/*function RemoveDeviceSuccess(){ 
 		var id = $('#dev_id_ID').val();
 		$('ul.filetree:eq(1) span.channel').each(function(){ 
 			if($(this).data('data')['dev_id'] == id){
@@ -1020,13 +1015,13 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		})
 		$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+id).parent('li')});
 		closeMenu();
-	}
+	}*/
 
-	function RemoveDeviceAllSuccess(data){
+	/*function RemoveDeviceAllSuccess(data){
 		$('ul.filetree:eq(0) span.device').each(function(){
 			$('ul.filetree:eq(0)').treeview({remove:$(this).parent('li')});
 		})		
-	}
+	}*/
 
 	function AddChannelDoubleInGroupSuccess(data){
 		data.channelname=data.channelname.replace(/-/g,'.');

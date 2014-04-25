@@ -80,9 +80,10 @@
 .del,.modify{ float:right; margin: 0 2px;}	
 .filetree span.area	{ background: url(images/area_01.png) 0 no-repeat;}
 .filetree span.group{ background: url(images/group_01.png) 0 no-repeat;}
-.filetree li.expandable span.area{background: url(images/area_02.png) 0 no-repeat;}	
-.filetree li.expandable span.group{background: url(images/group_02.png) 0 no-repeat;}	
+/* .filetree li.expandable span.area{background: url(images/area_02.png) 0 no-repeat;}	
+.filetree li.expandable span.group{background: url(images/group_02.png) 0 no-repeat;}	 */
 .filetree .open_chl{ background: url(images/cam_1.png) 0 no-repeat;}
+.filetree span.sel{ background-color: #ABCDEF};
 .clearfix:after{
 content:".";
 display:block;
