@@ -326,7 +326,7 @@ var oSearchOcx,
 
 	})///
 
-	//$(window).resize(set_contentMax)
+	$(window).resize(set_contentMax)
 
 	var Language={'zh_CN':'中文','en_GB':'English'};
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}

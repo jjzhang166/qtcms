@@ -155,7 +155,8 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 				//控件最大化
 		ViewMax();
 		
-		//$(window).resize(ViewMax);
+		$(window).resize(ViewMax);
+		
 		bFullScreen = oCommonLibrary.getAutoFullscreen();
 		
 		if(bFullScreen){
