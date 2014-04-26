@@ -35,6 +35,7 @@ var oCommonLibrary;
 
 			if(!$('#dev_'+nowDevID)[0]){
 				$('tbody.search_result tr').remove();
+				$('#fileRec').hide();
 				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
 					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
 				}
@@ -44,6 +45,7 @@ var oCommonLibrary;
 		}else if(data.Dsturl.indexOf('play_back') != -1){
 			if(!$('#dev_'+nowDevID)[0]){
 				$('#channelvideo div.video').remove();
+				$('#fileRec').hide();
 				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
 					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
 				}
