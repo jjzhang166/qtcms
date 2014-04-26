@@ -47,7 +47,6 @@ var oSearchOcx,
 					alert(obj.attr('id'));
 				}*/
 				if(event.which == 1){
-					console.log(obj.data('data'));
 					if(obj[0].nodeName == 'SPAN'){
 						obj.toggleClass('sel');
 						if(obj.hasClass('channel')){
@@ -309,7 +308,6 @@ var oSearchOcx,
 		set_contentMax();
 
 		searchEdDev(); //填充已添加过的设备
-		console.log(searchedDev);
 
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
