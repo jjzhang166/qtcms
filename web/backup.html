@@ -176,6 +176,8 @@ var now = 0;
 
 		areaList2Ui(0,1);
 
+		$('ul.filetree span.device:eq(0)').parent('li').addClass('sel');
+
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');

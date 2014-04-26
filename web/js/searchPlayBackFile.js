@@ -58,14 +58,13 @@ function setDevData2ocx(){
 		typeHint[8] = lang.Manual;
 		typeHint[15] = lang.All;
 	function ocxsearchVideo(){
+		if(!$('ul.filetree li.sel')[0]){
+			$('ul.filetree li:eq(1)').addClass('sel');
+		}
 
 		recTotal = 0;
 		
 		berorSerchShowHint();
-		
-		if(!$('div.dev_list li.sel')[0]){
-			$('div.dev_list li:eq(1)').addClass('sel');
-		}
 
 		var devData = $('div.dev_list li.sel span.device').data('data');
 		var type = $('#type span').attr('value') || 0;

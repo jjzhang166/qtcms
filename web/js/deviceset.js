@@ -1112,6 +1112,9 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		})
 	}
 	function searchDevAvailable(key){
+		if(searchedDev.length == 0){
+			return true;
+		}
 		for( i in searchedDev ){
 			if(searchedDev[i] == key){
 				return false;

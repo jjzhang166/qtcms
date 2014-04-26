@@ -31,6 +31,8 @@ var oCommonLibrary;
 			}	
 		}else if(data.Dsturl.indexOf('backup') != -1){
 			areaList2Ui(0,1);
+
+			$('ul.filetree span.device:eq(0)').parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('play_back') != -1){
 			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
@@ -39,6 +41,8 @@ var oCommonLibrary;
 			areaList2Ui(key);
 
 			set_contentMax();
+
+			searchEdDev();
 			if(key == 0){
 				searchFlush();
 			}else{
