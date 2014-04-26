@@ -44,7 +44,6 @@ public slots:
     // 设置设备厂商信息
     int setDeviceVendor(const QString & vendor);
     // 设置回放同步组
-    //int AddChannelIntoPlayGroup(uint uiWndId,unsigned int uiChannel);
 	int AddChannelIntoPlayGroup(uint uiWndId,int uiChannelId);
 	int GetWndInfo(int uiWndId );
     void setUserVerifyInfo(const QString & sUsername,const QString & sPassword);
@@ -123,9 +122,11 @@ private:
    
 	QMutex _mutexWidList;
 	DevCliSetInfo m_DevCliSetInfo;
+	int m_chlID;
 	private:
 	int  cbInit();
 	int GetDeviceInfo(int chlId);
+	bool ChlIsExit(int chlId);
 };
 
 

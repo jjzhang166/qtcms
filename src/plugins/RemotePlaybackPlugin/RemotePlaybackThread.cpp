@@ -35,8 +35,6 @@ int RemotePlaybackThread::SetIDeviceGroupRemotePlaybackParm( IDeviceGroupRemoteP
 	{
 		lpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceGroupRemotePlayback,(void**)&LpIDeviceGroupRemotePlayback);
 	}
-
-	//LpIDeviceGroupRemotePlayback=lpIDeviceGroupRemotePlayback;
 	return 0;
 }
 
@@ -56,16 +54,12 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 		return;
 	}
 	m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
-	//if (IDeviceClient::STATUS_CONNECTED!=m_nIDeviceClient->getConnectStatus())
-	//{
-		//start search
 		nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
 		if (1==nRet)
 		{
 			m_nIDeviceClient->Release();
 			goto finishRearch;
 		}
-	//}
 	m_nIDeviceClient->Release();
 	IDeviceSearchRecord *m_DeviceSearchRecord = NULL;
 	LpIDeviceGroupRemotePlayback->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
