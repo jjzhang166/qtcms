@@ -165,6 +165,7 @@ nowDevID=null; //当前选中设备ID
 		listParent.on('click','li:has(span.device):gt(0)',function(){
 			listParent.find('li:has(span.device):gt(0)').removeClass('sel');
 			$(this).addClass('sel');
+			nowDevID = $(this).find('span.device').data('data').dev_id;
 		})
 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
