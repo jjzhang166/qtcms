@@ -19,7 +19,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		bFullScreen = 0;
 
-		nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+		if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
+			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+		}
 	    
 	   //$('ul.filetree').treeview();		
 		

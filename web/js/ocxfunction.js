@@ -35,10 +35,11 @@ var oCommonLibrary;
 
 			$('ul.filetree span.device:eq(0)').parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('play_back') != -1){
-			
-			$('#dev_'+nowDevID).parent('li').addClass('sel');
 
-			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+			if(!$('#dev_'+nowDevID)[0] && $('ul.filetree:eq(0) span.device:eq(0)')[0]){
+				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+			}
+			$('#dev_'+nowDevID).parent('li').addClass('sel');
 		}else if(data.Dsturl.indexOf('device') != -1){
 			//分组列表;
 			groupList2Ui();
