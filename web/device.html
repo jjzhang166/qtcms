@@ -713,7 +713,7 @@
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to")</script></h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
-						<tr><td colspan="4">
+						<!--<tr><td colspan="4">
 			                            <input id="dvr_record_weekday_1" class="chk" type="checkbox"/><script>T("Monday")</script>
 			                            <input id="dvr_record_weekday_2" class="chk" type="checkbox" /><script>T("Tuesday")</script>
 			                            <input id="dvr_record_weekday_3" class="chk" type="checkbox" /><script>T("Wednesday")</script>
@@ -722,7 +722,7 @@
 			                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" /><script>T("Saturday")</script>
 			                            <input id="dvr_record_weekday_0" class="chk" type="checkbox" /><script>T("Sunday")</script>
 			                            </td>
-			                        </tr>
+			                        </tr>-->
 						<tr>
 							<td colspan="4" class="td4 dvr_record_chn_sel">
 							<div><input type="checkbox" /><span>1</span></div>
@@ -824,8 +824,9 @@
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a>pelco-D</a></li>
-									<li><a>pelco-P</a></li>
+                                	<input type="hidden" id="dvr_ptz_agreement_ID" value="">
+									<li value="0"><a>pelco-D</a></li>
+									<li value="1"><a>pelco-P</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1261,14 +1262,14 @@
 							<td><script>T("Stream")</script></td>
 							<td>
 								<div class="select" style="width:133px;" id="encode_id">
-									<span id="ipc_enc_stream">主码流</span>
+									<span id="ipc_enc_stream">主码�?/span>
 									<a class="hover"></a>
 								</div>
 								<ul id="ipc_enc_stream_sel" class="option">
                                 	<input id="ipc_enc_stream_ID" value="101" type="hidden" />
-									<li value="101"><a onclick="encode_load_content();" href="javascript:;">主码流</a></li>
-									<li value="102"><a onclick="encode_load_content();" href="javascript:;">辅码流1</a></li>
-									<li value="103"><a onclick="encode_load_content();" href="javascript:;">辅码流2（手机）</a></li>
+									<li value="101"><a onclick="encode_load_content();" href="javascript:;">主码�?/a></li>
+									<li value="102"><a onclick="encode_load_content();" href="javascript:;">辅码�?</a></li>
+									<li value="103"><a onclick="encode_load_content();" href="javascript:;">辅码�?（手机）</a></li>
 								</ul>
 							</td><td></td>
 						</tr>

@@ -1287,12 +1287,16 @@ function dvr_ptz_data2ui(dvr_selected_chn)
 {
 	$("#dvr_ptz_chn_sel0").html(dvr_selected_chn+1);
 	$('#dvr_ptz_device_addr')[0].value = dvr_data.juan.envload.ptz[dvr_selected_chn].id;
+	$('#dvr_ptz_agreement_ID').val(dvr_data.juan.envload.ptz[dvr_selected_chn].protocal);
 	switch(dvr_data.juan.envload.ptz[dvr_selected_chn].protocal)
 	{
 		case 0: $("#dvr_ptz_agreement")[0].innerHTML = 'pelco-D';break;
 		case 1: $("#dvr_ptz_agreement")[0].innerHTML = 'pelco-P';break;
 		default: break;
 	}
+	$('#dvr_ptz_agreement_ID').nextAll('li').click(function(){
+		 	$('#dvr_ptz_agreement_ID').val($(this).attr('value'));
+		})
 	switch(dvr_data.juan.envload.ptz[dvr_selected_chn].baudrate)
 	{
 		case 0: $("#dvr_ptz_baud_rate")[0].innerHTML = '2400';break;
@@ -1370,13 +1374,7 @@ function dvr_ptz_load_content()
 function dvr_ptz_save_content(ret)
 {
 	var chk_chn = $('#dvr_ptz_chn_sel0').html()-1;
-	var dvr_ptz_agreement,dvr_ptz_baud_rate;
-	switch($("#dvr_ptz_agreement")[0].innerHTML)
-	{
-		case 'pelco-D': dvr_ptz_baud_rate = 0;break;
-		case 'pelco-P': dvr_ptz_baud_rate = 1;break;
-		default: break;
-	}
+	var dvr_ptz_baud_rate;
 	switch($("#dvr_ptz_baud_rate")[0].innerHTML)
 	{
 		case '2400': dvr_ptz_baud_rate = 0;break;
@@ -1395,7 +1393,7 @@ function dvr_ptz_save_content(ret)
 	xmlstr += '<ptz';
 	xmlstr += ' chn="' + chk_chn + '"';
 	xmlstr += ' id="' + $('#dvr_ptz_device_addr')[0].value + '"';
-	xmlstr += ' protocal="' + dvr_ptz_baud_rate + '"';
+	xmlstr += ' protocal="' + $('#dvr_ptz_agreement_ID').val() + '"';
 	xmlstr += ' baudrate="' + dvr_ptz_baud_rate + '"';
 	xmlstr += ' />';
 	if(ret > 0)
