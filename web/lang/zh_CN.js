@@ -182,6 +182,8 @@
 	'Phone_port':'手机端口',
 	'Main_stream':'主码流',
 	'Sub_stream':'次码流',
+	'Sub_stream1':'辅码流1',
+	'Sub_stream2':'辅码流2(手机)',
 	'Coding_mode':'编码模式',
 	'Video_streaming':'视频流',
 	'Audio_and_video_streaming':'音视频流',
