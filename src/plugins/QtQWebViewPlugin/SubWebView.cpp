@@ -149,7 +149,11 @@ void SubWebView::keyPressEvent( QKeyEvent* ev )
 #ifdef __USE_WEB_DEBUGER__
 	case Qt::Key_F12:{
 		m_webinspector.setPage(page());
-		m_webinspector.showMaximized();
+		
+		m_webinspector.show();
+		int mheight=m_webinspector.height();
+		int mwidth=this->width();
+		m_webinspector.resize(mwidth,mheight);
 					 }
 					 break;
 	case  Qt::Key_F5:{
