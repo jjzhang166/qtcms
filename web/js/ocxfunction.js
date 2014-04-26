@@ -33,13 +33,24 @@ var oCommonLibrary;
 			
 			areaList2Ui(0,1);
 
-			$('ul.filetree span.device:eq(0)').parent('li').addClass('sel');
-		}else if(data.Dsturl.indexOf('play_back') != -1){
-
-			if(!$('#dev_'+nowDevID)[0] && $('ul.filetree:eq(0) span.device:eq(0)')[0]){
-				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+			if(!$('#dev_'+nowDevID)[0]){
+				$('tbody.search_result tr').remove();
+				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
+					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+				}
+			}else{
+				$('#dev_'+nowDevID).parent('li').addClass('sel');
 			}
-			$('#dev_'+nowDevID).parent('li').addClass('sel');
+		}else if(data.Dsturl.indexOf('play_back') != -1){
+			if(!$('#dev_'+nowDevID)[0]){
+				$('#channelvideo div.video').remove();
+				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
+					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+				}
+			}else{
+				$('#dev_'+nowDevID).parent('li').addClass('sel');
+			}			
+
 		}else if(data.Dsturl.indexOf('device') != -1){
 			//分组列表;
 			groupList2Ui();

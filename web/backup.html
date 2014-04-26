@@ -147,6 +147,7 @@
 <script type="text/javascript">
 var oPlayBack,oBackup;
 var now = 0;
+nowDevID=null; //当前选中设备ID
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
@@ -176,7 +177,9 @@ var now = 0;
 
 		areaList2Ui(0,1);
 
-		$('ul.filetree span.device:eq(0)').parent('li').addClass('sel');
+		if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
+			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+		}
 
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');

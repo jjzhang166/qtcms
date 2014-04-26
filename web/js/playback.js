@@ -175,7 +175,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 				dragStopMove();
 
-				if(index){
+				if(bool){
 					oPlayBack.style.height='0px';
 					oPlayBack.GroupStop();
 					oPlayBack.GroupSpeedNormal();
@@ -457,6 +457,10 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},200);
 	}
 	function playBackSerchFile(){
+		
+		oPlayBack.GroupStop();
+		oPlaybackLocl.GroupStop();
+
 		recFile=[];
 
 		palybackspeed('1X');
