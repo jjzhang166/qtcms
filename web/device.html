@@ -1305,8 +1305,8 @@
 								</ul>
 							</td><td></td>
 						</tr>
-			                        <tr><td>BPS</td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：bps)</td></tr>
-			                        <tr><td>FPS</td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td>(Unit：fps)</td></tr>
+			                        <tr><td><script>T("BPS")</script></td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
+			                        <tr><td><script>T("FPS")</script></td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
 			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="encode_save_content();"><script>T("Save")</script></div></td></tr>
 			                        </table>
 			                  </div>
@@ -1500,7 +1500,7 @@
 			<div class="right_content">
 				<ul class="ope_list nav1">
 					<li class="ope_listAct" onclick="FillCommonParmData();"><script>T("Local_Settings")</script></li>
-					<li onclick="FillRecordTimeData();"><script>T("Video_settings")</script></li>
+					<li onclick="SettingRecordDoubleTimeParm();"><script>T("Video_settings")</script></li>
 					<li onclick="FillStorageParmData();"><script>T("Storage_Settings")</script></li>
 				</ul>
 				<div id="CommonParm" class="switch" style="display:block;">
@@ -1557,6 +1557,7 @@
 			
 					</div>
 					<table style="float:left" id="recordtime">
+						<thead>
 						<tr>
 							<td class="td1" style="text-align:right;"><script>T("Week")</script></td>
 							<td class="td2">
@@ -1575,6 +1576,8 @@
 								</ul>
 							</td>
 						</tr>
+						</thead>
+						<tbody>
 						<tr>
 							<td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>1</td>
 							<td class="td2 schedle_id">
@@ -1606,6 +1609,7 @@
 						<tr><td colspan="2" class="td3 tdBtn">
 						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>T("Save")</script></div>
 						<div class="hover"><script>T("Cancel")</script></div></td></tr>
+						</tbody>
 					</table>
 				</div>
 				<div id="StorageParm" class="switch">

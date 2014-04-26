@@ -2,8 +2,8 @@
 		recTotal = 0;  //文件检索总数。
 //搜索远程录像
 function setDevData2ocx(){
-		var oChannel =$('div.dev_list li.sel span.channel'),
-			oDevData=$('div.dev_list li.sel span.device').data('data');
+		var oDevData=$('div.dev_list li.sel span.device').data('data'),
+			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
 
 		var b = 1;
 		if(bool){
@@ -27,7 +27,7 @@ function setDevData2ocx(){
 				var i= 0;
 				intoWindsChl.each(function(index){
 					if($(this).is(':checked')){
-						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(index).data('data').channel_id)){
+						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel[index])){
 							b = 0;
 						};
 						i++;
@@ -35,7 +35,7 @@ function setDevData2ocx(){
 				});
 			}else{
 				for(var i=0;i<oDevData.channel_count;i++){
-					if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel.eq(i).data('data').channel_id)){
+					if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel[i])){
 						b = 0;
 					}
 				}

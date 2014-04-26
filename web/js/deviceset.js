@@ -355,24 +355,26 @@ var oSearchOcx,
 			$('#SplitScreenMode_ID').val('div'+$(this).html());
 		})
 	}
-	function FillRecordTimeData(){
+	/*function FillRecordTimeData(){
 		SettingRecordDoubleTimeParm();
-		/*$('ul.week a').each(function(index){ 
+		$('ul.week a').each(function(index){ 
 			$(this).click(function(){
 				$('#week').html($(this).html());
 			})
-		})*/
-	}
-	function initChannlrecTime(obj){
-		var oTimes=$('#recordtime tr:lt(5)');
+		})
+	}*/
+	function initChannlrecTime(obj){ //初始化计划录像的XML信息
+		var oTimes=$('#recordtime tbody tr:lt(4)');
 		var str = '<recordtime num="4">';
-		for(i in obj.data()){ 
+
+		for(i in obj.data()){
 			var data = obj.data()[i];
 			var timeid = i.split('_')[1];
 			var start = data.starttime.split(' ')[1];
 			var end = data.endtime.split(' ')[1]
 			var enable = Boolean(data.enable);
-			var n = data.schedle_id+1;
+
+			var n = data.schedle_id;
 			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
 			oTimes.eq(n).find('input.timeid').val(timeid);
 			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
@@ -1075,9 +1077,16 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		$('ul.filetree').treeview();
 	}
 	function SettingCommonParmSuccess(data){
-		//alert(data);
+		//
 	}
-
+	function SettingRecordDoubleTimeParmSuccess(data){
+		$('#recordtime tbody tr:lt(4)').each(function(){
+			var nowWeekData = $('ul.week.option li:eq('+$('#week').attr('value')+')').data('data_'+$(this).find('input.timeid').val());
+			nowWeekData.starttime='1970-01-01 '+$(this).find('div.timeInput:eq(0)').gettime();
+			nowWeekData.endtime='1970-01-01 '+$(this).find('div.timeInput:eq(1)').gettime();
+			nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
+		})
+	}
 	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
