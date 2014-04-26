@@ -1,5 +1,6 @@
 var oSearchOcx,
 	key=0; //当前菜单选项
+	searchedDev=[];
 	$(function(){
 		
 		oSearchOcx = document.getElementById('devSearch');
@@ -46,6 +47,7 @@ var oSearchOcx,
 					alert(obj.attr('id'));
 				}*/
 				if(event.which == 1){
+					console.log(obj.data('data'));
 					if(obj[0].nodeName == 'SPAN'){
 						obj.toggleClass('sel');
 						if(obj.hasClass('channel')){
@@ -305,6 +307,9 @@ var oSearchOcx,
 		})
 
 		set_contentMax();
+
+		searchEdDev(); //填充已添加过的设备
+		console.log(searchedDev);
 
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
@@ -840,20 +845,20 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	//设备搜索回调函数
 	function callback(data){
 		var bUsed = 1;
-		$('#SerachDevList tbody tr').each(function(){ 
+		/*$('#SerachDevList tbody tr').each(function(){ 
 			if(parseInt($(this).find('td:eq(1)').html()) == data.SearchSeeId_ID || $(this).find('td:eq(2)').html() == data.SearchIP_ID){
 				bUsed =0;
 			}
-		})
-		
-		$('div.dev_list:eq(0) span.device').each(function(){ 
+		})*/
+		var key = data.SearchSeeId_ID ?  data.SearchSeeId_ID : data.SearchIP_ID;
+		/*$('div.dev_list:eq(0) span.device').each(function(){ 
 			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
 				bUsed = 0;
 			}
-		})
+		})*/
 
-		if(bUsed){
-			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace(/\./g,'-');
+		if(searchDevAvailable(key)){
+			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
 			var sClass = data.SearchVendor_ID.split(' ')[1];
 			$('<tr id="esee_'+id+'" class="'+sClass+'"><td><input type="checkbox" />'+data.SearchVendor_ID.split(' ')[1]+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
@@ -942,6 +947,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				adddev(succeedId[i])
 			}
 		}
+		searchEdDev();
 		closeMenu();
 	}
 	function RemoveDeviceFeedBackSuccess(data){
@@ -957,6 +963,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				})
 			}
 		}
+		searchEdDev();
 		closeMenu();
 	}
 
@@ -1096,4 +1103,21 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	function SettingStorageParmSuccess(data){
 		//alert(data);
+	}
+	function searchEdDev(){
+		searchedDev=[];
+		$('ul.filetree span.device').each(function(){
+			var devData = $(this).data('data');
+			var usedKey = $(this).data('data').eseeid;
+				usedKey = usedKey ? usedKey : devData.address;			
+			searchedDev.push(usedKey);
+		})
+	}
+	function searchDevAvailable(key){
+		for( i in searchedDev ){
+			if(searchedDev[i] == key){
+				return false;
+			}
+		}
+		return true;
 	}
