@@ -10,11 +10,21 @@
 #include "ILocalPlayer.h"
 #include "IWindowDivMode.h"
 #include "RecordPlayerView.h"
+#include <IAreaManager.h>
+#include <IDeviceManager.h>
 
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser);
 int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser);
 int cbSearchStop(QString evName,QVariantMap evMap,void*pUser);
-
+typedef enum __enRecordPlayStatus{
+	STATUS_PLAY,
+	STATUS_PAUSE,
+	STATUS_STOP,
+	STATUS_SLOW,
+	STATUS_FAST,
+	STATUS_NORMAL,
+	STATUS_CONTINUE
+}RecordPlayStatus;
 class RecordPlayer : public QWidget,
 	public QWebPluginFWBase
 {
@@ -58,13 +68,11 @@ public slots:
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);
-
-
 private:
 	int cbInit();
 	QDateTime getDateFromPath(QString &filePath);
 	int sortFileList(QStringList &fileList);
-
+	bool DevIsExit(QString devicename);
 private:
 	ILocalRecordSearch *m_pLocalRecordSearch;
 	ILocalPlayer *m_pLocalPlayer;
@@ -76,6 +84,8 @@ private:
 	int m_currentWindID;
 	bool m_bIsOpenAudio;
 	unsigned int m_uiPersent;
+	QString m_devicename;
+	RecordPlayStatus m_CurStatus;
 };
 
 

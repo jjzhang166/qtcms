@@ -13,7 +13,8 @@ m_pLocalPlayer(NULL),
 m_pWindowDivMode(NULL),
 m_currentWindID(0),
 m_bIsOpenAudio(false),
-m_uiPersent(50)
+m_uiPersent(50),
+m_CurStatus(STATUS_STOP)
 {
 	//…Í«ÎILocalRecordSearchΩ”ø⁄
 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
@@ -125,6 +126,7 @@ int RecordPlayer::GetCurrentWnd()
 int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
 {
 	qDebug()<<"RecordPlayer :searchDateByDeviceName:"<<sdevname;
+	m_devicename=sdevname;
 	if (sdevname.isEmpty())
 	{
 		return 1;
@@ -278,6 +280,7 @@ int RecordPlayer::GroupPlay()
 	/*SetVolume(0xAECBCA);*/
 	AudioEnabled(m_bIsOpenAudio);
 	SetVolume(m_uiPersent);
+	m_CurStatus=STATUS_PLAY;
 	return 0;
 }
 int RecordPlayer::GroupPause()
@@ -293,7 +296,7 @@ int RecordPlayer::GroupPause()
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_PAUSE;
 	return 0;
 }
 int RecordPlayer::GroupContinue()
@@ -309,7 +312,7 @@ int RecordPlayer::GroupContinue()
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_CONTINUE;
 	return 0;
 }
 int RecordPlayer::GroupStop()
@@ -325,7 +328,7 @@ int RecordPlayer::GroupStop()
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_STOP;
 	return 0;
 }
 int RecordPlayer::GroupSpeedFast(int speed)
@@ -341,7 +344,7 @@ int RecordPlayer::GroupSpeedFast(int speed)
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_FAST;
 	return 0;
 }
 int RecordPlayer::GroupSpeedSlow(int speed)
@@ -357,7 +360,7 @@ int RecordPlayer::GroupSpeedSlow(int speed)
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_SLOW;
 	return 0;
 }
 int RecordPlayer::GroupSpeedNormal()
@@ -373,7 +376,7 @@ int RecordPlayer::GroupSpeedNormal()
 	{
 		return 1;
 	}
-
+	m_CurStatus=STATUS_NORMAL;
 	return 0;
 }
 
@@ -427,6 +430,7 @@ int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser)
 	if ("GetRecordFile" == evName)
 	{
 		pRecordPlayer->transRecordFiles(evMap);
+		qDebug()<<evMap;
 	}
 	return 0;
 }
@@ -481,7 +485,15 @@ void RecordPlayer::showEvent( QShowEvent * )
 		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
 	}
 	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
-	GroupContinue();
+	if(m_CurStatus!=STATUS_STOP){
+		if (DevIsExit(m_devicename))
+		{
+			GroupContinue();
+		}else{
+			GroupContinue();
+			GroupStop();
+		}
+	}
 }
 
 void RecordPlayer::hideEvent( QHideEvent * )
@@ -493,4 +505,54 @@ void RecordPlayer::hideEvent( QHideEvent * )
 QVariantMap RecordPlayer::ScreenShot()
 {
 	return m_subRecPlayerView[m_currentWindID].ScreenShot();
+}
+
+bool RecordPlayer::DevIsExit( QString devicename)
+{
+	bool flags=false;
+	IDeviceManager *pDeviceManager=NULL;
+	IAreaManager *pAreaManager=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&pDeviceManager);
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&pAreaManager);
+	if (pAreaManager==NULL||pDeviceManager==NULL)
+	{
+		if (pDeviceManager!=NULL)
+		{
+			pDeviceManager->Release();
+		}
+		if (pAreaManager!=NULL)
+		{
+			pAreaManager->Release();
+		}
+		return false;
+	}
+	QStringList AreaListID=pAreaManager->GetAreaList();
+	for (int i=0;i<AreaListID.size();++i)
+	{
+		QStringList DeviceListID=pDeviceManager->GetDeviceList(AreaListID.at(i).toInt());
+		QStringList::const_iterator ite;
+		for(ite=DeviceListID.constBegin();ite!=DeviceListID.constBegin();++ite){
+			QVariantMap DeviceMap=pDeviceManager->GetDeviceInfo(ite->toInt());
+			if (DeviceMap.value("name").toString()==devicename)
+			{
+				pAreaManager->Release();
+				pDeviceManager->Release();
+				return true;
+			}
+		}
+	}
+	//root area
+	QStringList DeviceListID=pDeviceManager->GetDeviceList(0);
+	for(int i=0;i<DeviceListID.size();++i){
+		QVariantMap DeviceMap=pDeviceManager->GetDeviceInfo(DeviceListID.at(i).toInt());
+		if (DeviceMap.value("name").toString()==devicename)
+		{
+			pAreaManager->Release();
+			pDeviceManager->Release();
+			return true;
+		}
+	}
+	pAreaManager->Release();
+	pDeviceManager->Release();
+	return false;
 }

@@ -105,7 +105,7 @@ int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 		return -1;
 	}
 	int nRet = 2;
-
+	m_chlID=uiChannelId;
 	if (!bIsCaseInitFlags)
 	{
 		QString sAppPath = QCoreApplication::applicationDirPath();
