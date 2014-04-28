@@ -89,9 +89,9 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			if(oView.id == 'playback'){
+			if(veiwObj.id == 'playback'){
 				document.getElementById('playbackLocl').SetVolume(left);
-			}else if(oView.id == 'playbackLocl'){
+			}else if(veiwObj.id == 'playbackLocl'){
 				document.getElementById('playback').SetVolume(left);
 			}
 			//veiwObj.vol = left;

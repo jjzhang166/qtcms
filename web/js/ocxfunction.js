@@ -2,10 +2,6 @@ var oCommonLibrary;
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
-		//区域列表;
-		areaList2Ui();
-		//分组列表;
-		groupList2Ui();
 
 		$('ul.filetree').treeview();
 		//多语言提示转换
@@ -14,8 +10,9 @@ var oCommonLibrary;
 		})
 	})
 	function refresh(data){ 
+		window.initOxcDevListStatus();
 		//区域列表;
-		areaList2Ui();
+		/*areaList2Ui();
 
 		if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
@@ -32,27 +29,12 @@ var oCommonLibrary;
 		}else if(data.Dsturl.indexOf('backup') != -1){
 			
 			areaList2Ui(0,1);
-
-			if(!$('#dev_'+nowDevID)[0]){
-				$('tbody.search_result tr').remove();
-				$('#fileRec').hide();
-				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
-					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
-				}
-			}else{
-				$('#dev_'+nowDevID).parent('li').addClass('sel');
-			}
+			initrecFileOcx($('tbody.search_result tr'))
+			
 		}else if(data.Dsturl.indexOf('play_back') != -1){
-			if(!$('#dev_'+nowDevID)[0]){
-				$('#channelvideo div.video').remove();
-				$('#fileRec').hide();
-				dragStopMove();
-				if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
-					nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
-				}
-			}else{
-				$('#dev_'+nowDevID).parent('li').addClass('sel');
-			}			
+			initrecFileOcx($('#channelvideo div.video'));
+			dragStopMove();
+			palybackspeed('1X');
 
 		}else if(data.Dsturl.indexOf('device') != -1){
 			//分组列表;
@@ -62,12 +44,13 @@ var oCommonLibrary;
 			set_contentMax();
 
 			searchEdDev();
+
 			if(key == 0){
 				searchFlush();
 			}else{
 				oSearchOcx.Stop();
 			}
-		}
+		}*/
 	}
 	
 	//区域分组,属性菜单输出.

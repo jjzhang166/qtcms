@@ -151,17 +151,12 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 				}
 			}
 		})*/
-		
-				//控件最大化
-		ViewMax();
-		
-		$(window).resize(ViewMax);
-		
-		bFullScreen = oCommonLibrary.getAutoFullscreen();
+			
+		/*bFullScreen = oCommonLibrary.getAutoFullscreen();
 		
 		if(bFullScreen){
 			viewFullScreen();
-		}
+		}*/
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
@@ -172,6 +167,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		$('#setModel').css('background-position',indexLi.css('background-position'));
 
 		setViewNumNow();
+
 		//绑定控件事件
 		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
 
@@ -191,8 +187,16 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			})	
 		})
 
+		//控件UI最大化
+		ViewMax();
+
+		initOxcDevListStatus();
+
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
+	
+	$(window).resize(ViewMax);
+	
 	function ViewMax(){
 		var W = $(window).width();
 		var H = $(window).height();
@@ -458,4 +462,22 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			alert(lang.PTZ_operation_failed);
 		};
 	}*/
+	function initOxcDevListStatus(){  //  初始化控件,设备列表,以及之间的状态
+		//区域列表;
+		areaList2Ui();
+		//分组列表;
+		groupList2Ui();
 
+		$('span.channel').removeClass('channel_1');
+
+		for(var i=0;i<64;i++){
+			var oWinInfo = oPreView.GetWindowInfo(i);
+			if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
+				var chlData = $('#channel_'+oWinInfo.chlId).attr({
+					wind:i,
+					state:oWinInfo.currentState
+				}).addClass('channel_1').data('data');
+				checkDevAllOpen(chlData.dev_id);
+			}
+		}
+	}

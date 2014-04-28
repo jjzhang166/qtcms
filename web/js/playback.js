@@ -15,9 +15,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 /*		oPlaybackLocl.volEnable = false;
 		oPlaybackLocl.vol = 50;*/
 
-		ViewMax();
-
-		bFullScreen = 0;
+		
 
 		if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
 			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
@@ -120,24 +118,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				set_drag(80,channelvideo.width()-1,$('div.play_time'));
 			}	
 		});
-		
-		$(window).resize(function(){  //窗口自适应大小
-			dragStopMove();
-			var oPlay_time = $('#operating div.play_time'),
-				oP = $('#channelvideo'),
-				p = oP.width()-81;
-
-			ViewMax();
-
-			// 窗口缩放同步搜索文件UI
-			p = (oP.width()-81)/p;
-
-			oPlay_time.css('left',(parseInt(oPlay_time.css('left')) - 79)*p+79);
-			
-			if(bNoResize){
-				noResize();
-			}
-		})
 
 		/*$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
 			$(this).click(function(){
@@ -167,27 +147,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					  .end().find('.now_sound').css('left',oView.vol-2);
 
 				SyncSoundSli(oView.enable);*/
-				recFile=[];
-
-				palybackspeed('1X');
-
 				$('#channelvideo div.video').remove();
 
-				dragStopMove();
-
-				if(bool){
-					oPlayBack.style.height='0px';
-					oPlayBack.GroupStop();
-					oPlayBack.GroupSpeedNormal();
-					oPlaybackLocl.style.height='100%';
-					$('#type').next('ul.option').find('li:gt(1)').hide();
-				}else{
-					oPlaybackLocl.style.height='0px';
-					oPlaybackLocl.GroupStop();
-					oPlaybackLocl.GroupSpeedNormal();
-					oPlayBack.style.height='100%';
-					$('#type').next('ul.option').find('li').show();
-				}
+				initOxcDevListStatus();
 
 				//保存当前选中的设备
 				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
@@ -198,7 +160,30 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
+
+		bFullScreen = 0;
+
+		ViewMax();
+
+		initOxcDevListStatus();
 	})///
+	$(window).resize(function(){  //窗口自适应大小
+		dragStopMove();
+		var oPlay_time = $('#operating div.play_time'),
+			oP = $('#channelvideo'),
+			p = oP.width()-81;
+
+		ViewMax();
+
+		// 窗口缩放同步搜索文件UI
+		p = (oP.width()-81)/p;
+
+		oPlay_time.css('left',(parseInt(oPlay_time.css('left')) - 79)*p+79);
+		
+		if(bNoResize){
+			noResize();
+		}
+	})
 
 	function ViewMax(){
 		var W = $(window).width(),
@@ -457,19 +442,39 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},200);
 	}
 	function playBackSerchFile(){
+
+		$('#channelvideo div.video').remove();
+
+		initOxcDevListStatus();
+
+		PBrecFileTableInit();
+
+		ocxsearchVideo();
+	}
+	function initOxcDevListStatus(){
 		
-		oPlayBack.GroupStop();
-		oPlaybackLocl.GroupStop();
+		areaList2Ui();
+
+		if(bool){
+			oPlayBack.style.height='0px';
+			oPlayBack.GroupStop();
+			oPlayBack.GroupSpeedNormal();
+			oPlaybackLocl.style.height='100%';
+			$('#type').next('ul.option').find('li:gt(1)').hide();
+		}else{
+			oPlaybackLocl.style.height='0px';
+			oPlaybackLocl.GroupStop();
+			oPlaybackLocl.GroupSpeedNormal();
+			oPlayBack.style.height='100%';
+			$('#type').next('ul.option').find('li').show();
+		}	
+
 
 		recFile=[];
 
 		palybackspeed('1X');
 
-		$('#channelvideo div.video').remove();
-
 		dragStopMove();
 
-		PBrecFileTableInit();
-
-		ocxsearchVideo();
+		initrecFileOcx($('#channelvideo div.video'));
 	}

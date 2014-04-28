@@ -110,3 +110,15 @@ function setDevData2ocx(){
 	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	
 	}
+
+	function initrecFileOcx(obj){
+		if(!$('#dev_'+nowDevID)[0]){
+			obj.remove();
+			$('#fileRec').hide();
+			if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
+				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
+			}
+		}else{
+			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
+		}
+	}

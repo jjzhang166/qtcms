@@ -174,18 +174,14 @@ nowDevID=null; //当前选中设备ID
 			}
 		})
 
-		contentMax();
-
-		areaList2Ui(0,1);
-
-		if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
-			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
-		}
-
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
+
+		contentMax();
+
+		initOxcDevListStatus()
 
 	})///
 
@@ -326,6 +322,11 @@ nowDevID=null; //当前选中设备ID
 			return !$(this).find(':checkbox').is(':checked');
 		}).remove();//远程备份中正在下载的文件不被删除.
 		ocxsearchVideo();
+	}
+
+	function initOxcDevListStatus(){
+		areaList2Ui(0,1);
+		initrecFileOcx($('tbody.search_result tr'))
 	}
 </script>
 </body>

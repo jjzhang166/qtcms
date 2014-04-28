@@ -305,10 +305,6 @@ var oSearchOcx,
 		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
 		})
 
-		set_contentMax();
-
-		searchEdDev(); //填充已添加过的设备
-
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -324,6 +320,11 @@ var oSearchOcx,
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
 
+		set_contentMax();
+
+		searchEdDev(); //填充已添加过的设备
+		
+		initOxcDevListStatus()	
 	})///
 
 	$(window).resize(set_contentMax)
@@ -1121,4 +1122,19 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			}
 		}
 		return true;
+	}
+	function initOxcDevListStatus(){
+		//分组列表;
+		groupList2Ui();
+		areaList2Ui(key);
+
+		set_contentMax();
+
+		searchEdDev();
+
+		if(key == 0){
+			searchFlush();
+		}else{
+			oSearchOcx.Stop();
+		}
 	}
