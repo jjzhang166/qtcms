@@ -17,6 +17,7 @@ typedef struct _tagDevCliSetInfo{
 	QString m_sPassword;
 	QString m_sCameraname;
 	QString m_sVendor;
+	QString m_sDeviceName;
 }DevCliSetInfo;
 typedef struct _tagRenderInfo{
 	char* pData;

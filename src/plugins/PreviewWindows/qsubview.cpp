@@ -816,13 +816,13 @@ void QSubView::OnCheckTime()
 			recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
 			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime)
 			{
-				if (m_DevCliSetInfo.m_sEseeId.toInt()<1)
-				{
-					m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sAddress, m_DevCliSetInfo.m_uiChannelId);
-				}else{
-					m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
-				}
-				
+				//if (m_DevCliSetInfo.m_sEseeId.toInt()<1)
+				//{
+				//	m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sAddress, m_DevCliSetInfo.m_uiChannelId);
+				//}else{
+				//	m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				//}
+				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sDeviceName,m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsAutoRecording = true;
 			}
@@ -847,7 +847,8 @@ void QSubView::OnCheckTime()
 			currentTime = QTime::currentTime();
 			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime&&m_CurrentState==STATUS_CONNECTED)
 			{
-				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
+				/*m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);*/
+				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sDeviceName,m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsAutoRecording = true;
 			}
@@ -1334,6 +1335,7 @@ int QSubView::GetDeviceInfo( int chlId )
 			m_DevCliSetInfo.m_sAddress=deviceInfo.value("address").toString();
 			m_DevCliSetInfo.m_uiPort=deviceInfo.value("port").toInt();
 			m_DevCliSetInfo.m_uiChannelIdInDataBase=chlId;
+			m_DevCliSetInfo.m_sDeviceName=deviceInfo.value("name").toString();
 			pDeviceManager->Release();
 			return 0;
 		}
