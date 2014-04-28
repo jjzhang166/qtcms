@@ -382,8 +382,8 @@ int RecordPlayer::GroupSpeedNormal()
 
 QString RecordPlayer::GetNowPlayedTime()
 {
-	QString playedTime = "";
-	if (NULL == m_pLocalPlayer)
+	QString playedTime = "-1";
+	if (NULL == m_pLocalPlayer||m_CurStatus==STATUS_STOP)
 	{
 		return playedTime;
 	}

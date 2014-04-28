@@ -25,7 +25,8 @@ bIsCaseInitFlags(false),
 _curConnectState(STATUS_DISCONNECTED),
 _curConnectType(TYPE_NULL),
 bIsOpenAudio(false),
-m_uiPersent(50)
+m_uiPersent(50),
+m_CurStatus(STATUS_STOP)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -201,22 +202,21 @@ finishSearch:
 
  QString RPlaybackWnd::GetNowPlayedTime()
  {
-     if (NULL != m_GroupPlayback )
-     {
-         QDateTime playedTime = m_GroupPlayback->GroupGetPlayedTime();
+	 if (NULL == m_GroupPlayback||m_CurStatus==STATUS_STOP)
+	 {
+		 return "-1";
+	 }
+     QDateTime playedTime = m_GroupPlayback->GroupGetPlayedTime();
 
-		 //QString playedTimeTest;
-		 //playedTimeTest=playedTime.toString("yyyy-MM-dd hh:mm:ss");
-		 //qDebug()<<playedTimeTest;
+	 //QString playedTimeTest;
+	 //playedTimeTest=playedTime.toString("yyyy-MM-dd hh:mm:ss");
+	 //qDebug()<<playedTimeTest;
 
-		 QDateTime pCurdate;
-		 pCurdate.setDate(QDate::currentDate());
-		 QString CurrentTime;
-		 CurrentTime=QString("%1").arg(playedTime.toTime_t()-pCurdate.toTime_t());
-		 return CurrentTime;
-     }
-     else
-         return NULL;
+	 QDateTime pCurdate;
+	 pCurdate.setDate(QDate::currentDate());
+	 QString CurrentTime;
+	 CurrentTime=QString("%1").arg(playedTime.toTime_t()-pCurdate.toTime_t());
+	 return CurrentTime;
  }
 
 int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString & endTime)
@@ -247,6 +247,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 		}
 		_mutexWidList.unlock();
 	}
+	m_CurStatus=STATUS_PLAY;
 	/*SetVolume(0xAECBCA);*/
 	AudioEnabled(bIsOpenAudio);
 	SetVolume(m_uiPersent);
@@ -260,6 +261,7 @@ int   RPlaybackWnd::GroupPause()
     {
         nRet = m_GroupPlayback->GroupPause();
     } 
+	m_CurStatus=STATUS_PAUSE;
     return nRet;
 }
 int   RPlaybackWnd::GroupContinue()
@@ -269,6 +271,7 @@ int   RPlaybackWnd::GroupContinue()
     {
         nRet = m_GroupPlayback->GroupContinue();
     } 
+	m_CurStatus=STATUS_CONTINUE;
     return nRet;
 }
 int   RPlaybackWnd::GroupStop()
@@ -280,6 +283,7 @@ int   RPlaybackWnd::GroupStop()
         nRet = m_GroupPlayback->GroupStop();
 		_widList.clear();
     } 
+	m_CurStatus=STATUS_STOP;
     return nRet;
 }
 int  RPlaybackWnd::AudioEnabled(bool bEnable)
@@ -309,6 +313,7 @@ int   RPlaybackWnd::GroupSpeedFast()
     {
         nRet = m_GroupPlayback->GroupSpeedFast();
     } 
+	m_CurStatus=STATUS_FAST;
     return nRet;
 }
 int   RPlaybackWnd::GroupSpeedSlow()
@@ -318,6 +323,7 @@ int   RPlaybackWnd::GroupSpeedSlow()
     {
         nRet = m_GroupPlayback->GroupSpeedSlow();
     } 
+	m_CurStatus=STATUS_SLOW;
     return nRet;
 }
 int   RPlaybackWnd::GroupSpeedNormal()
@@ -327,6 +333,7 @@ int   RPlaybackWnd::GroupSpeedNormal()
     {
         nRet = m_GroupPlayback->GroupSpeedNormal();
     } 
+	m_CurStatus=STATUS_NORMAL;
     return nRet;
 }
 

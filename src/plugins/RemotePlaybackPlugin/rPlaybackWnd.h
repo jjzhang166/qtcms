@@ -24,7 +24,15 @@ typedef struct _tagDevCliSetInfo{
 	QString m_sCameraname;
 	QString m_sVendor;
 }DevCliSetInfo;
-
+typedef enum __enRemotePlayBackStatus{
+	STATUS_PLAY,
+	STATUS_PAUSE,
+	STATUS_STOP,
+	STATUS_SLOW,
+	STATUS_FAST,
+	STATUS_NORMAL,
+	STATUS_CONTINUE
+}RemotePlayBackStatus;
 class RPlaybackWnd : public QWidget,
 	public QWebPluginFWBase
 {
@@ -123,6 +131,7 @@ private:
 	QMutex _mutexWidList;
 	DevCliSetInfo m_DevCliSetInfo;
 	int m_chlID;
+	RemotePlayBackStatus m_CurStatus;
 	private:
 	int  cbInit();
 	int GetDeviceInfo(int chlId);
