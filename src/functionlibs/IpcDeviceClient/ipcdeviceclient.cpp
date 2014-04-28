@@ -667,6 +667,13 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 			m_DeviceConnectProtocol=NULL;
 			return false;
 		}
+		if ("0"==m_DeviceInfo.m_sEseeId&&(clsid==CLSID_Hole||clsid==CLSID_Turn))
+		{
+			DeInitProtocl();
+			m_DeviceConnectProtocol->Release();
+			m_DeviceConnectProtocol=NULL;
+			return false;
+		}
 		if (true==bCloseingFlags)
 		{
 			//要求停止连接
