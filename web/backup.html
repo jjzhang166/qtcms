@@ -269,6 +269,7 @@ nowDevID=null; //当前选中设备ID
 			return index != 0;
 		})*/
 	}
+	
 	function syndownload(){
 		var i=0;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
@@ -281,8 +282,8 @@ nowDevID=null; //当前选中设备ID
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			//debugData('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
-			oWarp.find('span').width(width);
+			//console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
+			oWarp.find('span').animate({width:width},1000);
 /*			if(p == 1){
 				//clearInterval(timer);
 				$('#search_result tr').has('input:checked').eq(now).prop('checked',false).find('span').width(oWarp.find('div').width());
@@ -290,33 +291,36 @@ nowDevID=null; //当前选中设备ID
 		},1000);
 		//show('正在下载当前选中文件的第'+now+'个!');
 	}
+
 	function BackupStatusChangeCallback(data){
 		//show('当前文件的下载状态'+data.types);
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 		if(data.types == 'startBackup'){
 			syndownload();
 		}else{
+			now++;
 			if(data.types == 'backupFinished'){ 
-				oWarp.find('span').width('100%');
+				oWarp.find('span').animate({width:'100%'},1000);
 				     //.end().find('input').prop('checked',false);
 			}
 			oWarp.find('a').off();
 			clearInterval(timer);
-			var oList = $('#search_result input:checked')
+			var oList = $('#search_result input:checked');
 			if(now >= oList.length){
-				//show('所有选择的文件下载完成!');
+				//console.log('所有选择的文件下载完成!');
 				now=0;
-				$('#search_result input:checked').prop('checked',false);
+				oList.prop('checked',false);
 				return;
 			}
 			//oBackup.stopBackup();
-			now++;
 			startDownload();
 		}
 	}
+
 	function backupstop(){
 		oBackup.stopBackup()
 	}
+
 	function backupSearchFile(){
 		$('tbody.search_result tr').filter(function(){
 			return !$(this).find(':checkbox').is(':checked');
@@ -326,8 +330,9 @@ nowDevID=null; //当前选中设备ID
 
 	function initOxcDevListStatus(){
 		areaList2Ui(0,1);
-		initrecFileOcx($('tbody.search_result tr'))
+		initrecFileOcx($('tbody.search_result tr').filter(function(){return $(this).find(':checkbox').not('checked')}));
 	}
+
 </script>
 </body>
 </html>
