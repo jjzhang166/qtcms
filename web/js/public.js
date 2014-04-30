@@ -201,19 +201,20 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					}
 				});	
 			})
-			function availability(obj,index){   //调整输入的事件范围
+			function availability(obj,index){   //调整输入的时间范围
 				var str = obj.val().split('');
+				console.log(str);
 				if(index == 0){
 					if(str[0] > 2){
-						obj.val('2'+str[1]);	
+						obj.val('2');	
 					}	
 					if(str[1] > 3){
-						obj.val(str[0]+'3');
+						obj.val('23');
 					}
 				}else{
 					if(str[0] > 6){
-						obj.val('5'+str[1]);
-					}	
+						obj.val('5');
+					}
 				}
 				return obj.val();
 			}
