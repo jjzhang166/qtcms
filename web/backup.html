@@ -179,8 +179,6 @@ nowDevID=null; //当前选中设备ID
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
 
-		contentMax();
-
 		initOxcDevListStatus()
 
 	})///
@@ -330,6 +328,9 @@ nowDevID=null; //当前选中设备ID
 
 	function initOxcDevListStatus(){
 		areaList2Ui(0,1);
+
+		contentMax();
+
 		initrecFileOcx($('tbody.search_result tr').filter(function(){return $(this).find(':checkbox').not('checked')}));
 	}
 

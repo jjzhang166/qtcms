@@ -319,10 +319,6 @@ var oSearchOcx,
 		//搜索设备;
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
-
-		set_contentMax();
-
-		searchEdDev(); //填充已添加过的设备
 		
 		initOxcDevListStatus()	
 	})///
@@ -525,6 +521,7 @@ var oSearchOcx,
 		str+='</chlintogroup>';
 		$('#addchannelingroupdouble_ID').val(str);
 	}
+	
 	function set_contentMax(){
 		var W = $(window).width(),
 			H = $(window).height();
@@ -1103,7 +1100,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function SettingStorageParmSuccess(data){
 		//alert(data);
 	}
-	function searchEdDev(){
+	function searchEdDev(){   //填充已搜索设备初始值
 		searchedDev=[];
 		$('ul.filetree span.device').each(function(){
 			var devData = $(this).data('data');
@@ -1127,7 +1124,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//分组列表;
 		groupList2Ui();
 		areaList2Ui(key);
-
+		// UI 调整
 		set_contentMax();
 
 		searchEdDev();

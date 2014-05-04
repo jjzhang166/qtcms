@@ -80,10 +80,11 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		//日志区域右键从菜单
 		$('#actionLog').mouseup(function(event){
 			if(event.which == 3){
+				var maxT = $(this).offset().top+$(this).height() - 19;
 				var l = event.pageX > $(this).width() - 84 ? $(this).width() - 84 : event.pageX;
-				var t = event.pageY - $(this).offset().top 
-					t = t > $(this).height() - 19 ? $(this).height() - 19: t;
-				$(this).find('div.emptyAct').css({ 
+				var t = event.pageY > maxT ? maxT: event.pageY;
+
+				$('div.emptyAct').css({
 					left:l,
 					top:t
 				}).show();
@@ -100,8 +101,9 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			if(event.which == 3 && target.hasClass('channel')){
 				$('div.dev_list span.channel').removeClass('sel');
 				target.addClass('sel');
+				var maxT = $(this).offset().top+$(this).height() - 24;
 				var l = event.pageX > $(window).width() - 80 ? $(window).width() - 80 : event.pageX;
-				var t = event.pageY > $(this).offset().top+$(this).height() - 24 ? $(this).offset().top+$(this).height() - 24 :event.pageY;
+				var t = event.pageY > maxT ? maxT :event.pageY;
 				oMenu.css({ 
 					left:l,
 					top:t

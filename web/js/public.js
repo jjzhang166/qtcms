@@ -411,6 +411,7 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 		}
 	}
 }
+
 //弹出框部分操作
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
@@ -426,7 +427,6 @@ function closeMenu(){
 	$('div.menu').each(function(){ 
 		$(this).find('div.close:last').html(lang.Cancel);
 	})*/
-	
 }
 function Confirm(str){
 	$('#confirm h4').append('<p>'+str+'</p>');
