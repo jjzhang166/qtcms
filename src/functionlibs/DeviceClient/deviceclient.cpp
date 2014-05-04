@@ -695,7 +695,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 	}
 
 	pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
-
+	pDeviceConnection->Release();
 	ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
 
 	return ret;
@@ -1155,7 +1155,6 @@ int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 
 int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 {
-	qDebug("cbFoundFileFormprotocl");
 	if ("foundFile"==evName)
 	{
 		((DeviceClient*)pUser)->cbFoundFile(evMap);

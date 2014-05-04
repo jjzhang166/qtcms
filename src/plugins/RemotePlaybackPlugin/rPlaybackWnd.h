@@ -12,6 +12,8 @@
 #include "rSubview.h"
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
+#include "rPlayBackRun.h"
+#include <QTimer>
 typedef struct _tagDevCliSetInfo{
 	QString m_sAddress;
 	unsigned int m_uiPort;
@@ -37,7 +39,6 @@ class RPlaybackWnd : public QWidget,
 	public QWebPluginFWBase
 {
 	Q_OBJECT
-
 public:
 	RPlaybackWnd(QWidget *parent = 0);
 	~RPlaybackWnd();
@@ -68,6 +69,18 @@ public slots:
     int   GroupSpeedFast() ;
     int   GroupSpeedSlow();
     int   GroupSpeedNormal();
+public slots:
+	void FoundFileToUislot(QVariantMap );
+	void RecFileSearchFinishedToUislot(QVariantMap );
+	void SocketErrorToUislot(QVariantMap );
+	void StateChangeToUislot(QVariantMap );
+	void CacheStateToUislot(QVariantMap );
+signals:
+	void FoundFileToUiS(QVariantMap );
+	void RecFileSearchFinishedToUiS(QVariantMap );
+	void SocketErrorToUiS(QVariantMap );
+	void StateChangeToUiS(QVariantMap );
+	void CacheStateToUiS(QVariantMap );
 public:
     int   GetCurrentWnd();
     void  CurrentStateChangePlugin(int stateValue);
@@ -94,6 +107,7 @@ public:
 		TYPE_SEARCH,
 		TYPE_STREAM,
 	}ConnectType;
+
 public:
 	ConnectStatus _curConnectState;
 	ConnectType _curConnectType;
@@ -132,6 +146,7 @@ private:
 	DevCliSetInfo m_DevCliSetInfo;
 	int m_chlID;
 	RemotePlayBackStatus m_CurStatus;
+	rPlayBackRun m_rplaybackrun;
 	private:
 	int  cbInit();
 	int GetDeviceInfo(int chlId);

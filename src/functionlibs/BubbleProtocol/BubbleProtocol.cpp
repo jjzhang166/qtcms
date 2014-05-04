@@ -400,7 +400,7 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 		request.setUrl(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		m_reply = m_manager->post(request, sndData.toUtf8());
-		connect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()));
+		connect(m_reply, SIGNAL(readyRead()), this, SLOT(finishReply()),Qt::DirectConnection);
 
 		QEventLoop loop;
 		connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));

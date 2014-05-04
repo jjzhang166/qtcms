@@ -46,6 +46,15 @@ m_CurStatus(STATUS_STOP)
   		m_DivMode->flush();
  	}
 	m_RemotePlaybackObject.SetrPlaybackWnd(this);
+	m_rplaybackrun.cbRegisterEvent("foundFile",cbFoundFile,this);
+	m_rplaybackrun.cbRegisterEvent("CurrentStatus",cbStateChange,this);
+	m_rplaybackrun.cbRegisterEvent("recFileSearchFinished",cbRecFileSearchFinished,this);
+	m_rplaybackrun.cbRegisterEvent("bufferStatus",cbCacheState,this);
+	bool flag=false;
+	connect(this,SIGNAL(FoundFileToUiS(QVariantMap)),this,SLOT(FoundFileToUislot(QVariantMap)));
+ 	connect(this,SIGNAL(RecFileSearchFinishedToUiS(QVariantMap)),this,SLOT(RecFileSearchFinishedToUislot(QVariantMap)));
+ 	connect(this,SIGNAL(SocketErrorToUiS(QVariantMap)),this,SLOT(SocketErrorToUislot(QVariantMap)));
+ 	connect(this,SIGNAL(CacheStateToUiS(QVariantMap)),this,SLOT(CacheStateToUislot(QVariantMap)));
 }
 
 RPlaybackWnd::~RPlaybackWnd()
@@ -74,6 +83,8 @@ void  RPlaybackWnd::resizeEvent( QResizeEvent * ev)
 int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPort,const QString &eseeID)
 {
 	qDebug()<<"RPlaybackWnd setDeviceHostInfo"<<sAddress<<uiPort<<eseeID;
+	QVariantMap item;
+	m_rplaybackrun.setDeviceHostInfo(sAddress,uiPort,eseeID);
     if (!m_HostAddress.setAddress(sAddress) || uiPort > 65535)
     {
         return 1;
@@ -89,6 +100,7 @@ int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPo
 int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 {
 	qDebug()<<"RPlaybackWnd setDeviceVendor"<<vendor;
+	m_rplaybackrun.setDeviceVendor(vendor);
     if (vendor.isEmpty())
     {
         return 1;
@@ -156,19 +168,20 @@ int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 		bIsCaseInitFlags = false;
 	}
 	return nRet;
-	return 0;
 }
 
 void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString & sPassword)
 {
 	qDebug()<<"RPlaybackWnd setUserVerifyInfo"<<sUsername<<sPassword;
-    m_sUserName = sUsername;
+    m_rplaybackrun.setUserVerifyInfo(sUsername,sPassword);
+	m_sUserName = sUsername;
     m_sUserPwd  = sPassword;
 }
 
 int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime)
 {
 	qDebug()<<"RPlaybackWnd:"<<"nChannel"<<nChannel<<"nTypes"<<nTypes<<startTime<<endTime;
+	m_rplaybackrun.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	int nRet=1;
 	if (false==bIsInitFlags)
 	{
@@ -181,14 +194,13 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 	{
 		goto finishSearch;
 	}
-	/*nRet=m_RemotePlaybackObject.SetParm(m_sUserName,m_sUserPwd,m_uiPort,m_sHostAddress,m_sEseeId);*/
 	nRet=m_RemotePlaybackObject.SetParm(m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_sEseeId);
 	if (1==nRet)
 	{
 		goto finishSearch;
 	}
 	_curConnectType=TYPE_SEARCH;
-	nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	/*nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);*/
 	return nRet;
 finishSearch:
 	{
@@ -410,14 +422,13 @@ int  RPlaybackWnd::cbInit()
 
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
-	qDebug()<<evMap;
-	EventProcCall("RecFileInfo",evMap);
+	emit FoundFileToUiS(evMap);
 }
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
 	qDebug()<<evMap;
-	EventProcCall("recFileSearchFinished",evMap);
+	emit RecFileSearchFinishedToUiS(evMap);
 }
 
 void RPlaybackWnd::SocketError( QVariantMap evMap )
@@ -427,28 +438,11 @@ void RPlaybackWnd::SocketError( QVariantMap evMap )
 
 void RPlaybackWnd::StateChange( QVariantMap evMap )
 {
-	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
-	if (_curConnectType==TYPE_STREAM)
-	{
-		qDebug()<<evMap;
-		QList<int>::Iterator it;
-		for(it=_widList.begin();it!=_widList.end();it++){
-			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
-		}
-	}
-	if (_curConnectState==STATUS_DISCONNECTED)
-	{
-		_mutexWidList.lock();
-		_widList.clear();
-		_mutexWidList.unlock();
-	}
+	emit StateChangeToUiS(evMap);
 }
 void RPlaybackWnd::CacheState( QVariantMap evMap )
 {
-	QList<int>::iterator it;
-	for(it=_widList.begin();it!=_widList.end();it++){
-		m_PlaybackWnd[*it].CacheState(evMap);
-	}
+	emit CacheStateToUiS(evMap);
 }
 
 void RPlaybackWnd::hideEvent( QHideEvent * )
@@ -537,6 +531,49 @@ bool RPlaybackWnd::ChlIsExit( int chlId )
 	return flags;
 }
 
+void RPlaybackWnd::FoundFileToUislot( QVariantMap evMap )
+{
+	EventProcCall("RecFileInfo",evMap);
+}
+
+void RPlaybackWnd::RecFileSearchFinishedToUislot( QVariantMap evMap )
+{
+	qDebug()<<evMap;
+	EventProcCall("recFileSearchFinished",evMap);
+}
+
+void RPlaybackWnd::SocketErrorToUislot( QVariantMap evMap )
+{
+
+}
+
+void RPlaybackWnd::StateChangeToUislot( QVariantMap evMap )
+{
+	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
+	if (_curConnectType==TYPE_STREAM)
+	{
+		qDebug()<<evMap;
+		QList<int>::Iterator it;
+		for(it=_widList.begin();it!=_widList.end();it++){
+			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
+		}
+	}
+	if (_curConnectState==STATUS_DISCONNECTED)
+	{
+		_mutexWidList.lock();
+		_widList.clear();
+		_mutexWidList.unlock();
+	}
+}
+
+void RPlaybackWnd::CacheStateToUislot( QVariantMap evMap )
+{
+	QList<int>::iterator it;
+	for(it=_widList.begin();it!=_widList.end();it++){
+		m_PlaybackWnd[*it].CacheState(evMap);
+	}
+}
+
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
@@ -545,13 +582,11 @@ bool RPlaybackWnd::ChlIsExit( int chlId )
 		 ((RPlaybackWnd*)pUser)->FoundFile(evMap);
      }
      return nRet;
-
  }
 
  int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
-     qDebug()<<"cbRecFileSearchFinished";
      if (evName == "recFileSearchFinished")
      {
 		 ((RPlaybackWnd*)pUser)->RecFileSearchFinished(evMap);
