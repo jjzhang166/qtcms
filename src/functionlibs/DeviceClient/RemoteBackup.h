@@ -9,6 +9,7 @@
 #include "IEventRegister.h"
 #include "avilib.h"
 #include <QTextCodec>
+#include <IDisksSetting.h>
 
 class RemoteBackup : public QThread
 {
@@ -55,6 +56,7 @@ private:
 	bool createFile();
 	int closeFile();
 	void clearbuffer();
+	bool getUsableDisk(QString disk);
 
 	QMutex m_bufflock;
 	QQueue<RecFrame> m_bufferqueue;

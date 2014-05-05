@@ -344,6 +344,11 @@ void RemoteBackup::run()
 	}else{
 		 callBackupStatus("noStream");
 	}
+	if (false==getUsableDisk(m_savePath))
+	{
+		callBackupStatus("insufficient-disk");
+		qDebug("Out of Disk Space");
+	}
 	int timeout = 0;
 	RecFrame recframe;
 
@@ -425,6 +430,28 @@ void RemoteBackup::run()
 	clearbuffer();
 	m_backuping = false;
 	m_firstgentime = 0;
+}
+
+bool RemoteBackup::getUsableDisk(QString sdisk)
+{
+	bool flags=false;
+	int freesizem;
+	QStringList distlist=sdisk.split(":");
+	sdisk=distlist.at(0);
+	sdisk.append(":");
+		//使用默认大小
+	freesizem=500;
+	quint64 FreeByteAvailable;
+	quint64 TotalNumberOfBytes;
+	quint64 TotalNumberOfFreeBytes;
+	if (GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes))
+	{
+		if (TotalNumberOfFreeBytes>(quint64)freesizem*1024*1024)
+		{
+			flags=true;
+		}
+	}
+	return flags;
 }
 
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser)
