@@ -110,7 +110,7 @@
 			<ul>
 				<li class="setViewNum hover" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
 				<li class="setViewNum hover" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Client_settings")</script></li>
+				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Local_Settings")</script></li>
 				<!-- <li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> -->
 				<li class="setViewNum hover" style="background-position:0 -200px;"><script>T("Version")</script></li>
 			</ul>
@@ -401,7 +401,7 @@
 											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li value="0"><a>QCIP</a></li>
+											<li value="0"><a>QCIF</a></li>
 											<li value="1"><a>CIF</a></li>
 											<li value="2"><a>HD1</a></li>
 			                                <li value="3"><a>D1</a></li>
@@ -505,7 +505,7 @@
 											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li><a>QCIP</a></li>
+											<li><a>QCIF</a></li>
 											<li><a>CIF</a></li>
 										</ul>
 									</td>
@@ -1499,7 +1499,7 @@
 			</div>
 			<div class="right_content">
 				<ul class="ope_list nav1">
-					<li class="ope_listAct" onclick="FillCommonParmData();"><script>T("Local_Settings")</script></li>
+					<li class="ope_listAct" onclick="FillCommonParmData();"><script>T("Common_settings")</script></li>
 					<li onclick="SettingRecordDoubleTimeParm();"><script>T("Video_settings")</script></li>
 					<li onclick="FillStorageParmData();"><script>T("Storage_Settings")</script></li>
 				</ul>
@@ -1573,6 +1573,7 @@
 									<li><a value="4"><script>T("Friday")</script></a></li>
 									<li><a value="5"><script>T("Saturday")</script></a></li>
 									<li><a value="6"><script>T("Sunday")</script></a></li>
+									<li><a value="0,1,2,3,4,5,6"><script>T("Everyday")</script></a></li>
 								</ul>
 							</td>
 						</tr>
