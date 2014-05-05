@@ -1239,6 +1239,8 @@ int avi_parse_input_file(avi_t *AVI, int getIndex)
 
    /* Interpret the header list */
 
+   AVI->ticket = str2ulong(hdrl_data + 48); //read ticket
+
    for(i=0;i<hdrl_len;)
    {
       /* List tags are completly ignored */
@@ -1934,4 +1936,41 @@ char *AVI_strerror()
 uint64_t AVI_max_size()
 {
   return((uint64_t) AVI_MAX_LEN);
+}
+
+int AVI_set_ticket( char *file, unsigned long ticket )
+{
+	if (!file || ticket < 0)
+	{
+		return -1;
+	}
+	FILE *fp = NULL;
+	unsigned char arr[4] = {0};
+
+	//open file
+	if (NULL == (fp = fopen(file, "rb+")))
+	{
+		AVI_errno = AVI_ERR_WRITE;
+		return -1;
+	}
+
+	fseek(fp, 0x48, SEEK_SET);
+	long2str(arr, ticket);
+	fwrite(arr, sizeof(arr), 1, fp);
+
+	fclose(fp);
+	return 0;
+}
+
+int AVI_get_ticket( avi_t *AVI, unsigned long *ticket )
+{
+	if (AVI && ticket)
+	{
+		*ticket = AVI->ticket;
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
 }

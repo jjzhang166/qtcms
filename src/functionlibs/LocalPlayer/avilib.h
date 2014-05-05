@@ -185,6 +185,8 @@ typedef struct
   
   int anum;            // total number of audio tracks 
   int aptr;            // current audio working track 
+
+  unsigned long ticket;		//ticket of file end
   
   BITMAPINFOHEADER_avilib *bitmap_info_header;
   WAVEFORMATEX_avilib *wave_format_ex[AVI_MAX_TRACKS];
@@ -328,6 +330,8 @@ int AVI_get_audio_track(avi_t *AVI);
 int AVI_audio_tracks(avi_t *AVI);
 
 int AVI_seek_pos(avi_t *AVI, int frame);//¨°??¡¥???t????¦Ì?¦Ì¨²frame??
+int AVI_set_ticket(char *file, unsigned long ticket);
+int AVI_get_ticket(avi_t *AVI, unsigned long *ticket);
 
 //extern HI_U32 aHeight;
 //extern HI_U32 aWidth;

@@ -64,7 +64,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 		RecBufferNode bufTemp;
 		bufTemp.dwDataType = type;
 		bufTemp.dwBufferSize = datasize;
-		bufTemp.dwTicketCount = (unsigned int)frameinfo["pts"].toULongLong()/1000;
+		bufTemp.dwTicketCount = (unsigned int)(frameinfo["pts"].toULongLong()/1000);
 		bufTemp.nChannel = frameinfo["channel"].toInt();
 		bufTemp.Buffer = new char[datasize];
 		if (!bufTemp.Buffer)
@@ -130,10 +130,14 @@ void Recorder::run()
 	//char sSavePath[1024];
 	QString sSavePath;
 	int nRecStep = 0;
+	unsigned int startTick = 0;
+	unsigned int endTick = 0;
+	QString lastFileName;
 	avi_t * AviFile = NULL;
 	int nLoopCount = 0;
 	bool bAudioBeSet;
 	bool bThreadRunning = true;
+	bool bFileStart = false;
 	QVariantMap parm;
 	parm.insert("RecordState",true);
 	enventProcCall("RecordState",parm);
@@ -174,6 +178,10 @@ void Recorder::run()
 				if (m_dataqueue.size() > 0)
 				{
 					RecBufferNode NodeTemp = m_dataqueue.front();
+					if (bFileStart)
+					{
+						startTick = NodeTemp.dwTicketCount;
+					}
 					if (AVENC_IDR == NodeTemp.dwDataType)
 					{
 						qDebug("Get an I frame\n");
@@ -211,6 +219,13 @@ void Recorder::run()
 					}
 					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,25,"X264");
 					qDebug("Set pic resolution:%d * %d\n",m_nRecWidth,m_nRecHeight);
+
+					if (bFileStart && 0 == startTick - endTick)
+					{
+						unsigned int tick = getSeconds(sFilePathName);
+						AVI_set_ticket(lastFileName.toLatin1().data(), tick);
+					}
+
 					nRecStep = 3;
 				}
 				m_dataRef.unlock();
@@ -287,6 +302,11 @@ void Recorder::run()
 					if (AVENC_IDR == node.dwDataType)
 					{
 						qDebug("Get an I frame,skip\n");
+
+						endTick = node.dwTicketCount;
+						bFileStart = true;
+						lastFileName = sSavePath;
+
 						nRecStep = 5;
 					}
 					else if (AVENC_PSLICE == node.dwDataType)
@@ -409,6 +429,25 @@ bool Recorder::CreateDir(QString fullname)
 	}
 
 	return true;
+}
+
+unsigned int Recorder::getSeconds(QString &fileName)
+{
+	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+	QDateTime datetime;
+	if (-1 != rx.indexIn(fileName, 0))
+	{
+		QString date = rx.cap(1);
+		datetime = QDateTime::fromString(date, "yyyy-MM-dd");
+	}
+	
+	rx.setPattern("([0-9]{6}).avi");
+	if (-1 != rx.indexIn(fileName))
+	{
+		QString time = rx.cap(1);
+		datetime.setTime(QTime::fromString(time, "hhmmss"));
+	}
+	return datetime.toTime_t();
 }
 
 QString Recorder::getModeName()

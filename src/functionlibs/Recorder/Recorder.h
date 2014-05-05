@@ -71,6 +71,8 @@ private:
 	bool CreateDir(QString fullname);
 	void cleardata();
 	void enventProcCall(QString sEvent,QVariantMap parm);
+	unsigned int getSeconds(QString &fileName);
+
 	int m_nRef;
 	QMutex m_csRef;
 
@@ -96,6 +98,7 @@ private:
 	//proc
 	QStringList m_eventList;
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
+
 };
 
 #endif // RECORDER_H

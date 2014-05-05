@@ -67,6 +67,8 @@ private:
 	int checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec);
 	bool checkChannelInFileList(QStringList const filelist);
 	int countSkipTime();
+	bool checkFileFromLong(QString path, unsigned long &tick, QDateTime & endTime);
+
 private:
 	int m_nRef;
 	QMutex m_csRef;

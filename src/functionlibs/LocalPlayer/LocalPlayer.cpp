@@ -134,6 +134,25 @@ bool LocalPlayer::checkChannel(const QString& schannellist)
 	}
 }
 
+bool LocalPlayer::checkFileFromLong(QString path, unsigned long &tick, QDateTime & endTime)
+{
+	if (tick <= 0 || path.isEmpty())
+	{
+		return false;
+	}
+
+	endTime = QDateTime::fromTime_t(tick);
+	QString filePath = path + "/" + endTime.toString("hhmmss") + ".avi";
+	if (QFile::exists(filePath))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, const QString& sbegintime, const QString& sendtime, const QString& schannellist)
 {
 	if (sdevname.isEmpty() || !checkChannel(schannellist))
@@ -146,6 +165,9 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	int aviFileLength = 0;
 	int totalFrames = 0;
 	int frameRate = 0;
+	int audioChunks = 0;
+	int audioRate = 0;
+	int audioBlock = 0;
 	avi_t *aviFile = NULL;
 
 	if (!date.isValid() || !timeStart.isValid() || !timeEnd.isValid())
@@ -180,6 +202,7 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 			{
 				QString fileName = sltFileList[k].fileName();
 				QTime fileTime = QTime::fromString(fileName.left(6), "hhmmss");
+				date.setTime(fileTime);
 				if (fileTime >= timeStart && fileTime <= timeEnd)
 				{
 					QString filePath = subPath + "/" + fileName;
@@ -189,28 +212,57 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 						continue;
 					}
 
-					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
-					totalFrames = AVI_video_frames(aviFile);
-					frameRate = AVI_frame_rate(aviFile);
-					if (0 == totalFrames || 0 == frameRate)
+					QDateTime endTime;
+					bool fileExit = false;
+					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 1);
+
+					unsigned long ticket = 0;
+					AVI_get_ticket(aviFile, &ticket);
+					if (!(ticket > 0 && (fileExit = checkFileFromLong(subPath, ticket, endTime))))
 					{
-						continue;
+						audioChunks = AVI_audio_chunks(aviFile);
+						audioRate = AVI_audio_rate(aviFile);
+						audioBlock = AVI_audio_size(aviFile, 0);
+						if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
+						{
+							aviFileLength = audioChunks*audioBlock/audioRate;
+						}
+						else
+						{
+							totalFrames = AVI_video_frames(aviFile);
+							frameRate = AVI_frame_rate(aviFile);
+							if (0 == totalFrames || 0 == frameRate)
+							{
+								continue;
+							}
+							aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+						}			
 					}
-					aviFileLength = totalFrames/frameRate;//the length of avi file playing time
 
 					AVI_close(aviFile);
 
-					
+					QString dbStr = subPath + "/" + fileName + "     " + fileTime.toString("hh:mm:ss");
+
 					QVariantMap fileInfo;
 					fileInfo.insert("filename", fileName);
 					fileInfo.insert("filepath", filePath);
 					fileInfo.insert("filesize", QString("%1").arg(fileSize));
 					fileInfo.insert("channelnum", sltChannels[j]);
-					date.setTime(fileTime);
 					fileInfo.insert("startTime", date);
-					fileInfo.insert("stopTime", date.addSecs(aviFileLength));
+					if (fileExit)
+					{
+						fileInfo.insert("stopTime", endTime);
+					}
+					else
+					{
+						fileInfo.insert("stopTime", date.addSecs(aviFileLength));
+					}
 
 					eventProcCall(QString("GetRecordFile"), fileInfo);
+
+					QTime spend(0, 0, 0);
+					dbStr += "<--------->" + fileInfo["stopTime"].toDateTime().toString("hh:mm:ss");
+					qDebug()<<dbStr;
 				}
 			}
 		}
@@ -652,7 +704,7 @@ bool LocalPlayer::GroupEnableAudio(bool bEnable)
 		QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(m_pCurView);
 		if (!bEnable)
 		{
-			iter->pPlayMgr->OpneAudio(false);
+			iter->pPlayMgr->OpneAudio(true);
 			m_pCurView = NULL;
 		}
 		iter->pPlayMgr->AudioSwitch(bEnable);
