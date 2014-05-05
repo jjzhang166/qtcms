@@ -279,7 +279,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=2;
 					break;
 				}
-				if (1==m_DeviceConnectonHole->setDeviceHost(sAddr)||1==m_DeviceConnectonHole->setDevicePorts(m_ports)||1==m_DeviceConnectonHole->setDeviceId(sEseeId)||sEseeId=="0")
+				if (1==m_DeviceConnectonHole->setDeviceHost(sAddr)||1==m_DeviceConnectonHole->setDevicePorts(m_ports)||1==m_DeviceConnectonHole->setDeviceId(sEseeId)||sEseeId=="0"||sEseeId=="")
 				{
 					nStep=2;
 					break;
@@ -311,7 +311,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=4;
 					break;
 				}
-				if (1==m_DeviceConnectonTurn->setDeviceHost(sAddr)||1==m_DeviceConnectonTurn->setDevicePorts(m_ports)||1==m_DeviceConnectonTurn->setDeviceId(sEseeId)||sEseeId=="0")
+				if (1==m_DeviceConnectonTurn->setDeviceHost(sAddr)||1==m_DeviceConnectonTurn->setDevicePorts(m_ports)||1==m_DeviceConnectonTurn->setDeviceId(sEseeId)||sEseeId=="0"||sEseeId=="")
 				{
 					nStep=4;
 					break;
