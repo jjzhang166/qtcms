@@ -174,6 +174,9 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		oPreView.AddEventProc('CurrentWindows','WindCallback(ev)')
 
 		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
+
+		oPreView.AddEventProc('DivModeChange','setViewNumNow(ev)');
+		
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
