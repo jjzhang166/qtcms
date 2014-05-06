@@ -388,24 +388,29 @@ var oSearchOcx,
 	function getRecrodxml(){
 		var copyTo = [$('#RecordTime span.channel.sel').data('data').channel_id], // 初始的通道ID
 			copyID = $('#RecordTime td.copyTo span').attr('value').split(','), // 要拷贝到的通道ID
-			nowWeek = $('#week').attr('value'),
+			nowWeek = $('#week').attr('value').split(','),
 			nowWeekTimeID = [];
-		if(copyID[0] != '')
-			copyTo = copyTo.concat(copyID);  // 要修改的通道的ID
-		//debugData('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
+		copyTo = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
+		//console.log('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
 		// 返回符合当天星期的时间ID
-		for(var i in copyTo){ 
+		for(i in copyTo){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copyTo[i]);
 			for(j in timeID){
 				var timeinfo = oCommonLibrary.GetRecordTimeInfo(timeID[j])
-				if(timeinfo.weekday == nowWeek){
-					nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
+				for(k in nowWeek){
+					if(timeinfo.weekday == nowWeek[k]){
+						nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
+					}
 				}
 			}
 		}
+		/*else{
+					nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
+				}*/
+		console.log(nowWeekTimeID);
 		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
-			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')')
+			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')');
 			var timeid = nowWeekTimeID[i][0];
 			var start = warp.find('div.timeInput:eq(0)').gettime();
 			var end = warp.find('div.timeInput:eq(1)').gettime();
@@ -1083,12 +1088,24 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//
 	}
 	function SettingRecordDoubleTimeParmSuccess(data){
-		$('#recordtime tbody tr:lt(4)').each(function(){
-			var nowWeekData = $('ul.week.option li:eq('+$('#week').attr('value')+')').data('data_'+$(this).find('input.timeid').val());
-			nowWeekData.starttime='1970-01-01 '+$(this).find('div.timeInput:eq(0)').gettime();
-			nowWeekData.endtime='1970-01-01 '+$(this).find('div.timeInput:eq(1)').gettime();
-			nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
-		})
+		var week = $('#week').attr('value').split(',');
+		for(i in week){
+			var weekData = $('ul.week.option li:eq('+week[i]+')').data()
+			var n = 0;
+			for(j in weekData){
+				var newTimeWarp = $('#recordtime tbody tr:eq('+n+')')
+				weekData[j].starttime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(0)').gettime();
+				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(1)').gettime();
+				weekData[j].enable=newTimeWarp.find(':checkbox').is(':checked') ? 1 : 0;
+				n++;
+			}
+			/*$('#recordtime tbody tr:lt(4)').each(function(){
+				var nowWeekData = $('ul.week.option li:eq('+i+')').data('data_'+$(this).find('input.timeid').val());
+				nowWeekData.starttime='1970-01-01 '+$(this).find('div.timeInput:eq(0)').gettime();
+				nowWeekData.endtime='1970-01-01 '+$(this).find('div.timeInput:eq(1)').gettime();
+				nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
+			})*/
+		}
 	}
 	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');

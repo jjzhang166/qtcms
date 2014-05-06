@@ -213,6 +213,14 @@ h4{
 	/* clear: both; */
 	cursor:default
 }
+.option span.typeColor{
+	display: block;
+	height: 10px;
+	width:14px;
+	margin:4px; 
+	float: right;
+}
+
 #PTZ_control{
 	position: relative;
 	width: 228px;

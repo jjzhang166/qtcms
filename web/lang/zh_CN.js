@@ -298,6 +298,7 @@
 	'Remote_Control_No':'遥控器编号',
 	'Transparency':'透明度',
 	'Open_PPPOE':'打开PPPOE',
+	'video_type':'录像类型',
 	'Start_Time':'开始时间',
 	'End_Time':'结束时间',
 	'Time_d':'时间段',

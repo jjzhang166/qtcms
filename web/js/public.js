@@ -145,7 +145,8 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			option.on('click','a',function(){
 				//if($(this).attr('class') != 'hover'){
 					var str = $(this).html();
-					str = str.match(/<\/?\w+>/g) ? str.replace(/(\d*)[<\/?\w+>|T\(\"\w+\"\)]*(\w*)*/g,"$1$2") : str;
+					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
+					console.log(str);
 					$('ul.option').hide();
 					This.find('span').html(str).attr('value',$(this).attr('value'));
 					if(This.find('ul[action]')){
@@ -203,7 +204,6 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			})
 			function availability(obj,index){   //调整输入的时间范围
 				var str = obj.val().split('');
-				console.log(str);
 				if(index == 0){
 					if(str[0] > 2){
 						obj.val('2');	
@@ -212,7 +212,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 						obj.val('23');
 					}
 				}else{
-					if(str[0] > 6){
+					if(str[0] > 5){
 						obj.val('5');
 					}
 				}

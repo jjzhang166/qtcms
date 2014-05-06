@@ -52,11 +52,16 @@ function setDevData2ocx(){
 		}
   	}
 	var typeHint = [];
-		typeHint[1] = lang.Time;
-		typeHint[2] = lang.Move;
+		typeHint[1] = lang.Timing;
+		typeHint[2] = lang.Mobile;
 		typeHint[4] = lang.Warning;
 		typeHint[8] = lang.Manual;
 		typeHint[15] = lang.All;
+	var color = [];
+		color[1] = '#7BC345';
+		color[2] = '#FFE62E';
+		color[4] = '#F00';
+		color[8] = '#F78445';	
 	function ocxsearchVideo(){
 		if(!$('ul.filetree li.sel')[0]){
 			$('ul.filetree li:eq(1)').addClass('sel');
@@ -67,8 +72,8 @@ function setDevData2ocx(){
 		berorSerchShowHint();
 
 		var devData = $('div.dev_list li.sel span.device').data('data');
-		var type = $('#type span').attr('value') || 0;
-			type = type == 0 ? 15 : 1 << type;
+		var type = $('#type span').attr('value');
+		
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';

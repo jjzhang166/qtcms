@@ -317,12 +317,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		$('#palybackspeed').html(str);
 	}
 
-
-	var color = [];
-		color[1] = '#7BC345';
-		color[2] = '#FFE62E';
-		color[4] = '#F00';
-		color[8] = '#F78445';
 	/*function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
