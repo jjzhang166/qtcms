@@ -195,6 +195,8 @@ void QPreviewWindows::OnSubWindowDblClick( QWidget * wind,QMouseEvent * ev)
 		return ;
 	}
 	m_DivMode->subWindowDblClick(wind,ev);
+	QVariantMap evMap;
+	EventProcCall("DivModeChange",evMap);
 }
 
 void QPreviewWindows::SetCurrentWind(QWidget *wind)
