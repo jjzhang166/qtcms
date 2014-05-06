@@ -77,8 +77,8 @@
 			var thisMonthData = this.getMonthdata(date);
 			warp.find('tbody td').html('').slice(thisMonthData[0]).each(function(index){
 				index +=1;
-				if(index < thisMonthData[1]){
-					$(this).html(index+1);
+				if(index <= thisMonthData[1]){
+					$(this).html(index);
 					if(index == dd[2]){ 
 						$(this).addClass('nowDay');
 					}
