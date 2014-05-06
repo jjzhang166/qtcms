@@ -86,6 +86,8 @@ private:
 	unsigned int m_uiPersent;
 	QString m_devicename;
 	RecordPlayStatus m_CurStatus;
+	QVariantMap fileMap;
+	QString fileKey;
 };
 
 

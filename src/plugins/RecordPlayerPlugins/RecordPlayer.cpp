@@ -152,6 +152,8 @@ int RecordPlayer::searchVideoFile(const QString& sdevname,
 	const QString& schannellist)
 {
 	qDebug()<<"RecordPlayer :searchVideoFile:"<<sdevname<<sbegintime<<sendtime<<schannellist;
+	fileMap.clear();
+	fileKey="0";
 	if (NULL == m_pLocalRecordSearch)
 	{
 		return 1;
@@ -162,7 +164,7 @@ int RecordPlayer::searchVideoFile(const QString& sdevname,
 	{
 		return 1;
 	}
-
+	EventProcCall("GetRecordFile",fileMap);
 	return 0;
 }
 
@@ -461,14 +463,22 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"filename",evMap["filename"].toString());
-	qDebug()<<evMap["filename"].toString();
 	EP_ADD_PARAM(arg,"filepath",evMap["filepath"].toString());
 	EP_ADD_PARAM(arg,"filesize",evMap["filesize"].toString());
 	EP_ADD_PARAM(arg,"channelnum",evMap["channelnum"].toString());
 	EP_ADD_PARAM(arg,"startTime",startTime.toString("yyyy-MM-dd hh:mm:ss"));
 	EP_ADD_PARAM(arg,"stopTime",stopTime.toString("yyyy-MM-dd hh:mm:ss"));
-	EventProcCall("GetRecordFile",arg);
-
+	QString fileinfo;
+	fileinfo.append("filename").append(":").append(evMap["filename"].toString()).append(";");
+	fileinfo.append("filepath").append(":").append(evMap["filepath"].toString()).append(";");
+	fileinfo.append("filesize").append(":").append(evMap["filesize"].toString()).append(";");
+	fileinfo.append("channelnum").append(":").append(evMap["channelnum"].toString()).append(";");
+	fileinfo.append("startTime").append(":").append(startTime.toString("yyyy-MM-dd hh:mm:ss")).append(";");
+	fileinfo.append("stopTime").append(":").append(stopTime.toString("yyyy-MM-dd hh:mm:ss")).append(";");
+	fileMap.insert(fileKey,fileinfo);
+	int ifileKey=fileKey.toInt();
+	fileKey=QString::number(ifileKey+1);
+	/*EventProcCall("GetRecordFile",arg);*/
 }
 void RecordPlayer::transSearchStop(QVariantMap &evMap)
 {

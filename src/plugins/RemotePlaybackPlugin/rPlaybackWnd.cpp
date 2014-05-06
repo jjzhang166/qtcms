@@ -422,12 +422,27 @@ int  RPlaybackWnd::cbInit()
 
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
-	emit FoundFileToUiS(evMap);
+	QVariantMap::const_iterator it;
+	QString fileinfo;
+	for(it=evMap.begin();it!=evMap.end();it++){
+		fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");
+	}
+	fileMap.insert(fileKey,fileinfo);
+	int ifilekey;
+	ifilekey=fileKey.toInt();
+	fileKey=QString::number(ifilekey+1);
+	if (ifilekey==fileTotal-1)
+	{
+		emit FoundFileToUiS(fileMap);
+	}
 }
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
 	qDebug()<<evMap;
+	fileTotal=evMap.value("total").toInt();
+	fileKey="0";
+	fileMap.clear();
 	emit RecFileSearchFinishedToUiS(evMap);
 }
 

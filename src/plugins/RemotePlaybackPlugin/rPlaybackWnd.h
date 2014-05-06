@@ -151,6 +151,9 @@ private:
 	int  cbInit();
 	int GetDeviceInfo(int chlId);
 	bool ChlIsExit(int chlId);
+	int fileTotal;
+	QString fileKey;
+	QVariantMap fileMap;
 };
 
 
