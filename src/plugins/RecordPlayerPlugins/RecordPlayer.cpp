@@ -453,7 +453,6 @@ void RecordPlayer::transRecordDate(QVariantMap &evMap)
 	DEF_EVENT_PARAM(arg);
 	EP_ADD_PARAM(arg,"devname",evMap["devname"].toString());
 	EP_ADD_PARAM(arg,"date",date.toString("yyyy-MM-dd"));
-
 	EventProcCall("GetRecordDate",arg);
 }
 void RecordPlayer::transRecordFiles(QVariantMap &evMap)
@@ -471,13 +470,12 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 	QString fileinfo;
 	QVariantMap::const_iterator it;
 	fileinfo.append("{");
-	for(it=evMap.begin();it!=evMap.end();it++){
+	for(it=arg.begin();it!=arg.end();it++){
 		/*fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");*/
-		fileinfo.append(it.key()).append(":").append("\"").append(it.value().toString()).append("\"").append(",");
+		fileinfo.append(it.key()).append(":").append("\\").append("\"").append(it.value().toString()).append("\\").append("\"").append(",");
 	}
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
-
 	fileMap.insert(fileKey,fileinfo);
 	int ifileKey=fileKey.toInt();
 	fileKey=QString::number(ifileKey+1);

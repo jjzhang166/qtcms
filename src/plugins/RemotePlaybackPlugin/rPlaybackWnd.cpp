@@ -427,7 +427,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	fileinfo.append("{");
 	for(it=evMap.begin();it!=evMap.end();it++){
 		/*fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");*/
-		fileinfo.append(it.key()).append(":").append("\"").append(it.value().toString()).append("\"").append(",");
+		fileinfo.append(it.key()).append(":").append("\\").append("\"").append(it.value().toString()).append("\\").append("\"").append(",");
 	}
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
