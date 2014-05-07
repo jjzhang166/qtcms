@@ -472,7 +472,7 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 	fileinfo.append("{");
 	for(it=arg.begin();it!=arg.end();it++){
 		/*fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");*/
-		fileinfo.append(it.key()).append(":").append("\\").append("\"").append(it.value().toString()).append("\\").append("\"").append(",");
+		fileinfo.append("\\").append("\"").append(it.key()).append("\\").append("\"").append(":").append("\\").append("\"").append(it.value().toString()).append("\\").append("\"").append(",");
 	}
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
