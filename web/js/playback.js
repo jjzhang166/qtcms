@@ -331,9 +331,10 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 	function RecFileInfoCallback(data){
 		recFile=data;
-		RecFileInfo2UI(recFile);
+		RecFileInfo2UI();
 	}
-	function RecFileInfo2UI(recFile){
+	function RecFileInfo2UI(){
+		console.log(recFile);
 		var n=0;
 		for( i in recFile){ 
 			n++;
@@ -345,6 +346,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			var chl = data.channel || parseInt(data.channelnum -1);
 			var p = ($('#channelvideo').width()-80)/(3600*24);
 			var width = (end-start)*p;
+				width < 1 ? 1 : width;
 			var left = start*p+81;
 			var types = data.types || 8;
 			if(data.filepath){

@@ -452,10 +452,10 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
 			str += lang.Failed;
 		}else{
-			oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
 			if(oPreView.SwithStream(currWin,oChlData.channel_id)){
 				str += lang.Failed;
 			}else{
+				oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
 				str += lang.Success;
 			}
 		}
