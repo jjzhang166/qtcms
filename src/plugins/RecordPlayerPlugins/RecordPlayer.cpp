@@ -469,12 +469,15 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 	EP_ADD_PARAM(arg,"startTime",startTime.toString("yyyy-MM-dd hh:mm:ss"));
 	EP_ADD_PARAM(arg,"stopTime",stopTime.toString("yyyy-MM-dd hh:mm:ss"));
 	QString fileinfo;
-	fileinfo.append("filename").append(":").append(evMap["filename"].toString()).append(";");
-	fileinfo.append("filepath").append(":").append(evMap["filepath"].toString()).append(";");
-	fileinfo.append("filesize").append(":").append(evMap["filesize"].toString()).append(";");
-	fileinfo.append("channelnum").append(":").append(evMap["channelnum"].toString()).append(";");
-	fileinfo.append("startTime").append(":").append(startTime.toString("yyyy-MM-dd hh:mm:ss")).append(";");
-	fileinfo.append("stopTime").append(":").append(stopTime.toString("yyyy-MM-dd hh:mm:ss")).append(";");
+	QVariantMap::const_iterator it;
+	fileinfo.append("{");
+	for(it=evMap.begin();it!=evMap.end();it++){
+		/*fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");*/
+		fileinfo.append(it.key()).append(":").append("\"").append(it.value().toString()).append("\"").append(",");
+	}
+	fileinfo.append("}");
+	fileinfo.replace(",}","}");
+
 	fileMap.insert(fileKey,fileinfo);
 	int ifileKey=fileKey.toInt();
 	fileKey=QString::number(ifileKey+1);

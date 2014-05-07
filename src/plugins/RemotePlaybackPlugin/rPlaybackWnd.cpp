@@ -424,9 +424,13 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
 	QVariantMap::const_iterator it;
 	QString fileinfo;
+	fileinfo.append("{");
 	for(it=evMap.begin();it!=evMap.end();it++){
-		fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");
+		/*fileinfo.append(it.key()).append(":").append(it.value().toString()).append(";");*/
+		fileinfo.append(it.key()).append(":").append("\"").append(it.value().toString()).append("\"").append(",");
 	}
+	fileinfo.append("}");
+	fileinfo.replace(",}","}");
 	fileMap.insert(fileKey,fileinfo);
 	int ifilekey;
 	ifilekey=fileKey.toInt();
