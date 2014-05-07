@@ -1243,7 +1243,7 @@
 					<li onclick="encode_load_content();"><script>T("Encoding_settings")</script></li>
 					<li onclick="network_load_content();"><script>T("Network_Settings")</script></li>
 					<li onclick="user_management_load_content();"><script>T("User_Settings")</script></li>
-					<li onclick="time_load_content();"><script>T("Time_Set")</script></li>
+					<li onclick="time_zone_load();"><script>T("Time_Set")</script></li>
 			                    <li><script>T("Initial_setup")</script></li>
 				</ul>
 			                <div class="switch ipc_list"  style="display:none;">
@@ -1428,7 +1428,7 @@
 			                <div class="switch ipc_list">
 				<table>
 					<tr><td><script>T("Device_Time")</script></td><td><input id="curent_time" value="0" disabled="disabled"/></td><td></td></tr>
-			                    <tr><td><script>T("Time_Format")</script></td><td>
+			                    <tr style="display:none;"><td><script>T("Time_Format")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span class="date_form" onChange="showtime();"></span>
 			                                <a class="hover"></a>
@@ -1439,7 +1439,7 @@
 									<li><a>DMY: xx xx xxxx</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td><script>T("Time_separator")</script></td><td>
+			                    <tr style="display:none;"><td><script>T("Time_separator")</script></td><td>
 			                    	<div class="select" style="width:149px;">
 			                                <span id="date_break" onChange="showtime();"></span>
 			                                <a class="hover"></a>
@@ -1452,35 +1452,50 @@
 			                    </td><td></td></tr>
 			                    <tr><td><script>T("Time_Zone")</script></td><td>
 			                    	<div class="select" style="width:149px;">
-			                                <span id="time_zone">GMT-12:00</span>
+			                                <span id="time_zone"></span>
 			                                <a class="hover"></a>
 								</div>
 								<ul class="option" >
-									<li><a>1</a></li>
-									<li><a>2</a></li>
-									<li><a>1</a></li>
-									<li><a>2</a></li>
-									<li><a>3</a></li>
-			                                    <li><a>3</a></li>
+									<li><a>GMT-12:00</a></li>
+                                    <li><a>GMT-11:00</a></li>
+                                    <li><a>GMT-10:00</a></li>
+                                    <li><a>GMT-09:00</a></li>
+                                    <li><a>GMT-08:00</a></li>
+                                    <li><a>GMT-07:00</a></li>
+                                    <li><a>GMT-06:00</a></li>
+                                    <li><a>GMT-05:00</a></li>
+                                    <li><a>GMT-04:30</a></li>
+                                    <li><a>GMT-04:00</a></li>
+                                    <li><a>GMT-03:30</a></li>
+                                    <li><a>GMT-03:00</a></li>
+                                    <li><a>GMT-02:00</a></li>
+                                    <li><a>GMT-01:00</a></li>
+                                    <li><a>GMT</a></li>
+									<li><a>GMT+01:00</a></li>
+									<li><a>GMT+02:00</a></li>
+                                    <li><a>GMT+03:00</a></li>
+                                    <li><a>GMT+03:30</a></li>
+                                    <li><a>GMT+04:00</a></li>
+                                    <li><a>GMT+04:30</a></li>
+                                    <li><a>GMT+05:00</a></li>
+                                    <li><a>GMT+05:30</a></li>
+                                    <li><a>GMT+05:45</a></li>
+                                    <li><a>GMT+06:00</a></li>
+                                    <li><a>GMT+06:30</a></li>
+                                    <li><a>GMT+07:00</a></li>
+                                    <li><a>GMT+08:00</a></li>
 								</ul>
 			                    </td><td></td></tr>
-			                    <tr><td><script>T("Daylight_Saving_Time")</script></td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
-			                    <tr><td><script>T("Manual_settings")</script></td><td></td><td></td></tr>
-			                    <tr><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
-			                    <tr><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
-			                    <tr><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>
+			                    <tr style="display:none;"><td><script>T("Daylight_Saving_Time")</script></td><td><input id="daylight_time" value="0" onChange="is_valid_daylight()" /></td><td></td></tr>
+			                    <tr style="display:none;"><td><script>T("Manual_settings")</script></td><td></td><td></td></tr>
+			                    <tr style="display:none;"><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
+			                    <tr style="display:none;"><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
+			                    <tr style="display:none;"><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>
 			                    <tr><td><script>T("Computer_time")</script></td><td><input id="time_pc" value="0" disabled="disabled"></td><td class="tdBtn"><div id="sync_pc" class="hover" onClick="sync_pc_time()"><script>T("Computer_time")</script></div></td></tr>
-			                    <tr><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr>
+			                    <tr style="display:none;"><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr>
 			                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input name="ntp" type="radio" id="time_ntp__1" onClick="ntp_change();" /><script>T("Open")</script><input name="ntp" type="radio" id="time_ntp__0" onClick="ntp_change();" checked /><script>T("Close")</script></td><td></td></tr>
 			                    <tr><td><script>T("nternet_server")</script></td><td>
-			                    	<div class="select" style="width:149px;">
-			                                <span id="time_ntp__server" name="ntp_server"></span>
-			                                <a class="hover"></a>
-								</div>
-								<ul class="option" >
-									<li><a>time.window.com</a></li>
-									<li><a>time.nist.gov</a></li>
-								</ul>
+			                    	<input id="ntp_server" name="ntp_server" value="" />
 			                    </td><td></td></tr>
 			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>T("Save")</script></div></td></tr>
 				</table>

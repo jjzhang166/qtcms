@@ -946,33 +946,76 @@ Date.prototype.toFormatString=function()
 }
 function time_zone_load()
 {
+	sync_pc_time();
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
 		$.ajax({
 				type:"GET",
-				url:ipc_url + '/System/time/timeZone/',
+				url:ipc_url + '/netsdk/system/time/timeZone',
 				dataType:"json",
 				beforeSend : function(req){ 
 				req .setRequestHeader('Authorization', auth);
 				},
 				success:function(data){	
-					$('#time_zone').innerHTML = data;
+					$('#time_zone').html(data);
+					time_ntp_load();
 				},
 				error:function(a,b,c){ 
 					alert(b);
 			}
 		});
 }
+function time_ntp_load()
+{
+	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
+	var auth = "Basic " + base64.encode('admin:');
+		$.ajax({
+				type:"GET",
+				url:ipc_url + '/netsdk/system/time/ntp',
+				dataType:"json",
+				beforeSend : function(req){ 
+				req .setRequestHeader('Authorization', auth);
+				},
+				success:function(data){	
+					switch (data.ntpEnabled)
+					{
+						case true: $("#time_ntp__1")[0].checked = 1;break;
+						case false: $("#time_ntp__0")[0].checked = 1;break;
+						default:break;	
+					};
+					$('#ntp_server').val(data.ntpServerDomain);
+					ntp_change();
+				},
+				error:function(a,b,c){ 
+					alert(b);
+			}
+		});
+}
+function ntp_change()
+{
+	if ($("#time_ntp__1")[0].checked == 1)
+	{
+		$("#ntp_server")[0].disabled = false;
+	}else
+	{
+		$("#ntp_server")[0].disabled = true;
+	}
+}
+function time_save_content()
+{
+	time_zone_save();
+}
 function time_zone_save()
 {
-	var time_zone = $('#time_zone :selected').html();
+	//alert(111)
+	var time_zone = $('#time_zone').html();
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	var auth = "Basic " + base64.encode('admin:');
 	
 	var time_zone_data = '{"time_Zone":"'+time_zone+'"}';
 		$.ajax({
 				type:'PUT',
-				url:ipc_url + '/System/time/timeZone/',
+				url:ipc_url + '/netsdk/system/time/timeZone',
 				dataType:'json',
 				data:time_zone_data,
 				async:false,
@@ -980,9 +1023,35 @@ function time_zone_save()
 				req .setRequestHeader('Authorization', auth);
 				},
 				success:function(data){ 
-					if(data.statusCode == 0){ 
+				time_ntp_save();
+				},
+				error:function(a,b,c){ 
+					//alert(b);
+				}
+			})
+}
+function time_ntp_save()
+{
+	if ($("#time_ntp__1")[0].checked == true)
+	{
+		ntp_s = true;
+	}else{ntp_s = false};
+	var ntp_server = $('#ntp_server').val();
+	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
+	var auth = "Basic " + base64.encode('admin:');
+	
+	var time_ntp_data = '{ "ntpEnabled": '+ntp_s+', "ntpServerDomain": "'+ntp_server+'" }';
+		$.ajax({
+				type:'PUT',
+				url:ipc_url + '/netsdk/system/time/ntp',
+				dataType:'json',
+				data:time_ntp_data,
+				async:false,
+				beforeSend : function(req ) {
+				req .setRequestHeader('Authorization', auth);
+				},
+				success:function(data){
 
-					}
 				},
 				error:function(a,b,c){ 
 					//alert(b);
@@ -1028,8 +1097,9 @@ function time_data2ui(dvr_data)
 
 	showtime();
 }
-function time_load_content()
+/*function time_load_content()
 {
+	alert(1)
 	var xmlstr = '';
 	xmlstr += '<juan ver="" seq="">';
 	xmlstr += '<conf type="read" user="admin" password="">';
@@ -1129,39 +1199,11 @@ function time_save_content()
 		error: function(XMLHttpRequest, textStatus, errorThrown){
 		}
 	});	
-}
+}*/
 function showtime()
 {
 	var time_show = "";
-	switch ($("#date_break")[0].innerHTML)
-	{
-		case 'xxxx-xx-xx':
-			datebreak = '-';
-			break;
-		case 'xxxx/xx/xx':
-			datebreak = '/';
-			break;
-		case 'xxxx.xx.xx':
-			datebreak = '.';
-			break;
-		default:
-			break;		
-	}
-	switch ($(".date_form")[0].innerHTML)
-	{
-		case 'YMD: xxxx xx xx':
-			time_show = yy+datebreak+mm+datebreak+dd+"  ";
-			break;
-		case 'MDY: xx xx xxxx':
-			time_show = mm+datebreak+dd+datebreak+yy+"  ";
-			break;
-		case 'DMY: xx xx xxxx':
-			time_show = dd+datebreak+mm+datebreak+yy+"  ";
-			break;
-		default:
-			break;
-	}
-	time_show += strHour+":"+strMin+":"+strSen;
+	time_show += strYear+"-"+strMonth+"-"+strDate+"-"+strHour+":"+strMin+":"+strSen;
 	$("#curent_time")[0].value = time_show;
 }
 function savetime()
