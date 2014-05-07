@@ -48,7 +48,9 @@ void QtQWebView::LoadNewPage( QString url )
 		{
 			item->m_SubWebView->resize(PageSize);
 			item->m_SubWebView->move(nX,nY);
-			item->m_SubWebView->show();
+			//item->m_SubWebView->show();
+			//全屏
+			item->m_SubWebView->showFullScreen();
 			item->m_SubWebView->OnRefressMessage();
 			//隐藏主页
 			QEventLoop eventloop;
@@ -78,7 +80,9 @@ void QtQWebView::LoadNewPage( QString url )
 		eventloop.exec();
 	}
 	QWidget *pa=this->parentWidget();
-	m_tagViewPage.m_SubWebView->show();
+	/*m_tagViewPage.m_SubWebView->show();*/
+	//全屏
+	m_tagViewPage.m_SubWebView->showFullScreen();
 	//隐藏主页
 	QEventLoop eventloop;
 	QTimer::singleShot(10,&eventloop,SLOT(quit()));
@@ -119,7 +123,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 	{
 		//显示主页
 		QWidget *pa=this->parentWidget();
-		((QWebView*)pa)->show();
+		((QWebView*)pa)->showFullScreen();
 		pa->resize(PageSize);
 		((QWebView*)pa)->move(nX,nY);
 		QEventLoop eventloop;
@@ -143,7 +147,7 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 			item->m_SubWebView->close();
 			//显示主页
 			QWidget *pa=this->parentWidget();
-			((QWebView*)pa)->show();
+			((QWebView*)pa)->showFullScreen();
 			OnRefressMessage();
 			SubWebView::bIsbuilding=false;
 			return;
@@ -159,9 +163,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 		{
 			if (DstUrl==it->url)
 			{
-				it->m_SubWebView->show();
-				it->m_SubWebView->page()->view()->resize(PageSize);
-				it->m_SubWebView->page()->view()->move(nX,nY);
+				it->m_SubWebView->showFullScreen();
+				//it->m_SubWebView->page()->view()->resize(PageSize);
+				//it->m_SubWebView->page()->view()->move(nX,nY);
 				it->m_SubWebView->OnRefressMessage();
 				QEventLoop eventloop;
 				QTimer::singleShot(10,&eventloop,SLOT(quit()));
@@ -187,7 +191,9 @@ void QtQWebView::LoadNewPageFromViewSignal( const QString &text )
 					QTimer::singleShot(5,&eventloop,SLOT(quit()));
 					eventloop.exec();
 				}
-				m_tagViewPage.m_SubWebView->show();
+				/*m_tagViewPage.m_SubWebView->show();*/
+				//全屏
+				m_tagViewPage.m_SubWebView->showFullScreen();
 				QEventLoop eventloop;
 				QTimer::singleShot(10,&eventloop,SLOT(quit()));
 				eventloop.exec();
