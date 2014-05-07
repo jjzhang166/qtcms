@@ -287,6 +287,7 @@
 	'File_size':'文件大小',
 	'Loop_video':'循环录像',
 	'Disk_reserved_space':'磁盘预留空间',
+	'Insufficient_Disk_Space':'磁盘空间不足',
 	'No.':'序号',
 	'Delete_users':'删除用户',
 	'The_current_version':'当前版本:',

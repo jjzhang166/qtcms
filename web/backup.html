@@ -7,12 +7,14 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />	
 
-<script type="text/javascript" src="lang/en_GB.js"></script>
+<!-- 语言文件 -->
 <script type="text/javascript" src="lang/zh_CN.js"></script>
+<!-- 语言文件 end -->
 
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/qframework.js" id="add_lang"></script>
+<script type="text/javascript" src="js/qframework.js"></script>
 <script type="text/javascript" src="js/public.js"></script>
+
 <style type="text/css">
 	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto; position: absolute; top: 78px;}
 	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
@@ -336,7 +338,7 @@ nowDevID=null; //当前选中设备ID
 			if(data.types=='insufficient-disk'){
 				oBackup.stopBackup();
 				oList.prop('checked',false);
-				alert('磁盘空间不足!');
+				alert(lang.Insufficient_Disk_Space);
 				return;
 			}
 			startDownload();
