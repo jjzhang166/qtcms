@@ -477,7 +477,7 @@ void RecordPlayer::transRecordFiles(QVariantMap &evMap)
 	fileinfo.append("\\").append("\"").append("end").append("\\").append("\"").append(":").append("\\").append("\"").append(stopTime.toString("yyyy-MM-dd hh:mm:ss")).append("\\").append("\"").append(",");
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
-	fileMap.insert(fileKey,fileinfo);
+	fileMap.insert(fileKey.append("_index"),fileinfo);
 	int ifileKey=fileKey.toInt();
 	fileKey=QString::number(ifileKey+1);
 	/*EventProcCall("GetRecordFile",arg);*/

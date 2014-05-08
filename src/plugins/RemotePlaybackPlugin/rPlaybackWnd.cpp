@@ -431,7 +431,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	}
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
-	fileMap.insert(fileKey,fileinfo);
+	fileMap.insert(fileKey.append("_index"),fileinfo);
 	int ifilekey;
 	ifilekey=fileKey.toInt();
 	fileKey=QString::number(ifilekey+1);
