@@ -407,7 +407,6 @@ var oSearchOcx,
 		/*else{
 					nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
 				}*/
-		console.log(nowWeekTimeID);
 		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
 			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')');
@@ -493,7 +492,7 @@ var oSearchOcx,
 			}
 		}
 
-		clickedAbles.each(function(){
+		/*clickedAbles.each(function(){
 			$(this).click(function(){
 				var checked = []; 
 				clickedAbles.each(function(){ 
@@ -501,10 +500,20 @@ var oSearchOcx,
 					$('#UseDisks_ID').val(checked.join(':'));
 				})
 			})
-		})
+		})*/
 		$('#LoopRecording_ID').toCheck();
 	}
 	
+	//组合勾选的硬盘版格式以用于保存。  // C;D;E
+	function SettingStorageParmData(){
+		var UseDisks = [];
+		$('#StorageParm thead :checked').each(function(){
+			UseDisks.push($(this).val());
+		})	
+		$('#UseDisks_ID').val(UseDisks.join(':'));
+		console.log($('#UseDisks_ID').val());
+	}
+
 	//分组区域添加到分组, 数据组织
 	function SetChannelIntoGroupData(){
 		var oChlList = $('div.dev_list:eq(0) span.sel.channel');
