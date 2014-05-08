@@ -266,8 +266,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			});
 			oPlaybackLocl.GroupPlay();
 		}else{
-			var type = parseInt($('#type span').attr('value')),
-			type = type == 0 ? 15 : 1 << type;
+			var type = parseInt($('#type span').attr('value'));
 			oPlayBack.GroupPlay(type,begin,end);
 		}
 		dragStartMove();
