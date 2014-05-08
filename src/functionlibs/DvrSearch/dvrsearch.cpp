@@ -203,7 +203,10 @@ void DvrSearch::Recv()
 
 		StrToOther = ParseSearch(strTmp, "CH");
         strListInfo.insert(4,QString(StrToOther.data()));
-   
+		if (strListInfo.at(0)=="0")
+		{
+			continue;
+		}
         m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("JUAN DVR"));
         m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
         m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(""));
