@@ -252,14 +252,16 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			end = date+' 23:59:59';
 			setDevData2ocx();
 		if(bool){
+			var k = 0;
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = $('div.dev_list li.sel').find('span.channel').eq(index).data('filepath');
 					if(filepath){
-						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,index,begin,end) != 0){
+						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
 							b = 0;
 						};
 					}
+					k++;
 				}
 			});
 			oPlaybackLocl.GroupPlay();
@@ -334,7 +336,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		RecFileInfo2UI();
 	}
 	function RecFileInfo2UI(){
-		console.log(recFile);
 		var n=0;
 		for( i in recFile){ 
 			n++;
