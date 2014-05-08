@@ -357,10 +357,10 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					filepathArr.sort(SortByfileTime).join(',');
 				oChannel.data('filepath',filepathArr);			
 			}
-			$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
-			if(!bool){
-				showRecProgress(n);
-			}		
+			$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');		
+		}
+		if(!bool){
+			showRecProgress(n);
 		}
 	}
 	function SortByfileTime(a,b){  //文件路径时间升序排列
