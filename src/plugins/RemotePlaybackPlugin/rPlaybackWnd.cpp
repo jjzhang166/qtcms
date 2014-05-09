@@ -431,11 +431,13 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	}
 	fileinfo.append("}");
 	fileinfo.replace(",}","}");
-	fileMap.insert(fileKey.append("_index"),fileinfo);
+	QString key;
+	key="index_";
+	fileMap.insert(key.append(fileKey),fileinfo);
 	int ifilekey;
 	ifilekey=fileKey.toInt();
 	fileKey=QString::number(ifilekey+1);
-	if (ifilekey==fileTotal-1)
+	if (ifilekey==fileTotal-fileTotal/100-1)
 	{
 		emit FoundFileToUiS(fileMap);
 	}
@@ -622,18 +624,6 @@ void RPlaybackWnd::CacheStateToUislot( QVariantMap evMap )
 	 return 1;
  }
  
-
-
-
-
-
-
-
-
-
-
-
-
  int cbCacheState(QString evName,QVariantMap evMap,void*pUser)
  {
 		 if (evName=="bufferStatus")
