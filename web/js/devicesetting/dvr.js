@@ -1012,7 +1012,7 @@ function dvr_screen_data2ui(dvr_selected_chn)
 function dvr_screen_load_content()
 {
 	var xmlstr = '';
-	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
+	xmlstr += '<juan ver="0" squ="fastweb" dir="0" enc="1">';
 	xmlstr += '<envload type="0" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
 	for(var i = 0; i < dvr_chn; i++)
 	{
