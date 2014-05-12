@@ -531,7 +531,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 	}
 	img.save(backgroundpath,"JPG");
 	delete rgbBuff;
-	
+	m_bContinuousStreamflags=true;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	return 0;
 }
