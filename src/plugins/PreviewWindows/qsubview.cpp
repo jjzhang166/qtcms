@@ -48,7 +48,8 @@ QSubView::QSubView(QWidget *parent)
 	m_DisConnectingTimeId(0),
 	m_RenderTimeId(0),
 	m_AutoConnectTimeId(0),
-	m_RecordFlushTime(0)
+	m_RecordFlushTime(0),
+	m_bScreenShotflags(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -100,6 +101,7 @@ QSubView::~QSubView()
 	if (NULL!=m_IVideoDecoder)
 	{
 		m_IVideoDecoder->Release();
+		m_IVideoDecoder = NULL;
 	}
 	if (NULL!=m_IVideoRender)
 	{
@@ -217,7 +219,8 @@ int QSubView::OpenCameraInWnd(int chlId)
 			m_QSubViewObject.SetAutoSyncTime(syncTime);
 		}
 	}
-
+	//区分主码流
+	IpcSwitchStream();
 	//0.5s检测一次是否需要刷新历史图片
 	m_RenderTimeId=startTimer(500);
 	m_QSubViewObject.OpenCameraInWnd();
@@ -434,6 +437,55 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	m_HistoryState=m_CurrentState;
 	return 0;
 }
+#define MR(Y,U,V) (Y + (1.403)*(V-128))  
+#define MG(Y,U,V) (Y - (0.344) * (U-128) - (0.714) * (V-128) )   
+#define MB(Y,U,V) (Y + ((1.773) * (U-128)))  
+void YUV420_C_RGB( char* pYUV, unsigned char* pRGB, int height, int width)  
+{  
+    char* pY = pYUV;  
+    char* pU = pYUV+height*width;  
+    char* pV = pU+(height*width/4);  
+  
+  
+    unsigned char* pBGR = NULL;  
+    unsigned char R = 0;  
+    unsigned char G = 0;  
+    unsigned char B = 0;  
+    unsigned char Y = 0;  
+    unsigned char U = 0;  
+    unsigned char V = 0;  
+    double tmp = 0;  
+    for ( int i = 0; i < height; ++i )  
+    {  
+        for ( int j = 0; j < width; ++j )  
+        {  
+            pBGR = pRGB+ i*width*3+j*3;  
+  
+            Y = *(pY+i*width+j);  
+            U = *(pU + i/2*width/2 + j/2);  
+            V = *(pV + i/2*width/2 + j/2); 
+  
+            //B  
+            tmp = MB(Y, U, V);  
+            B = (tmp > 255) ? 255 : (char)tmp;  
+            B = (B<0) ? 0 : B;  
+            //G  
+            tmp = MG(Y, U, V);  
+            G = (tmp > 255) ? 255 : (char)tmp;  
+            G = (G<0) ? 0 : G;  
+            //R  
+            tmp = MR(Y, U, V);  
+			R = (tmp > 255) ? 255 : (char)tmp;  
+			R = (R<0) ? 0 : R;  
+  
+            *pBGR     = R;              
+            *(pBGR+1) = G;          
+            *(pBGR+2) = B;   
+        }  
+      
+    }  
+}  
+
 int QSubView::PrevRender(QVariantMap evMap)
 {
 	QVariantMap::const_iterator it;
@@ -464,6 +516,19 @@ int QSubView::PrevRender(QVariantMap evMap)
 		m_IVideoRender->init(iWidth,iHeight);
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
+	}
+	if (m_bScreenShotflags)
+	{
+		unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+
+		YUV420_C_RGB(pData, rgbBuff, iHeight, iWidth);
+
+		QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
+		img.save(screenShotDir, "JPG");
+
+		delete rgbBuff;
+		m_bScreenShotflags=false;
+
 	}
 	m_bRendering=true;
 	m_csRender.lock();
@@ -995,35 +1060,7 @@ void QSubView::SetCurrentFocus( bool focus)
 void QSubView::resizeEvent( QResizeEvent * )
 {
 	_manageWidget->resize(this->size());
-	if (this->parentWidget()->width()-this->width()<20)
-	{
-		if (NULL!=m_IDeviceClientDecideByVendor)
-		{
-			ISwitchStream *m_SwitchStream=NULL;
-			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-			if (NULL!=m_SwitchStream)
-			{
-				m_SwitchStream->SwitchStream(0);
-				m_DevCliSetInfo.m_uiStreamId=0;
-				m_SwitchStream->Release();
-				m_SwitchStream=NULL;
-			}
-		}
-	}
-	else{
-		if (NULL!=m_IDeviceClientDecideByVendor)
-		{
-			ISwitchStream *m_SwitchStream=NULL;
-			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
-			if (NULL!=m_SwitchStream)
-			{
-				m_SwitchStream->SwitchStream(1);
-				m_DevCliSetInfo.m_uiStreamId=1;
-				m_SwitchStream->Release();
-				m_SwitchStream=NULL;
-			}
-		}
-	}
+	IpcSwitchStream();
 }
 
 void QSubView::RecordState( QVariantMap evMap )
@@ -1354,7 +1391,6 @@ QVariantMap QSubView::GetWindowInfo()
 
 QVariantMap QSubView::ScreenShot()
 {
-	_ScreenShotImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
 	QString dir=QCoreApplication::applicationDirPath();
 	dir.append("/temp");
 	QDir temp;
@@ -1370,10 +1406,11 @@ QVariantMap QSubView::ScreenShot()
 	imageName+="/";
 	imageName+=QString::number(mutime);
 	imageName+=".jpg";
-	_ScreenShotImage.save(imageName);
+	screenShotDir=imageName;
 	QVariantMap item;
 	item.insert("imageName",QString::number(mutime).append(".jpg"));
 	item.insert("path",dir);
+	m_bScreenShotflags=true;
 	return item;
 }
 
@@ -1553,5 +1590,39 @@ int QSubView::ClosePTZ( int nCmd )
 		nRet = m_pPTZControl->ControlPTZStop(m_DevCliSetInfo.m_uiChannelId, nCmd);
 	}
 	return nRet;
+}
+
+
+void QSubView::IpcSwitchStream()
+{
+	if (this->parentWidget()->width()-this->width()<20)
+	{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(0);
+				m_DevCliSetInfo.m_uiStreamId=0;
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
+	else{
+		if (NULL!=m_IDeviceClientDecideByVendor)
+		{
+			ISwitchStream *m_SwitchStream=NULL;
+			m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+			if (NULL!=m_SwitchStream)
+			{
+				m_SwitchStream->SwitchStream(1);
+				m_DevCliSetInfo.m_uiStreamId=1;
+				m_SwitchStream->Release();
+				m_SwitchStream=NULL;
+			}
+		}
+	}
 }
 

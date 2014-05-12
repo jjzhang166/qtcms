@@ -107,6 +107,7 @@ private:
 	void translateUi();
 	QString GetlanguageLable(QString);
 	void SaveToDatobase();
+	void IpcSwitchStream();
 public slots:
 		virtual void timerEvent( QTimerEvent * );
 		void OnRMousePressMenu();
@@ -196,6 +197,9 @@ private:
 
 	QTranslator *_translator;
 	IPTZControl *m_pPTZControl;
+
+	QString screenShotDir;
+	bool	m_bScreenShotflags;
 };
 
 
