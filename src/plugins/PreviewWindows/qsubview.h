@@ -176,6 +176,7 @@ private:
 	int m_ConnectingTimeId;
 	int m_ForbidConnectTimeId;
 	int m_ContinuousStreamTimeId;
+	int m_HeartbeatTimeId;
 	//计划录像刷新时间
 	int m_RecordFlushTime;
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
@@ -192,6 +193,7 @@ private:
 	bool	m_bScreenShotflags;
 	QString backgroundpath;
 	volatile bool m_bContinuousStreamflags;
+	volatile bool m_bHeartbeatflags;
 };
 
 

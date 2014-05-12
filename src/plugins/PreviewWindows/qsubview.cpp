@@ -47,9 +47,11 @@ QSubView::QSubView(QWidget *parent)
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
 	m_AutoConnectTimeId(0),
+	m_HeartbeatTimeId(0),
 	m_RecordFlushTime(0),
 	m_bScreenShotflags(false),
-	m_bContinuousStreamflags(false)
+	m_bContinuousStreamflags(false),
+	m_bHeartbeatflags(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -69,6 +71,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
 
+
 	m_QActionCloseView=m_RMousePressMenu.addAction(tr("Close Preview"));
 	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
@@ -78,6 +81,7 @@ QSubView::QSubView(QWidget *parent)
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
 	m_ContinuousStreamTimeId=startTimer(1000);
+	m_HeartbeatTimeId=startTimer(10000);
 
 	_manageWidget=new ManageWidget(this);
 	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
@@ -131,6 +135,10 @@ QSubView::~QSubView()
 	if (m_ForbidConnectTimeId!=0)
 	{
 		killTimer(m_ForbidConnectTimeId);
+	}
+	if (m_HeartbeatTimeId!=0)
+	{
+		killTimer(m_HeartbeatTimeId);
 	}
 	if (m_ContinuousStreamTimeId!=0)
 	{
@@ -363,10 +371,7 @@ int QSubView::PrevPlay(QVariantMap evMap)
 }
 int QSubView::CurrentStateChange(QVariantMap evMap)
 {
-
 	m_CurrentState=(QSubViewConnectStatus)evMap.value("CurrentStatus").toInt();
-	
-	
 	if (1==m_CurrentState)
 	{
 		emit Connectting();
@@ -422,7 +427,7 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	
 	
-	/*emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);*/
+	//emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
 	//自动重连
     if (STATUS_DISCONNECTED==m_CurrentState&&STATUS_CONNECTED==m_HistoryState)
 	{
@@ -537,6 +542,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 	img.save(backgroundpath,"JPG");
 	delete rgbBuff;
 	m_bContinuousStreamflags=true;
+	m_bHeartbeatflags=false;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	return 0;
 }
@@ -566,7 +572,18 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		killTimer(ev->timerId());
 		m_DisConnectingTimeId=0;
 	}
-
+	if (m_HeartbeatTimeId==ev->timerId())
+	{
+		if (m_bHeartbeatflags==true&&m_HistoryState==STATUS_CONNECTED)
+		{
+			QVariantMap evMap;
+			evMap.insert("CurrentStatus",STATUS_DISCONNECTED);
+			CurrentStateChange(evMap);
+		}
+		else{
+			m_bHeartbeatflags=true;
+		}
+	}
 	if (m_ContinuousStreamTimeId==ev->timerId())
 	{
 		m_bContinuousStreamflags=false;
@@ -1592,4 +1609,5 @@ void QSubView::IpcSwitchStream()
 		}
 	}
 }
+
 
