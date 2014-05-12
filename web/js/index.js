@@ -12,12 +12,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		//$(window).off();
 
 	    $('div.dev_list:eq(1)').hide();
-		
-		$('.hover').each(function(){
-			var action = $(this).attr('class').split(' ')[0];
-			addMouseStyle($(this),action);
-		})
-		
+				
 		oAs.each(function(index){
 			$(this).click(function(){
 				$(window).off();

@@ -1,7 +1,7 @@
 var oBottom,oPlayBack,oPlaybacKLocl;
 var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
-	recFile={},	//搜索到的文件,窗口改变的时候重绘搜索文件
+	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
 	bNoResize=1,   //当前窗口是否在改变
 	nowDevID=null; //当前选中设备ID
 
@@ -18,11 +18,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	   //$('ul.filetree').treeview();		
 		
 		//$('div.dev_list').eq(1).hide();
-		
-		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-			var action = $(this).attr('class').split(' ')[0];
-			addMouseStyle($(this),action);
-		})
 
 		var listParent = $('div.dev_list');
 
@@ -162,6 +157,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		initOxcDevListStatus();
 	})///
 	$(window).resize(function(){  //窗口自适应大小
+		return;
 		dragStopMove();
 		var oPlay_time = $('#operating div.play_time'),
 			oP = $('#channelvideo'),
@@ -330,34 +326,93 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		})		
 	}*/
 
+	var mergerNum = 0;  // 匹配重合的次数;
+
 	function RecFileInfoCallback(data){
-		recFile=data;
-		RecFileInfo2UI();
+		console.log(data);
+		RecFileInfo2UI(data);
 	}
-	function RecFileInfo2UI(){
-		var n=0;
-		for( i in recFile){ 
-			n++;
-			var data = $.parseJSON(recFile[i]);
-			var start = data.start;
-				start=time2Sec(start.split(' ')[1]);
-			var end = data.end;
-				end = time2Sec(end.split(' ')[1]);
-			var chl = data.channel || parseInt(data.channelnum -1);
-			var p = ($('#channelvideo').width()-80)/(3600*24);
-			var width = (end-start)*p;
-				width < 1 ? 1 : width;
-			var left = start*p+81;
-			var types = data.types || 8;
-			if(data.filepath){
-				var oChannel = $('div.dev_list li.sel').find('span.channel').eq(chl);
-				var filepathArr = oChannel.data('filepath');
-					filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
-					filepathArr.push(data.filepath);
-					filepathArr.sort(SortByfileTime).join(',');
-				oChannel.data('filepath',filepathArr);			
+
+	function Deleteduplicate(data){
+		var maxChl = 0;
+		for(i in data){
+			var nowchl = $.parseJSON(data[i]).channelnum;
+			maxChl = maxChl > nowchl ? maxChl : nowchl;
+		}
+		var file = [];
+		for(i=1;i<=maxChl;i++){  //按通道分类文件
+			var chlfile = [];   //对应通道空数组
+			for( k in data){ //便利所有文件
+				var nowfile = $.parseJSON(data[k])
+				if(i == nowfile.channelnum){
+					chlfile.push(nowfile);
+					chlfile.sort(SortfileTime);
+				}
 			}
-			$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');		
+			file.push(mergerOrderFile(chlfile));
+		}
+		return file;
+	}
+
+	function mergerOrderFile(oChlfile){  //合并时间连续的文件
+		if(oChlfile.length <= 1){
+			return oChlfile;
+		}
+		var	n=0,
+			m=0,
+			chlData=[];
+		for(var i=0;i<oChlfile.length;i++){
+
+			if((i+1) < oChlfile.length){
+				if(oChlfile[i].end >= oChlfile[i+1].start){
+					m++;
+				}else{
+					oChlfile[n].end = oChlfile[m+n].end;
+					chlData.push(oChlfile[n])	
+					n=i+1;
+					m=0;
+				}
+			}
+		}
+		oChlfile[n].end = oChlfile[m+n].end;
+		chlData.push(oChlfile[n]);		
+		return chlData;
+	}	
+
+	function SortfileTime(a,b){  //文件路径时间升序排列
+		var a = time2Sec(a.start.split(' ')[1]),
+			b = time2Sec(b.start.split(' ')[1]);
+		return a-b;
+	}
+
+	function RecFileInfo2UI(data){
+		recFile=Deleteduplicate(data);
+		console.log(recFile);
+		var n=0;
+		for( i in recFile){
+			for(k in recFile[i]){
+				n++;
+				var data = recFile[i][k];
+				var start = data.start;
+					start=time2Sec(start.split(' ')[1]);
+				var end = data.end;
+					end = time2Sec(end.split(' ')[1]);
+				var chl = data.channel || parseInt(data.channelnum -1);
+				var p = ($('#channelvideo').width()-80)/(3600*24);
+				var width = (end-start)*p;
+					width = width < 1 ? 1 : width;
+				var left = start*p+81;
+				var types = data.types || 8;
+				if(data.filepath){
+					var oChannel = $('div.dev_list li.sel').find('span.channel').eq(chl);
+					var filepathArr = oChannel.data('filepath');
+						filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
+						filepathArr.push(data.filepath);
+						filepathArr.sort(SortByfileTime).join(',');
+					oChannel.data('filepath',filepathArr);			
+				}
+				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
+			}	
 		}
 		if(!bool){
 			showRecProgress(n);
@@ -465,7 +520,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		}	
 
 
-		recFile={};
+		recFile=[];
 
 		palybackspeed('1X');
 

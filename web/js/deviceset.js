@@ -79,11 +79,6 @@ var oSearchOcx,
 			})
 		})	
 			
-		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-			var action = $(this).attr('class').split(' ')[0];
-			addMouseStyle($(this),action);
-		})
-
 		//跳转其他页面之前 先关闭搜索。
 		$('#top_nav li').each(function(index){
 			$(this).click(function(){
@@ -504,14 +499,13 @@ var oSearchOcx,
 		$('#LoopRecording_ID').toCheck();
 	}
 	
-	//组合勾选的硬盘版格式以用于保存。  // C;D;E
+	//组合勾选的硬盘版格式以用于保存。  // C:D:E
 	function SettingStorageParmData(){
 		var UseDisks = [];
 		$('#StorageParm thead :checked').each(function(){
 			UseDisks.push($(this).val());
 		})	
 		$('#UseDisks_ID').val(UseDisks.join(':'));
-		console.log($('#UseDisks_ID').val());
 	}
 
 	//分组区域添加到分组, 数据组织

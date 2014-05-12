@@ -332,18 +332,17 @@ $(function(){
 	//表单全选..
 	$('tbody.synCheckboxClick').SynchekboxClick();
 
-	$('div.calendar').each(function(index){
-		$(this).initCalendar();
-	})
 	document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
 		var e = e || window.event;
 		if(e.target.tagName != 'BODY'){
 			return;
 		}
 	}
-	//初始化声音按钮的初始值
-	$('#sound').prev('li').prop('soundOn',true);
 
+	$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		var action = $(this).attr('class').split(' ')[0];
+		addMouseStyle($(this),action);
+	})
 })///
 function triggerOnclick(id,sEv){ 
 	try{

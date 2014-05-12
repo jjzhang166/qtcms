@@ -78,3 +78,7 @@ function viewFullScreen(){
 		bFullScreen = 1;
 	}
 }
+$(function(){
+	//初始化声音按钮的初始值
+	$('#sound').prev('li').prop('soundOn',true);
+})
