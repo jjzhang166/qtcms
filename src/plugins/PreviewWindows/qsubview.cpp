@@ -77,7 +77,7 @@ QSubView::QSubView(QWidget *parent)
 
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
-	m_ContinuousStreamTimeId=startTimer(5000);
+	m_ContinuousStreamTimeId=startTimer(1000);
 
 	_manageWidget=new ManageWidget(this);
 	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
@@ -567,7 +567,7 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		m_DisConnectingTimeId=0;
 	}
 
-	if (m_ConnectingTimeId==ev->timerId())
+	if (m_ContinuousStreamTimeId==ev->timerId())
 	{
 		m_bContinuousStreamflags=false;
 	}
