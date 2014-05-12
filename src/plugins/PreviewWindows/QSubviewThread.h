@@ -22,6 +22,8 @@ public:
 	IDeviceClient* GetDeviceClient();
 	bool GetCreateDeviceFlags();
 	void SetCreateDeviceFlags(bool flags);
+	void SetCloseDeviceFlags(bool flags);
+	bool GetCloseDeviceFlags();
 public:
 	DevCliSetInfo m_DevCliSetInfo;
 	bool bCreateDeviceFlags;

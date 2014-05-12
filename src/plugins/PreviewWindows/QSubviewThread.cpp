@@ -17,7 +17,11 @@ QSubviewThread::QSubviewThread(void):m_IDeviceClient(NULL),
 
 QSubviewThread::~QSubviewThread(void)
 {
-	CloseAll();
+	if (!m_bIsClosing)
+	{
+		m_bIsClosing=true;
+		CloseAll();
+	}
 	while(m_bIsClosing==true){
 		msleep(100);
 	}
@@ -90,12 +94,6 @@ void QSubviewThread::OpenCameraInWnd()
 void QSubviewThread::CloseAll()
 {
 	//防止多线程同时调用
-	if (m_bIsClosing==true)
-	{
-		return;
-	}
-
-	m_bIsClosing=true;
 	if (NULL==m_IDeviceClient)
 	{
 		m_bIsClosing=false;
@@ -109,7 +107,6 @@ void QSubviewThread::CloseAll()
 	m_IDeviceClientCloseAll=NULL;
 	m_IDeviceClient->Release();
 	m_IDeviceClient=NULL;
-
 	m_bIsSysTime = false;
 	m_bIsClosing=false;
 	return;
@@ -183,6 +180,10 @@ int QSubviewThread::SetDeviceByVendor(QString sVendor, QWidget *pWnd)
 
 IDeviceClient* QSubviewThread::GetDeviceClient()
 {
+	if (m_bIsClosing==true)
+	{
+		return NULL;
+	}
 	return m_IDeviceClient;
 }
 
@@ -194,4 +195,14 @@ bool QSubviewThread::GetCreateDeviceFlags()
 void QSubviewThread::SetCreateDeviceFlags( bool flags )
 {
 	bCreateDeviceFlags = flags;
+}
+
+void QSubviewThread::SetCloseDeviceFlags( bool flags )
+{
+	m_bIsClosing=flags;
+}
+
+bool QSubviewThread::GetCloseDeviceFlags()
+{
+	return m_bIsClosing;
 }

@@ -35,11 +35,11 @@ int QSubViewObject::OpenCameraInWnd()
 }
 int QSubViewObject::CloseWndCamera()
  {
-	 if (bIsOpen&&m_QSubviewProcess->isFinished()==false)
+	 if (bIsOpen&&m_QSubviewProcess->isFinished()==false&&false==m_QSubviewProcess->GetCloseDeviceFlags())
 	 {
-		  QFuture<void>ret=QtConcurrent::run(m_QSubviewProcess,&QSubviewThread::CloseAll);
-	 }
-	
+		 m_QSubviewProcess->SetCloseDeviceFlags(true);
+		 QFuture<void>ret=QtConcurrent::run(m_QSubviewProcess,&QSubviewThread::CloseAll);
+	 }	
 	bIsOpen=false;
 	return 0;
 }
@@ -62,10 +62,16 @@ void QSubViewObject::m_workerThreadQuit()
 IDeviceClient* QSubViewObject::SetDeviceByVendor( QString sVendor,QWidget *wnd )
 {
 	m_QSubviewProcess->SetCreateDeviceFlags(false);
-	emit SetDeviceByVendorSignal(sVendor, wnd);
+	/*emit SetDeviceByVendorSignal(sVendor, wnd);*/
+	m_QSubviewProcess->SetDeviceByVendor(sVendor,wnd);
 	while(!m_QSubviewProcess->GetCreateDeviceFlags()){
 		msleep(100);
 	}
 	return m_QSubviewProcess->GetDeviceClient();
 	
+}
+
+bool QSubViewObject::GetDeviceCloseFlags()
+{
+	return m_QSubviewProcess->GetCloseDeviceFlags();
 }

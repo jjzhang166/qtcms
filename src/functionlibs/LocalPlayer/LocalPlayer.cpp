@@ -724,6 +724,10 @@ int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 		return 0;
 	}
 	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(pWnd);
+	if (NULL==iter->pPlayMgr)
+	{
+		return 1;
+	}
 	if (0xAECBCA == uiPersent)
 	{
 		if (NULL != m_pCurView)

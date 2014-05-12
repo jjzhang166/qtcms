@@ -23,6 +23,7 @@ public:
 
 	void SetAutoSyncTime(bool bEnabled);
 	IDeviceClient *SetDeviceByVendor(QString sVendor,QWidget *wnd);
+	bool GetDeviceCloseFlags();
 
 signals:
 	void OpenCameraInWndSignl();

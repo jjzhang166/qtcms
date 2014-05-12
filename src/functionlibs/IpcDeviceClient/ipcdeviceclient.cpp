@@ -62,7 +62,6 @@ IpcDeviceClient::~IpcDeviceClient(void)
 	{
 		closeAll();
 	}
-
 }
 
 long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )

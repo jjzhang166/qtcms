@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <QApplication>
+#include <QTimer>
 bool QSubView::m_bIsAudioOpend = false;
 IAudioPlayer* QSubView::m_pAudioPlayer = NULL;
 QSubView* QSubView::m_pCurrView = NULL;
@@ -94,13 +95,17 @@ QSubView::QSubView(QWidget *parent)
 QSubView::~QSubView()
 {
 	CloseWndCamera();
-	
+	while(m_QSubViewObject.GetDeviceCloseFlags()){
+		QTime dieTime=QTime::currentTime().addMSecs(10);
+		while(QTime::currentTime()<dieTime){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+		}
+	}
 	if (NULL!=m_IDeviceClientDecideByVendor)
 	{
 		m_IDeviceClientDecideByVendor->Release();
 		m_IDeviceClientDecideByVendor=NULL;
 	}
-
 	if (NULL!=m_IVideoDecoder)
 	{
 		m_IVideoDecoder->Release();
