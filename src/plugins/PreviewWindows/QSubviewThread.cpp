@@ -82,7 +82,7 @@ void QSubviewThread::OpenCameraInWnd()
 	m_IDeviceClientOpenCameraInWnd->Release();
 	m_IDeviceClientOpenCameraInWnd=NULL;
 }
-void QSubviewThread::SetAutoSyncTime(bool bEnabled)
+ void QSubviewThread::SetAutoSyncTime(bool bEnabled)
 {
 	m_bIsSysTime = bEnabled;
 }

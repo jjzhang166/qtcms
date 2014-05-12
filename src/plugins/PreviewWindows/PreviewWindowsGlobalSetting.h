@@ -19,19 +19,7 @@ typedef struct _tagDevCliSetInfo{
 	QString m_sVendor;
 	QString m_sDeviceName;
 }DevCliSetInfo;
-typedef struct _tagRenderInfo{
-	char* pData;
-	char* pYdata;
-	char* pUdata;
-	char* pVdata;
-	int iWidth;
-	int iHeight;
-	int iYStride;
-	int iUVStride;
-	int iLineStride;
-	QString iPixeFormat;
-	int iFlags;
-}RenderInfo;
+
 typedef struct _tagRecordDevInfo{
 	QString m_DevName;
 	int m_ChannelNum;

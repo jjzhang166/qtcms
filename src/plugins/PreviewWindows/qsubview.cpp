@@ -30,7 +30,6 @@ QSubView::QSubView(QWidget *parent)
 	m_HistoryState(QSubView::STATUS_DISCONNECTED),
 	iInitWidth(0),
 	iInitHeight(0),
-	m_bRendering(false),
 	m_bIsRecording(false),
 	m_bStateAutoConnect(false),
 	m_bIsAutoConnecting(false),
@@ -46,16 +45,15 @@ QSubView::QSubView(QWidget *parent)
 	m_nCountDisConnecting(0),
 	m_CountConnecting(0),
 	m_DisConnectingTimeId(0),
-	m_RenderTimeId(0),
 	m_AutoConnectTimeId(0),
 	m_RecordFlushTime(0),
-	m_bScreenShotflags(false)
+	m_bScreenShotflags(false),
+	m_bContinuousStreamflags(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	//申请解码器接口
 	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
-// 	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_IVideoDecoder);
 	//申请渲染器接口
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_IVideoRender);
 	//申请IRecorder接口
@@ -67,10 +65,9 @@ QSubView::QSubView(QWidget *parent)
 
 	connect(this,SIGNAL(DisConnecting()),this,SLOT(OnDisConnecting()),Qt::QueuedConnection);
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);//Ui显示正在连接中
-	connect(this,SIGNAL(RenderHistoryPix()),this,SLOT(OnRenderHistoryPix()),Qt::QueuedConnection);
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
-	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnected()),Qt::QueuedConnection);
+
 	m_QActionCloseView=m_RMousePressMenu.addAction(tr("Close Preview"));
 	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
 	connect(this,SIGNAL(RMousePressMenu()),this,SLOT(OnRMousePressMenu()));
@@ -79,13 +76,19 @@ QSubView::QSubView(QWidget *parent)
 
 	//初始历史render的值
 	m_ForbidConnectTimeId=startTimer(2000);
-	m_HistoryRenderInfo.pData=NULL;
-	//test
+	m_ContinuousStreamTimeId=startTimer(5000);
+
 	_manageWidget=new ManageWidget(this);
 	connect(this,SIGNAL(RecordStateSignals(bool)),_manageWidget,SLOT(RecordState(bool)));
 	initDeviceInfo();
 	_translator=new QTranslator();
 	QApplication::installTranslator(_translator);
+
+	QString dir=QCoreApplication::applicationDirPath();
+	backgroundpath.append(dir);
+	backgroundpath+="/temp/";
+	backgroundpath+=QString::number(int(this));
+	backgroundpath+=".jpg";
 }
 
 QSubView::~QSubView()
@@ -124,6 +127,10 @@ QSubView::~QSubView()
 	{
 		killTimer(m_ForbidConnectTimeId);
 	}
+	if (m_ContinuousStreamTimeId!=0)
+	{
+		killTimer(m_ContinuousStreamTimeId);
+	}
 	if (NULL != m_pAudioPlayer)
 	{
 		m_pAudioPlayer->Stop();
@@ -155,7 +162,6 @@ void QSubView::mouseDoubleClickEvent( QMouseEvent * ev)
 void QSubView::mousePressEvent(QMouseEvent *ev)
 {
 	setFocus(Qt::MouseFocusReason);
-	saveCacheImage();
 	if (ev->button()==Qt::RightButton)
 	{
 		emit RMousePressMenu();
@@ -188,8 +194,7 @@ int QSubView::OpenCameraInWnd(int chlId)
 	{
 		In_CloseAutoConnect();
 	}
-	//关闭上一次的连接
-	//CloseWndCamera();
+
 	//生成设备组件
 	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(m_DevCliSetInfo.m_sVendor,this);
 	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
@@ -222,7 +227,6 @@ int QSubView::OpenCameraInWnd(int chlId)
 	//区分主码流
 	IpcSwitchStream();
 	//0.5s检测一次是否需要刷新历史图片
-	m_RenderTimeId=startTimer(500);
 	m_QSubViewObject.OpenCameraInWnd();
 	m_checkTime.start(1000);
 	return 0;
@@ -369,7 +373,6 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	if (0==m_CurrentState)
 	{
-		emit Connected();
 		m_bIsAutoConnect=true;
 		QVariantMap evMapToUi;
 		evMapToUi.insert("CurrentState",m_CurrentState);
@@ -390,8 +393,6 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	if (2==m_CurrentState)
 	{
-		//断开后，把历史图片数据清空
-		m_HistoryRenderInfo.pData=NULL;
 		update();
 		QVariantMap evMapToUi;
 		evMapToUi.insert("CurrentState",m_CurrentState);
@@ -517,36 +518,21 @@ int QSubView::PrevRender(QVariantMap evMap)
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
 	}
+
+	unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+
+	YUV420_C_RGB(pData, rgbBuff, iHeight, iWidth);
+
+	QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 	if (m_bScreenShotflags)
 	{
-		unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
-
-		YUV420_C_RGB(pData, rgbBuff, iHeight, iWidth);
-
-		QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 		img.save(screenShotDir, "JPG");
-
-		delete rgbBuff;
 		m_bScreenShotflags=false;
-
 	}
-	m_bRendering=true;
-	m_csRender.lock();
-	m_HistoryRenderInfo.pData=pData;
-	m_HistoryRenderInfo.pYdata=pYdata;
-	m_HistoryRenderInfo.pUdata=pUdata;
-	m_HistoryRenderInfo.pVdata=pVdata;
-	m_HistoryRenderInfo.iWidth=iWidth;
-	m_HistoryRenderInfo.iHeight=iHeight;
-	m_HistoryRenderInfo.iYStride=iYStride;
-	m_HistoryRenderInfo.iUVStride=iUVStride;
-	m_HistoryRenderInfo.iLineStride=iLineStride;
-	m_HistoryRenderInfo.iPixeFormat=iPixeFormat;
-	m_HistoryRenderInfo.iFlags=iFlags;
-	m_bIsRenderHistory=false;
+	img.save(backgroundpath,"JPG");
+	delete rgbBuff;
+	
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
-	m_csRender.unlock();
-	m_bRendering=false;
 	return 0;
 }
 
@@ -575,14 +561,10 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		killTimer(ev->timerId());
 		m_DisConnectingTimeId=0;
 	}
-	if (m_CurrentState!=STATUS_CONNECTED&&ev->timerId()==m_RenderTimeId)
+
+	if (m_ConnectingTimeId==ev->timerId())
 	{
-		killTimer(ev->timerId());
-		m_RenderTimeId=0;
-	}
-	if (m_RenderTimeId==ev->timerId())
-	{
-		emit RenderHistoryPix();
+		m_bContinuousStreamflags=false;
 	}
 	//自动重连 时钟信号
 	if (m_AutoConnectTimeId==ev->timerId())
@@ -881,12 +863,6 @@ void QSubView::OnCheckTime()
 			recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
 			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime)
 			{
-				//if (m_DevCliSetInfo.m_sEseeId.toInt()<1)
-				//{
-				//	m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sAddress, m_DevCliSetInfo.m_uiChannelId);
-				//}else{
-				//	m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);
-				//}
 				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sDeviceName,m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsAutoRecording = true;
@@ -912,7 +888,6 @@ void QSubView::OnCheckTime()
 			currentTime = QTime::currentTime();
 			if (!m_bIsAutoRecording && currentTime >= m_lstReocrdTimeInfoList[j].startTime && currentTime < m_lstReocrdTimeInfoList[j].endTime&&m_CurrentState==STATUS_CONNECTED)
 			{
-				/*m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sEseeId, m_DevCliSetInfo.m_uiChannelId);*/
 				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sDeviceName,m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsAutoRecording = true;
@@ -963,7 +938,6 @@ void QSubView::In_OpenAutoConnect()
 		m_bIsRecording = false;
 	}
 	//生成设备组件
-	//SetDeviceByVendor(m_DevCliSetInfo.m_sVendor);
 
 	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(m_DevCliSetInfo.m_sVendor,this);
 	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
@@ -998,25 +972,7 @@ void QSubView::OnDisConnecting()
 {
     m_DisConnectingTimeId=startTimer(500);
 }
-void QSubView::OnConnected()
-{
-	m_RenderTimeId=startTimer(500);
-}
 
-
-void QSubView::OnRenderHistoryPix()
-{
-    if (m_CurrentState==STATUS_CONNECTED)
-	{
-		if (NULL!=m_IVideoRender&&NULL!=m_HistoryRenderInfo.pData&&true==m_bIsRenderHistory)
-		{
-			m_csRender.lock();
-			m_IVideoRender->render(m_HistoryRenderInfo.pData,m_HistoryRenderInfo.pYdata,m_HistoryRenderInfo.pUdata,m_HistoryRenderInfo.pVdata,m_HistoryRenderInfo.iWidth,m_HistoryRenderInfo.iHeight,m_HistoryRenderInfo.iYStride,m_HistoryRenderInfo.iUVStride,m_HistoryRenderInfo.iLineStride,m_HistoryRenderInfo.iPixeFormat,m_HistoryRenderInfo.iFlags);
-			m_csRender.unlock();
-		}
-		/*m_bIsRenderHistory=true;*/
-	}
-}
 
 void QSubView::In_CloseAutoConnect()
 {
@@ -1138,20 +1094,14 @@ void QSubView::paintEventNoVideo( QPaintEvent * e)
 		int bheight=0;
 		int ax=0;
 		int ay=0;
-
 		rcClient.getCoords(&ax, &ay, &awidth, &bheight);
 		int aFontSize=10;
 		int aw=400;
-		//	int ah=300;
 		aFontSize=awidth*FontSize/(aw);
 		QFont font(FontFamily, aFontSize, QFont::Bold);
-
 		p.setFont(font);
-
 		pen.setColor(FontColor);
-
 		p.setPen(pen);
-
 		p.drawText(rcClient, Qt::AlignCenter, "No Video");
 	}
 	
@@ -1275,13 +1225,19 @@ void QSubView::paintEventCache( QPaintEvent *e )
 		QRect rcClient = contentsRect();
 		this->geometry().center();
 		QPixmap pix;
-		QString PixPaht = sAppPath + image;
+
+		QString PixPaht;
+		if (m_bContinuousStreamflags)
+		{
+			PixPaht=backgroundpath;
+		}else{
+			PixPaht= sAppPath + image;
+		}
 		pix.load(PixPaht);
 
 		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		//背景
-		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-		p.drawPixmap(rcClient,m_cacheImage);
+		p.drawPixmap(rcClient,pix);
 		//边框
 		QPen pen = QPen(LineColor);
 		pen.setWidth(2);
@@ -1301,22 +1257,28 @@ void QSubView::paintEventCache( QPaintEvent *e )
 			pen.setColor(LineCurColor);
 			p.setPen(pen);
 			p.drawRect(QRectF(x,y,width, height));
-			/*p.drawRect(QRectF(x + 2,y + 2,width - 2, height - 2));*/
 		}
 		else
 		{
 			p.drawRect(rcClient);
 		}
+		if (!m_bContinuousStreamflags)
+		{
+			int awidth=0;
+			int bheight=0;
+			int ax=0;
+			int ay=0;
+			rcClient.getCoords(&ax, &ay, &awidth, &bheight);
+			int aFontSize=10;
+			int aw=400;
+			aFontSize=awidth*FontSize/(aw);
+			QFont font(FontFamily, aFontSize, QFont::Bold);
+			p.setFont(font);
+			pen.setColor(FontColor);
+			p.setPen(pen);
+			p.drawText(rcClient, Qt::AlignCenter, "No Video");
+		}
 	}
-}
-
-void QSubView::saveCacheImage()
-{
-	if (m_CurrentState==STATUS_CONNECTED)
-	{
-		_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
-	}
-	
 }
 
 int QSubView::liveStreamRequire( int nChannel,int nStream,bool bOpen )

@@ -101,7 +101,6 @@ private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
-	void saveCacheImage();
 	int GetDeviceInfo(int chlId);
 	void initDeviceInfo();
 	void translateUi();
@@ -115,8 +114,6 @@ public slots:
 		void OnSwitchStreamFromMouseEv();
 		void OnConnectting();
 		void OnDisConnecting();
-		void OnConnected();
-		void OnRenderHistoryPix();
 		void OnCheckTime();
 		void OnCreateAutoConnectTime();
 		void In_OpenAutoConnect();
@@ -128,17 +125,14 @@ signals:
 		void SetCurrentWindSignl(QWidget *);
 		void CurrentStateChangeSignl(QVariantMap evMap,QWidget *);
 		void Connectting();
-		void Connected();
 		void DisConnecting();
 		void RMousePressMenu();
-		void RenderHistoryPix();
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
 		void RecordStateSignals(bool );
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
 	RecordDevInfo m_RecordDevInfo;
-	RenderInfo m_HistoryRenderInfo;//上一帧图像的信息
 	IVideoRender *m_IVideoRender;
 	IVideoDecoder *m_IVideoDecoder;
 	IDeviceClient *m_IDeviceClientDecideByVendor;
@@ -154,9 +148,7 @@ private:
 	static int m_nSampleRate;
 	static int m_nSampleWidth;
 	//标志位
-	bool m_bRendering;
 	bool m_bIsRecording;
-	bool m_bIsRenderHistory;
 	bool m_bIsAutoConnect;
 	bool m_bStateAutoConnect;
 	bool m_bIsAutoConnecting;
@@ -171,7 +163,6 @@ private:
 	Ui::titleview * ui;
 
 	QMutex m_MutexdoubleClick;
-	QMutex m_csRender;
 	QMenu m_RMousePressMenu;
 
 	QAction *m_QActionCloseView;
@@ -181,10 +172,10 @@ private:
 	int m_CountConnecting;
 	//时钟id
 	int m_DisConnectingTimeId;
-	int m_RenderTimeId;
 	int m_AutoConnectTimeId;
 	int m_ConnectingTimeId;
 	int m_ForbidConnectTimeId;
+	int m_ContinuousStreamTimeId;
 	//计划录像刷新时间
 	int m_RecordFlushTime;
 	QList<RecordTimeInfo> m_lstReocrdTimeInfoList;
@@ -192,14 +183,15 @@ private:
 	static QSubView* m_pCurrView;
 
 	ManageWidget *_manageWidget;
-	QPixmap _cacheBackImage;
-	QPixmap _ScreenShotImage;
+
 
 	QTranslator *_translator;
 	IPTZControl *m_pPTZControl;
 
 	QString screenShotDir;
 	bool	m_bScreenShotflags;
+	QString backgroundpath;
+	volatile bool m_bContinuousStreamflags;
 };
 
 
