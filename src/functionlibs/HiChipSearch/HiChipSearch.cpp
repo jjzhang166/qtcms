@@ -186,7 +186,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchHttpport_ID", context);
 
 	itemmap.insert("SearchMediaPort_ID", context);
-	itemmap.insert("SearchVendor_ID", "JUAN IPC");
+	itemmap.insert("SearchVendor_ID", "IPC");
 	
 
 }

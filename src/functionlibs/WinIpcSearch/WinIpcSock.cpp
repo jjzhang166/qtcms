@@ -343,7 +343,7 @@ void WinIpcSock::run()
 				qitem.insert("SearchChannelCount_ID",item.channelcnt);
 				qitem.insert("SearchMac_ID",item.mac);
 				qitem.insert("SearchDeviceId_ID",item.devid);
-				qitem.insert("SearchVendor_ID", "JUAN IPC");
+				qitem.insert("SearchVendor_ID", "IPC");
 				eventProcCall("SearchDeviceSuccess",qitem);
 				/*m_SearchCallback("SearchDeviceSuccess",qitem,m_SearchCallbackParam);*/
 			}

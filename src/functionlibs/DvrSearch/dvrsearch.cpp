@@ -181,7 +181,6 @@ void DvrSearch::Recv()
         
 		QString strTmp(datagram.data());
 		strTmp = strTmp.toUpper();
-    
         if ( datagram.contains("SEARCHDEV") )
         {
             continue;
@@ -203,11 +202,20 @@ void DvrSearch::Recv()
 
 		StrToOther = ParseSearch(strTmp, "CH");
         strListInfo.insert(4,QString(StrToOther.data()));
+
+		StrToOther=ParseSearch(strTmp,"MODEL");
+		strListInfo.insert(5,QString(StrToOther.data()));
 		if (strListInfo.at(0)=="0")
 		{
 			continue;
 		}
-        m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("JUAN DVR"));
+		if (strListInfo.at(5)=="0")
+		{
+			 m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("DVR"));
+		}else{
+			m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant(strListInfo.at(5)));
+		}
+       
         m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
         m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(""));
         m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
