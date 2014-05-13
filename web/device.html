@@ -127,7 +127,7 @@
 							<td style="width:60px;"><script>T("Channels")</script></td>
 						</tr>
 					</thead>
-					<tbody class="synCheckboxClick">
+					<tbody id="SerachedDevList" class="synCheckboxClick">
 					</tbody>
 					<input type="hidden" id="AutoSetNetworkInfoID" />
 				</table>
@@ -148,7 +148,7 @@
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="height:146px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();"id="tableSelectAll" status="0" /><script>T("Select")</script></td></tr></thead>
+					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" /><label for="SerachedDevList_SelectAll"><script>T("Select")</script></label></td></tr></thead>
 					<tbody>
 						<tr>
 							<td style="width:70px;"><script>T("Device_IP")</script></td>
@@ -583,6 +583,7 @@
 						<tr>
 						<td colspan="4">
 							<table class="tb1">
+								<tbody id="Encoding_settings" class="synCheckboxClick">
 								<tr>
 									<td colspan="4" class="td4 dvr_enc_chn_sel">
                                         <div><input type="checkbox" /><span>1</span></div>
@@ -631,8 +632,10 @@
 										<div><input type="checkbox" /><span>32</span></div>
 									</td>
 								</tr>
-								<tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script>
-								<td class="tdBtn"><div class="hover chk_all_btn"><script>T("Copy_to_all")</script></div></td></tr>
+								</tbody>
+								<tr><td colspan="3"><input id="Encoding_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="Encoding_settings_SelectAll"><label for="Encoding_settings_SelectAll"><script>T("Select")</script></label>
+								<!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
+								
 							</table>
 						</td>
 						</tr>
@@ -724,55 +727,57 @@
 			                            <input id="dvr_record_weekday_0" class="chk" type="checkbox" /><script>T("Sunday")</script>
 			                            </td>
 			                        </tr>-->
-						<tr>
-							<td colspan="4" class="td4 dvr_record_chn_sel">
-							<div><input type="checkbox" /><span>1</span></div>
-							<div><input type="checkbox" /><span>2</span></div>
-							<div><input type="checkbox" /><span>3</span></div>
-							<div><input type="checkbox" /><span>4</span></div>
-							<div><input type="checkbox" /><span>5</span></div>
-							<div><input type="checkbox" /><span>6</span></div>
-							<div><input type="checkbox" /><span>7</span></div>
-							<div><input type="checkbox" /><span>8</span></div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="4" class="td4 dvr_record_chn_sel">
-							<div><input type="checkbox" /><span>9</span></div>
-							<div><input type="checkbox" /><span>10</span></div>
-							<div><input type="checkbox" /><span>11</span></div>
-							<div><input type="checkbox" /><span>12</span></div>
-							<div><input type="checkbox" /><span>13</span></div>
-							<div><input type="checkbox" /><span>14</span></div>
-							<div><input type="checkbox" /><span>15</span></div>
-							<div><input type="checkbox" /><span>16</span></div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="4" class="td4 dvr_record_chn_sel">
-							<div><input type="checkbox" /><span>17</span></div>
-							<div><input type="checkbox" /><span>18</span></div>
-							<div><input type="checkbox" /><span>19</span></div>
-							<div><input type="checkbox" /><span>20</span></div>
-							<div><input type="checkbox" /><span>21</span></div>
-							<div><input type="checkbox" /><span>22</span></div>
-							<div><input type="checkbox" /><span>23</span></div>
-							<div><input type="checkbox" /><span>24</span></div>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="4" class="td4 dvr_record_chn_sel">
-							<div><input type="checkbox" /><span>25</span></div>
-							<div><input type="checkbox" /><span>26</span></div>
-							<div><input type="checkbox" /><span>27</span></div>
-							<div><input type="checkbox" /><span>28</span></div>
-							<div><input type="checkbox" /><span>29</span></div>
-							<div><input type="checkbox" /><span>30</span></div>
-							<div><input type="checkbox" /><span>31</span></div>
-							<div><input type="checkbox" /><span>32</span></div>
-							</td>
-						</tr>
-			                 <tr><td colspan="3"><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
+			            <tbody id="Video_settings" class="synCheckboxClick">
+							<tr>
+								<td colspan="4" class="td4 dvr_record_chn_sel">
+								<div><input type="checkbox" /><span>1</span></div>
+								<div><input type="checkbox" /><span>2</span></div>
+								<div><input type="checkbox" /><span>3</span></div>
+								<div><input type="checkbox" /><span>4</span></div>
+								<div><input type="checkbox" /><span>5</span></div>
+								<div><input type="checkbox" /><span>6</span></div>
+								<div><input type="checkbox" /><span>7</span></div>
+								<div><input type="checkbox" /><span>8</span></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="td4 dvr_record_chn_sel">
+								<div><input type="checkbox" /><span>9</span></div>
+								<div><input type="checkbox" /><span>10</span></div>
+								<div><input type="checkbox" /><span>11</span></div>
+								<div><input type="checkbox" /><span>12</span></div>
+								<div><input type="checkbox" /><span>13</span></div>
+								<div><input type="checkbox" /><span>14</span></div>
+								<div><input type="checkbox" /><span>15</span></div>
+								<div><input type="checkbox" /><span>16</span></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="td4 dvr_record_chn_sel">
+								<div><input type="checkbox" /><span>17</span></div>
+								<div><input type="checkbox" /><span>18</span></div>
+								<div><input type="checkbox" /><span>19</span></div>
+								<div><input type="checkbox" /><span>20</span></div>
+								<div><input type="checkbox" /><span>21</span></div>
+								<div><input type="checkbox" /><span>22</span></div>
+								<div><input type="checkbox" /><span>23</span></div>
+								<div><input type="checkbox" /><span>24</span></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="td4 dvr_record_chn_sel">
+								<div><input type="checkbox" /><span>25</span></div>
+								<div><input type="checkbox" /><span>26</span></div>
+								<div><input type="checkbox" /><span>27</span></div>
+								<div><input type="checkbox" /><span>28</span></div>
+								<div><input type="checkbox" /><span>29</span></div>
+								<div><input type="checkbox" /><span>30</span></div>
+								<div><input type="checkbox" /><span>31</span></div>
+								<div><input type="checkbox" /><span>32</span></div>
+								</td>
+							</tr>
+						</tbody>
+			                 <tr><td colspan="3"><input id="Video_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label><script>T("Select")</script></label><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 							<tr><td colspan="4" class="tdBtn" style="background:#282828;">
 								<div class="hover"><script>T("Cancel")</script></div>
 								<div class="hover" onclick="dvr_save('dvr_record_chn_sel');"><script>T("Save")</script></div>
@@ -850,78 +855,6 @@
 							</td>
 						</tr>
 						<tr style="background:#282828;"><td colspan="4"></td></tr>
-						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
-						<tr>
-							<td colspan="4">
-								<table class="tb1">
-									<tr>
-										<td colspan="4" class="td4 dvr_ptz_chn_sel">
-										<div><input type="checkbox" /><span>1</span></div>
-										<div><input type="checkbox" /><span>2</span></div>
-										<div><input type="checkbox" /><span>3</span></div>
-										<div><input type="checkbox" /><span>4</span></div>
-										<div><input type="checkbox" /><span>5</span></div>
-										<div><input type="checkbox" /><span>6</span></div>
-										<div><input type="checkbox" /><span>7</span></div>
-										<div><input type="checkbox" /><span>8</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_ptz_chn_sel">
-										<div><input type="checkbox" /><span>9</span></div>
-										<div><input type="checkbox" /><span>10</span></div>
-										<div><input type="checkbox" /><span>11</span></div>
-										<div><input type="checkbox" /><span>12</span></div>
-										<div><input type="checkbox" /><span>13</span></div>
-										<div><input type="checkbox" /><span>14</span></div>
-										<div><input type="checkbox" /><span>15</span></div>
-										<div><input type="checkbox" /><span>16</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_ptz_chn_sel">
-										<div><input type="checkbox" /><span>17</span></div>
-										<div><input type="checkbox" /><span>18</span></div>
-										<div><input type="checkbox" /><span>19</span></div>
-										<div><input type="checkbox" /><span>20</span></div>
-										<div><input type="checkbox" /><span>21</span></div>
-										<div><input type="checkbox" /><span>22</span></div>
-										<div><input type="checkbox" /><span>23</span></div>
-										<div><input type="checkbox" /><span>24</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_ptz_chn_sel">
-										<div><input type="checkbox" /><span>25</span></div>
-										<div><input type="checkbox" /><span>26</span></div>
-										<div><input type="checkbox" /><span>27</span></div>
-										<div><input type="checkbox" /><span>28</span></div>
-										<div><input type="checkbox" /><span>29</span></div>
-										<div><input type="checkbox" /><span>30</span></div>
-										<div><input type="checkbox" /><span>31</span></div>
-										<div><input type="checkbox" /><span>32</span></div>
-										</td>
-									</tr>
-									<tr><td><input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td><script>T("Data_rate")</script></td>
-							<td colspan="2">
-								<div class="select" style="width:133px;">
-										<span id="dvr_ptz_data_rate"></span>
-										<a class="hover"></a>
-								</div>
-								<ul class="option">
-									<li><a>5</a></li>
-									<li><a>6</a></li>
-									<li><a>7</a></li>
-                                    <li><a>8</a></li>
-								</ul>
-							</td>
-						</tr>
-						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr>
 							<td><script>T("Stop_bits")</script></td>
 							<td colspan="2">
@@ -948,6 +881,80 @@
 									<li><a></a></li>
 									<li><a></a></li>
 								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td><script>T("Data_rate")</script></td>
+							<td colspan="2">
+								<div class="select" style="width:133px;">
+										<span id="dvr_ptz_data_rate"></span>
+										<a class="hover"></a>
+								</div>
+								<ul class="option">
+									<li><a>5</a></li>
+									<li><a>6</a></li>
+									<li><a>7</a></li>
+                                    <li><a>8</a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr style="background:#282828;"><td colspan="4"></td></tr>
+						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
+						<tr>
+							<td colspan="4">
+								<table class="tb1">
+									<tbody id="PTZ_settings" class="synCheckboxClick">
+										<tr>
+											<td colspan="4" class="td4 dvr_ptz_chn_sel">
+											<div><input type="checkbox" /><span>1</span></div>
+											<div><input type="checkbox" /><span>2</span></div>
+											<div><input type="checkbox" /><span>3</span></div>
+											<div><input type="checkbox" /><span>4</span></div>
+											<div><input type="checkbox" /><span>5</span></div>
+											<div><input type="checkbox" /><span>6</span></div>
+											<div><input type="checkbox" /><span>7</span></div>
+											<div><input type="checkbox" /><span>8</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_ptz_chn_sel">
+											<div><input type="checkbox" /><span>9</span></div>
+											<div><input type="checkbox" /><span>10</span></div>
+											<div><input type="checkbox" /><span>11</span></div>
+											<div><input type="checkbox" /><span>12</span></div>
+											<div><input type="checkbox" /><span>13</span></div>
+											<div><input type="checkbox" /><span>14</span></div>
+											<div><input type="checkbox" /><span>15</span></div>
+											<div><input type="checkbox" /><span>16</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_ptz_chn_sel">
+											<div><input type="checkbox" /><span>17</span></div>
+											<div><input type="checkbox" /><span>18</span></div>
+											<div><input type="checkbox" /><span>19</span></div>
+											<div><input type="checkbox" /><span>20</span></div>
+											<div><input type="checkbox" /><span>21</span></div>
+											<div><input type="checkbox" /><span>22</span></div>
+											<div><input type="checkbox" /><span>23</span></div>
+											<div><input type="checkbox" /><span>24</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_ptz_chn_sel">
+											<div><input type="checkbox" /><span>25</span></div>
+											<div><input type="checkbox" /><span>26</span></div>
+											<div><input type="checkbox" /><span>27</span></div>
+											<div><input type="checkbox" /><span>28</span></div>
+											<div><input type="checkbox" /><span>29</span></div>
+											<div><input type="checkbox" /><span>30</span></div>
+											<div><input type="checkbox" /><span>31</span></div>
+											<div><input type="checkbox" /><span>32</span></div>
+											</td>
+										</tr>
+									</tbody>
+									<tr><td><input id="PTZ_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="PTZ_settings_SelectAll"><script>T("Select")</script></label><td></td><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
+								</table>
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;">
@@ -1045,56 +1052,58 @@
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other")</script></h5></td></tr>
 						<tr><td colspan="3">
 								<table class="tb1">
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>1</span></div>
-									<div><input type="checkbox" /><span>2</span></div>
-									<div><input type="checkbox" /><span>3</span></div>
-									<div><input type="checkbox" /><span>4</span></div>
-									<div><input type="checkbox" /><span>5</span></div>
-									<div><input type="checkbox" /><span>6</span></div>
-									<div><input type="checkbox" /><span>7</span></div>
-									<div><input type="checkbox" /><span>8</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>9</span></div>
-									<div><input type="checkbox" /><span>10</span></div>
-									<div><input type="checkbox" /><span>11</span></div>
-									<div><input type="checkbox" /><span>12</span></div>
-									<div><input type="checkbox" /><span>13</span></div>
-									<div><input type="checkbox" /><span>14</span></div>
-									<div><input type="checkbox" /><span>15</span></div>
-									<div><input type="checkbox" /><span>16</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>17</span></div>
-									<div><input type="checkbox" /><span>18</span></div>
-									<div><input type="checkbox" /><span>19</span></div>
-									<div><input type="checkbox" /><span>20</span></div>
-									<div><input type="checkbox" /><span>21</span></div>
-									<div><input type="checkbox" /><span>22</span></div>
-									<div><input type="checkbox" /><span>23</span></div>
-									<div><input type="checkbox" /><span>24</span></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" class="td4 dvr_detect_chn_sel">
-									<div><input type="checkbox" /><span>25</span></div>
-									<div><input type="checkbox" /><span>26</span></div>
-									<div><input type="checkbox" /><span>27</span></div>
-									<div><input type="checkbox" /><span>28</span></div>
-									<div><input type="checkbox" /><span>29</span></div>
-									<div><input type="checkbox" /><span>30</span></div>
-									<div><input type="checkbox" /><span>31</span></div>
-									<div><input type="checkbox" /><span>32</span></div>
-									</td>
-								</tr>
+								<tbody id="Video_detection_settings" class="synCheckboxClick">
+									<tr>
+										<td colspan="3" class="td4 dvr_detect_chn_sel">
+										<div><input type="checkbox" /><span>1</span></div>
+										<div><input type="checkbox" /><span>2</span></div>
+										<div><input type="checkbox" /><span>3</span></div>
+										<div><input type="checkbox" /><span>4</span></div>
+										<div><input type="checkbox" /><span>5</span></div>
+										<div><input type="checkbox" /><span>6</span></div>
+										<div><input type="checkbox" /><span>7</span></div>
+										<div><input type="checkbox" /><span>8</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="td4 dvr_detect_chn_sel">
+										<div><input type="checkbox" /><span>9</span></div>
+										<div><input type="checkbox" /><span>10</span></div>
+										<div><input type="checkbox" /><span>11</span></div>
+										<div><input type="checkbox" /><span>12</span></div>
+										<div><input type="checkbox" /><span>13</span></div>
+										<div><input type="checkbox" /><span>14</span></div>
+										<div><input type="checkbox" /><span>15</span></div>
+										<div><input type="checkbox" /><span>16</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="td4 dvr_detect_chn_sel">
+										<div><input type="checkbox" /><span>17</span></div>
+										<div><input type="checkbox" /><span>18</span></div>
+										<div><input type="checkbox" /><span>19</span></div>
+										<div><input type="checkbox" /><span>20</span></div>
+										<div><input type="checkbox" /><span>21</span></div>
+										<div><input type="checkbox" /><span>22</span></div>
+										<div><input type="checkbox" /><span>23</span></div>
+										<div><input type="checkbox" /><span>24</span></div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="td4 dvr_detect_chn_sel">
+										<div><input type="checkbox" /><span>25</span></div>
+										<div><input type="checkbox" /><span>26</span></div>
+										<div><input type="checkbox" /><span>27</span></div>
+										<div><input type="checkbox" /><span>28</span></div>
+										<div><input type="checkbox" /><span>29</span></div>
+										<div><input type="checkbox" /><span>30</span></div>
+										<div><input type="checkbox" /><span>31</span></div>
+										<div><input type="checkbox" /><span>32</span></div>
+										</td>
+									</tr>
+								</tbody>	
 								<tr><td>
-								<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td><td class="tdBtn"><div class="hover chk_all_btn"><script>T("All")</script></div></td></tr>
+								<input id="Video_detection_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="Video_detection_settings_SelectAll"><script>T("Select")</script></label><td></td><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 							</table>
 						</td></tr>
 						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');"><script>T("Save")</script></div></td></tr>
@@ -1149,65 +1158,68 @@
 			                                    </ul>
 			                                </td>
 						</tr>
-						<tr><td>
-							<input type="checkbox" />SOD</td><td colspan="2">
+						<tr><!-- <td>
+							<input type="checkbox" />SOD</td> -->
+							<td colspan="3">
 							<input type="checkbox"/><script>T("Email_alerts")</script></td></tr>
 						<tr style="background:#282828;"><td colspan="4"></td></tr>
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other_channels")</script></h5></td></tr>
 						<tr>
 							<td colspan="4">
 								<table class="tb1">
-									<tr>
-										<td colspan="4" class="td4 dvr_alarm_chn_sel">
-										<div><input type="checkbox" /><span>1</span></div>
-										<div><input type="checkbox" /><span>2</span></div>
-										<div><input type="checkbox" /><span>3</span></div>
-										<div><input type="checkbox" /><span>4</span></div>
-										<div><input type="checkbox" /><span>5</span></div>
-										<div><input type="checkbox" /><span>6</span></div>
-										<div><input type="checkbox" /><span>7</span></div>
-										<div><input type="checkbox" /><span>8</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_alarm_chn_sel">
-										<div><input type="checkbox" /><span>9</span></div>
-										<div><input type="checkbox" /><span>10</span></div>
-										<div><input type="checkbox" /><span>11</span></div>
-										<div><input type="checkbox" /><span>12</span></div>
-										<div><input type="checkbox" /><span>13</span></div>
-										<div><input type="checkbox" /><span>14</span></div>
-										<div><input type="checkbox" /><span>15</span></div>
-										<div><input type="checkbox" /><span>16</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_alarm_chn_sel">
-										<div><input type="checkbox" /><span>17</span></div>
-										<div><input type="checkbox" /><span>18</span></div>
-										<div><input type="checkbox" /><span>19</span></div>
-										<div><input type="checkbox" /><span>20</span></div>
-										<div><input type="checkbox" /><span>21</span></div>
-										<div><input type="checkbox" /><span>22</span></div>
-										<div><input type="checkbox" /><span>23</span></div>
-										<div><input type="checkbox" /><span>24</span></div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" class="td4 dvr_alarm_chn_sel">
-										<div><input type="checkbox" /><span>25</span></div>
-										<div><input type="checkbox" /><span>26</span></div>
-										<div><input type="checkbox" /><span>27</span></div>
-										<div><input type="checkbox" /><span>28</span></div>
-										<div><input type="checkbox" /><span>29</span></div>
-										<div><input type="checkbox" /><span>30</span></div>
-										<div><input type="checkbox" /><span>31</span></div>
-										<div><input type="checkbox" /><span>32</span></div>
-										</td>
-									</tr>
+									<tbody id="Alarm_settings" class="synCheckboxClick">
+										<tr>
+											<td colspan="4" class="td4 dvr_alarm_chn_sel">
+											<div><input type="checkbox" /><span>1</span></div>
+											<div><input type="checkbox" /><span>2</span></div>
+											<div><input type="checkbox" /><span>3</span></div>
+											<div><input type="checkbox" /><span>4</span></div>
+											<div><input type="checkbox" /><span>5</span></div>
+											<div><input type="checkbox" /><span>6</span></div>
+											<div><input type="checkbox" /><span>7</span></div>
+											<div><input type="checkbox" /><span>8</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_alarm_chn_sel">
+											<div><input type="checkbox" /><span>9</span></div>
+											<div><input type="checkbox" /><span>10</span></div>
+											<div><input type="checkbox" /><span>11</span></div>
+											<div><input type="checkbox" /><span>12</span></div>
+											<div><input type="checkbox" /><span>13</span></div>
+											<div><input type="checkbox" /><span>14</span></div>
+											<div><input type="checkbox" /><span>15</span></div>
+											<div><input type="checkbox" /><span>16</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_alarm_chn_sel">
+											<div><input type="checkbox" /><span>17</span></div>
+											<div><input type="checkbox" /><span>18</span></div>
+											<div><input type="checkbox" /><span>19</span></div>
+											<div><input type="checkbox" /><span>20</span></div>
+											<div><input type="checkbox" /><span>21</span></div>
+											<div><input type="checkbox" /><span>22</span></div>
+											<div><input type="checkbox" /><span>23</span></div>
+											<div><input type="checkbox" /><span>24</span></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4" class="td4 dvr_alarm_chn_sel">
+											<div><input type="checkbox" /><span>25</span></div>
+											<div><input type="checkbox" /><span>26</span></div>
+											<div><input type="checkbox" /><span>27</span></div>
+											<div><input type="checkbox" /><span>28</span></div>
+											<div><input type="checkbox" /><span>29</span></div>
+											<div><input type="checkbox" /><span>30</span></div>
+											<div><input type="checkbox" /><span>31</span></div>
+											<div><input type="checkbox" /><span>32</span></div>
+											</td>
+										</tr>
+									</tbody>
 									<tr><td>
-										<input class="chk_all" style="margin:0 4px;" type="checkbox" /><script>T("All")</script><td></td>
-										<td class="tdBtn"><div class="hover chk_all_btn"><script>T("Copy_to_all")</script></div></td></tr>
+										<input id="Alarm_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="Alarm_settings_SelectAll"><script>T("Select")</script></label></label><td></td>
+										<!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 								</table>
 							</td>
 						</tr>
@@ -1301,8 +1313,8 @@
 								</div>
 								<ul id="ipc_enc_BitRateControlType_sel" class="option">
                                 	<input id="ipc_enc_BitRateControlType_ID" type="hidden" />
-									<li value="CBR"><a><script>T("Unchanged")</script></a></li>
-									<li value="VBR"><a><script>T("Variable")</script></a></li>
+									<li value="CBR"><a><script>T("Fixed_rate")</script></a></li>
+									<li value="VBR"><a><script>T("Variable_rate")</script></a></li>
 								</ul>
 							</td><td></td>
 						</tr>
@@ -1615,7 +1627,7 @@
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a class="all"><script>T("All")</script></a></li>
+									<li><a class="all"><script>T("Select")</script></a></li>
 									<li><a></a></li>
 									<li><a></a></li>
 									<li><a></a></li>
@@ -1632,7 +1644,7 @@
 				</div>
 				<div id="StorageParm" class="switch">
 					<table><tr><td class="td1"><script>T("Disk")</script></td><td style="width:450px;"><table class="tb1" style="padding:10px">
-								<thead>
+								<tbody id="Storage_Settings" class="synCheckboxClick">
 									<tr>
 										<td colspan="4" class="td4">
 										<div><input type="checkbox" value="D" disabled="disable" /><span>D</span></div>
@@ -1667,10 +1679,8 @@
 										<div><input type="checkbox" value="Z" disabled="disable"/><span>Z</span></div>
 										</td>
 									</tr>
-								</thead>
-								<tbody>
-									<tr><td><input style="margin:0 4px;" type="checkbox" onclick="disksSelectAll()" /><script>T("All")</script><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>
-								</tbody>	
+								</tbody>
+									<tr><td><input id="Storage_Settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label id="Storage_Settings_SelectAll"><script>T("Select")</script></label><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>	
 								</table>
 							</td>
 						</tr>
@@ -1770,9 +1780,9 @@
 							<a class="hover"></a>
 						</div>
 						<ul class="option" action="vendor_ID">
-							<li><a style="width:154px;" value="JUAN DVR">DVR</a></li>
-							<!-- <li><a style="width:154px;" value="NVR">NVR</a></li> -->
-							<li><a style="width:154px;" value="JUAN IPC">IPC</a></li>
+							<li><a style="width:154px;" value="DVR">DVR</a></li>
+							<li><a style="width:154px;" value="NVR">NVR</a></li>
+							<li><a style="width:154px;" value="JIPC">IPC</a></li>
 						</ul>
 					</td>
 				</tr>

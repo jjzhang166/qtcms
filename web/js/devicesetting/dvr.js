@@ -30,33 +30,33 @@ function mk_chn_content(_id, _chn)
 	}
 	$('.'+_id+' div input').eq(0).prop('checked',true);
 	$('.'+_id+' div input').eq(0).prop('disabled',true);
-		$('.chk_all').each(function(index) {
-			$(this).click(function(){
-				for(var i = 0; i < _chn; i++)
-				{
-					if($(this).prop('checked') == true){
-						$('.'+_id+' div input').eq(i).prop('checked',true);
-					}else{
-						$('.'+_id+' div input').eq(i).prop('checked',false);
-					}
-				}
-				var dvr_selected_chn = $('#'+_id+'0')[0].innerHTML - 1;
-				$('.'+_id+' div input').eq(dvr_selected_chn).prop('checked',true);
-				$('.'+_id+' div input').eq(dvr_selected_chn).prop('disabled',true);
-			})
-		});
-	$('.chk_all_btn').each(function(index) {
-			$(this).click(function(){
-				$('.chk_all').eq(index).prop('checked',true);
-				for(var i = 0; i < _chn; i++)
-				{
+	/*$('.chk_all').each(function(index) {
+		$(this).click(function(){
+			for(var i = 0; i < _chn; i++)
+			{
+				if($(this).prop('checked') == true){
 					$('.'+_id+' div input').eq(i).prop('checked',true);
+				}else{
+					$('.'+_id+' div input').eq(i).prop('checked',false);
 				}
-				var dvr_selected_chn = $('#'+_id+'0')[0].innerHTML - 1;
-				$('.'+_id+' div input').eq(dvr_selected_chn).prop('checked',true);
-				$('.'+_id+' div input').eq(dvr_selected_chn).prop('disabled',true);
-			})
-		});
+			}
+			var dvr_selected_chn = $('#'+_id+'0')[0].innerHTML - 1;
+			$('.'+_id+' div input').eq(dvr_selected_chn).prop('checked',true);
+			$('.'+_id+' div input').eq(dvr_selected_chn).prop('disabled',true);
+		})
+	});
+	$('.chk_all_btn').each(function(index) {
+		$(this).click(function(){
+			$('.chk_all').eq(index).prop('checked',true);
+			for(var i = 0; i < _chn; i++)
+			{
+				$('.'+_id+' div input').eq(i).prop('checked',true);
+			}
+			var dvr_selected_chn = $('#'+_id+'0')[0].innerHTML - 1;
+			$('.'+_id+' div input').eq(dvr_selected_chn).prop('checked',true);
+			$('.'+_id+' div input').eq(dvr_selected_chn).prop('disabled',true);
+		})
+	});*/
 	$('#'+_id+' li a').each(function(index) {
 				$(this).click(function(){
 					$('#'+_id+'0').html($(this)[0].innerHTML);

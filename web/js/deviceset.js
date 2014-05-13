@@ -193,14 +193,14 @@ var oSearchOcx,
 		})
 
 		//搜索结果 设备列表tr委托部分事件;
-		$('tbody.synCheckboxClick').on('click','tr',function(){
+		$('#SerachedDevList').on('click','tr',function(){
 			var data = $(this).data('data');
-			if(data.SearchVendor_ID == 'JUAN IPC'){
+			if(data.SearchVendor_ID == 'IPC'){
 				for(i in data){
 					$('#'+i).val(data[i]);
 				}
 			}
-			$('tbody.synCheckboxClick').find('tr').removeClass('sel')
+			$('#SerachedDevList').find('tr').removeClass('sel')
 			$(this).addClass('sel');
 		})
 		
@@ -300,6 +300,11 @@ var oSearchOcx,
 		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
 		})
 
+
+		//搜索设备全选和 TR 同步选中
+		$('tbody.synCheckboxClick').each(function(){
+			$(this).SynchekboxClick();
+		})
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -418,14 +423,14 @@ var oSearchOcx,
 	// 全选
 	function addAlldevIntoArea(){
 		selectEdparent('area');
-		var devList = $('tbody.synCheckboxClick input:checkbox').prop('checked',true);
+		var devList = $('#SerachedDevList input:checkbox').prop('checked',true);
 		initDevIntoAreaXml(devList,$('#adddeviceall_ID'));
 	}
 	//添加多台设备
 	function adddoubdevIntoArea(){
 		selectEdparent('area');
-		var devList = $('tbody.synCheckboxClick input:checked');
-		initDevIntoAreaXml($('tbody.synCheckboxClick input:checked'),$('#adddevicedouble_ID'));
+		var devList = $('#SerachedDevList input:checked');
+		initDevIntoAreaXml($('#SerachedDevList input:checked'),$('#adddevicedouble_ID'));
 	}
 	/*//一键添加
 	function (){
@@ -457,7 +462,7 @@ var oSearchOcx,
 			obj.val(str);
 		}
 	function FillStorageParmData(){
-		var diskcheckbox = $('#StorageParm table table input:checkbox')
+		var diskcheckbox = $('#Storage_Settings input:checkbox')
 		var disks = oCommonLibrary.getEnableDisks().split(':');
 		for(i in disks){ 
 			diskcheckbox.each(function(){ 
@@ -469,13 +474,19 @@ var oSearchOcx,
 		var item = ['FilePackageSize','LoopRecording','DiskSpaceReservedSize']
 		var useDisks = oCommonLibrary.getUseDisks().split(':');
 		var clickedAbles = diskcheckbox.filter(function(){ 
-			return !$(this).prop('disabled');
+			return $(this).is(':enabled');
 		})
 		for( n in useDisks){ 
+			var b = true;
 			clickedAbles.each(function(){ 
 				$(this).dataIntoSelected(useDisks[n]);
+				if(!$(this).is(':checked')){
+					b = false;	
+				}
 			})
+			$('#Storage_Settings_SelectAll').prop('checked',b);
 		}
+
 
 		for( k in item){ 
 			var str = oCommonLibrary['get'+item[k]]();
@@ -502,7 +513,7 @@ var oSearchOcx,
 	//组合勾选的硬盘版格式以用于保存。  // C:D:E
 	function SettingStorageParmData(){
 		var UseDisks = [];
-		$('#StorageParm thead :checked').each(function(){
+		$('#Storage_Settings :checked').each(function(){
 			UseDisks.push($(this).val());
 		})	
 		$('#UseDisks_ID').val(UseDisks.join(':'));
@@ -763,7 +774,7 @@ function cleanDev(){  //清空设备
 	$('#removedeviceall_ID').val(arr.join(','))
 }
 function setIP(){ //设置IP
-	var oData = $('tbody.synCheckboxClick tr.sel').data('data')
+	var oData = $('#SerachedDevList tr.sel').data('data')
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
 		Confirm(lang.IP_setup_failed);
 	}else{
@@ -785,12 +796,8 @@ function autoSetIP(){  //批量分配IP
 	
 }
 function autoSetIPcallBack(data){
-}
-//devinfo
-function disksSelectAll(){
-	$('#StorageParm input:checkbox:lt(22)').click();
-}
 
+}
 
 //// oCommonLibrary, 操作做数据库回调方法.
 var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
@@ -863,8 +870,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 
 		if(searchDevAvailable(key)){
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
-			var sClass = data.SearchVendor_ID.split(' ')[1];
-			$('<tr id="esee_'+id+'" class="'+sClass+'"><td><input type="checkbox" />'+data.SearchVendor_ID.split(' ')[1]+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
+			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
 				

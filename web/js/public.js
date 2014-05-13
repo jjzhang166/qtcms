@@ -255,19 +255,37 @@ function showNowPlayBackTime(oNow,oleft,X2){
 		// 表单tr点击同步首个td下的checkbox点击
 		'SynchekboxClick':function(){
 			var warp = $(this);
-			if(warp.length == 0 || warp[0].nodeName != 'TBODY'){
-				return;
+			var warpId = warp.attr('id');
+			var oSelectAll=$('#'+warpId+'_SelectAll');
+
+			console.log(warpId);
+
+			if(warpId == 'SerachedDevList'){
+				warp.on('click','tr',function(){
+					$(this).find('input:checkbox').click();
+				})
 			}
 
-			warp.on('click','tr',function(){
-				$(this).find('input:checkbox').click();
-			})
-
 			warp.on('click',':checkbox',function(event){
+				var b = true;
+				warp.find(':checkbox:enabled').each(function(){
+					console.log($(this).is('checked'))
+					if(!$(this).is('checked')){
+						b = false;
+					}
+				})
+
+				console.log(b);
+				oSelectAll.prop('checked',b);
 				event.stopPropagation();
 			})
 
-			$('#tableSelectAll').on('click',function(){  // 全选
+			oSelectAll.click(function(){
+				warp.find(':checkbox:enabled').prop('checked',$(this).is(':checked'));
+			})
+			return warp
+
+			/*$('#tableSelectAll').on('click',function(){  // 全选
 				if($(this).attr('status')){
 					warp.find('input:checkbox').not(':checked').prop('checked',true);
 					$(this).removeAttr('status');
@@ -276,11 +294,38 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					$(this).attr('status',1);
 				}
 				
-			})
+			})*/
 
 			/*$('#tableAntiElection').on('click',function(){ //全不选
 				warp.find('input:checkbox').prop('checked',false);
 			})*/
+		},
+		//批量checkbox和全选功能.
+		'tableSelectAll':function(){
+			var warp = $(this);
+			var warpId = warp.attr('id');
+			var oSelectAll=$('#'+warpId+'_SelectAll');
+			console.log(warpId+'_SelectAll');
+			warp.on('click',':checkbox:enabled',function(event){
+				console.log($(this).prop('checked'));
+
+			})
+			/*warp.on('click',':checkbox',function(){
+				console.log($(this).prop('checked'));
+				warp.find(':checkbox:enabled').each(function(){
+					if(!$(this).is('checked')){
+						oSelectAll.prop('checked',false);
+					}else{
+						oSelectAll.prop('checked',true);
+					}
+				})
+			})*/
+
+			oSelectAll.click(function(){
+				warp.find(':checkbox:enabled').prop('checked',$(this).is(':checked'));
+			})
+
+			return warp;
 		}
 	})
 })(jQuery)
@@ -329,9 +374,6 @@ $(function(){
 		$(this).toSwitch();
 	})
 	
-	//表单全选..
-	$('tbody.synCheckboxClick').SynchekboxClick();
-
 	document.oncontextmenu = function(e){  //文档默认右键事件冒泡取消
 		var e = e || window.event;
 		if(e.target.tagName != 'BODY'){
