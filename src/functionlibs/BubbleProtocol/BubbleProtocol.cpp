@@ -191,7 +191,7 @@ void BubbleProtocol::extractRecordInfo(QDomDocument* dom)
         m_lstRecordList.append(record);
 
         QVariantMap recordInfo;
-        recordInfo.insert("channel", record.cChannel);
+        recordInfo.insert("channelnum", record.cChannel+1);
         recordInfo.insert("types", record.cTypes);
         recordInfo.insert("start", record.StartTime.toString("yyyy-MM-dd hh:mm:ss"));
         recordInfo.insert("end", record.EndTime.toString("yyyy-MM-dd hh:mm:ss"));
