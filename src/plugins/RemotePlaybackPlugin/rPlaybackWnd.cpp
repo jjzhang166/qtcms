@@ -437,7 +437,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	int ifilekey;
 	ifilekey=fileKey.toInt();
 	fileKey=QString::number(ifilekey+1);
-	if (ifilekey==fileTotal-fileTotal/100-1)
+	if (ifilekey==fileTotal-1)
 	{
 		emit FoundFileToUiS(fileMap);
 	}

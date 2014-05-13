@@ -381,7 +381,7 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
         return 2;
     }
 	//save researchinfo
-	m_ReSearchInfo.session_count=99;
+	m_ReSearchInfo.session_count=100;
 	m_ReSearchInfo.session_index=0;
 	m_ReSearchInfo.session_total=0;
 	// research
