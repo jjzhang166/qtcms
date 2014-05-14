@@ -305,7 +305,7 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_common_save_content();"><script>T("Confirm")</script></div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="dvr_common_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -357,7 +357,7 @@
 							</td>
 							<td colspan="2"></td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_network_save_content();"><script>T("Confirm")</script></div></td></tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover" onclick="dvr_network_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -639,7 +639,7 @@
 							</table>
 						</td>
 						</tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');"><script>T("Confirm")</script></div></td><td></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" onclick="dvr_save('dvr_enc_chn_sel');"><script>T("Save")</script></div></td><td></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -779,7 +779,6 @@
 						</tbody>
 			                 <tr><td colspan="3"><input id="Video_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label><script>T("Select")</script></label><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 							<tr><td colspan="4" class="tdBtn" style="background:#282828;">
-								<div class="hover"><script>T("Cancel")</script></div>
 								<div class="hover" onclick="dvr_save('dvr_record_chn_sel');"><script>T("Save")</script></div>
 							</td></tr>
 					</table>
@@ -802,7 +801,6 @@
 						</tr>
 						<tr><td><script>T("Name")</script></td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
 						<tr><td colspan="2" class="tdBtn">
-							<div class="hover"><script>T("Cancel")</script></div>
 							<div class="hover" onclick="dvr_screen_save_content()"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
@@ -958,7 +956,6 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;">
-							<div class="hover"><script>T("Cancel")</script></div>
 							<div class="hover" onclick="dvr_save('dvr_ptz_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
@@ -1106,7 +1103,7 @@
 								<input id="Video_detection_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="Video_detection_settings_SelectAll"><script>T("Select")</script></label><td></td><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 							</table>
 						</td></tr>
-						<tr><td colspan="3" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');"><script>T("Save")</script></div></td></tr>
+						<tr><td colspan="3" class="tdBtn"><div class="hover" onclick="dvr_save('dvr_detect_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>	
 				<div class="switch dvr_list">
@@ -1223,7 +1220,7 @@
 								</table>
 							</td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');"><script>T("Save")</script></div></td></tr>
+						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="dev_list" style="height:600px;  position: absolute; top:0; right:0;">
@@ -1320,7 +1317,7 @@
 						</tr>
 			                        <tr><td><script>T("BPS")</script></td><td><input id="ipc_enc_bps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
 			                        <tr><td><script>T("FPS")</script></td><td><input id="ipc_enc_fps" style="width:133px;" onKeyUp="value=value.replace(/[^\d]/g,'')" type="text" /></td><td><script>T("Unit")</script></td></tr>
-			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="encode_save_content();"><script>T("Save")</script></div></td></tr>
+			                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover" onclick="encode_save_content();"><script>T("Save")</script></div></td></tr>
 			                        </table>
 			                  </div>
 			                <div class="switch ipc_list">
@@ -1389,7 +1386,6 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn">
-						<div class="hover"><script>T("Cancel")</script></div>
 						<div class="hover" onclick="remote_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 			                </div>
@@ -1509,7 +1505,7 @@
 			                    <tr><td><script>T("nternet_server")</script></td><td>
 			                    	<input id="ntp_server" name="ntp_server" value="" />
 			                    </td><td></td></tr>
-			                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Cancel")</script></div><div class="hover" onclick="time_save_content();"><script>T("Save")</script></div></td></tr>
+			                    <tr><td colspan="4" class="tdBtn"><div class="hover" onclick="time_save_content();"><script>T("Save")</script></div></td></tr>
 				</table>
 			                </div>
 			                <div class="switch ipc_list">
@@ -1638,7 +1634,7 @@
 						</tr>
 						<tr><td colspan="2" class="td3 tdBtn">
 						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>T("Save")</script></div>
-						<div class="hover"><script>T("Cancel")</script></div></td></tr>
+						</td></tr>
 						</tbody>
 					</table>
 				</div>
