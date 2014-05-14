@@ -46,6 +46,7 @@ QWebPluginFWBase(this)
 				{
 					p_deviceSearch->QueryInterface(IID_IDeviceNetModify, (void**)&m_pDeviceNetModify);
 					pEventInstance->registerEvent("SettingStatus", DeviceSetNetInfoProc, this);
+
 				}
 				pEventInstance->Release();
 
@@ -66,6 +67,11 @@ DeviceSearchWindows::~DeviceSearchWindows(void)
 	{
 		(*iter)->Stop();
 		(*iter)->Release();
+	}
+	if (m_pDeviceNetModify!=NULL)
+	{
+		m_pDeviceNetModify->Release();
+		m_pDeviceNetModify=NULL;
 	}
 }
 
