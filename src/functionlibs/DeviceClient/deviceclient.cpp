@@ -431,6 +431,12 @@ int DeviceClient::closeAll()
 {
 	m_csCloseAll.lock();
 	bCloseingFlags=true;
+	//释放云台控制相关资源
+	if (NULL != m_pProtocolPTZ)
+	{
+		m_pProtocolPTZ->Release();
+		m_pProtocolPTZ = NULL;
+	}
 	//如果已经处于断开状态，直接返回
 	if (IDeviceClient::STATUS_DISCONNECTED==m_CurStatus)
 	{
@@ -451,12 +457,7 @@ int DeviceClient::closeAll()
 		m_csCloseAll.unlock();
 		goto end;
 	}
-	//释放云台控制相关资源
-	if (NULL != m_pProtocolPTZ)
-	{
-		m_pProtocolPTZ->Release();
-		m_pProtocolPTZ = NULL;
-	}
+
 
 	m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&m_CloseAllConnect);
 	if (NULL!=m_CloseAllConnect)

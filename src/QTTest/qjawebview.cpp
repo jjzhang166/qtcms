@@ -200,6 +200,8 @@ void QJaWebView::OnLoad( bool bOk )
 			}
 		}
 		file->close();
+		delete file;
+		file=NULL;
     }
 }
 

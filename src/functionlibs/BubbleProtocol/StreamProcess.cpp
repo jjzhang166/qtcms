@@ -202,6 +202,12 @@ void StreamProcess::analyzeBubbleInfo()
 		}
 		m_lstStreamList.append(list);
 	}
+	if (NULL!=dom)
+	{
+		delete dom;
+		dom=NULL;
+	}
+	return ;
 }
 
 

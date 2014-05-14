@@ -21,7 +21,6 @@ widgetforvideo::widgetforvideo(QWidget *parent):QWidget(parent)
 	//QPalette palette;
 	//palette.setBrush(QPalette::Background, QBrush(QPixmap(curDir)));
 	//this->setPalette(palette);
-
 }
 
 

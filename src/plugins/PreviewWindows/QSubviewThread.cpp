@@ -168,10 +168,16 @@ int QSubviewThread::SetDeviceByVendor(QString sVendor, QWidget *pWnd)
 						}
 					}	
 					bCreateDeviceFlags = true;
+					file->close();
+					delete file;
+					file=NULL;
 					return 0;
 				}		
 			}
 		}
+		file->close();
+		delete file;
+		file=NULL;
 	}
 	
 	bCreateDeviceFlags = true;

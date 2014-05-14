@@ -64,7 +64,9 @@ QList<QWebPluginFactory::Plugin> WebkitPluginsFactory::plugins() const
 			plugins.insert(plugins.size(),pluginTemp);
 		}
 	}
-
+	file->close();
+	delete file;
+	file=NULL;
 	return plugins;
 }
 
@@ -106,10 +108,16 @@ QObject * WebkitPluginsFactory::create( const QString& mimeType, const QUrl& url
 				{
 					QObject * retObj = webPluginBase->create(mimeType,url,argumentNames,argumentValues);
 					webPluginBase->Release();
+					file->close();
+					delete file;
+					file=NULL;
 					return retObj;
 				}
 			}
 		}
 	}
+	file->close();
+	delete file;
+	file=NULL;
 	return NULL;
 }

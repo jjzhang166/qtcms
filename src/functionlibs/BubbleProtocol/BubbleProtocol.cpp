@@ -47,7 +47,7 @@ BubbleProtocol::~BubbleProtocol(void)
 	m_workerThread.wait();
 	//delete m_pStreamProcess;
 }
-// inherited from IDeviceConnection  >>>>>
+
 int BubbleProtocol::setDeviceHost(const QString & sAddr)
 {
 	if (!m_hostAddress.setAddress(sAddr))

@@ -480,7 +480,10 @@ QString QPreviewWindows::GetLanguageLabel()
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void**)&pLocalSetting);
 	if (pLocalSetting!=NULL)
 	{
-		return pLocalSetting->getLanguage();
+		QString tag=pLocalSetting->getLanguage();
+		pLocalSetting->Release();
+		pLocalSetting=NULL;
+		return tag;
 	}
 	else{
 		return "en_GB";
