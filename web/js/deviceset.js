@@ -115,7 +115,7 @@ var oSearchOcx,
 
 						$('ul.ipc_list0').hide().nextUntil('div.dev_list').hide();
 						$('ul.dvr_list0').hide().nextUntil('div.dev_list').hide();
-						if(oDevData.vendor == 'JUAN IPC'){//如果选中设备为ipc
+						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
 							$('ul.ipc_list0 li').removeClass('ope_listAct');
 							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct');
 							$('.ipc_list0').show();	
@@ -123,7 +123,7 @@ var oSearchOcx,
 							ipc(_url,oDevData.username,oDevData.password);
 							devinfo_load_content(true);										
 						}
-					    if(oDevData.vendor == 'JUAN DVR')//如果选中设备为dvr
+					    if(oDevData.vendor == 'DVR')//如果选中设备为dvr
 						{
 							$('ul.dvr_list0 li').removeClass('ope_listAct');
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
