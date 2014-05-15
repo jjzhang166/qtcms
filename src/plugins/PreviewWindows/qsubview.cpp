@@ -70,7 +70,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);//Ui显示正在连接中
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
-
+	connect(this,SIGNAL(BackToMainThreadSignals(QVariantMap)),this,SLOT(BackToMainThread(QVariantMap)));
 
 	m_QActionCloseView=m_RMousePressMenu.addAction(tr("Close Preview"));
 	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
@@ -155,6 +155,11 @@ QSubView::~QSubView()
 		delete _translator;
 		_translator=NULL;
 	}	
+	if (NULL!=_manageWidget)
+	{
+		delete _manageWidget;
+		_manageWidget=NULL;
+	}
 }
 
 
@@ -421,13 +426,13 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 			m_pRecorder->Stop();
 			m_bIsAutoRecording = false;
 		}
-		m_checkTime.stop();
+		/*m_checkTime.stop();*/
+		QVariantMap evMap;
+		evMap.insert("m_checkTime",false);
+		emit BackToMainThreadSignals(evMap);
 		m_RecordFlushTime=0;
 		qDebug()<<m_DevCliSetInfo.m_sEseeId<<m_DevCliSetInfo.m_uiChannelId<<"disconnected";
 	}
-	
-	
-	//emit CurrentStateChangeSignl(evMap.value("CurrentStatus").toInt(),this);
 	//自动重连
     if (STATUS_DISCONNECTED==m_CurrentState&&STATUS_CONNECTED==m_HistoryState)
 	{
@@ -1481,6 +1486,8 @@ QString QSubView::GetlanguageLable(QString label)
 			break;
 		}
 	}
+	file->close();
+	delete file;
 	return sFileName;
 }
 
@@ -1607,6 +1614,14 @@ void QSubView::IpcSwitchStream()
 				m_SwitchStream=NULL;
 			}
 		}
+	}
+}
+
+void QSubView::BackToMainThread( QVariantMap evMap)
+{
+	if (evMap.contains("m_checkTime"))
+	{
+		m_checkTime.stop();
 	}
 }
 

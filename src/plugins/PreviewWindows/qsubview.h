@@ -117,7 +117,7 @@ public slots:
 		void OnCheckTime();
 		void OnCreateAutoConnectTime();
 		void In_OpenAutoConnect();
-		
+		void BackToMainThread(QVariantMap);
 signals:
 		void mouseDoubleClick(QWidget *,QMouseEvent *);
 		void mousePressEvent(QWidget *,QMouseEvent *);
@@ -130,6 +130,7 @@ signals:
 		void AutoConnectSignals();
 		void CreateAutoConnectTimeSignals();
 		void RecordStateSignals(bool );
+		void BackToMainThreadSignals(QVariantMap);
 private:
 	DevCliSetInfo m_DevCliSetInfo;//设备信息
 	RecordDevInfo m_RecordDevInfo;

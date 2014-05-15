@@ -32,7 +32,7 @@ m_streanCount(0)
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
     connect(this, SIGNAL(sigChildThreadToConn(QString , quint16 )),m_pStreamProcess,SLOT(conToHost(QString , quint16 )),Qt::BlockingQueuedConnection);
-    connect(this, SIGNAL(sigEndStream()), m_pStreamProcess, SLOT(stopStream())/*, Qt::BlockingQueuedConnection*/);
+    connect(this, SIGNAL(sigEndStream()), m_pStreamProcess, SLOT(stopStream()), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigWriteSocket(QByteArray)), m_pStreamProcess,SLOT(socketWrites(QByteArray)),Qt::BlockingQueuedConnection);
 
 	m_workerThread.start();
@@ -330,7 +330,7 @@ int BubbleProtocol::authority()
 int BubbleProtocol::disconnect()
 {
 	//if has socket connecting, stop it
-	emit sigQuitThread();
+	/*emit sigQuitThread();*/
 	emit sigEndStream();
 	//m_pStreamProcess->stopStream();
 
