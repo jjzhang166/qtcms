@@ -146,7 +146,6 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				//if($(this).attr('class') != 'hover'){
 					var str = $(this).html();
 					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
-					console.log(str);
 					$('ul.option').hide();
 					This.find('span').html(str).attr('value',$(this).attr('value'));
 					if(This.find('ul[action]')){
@@ -258,9 +257,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var warpId = warp.attr('id');
 			var oSelectAll=$('#'+warpId+'_SelectAll');
 
-			console.log(warpId);
-
-			if(warpId == 'SerachedDevList'){
+			if(warpId == 'SerachedDevList' || warpId == 'search_resultFile'){
 				warp.on('click','tr',function(){
 					$(this).find('input:checkbox').click();
 				})
@@ -269,13 +266,11 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			warp.on('click',':checkbox',function(event){
 				var b = true;
 				warp.find(':checkbox:enabled').each(function(){
-					console.log($(this).is('checked'))
 					if(!$(this).is('checked')){
 						b = false;
 					}
 				})
 
-				console.log(b);
 				oSelectAll.prop('checked',b);
 				event.stopPropagation();
 			})
@@ -299,33 +294,6 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			/*$('#tableAntiElection').on('click',function(){ //全不选
 				warp.find('input:checkbox').prop('checked',false);
 			})*/
-		},
-		//批量checkbox和全选功能.
-		'tableSelectAll':function(){
-			var warp = $(this);
-			var warpId = warp.attr('id');
-			var oSelectAll=$('#'+warpId+'_SelectAll');
-			console.log(warpId+'_SelectAll');
-			warp.on('click',':checkbox:enabled',function(event){
-				console.log($(this).prop('checked'));
-
-			})
-			/*warp.on('click',':checkbox',function(){
-				console.log($(this).prop('checked'));
-				warp.find(':checkbox:enabled').each(function(){
-					if(!$(this).is('checked')){
-						oSelectAll.prop('checked',false);
-					}else{
-						oSelectAll.prop('checked',true);
-					}
-				})
-			})*/
-
-			oSelectAll.click(function(){
-				warp.find(':checkbox:enabled').prop('checked',$(this).is(':checked'));
-			})
-
-			return warp;
 		}
 	})
 })(jQuery)

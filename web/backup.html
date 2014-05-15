@@ -68,11 +68,11 @@
 				<li><a style="background-position: -36px 0;"></a><script>T("Playback")</script></li>
 				<li class="active"><a style="background-position: -62px 0;"></a><script>T("Backup")</script></li>
 				<li><a style="background-position: -88px 0; width:36px;"></a><script>T("Set_up")</script></li>
-				<!-- <li><a class="hover" style="background-position: 0 -208px;" href="javascript:;">System</a></li>
+				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li>
 				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li> -->
 			</ul>
 			<!-- <div>
-				<a href="javascript:;"></a>				
+				<a></a>				
 				<p style="color:#000;"><span><script>T("Login_account")</script></span>eddy</p>
 			</div> -->
 			</div>
@@ -106,11 +106,11 @@
 		</div>
 		<div class="calendar">
 			<div class="calendar_top">
-				<a class="hover" style="background-position: -240px -31px;" href="javascript:;" title="Prev_year"></a>
-				<a class="hover" style="background-position: -160px -31px;" href="javascript:;" title="Prev_Month"></a>
+				<a class="hover" style="background-position: -240px -31px;" title="Prev_year"></a>
+				<a class="hover" style="background-position: -160px -31px;" title="Prev_Month"></a>
 				<span class="nowDate" title="Current_search_date"></span>
-				<a class="hover" style="background-position: -0px -31px;" href="javascript:;" title="Next_year"></a>
-				<a class="hover" style="background-position: -80px -31px;" href="javascript:;" title="Next_Month"></a></div>
+				<a class="hover" style="background-position: -0px -31px;" title="Next_year"></a>
+				<a class="hover" style="background-position: -80px -31px;" title="Next_Month"></a></div>
 			<div class="calendar_days">
 				<table>
 					<thead>
@@ -148,14 +148,14 @@
 						<td><script>T("End_Time")</script></td>
 						<td style="width:300px;"><script>T("Progress")</script></td></tr>
 				</thead>
-				<tbody class="search_result synCheckboxClick">
+				<tbody class="synCheckboxClick" id="search_resultFile">
 					<!-- <tr><td><input type="checkbox" /></td><td>1123123</td><td>1</td><td><span class="type"><span class="hint">定时</span><span class="color" style="background:red"></span></span></td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
 				</tbody>
 			</table>
 	</div>
 	<div id="file_bottom">
 		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
-		<a style="margin-left:30px;" class="hover" href="javascript:;" id="tableSelectAll"><script>T("Select")</script></a>
+		<a style="margin-left:30px;" class="hover" onclick="selectAll();"><script>T("Select")</script></a>
 		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>T("Stop_backup")</script></a>
 		<a class="hover" onclick="getDir();"><script>T("Start_Backup")</script></a>
 	</div>
@@ -193,8 +193,12 @@ nowDevID=null; //当前选中设备ID
 			}
 		})
 
+		$('tbody.synCheckboxClick').each(function(){
+			$(this).SynchekboxClick();
+		})
+
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
-		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
+		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
 
@@ -211,17 +215,16 @@ nowDevID=null; //当前选中设备ID
 		n++;
 		var data = $.parseJSON(recFile[i]);
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
-		var uid = sDevName+'_'+data.channel+'_'+data.start+'_'+data.end;
+		var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 		var type =typeHint[data.types];
 		var typeColor = color[data.types];
-		console.log(type+'//'+typeColor);
-			$('tbody.search_result tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
+			$('#search_resultFile tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
 				if(uid == $(this).attr('uid')){
 					b=0;
 				}
 			})
 			if(b){
-				$('<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+(parseInt(data.channel)+1)+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('tbody.search_result').find('input:checkbox').data('data',data);
+				$('<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('#search_resultFile').find('input:checkbox').data('data',data);
 			}
 		}	
 		showRecProgress(n);
@@ -280,8 +283,10 @@ nowDevID=null; //当前选中设备ID
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
-		//alert(oDevData.address+'//'+oDevData.port+'//'+oDevData.eseeid+'//'+fileData.channel+'//'+fileData.types+'//'+fileData.start+'//'+fileData.end+'//'+path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channel,fileData.types,fileData.start,fileData.end,path) != 0){
+		console.log(oDevData);
+		console.log(fileData);
+		console.log(path);
+		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channelnum,fileData.types,fileData.start,fileData.end,path) != 0){
 			alert(T('File_download_failed',now));
 			now++;
 			startDownload();
@@ -318,6 +323,7 @@ nowDevID=null; //当前选中设备ID
 	}
 
 	function BackupStatusChangeCallback(data){
+		console.log(data);
 		//show('当前文件的下载状态'+data.types);
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 		if(data.types == 'startBackup'){
@@ -352,7 +358,7 @@ nowDevID=null; //当前选中设备ID
 	}
 
 	function backupSearchFile(){
-		$('tbody.search_result tr').filter(function(){
+		$('#search_resultFile tr').filter(function(){
 			return !$(this).find(':checkbox').is(':checked');
 		}).remove();//远程备份中正在下载的文件不被删除.
 		ocxsearchVideo();
@@ -363,8 +369,23 @@ nowDevID=null; //当前选中设备ID
 
 		contentMax();
 
-		initrecFileOcx($('tbody.search_result tr').filter(function(){return $(this).find(':checkbox').not('checked')}));
+		initrecFileOcx($('#search_resultFile tr').filter(function(){return $(this).find(':checkbox').not('checked')}));
 	}
+
+	function selectAll(){
+		var oCheckbox = $('#search_resultFile :checkbox');
+
+		var b = true;
+		oCheckbox.each(function(){
+			if(!$(this).is(':checked')){
+				b = true;
+			}else{
+				b = false;
+			}
+
+		})
+		oCheckbox.prop('checked',b);
+	}	
 
 </script>
 </body>
