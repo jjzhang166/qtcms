@@ -1,7 +1,6 @@
 #include "RemoteBackupPlugin.h"
 #include <guid.h>
 
-
 RemoteBackupPlugin::RemoteBackupPlugin() :
 m_nRef(0)
 {

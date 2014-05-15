@@ -6,7 +6,6 @@
 #include <QtCore\QFile>
 #include <QtCore\QIODevice>
 #include <QtCore\QCoreApplication>
-
 int __cdecl BackupStatusProc(QString sEventName,QVariantMap dvrItem,void * pUser);
 
 RemoteBackupWindows::RemoteBackupWindows(QWidget *parent)
@@ -16,7 +15,7 @@ m_pRemoteBackup(NULL)
 {
 
 	// install all search component
-	LoadDeviceClient("JUAN DVR");
+	LoadDeviceClient("DVR");
 	m_dir.append(".");
 	connect(this,SIGNAL(sendStatus(QVariantMap)),this,SLOT(sendToHtml(QVariantMap)));
 }
@@ -130,7 +129,6 @@ void RemoteBackupWindows::ChooseDir()
 	dir.replace(QString("\\"),QString("/"));
 	item.insert("path",dir);
 	EventProcCall("RecordDirPath",item);
-
 }
 
 int __cdecl BackupStatusProc(QString sEventName,QVariantMap dvrItem,void * pUser)
