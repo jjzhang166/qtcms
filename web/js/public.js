@@ -146,12 +146,15 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				//if($(this).attr('class') != 'hover'){
 					var str = $(this).html();
 					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
+					var value = $(this).attr('value')
 					$('ul.option').hide();
-					This.find('span').html(str).attr('value',$(this).attr('value'));
-					if(This.find('ul[action]')){
-						This.find('#'+This.find('ul[action]').attr('action')).val($(this).attr('value'));
+					This.find('span').html(str).attr('value',value);
+					console.log('span');
+					console.log(This.find('span').attr('value'));
+					if(This.next('ul[action]')){
+						This.find('#'+This.next('ul[action]').attr('action')).val(value);
 					}
-					This.find('input:hidden').val($(this).attr('value'));
+					//This.find('input:hidden').val($(this).attr('value'));
 				//}
 			})
 		},
