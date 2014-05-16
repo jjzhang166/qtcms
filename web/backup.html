@@ -283,10 +283,17 @@ nowDevID=null; //当前选中设备ID
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
-		console.log(oDevData);
+		console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
 		console.log(fileData);
-		console.log(path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,fileData.channelnum,fileData.types,fileData.start,fileData.end,path) != 0){
+		if(now >= oList.length){
+			console.log('所有选择的文件下载完成!');
+			now=0;
+			oBackup.stopBackup();
+			oList.prop('checked',false);
+			clearInterval(timer);
+			return;
+		}
+		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData.channelnum-1),fileData.types,fileData.start,fileData.end,path) != 0){
 			alert(T('File_download_failed',now));
 			now++;
 			startDownload();
@@ -312,7 +319,7 @@ nowDevID=null; //当前选中设备ID
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			//console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
+			console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
 			oWarp.find('.progess span').animate({width:width},1000);
 /*			if(p == 1){
 				//clearInterval(timer);
@@ -323,6 +330,7 @@ nowDevID=null; //当前选中设备ID
 	}
 
 	function BackupStatusChangeCallback(data){
+		console.log('下载文件状态数据');
 		console.log(data);
 		//show('当前文件的下载状态'+data.types);
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
@@ -337,12 +345,6 @@ nowDevID=null; //当前选中设备ID
 			oWarp.find('a').off();
 			clearInterval(timer);
 			var oList = $('#search_result input:checked');
-			if(now >= oList.length){
-				//console.log('所有选择的文件下载完成!');
-				now=0;
-				oList.prop('checked',false);
-				return;
-			}
 			if(data.types=='insufficient-disk'){
 				oBackup.stopBackup();
 				oList.prop('checked',false);

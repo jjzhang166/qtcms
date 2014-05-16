@@ -1,6 +1,7 @@
-var oPreView,oDiv;
-var winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnected,lang.Being_disconnected];
-var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down];
+var oPreView,oDiv,
+	winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnected,lang.Being_disconnected],
+	currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down],
+	errorcolor = 'red';
 	$(function(){
 		
 		oPreView= $('#previewWindows')[0];
@@ -230,6 +231,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
+		var str = '';
 		if(bool){
 			var wind = 0;
 
@@ -239,15 +241,15 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 				wind++;
 			})
 
-			writeActionLog(lang.All_channelsare_open_under_the_current_list);
+			str = lang.All_channelsare_open_under_the_current_list;
 		}else{
 
 			$('div.dev_list:visible span.channel[wind]').each(function(){
 				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
 			})
-
-			writeActionLog(lang.The_current_list_of_all_channels_are_closed_under);
+			str = lang.The_current_list_of_all_channels_are_closed_under
 		}
+		writeActionLog(str);
 	}
 
 	function checkAllchannelOpen(){
@@ -270,7 +272,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
 			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)+'  '+winState[windState];
-			writeActionLog(str);
+			writeActionLog(str,errorcolor);
 		}
 		wind = getWind(wind);
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
@@ -359,9 +361,10 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 	}
 
 	//日志信息操作
-	function writeActionLog(str){ 
+	function writeActionLog(str,color){ 
+		var color = color ? color : '#4DBDEE';
 		if(str){
-			$('<p>'+getNowTime()+'  '+str+'</p>').prependTo('#actionLog');
+			$('<p>[ '+getNowTime()+' ] :  <span style="color:'+color+'">'+str+'</span></p>').prependTo('#actionLog');
 		}
 	}
 
@@ -397,7 +400,8 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 	function Record(obj){ //录像
 		var transKey = '',
 		backStatus= 0,
-		data = {};
+		data = {},
+		c = errorcolor;
 		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
 				data = $(this).data('data');
@@ -412,6 +416,7 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 						}
 					}else{ 
 						transKey = 'Start_manual_recording';
+						c = '';
 					}
 				}
 			})
@@ -426,10 +431,11 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 					}
 				}else{ 
 					transKey = 'Close_the_manual_recording';
+					c = '';
 				}
 			})	
 		}
-		writeActionLog(T(transKey,data.name,data.channel_name));
+		writeActionLog(T(transKey,data.name,data.channel_name),c);
 		/*obj.blur(function(){
 			if(backStatus){
 				obj.attr('toggle',1).css('background-position','-120px -108px');
@@ -442,8 +448,9 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 	function SwithStream(){  // 切换码流
 		var oChlData = $('#search_device span.channel.sel').data('data'),
 			currWin = oPreView.GetCurrentWnd(),
-			str = T('channel_switch_Stream',(currWin+1));
-			stream = oChlData.stream_id ? 0 : 1;
+			str = T('channel_switch_Stream',(currWin+1)),
+			stream = oChlData.stream_id ? 0 : 1,
+			c = errorcolor;
 		if(oCommonLibrary.ModifyChannelStream(oChlData.channel_id,stream)){
 			str += lang.Failed;
 		}else{
@@ -452,9 +459,10 @@ var currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutti
 			}else{
 				oChlData.stream_id = $('#search_device span.channel.sel').data('data').stream_id = stream;
 				str += lang.Success;
+				c = '';
 			}
 		}
-		writeActionLog(str);
+		writeActionLog(str,c);
 	}
 
 	/*function PTZcontrol(code){

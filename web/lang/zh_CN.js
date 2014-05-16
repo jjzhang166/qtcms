@@ -325,7 +325,7 @@
 
 	'channel_Manual_recording_data_binding_failed':'设备:_V_  下的通道:_V_ 的手动录像数据绑定失败!',
 	'channel_Manual_recording_fail':'设备:_V_  下的通道:_V_手动录像失败!',
-	'channel_has_been_in_the_planning_Video_state':'设备:_V_ 经处于计划录像状态!',
+	'channel_has_been_in_the_planning_Video_state':'设备:_V_ 已经处于计划录像状态!',
 	'Start_manual_recording':'设备:_V_  下的通道:_V_ 开始手动录像.',
 	'Close_the_manual_recording_failed':'设备:_V_  下的通道:_V_ 关闭手动录像失败!',
 	'Close_the_manual_recording':'设备:_V_  下的通道:_V_ 关闭手动录像.',
