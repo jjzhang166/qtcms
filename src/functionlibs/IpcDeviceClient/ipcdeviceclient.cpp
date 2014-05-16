@@ -218,7 +218,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			//尝试穿透协议连接
 		case 1:
 			{
-				if (true==TryToConnectProtocol(CLSID_Hole))
+				if (m_DeviceInfo.m_sEseeId!=""&&m_DeviceInfo.m_sEseeId!="0"&&true==TryToConnectProtocol(CLSID_Hole))
 				{
 					qDebug()<<"Hole connect success";
 					nStep=3;
@@ -233,7 +233,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			//尝试转发协议连接
 		case 2:
 			{
-				if (true==TryToConnectProtocol(CLSID_Turn))
+				if (m_DeviceInfo.m_sEseeId!=""&&m_DeviceInfo.m_sEseeId!="0"&&true==TryToConnectProtocol(CLSID_Turn))
 				{
 					qDebug()<<"Turn connect success";
 					nStep=3;
