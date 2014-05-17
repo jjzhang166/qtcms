@@ -15,6 +15,7 @@ m_nPort(80),
 m_bIsSupportBubble(true),
 m_bStop(false),
 m_nVerifyResult(0),
+m_bIsResethead(false),
 m_tcpSocket(NULL)
 {
 }
@@ -219,12 +220,27 @@ void StreamProcess::receiveStream()
 	if (m_bStop)
 	{
 		m_buffer.clear();
+		m_bIsResethead=false;
 		return;
 	}
 
 	if (m_tcpSocket->bytesAvailable() > 0)
 	{
-		m_buffer += m_tcpSocket->readAll();
+		m_headbuffer.clear();
+		m_headbuffer=m_tcpSocket->readAll();
+		if (m_bIsResethead&&(m_headbuffer.startsWith("\xab")||m_headbuffer.startsWith("\xaa")))
+		{
+			m_buffer.clear();
+			m_buffer+=m_headbuffer;
+			m_headbuffer.clear();
+			m_bIsResethead=false;
+		}
+		if (m_buffer.startsWith("\xab")==false&&m_buffer.startsWith("\xaa")==false&&m_buffer.size()>100000)
+		{
+			m_buffer.clear();
+			m_bIsResethead=true;
+		}
+		m_buffer+=m_headbuffer;
 		if (m_buffer.contains("HTTP/1.1 200") && m_buffer.size() >= 1024)
 		{
 			analyzeBubbleInfo();

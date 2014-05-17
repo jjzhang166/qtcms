@@ -37,6 +37,8 @@ private:
 	quint16 m_nPort;
 	QTcpSocket *m_tcpSocket;
 	QByteArray m_buffer;
+	QByteArray m_headbuffer;
+	bool m_bIsResethead;
 	uint m_nTotalBytes;
 	int m_nRemainBytes;
 	QStringList m_eventList;
