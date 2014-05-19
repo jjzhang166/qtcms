@@ -171,6 +171,7 @@ static HiChipSearchItem_t parseSearchAck(CHAR*ack){
 		ip += strlen("IP=");
 		strncpy(item.ip, ip, strstr(ip, "\r\n") - ip);
 	}
+	qDebug("Search ip:%s",item.ip);
 	// netmask
 	if (NULL != (netmask = strstr(ack, "MASK=")))
 	{
@@ -316,6 +317,7 @@ void WinIpcSock::run()
 	}
 
 	DWORD dwSendCount = 0;
+	int nSleepTime = 0;
 	while(!m_bIsStop){
 		if (::GetTickCount()-dwSendCount>m_nTimeInterval * 1000||m_bIsFlush)
 		{
@@ -366,7 +368,12 @@ void WinIpcSock::run()
 			m_SetupStatusParmMutex.unlock();
 			IPCamSetup(item);
 		}
-		msleep(50);
+		nSleepTime ++;
+		if (nSleepTime > 100)
+		{
+			msleep(1);
+			nSleepTime = 0;
+		}
 	}
 	for(int i=0;i<m_IpCount;i++){
 		closesocket(m_SockMulti[i]);
