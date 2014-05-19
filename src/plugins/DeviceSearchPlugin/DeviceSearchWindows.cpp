@@ -100,6 +100,9 @@ int DeviceSearchWindows::Stop()
 
 int DeviceSearchWindows::Flush()
 {
+	m_DeviceItemMutex.lock();
+	m_DeviceItem.clear();
+	m_DeviceItemMutex.unlock();
 	for (QList<IDeviceSearch*>::iterator iter=m_deviceList.begin();iter != m_deviceList.end(); iter++)
 	{
 		(*iter)->Flush();

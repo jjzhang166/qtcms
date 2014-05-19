@@ -845,6 +845,11 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 
 	//搜索设备控件方法.
+	function searchFlushReal(){
+		$('#SerachDevList tbody tr').remove();
+		oSearchOcx.Flush();
+	}
+	
 	function searchFlush(){
 		oSearchOcx.Stop();
 		$('#SerachDevList tbody tr').remove();	 

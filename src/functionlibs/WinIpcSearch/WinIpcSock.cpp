@@ -317,7 +317,7 @@ void WinIpcSock::run()
 
 	DWORD dwSendCount = 0;
 	while(!m_bIsStop){
-		if (::GetTickCount()-dwSendCount>10000||m_bIsFlush)
+		if (::GetTickCount()-dwSendCount>m_nTimeInterval * 1000||m_bIsFlush)
 		{
 			SendSearchReq();
 			dwSendCount=::GetTickCount();
