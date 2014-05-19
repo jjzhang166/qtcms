@@ -1,8 +1,9 @@
 	var bool = 0, //本地远程回放控制  0为远程 1为本地
-		recTotal = 0;  //文件检索总数。
+		recTotal = 0,  //文件检索总数。
+		nowDevID=null; //当前选中设备ID
 //搜索远程录像
 function setDevData2ocx(){
-		var oDevData=$('div.dev_list li.sel span.device').data('data'),
+		var oDevData=$('#dev_'+nowDevID).data('data'),
 			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
 
 		var b = 1;
@@ -63,15 +64,20 @@ function setDevData2ocx(){
 		color[4] = '#F00';
 		color[8] = '#F78445';	
 	function ocxsearchVideo(){
-		if(!$('ul.filetree li.sel')[0]){
+		/*if(!$('ul.filetree li.sel')[0]){
 			$('ul.filetree li:eq(1)').addClass('sel');
-		}
+		}*/
 
 		recTotal = 0;
 		
 		berorSerchShowHint();
 
+		getAudioObj().GroupStop();
+
 		var devData = $('div.dev_list li.sel span.device').data('data');
+
+		nowDevID = devData.dev_id;
+
 		var type = $('#type span').attr('value');
 		
 		var date = $("div.calendar span.nowDate").html();
@@ -126,4 +132,6 @@ function setDevData2ocx(){
 		}else{
 			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
 		}
+
+		console.log('初始化后的设备ID:'+nowDevID);
 	}
