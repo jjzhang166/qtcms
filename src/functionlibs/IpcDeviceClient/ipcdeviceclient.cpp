@@ -352,6 +352,12 @@ int IpcDeviceClient::closeAll()
 	//中断正在连接的状态
 	bHadCallCloseAll=true;
 	m_csRefDelete.lock();
+	//释放云台控制相关资源
+	if (NULL != m_pProtocolPTZ)
+	{
+		m_pProtocolPTZ->Release();
+		m_pProtocolPTZ = NULL;
+	}
 	//如果已经处于断开的状态，则释放资源
 	if (m_CurStatus==IDeviceClient::STATUS_DISCONNECTED)
 	{
@@ -365,12 +371,7 @@ int IpcDeviceClient::closeAll()
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTING);
 	eventProcCall("CurrentStatus",CurStatusParm);
-	//释放云台控制相关资源
-	if (NULL != m_pProtocolPTZ)
-	{
-		m_pProtocolPTZ->Release();
-		m_pProtocolPTZ = NULL;
-	}
+
 
 	QMultiMap<int,SingleConnect>::iterator it;
 	for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
