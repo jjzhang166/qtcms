@@ -92,6 +92,7 @@ int WinIpcSock::Start()
 int WinIpcSock::Stop()
 {
 	m_bIsStop=true;
+	m_bIsFlush=true;
 	return 0;
 }
 

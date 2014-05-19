@@ -207,6 +207,7 @@ int HiChipSearch::Flush()
 
 int HiChipSearch::Stop(){
 	m_running=false;
+	m_bFlush = true;
 	return 0;
 }
 

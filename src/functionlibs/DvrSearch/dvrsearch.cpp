@@ -74,6 +74,7 @@ int DvrSearch::Start()
 }
 int DvrSearch::Stop(){
 	m_running=false;
+	m_bFlush=true;
 	return 0;
 }
 
