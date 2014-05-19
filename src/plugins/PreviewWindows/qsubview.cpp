@@ -453,54 +453,63 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	m_HistoryState=m_CurrentState;
 	return 0;
 }
-#define MR(Y,U,V) (Y + (1.403)*(V-128))  
-#define MG(Y,U,V) (Y - (0.344) * (U-128) - (0.714) * (V-128) )   
-#define MB(Y,U,V) (Y + ((1.773) * (U-128)))  
-void YUV420_C_RGB( char* pYUV, unsigned char* pRGB, int height, int width)  
-{  
-    char* pY = pYUV;  
-    char* pU = pYUV+height*width;  
-    char* pV = pU+(height*width/4);  
-  
-  
-    unsigned char* pBGR = NULL;  
-    unsigned char R = 0;  
-    unsigned char G = 0;  
-    unsigned char B = 0;  
-    unsigned char Y = 0;  
-    unsigned char U = 0;  
-    unsigned char V = 0;  
-    double tmp = 0;  
-    for ( int i = 0; i < height; ++i )  
-    {  
-        for ( int j = 0; j < width; ++j )  
-        {  
-            pBGR = pRGB+ i*width*3+j*3;  
-  
-            Y = *(pY+i*width+j);  
-            U = *(pU + i/2*width/2 + j/2);  
-            V = *(pV + i/2*width/2 + j/2); 
-  
-            //B  
-            tmp = MB(Y, U, V);  
-            B = (tmp > 255) ? 255 : (char)tmp;  
-            B = (B<0) ? 0 : B;  
-            //G  
-            tmp = MG(Y, U, V);  
-            G = (tmp > 255) ? 255 : (char)tmp;  
-            G = (G<0) ? 0 : G;  
-            //R  
-            tmp = MR(Y, U, V);  
-			R = (tmp > 255) ? 255 : (char)tmp;  
-			R = (R<0) ? 0 : R;  
-  
-            *pBGR     = R;              
-            *(pBGR+1) = G;          
-            *(pBGR+2) = B;   
-        }  
-      
-    }  
-}  
+
+static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *pv, int width, int height, unsigned char *dst)
+{
+	int line, col, linewidth;
+	int y, u, v, yy, vr, ug, vg, ub;
+	int r, g, b;
+	unsigned char *pRGB = NULL;
+
+	linewidth = width >> 1;
+
+	y = *py++;
+	yy = y << 8;
+	u = *pu - 128;
+	ug = 88 * u;
+	ub = 454 * u;
+	v = *pv - 128;
+	vg = 183 * v;
+	vr = 359 * v;
+
+	for (line = 0; line < height; line++) {
+		for (col = 0; col < width; col++) {
+			r = (yy + vr) >> 8;
+			g = (yy - ug - vg) >> 8;
+			b = (yy + ub ) >> 8;
+
+			if (r < 0) r = 0;
+			if (r > 255) r = 255;
+			if (g < 0) g = 0;
+			if (g > 255) g = 255;
+			if (b < 0) b = 0;
+			if (b > 255) b = 255;
+
+			pRGB = dst + line*width*3 + col*3;
+			*pRGB = r;
+			*(pRGB + 1) = g;
+			*(pRGB + 2) = b;
+
+			y = *py++;
+			yy = y << 8;
+			if (col & 1) {
+				pu++;
+				pv++;
+
+				u = *pu - 128;
+				ug = 88 * u;
+				ub = 454 * u;
+				v = *pv - 128;
+				vg = 183 * v;
+				vr = 359 * v;
+			}
+		} 
+		if ((line & 1) == 0) { 
+			pu -= linewidth;
+			pv -= linewidth;
+		}
+	} 
+}
 
 int QSubView::PrevRender(QVariantMap evMap)
 {
@@ -534,18 +543,17 @@ int QSubView::PrevRender(QVariantMap evMap)
 		iInitWidth=iWidth;
 	}
 
-	unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
-
-	YUV420_C_RGB(pData, rgbBuff, iHeight, iWidth);
-
-	QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 	if (m_bScreenShotflags)
 	{
+		unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+		memset(rgbBuff, 0, iWidth*iHeight*3);
+		YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
+		QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 		img.save(screenShotDir, "JPG");
 		m_bScreenShotflags=false;
+		delete rgbBuff;
 	}
-	img.save(backgroundpath,"JPG");
-	delete rgbBuff;
+// 	img.save(backgroundpath,"JPG");
 	m_bContinuousStreamflags=true;
 	m_bHeartbeatflags=false;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
