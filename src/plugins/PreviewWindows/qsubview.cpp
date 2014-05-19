@@ -538,6 +538,7 @@ int QSubView::PrevRender(QVariantMap evMap)
 
 	if (iInitHeight!=iHeight||iInitWidth!=iWidth)
 	{
+		m_IVideoRender->deinit();
 		m_IVideoRender->init(iWidth,iHeight);
 		iInitHeight=iHeight;
 		iInitWidth=iWidth;
@@ -551,9 +552,10 @@ int QSubView::PrevRender(QVariantMap evMap)
 		QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 		img.save(screenShotDir, "JPG");
 		m_bScreenShotflags=false;
-		delete rgbBuff;
+		delete [] rgbBuff;
 	}
-// 	img.save(backgroundpath,"JPG");
+
+	
 	m_bContinuousStreamflags=true;
 	m_bHeartbeatflags=false;
 	m_IVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
@@ -591,7 +593,7 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		{
 			QVariantMap evMap;
 			evMap.insert("CurrentStatus",STATUS_DISCONNECTED);
-			CurrentStateChange(evMap);
+			/*CurrentStateChange(evMap);*/
 		}
 		else{
 			m_bHeartbeatflags=true;
@@ -1265,12 +1267,14 @@ void QSubView::paintEventCache( QPaintEvent *e )
 		if (m_bContinuousStreamflags)
 		{
 			PixPaht=backgroundpath;
+			pix.load(PixPaht);
+			/*pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);*/
 		}else{
 			PixPaht= sAppPath + image;
+			pix.load(PixPaht);
+			pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		}
-		pix.load(PixPaht);
 
-		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		//±³¾°
 		p.drawPixmap(rcClient,pix);
 		//±ß¿ò
