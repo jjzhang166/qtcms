@@ -595,6 +595,11 @@ void RPlaybackWnd::CacheStateToUislot( QVariantMap evMap )
 	}
 }
 
+int RPlaybackWnd::GetCurrentState()
+{
+	return m_CurStatus;
+}
+
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;

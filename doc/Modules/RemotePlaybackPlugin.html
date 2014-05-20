@@ -129,6 +129,16 @@ int   GroupSpeedFast() ;</p>
   //  -1: 播放的实例创建失败 <br />
   //  0： 组件中GroupSpeedNormal函数返回调用成功 <br />
   int   GroupSpeedNormal();</p>
+<p align="left">//简介：获取当前的状态</p>
+<p align="left">//返回值：</p>
+<p align="left"> STATUS_PLAY, 0<br />
+STATUS_PAUSE, 1<br />
+STATUS_STOP, 2<br />
+STATUS_SLOW, 3<br />
+STATUS_FAST, 4<br />
+STATUS_NORMAL, 5<br />
+STATUS_CONTINUE 6</p>
+<p align="left">int GetCurrentState();</p>
 <p align="left">=========截屏=========</p>
 <p align="left">返回值参数：imageName,path</p>
 <p align="left">QVariantMap ScreenShot();</p>

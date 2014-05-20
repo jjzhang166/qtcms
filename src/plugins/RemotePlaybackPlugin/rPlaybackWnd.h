@@ -69,6 +69,7 @@ public slots:
     int   GroupSpeedFast() ;
     int   GroupSpeedSlow();
     int   GroupSpeedNormal();
+	int	GetCurrentState();
 public slots:
 	void FoundFileToUislot(QVariantMap );
 	void RecFileSearchFinishedToUislot(QVariantMap );

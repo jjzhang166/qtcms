@@ -65,6 +65,7 @@ public slots:
 	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
 	QVariantMap ScreenShot();
+	int GetCurrentState();
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);

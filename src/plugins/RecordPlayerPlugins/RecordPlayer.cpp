@@ -570,3 +570,8 @@ bool RecordPlayer::DevIsExit( QString devicename)
 	pDeviceManager->Release();
 	return false;
 }
+
+int RecordPlayer::GetCurrentState()
+{
+	return m_CurStatus;
+}
