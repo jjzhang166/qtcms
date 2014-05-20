@@ -86,10 +86,11 @@ int DvrSearch::Flush(){
 
 void DvrSearch::run(){
     m_pUdpSocket = new QUdpSocket;
-    m_pUdpSocket->bind(UDP_PORT, QUdpSocket::ShareAddress);
+    m_pUdpSocket->bind();
     QElapsedTimer timer;
     timer.start();
     qint64 nLen = m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
+	int nSleepTime = 0;
     while (m_running)
 	{
         if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
@@ -99,7 +100,12 @@ void DvrSearch::run(){
             m_bFlush = false;      
         }  
         Recv(); 
-        msleep(10);
+		nSleepTime ++;
+		if (nSleepTime > 100)
+		{
+			nSleepTime = 0;
+			msleep(10);
+		}
 	} 
 	m_pUdpSocket->close();
 	delete m_pUdpSocket;
