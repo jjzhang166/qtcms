@@ -289,7 +289,6 @@ int QSubView::GetWindowConnectionStatus()
 int QSubView::cbInit()
 {
 	//注册设备服务回调函数
-	QString evName="LiveStream";
 	IEventRegister *pRegist=NULL;
 	if (NULL==m_IDeviceClientDecideByVendor)
 	{
@@ -300,23 +299,14 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	pRegist->registerEvent(evName,cbLiveStream,this);
-	evName.clear();
-	evName.append("SocketError");
-	pRegist->registerEvent(evName,cbConnectError,this);
-	evName.clear();
-	evName.append("CurrentStatus");
-	pRegist->registerEvent(evName,cbStateChange,this);
-
-	evName.clear();
-	evName.append("ForRecord");
-	pRegist->registerEvent(evName,cbForRecord,this);
+	pRegist->registerEvent(QString("LiveStream"),cbLiveStream,this);
+	pRegist->registerEvent(QString("SocketError"),cbConnectError,this);
+	pRegist->registerEvent(QString("CurrentStatus"),cbStateChange,this);
+	pRegist->registerEvent(QString("ForRecord"),cbForRecord,this);
 
 	pRegist->Release();
 	pRegist=NULL;
 	//注册解码回调函数
-	evName.clear();
-	evName.append("DecodedFrame");
 	if (NULL==m_IVideoDecoder)
 	{
 		return 1;
@@ -326,7 +316,7 @@ int QSubView::cbInit()
 	{
 		return 1;
 	}
-	pRegist->registerEvent(evName,cbDecodedFrame,this);
+	pRegist->registerEvent(QString("DecodedFrame"),cbDecodedFrame,this);
 	pRegist->Release();
 	pRegist=NULL;
 	//初始化渲染器
