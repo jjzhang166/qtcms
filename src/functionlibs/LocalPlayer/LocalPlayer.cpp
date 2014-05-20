@@ -319,6 +319,11 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 		aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
 		totalFrames = AVI_video_frames(aviFile);
 		frameRate = AVI_frame_rate(aviFile);
+		if (totalFrames==0||frameRate==0)
+		{
+			AVI_close(aviFile);
+			continue;
+		}
 		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
 		AVI_close(aviFile);
 
