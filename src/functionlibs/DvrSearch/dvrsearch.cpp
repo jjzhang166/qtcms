@@ -1,5 +1,6 @@
 #include "dvrsearch.h"
 #include <QElapsedTimer>
+#include <QNetworkInterface>
 
 
 DvrSearch::DvrSearch():
@@ -83,32 +84,54 @@ int DvrSearch::Flush(){
 	return 0;
 }
 
-
-void DvrSearch::run(){
-    m_pUdpSocket = new QUdpSocket;
-    m_pUdpSocket->bind();
-    QElapsedTimer timer;
-    timer.start();
-    qint64 nLen = m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
-	int nSleepTime = 0;
-    while (m_running)
+int DvrSearch::SendSearchMessage(QList<QUdpSocket *> socklist)
+{
+	Q_FOREACH(QUdpSocket * s,socklist)
 	{
-        if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
-        {
-            timer.start();
-            m_pUdpSocket->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
-            m_bFlush = false;      
-        }  
-        Recv(); 
-		nSleepTime ++;
-		if (nSleepTime > 100)
+		qint64 nLen = s->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
+	}
+	return 0;
+}
+
+void DvrSearch::run()
+{
+	// 获取网卡ip信息
+	QList<QUdpSocket *> socketList;
+	QList<QHostAddress> addressList = QNetworkInterface::allAddresses();
+	Q_FOREACH(QHostAddress it,addressList)
+	{
+		if (QAbstractSocket::IPv4Protocol == it.protocol())
 		{
-			nSleepTime = 0;
-			msleep(10);
+			QUdpSocket * s = new QUdpSocket;
+			s->bind(it,0);
+			socketList.append(s);
 		}
+	}
+	QElapsedTimer timer;
+	timer.start();
+	SendSearchMessage(socketList);
+	int nSleepTime = 0;
+	while (m_running)
+	{
+		if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)
+		{
+			timer.start();
+			SendSearchMessage(socketList);
+			m_bFlush = false;      
+		}  
+		Recv(socketList); 
+		msleep(1);
 	} 
-	m_pUdpSocket->close();
-	delete m_pUdpSocket;
+
+
+
+	Q_FOREACH(QUdpSocket * s,socketList)
+	{
+		s->close();
+		delete s;
+	}
+	socketList.clear();
+	return;
 }
 
 int DvrSearch::setInterval(int nInterval)
@@ -178,65 +201,69 @@ void DvrSearch::eventProcCall(QString sEvent,QVariantMap param)
     }
 }
 
-void DvrSearch::Recv()
+void DvrSearch::Recv(QList<QUdpSocket *> socketlist)
 {
-	while (m_pUdpSocket->hasPendingDatagrams())
+	Q_FOREACH(QUdpSocket * s,socketlist)
 	{
-		QByteArray datagram;
-		datagram.resize(m_pUdpSocket->pendingDatagramSize());
-		m_pUdpSocket->readDatagram(datagram.data(),datagram.size());
-        
-		QString strTmp(datagram.data());
-		strTmp = strTmp.toUpper();
-        if ( datagram.contains("SEARCHDEV") )
-        {
-            continue;
-        }
-        
-		QByteArray     StrToOther;
-        QStringList    strListInfo;
-		StrToOther = ParseSearch(strTmp, "JAIP");
-        strListInfo.insert(0,QString(StrToOther.data()));
-
-		StrToOther = ParseSearch(strTmp, "ID");
-	    strListInfo.insert(1,QString(StrToOther.data()));
-
-        StrToOther = ParseSearch(strTmp, "PORT");
-        strListInfo.insert(2,QString(StrToOther.data()));
-
-		StrToOther = ParseSearch(strTmp, "HTTP");
-        strListInfo.insert(3,QString(StrToOther.data()));
-
-		StrToOther = ParseSearch(strTmp, "CH");
-        strListInfo.insert(4,QString(StrToOther.data()));
-
-		StrToOther=ParseSearch(strTmp,"MODEL");
-		strListInfo.insert(5,QString(StrToOther.data()));
-		if (strListInfo.at(0)=="0")
+		if (s->hasPendingDatagrams())
 		{
-			continue;
-		}
-		if (strListInfo.at(5)=="0")
-		{
-			 m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("DVR"));
-		}else{
-			m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant(strListInfo.at(5)));
-		}
+			QByteArray datagram;
+			datagram.resize(s->pendingDatagramSize());
+			s->readDatagram(datagram.data(),datagram.size());
+        
+			QString strTmp(datagram.data());
+			strTmp = strTmp.toUpper();
+			if ( datagram.contains("SEARCHDEV") )
+			{
+				continue;
+			}
+        
+			QByteArray     StrToOther;
+			QStringList    strListInfo;
+			StrToOther = ParseSearch(strTmp, "JAIP");
+			strListInfo.insert(0,QString(StrToOther.data()));
+
+			StrToOther = ParseSearch(strTmp, "ID");
+			strListInfo.insert(1,QString(StrToOther.data()));
+
+			StrToOther = ParseSearch(strTmp, "PORT");
+			strListInfo.insert(2,QString(StrToOther.data()));
+
+			StrToOther = ParseSearch(strTmp, "HTTP");
+			strListInfo.insert(3,QString(StrToOther.data()));
+
+			StrToOther = ParseSearch(strTmp, "CH");
+			strListInfo.insert(4,QString(StrToOther.data()));
+
+			StrToOther=ParseSearch(strTmp,"MODEL");
+			strListInfo.insert(5,QString(StrToOther.data()));
+			if (strListInfo.at(0)=="0")
+			{
+				continue;
+			}
+			if (strListInfo.at(5)=="0")
+			{
+				 m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant("DVR"));
+			}else{
+				m_mEventCBParam.insert("SearchVendor_ID"        ,QVariant(strListInfo.at(5)));
+			}
        
-        m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
-        m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(""));
-        m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
-        m_mEventCBParam.insert("SearchSeeId_ID"         ,QVariant(strListInfo.at(1)));
-        m_mEventCBParam.insert("SearchChannelCount_ID"  ,QVariant(strListInfo.at(4)));
-        m_mEventCBParam.insert("SearchIP_ID"            ,QVariant(strListInfo.at(0)));
-        m_mEventCBParam.insert("SearchMask_ID"          ,QVariant(""));
-        m_mEventCBParam.insert("SearchMac_ID"           ,QVariant(""));
-        m_mEventCBParam.insert("SearchGateway_ID"       ,QVariant(""));     
-		m_mEventCBParam.insert("SearchHttpport_ID"      ,QVariant(strListInfo.at(3)));
-		m_mEventCBParam.insert("SearchMediaPort_ID"     ,QVariant(strListInfo.at(2)));
-        eventProcCall(QString("SearchDeviceSuccess"),m_mEventCBParam);
+			m_mEventCBParam.insert("SearchDeviceName_ID"    ,QVariant(""));
+			m_mEventCBParam.insert("SearchDeviceId_ID"      ,QVariant(""));
+			m_mEventCBParam.insert("SearchDeviceModelId_ID" ,QVariant(""));
+			m_mEventCBParam.insert("SearchSeeId_ID"         ,QVariant(strListInfo.at(1)));
+			m_mEventCBParam.insert("SearchChannelCount_ID"  ,QVariant(strListInfo.at(4)));
+			m_mEventCBParam.insert("SearchIP_ID"            ,QVariant(strListInfo.at(0)));
+			m_mEventCBParam.insert("SearchMask_ID"          ,QVariant(""));
+			m_mEventCBParam.insert("SearchMac_ID"           ,QVariant(""));
+			m_mEventCBParam.insert("SearchGateway_ID"       ,QVariant(""));     
+			m_mEventCBParam.insert("SearchHttpport_ID"      ,QVariant(strListInfo.at(3)));
+			m_mEventCBParam.insert("SearchMediaPort_ID"     ,QVariant(strListInfo.at(2)));
+			eventProcCall(QString("SearchDeviceSuccess"),m_mEventCBParam);
 
-	} // end of while
+		} // end of while
+
+	}
 }
 
 QByteArray DvrSearch::ParseSearch(const QString &content, const QString &index)

@@ -40,12 +40,12 @@ protected:
 
 private:
 	QByteArray ParseSearch(const QString &content, const QString &str);
-	void  Recv( );
+	void  Recv(QList<QUdpSocket *>);
     void eventProcCall(QString sEvent,QVariantMap param);
+	int SendSearchMessage(QList<QUdpSocket *> socklist);
 private:
 	int             m_nRef;
 	QMutex          m_csRef;
-	QUdpSocket *    m_pUdpSocket;
 	int             m_nTimeInterval;
 	volatile  bool  m_bFlush;
     QStringList     m_sEventList;
