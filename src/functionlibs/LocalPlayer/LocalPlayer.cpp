@@ -140,8 +140,16 @@ bool LocalPlayer::checkFileFromLong(QString path, unsigned long &tick, QDateTime
 	{
 		return false;
 	}
-
-	endTime = QDateTime::fromTime_t(tick);
+	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+	QDate date;
+	QTime time(tick/3600, tick%3600/60, tick%60);
+	if (-1 != rx.indexIn(path, 0))
+	{
+		QString dateStr = rx.cap(1);
+		date = QDate::fromString(dateStr, "yyyy-MM-dd");
+	}
+	endTime.setDate(date);
+	endTime.setTime(time);
 	QString filePath = path + "/" + endTime.toString("hhmmss") + ".avi";
 	if (QFile::exists(filePath))
 	{
@@ -241,8 +249,6 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 
 					AVI_close(aviFile);
 
-					QString dbStr = subPath + "/" + fileName + "     " + fileTime.toString("hh:mm:ss");
-
 					QVariantMap fileInfo;
 					fileInfo.insert("filename", fileName);
 					fileInfo.insert("filepath", filePath);
@@ -259,10 +265,6 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 					}
 
 					eventProcCall(QString("GetRecordFile"), fileInfo);
-
-					QTime spend(0, 0, 0);
-					dbStr += "<--------->" + fileInfo["stopTime"].toDateTime().toString("hh:mm:ss");
-					qDebug()<<dbStr;
 				}
 			}
 		}
