@@ -70,7 +70,7 @@ QSubView::QSubView(QWidget *parent)
 	connect(this,SIGNAL(Connectting()),this,SLOT(OnConnectting()),Qt::QueuedConnection);//Ui显示正在连接中
 	connect(this,SIGNAL(AutoConnectSignals()),this,SLOT(In_OpenAutoConnect()),Qt::QueuedConnection);
 	connect(this,SIGNAL(CreateAutoConnectTimeSignals()),this,SLOT(OnCreateAutoConnectTime()),Qt::QueuedConnection);
-	connect(this,SIGNAL(BackToMainThreadSignals(QVariantMap)),this,SLOT(BackToMainThread(QVariantMap)));
+	connect(this,SIGNAL(BackToMainThreadSignals(QVariantMap)),this,SLOT(BackToMainThread(QVariantMap)),Qt::QueuedConnection);
 
 	m_QActionCloseView=m_RMousePressMenu.addAction(tr("Close Preview"));
 	m_QActionSwitchStream=m_RMousePressMenu.addAction(tr("Switch Stream"));
@@ -144,6 +144,11 @@ QSubView::~QSubView()
 	{
 		killTimer(m_ContinuousStreamTimeId);
 	}
+	if (m_AutoConnectTimeId!=0)
+	{
+		killTimer(m_AutoConnectTimeId);
+		m_AutoConnectTimeId=0;
+	}
 	if (NULL != m_pAudioPlayer)
 	{
 		m_pAudioPlayer->Stop();
@@ -212,7 +217,6 @@ int QSubView::OpenCameraInWnd(int chlId)
 	{
 		In_CloseAutoConnect();
 	}
-
 	//生成设备组件
 	IDeviceClient *iDeviceClient=m_QSubViewObject.SetDeviceByVendor(m_DevCliSetInfo.m_sVendor,this);
 	if (iDeviceClient!=NULL&&m_IDeviceClientDecideByVendor==NULL)
@@ -449,10 +453,16 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 			}
 		}
 	}
-
+	if (m_CurrentState==STATUS_DISCONNECTED&&m_bStateAutoConnect==false)
+	{
+		QVariantMap evMap;
+		evMap.insert("close",true);
+		emit BackToMainThreadSignals(evMap);
+	}
 	m_HistoryState=m_CurrentState;
 	return 0;
 }
+
 
 static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *pv, int width, int height, unsigned char *dst)
 {
@@ -898,7 +908,7 @@ void QSubView::OnCheckTime()
 			currentTime = QTime::currentTime();
 			recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
 			recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
-			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime)
+			if (!m_bIsAutoRecording && currentTime >= recTimeInfo.startTime && currentTime < recTimeInfo.endTime&&m_CurrentState==STATUS_CONNECTED)
 			{
 				m_pRecorder->SetDevInfo(m_DevCliSetInfo.m_sDeviceName,m_DevCliSetInfo.m_uiChannelId);
 				m_pRecorder->Start();
@@ -1635,6 +1645,11 @@ void QSubView::BackToMainThread( QVariantMap evMap)
 	{
 		m_checkTime.stop();
 	}
+	if (evMap.contains("close"))
+	{
+		CloseWndCamera();
+	}
+	
 }
 
 

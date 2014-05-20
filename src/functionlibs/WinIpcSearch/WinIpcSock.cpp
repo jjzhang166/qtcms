@@ -171,7 +171,7 @@ static HiChipSearchItem_t parseSearchAck(CHAR*ack){
 		ip += strlen("IP=");
 		strncpy(item.ip, ip, strstr(ip, "\r\n") - ip);
 	}
-	qDebug("Search ip:%s",item.ip);
+	/*qDebug("Search ip:%s",item.ip);*/
 	// netmask
 	if (NULL != (netmask = strstr(ack, "MASK=")))
 	{
