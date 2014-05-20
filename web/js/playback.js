@@ -2,7 +2,8 @@ var oBottom,oPlayBack,oPlaybacKLocl;
 var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
-	bNoResize=1;   //当前窗口是否在改变
+	bNoResize=1,   //当前窗口是否在改变
+	maxFileEndTime=0;
 
 	$(function(){
 		oBottom = $('#operating');
@@ -142,9 +143,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
-		$('div.dev_list').on('click','span.channel',function(){
-			console.log($(this).data('filepath'));
-		})
+
+		/*$('#top li.active').siblings('li').click(function(){
+			dragStopMove()
+		})*/
+		
 		//return false;
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
@@ -250,22 +253,22 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			end = date+' 23:59:59';
 			setDevData2ocx();
 
-		console.log('开始时间:'+begin+'//结束时间'+end);
+		//console.log('开始时间:'+begin+'//结束时间'+end);
 
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
 							.end().end().next('ul').find('span.channel');
 
-		console.log('当前播放的设备ID:'+nowDevID);
-		console.log('----------------------------');
+		//console.log('当前播放的设备ID:'+nowDevID);
+		//console.log('----------------------------');
 		if(bool){ //本地回访
 			var k = 0;
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = oChannel.eq(index).data('filepath');
-					console.log('本地回放文件:');
-					console.log(filepath);
+					/*console.log('本地回放文件:');
+					console.log(filepath);*/
 					if(filepath){
-						console.log(filepath);
+						//console.log(filepath);
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
 							b = 0;
 						};
@@ -404,7 +407,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 	function RecFileInfo2UI(){
 		var oChannels = $('#dev_'+nowDevID).next('ul').find('span.channel');
-		console.log(oChannels.length);
+		//console.log(oChannels.length);
 		var n=0;
 		for( i in recFile){
 			for(k in recFile[i]){
@@ -414,6 +417,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					start=time2Sec(start.split(' ')[1]);
 				var end = data.end;
 					end = time2Sec(end.split(' ')[1]);
+					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 				var chl = parseInt(data.channelnum -1);
 				var p = ($('#channelvideo').width()-80)/(3600*24);
 				var width = (end-start)*p;
@@ -431,6 +435,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 			}	
 		}
+
 		if(!bool){
 			showRecProgress(n);
 		}
@@ -450,11 +455,13 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		drag_timer = setInterval(function(){
 			var max = $('#channelvideo').width();
 			var p = (max-79)/(3600*24);
+
+				max = maxFileEndTime*p+79 < max ? maxFileEndTime*p+79 : max;
+
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed);
-			if(left >= max-1){ 
-				left=max-1;
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
 			oDrag.css('left',left);
@@ -462,6 +469,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},SynTimeUnits);
 	}
 	function dragStopMove(){
+		console.log('播放结束');
 		clearInterval(drag_timer);
 	}
 	//回放页面文件显示表格初始化
@@ -539,11 +547,17 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			oPlayBack.style.height='100%';
 			$('#type').next('ul.option').find('li').show();
 		}	
+		
+		var objStatus = getAudioObj().GetCurrentState();
 
+		if(objStatus == 2){
+			recFile=[];
 
-		/*recFile=[];
+			palybackspeed('1X');
 
-		palybackspeed('1X');
-
-		dragStopMove();*/
+			dragStopMove();
+		}/*else{
+			dragStartMove();
+			palybackspeed(nowSpeed<1 ? '1/'+1/nowSpeed+'X' : nowSpeed+'X');
+		}*/
 	}

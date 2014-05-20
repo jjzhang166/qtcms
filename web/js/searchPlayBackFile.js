@@ -133,5 +133,5 @@ function setDevData2ocx(){
 			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
 		}
 
-		console.log('初始化后的设备ID:'+nowDevID);
+		//console.log('初始化后的设备ID:'+nowDevID);
 	}
