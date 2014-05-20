@@ -285,22 +285,6 @@ var oSearchOcx,
 			initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
 		})
 
-
-		$('ul.week.option li').each(function(index){
-			$(this).on('click',function(){
-				initChannlrecTime($(this));
-			})
-		})
-
-		$('#Language_ID').nextAll('li').click(function(){
-		 	$('#Language_ID').val($(this).attr('value'));
-		})
-
-		$('#SplitScreenMode_ID').nextAll('li').click(function(){
-		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
-		})
-
-
 		//搜索设备全选和 TR 同步选中
 		$('tbody.synCheckboxClick').each(function(){
 			$(this).SynchekboxClick();
@@ -351,8 +335,13 @@ var oSearchOcx,
 			$(this).toCheck();
 		})
 
-		$('#viewMod a').click(function(){
-			$('#SplitScreenMode_ID').val('div'+$(this).html());
+		$('#Language_ID').nextAll('li').click(function(){
+		 	$('#Language_ID').val($(this).attr('value'));
+		})
+
+		$('#viewMod').on('click','a',function(){
+		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
+		 $('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
 		})
 	}
 	/*function FillRecordTimeData(){
@@ -969,7 +958,6 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//areaList2Ui(0);
 		var succeedId = data.succeedId.split(';');
 		var b = succeedId.length > 10 ? 1 : 0;
-		console.log(succeedId.length);
 		for(i in succeedId){
 			if(succeedId[i]){
 				$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
@@ -1126,6 +1114,11 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
 			})*/
 		}
+		$('ul.week.option li').each(function(index){
+			$(this).on('click',function(){
+				initChannlrecTime($(this));
+			})
+		})
 	}
 	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');

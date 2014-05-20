@@ -149,8 +149,6 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					var value = $(this).attr('value')
 					$('ul.option').hide();
 					This.find('span').html(str).attr('value',value);
-					console.log('span');
-					console.log(This.find('span').attr('value'));
 					if(This.next('ul[action]')){
 						This.find('#'+This.next('ul[action]').attr('action')).val(value);
 					}
