@@ -968,6 +968,8 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function RemoveDeviceFeedBackSuccess(data){
 		//areaList2Ui(0);
 		var succeedId = data.succeedId.split(';');
+		var b = succeedId.length > 10 ? 1 : 0;
+		console.log(succeedId.length);
 		for(i in succeedId){
 			if(succeedId[i]){
 				$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
@@ -978,8 +980,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				})
 			}
 		}
+		
 		searchEdDev();
 		closeMenu();
+
+		if(b)
+			searchFlushReal();
 	}
 
 	function adddev(devID){
