@@ -3,7 +3,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
 	bNoResize=1,   //当前窗口是否在改变
-	maxFileEndTime=0;
+	maxFileEndTime='';
 
 	$(function(){
 		oBottom = $('#operating');
@@ -250,7 +250,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
-			end = date+' 23:59:59';
+			end = date+' '+maxFileEndTime;
+			console.log(end);
 			setDevData2ocx();
 
 		//console.log('开始时间:'+begin+'//结束时间'+end);
@@ -416,11 +417,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				var start = data.start;
 					start=time2Sec(start.split(' ')[1]);
 				var end = data.end;
-					end = time2Sec(end.split(' ')[1]);
+					end = end.split(' ')[1];
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
+					//console.log(maxFileEndTime);
 				var chl = parseInt(data.channelnum -1);
 				var p = ($('#channelvideo').width()-80)/(3600*24);
-				var width = (end-start)*p;
+				var width = (time2Sec(end)-start)*p;
 					width = width < 1 ? 1 : width;
 				var left = start*p+81;
 				var types = data.types || 8;
@@ -456,11 +458,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			var max = $('#channelvideo').width();
 			var p = (max-79)/(3600*24);
 
-				max = maxFileEndTime*p+79 < max ? maxFileEndTime*p+79 : max;
+				max = time2Sec(maxFileEndTime)*p+79 < max ? time2Sec(maxFileEndTime)*p+79 : max;
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
@@ -469,7 +471,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},SynTimeUnits);
 	}
 	function dragStopMove(){
-		console.log('播放结束');
+		//console.log('播放结束');
 		clearInterval(drag_timer);
 	}
 	//回放页面文件显示表格初始化
@@ -521,6 +523,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		$('#channelvideo div.video').remove();
 
 		PBrecFileTableInit();
+
+		maxFileEndTime = '';
 
 		ocxsearchVideo();
 
