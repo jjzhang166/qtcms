@@ -297,6 +297,11 @@ bool rPlayBackRun::__BuildDev(void **ppv)
 			}
 		}
 	}
+	if (NULL!=file)
+	{
+		delete file;
+		file=NULL;
+	}
 	return flag;
 }
 

@@ -437,10 +437,23 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	int ifilekey;
 	ifilekey=fileKey.toInt();
 	fileKey=QString::number(ifilekey+1);
-	if (ifilekey==fileTotal-1)
+	if (fileTotal<100)
 	{
-		emit FoundFileToUiS(fileMap);
-	}
+		if (ifilekey==fileTotal-1)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<ifilekey<<fileTotal;
+			emit FoundFileToUiS(fileMap);
+		}
+	}else{
+		if (ifilekey%99==0&&ifilekey!=0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<ifilekey;
+			fileTotal=fileTotal-100;
+			fileKey="0";
+			emit FoundFileToUiS(fileMap);
+			fileMap.clear();
+		}
+		}
 }
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
