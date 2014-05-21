@@ -2,8 +2,12 @@ var oBottom,oPlayBack,oPlaybacKLocl;
 var	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
+<<<<<<< Updated upstream
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime=0;
+=======
+	bNoResize=1;   //当前窗口是否在改变
+>>>>>>> Stashed changes
 
 	$(function(){
 		oBottom = $('#operating');
@@ -27,7 +31,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		})
 
 		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
+<<<<<<< Updated upstream
 			$(this).addClass('sel').siblings('li').removeClass('sel')
+=======
+			$(this).addClass('sel').siblings('li').removeClass('sel');
+>>>>>>> Stashed changes
 		})
 
 		/*$('div.dev_list span.channel').on('click',function(){
@@ -140,7 +148,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				initOxcDevListStatus();
 
 				//保存当前选中的设备
-				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
+				//nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
 
@@ -251,8 +259,13 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' 23:59:59';
+
+			$('div.dev_list').find('li').removeClass('sel');
+			$('#dev_'+nowDevID).parent('li').addClass('sel');
+
 			setDevData2ocx();
 
+<<<<<<< Updated upstream
 		//console.log('开始时间:'+begin+'//结束时间'+end);
 
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
@@ -261,12 +274,20 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		//console.log('当前播放的设备ID:'+nowDevID);
 		//console.log('----------------------------');
 		if(bool){ //本地回访
+=======
+		if(bool){
+>>>>>>> Stashed changes
 			var k = 0;
+			var oChannel = $('#dev_'+nowDevID).next('ul').find('span.channel');
+
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = oChannel.eq(index).data('filepath');
+<<<<<<< Updated upstream
 					/*console.log('本地回放文件:');
 					console.log(filepath);*/
+=======
+>>>>>>> Stashed changes
 					if(filepath){
 						//console.log(filepath);
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
@@ -411,21 +432,30 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		var n=0;
 		for( i in recFile){
 			for(k in recFile[i]){
+				console.log(recFile[i][k]);
 				n++;
 				var data = recFile[i][k];
 				var start = data.start;
 					start=time2Sec(start.split(' ')[1]);
 				var end = data.end;
 					end = time2Sec(end.split(' ')[1]);
+<<<<<<< Updated upstream
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 				var chl = parseInt(data.channelnum -1);
+=======
+				var chl = data.channelnum -1;
+>>>>>>> Stashed changes
 				var p = ($('#channelvideo').width()-80)/(3600*24);
 				var width = (end-start)*p;
 					width = width < 1 ? 1 : width;
 				var left = start*p+81;
 				var types = data.types || 8;
 				if(data.filepath){
+<<<<<<< Updated upstream
 					var oChannel = oChannels.eq(chl);
+=======
+					var oChannel = $('#dev_'+nowDevID).next('ul').find('span.channel').eq(chl);
+>>>>>>> Stashed changes
 					var filepathArr = oChannel.data('filepath');
 						filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
 						filepathArr.push(data.filepath);
@@ -520,11 +550,20 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		$('#channelvideo div.video').remove();
 
+<<<<<<< Updated upstream
 		PBrecFileTableInit();
 
 		ocxsearchVideo();
 
 		//initOxcDevListStatus();
+=======
+		ocxsearchVideo();
+
+		initOxcDevListStatus();
+
+		PBrecFileTableInit();
+
+>>>>>>> Stashed changes
 	}
 	function initOxcDevListStatus(){
 		

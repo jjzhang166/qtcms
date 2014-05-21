@@ -64,10 +64,13 @@ function setDevData2ocx(){
 		color[4] = '#F00';
 		color[8] = '#F78445';	
 	function ocxsearchVideo(){
+<<<<<<< Updated upstream
 		/*if(!$('ul.filetree li.sel')[0]){
 			$('ul.filetree li:eq(1)').addClass('sel');
 		}*/
 
+=======
+>>>>>>> Stashed changes
 		recTotal = 0;
 		
 		berorSerchShowHint();
@@ -76,9 +79,14 @@ function setDevData2ocx(){
 
 		var devData = $('div.dev_list li.sel span.device').data('data');
 
+<<<<<<< Updated upstream
 		nowDevID = devData.dev_id;
 
+=======
+>>>>>>> Stashed changes
 		var type = $('#type span').attr('value');
+
+		nowDevID = devData.dev_id;
 		
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
@@ -106,6 +114,7 @@ function setDevData2ocx(){
 				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}
 		}
+
 	}
 	function showRecProgress(now){  //回访检索文件进度
 		var con = lang.Retrieving,
@@ -123,14 +132,12 @@ function setDevData2ocx(){
 	}
 
 	function initrecFileOcx(obj){
-		if(!$('#dev_'+nowDevID)[0]){
+		if($('#dev_'+nowDevID)[0]){
+			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
+		}else{
 			obj.remove();
 			$('#fileRec').hide();
-			if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
-				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
-			}
-		}else{
-			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
+			nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
 		}
 
 		//console.log('初始化后的设备ID:'+nowDevID);

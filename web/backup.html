@@ -84,7 +84,7 @@
 			<!-- <li>Group</li> -->
 		</ul>
 		<div class="dev_list" id="list">
-			<ul class="filetree">			
+			<ul class="filetree">	
 			</ul>
 		</div>
 		<div style="height:24px;">
@@ -181,7 +181,12 @@ var now = 0;
 		})
 		
 		listParent.on('click','li:has(span.device):gt(0)',function(){
+<<<<<<< Updated upstream
 			$(this).addClass('sel').siblings('li').removeClass('sel');
+=======
+			listParent.find('li:has(span.device):gt(0)').removeClass('sel');
+			$(this).addClass('sel');
+>>>>>>> Stashed changes
 		})
 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
