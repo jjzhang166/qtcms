@@ -177,7 +177,6 @@ void StorageMgr::deleteOldDir(const QStringList& diskslist)
 		foreach(unsigned int datelist,datetimelist){
 			oldestdate=qMin(oldestdate,datelist);
 			QDateTime datetime=QDateTime::fromTime_t(datelist);
-			qDebug()<<datetime.toString("yyyy-MM-dd")<<datelist<<oldestdate;
 		}
 		datetimelist.removeAt(datetimelist.indexOf(oldestdate));
 		QDateTime earliestTime=QDateTime::fromTime_t(oldestdate);
