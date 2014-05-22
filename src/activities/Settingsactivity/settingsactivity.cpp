@@ -487,7 +487,7 @@ void settingsActivity::OnAddDevice()
 	QVariant sUserName=QueryValue("username_ID");
 	QVariant sPassWord=QueryValue("password_ID");
 	QVariant chlCount=QueryValue("channel_count_ID");
-	QVariant ConnectMethod=QueryValue("connect_method_ID");
+	QVariant ConnectMethod=QueryValue("method_ID");
 	QVariant sVendor=QueryValue("vendor_ID");
 
 	DEF_EVENT_PARAM(arg);
@@ -729,7 +729,7 @@ void settingsActivity::OnModifyDevice()
 		}
 	}
 
-	QVariant connect_method=QueryValue("connect_method_ID");
+	QVariant connect_method=QueryValue("method_ID");
 	if (0==connect_method.toInt()||1==connect_method.toInt())
 	{
 		int nRet_int=Idevice->ModifyDeviceConnectMethod(Dev_Id.toInt(),connect_method.toInt());
