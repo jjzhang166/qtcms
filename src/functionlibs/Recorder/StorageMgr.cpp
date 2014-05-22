@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QDateTime>
 
+#include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
 
@@ -143,26 +144,88 @@ QString StorageMgr::getUsableDisk()//返回'0'说明没有找到满足条件的分区
 
 void StorageMgr::deleteOldDir(const QStringList& diskslist)
 {
+
+	int deletetotalsize;
+	int freesizem;
+	if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
+		freesizem = 128;
+
+	freesizem=freesizem+200;
+	bool flag=false;
+	QList<unsigned int> datetimelist;
 	QDateTime earliestTime;
-	earliestTime = QDateTime::fromString("9999-99-99","yyyy-MM-dd");
+	earliestTime = QDateTime::fromString("2030-12-31","yyyy-MM-dd");
 	foreach(QString sdisk,diskslist)
 	{
-		QString spath = sdisk+":/JAREC/";
+		QString spath = sdisk+":/REC/";
 		QDir dir(spath);
 		dir.setFilter(QDir::AllDirs);
 		QFileInfoList fileList = dir.entryInfoList();
 		foreach(QFileInfo fi,fileList)
 		{
 			QDateTime dtime = QDateTime::fromString(fi.fileName(),"yyyy-MM-dd");
-			if (dtime<earliestTime)
-				earliestTime = dtime;
+			if (!datetimelist.contains(dtime.toTime_t()))
+			datetimelist.append(dtime.toTime_t());
+			//if (dtime<earliestTime&&dtime.toString("yyyy-MM-dd")!="")
+			//	earliestTime = dtime;
 		}
 	}
 
 	foreach(QString sdisk,diskslist)
 	{
-		QString spath = sdisk+":/JAREC/" + earliestTime.toString("yyyy-MM-dd");
-		deleteDir(spath);
+		unsigned int oldestdate=1900000000;
+		foreach(unsigned int datelist,datetimelist){
+			oldestdate=qMin(oldestdate,datelist);
+			QDateTime datetime=QDateTime::fromTime_t(datelist);
+			qDebug()<<datetime.toString("yyyy-MM-dd")<<datelist<<oldestdate;
+		}
+		datetimelist.removeAt(datetimelist.indexOf(oldestdate));
+		QDateTime earliestTime=QDateTime::fromTime_t(oldestdate);
+		QString spath = sdisk+":/REC/" + earliestTime.toString("yyyy-MM-dd");
+		QDir dir(spath);
+		dir.setFilter(QDir::AllDirs);
+		QFileInfoList fileList = dir.entryInfoList();
+
+		foreach(QFileInfo fi,fileList)
+		{
+			QString spath=sdisk+":/REC/" + earliestTime.toString("yyyy-MM-dd")+"/"+fi.fileName();
+			if (fi.fileName()=="."||fi.fileName()=="..")
+			{
+				continue;
+			}
+			QDir dir(spath);
+			dir.setFilter(QDir::AllDirs);
+			QFileInfoList filechllist=dir.entryInfoList();
+			foreach(QFileInfo fil,filechllist){
+				QString spath=sdisk+":/REC/" + earliestTime.toString("yyyy-MM-dd")+"/"+fi.fileName()+"/"+fil.fileName();
+				if (fil.fileName()!="."&&fil.fileName()!="..")
+				{
+					QDir dir(spath);
+					dir.setFilter(QDir::AllEntries|QDir::NoDotAndDotDot);
+					QFileInfoList fileList = dir.entryInfoList();
+					foreach(QFileInfo finame,fileList){
+						QString spath=sdisk+":/REC/" + earliestTime.toString("yyyy-MM-dd")+"/"+fi.fileName()+"/"+fil.fileName()+"/"+finame.fileName();
+						QFile file(spath);
+						if (file.exists())
+						{
+							freesizem=freesizem-file.size();
+						}else{
+							freesizem=freesizem-fil.size();
+						}				
+						deleteDir(spath);
+						if (freesizem<0)
+						{
+							flag=true;
+							break;
+						}
+					}
+				}		
+			}
+			if (flag==true)
+				break;
+		}
+		if (flag==true)
+			break;
 	}
 
 }
@@ -171,7 +234,12 @@ bool StorageMgr::deleteDir(const QString& dirpath)
 {
 	if (dirpath.isEmpty())
 		return false;
-
+	QFile file(dirpath);
+	if (file.exists())
+	{
+		QFile::remove(dirpath);
+		return true;
+	}
 	QDir dir(dirpath);
 	if (!dir.exists())
 		return true;
@@ -192,3 +260,4 @@ bool StorageMgr::GetDiskFreeSpaceEx(char* lpDirectoryName, quint64* lpFreeBytesA
 {
 	return GetDiskFreeSpaceExQ(lpDirectoryName,lpFreeBytesAvailableToCaller,lpTotalNumberOfBytes,lpTotalNumberOfFreeBytes);
 }
+
