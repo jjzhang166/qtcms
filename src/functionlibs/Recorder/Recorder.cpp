@@ -433,21 +433,15 @@ bool Recorder::CreateDir(QString fullname)
 
 unsigned int Recorder::getSeconds(QString &fileName)
 {
-	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
-	QDateTime datetime;
-	if (-1 != rx.indexIn(fileName, 0))
-	{
-		QString date = rx.cap(1);
-		datetime = QDateTime::fromString(date, "yyyy-MM-dd");
-	}
-	
+	QRegExp rx;
+	QTime t;
 	rx.setPattern("([0-9]{6}).avi");
 	if (-1 != rx.indexIn(fileName))
 	{
 		QString time = rx.cap(1);
-		datetime.setTime(QTime::fromString(time, "hhmmss"));
+		t = QTime::fromString(time, "hhmmss");
 	}
-	return datetime.toTime_t();
+	return t.hour()*3600 + t.minute()*60 + t.second();
 }
 
 QString Recorder::getModeName()
