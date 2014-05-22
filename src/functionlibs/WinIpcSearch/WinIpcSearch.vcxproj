@@ -81,6 +81,9 @@
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;$(SolutionDir)..\libs\win\IPHlpApi.Lib;$(SolutionDir)..\libs\win\WSOCK32.LIB;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>WinIpcSearch.def</ModuleDefinitionFile>
     </Link>
+    <PostBuildEvent>
+      <Command>copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\guid.cpp" />

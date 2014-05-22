@@ -135,6 +135,10 @@ copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Co
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy  "$(LocalDebuggerWorkingDirectory)chinese.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
+copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\guid.cpp" />
