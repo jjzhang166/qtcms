@@ -13,7 +13,7 @@ class StreamProcess : public QObject
 {
 	Q_OBJECT
 public:
-	StreamProcess(void);
+	StreamProcess(QObject *parent);
 	void setAddressInfo(QHostAddress hostAddress, int port);
 	void setEventMap(QStringList eventList, QMultiMap<QString, ProcInfoItem> eventMap);
     int getSocketState();
@@ -37,8 +37,8 @@ private:
 	quint16 m_nPort;
 	QTcpSocket *m_tcpSocket;
 	QByteArray m_buffer;
-	QByteArray m_headbuffer;
-	bool m_bIsResethead;
+// 	QByteArray m_headbuffer;
+// 	bool m_bIsResethead;
 	uint m_nTotalBytes;
 	int m_nRemainBytes;
 	QStringList m_eventList;
@@ -46,6 +46,7 @@ private:
 	int m_nVerifyResult;
 	bool m_bIsSupportBubble;
 	QList<QList<Stream>> m_lstStreamList;
+
 
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);

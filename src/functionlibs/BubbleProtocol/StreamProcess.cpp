@@ -7,7 +7,8 @@
 #include <QtCore/QTime>
 
 
-StreamProcess::StreamProcess():
+StreamProcess::StreamProcess(QObject *parent):
+QObject(parent),
 m_nRemainBytes(0),
 m_nTotalBytes(0),
 m_bIsHead(true),
@@ -15,7 +16,7 @@ m_nPort(80),
 m_bIsSupportBubble(true),
 m_bStop(false),
 m_nVerifyResult(0),
-m_bIsResethead(false),
+// m_bIsResethead(false),
 m_tcpSocket(NULL)
 {
 }
@@ -220,27 +221,13 @@ void StreamProcess::receiveStream()
 	if (m_bStop)
 	{
 		m_buffer.clear();
-		m_bIsResethead=false;
+// 		m_bIsResethead=false;
 		return;
 	}
 
 	if (m_tcpSocket->bytesAvailable() > 0)
 	{
-		m_headbuffer.clear();
-		m_headbuffer=m_tcpSocket->readAll();
-		if (m_bIsResethead&&(m_headbuffer.startsWith("\xab")||m_headbuffer.startsWith("\xaa")))
-		{
-			m_buffer.clear();
-			m_buffer+=m_headbuffer;
-			m_headbuffer.clear();
-			m_bIsResethead=false;
-		}
-		if (m_buffer.startsWith("\xab")==false&&m_buffer.startsWith("\xaa")==false&&m_buffer.size()>100000)
-		{
-			m_buffer.clear();
-			m_bIsResethead=true;
-		}
-		m_buffer+=m_headbuffer;
+		m_buffer += m_tcpSocket->readAll();
 		if (m_buffer.contains("HTTP/1.1 200") && m_buffer.size() >= 1024)
 		{
 			analyzeBubbleInfo();
@@ -275,6 +262,46 @@ void StreamProcess::receiveStream()
 			if (m_buffer.size() >= m_nTotalBytes)
 			{
 				analyzePreviewStream();
+			}
+		}
+		else if (!m_buffer.isEmpty())//Clear information which does not satisfy the condition
+		{
+			int pos = 0;
+			while(pos >= 0)
+			{
+				pos = m_buffer.indexOf('\xaa');
+				if (-1 == pos)
+				{
+					pos = m_buffer.indexOf('\xab');
+				}
+				if (pos < 0)
+				{
+					int half = m_buffer.size()/2;
+					m_buffer.remove(0, half);
+					return;
+				}
+				char *pStr = m_buffer.data() + pos;
+				pBubble = (Bubble *)pStr;
+				if ((pBubble->cHead == '\xaa' || pBubble->cHead == '\xab') 
+					&& (pBubble->cCmd == '\x00' || pBubble->cCmd == '\x01' || pBubble->cCmd == '\x02' || pBubble->cCmd == '\x08' || pBubble->cCmd == '\x09')
+					&& (qToBigEndian(pBubble->uiLength) < 100000))
+				{
+					m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
+					m_buffer.remove(0, pos);
+					if ('\xaa' == pBubble->cHead)
+					{
+						analyzePreviewStream();
+					}
+					else
+					{
+						analyzeRecordStream();
+					}
+					return;
+				}
+				else
+				{
+					m_buffer.remove(0, pos + 1);
+				}
 			}
 		}
 	}
