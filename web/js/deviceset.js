@@ -20,8 +20,8 @@ var oSearchOcx,
 
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
-				$('#device input:radio').attr('id','');
-				$(this).attr('id','connect_method_ID');
+				$('#device input:radio').removeAttr('id');
+				$(this).attr('id','method_ID');
 				var oSwitch = $('#device tr').slice(2,6);
 				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
 				if(index == 0){
@@ -713,7 +713,9 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
-	//show(data);
+	console.log('填充数据');
+	console.log('----------------');
+	console.log(data);
 	if(!data){ 
 		Confirm(lang.Please_select_a_device);
 		return ;
@@ -735,12 +737,11 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html(lang.delete+data[i]);
 		}
-		var str = ''
-		if(data[i] != ''){ 
-			str = data[i];
-		}
+		var str = data[i];		
+
 		if($('#'+i+'_ID')[0]){ 
 			$('#'+i+'_ID').val(str);
+			$('#device span[dataAction="'+i+'_ID"]').html(str).attr('value',str);
 		}else{ 
 			$('<input type="hidden" class="data" value="'+str+'" id="'+i+'_ID"/>').appendTo(obox);
 		}
