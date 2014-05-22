@@ -193,7 +193,7 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 				};
 
 				unsigned char scaling_matrix4[6][16];
-				unsigned char scaling_matrix8[6][16];
+				unsigned char scaling_matrix8[6][64];
 
 				decode_scaling_list(buf,nLen,StartBit,scaling_matrix4[0],16,default_scaling4[0],fallback[0]);
 				decode_scaling_list(buf,nLen,StartBit,scaling_matrix4[1],16,default_scaling4[0],scaling_matrix4[0]); // Intra, Cr
