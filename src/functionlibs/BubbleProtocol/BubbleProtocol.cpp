@@ -28,7 +28,7 @@ m_streanCount(0)
 // 	m_timer.singleShot(10000, this, SLOT(sendHeartBeat()));
 
     m_manager = new QNetworkAccessManager(this);
-	m_pStreamProcess = new StreamProcess(this);
+	m_pStreamProcess = new StreamProcess();
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
     connect(this, SIGNAL(sigChildThreadToConn(QString , quint16 )),m_pStreamProcess,SLOT(conToHost(QString , quint16 )),Qt::BlockingQueuedConnection);

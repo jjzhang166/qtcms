@@ -13,7 +13,7 @@ class StreamProcess : public QObject
 {
 	Q_OBJECT
 public:
-	StreamProcess(QObject *parent);
+	StreamProcess();
 	void setAddressInfo(QHostAddress hostAddress, int port);
 	void setEventMap(QStringList eventList, QMultiMap<QString, ProcInfoItem> eventMap);
     int getSocketState();

@@ -7,8 +7,7 @@
 #include <QtCore/QTime>
 
 
-StreamProcess::StreamProcess(QObject *parent):
-QObject(parent),
+StreamProcess::StreamProcess():
 m_nRemainBytes(0),
 m_nTotalBytes(0),
 m_bIsHead(true),
