@@ -50,7 +50,6 @@ public:
 
 	virtual void mousePressEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
-
 	int GetCurrentWnd();
 	int OpenCameraInWnd(int chlId);
 	int SetDevChannelInfo(int ChannelId);

@@ -343,14 +343,14 @@ int QSubView::cbInit()
 }
 int QSubView::PrevPlay(QVariantMap evMap)
 {
-	unsigned int nLength=evMap.value("length").toUInt();
-	char * lpdata=(char *)evMap.value("data").toUInt();
-	int frameType = evMap.value("frametype").toUInt();
-
-	if (NULL==m_IVideoDecoder)
+	if (NULL==m_IVideoDecoder||!this->isVisible())
 	{
 		return 1;
 	}
+
+	unsigned int nLength=evMap.value("length").toUInt();
+	char * lpdata=(char *)evMap.value("data").toUInt();
+	int frameType = evMap.value("frametype").toUInt();
 
 	if (NULL != m_pAudioPlayer && 0 == frameType && m_pCurrView == this)
 	{
@@ -1641,5 +1641,6 @@ void QSubView::BackToMainThread( QVariantMap evMap)
 	}
 	
 }
+
 
 

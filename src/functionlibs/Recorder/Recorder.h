@@ -99,6 +99,7 @@ private:
 	QStringList m_eventList;
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 
+
 };
 
 #endif // RECORDER_H

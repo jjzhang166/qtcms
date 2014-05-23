@@ -66,6 +66,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 		bufTemp.dwBufferSize = datasize;
 		bufTemp.dwTicketCount = (unsigned int)(frameinfo["pts"].toULongLong()/1000);
 		bufTemp.nChannel = frameinfo["channel"].toInt();
+		bufTemp.Buffer=NULL;
 		bufTemp.Buffer = new char[datasize];
 		if (!bufTemp.Buffer)
 			return IRecorder::E_SYSTEM_FAILED;
@@ -103,11 +104,13 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 			bufTemp.samplerate = frameinfo["samplerate"].toInt();
 			bufTemp.samplewidth = frameinfo["samplewidth"].toInt();
 		}
-
+		if (m_dataqueue.size()>20){
+			msleep(500);
+		}
+		
 		m_dataRef.lock();
 		m_dataqueue.enqueue(bufTemp);
 		m_dataRef.unlock();
-
 	}
 
 	return IRecorder::OK;
@@ -134,6 +137,7 @@ void Recorder::run()
 	unsigned int endTick = 0;
 	QString lastFileName;
 	avi_t * AviFile = NULL;
+	int nSleepTime=0;
 	int nLoopCount = 0;
 	bool bAudioBeSet;
 	bool bThreadRunning = true;
@@ -143,8 +147,12 @@ void Recorder::run()
 	enventProcCall("RecordState",parm);
 	while (bThreadRunning)
 	{
-		msleep(10);
-
+		if (m_dataqueue.size()<1||nSleepTime>10)
+		{
+			msleep(10);
+			nSleepTime=0;
+		}
+		nSleepTime++;
 		if (m_bFinish)
 		{
 			nRecStep = 5;
@@ -159,6 +167,15 @@ void Recorder::run()
 				if (!bRet)
 				{
 					msleep(1000);
+					m_dataRef.lock();
+					if (m_dataqueue.size()>0)
+					{
+						RecBufferNode NodeTemp=m_dataqueue.front();
+						delete []NodeTemp.Buffer;
+						NodeTemp.Buffer = NULL;
+						m_dataqueue.pop_front();
+					}
+					m_dataRef.unlock();
 					break;
 				}
 
@@ -325,6 +342,9 @@ void Recorder::run()
 						delete[] node.Buffer;
 						node.Buffer = NULL;
 						m_dataqueue.pop_front();
+					}
+					else{
+						qDebug()<<"lose"<<__FUNCTION__<<__LINE__;
 					}
 				}
 				m_dataRef.unlock();
@@ -538,3 +558,5 @@ void Recorder::enventProcCall( QString sEvent,QVariantMap parm )
 		}
 	}
 }
+
+
