@@ -143,10 +143,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				nowDevID = $('div.dev_list li.sel span.device').data('data').dev_id;
 			})
 		})
-
-		/*$('#top li.active').siblings('li').click(function(){
-			dragStopMove()
-		})*/
 		
 		//return false;
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
@@ -251,14 +247,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		var begin = getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html()),
 			date = $("div.calendar span.nowDate").html(),
 			end = date+' '+maxFileEndTime;
-			console.log(end);
 			setDevData2ocx();
 
 		//console.log('开始时间:'+begin+'//结束时间'+end);
 
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
 							.end().end().next('ul').find('span.channel');
-
 		//console.log('当前播放的设备ID:'+nowDevID);
 		//console.log('----------------------------');
 		if(bool){ //本地回访
@@ -352,6 +346,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		recFile=Deleteduplicate(data);
 
 		initOxcDevListStatus();
+
+		loclFileDataIntoChannel(data)
 	}
 
 	function Deleteduplicate(data){
@@ -406,8 +402,22 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		return a-b;
 	}
 
-	function RecFileInfo2UI(){
+	function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
 		var oChannels = $('#dev_'+nowDevID).next('ul').find('span.channel');
+		for(i in data){
+			var fileData = $.parseJSON(data[i]);
+			if(fileData.filepath){
+				var oChannel = oChannels.eq(parseInt(fileData.channelnum -1));
+				var filepathArr = oChannel.data('filepath');
+					filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
+					filepathArr.push(fileData.filepath);
+					filepathArr.sort(SortByfileTime).join(',');
+				oChannel.data('filepath',filepathArr);
+			}
+		}
+	}
+
+	function RecFileInfo2UI(){
 		//console.log(oChannels.length);
 		var n=0;
 		for( i in recFile){
@@ -426,14 +436,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 					width = width < 1 ? 1 : width;
 				var left = start*p+81;
 				var types = data.types || 8;
-				if(data.filepath){
-					var oChannel = oChannels.eq(chl);
-					var filepathArr = oChannel.data('filepath');
-						filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
-						filepathArr.push(data.filepath);
-						filepathArr.sort(SortByfileTime).join(',');
-					oChannel.data('filepath',filepathArr);
-				}
 				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+chl+')');
 			}	
 		}
