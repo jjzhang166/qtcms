@@ -18,7 +18,10 @@ m_bInit(false)
 
 Hih264Decoder::~Hih264Decoder()
 {
-
+	if (NULL != m_hDec)
+	{
+		deinit();
+	}
 }
 
 int Hih264Decoder::init(int nWidth,int nHeight)

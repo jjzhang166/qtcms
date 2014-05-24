@@ -709,6 +709,10 @@ bool LocalPlayer::GroupEnableAudio(bool bEnable)
 	if (NULL!=m_pCurView)
 	{
 		QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(m_pCurView);
+		if (m_GroupMap.end() == iter)
+		{
+			return false;
+		}
 		if (!bEnable)
 		{
 			iter->pPlayMgr->OpneAudio(true);
@@ -731,7 +735,7 @@ int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 		return 0;
 	}
 	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.find(pWnd);
-	if (NULL==iter->pPlayMgr)
+	if (m_GroupMap.end() == iter)
 	{
 		return 1;
 	}
@@ -739,8 +743,11 @@ int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 	{
 		if (NULL != m_pCurView)
 		{
-			PrePlay play = m_GroupMap[m_pCurView];
-			play.pPlayMgr->OpneAudio(false);
+			QMap<QWidget*, PrePlay>::iterator it = m_GroupMap.find(m_pCurView);
+			if (it != m_GroupMap.end())
+			{
+				it->pPlayMgr->OpneAudio(false);
+			}
 		}
 		m_pCurView = pWnd;
 		iter->pPlayMgr->OpneAudio(true);
