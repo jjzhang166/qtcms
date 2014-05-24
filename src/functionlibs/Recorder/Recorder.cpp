@@ -147,7 +147,7 @@ void Recorder::run()
 	enventProcCall("RecordState",parm);
 	while (bThreadRunning)
 	{
-		if (m_dataqueue.size()<1||nSleepTime>10)
+		if (m_dataqueue.size()<1/*||nSleepTime>10*/)
 		{
 			msleep(10);
 			nSleepTime=0;
@@ -166,7 +166,7 @@ void Recorder::run()
 				bool bRet = CreateSavePath(sSavePath);
 				if (!bRet)
 				{
-					msleep(1000);
+					/*msleep(1000);*/
 					m_dataRef.lock();
 					if (m_dataqueue.size()>0)
 					{

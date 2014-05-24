@@ -22,6 +22,7 @@ class Recorder : public QThread,
 public:
 	Recorder();
 	~Recorder();
+
 	//IRecorder
 	virtual int Start();
 	virtual int Stop();
