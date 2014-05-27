@@ -664,16 +664,39 @@ void QSubView::OnSwitchStreamFromMouseEv()
 {
 	if (m_CurrentState==STATUS_CONNECTED)
 	{
-		if (m_DevCliSetInfo.m_uiStreamId==0)
+		if ("IPC"==m_DevCliSetInfo.m_sVendor)
 		{
-			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,1,true);
-			m_DevCliSetInfo.m_uiStreamId=1;
-			SaveToDatobase();
+			if (NULL!=m_IDeviceClientDecideByVendor)
+			{
+				ISwitchStream *m_SwitchStream=NULL;
+				m_IDeviceClientDecideByVendor->QueryInterface(IID_ISwitchStream,(void**)&m_SwitchStream);
+				if (NULL!=m_SwitchStream)
+				{
+					if(m_DevCliSetInfo.m_uiStreamId==0){
+						m_SwitchStream->SwitchStream(1);
+						m_DevCliSetInfo.m_uiStreamId=1;
+						SaveToDatobase();
+					}else{
+						m_SwitchStream->SwitchStream(0);
+						m_DevCliSetInfo.m_uiStreamId=0;
+						SaveToDatobase();
+					}				
+					m_SwitchStream->Release();
+					m_SwitchStream=NULL;
+				}
+			}
 		}else{
-			liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,0,true);
-			m_DevCliSetInfo.m_uiStreamId=0;
-			SaveToDatobase();
-	}
+			if (m_DevCliSetInfo.m_uiStreamId==0)
+			{
+				liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,1,true);
+				m_DevCliSetInfo.m_uiStreamId=1;
+				SaveToDatobase();
+			}else{
+				liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,0,true);
+				m_DevCliSetInfo.m_uiStreamId=0;
+				SaveToDatobase();
+			}
+		}
 	}
 }
 

@@ -216,7 +216,6 @@ void StreamProcess::analyzeBubbleInfo()
 void StreamProcess::receiveStream()
 {
 	Bubble *pBubble = NULL;
-
 	if (m_bStop)
 	{
 		m_buffer.clear();
@@ -382,7 +381,10 @@ void StreamProcess::analyzePreviewStream()
 			}
 			m_buffer.remove(0, m_nTotalBytes);
 		}
-
+		else if ('\x02'==pBubble->cCmd||'\x08'==pBubble->cCmd)
+		{
+			m_buffer.remove(0,11);
+		}
 		if (m_buffer.size() > 5)
 		{
 			pBubble = (Bubble *)m_buffer.data();

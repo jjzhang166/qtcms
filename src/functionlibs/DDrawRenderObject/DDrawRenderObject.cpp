@@ -16,10 +16,11 @@ int						g_nDDrawRef = 0;
 void InitDDrawGlobal()
 {
 	g_csDDraw.Lock();
-	if (g_nDDrawRef > 0)
+/*	if (g_nDDrawRef > 0)
 	{
+		g_csDDraw.Unlock();
 		return;
-	}
+	}*/
 
 	// InitSource
 	HRESULT hr;

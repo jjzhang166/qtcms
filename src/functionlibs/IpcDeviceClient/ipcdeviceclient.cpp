@@ -824,7 +824,7 @@ void IpcDeviceClient::SyncTime()
 		return;
 	}
 
-	m_tcpSocket = new QTcpSocket;
+	m_tcpSocket = new QTcpSocket(this);
 	connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(Reveived()));
 
 	m_tcpSocket->connectToHost(QHostAddress(m_DeviceInfo.m_sAddr), (quint16)m_DeviceInfo.m_ports["media"].toUInt());
