@@ -235,7 +235,7 @@ int QSubView::OpenCameraInWnd(int chlId)
 		}
 	m_QSubViewObject.SetCameraInWnd(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId,m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_sCameraname,m_DevCliSetInfo.m_sVendor);
 	//IPC Time Synchronization
-	if ("JUAN IPC" == m_DevCliSetInfo.m_sVendor)
+	if ("IPC" == m_DevCliSetInfo.m_sVendor)
 	{
 		ILocalSetting *pLocalSetting = NULL;
 		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalSetting);

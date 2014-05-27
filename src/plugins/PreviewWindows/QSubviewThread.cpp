@@ -56,7 +56,7 @@ void QSubviewThread::OpenCameraInWnd()
 		return;
 	}
 
-	if ("JUAN IPC" == m_DevCliSetInfo.m_sVendor)
+	if ("IPC" == m_DevCliSetInfo.m_sVendor)
 	{
 		IAutoSycTime *pAutoSycTime = NULL;
 		m_IDeviceClient->QueryInterface(IID_IAutoSycTime, (void**)&pAutoSycTime);
