@@ -25,3 +25,8 @@ IDDrawRender * CreateObject()
 	return pInstance;
 }
 
+void ReleaseObject(IDDrawRender *obj)
+{
+	delete (CDDrawRenderObject *)obj;
+}
+

@@ -1,3 +1,4 @@
 LIBRARY "DDrawRenderObject.dll"
 EXPORTS
 	CreateObject @1
+	ReleaseObject @2

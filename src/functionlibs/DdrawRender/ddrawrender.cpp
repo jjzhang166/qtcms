@@ -4,6 +4,7 @@
 #include <QtCore/QCoreApplication>
 
 typedef IDDrawRender * (*lpCreateObject)();
+typedef void (*lpReleaseObj)(IDDrawRender *);
 
 DdrawRender::DdrawRender():
 m_nRef(0)
@@ -19,7 +20,9 @@ DdrawRender::~DdrawRender()
 {
 	if (NULL != m_renderObj)
 	{
-		delete m_renderObj;
+		QLibrary Module("DDrawRenderObject.dll");
+		lpReleaseObj pFun = (lpReleaseObj)Module.resolve("ReleaseObject");
+		pFun(m_renderObj);
 	}
 }
 
