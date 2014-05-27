@@ -108,6 +108,9 @@ function setDevData2ocx(){
 		}
 	}
 	function showRecProgress(now){  //回访检索文件进度
+			
+			now = recTotal
+
 		var con = lang.Retrieving,
 			p =now/recTotal*100;
 		if(recTotal == now){
