@@ -374,7 +374,7 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 {
     m_bIsPreviewStopped  = true;
     m_bIsPlaybackStopped = false;
-    if (nChannel < 0 || nTypes < 0 || startTime > endTime||m_bIsResearch==true)
+    if ( nTypes < 0 || startTime > endTime||m_bIsResearch==true)
     {
         return 2;
     }
@@ -392,7 +392,7 @@ int BubbleProtocol::startSearchRecFile(int nChannel,int nTypes,const QDateTime &
 		url.setPath("cgi-bin/gw.cgi");
 		url.setPort(m_ports["media"].toInt());
 
-		QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg(nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
+		QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg((unsigned int)nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
 
 		QNetworkRequest request;
 		request.setUrl(url);

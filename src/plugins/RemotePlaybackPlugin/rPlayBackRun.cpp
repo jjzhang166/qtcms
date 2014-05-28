@@ -153,47 +153,49 @@ bool rPlayBackRun::__startSearchRecFile()
 	bool flag=false;
 	if (NULL!=m_GroupPlaySearch)
 	{
-		__InitSearchCb(m_GroupPlaySearch);
-		int nChannel=m_FuncInfo.value("nChannel").toInt();
-		int nTypes=m_FuncInfo.value("nTypes").toInt();
-		QString startTime=m_FuncInfo.value("startTime").toString();
-		QString endTime=m_FuncInfo.value("endTime").toString();
-		QString sUsername=m_FuncInfo.value("sUsername").toString();
-		QString sPassword=m_FuncInfo.value("sPassword").toString();
-		QString sAddress=m_FuncInfo.value("sAddress").toString();
-		int uiPort=m_FuncInfo.value("uiPort").toInt();
-		QString eseeID=m_FuncInfo.value("eseeID").toString();
-		if (startTime.isEmpty()==false&&endTime.isEmpty()==false)
+		if (__InitSearchCb(m_GroupPlaySearch))
 		{
-			IDeviceClient *m_nIDeviceClient=NULL;
-			m_GroupPlaySearch->QueryInterface(IID_IDeviceClient,(void**)&m_nIDeviceClient);
-			if (m_nIDeviceClient!=NULL)
+			int nChannel=m_FuncInfo.value("nChannel").toInt();
+			int nTypes=m_FuncInfo.value("nTypes").toInt();
+			QString startTime=m_FuncInfo.value("startTime").toString();
+			QString endTime=m_FuncInfo.value("endTime").toString();
+			QString sUsername=m_FuncInfo.value("sUsername").toString();
+			QString sPassword=m_FuncInfo.value("sPassword").toString();
+			QString sAddress=m_FuncInfo.value("sAddress").toString();
+			int uiPort=m_FuncInfo.value("uiPort").toInt();
+			QString eseeID=m_FuncInfo.value("eseeID").toString();
+			if (startTime.isEmpty()==false&&endTime.isEmpty()==false)
 			{
-				m_nIDeviceClient->checkUser(sUsername,sPassword);
-				nret=m_nIDeviceClient->connectToDevice(sAddress,uiPort,eseeID);
-				if (nret!=1)
+				IDeviceClient *m_nIDeviceClient=NULL;
+				m_GroupPlaySearch->QueryInterface(IID_IDeviceClient,(void**)&m_nIDeviceClient);
+				if (m_nIDeviceClient!=NULL)
 				{
-					IDeviceSearchRecord *m_DeviceSearchRecord=NULL;
-					m_GroupPlaySearch->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
-					if (NULL!=m_DeviceSearchRecord)
+					m_nIDeviceClient->checkUser(sUsername,sPassword);
+					nret=m_nIDeviceClient->connectToDevice(sAddress,uiPort,eseeID);
+					if (nret!=1)
 					{
-						QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
-						QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
-						nret =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
-						if (0==nret)
+						IDeviceSearchRecord *m_DeviceSearchRecord=NULL;
+						m_GroupPlaySearch->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
+						if (NULL!=m_DeviceSearchRecord)
 						{
-							flag=true;
+							QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+							QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
+							nret =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
+							if (0==nret)
+							{
+								flag=true;
+							}
+							m_DeviceSearchRecord->Release();
+							m_DeviceSearchRecord=NULL;
 						}
-						m_DeviceSearchRecord->Release();
-						m_DeviceSearchRecord=NULL;
 					}
+					m_nIDeviceClient->Release();
+					m_nIDeviceClient=NULL;
 				}
-				m_nIDeviceClient->Release();
-				m_nIDeviceClient=NULL;
 			}
+			m_GroupPlaySearch->Release();
+			m_GroupPlaySearch=NULL;
 		}
-		m_GroupPlaySearch->Release();
-		m_GroupPlaySearch=NULL;
 	}
 	return flag;
 }
