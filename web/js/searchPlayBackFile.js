@@ -58,15 +58,14 @@ function setDevData2ocx(){
 		typeHint[4] = lang.Warning;
 		typeHint[8] = lang.Manual;
 		typeHint[15] = lang.All;
+
 	var color = [];
 		color[1] = '#7BC345';
 		color[2] = '#FFE62E';
 		color[4] = '#F00';
-		color[8] = '#F78445';	
+		color[8] = '#F78445';
+
 	function ocxsearchVideo(){
-		/*if(!$('ul.filetree li.sel')[0]){
-			$('ul.filetree li:eq(1)').addClass('sel');
-		}*/
 
 		recTotal = 0;
 		
@@ -84,7 +83,7 @@ function setDevData2ocx(){
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
 		setDevData2ocx();
-		/*show(chl+'+'+type+'+'+startTime+'+'+endTime);
+		/*console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
 		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
 			var chl ='';

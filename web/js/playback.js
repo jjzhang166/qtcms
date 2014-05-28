@@ -58,13 +58,15 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		var channelvideo = $("#channelvideo");
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
+
 			if($(this).prop('checked')){
 				oSelected.push($(this));
 			}else{ 
 				oSelected.pop($(this));
 			}
+
 			if(oSelected.length>4){
-				oSelected.shift().prop('checked',false);
+				$(oSelected.shift()).prop('checked',false);
 			}
 		})
 
@@ -478,7 +480,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	}
 	//回放页面文件显示表格初始化
 	function PBrecFileTableInit(){
-		oSelected = [];
 		var odev = $('div.dev_list li.sel span.channel')
 		var oVideoList = $("#channelvideo").html('');
 		if(odev.length != 0){
@@ -495,9 +496,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		setTables();
 
-		$("#channelvideo input:checkbox:checked").each(function(){
+		/*$("#channelvideo input:checkbox:checked").each(function(){
 			oSelected.push($(this));
-		});
+		});*/
+
+		oSelected = $.makeArray($("#channelvideo input:checkbox:checked"));
 	}
 
 	function addRecFileTable(str,name){
