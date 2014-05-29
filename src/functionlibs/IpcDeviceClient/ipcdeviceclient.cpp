@@ -284,6 +284,11 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	return 0;
 }
 
+int IpcDeviceClient::connectToDevice()
+{
+	return connectToDevice(m_sAddr,m_uiPort,m_sEseeId);
+}
+
 int IpcDeviceClient::checkUser( const QString & sUsername,const QString &sPassword )
 {
 	m_DeviceInfo.m_sUserName.clear();
@@ -1023,6 +1028,24 @@ int IpcDeviceClient::ControlPTZStop( const int &nChl, const int &nCmd )
 		return 1;
 	}
 	return m_pProtocolPTZ->PTZStop(nChl, nCmd);
+}
+
+int IpcDeviceClient::setDevicePorts( unsigned int ports )
+{
+	m_uiPort=ports;
+	return 0;
+}
+
+int IpcDeviceClient::setDeviceId( const QString & isee )
+{
+	m_sEseeId=isee;
+	return 0;
+}
+
+int IpcDeviceClient::setDeviceHost( const QString & sAddr )
+{
+	m_sAddr=sAddr;
+	return 0;
 }
 
 

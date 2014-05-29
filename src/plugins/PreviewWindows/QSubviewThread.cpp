@@ -73,7 +73,10 @@ void QSubviewThread::OpenCameraInWnd()
 	m_IDeviceClient->QueryInterface(IID_IDeviceClient,(void**)&m_IDeviceClientOpenCameraInWnd);
 	if (1!=m_IDeviceClientOpenCameraInWnd->setChannelName(m_DevCliSetInfo.m_sCameraname))
 	{
-		if (1!=m_IDeviceClientOpenCameraInWnd->connectToDevice(m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sEseeId))
+		m_IDeviceClientOpenCameraInWnd->setDeviceHost(m_DevCliSetInfo.m_sAddress);
+		m_IDeviceClientOpenCameraInWnd->setDeviceId(m_DevCliSetInfo.m_sEseeId);
+		m_IDeviceClientOpenCameraInWnd->setDevicePorts(m_DevCliSetInfo.m_uiPort);
+		if (1!=m_IDeviceClientOpenCameraInWnd->connectToDevice())
 		{
             if (1!=m_IDeviceClientOpenCameraInWnd->liveStreamRequire(m_DevCliSetInfo.m_uiChannelId,m_DevCliSetInfo.m_uiStreamId,true))
 			{

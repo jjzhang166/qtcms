@@ -43,7 +43,10 @@ public:
 	virtual int queryEvent(QString eventName,QStringList& eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 	//IDeviceClient
-	virtual int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
+	virtual int setDeviceHost(const QString & sAddr);
+	virtual int setDeviceId(const QString & isee);
+	virtual int setDevicePorts(unsigned int ports);
+	virtual int connectToDevice();
 	virtual int checkUser(const QString & sUsername,const QString &sPassword);
 	virtual int setChannelName(const QString & sChannelName);
 	virtual int liveStreamRequire(int nChannel,int nStream,bool bOpen);
@@ -90,6 +93,7 @@ private:
 	int sndSyncTimeForPreVersion();
 	int sndGetLocalSystemTime();
 	int sndSyncTimeCmd();
+	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 signals:
 	void sigSyncTime();
 private slots:
@@ -114,6 +118,9 @@ private:
 	QMultiMap<int,SingleConnect> m_DeviceClentMap;
 	QMultiMap<int ,CurStatusInfo> m_StreamCurStatus;
 	//设备信息
+	QString m_sAddr;
+	QString m_sEseeId;
+	unsigned int m_uiPort;
 	DeviceInfo m_DeviceInfo;
 	volatile bool bCloseingFlags;
 	volatile bool bHadCallCloseAll;

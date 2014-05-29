@@ -54,7 +54,10 @@ void RemotePlaybackThread::startSearchRecFileSlots( int nChannel,int nTypes,cons
 		return;
 	}
 	m_nIDeviceClient->checkUser(m_sUserName,m_sUserPwd);
-		nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
+	m_nIDeviceClient->setDeviceHost(m_HostAddress);
+	m_nIDeviceClient->setDeviceId(m_sEseeId);
+	m_nIDeviceClient->setDevicePorts(m_uiPort);
+		nRet=m_nIDeviceClient->connectToDevice();
 		if (1==nRet)
 		{
 			m_nIDeviceClient->Release();
@@ -103,8 +106,10 @@ void RemotePlaybackThread::GroupPlaySlots( int nTypes,const QString & startTime,
 		m_nIDeviceClient->Release();
 		return;
 	}
-	nRet=m_nIDeviceClient->connectToDevice(m_HostAddress,m_uiPort,m_sEseeId);
-	qDebug()<<nRet;
+	m_nIDeviceClient->setDeviceHost(m_HostAddress);
+	m_nIDeviceClient->setDeviceId(m_sEseeId);
+	m_nIDeviceClient->setDevicePorts(m_uiPort);
+	nRet=m_nIDeviceClient->connectToDevice();
 	if (1==nRet)
 	{
 		m_nIDeviceClient->Release();

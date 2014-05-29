@@ -419,7 +419,6 @@ int  RPlaybackWnd::cbInit()
      bIsInitFlags=true;
      return 0;
  }
-
 void RPlaybackWnd::FoundFile( QVariantMap evMap )
 {
 	QVariantMap::const_iterator it;
@@ -447,7 +446,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 	}else{
 		if (ifilekey%99==0&&ifilekey!=0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<ifilekey;
+			qDebug()<<__FUNCTION__<<__LINE__<<"ifilekey"<<ifilekey<<"fileTotal"<<fileTotal;
 			fileTotal=fileTotal-100;
 			fileKey="0";
 			emit FoundFileToUiS(fileMap);
@@ -458,7 +457,7 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
-	qDebug()<<evMap;
+	qDebug()<<evMap<<__FUNCTION__<<__LINE__;
 	fileTotal=evMap.value("total").toInt();
 	fileKey="0";
 	fileMap.clear();
@@ -572,7 +571,6 @@ void RPlaybackWnd::FoundFileToUislot( QVariantMap evMap )
 
 void RPlaybackWnd::RecFileSearchFinishedToUislot( QVariantMap evMap )
 {
-	qDebug()<<evMap;
 	EventProcCall("recFileSearchFinished",evMap);
 }
 
@@ -586,7 +584,7 @@ void RPlaybackWnd::StateChangeToUislot( QVariantMap evMap )
 	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
 	if (_curConnectType==TYPE_STREAM)
 	{
-		qDebug()<<evMap;
+		qDebug()<<evMap<<__FUNCTION__<<__LINE__;
 		QList<int>::Iterator it;
 		for(it=_widList.begin();it!=_widList.end();it++){
 			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);

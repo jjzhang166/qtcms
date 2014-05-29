@@ -4,14 +4,26 @@
 
 interface IDeviceClient : public IPComBase
 {
-	// 连接到设备
-	// sAddress:设备ip地址
-	// uiPort:设备端口
-	// sEseeId:设备id
-	// 返回值:
-	//	0:连接成功
-	//  1:连接失败
-	virtual int connectToDevice(const QString & sAddr,unsigned int uiPort,const QString & sEseeId) = 0;
+	//设置host,ip地址
+	//返回值
+	//0：设置成功
+	//1：设置失败
+	virtual int setDeviceHost(const QString & sAddr) = 0;
+	//设置Ports
+	//返回值
+	//0：设置成功
+	//1：设置失败
+	virtual int setDevicePorts(unsigned int ports) = 0;
+	//设置易视网Id
+	//返回值
+	//0：设置成功
+	//1：设置失败
+	virtual int setDeviceId(const QString & isee) = 0;
+	//连接设备
+	//返回值
+	//0：连接成功
+	//1：连接失败
+	virtual int connectToDevice() = 0;
 
 	// 校验用户名密码
 	// sUsername:用户名

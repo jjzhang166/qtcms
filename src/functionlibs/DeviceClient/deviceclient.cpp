@@ -216,7 +216,6 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 {
 	// 检测状态
 	// 已连接则返回错误
-	Device_Debug("test");
 	bCloseingFlags=false;
 	m_ports.insert("media",uiPort);
 	//注册回调函数
@@ -385,6 +384,12 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 
 	return 0;
 }
+
+int DeviceClient::connectToDevice()
+{
+	return connectToDevice(m_sAddr,m_uiPort,m_sEseeId);
+}
+
 int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
 {
 	m_sUserName = sUsername;
@@ -681,7 +686,10 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 	{
 		return 2;
 	}
-
+	if (false==bIsInitFlags)
+	{
+		cbInit();
+	}
 	int ret = 1;
 	if (NULL == m_pRemotePlayback)
 	{
@@ -696,6 +704,11 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 	}
 
 	pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
+	pDeviceConnection->setDeviceHost(m_sAddr);
+	pDeviceConnection->setDeviceId(m_sEseeId);
+	QVariantMap ports;
+	ports.insert("media",m_uiPort);
+	pDeviceConnection->setDevicePorts(ports);
 	pDeviceConnection->Release();
 	ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
 
@@ -1142,6 +1155,24 @@ int DeviceClient::ControlPTZStop( const int &nChl, const int &nCmd )
 		return 1;
 	}
 	return m_pProtocolPTZ->PTZStop(nChl, nCmd);
+}
+
+int DeviceClient::setDeviceHost( const QString & sAddr )
+{
+	m_sAddr=sAddr;
+	return 0;
+}
+
+int DeviceClient::setDevicePorts( unsigned int ports )
+{
+	m_uiPort=ports;
+	return 0;
+}
+
+int DeviceClient::setDeviceId( const QString & isee )
+{
+	m_sEseeId=isee;
+	return 0;
 }
 
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)

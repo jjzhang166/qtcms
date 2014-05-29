@@ -51,7 +51,10 @@ public:
 	virtual int queryEvent(QString eventName,QStringList& eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 	//IDeviceClient
-	virtual int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
+	virtual int setDeviceHost(const QString & sAddr);
+	virtual int setDevicePorts(unsigned int ports);
+	virtual int setDeviceId(const QString & isee);
+	virtual int connectToDevice();
 	virtual int checkUser(const QString & sUsername,const QString &sPassword);
 	virtual int setChannelName(const QString & sChannelName);
 	virtual int liveStreamRequire(int nChannel,int nStream,bool bOpen);
@@ -151,6 +154,7 @@ private:
 	int cbInit();
 	void eventProcCall(QString sEvent,QVariantMap param);
 	bool removeRepeatWnd(QWidget*);
+	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 signals:
 	void TerminateConnectSignal();
 	

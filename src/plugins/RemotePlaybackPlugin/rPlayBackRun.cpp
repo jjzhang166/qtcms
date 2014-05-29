@@ -171,23 +171,23 @@ bool rPlayBackRun::__startSearchRecFile()
 				if (m_nIDeviceClient!=NULL)
 				{
 					m_nIDeviceClient->checkUser(sUsername,sPassword);
-					nret=m_nIDeviceClient->connectToDevice(sAddress,uiPort,eseeID);
-					if (nret!=1)
+					m_nIDeviceClient->setDeviceHost(sAddress);
+					m_nIDeviceClient->setDeviceId(eseeID);
+					m_nIDeviceClient->setDevicePorts(uiPort);
+					/*m_nIDeviceClient->connectToDevice();*/
+					IDeviceSearchRecord *m_DeviceSearchRecord=NULL;
+					m_GroupPlaySearch->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
+					if (NULL!=m_DeviceSearchRecord)
 					{
-						IDeviceSearchRecord *m_DeviceSearchRecord=NULL;
-						m_GroupPlaySearch->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
-						if (NULL!=m_DeviceSearchRecord)
+						QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+						QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
+						nret =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
+						if (0==nret)
 						{
-							QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
-							QDateTime end   = QDateTime::fromString(endTime,   "yyyy-MM-dd hh:mm:ss");
-							nret =m_DeviceSearchRecord->startSearchRecFile(nChannel,nTypes,start,end);
-							if (0==nret)
-							{
-								flag=true;
-							}
-							m_DeviceSearchRecord->Release();
-							m_DeviceSearchRecord=NULL;
+							flag=true;
 						}
+						m_DeviceSearchRecord->Release();
+						m_DeviceSearchRecord=NULL;
 					}
 					m_nIDeviceClient->Release();
 					m_nIDeviceClient=NULL;

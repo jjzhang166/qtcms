@@ -92,16 +92,16 @@ signals:
     void sigWriteSocket(QByteArray block);
     void sigChildThreadToConn(QString address, quint16 port);
 private slots:
-    void finishReply();
+    void remoteDataReady();
     void sendHeartBeat();
 private:
     void eventProcCall(QString sEvent,QVariantMap param);
-    void extractRecordInfo(QDomDocument*);
+    int extractRecordInfo(QDomDocument*);
     int  writeBuff(QByteArray &, int, int, uint, uint);
     void setRecordInfo(Record&, QStringList);
     int  isFileExist(QString);
 	int OperatePTZ( const unsigned int &uiChl, const int &nCmd, const int &nSpeed, bool bStart);
-
+	int finishReply();
 private:
 	//member variable about device connection
     QNetworkAccessManager *m_manager;
@@ -126,6 +126,7 @@ private:
     bool   m_bIsPlaybackPaused;
     bool   m_bIsPlaybackStopped;
 	bool   m_bIsResearch;
+	bool	m_bIsdataReady;
 	int    m_channelNum;
 	int    m_streamNum;
 	int    m_streanCount;

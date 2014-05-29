@@ -1662,7 +1662,6 @@ void QSubView::BackToMainThread( QVariantMap evMap)
 	{
 		CloseWndCamera();
 	}
-	
 }
 
 
