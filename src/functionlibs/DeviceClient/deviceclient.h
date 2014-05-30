@@ -25,6 +25,7 @@
 
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbRecFileSearchFailFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
 int cbLiveStreamFormprotocl(QString evName,QVariantMap evMap,void*pUser);
@@ -83,6 +84,7 @@ public:
 	int recordFrame(QVariantMap &evMap);
 	int cbFoundFile(QVariantMap &evmap);
 	int cbRecFileSearchFinished(QVariantMap &evmap);
+	int cbRecFileSearchFail(QVariantMap &evmap);
 	int cbLiveStream(QVariantMap &evmap);
 	int cbSocketError(QVariantMap &evmap);
 

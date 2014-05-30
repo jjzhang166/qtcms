@@ -47,12 +47,14 @@ m_CurStatus(STATUS_STOP)
  	}
 	m_RemotePlaybackObject.SetrPlaybackWnd(this);
 	m_rplaybackrun.cbRegisterEvent("foundFile",cbFoundFile,this);
+	m_rplaybackrun.cbRegisterEvent("recFileSearchFail",cbRecFileSearchFail,this);
 	m_rplaybackrun.cbRegisterEvent("CurrentStatus",cbStateChange,this);
 	m_rplaybackrun.cbRegisterEvent("recFileSearchFinished",cbRecFileSearchFinished,this);
 	m_rplaybackrun.cbRegisterEvent("bufferStatus",cbCacheState,this);
 	bool flag=false;
 	connect(this,SIGNAL(FoundFileToUiS(QVariantMap)),this,SLOT(FoundFileToUislot(QVariantMap)));
  	connect(this,SIGNAL(RecFileSearchFinishedToUiS(QVariantMap)),this,SLOT(RecFileSearchFinishedToUislot(QVariantMap)));
+	connect(this,SIGNAL(FileSearchFailToUiS(QVariantMap)),this,SLOT(FileSearchFailUislot(QVariantMap)));
  	connect(this,SIGNAL(SocketErrorToUiS(QVariantMap)),this,SLOT(SocketErrorToUislot(QVariantMap)));
  	connect(this,SIGNAL(CacheStateToUiS(QVariantMap)),this,SLOT(CacheStateToUislot(QVariantMap)));
 }
@@ -403,17 +405,12 @@ int  RPlaybackWnd::cbInit()
      {
          return 1;
      }
-     pRegist->registerEvent(evName,cbFoundFile,this);
-     evName.clear();
-     evName.append("CurrentStatus");
-     pRegist->registerEvent(evName,cbStateChange,this);
-     evName.clear();
-     evName.append("recFileSearchFinished");
-     pRegist->registerEvent(evName,cbRecFileSearchFinished,this);
-     pRegist->Release();
-	 evName.clear();
-	 evName.append("bufferStatus");
-	 pRegist->registerEvent(evName,cbCacheState,this);
+	 pRegist->registerEvent("foundFile",cbFoundFile,this);
+	 pRegist->registerEvent("CurrentStatus",cbStateChange,this);
+	 pRegist->registerEvent("recFileSearchFinished",cbRecFileSearchFinished,this);
+	 pRegist->registerEvent("bufferStatus",cbCacheState,this);
+     pRegist->registerEvent("recFileSearchFail",cbRecFileSearchFail,this);
+	 pRegist->Release();
      pRegist=NULL;
 
      bIsInitFlags=true;
@@ -611,6 +608,17 @@ int RPlaybackWnd::GetCurrentState()
 	return m_CurStatus;
 }
 
+void RPlaybackWnd::FileSearchFailUislot( QVariantMap evMap)
+{
+	EventProcCall("recFileSearchFail",evMap);
+}
+
+void RPlaybackWnd::RecFileSearchFail( QVariantMap evMap )
+{
+	qDebug()<<evMap<<__FUNCTION__<<__LINE__;
+	emit FileSearchFailToUiS(evMap);
+}
+
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;
@@ -620,7 +628,15 @@ int RPlaybackWnd::GetCurrentState()
      }
      return nRet;
  }
-
+ int cbRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser)
+ {
+	 int nRet = 1;
+	 if (evName == "recFileSearchFail")
+	 {
+		 ((RPlaybackWnd*)pUser)->RecFileSearchFail(evMap);
+	 }
+	 return nRet;
+ }
  int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser)
  {
      int nRet = 1;

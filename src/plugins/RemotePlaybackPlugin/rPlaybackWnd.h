@@ -73,12 +73,14 @@ public slots:
 public slots:
 	void FoundFileToUislot(QVariantMap );
 	void RecFileSearchFinishedToUislot(QVariantMap );
+	void FileSearchFailUislot(QVariantMap);
 	void SocketErrorToUislot(QVariantMap );
 	void StateChangeToUislot(QVariantMap );
 	void CacheStateToUislot(QVariantMap );
 signals:
 	void FoundFileToUiS(QVariantMap );
 	void RecFileSearchFinishedToUiS(QVariantMap );
+	void FileSearchFailToUiS(QVariantMap);
 	void SocketErrorToUiS(QVariantMap );
 	void StateChangeToUiS(QVariantMap );
 	void CacheStateToUiS(QVariantMap );
@@ -92,6 +94,7 @@ public:
 
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);
+	void  RecFileSearchFail(QVariantMap evMap);
 	void  SocketError(QVariantMap evMap);
 	void  StateChange(QVariantMap evMap);
 	void  CacheState(QVariantMap evMap);

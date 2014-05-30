@@ -23,7 +23,7 @@ m_streamNum(0),
 m_streanCount(0)
 {
 	m_eventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
-               <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged";
+               <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail";
 
 // 	m_timer.singleShot(10000, this, SLOT(sendHeartBeat()));
 
@@ -955,8 +955,8 @@ int BubbleProtocol::finishReply()
 	if (200 != statusCode.toInt())
 	{
 		QVariantMap recordTotal;
-		recordTotal.insert("total", QString("%1").arg(0));
-		eventProcCall(QString("recFileSearchFinished"), recordTotal); 
+		//recordTotal.insert("total", QString("%1").arg(0));
+		//eventProcCall(QString("recFileSearchFinished"), recordTotal); 
 		m_block.clear();
 		qDebug()<<__FUNCTION__<<__LINE__<<"statusCode!=200";
 		return 2;
@@ -970,9 +970,9 @@ int BubbleProtocol::finishReply()
 	{
 		delete dom;
 		dom = NULL;
-		QVariantMap recordTotal;
-		recordTotal.insert("total", QString("%1").arg(0));
-		eventProcCall(QString("recFileSearchFinished"), recordTotal); 
+		//QVariantMap recordTotal;
+		//recordTotal.insert("total", QString("%1").arg(0));
+		//eventProcCall(QString("recFileSearchFinished"), recordTotal); 
 		m_block.clear();
 		qDebug()<<__FUNCTION__<<__LINE__<<"dom fail";
 		return 2;
@@ -1002,6 +1002,9 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 	if ( nTypes < 0 || startTime > endTime||m_bIsResearch==true)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+		QVariantMap parm;
+		parm.insert("parm", QString("%1").arg(1));
+		eventProcCall(QString("recFileSearchFail"), parm); 
 		return 2;
 	}
 	//save researchinfo
@@ -1010,6 +1013,7 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 	m_ReSearchInfo.session_total=0;
 	// research
 	bool bSearch=true;
+	int flag=-1;
 	while(bSearch){
 		m_bIsResearch=true;
 		QUrl url;
@@ -1037,7 +1041,7 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()),Qt::DirectConnection);
 			QTimer::singleShot(5000,&loop, SLOT(quit()));
 			loop.exec();
-			int flag=-1;
+			flag=-1;
 			if (m_bIsdataReady==true)
 			{
 				 flag=finishReply();
@@ -1063,11 +1067,23 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			bSearch=false;
 		}
 	}
-	if (!m_lstRecordList.isEmpty())
+	if (!m_lstRecordList.isEmpty()&&(flag!=-1||flag!=2))
 	{
 		return 0;
 	}
-	else
+	else{
+		if (m_lstRecordList.isEmpty())
+		{
+			QVariantMap parm;
+			parm.insert("parm", QString("%1").arg(2));
+			eventProcCall(QString("recFileSearchFail"), parm); 
+		}else{
+			QVariantMap parm;
+			parm.insert("parm", QString("%1").arg(3));
+			eventProcCall(QString("recFileSearchFail"), parm); 
+		}
 		return 1;
+	}
+		
 }
 

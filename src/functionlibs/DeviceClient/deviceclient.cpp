@@ -20,7 +20,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail";
 
 	DeviceClientInfoItem devcliInfo;
 
@@ -45,6 +45,9 @@ DeviceClient::DeviceClient():m_nRef(0),
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("SocketError",devcliInfo);
 
+	devcliInfo.proc=cbRecFileSearchFailFormprotocl;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("recFileSearchFail",devcliInfo);
 	if (NULL != m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
@@ -684,6 +687,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 {
 	if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
 		return 2;
 	}
 	if (false==bIsInitFlags)
@@ -693,6 +697,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 	int ret = 1;
 	if (NULL == m_pRemotePlayback)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
 		return 1;
 	}
 
@@ -700,6 +705,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 	m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
 	if (NULL == pDeviceConnection)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
 		return 1;
 	}
 
@@ -1035,7 +1041,11 @@ int DeviceClient::cbRecFileSearchFinished( QVariantMap &evmap )
 	eventProcCall("recFileSearchFinished",evmap);
 	return 0;
 }
-
+int DeviceClient::cbRecFileSearchFail( QVariantMap &evmap )
+{
+	eventProcCall("recFileSearchFail",evmap);
+	return 0;
+}
 int DeviceClient::cbLiveStream( QVariantMap &evmap )
 {
 	eventProcCall("LiveStream",evmap);
@@ -1204,7 +1214,15 @@ int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUs
 	}
 	return 1;
 }
-
+int cbRecFileSearchFailFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+{
+	if ("recFileSearchFail"==evName)
+	{
+		((DeviceClient*)pUser)->cbRecFileSearchFail(evMap);
+		return 0;
+	}
+	return 1;
+}
 int cbLiveStreamFormprotocl( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)
