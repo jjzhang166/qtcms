@@ -197,7 +197,16 @@ bool rPlayBackRun::__startSearchRecFile()
 			m_GroupPlaySearch=NULL;
 		}
 	}
-	return flag;
+	if (flag==false)
+	{
+		QVariantMap parm;
+		parm.insert("parm",QString("%1").arg(1));
+		__eventProcCall(QString("recFileSearchFail"),parm);
+		return flag;
+	}
+	else{
+		return flag;
+	}
 }
 
 QString rPlayBackRun::__GetNowPlayedTime()
@@ -311,7 +320,6 @@ bool rPlayBackRun::__InitSearchCb(IDeviceGroupRemotePlayback *pSearch)
 {
 	if (pSearch!=NULL)
 	{
-		QString evName = "foundFile";
 		IEventRegister *pRegist = NULL;
 		pSearch->QueryInterface(IID_IEventRegister,(void**)&pRegist);
 		if (NULL!=pRegist)
@@ -349,6 +357,15 @@ void rPlayBackRun::cbRegisterEvent( QString eventName,runEventCallBack eventCB,v
 	procInfo.evCBName = eventCB;
 	procInfo.pUser = pUser;
 	m_mEventCBMap.insert(eventName, procInfo);
+}
+
+void rPlayBackRun::__eventProcCall( QString sEventName,QVariantMap parm )
+{
+	EventCBInfo eventDes=m_mEventCBMap.value(sEventName);
+	if (NULL!=eventDes.evCBName)
+	{
+		eventDes.evCBName(sEventName,parm,eventDes.pUser);
+	}
 }
 
 

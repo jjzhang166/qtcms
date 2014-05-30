@@ -95,7 +95,7 @@ private:
 	bool  __BuildDev(void **ppv);
 	bool  __InitSearchCb(IDeviceGroupRemotePlayback *pSearch);
 	void  __SwitchFunction();
-
+	void __eventProcCall(QString sEventName,QVariantMap parm);
 public slots:
 	void  __ResetForbinFreOpera();
 };

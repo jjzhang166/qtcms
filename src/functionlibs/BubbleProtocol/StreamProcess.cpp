@@ -500,6 +500,8 @@ void StreamProcess::analyzeRecordStream()
 		}
 		if (!m_buffer.startsWith("\xab"))
 		{
+			delete[] dataArr;
+			dataArr = NULL;
 			return;
 		}
 

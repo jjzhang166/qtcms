@@ -946,7 +946,7 @@ int BubbleProtocol::finishReply()
 	m_block += m_reply->readAll();
 	if(m_block.size() < total)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"wait for totalsize";
+		qDebug()<<__FUNCTION__<<__LINE__<<"wait for totalsize"<<m_block.size()<<total;
 		return 1;
 	}
 
@@ -1021,8 +1021,6 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 		url.setHost(m_hostAddress.toString());
 		url.setPath("cgi-bin/gw.cgi");
 		url.setPort(m_ports["media"].toInt());
-		qDebug()<<m_hostAddress.toString();
-		qDebug()<<m_ports["media"].toInt();
 		QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg((unsigned int)nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
 
 		QNetworkRequest request;
@@ -1035,7 +1033,7 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 		bool waitforread=true;
 		int waittime=0;
 		connect(m_reply, SIGNAL(readyRead()), this, SLOT(remoteDataReady()),Qt::DirectConnection);
-		while(waitforread&&waittime<4){
+		while(waitforread&&waittime<2){
 			m_bIsdataReady=false;
 			QEventLoop loop;
 			connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()),Qt::DirectConnection);
@@ -1054,6 +1052,7 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 				waitforread=false;
 			}else{
 				//wait for remain data
+				waittime--;
 			}
 			waittime++;
 		}
@@ -1067,7 +1066,7 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			bSearch=false;
 		}
 	}
-	if (!m_lstRecordList.isEmpty()&&(flag!=-1||flag!=2))
+	if (flag==0)
 	{
 		return 0;
 	}
