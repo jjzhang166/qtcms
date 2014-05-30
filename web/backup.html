@@ -16,15 +16,16 @@
 <script type="text/javascript" src="js/public.js"></script>
 
 <style type="text/css">
-	#search_result{background: #1E1E1E; overflow-x:hidden; overflow-y:auto; position: absolute; top: 78px;}
+	#search_result{background: #1E1E1E; position: absolute; top: 78px;}
 	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
-	#search_result table{ border-collapse:collapse; color: #BEBEBE;width: 100%;}
-	#search_result table td{ border: 1px solid #414141; text-align: center;}
-	#search_result table thead td{ border: none; height: 16px; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;}
+	#search_result table { border-collapse:collapse; color: #BEBEBE;width: 100%;display: block;}
+	#file_warp tbody td{ border: 1px solid #414141; text-align: center; height: 16px;}
 	#search_result .type span{ float: left;}
 	#search_result .type{ height: 14px; width:auto;}
 	#search_result .type .color{height: 10px; width: 16px; margin: 4px 2px;}
+
+	#file_warp thead{height:0;}
 	.switch{ position: relative;}
 
 	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
@@ -138,7 +139,7 @@
 	</div>
 	<div id="search_result">
 			<table>
-				<thead>
+				<thead style="border:0; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;height:18px;">
 					<tr>
 						<td></td>
 						<td><script>T("Device_name")</script></td>
@@ -147,6 +148,19 @@
 						<td><script>T("Star_Time")</script></td>
 						<td><script>T("End_Time")</script></td>
 						<td style="width:300px;"><script>T("Progress")</script></td></tr>
+				</thead>
+			</table>
+			<table id="file_warp" style="overflow-x:hidden; overflow-y:auto; ">
+				<thead>
+					<tr>
+						<td style="width:50px;"></td>
+						<td style="width:160px;"></td>
+						<td style="width:50px;"></td>
+						<td style="width:140px;"></td>
+						<td></td>
+						<td></td>
+						<td style="width:300px;"></td>
+					</tr>
 				</thead>
 				<tbody class="synCheckboxClick" id="search_resultFile">
 					<!-- <tr><td><input type="checkbox" /></td><td>1123123</td><td>1</td><td><span class="type"><span class="hint">定时</span><span class="color" style="background:red"></span></span></td><td>2010-10-10 24:59:59</td><td>2010-10-10 24:59:59</td><td class="progess"><div><span></span></div><a></a></td></tr> -->
@@ -231,17 +245,15 @@ var now = 0;
 		var W = $(window).width();
 			W = W <=1000 ? 1000 : W;
 			H = H <=600 ? 600 : H;
-		var main = $('#search_result');
-		/*if(main.width()<830){
-			main.width(830);
-		}
-		if(main.height()<450){
-			main.height(450);
-		}*/
-		main.css({
+		var main = $('#search_result').css({
 			height: H - 138,
 			width: W - 238
 		});
+
+		$('#file_warp').height(main.height() -18).find('thead td:gt(3)').not(':last').width(($('#file_warp').width()-700)/2);
+
+		theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+
 		$('#search_device').css({
 			left:main.width()+2
 		})

@@ -16,7 +16,7 @@ var oSearchOcx,
 		
 		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
 			closeMenu();
-		})
+		});
 
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
@@ -148,11 +148,9 @@ var oSearchOcx,
 					warp.show();
 					$('ul.ipc_list0').hide();
 				})
-			/*	warp.find('li').each(function(index){
+				/*warp.find('li').each(function(index){
 					$(this).click(function(){
-						alert(index)
-						switch(index)
-						{
+						switch(index){
 							case 0: dvr_devinfo_load_content();break;
 							case 1: dvr_common_load_content();break;
 							case 2: dvr_network_load_content();break;
@@ -546,13 +544,13 @@ var oSearchOcx,
 		}).find('div.right_content:visible');
 
 		if(key == 0){ 
-			var main = $('#SerachDevList');
-			main.css({ 
+			var main = $('#SerachDevList').css({ 
 				height:H-252,
 				width:W-600
 			})
 
 			main.find('thead td').not(':first,:last').width((main.width()-130)/2)
+			theadtbody(main.find('thead td'),main.prev('table').find('thead td'));
 
 			$('#Allocation').css({
 				top:main.height(),

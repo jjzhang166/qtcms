@@ -49,6 +49,7 @@
 	.tb1 td,.tb2,td{width:auto;}
 	.tb1 {display: block; background: #282828; float: left;}
 	.tb1 tr{background: #323232;}
+	.tb1 thead td{height: 0;}
 	.tb2 tbody td{border:1px solid #EDF1F7;}
 	.tb2 .thead td{background:url(images/log/thead_bg.png) repeat-x; height: 16px;}
 	.tb2 thead td{ text-align:center; background:#282828;}
@@ -76,7 +77,7 @@
 <body style="background:#282828;">
 <object type="application/cms-common-library" id="commonLibrary" style="width:0; height:0; position: absolute;"></object>
 <script type="text/javascript">
-	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;;
+	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
 <object type="application/cms-dsview-windows" id="devSearch" style="width:0; height:0;position: absolute;"></object>
 	<div id="top">
@@ -118,7 +119,7 @@
 		</div>
 		<div class="right">
 			<div style="-display:block;" class="right_content">
-				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="overflow-x:hidden;overflow-y:auto; position: absolute; left:0;">
+				<table class="tb1 tb2" style="position: absolute; top:0;">
 					<thead class="thead">
 						<tr>
 							<td style="width:140px;"><script>T("Device")</script></td>
@@ -127,10 +128,20 @@
 							<td style="width:60px;"><script>T("Channels")</script></td>
 						</tr>
 					</thead>
+				</table>
+				<table id="SerachDevList" class="tb1 tb2" cellpadding="0" style="overflow-x:hidden;overflow-y:auto; position: absolute; left:0; top:16px;">
+					<thead>
+						<tr>
+							<td style="width:140px;"></td>
+							<td></td>
+							<td></td>
+							<td style="width:60px;"></td>
+						</tr>						
+					</thead>
 					<tbody id="SerachedDevList" class="synCheckboxClick">
 					</tbody>
-					<input type="hidden" id="AutoSetNetworkInfoID" />
 				</table>
+				<input type="hidden" id="AutoSetNetworkInfoID" />
 				<input type="hidden" id="adddevicedouble_ID" />
 				<input type="hidden" id="adddeviceall_ID" />
 				<input type="hidden" id="removedeviceall_ID" />

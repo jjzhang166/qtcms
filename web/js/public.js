@@ -541,3 +541,9 @@ function getAudioObj(){   //返回当前页面播放的插件对象。
 	}
 	return oAudioObj;
 }
+
+function theadtbody(t1,t2){
+	t1.each(function(index){
+		t2.eq(index).width($(this).width());
+	})
+}

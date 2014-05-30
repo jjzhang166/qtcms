@@ -59,15 +59,23 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 
+			console.log('~~~~~~~~~~~~~~~~~~~~');
+
 			if($(this).prop('checked')){
-				oSelected.push($(this));
+				oSelected.push(this);
+				console.log('------------'+oSelected.length);
+				console.log(oSelected);		
+				if(oSelected.length>4){
+					console.log('++++++++++++'+oSelected.length);
+					console.log(oSelected);			
+					$(oSelected.shift()).prop('checked',false);
+				}
 			}else{ 
-				oSelected.pop($(this));
+				oSelected.pop();
 			}
 
-			if(oSelected.length>4){
-				$(oSelected.shift()).prop('checked',false);
-			}
+			console.log('============='+oSelected.length);
+			console.log(oSelected);
 		})
 
 		channelvideo.on('click','td.no_border',function(event){ 
