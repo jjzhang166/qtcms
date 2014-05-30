@@ -226,7 +226,7 @@ void PlayManager::run()
 
 int PlayManager::prePlay(QVariantMap item)
 {
-	if (NULL == m_pVedioRender)
+	if (NULL == m_pVedioRender || m_bStop)
 	{
 		return 1;
 	}

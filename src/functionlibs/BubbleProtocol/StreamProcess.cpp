@@ -246,6 +246,7 @@ void StreamProcess::receiveStream()
 		}
 		else if (m_buffer.startsWith("\xab") && m_buffer.size() > 5)
 		{
+			m_curHead = '\xab';
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
 			if (m_buffer.size() >= m_nTotalBytes)
@@ -255,6 +256,7 @@ void StreamProcess::receiveStream()
 		}
 		else if (m_buffer.startsWith("\xaa") && m_buffer.size() > 5)
 		{
+			m_curHead = '\xaa';
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
 			if (m_buffer.size() >= m_nTotalBytes)
@@ -262,27 +264,25 @@ void StreamProcess::receiveStream()
 				analyzePreviewStream();
 			}
 		}
-		else if (!m_buffer.isEmpty())//Clear information which does not satisfy the condition
+		//Clear information which does not satisfy the condition
+		if (m_buffer.size() > 6 && !m_buffer.startsWith("\xaa") && !m_buffer.startsWith("\xab"))
 		{
 			int pos = 0;
 			while(pos >= 0)
 			{
-				pos = m_buffer.indexOf('\xaa');
+				pos = m_buffer.indexOf(m_curHead);
+				//not find frame head
 				if (-1 == pos)
 				{
-					pos = m_buffer.indexOf('\xab');
-				}
-				if (pos < 0)
-				{
-					int half = m_buffer.size()/2;
-					m_buffer.remove(0, half);
+					m_buffer.clear();
 					return;
 				}
+				
 				char *pStr = m_buffer.data() + pos;
 				pBubble = (Bubble *)pStr;
 				if ((pBubble->cHead == '\xaa' || pBubble->cHead == '\xab') 
 					&& (pBubble->cCmd == '\x00' || pBubble->cCmd == '\x01' || pBubble->cCmd == '\x02' || pBubble->cCmd == '\x08' || pBubble->cCmd == '\x09')
-					&& (qToBigEndian(pBubble->uiLength) < 100000))
+					&& (qToBigEndian(pBubble->uiLength) < 200000))
 				{
 					m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
 					m_buffer.remove(0, pos);
@@ -299,6 +299,10 @@ void StreamProcess::receiveStream()
 				else
 				{
 					m_buffer.remove(0, pos + 1);
+					if (m_buffer.size() < 6)
+					{
+						return;
+					}
 				}
 			}
 		}
@@ -384,6 +388,10 @@ void StreamProcess::analyzePreviewStream()
 		else if ('\x02'==pBubble->cCmd||'\x08'==pBubble->cCmd)
 		{
 			m_buffer.remove(0,11);
+		}
+		if (!m_buffer.startsWith("\xaa"))
+		{
+			return;
 		}
 		if (m_buffer.size() > 5)
 		{
@@ -489,6 +497,10 @@ void StreamProcess::analyzeRecordStream()
 				eventProcCall(QString("RecordStream"), mStreamInfo);
 			}
 			m_buffer.remove(0, m_nTotalBytes);
+		}
+		if (!m_buffer.startsWith("\xab"))
+		{
+			return;
 		}
 
 		if (m_buffer.size() > 5)

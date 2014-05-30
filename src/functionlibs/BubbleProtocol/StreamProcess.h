@@ -13,7 +13,7 @@ class StreamProcess : public QObject
 {
 	Q_OBJECT
 public:
-	StreamProcess();
+	StreamProcess(void);
 	void setAddressInfo(QHostAddress hostAddress, int port);
 	void setEventMap(QStringList eventList, QMultiMap<QString, ProcInfoItem> eventMap);
     int getSocketState();
@@ -46,7 +46,7 @@ private:
 	int m_nVerifyResult;
 	bool m_bIsSupportBubble;
 	QList<QList<Stream>> m_lstStreamList;
-
+	char m_curHead;
 
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
