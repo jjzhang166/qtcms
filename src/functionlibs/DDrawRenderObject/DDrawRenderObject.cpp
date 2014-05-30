@@ -131,6 +131,7 @@ m_bEnable(true)
 CDDrawRenderObject::~CDDrawRenderObject()
 {
 	DeinitDDrawGlobal();
+	deinit();
 }
 
 int CDDrawRenderObject::init( int nWidth,int nHeight )
