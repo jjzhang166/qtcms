@@ -66,6 +66,10 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 	{
 		m_pRemotePlayBack->GroupSetVolume(0xAECBCA, this);
 	}
+	if (0 == _curCache)
+	{
+		_cacheLable->hide();
+	}
 }
 
 void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
@@ -100,8 +104,8 @@ void RSubView::SetCurConnectState( __enConnectStatus parm  )
 
 void RSubView::CacheState( QVariantMap evMap )
 {
-	int *wind = reinterpret_cast<int*>(this);
-	if (evMap.value("wind").toInt()==*wind)
+// 	int *wind = reinterpret_cast<int*>(this);
+	if (evMap.value("wind").toInt() == (int)this)
 	{
 		emit CacheStateSig(evMap);
 	}

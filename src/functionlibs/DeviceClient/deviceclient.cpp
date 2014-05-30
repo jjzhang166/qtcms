@@ -656,11 +656,13 @@ void DeviceClient::bufferStatus(int persent, BufferManager* pBuff)
 		++iter;
 	}
 // 	void* wind = (void*)iter->wnd;
-	int *wind = reinterpret_cast<int*>(iter->wnd);
+// 	int *wind = reinterpret_cast<int*>(iter->wnd);
+
+	int wind = (int)iter->wnd;
 
 	QVariantMap item;
 	item.insert("Persent", persent);
-	item.insert("wind", *wind);
+	item.insert("wind", wind);
 
 	eventProcCall(QString("bufferStatus"), item);
 }
@@ -767,6 +769,21 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 	m_nStartTimeSeconds = start.toTime_t();
 	int nRet = m_pRemotePlayback->getPlaybackStreamByTime(m_nChannels, nTypes, start, end);
 	m_bGroupStop = false;
+
+	if (!m_groupMap.isEmpty())
+	{
+		QMap<int, WndPlay>::iterator iter = m_groupMap.begin();
+		while(iter != m_groupMap.end())
+		{
+			int wind = (int)iter->wnd;
+			QVariantMap item;
+			item.insert("Persent", 0);
+			item.insert("wind", wind);
+
+			eventProcCall(QString("bufferStatus"), item);
+			iter++;
+		}
+	}
 
 	return nRet;
 }

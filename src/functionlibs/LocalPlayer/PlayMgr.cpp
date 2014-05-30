@@ -377,7 +377,7 @@ int cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 
 int PlayMgr::prePlay(QVariantMap item)
 {
-	if (NULL == m_pVedioRender)
+	if (NULL == m_pVedioRender || !m_bPlaying)
 	{
 		return 1;
 	}

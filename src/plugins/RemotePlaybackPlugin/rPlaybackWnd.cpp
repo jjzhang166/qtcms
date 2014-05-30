@@ -599,7 +599,10 @@ void RPlaybackWnd::CacheStateToUislot( QVariantMap evMap )
 {
 	QList<int>::iterator it;
 	for(it=_widList.begin();it!=_widList.end();it++){
-		m_PlaybackWnd[*it].CacheState(evMap);
+		if (evMap.value("wind").toInt() == (int)&m_PlaybackWnd[*it])
+		{
+			m_PlaybackWnd[*it].CacheState(evMap);
+		}
 	}
 }
 
