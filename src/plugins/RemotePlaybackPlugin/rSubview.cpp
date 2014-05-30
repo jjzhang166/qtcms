@@ -68,7 +68,10 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 	}
 	if (0 == _curCache)
 	{
-		_cacheLable->hide();
+		if (NULL!=_cacheLable)
+		{
+			_cacheLable->hide();
+		}
 	}
 }
 
