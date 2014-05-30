@@ -7,6 +7,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QNetworkReply>
+#include <QTcpSocket>
 #include <QThread>
 #include <QMutex>
 #include <QTimer>
@@ -101,11 +102,10 @@ private:
     void setRecordInfo(Record&, QStringList);
     int  isFileExist(QString);
 	int OperatePTZ( const unsigned int &uiChl, const int &nCmd, const int &nSpeed, bool bStart);
-	int finishReply();
+	int parseSearchData();
 private:
 	//member variable about device connection
-    QNetworkAccessManager *m_manager;
-    QNetworkReply *        m_reply;
+	QTcpSocket m_remoteSearchfileTcpSocket;
 	QByteArray             m_block;
 	QHostAddress           m_hostAddress;
 	QVariantMap            m_ports;

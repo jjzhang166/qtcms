@@ -27,7 +27,6 @@ m_streanCount(0)
 
 // 	m_timer.singleShot(10000, this, SLOT(sendHeartBeat()));
 
-    m_manager = new QNetworkAccessManager(this);
 	m_pStreamProcess = new StreamProcess();
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
@@ -94,7 +93,8 @@ int BubbleProtocol::connectToDevice()
  	connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
  	loop.exec();
  
-  	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
+	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
+
   	emit sigWriteSocket(block.toAscii());
   
   	g_mutex.lock();
@@ -931,69 +931,6 @@ int BubbleProtocol::PTZStop( const int &nChl, const int &nCmd )
 	return OperatePTZ(nChl, nCmd, 0, false);
 }
 
-int BubbleProtocol::finishReply()
-{
-	//0;finish;
-	//1;wait for remain data
-	//2;false;
-	int total = 0;
-	m_bIsdataReady=false;
-	if (m_reply->hasRawHeader("Content-Length"))
-	{
-		total = m_reply->header(QNetworkRequest::ContentLengthHeader).toUInt();
-	}
-
-	m_block += m_reply->readAll();
-	if(m_block.size() < total)
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"wait for totalsize"<<m_block.size()<<total;
-		return 1;
-	}
-
-	QVariant statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-	if (200 != statusCode.toInt())
-	{
-		QVariantMap recordTotal;
-		//recordTotal.insert("total", QString("%1").arg(0));
-		//eventProcCall(QString("recFileSearchFinished"), recordTotal); 
-		m_block.clear();
-		qDebug()<<__FUNCTION__<<__LINE__<<"statusCode!=200";
-		return 2;
-	}
-	int pos = m_block.indexOf("<");
-	QString xml = m_block.mid(pos, m_block.lastIndexOf(">") + 1 - pos);
-
-
-	QDomDocument *dom = new QDomDocument();
-	if(!dom->setContent(xml))
-	{
-		delete dom;
-		dom = NULL;
-		//QVariantMap recordTotal;
-		//recordTotal.insert("total", QString("%1").arg(0));
-		//eventProcCall(QString("recFileSearchFinished"), recordTotal); 
-		m_block.clear();
-		qDebug()<<__FUNCTION__<<__LINE__<<"dom fail";
-		return 2;
-	}
-
-	m_bIsPostSuccessed = true;
-	if (extractRecordInfo(dom)==0)
-	{
-		m_block.clear();
-		delete dom;
-		dom = NULL;
-		qDebug()<<__FUNCTION__<<__LINE__<<"remote search file done";
-		return 0;
-	}else{
-		m_block.clear();
-		delete dom;
-		dom = NULL;
-		qDebug()<<__FUNCTION__<<__LINE__<<"dom fail";
-		return 1;
-	}
-}
 
 int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime )
 {
@@ -1014,58 +951,110 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 	// research
 	bool bSearch=true;
 	int flag=-1;
+	int step=0;
+	int waittime=0;
 	while(bSearch){
-		m_bIsResearch=true;
-		QUrl url;
-		url.setScheme(QLatin1String("http"));
-		url.setHost(m_hostAddress.toString());
-		url.setPath("cgi-bin/gw.cgi");
-		url.setPort(m_ports["media"].toInt());
-		QString sndData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg((unsigned int)nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
-
-		QNetworkRequest request;
-		request.setUrl(url);
-		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-		request.setAttribute(QNetworkRequest::CustomVerbAttribute,true);
-		request.setAttribute(QNetworkRequest::DoNotBufferUploadDataAttribute,true);
-		m_reply = m_manager->post(request, sndData.toUtf8());
-		//设定超时的time
-		bool waitforread=true;
-		int waittime=0;
-		connect(m_reply, SIGNAL(readyRead()), this, SLOT(remoteDataReady()),Qt::DirectConnection);
-		while(waitforread&&waittime<2){
-			m_bIsdataReady=false;
-			QEventLoop loop;
-			connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()),Qt::DirectConnection);
-			QTimer::singleShot(5000,&loop, SLOT(quit()));
-			loop.exec();
-			flag=-1;
-			if (m_bIsdataReady==true)
+		switch(step){
+		case 0://连接到设备
 			{
-				 flag=finishReply();
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"timeout waittime"<<waittime;
-				//do nothing
+				m_remoteSearchfileTcpSocket.connectToHost(m_hostAddress.toString(),(quint16)m_ports["media"].toInt());
+				if (m_remoteSearchfileTcpSocket.waitForConnected(5000))
+				{
+					step=1;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"search remote file connet to device fail";
+					step=5;
+				}
 			}
-			if (flag==0||flag==2)
+			break;
+		case 1://发送数据
 			{
-				waitforread=false;
-			}else{
-				//wait for remain data
-				waittime--;
+				QString post="POST /cgi-bin/gw.cgi HTTP/1.1\r\n";
+				QString content_type="Content-Type: application/x-www-form-urlencoded\r\n";			
+				QString connecttion="Connection: Keep-Alive\r\n";
+				QString accept_encoding="Accept-Encoding: gzip\r\n";
+				QString accept_language="Accept-Language: zh-CN,en,*\r\n";
+				QString user_agent="User-Agent: Mozilla/5.0\r\n";
+				QString host="Host: ";
+				host.append(m_hostAddress.toString()).append(":").append(QString::number(m_ports["media"].toInt())).append("\r\n\r\n");
+				QString sendData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(m_deviceUsername).arg(m_devicePassword).arg((unsigned int)nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_ReSearchInfo.session_index).arg(m_ReSearchInfo.session_count));
+				QString content_length="Content-Length: ";
+				content_length.append(QString::number(sendData.size())).append("\r\n");
+				QString block=post+content_type+content_length+connecttion+accept_encoding+accept_language+user_agent+host+sendData;
+				m_remoteSearchfileTcpSocket.write(block.toAscii());
+				if (m_remoteSearchfileTcpSocket.waitForBytesWritten(1000))
+				{
+					step=2;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"search remote file write data fail";
+					step=4;
+				}
 			}
-			waittime++;
-		}
-		m_reply->deleteLater();
-		//reSearch
-		if (m_ReSearchInfo.session_total-1>m_ReSearchInfo.session_index+100)
-		{
-			m_ReSearchInfo.session_index+=100;
-		}else{
-			m_bIsResearch=false;
-			bSearch=false;
+			break;
+		case 2://接受数据
+			{
+				if (m_remoteSearchfileTcpSocket.waitForReadyRead(3000))
+				{
+					step=3;//有数据，去处理
+					waittime--;
+				}else{
+					if (waittime>2)
+					{
+						step=4;//不再等待，断开连接
+						qDebug()<<__FUNCTION__<<__LINE__<<"wait for remote data outtime"<<waittime;
+					}else{
+						step=2;//接着等待
+						qDebug()<<__FUNCTION__<<__LINE__<<"wait for remote data outtime"<<waittime;
+					}
+					waittime++;
+				}
+			}
+			break;
+		case 3://处理数据
+			{
+				//0:解析完整
+				//1:等待完整数据
+				//2:解析错误
+				int mvalue=parseSearchData();
+				flag=mvalue;
+				if (mvalue==0)
+				{
+					//判断是否需要重新搜索
+					if (m_ReSearchInfo.session_total>m_ReSearchInfo.session_index+100)
+					{
+						step=0;//搜索下一百个文件
+						m_ReSearchInfo.session_index+=100;
+						waittime=0;
+						qDebug()<<__FUNCTION__<<__LINE__<<"research"<<m_ReSearchInfo.session_index;
+						flag=-1;
+						m_remoteSearchfileTcpSocket.disconnectFromHost();
+					}else{
+						step=4;//搜索完成，结束
+					}
+				}else if (mvalue==1)
+				{
+					step=2;//接着等待数据
+				}else{
+					step=4;//解析错误，断开连接
+					qDebug()<<__FUNCTION__<<__LINE__<<"remote data parse fail";
+				}
+			}
+			break;
+		case 4://断开连接
+			{
+				m_remoteSearchfileTcpSocket.disconnectFromHost();
+				step=5;
+			}
+			break;
+		case 5://结束
+			{
+				bSearch=false;//跳出循环
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop search remote file";
+			}
+			break;
 		}
 	}
+	//搜索结果，抛出给外界
 	if (flag==0)
 	{
 		return 0;
@@ -1083,6 +1072,64 @@ int BubbleProtocol::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 		}
 		return 1;
 	}
-		
+}
+
+int BubbleProtocol::parseSearchData()
+{
+	//0:解析完整
+	//1:等待完整数据
+	//2:解析错误
+	int totalsize=0;
+	m_block+=m_remoteSearchfileTcpSocket.readAll();
+	if (m_block.contains("HTTP/1.1 200"))
+	{
+		//keep going
+		if (m_block.contains("Content-Length"))
+		{
+			int pos=m_block.indexOf("Content-Length: ");
+			pos+=QString("Content-Length: ").size();
+			int wsize=m_block.indexOf("\r\n",pos);
+			wsize=wsize-pos;
+			totalsize=m_block.mid(pos,wsize).toInt();
+			if (m_block.size()<totalsize)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"data.size"<<m_block.size()<<totalsize;
+				return 1;
+			}else{
+				//parsedata
+				int pos=m_block.indexOf("<");
+				QString xml=m_block.mid(pos,m_block.lastIndexOf(">")+1-pos);
+				QDomDocument *dom=new QDomDocument();
+				if (!dom->setContent(xml))
+				{
+					delete dom;
+					dom=NULL;
+					m_block.clear();
+					qDebug()<<__FUNCTION__<<__LINE__<<"dom fail";
+					return 2;
+				}else{
+					if (extractRecordInfo(dom)==0)
+					{
+						m_block.clear();
+						delete dom;
+						dom=NULL;
+						qDebug()<<__FUNCTION__<<__LINE__<<"remote search file done";
+						return 0;
+					}else{
+						m_block.clear();
+						delete dom;
+						dom=NULL;
+						return 2;
+					}
+				}
+			}
+		}
+		else{
+			return 1;
+		}
+	}else{
+		m_block.clear();
+		return 2;
+	}
 }
 

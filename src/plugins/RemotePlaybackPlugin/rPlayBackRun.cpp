@@ -174,7 +174,6 @@ bool rPlayBackRun::__startSearchRecFile()
 					m_nIDeviceClient->setDeviceHost(sAddress);
 					m_nIDeviceClient->setDeviceId(eseeID);
 					m_nIDeviceClient->setDevicePorts(uiPort);
-					/*m_nIDeviceClient->connectToDevice();*/
 					IDeviceSearchRecord *m_DeviceSearchRecord=NULL;
 					m_GroupPlaySearch->QueryInterface(IID_IDeviceSearchRecord,(void**)&m_DeviceSearchRecord);
 					if (NULL!=m_DeviceSearchRecord)
