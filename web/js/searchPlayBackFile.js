@@ -120,6 +120,14 @@ function setDevData2ocx(){
 		             .end().find('h4').html(con);
 	}
 
+	function recFileSearchFailCallback(data){
+		console.log(data);
+		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
+		$('#fileRec h4').html(hint[data.parm])
+						.end().show();
+		$('#fileRec').fadeOut(1500);								
+	}
+
 	function RecfinishCallback(data){ //检索完成回调
 		recTotal = data.total ? data.total : 0;	
 	}
@@ -137,3 +145,6 @@ function setDevData2ocx(){
 
 		//console.log('初始化后的设备ID:'+nowDevID);
 	}
+	$(function(){
+		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)');
+	})
