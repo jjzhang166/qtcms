@@ -106,7 +106,7 @@ var oCommonLibrary;
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
-			var add = $('<li><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
+			var add = $('<li class="closed"><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});
 			devChannelList2Ui(id,num);
@@ -144,7 +144,7 @@ var oCommonLibrary;
 		for( i in groupList){
 			var id = groupList[i];
 			var name =oCommonLibrary.GetGroupName(id);
-			var add = $('<li><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo(obj);
+			var add = $('<li class="closed"><span class="group" id="group_'+id+'">'+name+'</span><ul></ul></li>').appendTo(obj);
 			add.find('span.group').data('data',{'group_id':id,'group_name':name});
 			obj.treeview({add:add});
 			groupChannelList2Ui(id);

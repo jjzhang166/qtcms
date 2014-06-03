@@ -379,7 +379,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				var nowfile = $.parseJSON(data[k])
 				if(i == nowfile.channelnum){
 					chlfile.push(nowfile);
-					chlfile.sort(SortfileTime);
+					chlfile.sort(TimeAsc);
 				}
 			}
 			file.push(mergerOrderFile(chlfile));
