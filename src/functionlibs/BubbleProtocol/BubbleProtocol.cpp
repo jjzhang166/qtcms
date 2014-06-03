@@ -1089,8 +1089,9 @@ int BubbleProtocol::parseSearchData()
 			int pos=m_block.indexOf("Content-Length: ");
 			pos+=QString("Content-Length: ").size();
 			int wsize=m_block.indexOf("\r\n",pos);
+			int headsize=wsize;
 			wsize=wsize-pos;
-			totalsize=m_block.mid(pos,wsize).toInt();
+			totalsize=m_block.mid(pos,wsize).toInt()+headsize;
 			if (m_block.size()<totalsize)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"data.size"<<m_block.size()<<totalsize;
