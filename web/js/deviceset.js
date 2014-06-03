@@ -545,7 +545,7 @@ var oSearchOcx,
 
 		if(key == 0){ 
 			var main = $('#SerachDevList').css({ 
-				height:H-252,
+				height:H-260,
 				width:W-600
 			})
 
@@ -553,7 +553,7 @@ var oSearchOcx,
 			theadtbody(main.find('thead td'),main.prev('table').find('thead td'));
 
 			$('#Allocation').css({
-				top:main.height(),
+				top:main.height()+18,
 				width:main.width()
 			}).find('tbody .aa').width((main.width()-176)/2)
 

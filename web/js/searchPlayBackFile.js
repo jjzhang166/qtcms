@@ -121,11 +121,13 @@ function setDevData2ocx(){
 	}
 
 	function recFileSearchFailCallback(data){
-		console.log(data);
+		//console.log(data);
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
-		$('#fileRec h4').html(hint[data.parm])
+		$('#fileRec h4').html('<h4 style="color:red;">'+hint[data.parm]+'</h4>')
 						.end().show();
-		$('#fileRec').fadeOut(1500);								
+		setTimeout(function(){
+			$('#fileRec').fadeOut(1500);
+		},1000);
 	}
 
 	function RecfinishCallback(data){ //检索完成回调

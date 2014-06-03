@@ -19,8 +19,8 @@
 	#search_result{background: #1E1E1E; position: absolute; top: 78px;}
 	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
-	#search_result table { border-collapse:collapse; color: #BEBEBE;width: 100%;display: block;}
-	#file_warp tbody td{ border: 1px solid #414141; text-align: center; height: 16px;}
+	#search_result table { border-collapse:collapse; color: #BEBEBE;width: 100%;display: block; text-align: center;}
+	#file_warp tbody td{ border: 1px solid #414141;height: 16px;}
 	#search_result .type span{ float: left;}
 	#search_result .type{ height: 14px; width:auto;}
 	#search_result .type .color{height: 10px; width: 16px; margin: 4px 2px;}
@@ -291,10 +291,10 @@ var now = 0;
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
-		console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
-		console.log(fileData);
+		/*console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
+		console.log(fileData);*/
 		if(now >= oList.length){
-			console.log('所有选择的文件下载完成!');
+			//console.log('所有选择的文件下载完成!');
 			now=0;
 			oBackup.stopBackup();
 			oList.prop('checked',false);
@@ -327,7 +327,7 @@ var now = 0;
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
+			//console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
 			oWarp.find('.progess span').animate({width:width},1000);
 /*			if(p == 1){
 				//clearInterval(timer);
@@ -338,8 +338,8 @@ var now = 0;
 	}
 
 	function BackupStatusChangeCallback(data){
-		console.log('下载文件状态数据');
-		console.log(data);
+		/*console.log('下载文件状态数据');
+		console.log(data);*/
 		//show('当前文件的下载状态'+data.types);
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 		if(data.types == 'startBackup'){
