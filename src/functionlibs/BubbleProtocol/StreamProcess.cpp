@@ -391,6 +391,8 @@ void StreamProcess::analyzePreviewStream()
 		}
 		if (!m_buffer.startsWith("\xaa"))
 		{
+			delete[] dataArr;
+			dataArr = NULL;
 			return;
 		}
 		if (m_buffer.size() > 5)
