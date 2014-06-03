@@ -59,12 +59,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 
-			console.log('~~~~~~~~~~~~~~~~~~~~');
+			//console.log('~~~~~~~~~~~~~~~~~~~~');
 
 			if($(this).prop('checked')){
 				oSelected.push(this);
-				console.log('------------'+oSelected.length);
-				console.log(oSelected);		
+				/*console.log('------------'+oSelected.length);
+				console.log(oSelected);	*/	
 				if(oSelected.length>4){
 					console.log('++++++++++++'+oSelected.length);
 					console.log(oSelected);			
@@ -74,12 +74,18 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				oSelected.pop();
 			}
 
-			console.log('============='+oSelected.length);
-			console.log(oSelected);
-		})
+			/*console.log('============='+oSelected.length);
+			console.log(oSelected);*/
 
-		channelvideo.on('click','td.no_border',function(event){ 
-			$(this).find('input:checkbox').click();
+			/* 有时候可以选中超过5个以上. 未找出原因. 以下是修正方案：*/
+			if($("#channelvideo :checked").length >4){
+				/*console.log('设置失败,修正!');*/
+				$("#channelvideo :checkbox").prop('checked',false);
+				for( i in oSelected){
+					oSelected[i].checked = true;
+				}
+			}
+			/* 有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
 		})
 
 		channelvideo.on({  //整个搜索的文件列表事件
@@ -405,13 +411,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		chlData.push(oChlfile[n]);		
 		return chlData;
 	}	
-
-	function SortfileTime(a,b){  //文件路径时间升序排列
-		var a = time2Sec(a.start.split(' ')[1]),
-			b = time2Sec(b.start.split(' ')[1]);
-		return a-b;
-	}
-
+	
 	function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
 		var oChannels = $('#dev_'+nowDevID).next('ul').find('span.channel');
 		for(i in data){
@@ -421,7 +421,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				var filepathArr = oChannel.data('filepath');
 					filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
 					filepathArr.push(fileData.filepath);
-					filepathArr.sort(SortByfileTime).join(',');
+					filepathArr.sort(TimeAsc).join(',');
 				oChannel.data('filepath',filepathArr);
 			}
 		}
@@ -488,31 +488,28 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	}
 	//回放页面文件显示表格初始化
 	function PBrecFileTableInit(){
+		$('#channelvideo div.video').remove();
 		var odev = $('div.dev_list li.sel span.channel')
 		var oVideoList = $("#channelvideo").html('');
 		if(odev.length != 0){
 			odev.each(function(index){
 				var name = $(this).data('data').channel_name;
 				var str = index < 4 ? 'checked="checked"' : '';
-				addRecFileTable(str,name);
+				addRecFileTable(str,name,index);
 			})
 		}
 		if(odev.length < 4){
 			for(var i=2;i<=4;i++)
-			addRecFileTable('disabled="disabled"','chl_'+i);
+			addRecFileTable('disabled="disabled"','chl_'+i,i);
 		} 
 
 		setTables();
 
-		/*$("#channelvideo input:checkbox:checked").each(function(){
-			oSelected.push($(this));
-		});*/
-
 		oSelected = $.makeArray($("#channelvideo input:checkbox:checked"));
 	}
 
-	function addRecFileTable(str,name){
-		$('<tr><td class="no_border"><input type="checkbox"'+str+'>'+name+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+	function addRecFileTable(str,name,index){
+		$('<tr><td class="no_border"><input id="chk_'+index+'" type="checkbox"'+str+' /><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 	}
 	function noResize(){
 		bNoResize=0;
@@ -532,8 +529,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},200);
 	}
 	function playBackSerchFile(){
-
-		$('#channelvideo div.video').remove();
 
 		PBrecFileTableInit();
 

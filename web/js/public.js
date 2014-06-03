@@ -486,7 +486,7 @@ function gettime(objs){
 	})
 	return time.join(':');
 }
-function time2Sec(str){ 
+function time2Sec(str){
 	var a =str.split(':');
 	return fuckParseInt(a[0])*60*60+fuckParseInt(a[1])*60+fuckParseInt(a[2]);
 }

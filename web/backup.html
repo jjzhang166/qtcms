@@ -219,11 +219,13 @@ var now = 0;
 	$(window).resize(contentMax);
 
 	function RecFileInfoCallback(recFile){
+		var File = fileSort(recFile,TimeAsc);
+		console.log(File);
 		var b = 1;
 		var n=0;
-		for( i in recFile){ 
+		for( i in File){ 
 		n++;
-		var data = $.parseJSON(recFile[i]);
+		var data = File[i];
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
 		var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 		var type =typeHint[data.types];
@@ -395,7 +397,16 @@ var now = 0;
 
 		})
 		oCheckbox.prop('checked',b);
-	}	
+	}
+
+	function fileSort(recFile,fn){
+		var oRecFile = [];
+		for ( i in recFile){
+			oRecFile.push($.parseJSON(recFile[i]));
+		}
+
+		return oRecFile.sort(fn);
+	}
 
 </script>
 <script type="text/javascript" src="js/searchPlayBackFile.js"></script>

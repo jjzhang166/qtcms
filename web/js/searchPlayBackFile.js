@@ -147,6 +147,11 @@ function setDevData2ocx(){
 
 		//console.log('初始化后的设备ID:'+nowDevID);
 	}
+
+	function TimeAsc(a,b){
+		return time2Sec(a.start.split(' ')[1]) - time2Sec(b.start.split(' ')[1]);
+	}
+
 	$(function(){
 		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)');
 	})
