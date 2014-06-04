@@ -20,6 +20,7 @@
 	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
 	#search_result table { border-collapse:collapse; color: #BEBEBE;width: 100%;display: block; text-align: center;}
+	#search_result .thead td{ background:url(images/log/thead_bg.png) repeat-x 0 0; height: 20px;}
 	#file_warp tbody td{ border: 1px solid #414141;height: 16px;}
 	#search_result .type span{ float: left;}
 	#search_result .type{ height: 14px; width:auto;}
@@ -137,8 +138,8 @@
 		</div>
 	</div>
 	<div id="search_result">
-			<table>
-				<thead style="border:0; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;height:20px;">
+			<table class="thead">
+				<thead style="border:0; font-size: 14px;">
 					<tr>
 						<td></td>
 						<td><script>T("Device_name")</script></td>
@@ -152,10 +153,10 @@
 			<table id="file_warp" style="overflow-x:hidden; overflow-y:auto; position: relative; top:-4px;">
 				<thead>
 					<tr>
-						<td style="width:50px;" class="hover"></td>
-						<td style="width:160px;" class="hover"></td>
-						<td style="width:50px;" class="hover"></td>
-						<td style="width:140px;" class="hover"></td>
+						<td style="width:50px;"></td>
+						<td style="width:160px;"></td>
+						<td style="width:50px;"></td>
+						<td style="width:140px;"></td>
 						<td></td>
 						<td></td>
 						<td style="width:300px;"></td>
@@ -180,10 +181,10 @@
 
 <script type="text/javascript" src="js/ocxfunction.js"></script>
 <script type="text/javascript">
-var oPlayBack={},
-	oBackup={},
-	now = 0,
-	recFile=[];
+var oPlayBack={},  // 远程回访控件对象
+	oBackup={},    // 备份控件对象
+	now = 0,	   // 当前下载的第几个文件
+	recFile=null;  // 搜索文件
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
@@ -208,18 +209,25 @@ var oPlayBack={},
 			$(this).SynchekboxClick();
 		})
 
-		$('#search_result thead:eq(0) td[sort]').click(function(){
-			$('#search_resultFile').html('');
-			var sorType='';
-			if($(this).attr('sorType')){
-				sorType = 'Asc';
-				$(this).removeAttr('sorType');
-			}else{
-				sorType = 'Des';
-				$(this).attr('sorType',1);
-				
+
+		//文件排序
+		$('#search_result thead:eq(0) td:gt(0)').mousedown(function(){ 
+			$(this).css('background-position','0 -20px');
+		}).mouseup(function(){ 
+			$(this).css('background-position','0 0');
+			if($(this).attr('sort') && recFile){ // 文件排序重画UI
+				$('#search_resultFile').html('');
+				var sorType='';
+				if($(this).attr('sorType')){
+					sorType = 'Asc';
+					$(this).removeAttr('sorType');
+				}else{
+					sorType = 'Des';
+					$(this).attr('sorType',1);
+					
+				}
+				reSort_2UI($(this).attr('sort')+sorType);			
 			}
-			reSort_2UI($(this).attr('sort')+sorType);
 		})
 
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');

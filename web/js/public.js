@@ -327,7 +327,7 @@ $(function(){
 	//导航UI切换
 	$('#top div.top_nav li').mousedown(function(){ 
 		$(this).css('background-position','0 -52px');
-	}).mouseup(function(){ 
+	}).mouseup(function(){
 			$(this).css('background-position','0 0');
 	})
 	//时间空间初始化
