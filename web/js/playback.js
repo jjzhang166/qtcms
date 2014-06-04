@@ -454,12 +454,14 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			showRecProgress(n);
 		}
 	}
+
 	function SortByfileTime(a,b){  //文件路径时间升序排列
 		var reg = /.*?(\d{6})\.avi/g;
 		var a = parseInt(a.replace(reg,'$1'));
 		var b = parseInt(b.replace(reg,'$1'));
 		return a - b;
 	}
+
 	function dragStartMove(){
 		var SynTimeUnits = 1000;//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
 		var oPlay = bool ? oPlaybackLocl : oPlayBack;
@@ -520,7 +522,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			if($(window).width() == winW && $(window).height() == winH){
 				if(recFile){
 					for(i in recFile){
-						RecFileInfo2UI(recFile[i]);
+						RecFileInfo2UI();
 					}
 				}
 			}
@@ -536,7 +538,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		ocxsearchVideo();
 
-		//initOxcDevListStatus();
+		initOxcDevListStatus();
 	}
 	function initOxcDevListStatus(){
 		

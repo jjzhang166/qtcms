@@ -25,7 +25,6 @@
 	#search_result .type{ height: 14px; width:auto;}
 	#search_result .type .color{height: 10px; width: 16px; margin: 4px 2px;}
 
-	#file_warp thead{height:0;}
 	.switch{ position: relative;}
 
 	.progess div{ width: 250px; border:1px solid #fff; height: 14px; float: left;}
@@ -139,24 +138,24 @@
 	</div>
 	<div id="search_result">
 			<table>
-				<thead style="border:0; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;height:18px;">
+				<thead style="border:0; background:url(images/log/thead_bg.png) repeat-x 0 0; font-size: 14px;height:20px;">
 					<tr>
 						<td></td>
 						<td><script>T("Device_name")</script></td>
-						<td><script>T("Channel")</script></td>
-						<td><script>T("video_type")</script></td>
-						<td><script>T("Star_Time")</script></td>
-						<td><script>T("End_Time")</script></td>
+						<td sort="Chl"><script>T("Channel")</script></td>
+						<td sort="Type"><script>T("video_type")</script></td>
+						<td sort="Time"><script>T("Star_Time")</script></td>
+						<td sort="Time"><script>T("End_Time")</script></td>
 						<td style="width:300px;"><script>T("Progress")</script></td></tr>
 				</thead>
 			</table>
-			<table id="file_warp" style="overflow-x:hidden; overflow-y:auto; ">
+			<table id="file_warp" style="overflow-x:hidden; overflow-y:auto; position: relative; top:-4px;">
 				<thead>
 					<tr>
-						<td style="width:50px;"></td>
-						<td style="width:160px;"></td>
-						<td style="width:50px;"></td>
-						<td style="width:140px;"></td>
+						<td style="width:50px;" class="hover"></td>
+						<td style="width:160px;" class="hover"></td>
+						<td style="width:50px;" class="hover"></td>
+						<td style="width:140px;" class="hover"></td>
 						<td></td>
 						<td></td>
 						<td style="width:300px;"></td>
@@ -181,8 +180,10 @@
 
 <script type="text/javascript" src="js/ocxfunction.js"></script>
 <script type="text/javascript">
-var oPlayBack,oBackup;
-var now = 0;
+var oPlayBack={},
+	oBackup={},
+	now = 0,
+	recFile=[];
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
@@ -207,6 +208,20 @@ var now = 0;
 			$(this).SynchekboxClick();
 		})
 
+		$('#search_result thead:eq(0) td[sort]').click(function(){
+			$('#search_resultFile').html('');
+			var sorType='';
+			if($(this).attr('sorType')){
+				sorType = 'Asc';
+				$(this).removeAttr('sorType');
+			}else{
+				sorType = 'Des';
+				$(this).attr('sorType',1);
+				
+			}
+			reSort_2UI($(this).attr('sort')+sorType);
+		})
+
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
@@ -218,14 +233,27 @@ var now = 0;
 
 	$(window).resize(contentMax);
 
-	function RecFileInfoCallback(recFile){
-		var File = fileSort(recFile,TimeAsc);
-		console.log(File);
+	function RecFileInfoCallback(data){
+		recFile = [];
+		for ( i in data){
+			recFile.push($.parseJSON(data[i]));
+		}
+		reSort_2UI('TimeAsc');
+	}
+
+	function reSort_2UI(sortfn){
+		var fn = window[sortfn];
+		recFile.sort(fn);
+		RecFile2UI();
+	}
+
+	function RecFile2UI(){
+		$('#search_resultFile').html('');
 		var b = 1;
 		var n=0;
-		for( i in File){ 
+		for( i in recFile){ 
 		n++;
-		var data = File[i];
+		var data = recFile[i];
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
 		var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 		var type =typeHint[data.types];
@@ -398,16 +426,6 @@ var now = 0;
 		})
 		oCheckbox.prop('checked',b);
 	}
-
-	function fileSort(recFile,fn){
-		var oRecFile = [];
-		for ( i in recFile){
-			oRecFile.push($.parseJSON(recFile[i]));
-		}
-
-		return oRecFile.sort(fn);
-	}
-
 </script>
 <script type="text/javascript" src="js/searchPlayBackFile.js"></script>
 </body>

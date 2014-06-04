@@ -148,11 +148,32 @@ function setDevData2ocx(){
 		//console.log('初始化后的设备ID:'+nowDevID);
 	}
 
+	/*排序方法	*/
+
 	function TimeAsc(a,b){
 		return time2Sec(a.start.split(' ')[1]) - time2Sec(b.start.split(' ')[1]);
 	}
 
-	
+	function TimeDes(a,b){
+		return time2Sec(b.start.split(' ')[1]) - time2Sec(a.start.split(' ')[1]);
+	}
+
+	function ChlAsc(a,b){
+		return a.channelnum - b.channelnum;
+	}
+
+	function ChlDes(a,b){
+		return b.channelnum - a.channelnum;
+	}
+
+	function TypeAsc(a,b){
+		return a.types - b.types;
+	}
+
+	function TypeDes(a,b){
+		return b.types - a.types;
+	}
+	/*排序方法	*/	
 
 	$(function(){
 		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)');
