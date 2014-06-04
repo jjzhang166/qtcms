@@ -11,6 +11,9 @@
 #include <QTextCodec>
 #include <IDisksSetting.h>
 
+#include <QDebug>
+#include <QStringList>
+#include <QMultiMap>
 class RemoteBackup : public QThread
 {
 public:
@@ -51,7 +54,7 @@ private:
 	bool connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	bool tryConnectProtocol(CLSID clsid,const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	void stopConnect();
-	void callBackupStatus(QString sstatus);
+	void eventProcCall(QString sEventName,QVariantMap parm);
 	/*bool createFile(const QString &sPath,int nchannel,QDateTime startTime);*/
 	bool createFile();
 	int closeFile();
@@ -91,5 +94,8 @@ private:
 	int m_nchannel;
 	QString m_savePath;
 	QString m_devid;
+
+	QStringList m_eventList;
+	QMultiMap<QString,evItem> m_eventMap;
 };
 

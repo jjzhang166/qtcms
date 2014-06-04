@@ -7,6 +7,7 @@
 #include <QtCore\QIODevice>
 #include <QtCore\QCoreApplication>
 int __cdecl BackupStatusProc(QString sEventName,QVariantMap dvrItem,void * pUser);
+int __cdecl BackupProgressProc(QString sEventName,QVariantMap item, void *pUser);
 
 RemoteBackupWindows::RemoteBackupWindows(QWidget *parent)
 : QWidget(parent),
@@ -55,7 +56,8 @@ bool RemoteBackupWindows::LoadDeviceClient(QString vendor)
 			{
 				IEventRegister* pEventInstance = NULL;
 				m_pRemoteBackup->QueryInterface(IID_IEventRegister,(void**)&pEventInstance);
-				pEventInstance->registerEvent("backupEvent",BackupStatusProc,this);
+				pEventInstance->registerEvent("BackupStatusChange",BackupStatusProc,this);
+				pEventInstance->registerEvent("progress",BackupProgressProc,this);
 				pEventInstance->Release();
 
 			}
@@ -88,7 +90,6 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 }
 int RemoteBackupWindows::stopBackup()
 {
-	qDebug()<<"RemoteBackupWindows :stopBackup";
 	int nRet = 0;
 	if (m_pRemoteBackup)
 	{
@@ -108,9 +109,10 @@ float RemoteBackupWindows::getProgress()
 
 void RemoteBackupWindows::sendToHtml(QVariantMap item)
 {
-	qDebug("BackupStatusChange");
-	qDebug()<<item;
-	EventProcCall("BackupStatusChange",item);
+	QString sEventName=item.value("sEventName").toString();
+	item.remove(sEventName);
+	EventProcCall(sEventName,item);
+
 }
 
 void RemoteBackupWindows::procCallBack(QVariantMap item)
@@ -133,9 +135,20 @@ void RemoteBackupWindows::ChooseDir()
 
 int __cdecl BackupStatusProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {
-	if (sEventName == "backupEvent")
+	if (sEventName == "BackupStatusChange")
 	{
+		dvrItem.insert("sEventName","BackupStatusChange");
 		((RemoteBackupWindows*)pUser)->procCallBack(dvrItem);
+	}
+	return 0;
+}
+
+int __cdecl BackupProgressProc( QString sEventName,QVariantMap item, void *pUser )
+{
+	if (sEventName == "progress")
+	{
+		item.insert("sEventName","progress");
+		((RemoteBackupWindows*)pUser)->procCallBack(item);
 	}
 	return 0;
 }

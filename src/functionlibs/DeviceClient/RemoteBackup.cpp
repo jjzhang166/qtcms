@@ -29,7 +29,9 @@ m_backuping(false),
 m_bFinish(false),
 m_bAudioBeSet(false),
 m_progress(0.0f),
-AviFile(NULL)
+AviFile(NULL),
+m_videoHeight(0),
+m_videoWidth(0)
 {
 	m_backproc.backproc = NULL;
 	m_backproc.pUser = NULL;
@@ -37,11 +39,14 @@ AviFile(NULL)
 	m_nFrameCount = 0;
 	m_nLastTicket = 0;
 	m_firstgentime = 0;
+	m_eventList<<"progress"<<"BackupStatusChange";
 }
 
 
 RemoteBackup::~RemoteBackup(void)
 {
+	m_backuping=false;
+	wait();
 	stopConnect();
 	closeFile();
 	clearbuffer();
@@ -57,14 +62,21 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 {
 	QDir dir;
 	
-	/*m_sttime = startTime.toTime_t();
-	m_edtime = endTime.toTime_t();*/
+
 	if (nChannel<0 || (endTime.toTime_t() < startTime.toTime_t()) || !dir.exists(sbkpath))
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"parm error";
+		QVariantMap item;
+		item.insert("types","fail");
+		eventProcCall("BackupStatusChange",item);
 		return 1;
 	}
 	if (QThread::isRunning())
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"last backup still running";
+		QVariantMap item;
+		item.insert("types","fail");
+		eventProcCall("BackupStatusChange",item);
 		return 2;
 	}
 	m_stime = startTime;
@@ -83,11 +95,17 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 		clearbuffer();
 		if(0 == m_pRemotePlayback->getPlaybackStreamByTime(1<<nChannel,nTypes,startTime,endTime))
 		{
-			callBackupStatus("startBackup");
+			QVariantMap item;
+			item.insert("types","startBackup");
+			eventProcCall("BackupStatusChange",item);
 			start();
 			return 0;
 		}	
 	}
+	qDebug()<<__FUNCTION__<<__LINE__<<"back up connect to device fail";
+	QVariantMap item;
+	item.insert("types","fail");
+	eventProcCall("BackupStatusChange",item);
 	return 2;
 }
 int RemoteBackup::Stop()
@@ -96,7 +114,9 @@ int RemoteBackup::Stop()
 	m_backuping = false;
 
 	wait();
-	callBackupStatus("stopBackup");
+	QVariantMap item;
+	item.insert("types","stopBackup");
+	eventProcCall("BackupStatusChange",item);
 	return 0;
 }
 float RemoteBackup::getProgress()
@@ -168,7 +188,15 @@ int RemoteBackup::SetBackupEvent(QString eventName,int (__cdecl *proc)(QString,Q
 {
 	m_backproc.backproc = proc;
 	m_backproc.pUser = pUser;
-
+	if (!m_eventList.contains(eventName))
+	{
+		return -1;
+	}else{
+		evItem proInfo;
+		proInfo.pUser=pUser;
+		proInfo.backproc=proc;
+		m_eventMap.insert(eventName,proInfo);
+	}
 	return 0;
 }
 
@@ -236,22 +264,17 @@ void RemoteBackup::stopConnect()
 		m_pRemotePlayback = NULL;
 	}
 }
-void RemoteBackup::callBackupStatus(QString sstatus)
-{
-	if (m_backproc.backproc)
-	{
-		QVariantMap evMap;
-		evMap.insert("types",sstatus);
-		m_backproc.backproc("backupEvent",evMap,m_backproc.pUser);
-	}
-}
+
 bool RemoteBackup::createFile()
 {
 	QDir dir;
-	if (!dir.exists(m_savePath))
+	if (!dir.exists(m_savePath)){
+		qDebug()<<__FUNCTION__<<__LINE__<<m_savePath<<"is no exists";
 		return false;
-	if (!m_backuping)
-	{
+	}else{
+		//keep going
+	}
+
 		QString fullname = m_savePath ;
 		char sChannelNum[3];
 		sprintf(sChannelNum,"%02d",m_nchannel+1);
@@ -264,24 +287,47 @@ bool RemoteBackup::createFile()
 		if (file.exists())
 		{
 			file.remove();
+		}else{
+			//keep going
 		}
-		//QByteArray tochar;
-		//QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
-		//QTextCodec *codec=QTextCodec::codecForName("GB18030");
-		//QString touic=codec->fromUnicode(fullname);
-		//QString uic=codec->toUnicode(touic.toLatin1());
-		//AviFile = AVI_open_output_file(uic.toLatin1().data());
 		QTextCodec * codec = QTextCodec::codecForLocale();
 		QByteArray byAyFullName = codec->fromUnicode(fullname);
 		AviFile = AVI_open_output_file(byAyFullName.data());
-		if (NULL == AviFile) 
+		if (NULL == AviFile) {
+			qDebug()<<__FUNCTION__<<__LINE__<<fullname<<"open fail";
 			return false;
-
-		AVI_set_video(AviFile,m_videoWidth,m_videoHeight,25,"X264");
-		memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
-	}
-
-	return true;
+		}else{
+			//keep going
+		}
+		int timeout=0;
+		bool btimeout=true;
+		while(btimeout&&timeout<50){
+			if (m_videoWidth==0)
+			{
+				timeout++;
+				msleep(100);
+			}else{
+				AVI_set_video(AviFile,m_videoWidth,m_videoHeight,25,"X264");
+				memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
+				btimeout=false;
+			}
+		}
+		if (btimeout)
+		{
+			AVI_close(AviFile);
+			AviFile = NULL;
+			QFile file;
+			file.setFileName(fullname);
+			if (file.exists())
+			{
+				file.remove();
+			}else{
+				//keep going
+			}
+			return false;
+		}else{
+			return true;
+		}
 }
 int RemoteBackup::closeFile()
 {
@@ -334,102 +380,174 @@ void RemoteBackup::clearbuffer()
 	}
 	m_bufflock.unlock();
 }
-
 void RemoteBackup::run()
 {
-
-	if (createFile())
-	{
-		m_backuping = true;
-	}else{
-		 callBackupStatus("noStream");
-	}
-	if (false==getUsableDisk(m_savePath))
-	{
-		callBackupStatus("insufficient-disk");
-		qDebug("Out of Disk Space");
-	}
-	int timeout = 0;
+	m_backuping=true;
+	int step=0;
+	int timeout=0;
 	RecFrame recframe;
 
 	unsigned int sdtime = m_stime.toTime_t();
 	unsigned int edtime = m_etime.toTime_t();
 	bool m_firstflame=true;
-	while(m_backuping )
-	{
-		if (m_bufferqueue.size()>0)
-		{
-			timeout=0;
-			m_bufflock.lock();
-			recframe = m_bufferqueue.dequeue();
-			m_bufflock.unlock();
-
-			//Calculation the progress
-			
-			unsigned int curr_gentime = recframe.gentime;
-			if (true==m_firstflame)
+	int lastproess=0;
+	while(m_backuping){
+		switch(step){
+		case 0://创建文件
 			{
-				m_firstgentime=curr_gentime;
-				m_firstflame=false;
-			}
-			if(curr_gentime>=m_firstgentime)
-				m_progress = (float)(curr_gentime - m_firstgentime)/(edtime - sdtime);
-
-			
-			//write the video file
-			if (AVENC_IDR == recframe.type || AVENC_PSLICE == recframe.type)
-			{
-				AVI_write_frame(AviFile,recframe.pdata,recframe.datasize,(AVENC_IDR == recframe.type));
-			}// first audio frame
-			else if (0x00 == recframe.type)
-			{
-				if (!m_bAudioBeSet)
+				if (createFile())
 				{
-					int AudioFormat = WAVE_FORMAT_ALAW;
-
-					AVI_set_audio(AviFile, 1, m_samplerate, m_samplewidth, AudioFormat, 64);
-					m_bAudioBeSet = true;
+					step=1;//创建成功
+				}else{
+					step=5;//创建失败，结束
+					qDebug()<<__FUNCTION__<<__LINE__<<"creat file fail";
+					QVariantMap item;
+					item.insert("types","fail");
+					eventProcCall("BackupStatusChange",item);
 				}
-				AVI_write_audio(AviFile,recframe.pdata ,recframe.datasize);
 			}
-		
-			delete[] recframe.pdata;
-			recframe.pdata = NULL;
-
-			if (m_progress>=1.0f || AVI_bytes_written(AviFile)>1024*1024*1024)	
+			break;
+		case 1://检测磁盘空间是否足够，至少大于2g
 			{
-				//完成备份
-				callBackupStatus("backupFinished");
-				break;
+				if (getUsableDisk(m_savePath))
+				{
+					step=2;
+				}else{
+					step=5;//磁盘空间不足
+					qDebug()<<__FUNCTION__<<__LINE__<<"insufficient-disk";
+					QVariantMap item;
+					item.insert("types","insufficient-disk");
+					eventProcCall("BackupStatusChange",item);
+				}
 			}
-
-			quint64 FreeByteAvailable;
-			quint64 TotalNumberOfBytes;
-			quint64 TotalNumberOfFreeBytes;
-			GetDiskFreeSpaceExQ(m_savePath.left(2).toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
-			if (TotalNumberOfFreeBytes<1024*1024)
+			break;
+		case 2://是否有码流
 			{
-				callBackupStatus("diskfull");
-				break;
+				if (m_bufferqueue.size()>0)
+				{
+					step=3;
+					timeout=0;
+				}else{
+					step=2;
+					msleep(100);//等待码流
+					timeout++;
+					if (timeout>50)
+					{
+						step=5;//超时没有码流,结束备份
+						qDebug()<<__FUNCTION__<<__LINE__<<"time out ,no stream";
+						QVariantMap item;
+						item.insert("types","fail");
+						eventProcCall("BackupStatusChange",item);
+					}else{
+						//do nothing
+					}
+				}
 			}
-
-		}
-		else 
-		{
-			timeout++;
-			if (timeout>50)
+			break;
+		case 3:
 			{
-			    callBackupStatus("noStream");
-			    break;
+				m_bufflock.lock();
+				recframe = m_bufferqueue.dequeue();
+				m_bufflock.unlock();
+
+				//Calculation the progress
+				unsigned int curr_gentime = recframe.gentime;
+				if (true==m_firstflame)
+				{
+					m_firstgentime=curr_gentime;
+					m_firstflame=false;
+				}
+				if(curr_gentime>=m_firstgentime){
+					m_progress = (float)(curr_gentime - m_firstgentime)/(edtime - sdtime);
+					int progress=m_progress*1000;
+					if (progress%10==0&&progress>9&&progress>lastproess)
+					{
+						lastproess=progress;
+						QVariantMap item;
+						item.insert("parm",progress/10);
+						eventProcCall("progress",item);
+
+					}else{
+						//do nothing
+					}
+				}else{
+					//do nothing;
+				}
+					
+				if (AVENC_IDR==recframe.type||AVENC_PSLICE==recframe.type)//video
+				{
+					AVI_write_frame(AviFile,recframe.pdata,recframe.datasize,(AVENC_IDR==recframe.type));
+				}else if (0x00==recframe.type)//audio
+				{
+					if (!m_bAudioBeSet)
+					{
+						int AudioFormat=WAVE_FORMAT_ALAW;
+						AVI_set_audio(AviFile,1,m_samplerate,m_samplewidth,AudioFormat,64);
+						m_bAudioBeSet=true;
+					}else{
+						//do nothing
+					}
+
+					AVI_write_audio(AviFile,recframe.pdata,recframe.datasize);
+				}else{
+					//do nothing;
+				}
+
+				delete[] recframe.pdata;
+				recframe.pdata = NULL;
+				step =4;
 			}
-			msleep(100);
+			break;
+		case 4://判断是否结束
+			{
+				if (AVI_bytes_written(AviFile)>1024*1024*1024)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"file size >1G,stop back up";
+
+					QVariantMap item;
+					item.insert("parm",100);
+					eventProcCall("progress",item);
+					item.clear();
+					item.insert("types","backupFinished");
+					eventProcCall("BackupStatusChange",item);
+					step=5;//文件最大不超过1G
+				}else if (m_progress>=1.0f)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"m_progress"<<m_progress<<"back up finish";
+					QVariantMap item;
+					item.insert("parm",100);
+					eventProcCall("progress",item);
+					item.clear();
+					item.insert("types","backupFinished");
+					eventProcCall("BackupStatusChange",item);
+					step=5;//文件下载完毕
+				}else if (m_progress>=0.9f&&timeout>20)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"m_progress"<<m_progress<<"back up finish";
+					QVariantMap item;
+					item.insert("parm",100);
+					eventProcCall("progress",item);
+					item.clear();
+					item.insert("types","backupFinished");
+					eventProcCall("BackupStatusChange",item);
+					step =5;//文件下载完毕,修正进度条不能满0.99的情况
+				}
+				else{
+					//keep backing up
+					step =2;
+				}
+			}
+			break;
+		case 5://结束
+			{
+				closeFile();
+				clearbuffer();
+				m_backuping = false;
+				m_firstgentime = 0;
+			}
+			break;
 		}
 	}
-
-	closeFile();
-	clearbuffer();
-	m_backuping = false;
-	m_firstgentime = 0;
 }
 
 bool RemoteBackup::getUsableDisk(QString sdisk)
@@ -440,19 +558,35 @@ bool RemoteBackup::getUsableDisk(QString sdisk)
 	sdisk=distlist.at(0);
 	sdisk.append(":");
 		//使用默认大小
-	freesizem=500;
+	freesizem=1024;
 	quint64 FreeByteAvailable;
 	quint64 TotalNumberOfBytes;
 	quint64 TotalNumberOfFreeBytes;
 	if (GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes))
 	{
-		if (TotalNumberOfFreeBytes>(quint64)freesizem*1024*1024)
+		if (TotalNumberOfFreeBytes>(quint64)freesizem*1024*1024*2)
 		{
 			flags=true;
 		}
 	}
 	return flags;
 }
+
+
+
+void RemoteBackup::eventProcCall( QString sEventName,QVariantMap parm )
+{
+	if (m_eventList.contains(sEventName))
+	{
+		evItem eventDec=m_eventMap.value(sEventName);
+		if (NULL!=eventDec.backproc)
+		{
+			eventDec.backproc(sEventName,parm,eventDec.pUser);
+		}
+	}
+}
+
+
 
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser)
 {

@@ -188,7 +188,12 @@ int DeviceClient::queryEvent(QString eventName,QStringList& eventParams)
 
 int DeviceClient::registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser)
 {
-	if ("backupEvent" == eventName)
+	if ("BackupStatusChange" == eventName)
+	{
+		m_RemoteBackup.SetBackupEvent(eventName,proc,pUser);
+		return IEventRegister::OK;
+	}
+	if ("progress"==eventName)
 	{
 		m_RemoteBackup.SetBackupEvent(eventName,proc,pUser);
 		return IEventRegister::OK;
