@@ -8,17 +8,6 @@
 #define AVENC_PSLICE	0x02
 #define AVENC_AUDIO		0x00
 
-//#pragma pack(4)
-//typedef struct _tagAudioBufAttr{
-//	int entries;
-//	int packsize;
-//	unsigned long long pts;
-//	time_t * gtime;
-//	char encode[8];
-//	int samplerate;
-//	int samplewidth;
-//}AudioBufAttr;
-//#pragma pack()
 
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser);
 
@@ -69,6 +58,9 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 		QVariantMap item;
 		item.insert("types","fail");
 		eventProcCall("BackupStatusChange",item);
+		item.clear();
+		item.insert("types","stopBackup");
+		eventProcCall("BackupStatusChange",item);
 		return 1;
 	}
 	if (QThread::isRunning())
@@ -76,6 +68,9 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 		qDebug()<<__FUNCTION__<<__LINE__<<"last backup still running";
 		QVariantMap item;
 		item.insert("types","fail");
+		eventProcCall("BackupStatusChange",item);
+		item.clear();
+		item.insert("types","stopBackup");
 		eventProcCall("BackupStatusChange",item);
 		return 2;
 	}
@@ -105,6 +100,9 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 	qDebug()<<__FUNCTION__<<__LINE__<<"back up connect to device fail";
 	QVariantMap item;
 	item.insert("types","fail");
+	eventProcCall("BackupStatusChange",item);
+	item.clear();
+	item.insert("types","stopBackup");
 	eventProcCall("BackupStatusChange",item);
 	return 2;
 }
@@ -544,6 +542,9 @@ void RemoteBackup::run()
 				clearbuffer();
 				m_backuping = false;
 				m_firstgentime = 0;
+				QVariantMap item;
+				item.insert("types","stopBackup");
+				eventProcCall("BackupStatusChange",item);
 			}
 			break;
 		}
