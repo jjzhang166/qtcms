@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -219,10 +219,10 @@ var oPlayBack={},  // 远程回访控件对象
 				$('#search_resultFile').html('');
 				var sorType='';
 				if($(this).attr('sorType')){
-					sorType = 'Asc';
+					sorType = 'Des';
 					$(this).removeAttr('sorType');
 				}else{
-					sorType = 'Des';
+					sorType = 'Asc';
 					$(this).attr('sorType',1);
 					
 				}
@@ -234,6 +234,7 @@ var oPlayBack={},  // 远程回访控件对象
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
+		oBackup.AddEventProc('progress','progressCallback(data)');
 
 		initOxcDevListStatus()
 
@@ -246,7 +247,7 @@ var oPlayBack={},  // 远程回访控件对象
 		for ( i in data){
 			recFile.push($.parseJSON(data[i]));
 		}
-		reSort_2UI('TimeAsc');
+		reSort_2UI('TimeDes');
 	}
 
 	function reSort_2UI(sortfn){
@@ -257,15 +258,15 @@ var oPlayBack={},  // 远程回访控件对象
 
 	function RecFile2UI(){
 		$('#search_resultFile').html('');
-		var b = 1;
-		var n=0;
+		var b = 1,
+			n=0;
 		for( i in recFile){ 
-		n++;
-		var data = recFile[i];
-		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
-		var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
-		var type =typeHint[data.types];
-		var typeColor = color[data.types];
+			n++;
+			var data = recFile[i];
+			var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
+			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
+			var type =typeHint[data.types];
+			var typeColor = color[data.types];
 			$('#search_resultFile tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
 				if(uid == $(this).attr('uid')){
 					b=0;
@@ -277,6 +278,7 @@ var oPlayBack={},  // 远程回访控件对象
 		}	
 		showRecProgress(n);
 	}
+
 	function contentMax(){
 		var H = $(window).height();
 		var W = $(window).width();
@@ -308,6 +310,7 @@ var oPlayBack={},  // 远程回访控件对象
 	function getDir(){ 
 		oBackup.ChooseDir();
 	};
+
 	var path = '',
 		now = 0,
 		timer = null;
@@ -319,8 +322,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function startDownload(){
-		//show('开始下载当前第'+now+'个文件!');
-		var oList = $('#search_result input:checked')
+		var oList = $('#search_result input:checked');
+		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!');
 /*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
 			now=0;
@@ -329,16 +332,8 @@ var oPlayBack={},  // 远程回访控件对象
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		//show(oDevData);
 		var fileData = oList.eq(now).data('data');
-		/*console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
-		console.log(fileData);*/
-		if(now >= oList.length){
-			//console.log('所有选择的文件下载完成!');
-			now=0;
-			oBackup.stopBackup();
-			oList.prop('checked',false);
-			clearInterval(timer);
-			return;
-		}
+		//console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
+		//console.log(fileData);
 		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData.channelnum-1),fileData.types,fileData.start,fileData.end,path) != 0){
 			alert(T('File_download_failed',now));
 			now++;
@@ -352,8 +347,20 @@ var oPlayBack={},  // 远程回访控件对象
 			return index != 0;
 		})*/
 	}
+	function progressCallback(data){
+		//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+data.parm+'---------自动抛出进度---------');
+		var oWarp = $('#search_result tr').has('input:checked').eq(now);
+			oWarp.find('a').one('click',function(){
+				backupstop();
+				//show('当前第'+now+'个任务已被终止!');
+				return;
+			})
+		var width = (data.parm/100)*oWarp.find('div').width()+1;
+			oWarp.find('.progess span').animate({width:width},1000);
+	}
 	
-	function syndownload(){
+	function syndownload(){   //同步下载文件状态.
+		return;
 		var i=0;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
 			oWarp.find('a').one('click',function(){
@@ -365,8 +372,8 @@ var oPlayBack={},  // 远程回访控件对象
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			//console.log('当前第'+now+'个文件的下载进度为'+p+'::所耗时间为'+i+'秒!');
 			oWarp.find('.progess span').animate({width:width},1000);
+			console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
 /*			if(p == 1){
 				//clearInterval(timer);
 				$('#search_result tr').has('input:checked').eq(now).prop('checked',false).find('span').width(oWarp.find('div').width());
@@ -376,33 +383,48 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function BackupStatusChangeCallback(data){
-		/*console.log('下载文件状态数据');
-		console.log(data);*/
-		//show('当前文件的下载状态'+data.types);
-		var oWarp = $('#search_result tr').has('input:checked').eq(now);
-		if(data.types == 'startBackup'){
+		var oList = $('#search_result input:checked'),
+			oWarp = oList.eq(now).parent('tr'),
+			types = data.types;
+		console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'-----------------------');
+		/*if(types == 'startBackup'){
 			syndownload();
-		}else{
-			now++;
-			if(data.types == 'backupFinished'){ 
+		}else{*/
+
+			if(types == 'backupFinished'){ 
+				console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
 				oWarp.find('.progess span').animate({width:'100%'},1000);
 				     //.end().find('input').prop('checked',false);
 			}
-			oWarp.find('a').off();
-			clearInterval(timer);
-			var oList = $('#search_result input:checked');
-			if(data.types=='insufficient-disk'){
-				oBackup.stopBackup();
+
+			if(types=='insufficient-disk'){
+				backupstop();
 				oList.prop('checked',false);
 				alert(lang.Insufficient_Disk_Space);
 				return;
 			}
-			startDownload();
-		}
+
+			if( types == 'Fail')
+				console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
+			if( types == 'stopBackup' ){
+				now++;
+				if(now == oList.length){
+					backupstop();
+					return;
+				}
+				oWarp.find('a').off();
+				clearInterval(timer);
+				startDownload();
+			}
+		/*}*/
 	}
 
 	function backupstop(){
-		oBackup.stopBackup()
+		console.log('所有选择的文件下载完成!!!');
+		oBackup.stopBackup();
+		now=0;
+		$('#search_result input:checked').prop('checked',false);
+		clearInterval(timer);
 	}
 
 	function backupSearchFile(){

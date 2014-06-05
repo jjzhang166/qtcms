@@ -5,7 +5,7 @@
 #include <IActivities.h>
 #include <QWebInspector>
 
-#define __USE_WEB_DEBUGER__
+//#define __USE_WEB_DEBUGER__
 
 class QJaWebView : public QWebView
 {
