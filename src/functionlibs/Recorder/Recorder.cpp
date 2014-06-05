@@ -279,15 +279,17 @@ void Recorder::run()
 					m_dataqueue.pop_front();
 				}
 				m_dataRef.unlock();
-				long nWrittenSize = AVI_bytes_written(AviFile);
-				if (nWrittenSize > 1024 * 1024 * fileMaxSize)
-				{
-					qDebug("File over 128M\n");
-					nRecStep = 4;
-				}
+
 
 				if (m_bcheckdiskfreesize==true)
 				{
+					long nWrittenSize = AVI_bytes_written(AviFile);
+					if (nWrittenSize > 1024 * 1024 * fileMaxSize)
+					{
+						qDebug("File over 128M\n");
+						nRecStep = 4;
+					}
+
 					m_bcheckdiskfreesize=false;
 					QString sdisk = sSavePath.left(2);
 					quint64 FreeByteAvailable;
