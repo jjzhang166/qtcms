@@ -9,6 +9,7 @@
 #include "IRecorder.h"
 #include "StorageMgr.h"
 #include <IEventRegister.h>
+#include <QTimer>
 
 //#define REC_SYS_DATA					0x11
 #define AVENC_IDR		0x01
@@ -19,6 +20,7 @@ class Recorder : public QThread,
 	public IRecorder,
 	public IEventRegister
 {
+	Q_OBJECT
 public:
 	Recorder();
 	~Recorder();
@@ -42,11 +44,6 @@ public:
 	virtual int queryEvent(QString eventName,QStringList& eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 
-	/*typedef struct _tagFrameInfo{
-	char * pData;
-	unsigned int uiDataSize;
-	unsigned int uiTimeStamp;
-	}FrameInfo;*/
 
 	typedef struct _tagVideoInfo{
 		unsigned int uiWidth;
@@ -58,13 +55,14 @@ public:
 		unsigned int  dwDataType;
 		unsigned int  dwBufferSize;
 		unsigned int  dwTicketCount;
-		//int    nWidth;
-		//int    nHeight;
+
 		char * Buffer;
 		int samplerate;
 		int samplewidth;
 		char encode[8];
 	}RecBufferNode;
+public slots:
+	void checkdiskfreesize();
 protected:
 	void run();
 private:
@@ -100,7 +98,9 @@ private:
 	QStringList m_eventList;
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 
-
+	//checkdiskfreesize
+	bool m_bcheckdiskfreesize;
+	QTimer m_checkdisksize;
 };
 
 #endif // RECORDER_H
