@@ -85,7 +85,6 @@ private:
 
 	/*unsigned int m_sttime;
 	unsigned int m_edtime;*/
-	
 	float m_progress;
 	unsigned int m_firstgentime;
 	
@@ -94,6 +93,9 @@ private:
 	int m_nchannel;
 	QString m_savePath;
 	QString m_devid;
+	QString m_sAddr;
+	unsigned int m_uiPort;
+	int m_nTypes;
 
 	QStringList m_eventList;
 	QMultiMap<QString,evItem> m_eventMap;

@@ -77,7 +77,7 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 	const QString & endTime,
 	const QString & sbkpath)
 {
-	qDebug()<<"RemoteBackupWindows:startBackup"<<"startBackup"<<"sAddr:"<<sAddr<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"nTypes"<<nTypes<<"startTime"<<startTime<<"endTime"<<endTime<<"sbkpath"<<sbkpath;
+	qDebug()<<__FUNCTION__<<__LINE__<<"sAddr:"<<sAddr<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"nTypes"<<nTypes<<"startTime"<<startTime<<"endTime"<<endTime<<"sbkpath"<<sbkpath<<"chl"<<nChannel;
 	int nRet = 0;
 	QDateTime stime = QDateTime::fromString(startTime,"yyyy-MM-dd hh:mm:ss");
 	QDateTime etime = QDateTime::fromString(endTime,"yyyy-MM-dd hh:mm:ss");
@@ -90,6 +90,7 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 }
 int RemoteBackupWindows::stopBackup()
 {
+	qDebug()<<__FUNCTION__<<__LINE__;
 	int nRet = 0;
 	if (m_pRemoteBackup)
 	{

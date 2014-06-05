@@ -36,7 +36,6 @@ RemoteBackup::~RemoteBackup(void)
 {
 	m_backuping=false;
 	wait();
-	stopConnect();
 	closeFile();
 	clearbuffer();
 }
@@ -65,13 +64,7 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 	}
 	if (QThread::isRunning())
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"last backup still running";
-		QVariantMap item;
-		item.insert("types","fail");
-		eventProcCall("BackupStatusChange",item);
-		item.clear();
-		item.insert("types","stopBackup");
-		eventProcCall("BackupStatusChange",item);
+		qDebug()<<__FUNCTION__<<__LINE__<<"last backup still running,please call the function of Stop() before call the function of StartByParam()";
 		return 2;
 	}
 	m_stime = startTime;
@@ -79,36 +72,17 @@ int RemoteBackup::StartByParam(const QString &sAddr,unsigned int uiPort,const QS
 	m_nchannel = nChannel;
 	m_savePath = sbkpath;
 	m_devid = sEseeId;
-	if (connectToDevice(sAddr,uiPort,sEseeId))
-	{
-		IEventRegister* pEventRegister = NULL;
-		m_pBackupConnect->QueryInterface(IID_IEventRegister,(void**)&pEventRegister);
-		pEventRegister->registerEvent("RecordStream",cbGetStream,this);
-		pEventRegister->Release();
-
-		//++start backup
-		clearbuffer();
-		if(0 == m_pRemotePlayback->getPlaybackStreamByTime(1<<nChannel,nTypes,startTime,endTime))
-		{
-			QVariantMap item;
-			item.insert("types","startBackup");
-			eventProcCall("BackupStatusChange",item);
-			start();
-			return 0;
-		}	
-	}
-	qDebug()<<__FUNCTION__<<__LINE__<<"back up connect to device fail";
+	m_sAddr=sAddr;
+	m_nTypes=nTypes;
+	m_uiPort=uiPort;
 	QVariantMap item;
-	item.insert("types","fail");
+	item.insert("types","startBackup");
 	eventProcCall("BackupStatusChange",item);
-	item.clear();
-	item.insert("types","stopBackup");
-	eventProcCall("BackupStatusChange",item);
-	return 2;
+	start();
+	return 0;
 }
 int RemoteBackup::Stop()
 {
-	stopConnect();
 	m_backuping = false;
 
 	wait();
@@ -201,13 +175,13 @@ bool RemoteBackup::connectToDevice(const QString &sAddr,unsigned int uiPort,cons
 	int amount=3;
 	while(amount>0){
 		//尝试bubble协议连接
-		if (tryConnectProtocol(CLSID_BubbleProtocol,sAddr,uiPort,sEseeId))
+		if (m_backuping&&tryConnectProtocol(CLSID_BubbleProtocol,sAddr,uiPort,sEseeId))
 			return true;
 		//尝试穿透协议连接
-		if (tryConnectProtocol(CLSID_Hole,sAddr,uiPort,sEseeId))
+		if (m_backuping&&tryConnectProtocol(CLSID_Hole,sAddr,uiPort,sEseeId))
 			return true;
 		//尝试转发协议链接
-		if (tryConnectProtocol(CLSID_Turn,sAddr,uiPort,sEseeId))
+		if (m_backuping&&tryConnectProtocol(CLSID_Turn,sAddr,uiPort,sEseeId))
 			return true;
 		
 		amount--;
@@ -376,7 +350,46 @@ void RemoteBackup::clearbuffer()
 }
 void RemoteBackup::run()
 {
+	//connect to device
 	m_backuping=true;
+	if (connectToDevice(m_sAddr,m_uiPort,m_devid))
+	{
+		IEventRegister* pEventRegister = NULL;
+		m_pBackupConnect->QueryInterface(IID_IEventRegister,(void**)&pEventRegister);
+		pEventRegister->registerEvent("RecordStream",cbGetStream,this);
+		pEventRegister->Release();
+
+		//++start backup
+		clearbuffer();
+		if(0 == m_pRemotePlayback->getPlaybackStreamByTime(1<<m_nchannel,m_nTypes,m_stime,m_etime))
+		{
+			//keep going ,sucess
+			qDebug()<<__FUNCTION__<<__LINE__<<"get stream success";
+		}else{
+			//get stream fail
+			qDebug()<<__FUNCTION__<<__LINE__<<"get stream fail";
+			QVariantMap item;
+			item.insert("types","fail");
+			eventProcCall("BackupStatusChange",item);
+			item.clear();
+			item.insert("types","stopBackup");
+			eventProcCall("BackupStatusChange",item);
+			return;
+		}	
+	}else{
+		//connect to device fail
+		qDebug()<<__FUNCDNAME__<<__LINE__<<"connetct to device fail";
+		QVariantMap item;
+		item.insert("types","fail");
+		eventProcCall("BackupStatusChange",item);
+		item.clear();
+		item.insert("types","stopBackup");
+		eventProcCall("BackupStatusChange",item);
+		return;
+	}
+
+	//receive stream
+	
 	int step=0;
 	int timeout=0;
 	RecFrame recframe;
@@ -546,13 +559,15 @@ void RemoteBackup::run()
 				m_backuping = false;
 				mbthread=false;
 				m_firstgentime = 0;
-				QVariantMap item;
-				item.insert("types","stopBackup");
-				eventProcCall("BackupStatusChange",item);
 			}
 			break;
 		}
 	}
+	//stop back up
+	stopConnect();
+	QVariantMap item;
+	item.insert("types","stopBackup");
+	eventProcCall("BackupStatusChange",item);
 }
 
 bool RemoteBackup::getUsableDisk(QString sdisk)
