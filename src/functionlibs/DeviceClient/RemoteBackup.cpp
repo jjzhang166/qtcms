@@ -389,7 +389,14 @@ void RemoteBackup::run()
 	unsigned int edtime = m_etime.toTime_t();
 	bool m_firstflame=true;
 	int lastproess=0;
-	while(m_backuping){
+	bool mbthread=true;
+	while(mbthread){
+		if (m_backuping==false)
+		{
+			step=5;
+		}else{
+			//keep going
+		}
 		switch(step){
 		case 0://创建文件
 			{
@@ -541,6 +548,7 @@ void RemoteBackup::run()
 				closeFile();
 				clearbuffer();
 				m_backuping = false;
+				mbthread=false;
 				m_firstgentime = 0;
 				QVariantMap item;
 				item.insert("types","stopBackup");
