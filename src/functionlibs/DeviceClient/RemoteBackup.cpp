@@ -112,9 +112,6 @@ int RemoteBackup::Stop()
 	m_backuping = false;
 
 	wait();
-	QVariantMap item;
-	item.insert("types","stopBackup");
-	eventProcCall("BackupStatusChange",item);
 	return 0;
 }
 float RemoteBackup::getProgress()
@@ -357,7 +354,6 @@ int RemoteBackup::closeFile()
 		AVI_set_video(AviFile,m_videoWidth,m_videoHeight,iFrameCount,"X264");
 		AVI_close(AviFile);
 		AviFile = NULL;
-		qDebug("Close file\n");
 	}
 
 	m_nFrameCount = 0;
@@ -439,7 +435,7 @@ void RemoteBackup::run()
 					if (timeout>50)
 					{
 						step=5;//超时没有码流,结束备份
-						qDebug()<<__FUNCTION__<<__LINE__<<"time out ,no stream";
+						qDebug()<<__FUNCTION__<<__LINE__<<"m_progress"<<m_progress<<"time out ,no stream";
 						QVariantMap item;
 						item.insert("types","fail");
 						eventProcCall("BackupStatusChange",item);
