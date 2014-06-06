@@ -216,7 +216,7 @@ var oPlayBack={},  // 远程回访控件对象
 		}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
 			if($(this).attr('sort') && recFile){ // 文件排序重画UI
-				$('#search_resultFile').html('');
+				//$('#search_resultFile').html('');
 				var sorType='';
 				if($(this).attr('sorType')){
 					sorType = 'Des';
@@ -257,7 +257,6 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function RecFile2UI(){
-		$('#search_resultFile').html('');
 		var b = 1,
 			n=0;
 		for( i in recFile){ 
