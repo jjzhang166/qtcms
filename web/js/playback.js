@@ -277,7 +277,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				if($(this).is(':checked')){
 					var filepath = oChannel.eq(index).data('filepath');
 					if(filepath){
-						console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
+						console.log('本地回放文件:'+filepath);
+						console.log('通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
 							alert('播放失败!');
 						};
@@ -358,6 +359,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	function RecFileInfoCallback(data){
 
 		recFile = data;
+		console.log('搜索到的数据:');
+		console.log(recFile);
+		console.log('=========================================');
 
 		initOxcDevListStatus();
 
@@ -412,6 +416,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	}	
 	
 	function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
+		console.log('文件绑定时收到的数据!');
+		console.log(data);
+		console.log('===========================');
 		var oChannels = $('#dev_'+nowDevID).next('ul').find('span.channel');
 		for(i in data){
 			var fileData = $.parseJSON(data[i]);
@@ -420,7 +427,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 				var filepathArr = oChannel.data('filepath');
 					filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
 					filepathArr.push(fileData.filepath);
-					filepathArr.sort(TimeAsc).join(',');
+					filepathArr.sort(SortByfileTime).join(',');
 				oChannel.data('filepath',filepathArr);
 			}
 		}
@@ -429,6 +436,9 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	function RecFileInfo2UI(){
 		//console.log(oChannels.length);
 		var File = Deleteduplicate(recFile);
+		console.log('合并过的数据:');
+		console.log(File);
+		console.log('==========================================');
 		var n=0;
 		for( i in File){
 			for(k in File[i]){
@@ -485,7 +495,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		},SynTimeUnits);
 	}
 	function dragStopMove(){
-		//console.log('播放结束');
+		console.log('播放结束');
 		clearInterval(drag_timer);
 	}
 	//回放页面文件显示表格初始化
