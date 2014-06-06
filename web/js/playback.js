@@ -269,19 +269,17 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
 							.end().end().next('ul').find('span.channel');
-		//console.log('当前播放的设备ID:'+nowDevID);
-		//console.log('----------------------------');
+		console.log('当前播放的设备ID:'+nowDevID);
+		console.log('----------------------------');
 		if(bool){ //本地回访
 			var k = 0;
 			$("#channelvideo").find('input:checkbox').each(function(index){
 				if($(this).is(':checked')){
 					var filepath = oChannel.eq(index).data('filepath');
-					/*console.log('本地回放文件:');
-					console.log(filepath);*/
 					if(filepath){
-						//console.log(filepath);
+						console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 						if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
-							b = 0;
+							alert('播放失败!');
 						};
 					}
 					k++;
@@ -359,11 +357,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 	function RecFileInfoCallback(data){
 
-		recFile=Deleteduplicate(data);
+		recFile = data;
 
 		initOxcDevListStatus();
 
 		loclFileDataIntoChannel(data)
+		
 	}
 
 	function Deleteduplicate(data){
@@ -429,11 +428,12 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 	function RecFileInfo2UI(){
 		//console.log(oChannels.length);
+		var File = Deleteduplicate(recFile);
 		var n=0;
-		for( i in recFile){
-			for(k in recFile[i]){
+		for( i in File){
+			for(k in File[i]){
 				n++;
-				var data = recFile[i][k];
+				var data = File[i][k];
 				var start = data.start;
 					start=time2Sec(start.split(' ')[1]);
 				var end = data.end;
@@ -476,7 +476,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
@@ -513,7 +513,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 	function addRecFileTable(str,name,index){
 		$('<tr><td class="no_border"><input id="chk_'+index+'" type="checkbox"'+str+' /><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 	}
-	function noResize(){
+	/*function noResize(){
 		bNoResize=0;
 		$('#channelvideo div.video').remove();
 		var winW = $(window).width(),
@@ -529,7 +529,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			bNoResize=1;
 			dragStartMove();
 		},200);
-	}
+	}*/
 	function playBackSerchFile(){
 
 		PBrecFileTableInit();
@@ -537,8 +537,6 @@ var	drag_timer = null, //播放时间拖拽的定时器
 		maxFileEndTime = '';
 
 		ocxsearchVideo();
-
-		initOxcDevListStatus();
 	}
 	function initOxcDevListStatus(){
 		
