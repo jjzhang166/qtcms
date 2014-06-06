@@ -1940,6 +1940,10 @@ uint64_t AVI_max_size()
 
 int AVI_seek_pos( avi_t *AVI, int frame )
 {
+	if (frame >= AVI->video_frames)
+	{
+		return -1;
+	}
 	int video_pos = AVI->video_index[frame].pos - 8;
 	if (lseek(AVI->fdes, video_pos, SEEK_SET) < 0)
 	{

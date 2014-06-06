@@ -10,6 +10,9 @@ LocalPlayer::LocalPlayer() :
 m_nRef(0),
 m_nGroupNum(4),
 m_playTime(0),
+m_skipTime(86400),
+m_lastPlayTime(0),
+m_callTimes(0),
 m_bIsGroupPlaying(false),
 m_pCurView(NULL)
 {
@@ -264,6 +267,11 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 						fileInfo.insert("stopTime", date.addSecs(aviFileLength));
 					}
 
+					PeriodTime item;
+					item.start = fileInfo.value("startTime").toDateTime().toTime_t();
+					item.end = fileInfo.value("stopTime").toDateTime().toTime_t();
+					m_filePeriodMap.insert(filePath, item);
+
 					eventProcCall(QString("GetRecordFile"), fileInfo);
 				}
 			}
@@ -280,20 +288,20 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec)
 {
 	QString filePath;
-	QString dateStr;
-	QFileInfo fileInfo(filePath);
-	QDateTime dateTime;
-	QDateTime fileEndTime;
-	QDate date;
-	QTime time;
-	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+// 	QString dateStr;
+// 	QFileInfo fileInfo(filePath);
+// 	QDateTime dateTime;
+// 	QDateTime fileEndTime;
+// 	QDate date;
+// 	QTime time;
+// 	QRegExp rx("([0-9]{4}-[0-9]{2}-[0-9]{2})");
 	int firstFile = -1;
 	bool find = false;
 	PeriodTime perTime;
-	int aviFileLength = 0;
-	int totalFrames = 0;
-	int frameRate = 0;
-	avi_t *aviFile = NULL;
+// 	int aviFileLength = 0;
+// 	int totalFrames = 0;
+// 	int frameRate = 0;
+// 	avi_t *aviFile = NULL;
 
 	if (fileList.isEmpty())
 	{
@@ -302,41 +310,44 @@ int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& sta
 	for(int pos = 0; pos < fileList.size(); pos++)
 	{
 		filePath = fileList[pos];
-		if (-1 != rx.indexIn(filePath,0))
-		{
-			dateStr = rx.cap(1);
-		}
-		fileInfo.setFile(filePath);
-		QString baseName = fileInfo.baseName();
-		date = QDate::fromString(dateStr, "yyyy-MM-dd");
-		time = QTime::fromString(baseName, "hhmmss");
-		dateTime.setDate(date);
-		dateTime.setTime(time);
+// 		if (-1 != rx.indexIn(filePath,0))
+// 		{
+// 			dateStr = rx.cap(1);
+// 		}
+// 		fileInfo.setFile(filePath);
+// 		QString baseName = fileInfo.baseName();
+// 		date = QDate::fromString(dateStr, "yyyy-MM-dd");
+// 		time = QTime::fromString(baseName, "hhmmss");
+// 		dateTime.setDate(date);
+// 		dateTime.setTime(time);
+// 
+// 		if (0 == fileInfo.size())
+// 		{
+// 			continue;
+// 		}
+// 
+// 		aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
+// 		totalFrames = AVI_video_frames(aviFile);
+// 		frameRate = AVI_frame_rate(aviFile);
+// 		if (totalFrames==0||frameRate==0)
+// 		{
+// 			AVI_close(aviFile);
+// 			continue;
+// 		}
+// 		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+// 		AVI_close(aviFile);
+// 
+// 		fileEndTime = dateTime.addSecs(aviFileLength);
 
-		if (0 == fileInfo.size())
-		{
-			continue;
-		}
+		PeriodTime item = m_filePeriodMap.value(filePath);
 
-		aviFile = AVI_open_input_file(filePath.toLatin1().data(), 0);
-		totalFrames = AVI_video_frames(aviFile);
-		frameRate = AVI_frame_rate(aviFile);
-		if (totalFrames==0||frameRate==0)
-		{
-			AVI_close(aviFile);
-			continue;
-		}
-		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
-		AVI_close(aviFile);
-
-		fileEndTime = dateTime.addSecs(aviFileLength);
-		if (!find && !((dateTime >= endTime) || (fileEndTime <= startTime)))
+		if (!find && !((item.start >= endTime.toTime_t()) || (item.end <= startTime.toTime_t())))
 		{
 			firstFile = pos;
 			find = true;
 		}
-		perTime.start = qMax(dateTime.toTime_t(), startTime.toTime_t());
-		perTime.end = qMin(fileEndTime.toTime_t(), endTime.toTime_t());
+		perTime.start = qMax(item.start, startTime.toTime_t());
+		perTime.end = qMin(item.end, endTime.toTime_t());
 		if (perTime.end > perTime.start)
 		{
 			perTimeVec.append(perTime);
@@ -510,6 +521,8 @@ int LocalPlayer::countSkipTime()
 		if (perTime.start < perTime.end)
 		{
 			result.append(perTime);
+			perTime.start = 0;
+			perTime.end = 0;
 		}
 	}
 
@@ -618,6 +631,9 @@ int LocalPlayer::GroupStop()
 	m_bIsGroupPlaying = false;
 	m_GroupMap.clear();
 	m_playTime = 0;
+	m_skipTime = 86400;
+	m_callTimes = 0;
+	m_lastPlayTime = 0;
 	
 	return 0;
 }
@@ -687,6 +703,22 @@ QDateTime LocalPlayer::GetNowPlayedTime()
 	time.setTime(secTime.addSecs(m_playTime));
 	return time;
 }
+void LocalPlayer::setBaseTime(uint &baseTime)
+{
+	if (m_callTimes == m_GroupMap.size() - 1)
+	{
+		m_playTime += qMin(m_skipTime, baseTime);
+		m_skipTime = 86400;
+		m_callTimes = 0;
+	}
+	else
+	{
+		m_callTimes++;
+		m_skipTime = qMin(m_skipTime, baseTime);
+
+		int test = 0;
+	}
+}
 void LocalPlayer::setPlayTime(uint &playTime)
 {
 	if (playTime < 0)
@@ -694,10 +726,11 @@ void LocalPlayer::setPlayTime(uint &playTime)
 		return;
 	}
 
-	if (m_playTime < playTime)
+	if (m_lastPlayTime < playTime)
 	{
-		m_playTime = playTime;
+		m_playTime += playTime - m_lastPlayTime;
 	}
+	m_lastPlayTime = playTime;
 }
 
 bool LocalPlayer::GroupEnableAudio(bool bEnable)
@@ -759,11 +792,18 @@ int LocalPlayer::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 	return 0;
 }
 
-void cbTimeChange(uint playTime, void* pUser)
+void cbTimeChange(QString evName, uint playTime, void* pUser)
 {
 	if (playTime >= 0 && pUser != NULL)
 	{
-		((LocalPlayer*)pUser)->setPlayTime(playTime);
+		if ("playingTime" == evName)
+		{
+			((LocalPlayer*)pUser)->setPlayTime(playTime);
+		}
+		if ("skipTime" == evName)
+		{
+			((LocalPlayer*)pUser)->setBaseTime(playTime);
+		}
 	}
 }
 

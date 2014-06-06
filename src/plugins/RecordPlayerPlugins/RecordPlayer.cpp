@@ -19,9 +19,16 @@ m_CurStatus(STATUS_STOP)
 	//申请ILocalRecordSearch接口
 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
 	//申请ILocalPlayer接口
-	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalPlayer,(void **)&m_pLocalPlayer);
+// 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalPlayer,(void **)&m_pLocalPlayer);
 	//申请IWindowDivMode接口
 	pcomCreateInstance(CLSID_DivMode2_2,NULL,IID_IWindowDivMode,(void **)&m_pWindowDivMode);
+
+	//申请ILocalPlayer接口
+	if (NULL != m_pLocalRecordSearch)
+	{
+		m_pLocalRecordSearch->QueryInterface(IID_ILocalPlayer, (void**)&m_pLocalPlayer);
+	}
+
 
 	for (int i = 0; i < ARRAY_SIZE(m_subRecPlayerView); i++)
 	{

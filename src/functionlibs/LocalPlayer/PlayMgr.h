@@ -20,7 +20,7 @@ typedef struct _tagPeriodTime{
 	uint end;
 }PeriodTime;
 
-typedef void (*pcbTimeChange)(uint playTime, void* pUser);
+typedef void (*pcbTimeChange)(QString evName, uint playTime, void* pUser);
 
 class PlayMgr :
 	public QThread

@@ -110,6 +110,7 @@ void PlayMgr::run()
 	bool isFirstKeyFrame = false;
 	qint64 timeOffset = 0;
 	int skipPos = 0;
+	unsigned int skipTime = 0;
 
 	m_bPlaying = true;
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
@@ -135,11 +136,11 @@ void PlayMgr::run()
 		fileStartTime.setTime(time);
 
 		timeOffset = fileStartTime.toMSecsSinceEpoch() - tempTime.toMSecsSinceEpoch();
-		if (!m_bIsChange)
-		{
-			m_who = (void*)this;
-			m_bIsChange = true;
-		}
+// 		if (!m_bIsChange)
+// 		{
+// 			m_who = (void*)this;
+// 			m_bIsChange = true;
+// 		}
 		for (int j = skipPos; j < m_skipTime.size(); ++j)
 		{
 			if (fileStartTime.toTime_t() >= m_skipTime[j].end)
@@ -149,27 +150,37 @@ void PlayMgr::run()
 				{
 					timeOffset = 0;
 				}
-				if (m_who == (void*)this)
-				{
-					m_playingTime += m_skipTime[j].end - m_skipTime[j].start;
-				}
+// 				if (m_who == (void*)this)
+// 				{
+// 					m_playingTime += m_skipTime[j].end - m_skipTime[j].start;
+// 				}
+				skipTime = m_skipTime[j].end - m_skipTime[j].start;
 			}
 			else
 			{
 				skipPos = j;
 				break;
 			}
+			if (NULL != m_pcbTimeChg)
+			{
+				m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
+			}
 		}
 		if (timeOffset > 0)
 		{
 			m_mutex.lock();
-			m_waitForPlay.wait(&m_mutex, timeOffset - 100);
+			m_waitForPlay.wait(&m_mutex, timeOffset - 100 > 0 ? timeOffset - 100 : 0);
 			m_mutex.unlock();
 		}
 		else
 		{
 			isPlayInMid = true;
 		}
+		if (timeOffset < 0)
+		{
+			fileStartTime = tempTime;
+		}
+
 
 		avi_t *file = AVI_open_input_file(filePath.toLatin1().data(),1);
 		if (NULL != file)
@@ -274,7 +285,7 @@ void PlayMgr::run()
 
 					if (NULL != m_pcbTimeChg)
 					{
-						m_pcbTimeChg(m_playingTime, m_pUser);
+						m_pcbTimeChg(QString("playingTime"), m_playingTime, m_pUser);
 					}
 				}
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
@@ -291,6 +302,7 @@ void PlayMgr::run()
 		{
 			continue;
 		}
+		skipTime = 0;
 	}
 	m_nSpeedRate = 0;
 	m_bStop = false;

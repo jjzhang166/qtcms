@@ -11,7 +11,7 @@
 #include "ILocalPlayer.h"
 
 
-void cbTimeChange(uint playTime, void* pUser);
+void cbTimeChange(QString evName, uint playTime, void* pUser);
 
 class LocalPlayer : public QObject,
 	public IEventRegister,
@@ -60,6 +60,7 @@ public:
 		void		*puser;
 	}ProcInfoItem;
 	void setPlayTime(uint &playTime);
+	void setBaseTime(uint &baseTime);
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	int checkUsedDisk(QString &strDisk);
@@ -86,6 +87,11 @@ private:
 	uint m_playTime;
 
 	QWidget* m_pCurView;
+
+	QMap<QString, PeriodTime> m_filePeriodMap;
+	uint m_skipTime;
+	uint m_lastPlayTime;
+	int m_callTimes;
 };
 
 #endif // LOCALPLAYER_H
