@@ -1,14 +1,10 @@
 var oSearchOcx,
-	key=0; //当前菜单选项
-	searchedDev=[];
+	key=0, //当前菜单选项
+	searchedDev=[];//已经搜索到的设备;
 	$(function(){
 		
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
-		
-		/*$('ul.filetree').treeview().find('span.channel').click(function(){
-			$(this).toggleClass('channel_1')
-		});*/
 
 		oTreeWarp.hide();
 

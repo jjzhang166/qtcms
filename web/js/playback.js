@@ -1,9 +1,9 @@
-var oBottom,oPlayBack,oPlaybacKLocl;
-var	drag_timer = null, //播放时间拖拽的定时器
-	oSelected = [], //
+var oBottom,oPlayBack,oPlaybacKLocl,
+	drag_timer = null, //播放时间拖拽的定时器
+	oSelected = [], //选中的播放的通道
 	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
 	bNoResize=1,   //当前窗口是否在改变
-	maxFileEndTime='';
+	maxFileEndTime=''; //搜索到的文件最大时间
 
 	$(function(){
 		oBottom = $('#operating');
@@ -123,34 +123,11 @@ var	drag_timer = null, //播放时间拖拽的定时器
 			}	
 		});
 
-		/*$('#type').next('ul').find('a').each(function(index){  //搜索文件类型下拉菜单
-			$(this).click(function(){
-				$('#type span').attr('type',index);
-			})
-		})*/
-
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
 				
 				bool = index;
-				/*var oView = getAudioObj();
-				var oSound = $('#sound'),
-				var obtonbackPos = oSound.prev('li').css('background-position').split(' ');
-				
-				if(oView.enable){
-					var top = '-36px';
-					oSound.prev('li').attr('toggle',1);
-				}else{
-					var top = '0px';
-					oSound.prev('li').removeAttr('toggle');
-				}
-			
-				oSound.prop('soundOn',oView.type)
-					  .prev('li').css('background-position',obtonbackPos[0]+' '+top)
-					  .end().find('p:last').width(oView.vol)
-					  .end().find('.now_sound').css('left',oView.vol-2);
 
-				SyncSoundSli(oView.enable);*/
 				$('#channelvideo div.video').remove();
 
 				initOxcDevListStatus();
@@ -486,7 +463,7 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前以播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
@@ -548,6 +525,8 @@ var	drag_timer = null, //播放时间拖拽的定时器
 
 		ocxsearchVideo();
 	}
+
+	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		
 		areaList2Ui();

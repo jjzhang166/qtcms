@@ -1,8 +1,8 @@
 	var bool = 0, //本地远程回放控制  0为远程 1为本地
 		recTotal = 0,  //文件检索总数。
 		nowDevID=null; //当前选中设备ID
-//搜索远程录像
-function setDevData2ocx(){
+	//搜索远程录像
+	function setDevData2ocx(){
 		var oDevData=$('#dev_'+nowDevID).data('data'),
 			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
 
@@ -149,7 +149,6 @@ function setDevData2ocx(){
 	}
 
 	/*排序方法	*/
-
 	function TimeAsc(a,b){
 		return time2Sec(a.start.split(' ')[1]) - time2Sec(b.start.split(' ')[1]);
 	}
