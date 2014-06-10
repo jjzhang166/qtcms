@@ -102,13 +102,13 @@ void PlayMgr::run()
 	QString fileDate;
 	QRegExp rx;
 	QDateTime fileStartTime;
-	QDateTime currentPlayTime;
-	QDateTime tempTime = m_startTime;
+	QDateTime currentPlayTime = m_startTime;
+//	QDateTime tempTime;
 	QDate date;
 	QTime time;
-	bool isPlayInMid = false;
+//	bool isPlayInMid = false;
 	bool isFirstKeyFrame = false;
-	qint64 timeOffset = 0;
+	int timeOffset = 0;
 	int skipPos = 0;
 	unsigned int skipTime = 0;
 
@@ -135,50 +135,43 @@ void PlayMgr::run()
 		fileStartTime.setDate(date);
 		fileStartTime.setTime(time);
 
-		timeOffset = fileStartTime.toMSecsSinceEpoch() - tempTime.toMSecsSinceEpoch();
-// 		if (!m_bIsChange)
-// 		{
-// 			m_who = (void*)this;
-// 			m_bIsChange = true;
-// 		}
-		for (int j = skipPos; j < m_skipTime.size(); ++j)
+		while (skipPos < m_skipTime.size())
 		{
-			if (fileStartTime.toTime_t() >= m_skipTime[j].end)
+			timeOffset = currentPlayTime.toTime_t() - fileStartTime.toTime_t();
+			if (timeOffset >= 0)
 			{
-				timeOffset -= (m_skipTime[j].end - m_skipTime[j].start)*1000;
-				if (timeOffset < 0)
-				{
-					timeOffset = 0;
-				}
-// 				if (m_who == (void*)this)
-// 				{
-// 					m_playingTime += m_skipTime[j].end - m_skipTime[j].start;
-// 				}
-				skipTime = m_skipTime[j].end - m_skipTime[j].start;
+				break;
 			}
 			else
 			{
-				skipPos = j;
-				break;
+				int waitSec = 0;
+				if (m_skipTime[skipPos].start > fileStartTime.toTime_t())
+				{
+					waitSec = fileStartTime.toTime_t() - currentPlayTime.toTime_t();
+				}
+				else
+				{
+					waitSec = m_skipTime[skipPos].start - currentPlayTime.toTime_t();
+				}
+
+				if (waitSec > 0)
+				{
+					m_mutex.lock();
+					m_waitForPlay.wait(&m_mutex, waitSec*1000);
+					m_mutex.unlock();
+					currentPlayTime = currentPlayTime.addSecs(waitSec);
+				}
+				else
+				{
+					skipTime = m_skipTime[skipPos].end - m_skipTime[skipPos].start;
+					if (NULL != m_pcbTimeChg && NULL != m_pUser)
+					{
+						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
+						currentPlayTime = currentPlayTime.addSecs(skipTime);
+						skipPos++;
+					}
+				}
 			}
-			if (NULL != m_pcbTimeChg)
-			{
-				m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
-			}
-		}
-		if (timeOffset > 0)
-		{
-			m_mutex.lock();
-			m_waitForPlay.wait(&m_mutex, timeOffset - 100 > 0 ? timeOffset - 100 : 0);
-			m_mutex.unlock();
-		}
-		else
-		{
-			isPlayInMid = true;
-		}
-		if (timeOffset < 0)
-		{
-			fileStartTime = tempTime;
 		}
 
 
@@ -187,7 +180,7 @@ void PlayMgr::run()
 		{
 			int frameRate = AVI_frame_rate(file);
 
-			int isKeyFrame = 0;
+//			int isKeyFrame = 0;
 			long length = 0;
 			QElapsedTimer frameTimer;
 			int lastTime = 0;
@@ -204,7 +197,7 @@ void PlayMgr::run()
 			int nAudioChl = AVI_audio_channels(file);
 			int nSampleRate = AVI_audio_rate(file);
 			int nSampleWidth = AVI_audio_bits(file);
-			long bytes = 0;
+//			long bytes = 0;
 
 			//find start point
 			if (AVI_seek_start(file))
@@ -213,11 +206,9 @@ void PlayMgr::run()
 				continue;
 			}
 			//start frame
-			int startframe = 0;
-			long startBytes = 0;
-			if (isPlayInMid)
+			int startframe = qAbs(timeOffset)*frameRate;
+			if (startframe > 0)
 			{
-				startframe = qAbs(timeOffset)*frameRate/1000;
 				AVI_seek_pos(file, startframe);
 			}
 			int nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);
@@ -266,9 +257,6 @@ void PlayMgr::run()
 					m_pVedioDecoder->decode(vedioBuff, length);
 					frameTimer.start();
 
-					//count current play time;
-					currentPlayTime = fileStartTime.addSecs(frame/frameRate);
-
 					if (!m_bIsPickThread)
 					{
 						m_bIsPickThread = true;
@@ -281,6 +269,7 @@ void PlayMgr::run()
 						{
 							++m_playingTime;
 						}
+						currentPlayTime = currentPlayTime.addSecs(1);
 					}
 
 					if (NULL != m_pcbTimeChg)
@@ -291,7 +280,6 @@ void PlayMgr::run()
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
 			}
 
-			tempTime = currentPlayTime;
 			AVI_close(file);
 			if (bIsPlayTimeChg)
 			{
@@ -302,7 +290,6 @@ void PlayMgr::run()
 		{
 			continue;
 		}
-		skipTime = 0;
 	}
 	m_nSpeedRate = 0;
 	m_bStop = false;

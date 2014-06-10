@@ -715,8 +715,6 @@ void LocalPlayer::setBaseTime(uint &baseTime)
 	{
 		m_callTimes++;
 		m_skipTime = qMin(m_skipTime, baseTime);
-
-		int test = 0;
 	}
 }
 void LocalPlayer::setPlayTime(uint &playTime)
