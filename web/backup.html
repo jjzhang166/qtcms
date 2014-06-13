@@ -189,16 +189,6 @@ var oPlayBack={},  // 远程回访控件对象
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
 
-		var listParent = $('div.dev_list');
-
-		listParent.on('dblclick','li:has(span.device):gt(0)',function(){
-			backupSearchFile();
-		})
-		
-		listParent.on('click','li:has(span.device):gt(0)',function(){
-			$(this).addClass('sel').siblings('li').removeClass('sel');
-		})
-
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
 			if(oBackup.getProgress() != 0){
 				return;
@@ -231,12 +221,12 @@ var oPlayBack={},  // 远程回访控件对象
 		})
 
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
-		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
+
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
 		oBackup.AddEventProc('progress','progressCallback(data)');
 
-		initOxcDevListStatus()
+		initOxcDevListStatus();
 
 	})///
 
@@ -257,6 +247,7 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function RecFile2UI(){
+		console.log(recFile);
 		var b = 1,
 			n=0;
 		for( i in recFile){ 
@@ -274,7 +265,7 @@ var oPlayBack={},  // 远程回访控件对象
 			if(b){
 				$('<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>').appendTo('#search_resultFile').find('input:checkbox').data('data',data);
 			}
-		}	
+		}
 		showRecProgress(n);
 	}
 
@@ -435,6 +426,19 @@ var oPlayBack={},  // 远程回访控件对象
 
 	function initOxcDevListStatus(){
 		areaList2Ui(0,1);
+
+		$('div.dev_list span.device').each(function(){
+			$(this).parent('li').on({
+				dblclick:function(){
+					backupSearchFile();
+				},
+				click:function(){
+					$('div.dev_list li').removeClass('sel');
+					$(this).addClass('sel');
+				}
+			})
+		})
+
 
 		contentMax();
 

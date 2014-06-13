@@ -19,17 +19,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		//$('div.dev_list').eq(1).hide();
 
-		var listParent = $('div.dev_list');
-
-
-		listParent.on('dblclick','li:has(span.device):gt(0)',function(){ //设备双击开始搜索
-			playBackSerchFile();
-		})
-
-		listParent.on('click','li:has(span.device):gt(0)',function(){ //单击同步选中状态
-			$(this).addClass('sel').siblings('li').removeClass('sel')
-		})
-
 		/*$('div.dev_list span.channel').on('click',function(){
 			var b = true;
 			var obj = $(this).parent('li')
@@ -139,7 +128,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		//return false;
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
-		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');
+
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
 
@@ -411,7 +400,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function RecFileInfo2UI(){
-		//console.log(oChannels.length);
 		var File = Deleteduplicate(recFile);
 		console.log('合并过的数据:');
 		console.log(File);
@@ -530,6 +518,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function initOxcDevListStatus(){
 		
 		areaList2Ui();
+
+		$('div.dev_list span.device').each(function(){
+			$(this).parent('li').on({
+				dblclick:function(){ //设备双击开始搜索
+					playBackSerchFile();
+				},
+				click:function(){ //单击同步选中状态
+					$('div.dev_list li').removeClass('sel');
+					$(this).addClass('sel');
+				}
+			})
+		})
 
 		initrecFileOcx($('#channelvideo div.video'));
 

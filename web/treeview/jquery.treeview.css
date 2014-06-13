@@ -83,7 +83,7 @@
 /* .filetree li.expandable span.area{background: url(images/area_02.png) 0 no-repeat;}	
 .filetree li.expandable span.group{background: url(images/group_02.png) 0 no-repeat;}	 */
 .filetree .open_chl{ background: url(images/cam_1.png) 0 no-repeat;}
-.filetree .sel,.filetree span.device.sel{ background-color: #ABCDEF};
+.filetree .sel,.filetree span.area.sel,.filetree span.group.sel,.filetree span.device.sel,.filetree span.channel.sel{ background-color: #ABCDEF};
 .clearfix:after{
 content:".";
 display:block;
