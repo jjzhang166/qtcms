@@ -504,9 +504,9 @@ void settingsActivity::OnAddDevice()
 		return;
 	}
 	//设备名为空时，使用易视网id填充，易视网为空时，使用ip地址填充
-	if (sDeviceName.Size==0)
+	if (sDeviceName.Size==0||sDeviceName=="")
 	{
-		if (sEseeId.isNull()==false)
+		if (sEseeId.isNull()==false&&sEseeId!="")
 		{
 			sDeviceName=sEseeId;
 		}
@@ -514,7 +514,7 @@ void settingsActivity::OnAddDevice()
 			sDeviceName=sAddress;
 		}
 	}
-	if(sDeviceName.isNull()||sUserName.isNull()||chlCount.isNull()||ConnectMethod.isNull()||sVendor.isNull()){
+	if(sDeviceName.toString().isEmpty()||sUserName.toString().isEmpty()||chlCount.toString().isEmpty()||ConnectMethod.toString().isEmpty()||sVendor.toString().isEmpty()){
 		EP_ADD_PARAM(bcitem,"total",total);
 		EP_ADD_PARAM(bcitem,"succeedId",devId);
 		EventProcCall("AddDeviceFeedBackSuccess",bcitem);
