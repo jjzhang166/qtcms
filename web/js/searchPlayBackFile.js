@@ -178,6 +178,7 @@
 	/*排序方法	*/	
 
 	$(function(){
+		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)');
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
 	})

@@ -707,9 +707,9 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	var data = pObj.data('data');
-	console.log('填充数据');
+	/*console.log('填充数据');
 	console.log('----------------');
-	console.log(data);
+	console.log(data);*/
 	if(!data){ 
 		Confirm(lang.Please_select_a_device);
 		return ;
@@ -818,13 +818,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 
 	function Fail(data){
-		var str='';
+		console.log(data);
+		/*var str='';
 		if(data.name){
 			str +=data.name+': ';
 		}else if(data.channelname){ 
 			str +=data.name+': ';
 		}
-		str += data.fail
+		str += data.fail*/
 		Confirm("操作失败");
 	}
 
@@ -948,6 +949,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		}
 		searchEdDev();
 		closeMenu();
+		data.total == 0 && Confirm('添加失败!');
 	}
 	function RemoveDeviceFeedBackSuccess(data){
 		//areaList2Ui(0);

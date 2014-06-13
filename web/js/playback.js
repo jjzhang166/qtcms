@@ -127,7 +127,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		})
 		
 		//return false;
-		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
 
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');
