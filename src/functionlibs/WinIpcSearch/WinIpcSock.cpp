@@ -421,9 +421,14 @@ int WinIpcSock::SetNetworkInfo( const QString &sDeviceID, const QString &sAddres
 	item.insert("sPort",sPort);
 	item.insert("sUsername",sUsername);
 	item.insert("sPassword",sPassword);
-	m_SetupStatusParmMutex.lock();
-	m_SetupStatusParm.enqueue(item);
-	m_SetupStatusParmMutex.unlock();
+	if (QThread::isRunning())
+	{
+		m_SetupStatusParmMutex.lock();
+		m_SetupStatusParm.enqueue(item);
+		m_SetupStatusParmMutex.unlock();
+	}else{
+		IPCamSetup(item);
+	}
 	return 0;
 }
 
@@ -516,7 +521,7 @@ int IPCamSetup(QVariantMap item){
 			ret = sendto(m_Sock[i], (char *)sendbuf, strlen(sendbuf), 0, (struct sockaddr *)&peer_addr, sizeof(peer_addr));
 		}
 		nCSeq++;
-		Sleep(1000);
+		Sleep(100);
 	}
 	return 0;
 }

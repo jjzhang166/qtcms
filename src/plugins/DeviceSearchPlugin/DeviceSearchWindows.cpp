@@ -127,25 +127,25 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 	const QString &sUsername,
 	const QString &sPassword)
 {
-	qDebug()<<"SetNetworkInfo"<<sDeviceID<<sAddress<<sMask<<sGateway<<sMac<<sPort<<sUsername<<sPassword;
-	if (sDeviceID.isEmpty() && sAddress.isEmpty() && sMask.isEmpty() && sGateway.isEmpty() && sMac.isEmpty() && sPort.isEmpty())
-	{
-		return 1;
-	}
+	return m_setnetwork.SetNetworkInfo(sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
+	//if (sDeviceID.isEmpty() && sAddress.isEmpty() && sMask.isEmpty() && sGateway.isEmpty() && sMac.isEmpty() && sPort.isEmpty())
+	//{
+	//	return 1;
+	//}
 
-	if (NULL == m_pDeviceNetModify)
-	{
-		return 1;
-	}
-	int nRet = m_pDeviceNetModify->SetNetworkInfo( sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
-	if (nRet==IDeviceNetModify::OK)
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+	//if (NULL == m_pDeviceNetModify)
+	//{
+	//	return 1;
+	//}
+	//int nRet = m_pDeviceNetModify->SetNetworkInfo( sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
+	//if (nRet==IDeviceNetModify::OK)
+	//{
+	//	return 0;
+	//}
+	//else
+	//{
+	//	return 1;
+	//}
 }
 
 void DeviceSearchWindows::addItemMap(QVariantMap item)
@@ -172,59 +172,65 @@ void DeviceSearchWindows::sendInfoToUI(QVariantMap item)
 
 int DeviceSearchWindows::AutoSetNetworkInfo()
 {
-	QString lSAddress;
-	QString lSNetmask;
-	if (0==__GetNetworkInfo(lSAddress,lSNetmask))
-	{
-		__GetInitAddress(lSAddress,lSNetmask);
-		//读入数据
-		QVariant lDevNetworkInfoFile=__QueryValue("AutoSetNetworkInfoID");
-		QDomDocument lConfFile;
-		lConfFile.setContent(lDevNetworkInfoFile.toString());
-		QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
-		QDomNodeList itemList=lDevNetworkInfoNode.childNodes();
-		if (0==itemList.count())
-		{
-			return 0;
-		}
-		else{
-			for (int n=0;n<itemList.count();n++){
-				QDomNode itemDev;
-				itemDev=itemList.at(n);
-				QString sDeviceID=itemDev.toElement().attribute("sDeviceID");
-				QString sAddress=itemDev.toElement().attribute("sAddress");
-				QString sGateway=itemDev.toElement().attribute("sGateway");
-				QString sMask=itemDev.toElement().attribute("sMask");
-				QString sMac=itemDev.toElement().attribute("sMac");
-				QString sPort=itemDev.toElement().attribute("sPort");
-				QString sUsername=itemDev.toElement().attribute("sUsername");
-				QString sPassword=itemDev.toElement().attribute("sPassword");
-				
-				QString lSNewAddress;
-				if (1==__ApplyAddress(lSNewAddress,lSAddress))
-				{
-					return 1;
-				}
-				qDebug()<<"lSNewAddress"<<lSNewAddress;
-				qDebug()<<"lSNetmask"<<lSNetmask;
-				// Set sAddress
-				sAddress.clear();
-				sAddress=lSNewAddress;
-				//设置子网掩码
-				sMask.clear();
-				sMask=lSNetmask;
-				//设置网关
-				sGateway.clear();
-				sGateway=QString().append(m_HistoryGateWay.IpPart1).append(".").append(m_HistoryGateWay.IpPart2).append(".").append(m_HistoryGateWay.IpPart3).append(".").append(m_HistoryGateWay.IpPart4);
-				qDebug()<<"sGateway"<<sGateway;
-				//Call SetNetworkInfo
+	QVariant lDevNetworkInfoFile=__QueryValue("AutoSetNetworkInfoID");
+	QDomDocument lConfFile;
+	lConfFile.setContent(lDevNetworkInfoFile.toString());
+	QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
+	QDomNodeList itemList=lDevNetworkInfoNode.childNodes();
+	return m_setnetwork.AutoSetNetworkInfo(itemList);
+	//QString lSAddress;
+	//QString lSNetmask;
+	//if (0==__GetNetworkInfo(lSAddress,lSNetmask))
+	//{
+	//	__GetInitAddress(lSAddress,lSNetmask);
+	//	//读入数据
+	//	QVariant lDevNetworkInfoFile=__QueryValue("AutoSetNetworkInfoID");
+	//	QDomDocument lConfFile;
+	//	lConfFile.setContent(lDevNetworkInfoFile.toString());
+	//	QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
+	//	QDomNodeList itemList=lDevNetworkInfoNode.childNodes();
+	//	if (0==itemList.count())
+	//	{
+	//		return 0;
+	//	}
+	//	else{
+	//		for (int n=0;n<itemList.count();n++){
+	//			QDomNode itemDev;
+	//			itemDev=itemList.at(n);
+	//			QString sDeviceID=itemDev.toElement().attribute("sDeviceID");
+	//			QString sAddress=itemDev.toElement().attribute("sAddress");
+	//			QString sGateway=itemDev.toElement().attribute("sGateway");
+	//			QString sMask=itemDev.toElement().attribute("sMask");
+	//			QString sMac=itemDev.toElement().attribute("sMac");
+	//			QString sPort=itemDev.toElement().attribute("sPort");
+	//			QString sUsername=itemDev.toElement().attribute("sUsername");
+	//			QString sPassword=itemDev.toElement().attribute("sPassword");
+	//			
+	//			QString lSNewAddress;
+	//			if (1==__ApplyAddress(lSNewAddress,lSAddress))
+	//			{
+	//				return 1;
+	//			}
+	//			qDebug()<<"lSNewAddress"<<lSNewAddress;
+	//			qDebug()<<"lSNetmask"<<lSNetmask;
+	//			// Set sAddress
+	//			sAddress.clear();
+	//			sAddress=lSNewAddress;
+	//			//设置子网掩码
+	//			sMask.clear();
+	//			sMask=lSNetmask;
+	//			//设置网关
+	//			sGateway.clear();
+	//			sGateway=QString().append(m_HistoryGateWay.IpPart1).append(".").append(m_HistoryGateWay.IpPart2).append(".").append(m_HistoryGateWay.IpPart3).append(".").append(m_HistoryGateWay.IpPart4);
+	//			qDebug()<<"sGateway"<<sGateway;
+	//			//Call SetNetworkInfo
 
-				//SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
-			}
-		}
-	}else{
-		return 1;
-	}
+	//			//SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
+	//		}
+	//	}
+	//}else{
+	//	return 1;
+	//}
 }
 
 int DeviceSearchWindows::__GetNetworkInfo( QString &address,QString &netmask )
