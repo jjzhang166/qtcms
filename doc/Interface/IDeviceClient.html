@@ -40,14 +40,26 @@ p.MsoNormal {mso-style-unhide:no;
 <p>#include
   &lt;IDeviceClient.h&gt;</p>
 <p>函数定义</p>
-<p> // 连接到设备<br />
-// sAddress:设备ip地址<br />
-// uiPort:设备端口<br />
-// sEseeId:设备id<br />
-// 返回值:<br />
-//	0:连接成功<br />
-//  1:连接失败<br />
-virtual int connectToDevice(const QString &amp; sAddr,unsigned int uiPort,const QString &amp; sEseeId) = 0;</p>
+<p> //设置host,ip地址<br />
+//返回值<br />
+//0：设置成功<br />
+//1：设置失败<br />
+virtual int setDeviceHost(const QString &amp; sAddr) = 0;<br />
+//设置Ports<br />
+//返回值<br />
+//0：设置成功<br />
+//1：设置失败<br />
+virtual int setDevicePorts(unsigned int ports) = 0;<br />
+//设置易视网Id<br />
+//返回值<br />
+//0：设置成功<br />
+//1：设置失败<br />
+virtual int setDeviceId(const QString &amp; isee) = 0;<br />
+//连接设备<br />
+//返回值<br />
+//0：连接成功<br />
+//1：连接失败<br />
+virtual int connectToDevice() = 0;</p>
 <p> // 校验用户名密码<br />
   // sUsername:用户名<br />
   // sPassword:密码<br />
@@ -74,7 +86,7 @@ virtual int connectToDevice(const QString &amp; sAddr,unsigned int uiPort,const 
   //	0:关闭成功<br />
   //	1:关闭失败<br />
   virtual int closeAll() = 0;</p>
-<p> // 获取当前组件的Vendor名称，当前定义值为:&quot;JUAN DVR&quot;，&quot;JUAN IPC&quot;,&quot;ONVIF&quot;三种<br />
+<p> // 获取当前组件的Vendor名称，当前定义值为:&quot;DVR&quot;，&quot;IPC&quot;,&quot;NVR&quot;三种<br />
   virtual QString getVendor() = 0;</p>
 <p> // 获取当前的连接状态<br />
   // 返回值:<br />
