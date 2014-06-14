@@ -514,11 +514,6 @@ static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *
 int QSubView::PrevRender(QVariantMap evMap)
 {
 	QVariantMap::const_iterator it;
-	for (it=evMap.begin();it!=evMap.end();++it)
-	{
-		QString sKey=it.key();
-		QString sValue=it.value().toString();
-	}
 	if (NULL==m_IVideoRender)
 	{
 		return 1;
@@ -771,13 +766,6 @@ int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
     Q_UNUSED(evName);
     Q_UNUSED(pUser);
 	qDebug()<<"cbConnectError";
-
-	QVariantMap::const_iterator it;
-	for (it=evMap.begin();it!=evMap.end();++it)
-	{
-		QString sKey=it.key();
-		QString sValue=it.value().toString();
-	}
 	return 1;
 }
 
@@ -1089,6 +1077,7 @@ void QSubView::RecordState( QVariantMap evMap )
 		}
 		else{
 			emit RecordStateSignals(false);
+			m_bIsAutoRecording=false;
 		}
 	}
 }

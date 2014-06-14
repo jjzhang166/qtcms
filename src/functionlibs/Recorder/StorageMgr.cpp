@@ -2,7 +2,7 @@
 #include "guid.h"
 #include <QDir>
 #include <QDateTime>
-
+#include <QDebug>
 #include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
@@ -16,7 +16,6 @@ StorageMgr::StorageMgr(void):
 	{
 		qDebug("can not create diskssetting instance");
 	}
-
 }
 
 
@@ -150,7 +149,7 @@ void StorageMgr::deleteOldDir(const QStringList& diskslist)
 	if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
 		freesizem = 128;
 
-	freesizem=freesizem+200;
+	freesizem=(freesizem+200)*1024;
 	bool flag=false;
 	QList<unsigned int> datetimelist;
 	QDateTime earliestTime;
@@ -166,14 +165,13 @@ void StorageMgr::deleteOldDir(const QStringList& diskslist)
 			QDateTime dtime = QDateTime::fromString(fi.fileName(),"yyyy-MM-dd");
 			if (!datetimelist.contains(dtime.toTime_t()))
 			datetimelist.append(dtime.toTime_t());
-			//if (dtime<earliestTime&&dtime.toString("yyyy-MM-dd")!="")
-			//	earliestTime = dtime;
 		}
 	}
 
 	foreach(QString sdisk,diskslist)
 	{
 		unsigned int oldestdate=1900000000;
+		/*unsigned int oldestdate=QDateTime::currentDateTimeUtc().toTime_t();*/
 		foreach(unsigned int datelist,datetimelist){
 			oldestdate=qMin(oldestdate,datelist);
 			QDateTime datetime=QDateTime::fromTime_t(datelist);

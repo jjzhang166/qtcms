@@ -140,8 +140,6 @@ void Recorder::run()
 	avi_t * AviFile = NULL;
 	int nSleepTime=0;
 	int nLoopCount = 0;
-	int fileMaxSize= m_StorageMgr.getFilePackageSize();
-	quint64 diskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
 	bool bAudioBeSet;
 	bool bThreadRunning = true;
 	bool bFileStart = false;
@@ -180,6 +178,7 @@ void Recorder::run()
 						m_dataqueue.pop_front();
 					}
 					m_dataRef.unlock();
+					m_bFinish=true;
 					break;
 				}
 
@@ -234,7 +233,7 @@ void Recorder::run()
 					if (NULL == AviFile)
 					{
 						qDebug()<<__FUNCTION__<<__LINE__<<sFilePathName<<"creat file fail";
-						nRecStep = 0;
+						m_bFinish=true;
 						m_dataRef.unlock();
 						break;
 					}
@@ -283,6 +282,8 @@ void Recorder::run()
 
 				if (m_bcheckdiskfreesize==true)
 				{
+					int fileMaxSize= m_StorageMgr.getFilePackageSize();
+					quint64 diskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
 					long nWrittenSize = AVI_bytes_written(AviFile);
 					if (nWrittenSize > 1024 * 1024 * fileMaxSize)
 					{
