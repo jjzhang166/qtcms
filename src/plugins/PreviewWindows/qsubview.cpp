@@ -402,7 +402,10 @@ int QSubView::CurrentStateChange(QVariantMap evMap)
 	}
 	if (2==m_CurrentState)
 	{
-		update();
+		QVariantMap evupdateMap;
+		evupdateMap.insert("update",true);
+		emit BackToMainThreadSignals(evupdateMap);
+
 		QVariantMap evMapToUi;
 		evMapToUi.insert("CurrentState",m_CurrentState);
 		evMapToUi.insert("ChannelId",m_DevCliSetInfo.m_uiChannelIdInDataBase);
@@ -1650,6 +1653,10 @@ void QSubView::BackToMainThread( QVariantMap evMap)
 	if (evMap.contains("close"))
 	{
 		CloseWndCamera();
+	}
+	if (evMap.contains("update"))
+	{
+		update();
 	}
 }
 
