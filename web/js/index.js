@@ -49,11 +49,12 @@ var oPreView,oDiv,
 					chlData = getChlFullInfo($(this));	 
 					if(!$(this).attr('wind')){
 						oDevice.attr('bAllopen','1');
-						var windState = oPreView.GetWindowConnectionStatus(wind);
-						var win = wind;
-						if(windState != 2){
+						/*var windState = oPreView.GetWindowConnectionStatus(wind);
+						var win = wind;*/
+						//if(windState != 2){
 							win = getWind(wind);
-						}
+							if(win  == -1) {return;}
+						//}
 						openWind(win,chlData);
 					}	
 				})
@@ -237,6 +238,7 @@ var oPreView,oDiv,
 
 			$('div.dev_list:visible span.channel').not('[wind]').each(function(){
 				wind = getWind(wind);
+				if(wind  == -1) {return;}
 				openWind(wind,getChlFullInfo($(this)));
 				wind++;
 			})
@@ -274,7 +276,8 @@ var oPreView,oDiv,
 			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)+'  '+winState[windState];
 			writeActionLog(str,errorcolor);
 		}
-		wind = getWind(wind);
+		wind = getWind(wind)
+		if(wind  == -1) {return;}
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
 		oPreView.SetDevChannelInfo(wind,data.channel_id);
@@ -291,12 +294,10 @@ var oPreView,oDiv,
 	}
 
 	function windChangeCallback(ev){ //CurrentState 0 STATUS_CONNECTED,1 STATUS_CONNECTING,2 STATUS_DISCONNECTED,3 STATUS_DISCONNECTING;
-		var obj = $('#channel_'+ev.ChannelId);
-		/*$('div.dev_list span.channel').filter(function(){ 
-			return $(this).attr('wind') == ev.WPageId;
-		})*/
-		var chlData = getChlFullInfo(obj);
-		var str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
+		var obj = $('#channel_'+ev.ChannelId),
+			c = '',
+			chlData = getChlFullInfo(obj),
+			str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
 
 		if(ev.CurrentState == 2){
 			obj.removeAttr('state wind').removeClass('channel_1');
@@ -310,21 +311,36 @@ var oPreView,oDiv,
 			str=''
 			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
 		}
-		writeActionLog(str);
+		writeActionLog(str);		
+		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
+			writeActionLog('所以窗口正在使用!!',errorcolor);
+		}*/
 	}
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
+		if(i>63){
+			if(checkOcxAllUsed()){
+				return -1;
+			}else{	
+				i = 0;
+			}
+		}
 		if(oPreView.GetWindowConnectionStatus(i)!=2){
 			i++;
-			if(i>64){
-				i=0;
-			}
 			return getWind(i);
 		}else{ 
 			return i;
 		}
 	}
-	// 检车该设备是否全开.
+	function checkOcxAllUsed(){
+		for(var i=0;i<63;i++){
+			if(oPreView.GetWindowConnectionStatus(i)==2){
+				return false;
+			}
+		}
+		return true;
+	}
+	// 检查该设备是否全开.
 	function checkDevAllOpen(dev_id){ 
 		var bAllopen = 1;
 		var oDev =$('#dev_'+dev_id);

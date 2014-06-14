@@ -961,7 +961,7 @@ function time_zone_load()
 					time_ntp_load();
 				},
 				error:function(a,b,c){ 
-					alert(b);
+					//alert(b);
 			}
 		});
 }
@@ -987,7 +987,7 @@ function time_ntp_load()
 					ntp_change();
 				},
 				error:function(a,b,c){ 
-					alert(b);
+					//alert(b);
 			}
 		});
 }

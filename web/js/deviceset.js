@@ -938,6 +938,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	function AddDeviceFeedBackSuccess(data){
 		// /areaList2Ui(0);
+		closeMenu();
 		$('#SerachDevList tbody tr').filter(function(){
 			return $(this).find('input').is(':checked');
 		}).remove();
@@ -948,11 +949,11 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			}
 		}
 		searchEdDev();
-		closeMenu();
 		data.total == 0 && Confirm('添加失败!');
 	}
 	function RemoveDeviceFeedBackSuccess(data){
 		//areaList2Ui(0);
+		closeMenu();
 		var succeedId = data.succeedId.split(';');
 		var b = succeedId.length > 10 ? 1 : 0;
 		for(i in succeedId){
@@ -967,8 +968,6 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		}
 		
 		searchEdDev();
-		closeMenu();
-
 		if(b)
 			searchFlushReal();
 	}
