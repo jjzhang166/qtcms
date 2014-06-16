@@ -49,6 +49,7 @@ BubbleProtocol::~BubbleProtocol(void)
 
 int BubbleProtocol::setDeviceHost(const QString & sAddr)
 {
+
 	if (!m_hostAddress.setAddress(sAddr))
 	{
 		return 1;
@@ -527,9 +528,7 @@ int BubbleProtocol::stopPlaybackStream()
     return 0;
 
 }
-// inherited from IRemotePlayback <<<< 
 
-// inherited from IRemotePreview  >>>>>
 int BubbleProtocol::getLiveStream(int nChannel, int nStream)
 {
 	if (nChannel< 0 || nStream <0)
@@ -686,9 +685,7 @@ int BubbleProtocol::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
 
 	return 0;
 }
- // inherited from IRemotePreview <<<< 
 
-// inherited from IEventRegister  >>>>>
  QStringList BubbleProtocol::eventList()
  {
  	return m_eventList;
@@ -744,7 +741,7 @@ int BubbleProtocol::getStreamInfo(int nStreamId,QVariantMap &streamInfo)
 	m_pStreamProcess->setEventMap(m_eventList, m_eventMap);
  	return IEventRegister::OK;
  }
- // inherited from IEventRegister <<<< 
+
 long __stdcall BubbleProtocol::QueryInterface( const IID & iid,void **ppv )
 {
 	if (IID_IRemotePreview == iid)

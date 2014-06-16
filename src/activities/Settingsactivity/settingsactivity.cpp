@@ -39,7 +39,6 @@ unsigned long __stdcall settingsActivity::AddRef()
 	m_csRef.lock();
 	m_nRef ++;
 	m_csRef.unlock();
-	qDebug("Addref:%d",m_nRef);
 	return m_nRef;
 }
 
@@ -134,7 +133,6 @@ void settingsActivity::OnTopActDbClick()
 			currentSize.setWidth(1000);
 		}
 		m_MainView->resize(currentSize);
-		qDebug()<<m_MainView;
 		int nX=rcScreen.width()-currentSize.width();
 		int nY=rcScreen.height()-currentSize.height();
 		m_MainView->move(nX/2,nY/2);
@@ -339,7 +337,6 @@ void settingsActivity::OnDeleteUserOk()
 void settingsActivity::OnAddDeviceDouble()
 {
 	int nRet_id;
-	qDebug("========OnAddDeviceDouble========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -460,7 +457,6 @@ void settingsActivity::OnAddDeviceDouble()
 void settingsActivity::OnAddDevice()
 {	
 	int nRet_id;
-	qDebug("========OnAddDevice========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -1633,8 +1629,6 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 void settingsActivity::OnAddDeviceALL()
 {
 	int nRet_id;
-	qDebug()<<"step in";
-	qDebug("========OnAddDeviceALL========");
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
@@ -1703,7 +1697,6 @@ void settingsActivity::OnAddDeviceALL()
 		QString SearchGateway_ID=item.toElement().attribute("SearchGateway_ID");
 		QString SearchHttpport_ID=item.toElement().attribute("SearchHttpport_ID");
 		QString SearchMediaPort_ID=item.toElement().attribute("SearchMediaPort_ID");
-		qDebug()<<SearchIP_ID;
 		//添加的默认参数
 
 		QString	UserName_ID=item.toElement().attribute("username");
@@ -1773,7 +1766,6 @@ void settingsActivity::OnRemoveDeviceALLThread()
 void settingsActivity::OnRemoveDeviceALL()
 {
 	IDeviceManager *Idevice=NULL;
-	qDebug()<<"OnRemoveDeviceALL";
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
 
 	//==================
@@ -1793,7 +1785,6 @@ void settingsActivity::OnRemoveDeviceALL()
 	for (int n=0;n<DevNum;n++)
 	{
 		int liDevId=DevString.section(",",n,n).toInt();
-		qDebug()<<liDevId;
 
 		bool nRet_bool=false;
 		nRet_bool=Idevice->IsDeviceExist(liDevId);

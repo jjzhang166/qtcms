@@ -39,7 +39,6 @@ unsigned long __stdcall previewactivity::AddRef()
 	m_csRef.lock();
 	m_nRef ++;
 	m_csRef.unlock();
-	qDebug("Addref:%d",m_nRef);
 	return m_nRef;
 }
 
@@ -78,7 +77,6 @@ void previewactivity::OnTopActDbClick()
 
 		// get screen size
 		QRect rcScreen = QApplication::desktop()->screenGeometry();
-		qDebug()<<rcScreen.width()<<rcScreen.height();
 		// get current size
 		QSize currentSize=m_MainView->size();
 

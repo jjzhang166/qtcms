@@ -128,24 +128,6 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 	const QString &sPassword)
 {
 	return m_setnetwork.SetNetworkInfo(sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
-	//if (sDeviceID.isEmpty() && sAddress.isEmpty() && sMask.isEmpty() && sGateway.isEmpty() && sMac.isEmpty() && sPort.isEmpty())
-	//{
-	//	return 1;
-	//}
-
-	//if (NULL == m_pDeviceNetModify)
-	//{
-	//	return 1;
-	//}
-	//int nRet = m_pDeviceNetModify->SetNetworkInfo( sDeviceID, sAddress, sMask, sGateway, sMac, sPort, sUsername, sPassword);
-	//if (nRet==IDeviceNetModify::OK)
-	//{
-	//	return 0;
-	//}
-	//else
-	//{
-	//	return 1;
-	//}
 }
 
 void DeviceSearchWindows::addItemMap(QVariantMap item)

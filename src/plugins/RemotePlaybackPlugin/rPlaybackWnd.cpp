@@ -84,14 +84,12 @@ void  RPlaybackWnd::resizeEvent( QResizeEvent * ev)
 
 int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPort,const QString &eseeID)
 {
-	qDebug()<<"RPlaybackWnd setDeviceHostInfo"<<sAddress<<uiPort<<eseeID;
 	QVariantMap item;
 	m_rplaybackrun.setDeviceHostInfo(sAddress,uiPort,eseeID);
     if (!m_HostAddress.setAddress(sAddress) || uiPort > 65535)
     {
         return 1;
     }
-	qDebug()<<m_HostAddress.toString();
 	m_sHostAddress.clear();
 	m_sHostAddress=m_HostAddress.toString();
     m_uiPort   = uiPort;
@@ -101,7 +99,6 @@ int   RPlaybackWnd::setDeviceHostInfo(const QString & sAddress,unsigned int uiPo
 
 int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 {
-	qDebug()<<"RPlaybackWnd setDeviceVendor"<<vendor;
 	m_rplaybackrun.setDeviceVendor(vendor);
     if (vendor.isEmpty())
     {
@@ -113,7 +110,6 @@ int   RPlaybackWnd::setDeviceVendor(const QString & vendor)
 
 int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 {
-	qDebug()<<"RPlaybackWnd AddChannelIntoPlayGroup"<<uiWndId<<uiChannelId;
 	GetDeviceInfo(uiChannelId);
 	if (uiWndId >= ARRAY_SIZE(m_PlaybackWnd) || m_DevCliSetInfo.m_uiChannelId > 32)
 	{
@@ -174,7 +170,6 @@ int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 
 void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString & sPassword)
 {
-	qDebug()<<"RPlaybackWnd setUserVerifyInfo"<<sUsername<<sPassword;
     m_rplaybackrun.setUserVerifyInfo(sUsername,sPassword);
 	m_sUserName = sUsername;
     m_sUserPwd  = sPassword;
@@ -182,7 +177,6 @@ void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString &
 
 int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime)
 {
-	qDebug()<<"RPlaybackWnd:"<<"nChannel"<<nChannel<<"nTypes"<<nTypes<<startTime<<endTime;
 	m_rplaybackrun.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	int nRet=1;
 	if (false==bIsInitFlags)
@@ -235,7 +229,6 @@ finishSearch:
 
 int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString & endTime)
 {
-	qDebug()<<"RPlaybackWnd GroupPlay"<<"nTypes"<<nTypes<<startTime<<endTime;
 	int nRet=1;
 	if (false==bIsInitFlags)
 	{
@@ -290,7 +283,6 @@ int   RPlaybackWnd::GroupContinue()
 }
 int   RPlaybackWnd::GroupStop()
 {
-	qDebug()<<"RPlaybackWnd:GroupStop";
     int nRet = -1;
     if (NULL != m_GroupPlayback)
     {
@@ -454,7 +446,6 @@ void RPlaybackWnd::FoundFile( QVariantMap evMap )
 
 void RPlaybackWnd::RecFileSearchFinished( QVariantMap evMap )
 {
-	qDebug()<<evMap<<__FUNCTION__<<__LINE__;
 	fileTotal=evMap.value("total").toInt();
 	fileKey="0";
 	fileMap.clear();
@@ -581,7 +572,6 @@ void RPlaybackWnd::StateChangeToUislot( QVariantMap evMap )
 	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
 	if (_curConnectType==TYPE_STREAM)
 	{
-		qDebug()<<evMap<<__FUNCTION__<<__LINE__;
 		QList<int>::Iterator it;
 		for(it=_widList.begin();it!=_widList.end();it++){
 			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
@@ -618,7 +608,6 @@ void RPlaybackWnd::FileSearchFailUislot( QVariantMap evMap)
 
 void RPlaybackWnd::RecFileSearchFail( QVariantMap evMap )
 {
-	qDebug()<<evMap<<__FUNCTION__<<__LINE__;
 	emit FileSearchFailToUiS(evMap);
 }
 

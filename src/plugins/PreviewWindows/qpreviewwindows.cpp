@@ -228,13 +228,9 @@ int QPreviewWindows::OpenCameraInWnd( unsigned int uiWndIndex ,const QString sAd
 	{
 		return 1;
 	}
-	m_mutex.lock();
-	//m_CurrentWnd=uiWndIndex;
-	m_mutex.unlock();
 	m_uiWndIndex = uiWndIndex;
 	m_PreviewWnd[uiWndIndex].SetPlayWnd(uiWndIndex);
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(uiChannelId);
-	qDebug()<<"OpenCameraInWnd"<<"uiWndIndex"<<uiWndIndex<<"sAddress:"<<sAddress<<"uiPort:"<<uiPort<<"sEseeId:"<<sEseeId<<"uiChannelId:"<<uiChannelId<<"uiStreamId:"<<uiStreamId<<"sUsername:"<<sUsername<<"sPassword:"<<sPassword<<"sCameraname:"<<sCameraname<<"sVendor"<<sVendor;
 	return 0;
 }
 int QPreviewWindows::SwithStream(unsigned int uiWndIndex,int chlId)
@@ -247,9 +243,6 @@ int QPreviewWindows::OpenCameraInWnd(unsigned int uiWndIndex,int chlId)
 	{
 		return 1;
 	}
-	m_mutex.lock();
-	//m_CurrentWnd=uiWndIndex;
-	m_mutex.unlock();
 	m_uiWndIndex = uiWndIndex;
 	m_PreviewWnd[uiWndIndex].SetPlayWnd(uiWndIndex);
 	m_PreviewWnd[uiWndIndex].OpenCameraInWnd(chlId);
@@ -261,9 +254,6 @@ int QPreviewWindows::CloseWndCamera( unsigned int uiWndIndex )
 	{
 		return 1;
 	}
-	m_mutex.lock();
-	//m_CurrentWnd=uiWndIndex;
-	m_mutex.unlock();
 	m_PreviewWnd[uiWndIndex].CloseWndCamera();
 	return 0;
 }
@@ -274,10 +264,6 @@ int QPreviewWindows::GetWindowConnectionStatus( unsigned int uiWndIndex )
 	{
 		return 0;
 	}
-	m_mutex.lock();
-	//m_CurrentWnd=uiWndIndex;
-	m_mutex.unlock();
-	qDebug()<<m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus()<<"uiWndIndex:"<<uiWndIndex;
 	return m_PreviewWnd[uiWndIndex].GetWindowConnectionStatus();
 }
 
@@ -325,7 +311,6 @@ void QPreviewWindows::OnSubWindowRmousePress( QWidget *Wid,QMouseEvent *ev )
 
 int QPreviewWindows::StartRecord(int nWndID)
 {
-	qDebug()<<"StartRecord:"<<nWndID;
     if (nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
@@ -338,7 +323,6 @@ int QPreviewWindows::StartRecord(int nWndID)
 
 int QPreviewWindows::StopRecord(int nWndID)
 {
-	qDebug()<<"StopRecord:"<<nWndID;
     if (nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
@@ -351,7 +335,6 @@ int QPreviewWindows::StopRecord(int nWndID)
 
 int QPreviewWindows::SetDevInfo(const QString&devname,int nChannelNum, int nWndID)
 {
-	qDebug()<<"SetDevInfo"<<"devname:"<<devname<<"nChannelNum:"<<nChannelNum<<"nWndID:"<<nWndID;
     if (nChannelNum < 0 || nWndID < 0 || (unsigned int)nWndID >= ARRAY_SIZE(m_PreviewWnd))
 	{
 		return 1;
@@ -399,7 +382,6 @@ int QPreviewWindows::SetVolume(unsigned int uiPersent)
 
 int QPreviewWindows::AudioEnabled(bool bEnabled)
 {
-	/*int nRet = m_PreviewWnd[0].AudioEnabled(bEnabled);*/
 	int nRet = m_PreviewWnd[m_CurrentWnd].AudioEnabled(bEnabled);
 	m_bIsOpenAudio=bEnabled;
 	m_PreviewWnd[m_CurrentWnd].SetCurrentFocus(true);

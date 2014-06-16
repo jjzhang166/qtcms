@@ -345,6 +345,10 @@ int QSubView::PrevPlay(QVariantMap evMap)
 {
 	if (NULL==m_IVideoDecoder||!this->isVisible())
 	{
+		//if (NULL!=m_IVideoDecoder)
+		//{
+		//	m_IVideoDecoder->deinit();
+		//}
 		return 1;
 	}
 

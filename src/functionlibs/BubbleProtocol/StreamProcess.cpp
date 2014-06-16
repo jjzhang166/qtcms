@@ -85,9 +85,8 @@ void StreamProcess::conToHost(QString hostAddr, quint16 ui16Port )
 	connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
 	connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
 	connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
-
     m_tcpSocket->connectToHost(hostAddr, ui16Port);
-    if (m_tcpSocket->waitForConnected(500))
+    if (m_tcpSocket->waitForConnected(2000))
     {
 		m_nRemainBytes = 0;
 		m_nTotalBytes = 0;
@@ -117,31 +116,35 @@ void StreamProcess::socketWrites(QByteArray block)
 {
 	if (NULL != m_tcpSocket && QAbstractSocket::ConnectedState == m_tcpSocket->state())
 	{
-        m_tcpSocket->write(block);
+        int size=m_tcpSocket->write(block);
         if (!m_tcpSocket->waitForBytesWritten(300))
         {
-            qDebug()<<"socket write failure:\t"<<__FUNCTION__<<__LINE__;
-        }
+            qDebug()<<__FUNCTION__<<__LINE__<<"socket write failure:\t"<<"time out";
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"write size"<<size;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"socket write failure:\t"<<"connnet fail ";
 	}
-	else if (NULL != m_tcpSocket && QAbstractSocket::ConnectedState != m_tcpSocket->state())
-	{
-		m_tcpSocket->abort();
-        int times = 0;
-        while (m_tcpSocket->state() != QAbstractSocket::ConnectedState && times < 3)
-        {
-            ++times;
-            m_tcpSocket->connectToHost(m_hostAddress, m_nPort);
-            if (m_tcpSocket->waitForConnected(300))
-            {
-                m_tcpSocket->write(block);
-                if (!m_tcpSocket->waitForBytesWritten(300))
-                {
-                    qDebug()<<"socket write failure:\t"<<__FUNCTION__<<__LINE__;
-                }
-            }
-        }
-		
-    }
+	//else if (NULL != m_tcpSocket && QAbstractSocket::ConnectedState != m_tcpSocket->state())
+	//{
+	//	m_tcpSocket->abort();
+ //       int times = 0;
+ //       while (m_tcpSocket->state() != QAbstractSocket::ConnectedState && times < 3)
+ //       {
+ //           ++times;
+ //           m_tcpSocket->connectToHost(m_hostAddress, m_nPort);
+ //           if (m_tcpSocket->waitForConnected(300))
+ //           {
+ //               m_tcpSocket->write(block);
+ //               if (!m_tcpSocket->waitForBytesWritten(300))
+ //               {
+ //                   qDebug()<<"socket write failure:\t"<<__FUNCTION__<<__LINE__;
+ //               }
+ //           }
+ //       }
+	//	
+ //   }
 }
 QString StreamProcess::checkXML(QString source)
 {
@@ -550,8 +553,8 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 	mStreamInfo.insert("connectionStatus", m_tcpSocket->state());
 	mStreamInfo.insert("errorValue", m_tcpSocket->error());
 	mStreamInfo.insert("errorDescription", m_tcpSocket->errorString());
-
 	eventProcCall(QString("SocketError"), mStreamInfo);
+	qDebug()<<__FUNCTION__<<__LINE__<<m_tcpSocket->error();
 	m_tcpSocket->close();
 }
 
@@ -560,6 +563,7 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 	QVariantMap mStreamInfo;
 
 	int nStatus = m_tcpSocket->state();
+	qDebug()<<__FUNCTION__<<__LINE__<<m_tcpSocket->state();
 	int nRet = 0;
 	if (QAbstractSocket::ConnectingState == nStatus)
 	{
