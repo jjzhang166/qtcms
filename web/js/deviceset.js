@@ -100,7 +100,13 @@ var oSearchOcx,
 				}
 				if(key == 1){
 
+					$('#set_content ul.ope_list li').click(function(){
+						emptyDevSetMenu();
+					})
+
 					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
+
+						emptyDevSetMenu();
 
 						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
 						$(this).addClass('sel')
@@ -119,7 +125,7 @@ var oSearchOcx,
 							ipc(_url,oDevData.username,oDevData.password);
 							devinfo_load_content(true);										
 						}
-					    if(oDevData.vendor == 'DVR')//如果选中设备为dvr
+					    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为dvr
 						{
 							$('ul.dvr_list0 li').removeClass('ope_listAct');
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
@@ -138,13 +144,13 @@ var oSearchOcx,
 			})
 
 			// 设置相关
-			$('ul.dvr_list0').each(function(){//dvr
+			/*$('ul.dvr_list0').each(function(){//dvr
 				var warp = $(this);
 				warp.click(function(){ 
 					warp.show();
 					$('ul.ipc_list0').hide();
 				})
-				/*warp.find('li').each(function(index){
+				warp.find('li').each(function(index){
 					$(this).click(function(){
 						switch(index){
 							case 0: dvr_devinfo_load_content();break;
@@ -159,16 +165,27 @@ var oSearchOcx,
 							default:break;
 						}		
 					})
-				})*/
-			});
+				})
+			});*/
+			/*$('ul.dvr_list0').click(function(){
+				emptyDevSetMenu();
+				$(this).show();
+				$('ul.ipc_list0').hide();
+			})
 
-			$('ul.ipc_list0').each(function(){//ipc
+			$('ul.ipc_list0').click(function(){
+				emptyDevSetMenu();
+				$(this).show();
+				$('ul.dvr_list0').hide();
+			})*/
+
+			/*$('ul.ipc_list0').each(function(){//ipc
 				var warp = $(this);
 				warp.click(function(){ 
 					warp.show();
 					$('ul.dvr_list0').hide();
 				})
-				/*$('ul.ipc_list0 li').each(function(index){
+				$('ul.ipc_list0 li').each(function(index){
 					$(this).click(function(){
 						alert(index);
 						switch(index)
@@ -182,8 +199,8 @@ var oSearchOcx,
 							default:break;
 						}			
 					})
-				})*/
-			});
+				})
+			});*/
 		})
 
 		//搜索结果 设备列表tr委托部分事件;
@@ -301,7 +318,7 @@ var oSearchOcx,
 		initOxcDevListStatus()	
 	})///
 
-	$(window).resize(set_contentMax)
+	///$(window).resize(set_contentMax)
 
 	var Language={'zh_CN':'中文','en_GB':'English'};
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
@@ -522,6 +539,11 @@ var oSearchOcx,
 		})
 		str+='</chlintogroup>';
 		$('#addchannelingroupdouble_ID').val(str);
+	}
+
+	function emptyDevSetMenu(){
+		$('#set_content div.switch input[id]').val('').prop('checked',false);
+		$('#set_content div.switch span[id]').html('');
 	}
 	
 	function set_contentMax(){

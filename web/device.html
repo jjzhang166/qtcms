@@ -33,7 +33,7 @@
 	table .select1{ width: 130px;}
 	tr{ background: #282828; height: auto; text-align: left;}
 	td{ width: 168px; font-size: 14px; text-indent: 4px; height: 28px; }
-	table input{ height: 16px; margin-right:6px; border: 0; background: url(images/top_icon.png) no-repeat -440px 0;}
+	table input{ height: 16px; margin-right:6px; border: 0; background: url(images/top_icon.png) no-repeat -440px 0; text-indent: 4px;}
 	table .td1{ width: 110px;}
 	table .td2{ width: 228px;}
 	table .td4{ width: auto;}
@@ -45,6 +45,7 @@
 	table .iput{float: right; margin-right: 6px;}
 	table .iput1{float: left; width:78px;}
 	table .inpt2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; line-height: 22px; text-align: center;}
+	table .select,table .option{ margin-left:4px;}
 	.title{color: #FF6400;}
 	.tb1 td,.tb2,td{width:auto;}
 	.tb1 {display: block; background: #282828; float: left;}
@@ -175,7 +176,7 @@
 						</tr>
 						<tr>
 							<td><script>T("Port")</script></td>
-							<td colspan="3"><input type="text" style="width:60px; float:left;" id="SearchHttpport_ID" /><div class="hover inpt2" onclick="setIP()"><script>T("Set_up")</script></div></td>
+							<td colspan="3"><input type="text" style="width:60px; float:left; margin-left:4px;" id="SearchHttpport_ID" /><div class="hover inpt2" onclick="setIP()"><script>T("Set_up")</script></div></td>
 						</tr>
 						<tr>
 							<td colspan="4"><div class="hover inpt2" style="margin-left:0;"  onclick="autoSetIP();"><script>T("Batch_assign_IP")</script></div></td>
@@ -210,12 +211,12 @@
 				</ul>
 				<div class="switch dvr_list"  style="display:block;">
 					<table>
-						<tr><td><script>T("Device_name")</script></td><td><input type="text" id="Dvr_Device_name" /></td></tr>
-						<tr><td><script>T("Model")</script></td><td><input type="text" id="Dvr_Device_model" /></td></tr>
-						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" /></td></tr>
-						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" /></td></tr>
-						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" /></td></tr>
-						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" /></td></tr>
+						<tr><td><script>T("Device_name")</script></td><td><input type="text" id="Dvr_Device_name"  readonly="readonly" /></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" id="Dvr_Device_model" readonly="readonly" /></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" readonly="readonly"/></td></tr>
 						<!-- <tr><td><script>T("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
 						<tr><td><script>T("Alarm_input")</script></td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
 						<tr><td><script>T("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr> -->
