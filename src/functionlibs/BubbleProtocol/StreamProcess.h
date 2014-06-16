@@ -9,6 +9,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMultiMap>
 
+#include "IDeviceConnection.h"
+#include <QTimer>
 class StreamProcess : public QObject
 {
 	Q_OBJECT
@@ -30,6 +32,7 @@ private slots:
 	void stateChanged (QAbstractSocket::SocketState socketState);
     void conToHost(QString , quint16 );
 	void socketWrites(QByteArray block);
+	void sendHeartBeat();
 private:
 	bool m_bIsHead;
 	volatile bool m_bStop;
@@ -47,13 +50,15 @@ private:
 	bool m_bIsSupportBubble;
 	QList<QList<Stream>> m_lstStreamList;
 	char m_curHead;
-
+	int m_curstate;
+	QTimer *m_hearttimer;
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	void analyzeRecordStream();
 	void analyzePreviewStream();
 	void analyzeBubbleInfo();
 	QString checkXML(QString source);
+
 
 };
 

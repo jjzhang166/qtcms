@@ -25,8 +25,7 @@ m_streanCount(0)
 	m_eventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
                <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail";
 
-// 	m_timer.singleShot(10000, this, SLOT(sendHeartBeat()));
-
+ /*	m_timer.singleShot(2000, this, SLOT(sendHeartBeat()));*/
 	m_pStreamProcess = new StreamProcess();
 	m_pStreamProcess->moveToThread(&m_workerThread);
 	connect(&m_workerThread, SIGNAL(finished()), m_pStreamProcess, SLOT(deleteLater()));
@@ -41,7 +40,6 @@ BubbleProtocol::~BubbleProtocol(void)
 {
 //	m_pStreamProcess->stopStream();
 	emit sigEndStream();
-
 	m_workerThread.quit();
 	m_workerThread.wait();
 	//delete m_pStreamProcess;
@@ -88,11 +86,10 @@ int BubbleProtocol::connectToDevice()
 
 	m_pStreamProcess->setAddressInfo(m_hostAddress, m_ports["media"].toInt());
 	emit sigChildThreadToConn(m_hostAddress.toString(), m_ports["media"].toInt());
-
- 	QEventLoop loop;
- 	QTimer::singleShot(1000, &loop, SLOT(quit()));
- 	connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
- 	loop.exec();
+ 	//QEventLoop loop;
+ 	//QTimer::singleShot(1000, &loop, SLOT(quit()));
+ 	//connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
+ 	//loop.exec();
  
 	QString block = "GET /bubble/live?ch=0&stream=0 HTTP/1.1\r\n\r\n";
 
@@ -208,6 +205,12 @@ void BubbleProtocol::setRecordInfo(Record& record, QStringList strList)
 
 void BubbleProtocol::sendHeartBeat()
 {
+	if (m_pStreamProcess->getSocketState()!=IDeviceConnection::CS_Connected)
+	{
+		return;
+	}else{
+		//keep going
+	}
     char buff[100];
     qint64 nLen = 0;
 

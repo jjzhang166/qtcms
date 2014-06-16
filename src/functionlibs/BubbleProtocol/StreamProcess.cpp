@@ -3,7 +3,6 @@
 #include <QtEndian>
 #include <QDomDocument>
 #include "h264wh.h"
-#include "IDeviceConnection.h"
 #include <QtCore/QTime>
 
 
@@ -15,9 +14,10 @@ m_nPort(80),
 m_bIsSupportBubble(true),
 m_bStop(false),
 m_nVerifyResult(0),
-// m_bIsResethead(false),
+m_hearttimer(NULL),
 m_tcpSocket(NULL)
 {
+	m_curstate=IDeviceConnection::CS_Disconnecting;
 }
 
 StreamProcess::~StreamProcess(void)
@@ -31,34 +31,8 @@ StreamProcess::~StreamProcess(void)
 
 int  StreamProcess::getSocketState()
 {
-	if (NULL == m_tcpSocket)
-	{
-		return 0;
-	}
+	return m_curstate;
 
-    int nStatus = m_tcpSocket->state();
-    int nRet = 0;
-    if (QAbstractSocket::ConnectingState == nStatus)
-    {
-        nRet = IDeviceConnection::CS_Connectting;
-    }
-    else if (QAbstractSocket::ConnectedState == nStatus)
-    {
-        nRet = IDeviceConnection::CS_Connected;
-    }
-    else if (QAbstractSocket::ClosingState == nStatus)
-    {
-        nRet = IDeviceConnection::CS_Disconnecting;
-    }
-    else if (QAbstractSocket::UnconnectedState == nStatus)
-    {
-        nRet = IDeviceConnection::CS_Disconnected;
-    }
-    else
-    {
-        //nothing
-    }
-    return nRet;
 }
 
 void StreamProcess::setAddressInfo(QHostAddress hostAddress, int port)
@@ -104,7 +78,6 @@ void StreamProcess::stopStream()
 		m_bStop = true;
 
 		disconnect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveStream()));
-		qDebug()<<m_tcpSocket->state();
 		m_tcpSocket->disconnectFromHost();
 
 		disconnect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(showError(QAbstractSocket::SocketError)));
@@ -121,7 +94,7 @@ void StreamProcess::socketWrites(QByteArray block)
         {
             qDebug()<<__FUNCTION__<<__LINE__<<"socket write failure:\t"<<"time out";
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"write size"<<size;
+			
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"socket write failure:\t"<<"connnet fail ";
@@ -554,7 +527,13 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 	mStreamInfo.insert("errorValue", m_tcpSocket->error());
 	mStreamInfo.insert("errorDescription", m_tcpSocket->errorString());
 	eventProcCall(QString("SocketError"), mStreamInfo);
-	qDebug()<<__FUNCTION__<<__LINE__<<m_tcpSocket->error();
+	if (m_hearttimer!=NULL&&m_hearttimer->isActive())
+	{
+		m_hearttimer->stop();
+		disconnect(m_hearttimer,SIGNAL(timeout()),this,SLOT(sendHeartBeat()));
+		delete m_hearttimer;
+		m_hearttimer=NULL;
+	}
 	m_tcpSocket->close();
 }
 
@@ -563,7 +542,6 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 	QVariantMap mStreamInfo;
 
 	int nStatus = m_tcpSocket->state();
-	qDebug()<<__FUNCTION__<<__LINE__<<m_tcpSocket->state();
 	int nRet = 0;
 	if (QAbstractSocket::ConnectingState == nStatus)
 	{
@@ -573,6 +551,12 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 	else if (QAbstractSocket::ConnectedState == nStatus)
 	{
 		nRet = IDeviceConnection::CS_Connected;
+		if (m_hearttimer==NULL)
+		{
+			m_hearttimer=new QTimer;
+			m_hearttimer->start(10000);
+			connect(m_hearttimer,SIGNAL(timeout()),this,SLOT(sendHeartBeat()));
+		}		
 		goto pro;
 	}
 	else if (QAbstractSocket::ClosingState == nStatus)
@@ -583,10 +567,19 @@ void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 	else if (QAbstractSocket::UnconnectedState == nStatus)
 	{
 		nRet = IDeviceConnection::CS_Disconnected;
+		if (m_hearttimer!=NULL&&m_hearttimer->isActive())
+		{
+			m_hearttimer->stop();
+			disconnect(m_hearttimer,SIGNAL(timeout()),this,SLOT(sendHeartBeat()));
+			delete m_hearttimer;
+			m_hearttimer=NULL;
+		}
+		
 		goto pro;
 	}
 	return ;
-	pro:
+pro:
+	m_curstate=nRet;
 	mStreamInfo.insert("status", nRet);
 
 	eventProcCall(QString("StateChangeed"), mStreamInfo);
@@ -602,4 +595,28 @@ void StreamProcess::eventProcCall( QString sEvent,QVariantMap param )
 			eventDes.proc(sEvent,param,eventDes.puser);
 		}
 	}
+}
+
+void StreamProcess::sendHeartBeat()
+{
+	char buff[100];
+	qint64 nLen = 0;
+
+	Bubble * bubble = (Bubble *)buff;
+
+		bubble->cHead = (char)0xaa;
+		bubble->cCmd = 0x07;
+
+	QDateTime time = QDateTime::currentDateTime();
+	bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+
+	bubble->pLoad[0] = 0x02;
+	bubble->uiLength = sizeof(Bubble) - sizeof(bubble->cHead) - sizeof(bubble->uiLength);
+
+	nLen = (qint64)(bubble->uiLength + sizeof(bubble->cHead) + sizeof(bubble->uiLength));
+	bubble->uiLength = qToBigEndian(bubble->uiLength);
+
+	QByteArray block;
+	block.append(buff, nLen);
+	socketWrites(block);
 }

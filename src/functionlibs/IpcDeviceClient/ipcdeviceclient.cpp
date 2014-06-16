@@ -733,7 +733,6 @@ void IpcDeviceClient::DeInitProtocl()
 	{
 		if (NULL!=it->m_DeviceConnecton)
 		{
-			qDebug()<<"release======================"<<it->m_DeviceConnecton;
 			it->m_DeviceConnecton->Release();
 			it->m_DeviceConnecton=NULL;
 		}

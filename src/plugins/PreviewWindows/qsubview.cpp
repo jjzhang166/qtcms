@@ -282,7 +282,7 @@ int QSubView::CloseWndCamera()
 }
 int QSubView::GetWindowConnectionStatus()
 {
-	return m_CurrentState;
+	return m_CurrentState;	
 }
 
 
@@ -629,9 +629,8 @@ void QSubView::timerEvent( QTimerEvent * ev)
 		{
             if (STATUS_CONNECTED!=m_CurrentState&&false==m_bIsAutoConnecting)
 			{
-				qDebug()<<"AutoConnectSignals";
 				killTimer(ev->timerId());
-				m_AutoConnectTimeId=startTimer(10000);
+				m_AutoConnectTimeId=startTimer(30000);
 				emit AutoConnectSignals();
 			}
 		}
@@ -647,7 +646,7 @@ void QSubView::OnRMousePressMenu()
 		m_QActionSwitchStream->setText(tr("Switch to MainStream"));
 	}
 
-	if (m_CurrentState==STATUS_DISCONNECTED)
+	if (m_CurrentState==STATUS_DISCONNECTED&&m_bStateAutoConnect==false)
 	{
 		m_QActionCloseView->setDisabled(true);
 		m_QActionSwitchStream->setDisabled(true);
@@ -978,6 +977,7 @@ int QSubView::ForRecord( QVariantMap evMap )
 void QSubView::In_OpenAutoConnect()
 {
 	//关闭上一次的连接
+	qDebug()<<__FUNCTION__<<__LINE__<<"AutoConnectSignals";
 	m_bIsAutoConnecting=true;
 	m_QSubViewObject.CloseWndCamera();
 	//释放动态生成的指针
