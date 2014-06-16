@@ -3,7 +3,7 @@
 #include <QtCore\QFile>
 #include <QtCore\QCoreApplication>
 #include "qarplib.h"
-#pragma comment(lib,"Qarp.lib")
+//#pragma comment(lib,"Qarp.lib")
 
 void dectobin(unsigned int n);
 QString Getgateway(QString ip,QString mask);
