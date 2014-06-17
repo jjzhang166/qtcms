@@ -31,7 +31,6 @@ m_bcheckdiskfreesize(false)
 
 Recorder::~Recorder()
 {
-
 }
 
 int Recorder::Start()
@@ -106,8 +105,12 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 			bufTemp.samplerate = frameinfo["samplerate"].toInt();
 			bufTemp.samplewidth = frameinfo["samplewidth"].toInt();
 		}
-		if (m_dataqueue.size()>20){
-			msleep(500);
+		if (m_dataqueue.size()>10){
+			msleep(10);	
+			if (m_dataqueue.size()>20)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"size:"<<m_dataqueue.size()<<"record cause sleep!!!";
+			}
 		}
 		
 		m_dataRef.lock();
@@ -151,7 +154,7 @@ void Recorder::run()
 	{
 		if (m_dataqueue.size()<1||nSleepTime>10)
 		{
-			msleep(1);
+			msleep(10);
 			nSleepTime=0;
 		}
 		nSleepTime++;
@@ -566,6 +569,7 @@ void Recorder::checkdiskfreesize()
 		//keep going
 	}
 }
+
 
 
 

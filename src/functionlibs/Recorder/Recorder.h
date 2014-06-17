@@ -92,7 +92,6 @@ private:
 	int m_reservedsize;
 	QMutex m_dataRef;
 	QQueue<RecBufferNode> m_dataqueue;
-
 	StorageMgr m_StorageMgr;
 	//proc
 	QStringList m_eventList;
