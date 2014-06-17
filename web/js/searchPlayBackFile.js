@@ -108,8 +108,8 @@
 	}
 	function showRecProgress(now){  //回访检索文件进度
 			
-		//now = recTotal
-		console.log(now+'//'+recTotal);
+		now = recTotal
+	//	console.log(now+'//'+recTotal);
 		var con = lang.Retrieving,
 			p =now/recTotal*100;
 		if(recTotal == now){
@@ -121,7 +121,7 @@
 	}
 
 	function recFileSearchFailCallback(data){
-		console.log(data);
+		//console.log(data);
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
 		$('#fileRec h4').html('<h4 style="color:red;">'+hint[data.parm]+'</h4>')
 						.end().show();
@@ -131,7 +131,7 @@
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		console.log(data);
+		//console.log(data);
 		recTotal = data.total ? data.total : 0;	
 		
 		recTotal == 0 && showRecProgress(recTotal);		
