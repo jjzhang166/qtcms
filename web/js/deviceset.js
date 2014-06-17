@@ -315,7 +315,7 @@ var oSearchOcx,
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
 		
-		initOxcDevListStatus()	
+		initOxcDevListStatus()
 	})///
 
 	///$(window).resize(set_contentMax)
@@ -354,15 +354,18 @@ var oSearchOcx,
 		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
 		 $('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
 		})
+
+		areaList2Ui(2);
 	}
-	/*function FillRecordTimeData(){
-		SettingRecordDoubleTimeParm();
+	function FillRecordTimeData(){
+		areaList2Ui(2);
+		/*SettingRecordDoubleTimeParm();
 		$('ul.week a').each(function(index){ 
 			$(this).click(function(){
 				$('#week').html($(this).html());
 			})
-		})
-	}*/
+		})*/
+	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
 		var oTimes=$('#recordtime tbody tr:lt(4)');
 		var str = '<recordtime num="4">';
