@@ -139,7 +139,7 @@ var oSearchOcx,
 				}else if(key == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}else if(key == 3){ 
-					//userList2Ui();
+					userList2Ui();
 				}
 			})
 
@@ -379,7 +379,7 @@ var oSearchOcx,
 			oTimes.eq(n).find('input.timeid').val(timeid);
 			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
 			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
-			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 		}
 		str +='</recordtime>';
 		$('#recordtimedouble_ID').val(str);
@@ -615,7 +615,7 @@ var oSearchOcx,
 		if(obj == 'menu3' || obj == 'confirm'){
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
-				Confirm('please select user!!!');
+				Confirm(lang.please_select_user);
 				return;
 			}
 			if(obj == 'menu3'){
@@ -811,6 +811,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function AddUserSuccess(ev){
 		var name =$('#username_add_ID').val();
 		var userCom= $('#level_add_ID').prev('a').prev('span').html();
+			userCom = userCom.match(/<\/?\w+>/g) ? userCom.match(/[\u4e00-\u9fa5]+/g)[0] : userCom;
 		for(i in userLev){
 			if(userLev[i] == userCom){
 				var userlv = i;
@@ -848,7 +849,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			str +=data.name+': ';
 		}
 		str += data.fail*/
-		Confirm("操作失败");
+		Confirm(lang.Operation_failed);
 	}
 
 	//搜索设备控件方法.
@@ -1144,6 +1145,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		$('ul.week.option li').removeData();
 		$('#week').html(lang.Monday).attr('value','0');
 		$('#recordtime td.copyTo').find('a,span').attr('value','').not('a.all').html('');
+		areaList2Ui(2);
 	}
 	function SettingStorageParmSuccess(data){
 		//alert(data);
