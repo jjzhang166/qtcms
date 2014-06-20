@@ -34,8 +34,9 @@ LocalPlayer::~LocalPlayer()
 	{
 		if (NULL != iter->pPlayMgr)
 		{
-			delete iter->pPlayMgr;
-			iter->pPlayMgr = NULL;
+// 			delete iter->pPlayMgr;
+// 			iter->pPlayMgr = NULL;
+			iter->pPlayMgr->deleteLater();
 		}
 	}
 	m_GroupMap.clear();
@@ -625,7 +626,8 @@ int LocalPlayer::GroupStop()
 		}
 		g_waitConPause.wakeOne();
 		iter->pPlayMgr->stop();
-		delete iter->pPlayMgr;
+/*		delete iter->pPlayMgr;*/
+		iter->pPlayMgr->deleteLater();
 	}
 
 	m_bIsGroupPlaying = false;
