@@ -29,6 +29,7 @@
 #include <QDomDocument>
 #include <QDomNode>
 #include "IPTZControl.h"
+#include "QSubviewRun.h"
 
 int cbLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbForRecord(QString evName,QVariantMap evMap,void*pUser);
