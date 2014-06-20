@@ -514,18 +514,20 @@ void RemoteBackup::run()
 			break;
 		case 4://判断是否结束
 			{
-				if (AVI_bytes_written(AviFile)>1024*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"file size >1G,stop back up";
-
-					QVariantMap item;
-					item.insert("parm",100);
-					eventProcCall("progress",item);
-					item.clear();
-					item.insert("types","backupFinished");
-					eventProcCall("BackupStatusChange",item);
-					step=5;//文件最大不超过1G
-				}else if (m_progress>=1.0f)
+// 				if (AVI_bytes_written(AviFile)>1024*1024*1024)
+// 				{
+// 					qDebug()<<__FUNCTION__<<__LINE__<<"file size >1G,stop back up";
+// 
+// 					QVariantMap item;
+// 					item.insert("parm",100);
+// 					eventProcCall("progress",item);
+// 					item.clear();
+// 					item.insert("types","backupFinished");
+// 					eventProcCall("BackupStatusChange",item);
+// 					step=5;//文件最大不超过1G
+// 				}
+// 				else if (m_progress>=1.0f)
+				if (m_progress>=1.0f)
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<"m_progress"<<m_progress<<"back up finish";
 					QVariantMap item;
