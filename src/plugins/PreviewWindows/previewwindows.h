@@ -8,6 +8,7 @@
 #include "IDisplayWindowsManager.h"
 #include <QtGui/QtGui>
 #include "qpreviewwindows.h"
+#include "qpreviewwindowsex.h"
 
 class PreviewWindows :public QWidget
 	,public IWebPluginBase

@@ -52,6 +52,8 @@ public:
 	int closePTZ(int ncmd);
 	//加载语言
 	void loadLanguage(QString tags);
+	//设置当前焦点窗口
+	void setCurrentFocus(bool flags);
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);
@@ -69,7 +71,7 @@ signals:
 	void sgmouseLeftClick(QWidget*,QMouseEvent *);
 	void sgrecordState(bool);
 	void sgmouseMenu();
-
+	void sgconnectStatus(QVariantMap,QWidget *);
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
@@ -85,6 +87,7 @@ private:
 		STATUS_DISCONNECTING,
 	}tagConnectStatus;
 	tagConnectStatus m_tCurConnectStatus;
+	tagConnectStatus m_tHistoryConnectStatus;
 	QSubviewRun m_sSubviewRun;
 	ManageWidget *m_pManageWidget;
 	bool m_bIsFocus;

@@ -63,7 +63,7 @@ public:
 	int SetDevInfo(const QString&devname,int nChannelNum);
 
 	//“Ù∆µ≤•∑≈
-	int SetPlayWnd(int nWnd);
+	int SetPlayWnd(int nWnd);//unnecessary
 	int SetVolume(unsigned int uiPersent);
 	QSubView* getCurWind();
 	int AudioEnabled(bool bEnabled);

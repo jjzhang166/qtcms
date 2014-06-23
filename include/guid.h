@@ -95,4 +95,5 @@ extern const CLSID CLSID_Login;
 extern const CLSID CLSID_WinIpcSearch;
 extern const CLSID CLSID_PlaybackActivity;
 extern const CLSID CLSID_BackUpActivity;
+extern const CLSID CLSID_CommonlibEx;
 #endif

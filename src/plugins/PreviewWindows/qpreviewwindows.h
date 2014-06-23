@@ -43,7 +43,7 @@ public slots:
 
 	void OnSubWindowRmousePress(QWidget *,QMouseEvent *);
 
-	void SetCurrentWind(QWidget *);
+	void SetCurrentWind(QWidget *);//may be unnecessary
 
 	int GetCurrentWnd();
 

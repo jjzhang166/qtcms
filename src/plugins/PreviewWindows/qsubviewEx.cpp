@@ -4,6 +4,7 @@
 qsubviewEx::qsubviewEx(QWidget *parent):
 QWidget(parent),
 	m_tCurConnectStatus(STATUS_DISCONNECTED),
+	m_tHistoryConnectStatus(STATUS_DISCONNECTED),
 	m_pManageWidget(NULL),
 	m_bIsFocus(false),
 	m_nchlid(-1),
@@ -134,6 +135,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
+
 			}else if (m_tCurConnectStatus==STATUS_CONNECTING)
 			{
 				//正在连接中 
@@ -153,7 +155,15 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
 			}
-
+			//抛出事件
+			if (m_tHistoryConnectStatus!=m_tCurConnectStatus)
+			{
+				QVariantMap evMapToUi;
+				evMapToUi.insert("CurrentState",m_tCurConnectStatus);
+				evMapToUi.insert("ChannelId",m_tDeviceInfo.m_uiChannelIdInDataBase);
+				emit sgconnectStatus(evMapToUi,this);
+				m_tHistoryConnectStatus=m_tCurConnectStatus;
+			}
 		}
 	}
 }
@@ -562,6 +572,12 @@ QString qsubviewEx::getLanguageInfo( QString tags )
 	file->close();
 	delete file;
 	return sFileName;
+}
+
+void qsubviewEx::setCurrentFocus( bool flags )
+{
+	m_bIsFocus=flags;
+	m_sSubviewRun.setFoucs(flags);
 }
 
 

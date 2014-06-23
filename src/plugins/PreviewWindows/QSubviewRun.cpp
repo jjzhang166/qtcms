@@ -29,7 +29,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitWidth(0)
 {
 	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
-	connect(this,SIGNAL(sgbackToMainThread()),this,SLOT(slbackToMainThread()),Qt::BlockingQueuedConnection);
+	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()),Qt::BlockingQueuedConnection);
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
 }
