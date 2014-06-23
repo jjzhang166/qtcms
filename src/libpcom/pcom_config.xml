@@ -40,6 +40,7 @@
 		<item clsid="C7E581AB-4B51-4A24-898A-1A5406CF4B97" name="decoder.AudioDecoder" file="AudioDecoder.dll" type="AudioDecoder"/>
 		<item clsid="CDAAF783-0143-47AB-B5A5-4159CE25A61E" name="AudioDevice" file="AudioDevice.dll" type="AudioDevice"/>
 		<item clsid="3641CDC2-EDDB-4287-B723-3A770199ECAD" name="AudioPlayer" file="AudioPlayer.dll" type="AudioPlayer"/>
+		<item clsid="6243A3F3-EFC4-4A8F-88A0-0F2A59A24D29" name="CommonlibEx" file="commonlibEx.dll" type="commonlib"/>
 	
 	</CLSID>
 </root>
