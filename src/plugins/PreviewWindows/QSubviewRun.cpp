@@ -135,7 +135,11 @@ void QSubviewRun::run()
 					registerCallback(DEVICECLIENT);
 					registerCallback(DECODE);
 					//初始化：渲染器
-					if (0!=m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd))
+					QVariantMap evMap;
+					evMap.clear();
+					evMap.insert("eventName","setRenderWnd");
+					emit sgbackToMainThread(evMap);//the fuction of setRenderWnd() can not be call from sub thread
+					if (0!=/*m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd)*/0)
 					{
 						nOpenStep=4;
 					}else{
@@ -383,7 +387,7 @@ void QSubviewRun::run()
 			int nSysTimeStep=0;
 			bool bSysTimeStop=false;
 			while(!bSysTimeStop){
-				if (m_stop=true)
+				if (m_stop==true)
 				{
 					nSysTimeStep=4;
 				}
@@ -391,7 +395,7 @@ void QSubviewRun::run()
 				case 0:{
 					//获取数据库中设备是否需要自动同步时间
 					ILocalSetting *pLocalPlayer=NULL;
-					pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalPlayer);
+					pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_ILocalSetting,(void **)&pLocalPlayer);
 					if (NULL!=pLocalPlayer)
 					{
 						m_bIsSysTime=pLocalPlayer->getAutoSyncTime();
@@ -832,7 +836,7 @@ int QSubviewRun::cbCRecorderData( QString evName,QVariantMap evMap,void*pUser )
 bool QSubviewRun::createDevice()
 {
 	IChannelManager *pChannelManager=NULL;
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void**)&pChannelManager);
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManager);
 	if (NULL!=pChannelManager)
 	{
 		QVariantMap channelInfo=pChannelManager->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
@@ -843,7 +847,7 @@ bool QSubviewRun::createDevice()
 		pChannelManager->Release();
 		pChannelManager=NULL;
 		IDeviceManager *pDeviceManager=NULL;
-		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void **)&pDeviceManager);
+		pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IDeviceManager,(void **)&pDeviceManager);
 		if (NULL!=pDeviceManager)
 		{
 			QVariantMap deviceInfo=pDeviceManager->GetDeviceInfo(dev_id);
@@ -1331,6 +1335,10 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 		}
 	}
 	//其他事件也在此处处理
+	if (evMap.contains("eventName")&&evMap.value("eventName")=="setRenderWnd")
+	{
+		m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd);
+	}
 }
 
 void QSubviewRun::slplanRecord()

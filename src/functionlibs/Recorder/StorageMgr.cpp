@@ -11,7 +11,7 @@ StorageMgr::StorageMgr(void):
 	m_pDisksSetting(NULL),
 	m_currdisk('0')
 {
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void **)&m_pDisksSetting);
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IDiskSetting,(void **)&m_pDisksSetting);
 	if (!m_pDisksSetting)
 	{
 		qDebug("can not create diskssetting instance");

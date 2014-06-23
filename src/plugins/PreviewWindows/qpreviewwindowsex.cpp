@@ -268,7 +268,7 @@ int qpreviewwindowsex::SwithStream( unsigned int uiWndIndex,int chlId )
 
 int qpreviewwindowsex::SetDevChannelInfo( unsigned int uiWndIndex,int ChannelId )
 {
-
+	return m_sPreviewWnd[uiWndIndex].setDevChannelInfo(ChannelId);
 	return 0;
 }
 

@@ -414,7 +414,8 @@ void qsubviewEx::mousePressEvent( QMouseEvent * ev)
 
 int qsubviewEx::openPreview( int chlId )
 {
-	m_sSubviewRun.openPreview(chlId,m_pManageWidget->GetWidgetForVideo());
+	/*m_sSubviewRun.openPreview(chlId,m_pManageWidget->GetWidgetForVideo());*/
+	m_sSubviewRun.openPreview(m_tDeviceInfo.m_uiChannelIdInDataBase,m_pManageWidget->GetWidgetForVideo());
 	m_nchlid=chlId;
 	return 0;
 }
@@ -428,6 +429,7 @@ int qsubviewEx::closePreview()
 int qsubviewEx::setDevChannelInfo( int chlId )
 {
 	//do nothing ,this interface may be unnecessary
+	m_tDeviceInfo.m_uiChannelIdInDataBase=chlId;
 	qDebug()<<__FUNCTION__<<__LINE__<<"do nothing ,setDevChannelInfo interface may be unnecessary";
 	return 0;
 }
