@@ -2,11 +2,12 @@
 
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
-int cbDecodeRData(QString evName,QVariantMap evMap,void *pUser);
 int cbRecorderRData(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRError(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodeRFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordRState(QString evName,QVariantMap evMap,void*pUser);
+bool QSubviewRun::m_bIsAudioOpen=false;
+unsigned int QSubviewRun::m_volumePersent=50;
 QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_currentStatus(STATUS_DISCONNECTED),
 	m_historyStatus(STATUS_DISCONNECTED),
@@ -17,7 +18,15 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bIsPtzAutoOpen(false),
 	m_bIsAutoRecording(false),
 	m_bIsRecord(false),
-	m_bIsdataBaseFlush(true)
+	m_bIsdataBaseFlush(true),
+	m_bIsSysTime(false),
+	m_bIsFocus(false),
+	m_bScreenShot(false),
+	m_pAudioPlay(NULL),
+	m_sampleWidth(0),
+	m_sampleRate(0),
+	m_nInitHeight(0),
+	m_nInitWidth(0)
 {
 	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
 	connect(this,SIGNAL(sgbackToMainThread()),this,SLOT(slbackToMainThread()),Qt::BlockingQueuedConnection);
@@ -43,15 +52,19 @@ QSubviewRun::~QSubviewRun(void)
 void QSubviewRun::run()
 {
 	//此函数内生成的资源，必须仅在此函数内销毁
-	int nstep=DEFAULT;
+	
 	m_stop=false;
 	m_bIsRecord=false;
 	m_bIsAutoRecording=false;
-	bool nstop=false;
+	m_nInitHeight=0;
+	m_nInitWidth=0;
+
 	m_currentStatus=STATUS_CONNECTING;
 	QVariantMap curStatusInfo;
 	curStatusInfo.insert("CurrentStatus",m_currentStatus);
 	emit sgbackToMainThread(curStatusInfo);
+	int nstep=DEFAULT;
+	bool nstop=false;
 	while(!nstop){
 		if (!m_stepCode.isEmpty())
 		{
@@ -168,14 +181,14 @@ void QSubviewRun::run()
 						 }
 						 break;
 		case SWITCHSTREAM:{
-			//切换码流
-			if (m_newchlid==m_deviceInfo.m_uiChannelIdInDataBase&&m_currentStatus==STATUS_CONNECTED)
+			//ui切换码流
+			if (m_currentStatus==STATUS_CONNECTED)
 			{
 				IChannelManager *pChannelManger=NULL;
 				pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&pChannelManger);
 				if (NULL!=pChannelManger)
 				{
-					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_newchlid);
+					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
 					m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();
 					pChannelManger->Release();
 					pChannelManger=NULL;
@@ -195,6 +208,7 @@ void QSubviewRun::run()
 						  }
 						  break;
 		case SWITCHSTREAMEX:{
+			//窗口菜单切换码流
 			if (m_currentStatus==STATUS_CONNECTED&&NULL!=m_pdeviceClient)
 			{
 				if ("IPC"==m_deviceInfo.m_sVendor)
@@ -235,6 +249,11 @@ void QSubviewRun::run()
 			}
 							}
 							break;
+		case IPCAUTOSWITCHSTREAM:{
+				//ipc 自动切换码流
+			ipcAutoSwitchStream();
+								 }
+								 break;
 		case OPENPTZ:{
 			//操作云台
 			if (openPTZ())
@@ -361,6 +380,106 @@ void QSubviewRun::run()
 		case AUTOSYNTIME:{
 			//自动同步时间
 			// fix me
+			int nSysTimeStep=0;
+			bool bSysTimeStop=false;
+			while(!bSysTimeStop){
+				if (m_stop=true)
+				{
+					nSysTimeStep=4;
+				}
+				switch(nSysTimeStep){
+				case 0:{
+					//获取数据库中设备是否需要自动同步时间
+					ILocalSetting *pLocalPlayer=NULL;
+					pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalPlayer);
+					if (NULL!=pLocalPlayer)
+					{
+						m_bIsSysTime=pLocalPlayer->getAutoSyncTime();
+						pLocalPlayer->Release();
+						pLocalPlayer=NULL;
+						nSysTimeStep=1;
+					}else{
+						nSysTimeStep=2;
+					}
+					   }
+					   break;
+				case 1:{
+					//自动同步
+					if ("IPC"==m_deviceInfo.m_sVendor&&m_bIsSysTime==true&&m_pdeviceClient!=NULL)
+					{
+						IAutoSycTime *pAutoSysTime=NULL;
+						m_pdeviceClient->QueryInterface(IID_IAutoSycTime,(void**)&pAutoSysTime);
+						if (NULL!=pAutoSysTime)
+						{
+							pAutoSysTime->SetAutoSycTime(m_bIsSysTime);
+							pAutoSysTime->Release();
+							pAutoSysTime=NULL;
+							nSysTimeStep=3;
+						}else{
+							nSysTimeStep=2;
+						}
+					}else{
+						nSysTimeStep=2;
+					}
+					   }
+					   break;
+				case 2:{
+					//失败
+					nSysTimeStep=4;
+					   }
+					   break;
+				case 3:{
+					//成功
+					nSysTimeStep=4;
+					   }
+					   break;
+				case 4:{
+					//end
+					bSysTimeStop=true;
+					   }
+					   break;
+				}
+			}
+						 }
+						 break;
+		case SETVOLUME:{
+			//设置声音大小
+			if (NULL!=m_pAudioPlay)
+			{
+				m_pAudioPlay->SetVolume(m_volumePersent);
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"m_pAudioPlay is null";
+			}
+					   }
+					   break;
+		case AUDIOENABLE:{
+			//开启声道
+			if (m_bIsAudioOpen)
+			{
+				m_sampleRate=0;
+				m_sampleWidth=0;
+				if (NULL!=m_pAudioPlay)
+				{
+					m_pAudioPlay->EnablePlay(true);
+					m_pAudioPlay->SetVolume(m_volumePersent);
+				}else{
+					pcomCreateInstance(CLSID_AudioPlayer,NULL,IID_IAudioPlayer,(void **)&m_pAudioPlay);
+					if (NULL!=m_pAudioPlay)
+					{
+						m_pAudioPlay->EnablePlay(true);
+						m_pAudioPlay->SetVolume(m_volumePersent);
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"apply for IAudioPlayer inteface fail";
+					}
+				}
+			}else{
+				if (NULL !=m_pAudioPlay)
+				{
+					m_pAudioPlay->Stop();
+					m_pAudioPlay->Release();
+					m_pAudioPlay=NULL;
+				}
+			}
 						 }
 						 break;
 		case DEFAULT:{
@@ -393,6 +512,11 @@ void QSubviewRun::run()
 					m_pRecorder->Release();
 					m_pRecorder=NULL;
 				}
+				if (NULL!=m_pAudioPlay)
+				{
+					m_pAudioPlay->Release();
+					m_pAudioPlay=NULL;
+				}
 				//抛出断开的事件
 				m_currentStatus=STATUS_DISCONNECTED;
 				QVariantMap curStatusInfo;
@@ -416,6 +540,7 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		m_stepCode.enqueue(OPENPREVIEW);
 		m_deviceInfo.m_uiChannelIdInDataBase=chlId;
 		m_deviceInfo.m_pWnd=pWnd;
+		m_bIsdataBaseFlush=true;
 		return;
 	}
 }
@@ -432,13 +557,12 @@ void QSubviewRun::stopPreview()
 	}
 }
 
-void QSubviewRun::switchStream(int chlId)
+void QSubviewRun::switchStream()
 {
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
 		m_stepCode.enqueue(SWITCHSTREAM);
-		m_newchlid=chlId;
 	}else{
 		//do nothing
 		qDebug()<<__FUNCTION__<<__LINE__<<"switchStream fail";
@@ -639,49 +763,7 @@ void QSubviewRun::slstopPreview()
 
 int QSubviewRun::cbCConnectState( QString evName,QVariantMap evMap,void *pUser )
 {
-	slbackToMainThread(evMap);
-	if (evName=="CurrentStatus")
-	{
-		m_currentStatus=(QSubviewRunConnectStatus)evMap.value("CurrentStatus").toInt();
-		if (m_currentStatus==STATUS_CONNECTED)
-		{
-			//do 
-			//自动同步时间
-			//开启计划录像查询
-			//抛出事件；连接上只在这里抛出
-			QVariantMap curStatusInfo;
-			curStatusInfo.insert("CurrentStatus",m_currentStatus);
-			sgbackToMainThread(curStatusInfo);
-
-		}else if (m_currentStatus==STATUS_DISCONNECTED)
-		{
-			//do
-			//停止计划录像查询
-			//停止录像
-			//抛出事件；抛出位置一
-			QVariantMap curStatusInfo;
-			curStatusInfo.insert("CurrentStatus",m_currentStatus);
-			sgbackToMainThread(curStatusInfo);
-		}else if (m_currentStatus==STATUS_CONNECTING)
-		{
-			//do
-			QVariantMap curStatusInfo;
-			curStatusInfo.insert("CurrentStatus",m_currentStatus);
-			sgbackToMainThread(curStatusInfo);
-		}else if (m_currentStatus==STATUS_DISCONNECTING)
-		{
-			//do
-			QVariantMap curStatusInfo;
-			curStatusInfo.insert("CurrentStatus",m_currentStatus);
-			sgbackToMainThread(curStatusInfo);
-		}else{
-			//do nothing
-			qDebug()<<__FUNCTION__<<__LINE__<<"this is a undefined connectState";
-		}
-
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"evName may is not correct";
-	}
+	emit sgbackToMainThread(evMap);
 	return 0;
 }
 
@@ -703,16 +785,47 @@ void QSubviewRun::eventCallBack( QString eventName,QVariantMap evMap )
 
 int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 {
-	return 0;
+	if (NULL!=m_pIVideoDecoder)
+	{
+		if (m_deviceInfo.m_pWnd->isVisible())
+		{
+			unsigned int nLength=evMap.value("length").toUInt();
+			char * lpdata=(char *)evMap.value("data").toUInt();
+			int frameType = evMap.value("frametype").toUInt();
+			//音频
+			if (NULL!=m_pAudioPlay&&0==frameType&&m_bIsFocus==true)
+			{
+				int nSampleRate = evMap.value("samplerate").toUInt();
+				int nSampleWidth = evMap.value("samplewidth").toUInt();
+				if (nSampleRate != m_sampleRate || nSampleWidth != m_sampleWidth)
+				{
+					m_sampleRate = nSampleRate;
+					m_sampleWidth = nSampleWidth;
+					m_pAudioPlay->SetAudioParam(1, m_sampleRate, m_sampleWidth);
+				}
+				m_pAudioPlay->Play(lpdata, nLength);
+			}
+			//视频解码
+			m_pIVideoDecoder->decode(lpdata,nLength);
+			return 0;
+		}else{
+			//do nothing
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoDecoder is null";
+	}
+	return 1;
 }
 
-int QSubviewRun::cbCDecodeData( QString evName,QVariantMap evMap,void *pUser )
-{
-	return 0;
-}
 
 int QSubviewRun::cbCRecorderData( QString evName,QVariantMap evMap,void*pUser )
 {
+	if (NULL!=m_pRecorder)
+	{
+		m_pRecorder->InputFrame(evMap);
+	}else{
+		// do nothing
+	}
 	return 0;
 }
 
@@ -861,16 +974,115 @@ bool QSubviewRun::registerCallback(int registcode)
 
 int QSubviewRun::cbCConnectError( QString evName,QVariantMap evMap,void*pUser )
 {
+	if (m_currentStatus!=STATUS_DISCONNECTED)
+	{
+		m_currentStatus=STATUS_DISCONNECTED;
+		QVariantMap curStatusInfo;
+		curStatusInfo.insert("CurrentStatus",m_currentStatus);
+		emit sgbackToMainThread(curStatusInfo);
+	}
 	return 0;
+}
+static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *pv, int width, int height, unsigned char *dst)
+{
+	int line, col, linewidth;
+	int y, u, v, yy, vr, ug, vg, ub;
+	int r, g, b;
+	unsigned char *pRGB = NULL;
+
+	linewidth = width >> 1;
+
+	y = *py++;
+	yy = y << 8;
+	u = *pu - 128;
+	ug = 88 * u;
+	ub = 454 * u;
+	v = *pv - 128;
+	vg = 183 * v;
+	vr = 359 * v;
+
+	for (line = 0; line < height; line++) {
+		for (col = 0; col < width; col++) {
+			r = (yy + vr) >> 8;
+			g = (yy - ug - vg) >> 8;
+			b = (yy + ub ) >> 8;
+
+			if (r < 0) r = 0;
+			if (r > 255) r = 255;
+			if (g < 0) g = 0;
+			if (g > 255) g = 255;
+			if (b < 0) b = 0;
+			if (b > 255) b = 255;
+
+			pRGB = dst + line*width*3 + col*3;
+			*pRGB = r;
+			*(pRGB + 1) = g;
+			*(pRGB + 2) = b;
+
+			y = *py++;
+			yy = y << 8;
+			if (col & 1) {
+				pu++;
+				pv++;
+
+				u = *pu - 128;
+				ug = 88 * u;
+				ub = 454 * u;
+				v = *pv - 128;
+				vg = 183 * v;
+				vr = 359 * v;
+			}
+		} 
+		if ((line & 1) == 0) { 
+			pu -= linewidth;
+			pv -= linewidth;
+		}
+	} 
 }
 
 int QSubviewRun::cbCDecodeFrame( QString evName,QVariantMap evMap,void*pUser )
 {
+	if (NULL!=m_pIVideoRender)
+	{
+		char* pData=(char*)evMap.value("data").toUInt();	
+		char* pYdata=(char*)evMap.value("Ydata").toUInt();
+		char* pUdata=(char*)evMap.value("Udata").toUInt();
+		char* pVdata=(char*)evMap.value("Vdata").toUInt();
+		int iWidth=evMap.value("width").toInt();
+		int iHeight=evMap.value("height").toInt();
+		int iYStride=evMap.value("YStride").toInt();
+		int iUVStride=evMap.value("UVStride").toInt();
+		int iLineStride=evMap.value("lineStride").toInt();
+		QString iPixeFormat=evMap.value("pixelFormat").toString();
+		int iFlags=evMap.value("flags").toInt();
+
+		if (m_bScreenShot)
+		{
+			m_bScreenShot=false;
+			unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+			memset(rgbBuff, 0, iWidth*iHeight*3);
+			YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
+			QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
+			img.save(m_sScreenShotPath, "JPG");
+			delete [] rgbBuff;
+		}
+		if (m_nInitHeight!=iHeight||m_nInitWidth!=iWidth)
+		{
+			m_pIVideoRender->deinit();
+			m_pIVideoRender->init(iWidth,iHeight);
+			m_nInitWidth=iWidth;
+			m_nInitHeight=iHeight;
+		}
+		m_pIVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoRender is null";
+	}
 	return 0;
 }
 
 int QSubviewRun::cbCRecordState( QString evName,QVariantMap evMap,void*pUser )
 {
+	eventCallBack(evName,evMap);
 	return 0;
 }
 
@@ -1017,7 +1229,7 @@ int QSubviewRun::startRecord()
 		}else{
 			if (m_bIsRecord)
 			{
-				//donothing 
+				//do nothing 
 				qDebug()<<__FUNCTION__<<__LINE__<<"it had been recording";
 			}else{
 				m_stepCode.enqueue(STARTRECORD);
@@ -1054,6 +1266,7 @@ int QSubviewRun::stopRecord()
 
 void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 {
+	//连接状态
 	if (evMap.contains("CurrentStatus"))
 	{
 		m_currentStatus=(QSubviewRunConnectStatus)evMap.value("CurrentStatus").toInt();
@@ -1062,6 +1275,8 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			//do 
 			if (m_historyStatus!=m_currentStatus)
 			{
+				//开启声音
+				m_stepCode.enqueue(AUDIOENABLE);
 				//自动同步时间
 				m_stepCode.enqueue(AUTOSYNTIME);
 				//开启计划录像查询
@@ -1075,6 +1290,8 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			//do
 			if (m_historyStatus!=m_currentStatus)
 			{
+				//停止声音
+
 				//停止计划录像查询
 				m_planRecordTimer.stop();
 				//停止录像
@@ -1113,33 +1330,148 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			qDebug()<<__FUNCTION__<<__LINE__<<"this is a undefined connectState";
 		}
 	}
+	//其他事件也在此处处理
 }
 
 void QSubviewRun::slplanRecord()
 {
-	if (NULL!=m_pRecorder&&m_bIsRecord)
+	if (NULL!=m_pRecorder)
 	{
-		ISetRecordTime *psetRecordTime=NULL;
-		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&psetRecordTime);
-		if (NULL!=psetRecordTime)
+		if (m_bIsdataBaseFlush)
 		{
-			if (m_bIsdataBaseFlush)
+			ISetRecordTime *pSetRecordTime=NULL;
+			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
+			if (NULL!=pSetRecordTime)
 			{
-				//获取数据库数据
+				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_deviceInfo.m_uiChannelIdInDataBase);
+				tagRecorderTimeInfo recTimeInfo;
+				for (int i=0;i<recordIdList.size();i++)
+				{
+					QString recordId=recordIdList[i];
+					QVariantMap timeInfo=pSetRecordTime->GetRecordTimeInfo(recordId.toInt());
+					recTimeInfo.nEnable = timeInfo.value("enable").toInt();
+					recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
+					int weekDay = QDate::currentDate().dayOfWeek() - 1;
+
+					if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
+					{
+						continue;
+					}
+					recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
+					recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
+					m_lstReocrdTimeInfoList.append(recTimeInfo);
+				}
+				pSetRecordTime->Release();
+				pSetRecordTime=NULL;
 			}else{
-			//do nothing 
+				m_planRecordTimer.stop();
+				qDebug()<<__FUNCTION__<<__LINE__<<"plan record fail as apply for ISetRecordTime interface fail";
 			}
-			//keep going
 		}else{
-			m_planRecordTimer.stop();
-			qDebug()<<__FUNCTION__<<__LINE__<<"plan record fail as apply for ISetRecordTime interface fail";
+			//do nothing 
 		}
+		//keep going
+		for (int j=0;j<m_lstReocrdTimeInfoList.size();++j)
+		{
+			if (0==m_lstReocrdTimeInfoList[j].nEnable||QDate::currentDate().dayOfWeek()-1!=m_lstReocrdTimeInfoList[j].nWeekDay)
+			{
+				continue;
+			}
+			QTime currentTime; 
+			currentTime=QTime::currentTime();
+			if (m_currentStatus==STATUS_CONNECTED&&currentTime>=m_lstReocrdTimeInfoList[j].startTime&&currentTime<m_lstReocrdTimeInfoList[j].endTime&&m_bIsAutoRecording==false)
+			{
+				m_stepCode.enqueue(STARTRECORD);
+				m_bIsAutoRecording=true;
+			}
+			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
+			{
+				m_stepCode.enqueue(STOPRECORD);
+				m_bIsAutoRecording=false;
+			}
+			if (!m_lstReocrdTimeInfoList.size())
+			{
+				if (m_bIsAutoRecording==true)
+				{
+					m_stepCode.enqueue(STOPRECORD);
+					m_bIsAutoRecording=false;
+				}
+			}
+		}
+	}else{
+		//do nothing
+		m_planRecordTimer.stop();
 	}
 }
 
 void QSubviewRun::setDatabaseFlush( bool flag )
 {
 	m_bIsdataBaseFlush=flag;
+}
+
+void QSubviewRun::setVolume( unsigned int uiPersent )
+{
+	m_volumePersent=uiPersent;
+	if (m_bIsAudioOpen==true&&QThread::isRunning())
+	{
+		m_stepCode.enqueue(SETVOLUME);
+	}else{
+		//do nothing
+	}
+}
+
+void QSubviewRun::audioEnabled( bool bEnable )
+{
+	m_bIsAudioOpen=bEnable;
+	if (QThread::isRunning())
+	{
+		m_stepCode.enqueue(AUDIOENABLE);
+	}else{
+		//do nothing
+	}
+}
+
+void QSubviewRun::setFoucs( bool bEnable )
+{
+	m_bIsFocus=bEnable;
+}
+QVariantMap QSubviewRun::screenShot()
+{
+	QVariantMap item;
+	m_bScreenShot=true;
+	QString sdir=QCoreApplication::applicationDirPath();
+	sdir.append("/temp");
+	QDir dtemp;
+	bool bexist=dtemp.exists(sdir);
+	if (bexist==false)
+	{
+		dtemp.mkdir(sdir);
+	}else{
+		//keep going
+	}
+	QDateTime dtime=QDateTime::currentDateTime();
+	unsigned int uitime=dtime.toTime_t();
+	QString simageName;
+	simageName.append(sdir).append("/").append(QString::number(uitime)).append(".jpg");
+	m_sScreenShotPath=simageName;
+	item.insert("imageName",QString::number(uitime).append(".jpg"));
+	item.insert("path",sdir);
+	return item;
+}
+
+void QSubviewRun::ipcSwitchStream()
+{
+	if (QThread::isRunning())
+	{
+		m_stepCode.enqueue(IPCAUTOSWITCHSTREAM);
+	}else{
+		//do nothing
+	}
+}
+
+tagDeviceInfo QSubviewRun::deviceInfo()
+{
+	return m_deviceInfo;
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
@@ -1152,10 +1484,6 @@ int cbPreviewRData( QString evName,QVariantMap evMap,void *pUser )
 	return ((QSubviewRun*)pUser)->cbCPreviewData(evName,evMap,pUser);
 }
 
-int cbDecodeRData( QString evName,QVariantMap evMap,void *pUser )
-{
-	return ((QSubviewRun*)pUser)->cbCDecodeData(evName,evMap,pUser);
-}
 
 int cbRecorderRData( QString evName,QVariantMap evMap,void*pUser )
 {

@@ -24,7 +24,7 @@ QPreviewWindows::QPreviewWindows(QWidget *parent)
 		m_PreviewWnd[i].setParent(this);
 		connect(&m_PreviewWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PreviewWnd[i],SIGNAL(mousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowRmousePress(QWidget *,QMouseEvent *)));
-		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_PreviewWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));//there is unnecessary,delete
 		connect(&m_PreviewWnd[i],SIGNAL(CurrentStateChangeSignl(QVariantMap,QWidget *)),this,SLOT(CurrentStateChangePlugin(QVariantMap,QWidget *)));
 
 		m_PreviewWndList.insert(m_PreviewWndList.size(),&m_PreviewWnd[i]);

@@ -19,6 +19,11 @@
 #include <IPTZControl.h>
 #include <QTimer>
 #include <ISetRecordTime.h>
+#include <QList>
+#include <QTime>
+#include <ILocalSetting.h>
+#include <IAutoSycTime.h>
+#include <IAudioPlayer.h>
 typedef int (__cdecl *previewRunEventCb)(QString eventName,QVariantMap info,void *pUser);
 typedef struct _tagProcInfo{
 	previewRunEventCb proc;
@@ -35,6 +40,8 @@ typedef enum __tagStepCode{
 	STARTRECORD,//开启录像
 	STOPRECORD,//关闭录像
 	AUTOSYNTIME,//自动同步时间
+	AUDIOENABLE,//声音开关
+	SETVOLUME,//设置声音
 	DEFAULT,//缺省 无动作
 	END,//结束
 }tagStepCode;
@@ -71,21 +78,34 @@ public:
 	QSubviewRun(void);
 	~QSubviewRun(void);
 public:
+	//预览视频
 	void openPreview(int chlId,QWidget *pWnd);
 	void stopPreview();
-	void switchStream(int chlId);
+	//切换码流
+	void switchStream();
 	void switchStreamEx();
+	void ipcSwitchStream();
+	//云台控制
 	void openPTZ(int nCmd,int nSpeed);
 	void closePTZ(int nCmd);
+	//注册回调函数
 	void registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void*),void *pUser);
+	//录像
 	int startRecord();
 	int stopRecord();
+
 	void setDatabaseFlush(bool flag);
+	void setFoucs(bool bEnable);
+	//音频
+	void setVolume(unsigned int uiPersent);
+	void audioEnabled(bool bEnable);
+	
+	QVariantMap screenShot();
+	tagDeviceInfo deviceInfo();
 public:
 	//call back
 	int cbCConnectState(QString evName,QVariantMap evMap,void *pUser);
 	int cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer );
-	int cbCDecodeData( QString evName,QVariantMap evMap,void *pUser );
 	int cbCRecorderData( QString evName,QVariantMap evMap,void*pUser );
 	int cbCConnectError(QString evName,QVariantMap evMap,void*pUser );
 	int cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser);
@@ -100,6 +120,7 @@ private:
 	void saveToDataBase();
 	bool openPTZ();
 	bool closePTZ();
+	
 private slots:
 	void slstopPreview();
 	void slbackToMainThread(QVariantMap evMap);
@@ -124,11 +145,11 @@ private:
 	IVideoRender *m_pIVideoRender;
 	IVideoDecoder *m_pIVideoDecoder;
 	IRecorder *m_pRecorder;
+	IAudioPlayer *m_pAudioPlay;
 	QMultiMap<QString ,tagProcInfo> m_eventMap;
 	QStringList m_eventNameList;
 	bool m_stop;
 	tagDeviceInfo m_deviceInfo;
-	int m_newchlid;
 	int m_ptzCmd;
 	int m_ptzSpeed;
 	int m_ptzCmdEx;
@@ -137,5 +158,16 @@ private:
 	bool m_bIsRecord;
 	QTimer m_planRecordTimer;
 	bool m_bIsdataBaseFlush;
+	QList<tagRecorderTimeInfo> m_lstReocrdTimeInfoList;
+	bool m_bIsSysTime;
+	static unsigned int m_volumePersent;
+	static bool m_bIsAudioOpen;
+	bool m_bIsFocus;
+	int m_sampleRate;
+	int m_sampleWidth;
+	int m_nInitWidth;
+	int m_nInitHeight;
+	bool m_bScreenShot;
+	QString m_sScreenShotPath;
 };
 

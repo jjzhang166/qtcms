@@ -197,10 +197,7 @@ void QSubView::mousePressEvent(QMouseEvent *ev)
 	}
 }
 
-int QSubView::GetCurrentWnd()
-{
-	return 1;
-}
+
 
 int QSubView::OpenCameraInWnd(int chlId)
 {
@@ -777,12 +774,6 @@ int cbConnectError(QString evName,QVariantMap evMap,void*pUser)
 
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
 {
-	QVariantMap::const_iterator it;
-	for (it=evMap.begin();it!=evMap.end();++it)
-	{
-		QString sKey=it.key();
-		QString sValue=it.value().toString();
-	}
 	if (evName=="CurrentStatus")
 	{
 		((QSubView*)pUser)->CurrentStateChange(evMap);
