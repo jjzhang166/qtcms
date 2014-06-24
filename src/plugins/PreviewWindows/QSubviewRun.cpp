@@ -22,15 +22,16 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bIsSysTime(false),
 	m_bIsFocus(false),
 	m_bScreenShot(false),
+	m_bClosePreview(false),
 	m_pAudioPlay(NULL),
 	m_sampleWidth(0),
 	m_sampleRate(0),
 	m_nInitHeight(0),
 	m_nInitWidth(0)
 {
-	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
+	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()));
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
-	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()));
+	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
 }
@@ -491,6 +492,15 @@ void QSubviewRun::run()
 			//END
 			//sgstopPreview 阻塞，跳转到另一个线程，避免两个线程同时调用sstopPreview（）；
 				emit sgstopPreview();
+				int ncount=0;
+				while(m_bClosePreview==true&&ncount<700){
+					msleep(10);
+					ncount++;
+					if (ncount>500&&ncount%100==0)
+					{
+						qDebug()<<__FUNCTION__<<__LINE__<<"run is going terminate,but may be cause crash";
+					}
+				}
 				nstop=true;
 				//释放此函数生成的所有资源
 				if (NULL!=m_pIVideoRender)
@@ -726,45 +736,14 @@ void QSubviewRun::registerEvent( QString eventName,int (__cdecl *proc)(QString,Q
 
 void QSubviewRun::slstopPreview()
 {
-	if (QThread::isRunning())
+	if (m_bClosePreview!=true)
 	{
-		//断开连接
-		IDeviceClient *pdisconnet=NULL;
-		if (m_pdeviceClient!=NULL)
-		{
-			m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdisconnet);
-			if (NULL!=pdisconnet)
-			{
-				pdisconnet->closeAll();
-				pdisconnet->Release();
-				pdisconnet=NULL;
-			}else{
-				//do nothing;
-				qDebug()<<__FUNCTION__<<__LINE__<<"can not apply for disconnet interface";
-			}
-		}else{
-			// don nothing;
-		}
-		//停止录像
-		if (NULL!=m_pRecorder)
-		{
-			IRecorder *pRecorder=NULL;
-			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
-			if (NULL!=pRecorder)
-			{
-				pRecorder->Stop();
-				pRecorder->Release();
-				pRecorder=NULL;
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop recorder can not apply for IRecorder interface";
-			}
-		}else{
-
-		}
-		//
+		m_bClosePreview=true;
+		QFuture<void>ret=QtConcurrent::run(this,&QSubviewRun::slstopPreviewrun);
 	}else{
-
+		//do nothing
 	}
+
 }
 
 int QSubviewRun::cbCConnectState( QString evName,QVariantMap evMap,void *pUser )
@@ -1353,6 +1332,7 @@ void QSubviewRun::slplanRecord()
 	{
 		if (m_bIsdataBaseFlush)
 		{
+			m_bIsdataBaseFlush=false;
 			ISetRecordTime *pSetRecordTime=NULL;
 			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
 			if (NULL!=pSetRecordTime)
@@ -1491,6 +1471,51 @@ tagDeviceInfo QSubviewRun::deviceInfo()
 void QSubviewRun::slsetRenderWnd()
 {
 	m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd);
+}
+
+void QSubviewRun::slstopPreviewrun()
+{
+	m_bClosePreview=true;
+	if (QThread::isRunning()&&m_currentStatus!=STATUS_DISCONNECTED)
+	{
+		//断开连接
+		IDeviceClient *pdisconnet=NULL;
+		if (m_pdeviceClient!=NULL)
+		{
+			m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdisconnet);
+			if (NULL!=pdisconnet)
+			{
+				pdisconnet->closeAll();
+				pdisconnet->Release();
+				pdisconnet=NULL;
+			}else{
+				//do nothing;
+				qDebug()<<__FUNCTION__<<__LINE__<<"can not apply for disconnect interface";
+			}
+		}else{
+			// don nothing;
+		}
+		//停止录像
+		if (NULL!=m_pRecorder)
+		{
+			IRecorder *pRecorder=NULL;
+			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
+			if (NULL!=pRecorder)
+			{
+				pRecorder->Stop();
+				pRecorder->Release();
+				pRecorder=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop recorder can not apply for IRecorder interface";
+			}
+		}else{
+
+		}
+		//
+	}else{
+
+	}
+	m_bClosePreview=false;
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

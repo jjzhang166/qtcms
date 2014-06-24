@@ -24,6 +24,7 @@
 #include <ILocalSetting.h>
 #include <IAutoSycTime.h>
 #include <IAudioPlayer.h>
+#include <qtconcurrentrun.h>
 typedef int (__cdecl *previewRunEventCb)(QString eventName,QVariantMap info,void *pUser);
 typedef struct _tagProcInfo{
 	previewRunEventCb proc;
@@ -120,6 +121,8 @@ private:
 	void saveToDataBase();
 	bool openPTZ();
 	bool closePTZ();
+public slots:
+	void slstopPreviewrun();
 private slots:
 	void slstopPreview();
 	void slbackToMainThread(QVariantMap evMap);
@@ -170,5 +173,6 @@ private:
 	int m_nInitHeight;
 	bool m_bScreenShot;
 	QString m_sScreenShotPath;
+	volatile bool m_bClosePreview;
 };
   

@@ -52,6 +52,7 @@ DeviceClient::DeviceClient():m_nRef(0),
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
 	}
+	m_groupMap.clear();
 }
 
 DeviceClient::~DeviceClient()
