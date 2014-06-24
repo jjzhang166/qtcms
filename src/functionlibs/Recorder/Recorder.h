@@ -61,6 +61,7 @@ public:
 		int samplewidth;
 		char encode[8];
 	}RecBufferNode;
+
 public slots:
 	void checkdiskfreesize();
 protected:

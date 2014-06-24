@@ -1,6 +1,7 @@
 #pragma once
 #include "IDisksSetting.h"
 #include <QStringList>
+#include <QMutex>
 
 class StorageMgr
 {
@@ -15,6 +16,7 @@ public:
 	QString getUseDisks();
 	bool getLoopRecording();
 	int getFreeSizeForDisk();
+	bool freeDisk();
 	//
 
 	QString getFileSavePath(QString devname,int nChannelNum);
@@ -24,5 +26,6 @@ private:
 	QString getUsableDisk();
 	void deleteOldDir(const QStringList& dirlist);
 	bool deleteDir(const QString& diskslist);
+	static QMutex m_sLock;
 };
 

@@ -61,7 +61,6 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 	}
 	if (!m_bFinish)
 	{
-		//FrameInfo *frame = (FrameInfo *)cbuf;
 		RecBufferNode bufTemp;
 		bufTemp.dwDataType = type;
 		bufTemp.dwBufferSize = datasize;
@@ -304,8 +303,14 @@ void Recorder::run()
 					if( TotalNumberOfFreeBytes<= diskReservedSize * 1024 * 1024)
 					{
 						// not enough free space
-						qDebug()<<__FUNCTION__<<__LINE__<<"Not enough free space\n";
-						nRecStep = 4;
+						if (m_StorageMgr.freeDisk())
+						{
+							//freedisk succeed,keep going
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"Not enough free space\n";
+							nRecStep = 4;
+						}
+
 					}
 				}else{
 					//do nothing
@@ -569,6 +574,9 @@ void Recorder::checkdiskfreesize()
 		//keep going
 	}
 }
+
+
+
 
 
 

@@ -6,7 +6,7 @@
 #include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
-
+QMutex StorageMgr::m_sLock;
 StorageMgr::StorageMgr(void):
 	m_pDisksSetting(NULL),
 	m_currdisk('0')
@@ -69,7 +69,9 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum)
 {
 	QString filesavepath = "none";
 	
+	m_sLock.lock();
 	QString udisk = getUsableDisk();
+	m_sLock.unlock();
 	if ("0" != udisk)
 	{
 		filesavepath = udisk + ":/REC";
@@ -256,5 +258,19 @@ bool StorageMgr::deleteDir(const QString& dirpath)
 bool StorageMgr::GetDiskFreeSpaceEx(char* lpDirectoryName, quint64* lpFreeBytesAvailableToCaller, quint64* lpTotalNumberOfBytes, quint64* lpTotalNumberOfFreeBytes)
 {
 	return GetDiskFreeSpaceExQ(lpDirectoryName,lpFreeBytesAvailableToCaller,lpTotalNumberOfBytes,lpTotalNumberOfFreeBytes);
+}
+
+bool StorageMgr::freeDisk()
+{
+	QString flags;
+	m_sLock.lock();
+	flags=getUsableDisk();
+	m_sLock.unlock();
+	if (flags=="")
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
