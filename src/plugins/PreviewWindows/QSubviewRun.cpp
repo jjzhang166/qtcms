@@ -29,7 +29,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitHeight(0),
 	m_nInitWidth(0)
 {
-	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()));
+	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
