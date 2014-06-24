@@ -10,7 +10,8 @@ QWidget(parent),
 	m_nchlid(-1),
 	m_pClosePreviewAction(NULL),
 	m_pSwitchStreamAciton(NULL),
-	m_pTtanslator(NULL)
+	m_pTtanslator(NULL),
+	m_nConnectingCount(0)
 {
 	//注册回调函数
 	m_sSubviewRun.registerEvent(QString("CurrentStatus"),cbStateChangeEx,this);
@@ -26,6 +27,7 @@ QWidget(parent),
 	//绑定信号
 	connect(this,SIGNAL(sgrecordState(bool)),m_pManageWidget,SLOT(RecordState(bool)));
 	connect(this,SIGNAL(sgmouseMenu()),this,SLOT(slmouseMenu()));
+	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(m_pClosePreviewAction,SIGNAL(triggered(bool)),this,SLOT(slclosePreview()));
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 
@@ -128,13 +130,14 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 	if (evMap.contains("eventName")&&evMap.value("eventName")=="cbCStateChange")
 	{
 		if(evMap.contains("CurrentStatus")){
-			m_tCurConnectStatus==(tagConnectStatus)evMap.value("CurrentStatus").toInt();
+			m_tCurConnectStatus=(tagConnectStatus)evMap.value("CurrentStatus").toInt();
 			if (m_tCurConnectStatus==STATUS_CONNECTED)
 			{
 				//连接状态
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
+				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
 
 			}else if (m_tCurConnectStatus==STATUS_CONNECTING)
 			{
@@ -153,7 +156,9 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				//已经断开
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
+				update();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
+				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
 			}
 			//抛出事件
 			if (m_tHistoryConnectStatus!=m_tCurConnectStatus)
@@ -170,7 +175,59 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 
 void qsubviewEx::paintEventConnected( QPaintEvent *ev )
 {
+	Q_UNUSED(ev);
+	QPainter p(this);
+	QString image;
+	QColor LineColor;
+	QColor LineCurColor;
+	QColor FontColor;
+	int FontSize;
+	QString FontFamily;
 
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+
+	image = IniFile.value("background/background-image", QVariant("")).toString();
+	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
+	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
+	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+
+	QRect rcClient = contentsRect();
+	this->geometry().center();
+	QPixmap pix;
+
+	QString PixPaht;
+	PixPaht= sAppPath + image;
+	pix.load(PixPaht);
+	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+	//背景
+	p.drawPixmap(rcClient,pix);
+	//边框
+	QPen pen = QPen(LineColor);
+	pen.setWidth(2);
+	p.setPen(pen);
+	p.drawRect(rcClient);
+	//焦点
+
+	if (m_bIsFocus)
+	{
+		int x = 0;
+		int y = 0;
+		int width = 0;
+		int height = 0;
+		rcClient.getCoords(&x, &y, &width, &height);
+		pen.setWidth(5);
+		pen.setColor(LineCurColor);
+		p.setPen(pen);
+		p.drawRect(QRectF(x,y,width, height));
+	}
+	else
+	{
+		p.drawRect(rcClient);
+	}
 }
 
 void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
@@ -451,6 +508,7 @@ void qsubviewEx::slmouseMenu()
 		m_pSwitchStreamAciton->setEnabled(true);
 		m_pClosePreviewAction->setEnabled(true);
 	}
+	m_mRightMenu.exec(QCursor::pos());
 }
 
 int qsubviewEx::getCurrentConnectStatus()
@@ -528,6 +586,7 @@ void qsubviewEx::changeEvent( QEvent *ev )
 	if (ev->type()==QEvent::LanguageChange)
 	{
 		//do something
+		translateLanguage();
 	}
 }
 
@@ -536,9 +595,9 @@ void qsubviewEx::slclosePreview()
 	m_sSubviewRun.stopPreview();
 }
 
-void qsubviewEx::getDeviceInfo()
+tagDeviceInfo qsubviewEx::getDeviceInfo()
 {
-	m_sSubviewRun.deviceInfo();
+	return m_sSubviewRun.deviceInfo();
 }
 
 void qsubviewEx::loadLanguage( QString tags )
@@ -578,8 +637,24 @@ QString qsubviewEx::getLanguageInfo( QString tags )
 
 void qsubviewEx::setCurrentFocus( bool flags )
 {
+	if (m_bIsFocus==true&&flags==false)
+	{
+		update();
+	}
 	m_bIsFocus=flags;
 	m_sSubviewRun.setFoucs(flags);
+}
+
+void qsubviewEx::translateLanguage()
+{
+	if (NULL!=m_pSwitchStreamAciton)
+	{
+		m_pSwitchStreamAciton->setText(tr("Switch Stream"));
+	}
+	if (NULL!=m_pClosePreviewAction)
+	{
+		m_pClosePreviewAction->setText(tr("Close Preview"));
+	}
 }
 
 

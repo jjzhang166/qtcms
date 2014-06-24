@@ -42,7 +42,8 @@ public:
 private:
 	int						m_nRef;
 	QMutex					m_csRef;
-	QPreviewWindows			m_PreviewWindows;
+	/*QPreviewWindows			m_PreviewWindows;*/
+	qpreviewwindowsex			m_PreviewWindows;
 };
 
 #endif // PREVIEWWINDOWS_H

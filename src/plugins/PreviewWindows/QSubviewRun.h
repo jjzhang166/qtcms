@@ -120,14 +120,15 @@ private:
 	void saveToDataBase();
 	bool openPTZ();
 	bool closePTZ();
-	
 private slots:
 	void slstopPreview();
 	void slbackToMainThread(QVariantMap evMap);
 	void slplanRecord();
+	void slsetRenderWnd();
 signals:
 	void sgstopPreview();
 	void sgbackToMainThread(QVariantMap evMap);
+	void sgsetRenderWnd();
 protected:
 	void run();
 private:
@@ -170,4 +171,4 @@ private:
 	bool m_bScreenShot;
 	QString m_sScreenShotPath;
 };
-
+  

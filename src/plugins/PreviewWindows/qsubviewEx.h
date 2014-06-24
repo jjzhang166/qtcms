@@ -77,8 +77,9 @@ private:
 	void paintEventDisconnected(QPaintEvent *ev);
 	void paintEventConnecting(QPaintEvent *ev);
 	void paintEventDisconnecting(QPaintEvent *ev);
-	void getDeviceInfo();
+	tagDeviceInfo getDeviceInfo();
 	QString getLanguageInfo(QString tags);
+	void translateLanguage();
 private:
 	typedef enum __tagConnectStatus{
 		STATUS_CONNECTED,

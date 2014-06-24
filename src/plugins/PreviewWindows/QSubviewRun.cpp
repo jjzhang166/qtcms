@@ -29,8 +29,9 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitWidth(0)
 {
 	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
-	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)),Qt::BlockingQueuedConnection);
-	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()),Qt::BlockingQueuedConnection);
+	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
+	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()));
+	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
 }
 
@@ -59,10 +60,7 @@ void QSubviewRun::run()
 	m_nInitHeight=0;
 	m_nInitWidth=0;
 
-	m_currentStatus=STATUS_CONNECTING;
-	QVariantMap curStatusInfo;
-	curStatusInfo.insert("CurrentStatus",m_currentStatus);
-	emit sgbackToMainThread(curStatusInfo);
+
 	int nstep=DEFAULT;
 	bool nstop=false;
 	while(!nstop){
@@ -134,11 +132,10 @@ void QSubviewRun::run()
 					//×¢²áº¯Êý:Éè±¸£¬äÖÈ¾
 					registerCallback(DEVICECLIENT);
 					registerCallback(DECODE);
+					registerCallback(RECORD);
 					//³õÊ¼»¯£ºäÖÈ¾Æ÷
-					QVariantMap evMap;
-					evMap.clear();
-					evMap.insert("eventName","setRenderWnd");
-					emit sgbackToMainThread(evMap);//the fuction of setRenderWnd() can not be call from sub thread
+					//the fuction of setRenderWnd() can not be call from sub thread
+					emit sgsetRenderWnd();
 					if (0!=/*m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd)*/0)
 					{
 						nOpenStep=4;
@@ -539,6 +536,11 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		qDebug()<<__FUNCTION__<<__LINE__<<"this preview thread still running,please call stopPreview() function if you want reopen";
 		return;
 	}else{
+		m_currentStatus=STATUS_CONNECTING;
+		QVariantMap curStatusInfo;
+		curStatusInfo.insert("CurrentStatus",m_currentStatus);
+		emit sgbackToMainThread(curStatusInfo);
+
 		QThread::start();
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
@@ -554,7 +556,7 @@ void QSubviewRun::stopPreview()
 	if (QThread::isRunning())
 	{
 		//set nstepcode
-		emit slstopPreview();
+		slstopPreview();
 		m_stop=true;
 	}else{
 		//do nothing
@@ -1110,6 +1112,8 @@ bool QSubviewRun::connectToDevice()
 			}
 			if (m_currentStatus==STATUS_CONNECTED)
 			{
+				pdeviceClient->Release();
+				pdeviceClient=NULL;
 				return true;
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail";
@@ -1136,6 +1140,8 @@ bool QSubviewRun::connectToDevice()
 			}
 			
 		}
+		pdeviceClient->Release();
+		pdeviceClient=NULL;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"apply pdeviceClient fail";
 	}
@@ -1211,7 +1217,7 @@ void QSubviewRun::switchStreamEx()
 void QSubviewRun::saveToDataBase()
 {
 	IChannelManager *pChannelManger=NULL;
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void**)&pChannelManger);
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
 	if (NULL!=pChannelManger)
 	{
 		pChannelManger->ModifyChannelStream(m_deviceInfo.m_uiChannelIdInDataBase,m_deviceInfo.m_uiStreamId);
@@ -1480,6 +1486,11 @@ void QSubviewRun::ipcSwitchStream()
 tagDeviceInfo QSubviewRun::deviceInfo()
 {
 	return m_deviceInfo;
+}
+
+void QSubviewRun::slsetRenderWnd()
+{
+	m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd);
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

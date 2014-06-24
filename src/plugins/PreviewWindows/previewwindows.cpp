@@ -39,9 +39,8 @@ QList<QWebPluginFactory::Plugin> PreviewWindows::plugins() const
 
 QObject * PreviewWindows::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
-	//QWSWindow  *myQWSWindow =new QWSWindow();
-	//myQWSWindow->Lowering();
-	QPreviewWindows * previewWindows= new QPreviewWindows();
+	/*QPreviewWindows * previewWindows= new QPreviewWindows();*/
+	qpreviewwindowsex *previewWindows=new qpreviewwindowsex();
 	Q_UNUSED(argumentNames);
 	Q_UNUSED(argumentValues);
     Q_UNUSED(mimeType);
