@@ -128,6 +128,7 @@ private slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slplanRecord();
 	void slsetRenderWnd();
+	void slcheckoutBlock();
 signals:
 	void sgstopPreview();
 	void sgbackToMainThread(QVariantMap evMap);
@@ -174,5 +175,8 @@ private:
 	bool m_bScreenShot;
 	QString m_sScreenShotPath;
 	volatile bool m_bClosePreview;
+	QTimer m_checkIsBlockTimer;
+	volatile bool m_bIsBlock;
+	int m_nPosition;
 };
   

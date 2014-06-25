@@ -58,6 +58,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;QtCored4.lib;$(SolutionDir)..\libs\libpcom.lib;QtSqld4.lib;$(SolutionDir)..\libs\DisksInfo.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>commonlibEx.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy  "$(outdir)$(TargetFileName)" "$(SolutionDir)..\output\$(Configuration)\"</Command>
@@ -78,6 +79,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>commonlibEx.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -90,6 +92,9 @@
     <ClInclude Include="commonlibex_global.h" />
     <ClInclude Include="DisksInfo.h" />
     <ClInclude Include="dllmain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="commonlibEx.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,6 +23,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bIsFocus(false),
 	m_bScreenShot(false),
 	m_bClosePreview(false),
+	m_bIsBlock(false),
+	m_nPosition(0),
 	m_pAudioPlay(NULL),
 	m_sampleWidth(0),
 	m_sampleRate(0),
@@ -34,6 +36,9 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
+	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
+	m_checkIsBlockTimer.start(2000);
+
 }
 
 
@@ -49,6 +54,7 @@ QSubviewRun::~QSubviewRun(void)
 			qDebug()<<__FUNCTION__<<__LINE__<<"terminate this thread had caused more time than 5s,there may be out of control";
 		}
 	}
+	m_checkIsBlockTimer.stop();
 }
 
 void QSubviewRun::run()
@@ -119,10 +125,19 @@ void QSubviewRun::run()
 							nOpenStep=1;
 							break;
 						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"create render or decoder or recorder fail";
+							if (NULL==m_pRecorder)
+							{
+								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create recorder fail";
+							}else if (NULL==m_pIVideoRender)
+							{
+								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create render fail";
+							}else{
+								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create  decoder fail";
+							}
+										
 						}
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"create client fail";
+						qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create client fail";
 					}
 					//create deviceClient fail
 					nOpenStep=4;
@@ -136,7 +151,10 @@ void QSubviewRun::run()
 					registerCallback(RECORD);
 					//初始化：渲染器
 					//the fuction of setRenderWnd() can not be call from sub thread
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					emit sgsetRenderWnd();
+					m_bIsBlock=false;
 					if (0!=/*m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd)*/0)
 					{
 						nOpenStep=4;
@@ -148,23 +166,29 @@ void QSubviewRun::run()
 					   break;
 				case 2:{
 					//连接到设备
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					if (connectToDevice())
 					{
 						nOpenStep=3;
 					}else{
 						nOpenStep=4;
 					}
+					m_bIsBlock=false;
 					   }
 					   break;
 				case 3:{
 					//申请码流
 					ipcAutoSwitchStream();
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					if (liveSteamRequire())
 					{
 						nOpenStep=5;
 					}else{
 						nOpenStep=4;
 					}
+					m_bIsBlock=false;
 					   }
 					   break;
 				case 4:{
@@ -194,13 +218,15 @@ void QSubviewRun::run()
 					m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();
 					pChannelManger->Release();
 					pChannelManger=NULL;
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					if (liveSteamRequire())
 					{
 						//succeed
 					}else{
 						//fail
 					}
-					
+					m_bIsBlock=false;
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"switchStream fail";
 				}
@@ -238,13 +264,15 @@ void QSubviewRun::run()
 					if (m_deviceInfo.m_uiStreamId==0)
 					{
 						m_deviceInfo.m_uiStreamId=1;
-						liveSteamRequire();
-						saveToDataBase();
+
 					}else{
 						m_deviceInfo.m_uiStreamId=0;
-						liveSteamRequire();
-						saveToDataBase();
 					}
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
+					liveSteamRequire();
+					m_bIsBlock=false;
+					saveToDataBase();
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
@@ -289,30 +317,39 @@ void QSubviewRun::run()
 					QVariantMap curStatusInfo;
 					curStatusInfo.insert("CurrentStatus",m_currentStatus);
 					emit sgbackToMainThread(curStatusInfo);
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					if (connectToDevice())
 					{
 						nAutoReConnectStep=1;
 					}else{
 						nAutoReConnectStep=2;
 					}
-					   }
+					m_bIsBlock=false;
+					   }   
 					   break;
 				case 1:{
 					//申请码流
 					ipcAutoSwitchStream();
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					if (liveSteamRequire())
 					{
 						nAutoReConnectStep=3;
 					}else{
 						nAutoReConnectStep=2;
 					}
-					   }
+					m_bIsBlock=false;
+					   }   
 					   break;
 				case 2:{
 					//失败
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					emit sgstopPreview();
 					qDebug()<<__FUNCTION__<<__LINE__<<"autoReConnnect to device fail";
 					nAutoReConnectStep=4;
+					m_bIsBlock=false;
 					   }
 					   break;
 				case 3:{
@@ -413,7 +450,10 @@ void QSubviewRun::run()
 						m_pdeviceClient->QueryInterface(IID_IAutoSycTime,(void**)&pAutoSysTime);
 						if (NULL!=pAutoSysTime)
 						{
+							m_bIsBlock=true;
+							m_nPosition=__LINE__;
 							pAutoSysTime->SetAutoSycTime(m_bIsSysTime);
+							m_bIsBlock=false;
 							pAutoSysTime->Release();
 							pAutoSysTime=NULL;
 							nSysTimeStep=3;
@@ -491,7 +531,10 @@ void QSubviewRun::run()
 		case END:{
 			//END
 			//sgstopPreview 阻塞，跳转到另一个线程，避免两个线程同时调用sstopPreview（）；
+			m_bIsBlock=true;
+			m_nPosition=__LINE__;
 				emit sgstopPreview();
+				m_bIsBlock=false;
 				int ncount=0;
 				while(m_bClosePreview==true&&ncount<700){
 					msleep(10);
@@ -505,38 +548,57 @@ void QSubviewRun::run()
 				//释放此函数生成的所有资源
 				if (NULL!=m_pIVideoRender)
 				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					m_pIVideoRender->Release();
+					m_bIsBlock=false;
 					m_pIVideoRender=NULL;
 				}
 				if (NULL!=m_pdeviceClient)
 				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					m_pdeviceClient->Release();
+					m_bIsBlock=false;
 					m_pdeviceClient=NULL;
 				}
 				if (NULL!=m_pIVideoDecoder)
 				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					m_pIVideoDecoder->Release();
+					m_bIsBlock=false;
 					m_pIVideoDecoder=NULL;
 				}
 				if (NULL!=m_pRecorder)
 				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					m_pRecorder->Release();
+					m_bIsBlock=false;
 					m_pRecorder=NULL;
 				}
 				if (NULL!=m_pAudioPlay)
 				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
 					m_pAudioPlay->Release();
+					m_bIsBlock=false;
 					m_pAudioPlay=NULL;
 				}
 				//抛出断开的事件
 				m_currentStatus=STATUS_DISCONNECTED;
 				QVariantMap curStatusInfo;
 				curStatusInfo.insert("CurrentStatus",m_currentStatus);
+				m_bIsBlock=true;
+				m_nPosition=__LINE__;
 				emit sgbackToMainThread(curStatusInfo);
+				m_bIsBlock=false;
 				 }
 				 break;
 		}
 	}
+	return;
 }
 
 void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
@@ -1516,6 +1578,14 @@ void QSubviewRun::slstopPreviewrun()
 
 	}
 	m_bClosePreview=false;
+}
+
+void QSubviewRun::slcheckoutBlock()
+{
+	if (m_bIsBlock)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
+	}
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

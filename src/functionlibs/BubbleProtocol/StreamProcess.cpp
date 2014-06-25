@@ -356,7 +356,6 @@ void StreamProcess::analyzePreviewStream()
 				mStreamInfo.insert("width", width);
 				mStreamInfo.insert("height", height);
 				mStreamInfo.insert("vcodec", "H264");
-
 				eventProcCall(QString("LiveStream"), mStreamInfo);
 			}
 			m_buffer.remove(0, m_nTotalBytes);

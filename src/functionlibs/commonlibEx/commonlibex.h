@@ -166,6 +166,10 @@ private:
 	static QMutex Device_lock;
 	QMutex m_csRef;
 	int m_nRef;
+	QString m_sDbConnectionName;
+public:
+	static int m_randSeed;
+	static QMutex m_csRandSeed;
 };
 
 #endif // COMMONLIBEX_H

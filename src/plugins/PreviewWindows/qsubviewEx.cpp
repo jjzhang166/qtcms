@@ -7,7 +7,6 @@ QWidget(parent),
 	m_tHistoryConnectStatus(STATUS_DISCONNECTED),
 	m_pManageWidget(NULL),
 	m_bIsFocus(false),
-	m_nchlid(-1),
 	m_pClosePreviewAction(NULL),
 	m_pSwitchStreamAciton(NULL),
 	m_pTtanslator(NULL),
@@ -42,7 +41,6 @@ qsubviewEx::~qsubviewEx(void)
 	while(m_tCurConnectStatus!=STATUS_DISCONNECTED&&ncount<800){
 		QEventLoop loop;
 		QTimer::singleShot(10, &loop, SLOT(quit()));
-		connect(this, SIGNAL(sigQuitThread()), &loop, SLOT(quit()));
 		loop.exec();
 		ncount++;
 		if (ncount>500&&ncount%100==0)
@@ -156,7 +154,8 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				//已经断开
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
-				update();
+				/*update();*/
+				QTimer::singleShot(500, this, SLOT(update()));
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
 				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
 			}
@@ -472,7 +471,6 @@ void qsubviewEx::mousePressEvent( QMouseEvent * ev)
 int qsubviewEx::openPreview( int chlId )
 {
 	m_sSubviewRun.openPreview(m_tDeviceInfo.m_uiChannelIdInDataBase,m_pManageWidget->GetWidgetForVideo());
-	m_nchlid=chlId;
 	return 0;
 }
 
@@ -491,6 +489,7 @@ int qsubviewEx::setDevChannelInfo( int chlId )
 
 void qsubviewEx::slmouseMenu()
 {
+	m_tDeviceInfo=m_sSubviewRun.deviceInfo();
 	if (m_tDeviceInfo.m_uiStreamId==0)
 	{
 		m_pSwitchStreamAciton->setText(tr("Switch to SubStream"));
@@ -519,7 +518,7 @@ QVariantMap qsubviewEx::getWindowInfo()
 	QVariantMap vWindowInfo;
 	vWindowInfo.insert("focus",m_bIsFocus);
 	vWindowInfo.insert("currentState",m_tCurConnectStatus);
-	vWindowInfo.insert("chlId",m_nchlid);
+	vWindowInfo.insert("chlId",m_tDeviceInfo.m_uiChannelIdInDataBase);
 	return vWindowInfo;
 }
 
@@ -604,7 +603,8 @@ void qsubviewEx::loadLanguage( QString tags )
 	{
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QString path = sAppPath + "/LocalSetting";
-		m_pTtanslator->load(getLanguageInfo(tags),path);
+		QString tagName=getLanguageInfo(tags);
+		m_pTtanslator->load(tagName,path);
 	}
 }
 

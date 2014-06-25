@@ -92,7 +92,6 @@ private:
 	QSubviewRun m_sSubviewRun;
 	ManageWidget *m_pManageWidget;
 	bool m_bIsFocus;
-	int m_nchlid;
 	QMenu m_mRightMenu;
 	QAction *m_pClosePreviewAction;
 	QAction *m_pSwitchStreamAciton;

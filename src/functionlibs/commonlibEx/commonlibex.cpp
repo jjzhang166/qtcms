@@ -3,14 +3,31 @@
 QMutex commonlibEx::Group_lock;
 QMutex commonlibEx::Area_lock;
 QMutex commonlibEx::Device_lock;
+QMutex commonlibEx::m_csRandSeed;
+int commonlibEx::m_randSeed = 0;
 commonlibEx::commonlibEx():m_nRef(0)
 {
+	m_csRandSeed.lock();
+	int nConnectionSerialId = m_randSeed ++;
+	m_csRandSeed.unlock();
 
+	m_sDbConnectionName = QString("commonlibEx") + QString::number(nConnectionSerialId);
+	QSqlDatabase temp = QSqlDatabase::addDatabase("QSQLITE",m_sDbConnectionName);
+	m_db = new QSqlDatabase(temp);
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString sDatabasePath = sAppPath + "/system.db";
+	m_db->setDatabaseName(sDatabasePath);
+	if (!m_db->open())
+	{
+		qDebug("InitDatabase failed!!!");	
+	}
 }
 
 commonlibEx::~commonlibEx()
 {
-
+	m_db->close();
+	delete m_db;
+	QSqlDatabase::removeDatabase(m_sDbConnectionName);
 }
 
 long __stdcall commonlibEx::QueryInterface( const IID & iid,void **ppv )

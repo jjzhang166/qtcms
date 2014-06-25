@@ -11,7 +11,20 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
 {
     long lRet = S_OK;
     QString sReqClsid;
-	sReqClsid.append(QString(pcomGUID2String(clsid)));
+	/*sReqClsid.append(QString(pcomGUID2String(clsid)));*/
+	sReqClsid.sprintf("%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+		(unsigned int)clsid.Data1,
+		clsid.Data2,
+		clsid.Data3,
+		*((unsigned char *)clsid.Data4),
+		*((unsigned char *)(clsid.Data4 + 1)),
+		*((unsigned char *)(clsid.Data4 + 2)),
+		*((unsigned char *)(clsid.Data4 + 3)),
+		*((unsigned char *)(clsid.Data4 + 4)),
+		*((unsigned char *)(clsid.Data4 + 5)),
+		*((unsigned char *)(clsid.Data4 + 6)),
+		*((unsigned char *)(clsid.Data4 + 7))
+		);
     QString sAppPath = QCoreApplication::applicationDirPath();
     QDomDocument ConfFile;
     QFile *file = new QFile(sAppPath + "/pcom_config.xml");
@@ -30,7 +43,6 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
             QString sFileName =item.toElement().attribute("file");
             QString sModulePath = sAppPath + QString("/") + sFileName;
             QLibrary Module(sModulePath);
-			qDebug()<<sModulePath;
             typedef IPcomBase * (*lpCreateInstance)();
             lpCreateInstance pCreateInstance = (lpCreateInstance)Module.resolve("CreateInstance");
             IPcomBase * pInstance = pCreateInstance();
@@ -38,8 +50,8 @@ long pcomCreateInstance(const CLSID &clsid, IPcomBase *pBase, const IID &iid, vo
             {
                 pBase = pInstance = pCreateInstance();
             }
-			qDebug()<<sModulePath;
             lRet = pInstance->QueryInterface(iid,ppv);
+
 			pInstance->Release();
 
             bFound = true;
