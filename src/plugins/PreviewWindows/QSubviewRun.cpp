@@ -31,20 +31,26 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitHeight(0),
 	m_nInitWidth(0)
 {
-	connect(this,SIGNAL(sgstopPreview()),this,SLOT(slstopPreview()),Qt::BlockingQueuedConnection);
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
-	m_checkIsBlockTimer.start(2000);
-
+	m_checkIsBlockTimer.start(5000);
+	m_hMainThread=QThread::currentThreadId();
 }
 
 
 QSubviewRun::~QSubviewRun(void)
 {
-	m_stop=true;
+	if (QThread::isRunning())
+	{
+		//set nstepcode
+		slstopPreview();
+		m_stop=true;
+	}else{
+		//do nothing
+	}
 	int n=0;
 	while(QThread::isRunning()){
 		msleep(10);
@@ -306,17 +312,22 @@ void QSubviewRun::run()
 					  break;
 		case AUTORECONNECT:{
 			//自动重连
-			int nAutoReConnectStep=0;
+			int nAutoReConnectStep=4;
 			bool bAutoStop=false;
 			int nCount=0;
+			int nTime=200;
 			while(!bAutoStop){
 				switch(nAutoReConnectStep){
 				case 0:{
 					//连接
-					m_currentStatus=STATUS_CONNECTING;
+					if (nTime<800)
+					{
+						nTime+=100;
+					}
+					int nCurrentStatus=STATUS_CONNECTING;
 					QVariantMap curStatusInfo;
-					curStatusInfo.insert("CurrentStatus",m_currentStatus);
-					emit sgbackToMainThread(curStatusInfo);
+					curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+					backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
 					if (connectToDevice())
@@ -346,7 +357,16 @@ void QSubviewRun::run()
 					//失败
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
-					emit sgstopPreview();
+					slstopPreview();
+					int ncount=0;
+					while(m_bClosePreview==true&&ncount<700){
+						msleep(10);
+						ncount++;
+						if (ncount>500&&ncount%100==0)
+						{
+							qDebug()<<__FUNCTION__<<__LINE__<<"run is going terminate,but may be cause crash";
+						}
+					}
 					qDebug()<<__FUNCTION__<<__LINE__<<"autoReConnnect to device fail";
 					nAutoReConnectStep=4;
 					m_bIsBlock=false;
@@ -360,7 +380,7 @@ void QSubviewRun::run()
 				case 4:{
 					//休眠，每隔5s自动重连一次
 					nCount++;
-					if (nCount<500&&m_stop==false)
+					if (nCount<nTime&&m_stop==false)
 					{
 						msleep(10);
 					}else{
@@ -533,7 +553,7 @@ void QSubviewRun::run()
 			//sgstopPreview 阻塞，跳转到另一个线程，避免两个线程同时调用sstopPreview（）；
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
-				emit sgstopPreview();
+				slstopPreview();
 				m_bIsBlock=false;
 				int ncount=0;
 				while(m_bClosePreview==true&&ncount<700){
@@ -587,12 +607,12 @@ void QSubviewRun::run()
 					m_pAudioPlay=NULL;
 				}
 				//抛出断开的事件
-				m_currentStatus=STATUS_DISCONNECTED;
+				int nCurrentStatus=STATUS_DISCONNECTED;
 				QVariantMap curStatusInfo;
-				curStatusInfo.insert("CurrentStatus",m_currentStatus);
+				curStatusInfo.insert("CurrentStatus",nCurrentStatus);
 				m_bIsBlock=true;
 				m_nPosition=__LINE__;
-				emit sgbackToMainThread(curStatusInfo);
+				backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 				m_bIsBlock=false;
 				 }
 				 break;
@@ -608,11 +628,10 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		qDebug()<<__FUNCTION__<<__LINE__<<"this preview thread still running,please call stopPreview() function if you want reopen";
 		return;
 	}else{
-		m_currentStatus=STATUS_CONNECTING;
+		int nCurrentStatus=STATUS_CONNECTING;
 		QVariantMap curStatusInfo;
-		curStatusInfo.insert("CurrentStatus",m_currentStatus);
-		emit sgbackToMainThread(curStatusInfo);
-
+		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+		backToMainThread(curStatusInfo);
 		QThread::start();
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
@@ -810,7 +829,7 @@ void QSubviewRun::slstopPreview()
 
 int QSubviewRun::cbCConnectState( QString evName,QVariantMap evMap,void *pUser )
 {
-	emit sgbackToMainThread(evMap);
+	backToMainThread(evMap);//emit sgbackToMainThread(evMap);
 	return 0;
 }
 
@@ -1023,10 +1042,10 @@ int QSubviewRun::cbCConnectError( QString evName,QVariantMap evMap,void*pUser )
 {
 	if (m_currentStatus!=STATUS_DISCONNECTED)
 	{
-		m_currentStatus=STATUS_DISCONNECTED;
+		int nCurrentStatus=STATUS_DISCONNECTED;
 		QVariantMap curStatusInfo;
-		curStatusInfo.insert("CurrentStatus",m_currentStatus);
-		emit sgbackToMainThread(curStatusInfo);
+		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+		backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 	}
 	return 0;
 }
@@ -1162,20 +1181,20 @@ bool QSubviewRun::connectToDevice()
 				{
 					//
 					qDebug()<<__FUNCTION__<<__LINE__<<"there may be some error in deviceClient module";
-					m_currentStatus=STATUS_DISCONNECTED;
+					int nCurrentStatus=STATUS_DISCONNECTED;
 					QVariantMap curStatusInfo;
-					curStatusInfo.insert("CurrentStatus",m_currentStatus);
-					emit sgbackToMainThread(curStatusInfo);
+					curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+					backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 				}
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail";
 			if (m_currentStatus==STATUS_CONNECTING)
 			{
-				m_currentStatus=STATUS_DISCONNECTED;
+				int nCurrentStatus=STATUS_DISCONNECTED;
 				QVariantMap curStatusInfo;
-				curStatusInfo.insert("CurrentStatus",m_currentStatus);
-				emit sgbackToMainThread(curStatusInfo);
+				curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+				backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 			}else{
 				//do nothing
 			}
@@ -1318,6 +1337,7 @@ int QSubviewRun::stopRecord()
 void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 {
 	//连接状态
+	int chlid=m_deviceInfo.m_uiChannelIdInDataBase;
 	if (evMap.contains("CurrentStatus"))
 	{
 		m_currentStatus=(QSubviewRunConnectStatus)evMap.value("CurrentStatus").toInt();
@@ -1538,7 +1558,7 @@ void QSubviewRun::slsetRenderWnd()
 void QSubviewRun::slstopPreviewrun()
 {
 	m_bClosePreview=true;
-	if (QThread::isRunning()&&m_currentStatus!=STATUS_DISCONNECTED)
+	if (QThread::isRunning())
 	{
 		//断开连接
 		IDeviceClient *pdisconnet=NULL;
@@ -1585,6 +1605,20 @@ void QSubviewRun::slcheckoutBlock()
 	if (m_bIsBlock)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
+	}
+	if (QThread::isRunning())
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<m_nPosition<<QThread::isFinished();
+	}
+}
+
+void QSubviewRun::backToMainThread( QVariantMap evMap )
+{
+	if (currentThreadId()==m_hMainThread)
+	{
+		slbackToMainThread(evMap);
+	}else{
+		emit sgbackToMainThread(evMap);
 	}
 }
 

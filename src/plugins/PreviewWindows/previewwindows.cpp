@@ -10,7 +10,7 @@
 PreviewWindows::PreviewWindows() :
 m_nRef(0)
 {
-	m_PreviewWindows.setParent(this);
+
 }
 
 PreviewWindows::~PreviewWindows()
@@ -87,34 +87,3 @@ unsigned long __stdcall PreviewWindows::Release()
 	}
 	return nRet;
 }
-
-void PreviewWindows::nextPage()
-{
-	m_PreviewWindows.nextPage();
-}
-
-void PreviewWindows::prePage()
-{
-	m_PreviewWindows.prePage();
-}
-
-int PreviewWindows::getCurrentPage()
-{
-	return m_PreviewWindows.getCurrentPage();
-}
-
-int PreviewWindows::getPages()
-{
-	return m_PreviewWindows.getPages();
-}
-
-int PreviewWindows::setDivMode( QString divModeName )
-{
-	return m_PreviewWindows.setDivMode(divModeName);
-}
-
-QString PreviewWindows::getCureentDivMode()
-{
-	return m_PreviewWindows.getCureentDivMode();
-}
-Q_EXPORT_PLUGIN2("PreviewWindows.dll",PreviewWindows)

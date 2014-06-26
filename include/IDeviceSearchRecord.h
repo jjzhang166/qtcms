@@ -29,5 +29,9 @@ interface IDeviceSearchRecord : IPComBase
 // 	@2 name "recFileSearchFinished"
 // parameters:
 // 	"total":总共的录像记录条目数
+// @3 name "recFileSearchFail"
+// parameters:
+// "parm":错误码
+//1:参数错误，2：连接失败，3：搜索不完整
 
 #endif

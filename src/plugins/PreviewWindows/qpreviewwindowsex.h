@@ -23,7 +23,7 @@ class qpreviewwindowsex:public QWidget,
 	Q_OBJECT
 public:
 	qpreviewwindowsex(QWidget *parent = 0);
-	~qpreviewwindowsex(void);
+	virtual ~qpreviewwindowsex();
 
 public:
 	virtual void resizeEvent(QResizeEvent *);

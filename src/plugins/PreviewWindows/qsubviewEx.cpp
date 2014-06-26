@@ -1,4 +1,5 @@
 #include "qsubviewEx.h"
+#include <QTime>
 
 
 qsubviewEx::qsubviewEx(QWidget *parent):
@@ -39,9 +40,10 @@ qsubviewEx::~qsubviewEx(void)
 	//need to wait m_sSubviewRun terminate
 	int ncount =0;
 	while(m_tCurConnectStatus!=STATUS_DISCONNECTED&&ncount<800){
-		QEventLoop loop;
-		QTimer::singleShot(10, &loop, SLOT(quit()));
-		loop.exec();
+		QTime dieTime=QTime::currentTime().addMSecs(1);
+		while(QTime::currentTime()<dieTime){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+		}
 		ncount++;
 		if (ncount>500&&ncount%100==0)
 		{
@@ -134,6 +136,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				//连接状态
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
+				update();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
 				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
 
@@ -154,7 +157,6 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				//已经断开
 				//关闭正在连接中的屏幕显示
 				m_tConnectingTimer.stop();
-				/*update();*/
 				QTimer::singleShot(500, this, SLOT(update()));
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
 				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";

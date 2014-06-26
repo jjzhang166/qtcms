@@ -31,6 +31,9 @@ m_bcheckdiskfreesize(false)
 
 Recorder::~Recorder()
 {
+	m_bFinish = true;
+	wait();
+	cleardata();
 }
 
 int Recorder::Start()

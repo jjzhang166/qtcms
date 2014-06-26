@@ -28,22 +28,10 @@ public:
 
 	virtual unsigned long __stdcall Release();
 
-	virtual void nextPage();
 
-	virtual void prePage();
-
-	virtual int getCurrentPage();
-
-	virtual int getPages();
-
-	virtual int setDivMode( QString divModeName );
-
-	virtual QString getCureentDivMode();
 private:
 	int						m_nRef;
 	QMutex					m_csRef;
-	/*QPreviewWindows			m_PreviewWindows;*/
-	qpreviewwindowsex			m_PreviewWindows;
 };
 
 #endif // PREVIEWWINDOWS_H

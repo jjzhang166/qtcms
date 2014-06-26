@@ -177,7 +177,6 @@ void QJaWebView::OnLoad( bool bOk )
 			{
 				// To fix the title
 				QString sItemTitle = item.toElement().attribute("title");
-                qDebug() << MainFrame->title();
 				if (sItemTitle == MainFrame->title())
 				{
 					// find the activity and the make it work

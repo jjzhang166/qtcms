@@ -56,8 +56,17 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 }
 
 
-qpreviewwindowsex::~qpreviewwindowsex(void)
+qpreviewwindowsex::~qpreviewwindowsex()
 {
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].closePreview();
+	}
+	if (NULL != m_divMode)
+	{
+		m_divMode->Release();
+		m_divMode = NULL;
+	}
 }
 
 void qpreviewwindowsex::resizeEvent( QResizeEvent *ev )

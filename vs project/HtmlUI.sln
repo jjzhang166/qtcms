@@ -171,6 +171,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlaybackActivity", "..\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BackUpActivity", "..\src\activities\BackUpActivity\BackUpActivity.vcxproj", "{2180AE6E-E067-40BB-BF6D-5045FC688436}"
 EndProject
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlibEx", "..\src\functionlibs\commonlibEx\commonlibEx.vcxproj", "{606E4F2D-16A8-486A-9065-5CBC80F96016}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi

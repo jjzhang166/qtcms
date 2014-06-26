@@ -1,0 +1,3 @@
+LIBRARY "commonlibEx.dll"
+EXPORTS
+	CreateInstance @1

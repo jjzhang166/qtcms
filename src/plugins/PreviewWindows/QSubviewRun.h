@@ -121,16 +121,17 @@ private:
 	void saveToDataBase();
 	bool openPTZ();
 	bool closePTZ();
+	void backToMainThread(QVariantMap evMap);
+	
 public slots:
 	void slstopPreviewrun();
 private slots:
-	void slstopPreview();
 	void slbackToMainThread(QVariantMap evMap);
 	void slplanRecord();
 	void slsetRenderWnd();
 	void slcheckoutBlock();
+	void slstopPreview();
 signals:
-	void sgstopPreview();
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgsetRenderWnd();
 protected:
@@ -144,8 +145,8 @@ private:
 	}QSubviewRunConnectStatus;
 
 	QQueue<int> m_stepCode;
-	QSubviewRunConnectStatus m_currentStatus;
-	QSubviewRunConnectStatus m_historyStatus;
+	volatile QSubviewRunConnectStatus m_currentStatus;
+	volatile QSubviewRunConnectStatus m_historyStatus;
 	IDeviceClient *m_pdeviceClient;
 	IVideoRender *m_pIVideoRender;
 	IVideoDecoder *m_pIVideoDecoder;
@@ -178,5 +179,6 @@ private:
 	QTimer m_checkIsBlockTimer;
 	volatile bool m_bIsBlock;
 	int m_nPosition;
+	Qt::HANDLE m_hMainThread;
 };
   
