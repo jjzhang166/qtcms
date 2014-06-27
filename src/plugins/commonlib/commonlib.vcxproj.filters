@@ -53,6 +53,15 @@
     <ClCompile Include="..\..\common\guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qcommonpluginEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qcommonpluginEx.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qcommonpluginEx.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ccommonlib.h">
@@ -70,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qcommonplugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qcommonpluginEx.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

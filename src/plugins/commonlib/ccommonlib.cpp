@@ -36,7 +36,8 @@ QList<QWebPluginFactory::Plugin> Ccommonlib::plugins() const
 
 QObject * Ccommonlib::create( const QString& mimeType, const QUrl&, const QStringList& argumentNames, const QStringList& argumentValues ) const
 {
-	QCommonPlugin * obj = new QCommonPlugin(NULL);
+	/*QCommonPlugin * obj = new QCommonPlugin(NULL);*/
+	qcommonpluginEx *obj=new qcommonpluginEx(NULL);
 	return obj;
 }
 

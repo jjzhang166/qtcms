@@ -14,6 +14,7 @@
 #include <ISetRecordTime.h>
 #include <ILocalSetting.h>
 #include "qcommonplugin.h"
+#include "qcommonpluginEx.h"
 
 class Ccommonlib : public QObject
 	,public IWebPluginBase
@@ -176,7 +177,8 @@ public:
 private:
 	int m_nRef;
 	QMutex m_csRef;
-	QCommonPlugin m_pluginObj;
+	/*QCommonPlugin m_pluginObj;*/
+	qcommonpluginEx m_pluginObj;
 };
 
 #endif // CCOMMONLIB_H
