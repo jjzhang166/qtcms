@@ -253,7 +253,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			});
 			oPlaybackLocl.GroupPlay();
 		}else{//远程回放
-			var type = parseInt($('#type span').attr('value'));
+			var type = parseInt($('#type input[data]').attr('data'));
 			oPlayBack.GroupPlay(type,begin,end);
 		}
 		dragStartMove();

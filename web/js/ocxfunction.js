@@ -5,8 +5,11 @@ var oCommonLibrary;
 
 		$('ul.filetree').treeview();
 		//多语言提示转换
-		$('li[title],div[title],a[title],span[title]').each(function(){
-			$(this).attr('title',lang[$(this).attr('title')]);
+		$('li[title],div[title],a[title],span[title],input').each(function(){
+			$(this).attr('title',lang[$(this).attr('title')])
+			if(!/^\d+$/.test($(this).val())){
+				$(this).val(lang[$(this).val()] ? lang[$(this).val()] : $(this).val());
+			}
 		})
 	})
 	function refresh(data){ 

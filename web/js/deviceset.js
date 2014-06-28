@@ -2,7 +2,7 @@ var oSearchOcx,
 	key=0, //当前菜单选项
 	searchedDev=[];//已经搜索到的设备;
 	$(function(){
-		
+
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 
@@ -92,6 +92,7 @@ var oSearchOcx,
 				oTreeWarp.show();
 				set_contentMax();
 				areaList2Ui(key);
+				emptyDevSetMenu();
 
 				if(key == 0){
 					searchFlush();
@@ -100,7 +101,7 @@ var oSearchOcx,
 				}
 				if(key == 1){
 
-					$('#set_content ul.ope_list li').click(function(){
+					$('#set_content ul.ipc_list0 li,ul.dev_list0 li').click(function(){
 						emptyDevSetMenu();
 					})
 
@@ -115,21 +116,27 @@ var oSearchOcx,
 
 						var _url = 'http://'+oDevData.address+':'+oDevData.port;
 
-						$('ul.ipc_list0').hide().nextUntil('div.dev_list').hide();
-						$('ul.dvr_list0').hide().nextUntil('div.dev_list').hide();
+						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
-							$('ul.ipc_list0 li').removeClass('ope_listAct');
-							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct');
-							$('.ipc_list0').show();	
-							$('.ipc_list').eq(0).show();
+							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
+							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
 							ipc(_url,oDevData.username,oDevData.password);
-							devinfo_load_content(true);										
+/*							devinfo_load_content(true);	*/
+							nowDev = new IPC(oDevData.username,oDevData.password,_url);
+							
+							console.log('------------new IPC()--------------');
+							
+							$('#set_content ul.ipc_list0 li').click(function(){
+								nowDev[$(this).attr('action')+'2UI']();
+							})
+
+							nowDev.ipcBasicInfo2UI();
+
+							//oDev[$('ul.ipc_list0 li.ope_listAct').attr('action')]();
 						}
-					    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为dvr
+					    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR
 						{
-							$('ul.dvr_list0 li').removeClass('ope_listAct');
-							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct');
-							$('.dvr_list0').show()
+							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();	
@@ -258,7 +265,7 @@ var oSearchOcx,
 		})
 
 		$('#AddChannelInGroupDouble_ok').click(function(){ 
-			selectEdparent('group')
+			selectEdparent('group');
 			SetChannelIntoGroupData();
 		});
 		 /*client_setting*/
@@ -545,8 +552,10 @@ var oSearchOcx,
 	}
 
 	function emptyDevSetMenu(){
-		$('#set_content div.switch input[id]').val('').prop('checked',false);
-		$('#set_content div.switch span[id]').html('');
+		$('#set_content div.switch input[class]').val('').prop('checked',false);
+		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','');
+		$('#ajaxHint').hide();
+		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
 	
 	function set_contentMax(){
@@ -812,8 +821,8 @@ function autoSetIPcallBack(data){
 var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	
 	function AddUserSuccess(ev){
-		var name =$('#username_add_ID').val();
-		var userCom= $('#level_add_ID').prev('a').prev('span').html();
+		var userCom= $('#menu2 select input').val();
+		var name =userCom.attr('data')
 			userCom = userCom.match(/<\/?\w+>/g) ? userCom.match(/[\u4e00-\u9fa5]+/g)[0] : userCom;
 		for(i in userLev){
 			if(userLev[i] == userCom){
@@ -831,13 +840,13 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 
 	function ModifyUserSuccess(ev){
-		var userCom= $('#level_modify_ID').prev('a').prev('span').html();
+		var userCom= $('#menu3 select input');
 		for(i in userLev){
-			if(userLev[i] == userCom){
+			if(userLev[i] == userCom.val()){
 				var userlv = i
 			}
 		}
-		var name = $('#username_modify_ID').val();
+		var name = userCom.attr('data')
 		var data = {'username':name,'userlv':userlv,'userCom':userCom}
 		$('#UserMan tr.selected:first').data('data',data).find('td:last').html(userCom);
 		closeMenu();

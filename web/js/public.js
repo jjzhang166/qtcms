@@ -119,13 +119,13 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					warp.show().nextAll(':lt('+num+')').show();
 					warp.find('li').removeClass(sClass);
 					$(this).addClass(sClass);
-					warp.nextAll(':lt('+num+')').hide().eq(index).show();	
+					var showDiv = warp.nextAll(':lt('+num+')').hide().eq(index).show();
 				})
 			})
 		},
 		'toSelect':function(){ //模拟HTML下拉选择框 JQ插件形式
-			var This = this;
-			var option = This.next('ul.option');
+			var This = this.find('input').prop('disabled',true).end();
+			var option = This.next('ul.option').find('input').prop('disabled',true).end();
 			This.click(function(event){
 				event.stopPropagation();
 				if(option.is(':hidden')){ 
@@ -142,6 +142,25 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					$('ul.option').hide();
 				}
 			})
+			option.on('click','li',function(){
+				//if($(this).attr('class') != 'hover'){
+					var str = $(this).find('input').val();
+					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
+					$('ul.option').hide();
+					var data = $(this).find('input').attr('data');
+					This.find('input[data]').val(str).attr('data',data);
+					/*if(This.next('ul[action]')){
+						This.find('#'+This.next('ul[action]').attr('action')).val(value);
+					}*/
+					This.find('input:hidden').val($(this).attr('data'));
+				//}
+			})
+
+			/*1
+				设备设置重构IPC完成阶段.  兼容NVR/DVR 设置菜单的下拉框。
+
+				NVR/DVR重构完成后 请删除。
+			*/
 			option.on('click','a',function(){
 				//if($(this).attr('class') != 'hover'){
 					var str = $(this).html();
@@ -155,6 +174,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					//This.find('input:hidden').val($(this).attr('value'));
 				//}
 			})
+			/*1*/
 		},
 
 		'timeInput':function(options){  //时间输入框
@@ -449,7 +469,9 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 		left:($(window).width() - obj.width())/2
 	}).show();
 }
-function returnTime(sInt){  //
+
+
+function returnTime(sInt){  //秒转换时间.
 	var H = parseInt(sInt)/3600;
 		H = addZero(parseInt(H));
 	var M = (sInt-H*3600)/60
@@ -486,7 +508,7 @@ function gettime(objs){
 	})
 	return time.join(':');
 }
-function time2Sec(str){
+function time2Sec(str){  //把时间转换成秒
 	var a =str.split(':');
 	return fuckParseInt(a[0])*60*60+fuckParseInt(a[1])*60+fuckParseInt(a[2]);
 }

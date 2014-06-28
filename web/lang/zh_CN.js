@@ -196,8 +196,8 @@
 	'Low':'低',
 	'Minimum':'最低',
 	'Stream_control':'码流控制',
-	'Variable_rate':'可变码率',
-	'Fixed_rate':'固定码率',
+	'VBR':'可变码率',
+	'CBR':'固定码率',
 	'Moderate_rate':'适中码率',
 	'Stream_frame_rate':'流帧率',
 	'Stream_rate':'码流码率',
@@ -363,5 +363,18 @@
 	'Wed':'三',
 	'Thu':'四',
 	'Fri':'五',
-	'Sat':'六'
+	'Sat':'六',
+
+	//设备设置
+
+	'loading':'正在加载数据!',
+	'saveing':'正在保存数据!',
+	'loading_success':'加载成功!',
+	'save_success':'修改成功!',
+	'loading_fail':'加载失败,请检查左侧列表中对应的设备的参数后再稍后再试!',
+	'low_ver':'当前设备软件版本过低！为保证在该客户端中的正常使用,请手动升级!',
+	'timeout':'连接超时,请检查网络,稍后再试!',
+	'error':'请求出现错误,稍后再试!',
+	'abort':'请求已经取消,稍后再试!',
+	'login_fail':'默认用户:admin,默认空密码.登陆失败! 请在右边设备列表中修改成正确的用户名和密码再试.'
 }

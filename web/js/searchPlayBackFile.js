@@ -77,14 +77,13 @@
 
 		nowDevID = devData.dev_id;
 
-		var type = $('#type span').attr('value');
+		var type = $('#type input[data]').attr('data');
 		
 		var date = $("div.calendar span.nowDate").html();
 		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
 		setDevData2ocx();
-		/*console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
-		alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
+		/*alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){
 			var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
@@ -101,6 +100,7 @@
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
+			console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}

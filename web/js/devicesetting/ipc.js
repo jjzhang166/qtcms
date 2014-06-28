@@ -10,42 +10,42 @@ g_pwd = _pwd;
 }
 $(window).ready(function(){
 //开启本地时间
-	setInterval(renewtime,1000)
+	//setInterval(renewtime,1000)
 	$('.in').each(function(index){
-			$(this).focusout(function() {
-				if($(this).val() == ''){
-					alert('输入不能为空');
-					}
-			});
-			$(this).focus(function(){
-				$(this).val('');
-			});
-			$(this).keyup(function(){
-				var str = $(this).val();
-				if(index == 0){
-					if(str.length == 1){
-						if(str > 2){
-							$(this).val('2');	
-						}	
-					}else{
-						if(str.slice(0,1) == '2'){
-							if(str.slice(1,2) > 4){
-								$(this).val(str.slice(0,1)+'3');
-							}
+		$(this).focusout(function() {
+			if($(this).val() == ''){
+				alert('输入不能为空');
+				}
+		});
+		$(this).focus(function(){
+			$(this).val('');
+		});
+		$(this).keyup(function(){
+			var str = $(this).val();
+			if(index == 0){
+				if(str.length == 1){
+					if(str > 2){
+						$(this).val('2');	
+					}	
+				}else{
+					if(str.slice(0,1) == '2'){
+						if(str.slice(1,2) > 4){
+							$(this).val(str.slice(0,1)+'3');
 						}
 					}
-				}else{
-					if(str.length == 1){
-						if(str > 6){
-							$(this).val('5');
-						}	
+				}
+			}else{
+				if(str.length == 1){
+					if(str > 6){
+						$(this).val('5');
 					}	
-				}
-				if($(this).val().length == 2){
-					$('.in').eq(index + 1).focus();	
-				}
-			});	
-})
+				}	
+			}
+			if($(this).val().length == 2){
+				$('.in').eq(index + 1).focus();	
+			}
+		});
+	})
 //本地时间函数
 	function renewtime()
 	{
@@ -131,8 +131,8 @@ function deviceName_load()
 }
 function encode_load_content()
 {
-	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
-	var auth = "Basic " + base64.encode('admin:');
+	var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
+	//var auth = "Basic " + base64.encode('admin:');
 	var id = $('#ipc_enc_stream_ID').val();
 		 $.ajax({
 				type:"GET",
@@ -158,7 +158,7 @@ function encode_load()
 {
 	var id = $('#ipc_enc_stream_ID').val();
 	//var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
-	var auth = "Basic " + base64.encode('admin:');
+	var auth = "Basic " + base64.encode(g_usr+':'+g_pwd);
 	$.ajax({
 			type:"GET",
 			url:ipc_url + '/netsdk/video/encode/channel/'+id,
@@ -209,12 +209,12 @@ function encode_data2ui()
 			case 'false': $('#id_freeresolution_0')[0].checked = 1; break;
 			default: break;
 		}
-		$('#ipc_enc_stream_ID').nextAll('li').click(function(){
+		/*$('#ipc_enc_stream_ID').nextAll('li').click(function(){
 		 	$('#ipc_enc_stream_ID').val($(this).attr('value'));
 		})
 		$('#ipc_enc_BitRateControlType_ID').nextAll('li').click(function(){
 		 	$('#ipc_enc_BitRateControlType_ID').val($(this).attr('value'));
-		})
+		})*/
 }
 function encode_save_content()
 {	
@@ -235,6 +235,7 @@ function encode_save_content()
 		ipc_enc_freeResolution = false;
 	}
 	var encode_data = '{"channelName": "'+ ipc_enc_channelname +'","resolution":"'+ipc_enc_resolution+'","freeResolution":'+ipc_enc_freeResolution+',"resolutionWidth":'+ ipc_enc_resolutionWidth +',"resolutionHeight":'+ ipc_enc_resolutionHeight +',"bitRateControlType":"'+ipc_enc_BitRateControlType+'","constantBitRate":'+ ipc_enc_bps +',"frameRate":'+ ipc_enc_fps +'}';
+	console.log(encode_data);
 	
 	//	alert(encode_data); 
 	 
@@ -811,6 +812,7 @@ function user_management_prepare_cancel()
 
 function user_management_data2ui(dvr_data)
 {
+	console.log(dvr_data);
 	var user_count = dvr_data.user.user_list.count;
 	var tbl = $("#tbl_user_manage")[0];
 	for(var i = tbl.rows.length - 1; i >= 1; i--)
@@ -977,6 +979,7 @@ function time_ntp_load()
 				req .setRequestHeader('Authorization', auth);
 				},
 				success:function(data){	
+					console.log(data);
 					switch (data.ntpEnabled)
 					{
 						case true: $("#time_ntp__1")[0].checked = 1;break;
