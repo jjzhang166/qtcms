@@ -51,7 +51,7 @@ signals:
 
 	void connecttingUpdateSig();
 	void CacheStateSig(QVariantMap evMap);
-
+	
 public:    
 	Ui::titleview * ui;
 	IDeviceClient *m_LpClient;

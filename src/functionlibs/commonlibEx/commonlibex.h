@@ -40,6 +40,7 @@ public:
 	virtual bool IsUserExists(const QString & sUsername);
 	virtual bool CheckUser(const QString & sUsername,const QString & sPassword);
 	virtual int GetUserLevel(const QString & sUsername,int & nLevel);
+	virtual int GetUserLevel( const QString & sUsername );
 	virtual int GetUserAuthorityMask(const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2);
 	virtual int GetUserCount() ;
 	virtual QStringList GetUserList();

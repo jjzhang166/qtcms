@@ -116,7 +116,6 @@ void SubWebView::OnLoad( bool bOk )
 
 void SubWebView::OnstatusBarMessage( const QString &text )
 {
-	qDebug()<<text;
 	statusBarMessage.clear();
 	statusBarMessage.append(text);
 	if (text.size()<5||bIsbuilding==true)

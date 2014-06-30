@@ -90,7 +90,6 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 }
 int RemoteBackupWindows::stopBackup()
 {
-	qDebug()<<__FUNCTION__<<__LINE__;
 	int nRet = 0;
 	if (m_pRemoteBackup)
 	{

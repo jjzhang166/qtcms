@@ -328,6 +328,8 @@ void QSubviewRun::run()
 					QVariantMap curStatusInfo;
 					curStatusInfo.insert("CurrentStatus",nCurrentStatus);
 					backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
+					m_nInitHeight=0;
+					m_nInitWidth=0;
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
 					if (connectToDevice())
@@ -632,12 +634,12 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		QVariantMap curStatusInfo;
 		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
 		backToMainThread(curStatusInfo);
-		QThread::start();
-		m_stepCode.clear();
-		m_stepCode.enqueue(OPENPREVIEW);
 		m_deviceInfo.m_uiChannelIdInDataBase=chlId;
 		m_deviceInfo.m_pWnd=pWnd;
+		m_stepCode.clear();
+		m_stepCode.enqueue(OPENPREVIEW);
 		m_bIsdataBaseFlush=true;
+		QThread::start();
 		return;
 	}
 }
@@ -1605,10 +1607,6 @@ void QSubviewRun::slcheckoutBlock()
 	if (m_bIsBlock)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
-	}
-	if (QThread::isRunning())
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<m_nPosition<<QThread::isFinished();
 	}
 }
 

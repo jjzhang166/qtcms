@@ -7,7 +7,6 @@ public:
 
 	void Lock();
 	void Unlock();
-
 private:
 	CRITICAL_SECTION m_cs;
 };

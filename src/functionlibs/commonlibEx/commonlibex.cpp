@@ -220,6 +220,17 @@ int commonlibEx::GetUserLevel( const QString & sUsername,int & nLevel )
 	return nRet;
 }
 
+int commonlibEx::GetUserLevel( const QString & sUsername )
+{
+	int nRet = 0;
+	int nR = GetUserLevel(sUsername,nRet);
+	if (IUserManager::OK != nR)
+	{
+		return -1;
+	}
+	return nRet;
+}
+
 int commonlibEx::GetUserAuthorityMask( const QString & sUsername,int & nAuthorityMask1, int & nAuthorityMask2 )
 {
 	// check if user exists

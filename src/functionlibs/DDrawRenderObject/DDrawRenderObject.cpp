@@ -5,7 +5,7 @@
 #include "DDrawRenderObject.h"
 #include "DDMutex.h"
 
-CDDMutex				g_csDDraw;
+//CDDMutex				g_csClipper;
 CDDMutex                g_csClipper;
 LPDIRECTDRAW7           g_pDirectDraw7 = NULL;
 LPDIRECTDRAWSURFACE7    g_pPrimarySurface = NULL;	
@@ -15,10 +15,10 @@ int						g_nDDrawRef = 0;
 
 void InitDDrawGlobal()
 {
-	g_csDDraw.Lock();
+	g_csClipper.Lock();
 /*	if (g_nDDrawRef > 0)
 	{
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return;
 	}*/
 
@@ -28,7 +28,7 @@ void InitDDrawGlobal()
 	if (FAILED(hr))
 	{
 		g_pDirectDraw7 = NULL;
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return;
 	}
 
@@ -37,7 +37,7 @@ void InitDDrawGlobal()
 	{
 		g_pDirectDraw7->Release();
 		g_pDirectDraw7 = NULL;
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return ;
 	}
 
@@ -46,7 +46,7 @@ void InitDDrawGlobal()
 	{
 		g_pDirectDraw7->Release();
 		g_pDirectDraw7 = NULL;
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return ;
 	}
 
@@ -63,7 +63,7 @@ void InitDDrawGlobal()
 		g_pClipper = NULL;
 		g_pDirectDraw7->Release();
 		g_pDirectDraw7 = NULL;
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return ;
 	}
 
@@ -76,18 +76,18 @@ void InitDDrawGlobal()
 		g_pClipper = NULL;
 		g_pDirectDraw7->Release();
 		g_pDirectDraw7 = NULL;
-		g_csDDraw.Unlock();
+		g_csClipper.Unlock();
 		return ;
 	}
 
 	// ref
 	g_nDDrawRef ++;
-	g_csDDraw.Unlock();
+	g_csClipper.Unlock();
 }
 
 void DeinitDDrawGlobal()
 {
-	g_csDDraw.Lock();
+	g_csClipper.Lock();
 	if (g_nDDrawRef > 0)
 	{
 		g_nDDrawRef --;
@@ -113,7 +113,7 @@ void DeinitDDrawGlobal()
 			}
 		}
 	}
-	g_csDDraw.Unlock();
+	g_csClipper.Unlock();
 }
 
 

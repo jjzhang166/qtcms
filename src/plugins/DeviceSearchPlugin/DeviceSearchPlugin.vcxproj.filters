@@ -59,6 +59,15 @@
     <ClCompile Include="DeviceSearchWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SetNetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SetNetwork.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SetNetwork.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
@@ -67,12 +76,18 @@
     <ClInclude Include="DeviceSearchWindows_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qarplib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DeviceSearchPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="DeviceSearchWindows.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SetNetwork.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

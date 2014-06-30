@@ -181,11 +181,11 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
 
-	if (m_bIsSycTime)
-	{
-		connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
-		emit sigSyncTime();//同步时间
-	}
+	//if (m_bIsSycTime)
+	//{
+	//	connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
+	//	emit sigSyncTime();//同步时间
+	//}
 	//断开上一次的连接
 	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED||m_CurStatus==IDeviceClient::STATUS_DISCONNECTING||m_CurStatus==IDeviceClient::STATUS_CONNECTING)
 	{
@@ -627,6 +627,12 @@ int IpcDeviceClient::SwitchStream( int StreamNum )
 int IpcDeviceClient::SetAutoSycTime(bool bEnabled)
 {
 	m_bIsSycTime = bEnabled;
+	//change 
+	if (m_bIsSycTime)
+	{
+		connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
+		emit sigSyncTime();//同步时间
+	}
 	return 0;
 }
 bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )

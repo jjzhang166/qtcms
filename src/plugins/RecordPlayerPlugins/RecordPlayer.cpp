@@ -234,7 +234,6 @@ int RecordPlayer::sortFileList(QStringList &fileList)
 
 int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
 {
-	qDebug()<<"RecordPlayer :AddFileIntoPlayGroup:"<<filelist<<nWndID<<startTime<<endTime;
 	if (NULL == m_pLocalPlayer || filelist.isEmpty() || nWndID <0 || nWndID >= ARRAY_SIZE(m_subRecPlayerView))
 	{
 		return 1;

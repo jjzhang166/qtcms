@@ -171,7 +171,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlaybackActivity", "..\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BackUpActivity", "..\src\activities\BackUpActivity\BackUpActivity.vcxproj", "{2180AE6E-E067-40BB-BF6D-5045FC688436}"
 EndProject
-
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Qarp", "..\src\functionlibs\Qarp\Qarp.vcxproj", "{43925893-AA01-4056-BAB9-CB3050A3052D}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlibEx", "..\src\functionlibs\commonlibEx\commonlibEx.vcxproj", "{606E4F2D-16A8-486A-9065-5CBC80F96016}"
 EndProject
 Global
@@ -347,6 +348,14 @@ Global
 		{2180AE6E-E067-40BB-BF6D-5045FC688436}.Debug|Win32.Build.0 = Debug|Win32
 		{2180AE6E-E067-40BB-BF6D-5045FC688436}.Release|Win32.ActiveCfg = Release|Win32
 		{2180AE6E-E067-40BB-BF6D-5045FC688436}.Release|Win32.Build.0 = Release|Win32
+		{43925893-AA01-4056-BAB9-CB3050A3052D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{43925893-AA01-4056-BAB9-CB3050A3052D}.Debug|Win32.Build.0 = Debug|Win32
+		{43925893-AA01-4056-BAB9-CB3050A3052D}.Release|Win32.ActiveCfg = Release|Win32
+		{43925893-AA01-4056-BAB9-CB3050A3052D}.Release|Win32.Build.0 = Release|Win32
+		{606E4F2D-16A8-486A-9065-5CBC80F96016}.Debug|Win32.ActiveCfg = Debug|Win32
+		{606E4F2D-16A8-486A-9065-5CBC80F96016}.Debug|Win32.Build.0 = Debug|Win32
+		{606E4F2D-16A8-486A-9065-5CBC80F96016}.Release|Win32.ActiveCfg = Release|Win32
+		{606E4F2D-16A8-486A-9065-5CBC80F96016}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
