@@ -117,6 +117,7 @@ int qpreviewwindowsex::getPages()
 		return m_divMode->getPages();
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"m_divMode is null";
+		return -1;
 	}
 }
 
@@ -440,101 +441,3 @@ int qpreviewwindowsex::ClosePTZ( int nCmd )
 	return m_sPreviewWnd[m_nCurrentWnd].closePTZ(nCmd);
 }
 
-QVariantMap qpreviewwindowsex::CheckLoginInof( const QString &sUsername, const QString &sPassword, const QString &sLanguageLabel, bool bAutoLogin )
-{
-	QVariantMap item;
-	if (sUsername.isEmpty() || sPassword.isEmpty())
-	{
-		item.insert("errorCode", -3);
-		qDebug()<<__FUNCTION__<<__LINE__<<"errorCode::-3";
-		return item;
-	}else{
-		IUserManager *pUserManager = NULL;
-		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void**)&pUserManager);
-		if (NULL == pUserManager)
-		{
-			item.insert("errorCode", -4);
-			qDebug()<<__FUNCTION__<<__LINE__<<"errorCode::-4";
-			return item;
-		}else{
-			bool bIsUserExists = pUserManager->IsUserExists(sUsername);
-			if (!bIsUserExists)
-			{
-				item.insert("errorCode", -2);
-				qDebug()<<__FUNCTION__<<__LINE__<<"errorCode::-2";
-				pUserManager->Release();
-				pUserManager=NULL;
-				return item;
-			}else{
-				bool bIsAccountOk = pUserManager->CheckUser(sUsername, sPassword);
-				if (!bIsAccountOk)
-				{
-					item.insert("errorCode", -1);
-					qDebug()<<__FUNCTION__<<__LINE__<<"errorCode::-1";
-					pUserManager->Release();
-					pUserManager=NULL;
-					return item;
-				}else{
-					int level = 0;
-					int mask1 = 0;
-					int mask2 = 0;
-					pUserManager->GetUserLevel(sUsername, level);
-					pUserManager->GetUserAuthorityMask(sUsername, mask1, mask2);
-
-					ILocalSetting *pLocalSetting = NULL;
-					pUserManager->QueryInterface(IID_ILocalSetting, (void**)&pLocalSetting);
-					if (NULL == pLocalSetting)
-					{
-						item.insert("errorCode", -4);
-						qDebug()<<__FUNCTION__<<__LINE__<<"errorCode::-4";
-						pUserManager->Release();
-						pUserManager=NULL;
-						return item;
-					}else{
-						pLocalSetting->setAutoLogin(bAutoLogin);
-						pLocalSetting->setLanguage(sLanguageLabel);
-
-						pLocalSetting->Release();
-						pUserManager->Release();
-
-						item.insert("errorCode", 0);
-						item.insert("accountLevel", level);
-						item.insert("authorityMask1", mask1);
-						item.insert("authorityMask2", mask2);
-						return item;
-					}
-				}
-			}
-		}
-	}
-}
-
-int qpreviewwindowsex::ModifyPassword( const QString &sUsername, const QString &sOldPassword, const QString &sNewPassword )
-{
-	if (sUsername.isEmpty() || sOldPassword.isEmpty())
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"sUsername.isEmpty() || sOldPassword.isEmpty()";
-		return 1;
-	}else{
-		IUserManager *pUserManager = NULL;
-		pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IUserManager,(void**)&pUserManager);
-		if (NULL == pUserManager)
-		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"pUserManager is null";
-			return 1;
-		}else{
-			bool bIsAccountOk = pUserManager->CheckUser(sUsername, sOldPassword);
-			if (!bIsAccountOk)
-			{
-				pUserManager->Release();
-				pUserManager=NULL;
-				return 1;
-			}else{
-				int nRet = pUserManager->ModifyUserPassword(sUsername, sNewPassword);
-				pUserManager->Release();
-
-				return nRet;
-			}
-		}
-	}
-}

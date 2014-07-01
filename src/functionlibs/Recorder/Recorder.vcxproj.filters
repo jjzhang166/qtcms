@@ -61,9 +61,6 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Recorder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Recorder_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,5 +78,10 @@
     <None Include="Recorder.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Recorder.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

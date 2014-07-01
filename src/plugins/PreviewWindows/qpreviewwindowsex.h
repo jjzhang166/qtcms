@@ -66,9 +66,6 @@ public slots:
 	//云台
 	int OpenPTZ(int nCmd, int nSpeed);
 	int ClosePTZ(int nCmd);
-	//login
-	QVariantMap CheckLoginInof(const QString &sUsername, const QString &sPassword, const QString &sLanguageLabel, bool bAutoLogin);
-	int ModifyPassword(const QString &sUsername, const QString &sOldPassword, const QString &sNewPassword);
 	//子窗口信号函数
 	void subWindowDblClick(QWidget*,QMouseEvent *);
 	void subWindowMousePress(QWidget*,QMouseEvent *);
