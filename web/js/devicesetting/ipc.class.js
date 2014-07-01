@@ -3,6 +3,7 @@ var IPC = function(usr,pwd,url,type){
 	this._PWD = pwd;
 	this._URL = url;
 	this._VER = 0;
+	this._Upgrade = '1.3.0';  // CMS 支持的最低版本IPC
 
 console.log(arguments);
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);
@@ -14,7 +15,7 @@ console.log(arguments);
 	});*/
 
 
-	this.ipcBasicInfo2UI = function(){
+	this.ipcBasicInfo2UI = function(){ //获取设备信息
 		var This = this;
 		console.log('-------------------ipcBasicInfo2UI--------------------------');
 		var xmlstr = '';
@@ -30,11 +31,11 @@ console.log(arguments);
 		
 		_AJAXget(this._URL+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,'',function(data){
 			data2UI(data);
-			This._VER = $('#set_content div.ipc_list:visible input[data-UI="hardware_version"]').val();
+			This._VER = $('#set_content div.ipc_list:visible input[data-UI="software_version"]').val();
 		});
 	}
 
-	this.ipcencodeInfo2UI = function(){
+	this.ipcencodeInfo2UI = function(){ //获取编码信息
 		console.log('-------------------ipcencodeInfo2UI--------------------------');
 		var This = this;
 		_AJAXget(this._URL + '/netsdk/video/encode/channel/'+$('#set_content div.ipc_list:visible input[data]:first').attr('data')+'/properties','',function(){
@@ -46,7 +47,7 @@ console.log(arguments);
 		},data2UI);
 	}
 
-	this.ipcencodeInfoPut = function(){
+	this.ipcencodeInfoPut = function(){ //设置编码信息
 
 		var warp = $('#set_content div.ipc_list:visible');
 	
@@ -62,7 +63,7 @@ console.log(arguments);
 
 	}
 
-	this.ipcnetworkInfo2UI = function(){
+	this.ipcnetworkInfo2UI = function(){ //获取网络信息
 
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 		var warp = $('#set_content div.ipc_list:visible');
@@ -91,7 +92,12 @@ console.log(arguments);
 			warp.find('input[data-UI="mac"]').val(data);
 		});
 
-		_AJAXget(this._URL+'/netsdk/Network/Interface/1','','',data2UI);
+		_AJAXget(this._URL+'/netsdk/Network/Interface/1','','',function(data){
+			data2UI(data);
+			warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
+			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns',true) : disable('ddns');
+			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe',true) : disable('pppoe');
+		});
 
 		_AJAXget(this._URL+'/netsdk/Network/Esee','','',function(data){
 			warp.find('input[data-WARP="esee"] input[value="'+data.enabled+'"]').prop('checked',true);
@@ -101,14 +107,11 @@ console.log(arguments);
 
 		_AJAXget(this._URL+'/netsdk/Network/Port/1','','',function(data){
 			warp.find('input[data-UI="value"]').val(data.value);
-			warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' && disable('lan',true);
-			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' && disable('ddns',true);
-			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' && disable('pppoe',true);
 		});
 
 	}
 
-	this.ipcnetworkInfoPut = function(){
+	this.ipcnetworkInfoPut = function(){ //设置网络信息
 
 		var warp = $('#set_content div.ipc_list:visible');
 
@@ -121,7 +124,7 @@ console.log(arguments);
 		_AJAXput(this._URL+'/netsdk/Network/Port/1','{ "value": "'+warp.find('input[data-UI="value"]').val()+'"}');
 	}
 
-	this.ipcuserManagementInfo2UI = function(){
+	this.ipcuserManagementInfo2UI = function(){ //获取用户信息
 
 		dataType='';
 
@@ -145,7 +148,7 @@ console.log(arguments);
 		}
 	}
 
-	this.ipczoneInfo2UI = function(){
+	this.ipczoneInfo2UI = function(){ //获取时区信息
 
 		$('#PC_time').val(renewtime());
 
@@ -195,7 +198,7 @@ console.log(arguments);
 			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 		}
 
-		this.ipczoneInfoPut = function(){
+		this.ipczoneInfoPut = function(){ //设置时区
 
 			var warp = $('#set_content div.ipc_list:visible');
 

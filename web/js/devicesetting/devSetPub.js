@@ -1,4 +1,9 @@
-var ERROR = '',auth,dataType='json',jsonp='',type='get',nowDev;
+var auth,nowDev,
+	type='get',
+	dataType='json',
+	jsonp='',
+	ERROR = '',
+	base64 = new Base64();
 
 $.ajaxSetup({
 	processData: false, 
@@ -10,7 +15,7 @@ $.ajaxSetup({
 function data2UI(objData,oWarp){
 
 	if(nowDev._USR && nowDev._USR == 'no auth'){
-		$('#ajaxHint').stop(true,true).html(lang.login_fail).show();
+		showAJAXHint('login_fail').show();
 	}
 	var defaultWarp = $('#set_content div.ipc_list:visible')
 	var warp = (oWarp && oWarp[0]) ? oWarp : defaultWarp;
@@ -105,11 +110,11 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 
 function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始化方法.
 
-	var str = type == 'GET' ? lang.loading : lang.saveing ;
+	var str = type == 'GET' ? 'loading' : 'saveing' ;
 
 	var targetMenu = $('#set_content div.ipc_list:visible');
 
-		oHint = $('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(str).show();
+		oHint = showAJAXHint(str).css('top',targetMenu.height() + 46).stop(true,true).show();
 
 		if(checkAJAX())
 			return false;
@@ -142,10 +147,10 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			typeof(beforeSend) == 'function' && beforeSend();
 		},
 		success: function(data){
-			str =  type == 'GET' ? lang.loading_success : lang.save_success;
+			str =  type == 'GET' ? 'loading_success' : 'lang.save_success';
 			//console.log('---------------ajaxSuccess------------------');
 
-			oHint.html(str);
+			showAJAXHint(str)
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
 			console.log(Data);
@@ -155,21 +160,22 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			str = lang.loading_fail;
 
 			if(textStatus)
-				str=lang[textStatus];
+				str=textStatus;
 
 			if(errorThrown){
-				str=lang.login_fail;
+				str='login_fail';
 			}
 
-			oHint.html(str);
+			showAJAXHint(str);
 			//alert("error:" + textStatus);
 		},
 		complete: function(XMLHttpRequest, textStatus){
+			console.log('-------------complete-----------'+str);
 
-			if(str == lang.loading_success ||str == lang.save_success){
+			if(str == 'loading_success' || str == 'save_success'){
 				oHint.fadeOut(2000);
 			}else{
-				oHint.stop(true,true).html(str);
+				showAJAXHint(str);
 			}
 
 			checkAJAX();
@@ -192,12 +198,12 @@ function checkAJAX(){
 
 	if(nowDev._VER && nowDev._VER == 'no auth'){
 		$('#set_content div.ipc_list:eq(0) input:text').val('');
-		a = lang.login_fail;
-	}else if(nowDev._VER < '1.3.0'){
-		a = lang.low_ver;
+		a = 'login_fail';
+	}else if(nowDev._VER < nowDev._Upgrade){
+		a = 'low_ver';
 	}
 
-	a && $('#ajaxHint').stop(true,true).html(a).show();
+	a && showAJAXHint(a)
 
 	return a;
 }
@@ -207,7 +213,7 @@ function submitThisMenu(str){
 	nowDev[str+'Put']();
 }
 
-function getPutDataJSON(){
+/*function getPutDataJSON(){
 	var warp = $('#set_content div.ipc_list:visible'),
 		str = '{',
 		node = {};
@@ -234,13 +240,38 @@ function getPutDataJSON(){
 	str = str.slice(0,-1) + '}';
 
 	return str;
-}
+}*/
 
 function disable(warp,str){
 	var oInput = $('#set_content div.ipc_list:visible [data-WARP="'+warp+'"]').find('input:text,input:password');
 
 	str ? oInput.prop('disabled',str) : oInput.removeProp('disabled');
 	
+}
+
+//检车通道名是否为中文.
+
+function hasChinese(str){
+	if(/[\u4e00-\u9fa5]+/g.test(str)){
+		showAJAXHint('channelName_NOT_chinese').val('');
+	}else{
+		showAJAXHint().hide();
+	}
+}
+
+function showAJAXHint(str){
+	return $('#ajaxHint').stop(true,true).html(lang[str]).show();
+}
+//检查IP格式
+function chkIPformat(str){
+	return;
+	var re=/^(\d{1,3}\.){3}\d{1,3}$/;
+	console.log(str+'//'+re.test(str));
+	if(re.test(str)){
+		showAJAXHint().hide();
+	}else{
+		showAJAXHint('Incorrect_IP_format');
+	}
 }
 
 /*function json2str(obj){

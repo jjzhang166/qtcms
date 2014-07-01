@@ -107,8 +107,6 @@ var oSearchOcx,
 
 					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
 
-						emptyDevSetMenu();
-
 						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
 						$(this).addClass('sel')
 
@@ -117,10 +115,13 @@ var oSearchOcx,
 						var _url = 'http://'+oDevData.address+':'+oDevData.port;
 
 						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
+
+
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
 							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
-							ipc(_url,oDevData.username,oDevData.password);
+							emptyDevSetMenu();
+							//ipc(_url,oDevData.username,oDevData.password);
 /*							devinfo_load_content(true);	*/
 							nowDev = new IPC(oDevData.username,oDevData.password,_url);
 							
@@ -133,14 +134,15 @@ var oSearchOcx,
 							nowDev.ipcBasicInfo2UI();
 
 							//oDev[$('ul.ipc_list0 li.ope_listAct').attr('action')]();
-						}
-					    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR
-						{
+						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
+							emptyDevSetMenu();
+
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();	
 						}
+
 			 	   });
 
 				}else if(key == 2){
@@ -273,6 +275,7 @@ var oSearchOcx,
 		//record setting  回放设置;
 		var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
 		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
+
 			SettingRecordDoubleTimeParm();  //清空回放表单的数据
 			//通道选中状态唯一
 			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
@@ -282,11 +285,15 @@ var oSearchOcx,
 			var allChlID = [];  //所有通道ID
 			$(this).parent('li').siblings().each(function(){
 				var chlData = $(this).find('.channel').data('data');
-				$('<li><a value="'+chlData.channel_id+'">'+chlData.channel_name+'</a></li>').appendTo($('td.copyTo ul'));
+				$('<li><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
 				allChlID.push(chlData.channel_id);
 			})
 
-			$('td.copyTo a.all').attr('value',allChlID.join(',')); //拷贝到所有通道选项的value写入;
+			//拷贝到所有通道选项的value写入;
+			
+			$('<li><input class="all" data="" value="'+lang.Select+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+
+			//console.log(allChlID);
 
 			var chlData = $(this).data('data');
 
@@ -307,6 +314,10 @@ var oSearchOcx,
 		$('tbody.synCheckboxClick').each(function(){
 			$(this).SynchekboxClick();
 		})
+
+		//部分词条翻译
+		_t($('input:text'));
+
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -327,7 +338,7 @@ var oSearchOcx,
 
 	///$(window).resize(set_contentMax)
 
-	var Language={'zh_CN':'中文','en_GB':'English'};
+
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
 		for(i in SplitScreenMode){
 			SplitScreenMode[i]=SplitScreenMode[i]+lang.Screen;
@@ -336,42 +347,43 @@ var oSearchOcx,
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
+			//console.log(item[i]+'----------------'+str);
 			var obj = $('#'+item[i]+'_ID')
-			if(obj[0].nodeName != 'INPUT'){
-				obj.dataIntoHtml(str)
+			if(obj.is(':checkbox')){
+				obj.dataIntoSelected(str);	
 			}else{
-				obj.dataIntoSelected(str);
-			}
-
-			if(item[i] =='Language' || item[i] =='SplitScreenMode'){  //语言转换
-				$('span.'+item[i]).html(window[item[i]][str]);
-				obj.val(str);
+				obj.dataIntoVal(str)
+				$('#'+item[i]).dataIntoVal(str);
 			}
 		}
 
+		$('#SplitScreenMode').val(SplitScreenMode[$('#SplitScreenMode').val()]);
 		$('#CommonParm input:checkbox').each(function(){
 			$(this).toCheck();
 		})
 
-		$('#Language_ID').nextAll('li').click(function(){
-		 	$('#Language_ID').val($(this).attr('value'));
-		})
+		_t($('#CommonParm input:text'));
 
-		$('#viewMod').on('click','a',function(){
+		/*$('#Language_ID').nextAll('li').click(function(){
+		 	$('#Language_ID').val($(this).attr('value'));
+		})*/
+
+		/*$('#viewMod').on('click','a',function(){
 		 	$('#SplitScreenMode_ID').val($(this).attr('value'));
-		 $('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
-		})
+		 	$('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
+		})*/
 
 		areaList2Ui(2);
 	}
 	function FillRecordTimeData(){
 		areaList2Ui(2);
-		/*SettingRecordDoubleTimeParm();
-		$('ul.week a').each(function(index){ 
+		SettingRecordDoubleTimeParm();
+		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
 				$('#week').html($(this).html());
 			})
 		})*/
+		_t($('#RecordTime input:text'));
 	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
 		var oTimes=$('#recordtime tbody tr:lt(4)');
@@ -397,14 +409,21 @@ var oSearchOcx,
 	//添加前获取要修改的时间ID的类容XML;
 	function getRecrodxml(){
 		var copyTo = [$('#RecordTime span.channel.sel').data('data').channel_id], // 初始的通道ID
-			copyID = $('#RecordTime td.copyTo span').attr('value').split(','), // 要拷贝到的通道ID
-			nowWeek = $('#week').attr('value').split(','),
+			copyID = $('#RecordTime td.copyTo input:first').attr('data').split(','), // 要拷贝到的通道ID
+			nowWeek = $('#week').attr('data').split(','),
 			nowWeekTimeID = [];
-		copyTo = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
-		//console.log('通道ID:'+copyTo.join(',')+'当前星期'+nowWeek);
+		var copy = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
+		console.log('----------------初始的通道ID-------------');
+		console.log(copyTo);
+		console.log('----------------要拷贝到的通道ID-------------');
+		console.log(copyID);
+		console.log('----------------合并后的-------------');
+		console.log(copy);
+		console.log('--------------当前星期-------------------');
+		console.log(nowWeek);
 		// 返回符合当天星期的时间ID
-		for(i in copyTo){ 
-			var timeID = oCommonLibrary.GetRecordTimeBydevId(copyTo[i]);
+		for(i in copy){ 
+			var timeID = oCommonLibrary.GetRecordTimeBydevId(copy[i]);
 			for(j in timeID){
 				var timeinfo = oCommonLibrary.GetRecordTimeInfo(timeID[j])
 				for(k in nowWeek){
@@ -553,8 +572,9 @@ var oSearchOcx,
 
 	function emptyDevSetMenu(){
 		$('#set_content div.switch input[class]').val('').prop('checked',false);
-		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','');
-		$('#ajaxHint').hide();
+		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
+									  .end().find(':checkbox,:radio').prop('checked',false);
+		$('#ajaxHint').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
 	
@@ -1127,7 +1147,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//
 	}
 	function SettingRecordDoubleTimeParmSuccess(data){
-		var week = $('#week').attr('value').split(',');
+		var week = $('#week').attr('data').split(',');
 		for(i in week){
 			var weekData = $('ul.week.option li:eq('+week[i]+')').data()
 			var n = 0;
@@ -1151,13 +1171,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			})
 		})
 	}
-	function SettingRecordDoubleTimeParm(data){ //清空回放时间表单的数据
+	function SettingRecordDoubleTimeParm(){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week.option li').removeData();
-		$('#week').html(lang.Monday).attr('value','0');
-		$('#recordtime td.copyTo').find('a,span').attr('value','').not('a.all').html('');
-		areaList2Ui(2);
+		$('#week').val(lang.Monday).attr('data','0');
+		$('#recordtime td.copyTo').find('li').remove()
+								  .end().find('input').val('').data('');
+		//areaList2Ui(2);
 	}
 	function SettingStorageParmSuccess(data){
 		//alert(data);
@@ -1196,4 +1217,17 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		}else{
 			oSearchOcx.Stop();
 		}
+	}
+
+	function _t(obj){
+		obj.each(function(){
+			var val = $(this).val(),
+				str = lang[val] || val;
+			if(val.indexOf('Screen') != -1){
+				var t = val.split(' ');
+				str = lang[t[1]] ? t[0]+lang[t[1]] : str;
+			}
+
+			$(this).val(str);
+		})
 	}

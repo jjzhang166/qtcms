@@ -68,7 +68,7 @@
 	.right_content,.confirm{ display: none;}
 	.right_content{height: 100%;width:100%;}
 	
-	.timeInput{width: 90px; float:left; margin-right:6px;}
+	.timeInput{width: 90px; float:left; margin-left:4px;}
 	ul.groupAction li{float: left;}
 
 	.synCheckboxClick tr.sel{background: #4A911C}
@@ -76,6 +76,8 @@
 	#ajaxHint{ display: none; text-align: center; position: absolute; left: 14px; border-radius: 4px; background: #B64442; color: #ccc; padding:2px; }
 
 	#SerachDevList thead td{height:0;}
+
+	.week input,.week li{width: 63px; clear:both;}
 }
  </style>
 </head>
@@ -649,7 +651,7 @@
 									</td>
 								</tr>
 								</tbody>
-								<tr><td colspan="3"><input id="Encoding_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label for="Encoding_settings_SelectAll"><label for="Encoding_settings_SelectAll"><script>T("Select")</script></label>
+								<tr><td colspan="3"><input id="Encoding_settings_SelectAll" type="checkbox" /><label for="Encoding_settings_SelectAll"><label for="Encoding_settings_SelectAll"><script>T("Select")</script></label>
 								<!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
 								
 							</table>
@@ -1299,7 +1301,7 @@
 								</ul>
 							</td><td></td>
 						</tr>
-						<tr><td><script>T("Channel_name")</script></td><td><input data-UI="channelName" KeyUp="check();" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><!-- <div onClick="deviceName_load();" class="hover"><script>T("Copy")</script></div> --></td></tr>
+						<tr><td><script>T("Channel_name")</script></td><td><input data-UI="channelName" style="width:133px;" type="text" /></td><td class="td3 tdBtn"><!-- <div onClick="deviceName_load();" class="hover"><script>T("Copy")</script></div> --></td></tr>
 			                        <tr>
 							<td><script>T("Resolution")</script></td>
 							<td colspan="2">
@@ -1364,27 +1366,27 @@
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("IP_address")</script></td>
-			                            <td><input data-UI="staticIP" type="text" onChange="is_valid_ip('network_ip')" onFocus="save_ipaddr('network_ip')"/></td>
+			                            <td><input data-UI="staticIP" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_ip')" nFocus="save_ipaddr('network_ip')"/></td>
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("Gateway")</script></td>
-			                            <td><input data-UI="staticGateway" type="text" onChange="is_valid_ip('network_gateway')" onFocus="save_ipaddr('network_gateway')"/></td>
+			                            <td><input data-UI="staticGateway" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_gateway')" nFocus="save_ipaddr('network_gateway')"/></td>
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("Network_Mask")</script></td>
-			                            <td><input data-UI="staticNetmask" type="text" onChange="is_valid_ip('network_submask')" onFocus="save_ipaddr('network_submask')"/></td>
+			                            <td><input data-UI="staticNetmask" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_submask')" nFocus="save_ipaddr('network_submask')"/></td>
 			                        </tr>
 							 		<tr>
 							 			<td>优先 DNS</td>
-			                            <td><input data-UI="preferredDns" type="text" onChange="is_valid_ip('network_dns')" onFocus="save_ipaddr('network_dns')"/></td>
+			                            <td><input data-UI="preferredDns" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_dns')" nFocus="save_ipaddr('network_dns')"/></td>
 			                        </tr>
 			                        <tr>
 			                        	<td>备用 DNS</td>
-			                            <td><input data-UI="staticAlternateDns" type="text" onChange="is_valid_ip('network_dns2')" onFocus="save_ipaddr('network_dns2')"/></td>
+			                            <td><input data-UI="staticAlternateDns" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_dns2')" nFocus="save_ipaddr('network_dns2')"/></td>
 			                        </tr>
 			                        <tr data-WARP="port0">
 			                        	<td><script>T("Port")</script></td>
-			                            <td><input data-UI="value" type="text" onChange="is_valid_port()" onFocus="save_port()"/></td>
+			                            <td><input data-UI="value" type="text" onChange="is_valid_port()" nFocus="save_port()"/></td>
 			                       	</tr>
 			                        </tbody>            
 								</table>
@@ -1573,13 +1575,14 @@
 							<td><script>T("Language")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span class="Language"></span>
+									<!-- <span class="Language"></span> -->
+									<input id="Language" value="" data="" />
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<input type="hidden" id="Language_ID" />
+									<input id="Language_ID" value="" type="hidden" />
 									<!-- 语言选项 -->
-									<li value="zh_CN"><a>中文</a></li>
+									<li><input data="zh_CN" value="中文" /></li>
 									<!-- 语言选项 end-->
 								</ul>
 							</td>
@@ -1590,20 +1593,21 @@
 							<td><script>T("Default_screen_split_mode")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<span value="" class="SplitScreenMode"></span>
+									<!-- <span value="" class="SplitScreenMode"></span> -->
+									<input id="SplitScreenMode" value="" data="" />	
 									<a class="hover"></a>
 								</div>
 								<ul class="option" id="viewMod">
-									<input id="SplitScreenMode_ID" type="hidden" />
-									<li><a value="div1_1">1<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div2_2">4<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div6_1">6<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div8_1">8<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div3_3">9<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div4_4">16<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div5_5">25<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div7_7">49<span><script>T("Screen")</script></span></a></li>
-									<li><a value="div8_8">64<span><script>T("Screen")</script></span></a></li>
+									<input id="SplitScreenMode_ID" value="" type="hidden" />	
+									<li><input data="div1_1" value="1 Screen" /></li>
+									<li><input data="div2_2" value="4 Screen" /></li>
+									<li><input data="div6_1" value="6 Screen" /></li>
+									<li><input data="div8_1" value="8 Screen" /></li>
+									<li><input data="div3_3" value="9 Screen" /></li>
+									<li><input data="div4_4" value="16 Screen" /></li>
+									<li><input data="div5_5" value="25 Screen" /></li>
+									<li><input data="div7_7" value="49 Screen" /></li>
+									<li><input data="div8_8" value="64 Screen" /></li>
 								</ul>
 							</td>
 						</tr>
@@ -1627,18 +1631,18 @@
 							<td class="td1" style="text-align:right;"><script>T("Week")</script></td>
 							<td class="td2">
 								<div class="select" style="width:64px;">
-									<span id="week" value="0"><script>T("Monday")</script></span>
+									<input id="week" value="Monday" data="0" style="width:43px;" />
 									<a class="hover"></a>
 								</div>
 								<ul class="option week">
-									<li><a value="0"><script>T("Monday")</script></a></li>
-									<li><a value="1"><script>T("Tuesday")</script></a></li>
-									<li><a value="2"><script>T("Wednesday")</script></a></li>
-									<li><a value="3"><script>T("Thursday")</script></a></li>
-									<li><a value="4"><script>T("Friday")</script></a></li>
-									<li><a value="5"><script>T("Saturday")</script></a></li>
-									<li><a value="6"><script>T("Sunday")</script></a></li>
-									<li><a value="0,1,2,3,4,5,6"><script>T("Everyday")</script></a></li>
+									<li><input data="0" value="Monday"/></li>
+									<li><input data="1" value="Tuesday"/></li>
+									<li><input data="2" value="Wednesday"/></li>
+									<li><input data="3" value="Thursday"/></li>
+									<li><input data="4" value="Friday"/></li>
+									<li><input data="5" value="Saturday"/></li>
+									<li><input data="6" value="Sunday"/></li>
+									<li><input data="0,1,2,3,4,5,6" value="Everyday"/></li>
 								</ul>
 							</td>
 						</tr>
@@ -1659,15 +1663,11 @@
 							<td class="td1"><script>T("Copy_to")</script></td>
 							<td class="td2 copyTo">
 								<div class="select" style="width:133px;">
-										<span></span>
+										<input value="" data="" />
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><a class="all"><script>T("Select")</script></a></li>
-									<li><a></a></li>
-									<li><a></a></li>
-									<li><a></a></li>
-									<li><a></a></li>
+									<li><input class="all" value="Select"/></li>
 								</ul>
 							</td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
@@ -1716,13 +1716,13 @@
 										</td>
 									</tr>
 								</tbody>
-									<tr><td><input id="Storage_Settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label id="Storage_Settings_SelectAll"><script>T("Select")</script></label><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>	
+									<tr><td><input id="Storage_Settings_SelectAll" type="checkbox" /><label id="Storage_Settings_SelectAll"><script>T("Select")</script></label><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>	
 								</table>
 							</td>
 						</tr>
-						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
-						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:10px" /></td></tr>
-						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:10px" />MB</td></tr>
+						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
+						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:6px" /></td></tr>
+						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="SettingStorageParmData();" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
@@ -1811,17 +1811,17 @@
 					<td class="td1"><script>T("Device_Type")</script></td>
 					<td>
 						<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
-							<input style="width:100px;" value="DVR" data="DVR" />
+							<input style="width:100px;line-height:18px;" value="DVR" data="DVR" default/>
 							<a class="hover"></a>
 						</div>
 						<ul class="option" >
-							<li><input style="width:154px;" value="DVR" data="DVR" /></li>
-							<li><input style="width:154px;" value="NVR" data="NVR" /></li>
-							<li><input style="width:154px;" value="IPC" data="IPC" /></li>
+							<li style="width:154px;"><input value="DVR" data="DVR" default/></li>
+							<li style="width:154px;"><input value="NVR" data="NVR" default/></li>
+							<li style="width:154px;"><input value="IPC" data="IPC" default/></li>
 						</ul>
 					</td>
 				</tr>
-				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm" onclick=""><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 			</table>
 	</div>
 	<div id="area" class="menu">
@@ -1902,7 +1902,7 @@
 		<div style="padding:10px;">
 			<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 			<table style="margin:0 auto;">
-				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close" onclick="showdata('确认','confirm')"><script>T("Confirm")</script></div></td></tr>
+				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close" onclick="showdata('确认','confirm')"><script>T("Cancel")</script></div></td></tr>
 			</table>
 		</div>
 	</div>
@@ -1920,7 +1920,7 @@
 <script type="text/javascript" src="js/devicesetting/swfobject.js" ></script>
 <script type="text/javascript" src="js/devicesetting/base64.js"></script>
 <script type="text/javascript" src="js/devicesetting/xml2json.js"></script>
-<script type="text/javascript" src="js/devicesetting/ipc.js"></script>
+<!-- <script type="text/javascript" src="js/devicesetting/ipc.js"></script> -->
 <script type="text/javascript" src="js/devicesetting/dvr.js"></script>
 <script type="text/javascript" src="js/devicesetting/devSetPub.js"></script>
 <script type="text/javascript" src="js/devicesetting/ipc.class.js"></script>

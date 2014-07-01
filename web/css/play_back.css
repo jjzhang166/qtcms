@@ -207,7 +207,7 @@ h4{
 	background: url(../images/playback/select_bg.png) repeat-x; 
 	float: left;
 }
-.option li:hover{background: url(../images/playback/select_bg.png) repeat-x 0 -16px;}
+/* .option li:hover{background: url(../images/playback/select_bg.png) repeat-x 0 -16px;} */
 
 .option{
 	z-index: 1000; 

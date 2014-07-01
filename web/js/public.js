@@ -152,7 +152,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 					/*if(This.next('ul[action]')){
 						This.find('#'+This.next('ul[action]').attr('action')).val(value);
 					}*/
-					This.find('input:hidden').val($(this).attr('data'));
+					option.find('input:hidden[id]').dataIntoVal(data);
 				//}
 			})
 
@@ -256,8 +256,8 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				return $(this).val($(this).prop('checked'));
 			})
 		},
-		'dataIntoVal':function (val){ 
-			return $(this).val(val);
+		'dataIntoVal':function (val){
+			return $(this).val(val).attr('data',val);
 		},
 		'dataIntoHtml':function(val){ 
 			return $(this).html(val);
@@ -446,7 +446,7 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm').find('h4,span').html('');
-	$('#menusList div.menu').find('input.data')
+	$('#menusList div.menu').find('input.data').not('[default]')
 		.remove()
 		.end().find(':text').val('');
 		/*.end().end().each(function(){

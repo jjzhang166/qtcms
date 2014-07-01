@@ -262,6 +262,12 @@
 	'Open':'打开',
 	'Restore':'还原',
 	'Local_Settings':'本地设置',
+
+	//本地设置
+
+	'Operation_failed':'保存失败!',
+
+	
 	'Video_settings':'录像设置',
 	'Storage_Settings':'存储设置',
 	'Language':'语言',
@@ -365,6 +371,11 @@
 	'Fri':'五',
 	'Sat':'六',
 
+	//語言索引
+
+	'zh_CN':'中文',
+	'en_GB':'English',
+
 	//设备设置
 
 	'loading':'正在加载数据!',
@@ -376,5 +387,7 @@
 	'timeout':'连接超时,请检查网络,稍后再试!',
 	'error':'请求出现错误,稍后再试!',
 	'abort':'请求已经取消,稍后再试!',
-	'login_fail':'默认用户:admin,默认空密码.登陆失败! 请在右边设备列表中修改成正确的用户名和密码再试.'
+	'login_fail':'默认用户:admin,默认空密码.登陆失败! 请在右边设备列表中修改成正确的用户名和密码再试.',
+	'channelName_NOT_chinese':'通道名不支持中文',
+	'Incorrect_IP_format':'IP格式不正确!(例如:192.168.1.1)'
 }

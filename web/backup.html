@@ -306,11 +306,15 @@ var oPlayBack={},  // 远程回访控件对象
 	function getDirCallback(data){ 
 		now = 0;
 		path = data.path;
-		startDownload();
+		if(path != '')
+			startDownload();
 	}
 
 	function startDownload(){
 		var oList = $('#search_result input:checked');
+		if(oList.length == 0){
+			return;
+		}
 		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!');
 /*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
