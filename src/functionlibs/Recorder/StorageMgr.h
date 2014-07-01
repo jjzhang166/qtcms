@@ -2,12 +2,13 @@
 #include "IDisksSetting.h"
 #include <QStringList>
 #include <QMutex>
+#include <QtSql>
 
 class StorageMgr
 {
 	IDisksSetting* m_pDisksSetting;
-	char m_currdisk;
-	char m_usdisks[16];
+// 	char m_currdisk;
+// 	char m_usdisks[16];
 public:
 	StorageMgr(void);
 	~StorageMgr(void);
@@ -19,13 +20,34 @@ public:
 	bool freeDisk();
 	//
 
-	QString getFileSavePath(QString devname,int nChannelNum);
+	QString getFileSavePath(QString devname,int nChannelNum,int winId, int type, QTime &start);
 
 	bool GetDiskFreeSpaceEx(char* lpDirectoryName, quint64* lpFreeBytesAvailableToCaller, quint64* lpTotalNumberOfBytes, quint64* lpTotalNumberOfFreeBytes);
+
+	//database operate
+	void createTable();
+// 	int addRecord(QString sDevName, int chl, int winId, QString sDate, QString sStart, int type, QString sPath);
+	int updateRecord(QString sEnd, int size);
+private:
+	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate);
+	void deleteRecord(QString dbPath, QString date, QStringList filelist);
 private:
 	QString getUsableDisk();
 	void deleteOldDir(const QStringList& dirlist);
-	bool deleteDir(const QString& diskslist);
+// 	bool deleteDir(const QString& diskslist);
+	QStringList deleteFile(const QStringList& fileList);
+	QDate minDate(QList<QDate> dateList);
 	static QMutex m_sLock;
+
+	typedef struct _tagRecInfo{
+		QString dbPath;
+		QStringList fileLsit;
+	}RecInfo;
+
+	int m_insertId;
+	QString m_curDisk;
+	QString m_connectId;
+	QSqlDatabase *m_db;
+	static QMutex m_dblock;
 };
 

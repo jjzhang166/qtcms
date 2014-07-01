@@ -77,7 +77,13 @@ void PlayMgr::setCbTimeChange(pcbTimeChange pro, void* pUser)
 		m_pUser = pUser;
 	}
 }
-
+void PlayMgr::setFileInfo(QMap<QString, PeriodTime> fileInfoMap)
+{
+	if (!fileInfoMap.isEmpty())
+	{
+		m_filePeriodMap = fileInfoMap;
+	}
+}
 void PlayMgr::setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos, QVector<PeriodTime> &skipTime)
 {
 	if (fileList.isEmpty() || NULL == wnd)
@@ -98,46 +104,49 @@ void PlayMgr::setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start,
 void PlayMgr::run()
 {
 	QString filePath;
-	QString fileName;
-	QString fileDate;
-	QRegExp rx;
-	QDateTime fileStartTime;
+// 	QString fileName;
+// 	QString fileDate;
+// 	QRegExp rx;
+// 	QDateTime fileStartTime;
 	QDateTime currentPlayTime = m_startTime;
 //	QDateTime tempTime;
-	QDate date;
-	QTime time;
+// 	QDate date;
+// 	QTime time;
 //	bool isPlayInMid = false;
 	bool isFirstKeyFrame = false;
 	int timeOffset = 0;
 	int skipPos = 0;
 	unsigned int skipTime = 0;
+	unsigned int start = 0;
 
 	m_bPlaying = true;
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
 	{
 		//open file
 		filePath = m_lstfileList[i];
-		rx = QRegExp("([0-9]{4}-[0-9]{2}-[0-9]{2})");
-		if (-1 != rx.indexIn(filePath,0))
-		{
-			fileDate = rx.cap(1);
-		}
+// 		rx = QRegExp("([0-9]{4}-[0-9]{2}-[0-9]{2})");
+// 		if (-1 != rx.indexIn(filePath,0))
+// 		{
+// 			fileDate = rx.cap(1);
+// 		}
+// 
+// 		rx = QRegExp("([0-9]{6}).avi");
+// 		if (-1 != rx.indexIn(filePath, 0))
+// 		{
+// 			fileName = rx.cap(1);
+// 		}
+// 
+// 		//get start time from file path
+// 		date = QDate::fromString(fileDate, "yyyy-MM-dd");
+// 		time = QTime::fromString(fileName, "hhmmss");
+// 		fileStartTime.setDate(date);
+// 		fileStartTime.setTime(time);
 
-		rx = QRegExp("([0-9]{6}).avi");
-		if (-1 != rx.indexIn(filePath, 0))
-		{
-			fileName = rx.cap(1);
-		}
-
-		//get start time from file path
-		date = QDate::fromString(fileDate, "yyyy-MM-dd");
-		time = QTime::fromString(fileName, "hhmmss");
-		fileStartTime.setDate(date);
-		fileStartTime.setTime(time);
+		start = m_filePeriodMap.value(filePath).start;
 
 		while (skipPos < m_skipTime.size())
 		{
-			timeOffset = currentPlayTime.toTime_t() - fileStartTime.toTime_t();
+			timeOffset = currentPlayTime.toTime_t() - start;
 			if (timeOffset >= 0)
 			{
 				break;
@@ -145,9 +154,9 @@ void PlayMgr::run()
 			else
 			{
 				int waitSec = 0;
-				if (m_skipTime[skipPos].start > fileStartTime.toTime_t())
+				if (m_skipTime[skipPos].start > start)
 				{
-					waitSec = fileStartTime.toTime_t() - currentPlayTime.toTime_t();
+					waitSec = start - currentPlayTime.toTime_t();
 				}
 				else
 				{

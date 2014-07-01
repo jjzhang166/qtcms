@@ -151,6 +151,7 @@ void Recorder::run()
 	QVariantMap parm;
 	parm.insert("RecordState",true);
 	enventProcCall("RecordState",parm);
+	QTime start;
 
 	while (bThreadRunning)
 	{
@@ -170,22 +171,22 @@ void Recorder::run()
 		{
 		case 0:// prepare for new file
 			{
-				bool bRet = CreateSavePath(sSavePath);
-				if (!bRet)
-				{
-					/*msleep(1000);*/
-					m_dataRef.lock();
-					if (m_dataqueue.size()>0)
-					{
-						RecBufferNode NodeTemp=m_dataqueue.front();
-						delete []NodeTemp.Buffer;
-						NodeTemp.Buffer = NULL;
-						m_dataqueue.pop_front();
-					}
-					m_dataRef.unlock();
-					m_bFinish=true;
-					break;
-				}
+// 				bool bRet = CreateSavePath(sSavePath, start);
+// 				if (!bRet)
+// 				{
+// 					/*msleep(1000);*/
+// 					m_dataRef.lock();
+// 					if (m_dataqueue.size()>0)
+// 					{
+// 						RecBufferNode NodeTemp=m_dataqueue.front();
+// 						delete []NodeTemp.Buffer;
+// 						NodeTemp.Buffer = NULL;
+// 						m_dataqueue.pop_front();
+// 					}
+// 					m_dataRef.unlock();
+// 					m_bFinish=true;
+// 					break;
+// 				}
 
 				// Create save path
 
@@ -223,6 +224,8 @@ void Recorder::run()
 			break;
 		case 2://  write file head
 			{
+				//create file path
+				CreateSavePath(sSavePath, start);
 				QString sFilePathName = sSavePath;
 				QString sFileName;
 				m_dataRef.lock();
@@ -389,6 +392,8 @@ void Recorder::run()
 					qDebug()<<__FUNCTION__<<__LINE__<<"Close file";
 					AVI_close(AviFile);
 					AviFile = NULL;
+
+					m_StorageMgr.updateRecord(getFileEndTime(sSavePath, start), getFileSize(sSavePath));
 				}
 				if (m_bFinish)
 				{
@@ -426,9 +431,9 @@ void Recorder::cleardata()
 	m_dataRef.unlock();
 }
 
-bool Recorder::CreateSavePath(QString& sSavePath)
+bool Recorder::CreateSavePath(QString& sSavePath, QTime &start)
 {
-	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum);
+	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum, -1, 3, start);
 	return true;
 }
 
@@ -578,8 +583,43 @@ void Recorder::checkdiskfreesize()
 	}
 }
 
+QString Recorder::getFileEndTime( QString fileName, QTime start )
+{
+	avi_t *aviFile = AVI_open_input_file(fileName.toLatin1().data(), 1);
 
+	int	audioChunks = AVI_audio_chunks(aviFile);
+	int	audioRate = AVI_audio_rate(aviFile);
+	int	audioBlock = AVI_audio_size(aviFile, 0);
+	int aviFileLength = 0;
+	if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
+	{
+		aviFileLength = audioChunks*audioBlock/audioRate;
+	}
+	else
+	{
+		int totalFrames = AVI_video_frames(aviFile);
+		int frameRate = AVI_frame_rate(aviFile);
+		if (0 == totalFrames || 0 == frameRate)
+		{
+			QTime endTime(0, 0, 0);
+			return endTime.toString("hh:mm:ss");
+		}
+		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+	}
+	AVI_close(aviFile);
+	return start.addSecs(aviFileLength).toString("hh:mm:ss");
+}
 
+qint64 Recorder::getFileSize( QString fileName )
+{
+	QFile file(fileName);
+	if (file.exists())
+	{
+		return file.size();
+	}
+	else
+		return 0;
+}
 
 
 

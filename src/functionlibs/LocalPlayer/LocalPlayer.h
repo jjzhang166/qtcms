@@ -6,6 +6,7 @@
 #include <QtCore/QMutex>
 #include "IEventRegister.h"
 #include <QDebug>
+#include <QtSql>
 #include "ILocalRecordSearch.h"
 #include "IDisksSetting.h"
 #include "ILocalPlayer.h"
@@ -92,6 +93,9 @@ private:
 	uint m_skipTime;
 	uint m_lastPlayTime;
 	int m_callTimes;
+
+	QString m_connectId;
+	QSqlDatabase *m_db;
 };
 
 #endif // LOCALPLAYER_H

@@ -30,6 +30,7 @@ public:
 	PlayMgr(void);
 	~PlayMgr(void);
 	void setParamter(QStringList &fileList, QWidget* wnd, QDateTime &start, QDateTime &end, int &startPos, QVector<PeriodTime> &skipTime);
+	void setFileInfo(QMap<QString, PeriodTime> fileInfoMap);
 	void setPlaySpeed(int speedRate);
 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void pause(bool isPause);
@@ -69,6 +70,9 @@ private:
 	static bool m_bIsChange;
 	static void* m_who;
 	static IAudioPlayer* m_pAudioPlayer;
+
+	QMap<QString, PeriodTime> m_filePeriodMap;//record file path and start-end time
+
 
 	QMutex m_mutex;
 	QWaitCondition m_waitForPlay;

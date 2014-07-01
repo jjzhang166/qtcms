@@ -14,12 +14,21 @@ m_skipTime(86400),
 m_lastPlayTime(0),
 m_callTimes(0),
 m_bIsGroupPlaying(false),
+m_db(NULL),
 m_pCurView(NULL)
 {
 	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
 
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void**)&m_pDiskSetting);
 
+	QDateTime curTime = QDateTime::currentDateTime();
+	m_connectId = QString::number(curTime.toTime_t()) + QString::number((int)this);
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", m_connectId);
+	m_db = new QSqlDatabase(db);
+	if (NULL == m_db)
+	{
+		qDebug()<<"init database failed!";
+	}
 }
 
 LocalPlayer::~LocalPlayer()
@@ -40,6 +49,14 @@ LocalPlayer::~LocalPlayer()
 		}
 	}
 	m_GroupMap.clear();
+
+	if (NULL != m_db && m_db->isOpen())
+	{
+		m_db->close();
+		delete m_db;
+		m_db = NULL;
+		QSqlDatabase::removeDatabase(m_connectId);
+	}
 }
 
 int LocalPlayer::checkUsedDisk(QString &strDisk)
@@ -72,28 +89,53 @@ int LocalPlayer::searchDateByDeviceName(const QString& sdevname)
 	}
 
 	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
-	for (int i = 0; i < sltUsedDisk.size(); i++)
+// 	for (int i = 0; i < sltUsedDisk.size(); i++)
+// 	{
+// 		QString rootDir = QString(sltUsedDisk[i] + ":/REC/");
+// 		QDir dir = QDir(rootDir);
+// 		dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+// 
+// 		QStringList sltSubDir = dir.entryList();
+// 		for (int j = 0; j < sltSubDir.size(); j++)
+// 		{
+// 			QString strSubDir = rootDir + sltSubDir[j] + "/";
+// 			QDir subDir = QDir(strSubDir);
+// 			QStringList sltSubSubDir = subDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+// 			if (sltSubSubDir.contains(sdevname))
+// 			{
+// 				QDateTime dateTime = QDateTime::fromString(sltSubDir[j], "yyyy-MM-dd");
+// 				QVariantMap dateInfo;
+// 
+// 				dateInfo.insert("devname", sdevname);
+// 				dateInfo.insert("date", dateTime);
+// 
+// 				eventProcCall(QString("GetRecordDate"), dateInfo);
+// 			}
+// 		}
+// 	}
+
+	foreach(QString disk, sltUsedDisk)
 	{
-		QString rootDir = QString(sltUsedDisk[i] + ":/REC/");
-		QDir dir = QDir(rootDir);
-		dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-
-		QStringList sltSubDir = dir.entryList();
-		for (int j = 0; j < sltSubDir.size(); j++)
+		QString dbPath = disk + ":/REC/record.db";
+		m_db->setDatabaseName(dbPath);
+		if (!m_db->open())
 		{
-			QString strSubDir = rootDir + sltSubDir[j] + "/";
-			QDir subDir = QDir(strSubDir);
-			QStringList sltSubSubDir = subDir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-			if (sltSubSubDir.contains(sdevname))
-			{
-				QDateTime dateTime = QDateTime::fromString(sltSubDir[j], "yyyy-MM-dd");
-				QVariantMap dateInfo;
+			qDebug()<<"open " + dbPath + "failed!";
+			continue;
+		}
+		QSqlQuery _query(*m_db);
+		QString sqlCommand = QString("select dev_name, date from local_record where dev_name = '%1'").arg(sdevname);
+		_query.exec(sqlCommand);
+		while(_query.next())
+		{
+			QDate date = _query.value(1).toDate();
+			QDateTime dateTime;
+			dateTime.setDate(date);
 
-				dateInfo.insert("devname", sdevname);
-				dateInfo.insert("date", dateTime);
-
-				eventProcCall(QString("GetRecordDate"), dateInfo);
-			}
+			QVariantMap dateInfo;
+			dateInfo.insert("devname", sdevname);
+			dateInfo.insert("date", dateTime);
+			eventProcCall(QString("GetRecordDate"), dateInfo);
 		}
 	}
 
@@ -171,16 +213,16 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 	{
 		return ILocalRecordSearch::E_PARAMETER_ERROR;
 	}
-	QDateTime date = QDateTime::fromString(sdate,"yyyy-MM-dd");
+	QDate date = QDate::fromString(sdate,"yyyy-MM-dd");
 	QTime timeStart = QTime::fromString(sbegintime,"hh:mm:ss");
 	QTime timeEnd = QTime::fromString(sendtime,"hh:mm:ss");
-	int aviFileLength = 0;
-	int totalFrames = 0;
-	int frameRate = 0;
-	int audioChunks = 0;
-	int audioRate = 0;
-	int audioBlock = 0;
-	avi_t *aviFile = NULL;
+// 	int aviFileLength = 0;
+// 	int totalFrames = 0;
+// 	int frameRate = 0;
+// 	int audioChunks = 0;
+// 	int audioRate = 0;
+// 	int audioBlock = 0;
+// 	avi_t *aviFile = NULL;
 
 	if (!date.isValid() || !timeStart.isValid() || !timeEnd.isValid())
 	{
@@ -198,86 +240,145 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 		return ILocalRecordSearch::E_SYSTEM_FAILED;
 	}
 
-	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
-	QStringList sltChannels = schannellist.split(";", QString::SkipEmptyParts);
-	for (int i = 0; i < sltUsedDisk.size(); i++)
+	if (!m_filePeriodMap.isEmpty())
 	{
-		QString root = sltUsedDisk[i] + ":/REC/" + sdate + "/" + sdevname;
-		for (int j = 0; j < sltChannels.size(); j++)
-		{
-			QString channel = sltChannels[j].toInt() > 9 ? sltChannels[j] : "0" + sltChannels[j];
-			QString channelPath = "/CHL" + channel;
-			QString subPath = root + channelPath;
-			QDir subDir = QString(subPath);
-			QFileInfoList sltFileList = subDir.entryInfoList(QDir::Files);
-			for (int k = 0; k < sltFileList.size(); k++)
-			{
-				QString fileName = sltFileList[k].fileName();
-				QTime fileTime = QTime::fromString(fileName.left(6), "hhmmss");
-				date.setTime(fileTime);
-				if (fileTime >= timeStart && fileTime <= timeEnd)
-				{
-					QString filePath = subPath + "/" + fileName;
-					qint64 fileSize = sltFileList[k].size()/1024/1024;
-					if (0 == sltFileList[k].size())
-					{
-						continue;
-					}
-
-					QDateTime endTime;
-					bool fileExit = false;
-					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 1);
-
-					unsigned long ticket = 0;
-					AVI_get_ticket(aviFile, &ticket);
-					if (!(ticket > 0 && (fileExit = checkFileFromLong(subPath, ticket, endTime))))
-					{
-						audioChunks = AVI_audio_chunks(aviFile);
-						audioRate = AVI_audio_rate(aviFile);
-						audioBlock = AVI_audio_size(aviFile, 0);
-						if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
-						{
-							aviFileLength = audioChunks*audioBlock/audioRate;
-						}
-						else
-						{
-							totalFrames = AVI_video_frames(aviFile);
-							frameRate = AVI_frame_rate(aviFile);
-							if (0 == totalFrames || 0 == frameRate)
-							{
-								continue;
-							}
-							aviFileLength = totalFrames/frameRate;//the length of avi file playing time
-						}			
-					}
-
-					AVI_close(aviFile);
-
-					QVariantMap fileInfo;
-					fileInfo.insert("filename", fileName);
-					fileInfo.insert("filepath", filePath);
-					fileInfo.insert("filesize", QString("%1").arg(fileSize));
-					fileInfo.insert("channelnum", sltChannels[j]);
-					fileInfo.insert("startTime", date);
-					if (fileExit)
-					{
-						fileInfo.insert("stopTime", endTime);
-					}
-					else
-					{
-						fileInfo.insert("stopTime", date.addSecs(aviFileLength));
-					}
-
-					PeriodTime item;
-					item.start = fileInfo.value("startTime").toDateTime().toTime_t();
-					item.end = fileInfo.value("stopTime").toDateTime().toTime_t();
-					m_filePeriodMap.insert(filePath, item);
-
-					eventProcCall(QString("GetRecordFile"), fileInfo);
-				}
-			}
-		}
+		m_filePeriodMap.clear();
 	}
+
+	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
+// 	QStringList sltChannels = schannellist.split(";", QString::SkipEmptyParts);
+// 	for (int i = 0; i < sltUsedDisk.size(); i++)
+// 	{
+// 		QString root = sltUsedDisk[i] + ":/REC/" + sdate + "/" + sdevname;
+// 		for (int j = 0; j < sltChannels.size(); j++)
+// 		{
+// 			QString channel = sltChannels[j].toInt() > 9 ? sltChannels[j] : "0" + sltChannels[j];
+// 			QString channelPath = "/CHL" + channel;
+// 			QString subPath = root + channelPath;
+// 			QDir subDir = QString(subPath);
+// 			QFileInfoList sltFileList = subDir.entryInfoList(QDir::Files);
+// 			for (int k = 0; k < sltFileList.size(); k++)
+// 			{
+// 				QString fileName = sltFileList[k].fileName();
+// 				QTime fileTime = QTime::fromString(fileName.left(6), "hhmmss");
+// 				date.setTime(fileTime);
+// 				if (fileTime >= timeStart && fileTime <= timeEnd)
+// 				{
+// 					QString filePath = subPath + "/" + fileName;
+// 					qint64 fileSize = sltFileList[k].size()/1024/1024;
+// 					if (0 == sltFileList[k].size())
+// 					{
+// 						continue;
+// 					}
+// 
+// 					QDateTime endTime;
+// 					bool fileExit = false;
+// 					aviFile = AVI_open_input_file(filePath.toLatin1().data(), 1);
+// 
+// 					unsigned long ticket = 0;
+// 					AVI_get_ticket(aviFile, &ticket);
+// 					if (!(ticket > 0 && (fileExit = checkFileFromLong(subPath, ticket, endTime))))
+// 					{
+// 						audioChunks = AVI_audio_chunks(aviFile);
+// 						audioRate = AVI_audio_rate(aviFile);
+// 						audioBlock = AVI_audio_size(aviFile, 0);
+// 						if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
+// 						{
+// 							aviFileLength = audioChunks*audioBlock/audioRate;
+// 						}
+// 						else
+// 						{
+// 							totalFrames = AVI_video_frames(aviFile);
+// 							frameRate = AVI_frame_rate(aviFile);
+// 							if (0 == totalFrames || 0 == frameRate)
+// 							{
+// 								continue;
+// 							}
+// 							aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+// 						}			
+// 					}
+// 
+// 					AVI_close(aviFile);
+// 
+// 					QVariantMap fileInfo;
+// 					fileInfo.insert("filename", fileName);
+// 					fileInfo.insert("filepath", filePath);
+// 					fileInfo.insert("filesize", QString("%1").arg(fileSize));
+// 					fileInfo.insert("channelnum", sltChannels[j]);
+// 					fileInfo.insert("startTime", date);
+// 					if (fileExit)
+// 					{
+// 						fileInfo.insert("stopTime", endTime);
+// 					}
+// 					else
+// 					{
+// 						fileInfo.insert("stopTime", date.addSecs(aviFileLength));
+// 					}
+// 
+// 					PeriodTime item;
+// 					item.start = fileInfo.value("startTime").toDateTime().toTime_t();
+// 					item.end = fileInfo.value("stopTime").toDateTime().toTime_t();
+// 					m_filePeriodMap.insert(filePath, item);
+// 
+// 					eventProcCall(QString("GetRecordFile"), fileInfo);
+// 				}
+// 			}
+// 		}
+// 	}
+
+	QString chllist = schannellist.left(schannellist.size() - 1);
+	QString sqlChl = "dev_chl=" + chllist.replace(";", " or dev_chl=");
+	QString sqlCommand = QString("select dev_chl, start_time, end_time, file_size, path from local_record where dev_name='%1' and date='%2' and start_time >='%3' and end_time<='%4' and (%5) order by start_time").arg(sdevname).arg(sdate).arg(sbegintime).arg(sendtime).arg(sqlChl);
+
+	foreach(QString disk, sltUsedDisk)
+	{
+		QString dbPath = disk + ":/REC/record.db";
+		m_db->setDatabaseName(dbPath);
+		if (!m_db->open())
+		{
+			qDebug()<<"open " + dbPath + "failed!";
+			continue;
+		}
+		QSqlQuery _query(*m_db);
+		_query.exec(sqlCommand);
+		while (_query.next())
+		{
+			QString chl = _query.value(0).toString();
+			QTime start = _query.value(1).toTime();
+			QTime end = _query.value(2).toTime();
+			QString size = _query.value(3).toString();
+			QString path = _query.value(4).toString();
+
+			QDateTime startTime;
+			startTime.setDate(date);
+			startTime.setTime(start);
+			QDateTime endTime;
+			endTime.setDate(date);
+			endTime.setTime(end);
+			if (startTime >= endTime || size.toInt() <=0)
+			{
+				continue;
+			}
+
+			PeriodTime item;
+			item.start = startTime.toTime_t();
+			item.end = endTime.toTime_t();
+			m_filePeriodMap.insert(path, item);
+
+			QVariantMap fileInfo;
+			fileInfo.insert("filename", path.right(path.size() - path.lastIndexOf("/") - 1));
+			fileInfo.insert("filepath", path);
+			fileInfo.insert("filesize", size);
+			fileInfo.insert("channelnum", chl);
+			fileInfo.insert("startTime", startTime);
+			fileInfo.insert("stopTime", endTime);
+
+			eventProcCall(QString("GetRecordFile"), fileInfo);
+		}
+
+		m_db->close();
+	}
+
 
 	QVariantMap stopInfo;
 	stopInfo.insert("stopevent", QString("GetRecordFile"));
@@ -390,11 +491,11 @@ int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,co
 	{
 		return 3;
 	}
-	//fileList has different channel
-	if (!checkChannelInFileList(filelist))
-	{
-		return 3;
-	}
+// 	//fileList has different channel
+// 	if (!checkChannelInFileList(filelist))
+// 	{
+// 		return 3;
+// 	}
 	//group full
 	if (m_GroupMap.size() >= m_nGroupNum)
 	{
@@ -560,6 +661,7 @@ int LocalPlayer::GroupPlay()
 		}
 		iter->pPlayMgr->setCbTimeChange(cbTimeChange, this);
 		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos, iter->skipTime);
+		iter->pPlayMgr->setFileInfo(m_filePeriodMap);
 		if (iter->pPlayMgr->isRunning())
 		{
 			iter->pPlayMgr->quit();
