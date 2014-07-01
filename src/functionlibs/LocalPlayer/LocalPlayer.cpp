@@ -50,13 +50,10 @@ LocalPlayer::~LocalPlayer()
 	}
 	m_GroupMap.clear();
 
-	if (NULL != m_db && m_db->isOpen())
-	{
-		m_db->close();
-		delete m_db;
-		m_db = NULL;
-		QSqlDatabase::removeDatabase(m_connectId);
-	}
+	m_db->close();
+	delete m_db;
+	m_db = NULL;
+	QSqlDatabase::removeDatabase(m_connectId);
 }
 
 int LocalPlayer::checkUsedDisk(QString &strDisk)

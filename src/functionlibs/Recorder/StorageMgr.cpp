@@ -41,15 +41,12 @@ StorageMgr::~StorageMgr(void)
 		m_pDisksSetting->Release();
 	}
 
-	if (NULL != m_db && m_db->isOpen())
-	{
-		m_dblock.lock();
-		m_db->close();
-		delete m_db;
-		m_db = NULL;
-		QSqlDatabase::removeDatabase(m_connectId);
-		m_dblock.unlock();
-	}
+	m_dblock.lock();
+	m_db->close();
+	delete m_db;
+	m_db = NULL;
+	QSqlDatabase::removeDatabase(m_connectId);
+	m_dblock.unlock();
 }
 
 int StorageMgr::getFilePackageSize()
@@ -368,8 +365,7 @@ void StorageMgr::deleteOldDir(const QStringList& diskslist)
 			QStringList list = findEarlestRecord(path, date);
 			if (list.isEmpty())
 			{
-				m_dblock.unlock();
-				return;//open database failed or no record in database
+				continue;//open database failed or no record in database
 			}
 			RecInfo re;
 			re.dbPath = path;
