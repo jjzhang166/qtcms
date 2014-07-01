@@ -661,8 +661,7 @@ void settingsActivity::OnModifyDevice()
 			return;
 		}
 	}
-
-	QVariant sUsername=QueryValue("userName_ID");
+	QVariant sUsername=QueryValue("username_ID");
 	QVariant sPassword=QueryValue("password_ID");
 	if(false==sUsername.isNull()){
 		int nRet_int=Idevice->ModifyDeviceAuthority(Dev_Id.toInt(),sUsername.toString(),sPassword.toString());
