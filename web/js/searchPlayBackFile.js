@@ -100,7 +100,7 @@
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
-			console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
+			//console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
 			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
 				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}
@@ -134,7 +134,7 @@
 		//console.log(data);
 		recTotal = data.total ? data.total : 0;	
 		
-		recTotal == 0 && showRecProgress(recTotal);		
+		/*recTotal == 0 && */showRecProgress(recTotal);		
 	}
 
 	function initrecFileOcx(obj){
