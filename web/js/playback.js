@@ -337,8 +337,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function Deleteduplicate(data){
 		var maxChl = 0;
 		for(i in data){
-			var nowchl = $.parseJSON(data[i]).channelnum;
+			var nowchl = parseInt($.parseJSON(data[i]).channelnum);
 			maxChl = maxChl > nowchl ? maxChl : nowchl;
+
 		}
 		var file = [];
 		for(i=1;i<=maxChl;i++){  //按通道分类文件

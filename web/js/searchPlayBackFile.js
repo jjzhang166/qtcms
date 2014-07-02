@@ -174,7 +174,7 @@
 
 	function TypeDes(a,b){
 		return b.types - a.types;
-	}
+	}				
 	/*排序方法	*/	
 
 	$(function(){
