@@ -383,7 +383,34 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 
 	return ILocalRecordSearch::OK;
 }
-
+QStringList LocalPlayer::sortFileList(QStringList const fileList)
+{
+	QStringList sortList;
+	if (fileList.isEmpty())
+	{
+		return sortList;
+	}
+	sortList = fileList;
+	for (int i = 0; i < sortList.size() - 1; i++)
+	{
+		uint minTime = m_filePeriodMap.value(sortList.at(i)).start;
+		int minPos = i;
+		for (int j = 1; j <= sortList.size() - 1 - i; j++)
+		{
+			uint time = m_filePeriodMap.value(sortList.at(j)).start;
+			if (time < minTime)
+			{
+				minTime = time;
+				minPos = j;
+			}
+		}
+		if (i != minPos)
+		{
+			sortList.swap(i, minPos);
+		}
+	}
+	return sortList;
+}
 int LocalPlayer::checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec)
 {
 	QString filePath;
@@ -503,9 +530,12 @@ int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,co
 	{
 		return 2;
 	}
+	//sort file list
+	QStringList sortList = sortFileList(filelist);
+
 	QVector<PeriodTime> vecPerTime;
 	//there is no file between start time and end time
-	int startPos = checkFileExist(filelist, start, end, vecPerTime);
+	int startPos = checkFileExist(sortList, start, end, vecPerTime);
 	if (-1 == startPos)
 	{
 		return 3;
@@ -513,7 +543,7 @@ int LocalPlayer::AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,co
 
 	PrePlay prePlay;
 	prePlay.pPlayMgr = new PlayMgr();
-	prePlay.fileList = filelist;
+	prePlay.fileList = sortList;
 	prePlay.startTime = start;
 	prePlay.endTime = end;
 	prePlay.startPos = startPos;

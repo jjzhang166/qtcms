@@ -70,7 +70,7 @@ private:
 	bool checkChannelInFileList(QStringList const filelist);
 	int countSkipTime();
 	bool checkFileFromLong(QString path, unsigned long &tick, QDateTime & endTime);
-
+	QStringList sortFileList(QStringList const fileList);
 private:
 	int m_nRef;
 	QMutex m_csRef;
