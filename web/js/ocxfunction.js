@@ -5,9 +5,10 @@ var oCommonLibrary;
 
 		$('ul.filetree').treeview();
 		//多语言提示转换
-		$('li[title],div[title],a[title],span[title],input').each(function(){
+		$('li[title],div[title],a[title],span[title]').each(function(){
 			$(this).attr('title',lang[$(this).attr('title')])
 		})
+		_t($('input:text'));
 	})
 	function refresh(data){ 
 		window.initOxcDevListStatus();

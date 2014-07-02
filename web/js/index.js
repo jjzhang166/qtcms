@@ -246,9 +246,11 @@ var oPreView,oDiv,
 			str = lang.All_channelsare_open_under_the_current_list;
 		}else{
 
-			$('div.dev_list:visible span.channel[wind]').each(function(){
+			oPreView.CloseAll();
+
+			/*$('div.dev_list:visible span.channel[wind]').each(function(){
 				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
-			})
+			})*/
 			str = lang.The_current_list_of_all_channels_are_closed_under
 		}
 		writeActionLog(str);

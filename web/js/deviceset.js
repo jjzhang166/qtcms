@@ -315,9 +315,6 @@ var oSearchOcx,
 			$(this).SynchekboxClick();
 		})
 
-		//部分词条翻译
-		_t($('input:text'));
-
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -1217,17 +1214,4 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		}else{
 			oSearchOcx.Stop();
 		}
-	}
-
-	function _t(obj){
-		obj.each(function(){
-			var val = $(this).val(),
-				str = lang[val] || val;
-			if(val.indexOf('Screen') != -1){
-				var t = val.split(' ');
-				str = lang[t[1]] ? t[0]+lang[t[1]] : str;
-			}
-
-			$(this).val(str);
-		})
 	}

@@ -246,6 +246,8 @@ function disable(warp,str){
 	var oInput = $('#set_content div.ipc_list:visible [data-WARP="'+warp+'"]').find('input:text,input:password');
 
 	str ? oInput.prop('disabled',str) : oInput.removeProp('disabled');
+	 $('#set_content div.ipc_list:visible div.select').find('input').prop('disabled',true)
+	 												  .end().netx('ul.option').find('input').prop('disabled',true);
 	
 }
 

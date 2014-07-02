@@ -569,3 +569,17 @@ function theadtbody(t1,t2){
 		t2.eq(index).width($(this).width());
 	})
 }
+
+//input  值翻译
+function _t(obj){
+	obj.each(function(){
+		var val = $(this).val(),
+			str = lang[val] || val;
+		if(val.indexOf('Screen') != -1){
+			var t = val.split(' ');
+			str = lang[t[1]] ? t[0]+lang[t[1]] : str;
+		}
+
+		$(this).val(str);
+	})
+}
