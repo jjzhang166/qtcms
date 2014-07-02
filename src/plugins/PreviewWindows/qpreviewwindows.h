@@ -58,7 +58,6 @@ public slots:
 	int SetDevChannelInfo(unsigned int uiWndIndex,int ChannelId);
 
 	int CloseWndCamera(unsigned int uiWndIndex);
-
 	int GetWindowConnectionStatus(unsigned int uiWndIndex);
 	QVariantMap GetWindowInfo(unsigned int uiWndIndex);
 

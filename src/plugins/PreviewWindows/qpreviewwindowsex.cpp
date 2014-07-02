@@ -441,3 +441,12 @@ int qpreviewwindowsex::ClosePTZ( int nCmd )
 	return m_sPreviewWnd[m_nCurrentWnd].closePTZ(nCmd);
 }
 
+int qpreviewwindowsex::CloseAll()
+{
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].closePreview();
+	}
+	return 0;
+}
+

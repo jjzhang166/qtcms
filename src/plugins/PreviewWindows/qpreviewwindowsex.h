@@ -50,6 +50,7 @@ public slots:
 		,const QString & sVendor);
 	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
 	int CloseWndCamera(unsigned int uiWndIndex);
+	int CloseAll();
 	//切换码流
 	int SwithStream(unsigned int uiWndIndex,int chlId);
 	//设置窗口的设备信息 	

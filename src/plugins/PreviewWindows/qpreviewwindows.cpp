@@ -558,3 +558,4 @@ int QPreviewWindows::ModifyPassword( const QString &sUsername, const QString &sO
 
 	return nRet;
 }
+
