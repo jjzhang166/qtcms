@@ -30,7 +30,7 @@ m_bcheckdiskfreesize(false)
 	m_eventList<<"RecordState";
 	connect(&m_checkdisksize, SIGNAL(timeout()), this, SLOT(checkdiskfreesize()));
 	connect(&m_checkIsBlock,SIGNAL(timeout()),this,SLOT(checkIsBlock()));
-	m_checkdisksize.start(1000);
+	connect(this,SIGNAL(sgBackToMainThread(QVariantMap)),this,SLOT(slBackToMainThread(QVariantMap)));
 	m_checkIsBlock.start(3000);
 }
 
@@ -47,7 +47,7 @@ Recorder::~Recorder()
 		}
 	}
 	cleardata();
-	m_checkdisksize.stop();
+	/*m_checkdisksize.stop();*/
 	m_checkIsBlock.stop();
 }
 
@@ -168,6 +168,9 @@ void Recorder::run()
 	parm.insert("RecordState",true);
 	enventProcCall("RecordState",parm);
 	QTime start;
+	QVariantMap vCheckDisk;
+	vCheckDisk.insert("checkdiskfreesize",true);
+	emit sgBackToMainThread(vCheckDisk);
 	while(bThreadRunning){
 		if (m_dataqueue.size()<2||nSleepTime>100)
 		{
@@ -547,6 +550,9 @@ void Recorder::run()
 			   break;
 		}
 	}
+	vCheckDisk.clear();
+	vCheckDisk.insert("checkdiskfreesize",false);
+	emit sgBackToMainThread(vCheckDisk);
 	m_bFinish = true;
 	parm.clear();
 	parm.insert("RecordState",false);
@@ -993,12 +999,6 @@ void Recorder::enventProcCall( QString sEvent,QVariantMap parm )
 void Recorder::checkdiskfreesize()
 {
 	m_bcheckdiskfreesize=true;
-	if (!QThread::isRunning())
-	{
-		m_checkdisksize.stop();
-	}else{
-		//keep going
-	}
 }
 QString Recorder::getFileEndTime( QString fileName, QTime start )
 {
@@ -1082,6 +1082,19 @@ void Recorder::checkIsBlock()
 		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
 	}else{
 		//do nothing
+	}
+}
+
+void Recorder::slBackToMainThread( QVariantMap evMap )
+{
+	if (evMap.contains("checkdiskfreesize"))
+	{
+		if (evMap.value("checkdiskfreesize").toBool())
+		{
+			m_checkdisksize.start(2000);
+		}else{
+			m_checkdisksize.stop();
+		}
 	}
 }
 

@@ -122,6 +122,7 @@ private:
 	bool openPTZ();
 	bool closePTZ();
 	void backToMainThread(QVariantMap evMap);
+	void sleepEx(int time);
 	
 public slots:
 	void slstopPreviewrun();
@@ -180,5 +181,6 @@ private:
 	volatile bool m_bIsBlock;
 	int m_nPosition;
 	Qt::HANDLE m_hMainThread;
+	int m_nSleepSwitch;
 };
   

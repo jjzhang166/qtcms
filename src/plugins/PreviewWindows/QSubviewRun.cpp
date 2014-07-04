@@ -1,4 +1,5 @@
 #include "QSubviewRun.h"
+#include <QEventLoop>
 
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
@@ -29,7 +30,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_sampleWidth(0),
 	m_sampleRate(0),
 	m_nInitHeight(0),
-	m_nInitWidth(0)
+	m_nInitWidth(0),
+	m_nSleepSwitch(0)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
@@ -53,6 +55,7 @@ QSubviewRun::~QSubviewRun(void)
 	}
 	int n=0;
 	while(QThread::isRunning()){
+		//sleepEx(2);
 		msleep(10);
 		n++;
 		if (n>500&&n%100==0)
@@ -66,7 +69,6 @@ QSubviewRun::~QSubviewRun(void)
 void QSubviewRun::run()
 {
 	//此函数内生成的资源，必须仅在此函数内销毁
-	
 	m_stop=false;
 	m_bIsRecord=false;
 	m_bIsAutoRecording=false;
@@ -81,7 +83,8 @@ void QSubviewRun::run()
 		{
 			nstep=m_stepCode.dequeue();
 		}else{
-			msleep(10);
+			sleepEx(10);
+			/*msleep(10);*/
 			nstep=DEFAULT;
 		}
 		if (m_stop)
@@ -362,7 +365,8 @@ void QSubviewRun::run()
 					slstopPreview();
 					int ncount=0;
 					while(m_bClosePreview==true){
-						msleep(10);
+						sleepEx(10);
+						/*msleep(10);*/
 						ncount++;
 						if (ncount>500&&ncount%100==0)
 						{
@@ -384,7 +388,8 @@ void QSubviewRun::run()
 					nCount++;
 					if (nCount<nTime&&m_stop==false)
 					{
-						msleep(10);
+						sleepEx(10);
+						/*msleep(10);*/
 					}else{
 						if (m_stop==true)
 						{
@@ -560,7 +565,8 @@ void QSubviewRun::run()
 				m_bIsBlock=false;
 				int ncount=0;
 				while(m_bClosePreview==true){
-					msleep(10);
+					sleepEx(10);
+					/*msleep(10);*/
 					ncount++;
 					if (ncount>500&&ncount%100==0)
 					{
@@ -1619,6 +1625,21 @@ void QSubviewRun::backToMainThread( QVariantMap evMap )
 	}else{
 		emit sgbackToMainThread(evMap);
 	}
+}
+
+void QSubviewRun::sleepEx( int time )
+{
+	if (m_nSleepSwitch<60)
+	{
+		msleep(time);
+		m_nSleepSwitch++;
+	}else{
+		QEventLoop eventloop;
+		QTimer::singleShot(time, &eventloop, SLOT(quit()));
+		eventloop.exec();
+		m_nSleepSwitch=0;
+	}
+	return;
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

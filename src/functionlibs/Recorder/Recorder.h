@@ -75,7 +75,10 @@ public:
 		int samplewidth;
 		char encode[8];
 	}RecBufferNode;
-
+private slots:
+	void slBackToMainThread(QVariantMap evMap);
+signals:
+	void sgBackToMainThread(QVariantMap evMap);
 public slots:
 	void checkdiskfreesize();
 	void checkIsBlock();
