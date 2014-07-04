@@ -22,18 +22,33 @@ Recorder::Recorder() :
 m_nRef(0),
 m_channelnum(1),
 m_bFinish(true),
+m_bIsblock(false),
 m_bcheckdiskfreesize(false)
 {
 	m_nFrameCount = 0;
 	m_nLastTicket = 0;
 	m_eventList<<"RecordState";
+	connect(&m_checkdisksize, SIGNAL(timeout()), this, SLOT(checkdiskfreesize()));
+	connect(&m_checkIsBlock,SIGNAL(timeout()),this,SLOT(checkIsBlock()));
+	m_checkdisksize.start(1000);
+	m_checkIsBlock.start(3000);
 }
 
 Recorder::~Recorder()
 {
 	m_bFinish = true;
-	wait();
+	int nCount=0;
+	while(QThread::isRunning()){
+		msleep(10);
+		nCount++;
+		if (nCount>500&&nCount%100==0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"there must exist some error ,thread block at :"<<m_nPosition;
+		}
+	}
 	cleardata();
+	m_checkdisksize.stop();
+	m_checkIsBlock.stop();
 }
 
 int Recorder::Start()
@@ -42,16 +57,19 @@ int Recorder::Start()
 	{
 		m_bFinish = false;
 		start();
-		connect(&m_checkdisksize, SIGNAL(timeout()), this, SLOT(checkdiskfreesize()));
-		m_checkdisksize.start(1000);
 	}
 	return IRecorder::OK;
 }
 int Recorder::Stop()
 {
-	m_bFinish = true;
-	wait();
-	cleardata();
+	if (QThread::isRunning())
+	{
+		m_bFinish = true;
+	}else{
+		//do nothing
+		cleardata();
+	}
+	
 	return IRecorder::OK;
 }
 int Recorder::InputFrame(QVariantMap& frameinfo)
@@ -138,287 +156,690 @@ int Recorder::SetDevInfo(const QString& devname,int nChannelNum)
 void Recorder::run()
 {
 	QString sSavePath;
-	int nRecStep = 0;
-	unsigned int startTick = 0;
-	unsigned int endTick = 0;
-	QString lastFileName;
+	int nRecStep=INIT;
 	avi_t * AviFile = NULL;
 	int nSleepTime=0;
 	int nLoopCount = 0;
-	bool bAudioBeSet;
+	int nFileMaxSize=124;
+	quint64 qDiskReservedSize=1024;
+	bool bAudioBeSet=false;
 	bool bThreadRunning = true;
-	bool bFileStart = false;
 	QVariantMap parm;
 	parm.insert("RecordState",true);
 	enventProcCall("RecordState",parm);
 	QTime start;
-
-	while (bThreadRunning)
-	{
-		if (m_dataqueue.size()<1||nSleepTime>10)
+	while(bThreadRunning){
+		if (m_dataqueue.size()<2||nSleepTime>100)
 		{
 			msleep(10);
 			nSleepTime=0;
 		}
 		nSleepTime++;
-		if (m_bFinish)
-		{
-			nRecStep = 5;
-		}
 
-
-		switch(nRecStep)
-		{
-		case 0:// prepare for new file
+		switch(nRecStep){
+		case INIT:{
+			//新文件的各项参数初始化
+			nFileMaxSize=m_StorageMgr.getFilePackageSize();
+			qDiskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
+			bAudioBeSet=false;
+			m_dataRef.lock();
+			memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
+			m_nFrameCount=0;
+			m_nLastTicket=0;
+			m_lnFirstPts=0;
+			m_lnLastPts=0;
+			m_dataRef.unlock();
+			if (m_bFinish)
 			{
-// 				bool bRet = CreateSavePath(sSavePath, start);
-// 				if (!bRet)
-// 				{
-// 					/*msleep(1000);*/
-// 					m_dataRef.lock();
-// 					if (m_dataqueue.size()>0)
-// 					{
-// 						RecBufferNode NodeTemp=m_dataqueue.front();
-// 						delete []NodeTemp.Buffer;
-// 						NodeTemp.Buffer = NULL;
-// 						m_dataqueue.pop_front();
-// 					}
-// 					m_dataRef.unlock();
-// 					m_bFinish=true;
-// 					break;
-// 				}
-
-				// Create save path
-
-				bAudioBeSet = false;
-
-				memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
-				m_nFrameCount = 0;
-				m_nLastTicket = 0;
-				nRecStep = 1;
+				nRecStep=END;
+			}else{
+				nRecStep=FRIST_I_FRAME;
 			}
-			break;
-		case 1:// wait for an I frame
+			   }
+			   break;
+		case FRIST_I_FRAME:{
+			//等待第一个I帧
+			m_dataRef.lock();
+			if (m_dataqueue.size()>0)
 			{
-				m_dataRef.lock();
-				if (m_dataqueue.size() > 0)
+				RecBufferNode nodeTemp=m_dataqueue.front();
+				if (AVENC_IDR==nodeTemp.dwDataType)
 				{
-					RecBufferNode NodeTemp = m_dataqueue.front();
-					if (bFileStart)
-					{
-						startTick = NodeTemp.dwTicketCount;
-					}
-					if (AVENC_IDR == NodeTemp.dwDataType)
-					{
-						nRecStep = 2;
-					}
-					else
-					{
-						delete []NodeTemp.Buffer;
-						NodeTemp.Buffer = NULL;
-						m_dataqueue.pop_front();
-					}
-				}
-				m_dataRef.unlock();
-			}
-			break;
-		case 2://  write file head
-			{
-				//create file path
-				CreateSavePath(sSavePath, start);
-				QString sFilePathName = sSavePath;
-				QString sFileName;
-				m_dataRef.lock();
-				if (m_dataqueue.size() > 0)
-				{
-
-					// Create path
-					CreateDir(sFilePathName);
-
-					// Write file head
-					AviFile = AVI_open_output_file(sFilePathName.toAscii().data());
-					// Create file failed
-					if (NULL == AviFile)
-					{
-						qDebug()<<__FUNCTION__<<__LINE__<<sFilePathName<<"creat file fail";
-						m_bFinish=true;
-						m_dataRef.unlock();
-						break;
-					}
-					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,25,"X264");
-
-					if (bFileStart && 0 == startTick - endTick)
-					{
-						unsigned int tick = getSeconds(sFilePathName);
-						AVI_set_ticket(lastFileName.toLatin1().data(), tick);
-					}
-
-					nRecStep = 3;
-				}
-				m_dataRef.unlock();
-			}
-			break;
-		case 3://  write frame
-			{
-				m_dataRef.lock();
-				if (m_dataqueue.size() > 0)
-				{
-					RecBufferNode node = m_dataqueue.front();
-					if (AVENC_IDR == node.dwDataType || AVENC_PSLICE == node.dwDataType)
-					{
-						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR == node.dwDataType));
-					}// Ignor audio frame
-					else if (0x00 == node.dwDataType)
-					{
-						if (!bAudioBeSet)
-						{
-							int AudioFormat = WAVE_FORMAT_ALAW;
-
-							AVI_set_audio(AviFile, 1, node.samplerate, node.samplewidth, AudioFormat, 64);
-							bAudioBeSet = true;
-						}
-						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
-
-					}
-
-					delete[] node.Buffer;
-					node.Buffer = NULL;
+					m_lnFirstPts=nodeTemp.dwTicketCount;
+					nRecStep=CREATE_PATH;
+				}else{
+					delete []nodeTemp.Buffer;
+					nodeTemp.Buffer=NULL;
 					m_dataqueue.pop_front();
+					nRecStep=FRIST_I_FRAME;
 				}
-				m_dataRef.unlock();
+			}else{
+				nRecStep=FRIST_I_FRAME;
+			}
 
-
-				if (m_bcheckdiskfreesize==true)
+			if (m_bFinish)
+			{
+				nRecStep=END;    
+			}else{
+				//keep going
+			}
+			m_dataRef.unlock();
+			  }
+			   break;
+		case CREATE_PATH:{
+			//申请空间 并 创建文件路径
+			m_nPosition=__LINE__;
+			m_bIsblock=true;
+			if (CreateSavePath(sSavePath,start)&&CreateDir(sSavePath))
+			{
+				nRecStep=OPEN_FILE;
+			}else{
+				// fix me : 处理建立路径时产生的资源
+				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as create path fail";
+				nRecStep=END;
+			}
+			m_bIsblock=false;
+			if (m_bFinish)
+			{
+				// fix me : 处理建立路径时产生的资源
+				nRecStep=END;
+			}else{
+				//keep going 
+			}
+			   }
+			   break;
+		case OPEN_FILE:{
+			//打开文件
+			m_dataRef.lock();
+			if (m_dataqueue.size()>0)
+			{
+				AviFile=AVI_open_output_file(sSavePath.toAscii().data());
+				if (NULL!=AviFile)
 				{
-					int fileMaxSize= m_StorageMgr.getFilePackageSize();
-					quint64 diskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
-					long nWrittenSize = AVI_bytes_written(AviFile);
-					if (nWrittenSize > 1024 * 1024 * fileMaxSize)
+					nRecStep=SET_VIDEO_PARM;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as AVI_open_output_file fail";
+					nRecStep=END;
+				}
+			}else{
+				//keep going
+			}
+			m_dataRef.unlock();
+			   }
+			   break;
+		case SET_VIDEO_PARM:{
+			// 设置文件（视频）的各项参数
+			m_dataRef.lock();
+			AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,25,"X264");
+			m_dataRef.unlock();
+			nRecStep=WRITE_FRAME;
+			   }
+			   break;
+		case SET_AUDIO_PARM:{
+			//设置文件（音频）的各项参数
+			   }
+			   break;
+		case WRITE_FRAME:{
+			//写文件
+			m_dataRef.lock();
+			if (m_dataqueue.size()>0)
+			{
+				nSleepTime--;
+				RecBufferNode node=m_dataqueue.front();
+				if (AVENC_IDR==node.dwDataType||AVENC_PSLICE==node.dwDataType)
+				{
+					m_lnLastPts=node.dwTicketCount;
+					AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR==node.dwDataType));
+				}else if (0x00==node.dwDataType)
+				{
+					if (!bAudioBeSet)
 					{
-						qDebug("File over 128M\n");
-						nRecStep = 4;
+						int AudioFormat=WAVE_FORMAT_ALAW;
+						AVI_set_audio(AviFile,1,node.samplerate,node.samplewidth,AudioFormat,64);
+						bAudioBeSet=true;
 					}
-
-					m_bcheckdiskfreesize=false;
-					QString sdisk = sSavePath.left(2);
-					quint64 FreeByteAvailable;
-					quint64 TotalNumberOfBytes;
-					quint64 TotalNumberOfFreeBytes;
-					m_StorageMgr.GetDiskFreeSpaceEx(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
-
-					if( TotalNumberOfFreeBytes<= diskReservedSize * 1024 * 1024)
+					AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"this is a undefined frame,please check";
+				}
+				delete [] node.Buffer;
+				node.Buffer=NULL;
+				m_dataqueue.pop_front();
+			}else{
+				//keep going
+			}
+			if (m_bFinish)
+			{
+				nRecStep=WAIT_FOR_PACK;
+			}else{
+				nRecStep=CHECK_DISK_SPACE;
+			}
+			m_dataRef.unlock();
+			   }
+			   break;
+		case CHECK_DISK_SPACE:{
+			//检测硬盘空间
+			if (m_bcheckdiskfreesize)
+			{
+				//硬盘空间足够，下一步检测文件大小
+				//硬盘空间不够，释放空间
+				//释放成功，下一步检测文件大小，释放失败，跳转到等待I帧
+				m_bcheckdiskfreesize=false;
+				QString sDisk=sSavePath.left(2);
+				quint64 FreeByteAvailable;
+				quint64 TotalNumberOfBytes;
+				quint64 TotalNumberOfFreeBytes;
+				m_StorageMgr.GetDiskFreeSpaceEx(sDisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+				if (TotalNumberOfFreeBytes<=qDiskReservedSize*1024*1024)
+				{
+					m_nPosition=__LINE__;
+					m_bIsblock=true;
+					if (m_StorageMgr.freeDisk())
 					{
-						// not enough free space
-						if (m_StorageMgr.freeDisk())
+						//success
+						nFileMaxSize=m_StorageMgr.getFilePackageSize();
+						qDiskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
+						nRecStep=CHECK_FILE_SIZE;
+					}else{
+						//fail
+						qDebug()<<__FUNCTION__<<__LINE__<<"recorder turn to pack as no enough space";
+						nRecStep=WAIT_FOR_PACK;
+					}
+					m_bIsblock=false;
+				}else{
+					//do nothing
+					nRecStep=CHECK_FILE_SIZE;
+				}
+			}else{
+				//do nothing
+				nRecStep=WRITE_FRAME;
+			}
+			   }
+			   break;
+		case CHECK_FILE_SIZE:{
+			//检测文件大小
+			//文件不够大，接着录像 ，否则打包文件,跳转到等待I帧
+			long nWritenSize=AVI_bytes_written(AviFile);
+			if (nWritenSize>1024*1024*nFileMaxSize)
+			{
+				nRecStep=WAIT_FOR_PACK;
+			}else{
+				//keep going
+				nRecStep=WRITE_FRAME;
+			}
+			   }
+			   break;
+		case WAIT_FOR_PACK:{
+			//等待i帧过来，打包
+			int nCount=0;
+			bool nBwait=true;
+			m_nPosition=__LINE__;
+			m_bIsblock=true;
+			while(nBwait&&nCount<300){
+				m_dataRef.lock();
+				if (m_dataqueue.size()>0)
+				{
+					RecBufferNode node=m_dataqueue.front();
+					if (AVENC_IDR==node.dwDataType)
+					{
+						nBwait=false;
+					}else if (AVENC_PSLICE==node.dwDataType)
+					{
+						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR==node.dwDataType));
+						m_lnLastPts=node.dwTicketCount;
+						delete[]node.Buffer;
+						node.Buffer=NULL;
+						m_dataqueue.pop_front();
+					}else if (AVENC_AUDIO==node.dwDataType)
+					{
+						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
+						delete[]node.Buffer;
+						node.Buffer=NULL;
+						m_dataqueue.pop_front();
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"there is a undefined frame ,please check";
+					}
+				}else{
+					//do nothing
+					msleep(10);
+				}
+				nCount++;
+				m_dataRef.unlock();
+			}
+			m_bIsblock=false;
+			nRecStep=PACK;
+						   }
+						   break;
+		case PACK:{
+			//文件打包,打包是失败，跳转到end
+			//打包并保存到数据库成功，如果失败，跳转到end
+			//检测是否结束，如果结束，跳转到end，否则重头开始
+			if (AviFile!=NULL)
+			{
+				int iMaxFramerate=0;
+				int iMaxFramerateCount=0;
+				int iFrameCount=0;
+				int i;
+				m_dataRef.lock();
+				for (i=0;i<31;i++)
+				{
+					if (m_nFrameCountArray[i]!=0)
+					{
+						iMaxFramerate=i;
+					}
+				}
+				for (i=iMaxFramerate-3>=0?iMaxFramerate-3:0;i<iMaxFramerate;i++)
+				{
+					if (m_nFrameCountArray[i]>(unsigned int)iMaxFramerateCount)
+					{
+						iMaxFramerateCount=m_nFrameCountArray[i];
+						iFrameCount=i;
+					}
+				}
+				if (iFrameCount==0)
+				{
+					int totalFrame=AVI_video_frames(AviFile);
+					quint64 totalTime=0;
+					totalTime=m_lnLastPts-m_lnFirstPts;
+					if (totalTime/1000>0)
+					{
+						iFrameCount=totalFrame/(totalTime/1000);
+						if (iFrameCount>25)
 						{
-							//freedisk succeed,keep going
+							iFrameCount=25;
 						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"Not enough free space\n";
-							nRecStep = 4;
+							//do nothing
 						}
-
+					}else{
+						if (totalFrame<25)
+						{
+							iFrameCount=totalFrame;
+						}else{
+							iFrameCount=25;
+						}	
 					}
 				}else{
 					//do nothing
 				}
-
-			}
-			break;
-		case 4://  to be finish,find the next I frame
-			{
-				m_dataRef.lock();
-				if (m_dataqueue.size() > 0)
-				{
-					RecBufferNode node = m_dataqueue.front();
-					if (AVENC_IDR == node.dwDataType)
-					{
-						endTick = node.dwTicketCount;
-						bFileStart = true;
-						lastFileName = sSavePath;
-
-						nRecStep = 5;
-					}
-					else if (AVENC_PSLICE == node.dwDataType)
-					{
-						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR == node.dwDataType));
-
-						delete[] node.Buffer;
-						node.Buffer = NULL;
-						m_dataqueue.pop_front();
-					}
-					else if (AVENC_AUDIO == node.dwDataType)
-					{
-						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
-
-						delete[] node.Buffer;
-						node.Buffer = NULL;
-						m_dataqueue.pop_front();
-					}
-					else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"lose control";
-					}
-				}
+				AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,iFrameCount,"X264");
+				AVI_close(AviFile);
+				AviFile=NULL;
 				m_dataRef.unlock();
-			}
-			break;
-		case 5://  Close the file & more operatons
-			{
-				if (AviFile != NULL)
+				m_nPosition=__LINE__;
+				m_bIsblock=true;
+				QString sEndTime=getFileEndTime(sSavePath,start);
+				if (!sEndTime.isEmpty())
 				{
-					// set video info
-					int iMaxFramerate = 0;
-					int iMaxFramerateCount = 0;
-					int iFrameCount = 0;
-					int i;
-					// the max framerate
-					for (i = 0;i < 31;i++)
+					if (m_StorageMgr.updateRecord(sEndTime,getFileSize(sSavePath)))
 					{
-						if (m_nFrameCountArray[i] != 0)
-						{
-							iMaxFramerate = i;
-						}
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"recorder stop as updateRecord fail";
+						nRecStep=END;
 					}
-					// the frame rate 
-					for (i = iMaxFramerate - 3 >= 0 ? iMaxFramerate - 3 : 0; i <= iMaxFramerate;i++)
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"record fail as it can not get file endTime";
+					//删除此文件，并删除数据库中此文件的记录
+					QFile fRemove;
+					if (fRemove.remove(sSavePath))
 					{
-						if (m_nFrameCountArray[i] > (unsigned int)iMaxFramerateCount)
+						//删除数据库的记录
+						if (m_StorageMgr.deleteRecord())
 						{
-							iMaxFramerateCount = m_nFrameCountArray[i];
-							iFrameCount = i;
+							//do nothing
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"deleteRecord fail ,please check";
 						}
-					}
-					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,iFrameCount,"X264");
-
-					qDebug()<<__FUNCTION__<<__LINE__<<"Close file";
-					AVI_close(AviFile);
-					AviFile = NULL;
-
-					m_StorageMgr.updateRecord(getFileEndTime(sSavePath, start), getFileSize(sSavePath));
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"it can not remove the crash file ,please check";
+					}			
+					//keep going
 				}
+				m_bIsblock=false;
 				if (m_bFinish)
 				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"Terminate thread";
-					bThreadRunning = false;
+					nRecStep=END;
+				}else{
+					//keep going
+					nRecStep=INIT;
 				}
-				else
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"Next file";
-					nRecStep = 0;
-				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"recorder pack fail ,there must exist a error";
 			}
-			break;
-		default:
+			   }
+			   break;
+		case ERROR:{
+			//错误
+				}
+				break;
+		case END:{
+			//end
+			bThreadRunning=false;
+			m_bFinish=true;
+			if (AviFile!=NULL)
 			{
-
+				AVI_close(AviFile);
+				AviFile=NULL;
+				qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error";
+			}else{
+				//do nothing
 			}
-			break;
+			//删除无用文件
+			if (-1!=m_StorageMgr.getInsertId())
+			{
+				QFile fRemove;
+				if (fRemove.exists(sSavePath))
+				{
+					fRemove.remove(sSavePath);
+				}else{
+					// do nothing
+				}
+				//删除数据库中的记录
+				m_StorageMgr.deleteRecord();
+			}else{
+				// do nothing 
+			}
+			m_nPosition=__LINE__;
+			m_bIsblock=true;
+			cleardata();
+			m_bIsblock=false;
+				}
+			   break;
 		}
 	}
 	m_bFinish = true;
 	parm.clear();
 	parm.insert("RecordState",false);
+	m_nPosition=__LINE__;
+	m_bIsblock=true;
 	enventProcCall("RecordState",parm);
+	m_bIsblock=false;
 }
+
+//void Recorder::runEx()
+//{
+//	QString sSavePath;
+//	int nRecStep = 0;
+//	unsigned int startTick = 0;
+//	unsigned int endTick = 0;
+//	QString lastFileName;
+//	avi_t * AviFile = NULL;
+//	int nSleepTime=0;
+//	int nLoopCount = 0;
+//	bool bAudioBeSet;
+//	bool bThreadRunning = true;
+//	bool bFileStart = false;
+//	QVariantMap parm;
+//	parm.insert("RecordState",true);
+//	enventProcCall("RecordState",parm);
+//	QTime start;
+//
+//	while (bThreadRunning)
+//	{
+//		if (m_dataqueue.size()<1||nSleepTime>10)
+//		{
+//			msleep(10);
+//			nSleepTime=0;
+//		}
+//		nSleepTime++;
+//		if (m_bFinish)
+//		{
+//			nRecStep = 5;
+//		}
+//
+//
+//		switch(nRecStep)
+//		{
+//		case 0:// prepare for new file
+//			{
+//// 				bool bRet = CreateSavePath(sSavePath, start);
+//// 				if (!bRet)
+//// 				{
+//// 					/*msleep(1000);*/
+//// 					m_dataRef.lock();
+//// 					if (m_dataqueue.size()>0)
+//// 					{
+//// 						RecBufferNode NodeTemp=m_dataqueue.front();
+//// 						delete []NodeTemp.Buffer;
+//// 						NodeTemp.Buffer = NULL;
+//// 						m_dataqueue.pop_front();
+//// 					}
+//// 					m_dataRef.unlock();
+//// 					m_bFinish=true;
+//// 					break;
+//// 				}
+//
+//				// Create save path
+//
+//				bAudioBeSet = false;
+//
+//				memset(m_nFrameCountArray,0,sizeof(m_nFrameCountArray));
+//				m_nFrameCount = 0;
+//				m_nLastTicket = 0;
+//				nRecStep = 1;
+//			}
+//			break;
+//		case 1:// wait for an I frame
+//			{
+//				m_dataRef.lock();
+//				if (m_dataqueue.size() > 0)
+//				{
+//					RecBufferNode NodeTemp = m_dataqueue.front();
+//					if (bFileStart)
+//					{
+//						startTick = NodeTemp.dwTicketCount;
+//					}
+//					if (AVENC_IDR == NodeTemp.dwDataType)
+//					{
+//						nRecStep = 2;
+//					}
+//					else
+//					{
+//						delete []NodeTemp.Buffer;
+//						NodeTemp.Buffer = NULL;
+//						m_dataqueue.pop_front();
+//					}
+//				}
+//				m_dataRef.unlock();
+//			}
+//			break;
+//		case 2://  write file head
+//			{
+//				//create file path
+//				CreateSavePath(sSavePath, start);
+//				QString sFilePathName = sSavePath;
+//				QString sFileName;
+//				m_dataRef.lock();
+//				if (m_dataqueue.size() > 0)
+//				{
+//
+//					// Create path
+//					CreateDir(sFilePathName);
+//
+//					// Write file head
+//					AviFile = AVI_open_output_file(sFilePathName.toAscii().data());
+//					// Create file failed
+//					if (NULL == AviFile)
+//					{
+//						qDebug()<<__FUNCTION__<<__LINE__<<sFilePathName<<"creat file fail";
+//						m_bFinish=true;
+//						m_dataRef.unlock();
+//						break;
+//					}
+//					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,25,"X264");
+//
+//					if (bFileStart && 0 == startTick - endTick)
+//					{
+//						unsigned int tick = getSeconds(sFilePathName);
+//						AVI_set_ticket(lastFileName.toLatin1().data(), tick);
+//					}
+//
+//					nRecStep = 3;
+//				}
+//				m_dataRef.unlock();
+//			}
+//			break;
+//		case 3://  write frame
+//			{
+//				m_dataRef.lock();
+//				if (m_dataqueue.size() > 0)
+//				{
+//					RecBufferNode node = m_dataqueue.front();
+//					if (AVENC_IDR == node.dwDataType || AVENC_PSLICE == node.dwDataType)
+//					{
+//						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR == node.dwDataType));
+//					}// Ignor audio frame
+//					else if (0x00 == node.dwDataType)
+//					{
+//						if (!bAudioBeSet)
+//						{
+//							int AudioFormat = WAVE_FORMAT_ALAW;
+//
+//							AVI_set_audio(AviFile, 1, node.samplerate, node.samplewidth, AudioFormat, 64);
+//							bAudioBeSet = true;
+//						}
+//						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
+//
+//					}
+//
+//					delete[] node.Buffer;
+//					node.Buffer = NULL;
+//					m_dataqueue.pop_front();
+//				}
+//				m_dataRef.unlock();
+//
+//
+//				if (m_bcheckdiskfreesize==true)
+//				{
+//					int fileMaxSize= m_StorageMgr.getFilePackageSize();
+//					quint64 diskReservedSize=(quint64)m_StorageMgr.getFreeSizeForDisk();
+//					long nWrittenSize = AVI_bytes_written(AviFile);
+//					if (nWrittenSize > 1024 * 1024 * fileMaxSize)
+//					{
+//						qDebug("File over 128M\n");
+//						nRecStep = 4;
+//					}
+//
+//					m_bcheckdiskfreesize=false;
+//					QString sdisk = sSavePath.left(2);
+//					quint64 FreeByteAvailable;
+//					quint64 TotalNumberOfBytes;
+//					quint64 TotalNumberOfFreeBytes;
+//					m_StorageMgr.GetDiskFreeSpaceEx(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+//
+//					if( TotalNumberOfFreeBytes<= diskReservedSize * 1024 * 1024)
+//					{
+//						// not enough free space
+//						if (m_StorageMgr.freeDisk())
+//						{
+//							//freedisk succeed,keep going
+//						}else{
+//							qDebug()<<__FUNCTION__<<__LINE__<<"Not enough free space\n";
+//							nRecStep = 4;
+//						}
+//
+//					}
+//				}else{
+//					//do nothing
+//				}
+//
+//			}
+//			break;
+//		case 4://  to be finish,find the next I frame
+//			{
+//				m_dataRef.lock();
+//				if (m_dataqueue.size() > 0)
+//				{
+//					RecBufferNode node = m_dataqueue.front();
+//					if (AVENC_IDR == node.dwDataType)
+//					{
+//						endTick = node.dwTicketCount;
+//						bFileStart = true;
+//						lastFileName = sSavePath;
+//
+//						nRecStep = 5;
+//					}
+//					else if (AVENC_PSLICE == node.dwDataType)
+//					{
+//						AVI_write_frame(AviFile,node.Buffer,node.dwBufferSize,(AVENC_IDR == node.dwDataType));
+//
+//						delete[] node.Buffer;
+//						node.Buffer = NULL;
+//						m_dataqueue.pop_front();
+//					}
+//					else if (AVENC_AUDIO == node.dwDataType)
+//					{
+//						AVI_write_audio(AviFile,node.Buffer,node.dwBufferSize);
+//
+//						delete[] node.Buffer;
+//						node.Buffer = NULL;
+//						m_dataqueue.pop_front();
+//					}
+//					else{
+//						qDebug()<<__FUNCTION__<<__LINE__<<"lose control";
+//					}
+//				}
+//				m_dataRef.unlock();
+//			}
+//			break;
+//		case 5://  Close the file & more operatons
+//			{
+//				if (AviFile != NULL)
+//				{
+//					// set video info
+//					int iMaxFramerate = 0;
+//					int iMaxFramerateCount = 0;
+//					int iFrameCount = 0;
+//					int i;
+//					// the max framerate
+//					for (i = 0;i < 31;i++)
+//					{
+//						if (m_nFrameCountArray[i] != 0)
+//						{
+//							iMaxFramerate = i;
+//						}
+//					}
+//					// the frame rate 
+//					for (i = iMaxFramerate - 3 >= 0 ? iMaxFramerate - 3 : 0; i <= iMaxFramerate;i++)
+//					{
+//						if (m_nFrameCountArray[i] > (unsigned int)iMaxFramerateCount)
+//						{
+//							iMaxFramerateCount = m_nFrameCountArray[i];
+//							iFrameCount = i;
+//						}
+//					}
+//					AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,iFrameCount,"X264");
+//
+//					qDebug()<<__FUNCTION__<<__LINE__<<"Close file";
+//					AVI_close(AviFile);
+//					AviFile = NULL;
+//
+//					m_StorageMgr.updateRecord(getFileEndTime(sSavePath, start), getFileSize(sSavePath));
+//				}
+//				if (m_bFinish)
+//				{
+//					qDebug()<<__FUNCTION__<<__LINE__<<"Terminate thread";
+//					bThreadRunning = false;
+//				}
+//				else
+//				{
+//					qDebug()<<__FUNCTION__<<__LINE__<<"Next file";
+//					nRecStep = 0;
+//				}
+//			}
+//			break;
+//		default:
+//			{
+//
+//			}
+//			break;
+//		}
+//	}
+//	m_bFinish = true;
+//	parm.clear();
+//	parm.insert("RecordState",false);
+//	enventProcCall("RecordState",parm);
+//}
 
 void Recorder::cleardata()
 {
@@ -434,7 +855,12 @@ void Recorder::cleardata()
 bool Recorder::CreateSavePath(QString& sSavePath, QTime &start)
 {
 	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum, -1, 3, start);
-	return true;
+	if (sSavePath=="none")
+	{
+		return false;
+	}else{
+		return true;
+	}
 }
 
 bool Recorder::CreateDir(QString fullname)
@@ -452,15 +878,7 @@ bool Recorder::CreateDir(QString fullname)
 		QDir dir;
 		if (!dir.exists(filepath))
 			dir.mkpath(filepath);
-		////创建文件
-		//QFile file(fullname);
-		//file.open(QIODevice::ReadOnly);
-		//file.close();
-
-		//if (!file.exists())
-		//    return false;
 	}
-
 	return true;
 }
 
@@ -582,33 +1000,69 @@ void Recorder::checkdiskfreesize()
 		//keep going
 	}
 }
-
 QString Recorder::getFileEndTime( QString fileName, QTime start )
 {
-	avi_t *aviFile = AVI_open_input_file(fileName.toLatin1().data(), 1);
-
-	int	audioChunks = AVI_audio_chunks(aviFile);
-	int	audioRate = AVI_audio_rate(aviFile);
-	int	audioBlock = AVI_audio_size(aviFile, 0);
-	int aviFileLength = 0;
-	if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
+	QString sRet;
+	sRet.clear();
+	avi_t *aviFile=NULL;
+	aviFile=AVI_open_input_file(fileName.toLatin1().data(),1);
+	if (NULL!=aviFile)
 	{
-		aviFileLength = audioChunks*audioBlock/audioRate;
-	}
-	else
-	{
-		int totalFrames = AVI_video_frames(aviFile);
-		int frameRate = AVI_frame_rate(aviFile);
-		if (0 == totalFrames || 0 == frameRate)
+		int audioChunks=AVI_audio_chunks(aviFile);
+		int audioRate=AVI_audio_rate(aviFile);
+		int audioBlock=AVI_audio_size(aviFile,0);
+		int aviFileLength=0;
+		if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
 		{
-			QTime endTime(0, 0, 0);
-			return endTime.toString("hh:mm:ss");
+			aviFileLength = audioChunks*audioBlock/audioRate;
+		}else{
+			int totalFrames = AVI_video_frames(aviFile);
+			int frameRate = AVI_frame_rate(aviFile);
+			if (0 == totalFrames || 0 == frameRate)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"getFileEndTime as file totalFrames==0 or frameRate ==0,this kind of file should be remove";
+			}else{
+				aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+			}
 		}
-		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+		AVI_close(aviFile);
+		if (aviFileLength==0)
+		{
+			return sRet;
+		}else{
+			return start.addSecs(aviFileLength).toString("hh:mm:ss");
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"getFileEndTime fail as AVI_open_input_file fail";
 	}
-	AVI_close(aviFile);
-	return start.addSecs(aviFileLength).toString("hh:mm:ss");
+	return sRet;
 }
+//QString Recorder::getFileEndTimeEx( QString fileName, QTime start )
+//{
+//	avi_t *aviFile = AVI_open_input_file(fileName.toLatin1().data(), 1);
+//
+//	int	audioChunks = AVI_audio_chunks(aviFile);
+//	int	audioRate = AVI_audio_rate(aviFile);
+//	int	audioBlock = AVI_audio_size(aviFile, 0);
+//	int aviFileLength = 0;
+//	if (0 <= audioChunks && 0 <= audioRate && 0 <= audioBlock)
+//	{
+//		aviFileLength = audioChunks*audioBlock/audioRate;
+//	}
+//	else
+//	{
+//		int totalFrames = AVI_video_frames(aviFile);
+//		int frameRate = AVI_frame_rate(aviFile);
+//		if (0 == totalFrames || 0 == frameRate)
+//		{
+//			QTime endTime(0, 0, 0);
+//			return endTime.toString("hh:mm:ss");
+//		}
+//		aviFileLength = totalFrames/frameRate;//the length of avi file playing time
+//	}
+//	AVI_close(aviFile);
+//	return start.addSecs(aviFileLength).toString("hh:mm:ss");
+//}
 
 qint64 Recorder::getFileSize( QString fileName )
 {
@@ -620,6 +1074,18 @@ qint64 Recorder::getFileSize( QString fileName )
 	else
 		return 0;
 }
+
+void Recorder::checkIsBlock()
+{
+	if (m_bIsblock)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
+	}else{
+		//do nothing
+	}
+}
+
+
 
 
 

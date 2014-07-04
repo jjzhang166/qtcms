@@ -154,7 +154,7 @@ private:
 	IAudioPlayer *m_pAudioPlay;
 	QMultiMap<QString ,tagProcInfo> m_eventMap;
 	QStringList m_eventNameList;
-	bool m_stop;
+	volatile bool m_stop;
 	tagDeviceInfo m_deviceInfo;
 	int m_ptzCmd;
 	int m_ptzSpeed;

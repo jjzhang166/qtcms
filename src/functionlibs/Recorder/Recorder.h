@@ -15,7 +15,21 @@
 #define AVENC_IDR		0x01
 #define AVENC_PSLICE	0x02
 #define AVENC_AUDIO		0x00
-
+typedef enum __tagRecStepCode{
+	INIT,//新文件的各项参数初始化
+	FRIST_I_FRAME,//等待第一个I帧
+	CREATE_PATH,//申请空间 并 创建文件路径
+	OPEN_FILE,//打开文件
+	SET_VIDEO_PARM,// 设置文件（视频）的各项参数
+	SET_AUDIO_PARM,//设置文件（音频）的各项参数
+	WRITE_FRAME,//写文件
+	CHECK_DISK_SPACE,//检测硬盘空间
+	CHECK_FILE_SIZE,//检测文件大小
+	WAIT_FOR_PACK,
+	PACK,//文件打包
+	ERROR,//错误
+	END,
+}tagRecStepCode;
 class Recorder : public QThread,
 	public IRecorder,
 	public IEventRegister
@@ -64,8 +78,10 @@ public:
 
 public slots:
 	void checkdiskfreesize();
+	void checkIsBlock();
 protected:
 	void run();
+	/*void runEx();*/
 private:
 	bool CreateSavePath(QString& sSavePath, QTime &start);
 	bool CreateDir(QString fullname);
@@ -73,6 +89,7 @@ private:
 	void enventProcCall(QString sEvent,QVariantMap parm);
 	unsigned int getSeconds(QString &fileName);
 	QString getFileEndTime(QString fileName, QTime start);
+	/*QString getFileEndTimeEx(QString fileName, QTime start);*/
 	qint64 getFileSize(QString fileName);
 
 	int m_nRef;
@@ -89,8 +106,10 @@ private:
 	unsigned int m_nLastTicket;
 	unsigned int m_nFrameCountArray[31];
 
+	quint64  m_lnFirstPts;
+	quint64  m_lnLastPts;
 	//bool m_stop;
-	bool m_bFinish;
+	volatile bool m_bFinish;
 	int m_filesize;
 	int m_reservedsize;
 	QMutex m_dataRef;
@@ -102,7 +121,10 @@ private:
 
 	//checkdiskfreesize
 	bool m_bcheckdiskfreesize;
+	bool m_bIsblock;
 	QTimer m_checkdisksize;
+	QTimer m_checkIsBlock;
+	int m_nPosition;
 };
 
 #endif // RECORDER_H

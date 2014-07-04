@@ -79,45 +79,34 @@ bool StorageMgr::getLoopRecording()
 }
 int StorageMgr::getFreeSizeForDisk()
 {
-	int spacereservedsize;
+	int spacereservedsize=1024;
 	if (m_pDisksSetting)
 	{
 		m_pDisksSetting->getDiskSpaceReservedSize(spacereservedsize);
 	}
 	return spacereservedsize;
 }
-
-QString StorageMgr::getFileSavePath(QString devname,int nChannelNum, int winId, int type, QTime &start)
+QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, int type, QTime &start )
 {
-	QString filesavepath = "none";
-	
+	QString sFileSavePath="none";
+	m_insertId=-1;
 	m_sLock.lock();
-	QString udisk = getUsableDisk();
+	QString sDisk=getUsableDisk();
 	m_sLock.unlock();
-	if ("0" != udisk)
+	if ("0"!=sDisk)
 	{
-//		filesavepath = udisk + ":/REC";
-// 		QDateTime datetime = QDateTime::currentDateTime();//获取系统现在的时间
-// 		filesavepath += "/"+datetime.toString("yyyy-MM-dd"); 
-// 
-// 		filesavepath += "/"+devname;
-// 
-// 		char sChannelNum[3];
-// 		sprintf(sChannelNum,"%02d",nChannelNum+1);
-// 		filesavepath += "/CHL" + QString("%1").arg(QString(sChannelNum));
-// 
-// 		filesavepath += "/" + datetime.toString("hhmmss") + ".avi";
-
-		filesavepath = udisk + ":/REC";
+		sFileSavePath=sDisk+":/REC";
 		m_dblock.lock();
-		//if database is not open, open it
 		if (!m_db->isOpen())
 		{
-			m_db->setDatabaseName(filesavepath + "/record.db");
-			bool res = m_db->open();
-			if (!res)
+			m_db->setDatabaseName(sFileSavePath+"/record.db");
+			if (m_db->open())
 			{
-				qDebug()<<"open database failed!";
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"getFileSavePath fail as open db fail";
+				m_dblock.unlock();
+				return "none";
 			}
 		}
 
@@ -140,14 +129,13 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum, int winId, 
 			}
 			QString temp;
 			temp = temp.sprintf("/%04d/%03d.avi", dirNum, fileNum);
-			filesavepath += temp;
+			sFileSavePath += temp;
 		}
 		else
 		{
 			//use default path
-			filesavepath += "/0000/000.avi"; 
+			sFileSavePath += "/0000/000.avi"; 
 		}
-
 		//insert new data into database
 		_query.prepare("insert into local_record(dev_name,dev_chl,win_id,date,start_time,record_type,path) values(:dev_name,:dev_chl,:win_id,:date,:start_time,:record_type,:path)");
 		_query.bindValue(":dev_name",devname);
@@ -157,9 +145,9 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum, int winId, 
 		start = QTime::currentTime();
 		_query.bindValue(":start_time",start.toString("hh:mm:ss"));
 		_query.bindValue(":record_type", type);
-		_query.bindValue(":path", filesavepath);
+		_query.bindValue(":path", sFileSavePath);
 		_query.exec();
-
+		
 		//save the id inserted just now
 		command = QString("select max(id) from local_record");
 		_query.exec(command);
@@ -170,81 +158,115 @@ QString StorageMgr::getFileSavePath(QString devname,int nChannelNum, int winId, 
 
 		_query.finish();
 		m_dblock.unlock();
+		return sFileSavePath;
+	}else{
+		return sFileSavePath;
 	}
-
-	return filesavepath;
 }
-
-QString StorageMgr::getUsableDisk()//返回'0'说明没有找到满足条件的分区
+QString StorageMgr::getUsableDisk()
 {
-	QString qsdisks ; 
-	//char getdisk = '0';
-	QString getdisk = "0";
-	int retrycount = 3;
-	int freesizem;
-	bool brecove = m_pDisksSetting->getLoopRecording();
-	//使用默认大小
-	if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
-		freesizem = 128;
-
-	//查找满足条件的分区
-	if (0 == m_pDisksSetting->getUseDisks(qsdisks))
+	QString sDisks;
+	QString sGottenDisk="0";
+	int nTryCount=3;
+	int nFreeSize;
+	bool bRecover;
+	if (m_pDisksSetting!=NULL)
 	{
-		QStringList sdlist = qsdisks.split(":");
-		if (0 != sdlist.size())
+		bRecover=m_pDisksSetting->getLoopRecording();
+		if (0!=m_pDisksSetting->getDiskSpaceReservedSize(nFreeSize))
 		{
-			while(retrycount>0)
+			nFreeSize=124;
+		}else{
+			//do nothing
+		}
+		if (0==m_pDisksSetting->getUseDisks(sDisks))
+		{
+			QStringList sDiskList = sDisks.split(":");
+			if (sDiskList.size()!=0)
 			{
-				foreach(QString stritem,sdlist)
-				{
-					quint64 FreeByteAvailable = 0;
-					quint64 TotalNumberOfBytes = 0;
-					quint64 TotalNumberOfFreeBytes = 0;
-					QString sdisk = stritem+":";
-					if (GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes))
-					{
-						if (TotalNumberOfFreeBytes/1024/1024 > (quint64)freesizem)
+				while(nTryCount>0){
+					foreach(QString stritem,sDiskList){
+						quint64 FreeByteAvailable = 0;
+						quint64 TotalNumberOfBytes = 0;
+						quint64 TotalNumberOfFreeBytes = 0;
+						QString sdisk = stritem+":";
+						if (GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes))
 						{
-							getdisk = stritem;
-							if (!m_curDisk.isEmpty() && m_curDisk != getdisk && m_db->isOpen())
-							{
-								m_db->close();
-							}
-
-							QString dbpath = sdisk + "/REC/record.db";
-							if (!QFile::exists(dbpath) && !m_db->isOpen())
-							{
-								m_dblock.lock();
-								m_db->setDatabaseName(dbpath);
-								if (!m_db->open())
+							if (TotalNumberOfFreeBytes/1024/1024 > (quint64)nFreeSize){
+								sGottenDisk = stritem;
+								if (!m_curDisk.isEmpty() && m_curDisk != sGottenDisk && m_db->isOpen())
 								{
-									qDebug()<<"open database file failed!";
+									m_db->close();
 								}
-								createTable();
+								QString dbpath = sdisk + "/REC";
+								QDir dDir;
+								m_dblock.lock();
+								if (dDir.exists(dbpath))
+								{
+									//do nothing
+								}else{
+									//create dir ::rec
+									dDir.mkpath(dbpath);
+								}
+								dbpath+="/record.db";
+								if (!QFile::exists(dbpath) && !m_db->isOpen())
+								{
+									m_db->setDatabaseName(dbpath);
+									if (!m_db->open())
+									{
+										qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+									}else{
+
+									}
+									createTable();
+								}else{
+									//do nothing
+								}
 								m_dblock.unlock();
+								m_curDisk = sGottenDisk;
+								break;
+							}else{
+								// there is not enough space in this disk,please find anther or free disk
 							}
-							m_curDisk = getdisk;
-							break;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<sdisk<<"can not been gotten message,it may be a system disk ";
 						}
 					}
+					if (bRecover && "0" == sGottenDisk)
+					{
+						if (deleteOldDir(sDiskList))
+						{
+							//keep going
+						}else{
+							//there is no need to continue
+							nTryCount=0;
+						}
+					}else{
+						//keep going
+					}
+					if (bRecover&&sGottenDisk=="0")
+					{
+						nTryCount--;
+					}else{
+						//there is no need to continue
+						nTryCount=0;
+					}
+					
 				}
-
-				if (brecove && "0" == getdisk)
-				{
-					deleteOldDir(sdlist);
-				}
-
-				retrycount --;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"can not get usableDisk ,there may be exist a error in database";
 			}
-			
+		}else{
+			//
+			qDebug()<<__FUNCTION__<<__LINE__<<"can not get usableDisk,please select at least one disk as record disk in device setting page";
 		}
-
-		
+	}else{
+		//
+		qDebug()<<__FUNCTION__<<__LINE__<<"can not get usableDisk as m_pDisksSetting is null";
 	}
-
-	return getdisk;
-	
+	return sGottenDisk;
 }
+
 
 // void StorageMgr::deleteOldDir(const QStringList& diskslist)
 // {
@@ -331,8 +353,7 @@ QString StorageMgr::getUsableDisk()//返回'0'说明没有找到满足条件的分区
 // 	}
 // 
 // }
-
-void StorageMgr::deleteOldDir(const QStringList& diskslist)
+bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 {
 	QDate earlestDate;
 	QMap<QDate, RecInfo> result;
@@ -342,49 +363,142 @@ void StorageMgr::deleteOldDir(const QStringList& diskslist)
 	int freesizem = 0;
 	if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
 		freesizem = 1024;
-
-	while (true)
-	{
-		m_dblock.lock();
-		//check free space in disk
-		foreach(QString disk, diskslist)
-		{
-			QString sdisk = disk + ":";
-			GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
-			if (TotalNumberOfFreeBytes/1024/1024 > (quint64)freesizem)
-			{
-				m_dblock.unlock();
-				return;//has enough space
+	int nStep=0;
+	bool nIsStop=false;
+	bool bRet=false;
+	m_dblock.lock();
+	while(!nIsStop){
+		switch(nStep){
+		case 0:{
+			//检测是否需要删除
+			foreach(QString disk,diskslist){
+				QString sdisk = disk + ":";
+				GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+				if (TotalNumberOfFreeBytes/1024/1024 > (quint64)freesizem)
+				{
+					//有足够的空间
+					bRet=true;
+					nIsStop=true;
+					break;
+				}else{
+					//keep going
+					nStep=1;
+				}
 			}
-		}
-		//collect the earliest record date in each database
-		foreach(QString disk, diskslist)
-		{
-			QString path = disk + ":/REC/record.db";
-			QDate date;
-			QStringList list = findEarlestRecord(path, date);
-			if (list.isEmpty())
+			   }
+			   break;
+		case 1:{
+			//查找最早的记录
+			result.empty();
+			foreach(QString disk, diskslist)
 			{
-				continue;//open database failed or no record in database
+				QString path = disk + ":/REC/record.db";
+				QDate date;
+				QStringList list = findEarlestRecord(path, date);
+				if (list.isEmpty())
+				{
+					continue;//open database failed or no record in database
+				}
+				RecInfo re;
+				re.dbPath = path;
+				re.fileLsit = list;
+				result.insertMulti(date, re);
 			}
-			RecInfo re;
-			re.dbPath = path;
-			re.fileLsit = list;
-			result.insertMulti(date, re);
+			if (result.isEmpty())
+			{
+				//没有录像可以删除了
+				qDebug()<<__FUNCTION__<<__LINE__<<"there is no record for free,please remove anther file from disk";
+				bRet=false;
+				nIsStop=true;
+			}else{
+				earlestDate = minDate(result.keys());
+				nStep=2;
+			}
+			   }
+			   break;
+		case 2:{
+			//删除
+			QList<RecInfo> recInfo = result.values(earlestDate);
+			foreach(RecInfo each, recInfo)
+			{
+				//delete file from directory
+				QStringList hasDelete = deleteFile(each.fileLsit);
+				//delete record from database
+				deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"), hasDelete);
+			}
+			nStep=0;
+			   }
+			   break;
+		case 3:{
+			//结束
+			   }
+			   break;
 		}
-		//find the earliest date
-		earlestDate = minDate(result.keys());
-		QList<RecInfo> recInfo = result.values(earlestDate);
-		foreach(RecInfo each, recInfo)
-		{
-			//delete file from directory
-			QStringList hasDelete = deleteFile(each.fileLsit);
-			//delete record from database
-			deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"), hasDelete);
-		}
-		m_dblock.unlock();
 	}
+	m_dblock.unlock();
+	return bRet;
 }
+//bool StorageMgr::deleteOldDirEx(const QStringList& diskslist)
+//{
+//	QDate earlestDate;
+//	QMap<QDate, RecInfo> result;
+//	quint64 FreeByteAvailable = 0;
+//	quint64 TotalNumberOfBytes = 0;
+//	quint64 TotalNumberOfFreeBytes = 0;
+//	int freesizem = 0;
+//	if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
+//		freesizem = 1024;
+//
+//	while (true)
+//	{
+//		m_dblock.lock();
+//		//check free space in disk
+//		foreach(QString disk, diskslist)
+//		{
+//			QString sdisk = disk + ":";
+//			GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+//			if (TotalNumberOfFreeBytes/1024/1024 > (quint64)freesizem)
+//			{
+//				m_dblock.unlock();
+//				return true;//has enough space
+//			}
+//		}
+//		//collect the earliest record date in each database
+//		result.empty();
+//		foreach(QString disk, diskslist)
+//		{
+//			QString path = disk + ":/REC/record.db";
+//			QDate date;
+//			QStringList list = findEarlestRecord(path, date);
+//			if (list.isEmpty())
+//			{
+//				continue;//open database failed or no record in database
+//			}
+//			RecInfo re;
+//			re.dbPath = path;
+//			re.fileLsit = list;
+//			result.insertMulti(date, re);
+//		}
+//		if (result.isEmpty())
+//		{
+//			qDebug()<<__FUNCTION__<<__LINE__<<"there is no record for free ,please remove anther file to release space";
+//			return false;
+//		}else{
+//			//keep going
+//		}
+//		//find the earliest date
+//		earlestDate = minDate(result.keys());
+//		QList<RecInfo> recInfo = result.values(earlestDate);
+//		foreach(RecInfo each, recInfo)
+//		{
+//			//delete file from directory
+//			QStringList hasDelete = deleteFile(each.fileLsit);
+//			//delete record from database
+//			deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"), hasDelete);
+//		}
+//		m_dblock.unlock();
+//	}
+//}
 
 QDate StorageMgr::minDate(QList<QDate> dateList)
 {
@@ -468,16 +582,32 @@ bool StorageMgr::GetDiskFreeSpaceEx(char* lpDirectoryName, quint64* lpFreeBytesA
 
 bool StorageMgr::freeDisk()
 {
-	QString flags;
-	m_sLock.lock();
-	flags=getUsableDisk();
-	m_sLock.unlock();
-	if (flags=="")
+	QString sDisks;
+	if (m_pDisksSetting!=NULL)
 	{
-		return false;
+		if (0==m_pDisksSetting->getUseDisks(sDisks))
+		{
+			QStringList sDiskList=sDisks.split(":");
+			if (sDiskList.size()>0)
+			{
+				if (deleteOldDir(sDiskList))
+				{
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"freeDisk fail as deleteOldDir fail";
+				}
+			}else{
+				//
+				qDebug()<<__FUNCTION__<<__LINE__<<"freeDisk fail ,please check database ,there may be some error in database";
+			}
+		}else{
+			//
+			qDebug()<<__FUNCTION__<<__LINE__<<"freeDisk fail as getUseDisks fail";
+		}
 	}else{
-		return true;
+		qDebug()<<__FUNCTION__<<__LINE__<<"freeDisk fail as m_pDisksSetting is null";
 	}
+	return false;
 }
 
 // int StorageMgr::addRecord( QString sDevName, int chl, int winId, QString sDate, QString sStart, int type, QString sPath )
@@ -510,23 +640,51 @@ bool StorageMgr::freeDisk()
 // 
 // 	return insertId;
 // }
-
-int StorageMgr::updateRecord( QString sEnd, int size )
+bool StorageMgr::deleteRecord()
+{
+	bool bRet=false;
+	m_dblock.lock();
+	if (m_insertId!=-1)
+	{
+		QSqlQuery _query(*m_db);
+		QString command=QString("delete from local_record where id=%1").arg(m_insertId);
+		if (_query.exec(command))
+		{
+			bRet =true;
+			m_insertId=-1;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"deleteRecord fail as exec the command fail,please check the command or the id";
+			bRet=false;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"deleteRecord fail as the id ==-1";
+		bRet=false;
+	}
+	m_dblock.unlock();
+	return bRet;
+}
+bool StorageMgr::updateRecord( QString sEnd, int size )
 {
 	//update file end time and file size
 	m_dblock.lock();
 	QSqlQuery _query(*m_db);
 	QString command = QString("update local_record set end_time = '%1', file_size = %2 where id = %3").arg(sEnd).arg(QString::number(size)).arg(m_insertId);
-	_query.exec(command);
-	m_dblock.unlock();
-
-	m_insertId = -1;
-	return 0;
+	if (_query.exec(command))
+	{
+		m_dblock.unlock();
+		m_insertId = -1;
+		return true;
+	}else{
+		m_dblock.unlock();
+		qDebug()<<__FUNCTION__<<__LINE__<<"m_insertId::"<<m_insertId<<"sEnd::"<<sEnd<<"size::"<<size<<"updateRecord fail ,please check the database or the command";
+		return false;
+	}
 }
 
 QStringList StorageMgr::findEarlestRecord( QString dbPath, QDate &earlestDate )
 {
 	QStringList pathList;
+	pathList.empty();
 	m_db->setDatabaseName(dbPath);
 	if (!m_db->open())
 	{
@@ -566,6 +724,8 @@ void StorageMgr::deleteRecord( QString dbPath, QString date, QStringList filelis
 	m_db->close();
 }
 
+
+
 void StorageMgr::createTable()
 {
 	QSqlQuery _query(*m_db);
@@ -581,4 +741,13 @@ void StorageMgr::createTable()
 	command += "path char(64))";
 	_query.exec(command);
 }
+
+int StorageMgr::getInsertId()
+{
+	return m_insertId;
+}
+
+
+
+
 

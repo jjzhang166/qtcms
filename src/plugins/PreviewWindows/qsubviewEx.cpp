@@ -138,7 +138,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				update();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
+				/*qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";*/
 
 			}else if (m_tCurConnectStatus==STATUS_CONNECTING)
 			{
@@ -159,7 +159,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				QTimer::singleShot(500, this, SLOT(update()));
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
+				/*qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";*/
 			}
 			//Å×³öÊÂ¼þ
 			if (m_tHistoryConnectStatus!=m_tCurConnectStatus)

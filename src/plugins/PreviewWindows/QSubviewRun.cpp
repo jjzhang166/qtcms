@@ -43,10 +43,10 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 
 QSubviewRun::~QSubviewRun(void)
 {
-	if (QThread::isRunning())
+	if (QThread::isRunning()&&m_stop!=true)
 	{
-		//set nstepcode
-		slstopPreview();
+		//set nstep code
+		//slstopPreview();
 		m_stop=true;
 	}else{
 		//do nothing
@@ -361,7 +361,7 @@ void QSubviewRun::run()
 					m_nPosition=__LINE__;
 					slstopPreview();
 					int ncount=0;
-					while(m_bClosePreview==true&&ncount<700){
+					while(m_bClosePreview==true){
 						msleep(10);
 						ncount++;
 						if (ncount>500&&ncount%100==0)
@@ -554,11 +554,12 @@ void QSubviewRun::run()
 			//END
 			//sgstopPreview 阻塞，跳转到另一个线程，避免两个线程同时调用sstopPreview（）；
 			m_bIsBlock=true;
+			m_stop=true;
 			m_nPosition=__LINE__;
 				slstopPreview();
 				m_bIsBlock=false;
 				int ncount=0;
-				while(m_bClosePreview==true&&ncount<700){
+				while(m_bClosePreview==true){
 					msleep(10);
 					ncount++;
 					if (ncount>500&&ncount%100==0)
@@ -646,7 +647,7 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 
 void QSubviewRun::stopPreview()
 {
-	if (QThread::isRunning())
+	if (QThread::isRunning()&&m_stop!=true)
 	{
 		//set nstepcode
 		slstopPreview();

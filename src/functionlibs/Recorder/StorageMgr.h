@@ -18,6 +18,7 @@ public:
 	bool getLoopRecording();
 	int getFreeSizeForDisk();
 	bool freeDisk();
+	int getInsertId();
 	//
 
 	QString getFileSavePath(QString devname,int nChannelNum,int winId, int type, QTime &start);
@@ -27,13 +28,15 @@ public:
 	//database operate
 	void createTable();
 // 	int addRecord(QString sDevName, int chl, int winId, QString sDate, QString sStart, int type, QString sPath);
-	int updateRecord(QString sEnd, int size);
+	bool updateRecord(QString sEnd, int size);
+	bool deleteRecord();
 private:
 	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate);
 	void deleteRecord(QString dbPath, QString date, QStringList filelist);
 private:
 	QString getUsableDisk();
-	void deleteOldDir(const QStringList& dirlist);
+	bool deleteOldDir(const QStringList& dirlist);
+	/*bool deleteOldDirEx(const QStringList& dirlist);*/
 // 	bool deleteDir(const QString& diskslist);
 	QStringList deleteFile(const QStringList& fileList);
 	QDate minDate(QList<QDate> dateList);
