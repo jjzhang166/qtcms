@@ -1,11 +1,12 @@
-var IPC = function(usr,pwd,url,type){
+var IPC = function(usr,pwd,url,id,type){
 	this._USR = usr;
 	this._PWD = pwd;
 	this._URL = url;
+	this._ID = id;
+	this._TYPE = type;
 	this._VER = 0;
 	this._Upgrade = '1.3.0';  // CMS 支持的最低版本IPC
 
-console.log(arguments);
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);
 
 	/*$(document).ajaxSend(function(re){
@@ -37,14 +38,13 @@ console.log(arguments);
 
 	this.ipcencodeInfo2UI = function(){ //获取编码信息
 		console.log('-------------------ipcencodeInfo2UI--------------------------');
-		var This = this;
-		_AJAXget(this._URL + '/netsdk/video/encode/channel/'+$('#set_content div.ipc_list:visible input[data]:first').attr('data')+'/properties','',function(){
-			$('#set_content div.ipc_list:visible ul.option:eq(0) li').each(function(){
-				$(this)[0].onclick=function(){
-					_AJAXget(This._URL+'/netsdk/video/encode/channel/'+$(this).find('input').attr('data')+'/properties','','',data2UI);
-				}
-			})
-		},data2UI);
+		$('#set_content div.ipc_list:visible input[data]:first').attr('data',101).val(lang.Main_stream);
+		this._ipcencodeInfo2UI(101);
+		//_AJAXget(this._URL + '/netsdk/video/encode/channel/101/properties','','',data2UI);
+	}
+
+	this._ipcencodeInfo2UI = function(data){
+		_AJAXget(this._URL + '/netsdk/video/encode/channel/'+data+'/properties','','',data2UI);
 	}
 
 	this.ipcencodeInfoPut = function(){ //设置编码信息

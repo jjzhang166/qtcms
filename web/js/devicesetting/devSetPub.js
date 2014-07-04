@@ -27,6 +27,7 @@ function data2UI(objData,oWarp){
 			if(typeof objData[i] == 'object'){
 				/*/^\d+$/.test(objData[i][0])*/
 				if(objData[i]['opt']){
+					warp.find('ul'+warpKey).html('');
 					for(var k in objData[i]['opt']){
 						warp.find('ul'+warpKey).append('<li><input type="text" value="'+objData[i]['opt'][k]+'"></li>');
 					}
@@ -110,28 +111,16 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 
 function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始化方法.
 
+	emptyDevSetMenu();
+
 	var str = type == 'GET' ? 'loading' : 'saveing' ;
 
 	var targetMenu = $('#set_content div.ipc_list:visible');
 
-		oHint = showAJAXHint(str).css('top',targetMenu.height() + 46).stop(true,true).show();
+		oHint = showAJAXHint(str).css('top',targetMenu.height() + 46);
 
-		if(checkAJAX())
-			return false;
-
-		/*if(/[\d+\\.]+/.test(nowDev._VER) && nowDev._VER < '1.3.0'){
-			oHint.stop(true,true).html(lang.low_ver).show();
-			return;
-		}
-*/
-	/*if(nowDev._USR && nowDev._USR == 'no auth'){
-		$('#ajaxHint').stop(true,true).html(lang.login_fail).show();
-		return
-	}
-
-	if(nowDev._VER < '1.3.0'){
-		$('#ajaxHint').stop(true,true).html(lang.low_ver).show();
-	}*/
+	if(checkAJAX())
+		return false;
 
 	$.ajax({
 		type:type,
@@ -247,7 +236,7 @@ function disable(warp,str){
 
 	str ? oInput.prop('disabled',str) : oInput.removeProp('disabled');
 	 $('#set_content div.ipc_list:visible div.select').find('input').prop('disabled',true)
-	 												  .end().netx('ul.option').find('input').prop('disabled',true);
+	 												  .end().next('ul.option').find('input').prop('disabled',true);
 	
 }
 
@@ -262,7 +251,7 @@ function hasChinese(str){
 }
 
 function showAJAXHint(str){
-	return $('#ajaxHint').stop(true,true).html(lang[str]).show();
+	return $('#ajaxHint').html(lang[str]).stop(true,true).show();
 }
 //检查IP格式
 function chkIPformat(str){
@@ -274,6 +263,11 @@ function chkIPformat(str){
 	}else{
 		showAJAXHint('Incorrect_IP_format');
 	}
+}
+
+function getEncode(data){
+	console.log(data);
+	nowDev._ipcencodeInfo2UI(data);
 }
 
 /*function json2str(obj){

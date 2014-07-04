@@ -8,7 +8,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	$(function(){
 		oBottom = $('#operating');
 		//初始回放对象的声音状态,
-		oPlayBack = $('#playback')[0];
+		oPlayBack = $('#playback')[0];	
 /*		oPlayBack.volEnable = false;
 		oPlayBack.vol = 50;*/
 		oPlaybackLocl = $('#playbackLocl')[0];

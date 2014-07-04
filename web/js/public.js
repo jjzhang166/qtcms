@@ -446,9 +446,7 @@ function debugData(data){  // 在ID为test的div元素中打印对象数据
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm').find('h4,span').html('');
-	$('#menusList div.menu').find('input.data').not('[default]')
-		.remove()
-		.end().find(':text').val('');
+	$('#menusList div.menu').find(':text,:password').not('[default]').val('').end().find(':hidden').remove();
 		/*.end().end().each(function(){
 			$(this).find('div.close:last').html(lang.Cancel);	
 		})*/

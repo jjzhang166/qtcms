@@ -94,7 +94,6 @@ var oCommonLibrary;
 			}
 		}
 	}
-	
 	function deviceList2Ui(areaid,num,bool){ //设备菜单输出
 		bool = num == 1 ? true : bool;
 		var devList = oCommonLibrary.GetDeviceList(areaid);
@@ -115,6 +114,7 @@ var oCommonLibrary;
 	}
 	function devChannelList2Ui(devid,num){ //设备下通道菜单输出
 		var chlList = oCommonLibrary.GetChannelList(devid);
+		//console.log(chlList);	
 		for(i in chlList){ 
 			var id = chlList[i];
 			//if(!$('#channel_'+id)[0]){ 

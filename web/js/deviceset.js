@@ -92,7 +92,7 @@ var oSearchOcx,
 				oTreeWarp.show();
 				set_contentMax();
 				areaList2Ui(key);
-				emptyDevSetMenu();
+				/*emptyDevSetMenu();*/
 
 				if(key == 0){
 					searchFlush();
@@ -100,10 +100,14 @@ var oSearchOcx,
 					oSearchOcx.Stop();
 				}
 				if(key == 1){
-
+/*
 					$('#set_content ul.ipc_list0 li,ul.dev_list0 li').click(function(){
 						emptyDevSetMenu();
-					})
+					})*/
+					
+					if(nowDev){
+						$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
+					}
 
 					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
 
@@ -120,10 +124,11 @@ var oSearchOcx,
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
 							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
-							emptyDevSetMenu();
+							//emptyDevSetMenu();
 							//ipc(_url,oDevData.username,oDevData.password);
 /*							devinfo_load_content(true);	*/
-							nowDev = new IPC(oDevData.username,oDevData.password,_url);
+
+							nowDev = new IPC(oDevData.username,oDevData.password,_url,oDevData.dev_id,oDevData.vendor);
 							
 							console.log('------------new IPC()--------------');
 							
@@ -137,7 +142,7 @@ var oSearchOcx,
 						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
-							emptyDevSetMenu();
+							//emptyDevSetMenu();
 
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();	
@@ -410,14 +415,14 @@ var oSearchOcx,
 			nowWeek = $('#week').attr('data').split(','),
 			nowWeekTimeID = [];
 		var copy = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
-		console.log('----------------初始的通道ID-------------');
+/*		console.log('----------------初始的通道ID-------------');
 		console.log(copyTo);
 		console.log('----------------要拷贝到的通道ID-------------');
 		console.log(copyID);
 		console.log('----------------合并后的-------------');
 		console.log(copy);
 		console.log('--------------当前星期-------------------');
-		console.log(nowWeek);
+		console.log(nowWeek);*/
 		// 返回符合当天星期的时间ID
 		for(i in copy){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copy[i]);
@@ -568,10 +573,14 @@ var oSearchOcx,
 	}
 
 	function emptyDevSetMenu(){
+		//console.log(nowDev._ID);
+		$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
+
 		$('#set_content div.switch input[class]').val('').prop('checked',false);
+
 		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
-									  .end().find(':checkbox,:radio').prop('checked',false);
-		$('#ajaxHint').stop(true,true).hide();
+									  		  .end().find(':checkbox,:radio').prop('checked',false);
+		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
 	
@@ -1085,11 +1094,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		closeMenu();
 	}
 	function ModifyDeviceFeedBackSuccess(data){
-		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
+		/*var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
-		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);
+		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
+		areaList2Ui(0);
 		closeMenu();
 	}
 	/*function ModifyDeviceSuccess(data){
