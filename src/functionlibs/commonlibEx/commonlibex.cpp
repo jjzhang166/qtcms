@@ -1229,8 +1229,45 @@ int commonlibEx::ModifyDeviceChannelCount( int dev_id,int chlCount )
 	}
 
 	QSqlQuery _query(*m_db);
-	QString command = QString("update dev set channel_count='%1' where id='%2'").arg(chlCount).arg(dev_id);
+	QString command;
+	command=QString("select channel_count from dev where id ='%1'").arg(dev_id);
 	_query.exec(command);
+	int nOldChlCount=0;
+	while (_query.next())
+	{
+		nOldChlCount=_query.value(0).toInt();
+	}
+	command.clear();
+	command = QString("update dev set channel_count='%1' where id='%2'").arg(chlCount).arg(dev_id);
+	_query.exec(command);
+	if (nOldChlCount==chlCount)
+	{
+		//do nothing
+	}else if (nOldChlCount>chlCount)
+	{
+		//删除通道
+		command.clear();
+		if (chlCount<=0)
+		{
+			command=QString("delete from chl where dev_id='%1' and channel_number>='%2'").arg(dev_id).arg(0);
+		}else{
+			command=QString("delete from chl where dev_id='%1' and channel_number>='%2'").arg(dev_id).arg(chlCount);
+		}
+		_query.exec(command);
+	}else{
+		//添加通道
+		for (;nOldChlCount<chlCount;nOldChlCount++)
+		{
+			_query.prepare("insert into chl(dev_id,channel_number,name,stream_id) values(:dev_id,:channel_number,:name,:stream_id)");
+			_query.bindValue(":dev_id",dev_id);
+			_query.bindValue(":channel_number",nOldChlCount);
+			QString chlname=QString("chl_%1").arg(nOldChlCount+1);
+			_query.bindValue(":name",chlname);
+			_query.bindValue(":stream_id",1);
+			_query.exec();
+		}
+	}
+
 	Device_lock.unlock();
 	return IDeviceManager::OK;
 }
