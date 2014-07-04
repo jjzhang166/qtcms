@@ -26,7 +26,8 @@ _curConnectState(STATUS_DISCONNECTED),
 _curConnectType(TYPE_NULL),
 bIsOpenAudio(false),
 m_uiPersent(50),
-m_CurStatus(STATUS_STOP)
+m_CurStatus(STATUS_STOP),
+bIsHide(false)
 // m_DeviceClient(NULL)
 {
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
@@ -469,7 +470,13 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 void RPlaybackWnd::hideEvent( QHideEvent * )
 {
 	m_PlaybackWnd[0].AudioEnabled(false);
-	GroupPause();
+	if (m_CurStatus==STATUS_PLAY)
+	{
+		GroupPause();
+		bIsHide=true;
+	}else{
+		//do nothing
+	}
 }
 
 void RPlaybackWnd::showEvent( QShowEvent * )
@@ -481,7 +488,14 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 	}
 	if (ChlIsExit(m_chlID))
 	{
-		GroupContinue();
+		if (bIsHide==true)
+		{
+			GroupContinue();
+			bIsHide=false;
+		}else{
+			//do nothing
+		}
+		
 	}else{
 		GroupStop();
 	}

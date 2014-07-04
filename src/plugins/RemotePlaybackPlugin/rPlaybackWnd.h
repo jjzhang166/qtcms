@@ -14,6 +14,7 @@
 #include <IDeviceManager.h>
 #include "rPlayBackRun.h"
 #include <QTimer>
+#include <QTime>
 typedef struct _tagDevCliSetInfo{
 	QString m_sAddress;
 	unsigned int m_uiPort;
@@ -145,6 +146,7 @@ private:
     bool bIsInitFlags;
     bool bIsCaseInitFlags;
 	bool bIsOpenAudio;
+	bool bIsHide;
    
 	QMutex _mutexWidList;
 	DevCliSetInfo m_DevCliSetInfo;

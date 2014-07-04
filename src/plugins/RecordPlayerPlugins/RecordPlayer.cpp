@@ -13,6 +13,7 @@ m_pLocalPlayer(NULL),
 m_pWindowDivMode(NULL),
 m_currentWindID(0),
 m_bIsOpenAudio(false),
+m_bIsHide(false),
 m_uiPersent(50),
 m_CurStatus(STATUS_STOP)
 {
@@ -508,7 +509,13 @@ void RecordPlayer::showEvent( QShowEvent * )
 	if(m_CurStatus!=STATUS_STOP){
 		if (DevIsExit(m_devicename))
 		{
-			GroupContinue();
+			if (m_bIsHide)
+			{
+				m_bIsHide=false;
+				GroupContinue();
+			}else{
+				//do nothing
+			}
 		}else{
 			GroupContinue();
 			GroupStop();
@@ -519,7 +526,12 @@ void RecordPlayer::showEvent( QShowEvent * )
 void RecordPlayer::hideEvent( QHideEvent * )
 {
 	m_subRecPlayerView[0].AudioEnabled(false);
-	GroupPause();
+	if (m_CurStatus==STATUS_PLAY)
+	{
+		GroupPause();
+		m_bIsHide=true;
+	}
+
 }
 
 QVariantMap RecordPlayer::ScreenShot()
