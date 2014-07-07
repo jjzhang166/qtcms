@@ -65,6 +65,7 @@ public slots:
 	void slmouseMenu();
 	void slswitchStreamEx();
 	void slclosePreview();
+	void slMenRecorder();
 signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgmouseDoubleClick(QWidget *,QMouseEvent*);
@@ -81,6 +82,7 @@ private:
 	tagDeviceInfo getDeviceInfo();
 	QString getLanguageInfo(QString tags);
 	void translateLanguage();
+	bool getAutoRecordStatus();
 private:
 	typedef enum __tagConnectStatus{
 		STATUS_CONNECTED,
@@ -93,9 +95,11 @@ private:
 	QSubviewRun m_sSubviewRun;
 	ManageWidget *m_pManageWidget;
 	bool m_bIsFocus;
+	bool m_bIsRecording;
 	QMenu m_mRightMenu;
 	QAction *m_pClosePreviewAction;
 	QAction *m_pSwitchStreamAciton;
+	QAction *m_pRecorderAction;
 	tagDeviceInfo m_tDeviceInfo;
 	QTranslator *m_pTtanslator;
 	int m_nConnectingCount;

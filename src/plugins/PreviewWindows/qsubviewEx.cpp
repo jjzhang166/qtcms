@@ -8,8 +8,10 @@ QWidget(parent),
 	m_tHistoryConnectStatus(STATUS_DISCONNECTED),
 	m_pManageWidget(NULL),
 	m_bIsFocus(false),
+	m_bIsRecording(false),
 	m_pClosePreviewAction(NULL),
 	m_pSwitchStreamAciton(NULL),
+	m_pRecorderAction(NULL),
 	m_pTtanslator(NULL),
 	m_nConnectingCount(0)
 {
@@ -21,6 +23,7 @@ QWidget(parent),
 	//”“º¸≤Àµ•
 	m_pClosePreviewAction=m_mRightMenu.addAction(tr("Close Preview"));
 	m_pSwitchStreamAciton=m_mRightMenu.addAction(tr("Switch Stream"));
+	m_pRecorderAction=m_mRightMenu.addAction(tr("Start Record"));
 	//∂‡”Ô—‘
 	m_pTtanslator=new QTranslator();
 	QApplication::installTranslator(m_pTtanslator);
@@ -30,6 +33,7 @@ QWidget(parent),
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(m_pClosePreviewAction,SIGNAL(triggered(bool)),this,SLOT(slclosePreview()));
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
+	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
 
 }
 
@@ -119,8 +123,10 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 			if (evMap.value("RecordState").toBool()==true)
 			{
 				emit sgrecordState(true);
+				m_bIsRecording=true;
 			}else{
 				emit sgrecordState(false);
+				m_bIsRecording=false;
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"there is no record item";
@@ -507,6 +513,18 @@ void qsubviewEx::slmouseMenu()
 		m_pSwitchStreamAciton->setEnabled(true);
 		m_pClosePreviewAction->setEnabled(true);
 	}
+	if (m_tCurConnectStatus==STATUS_CONNECTED&&getAutoRecordStatus()==false)
+	{
+		m_pRecorderAction->setEnabled(true);
+	}else{
+		m_pRecorderAction->setDisabled(true);
+	}
+	if (m_bIsRecording)
+	{
+		m_pRecorderAction->setText(tr("Stop Record"));
+	}else{
+		m_pRecorderAction->setText(tr("Start Record"));
+	}
 	m_mRightMenu.exec(QCursor::pos());
 }
 
@@ -660,6 +678,21 @@ void qsubviewEx::translateLanguage()
 void qsubviewEx::setDataBaseFlush()
 {
 	m_sSubviewRun.setDatabaseFlush(true);
+}
+
+void qsubviewEx::slMenRecorder()
+{
+	if (m_bIsRecording)
+	{
+		stopRecord();
+	}else{
+		startRecord();
+	}
+}
+
+bool qsubviewEx::getAutoRecordStatus()
+{
+	return m_sSubviewRun.getAutoRecordStatus();
 }
 
 

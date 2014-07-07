@@ -1655,6 +1655,11 @@ void QSubviewRun::sleepEx( int time )
 	return;
 }
 
+bool QSubviewRun::getAutoRecordStatus()
+{
+	return m_bIsAutoRecording;
+}
+
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCConnectState(evName,evMap,pUser);

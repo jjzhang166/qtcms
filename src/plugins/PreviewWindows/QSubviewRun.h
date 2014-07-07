@@ -94,6 +94,7 @@ public:
 	//Â¼Ïñ
 	int startRecord();
 	int stopRecord();
+	bool getAutoRecordStatus();
 
 	void setDatabaseFlush(bool flag);
 	void setFoucs(bool bEnable);
