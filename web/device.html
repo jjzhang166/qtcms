@@ -204,6 +204,7 @@
 				</div>
 			</div>
 			<div class="right_content">
+				<input id="dev_id_ID_Ex" value="" type="hidden" />
 				<ul class="ope_list nav1 dvr_list0">
 					<li class="ope_listAct" onclick="dvr_devinfo_load_content();"><script>T("Device_info")</script></li>
 					<li onclick="dvr_common_load_content();"><script>T("General_Settings")</script></li>
@@ -1366,7 +1367,7 @@
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("IP_address")</script></td>
-			                            <td><input data-UI="staticIP" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_ip')" nFocus="save_ipaddr('network_ip')"/></td>
+			                            <td><input data-UI="staticIP" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_ip')" nFocus="save_ipaddr('network_ip')" id="address_ID_Ex" /></td>
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("Gateway")</script></td>
@@ -1386,7 +1387,7 @@
 			                        </tr>
 			                        <tr data-WARP="port0">
 			                        	<td><script>T("Port")</script></td>
-			                            <td><input data-UI="value" type="text" onChange="is_valid_port()" nFocus="save_port()"/></td>
+			                            <td><input id="port_ID_Ex" data-UI="value" type="text" Change="is_valid_port()" Focus="save_port()"/></td>
 			                       	</tr>
 			                        </tbody>            
 								</table>
@@ -1396,8 +1397,8 @@
 									<thead data-WARP="ddns">
 							 			<tr>
 							 				<td><script>T("DDNS_status")</script></td>
-							 				<td><input name="ddns" data-UI="enabled" type="radio" onclick="disable('ddns',true)" value="true"  onClick="remote_change();"/><script type="text/javascript">T("Open")</script>
-				                                <input name="ddns" data-UI="enabled" type="radio" onclick="disable('ddns')" value="false" onClick="remote_change();"/><script type="text/javascript">T("Close")</script>
+							 				<td><input name="ddns" data-UI="enabled" type="radio" onclick="disable('ddns')" value="true"  onClick="remote_change();"/><script type="text/javascript">T("Open")</script>
+				                                <input name="ddns" data-UI="enabled" type="radio" onclick="disable('ddns',true)" value="false" onClick="remote_change();"/><script type="text/javascript">T("Close")</script>
 				                            </td>
 				                        </tr>
 							 			<tr>
@@ -1424,8 +1425,8 @@
 						 			<tbody data-WARP="pppoe">
 				                       	<tr><td><script>T("PPPoE_status")</script></td>
 				                       		<td>
-				                            	<input name="pppoe" type="radio" onclick="disable('pppoe',true)" data-UI="enabled" onClick="remote_change();" value="ture" /><script>T("Open")</script>
-				                                <input name="pppoe" type="radio" onclick="disable('pppoe')" data-UI="enabled" onClick="remote_change();" value="false"/><script>T("Close")</script>
+				                            	<input name="pppoe" type="radio" onclick="disable('pppoe')" data-UI="enabled" onClick="remote_change();" value="true" /><script>T("Open")</script>
+				                                <input name="pppoe" type="radio" onclick="disable('pppoe',true)" data-UI="enabled" onClick="remote_change();" value="false"/><script>T("Close")</script>
 				                            </td>
 				                        </tr>
 				                        <tr><td><script>T("Username")</script></td><td><input type="text" data-UI="pppoeUserName"/></td></tr>
@@ -1435,7 +1436,7 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn">
-						<div class="hover" click="remote_save_content();" onclick="submitThisMenu('ipcnetworkInfo');"><script>T("Save")</script></div></td></tr>
+						<div class="hover" click="remote_save_content();" id="ModifyDeviceEx_ok" onclick="submitThisMenu('ipcnetworkInfo');portIPToCMS();"><script>T("Save")</script></div></td></tr>
 					</table>
 			    </div>
                 <!-- <div class="switch ipc_list">

@@ -1,4 +1,5 @@
-var oCommonLibrary;
+var oCommonLibrary,
+	key=0; //当前填充设备列表的索引;
 	$(function(){ 
 		//return false;
 		oCommonLibrary = document.getElementById('commonLibrary');
@@ -56,7 +57,7 @@ var oCommonLibrary;
 	
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool){ //区域菜单输出
-		num = num ? num : 0;
+		num = num || key ;
 		var obj = $('ul.filetree').not('[id]');
 
 			obj.each(function(){

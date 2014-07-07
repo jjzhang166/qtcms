@@ -3,19 +3,19 @@ var auth,nowDev,
 	dataType='json',
 	jsonp='',
 	ERROR = '',
-	base64 = new Base64();
+	base64 = new Base64(),
+	AJAX = null; //当前发送ajax请求的对象;
 
 $.ajaxSetup({
 	processData: false, 
 	cache: false,
-	timeout:5000,
-	async:true,
+	timeout:5000
 })
 
 function data2UI(objData,oWarp){
 
 	if(nowDev._USR && nowDev._USR == 'no auth'){
-		showAJAXHint('login_fail').show();
+		showAJAXHint('Unauthorized').show();
 	}
 	var defaultWarp = $('#set_content div.ipc_list:visible')
 	var warp = (oWarp && oWarp[0]) ? oWarp : defaultWarp;
@@ -24,7 +24,7 @@ function data2UI(objData,oWarp){
 
 			var dataKey = '[data-UI~="'+i+'"]',
 				warpKey = '[data-WARP~="'+i+'"]'
-			if(typeof objData[i] == 'object'){
+			if(typeof objData[i] == 'object' && ignoreKey(i)){
 				/*/^\d+$/.test(objData[i][0])*/
 				if(objData[i]['opt']){
 					warp.find('ul'+warpKey).html('');
@@ -56,10 +56,10 @@ function data2UI(objData,oWarp){
 
 						switch(oTag.attr('type')){
 							case 'radio' :
-								/*oTag.prop('checked',false).filter(function(){
-									return $(this).val() == objData[i];
-								}).prop('checked',true);*/
-								//console.log('+++++++++++++++radio++++++'+i+'+++++++++++'+objData[i]);
+								/*console.log('+++++++++++++++radio++++++'+i+'+++++++++++'+objData[i]);
+								console.log(warp);
+								console.log(oTag);*/
+
 								warp.find(':radio[data-UI="'+i+'"][value="'+objData[i]+'"]').prop('checked',true);
 							break;
 							case 'checkbox' :
@@ -78,7 +78,7 @@ function data2UI(objData,oWarp){
 }
 
 function ignoreKey(key){
-	var ignoreKey = ['type','mode','ver','seq','object','__proto__'];
+	var ignoreKey = ['type','mode','ver','seq','object','__proto__','upnp','wireless'];
 	for(var i=0;i<ignoreKey.length;i++){
 		if(key == ignoreKey[i]){
 			return false;
@@ -88,6 +88,8 @@ function ignoreKey(key){
 }
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
+
+	emptyDevSetMenu();
 
 	type = 'GET'
 
@@ -111,7 +113,6 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 
 function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始化方法.
 
-	emptyDevSetMenu();
 
 	var str = type == 'GET' ? 'loading' : 'saveing' ;
 
@@ -119,10 +120,14 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 		oHint = showAJAXHint(str).css('top',targetMenu.height() + 46);
 
-	if(checkAJAX())
-		return false;
+	//console.log('----------usr:--'+nowDev._USR+'-----password:--'+nowDev._PWD+'----');
 
-	$.ajax({
+	if(checkAJAX())
+		return;
+
+	//AJAX && AJAX.abort();
+
+	AJAX = $.ajax({
 		type:type,
 		url: url,
 		data: data,
@@ -135,26 +140,49 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			//console.log(re);
 			typeof(beforeSend) == 'function' && beforeSend();
 		},
-		success: function(data){
-			str =  type == 'GET' ? 'loading_success' : 'lang.save_success';
+		success: function(data,textStatus,jqXHR){
+			/*console.log('----------usr:--'+nowDev._USR+'-----password:--'+nowDev._PWD+'----')
+			console.log('++++++++++++++++jqXHR+++++++++++++++');
+			console.log(jqXHR.status);
+
+			console.log('++++++++++++++textStatus+++++++++++++++++');
+
+			console.log(textStatus);
+
+			console.log('+++++++++++++++++++++++++++++++');*/
+			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
 
 			showAJAXHint(str)
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
-			console.log(Data);
+			//console.log(Data);
 			typeof(success) == 'function' && success(Data);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			str = lang.loading_fail;
+			/*console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
+			console.log(XMLHttpRequest.status);
 
-			if(textStatus)
-				str=textStatus;
+			console.log('++++++++++++++textStatus+++++++++++++++++');
 
-			if(errorThrown){
-				str='login_fail';
+			console.log(textStatus);
+
+			console.log('++++++++++++++++errorThrown+++++++++++++++');
+
+			console.log(errorThrown);
+
+			console.log('+++++++++++++++++++++++++++++++');*/
+
+			str = 'loading_fail'
+
+			if(errorThrown && lang[errorThrown]){
+				str=errorThrown;				
 			}
 
+			if(str=='Unauthorized'){
+				nowDev._VER = 'no auth';
+			}
+			
 			showAJAXHint(str);
 			//alert("error:" + textStatus);
 		},
@@ -163,11 +191,10 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			if(str == 'loading_success' || str == 'save_success'){
 				oHint.fadeOut(2000);
+				checkAJAX();
 			}else{
 				showAJAXHint(str);
 			}
-
-			checkAJAX();
 
 			typeof(complete) == 'function' && complete();
 
@@ -187,7 +214,10 @@ function checkAJAX(){
 
 	if(nowDev._VER && nowDev._VER == 'no auth'){
 		$('#set_content div.ipc_list:eq(0) input:text').val('');
-		a = 'login_fail';
+		a = 'Unauthorized';
+
+		console.log('=======nowDev._VER=========='+nowDev._VER);
+
 	}else if(nowDev._VER < nowDev._Upgrade){
 		a = 'low_ver';
 	}
@@ -202,7 +232,7 @@ function submitThisMenu(str){
 	nowDev[str+'Put']();
 }
 
-/*function getPutDataJSON(){
+function getPutDataJSON(){
 	var warp = $('#set_content div.ipc_list:visible'),
 		str = '{',
 		node = {};
@@ -229,7 +259,7 @@ function submitThisMenu(str){
 	str = str.slice(0,-1) + '}';
 
 	return str;
-}*/
+}
 
 function disable(warp,str){
 	var oInput = $('#set_content div.ipc_list:visible [data-WARP="'+warp+'"]').find('input:text,input:password');
@@ -268,6 +298,22 @@ function chkIPformat(str){
 function getEncode(data){
 	console.log(data);
 	nowDev._ipcencodeInfo2UI(data);
+}
+
+function reInitNowDev(){
+	if(nowDev && key == 1){
+		var odev = $('#dev_'+nowDev._ID).addClass('sel')
+		odev.parent('li').siblings('li').find('span').removeClass('sel');
+		var oDevData = odev.data('data');
+		nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+	}
+}
+
+function portIPToCMS(){
+	console.log('--修改端口和地址重新同步设备状态----')
+	areaList2Ui();
+	console.log('--修改端口和地址重新加载设备列表----');
+	reInitNowDev();
 }
 
 /*function json2str(obj){

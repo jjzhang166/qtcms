@@ -1,5 +1,4 @@
 var oSearchOcx,
-	key=0, //当前菜单选项
 	searchedDev=[];//已经搜索到的设备;
 	$(function(){
 
@@ -91,8 +90,9 @@ var oSearchOcx,
 				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
 				oTreeWarp.show();
 				set_contentMax();
-				areaList2Ui(key);
+				areaList2Ui();
 				/*emptyDevSetMenu();*/
+				$('#ajaxHint').html('').stop(true,true).hide();
 
 				if(key == 0){
 					searchFlush();
@@ -100,16 +100,12 @@ var oSearchOcx,
 					oSearchOcx.Stop();
 				}
 				if(key == 1){
-/*
-					$('#set_content ul.ipc_list0 li,ul.dev_list0 li').click(function(){
-						emptyDevSetMenu();
-					})*/
 					
-					if(nowDev){
-						$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
-					}
+					reInitNowDev()
 
-					$('ul.filetree').not('[id]').eq(key).find('span.device').click(function(){
+					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){
+
+						$('#ajaxHint').html('').stop(true,true).hide();
 
 						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
 						$(this).addClass('sel')
@@ -120,6 +116,9 @@ var oSearchOcx,
 
 						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
 
+						$('#dev_id_ID_Ex').val(oDevData.dev_id);
+
+						AJAX && AJAX.abort();
 
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
 							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
@@ -128,12 +127,15 @@ var oSearchOcx,
 							//ipc(_url,oDevData.username,oDevData.password);
 /*							devinfo_load_content(true);	*/
 
-							nowDev = new IPC(oDevData.username,oDevData.password,_url,oDevData.dev_id,oDevData.vendor);
+							nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
 							
 							console.log('------------new IPC()--------------');
 							
 							$('#set_content ul.ipc_list0 li').click(function(){
-								nowDev[$(this).attr('action')+'2UI']();
+								if($(this).attr('action')){
+									AJAX && AJAX.abort();
+									nowDev[$(this).attr('action')+'2UI']();
+								}
 							})
 
 							nowDev.ipcBasicInfo2UI();
@@ -375,10 +377,10 @@ var oSearchOcx,
 		 	$('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
 		})*/
 
-		areaList2Ui(2);
+		areaList2Ui();
 	}
 	function FillRecordTimeData(){
-		areaList2Ui(2);
+		areaList2Ui();
 		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
@@ -1099,8 +1101,9 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
-		areaList2Ui(0);
+		areaList2Ui();
 		closeMenu();
+		reInitNowDev();
 	}
 	/*function ModifyDeviceSuccess(data){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}

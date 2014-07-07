@@ -1,7 +1,8 @@
-var IPC = function(usr,pwd,url,id,type){
+var IPC = function(usr,pwd,ip,port,id,type){
+	this._IP = ip;
+	this._PORT = port;
 	this._USR = usr;
 	this._PWD = pwd;
-	this._URL = url;
 	this._ID = id;
 	this._TYPE = type;
 	this._VER = 0;
@@ -15,6 +16,10 @@ var IPC = function(usr,pwd,url,id,type){
 		re.setRequestHeader('Authorization',auth);
 	});*/
 
+
+	this.getRequestURL = function(){
+		return 'http://'+this._IP+':'+this._PORT;
+	}
 
 	this.ipcBasicInfo2UI = function(){ //获取设备信息
 		var This = this;
@@ -30,7 +35,7 @@ var IPC = function(usr,pwd,url,id,type){
 		dataType='jsonp';
 		jsonp='jsoncallback';
 		
-		_AJAXget(this._URL+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,'',function(data){
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,'',function(data){
 			data2UI(data);
 			This._VER = $('#set_content div.ipc_list:visible input[data-UI="software_version"]').val();
 		});
@@ -40,11 +45,11 @@ var IPC = function(usr,pwd,url,id,type){
 		console.log('-------------------ipcencodeInfo2UI--------------------------');
 		$('#set_content div.ipc_list:visible input[data]:first').attr('data',101).val(lang.Main_stream);
 		this._ipcencodeInfo2UI(101);
-		//_AJAXget(this._URL + '/netsdk/video/encode/channel/101/properties','','',data2UI);
+		//_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/101/properties','','',data2UI);
 	}
 
 	this._ipcencodeInfo2UI = function(data){
-		_AJAXget(this._URL + '/netsdk/video/encode/channel/'+data+'/properties','','',data2UI);
+		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+data+'/properties','','',data2UI);
 	}
 
 	this.ipcencodeInfoPut = function(){ //设置编码信息
@@ -59,7 +64,7 @@ var IPC = function(usr,pwd,url,id,type){
 		/*var oJSON = $.parseJSON(getPutDataJSON())
 			oJSON.bitRateControlType = warp.find('input[data-UI="bitRateControlType"]').attr('data');
 		console.log(json2str(oJSON));*/
-		_AJAXput(this._URL + '/netsdk/video/encode/channel/'+warp.find('input[data]:first').attr('data'),str);
+		_AJAXput(this.getRequestURL() + '/netsdk/video/encode/channel/'+warp.find('input[data]:first').attr('data'),str);
 
 	}
 
@@ -68,44 +73,26 @@ var IPC = function(usr,pwd,url,id,type){
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 		var warp = $('#set_content div.ipc_list:visible');
 
-		/*var xmlstr = '';
-		xmlstr += '<juan ver="" seq="">';
-		xmlstr += '<conf type="read" user="'+this._USR+'" password="'+this._PWD+'">';
-		xmlstr += '<network mac="">';
-		xmlstr += '<lan dhcp="" static_ip="" static_netmask="" static_gateway="" static_preferred_dns="" static_alternate_dns="" >'
-		xmlstr += '<port0 name="" value=""/>'
-		xmlstr += '</lan>'
-		xmlstr += '<esee enable="" id_disp=""/>';
-		xmlstr += '<pppoe enable="" username="" password="" />';
-		xmlstr += '<ddns enable="" provider="" url="" username="" password="" />';
-		//xmlstr += '<threeg enable="" apn="" pin="" username="" password="" />';
-		xmlstr += '</network>';
-		xmlstr += '</conf>';
-		xmlstr += '</juan>';
-
-		dataType='jsonp';
-		jsonp='jsoncallback';
-		
-		_AJAXget(this._URL+'/cgi-bin/gw2.cgi?f=j','xml=' + xmlstr,'',data2UI);*/
-
-		_AJAXget(this._URL+'/netsdk/System/deviceInfo/macAddress','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/System/deviceInfo/macAddress','','',function(data){
 			warp.find('input[data-UI="mac"]').val(data);
 		});
 
-		_AJAXget(this._URL+'/netsdk/Network/Interface/1','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Interface/1','','',function(data){
 			data2UI(data);
 			warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
-			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns',true) : disable('ddns');
-			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe',true) : disable('pppoe');
+			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns') : disable('ddns',true);
+			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);
 		});
 
-		_AJAXget(this._URL+'/netsdk/Network/Esee','','',function(data){
-			warp.find('input[data-WARP="esee"] input[value="'+data.enabled+'"]').prop('checked',true);
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Esee','','',function(data){
+
+			warp.find('input[name="esee"][value="'+data.enabled+'"]').prop('checked',true);
+
 		});
 
-		_AJAXget(this._URL+'/netsdk/Network/Dns','','',data2UI);
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Dns','','',data2UI);
 
-		_AJAXget(this._URL+'/netsdk/Network/Port/1','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Port/1','','',function(data){
 			warp.find('input[data-UI="value"]').val(data.value);
 		});
 
@@ -114,14 +101,38 @@ var IPC = function(usr,pwd,url,id,type){
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
 
 		var warp = $('#set_content div.ipc_list:visible');
+		var This = this;
 
-		_AJAXput(this._URL+'/netsdk/Network/Interface/1','{"lan":{"addressingType":"'+warp.find('input[data-UI="addressingType"]:checked').val()+'", "staticIP": "'+warp.find('input[data-UI="staticIP"]').val()+'","staticNetmask": "'+warp.find('input[data-UI="staticNetmask"]').val()+'", "staticGateway": "'+warp.find('input[data-UI="staticGateway"]').val()+'" }}');
+		var interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
 
-		_AJAXput(this._URL+'/netsdk/Network/Esee','{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}');
+		//console.log($.parseJSON(interFaceJSON));
 
-		_AJAXput(this._URL+'/netsdk/Network/Dns','{ "preferredDns": "'+warp.find('input[data-UI="preferredDns"]').val()+'", "staticAlternateDns": "'+warp.find('input[data-UI="staticAlternateDns"]').val()+'" }');
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
+			This._IP = warp.find('input[data-UI="staticIP"]').val();
+			//console.log('IP修改成功++1'+This.getRequestURL());
+		});
 
-		_AJAXput(this._URL+'/netsdk/Network/Port/1','{ "value": "'+warp.find('input[data-UI="value"]').val()+'"}');
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}'/*,'','',function(){
+			console.log('Esee状态修改完成{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}++++++++++2');
+		}*/);
+
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Dns','{"preferredDns": "'+warp.find('input[data-UI="preferredDns"]').val()+'", "staticAlternateDns": "'+warp.find('input[data-UI="staticAlternateDns"]').val()+'" }'/*,'','',function(){
+			console.log('Dns状态修改完成++++++++++3');
+		}*/);
+
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}','',function(){
+			This._PORT = warp.find('input[data-UI="value"]').val();
+			//console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
+		});
+
+		function getBoolean(name){
+			return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false
+		}
+
+		function getVlue(name){
+			return warp.find('input[data-UI="'+name+'"]:checked').val() || warp.find('input[data-UI="'+name+'"]').val()
+		}
+
 	}
 
 	this.ipcuserManagementInfo2UI = function(){ //获取用户信息
@@ -130,10 +141,10 @@ var IPC = function(usr,pwd,url,id,type){
 
 		console.log('-------------------ipcuserManagementInfo2UI--------------------------');
 		
-		_AJAXget(this._URL+'/user/user_list.xml','username='+this._USR+'&password='+this._PWD,'',function(data){
+		_AJAXget(this.getRequestURL()+'/user/user_list.xml','username='+this._USR+'&password='+this._PWD,'',function(data){
 			$('user_list',data).children().not(':first').each(function(){
 				/*<user0 name=​"user" admin=​"yes" permit_live=​"yes" permit_setting=​"yes" permit_playback=​"yes" del_user=​"yes" edit_user=​"no" set_pass=​"no">​</user0>​*/
-				console.log($(this));
+				//console.log($(this));
 				$('<tr><td>'+$(this).attr('name')+'</td><td><input type="checkbox" '+__TRUE($(this).attr('admin'),'checked')+'/>管理<input type="checkbox" '+__TRUE($(this).attr('permit_setting'),'checked')+'/>设置<input type="checkbox" '+__TRUE($(this).attr('permit_playback'),'checked')+'/>回放</td><td><button '+__TRUE($(this).attr('edit_user'),'disabled')+' type="button" value="保存">保存</button><button '+__TRUE($(this).attr('del_user'),'disabled')+' type="button" value="删除">删除</button></td></tr>').appendTo($('#IPC_user_manage tbody'));
 			})
 		});
@@ -153,21 +164,21 @@ var IPC = function(usr,pwd,url,id,type){
 		$('#PC_time').val(renewtime());
 
 		console.log('-------------------timeZone--------------------------');
-		_AJAXget(this._URL+'/Netsdk/system/time/timeZone','','',function(data){
+		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/timeZone','','',function(data){
 			$('#time_zone').val(data).attr('data',data);
 		});
 
-		console.log('-------------------ntp-------------'+this._URL+'/netsdk/system/time/ntp-------------');
-		_AJAXget(this._URL+'/Netsdk/system/time/ntp','','',data2UI);
+		//console.log('-------------------ntp-------------'+this.getRequestURL()+'/netsdk/system/time/ntp-------------');
+		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/ntp','','',data2UI);
 
-		console.log('-------------------localTime-------------'+this._URL+'/NetSDK/System/time/localTime-------------');
-		_AJAXget(this._URL+'/NetSDK/System/time/localTime','','',function(data){
+		//console.log('-------------------localTime-------------'+this.getRequestURL()+'/NetSDK/System/time/localTime-------------');
+		_AJAXget(this.getRequestURL()+'/NetSDK/System/time/localTime','','',function(data){
 			var time = data.split('+')[0].replace('T','  ');
 			$('#curent_time').val(time).attr('data',time);
 			//console.log(data);
 		})
 
-		console.log('-------------------PCTime--------------------------');
+		//console.log('-------------------PCTime--------------------------');
 
 		setInterval(function(){
 			$('#PC_time').val(renewtime());
@@ -202,9 +213,9 @@ var IPC = function(usr,pwd,url,id,type){
 
 			var warp = $('#set_content div.ipc_list:visible');
 
-			_AJAXput(this._URL+'/netsdk/system/time/timeZone','"'+$('#time_zone').val()+'"');
+			_AJAXput(this.getRequestURL()+'/netsdk/system/time/timeZone','"'+$('#time_zone').val()+'"');
 
-			_AJAXput(this._URL+'/netsdk/system/time/ntp','{"ntpEnabled":'+(warp.find('input[data-UI="ntpEnabled"]:checked').val() == 'true' ? true : false)+',"ntpServerDomain":"'+warp.find('input[data-UI="ntpServerDomain"]').val()+'"}')
+			_AJAXput(this.getRequestURL()+'/netsdk/system/time/ntp','{"ntpEnabled":'+(warp.find('input[data-UI="ntpEnabled"]:checked').val() == 'true' ? true : false)+',"ntpServerDomain":"'+warp.find('input[data-UI="ntpServerDomain"]').val()+'"}')
 		}
 	}
 
