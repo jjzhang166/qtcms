@@ -8,7 +8,7 @@
 #pragma comment(lib,"netlib.lib")
 QMutex StorageMgr::m_sLock;
 QMutex StorageMgr::m_dblock;
-
+QList<int > StorageMgr::m_insertIdList;
 StorageMgr::StorageMgr(void):
 	m_insertId(-1),
 	m_pDisksSetting(NULL),
@@ -20,7 +20,6 @@ StorageMgr::StorageMgr(void):
 	{
 		qDebug("can not create diskssetting instance");
 	}
-
 	QDateTime curTime = QDateTime::currentDateTime();
 	m_connectId = QString::number(curTime.toTime_t()) + QString::number((int)this);
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", m_connectId);
@@ -154,6 +153,7 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 		if (_query.next())
 		{
 			m_insertId = _query.value(0).toInt();
+			m_insertIdList.append(m_insertId);
 		}
 
 		_query.finish();
@@ -651,6 +651,13 @@ bool StorageMgr::deleteRecord()
 		if (_query.exec(command))
 		{
 			bRet =true;
+			if (m_insertIdList.contains(m_insertId))
+			{
+				int npos=m_insertIdList.indexOf(m_insertId);
+				m_insertIdList.removeAt(npos);
+			}else{
+
+			}
 			m_insertId=-1;
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"deleteRecord fail as exec the command fail,please check the command or the id";
@@ -672,6 +679,13 @@ bool StorageMgr::updateRecord( QString sEnd, int size )
 	if (_query.exec(command))
 	{
 		m_dblock.unlock();
+		if (m_insertIdList.contains(m_insertId))
+		{
+			int npos=m_insertIdList.indexOf(m_insertId);
+			m_insertIdList.removeAt(npos);
+		}else{
+
+		}
 		m_insertId = -1;
 		return true;
 	}else{
@@ -692,13 +706,17 @@ QStringList StorageMgr::findEarlestRecord( QString dbPath, QDate &earlestDate )
 		return pathList;
 	}
 	QSqlQuery _query(*m_db);
-	QString command = QString("select date, path from local_record where date=(select date from local_record order by date limit 1) order by start_time");
+	QString command = QString("select date, path,id from local_record where date=(select date from local_record order by date limit 1) order by start_time");
 	_query.exec(command);
 
 	while (_query.next())
 	{
 		earlestDate = _query.value(0).toDate();
-		pathList<<_query.value(1).toString();
+		if (m_insertIdList.contains(_query.value(2).toInt()))
+		{
+		}else{
+			pathList<<_query.value(1).toString();
+		}
 	}
 	_query.finish();
 	m_db->close();

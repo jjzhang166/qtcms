@@ -52,5 +52,6 @@ private:
 	QString m_connectId;
 	QSqlDatabase *m_db;
 	static QMutex m_dblock;
+	static QList<int > m_insertIdList;
 };
 

@@ -1158,6 +1158,12 @@ int QSubviewRun::cbCDecodeFrame( QString evName,QVariantMap evMap,void*pUser )
 int QSubviewRun::cbCRecordState( QString evName,QVariantMap evMap,void*pUser )
 {
 	eventCallBack(evName,evMap);
+	if (evMap.value("RecordState").toBool()==true)
+	{
+	}else{
+		m_bIsAutoRecording=false;
+		m_bIsRecord=false;
+	}
 	return 0;
 }
 
