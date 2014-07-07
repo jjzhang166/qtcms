@@ -57,6 +57,7 @@ public slots:
 	void OnAddDeviceALLThread();
 	void OnRemoveDevice();
 	void OnModifyDevice();
+	void OnModifyDeviceEx();
 	void OnRemoveDeviceALL();
 	void OnRemoveDeviceALLThread();
 

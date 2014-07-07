@@ -84,7 +84,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
 	QWFW_MSGMAP("RemoveDeviceALL_ok","click","OnRemoveDeviceALLThread()");
 	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
-	QWFW_MSGMAP("ModifyDeviceEx_ok","click","OnModifyDevice()");
+	QWFW_MSGMAP("ModifyDeviceEx_ok","click","OnModifyDeviceEx()");
 
 	QWFW_MSGMAP("AddGroup_ok","click","OnAddGroup()");
 	QWFW_MSGMAP("RemoveGroup_ok","click","OnRemoveGroup()");
@@ -623,7 +623,50 @@ void settingsActivity::OnRemoveDevice()
 	Idevice->Release();
 	return;
 }
+void settingsActivity::OnModifyDeviceEx()
+{
+	IDeviceManager *Idevice=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
+	DEF_EVENT_PARAM(bcitem);
+	int total=0;
+	QString devId;
+	//==================
 
+	if(NULL==Idevice){
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
+		return;
+	}
+	QVariant Dev_Id=QueryValue("dev_id_ID_Ex");
+	bool nRet_bool=Idevice->IsDeviceExist(Dev_Id.toInt());
+	if(false==nRet_bool){
+		EP_ADD_PARAM(bcitem,"total",total);
+		EP_ADD_PARAM(bcitem,"succeedId",devId);
+		EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
+		Idevice->Release();
+		return;
+	}
+	QVariant sAddress=QueryValue("address_ID_Ex");
+	QVariant port=QueryValue("port_ID_Ex");
+	QVariant http=QueryValue("http_ID_Ex");
+	if(false==sAddress.isNull()&&false==port.isNull()&&false==http.isNull()){
+		int nRet_int=Idevice->ModifyDeviceHost(Dev_Id.toInt(),sAddress.toString(),port.toInt(),http.toInt());
+		if(0!=nRet_int){
+			EP_ADD_PARAM(bcitem,"total",total);
+			EP_ADD_PARAM(bcitem,"succeedId",devId);
+			EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
+			Idevice->Release();
+			return;
+		}
+	}
+	EP_ADD_PARAM(bcitem,"total",1);
+	devId.append(QString("%1").arg(Dev_Id.toInt()));
+	EP_ADD_PARAM(bcitem,"succeedId",devId);
+	EventProcCall("ModifyDeviceFeedBackSuccess",bcitem);
+	Idevice->Release();
+	return;
+}
 void settingsActivity::OnModifyDevice()
 {
 	IDeviceManager *Idevice=NULL;
@@ -1807,5 +1850,8 @@ void settingsActivity::OnRemoveDeviceALL()
 	EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
 	return;
 }
+
+
+
 
 
