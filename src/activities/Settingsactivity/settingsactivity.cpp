@@ -84,6 +84,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("RemoveDevice_ok","click","OnRemoveDevice()");
 	QWFW_MSGMAP("RemoveDeviceALL_ok","click","OnRemoveDeviceALLThread()");
 	QWFW_MSGMAP("ModifyDevice_ok","click","OnModifyDevice()");
+	QWFW_MSGMAP("ModifyDeviceEx_ok","click","OnModifyDevice()");
 
 	QWFW_MSGMAP("AddGroup_ok","click","OnAddGroup()");
 	QWFW_MSGMAP("RemoveGroup_ok","click","OnRemoveGroup()");
