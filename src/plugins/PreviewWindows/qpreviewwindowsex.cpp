@@ -384,6 +384,11 @@ void qpreviewwindowsex::showEvent( QShowEvent *ev )
 		}
 		m_sLastLanguageLabel=sLable;
 	}
+	//setDataBase flush
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].setDataBaseFlush();
+	}
 }
 
 bool qpreviewwindowsex::chlIsExist( int chlId )

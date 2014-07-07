@@ -54,6 +54,7 @@ public:
 	void loadLanguage(QString tags);
 	//设置当前焦点窗口
 	void setCurrentFocus(bool flags);
+	void setDataBaseFlush();
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);

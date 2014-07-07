@@ -657,6 +657,11 @@ void qsubviewEx::translateLanguage()
 	}
 }
 
+void qsubviewEx::setDataBaseFlush()
+{
+	m_sSubviewRun.setDatabaseFlush(true);
+}
+
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {

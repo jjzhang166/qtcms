@@ -1430,6 +1430,7 @@ void QSubviewRun::slplanRecord()
 			{
 				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_deviceInfo.m_uiChannelIdInDataBase);
 				tagRecorderTimeInfo recTimeInfo;
+				m_lstReocrdTimeInfoList.clear();
 				for (int i=0;i<recordIdList.size();i++)
 				{
 					QString recordId=recordIdList[i];
@@ -1482,6 +1483,18 @@ void QSubviewRun::slplanRecord()
 					m_bIsAutoRecording=false;
 				}
 			}
+		}
+		if (m_lstReocrdTimeInfoList.size()==0)
+		{
+			if (m_bIsAutoRecording==true)
+			{
+				m_stepCode.enqueue(STOPRECORD);
+				m_bIsAutoRecording=false;
+			}else{
+
+			}
+		}else{
+
 		}
 	}else{
 		//do nothing
@@ -1629,13 +1642,13 @@ void QSubviewRun::backToMainThread( QVariantMap evMap )
 
 void QSubviewRun::sleepEx( int time )
 {
-	if (m_nSleepSwitch<60)
+	if (m_nSleepSwitch<100)
 	{
 		msleep(time);
 		m_nSleepSwitch++;
 	}else{
 		QEventLoop eventloop;
-		QTimer::singleShot(time, &eventloop, SLOT(quit()));
+		QTimer::singleShot(2, &eventloop, SLOT(quit()));
 		eventloop.exec();
 		m_nSleepSwitch=0;
 	}
