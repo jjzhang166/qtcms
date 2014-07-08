@@ -1,10 +1,12 @@
 var auth,nowDev,
+	ERROR = '',
+	base64 = new Base64(),
+
+	AJAX = null, //当前发送ajax请求的对象;
 	type='get',
 	dataType='json',
 	jsonp='',
-	ERROR = '',
-	base64 = new Base64(),
-	AJAX = null; //当前发送ajax请求的对象;
+	async=true;
 
 $.ajaxSetup({
 	processData: false, 
@@ -89,7 +91,7 @@ function ignoreKey(key){
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
-	emptyDevSetMenu();
+	async && emptyDevSetMenu(); //异步请求时清空表单.
 
 	type = 'GET'
 
@@ -127,12 +129,13 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 	//AJAX && AJAX.abort();
 
-	AJAX = $.ajax({
+	AJAX=$.ajax({
 		type:type,
 		url: url,
 		data: data,
 		dataType: dataType,
 		jsonp: jsonp,
+		async:async,
 		beforeSend: function(re){
 			//console.log('-----------ajaxSend:'+auth+'--------------');
 			//console.log('-----------url:'+url+'---------------');
@@ -153,50 +156,57 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
 
-			showAJAXHint(str)
+			showAJAXHint(str);
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
 			//console.log(Data);
 			typeof(success) == 'function' && success(Data);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
-			/*console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
-			console.log(XMLHttpRequest.status);
 
-			console.log('++++++++++++++textStatus+++++++++++++++++');
+			str = 'loading_fail';
 
-			console.log(textStatus);
-
-			console.log('++++++++++++++++errorThrown+++++++++++++++');
-
-			console.log(errorThrown);
-
-			console.log('+++++++++++++++++++++++++++++++');*/
-
-			str = 'loading_fail'
-
-			if(errorThrown && lang[errorThrown]){
-				str=errorThrown;				
+			if(lang[textStatus]){
+				str = textStatus
 			}
 
-			if(str=='Unauthorized'){
+			if(errorThrown=='Unauthorized'){
+				str='Unauthorized';				
 				nowDev._VER = 'no auth';
 			}
+
+			str != 'abort' && showAJAXHint(str);
+
+
+			if(str != 'abort'){
+				console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
+				console.log(XMLHttpRequest.status);
+
+				console.log('++++++++++++++textStatus+++++++++++++++++');
+
+				console.log(textStatus);
+
+				console.log('++++++++++++++++errorThrown+++++++++++++++');
+
+				console.log(errorThrown);
+
+				console.log('+++++++++++++++++++++++++++++++');
+			}
 			
-			showAJAXHint(str);
 			//alert("error:" + textStatus);
 		},
 		complete: function(XMLHttpRequest, textStatus){
 			console.log('-------------complete-----------'+str);
+			if(str != 'abort'){
+				if(str == 'loading_success' || str == 'save_success'){
+					oHint.fadeOut(2000);
+					checkAJAX();
+				}else{
+					showAJAXHint(str);
+				}
 
-			if(str == 'loading_success' || str == 'save_success'){
-				oHint.fadeOut(2000);
-				checkAJAX();
-			}else{
-				showAJAXHint(str);
+				typeof(complete) == 'function' && complete();
 			}
-
-			typeof(complete) == 'function' && complete();
 
 			//console.log(/(\d+\\.)+/.test(nowDev._VER));
 		}
@@ -296,7 +306,7 @@ function chkIPformat(str){
 }
 
 function getEncode(data){
-	console.log(data);
+	//console.log(data);
 	nowDev._ipcencodeInfo2UI(data);
 }
 
@@ -309,13 +319,16 @@ function reInitNowDev(){
 	}
 }
 
-function portIPToCMS(){
-	console.log('--修改端口和地址重新同步设备状态----')
-	areaList2Ui();
-	console.log('--修改端口和地址重新加载设备列表----');
-	reInitNowDev();
+
+function portAsync(){
+	$('#http_ID_Ex').val($('#port_ID_Ex').val());
 }
 
+/*function AJAXabort(){
+	for(i in AJAX){
+		AJAX[i].abort();
+	}
+}*/
 /*function json2str(obj){
   var S = [];
   for(var i in obj){

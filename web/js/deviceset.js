@@ -575,7 +575,7 @@ var oSearchOcx,
 	}
 
 	function emptyDevSetMenu(){
-		//console.log(nowDev._ID);
+		//console.log('清空表单的数据');
 		$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
 
 		$('#set_content div.switch input[class]').val('').prop('checked',false);

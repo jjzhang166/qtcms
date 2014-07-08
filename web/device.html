@@ -1387,7 +1387,8 @@
 			                        </tr>
 			                        <tr data-WARP="port0">
 			                        	<td><script>T("Port")</script></td>
-			                            <td><input id="port_ID_Ex" data-UI="value" type="text" Change="is_valid_port()" Focus="save_port()"/></td>
+			                            <td><input id="port_ID_Ex" data-UI="value" type="text" onChange="portAsync()" Focus="save_port()"/>
+			                            	<input id="http_ID_Ex" data-UI="value" type="hidden"/></td>
 			                       	</tr>
 			                        </tbody>            
 								</table>
@@ -1436,7 +1437,7 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn">
-						<div class="hover" click="remote_save_content();" id="ModifyDeviceEx_ok" onclick="submitThisMenu('ipcnetworkInfo');portIPToCMS();"><script>T("Save")</script></div></td></tr>
+						<div class="hover" onclick="submitThisMenu('ipcnetworkInfo');"><script>T("Save")</script></div></td></tr>
 					</table>
 			    </div>
                 <!-- <div class="switch ipc_list">

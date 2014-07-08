@@ -18,6 +18,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 
 	this.getRequestURL = function(){
+		//console.log('http://'+this._IP+':'+this._PORT);
 		return 'http://'+this._IP+':'+this._PORT;
 	}
 
@@ -70,6 +71,10 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.ipcnetworkInfo2UI = function(){ //获取网络信息
 
+		emptyDevSetMenu();
+		
+		async=false;
+
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 		var warp = $('#set_content div.ipc_list:visible');
 
@@ -85,9 +90,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		});
 
 		_AJAXget(this.getRequestURL()+'/netsdk/Network/Esee','','',function(data){
-
 			warp.find('input[name="esee"][value="'+data.enabled+'"]').prop('checked',true);
-
 		});
 
 		_AJAXget(this.getRequestURL()+'/netsdk/Network/Dns','','',data2UI);
@@ -96,21 +99,17 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			warp.find('input[data-UI="value"]').val(data.value);
 		});
 
+		async=true;
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
 
-		var warp = $('#set_content div.ipc_list:visible');
-		var This = this;
+		async=false;
 
-		var interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
+		var warp = $('#set_content div.ipc_list:visible'),
+			This = this,
 
-		//console.log($.parseJSON(interFaceJSON));
-
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
-			This._IP = warp.find('input[data-UI="staticIP"]').val();
-			//console.log('IP修改成功++1'+This.getRequestURL());
-		});
+			interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
 
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}'/*,'','',function(){
 			console.log('Esee状态修改完成{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}++++++++++2');
@@ -121,8 +120,18 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		}*/);
 
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}','',function(){
-			This._PORT = warp.find('input[data-UI="value"]').val();
+			//This._PORT = warp.find('input[data-UI="value"]').val();
 			//console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
+		});
+
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
+			//This._IP = warp.find('input[data-UI="staticIP"]').val();
+			qob.OnModifyDeviceEx();
+			console.log('--修改端口和地址重新同步设备状态----');
+			areaList2Ui();
+			console.log('--修改端口和地址重新加载设备列表----');
+			reInitNowDev();
+			//console.log('IP修改成功++1'+This.getRequestURL());
 		});
 
 		function getBoolean(name){
@@ -133,6 +142,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			return warp.find('input[data-UI="'+name+'"]:checked').val() || warp.find('input[data-UI="'+name+'"]').val()
 		}
 
+		async=true;
 	}
 
 	this.ipcuserManagementInfo2UI = function(){ //获取用户信息
