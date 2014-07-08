@@ -632,7 +632,6 @@ void DeviceClient::action(QString options, BufferManager *pBuffer)
 	}
 	else if ("Pause" == options)
 	{
-		qDebug()<<"============= puase ============== ";
 		m_pRemotePlayback->pausePlaybackStream(true);
 	}
 	else if ("Continue" == options)

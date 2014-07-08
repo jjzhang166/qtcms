@@ -14,8 +14,38 @@
 #include <QDebug>
 #include <QStringList>
 #include <QMultiMap>
+#include <QTimer>
+typedef struct __tagBackUpInfo{
+	QString sAddr;
+	unsigned int uiPort;
+	QString sEeeId;
+	int nChannel;
+	int nTypes;
+	QDateTime startTime;
+	QDateTime endTime;
+	QString sPath;
+
+}tagBackUpInfo;
+typedef enum __tagStep{
+	INIT,//
+	CONNECTTODEVICE,//
+	INITPACK,
+	FIRST_I_FRAME,
+	OPEN_FILE,
+	SET_VIDEO,
+	WRITE_FRAME,
+	CHECK_FILE_SIZE,
+	CHECK_DISK_SPACK,
+	WAIT_FOR_PACK,
+	PACK,
+	FAIL,
+	SUCCESS,
+	END,
+
+}tagStep;
 class RemoteBackup : public QThread
 {
+	Q_OBJECT
 public:
 	RemoteBackup(void);
 	~RemoteBackup(void);
@@ -35,6 +65,7 @@ public:
 			const QDateTime & startTime,
 			const QDateTime & endTime,
 			const QString & sbkpath);
+
 	int Stop();
 
 	float getProgress();
@@ -44,32 +75,29 @@ public:
 	int SetBackupEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 protected:
 	void run();
+private slots:
+	void slCheckDisk();
+	void slCheckBlock();
 private:
 	typedef int (__cdecl *BackProc)(QString,QVariantMap,void *);
 	typedef struct _evItem{
 		BackProc backproc;
 		void* pUser;
 	}evItem;
-	//bool checkParam(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,int nChannel);
 	bool connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 	bool tryConnectProtocol(CLSID clsid,const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
-	void stopConnect();
+
 	void eventProcCall(QString sEventName,QVariantMap parm);
-	/*bool createFile(const QString &sPath,int nchannel,QDateTime startTime);*/
-	bool createFile();
-	int closeFile();
+
 	void clearbuffer();
 	bool getUsableDisk(QString disk);
 
 	QMutex m_bufflock;
 	QQueue<RecFrame> m_bufferqueue;
 	IDeviceConnection* m_pBackupConnect;
-	IRemotePlayback* m_pRemotePlayback;
-	QString m_filePath;
-	//QString m_fullfilename;
+
 	evItem m_backproc;
-	
-	avi_t * AviFile;
+
 	int m_videoHeight;
 	int m_videoWidth;
 	int m_samplerate;
@@ -77,27 +105,25 @@ private:
 
 	bool m_bAudioBeSet;
 	bool m_backuping;
-	bool m_bFinish;
+	bool m_bCheckDisk;
+	bool m_bCheckBlock;
+
+	int m_nPosition;
 
 	unsigned int m_nFrameCount;
 	unsigned int m_nLastTicket;
 	unsigned int m_nFrameCountArray[31];
 
-	/*unsigned int m_sttime;
-	unsigned int m_edtime;*/
+
 	float m_progress;
 	unsigned int m_firstgentime;
 	
-	QDateTime m_stime;
-	QDateTime m_etime;
-	int m_nchannel;
-	QString m_savePath;
-	QString m_devid;
-	QString m_sAddr;
-	unsigned int m_uiPort;
-	int m_nTypes;
+
+	tagBackUpInfo m_tBackUpInfo;
 
 	QStringList m_eventList;
 	QMultiMap<QString,evItem> m_eventMap;
+	QTimer m_tCheckDisk;
+	QTimer m_tCheckBlock;
 };
 
