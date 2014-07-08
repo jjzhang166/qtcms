@@ -5,6 +5,7 @@
 #include <qwfw_tools.h>
 #include <guid.h>
 #include "IEventRegister.h"
+#include "ILocalRecordSearchEx.h"
 
 RecordPlayer::RecordPlayer():
 QWebPluginFWBase(this),
@@ -439,7 +440,8 @@ int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser)
 	if ("GetRecordFile" == evName)
 	{
 		pRecordPlayer->transRecordFiles(evMap);
-		qDebug()<<evMap;
+
+		qDebug()<<evMap["channelnum"].toInt()<<evMap["startTime"].toDateTime().toString("hh:mm:ss")<<evMap["stopTime"].toDateTime().toString("hh:mm:ss")<<evMap["filepath"].toString();
 	}
 	return 0;
 }
@@ -592,4 +594,55 @@ bool RecordPlayer::DevIsExit( QString devicename)
 int RecordPlayer::GetCurrentState()
 {
 	return m_CurStatus;
+}
+
+int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const QString& sTypeList )
+{
+	//input parameter error
+	if (sDevName.isEmpty() || sDate.isEmpty() || sTypeList.isEmpty())
+	{
+		return 1;
+	}
+	//check type if valid
+	if (!checkTypeList(sTypeList))
+	{
+		return 1;
+	}
+	if (NULL == m_pLocalRecordSearch)
+	{
+		return 1;
+	}
+	fileMap.clear();
+	fileKey="0";
+
+	//get query interface
+	ILocalRecordSearchEx *pRecordSearchEx = NULL;
+	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecordSearchEx);
+	if (NULL == pRecordSearchEx)
+	{
+		return 1;
+	}
+	int ret = pRecordSearchEx->searchVideoFileEx(sDevName, sDate, sTypeList);
+	if (ILocalRecordSearchEx::OK != ret)
+	{
+		return 1;//call function error
+	}
+	pRecordSearchEx->Release();
+
+	EventProcCall("GetRecordFile",fileMap);
+	return 0;
+}
+
+bool RecordPlayer::checkTypeList( QString typeList )
+{
+	QStringList typelst = typeList.split(";", QString::SkipEmptyParts);
+	foreach(QString type, typelst)
+	{
+		if (!type.data()->isDigit())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

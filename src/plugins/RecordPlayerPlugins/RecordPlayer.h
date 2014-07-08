@@ -51,6 +51,11 @@ public slots:
 		const QString& sbegintime,
 		const QString& sendtime,
 		const QString& schannellist);
+	//ILocalRecordSearchEx
+	int searchVideoFileEx(const QString &sDevName,
+		const QString& sDate,
+		const QString& sTypeList);
+
 	//ILocalPlayer
 	int AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime);
 	int SetSynGroupNum(int num);
@@ -74,6 +79,7 @@ private:
 	QDateTime getDateFromPath(QString &filePath);
 	int sortFileList(QStringList &fileList);
 	bool DevIsExit(QString devicename);
+	bool checkTypeList(QString typeList);
 private:
 	ILocalRecordSearch *m_pLocalRecordSearch;
 	ILocalPlayer *m_pLocalPlayer;

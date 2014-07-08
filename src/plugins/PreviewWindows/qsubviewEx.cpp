@@ -695,6 +695,11 @@ bool qsubviewEx::getAutoRecordStatus()
 	return m_sSubviewRun.getAutoRecordStatus();
 }
 
+void qsubviewEx::setCurWindId( int nWindId )
+{
+	m_sSubviewRun.setWindId(nWindId);
+}
+
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {

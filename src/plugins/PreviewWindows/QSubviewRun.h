@@ -98,6 +98,7 @@ public:
 
 	void setDatabaseFlush(bool flag);
 	void setFoucs(bool bEnable);
+	void setWindId(int nWindId);
 	//“Ù∆µ
 	void setVolume(unsigned int uiPersent);
 	void audioEnabled(bool bEnable);
@@ -183,5 +184,7 @@ private:
 	int m_nPosition;
 	Qt::HANDLE m_hMainThread;
 	int m_nSleepSwitch;
+	int m_nWindId;
+	int m_nRecordType;
 };
   

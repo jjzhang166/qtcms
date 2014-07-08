@@ -10,13 +10,14 @@
 #include "ILocalRecordSearch.h"
 #include "IDisksSetting.h"
 #include "ILocalPlayer.h"
-
+#include "ILocalRecordSearchEx.h"
 
 void cbTimeChange(QString evName, uint playTime, void* pUser);
 
 class LocalPlayer : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearch,
+	public ILocalRecordSearchEx,
 	public ILocalPlayer
 {
 public:
@@ -33,6 +34,10 @@ public:
 		const QString& sbegintime,
 		const QString& sendtime,
 		const QString& schannellist);
+	//ILocalRecordSearchEx
+	virtual int searchVideoFileEx(const QString &sDevName,
+		const QString& sDate,
+		const QString& sTypeList);
 
 	//ILocalPlayer
 	virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end);

@@ -96,6 +96,7 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 	{
 		sFileSavePath=sDisk+":/REC";
 		m_dblock.lock();
+		//if database is not open, open it
 		if (!m_db->isOpen())
 		{
 			m_db->setDatabaseName(sFileSavePath+"/record.db");
@@ -135,6 +136,7 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 			//use default path
 			sFileSavePath += "/0000/000.avi"; 
 		}
+
 		//insert new data into database
 		_query.prepare("insert into local_record(dev_name,dev_chl,win_id,date,start_time,record_type,path) values(:dev_name,:dev_chl,:win_id,:date,:start_time,:record_type,:path)");
 		_query.bindValue(":dev_name",devname);
@@ -146,7 +148,7 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 		_query.bindValue(":record_type", type);
 		_query.bindValue(":path", sFileSavePath);
 		_query.exec();
-		
+
 		//save the id inserted just now
 		command = QString("select max(id) from local_record");
 		_query.exec(command);
@@ -163,7 +165,8 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 		return sFileSavePath;
 	}
 }
-QString StorageMgr::getUsableDisk()
+
+QString StorageMgr::getUsableDisk()//????'0'???¡Â?????????¨²¡Á???????????
 {
 	QString sDisks;
 	QString sGottenDisk="0";
@@ -353,6 +356,7 @@ QString StorageMgr::getUsableDisk()
 // 	}
 // 
 // }
+
 bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 {
 	QDate earlestDate;
@@ -610,36 +614,6 @@ bool StorageMgr::freeDisk()
 	return false;
 }
 
-// int StorageMgr::addRecord( QString sDevName, int chl, int winId, QString sDate, QString sStart, int type, QString sPath )
-// {
-// 	if (sDevName.isEmpty() || chl < 0 || sDate.isEmpty() || sStart.isEmpty() || type < 0 || type > 4 || sPath.isEmpty())
-// 	{
-// 		return -1;
-// 	}
-// 
-// 	int insertId = -1;
-// 	m_dblock.lock();
-// 	QSqlQuery _query(*m_db);
-// 	_query.prepare("insert into local_record(dev_name,dev_chl,win_id,date,start_time,record_type,path) values(:dev_name,:dev_chl,:win_id,:date,:start_time,:record_type,:path)");
-// 	_query.bindValue(":dev_name",sDevName);
-// 	_query.bindValue(":dev_chl",chl);
-// 	_query.bindValue(":win_id",winId);
-// 	_query.bindValue(":date",sDate);
-// 	_query.bindValue(":start_time",sStart);
-// 	_query.bindValue(":record_type", type);
-// 	_query.bindValue(":path", sPath);
-// 	_query.exec();
-// 
-// 	QString command = QString("select max(id) from local_record");
-// 	_query.exec(command);
-// 	if (_query.next())
-// 	{
-// 		insertId = _query.value(0).toInt();
-// 	}
-// 	m_dblock.unlock();
-// 
-// 	return insertId;
-// }
 bool StorageMgr::deleteRecord()
 {
 	bool bRet=false;

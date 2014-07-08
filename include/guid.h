@@ -96,4 +96,7 @@ extern const CLSID CLSID_WinIpcSearch;
 extern const CLSID CLSID_PlaybackActivity;
 extern const CLSID CLSID_BackUpActivity;
 extern const CLSID CLSID_CommonlibEx;
+extern const IID IID_IRecorderEx;
+extern const IID IID_ILocalRecordSearchEx;
+
 #endif

@@ -1,5 +1,6 @@
 #include "QSubviewRun.h"
 #include <QEventLoop>
+#include "IRecorderEx.h"
 
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
@@ -25,6 +26,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bScreenShot(false),
 	m_bClosePreview(false),
 	m_bIsBlock(false),
+	m_nWindId(0),
+	m_nRecordType(0),
 	m_nPosition(0),
 	m_pAudioPlay(NULL),
 	m_sampleWidth(0),
@@ -414,6 +417,15 @@ void QSubviewRun::run()
 			//¿ªÆôÂ¼Ïñ
 			if (NULL!=m_pRecorder&&m_bIsRecord==false)
 			{
+				//set device info for record
+				IRecorderEx *pRecordEx = NULL;
+				m_pRecorder->QueryInterface(IID_IRecorderEx, (void**)&pRecordEx);
+				if (NULL != pRecordEx)
+				{
+					pRecordEx->SetDevInfoEx(m_nWindId, m_nRecordType);
+					pRecordEx->Release();
+				}
+
 				m_pRecorder->SetDevInfo(m_deviceInfo.m_sDeviceName,m_deviceInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsRecord=true;
@@ -1318,6 +1330,7 @@ int QSubviewRun::startRecord()
 				qDebug()<<__FUNCTION__<<__LINE__<<"it had been recording";
 			}else{
 				m_stepCode.enqueue(STARTRECORD);
+				m_nRecordType = 3;// Manual recording
 			}
 			return 0;
 		}
@@ -1474,6 +1487,7 @@ void QSubviewRun::slplanRecord()
 			if (m_currentStatus==STATUS_CONNECTED&&currentTime>=m_lstReocrdTimeInfoList[j].startTime&&currentTime<m_lstReocrdTimeInfoList[j].endTime&&m_bIsAutoRecording==false)
 			{
 				m_stepCode.enqueue(STARTRECORD);
+				m_nRecordType = 0;//Scheduled recording
 				m_bIsAutoRecording=true;
 			}
 			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
@@ -1664,6 +1678,15 @@ void QSubviewRun::sleepEx( int time )
 bool QSubviewRun::getAutoRecordStatus()
 {
 	return m_bIsAutoRecording;
+}
+
+void QSubviewRun::setWindId( int nWindId )
+{
+	if (nWindId < 0)
+	{
+		return;
+	}
+	m_nWindId = nWindId;
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

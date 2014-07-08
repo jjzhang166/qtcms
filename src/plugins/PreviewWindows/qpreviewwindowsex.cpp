@@ -235,6 +235,7 @@ int qpreviewwindowsex::OpenCameraInWnd( unsigned int uiWndIndex ,const QString s
 		qDebug()<<__FUNCTION__<<__LINE__<<"input uiWndIndex value is error ";
 		return 1;
 	}else{
+		m_sPreviewWnd[uiWndIndex].setCurWindId(uiWndIndex);
 		m_sPreviewWnd[uiWndIndex].openPreview(uiChannelId);
 		return 0;
 	}

@@ -21,6 +21,8 @@ typedef struct _tagAudioBufAttr{
 Recorder::Recorder() :
 m_nRef(0),
 m_channelnum(1),
+m_windId(0),
+m_recordType(0),
 m_bFinish(true),
 m_bIsblock(false),
 m_bcheckdiskfreesize(false)
@@ -153,6 +155,18 @@ int Recorder::SetDevInfo(const QString& devname,int nChannelNum)
 	}
 	return IRecorder::OK;
 }
+
+int Recorder::SetDevInfoEx(const int &nWindId, const int &nRecordType)
+{
+	if (nWindId < 0 || nRecordType > 3 || nRecordType < 0)
+	{
+		return IRecorderEx::E_PARAMETER_ERROR;
+	}
+	m_windId = nWindId;
+	m_recordType = nRecordType;
+	return IRecorderEx::OK;
+}
+
 void Recorder::run()
 {
 	QString sSavePath;
@@ -860,7 +874,7 @@ void Recorder::cleardata()
 
 bool Recorder::CreateSavePath(QString& sSavePath, QTime &start)
 {
-	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum, -1, 3, start);
+	sSavePath = m_StorageMgr.getFileSavePath(m_devname,m_channelnum, m_windId, m_recordType, start);
 	if (sSavePath=="none")
 	{
 		return false;
@@ -911,6 +925,10 @@ long __stdcall Recorder::QueryInterface( const IID & iid,void **ppv )
 	if (IID_IRecorder == iid)
 	{
 		*ppv = static_cast<IRecorder *>(this);
+	}
+	else if (IID_IRecorderEx == iid)
+	{
+		*ppv = static_cast<IRecorderEx *>(this);
 	}
 	else if (IID_IPcomBase == iid)
 	{

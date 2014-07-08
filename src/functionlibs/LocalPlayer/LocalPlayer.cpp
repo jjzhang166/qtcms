@@ -983,6 +983,10 @@ long __stdcall LocalPlayer::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<ILocalRecordSearch *>(this);
 	}
+	else if (IID_ILocalRecordSearchEx == iid)
+	{
+		*ppv = static_cast<ILocalRecordSearchEx *>(this);
+	}
 	else if (IID_ILocalPlayer == iid)
 	{
 		*ppv = static_cast<ILocalPlayer *>(this);
@@ -1039,5 +1043,88 @@ void LocalPlayer::eventProcCall( QString sEvent,QVariantMap param )
 	}
 }
 
+int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const QString& sTypeList )
+{
+	QDate date = QDate::fromString(sDate,"yyyy-MM-dd");
+	if (!date.isValid())
+	{
+		return ILocalRecordSearchEx::E_PARAMETER_ERROR;
+	}
 
+	//get available disk
+	QString sUsedDisks;
+	if (1 == checkUsedDisk(sUsedDisks))
+	{
+		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
+	}
+	if (sUsedDisks.isEmpty())
+	{
+		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
+	}
+	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 
+	if (!m_filePeriodMap.isEmpty())
+	{
+		m_filePeriodMap.clear();//clear info last time remain
+	}
+	//create query command
+	QString typeList = sTypeList;
+	QString sqlType = "record_type=" + typeList.replace(";", " or record_type=");
+	QString sqlCommand = QString("select dev_chl, start_time, end_time, file_size, path from local_record where dev_name='%1' and date='%2' and (%3) order by start_time").arg(sDevName).arg(sDate).arg(sqlType);
+	//query
+	foreach(QString disk, sltUsedDisk)
+	{
+		QString dbPath = disk + ":/REC/record.db";
+		m_db->setDatabaseName(dbPath);
+		if (!m_db->open())
+		{
+			qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
+			continue;
+		}
+		QSqlQuery _query(*m_db);
+		_query.exec(sqlCommand);
+		while(_query.next())
+		{
+			QString chl = _query.value(0).toString();
+			QTime start = _query.value(1).toTime();
+			QTime end = _query.value(2).toTime();
+			QString size = _query.value(3).toString();
+			QString path = _query.value(4).toString();
+
+			QDateTime startTime;
+			startTime.setDate(date);
+			startTime.setTime(start);
+			QDateTime endTime;
+			endTime.setDate(date);
+			endTime.setTime(end);
+			if (startTime >= endTime || size.toInt() <=0)
+			{
+				continue;
+			}
+			//record file's start and end time
+			PeriodTime item;
+			item.start = startTime.toTime_t();
+			item.end = endTime.toTime_t();
+			m_filePeriodMap.insert(path, item);
+
+			//send file info to up level
+			QVariantMap fileInfo;
+			fileInfo.insert("filename", path.right(path.size() - path.lastIndexOf("/") - 1));
+			fileInfo.insert("filepath", path);
+			fileInfo.insert("filesize", size);
+			fileInfo.insert("channelnum", chl);
+			fileInfo.insert("startTime", startTime);
+			fileInfo.insert("stopTime", endTime);
+
+			eventProcCall(QString("GetRecordFile"), fileInfo);
+		}
+
+		m_db->close();
+	}
+
+	QVariantMap stopInfo;
+	stopInfo.insert("stopevent", QString("GetRecordFile"));
+	eventProcCall(QString("SearchStop"), stopInfo);
+
+	return ILocalRecordSearch::OK;
+}

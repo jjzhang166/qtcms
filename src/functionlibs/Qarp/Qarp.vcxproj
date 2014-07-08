@@ -60,8 +60,8 @@
       <ModuleDefinitionFile>qarp.def</ModuleDefinitionFile>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>F:\project\cms-git-work-back-2.1.1.7\src\functionlibs\Qarp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wpdpack/iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wpdpack/iphlpapi.lib;qtmaind.lib;QtCored4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

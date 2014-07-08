@@ -7,6 +7,7 @@
 #include <QtCore/QQueue>
 #include <QDebug>
 #include "IRecorder.h"
+#include "IRecorderEx.h"
 #include "StorageMgr.h"
 #include <IEventRegister.h>
 #include <QTimer>
@@ -32,6 +33,7 @@ typedef enum __tagRecStepCode{
 }tagRecStepCode;
 class Recorder : public QThread,
 	public IRecorder,
+	public IRecorderEx,
 	public IEventRegister
 {
 	Q_OBJECT
@@ -46,6 +48,8 @@ public:
 	virtual int InputFrame(QVariantMap& frameinfo);
 
 	virtual int SetDevInfo(const QString& devname,int nChannelNum);
+	//IRecordEx
+	virtual int SetDevInfoEx(const int &nWindId, const int &nRecordType);
 
 	virtual QString getModeName();
 
@@ -98,9 +102,11 @@ private:
 	int m_nRef;
 	QMutex m_csRef;
 
-	//
+	//device info
 	QString m_devname;
 	int m_channelnum;
+	int m_windId;
+	int m_recordType;
 	//
 	int m_nRecWidth;
 	int m_nRecHeight;

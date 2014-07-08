@@ -55,6 +55,8 @@ public:
 	//设置当前焦点窗口
 	void setCurrentFocus(bool flags);
 	void setDataBaseFlush();
+	//设置当前窗口ID
+	void setCurWindId(int nWindId);
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);
