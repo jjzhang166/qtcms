@@ -395,7 +395,7 @@ QStringList LocalPlayer::sortFileList(QStringList const fileList)
 	{
 		uint minTime = m_filePeriodMap.value(sortList.at(i)).start;
 		int minPos = i;
-		for (int j = 1; j <= sortList.size() - 1 - i; j++)
+		for (int j = i + 1; j < sortList.size(); j++)
 		{
 			uint time = m_filePeriodMap.value(sortList.at(j)).start;
 			if (time < minTime)
@@ -1043,7 +1043,7 @@ void LocalPlayer::eventProcCall( QString sEvent,QVariantMap param )
 	}
 }
 
-int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const QString& sTypeList )
+int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const int& nTypes )
 {
 	QDate date = QDate::fromString(sDate,"yyyy-MM-dd");
 	if (!date.isValid())
@@ -1068,8 +1068,7 @@ int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDat
 		m_filePeriodMap.clear();//clear info last time remain
 	}
 	//create query command
-	QString typeList = sTypeList;
-	QString sqlType = "record_type=" + typeList.replace(";", " or record_type=");
+	QString sqlType = getTypeList(nTypes);
 	QString sqlCommand = QString("select dev_chl, start_time, end_time, file_size, path from local_record where dev_name='%1' and date='%2' and (%3) order by start_time").arg(sDevName).arg(sDate).arg(sqlType);
 	//query
 	foreach(QString disk, sltUsedDisk)
@@ -1127,4 +1126,22 @@ int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDat
 	eventProcCall(QString("SearchStop"), stopInfo);
 
 	return ILocalRecordSearch::OK;
+}
+
+QString LocalPlayer::getTypeList( int nTypes )
+{
+	QString typeList;
+	int pos = 0;
+	while (nTypes > 0)
+	{
+		if (nTypes & 1)
+		{
+			typeList += (0 == pos) ? QString::number(pos) : ("*" + QString::number(pos));
+		}
+		pos++;
+		nTypes = nTypes>>1;
+	}
+
+	typeList = "record_type=" + typeList.replace("*", " or record_type=");
+	return typeList;
 }

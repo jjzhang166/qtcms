@@ -37,7 +37,7 @@ public:
 	//ILocalRecordSearchEx
 	virtual int searchVideoFileEx(const QString &sDevName,
 		const QString& sDate,
-		const QString& sTypeList);
+		const int& nTypes);
 
 	//ILocalPlayer
 	virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end);
@@ -76,6 +76,7 @@ private:
 	int countSkipTime();
 	bool checkFileFromLong(QString path, unsigned long &tick, QDateTime & endTime);
 	QStringList sortFileList(QStringList const fileList);
+	QString getTypeList(int nTypes);
 private:
 	int m_nRef;
 	QMutex m_csRef;

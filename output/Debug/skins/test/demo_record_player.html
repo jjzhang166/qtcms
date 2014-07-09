@@ -185,6 +185,18 @@ function AudioEnabled(){
 	
 	obj.AudioEnabled(bOpened);
 }
+
+function searchVideoFileEx(){
+	var obj = document.getElementById('windows');
+	var devName = document.getElementById('sdevname');
+	var date = document.getElementById('sSearchDate');
+	var types = 15;
+	
+	alert('searchVideoFileEx');
+	obj.AddEventProc("GetRecordFile", "GetRecordFile(ev);");
+	obj.searchVideoFileEx(devName.value, date.value, types);
+}
+
 </script>
 </head>
 
@@ -195,12 +207,14 @@ function AudioEnabled(){
 <table border="0" cellspacing="0" cellpadding="0" width="75%">
 	<tr>
 		<td>sdevname</td>
-		<td><input type="text" id="sdevname" value="1000"/></td>
+		<td><input type="text" id="sdevname" value="283911672"/></td>
         <td><button onclick="searchDateByDeviceName()">searchDateByDeviceName</button></td>
+        <td></td>
+        <td><button onclick="searchVideoFileEx()">searchVideoFileEx</button></td>
 	</tr>
 	<tr>
 		<td>sSearchDate</td>
-		<td><input type="text" id="sSearchDate" value="2014-01-14"/></td>
+		<td><input type="text" id="sSearchDate" value="2014-07-09"/></td>
         <td><button onclick="searchVideoFile()">searchVideoFile</button></td>
 	</tr>
 	<tr>

@@ -339,6 +339,13 @@ int RecordPlayer::GroupStop()
 		return 1;
 	}
 	m_CurStatus=STATUS_STOP;
+
+	//clear up residual picture when stop
+	for (int i = 0; i < ARRAY_SIZE(m_subRecPlayerView); i++)
+	{
+		m_subRecPlayerView[i].update();
+	}
+
 	return 0;
 }
 int RecordPlayer::GroupSpeedFast(int speed)
@@ -596,15 +603,10 @@ int RecordPlayer::GetCurrentState()
 	return m_CurStatus;
 }
 
-int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const QString& sTypeList )
+int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const int& nTypes )
 {
 	//input parameter error
-	if (sDevName.isEmpty() || sDate.isEmpty() || sTypeList.isEmpty())
-	{
-		return 1;
-	}
-	//check type if valid
-	if (!checkTypeList(sTypeList))
+	if (sDevName.isEmpty() || sDate.isEmpty() || nTypes <= 0 || nTypes > 15)
 	{
 		return 1;
 	}
@@ -622,7 +624,7 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 	{
 		return 1;
 	}
-	int ret = pRecordSearchEx->searchVideoFileEx(sDevName, sDate, sTypeList);
+	int ret = pRecordSearchEx->searchVideoFileEx(sDevName, sDate, nTypes);
 	if (ILocalRecordSearchEx::OK != ret)
 	{
 		return 1;//call function error
@@ -631,18 +633,4 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 
 	EventProcCall("GetRecordFile",fileMap);
 	return 0;
-}
-
-bool RecordPlayer::checkTypeList( QString typeList )
-{
-	QStringList typelst = typeList.split(";", QString::SkipEmptyParts);
-	foreach(QString type, typelst)
-	{
-		if (!type.data()->isDigit())
-		{
-			return false;
-		}
-	}
-
-	return true;
 }

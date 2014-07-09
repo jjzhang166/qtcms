@@ -34,11 +34,11 @@
 //输入参数:<br />
 // sDevName: 设备名称&nbsp;<br />
 // sDate：  录像日期，格式为&ldquo;yyyy-MM-dd&rdquo;。<br />
- // sTypeList：为检索的类型组合 (格式为&quot;x;x;x&quot; ，例如&quot;0;1;2;3&quot;，检索所有类型的组合), 0表示定时录像，1表示移动录像，2表示报警录像，3表示手动录像。<br />
+ // nTypes：为检索的类型组合 (按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像，例如&quot;15&quot;，表示检索所有类型的组合)。<br />
 //返回值：&nbsp;<br />
 // 1：调用失败&nbsp;<br />
 // 0：调用成功&nbsp;<br />
-int RecordPlayer::searchVideoFileEx( const QString &amp;sDevName, const QString&amp; sDate, const QString&amp; sTypeList );</p>
+int RecordPlayer::searchVideoFileEx( const QString &amp;sDevName, const QString&amp; sDate, const int&amp; nTypes );</p>
 <p>//添加播放文件到同步组中，并指定文件播放的窗口ID<br />
   //输入参数：<br />
   //filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，且按时间先后排序如：D:/JAREC/2014-01-10/99467979/CHL02/190545.avi,D:/JAREC/2014-01-10/99467979/CHL02/201525.avi,D:/JAREC/2014-01-10/99467979/CHL02/204137.avi<br />
