@@ -355,7 +355,7 @@ var oPlayBack={},  // 远程回访控件对象
 				return;
 			})
 		var width = (data.parm/100)*oWarp.find('div').width()+1;
-			oWarp.find('.progess span').animate({width:width},1000);
+			oWarp.find('.progess span').stop(false,true).animate({width:width},1000);
 	}
 	
 	function syndownload(){   //同步下载文件状态.
@@ -371,7 +371,7 @@ var oPlayBack={},  // 远程回访控件对象
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width()+1;
-			oWarp.find('.progess span').animate({width:width},1000);
+			oWarp.find('.progess span').stop(false,true).animate({width:width},1000);
 			//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
 /*			if(p == 1){
 				//clearInterval(timer);
@@ -383,16 +383,16 @@ var oPlayBack={},  // 远程回访控件对象
 
 	function BackupStatusChangeCallback(data){
 		var oList = $('#search_result input:checked'),
-			oWarp = oList.eq(now).parent('tr'),
+			oWarp = oList.eq(now).parent('td').parent('tr'),
 			types = data.types;
-		console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'-----------------------');
+		console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'----------------------');
 		/*if(types == 'startBackup'){
 			syndownload();
 		}else{*/
 
 			if(types == 'backupFinished'){ 
 				console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
-				oWarp.find('.progess span').animate({width:'100%'},1000);
+				oWarp.find('.progess span').css('width','100%');
 				     //.end().find('input').prop('checked',false);
 			}
 
@@ -403,17 +403,19 @@ var oPlayBack={},  // 远程回访控件对象
 				return;
 			}
 
-			if( types == 'Fail'){
+			if( types == 'fail'){
 				console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
+				oWarp.find('.progess span').css('background-color','#ccc');
 			}
-			if( types == 'stopBackup' ){
+			if( types == 'stopBackup'){
+				console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
+				clearInterval(timer);
 				now++;
 				if(now == oList.length){
 					backupstop();
 					return;
 				}
 				oWarp.find('a').off();
-				clearInterval(timer);
 				startDownload();
 			}
 		/*}*/
