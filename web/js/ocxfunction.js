@@ -56,7 +56,7 @@ var oCommonLibrary,
 	}
 	
 	//区域分组,属性菜单输出.
-	function areaList2Ui(num,bool){ //区域菜单输出
+	function areaList2Ui(num,bool,closed){ //区域菜单输出
 		num = num || key ;
 		var obj = $('ul.filetree').not('[id]');
 
@@ -83,7 +83,7 @@ var oCommonLibrary,
 
 		}
 		var arr =del(pidList.sort(sortNumber)); //  返回pid升序的PID数组
-		deviceList2Ui('0',num,bool);
+		deviceList2Ui('0',num,bool,closed);
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		
@@ -95,7 +95,7 @@ var oCommonLibrary,
 			}
 		}
 	}
-	function deviceList2Ui(areaid,num,bool){ //设备菜单输出
+	function deviceList2Ui(areaid,num,bool,closed){ //设备菜单输出
 		bool = num == 1 ? true : bool;
 		var devList = oCommonLibrary.GetDeviceList(areaid);
 		for (i in devList){
@@ -107,7 +107,7 @@ var oCommonLibrary,
 			devData['device_name'] = devData['name'];
 			devData['eseeid'] = devData['eseeid'];
 			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
-			var add = $('<li class="closed"><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
+			var add = $('<li class="'+closed+'"><span class="device" id="dev_'+id+'" >'+devData['name']+'</span>'+(bool ? '':'<ul></ul>')+'</li>').appendTo($('#area_'+areaid).next('ul'));
 			add.find('span.device').data('data',devData);
 			$('ul.filetree:eq('+num+')').treeview({add:add});
 			devChannelList2Ui(id,num);

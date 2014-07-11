@@ -370,7 +370,7 @@ var oPlayBack={},  // 远程回访控件对象
 		timer = setInterval(function(){
 			i++;
 			var p = oBackup.getProgress();
-			var width = p*oWarp.find('div').width()+1;
+			var width = p*oWarp.find('div').width();
 			oWarp.find('.progess span').stop(false,true).animate({width:width},1000);
 			//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
 /*			if(p == 1){
@@ -405,7 +405,8 @@ var oPlayBack={},  // 远程回访控件对象
 
 			if( types == 'fail'){
 				console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
-				oWarp.find('.progess span').css('background-color','#ccc');
+				oWarp.find('.progess').find('span').css('background-color','#ccc')
+									  .end().find('div').css('border-style','dashed');	
 			}
 			if( types == 'stopBackup'){
 				console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');

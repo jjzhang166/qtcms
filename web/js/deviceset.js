@@ -90,7 +90,7 @@ var oSearchOcx,
 				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
 				oTreeWarp.show();
 				set_contentMax();
-				areaList2Ui();
+				areaList2Ui('','','closed');
 				/*emptyDevSetMenu();*/
 				$('#ajaxHint').html('').stop(true,true).hide();
 
@@ -377,10 +377,10 @@ var oSearchOcx,
 		 	$('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
 		})*/
 
-		areaList2Ui();
+		areaList2Ui('','','closed');
 	}
 	function FillRecordTimeData(){
-		areaList2Ui();
+		areaList2Ui('','','closed');
 		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
@@ -603,7 +603,7 @@ var oSearchOcx,
 
 		if(key == 0){ 
 			var main = $('#SerachDevList').css({ 
-				height:H-260,
+				height:H-270,
 				width:W-600
 			})
 
@@ -1101,7 +1101,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
-		areaList2Ui();
+		areaList2Ui('','','closed');
 		closeMenu();
 		reInitNowDev();
 	}
@@ -1216,7 +1216,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function initOxcDevListStatus(){
 		//分组列表;
 		groupList2Ui();
-		areaList2Ui(key);
+		areaList2Ui(key,'','closed');
 		// UI 调整
 		set_contentMax();
 

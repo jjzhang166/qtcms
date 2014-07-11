@@ -3,6 +3,8 @@
 	<CLSID>
 		<item clsid="6C997D3A-503C-4BD6-88D8-B3ABDA5A2AC9" name="activity.preview" file="previewactivity.dll" title="preview"/>
 		<item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
+		<item clsid="EFF1FF04-910D-43D3-8340-CD050EDA70CF" name="activity.Playback" file="PlaybackActivity.dll" title="Playback"/>
+		<item clsid="1590BA27-BB21-4B98-BEE0-DF89F9CE6703" name="activity.BackUp" file="BackUpActivity.dll" title="BackUp"/>
 		<item clsid="B15ABB14-5545-4B14-9109-0EB573B33D64" name="plugin.commonlib" file="plugins/commonlib.dll" mimetype="application/cms-common-library"/>
 		<item clsid="074814B4-91A2-4B91-8FD9-1C1316578F81" name="plugin.previewwindowsplugin" file="plugins/previewwindows.dll" mimetype="application/cms-preview-windows" />
 		<item clsid="CB2CC692-E924-4003-A5A0-C686D090E0B0" name="plugin.remoteplaybackplugin" file="plugins/remoteplaybackplugin.dll" mimetype="application/cms-remote-playback" />
@@ -24,11 +26,13 @@
 		<item clsid="F0B0674D-8880-4ABA-BFEA-074198AB19FC" name="decoder.h264Decoder" file="h264Decoder.dll" type="h264decoder"/>
 		<item clsid="1E147AC2-1158-4C88-A408-A8738ED4DDAA" name="render.SDLRender" file="SDLRender.dll" type="sdlrender"/>
 		<item clsid="6BC3DD4C-0365-48B3-8209-43DFE8A1DDCD" name="render.DDraw" file="DdrawRender.dll" type="ddraw"/>
-		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="JUAN DVR" /> 
-		<item clsid="C46890FD-8603-4BBB-975C-FE0410F3AF45" name="device.juan_ipc" file="IpcDeviceClient.dll" vendor="JUAN IPC" /> 
+		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="DVR" /> 
+		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="NVR" /> 
+		<item clsid="C46890FD-8603-4BBB-975C-FE0410F3AF45" name="device.juan_ipc" file="IpcDeviceClient.dll" vendor="IPC" /> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
 		<item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
+		<item clsid="BF780F86-4FFB-41ED-B916-A370978A0312" name="protocols.winipcsearch" file="WinIpcSearch.dll" type="winipcsearch"/> 
 		<item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 
 		<item clsid="9291E9A4-9E2B-4FC1-A145-8FBDEC96F0C4" name="protocols.Preview_Playback" file="BubbleProtocol.dll" type="Preview_Playback"/>
 		<item clsid="8647B818-B4D9-4839-B93D-CCA117DAD28D" name="record.Recorder" file="Recorder.dll" type="recorder"/>   
@@ -36,6 +40,7 @@
 		<item clsid="C7E581AB-4B51-4A24-898A-1A5406CF4B97" name="decoder.AudioDecoder" file="AudioDecoder.dll" type="AudioDecoder"/>
 		<item clsid="CDAAF783-0143-47AB-B5A5-4159CE25A61E" name="AudioDevice" file="AudioDevice.dll" type="AudioDevice"/>
 		<item clsid="3641CDC2-EDDB-4287-B723-3A770199ECAD" name="AudioPlayer" file="AudioPlayer.dll" type="AudioPlayer"/>
+		<item clsid="6243A3F3-EFC4-4A8F-88A0-0F2A59A24D29" name="CommonlibEx" file="commonlibEx.dll" type="commonlib"/>
 	
 	</CLSID>
 </root>

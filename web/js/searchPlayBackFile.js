@@ -3,8 +3,6 @@
 		nowDevID=null; //当前选中设备ID
 	//搜索远程录像
 	function setDevData2ocx(){
-		var oDevData=$('#dev_'+nowDevID).data('data'),
-			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
 
 		var b = 1;
 		if(bool){
@@ -13,6 +11,10 @@
 				b = 0
 			}
 		}else{
+
+			var oDevData=$('#dev_'+nowDevID).data('data'),
+			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
+
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
 				b = 0;
@@ -73,19 +75,20 @@
 
 		getAudioObj().GroupStop();
 
-		var devData = $('div.dev_list li.sel span.device').data('data');
-
-		nowDevID = devData.dev_id;
 
 		var type = $('#type input[data]').attr('data');
 		
 		var date = $("div.calendar span.nowDate").html();
-		var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
-		var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
+
 		setDevData2ocx();
+
 		/*alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
-		if(bool){
-			var chl ='';
+		if(bool){  // 本地
+			localSearchDevNum=0;
+
+			searchLocalFile(localSearchDevNum,date,type);
+
+			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
 				chl+=i+';';
 			};
@@ -93,22 +96,52 @@
 				alert(T('devData.name',devData.name));
 				return;
 			}
-			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);
+			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);*/
 		}else{
+			// 远程
+			var devData = $('div.dev_list li.sel span.device').data('data');
+				if(!devData){
+					 $('div.dev_list span.device,li').removeClass('sel');
+					devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
+								.end().data('data');
+				}
+
+			nowDevID = devData.dev_id;
+
+			var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
+			var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
+			
 			var chl = 0;
 
 			for (var i=0;i<devData.channel_count;i++){
 				chl += 1 << i;
 			};
-			//console.log(chl+'+'+type+'+'+startTime+'+'+endTime);
-			if(oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)!=0){
+			var sta = oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)
+			console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
+			if(sta != 0){
 				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}
 		}
 	}
+
+	function searchLocalFile(key,date,type){
+		//console.log('当前设备列表------------');
+		var oDevList = $('div.dev_list span.device');
+		if(key >  (oDevList.length-1))
+			return;
+		//console.log(localSearchDevNum);
+		var type = type ||  $('#type input[data]').attr('data');
+		
+		var date = date || $("div.calendar span.nowDate").html();
+
+		var name = oDevList.eq(key).data('data').name;
+
+		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
+		oPlaybackLocl.searchVideoFileEx(name,date,type);
+	}
 	function showRecProgress(now){  //回访检索文件进度
 			
-		now = recTotal
+		now = recTotal;
 	//	console.log(now+'//'+recTotal);
 		var con = lang.Retrieving,
 			p =now/recTotal*100;
