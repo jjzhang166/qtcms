@@ -1,7 +1,8 @@
 var oBottom,oPlayBack,oPlaybacKLocl,
 	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //选中的播放的通道
-	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
+	recFile=null,	//搜索到的文件,窗口改变的时候重绘搜索文件
+	//localRecFile=[],//本地回访搜索文件
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='', //搜索到的文件最大时间
 	localSearchDevNum=0; //要搜索的本地回放文件的设备
@@ -56,8 +57,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				/*console.log('------------'+oSelected.length);
 				console.log(oSelected);	*/	
 				if(oSelected.length>4){
-					console.log('++++++++++++'+oSelected.length);
-					console.log(oSelected);			
+					/*console.log('++++++++++++'+oSelected.length);
+					console.log(oSelected);*/			
 					$(oSelected.shift()).prop('checked',false);
 				}
 			}else{ 
@@ -246,10 +247,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 							.end().end().next('ul').find('span.channel');
 		if(bool){ //本地回访
 			var k = 0;
-			$("#channelvideo").find('input:checked').each(function(index){
+			$("#channelvideo").find('input:checked').each(function(){
+				console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
 				var filepath =$('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]).data('filepath');
-				//console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
-				var filepath = oChannel.eq(2).data('filepath');
+				//var filepath = oChannel.eq(index).data('filepath');
 				if(filepath){
 					console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 					if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
@@ -332,15 +333,23 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		recFile=data;
 
+		console.log('当前列表第:'+localSearchDevNum+'设备搜索到的本地录像文件');
 		console.log(data);
 
 		initOxcDevListStatus();
+
+		data && loclFileDataIntoChannel(data);
 
 		localSearchDevNum++
 
 		searchLocalFile(localSearchDevNum);
 
-		loclFileDataIntoChannel(data)
+		/*if(bool){
+			localRecFile.push(data);
+			if(localSearchDevNum == $('div.dev_list span.device').length){
+				loclFileDataIntoChannel(localRecFile);
+			}
+		}*/
 	}
 
 	function Deleteduplicate(data){ // 合并文件
@@ -409,18 +418,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		/*console.log('文件绑定时收到的数据!');
 		console.log(data);
 		console.log('===========================');*/
-		var oChannels = $('#dev_'+nowDevID).next('ul').find('span.channel');
-		for(i in data){
-			var fileData = $.parseJSON(data[i]);
-			if(fileData.filepath){
-				var oChannel = oChannels.eq(parseInt(fileData.channelnum -1));
-				var filepathArr = oChannel.data('filepath');
-					filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
-					filepathArr.push(fileData.filepath);
-					filepathArr.sort(SortByfileTime).join(',');
-				oChannel.data('filepath',filepathArr);
+		//console.log(oChannels);
+		//for(var k=0;k<data.length;k++){
+			var oChannels = $('div.dev_list span.device:eq('+localSearchDevNum+')').next('ul').find('span.channel');
+			for(i in data){
+				var fileData = $.parseJSON(data[i]);
+				if(fileData.filepath){
+					var oChannel = oChannels.eq(parseInt(fileData.channelnum -1));
+					var filepathArr = oChannel.data('filepath');
+						filepathArr = filepathArr ? filepathArr.toString().split(',') : [];
+						filepathArr.push(fileData.filepath);
+						filepathArr.sort(SortByfileTime).join(',');
+					oChannel.data('filepath',filepathArr);
+				}
 			}
-		}
+		//}
+		return data;
 	}
 
 	function RecFileInfo2UI(){
@@ -504,7 +517,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},SynTimeUnits);
 	}
 	function dragStopMove(){
-		console.log('播放结束');
+		//console.log('播放结束');
 		clearInterval(drag_timer);
 	}
 	//回放页面文件显示表格初始化
@@ -557,11 +570,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playBackSerchFile(){
 
-		recFile=[];
+		recFile=null;
 
 		PBrecFileTableInit();
 
 		maxFileEndTime = '';
+
+		areaList2Ui();
 
 		ocxsearchVideo();
 	}
@@ -569,7 +584,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		
-		areaList2Ui();
+		!recFile && areaList2Ui();
+		
 
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({
