@@ -3,6 +3,89 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
+<style type="text/css">
+p.MsoNormal1 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal11 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal121 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+span.value12 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value1211 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value1212 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value13 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+p.MsoNormal12 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal111 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+p.MsoNormal1211 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+span.value121 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value12111 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value12121 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value131 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+span.value131 {mso-style-name:value1;
+	mso-style-unhide:no;
+	color:#9966CC;}
+</style>
 </head>
 
 <body>
@@ -39,6 +122,67 @@
 // 1：调用失败&nbsp;<br />
 // 0：调用成功&nbsp;<br />
 int RecordPlayer::searchVideoFileEx( const QString &amp;sDevName, const QString&amp; sDate, const int&amp; nTypes );</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//搜索符合条件的视频文件。检索结果以事件的形式抛出。</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value13">nWndId</span>：为设备名</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value13"><span lang="EN-US" xml:lang="EN-US">sDate</span></span>：为要搜索的日期<span
+lang="EN-US" xml:lang="EN-US"> (</span>格式<span lang="EN-US" xml:lang="EN-US">&quot;yyyy-MM-dd&quot;)</span><span style='font-size:9.5pt;font-family:新宋体;mso-fareast-font-family:宋体;
+mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:新宋体;color:#A31515'
+lang="EN-US" xml:lang="EN-US">
+  <o:p></o:p>
+</span></p>
+<p class="MsoNormal11" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value1211">sStartTime</span>：为开始检索时间（格式&quot;hh:mm:ss&quot;)</p>
+<p class="MsoNormal121" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value1212">sEndTime</span>：为结束<span class="MsoNormal11" style="mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none">检索时间（格式&quot;hh:mm:ss&quot;)</span></p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value12">nTypes</span>：为检索的类型组合 (按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像，例如&quot;15&quot;，表示检索所有类型的组合)</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//返回值:</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//1:调用失败</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//0:调用成功<br />
+  int searchVideoFileEx(const int & nWndId,const QString & sStartTime, const QString & sDate,const QString & sStartTime,const QString & sEndTime,const int & nTypes);</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>&nbsp;</p>
+<p class="MsoNormal1" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>&nbsp;</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//添加播放文件到同步组中，并指定文件播放的窗口ID。</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value131">nWndId</span>：为设备名</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><span class="MsoNormal1" style="mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none">//输入参数<span class="value131"><span lang="EN-US" xml:lang="EN-US">sDate</span></span>：为要搜索的日期<span style='font-size:9.5pt;font-family:新宋体;mso-fareast-font-family:宋体;
+mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:新宋体;color:#A31515'
+lang="EN-US" xml:lang="EN-US">
+  <o:p></o:p>
+  </span></span><span style='font-size:9.5pt;font-family:新宋体;mso-fareast-font-family:宋体;
+mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:新宋体;color:#A31515'
+lang="EN-US" xml:lang="EN-US">
+  <o:p></o:p>
+</span></p>
+<p class="MsoNormal111" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value12111">sStartTime</span>：为开始检索时间</p>
+<p class="MsoNormal1211" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//输入参数<span class="value12121">sEndTime</span>：为结束<span class="MsoNormal11" style="mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none">检索时间</span></p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><span class="MsoNormal" style="mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none">//输入参数<span class="value121">nTypes</span>：为检索的类型组合 (按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像，例如&quot;15&quot;，表示检索所有类型的组合)</span></p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//返回值：</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//1：调用成功</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>//2：调用失败</p>
+<p class="MsoNormal12" style='mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'>int AddFileIntoPlayGroupEx(const int &amp; nWndId,const QString&amp; sDate,const QString &amp; sStartTime,const QString &amp; sEndTime,const int &amp; nTypes);</p>
+<p>&nbsp;</p>
 <p>//添加播放文件到同步组中，并指定文件播放的窗口ID<br />
   //输入参数：<br />
   //filelist:文件名列表，列表中的文件必须是同一个通道号下的文件，包括完整的文章路径，且按时间先后排序如：D:/JAREC/2014-01-10/99467979/CHL02/190545.avi,D:/JAREC/2014-01-10/99467979/CHL02/201525.avi,D:/JAREC/2014-01-10/99467979/CHL02/204137.avi<br />
