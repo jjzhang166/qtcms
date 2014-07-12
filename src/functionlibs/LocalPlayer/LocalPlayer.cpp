@@ -10,9 +10,9 @@ LocalPlayer::LocalPlayer() :
 m_nRef(0),
 m_nGroupNum(4),
 m_playTime(0),
-m_skipTime(86400),
+// m_skipTime(86400),
 m_lastPlayTime(0),
-m_callTimes(0),
+// m_callTimes(0),
 m_bIsGroupPlaying(false),
 m_db(NULL),
 m_pCurView(NULL)
@@ -45,6 +45,7 @@ LocalPlayer::~LocalPlayer()
 		{
 // 			delete iter->pPlayMgr;
 // 			iter->pPlayMgr = NULL;
+			iter->pPlayMgr->stop();
 			iter->pPlayMgr->deleteLater();
 		}
 	}
@@ -237,10 +238,10 @@ int LocalPlayer::searchVideoFile(const QString& sdevname, const QString& sdate, 
 		return ILocalRecordSearch::E_SYSTEM_FAILED;
 	}
 
-	if (!m_filePeriodMap.isEmpty())
-	{
-		m_filePeriodMap.clear();
-	}
+// 	if (!m_filePeriodMap.isEmpty())
+// 	{
+// 		m_filePeriodMap.clear();
+// 	}
 
 	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 // 	QStringList sltChannels = schannellist.split(";", QString::SkipEmptyParts);
@@ -762,8 +763,8 @@ int LocalPlayer::GroupStop()
 	m_bIsGroupPlaying = false;
 	m_GroupMap.clear();
 	m_playTime = 0;
-	m_skipTime = 86400;
-	m_callTimes = 0;
+// 	m_skipTime = 86400;
+// 	m_callTimes = 0;
 	m_lastPlayTime = 0;
 	
 	return 0;
@@ -836,17 +837,21 @@ QDateTime LocalPlayer::GetNowPlayedTime()
 }
 void LocalPlayer::setBaseTime(uint &baseTime)
 {
-	if (m_callTimes == m_GroupMap.size() - 1)
-	{
-		m_playTime += qMin(m_skipTime, baseTime);
-		m_skipTime = 86400;
-		m_callTimes = 0;
-	}
-	else
-	{
-		m_callTimes++;
-		m_skipTime = qMin(m_skipTime, baseTime);
-	}
+// 	if (m_callTimes == m_GroupMap.size() - 1)
+// 	{
+// 		m_playTime += qMin(m_skipTime, baseTime);
+// 		m_skipTime = 86400;
+// 		m_callTimes = 0;
+// 	}
+// 	else
+// 	{
+// 		m_callTimes++;
+// 		m_skipTime = qMin(m_skipTime, baseTime);
+// 
+// 		int stets = 0;
+// 	}
+
+	m_playTime += baseTime;
 }
 void LocalPlayer::setPlayTime(uint &playTime)
 {
@@ -1063,10 +1068,10 @@ int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDat
 	}
 	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 
-	if (!m_filePeriodMap.isEmpty())
-	{
-		m_filePeriodMap.clear();//clear info last time remain
-	}
+// 	if (!m_filePeriodMap.isEmpty())
+// 	{
+// 		m_filePeriodMap.clear();//clear info last time remain
+// 	}
 	//create query command
 	QString sqlType = getTypeList(nTypes);
 	QString sqlCommand = QString("select dev_chl, start_time, end_time, file_size, path from local_record where dev_name='%1' and date='%2' and (%3) order by start_time").arg(sDevName).arg(sDate).arg(sqlType);

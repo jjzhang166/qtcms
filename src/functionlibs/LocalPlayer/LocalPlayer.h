@@ -12,6 +12,7 @@
 #include "ILocalPlayer.h"
 #include "ILocalRecordSearchEx.h"
 
+
 void cbTimeChange(QString evName, uint playTime, void* pUser);
 
 class LocalPlayer : public QObject,
@@ -96,9 +97,9 @@ private:
 	QWidget* m_pCurView;
 
 	QMap<QString, PeriodTime> m_filePeriodMap;
-	uint m_skipTime;
+// 	uint m_skipTime;
 	uint m_lastPlayTime;
-	int m_callTimes;
+// 	int m_callTimes;
 
 	QString m_connectId;
 	QSqlDatabase *m_db;

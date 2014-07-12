@@ -66,6 +66,7 @@ private:
 	static uint m_playingTime;
 	pcbTimeChange m_pcbTimeChg;
 	void *m_pUser;
+	static bool m_bIsSkiped;
 	static bool m_bIsPickThread;
 	static bool m_bIsChange;
 	static void* m_who;

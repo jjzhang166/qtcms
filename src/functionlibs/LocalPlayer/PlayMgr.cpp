@@ -13,6 +13,7 @@ bool PlayMgr::m_bIsChange = false;
 void* PlayMgr::m_who = NULL;
 bool PlayMgr::m_bIsPickThread = false;
 IAudioPlayer* PlayMgr::m_pAudioPlayer = NULL;
+bool PlayMgr::m_bIsSkiped = false;
 
 PlayMgr::PlayMgr(void):
 	m_pRenderWnd(NULL),
@@ -42,9 +43,13 @@ PlayMgr::PlayMgr(void):
 PlayMgr::~PlayMgr(void)
 {
 	m_bStop = true;
-	if(this->isRunning())
+// 	if(this->isRunning())
+// 	{
+// 		wait(1000);
+// 	}
+	while(QThread::isRunning())
 	{
-		wait(1000);
+		msleep(10);
 	}
 
 	m_pVedioDecoder->Release();
@@ -118,6 +123,7 @@ void PlayMgr::run()
 	int skipPos = 0;
 	unsigned int skipTime = 0;
 	unsigned int start = 0;
+	bool bSkip = false;
 
 	m_bPlaying = true;
 	for (int i = m_nStartPos; i < m_lstfileList.size() && !m_bStop && currentPlayTime < m_endTime; i++)
@@ -172,13 +178,18 @@ void PlayMgr::run()
 				}
 				else
 				{
+					if (!m_bIsSkiped)
+					{
+						bSkip = true;
+						m_bIsSkiped = true;
+					}
 					skipTime = m_skipTime[skipPos].end - m_skipTime[skipPos].start;
-					if (NULL != m_pcbTimeChg && NULL != m_pUser)
+					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip)
 					{
 						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
-						currentPlayTime = currentPlayTime.addSecs(skipTime);
-						skipPos++;
 					}
+					currentPlayTime = currentPlayTime.addSecs(skipTime);
+					skipPos++;
 				}
 			}
 		}
@@ -281,7 +292,7 @@ void PlayMgr::run()
 						currentPlayTime = currentPlayTime.addSecs(1);
 					}
 
-					if (NULL != m_pcbTimeChg)
+					if (NULL != m_pcbTimeChg && !m_bStop)
 					{
 						m_pcbTimeChg(QString("playingTime"), m_playingTime, m_pUser);
 					}
@@ -303,6 +314,11 @@ void PlayMgr::run()
 	m_nSpeedRate = 0;
 	m_bStop = false;
 	m_bIsChange = false;
+
+	if (bSkip)
+	{
+		m_bIsSkiped = false;
+	}
 }
 
 void PlayMgr::setPlaySpeed(int speedRate)
@@ -332,6 +348,7 @@ void PlayMgr::stop()
 	m_bIsChange = false;
 	m_who = NULL;
 	m_bIsPickThread = false;
+	m_bIsSkiped = false;
 }
 
 void PlayMgr::OpneAudio(bool bEnabled)
