@@ -88,7 +88,6 @@ public slots:
 	void checkIsBlock();
 protected:
 	void run();
-	/*void runEx();*/
 private:
 	bool CreateSavePath(QString& sSavePath, QTime &start);
 	bool CreateDir(QString fullname);
@@ -96,7 +95,6 @@ private:
 	void enventProcCall(QString sEvent,QVariantMap parm);
 	unsigned int getSeconds(QString &fileName);
 	QString getFileEndTime(QString fileName, QTime start);
-	/*QString getFileEndTimeEx(QString fileName, QTime start);*/
 	qint64 getFileSize(QString fileName);
 
 	int m_nRef;

@@ -55,6 +55,9 @@
     <ClInclude Include="..\..\..\include\ILoginDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="dvrsearch.h">
@@ -65,5 +68,8 @@
     <None Include="dvrsearch.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DvrSearch.rc" />
   </ItemGroup>
 </Project>

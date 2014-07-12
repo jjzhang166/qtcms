@@ -52,6 +52,9 @@
     <ClInclude Include="div2_2_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="div2_2.h">
@@ -62,5 +65,8 @@
     <None Include="div2_2.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div2_2.rc" />
   </ItemGroup>
 </Project>

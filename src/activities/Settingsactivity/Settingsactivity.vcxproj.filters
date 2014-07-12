@@ -76,6 +76,9 @@
     <ClInclude Include="settingsactivity_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Settingsactivity.def">
@@ -92,5 +95,8 @@
     <CustomBuild Include="SettingsactivityThread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Settingsactivity.rc" />
   </ItemGroup>
 </Project>

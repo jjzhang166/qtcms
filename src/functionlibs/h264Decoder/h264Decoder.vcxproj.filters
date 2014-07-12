@@ -57,10 +57,16 @@
     <ClInclude Include="h264Decoder_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="h264Decoder.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="h264Decoder.rc" />
   </ItemGroup>
 </Project>

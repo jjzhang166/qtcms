@@ -38,11 +38,15 @@
     <ClInclude Include="Hole.h" />
     <ClInclude Include="Hole_global.h" />
     <ClInclude Include="netlib.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="RudpLib.h" />
     <ClInclude Include="SoupXml.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Hole.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Hole.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8982E827-9F6E-4453-9992-3E0B67F2D1E7}</ProjectGuid>

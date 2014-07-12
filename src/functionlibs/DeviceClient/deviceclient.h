@@ -21,6 +21,7 @@
 #include "RemoteBackup.h"
 #include "IPTZControl.h"
 #include "IProtocolPTZ.h"
+#include "remotePlayBack.h"
 
 
 int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
@@ -152,6 +153,7 @@ private:
 
 	IProtocolPTZ *m_pProtocolPTZ;
 
+	remotePlayBack m_remotePlayback;
 private:
 	int cbInit();
 	void eventProcCall(QString sEvent,QVariantMap param);

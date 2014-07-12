@@ -97,6 +97,7 @@
     <ClCompile Include="ipcdeviceclient.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="ipcdeviceclient.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ipcdeviceclient.h...</Message>
@@ -111,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="IpcDeviceClient.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IpcDeviceClient.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

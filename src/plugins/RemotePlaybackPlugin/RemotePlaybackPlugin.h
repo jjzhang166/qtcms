@@ -25,7 +25,6 @@ public:
 private:
 	int						m_nRef;
 	QMutex					m_csRef;
-	RPlaybackWnd			m_RPlaybackWnd;
 };
 
 #endif // __REMOTEPLAYBACKPLUGIN_H__

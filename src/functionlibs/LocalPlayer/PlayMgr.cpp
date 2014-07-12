@@ -51,7 +51,6 @@ PlayMgr::~PlayMgr(void)
 	{
 		msleep(10);
 	}
-
 	m_pVedioDecoder->Release();
 	m_pVedioDecoder = NULL;
 	m_pVedioRender->Release();

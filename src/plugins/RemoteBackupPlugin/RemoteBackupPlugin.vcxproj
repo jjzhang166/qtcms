@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="RemoteBackupWindows.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing RemoteBackupWindows.h...</Message>
@@ -53,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="RemoteBackupPlugin.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RemoteBackupPlugin.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C15812CE-9889-4F6B-ADE0-BE285C64B3CD}</ProjectGuid>

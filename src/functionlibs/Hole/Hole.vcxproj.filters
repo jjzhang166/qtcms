@@ -70,6 +70,9 @@
     <ClInclude Include="netlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Hole.def">
@@ -80,5 +83,8 @@
     <CustomBuild Include="EseeXml.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Hole.rc" />
   </ItemGroup>
 </Project>

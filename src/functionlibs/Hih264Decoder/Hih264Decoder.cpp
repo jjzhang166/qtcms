@@ -70,6 +70,7 @@ int Hih264Decoder::decode(char * pData,unsigned int nDataLength)
 
 	int nWidth = 0;
 	int nHeight = 0;
+
 	GetWidthHeight((char *)pData,nDataLength,&nWidth,&nHeight);
 	if ((nWidth != m_nVideoWidth ||
 		nHeight != m_nVideoHeight) &&
@@ -77,7 +78,6 @@ int Hih264Decoder::decode(char * pData,unsigned int nDataLength)
 	{
 		deinit();
 	}
-
 	m_csDecInit.lock();
 	if (!m_bInit)
 	{
@@ -96,7 +96,6 @@ int Hih264Decoder::decode(char * pData,unsigned int nDataLength)
 	if (-1 == nResult)
 	{
 		m_csDecInit.unlock();
-	/*	qDebug()<<"HI H264DEC need more bits";*/
 		return 0;
 	}
 	else if (-3 == nResult)                 
@@ -124,14 +123,14 @@ int Hih264Decoder::decode(char * pData,unsigned int nDataLength)
 		g_csDecInit.lock();
 		int ret = applyEventProc("DecodedFrame",decodeParam);
 		g_csDecInit.unlock();
-
 		m_nVideoWidth = DecFrames.uWidth;
 		m_nVideoHeight = DecFrames.uHeight;
-
 		nResult = HiH264Dec_dll.DecFrame(m_hDec,NULL,0,0,&DecFrames,0);
 		if (-1 == nResult)
 		{
 			break;
+		}else{
+			
 		}
 
 	}

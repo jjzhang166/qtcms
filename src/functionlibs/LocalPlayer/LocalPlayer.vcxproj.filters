@@ -70,6 +70,9 @@
     <ClInclude Include="avilib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalPlayer.def">
@@ -80,5 +83,8 @@
     <CustomBuild Include="PlayMgr.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LocalPlayer.rc" />
   </ItemGroup>
 </Project>

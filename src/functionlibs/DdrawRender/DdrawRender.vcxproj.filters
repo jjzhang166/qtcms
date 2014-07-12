@@ -48,10 +48,16 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DDrawRender.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DdrawRender.rc" />
   </ItemGroup>
 </Project>

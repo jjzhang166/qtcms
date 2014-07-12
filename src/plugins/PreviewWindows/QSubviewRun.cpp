@@ -223,7 +223,7 @@ void QSubviewRun::run()
 			if (m_currentStatus==STATUS_CONNECTED)
 			{
 				IChannelManager *pChannelManger=NULL;
-				pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&pChannelManger);
+				pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void **)&pChannelManger);
 				if (NULL!=pChannelManger)
 				{
 					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
@@ -270,7 +270,7 @@ void QSubviewRun::run()
 						pSwitchStream->Release();
 						pSwitchStream=NULL;
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fai as apply ISwitchStream fail";
+						qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail as apply ISwitchStream fail";
 					}
 				}else{
 					if (m_deviceInfo.m_uiStreamId==0)

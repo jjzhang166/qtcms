@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="RecordPlayerPlugins_global.h" />
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="RecordPlayerView.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing RecordPlayerView.h...</Message>
@@ -148,6 +149,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="RecordPlayerPlugins.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RecordPlayerPlugins.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

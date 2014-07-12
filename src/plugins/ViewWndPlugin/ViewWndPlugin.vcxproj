@@ -130,10 +130,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DVIEWWNDPLUGIN_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(SolutionDir)..\include"</Command>
     </CustomBuild>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="viewwndplugin_global.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="viewwndplugin.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ViewWndPlugin.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

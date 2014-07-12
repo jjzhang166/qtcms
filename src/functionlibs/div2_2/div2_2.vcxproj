@@ -94,6 +94,7 @@
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="div2_2.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,6 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="div2_2.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div2_2.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -114,10 +114,14 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DDIV1_LIB -DQT_SQL_LIB -D_WINDLL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(SolutionDir)..\include" "-I$(QTDIR)\include\QtSql" "-IC:\Program Files (x86)\Visual Leak Detector\include"</Command>
     </CustomBuild>
     <ClInclude Include="Recorder_global.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="StorageMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Recorder.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Recorder.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

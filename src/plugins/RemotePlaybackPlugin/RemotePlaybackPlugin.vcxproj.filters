@@ -95,6 +95,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_rPlayBackRun.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="rPlayBackRunEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_rPlayBackRunEx.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_rPlayBackRunEx.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
@@ -111,6 +120,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_TitleView.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +147,16 @@
     <CustomBuild Include="rPlayBackRun.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="rPlayBackRunEx.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="RemotePlaybackPlugin.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RemotePlaybackPlugin.rc" />
   </ItemGroup>
 </Project>

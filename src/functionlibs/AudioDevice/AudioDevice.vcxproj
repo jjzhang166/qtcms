@@ -112,10 +112,14 @@
     </CustomBuild>
     <ClInclude Include="AudioDevice_global.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="WaveDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AudioDevice.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AudioDevice.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

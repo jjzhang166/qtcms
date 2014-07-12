@@ -217,10 +217,6 @@ finishSearch:
 	 }
      QDateTime playedTime = m_GroupPlayback->GroupGetPlayedTime();
 
-	 //QString playedTimeTest;
-	 //playedTimeTest=playedTime.toString("yyyy-MM-dd hh:mm:ss");
-	 //qDebug()<<playedTimeTest;
-
 	 QDateTime pCurdate;
 	 pCurdate.setDate(QDate::currentDate());
 	 QString CurrentTime;

@@ -575,7 +575,7 @@ void Hole::StreamData(LPVOID pData,int nDataSize)
 			//{
 			//	m_onIFrame(m_pOnIFrameParame);
 			//}	
-			qDebug("get the I Frame!!!");
+			/*qDebug("get the I Frame!!!");*/
 		}
 		frameitem.insert("channel",m_Channel);
 		frameitem.insert("pts",(UINT64)Frame->pts);

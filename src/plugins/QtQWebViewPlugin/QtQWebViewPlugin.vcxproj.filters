@@ -82,6 +82,9 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="QtQWebViewPlugin.def">
@@ -100,5 +103,8 @@
     <CustomBuild Include="webkitpluginsfactory.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="QtQWebViewPlugin.rc" />
   </ItemGroup>
 </Project>

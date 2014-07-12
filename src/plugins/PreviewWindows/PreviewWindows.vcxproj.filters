@@ -33,6 +33,11 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="previewwindows.cpp">
@@ -157,6 +162,9 @@
     <ClInclude Include="widgetforvideo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="previewwindows.h">
@@ -194,5 +202,8 @@
     <None Include="PreviewWindows.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PreviewWindows.rc" />
   </ItemGroup>
 </Project>

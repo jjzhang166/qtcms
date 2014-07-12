@@ -67,6 +67,9 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="PlaybackActivity.def">
@@ -80,5 +83,8 @@
     <CustomBuild Include="playbackactivity.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PlaybackActivity.rc" />
   </ItemGroup>
 </Project>

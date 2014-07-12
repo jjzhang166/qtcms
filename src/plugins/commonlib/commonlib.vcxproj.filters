@@ -76,6 +76,9 @@
     <ClInclude Include="DisksInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qcommonplugin.h">
@@ -89,5 +92,8 @@
     <None Include="commonlib.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="commonlib.rc" />
   </ItemGroup>
 </Project>

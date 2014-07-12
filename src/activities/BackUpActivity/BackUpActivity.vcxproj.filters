@@ -67,6 +67,9 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="BackUpActivity.def">
@@ -80,5 +83,8 @@
     <CustomBuild Include="..\..\..\include\qwfw.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BackUpActivity.rc" />
   </ItemGroup>
 </Project>

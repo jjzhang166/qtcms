@@ -79,6 +79,9 @@
     <ClInclude Include="..\..\..\include\IGroupManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="viewwndplugin.h">
@@ -92,5 +95,8 @@
     <None Include="viewwndplugin.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ViewWndPlugin.rc" />
   </ItemGroup>
 </Project>

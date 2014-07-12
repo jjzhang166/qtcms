@@ -96,11 +96,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SDLRender.h" />
     <ClInclude Include="SDLRender_global.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SDLRender.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SDLRender.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

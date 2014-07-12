@@ -34,12 +34,18 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ipcdeviceclient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ipcdeviceclient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ipcdeviceclient.h">
+    <ClInclude Include="ipcdeviceclient_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ipcdeviceclient_global.h">
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,5 +53,13 @@
     <None Include="IpcDeviceClient.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="ipcdeviceclient.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IpcDeviceClient.rc" />
   </ItemGroup>
 </Project>

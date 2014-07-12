@@ -9,7 +9,6 @@
 RemotePlaybackPlug::RemotePlaybackPlug() :
 m_nRef(0)
 {
-	m_RPlaybackWnd.setParent(this);
 }
 
 RemotePlaybackPlug::~RemotePlaybackPlug()

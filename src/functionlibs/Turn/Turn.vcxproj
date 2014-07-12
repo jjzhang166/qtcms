@@ -23,6 +23,7 @@
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="EseeXml.h" />
     <ClInclude Include="netlib.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="RudpLib.h" />
     <ClInclude Include="SoupXml.h" />
     <ClInclude Include="Turn.h" />
@@ -30,6 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Turn.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Turn.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BF8758CF-181B-47DF-A057-C11EF73D27C5}</ProjectGuid>

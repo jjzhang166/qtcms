@@ -83,9 +83,9 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		memcpy(recStream.pData, (char*)evMap["data"].toUInt(), recStream.uiLength);
 	}
 
-
+	m_mutex.lock();
 	m_StreamBuffer.enqueue(recStream);
-
+	m_mutex.unlock();
 	return 0;
 }
 
@@ -96,10 +96,10 @@ int BufferManager::readStream(RecordStreamFrame &streamInfo)
 		if (1 == m_StreamBuffer.size())
 		{
 			QMutex mutex;
-			mutex.lock();
+			m_mutex.lock();
 			streamInfo = m_StreamBuffer.takeFirst();
 // 			m_StreamBuffer.removeFirst();
-			mutex.unlock();
+			m_mutex.unlock();
 		}
 		else
 		{

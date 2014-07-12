@@ -64,6 +64,9 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="RemoteBackupPlugin.def">
@@ -77,5 +80,8 @@
     <CustomBuild Include="RemoteBackupWindows.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RemoteBackupPlugin.rc" />
   </ItemGroup>
 </Project>

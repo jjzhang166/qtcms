@@ -22,6 +22,10 @@
     <ClInclude Include="div7_7.h" />
     <ClInclude Include="div7_7_global.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div7_7.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{766A97EB-C086-4372-9832-3EB7AFCA7D11}</ProjectGuid>

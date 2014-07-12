@@ -269,7 +269,6 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 	{
 		return IDeviceNetModify::E_SYSTEM_FAILED;
 	}
-		qDebug()<<m_netInfo;
 		if (m_Socket==NULL)
 		{
 			return IDeviceNetModify::E_SYSTEM_FAILED;

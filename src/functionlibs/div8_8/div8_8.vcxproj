@@ -96,9 +96,13 @@
     <ClInclude Include="div8_8.h" />
     <ClInclude Include="div8_8_global.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="div8_8.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div8_8.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -47,6 +47,9 @@
     <ClInclude Include="BubbleProtocol_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -92,5 +95,8 @@
     <None Include="BubbleProtocol.def">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BubbleProtocol.rc" />
   </ItemGroup>
 </Project>

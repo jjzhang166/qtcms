@@ -39,6 +39,7 @@
     <ClInclude Include="DeviceSearchWindows_global.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="qarplib.h" />
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="SetNetwork.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing SetNetwork.h...</Message>
@@ -72,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DeviceSearchPlugin.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DeviceSearchPlugin.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{43E2068B-3E3E-4197-B3AB-F45542F4B6C7}</ProjectGuid>

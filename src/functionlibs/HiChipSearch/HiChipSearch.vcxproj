@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="HiChipSearch_global.h" />
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="HiChipSearch.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing HiChipSearch.h...</Message>
@@ -37,6 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HiChipSearch.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HiChipSearch.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{09A31E74-049C-43F2-B6BF-5184D2FCE7EE}</ProjectGuid>

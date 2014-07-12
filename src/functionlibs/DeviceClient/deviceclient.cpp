@@ -53,6 +53,12 @@ DeviceClient::DeviceClient():m_nRef(0),
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
 	}
 	m_groupMap.clear();
+	//
+	m_remotePlayback.registerEvent("foundFile",cbFoundFileFormprotocl,this);
+	m_remotePlayback.registerEvent("StateChangeed",cbStateChangeFormprotocl,this);
+	m_remotePlayback.registerEvent("recFileSearchFinished",cbRecFileSearchFinishedFormprotocl,this);
+	m_remotePlayback.registerEvent("SocketError",cbSocketErrorFormprotocl,this);
+	m_remotePlayback.registerEvent("recFileSearchFail",cbRecFileSearchFailFormprotocl,this);
 }
 
 DeviceClient::~DeviceClient()
@@ -403,6 +409,7 @@ int DeviceClient::checkUser(const QString & sUsername,const QString &sPassword)
 {
 	m_sUserName = sUsername;
 	m_sPassWord = sPassword;
+	m_remotePlayback.checkUser(sUsername,sPassword);
 	return 0;
 }
 int DeviceClient::setChannelName(const QString & sChannelName)
@@ -692,6 +699,8 @@ bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 
 int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
 {
+	m_remotePlayback.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	return 0;
 	if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
@@ -1022,8 +1031,8 @@ int DeviceClient::recordFrame(QVariantMap &evMap)
 	}
 
 	int nRet = 0;
-	int channle = evMap.value("channel").toInt();
-	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channle);
+	int channel = evMap.value("channel").toInt();
+	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channel);
 	BufferManager *pBuffer = iter->bufferManager;
 	if (NULL == pBuffer)
 	{
@@ -1192,18 +1201,21 @@ int DeviceClient::ControlPTZStop( const int &nChl, const int &nCmd )
 int DeviceClient::setDeviceHost( const QString & sAddr )
 {
 	m_sAddr=sAddr;
+	m_remotePlayback.setDeviceHost(sAddr);
 	return 0;
 }
 
 int DeviceClient::setDevicePorts( unsigned int ports )
 {
 	m_uiPort=ports;
+	m_remotePlayback.setDevicePorts(ports);
 	return 0;
 }
 
 int DeviceClient::setDeviceId( const QString & isee )
 {
 	m_sEseeId=isee;
+	m_remotePlayback.setDeviceEsee(isee);
 	return 0;
 }
 

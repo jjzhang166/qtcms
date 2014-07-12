@@ -101,7 +101,11 @@
     <ClInclude Include="qarp.h" />
     <ClInclude Include="qarp_global.h" />
     <ClInclude Include="qarplib.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Qarp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,6 +14,7 @@
     <ClInclude Include="GlobalSettings.h" />
     <ClInclude Include="h264wh.h" />
     <ClInclude Include="BubbleProtocol_global.h" />
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="StreamProcess.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing StreamProcess.h...</Message>
@@ -58,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BubbleProtocol.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BubbleProtocol.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0C22E54A-B333-4F39-BDE8-EA32003128FC}</ProjectGuid>

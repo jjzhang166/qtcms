@@ -77,6 +77,21 @@
     <ClCompile Include="avilib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_RemoteBackup.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_RemoteBackup.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="remotePlayBack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_remotePlayBack.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_remotePlayBack.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deviceclient_global.h">
@@ -91,13 +106,13 @@
     <ClInclude Include="DeviceGlobalSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RemoteBackup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="avilib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="netlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -117,5 +132,14 @@
     <CustomBuild Include="PlayManager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="RemoteBackup.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="remotePlayBack.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DeviceClient.rc" />
   </ItemGroup>
 </Project>

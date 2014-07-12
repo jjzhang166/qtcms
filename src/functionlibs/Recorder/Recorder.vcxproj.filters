@@ -73,6 +73,9 @@
     <ClInclude Include="netlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Recorder.def">
@@ -83,5 +86,8 @@
     <CustomBuild Include="Recorder.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Recorder.rc" />
   </ItemGroup>
 </Project>

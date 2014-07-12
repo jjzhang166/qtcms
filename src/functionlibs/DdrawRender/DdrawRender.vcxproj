@@ -98,9 +98,13 @@
     <ClInclude Include="ddrawrender.h" />
     <ClInclude Include="ddrawrender_global.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DDrawRender.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DdrawRender.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -100,9 +100,13 @@
     <ClInclude Include="h264wh.h" />
     <ClInclude Include="h264Decoder.h" />
     <ClInclude Include="h264Decoder_global.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="h264Decoder.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="h264Decoder.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

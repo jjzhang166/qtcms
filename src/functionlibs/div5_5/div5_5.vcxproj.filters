@@ -52,6 +52,9 @@
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="div5_5.def">
@@ -62,5 +65,8 @@
     <CustomBuild Include="div5_5.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div5_5.rc" />
   </ItemGroup>
 </Project>
