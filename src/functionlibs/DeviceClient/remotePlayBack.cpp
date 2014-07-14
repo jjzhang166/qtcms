@@ -104,12 +104,12 @@ int remotePlayBack::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			m_stepCode.enqueue(SEARCHRECFILE);
 			m_tStepCodeLock.unlock();
 			QThread::start();
+			return 0;
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"startSearchRecFile fail as thread had been running,if you want research please wait the thread finish or call stop";
 		return 1;
 	}
-	return 0;
 }
 
 int remotePlayBack::groupPlay( int nTypes,const QDateTime & start,const QDateTime & end )

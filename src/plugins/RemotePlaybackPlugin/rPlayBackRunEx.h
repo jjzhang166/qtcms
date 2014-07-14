@@ -7,6 +7,16 @@
 #include <QQueue>
 #include <QWidget>
 #include <QMultiMap>
+#include <QTimer>
+#include <QEventLoop>
+#include <QApplication>
+#include <QtXml/QtXml>
+#include <QFile>
+#include <guid.h>
+#include <IDeviceRemotePlayback.h>
+#include <IEventRegister.h>
+#include <IDeviceClient.h>
+#include <IDeviceSearchRecord.h>
 int cbXRecRunFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbXRecRunFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 int cbXRecRunFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
@@ -93,6 +103,8 @@ public:
 	int cbRecRunCacheState(QString evName,QVariantMap evMap,void*pUser);
 private:
 	void eventCallBack(QString sEventName,QVariantMap evMap);
+	void sleepEx(int nTime);
+	bool getDeviceObject();
 protected:
 	void run();
 private:
@@ -103,5 +115,7 @@ private:
 	bool m_bStop;
 	QMultiMap<QString ,tagRecPlayBackProcInfo> m_tEventMap;
 	QStringList m_tEventNameList;
+	int m_nSleepSwitch;
+	IDeviceGroupRemotePlayback *m_pDeviceGroupRemotePlayBack;
 };
 
