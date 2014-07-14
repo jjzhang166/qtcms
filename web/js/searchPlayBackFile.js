@@ -5,15 +5,19 @@
 	function setDevData2ocx(){
 
 		var b = 1;
-		if(bool){
+		if(bool){  //本地
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
 				alert(lang.Failed_to_set_the_number_of_synchronization_group);
 				b = 0
 			}
-		}else{
-
+		}else{  //远程
 			var oDevData=$('#dev_'+nowDevID).data('data'),
 			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
+
+			/*console.log('当前设备');
+			console.log(oDevData);
+			console.log('当前设备所属通道');
+			console.log(oChannel);*/
 
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
@@ -28,8 +32,12 @@
 			var intoWindsChl = $("#channelvideo").find('input:checkbox');
 			if(intoWindsChl.length != 0){
 				var i= 0;
+				/*console.log('选中的通道');
+				console.log(intoWindsChl);*/
 				intoWindsChl.each(function(index){
+					//console.log('当前checkbox状态:'+$(this).is(':checked'));
 					if($(this).is(':checked')){
+						//console.log(i+'//'+oChannel[index]);
 						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel[index])){
 							b = 0;
 						};
@@ -101,7 +109,7 @@
 			// 远程
 			var devData = $('div.dev_list li.sel span.device').data('data');
 				if(!devData){
-					 $('div.dev_list span.device,li').removeClass('sel');
+					$('div.dev_list span.device,li').removeClass('sel');
 					devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
 								.end().data('data');
 				}

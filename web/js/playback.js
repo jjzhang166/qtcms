@@ -338,8 +338,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initOxcDevListStatus();
 
-		data && loclFileDataIntoChannel(data);
-
 		localSearchDevNum++
 
 		searchLocalFile(localSearchDevNum);
@@ -545,9 +543,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function addRecFileTable(id,name,index){
-		var a = $('<tr '+id+'><td class="no_border"><input id="chk_'+index+'" type="checkbox"/><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+		var a = $('<tr '+id+'><td class="no_border"><input id="chk_'+index+'" checked="checked" type="checkbox" /><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 
 		setTables();
+		if($('#channelvideo input:checkbox').length > 4){
+			$("#channelvideo input:checkbox:gt(3)").prop('checked',false);
+		}
 		return a;
 
 	}
@@ -576,16 +577,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		maxFileEndTime = '';
 
-		areaList2Ui();
-
 		ocxsearchVideo();
 	}
 
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		
-		!recFile && areaList2Ui();
-		
+		if(recFile){
+			loclFileDataIntoChannel(recFile);
+		}else{
+			areaList2Ui();
+		}
 
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({

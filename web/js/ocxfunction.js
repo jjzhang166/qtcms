@@ -58,6 +58,9 @@ var oCommonLibrary,
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool,closed){ //区域菜单输出
 		num = num || key ;
+		if(num != 0){
+			closed='';
+		}
 		var obj = $('ul.filetree').not('[id]');
 
 			obj.each(function(){

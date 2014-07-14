@@ -90,7 +90,10 @@ var oSearchOcx,
 				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
 				oTreeWarp.show();
 				set_contentMax();
+
 				areaList2Ui('','','closed');
+
+
 				/*emptyDevSetMenu();*/
 				$('#ajaxHint').html('').stop(true,true).hide();
 
@@ -278,43 +281,8 @@ var oSearchOcx,
 			SetChannelIntoGroupData();
 		});
 		 /*client_setting*/
-
-		//record setting  回放设置;
-		var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
 		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
-
-			SettingRecordDoubleTimeParm();  //清空回放表单的数据
-			//通道选中状态唯一
-			$('div.dev_list:eq(3) span.channel').removeClass('sel')	
-			$(this).addClass('sel');
-			//填充完拷贝至其他通道的下拉菜单
-			$('td.copyTo li:gt(0)').remove();			
-			var allChlID = [];  //所有通道ID
-			$(this).parent('li').siblings().each(function(){
-				var chlData = $(this).find('.channel').data('data');
-				$('<li><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
-				allChlID.push(chlData.channel_id);
-			})
-
-			//拷贝到所有通道选项的value写入;
-			
-			$('<li><input class="all" data="" value="'+lang.Select+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
-
-			//console.log(allChlID);
-
-			var chlData = $(this).data('data');
-
-			var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
-			for(var i in sTimeID){
-				var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
-				//时间段数据和对应的星期关联
-				for(var j in weeks){
-					if(j == sTimeIDdata.weekday){
-						$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
-					}
-				}
-			}
-			initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
+			FillChannleRecordTime($(this));			
 		})
 
 		//搜索设备全选和 TR 同步选中
@@ -377,10 +345,12 @@ var oSearchOcx,
 		 	$('#viewMod').prev('div').find('span.SplitScreenMode').html($(this).html().match(/\d+|[\u4e00-\u9fa5]+/g).join(''));
 		})*/
 
-		areaList2Ui('','','closed');
+		//areaList2Ui();
 	}
+	//record setting  回放设置;
+	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
 	function FillRecordTimeData(){
-		areaList2Ui('','','closed');
+		areaList2Ui();
 		SettingRecordDoubleTimeParm();
 		/*$('ul.week a').each(function(index){ 
 			$(this).click(function(){
@@ -388,6 +358,43 @@ var oSearchOcx,
 			})
 		})*/
 		_t($('#RecordTime input:text'));
+		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
+	}
+
+	function FillChannleRecordTime(obj){
+		SettingRecordDoubleTimeParm();  //清空回放表单的数据
+		//通道选中状态唯一
+		$('div.dev_list:eq(3) span.channel').removeClass('sel')	
+		obj.addClass('sel');
+		console.log(obj);
+		//填充完拷贝至其他通道的下拉菜单
+		$('td.copyTo li:gt(0)').remove();
+		var allChlID = [];  //所有通道ID
+		obj.parent('li').siblings().each(function(){
+			var chlData = $(this).find('.channel').data('data');
+			$('<li><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
+			allChlID.push(chlData.channel_id);
+		})
+
+		//拷贝到所有通道选项的value写入;
+		
+		$('<li><input class="all" data="" value="'+lang.Select+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+
+		//console.log(allChlID);
+
+		var chlData = obj.data('data');
+
+		var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
+		for(var i in sTimeID){
+			var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
+			//时间段数据和对应的星期关联
+			for(var j in weeks){
+				if(j == sTimeIDdata.weekday){
+					$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
+				}
+			}
+		}
+		initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
 	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
 		var oTimes=$('#recordtime tbody tr:lt(4)');
@@ -1101,7 +1108,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
-		areaList2Ui('','','closed');
+		areaList2Ui();
 		closeMenu();
 		reInitNowDev();
 	}
@@ -1216,7 +1223,9 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function initOxcDevListStatus(){
 		//分组列表;
 		groupList2Ui();
+
 		areaList2Ui(key,'','closed');
+
 		// UI 调整
 		set_contentMax();
 
