@@ -513,6 +513,12 @@ void qsubviewEx::slmouseMenu()
 		m_pSwitchStreamAciton->setEnabled(true);
 		m_pClosePreviewAction->setEnabled(true);
 	}
+	if (m_tDeviceInfo.m_sVendor=="IPC")
+	{
+		m_pSwitchStreamAciton->setDisabled(true);
+	}else{
+		//do nothing 
+	}
 	if (m_tCurConnectStatus==STATUS_CONNECTED&&getAutoRecordStatus()==false)
 	{
 		m_pRecorderAction->setEnabled(true);

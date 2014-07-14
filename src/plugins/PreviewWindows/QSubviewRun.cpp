@@ -227,16 +227,43 @@ void QSubviewRun::run()
 				if (NULL!=pChannelManger)
 				{
 					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
-					m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();
+					/*m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();*/
+					if (m_deviceInfo.m_uiStreamId==0)
+					{
+						m_deviceInfo.m_uiStreamId=1;
+					}else{
+						m_deviceInfo.m_uiStreamId=0;
+					}
 					pChannelManger->Release();
 					pChannelManger=NULL;
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
-					if (liveSteamRequire())
+					if ("IPC"==m_deviceInfo.m_sVendor)
 					{
-						//succeed
+						ISwitchStream *pSwitchStream=NULL;
+						m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
+						if (NULL!=pSwitchStream)
+						{
+							if (m_deviceInfo.m_uiStreamId==0)
+							{
+								pSwitchStream->SwitchStream(0);
+								saveToDataBase();
+							}else{
+								pSwitchStream->SwitchStream(1);
+								saveToDataBase();
+							}
+							pSwitchStream->Release();
+							pSwitchStream=NULL;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail as apply ISwitchStream fail";
+						}
 					}else{
-						//fail
+						if (liveSteamRequire())
+						{
+							//succeed
+						}else{
+							//fail
+						}
 					}
 					m_bIsBlock=false;
 				}else{
