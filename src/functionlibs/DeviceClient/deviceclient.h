@@ -93,6 +93,7 @@ public:
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 		int nChannel,
 		int nTypes,
+		const QString &sDeviceName,
 		const QDateTime & startTime,
 		const QDateTime & endTime,
 		const QString & sbkpath);

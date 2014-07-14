@@ -1046,11 +1046,12 @@ int DeviceClient::recordFrame(QVariantMap &evMap)
 int DeviceClient::startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 	int nChannel,
 	int nTypes,
+	const QString &sDeviceName,
 	const QDateTime & startTime,
 	const QDateTime & endTime,
 	const QString & sbkpath)
 {
-	return m_RemoteBackup.StartByParam(sAddr,uiPort,sEseeId,nChannel,nTypes,startTime,endTime,sbkpath);
+	return m_RemoteBackup.StartByParam(sAddr,uiPort,sEseeId,nChannel,nTypes,sDeviceName,startTime,endTime,sbkpath);
 }
 int DeviceClient::stopBackup()
 {

@@ -73,6 +73,7 @@ bool RemoteBackupWindows::LoadDeviceClient(QString vendor)
 int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 	int nChannel,
 	int nTypes,
+	const QString &sDeviceName,
 	const QString & startTime,
 	const QString & endTime,
 	const QString & sbkpath)
@@ -83,7 +84,7 @@ int RemoteBackupWindows::startBackup(const QString &sAddr,unsigned int uiPort,co
 	QString dir=QString::fromLocal8Bit(sbkpath.toLocal8Bit());
 	if (m_pRemoteBackup)
 	{
-		nRet = m_pRemoteBackup->startBackup(sAddr,uiPort,sEseeId,nChannel,nTypes,stime,etime,sbkpath);
+		nRet = m_pRemoteBackup->startBackup(sAddr,uiPort,sEseeId,nChannel,nTypes,sDeviceName,stime,etime,sbkpath);
 	}
 	return nRet;
 }

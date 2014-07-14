@@ -11,6 +11,7 @@ interface IRemoteBackup : public IPComBase
 	// sAddr:设备ip
 	// uiPort:设备端口
 	// sEseeId:设备id
+	//sDeviceName:设备名称
 	// nChannel:最低位为0通道，最高位为31通道，每一位表示一个通道
 	// nTypes:录像类型，按位计算，第0位表示定时录像，第1位表示移动侦测录像，第2位表示报警录像，第3位表示手动录像
 	// startTime:开始时间
@@ -20,6 +21,7 @@ interface IRemoteBackup : public IPComBase
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 							int nChannel,
 							int nTypes,
+							const QString &sDeviceName,
 							const QDateTime & startTime,
 							const QDateTime & endTime,
 							const QString & sbkpath) = 0;

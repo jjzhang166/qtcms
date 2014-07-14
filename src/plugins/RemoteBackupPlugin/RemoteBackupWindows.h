@@ -24,6 +24,7 @@ public slots:
 	int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 		int nChannel,
 		int nTypes,
+		const QString &sDeviceName,
 		const QString & startTime,
 		const QString & endTime,
 		const QString & sbkpath);

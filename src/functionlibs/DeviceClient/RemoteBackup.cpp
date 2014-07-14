@@ -43,7 +43,7 @@ RemoteBackup::~RemoteBackup(void)
 	clearbuffer();
 }
 
-int RemoteBackup::StartByParam( const QString &sAddr,unsigned int uiPort,const QString &sEseeId, int nChannel, int nTypes, const QDateTime & startTime, const QDateTime & endTime, const QString & sbkpath )
+int RemoteBackup::StartByParam( const QString &sAddr,unsigned int uiPort,const QString &sEseeId, int nChannel, int nTypes, const QString &sDeviceName,const QDateTime & startTime, const QDateTime & endTime, const QString & sbkpath )
 {
 	if (QThread::isRunning())
 	{
@@ -55,6 +55,7 @@ int RemoteBackup::StartByParam( const QString &sAddr,unsigned int uiPort,const Q
 		m_tBackUpInfo.sEeeId=sEseeId;
 		m_tBackUpInfo.nChannel=nChannel;
 		m_tBackUpInfo.nTypes=nTypes;
+		m_tBackUpInfo.sDeviceName=sDeviceName;
 		m_tBackUpInfo.startTime=startTime;
 		m_tBackUpInfo.endTime=endTime;
 		m_tBackUpInfo.sPath=sbkpath;
@@ -443,7 +444,7 @@ void RemoteBackup::run()
 					fullname=m_tBackUpInfo.sPath;
 					char sChannelNum[3];
 					sprintf(sChannelNum,"%02d",m_tBackUpInfo.nChannel+1);
-					fullname += "/" + m_tBackUpInfo.sEeeId
+					fullname += "/" + m_tBackUpInfo.sDeviceName
 						+"_"+"CHL" + QString("%1").arg(QString(sChannelNum))
 						+"_" + m_tBackUpInfo.startTime.toString("yyyy-MM-dd(hhmmss)") 
 						+"_"+ m_tBackUpInfo.endTime.toString("yyyy-MM-dd(hhmmss)")+".avi";

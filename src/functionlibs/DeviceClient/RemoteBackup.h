@@ -21,6 +21,7 @@ typedef struct __tagBackUpInfo{
 	QString sEeeId;
 	int nChannel;
 	int nTypes;
+	QString sDeviceName;
 	QDateTime startTime;
 	QDateTime endTime;
 	QString sPath;
@@ -62,6 +63,7 @@ public:
 	int StartByParam(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 			int nChannel,
 			int nTypes,
+			const QString &sDeviceName,
 			const QDateTime & startTime,
 			const QDateTime & endTime,
 			const QString & sbkpath);
