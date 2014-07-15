@@ -5,7 +5,11 @@
 #include <IActivities.h>
 #include <QWebInspector>
 
-//#define __USE_WEB_DEBUGER__
+#include "minidumphead.h"
+#pragma comment(lib, "minidump.lib")
+
+
+#define __USE_WEB_DEBUGER__
 
 class QJaWebView : public QWebView
 {
@@ -33,6 +37,7 @@ private:
 	IActivities * m_Activity;
 #ifdef __USE_WEB_DEBUGER__
 	QWebInspector m_webinspector;
+	Dumper m_dup;
 #endif
 };
 

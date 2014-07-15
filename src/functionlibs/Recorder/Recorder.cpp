@@ -264,6 +264,8 @@ void Recorder::run()
 				//keep going 
 			}
 			   }
+
+			qDebug()<<__FUNCTION__<<__LINE__<<"create file"<<sSavePath;
 			   break;
 		case OPEN_FILE:{
 			//打开文件
@@ -283,6 +285,7 @@ void Recorder::run()
 			}
 			m_dataRef.unlock();
 			   }
+		   qDebug()<<__FUNCTION__<<__LINE__<<"open file"<<sSavePath<<AviFile;
 			   break;
 		case SET_VIDEO_PARM:{
 			// 设置文件（视频）的各项参数
@@ -291,6 +294,7 @@ void Recorder::run()
 			m_dataRef.unlock();
 			nRecStep=WRITE_FRAME;
 			   }
+			qDebug()<<__FUNCTION__<<__LINE__<<"set parm"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight;
 			   break;
 		case SET_AUDIO_PARM:{
 			//设置文件（音频）的各项参数
@@ -480,6 +484,9 @@ void Recorder::run()
 				}
 				AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,iFrameCount,"X264");
 				AVI_close(AviFile);
+
+				qDebug()<<__FUNCTION__<<__LINE__<<"pack file"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight<<"frameRate: "<<iFrameCount;
+
 				AviFile=NULL;
 				m_dataRef.unlock();
 				m_nPosition=__LINE__;
