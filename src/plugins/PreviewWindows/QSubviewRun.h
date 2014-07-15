@@ -113,6 +113,7 @@ public:
 	int cbCConnectError(QString evName,QVariantMap evMap,void*pUser );
 	int cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser);
 	int cbCRecordState(QString evName,QVariantMap evMap,void*pUser);
+	int cbCConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 private:
 	bool liveSteamRequire();
 	void eventCallBack(QString eventName,QVariantMap evMap);
@@ -158,7 +159,7 @@ private:
 	QMultiMap<QString ,tagProcInfo> m_eventMap;
 	QStringList m_eventNameList;
 	volatile bool m_stop;
-	tagDeviceInfo m_deviceInfo;
+	tagDeviceInfo m_tDeviceInfo;
 	int m_ptzCmd;
 	int m_ptzSpeed;
 	int m_ptzCmdEx;

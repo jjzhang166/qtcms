@@ -14,7 +14,7 @@
 #include <QTimer>
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser);
-
+int cbConnectRefuseEx(QString evName,QVariantMap evMap,void*pUser);
 class qsubviewEx:public QWidget
 {
 	Q_OBJECT
@@ -61,7 +61,7 @@ public:
 	//»Øµ÷º¯Êý
 	int cbCStateChange(QVariantMap evMap);
 	int cbCRecordState(QVariantMap evMap);
-
+	int cbCConnectRefuse(QVariantMap evMap);
 public slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slmouseMenu();
@@ -76,6 +76,7 @@ signals:
 	void sgrecordState(bool);
 	void sgmouseMenu();
 	void sgconnectStatus(QVariantMap,QWidget *);
+	void sgconnectRefuse(QVariantMap,QWidget *);
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);

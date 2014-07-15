@@ -15,6 +15,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(subWindowMousePress(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(subWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -454,5 +455,20 @@ int qpreviewwindowsex::CloseAll()
 		m_sPreviewWnd[i].closePreview();
 	}
 	return 0;
+}
+
+void qpreviewwindowsex::subWindowConnectRefuse( QVariantMap evMap,QWidget *wnd )
+{
+	int i;
+	for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		if (&m_sPreviewWnd[i]==wnd)
+		{
+			break;
+		}
+	}
+	evMap.insert("WPageId",i);
+	EventProcCall("ConnectRefuse",evMap);
+	return ;
 }
 

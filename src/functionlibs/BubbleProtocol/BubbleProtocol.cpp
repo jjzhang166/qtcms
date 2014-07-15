@@ -23,7 +23,7 @@ m_streamNum(0),
 m_streanCount(0)
 {
 	m_eventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
-               <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail";
+               <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail"<<"ConnectRefuse";
 
  /*	m_timer.singleShot(2000, this, SLOT(sendHeartBeat()));*/
 	m_pStreamProcess = new StreamProcess();

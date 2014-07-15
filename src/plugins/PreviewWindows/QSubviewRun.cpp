@@ -8,6 +8,7 @@ int cbRecorderRData(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRError(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodeRFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordRState(QString evName,QVariantMap evMap,void*pUser);
+int cbConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 bool QSubviewRun::m_bIsAudioOpen=false;
 unsigned int QSubviewRun::m_volumePersent=50;
 QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
@@ -39,7 +40,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
-	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame";
+	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(5000);
 	m_hMainThread=QThread::currentThreadId();
@@ -139,17 +140,17 @@ void QSubviewRun::run()
 						}else{
 							if (NULL==m_pRecorder)
 							{
-								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create recorder fail";
+								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create recorder fail";
 							}else if (NULL==m_pIVideoRender)
 							{
-								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create render fail";
+								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create render fail";
 							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create  decoder fail";
+								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create  decoder fail";
 							}
 										
 						}
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<m_deviceInfo.m_sDeviceName<<"::"<<m_deviceInfo.m_uiChannelId<<"create client fail";
+						qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create client fail";
 					}
 					//create deviceClient fail
 					nOpenStep=4;
@@ -167,7 +168,7 @@ void QSubviewRun::run()
 					m_nPosition=__LINE__;
 					emit sgsetRenderWnd();
 					m_bIsBlock=false;
-					if (0!=/*m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd)*/0)
+					if (0!=/*m_pIVideoRender->setRenderWnd(m_tDeviceInfo.m_pWnd)*/0)
 					{
 						nOpenStep=4;
 					}else{
@@ -226,25 +227,25 @@ void QSubviewRun::run()
 				pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void **)&pChannelManger);
 				if (NULL!=pChannelManger)
 				{
-					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
-					/*m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();*/
-					if (m_deviceInfo.m_uiStreamId==0)
+					QVariantMap channelInfo=pChannelManger->GetChannelInfo(m_tDeviceInfo.m_uiChannelIdInDataBase);
+					/*m_tDeviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();*/
+					if (m_tDeviceInfo.m_uiStreamId==0)
 					{
-						m_deviceInfo.m_uiStreamId=1;
+						m_tDeviceInfo.m_uiStreamId=1;
 					}else{
-						m_deviceInfo.m_uiStreamId=0;
+						m_tDeviceInfo.m_uiStreamId=0;
 					}
 					pChannelManger->Release();
 					pChannelManger=NULL;
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
-					if ("IPC"==m_deviceInfo.m_sVendor)
+					if ("IPC"==m_tDeviceInfo.m_sVendor)
 					{
 						ISwitchStream *pSwitchStream=NULL;
 						m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
 						if (NULL!=pSwitchStream)
 						{
-							if (m_deviceInfo.m_uiStreamId==0)
+							if (m_tDeviceInfo.m_uiStreamId==0)
 							{
 								pSwitchStream->SwitchStream(0);
 								saveToDataBase();
@@ -278,20 +279,20 @@ void QSubviewRun::run()
 			//窗口菜单切换码流
 			if (m_currentStatus==STATUS_CONNECTED&&NULL!=m_pdeviceClient)
 			{
-				if ("IPC"==m_deviceInfo.m_sVendor)
+				if ("IPC"==m_tDeviceInfo.m_sVendor)
 				{
 					ISwitchStream *pSwitchStream=NULL;
 					m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
 					if (NULL!=pSwitchStream)
 					{
-						if (m_deviceInfo.m_uiStreamId==0)
+						if (m_tDeviceInfo.m_uiStreamId==0)
 						{
 							pSwitchStream->SwitchStream(1);
-							m_deviceInfo.m_uiStreamId=1;
+							m_tDeviceInfo.m_uiStreamId=1;
 							saveToDataBase();
 						}else{
 							pSwitchStream->SwitchStream(0);
-							m_deviceInfo.m_uiStreamId=0;
+							m_tDeviceInfo.m_uiStreamId=0;
 							saveToDataBase();
 						}
 						pSwitchStream->Release();
@@ -300,12 +301,12 @@ void QSubviewRun::run()
 						qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail as apply ISwitchStream fail";
 					}
 				}else{
-					if (m_deviceInfo.m_uiStreamId==0)
+					if (m_tDeviceInfo.m_uiStreamId==0)
 					{
-						m_deviceInfo.m_uiStreamId=1;
+						m_tDeviceInfo.m_uiStreamId=1;
 
 					}else{
-						m_deviceInfo.m_uiStreamId=0;
+						m_tDeviceInfo.m_uiStreamId=0;
 					}
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
@@ -453,7 +454,7 @@ void QSubviewRun::run()
 					pRecordEx->Release();
 				}
 
-				m_pRecorder->SetDevInfo(m_deviceInfo.m_sDeviceName,m_deviceInfo.m_uiChannelId);
+				m_pRecorder->SetDevInfo(m_tDeviceInfo.m_sDeviceName,m_tDeviceInfo.m_uiChannelId);
 				m_pRecorder->Start();
 				m_bIsRecord=true;
 			}else{
@@ -510,7 +511,7 @@ void QSubviewRun::run()
 					   break;
 				case 1:{
 					//自动同步
-					if ("IPC"==m_deviceInfo.m_sVendor&&m_bIsSysTime==true&&m_pdeviceClient!=NULL)
+					if ("IPC"==m_tDeviceInfo.m_sVendor&&m_bIsSysTime==true&&m_pdeviceClient!=NULL)
 					{
 						IAutoSycTime *pAutoSysTime=NULL;
 						m_pdeviceClient->QueryInterface(IID_IAutoSycTime,(void**)&pAutoSysTime);
@@ -680,8 +681,8 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		QVariantMap curStatusInfo;
 		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
 		backToMainThread(curStatusInfo);
-		m_deviceInfo.m_uiChannelIdInDataBase=chlId;
-		m_deviceInfo.m_pWnd=pWnd;
+		m_tDeviceInfo.m_uiChannelIdInDataBase=chlId;
+		m_tDeviceInfo.m_pWnd=pWnd;
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
 		m_bIsdataBaseFlush=true;
@@ -739,54 +740,54 @@ bool QSubviewRun::openPTZ()
 		{
 			switch(m_ptzCmd){
 			case 0:{
-				ret=pIpzControl->ControlPTZUp(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZUp(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 1:{
-				ret=pIpzControl->ControlPTZDown(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZDown(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 2:{
-				ret=pIpzControl->ControlPTZLeft(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZLeft(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 3:{
-				ret=pIpzControl->ControlPTZRight(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZRight(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 4:{
 				if (!m_bIsPtzAutoOpen)
 				{
 					m_bIsPtzAutoOpen=true;
-					ret=pIpzControl->ControlPTZAuto(m_deviceInfo.m_uiChannelId,true);
+					ret=pIpzControl->ControlPTZAuto(m_tDeviceInfo.m_uiChannelId,true);
 				}else{
 					m_bIsPtzAutoOpen=false;
-					ret=pIpzControl->ControlPTZAuto(m_deviceInfo.m_uiChannelId,false);
+					ret=pIpzControl->ControlPTZAuto(m_tDeviceInfo.m_uiChannelId,false);
 				}
 				   }
 				   break;
 			case 5:{
-				ret=pIpzControl->ControlPTZFocusFar(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZFocusFar(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 6:{
-				ret=pIpzControl->ControlPTZFocusNear(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZFocusNear(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 7:{
-				ret=pIpzControl->ControlPTZZoomIn(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZZoomIn(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 8:{
-				ret=pIpzControl->ControlPTZZoomOut(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZZoomOut(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 9:{
-				ret=pIpzControl->ControlPTZIrisOpen(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZIrisOpen(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 				   }
 				   break;
 			case 10:{
-				ret=pIpzControl->ControlPTZIrisClose(m_deviceInfo.m_uiChannelId,m_ptzSpeed);
+				ret=pIpzControl->ControlPTZIrisClose(m_tDeviceInfo.m_uiChannelId,m_ptzSpeed);
 					}
 					break;
 			default:
@@ -830,7 +831,7 @@ bool QSubviewRun::closePTZ()
 		{
 			if (4!=m_ptzCmdEx)
 			{
-				int nRet=pPtzControl->ControlPTZStop(m_deviceInfo.m_uiChannelId,m_ptzCmdEx);
+				int nRet=pPtzControl->ControlPTZStop(m_tDeviceInfo.m_uiChannelId,m_ptzCmdEx);
 				if (nRet==0)
 				{
 					return true;
@@ -901,7 +902,7 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 {
 	if (NULL!=m_pIVideoDecoder)
 	{
-		if (m_deviceInfo.m_pWnd->isVisible())
+		if (m_tDeviceInfo.m_pWnd->isVisible())
 		{
 			unsigned int nLength=evMap.value("length").toUInt();
 			char * lpdata=(char *)evMap.value("data").toUInt();
@@ -949,10 +950,10 @@ bool QSubviewRun::createDevice()
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManager);
 	if (NULL!=pChannelManager)
 	{
-		QVariantMap channelInfo=pChannelManager->GetChannelInfo(m_deviceInfo.m_uiChannelIdInDataBase);
-		m_deviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();
-		m_deviceInfo.m_uiChannelId=channelInfo.value("number").toInt();
-		m_deviceInfo.m_sCameraname=channelInfo.value("name").toString();
+		QVariantMap channelInfo=pChannelManager->GetChannelInfo(m_tDeviceInfo.m_uiChannelIdInDataBase);
+		m_tDeviceInfo.m_uiStreamId=channelInfo.value("stream").toInt();
+		m_tDeviceInfo.m_uiChannelId=channelInfo.value("number").toInt();
+		m_tDeviceInfo.m_sCameraname=channelInfo.value("name").toString();
 		int dev_id=channelInfo.value("dev_id").toInt();
 		pChannelManager->Release();
 		pChannelManager=NULL;
@@ -961,16 +962,16 @@ bool QSubviewRun::createDevice()
 		if (NULL!=pDeviceManager)
 		{
 			QVariantMap deviceInfo=pDeviceManager->GetDeviceInfo(dev_id);
-			m_deviceInfo.m_sVendor=deviceInfo.value("vendor").toString();
-			m_deviceInfo.m_sPassword=deviceInfo.value("password").toString();
-			m_deviceInfo.m_sUsername=deviceInfo.value("username").toString();
-			m_deviceInfo.m_sEseeId=deviceInfo.value("eseeid").toString();
-			m_deviceInfo.m_sAddress=deviceInfo.value("address").toString();
-			m_deviceInfo.m_uiPort=deviceInfo.value("port").toInt();
-			m_deviceInfo.m_sDeviceName=deviceInfo.value("name").toString();
+			m_tDeviceInfo.m_sVendor=deviceInfo.value("vendor").toString();
+			m_tDeviceInfo.m_sPassword=deviceInfo.value("password").toString();
+			m_tDeviceInfo.m_sUsername=deviceInfo.value("username").toString();
+			m_tDeviceInfo.m_sEseeId=deviceInfo.value("eseeid").toString();
+			m_tDeviceInfo.m_sAddress=deviceInfo.value("address").toString();
+			m_tDeviceInfo.m_uiPort=deviceInfo.value("port").toInt();
+			m_tDeviceInfo.m_sDeviceName=deviceInfo.value("name").toString();
 			pDeviceManager->Release();
 			pDeviceManager=NULL;
-			if (m_deviceInfo.m_sVendor.isEmpty()==false)
+			if (m_tDeviceInfo.m_sVendor.isEmpty()==false)
 			{
 				QString sAppPath=QCoreApplication::applicationDirPath();
 				QFile *file=new QFile(sAppPath+"/pcom_config.xml");
@@ -982,7 +983,7 @@ bool QSubviewRun::createDevice()
 				for(int n=0;n<itemList.count();n++){
 					QDomNode item=itemList.at(n);
 					QString sItemName=item.toElement().attribute("vendor");
-					if (sItemName==m_deviceInfo.m_sVendor)
+					if (sItemName==m_tDeviceInfo.m_sVendor)
 					{
 						CLSID DeviceVendorClsid=pcomString2GUID(item.toElement().attribute("clsid"));
 						if (m_pdeviceClient!=NULL)
@@ -1033,6 +1034,7 @@ bool QSubviewRun::registerCallback(int registcode)
 				pRegist->registerEvent(QString("SocketError"),cbConnectRError,this);
 				pRegist->registerEvent(QString("CurrentStatus"),cbConnectRState,this);
 				pRegist->registerEvent(QString("ForRecord"),cbRecorderRData,this);
+				pRegist->registerEvent(QString("ConnectRefuse"),cbConnectRefuse,this);
 				pRegist->Release();
 				pRegist=NULL;
 				return true;
@@ -1212,11 +1214,11 @@ bool QSubviewRun::connectToDevice()
 	m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
 	if (NULL!=pdeviceClient)
 	{
-		pdeviceClient->checkUser(m_deviceInfo.m_sUsername,m_deviceInfo.m_sPassword);
-		pdeviceClient->setChannelName(m_deviceInfo.m_sCameraname);
-		pdeviceClient->setDeviceHost(m_deviceInfo.m_sAddress);
-		pdeviceClient->setDeviceId(m_deviceInfo.m_sEseeId);
-		pdeviceClient->setDevicePorts(m_deviceInfo.m_uiPort);
+		pdeviceClient->checkUser(m_tDeviceInfo.m_sUsername,m_tDeviceInfo.m_sPassword);
+		pdeviceClient->setChannelName(m_tDeviceInfo.m_sCameraname);
+		pdeviceClient->setDeviceHost(m_tDeviceInfo.m_sAddress);
+		pdeviceClient->setDeviceId(m_tDeviceInfo.m_sEseeId);
+		pdeviceClient->setDevicePorts(m_tDeviceInfo.m_uiPort);
 		if (0==pdeviceClient->connectToDevice())
 		{
 			int ncount=0;
@@ -1270,7 +1272,7 @@ bool QSubviewRun::liveSteamRequire()
 		m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
 		if (NULL !=pdeviceClient)
 		{
-			if (pdeviceClient->liveStreamRequire(m_deviceInfo.m_uiChannelId,m_deviceInfo.m_uiStreamId,true)==0)
+			if (pdeviceClient->liveStreamRequire(m_tDeviceInfo.m_uiChannelId,m_tDeviceInfo.m_uiStreamId,true)==0)
 			{
 				pdeviceClient->Release();
 				pdeviceClient=NULL;
@@ -1297,13 +1299,13 @@ void QSubviewRun::ipcAutoSwitchStream()
 		m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
 		if (NULL!=pSwitchStream)
 		{
-			if (m_deviceInfo.m_pWnd->parentWidget()->width()-m_deviceInfo.m_pWnd->width()<20)
+			if (m_tDeviceInfo.m_pWnd->parentWidget()->width()-m_tDeviceInfo.m_pWnd->width()<20)
 			{
 				pSwitchStream->SwitchStream(0);
-				m_deviceInfo.m_uiStreamId=0;
+				m_tDeviceInfo.m_uiStreamId=0;
 			}else{
 				pSwitchStream->SwitchStream(1);
-				m_deviceInfo.m_uiStreamId=1;
+				m_tDeviceInfo.m_uiStreamId=1;
 			}
 			pSwitchStream->Release();
 			pSwitchStream=NULL;
@@ -1334,7 +1336,7 @@ void QSubviewRun::saveToDataBase()
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
 	if (NULL!=pChannelManger)
 	{
-		pChannelManger->ModifyChannelStream(m_deviceInfo.m_uiChannelIdInDataBase,m_deviceInfo.m_uiStreamId);
+		pChannelManger->ModifyChannelStream(m_tDeviceInfo.m_uiChannelIdInDataBase,m_tDeviceInfo.m_uiStreamId);
 		pChannelManger->Release();
 		pChannelManger=NULL;
 	}else{
@@ -1392,7 +1394,7 @@ int QSubviewRun::stopRecord()
 void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 {
 	//连接状态
-	int chlid=m_deviceInfo.m_uiChannelIdInDataBase;
+	int chlid=m_tDeviceInfo.m_uiChannelIdInDataBase;
 	if (evMap.contains("CurrentStatus"))
 	{
 		m_currentStatus=(QSubviewRunConnectStatus)evMap.value("CurrentStatus").toInt();
@@ -1459,7 +1461,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 	//其他事件也在此处处理
 	if (evMap.contains("eventName")&&evMap.value("eventName")=="setRenderWnd")
 	{
-		m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd);
+		m_pIVideoRender->setRenderWnd(m_tDeviceInfo.m_pWnd);
 	}
 }
 
@@ -1474,7 +1476,7 @@ void QSubviewRun::slplanRecord()
 			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
 			if (NULL!=pSetRecordTime)
 			{
-				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_deviceInfo.m_uiChannelIdInDataBase);
+				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_tDeviceInfo.m_uiChannelIdInDataBase);
 				tagRecorderTimeInfo recTimeInfo;
 				m_lstReocrdTimeInfoList.clear();
 				for (int i=0;i<recordIdList.size();i++)
@@ -1616,12 +1618,12 @@ void QSubviewRun::ipcSwitchStream()
 
 tagDeviceInfo QSubviewRun::deviceInfo()
 {
-	return m_deviceInfo;
+	return m_tDeviceInfo;
 }
 
 void QSubviewRun::slsetRenderWnd()
 {
-	m_pIVideoRender->setRenderWnd(m_deviceInfo.m_pWnd);
+	m_pIVideoRender->setRenderWnd(m_tDeviceInfo.m_pWnd);
 }
 
 void QSubviewRun::slstopPreviewrun()
@@ -1716,6 +1718,19 @@ void QSubviewRun::setWindId( int nWindId )
 	m_nWindId = nWindId;
 }
 
+int QSubviewRun::cbCConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evMap.contains("ConnectRefuse"))
+	{
+		m_stop=true;
+		eventCallBack("ConnectRefuse",evMap);
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient resource had been full load";
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"undefined callBack event,please checkout";
+	}
+	return 0;
+}
+
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCConnectState(evName,evMap,pUser);
@@ -1742,4 +1757,9 @@ int cbDecodeRFrame(QString evName,QVariantMap evMap,void*pUser)
 int cbRecordRState( QString evName,QVariantMap evMap,void*pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCRecordState(evName,evMap,pUser);
+}
+
+int cbConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
+{
+	return ((QSubviewRun*)pUser)->cbCConnectRefuse(evName,evMap,pUser);
 }

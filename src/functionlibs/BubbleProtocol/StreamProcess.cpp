@@ -362,6 +362,14 @@ void StreamProcess::analyzePreviewStream()
 		}
 		else if ('\x02'==pBubble->cCmd||'\x08'==pBubble->cCmd)
 		{
+			if ('\x08'==pBubble->cCmd)
+			{
+				QVariantMap tConnectRefuseInfo;
+				tConnectRefuseInfo.insert("ConnectRefuse",true);
+				eventProcCall("ConnectRefuse",tConnectRefuseInfo);
+			}else{
+				//do nothing
+			}
 			m_buffer.remove(0,11);
 		}
 		if (!m_buffer.startsWith("\xaa"))

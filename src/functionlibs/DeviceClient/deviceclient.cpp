@@ -20,45 +20,49 @@ DeviceClient::DeviceClient():m_nRef(0),
 	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse";
 
 	DeviceClientInfoItem devcliInfo;
 
-	devcliInfo.proc=cbStateChangeFormprotocl;
+	devcliInfo.proc=cbXStateChange;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("StateChangeed",devcliInfo);
 
 
-	devcliInfo.proc=cbFoundFileFormprotocl;
+	devcliInfo.proc=cbXFoundFile;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("foundFile",devcliInfo);
 
-	devcliInfo.proc=cbRecFileSearchFinishedFormprotocl;
+	devcliInfo.proc=cbXRecFileSearchFinished;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("recFileSearchFinished",devcliInfo);
 
-	devcliInfo.proc=cbLiveStreamFormprotocl;
+	devcliInfo.proc=cbXLiveStream;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("LiveStream",devcliInfo);
 
-	devcliInfo.proc=cbSocketErrorFormprotocl;
+	devcliInfo.proc=cbXSocketError;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("SocketError",devcliInfo);
 
-	devcliInfo.proc=cbRecFileSearchFailFormprotocl;
+	devcliInfo.proc=cbXRecFileSearchFail;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("recFileSearchFail",devcliInfo);
+
+	devcliInfo.proc=cbXConnectRefuse;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("ConnectRefuse",devcliInfo);
 	if (NULL != m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
 	}
 	m_groupMap.clear();
 	//
-	m_remotePlayback.registerEvent("foundFile",cbFoundFileFormprotocl,this);
-	m_remotePlayback.registerEvent("StateChangeed",cbStateChangeFormprotocl,this);
-	m_remotePlayback.registerEvent("recFileSearchFinished",cbRecFileSearchFinishedFormprotocl,this);
-	m_remotePlayback.registerEvent("SocketError",cbSocketErrorFormprotocl,this);
-	m_remotePlayback.registerEvent("recFileSearchFail",cbRecFileSearchFailFormprotocl,this);
+	m_remotePlayback.registerEvent("foundFile",cbXFoundFile,this);
+	m_remotePlayback.registerEvent("StateChangeed",cbXStateChange,this);
+	m_remotePlayback.registerEvent("recFileSearchFinished",cbXRecFileSearchFinished,this);
+	m_remotePlayback.registerEvent("SocketError",cbXSocketError,this);
+	m_remotePlayback.registerEvent("recFileSearchFail",cbXRecFileSearchFail,this);
 }
 
 DeviceClient::~DeviceClient()
@@ -558,7 +562,7 @@ int DeviceClient::cbInit()
 		if (NULL!=IEventReg)
 		{
 			QString evName = QString("RecordStream");
-			IEventReg->registerEvent(evName, cbRecordStream, this);
+			IEventReg->registerEvent(evName, cbXRecordStream, this);
 
 			QMultiMap<QString,DeviceClientInfoItem>::const_iterator it;
 			for (it=m_EventMapToPro.begin();it!=m_EventMapToPro.end();++it)
@@ -607,7 +611,7 @@ int DeviceClient::cbInit()
 	bIsInitFlags=true;
 	return 0;
 }
-int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+int cbXStateChange(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("StateChangeed"==evName)
 	{
@@ -1220,7 +1224,13 @@ int DeviceClient::setDeviceId( const QString & isee )
 	return 0;
 }
 
-int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
+int DeviceClient::cbConnectRefuse( QVariantMap &evMap )
+{
+	eventProcCall("ConnectRefuse",evMap);
+	return 0;
+}
+
+int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)
 {
 	int nRet = 0;
 	DeviceClient *pClient = (DeviceClient*)pUser;
@@ -1230,7 +1240,7 @@ int cbRecordStream(QString evName,QVariantMap evMap,void*pUser)
 	return nRet;
 }
 
-int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+int cbXFoundFile(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("foundFile"==evName)
 	{
@@ -1240,7 +1250,7 @@ int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 	return 1;
 }
 
-int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+int cbXRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("recFileSearchFinished"==evName)
 	{
@@ -1249,7 +1259,7 @@ int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUs
 	}
 	return 1;
 }
-int cbRecFileSearchFailFormprotocl(QString evName,QVariantMap evMap,void*pUser)
+int cbXRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("recFileSearchFail"==evName)
 	{
@@ -1258,7 +1268,7 @@ int cbRecFileSearchFailFormprotocl(QString evName,QVariantMap evMap,void*pUser)
 	}
 	return 1;
 }
-int cbLiveStreamFormprotocl( QString evName,QVariantMap evMap,void*pUser )
+int cbXLiveStream( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)
 	{
@@ -1268,7 +1278,7 @@ int cbLiveStreamFormprotocl( QString evName,QVariantMap evMap,void*pUser )
 	return 1;
 }
 
-int cbSocketErrorFormprotocl( QString evName,QVariantMap evMap,void*pUser )
+int cbXSocketError( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("SocketError"==evName)
 	{
@@ -1276,4 +1286,16 @@ int cbSocketErrorFormprotocl( QString evName,QVariantMap evMap,void*pUser )
 		return 0;
 	}
 	return 1;
+}
+
+int cbXConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("ConnectRefuse"==evName)
+	{
+		((DeviceClient*)pUser)->cbConnectRefuse(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"call back connectRefuse fail,as the evName is not collect";
+		return 1;
+	}
 }

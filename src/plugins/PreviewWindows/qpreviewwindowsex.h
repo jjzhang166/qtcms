@@ -71,6 +71,7 @@ public slots:
 	void subWindowDblClick(QWidget*,QMouseEvent *);
 	void subWindowMousePress(QWidget*,QMouseEvent *);
 	void subWindowConnectStatus(QVariantMap,QWidget *);
+	void subWindowConnectRefuse(QVariantMap,QWidget *);
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();

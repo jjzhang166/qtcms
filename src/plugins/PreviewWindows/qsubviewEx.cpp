@@ -18,6 +18,7 @@ QWidget(parent),
 	//注册回调函数
 	m_sSubviewRun.registerEvent(QString("CurrentStatus"),cbStateChangeEx,this);
 	m_sSubviewRun.registerEvent(QString("RecordState"),cbRecordStateEx,this);
+	m_sSubviewRun.registerEvent(QString("ConnectRefuse"),cbConnectRefuseEx,this);
 	//生成渲染的窗口
 	m_pManageWidget=new ManageWidget(this);
 	//右键菜单
@@ -177,6 +178,15 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tHistoryConnectStatus=m_tCurConnectStatus;
 			}
 		}
+	}
+	if (evMap.contains("eventName")&&evMap.value("eventName")=="cbCConnectRefuse")
+	{
+		QVariantMap evMapToUi;
+		evMapToUi.insert("ConnectRefuse",true);
+		evMapToUi.insert("ChannelId",m_tDeviceInfo.m_uiChannelIdInDataBase);
+		emit sgconnectRefuse(evMapToUi,this);
+	}else{
+		//do noting
 	}
 }
 
@@ -706,6 +716,13 @@ void qsubviewEx::setCurWindId( int nWindId )
 	m_sSubviewRun.setWindId(nWindId);
 }
 
+int qsubviewEx::cbCConnectRefuse( QVariantMap evMap )
+{
+	evMap.insert("eventName","cbCConnectRefuse");
+	emit sgbackToMainThread(evMap);
+	return 0;
+}
+
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {
@@ -725,4 +742,16 @@ int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser)
 	}
 	else
 		return 1;
+}
+
+int cbConnectRefuseEx( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="ConnectRefuse")
+	{
+		((qsubviewEx*)pUser)->cbCConnectRefuse(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cbConnectRefuseEx fail as the eventName is not collect";
+		return 1;
+	}
 }

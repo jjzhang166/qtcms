@@ -14,14 +14,15 @@
 #include "IProtocolPTZ.h"
 
 //主码流的回调函数
-int cbLiveStreamFrompPotocol_Primary(QString evName,QVariantMap evMap,void*pUser);//预览码流
-int cbSocketErrorFrompPotocol_Primary(QString evName,QVariantMap evMap,void*pUser);//连接错误
-int cbStateChangeFrompPotocol_Primary(QString evName,QVariantMap evMap,void*pUser);//状态改变
+int cbXLiveStream_Primary(QString evName,QVariantMap evMap,void*pUser);//预览码流
+int cbXSocketError_Primary(QString evName,QVariantMap evMap,void*pUser);//连接错误
+int cbXStateChange_Primary(QString evName,QVariantMap evMap,void*pUser);//状态改变
+int cbXConnectRefuse_Primary(QString evName,QVariantMap evMap,void*pUser);
 //次码流的回调函数
-int cbLiveStreamFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser);
-int cbSocketErrorFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser);
-int cbStateChangeFrompPotocol_Minor(QString evName,QVariantMap evMap,void*pUser);
-
+int cbXLiveStream_Minor(QString evName,QVariantMap evMap,void*pUser);
+int cbXSocketError_Minor(QString evName,QVariantMap evMap,void*pUser);
+int cbXStateChange_Minor(QString evName,QVariantMap evMap,void*pUser);
+int cbXConnectRefuse_Minor(QString evName,QVariantMap evMap,void*pUser);
 class IpcDeviceClient:public QThread,
 	public IDeviceClient,
 	public IEventRegister,
@@ -81,6 +82,7 @@ public:
 	int cbLiveStream(QVariantMap &evmap);
 	int cbSocketError(QVariantMap &evmap);
 	int cbConnectStatusProc(QVariantMap evMap);
+	int cbConnectRefuse(QVariantMap evMap);
 
 	bool TryToConnectProtocol(CLSID clsid);
 	void DeInitProtocl();

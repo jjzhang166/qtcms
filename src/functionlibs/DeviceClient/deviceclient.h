@@ -24,13 +24,14 @@
 #include "remotePlayBack.h"
 
 
-int cbStateChangeFormprotocl(QString evName,QVariantMap evMap,void*pUser);
-int cbFoundFileFormprotocl(QString evName,QVariantMap evMap,void*pUser);
-int cbRecFileSearchFailFormprotocl(QString evName,QVariantMap evMap,void*pUser);
-int cbRecFileSearchFinishedFormprotocl(QString evName,QVariantMap evMap,void*pUser);
-int cbRecordStream(QString evName,QVariantMap evMap,void*pUser);
-int cbLiveStreamFormprotocl(QString evName,QVariantMap evMap,void*pUser);
-int cbSocketErrorFormprotocl(QString evName,QVariantMap evMap,void*pUser);
+int cbXStateChange(QString evName,QVariantMap evMap,void*pUser);
+int cbXFoundFile(QString evName,QVariantMap evMap,void*pUser);
+int cbXRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
+int cbXRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
+int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser);
+int cbXLiveStream(QString evName,QVariantMap evMap,void*pUser);
+int cbXSocketError(QString evName,QVariantMap evMap,void*pUser);
+int cbXConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 
 class  DeviceClient:public QThread,
 	public IDeviceClient,
@@ -88,7 +89,7 @@ public:
 	int cbRecFileSearchFail(QVariantMap &evmap);
 	int cbLiveStream(QVariantMap &evmap);
 	int cbSocketError(QVariantMap &evmap);
-
+	int cbConnectRefuse(QVariantMap &evMap);
 	//IRemoteBackup
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 		int nChannel,

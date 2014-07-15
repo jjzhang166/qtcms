@@ -18,7 +18,7 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_IfSwithStream(0)
 {
 	//设置本组件支持的回调函数事件名称
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse";
 	//设置主次码流的初始连接状态
 	CurStatusInfo m_statusInfo;
 	m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -27,29 +27,37 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	//设置回调函数到结构体
 	IpcDeviceClientToProcInfoItem m_IpcDevliInfo;
 	//主码流回调函数
-	m_IpcDevliInfo.proc=cbLiveStreamFrompPotocol_Primary;
+	m_IpcDevliInfo.proc=cbXConnectRefuse_Primary;
+	m_IpcDevliInfo.puser=this;
+	m_IpcDevliInfo.Stream=0;
+	m_EventMapToProc.insert("ConnectRefuse",m_IpcDevliInfo);
+	m_IpcDevliInfo.proc=cbXLiveStream_Primary;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=0;
 	m_EventMapToProc.insert("LiveStream",m_IpcDevliInfo);
-	m_IpcDevliInfo.proc=cbStateChangeFrompPotocol_Primary;
+	m_IpcDevliInfo.proc=cbXStateChange_Primary;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=0;
 	m_EventMapToProc.insert("StateChangeed",m_IpcDevliInfo);
-	m_IpcDevliInfo.proc=cbSocketErrorFrompPotocol_Primary;
+	m_IpcDevliInfo.proc=cbXSocketError_Primary;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=0;
 	m_EventMapToProc.insert("SocketError",m_IpcDevliInfo);
 
 	//子码流回调函数
-	m_IpcDevliInfo.proc=cbLiveStreamFrompPotocol_Minor;
+	m_IpcDevliInfo.proc=cbXConnectRefuse_Minor;
+	m_IpcDevliInfo.puser=this;
+	m_IpcDevliInfo.Stream=1;
+	m_EventMapToProc.insert("ConnectRefuse",m_IpcDevliInfo);
+	m_IpcDevliInfo.proc=cbXLiveStream_Minor;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=1;
 	m_EventMapToProc.insert("LiveStream",m_IpcDevliInfo);
-	m_IpcDevliInfo.proc=cbStateChangeFrompPotocol_Minor;
+	m_IpcDevliInfo.proc=cbXStateChange_Minor;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=1;
 	m_EventMapToProc.insert("StateChangeed",m_IpcDevliInfo);
-	m_IpcDevliInfo.proc=cbSocketErrorFrompPotocol_Minor;
+	m_IpcDevliInfo.proc=cbXSocketError_Minor;
 	m_IpcDevliInfo.puser=this;
 	m_IpcDevliInfo.Stream=1;
 	m_EventMapToProc.insert("SocketError",m_IpcDevliInfo);
@@ -1053,8 +1061,21 @@ int IpcDeviceClient::setDeviceHost( const QString & sAddr )
 	return 0;
 }
 
+int IpcDeviceClient::cbConnectRefuse( QVariantMap evMap )
+{
+	if ("Primary"==evMap.value("Stream")||"Minor"==evMap.value("Stream"))
+	{
+		evMap.remove("Stream");
+		eventProcCall("ConnectRefuse",evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"call back cbConnectRefuse fail,as evMap is error";
+		return 1;
+	}
+}
 
-int cbLiveStreamFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
+
+int cbXLiveStream_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)
 	{
@@ -1065,7 +1086,7 @@ int cbLiveStreamFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUse
 	return 1;
 }
 
-int cbSocketErrorFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
+int cbXSocketError_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("SocketError"==evName)
 	{
@@ -1076,7 +1097,7 @@ int cbSocketErrorFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUs
 	return 1;
 }
 
-int cbStateChangeFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUser )
+int cbXStateChange_Primary( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("StateChangeed"==evName)
 	{
@@ -1087,7 +1108,7 @@ int cbStateChangeFrompPotocol_Primary( QString evName,QVariantMap evMap,void*pUs
 	return 1;
 }
 
-int cbLiveStreamFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser )
+int cbXLiveStream_Minor( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("LiveStream"==evName)
 	{
@@ -1098,7 +1119,7 @@ int cbLiveStreamFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser 
 	return 1;
 }
 
-int cbSocketErrorFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser )
+int cbXSocketError_Minor( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("SocketError"==evName)
 	{
@@ -1109,7 +1130,7 @@ int cbSocketErrorFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser
 	return 1;
 }
 
-int cbStateChangeFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser )
+int cbXStateChange_Minor( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("StateChangeed"==evName)
 	{
@@ -1118,5 +1139,31 @@ int cbStateChangeFrompPotocol_Minor( QString evName,QVariantMap evMap,void*pUser
 		return 0;
 	}
 	return 1;
+}
+
+int cbXConnectRefuse_Primary( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("ConnectRefuse"==evName)
+	{
+		evMap.insert("Stream","Primary");
+		((IpcDeviceClient*)pUser)->cbConnectRefuse(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"connectRefuse callBack event fail as the eventName is not collect";
+		return 1;
+	}
+}
+
+int cbXConnectRefuse_Minor( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("ConnectRefuse"==evName)
+	{
+		evMap.insert("Stream","Minor");
+		((IpcDeviceClient*)pUser)->cbConnectRefuse(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"connectRefuse callBack event fail as the eventName is not collect";
+		return 1;
+	}
 }
 
