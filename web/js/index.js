@@ -96,6 +96,9 @@ var oPreView,oDiv,
 			var target = $(event.target),
 				oMenu = $('div.menu0');
 			if(event.which == 3 && target.hasClass('channel')){
+				if($('#dev_'+target.data('data').dev_id).data('data').vendor == 'IPC'){
+					return;
+				}
 				$('div.dev_list span.channel').removeClass('sel');
 				target.addClass('sel');
 				var maxT = $(this).offset().top+$(this).height() - 24;
@@ -173,6 +176,8 @@ var oPreView,oDiv,
 		oPreView.AddEventProc('CurrentStateChange','windChangeCallback(ev)');
 
 		oPreView.AddEventProc('DivModeChange','setViewNumNow(ev)');
+
+		oPreView.AddEventProc('ConnectRefuse','ConnectRefuse(ev)');
 		
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
@@ -378,6 +383,13 @@ var oPreView,oDiv,
 		setViewNumNow();
 	}
 
+	function ConnectRefuse(ev){
+		var data = oPreView.GetWindowInfo(ev.WPageId),
+			oDevData =  getChlFullInfo($('#channel_'+ev.ChannelId));
+			chlData = $('#channel_'+data.chlId).data('data');
+		writeActionLog(T('Resource_loaded',oDevData.device_name,chlData.channel_name,ev.WPageId),errorcolor);
+	}
+
 	//日志信息操作
 	function writeActionLog(str,color){ 
 		var color = color ? color : '#4DBDEE';
@@ -464,8 +476,11 @@ var oPreView,oDiv,
 	}
 
 	function SwithStream(){  // 切换码流
-		var oChlData = $('#search_device span.channel.sel').data('data'),
-			currWin = oPreView.GetCurrentWnd(),
+		var oChlData = $('#search_device span.channel.sel').data('data');
+		if($('#dev_'+oChlData.dev_id).data('data').vendor == 'IPC'){
+			return;
+		}
+		var	currWin = oPreView.GetCurrentWnd(),
 			str = T('channel_switch_Stream',(currWin+1)),
 			stream = oChlData.stream_id ? 0 : 1,
 			c = errorcolor;

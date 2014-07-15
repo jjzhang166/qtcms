@@ -204,10 +204,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			})
 			.each(function(index){ 
 				$(this).focusout(function() {
-					var str = availability($(this),index)
-					if(str == '' || str.length <= 1){
-						$(this).val($(this).attr('default'));
-					}
+					$(this).attr('default',availability($(this),index));
 				});
 
 				$(this).focus(function(){
@@ -215,26 +212,26 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				});
 
 				$(this).keyup(function(){
-					var str = availability($(this),index)
-					if(str.length == 2){
-						$(this).attr('default',$(this).val());
+					if($(this).val().length > 1){
+						$(this).attr('default',availability($(this),index));
 						inputs.eq(index + 1).focus();	
 					}
 				});	
 			})
 			function availability(obj,index){   //调整输入的时间范围
-				var str = obj.val().split('');
+				var str = parseInt(obj.val());
 				if(index == 0){
-					if(str[0] > 2){
-						obj.val('2');	
-					}	
-					if(str[1] > 3){
-						obj.val('23');
-					}
+					str > 23 &&	obj.val('23');
 				}else{
-					if(str[0] > 5){
-						obj.val('5');
-					}
+					str > 59 &&	obj.val('59');	
+				}
+
+				if(str<10){
+					obj.val('0'+str);
+				}
+
+				if(!/\d+/.test(str)){
+					obj.val(obj.attr('default'));
 				}
 				return obj.val();
 			}
@@ -318,9 +315,10 @@ function showNowPlayBackTime(oNow,oleft,X2){
 		}
 	})
 })(jQuery)
+
 $(function(){
 	// 导航页面跳转
-	var url =['index.html','play_back.html','backup.html','device.html','log.html']
+	var url =['index.html','play_back.html','backup.html','device.html','log.html'];
 	$('div.top_nav li').each(function(index){
 		$(this).on('click',function(){
 			var src = location.href.replace(/.*?(\w+\.html)/g,'$1'),
@@ -456,7 +454,18 @@ function closeMenu(){
 		$(this).find('div.close:last').html(lang.Cancel);
 	})*/
 }
-function Confirm(str){
+function Confirm(str,b){
+	if(b){
+		var oVisible = $('#menusList div.menu:visible').not('#confirm').css('z-index','0');
+		$('#confirm .close').off('click').click(function(){
+			oVisible.css('z-index','1000');
+			$('#confirm').find('h4,span').html('').end().hide();
+		})	
+	}else{
+		$('#confirm .close').click(function(){
+			closeMenu();
+		})
+	}
 	$('#confirm h4').append('<p>'+str+'</p>');
 	objShowCenter($('#confirm'));
 }
@@ -464,7 +473,8 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 	$('#iframe').hide().show();
 	obj.css({
 		top:($(window).height() - obj.height())/2,
-		left:($(window).width() - obj.width())/2
+		left:($(window).width() - obj.width())/2,
+		zIndex:'1000'
 	}).show();
 }
 
@@ -530,7 +540,7 @@ function checkHasObj(oSil,obj){
 }
 
 
-function T(){//语言切换
+function T(){//页面文本切换输出
 	var str = lang ? lang[arguments[0]] : arguments[0].replace('_',' ');
 	if(arguments.length ==1){
 		document.write(str);
@@ -538,6 +548,10 @@ function T(){//语言切换
 		str = hintTrans(arguments);
 	};
 	return str;
+}
+
+function _T(str){
+	return lang[str] ? lang[str] : str;
 }
 
 function hintTrans(obj){ //操作提示语言转换.
@@ -577,7 +591,6 @@ function _t(obj){
 			var t = val.split(' ');
 			str = lang[t[1]] ? t[0]+lang[t[1]] : str;
 		}
-
 		$(this).val(str);
 	})
 }

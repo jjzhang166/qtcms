@@ -106,6 +106,11 @@ function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
 function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 
+	if($('#ajaxHint').is(':visible')){
+		showAJAXHint('check_to_put');
+		return;
+	}
+
 	console.log('-------------------_AJAXget  init------------------------');
 
 	type ='PUT'
@@ -114,7 +119,6 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 }
 
 function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始化方法.
-
 
 	var str = type == 'GET' ? 'loading' : 'saveing' ;
 
@@ -159,7 +163,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			showAJAXHint(str);
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
-			//console.log(Data);
+			console.log(Data);
 			typeof(success) == 'function' && success(Data);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -177,7 +181,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			str != 'abort' && showAJAXHint(str);
 
-
+/*
 			if(str != 'abort'){
 				console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
 				console.log(XMLHttpRequest.status);
@@ -191,7 +195,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 				console.log(errorThrown);
 
 				console.log('+++++++++++++++++++++++++++++++');
-			}
+			}*/
 			
 			//alert("error:" + textStatus);
 		},
@@ -291,17 +295,46 @@ function hasChinese(str){
 }
 
 function showAJAXHint(str){
-	return $('#ajaxHint').html(lang[str]).stop(true,true).show();
+	var t = lang[str] || str;
+	return $('#ajaxHint').html(t).stop(true,true).show();
 }
 //检查IP格式
-function chkIPformat(str){
-	return;
-	var re=/^(\d{1,3}\.){3}\d{1,3}$/;
-	console.log(str+'//'+re.test(str));
-	if(re.test(str)){
-		showAJAXHint().hide();
+function chkInput(type,obj,str){
+	var hint = '';
+		val = obj.value;
+	switch(type){  //IPC编码设备码率
+		case 0:
+		var max =  $(obj).attr('max'),
+			min = $(obj).attr('min');
+			if(!/^\d+$/.test(val) || (parseInt(val) > max || parseInt(val) < min)){
+				hint = _T(str)+'('+min+'~'+max+')';
+			}
+		break;
+		case 1:
+			var re=/^(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.)(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.){2}([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))$/;
+			if(!re.test(val)){
+				hint = _T(str);
+			}
+		break;
+		case 2:
+			var re=/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/;
+			if(!re.test(val)){
+				hint = _T(str);
+			}
+		break;
+		case 3:
+			if(parseInt(val) > 65535 || parseInt(val) < 0 || val == ''){
+				hint = _T(str);
+			};
+		break;
+	}
+
+	if(hint){
+		$(obj).css('border','1px dashed red').attr('b',1);
+		showAJAXHint(_T('correct')+hint);
 	}else{
-		showAJAXHint('Incorrect_IP_format');
+		$(obj).css('border','0').removeAttr('b');
+		showAJAXHint().hide();	
 	}
 }
 

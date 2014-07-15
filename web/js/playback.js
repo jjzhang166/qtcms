@@ -248,11 +248,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(bool){ //本地回访
 			var k = 0;
 			$("#channelvideo").find('input:checked').each(function(){
-				console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
+				//console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
 				var filepath =$('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]).data('filepath');
 				//var filepath = oChannel.eq(index).data('filepath');
 				if(filepath){
-					console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
+					//console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 					if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
 						alert(lang.play_Failed);
 					};
@@ -333,8 +333,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		recFile=data;
 
-		console.log('当前列表第:'+localSearchDevNum+'设备搜索到的本地录像文件');
-		console.log(data);
+		/*console.log('当前列表第:'+localSearchDevNum+'设备搜索到的本地录像文件');
+		console.log(data);*/
 
 		initOxcDevListStatus();
 
@@ -583,11 +583,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		
-		if(recFile){
+		/*if(recFile){
 			loclFileDataIntoChannel(recFile);
 		}else{
 			areaList2Ui();
-		}
+		}*/
+		areaList2Ui();
+		loclFileDataIntoChannel(recFile);
 
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({

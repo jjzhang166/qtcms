@@ -49,8 +49,20 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		//_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/101/properties','','',data2UI);
 	}
 
-	this._ipcencodeInfo2UI = function(data){
-		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+data+'/properties','','',data2UI);
+	this._ipcencodeInfo2UI = function(num){
+		var warp = $('#set_content div.ipc_list:visible');
+		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+num+'/properties','','',
+			function(data){
+				data2UI(data);
+				warp.find('input[data-UI="constantBitRate"]').attr({
+					max:data.constantBitRateProperty.max,
+					min:data.constantBitRateProperty.min
+				}).end()
+				  .find('input[data-UI="frameRate"]').attr({
+				  	max:data.frameRateProperty.max,
+					min:data.frameRateProperty.min
+				  })
+			});
 	}
 
 	this.ipcencodeInfoPut = function(){ //设置编码信息
@@ -60,7 +72,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		console.log('---------------put----------------------');
 		var str = getPutDataJSON().replace('可变码率','VBR');
 			str = str.replace('固定码率','CBR');
-		console.log(str);
+		//console.log(str);
 
 		/*var oJSON = $.parseJSON(getPutDataJSON())
 			oJSON.bitRateControlType = warp.find('input[data-UI="bitRateControlType"]').attr('data');
@@ -127,9 +139,9 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
 			//This._IP = warp.find('input[data-UI="staticIP"]').val();
 			qob.OnModifyDeviceEx();
-			console.log('--修改端口和地址重新同步设备状态----');
+			/*console.log('--修改端口和地址重新同步设备状态----');
 			areaList2Ui();
-			console.log('--修改端口和地址重新加载设备列表----');
+			console.log('--修改端口和地址重新加载设备列表----');*/
 			reInitNowDev();
 			//console.log('IP修改成功++1'+This.getRequestURL());
 		});

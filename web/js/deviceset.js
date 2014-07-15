@@ -1102,6 +1102,54 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
 	}
+
+	function VerifidevMenu(type,obj){
+		var hint='',
+			str = obj.value;
+		//console.log('type:'+type+'---------------value:'+str);
+		switch(type){   //  IP地址
+			case 0:
+				var pre = /^(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.)(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.){2}([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))$/;
+				
+				if(!pre.test(str)){
+					hint='请输入正确格式的IP';	
+				};
+			break;
+			case 1:
+				if(parseInt(str) > 65535 || parseInt(str) < 0 || str == ''){
+					hint='请输入正确格式的端口';	
+				};
+			break;
+			case 2:
+				if(str == '')
+					hint='请输入正确的易视网ID';
+
+				if(/^\d+$/.test(str)){
+					if(!/^[1-9]\d{8,}$/.test(str)){
+						console.log('数字');
+						hint='请输入正确的易视网ID';
+					}
+				}else{
+					//console.log(/^\w+\d+$/.test(str)+'前缀11--------------'+str.length);
+					if(!/^\w+\d+$/.test(str) || str.length > 11){
+						console.log('前缀');
+						hint='请输入正确的易视网ID';
+					}
+				}
+			break;
+			case 3:
+				if(!(str == 1 || str == 4 || str == 8 || str == 16 || str == 32)){
+					hint='请输入正确的通道数';
+				}
+			break;
+		}
+		if(hint){
+			Confirm(hint,true);
+			obj.value = '';	
+		}
+		
+	}
+
 	function ModifyDeviceFeedBackSuccess(data){
 		/*var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
 		for(i in dataIndex){

@@ -13,11 +13,13 @@
 		}else{  //远程
 			var oDevData=$('#dev_'+nowDevID).data('data'),
 			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
-
-			/*console.log('当前设备');
+			console.log('-------------参数填充到控件------------------');
+			console.log(nowDevID)
+			console.log('当前设备');
 			console.log(oDevData);
 			console.log('当前设备所属通道');
-			console.log(oChannel);*/
+			console.log(oChannel);
+			console.log('-------------参数填充到控件------------------')
 
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
@@ -88,6 +90,17 @@
 		
 		var date = $("div.calendar span.nowDate").html();
 
+		var devData = $('div.dev_list li.sel span.device').data('data');
+
+			//console.log($('div.dev_list li.sel span.device'));
+			if(!devData){
+				$('div.dev_list span.device,li').removeClass('sel');
+				devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
+							.end().data('data');
+			}
+
+			nowDevID = devData.dev_id;
+
 		setDevData2ocx();
 
 		/*alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
@@ -107,15 +120,6 @@
 			oPlaybackLocl.searchVideoFile(devData.name,date,startTime,endTime,chl);*/
 		}else{
 			// 远程
-			var devData = $('div.dev_list li.sel span.device').data('data');
-				if(!devData){
-					$('div.dev_list span.device,li').removeClass('sel');
-					devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
-								.end().data('data');
-				}
-
-			nowDevID = devData.dev_id;
-
 			var startTime =gettime($('div.timeInput:eq(0) input')) || '00:00:00';
 			var endTime =gettime($('div.timeInput:eq(1) input')) || '23:59:59';
 			

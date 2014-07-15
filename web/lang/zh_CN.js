@@ -339,6 +339,7 @@
 	'Start_manual_recording':'设备:_V_  下的通道:_V_ 开始手动录像.',
 	'Close_the_manual_recording_failed':'设备:_V_  下的通道:_V_ 关闭手动录像失败!',
 	'Close_the_manual_recording':'设备:_V_  下的通道:_V_ 关闭手动录像.',
+	'Resource_loaded':'设备:_V_  下的通道:_V_ 在窗口:_V_下打开失败! 错误:连接数满载或者资源满载!',
 	'channel_switch_Stream':'窗口:_V_,切换码流',
 	'Failed':'失败!',
 	'Success':'成功!',
@@ -390,5 +391,13 @@
 	'abort':'请求已经取消,稍后再试!',
 	'Unauthorized':'默认用户:admin,默认空密码.登陆失败! 请在右边设备列表中修改成正确的用户名和密码再试.',
 	'channelName_NOT_chinese':'通道名不支持中文',
-	'Incorrect_IP_format':'IP格式不正确!(例如:192.168.1.1)'
+	'IP_format':'IP格式!(例如:192.168.1.100)',
+	'Gateway_format':'网关格式!(例如:192.168.1.1)',
+	'Mask_format':'子网掩码格式!(例如:255.255.255.0)',
+	'DNS':'域名解析服务器的地址!',
+	'correct':'请输入正确的',
+	'rate_range':'码率范围!',
+	'frame_rate_range':'帧率范围!',
+	'check_to_put':'请填写正确的参数或者等数据加载完后在提交.'
+
 }

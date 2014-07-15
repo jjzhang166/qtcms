@@ -1338,8 +1338,8 @@
 								</ul>
 							</td><td></td>
 						</tr>
-                        <tr><td><script>T("BPS")</script></td><td><input data-UI="constantBitRate" style="width:133px;" type="text" /></td><td><script>T("Unit")</script></td></tr>
-                        <tr><td><script>T("FPS")</script></td><td><input data-UI="frameRate" style="width:133px;" type="text" /></td><td><script>T("Unit")</script></td></tr>
+                        <tr><td><script>T("BPS")</script></td><td><input data-UI="constantBitRate" style="width:133px;" type="text" onblur="chkInput(0,this,'rate_range')" /></td><td><script>T("Unit")</script></td></tr>
+                        <tr><td><script>T("FPS")</script></td><td><input data-UI="frameRate" style="width:133px;" type="text" onblur="chkInput(0,this,'frame_rate_range')"/></td><td><script>T("Unit")</script></td></tr>
                         <tr><td colspan="3" class="td3 tdBtn"><div class="hover" click="encode_save_content();" onclick="submitThisMenu('ipcencodeInfo');"><script>T("Save")</script></div></td></tr>
                     </table>
 			    </div>
@@ -1367,27 +1367,27 @@
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("IP_address")</script></td>
-			                            <td><input data-UI="staticIP" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_ip')" nFocus="save_ipaddr('network_ip')" id="address_ID_Ex" /></td>
+			                            <td><input data-UI="staticIP" type="text" onblur="chkInput(1,this,'IP_format')" id="address_ID_Ex" /></td>
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("Gateway")</script></td>
-			                            <td><input data-UI="staticGateway" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_gateway')" nFocus="save_ipaddr('network_gateway')"/></td>
+			                            <td><input data-UI="staticGateway" type="text" onblur="chkInput(1,this,'Gateway_format')"/></td>
 			                        </tr>
 							 		<tr>
 							 			<td><script>T("Network_Mask")</script></td>
-			                            <td><input data-UI="staticNetmask" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_submask')" nFocus="save_ipaddr('network_submask')"/></td>
+			                            <td><input data-UI="staticNetmask" type="text" onblur="chkInput(2,this,'Mask_format')"/></td>
 			                        </tr>
 							 		<tr>
 							 			<td>优先 DNS</td>
-			                            <td><input data-UI="preferredDns" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_dns')" nFocus="save_ipaddr('network_dns')"/></td>
+			                            <td><input data-UI="preferredDns" type="text" onblur="chkInput(1,this,'DNS')"/></td>
 			                        </tr>
 			                        <tr>
 			                        	<td>备用 DNS</td>
-			                            <td><input data-UI="staticAlternateDns" type="text" onChange="chkIPformat(this.value)" Change="is_valid_ip('network_dns2')" nFocus="save_ipaddr('network_dns2')"/></td>
+			                            <td><input data-UI="staticAlternateDns" type="text" onblur="chkInput(1,this,'DNS')"/></td>
 			                        </tr>
 			                        <tr data-WARP="port0">
 			                        	<td><script>T("Port")</script></td>
-			                            <td><input id="port_ID_Ex" data-UI="value" type="text" onChange="portAsync()" Focus="save_port()"/>
+			                            <td><input id="port_ID_Ex" data-UI="value" type="text" onblur="chkInput(3,this,'Port')"/>
 			                            	<input id="http_ID_Ex" data-UI="value" type="hidden"/></td>
 			                       	</tr>
 			                        </tbody>            
@@ -1685,7 +1685,7 @@
 								<tbody id="Storage_Settings" class="synCheckboxClick">
 									<tr>
 										<td colspan="4" class="td4">
-										<div><input type="checkbox" value="D" disabled="disable" /><span>D</span></div>
+										<div><input type="checkbox" value="D" disabled="disable"/><span>D</span></div>
 										<div><input type="checkbox" value="E" disabled="disable"/><span>E</span></div>
 										<div><input type="checkbox" value="F" disabled="disable"/><span>F</span></div>
 										<div><input type="checkbox" value="G" disabled="disable"/><span>G</span></div>
@@ -1800,14 +1800,14 @@
 				<td><input style="width:18px;" type="radio" name="Connection" value="1" />
 					<script>T("Easy_Link_Watch")</script></td>
 				</tr>
-				<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" /></td></tr>
-				<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" /></td></tr>
-				<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" /></td></tr>
-				<tr class="tr1"><td class="td1"><script>T("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" /></td></tr>
+				<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" onblur="VerifidevMenu(0,this)" /></td></tr>
+				<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" onblur="VerifidevMenu(1,this)" /></td></tr>
+				<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" onblur="VerifidevMenu(1,this)" /></td></tr>
+				<tr class="tr1"><td class="td1"><script>T("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" onblur="VerifidevMenu(2,this)" /></td></tr>
 				<tr><td class="td1"><script>T("Username")</script></td><td><input type="text" id="username_ID" /></td></tr>
 				<tr><td class="td1"><script>T("Password")</script></td><td><input type="password" id="password_ID" value="" /></td></tr>
 				<tr><td class="td1"><script>T("Device_name")</script></td><td><input type="text" id="device_name_ID" /></td></tr>
-				<tr><td class="td1"><script>T("Channels")</script></td><td><input   type="text" id="channel_count_ID" /></td></tr>
+				<tr><td class="td1"><script>T("Channels")</script></td><td><input type="text" id="channel_count_ID" onblur="VerifidevMenu(3,this)" /></td></tr>
 				<tr><td class="td1"><script>T("Current_Area")</script></td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
 				<tr>
 					<td class="td1"><script>T("Device_Type")</script></td>
