@@ -300,7 +300,7 @@ bool rPlayBackRun::__BuildDev(void **ppv)
 		{
 			CLSID playbackTypeClsid = pcomString2GUID(item.toElement().attribute("clsid"));
 			pcomCreateInstance(playbackTypeClsid,NULL,IID_IDeviceGroupRemotePlayback,(void **)ppv);
-			if (NULL!=ppv)
+			if (NULL!=*ppv)
 			{
 				flag=true;
 				break;

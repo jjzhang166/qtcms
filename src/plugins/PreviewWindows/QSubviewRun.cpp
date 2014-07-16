@@ -1007,6 +1007,7 @@ bool QSubviewRun::createDevice()
 				file->close();
 				delete file;
 				file=NULL;
+				qDebug()<<__FUNCTION__<<__LINE__<<"create deviceClient fail because of it can not deviceClent defined in xml";
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"create deviceClient fail because of vendor is empty";
 			}
