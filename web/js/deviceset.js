@@ -157,9 +157,9 @@ var oSearchOcx,
 
 				}else if(key == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
-				}else if(key == 3){ 
+				}/*else if(key == 3){ 
 					userList2Ui();
-				}
+				}*/
 			})
 
 			// 设置相关
