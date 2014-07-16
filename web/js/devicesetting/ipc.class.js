@@ -131,10 +131,10 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			console.log('Dns状态修改完成++++++++++3');
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}','',function(){
-			//This._PORT = warp.find('input[data-UI="value"]').val();
-			//console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
-		});
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}'/*,'',function(){
+			This._PORT = warp.find('input[data-UI="value"]').val();
+			console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
+		}*/);
 
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
 			//This._IP = warp.find('input[data-UI="staticIP"]').val();
@@ -165,8 +165,6 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		
 		_AJAXget(this.getRequestURL()+'/user/user_list.xml','username='+this._USR+'&password='+this._PWD,'',function(data){
 			$('user_list',data).children().not(':first').each(function(){
-				/*<user0 name=​"user" admin=​"yes" permit_live=​"yes" permit_setting=​"yes" permit_playback=​"yes" del_user=​"yes" edit_user=​"no" set_pass=​"no">​</user0>​*/
-				//console.log($(this));
 				$('<tr><td>'+$(this).attr('name')+'</td><td><input type="checkbox" '+__TRUE($(this).attr('admin'),'checked')+'/>管理<input type="checkbox" '+__TRUE($(this).attr('permit_setting'),'checked')+'/>设置<input type="checkbox" '+__TRUE($(this).attr('permit_playback'),'checked')+'/>回放</td><td><button '+__TRUE($(this).attr('edit_user'),'disabled')+' type="button" value="保存">保存</button><button '+__TRUE($(this).attr('del_user'),'disabled')+' type="button" value="删除">删除</button></td></tr>').appendTo($('#IPC_user_manage tbody'));
 			})
 		});
@@ -209,15 +207,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		function renewtime(){
 			var myDate = new Date,
 
-				yy=myDate.getFullYear(),
-			/*if (yy.length<4)
-			{
-				var i = 4-yy.length;
-				for (var j = 0; j < i; j++)
-				{
-					yy = "0" + yy;
-				}
-			}*/
+			yy=myDate.getFullYear(),
+
 			mm=addZero(parseInt(myDate.getMonth())+1),
 
 			dd=addZero(myDate.getDate()),

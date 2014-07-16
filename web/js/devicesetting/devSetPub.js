@@ -218,8 +218,6 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 				typeof(complete) == 'function' && complete();
 			}
-
-			//console.log(/(\d+\\.)+/.test(nowDev._VER));
 		}
 	});
 }

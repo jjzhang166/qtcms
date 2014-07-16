@@ -9,42 +9,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	$(function(){
 		oBottom = $('#operating');
-		//初始回放对象的声音状态,
-		oPlayBack = $('#playback')[0];	
-/*		oPlayBack.volEnable = false;
-		oPlayBack.vol = 50;*/
-		oPlaybackLocl = $('#playbackLocl')[0];
-/*		oPlaybackLocl.volEnable = false;
-		oPlaybackLocl.vol = 50;*/
-	    
-	   //$('ul.filetree').treeview();		
 		
-		//$('div.dev_list').eq(1).hide();
+		oPlayBack = $('#playback')[0];	
 
-		/*$('div.dev_list span.channel').on('click',function(){
-			var b = true;
-			var obj = $(this).parent('li')
-			var oSibs = obj.siblings().add(obj);
-			$('div.dev_list li').filter(function(){
-				if(!checkHasObj(oSibs,$(this))){
-					return $(this);
-				} 			
-			}).removeClass('sel');
-
-			obj.toggleClass('sel');
-
-			obj.siblings().add(obj).each(function(){
-				if(!$(this).hasClass('sel')){
-					b = false;
-				}
-			})
-
-			if(b){
-				obj.parent('ul').parent('li').addClass('sel').find('span.device').addClass('sel');
-			}else{ 
-				obj.parent('ul').parent('li').removeClass('sel').find('span.device').removeClass('sel');
-			}
-		})*/
+		oPlaybackLocl = $('#playbackLocl')[0];
 		
 		var channelvideo = $("#channelvideo");
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
@@ -460,10 +428,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					target = target[0] ? target : $('#Rel_channel_'+ChannelData.channel_id);
 					/*console.log('-------------------------调整通道ID关联的对象!----------------------');
 					console.log(target);*/
-					/*if(!target[0]){
-						target = $('#channelvideo tr').not('[id]:first');
-						console.log('-------------------------文件描绘对象通道----------------------');
-						console.log(target);*/
 						if(!target[0]){
 							target = addRecFileTable('id="Rel_channel_'+ChannelData.channel_id+'"',ChannelData.channel_name,($('#channelvideo tr[id]').length+1))
 							/*console.log('-------------------------新添加的文件描绘对象通道----------------------');

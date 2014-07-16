@@ -14,7 +14,9 @@ var oCommonLibrary,
 	function refresh(data){
 		
 		if(data.Dsturl.indexOf('play_back') != -1){
+			
 			areaList2Ui();
+			
 			$('div.dev_list span.device').each(function(){
 				$(this).parent('li').on({
 					dblclick:function(){ //设备双击开始搜索
@@ -27,6 +29,8 @@ var oCommonLibrary,
 				})
 			})
 
+			/*if(recFile)
+				loclFileDataIntoChannel(recFile);*/
 		}
 		window.initOxcDevListStatus();
 		//区域列表;

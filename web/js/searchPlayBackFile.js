@@ -7,7 +7,7 @@
 		var b = 1;
 		if(bool){  //本地
 			if(oPlaybackLocl.SetSynGroupNum(4)){ 
-				alert(lang.Failed_to_set_the_number_of_synchronization_group);
+				//alert(lang.Failed_to_set_the_number_of_synchronization_group);
 				b = 0
 			}
 		}else{  //远程
@@ -23,12 +23,12 @@
 			console.log('-------------参数填充到控件------------------')*/
 
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
-				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
+				//alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
 				b = 0;
 			}
 
 			if(oPlayBack.setDeviceVendor(oDevData.vendor)){
-				alert(lang.Failed_to_set_vendor_is_empty);
+				//alert(lang.Failed_to_set_vendor_is_empty);
 				b = 0;
 			}
 			oPlayBack.setUserVerifyInfo(oDevData.username,oDevData.password);
@@ -131,7 +131,7 @@
 			var sta = oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)
 			console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
 			if(sta != 0){
-				alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
+				//alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
 			}
 		}
 	}
