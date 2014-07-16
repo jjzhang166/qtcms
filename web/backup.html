@@ -220,9 +220,9 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 		})
 
-		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');
-		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)');
-		oBackup.AddEventProc('progress','progressCallback(data)');
+		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
+		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
+		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
 
 		initOxcDevListStatus();
 

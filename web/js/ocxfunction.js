@@ -11,12 +11,12 @@ var oCommonLibrary,
 		})
 		_t($('input:text'));
 	})
-	function refresh(data){ 
+	function refresh(data){
+		areaList2Ui();
 		window.initOxcDevListStatus();
 		//区域列表;
-		/*areaList2Ui();
 
-		if(data.Dsturl == 'null'){
+		/*if(data.Dsturl == 'null'){
 			$('span.channel').removeClass('channel_1');
 			for(var i=0;i<64;i++){
 				var oWinInfo = oPreView.GetWindowInfo(i);

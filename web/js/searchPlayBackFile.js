@@ -13,13 +13,14 @@
 		}else{  //远程
 			var oDevData=$('#dev_'+nowDevID).data('data'),
 			oChannel =oCommonLibrary.GetChannelList(oDevData.dev_id);
-			console.log('-------------参数填充到控件------------------');
+			
+			/*console.log('-------------参数填充到控件------------------');
 			console.log(nowDevID)
 			console.log('当前设备');
 			console.log(oDevData);
 			console.log('当前设备所属通道');
 			console.log(oChannel);
-			console.log('-------------参数填充到控件------------------')
+			console.log('-------------参数填充到控件------------------')*/
 
 			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
@@ -99,7 +100,7 @@
 							.end().data('data');
 			}
 
-			nowDevID = devData.dev_id;
+		nowDevID = devData.dev_id;
 
 		setDevData2ocx();
 
@@ -223,7 +224,7 @@
 	/*排序方法	*/	
 
 	$(function(){
-		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');
-		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)');
-		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)'); 
+		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');  //搜索远程回放回调
+		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)'); //搜索远程回放失败回调
+		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');  //搜索远程回放完成回调
 	})

@@ -139,7 +139,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		//return false;
 
-		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)');
+		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)'); //本地回访回调
 		/*oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');*/
 
 		bFullScreen = 0;
@@ -333,21 +333,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		recFile=data;
 
-		/*console.log('当前列表第:'+localSearchDevNum+'设备搜索到的本地录像文件');
-		console.log(data);*/
+		console.log(recFile);
 
 		initOxcDevListStatus();
 
-		localSearchDevNum++
+		if(bool){
+			localSearchDevNum++
 
-		searchLocalFile(localSearchDevNum);
-
-		/*if(bool){
-			localRecFile.push(data);
-			if(localSearchDevNum == $('div.dev_list span.device').length){
-				loclFileDataIntoChannel(localRecFile);
-			}
-		}*/
+			searchLocalFile(localSearchDevNum);
+		}
 	}
 
 	function Deleteduplicate(data){ // 合并文件
@@ -444,6 +438,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/*console.log('--------当前填充的通道文件----------');
 			console.log(File[i]);*/
 			var target = $('#channelvideo tr').not('[id]').eq(0);
+			/*console.log('-------------------------初始化的添加对象!----------------------');
+			console.log(target);*/
 			for(k in File[i]){
 				n++;
 				var data = File[i][k];
@@ -461,11 +457,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					width = width < 1 ? 1 : width;
 				var left = start*p+81;
 				var types = data.types || 8;
-				/*var target = $('#Rel_channel_'+ChannelData.channel_id);
-					if(!target[0]){
-						target = $('#channelvideo tr').not('[id]:first');*/
+					target = target[0] ? target : $('#Rel_channel_'+ChannelData.channel_id);
+					/*console.log('-------------------------调整通道ID关联的对象!----------------------');
+					console.log(target);*/
+					/*if(!target[0]){
+						target = $('#channelvideo tr').not('[id]:first');
+						console.log('-------------------------文件描绘对象通道----------------------');
+						console.log(target);*/
 						if(!target[0]){
 							target = addRecFileTable('id="Rel_channel_'+ChannelData.channel_id+'"',ChannelData.channel_name,($('#channelvideo tr[id]').length+1))
+							/*console.log('-------------------------新添加的文件描绘对象通道----------------------');
+							console.log(target)*/
 						}else{
 							target.attr('id','Rel_channel_'+ChannelData.channel_id).find('label').html(ChannelData.channel_name);
 						}
@@ -538,7 +540,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		oSelected = $.makeArray($("#channelvideo input:checkbox:checked"));*/
 
 		for(var i=1;i<5;i++){
-			addRecFileTable('','chl_'+i,i);	
+			addRecFileTable('',lang['wind']+i,i);	
 		}
 	}
 
@@ -583,13 +585,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		
-		/*if(recFile){
+		if(recFile){
 			loclFileDataIntoChannel(recFile);
 		}else{
 			areaList2Ui();
-		}*/
-		areaList2Ui();
-		loclFileDataIntoChannel(recFile);
+		}
+		/*areaList2Ui();
+		if(bool)
+			loclFileDataIntoChannel(recFile);*/
 
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({

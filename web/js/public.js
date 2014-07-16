@@ -191,7 +191,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var times = opts.initTime.split(':');
 			for(var i=0;i<3;i++){
 				$('<input  maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
-				if(i<2){ 
+				if(i<2){
 					warp.html(warp.html()+opts.Delimiter);
 				}
 			}
@@ -204,7 +204,12 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			})
 			.each(function(index){ 
 				$(this).focusout(function() {
+					var str = $(this).val();
 					$(this).attr('default',availability($(this),index));
+					if(str.length == 1){
+						$(this).val('0'+str).attr('default','0'+str);
+					}
+					
 				});
 
 				$(this).focus(function(){
@@ -219,19 +224,15 @@ function showNowPlayBackTime(oNow,oleft,X2){
 				});	
 			})
 			function availability(obj,index){   //调整输入的时间范围
-				var str = parseInt(obj.val());
-				if(index == 0){
-					str > 23 &&	obj.val('23');
-				}else{
-					str > 59 &&	obj.val('59');	
-				}
-
-				if(str<10){
-					obj.val('0'+str);
-				}
-
-				if(!/\d+/.test(str)){
+				var str = obj.val();
+				if(!/\d{1,2}/.test(str)){
 					obj.val(obj.attr('default'));
+				}else{
+					if(index == 0){
+						str > 23 &&	obj.val('23');
+					}else{
+						str > 59 &&	obj.val('59');	
+					}
 				}
 				return obj.val();
 			}
