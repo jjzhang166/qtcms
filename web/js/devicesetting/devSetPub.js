@@ -105,8 +105,15 @@ function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
 
 function _AJAXput(url,data,beforeSend,success,complete){ // put方法
+	var b = true;
 
-	if($('#ajaxHint').is(':visible')){
+	$('#set_content div.ipc_list:visible input[data-UI]').each(function(){
+		if($(this).attr('b')){
+			b = false;
+		}
+	})
+
+	if(!b){
 		showAJAXHint('check_to_put');
 		return;
 	}

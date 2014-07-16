@@ -85,7 +85,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 		emptyDevSetMenu();
 		
-		async=false;
+		//async=false;
 
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 		var warp = $('#set_content div.ipc_list:visible');
@@ -111,7 +111,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			warp.find('input[data-UI="value"]').val(data.value);
 		});
 
-		async=true;
+		//async=true;
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
