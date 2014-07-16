@@ -39,7 +39,7 @@
 				console.log(intoWindsChl);*/
 				intoWindsChl.each(function(index){
 					//console.log('当前checkbox状态:'+$(this).is(':checked'));
-					if($(this).is(':checked')){
+					if($(this).is(':checked') && oChannel[index]){
 						//console.log(i+'//'+oChannel[index]);
 						if(oPlayBack.AddChannelIntoPlayGroup(i,oChannel[index])){
 							b = 0;
@@ -104,7 +104,6 @@
 
 		setDevData2ocx();
 
-		/*alert(oPlayBack.startSearchRecFile(chl,type,startTime,endTime));*/
 		if(bool){  // 本地
 			localSearchDevNum=0;
 

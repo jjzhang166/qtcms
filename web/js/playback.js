@@ -333,7 +333,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		recFile=data;
 
-		console.log(recFile);
+		//console.log(recFile);
 
 		initOxcDevListStatus();
 
@@ -589,22 +589,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			loclFileDataIntoChannel(recFile);
 		}else{
 			areaList2Ui();
+			
+			$('div.dev_list span.device').each(function(){
+				$(this).parent('li').on({
+					dblclick:function(){ //设备双击开始搜索
+						playBackSerchFile();
+					},
+					click:function(){ //单击同步选中状态
+						$('div.dev_list li,span').removeClass('sel');
+						$(this).addClass('sel');
+					}
+				})
+			})
 		}
 		/*areaList2Ui();
 		if(bool)
 			loclFileDataIntoChannel(recFile);*/
-
-		$('div.dev_list span.device').each(function(){
-			$(this).parent('li').on({
-				dblclick:function(){ //设备双击开始搜索
-					playBackSerchFile();
-				},
-				click:function(){ //单击同步选中状态
-					$('div.dev_list li,span').removeClass('sel');
-					$(this).addClass('sel');
-				}
-			})
-		})
 
 		initrecFileOcx($('#channelvideo div.video'));
 
