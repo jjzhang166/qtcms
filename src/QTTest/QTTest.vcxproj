@@ -104,7 +104,7 @@ copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Co
       <BrowseInformation>false</BrowseInformation>
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_DLL;QT_NO_DEBUG;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
@@ -124,7 +124,7 @@ copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Co
       <LinkIncremental>false</LinkIncremental>
       <OutputFile>$(OutDir)\QTTest.exe</OutputFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Link>
     <Midl>
@@ -137,7 +137,8 @@ copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Co
     </ResourceCompile>
     <PostBuildEvent>
       <Command>copy  "$(LocalDebuggerWorkingDirectory)chinese.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
-copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"</Command>
+copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
+copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\pdb"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
