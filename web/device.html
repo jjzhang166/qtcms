@@ -453,8 +453,8 @@
 										</div>
 										<ul class="option">
 											<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">
-                                            <li value="0"><a><script>T("Variable_rate")</script></a></li>
-											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+                                            <li value="0"><a><script>T("CBR")</script></a></li>
+											<li value="1"><a><script>T("VBR")</script></a></li>
 											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
@@ -555,8 +555,8 @@
 										</div>
 										<ul class="option">
                                         	<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">
-											<li value="0"><a><script>T("Variable_rate")</script></a></li>
-											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="0"><a><script>T("CBR")</script></a></li>
+											<li value="1"><a><script>T("VBR")</script></a></li>
 											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
@@ -1589,7 +1589,7 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
+						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" /></td></tr>
 						<!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
 						<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
@@ -1722,9 +1722,9 @@
 								</table>
 							</td>
 						</tr>
-						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
+						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(5,this)" />MB</td></tr>
 						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:6px" /></td></tr>
-						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
+						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(6,this)" />MB</td></tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="SettingStorageParmData();" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>

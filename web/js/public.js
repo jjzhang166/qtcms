@@ -190,7 +190,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var opts = $.extend(defaults, options);
 			var times = opts.initTime.split(':');
 			for(var i=0;i<3;i++){
-				$('<input  maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
+				$('<input type="text" maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
 				if(i<2){
 					warp.html(warp.html()+opts.Delimiter);
 				}
@@ -455,19 +455,21 @@ function closeMenu(){
 		$(this).find('div.close:last').html(lang.Cancel);
 	})*/
 }
-function Confirm(str,b){
+function Confirm(str,b,fn){
+	var obj = $('#confirm');
 	if(b){
 		var oVisible = $('#menusList div.menu:visible').not('#confirm').css('z-index','0');
-		$('#confirm .close').off('click').click(function(){
+		obj.find('close').off('click').click(function(){
 			oVisible.css('z-index','1000');
 			$('#confirm').find('h4,span').html('').end().hide();
 		})	
 	}else{
-		$('#confirm .close').click(function(){
+		obj.find('close').click(function(){
 			closeMenu();
+			typeof(fn) == 'function' && fn();
 		})
 	}
-	$('#confirm h4').append('<p>'+str+'</p>');
+	obj.find('h4').append('<p>'+str+'</p>');
 	objShowCenter($('#confirm'));
 }
 function objShowCenter(obj){ //调整弹出框定位 居中
@@ -477,6 +479,13 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 		left:($(window).width() - obj.width())/2,
 		zIndex:'1000'
 	}).show();
+	if(obj.attr('id') == 'confirm'){
+		if(obj.find('div.confirm:visible').length == 0){
+			obj.find('div.close').html(_T('Confirm'));
+		}else{
+			obj.find('div.close').html(_T('Cancel'));
+		}
+	}
 }
 
 

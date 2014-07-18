@@ -233,6 +233,22 @@ var oSearchOcx,
 			$('#SerachedDevList').find('tr').removeClass('sel')
 			$(this).addClass('sel');
 		})
+
+		//录像设置验证正确的时间段.
+		$('#recordtime tbody tr:lt(4)').each(function(){
+			$(this).on('focusout','input:last',function(){
+				var obj = $(this).parent('div.timeInput');
+				if(obj.gettime() < obj.prev('div.timeInput').gettime()){
+					//obj.attr('b',1);
+					Confirm('请输入正确的时间范围!'/*,'',function(){
+						console.log('--------时间范围验证回调-------------');
+						$('#recordtime div.timeInput[b] input:last').focus();
+					}*/);
+				}/*else{
+					obj.removeAttr('b');
+				}*/
+			});
+		});
 		
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
@@ -349,24 +365,20 @@ var oSearchOcx,
 	}
 	//record setting  回放设置;
 	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
-	function FillRecordTimeData(){
+	/*function FillRecordTimeData(){
 		areaList2Ui();
 		SettingRecordDoubleTimeParm();
-		/*$('ul.week a').each(function(index){ 
-			$(this).click(function(){
-				$('#week').html($(this).html());
-			})
-		})*/
 		_t($('#RecordTime input:text'));
 		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
-	}
+	}*/
 
 	function FillChannleRecordTime(obj){
 		SettingRecordDoubleTimeParm();  //清空回放表单的数据
+
+
 		//通道选中状态唯一
 		$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 		obj.addClass('sel');
-		console.log(obj);
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
 		var allChlID = [];  //所有通道ID
@@ -1115,12 +1127,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					hint=lang['correct']+lang['IP_format'];	
 				};
 			break;
-			case 1:
-				if(parseInt(str) > 65535 || parseInt(str) < 0 || str == ''){
+			case 1: //端口
+				if(parseInt(str) > 65535 || parseInt(str) < 0 || !/^\d{1,5}$/.test(str)){
 					hint=lang['correct']+lang['Port'];		
 				};
 			break;
-			case 2:
+			case 2:  // eseeID
 				if(str == '')
 					hint=lang['correct']+lang['Esee_ID'];
 
@@ -1137,14 +1149,29 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					}
 				}
 			break;
-			case 3:
-				if(!(str == 1 || str == 4 || str == 8 || str == 16 || str == 32)){
-					hint=lang['correct']+lang['Channels']+'(1,4,8,16,32)';
+			case 3:  //通道数。
+				if(!(str == 1 || str == 4 || str == 8 || str == 16 ||  str == 24 ||  str == 32)){
+					hint=lang['correct']+lang['Channels']+'(1,4,8,16,24,32)';
+				}
+			break;
+			case 4:  //自动轮训时间
+				if(!/^\d+$/.test(str) || parseInt(str) > 86400 || parseInt(str)<30){
+					hint=lang['correct']+lang['rotation_time'];
+				}
+			break;
+			case 5:  //文件大小
+				if(!/^\d+$/.test(str) || parseInt(str) > 512 /*|| parseInt(str)<128*/){
+					hint=lang['correct']+lang['File_size_range'];
+				}
+			break;
+			case 6:  //磁盘预留空间
+				if(!/^\d+$/.test(str) || parseInt(str) < (32*128)){
+					hint=lang['correct']+lang['Disk_space_reserved'];
 				}
 			break;
 		}
 		if(hint){
-			Confirm(hint,true);
+			type>3 ? Confirm(hint) : Confirm(hint,true);
 			obj.value = '';	
 		}
 		

@@ -434,8 +434,10 @@ var oPreView,oDiv,
 		c = errorcolor;
 		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
-				data = $(this).data('data');
-				if(oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
+				data =getChlFullInfo($(this));
+				console.log('------------1-------------');
+				console.log(data);
+				if(oPreView.SetDevInfo(data.device_name,data.channel_number,$(this).attr('wind'))){
 					transKey = 'channel_Manual_recording_data_binding_failed'
 				}else{
 					backStatus = oPreView.StartRecord($(this).attr('wind'))
@@ -449,11 +451,14 @@ var oPreView,oDiv,
 						c = '';
 					}
 				}
+				writeActionLog(T(transKey,data.name,data.channel_name),c);
 			})
 		}else{
 			$('div.dev_list span.channel[wind]').each(function(){
-				data = $(this).data('data'),
+				data = getChlFullInfo($(this)),
 				backStatus = oPreView.StopRecord($(this).attr('wind'));
+				console.log('------------12-------------');
+				console.log(data);
 				if(backStatus){ 
 					transKey = 'Close_the_manual_recording_failed'
 					if(backStatus == 2){
@@ -463,9 +468,9 @@ var oPreView,oDiv,
 					transKey = 'Close_the_manual_recording';
 					c = '';
 				}
+				writeActionLog(T(transKey,data.device_name,data.channel_name),c);
 			})	
 		}
-		writeActionLog(T(transKey,data.name,data.channel_name),c);
 		/*obj.blur(function(){
 			if(backStatus){
 				obj.attr('toggle',1).css('background-position','-120px -108px');

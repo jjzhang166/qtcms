@@ -571,8 +571,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			loclFileDataIntoChannel(recFile);*/
 
 		initrecFileOcx($('#channelvideo div.video'));
-
+		console.time('RecFileInfo2UI');
 		RecFileInfo2UI();
+		console.timeEnd('RecFileInfo2UI');
 
 		if(bool){
 			oPlayBack.style.height='0px';

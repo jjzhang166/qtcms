@@ -328,7 +328,7 @@ function chkInput(type,obj,str){
 			}
 		break;
 		case 3:
-			if(parseInt(val) > 65535 || parseInt(val) < 0 || val == ''){
+			if(parseInt(val) > 65535 || parseInt(val) < 0 || !/^\d{1,5}$/.test(val)){
 				hint = _T(str);
 			};
 		break;
@@ -339,7 +339,7 @@ function chkInput(type,obj,str){
 		showAJAXHint(_T('correct')+hint);
 	}else{
 		$(obj).css('border','0').removeAttr('b');
-		showAJAXHint().hide();	
+		showAJAXHint().hide();
 	}
 }
 

@@ -528,6 +528,7 @@ function setAjax(xmlstr,fun){
 }
 function dvr_encoding_data2ui(dvr_selected_chn)
 {
+	console.log(dvr_data);
 	$("#dvr_enc_chn_sel0").html(dvr_selected_chn+1);
 	//main_stream
 	$('#dvr_enc_main_mode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].mode);
@@ -573,8 +574,8 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 	$('#dvr_enc_main_bitmode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Variable_rate;break;
-		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.CBR;break;
+		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.VBR;break;
 		case 2:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}
@@ -636,8 +637,8 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 	$('#dvr_enc_sub_bitmode_ID').val(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Variable_rate;break;
-		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.CBR;break;
+		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.VBR;break;
 		case 2:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}

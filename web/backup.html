@@ -40,6 +40,7 @@
 	#fileRec h4{float: left; border: none;}
 
 	#list .sel li{background-color: #ABCDEF}
+	#page span{ cursor: default; margin: 8px 2px; border:1px solid red; line-height: 16px; width: 16px; height: 16px; display: block; float: left;}
 </style>
 </head>
 
@@ -168,10 +169,11 @@
 			</table>
 	</div>
 	<div id="file_bottom">
-		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
 		<a style="margin-left:30px;" class="hover" onclick="selectAll();"><script>T("Select")</script></a>
 		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>T("Stop_backup")</script></a>
 		<a class="hover" onclick="getDir();"><script>T("Start_Backup")</script></a>
+		<span id="page"></span>
+		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
 	</div>
 	<div id="foot"></div>
 	<script type="text/javascript" src="js/calendar.js"></script>
@@ -184,7 +186,11 @@
 var oPlayBack={},  // 远程回访控件对象
 	oBackup={},    // 备份控件对象
 	now = 0,	   // 当前下载的第几个文件
-	recFile=[];    // 搜索文件
+	recFile=[],    // 搜索文件
+	usedUid = [],
+	nowPage=1,
+	bFirstFileSerchCallback=true;
+
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
@@ -232,52 +238,62 @@ var oPlayBack={},  // 远程回访控件对象
 
 	function RecFileInfoCallback(data){
 		console.log('---------------搜索到文件回调---------------');
-
+		
 		for ( i in data){
 			recFile.push($.parseJSON(data[i]));
 		}
 
-		console.log(recTotal+'//'+recFile.length);
+		//console.log(recTotal+'//'+recFile.length);
 
-		if(recTotal==recFile.length)
-			reSort_2UI('TimeDes');
+		//if(recTotal==recFile.length)
+
+		bFirstFileSerchCallback && reSort_2UI('TimeDes');
+
+		bFirstFileSerchCallback = false
 	}
 
 	function reSort_2UI(sortfn){
 		var fn = window[sortfn];
-		recFile.sort(fn);
+		recFile.sort(fn).splice();
 		RecFile2UI();
 	}
 
 	function RecFile2UI(){
 		console.time('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
 		//console.log();
-
+		//console.log(usedUid);
 		var b = 1;
 			//n=0;
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
 		var str = '';
+		var oParent = $('#search_resultFile');
+
 		for(var i=0;i<recFile.length;i++){ 
 			//n++;
 			var data = recFile[i];
 			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 			var type =typeHint[data.types];
 			var typeColor = color[data.types];
-			$('#search_resultFile tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
-				if(uid == $(this).attr('uid')){
-					b=0;
+
+			for(var k=0;k<usedUid.length;k++){
+				if(usedUid[k] == uid){
+					b=false;
 				}
-			})
+			}
+			
 			if(b){
 				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
 			}
 		}
-		$(str).appendTo('#search_resultFile')
+		var obj = $(str).appendTo(oParent);
+
 		for(var i=0;i<recFile.length;i++){ 
 			//n++;
 			var data = recFile[i];
-			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
+			obj.eq(i).find('input:checkbox').data('data',data);
 		}
+
+		$('<span>'+($('#page span').length+1)+'</span>').appendTo($('#page'));
 
 		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
 		//showRecProgress(n);
@@ -438,11 +454,20 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function backupSearchFile(){
+		usedUid = [];
 		recFile=[];
+		$('#page').html('');
 		console.log('++++++++开始搜索+++++++++++');
-		$('#search_resultFile tr').filter(function(){
-			return !$(this).find(':checkbox').is(':checked');
-		}).remove();//远程备份中正在下载的文件不被删除.
+		var obj =$('#search_resultFile tr');
+		if(obj.length != 0){
+			obj.filter(function(){
+				return !$(this).find(':checkbox').is(':checked');
+			}).remove();//远程备份中正在下载的文件不被删除.
+
+			obj.has(':checked').each(function(){
+				usedUid.push($(this).attr('uid'));
+			})
+		}
 		ocxsearchVideo();
 	}
 
