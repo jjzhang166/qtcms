@@ -1265,7 +1265,7 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 	//create query command
 	QString sqlType = getTypeList(types);
-	QString sqlCommand = QString("select start_time, end_time, path from local_record where win_id='%1' and date='%2' and start_time>='%3' and end_time<='%4' and (%5) order by start_time")
+	QString sqlCommand = QString("select start_time, end_time, path from local_record where win_id='%1' and date='%2' and end_time>='%3' and start_time<='%4' and (%5) order by start_time")
 		.arg(wndId).arg(date.toString("yyyy-MM-dd")).arg(star.toString("hh:mm:ss")).arg(end.toString("hh:mm:ss")).arg(sqlType);
 	//query
 	foreach(QString disk, sltUsedDisk)

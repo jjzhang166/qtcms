@@ -147,9 +147,10 @@ void PlayMgr::run()
 // 		fileStartTime.setDate(date);
 // 		fileStartTime.setTime(time);
 
-		start = m_filePeriodMap.value(filePath).start;
+		PeriodTime per = m_filePeriodMap.value(filePath);
+		start = per.start;
 
-		while (skipPos < m_skipTime.size())
+		while (skipPos < m_skipTime.size() || m_skipTime.isEmpty())
 		{
 			timeOffset = currentPlayTime.toTime_t() - start;
 			if (timeOffset >= 0)
@@ -198,6 +199,7 @@ void PlayMgr::run()
 		if (NULL != file)
 		{
 			int frameRate = AVI_frame_rate(file);
+			int totalFrames = AVI_video_frames(file);
 
 //			int isKeyFrame = 0;
 			long length = 0;
@@ -225,7 +227,7 @@ void PlayMgr::run()
 				continue;
 			}
 			//start frame
-			int startframe = qAbs(timeOffset)*frameRate;
+			int startframe = (per.end > per.start) ? (qAbs(timeOffset)*totalFrames/(per.end - per.start)) : 0;
 			if (startframe > 0)
 			{
 				AVI_seek_pos(file, startframe);
