@@ -71,7 +71,19 @@ typedef struct _tagDeviceInfo{
 	QString m_sDeviceName;
 	QWidget *m_pWnd;
 }tagDeviceInfo;
-
+typedef struct _tagRenderInfo{
+	char *pData;
+	char *pYdata;
+	char *pUdata;
+	char *pVdata;
+	int nWidth;
+	int nHeight;
+	int nYStride;
+	int nUVStride;
+	int nLineStride;
+	QString sPixeFormat;
+	int nFlags;
+}tagRenderInfo;
 class QSubviewRun:public QThread
 {
 	Q_OBJECT
@@ -112,6 +124,7 @@ public:
 	int cbCRecorderData( QString evName,QVariantMap evMap,void*pUser );
 	int cbCConnectError(QString evName,QVariantMap evMap,void*pUser );
 	int cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser);
+	int cbCDecodeFrameEx(QString evName,QVariantMap evMap,void*pUser);
 	int cbCRecordState(QString evName,QVariantMap evMap,void*pUser);
 	int cbCConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 private:
@@ -126,6 +139,7 @@ private:
 	bool closePTZ();
 	void backToMainThread(QVariantMap evMap);
 	void sleepEx(int time);
+	void renderSaveFrame();
 	
 public slots:
 	void slstopPreviewrun();
@@ -187,5 +201,7 @@ private:
 	int m_nSleepSwitch;
 	int m_nWindId;
 	int m_nRecordType;
+	tagRenderInfo m_tRenderInfo;
+	volatile bool m_bIsSaveRenderFrame;
 };
   

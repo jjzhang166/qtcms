@@ -27,6 +27,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bScreenShot(false),
 	m_bClosePreview(false),
 	m_bIsBlock(false),
+	m_bIsSaveRenderFrame(false),
 	m_nWindId(0),
 	m_nRecordType(0),
 	m_nPosition(0),
@@ -44,6 +45,10 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(5000);
 	m_hMainThread=QThread::currentThreadId();
+	m_tRenderInfo.pData=NULL;
+	m_tRenderInfo.pUdata=NULL;
+	m_tRenderInfo.pVdata=NULL;
+	m_tRenderInfo.pYdata=NULL;
 }
 
 
@@ -655,6 +660,35 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pAudioPlay=NULL;
 				}
+				if (NULL!=m_tRenderInfo.pData)
+				{
+					delete m_tRenderInfo.pData;
+					m_tRenderInfo.pData=NULL;
+				}else{
+
+				}
+				if (NULL!=m_tRenderInfo.pUdata)
+				{
+					delete m_tRenderInfo.pUdata;
+					m_tRenderInfo.pUdata=NULL;
+				}else{
+
+				}
+				if (NULL!=m_tRenderInfo.pVdata)
+				{
+					delete m_tRenderInfo.pVdata;
+					m_tRenderInfo.pVdata=NULL;
+				}else{
+
+				}
+				if (NULL!=m_tRenderInfo.pYdata)
+				{
+					delete m_tRenderInfo.pYdata;
+					m_tRenderInfo.pYdata=NULL;
+				}else{
+
+				}
+				m_bIsSaveRenderFrame=false;
 				//抛出断开的事件
 				int nCurrentStatus=STATUS_DISCONNECTED;
 				QVariantMap curStatusInfo;
@@ -900,10 +934,47 @@ void QSubviewRun::eventCallBack( QString eventName,QVariantMap evMap )
 
 int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 {
-	if (NULL!=m_pIVideoDecoder)
-	{
-		if (m_tDeviceInfo.m_pWnd->isVisible())
-		{
+	int nDecodeStep=0;
+	int bDecodeStop=false;
+	while(bDecodeStop==false){
+		switch(nDecodeStep){
+		case 0:{
+			//解码指针是否为空
+			if (NULL!=m_pIVideoDecoder)
+			{
+				nDecodeStep=1;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"decode fail as the m_pIVideoDecoder is null";
+				nDecodeStep=3;
+			}
+			   }
+			   break;
+		case 1:{
+			//窗口是否可视
+			if (m_bIsSaveRenderFrame==false)
+			{
+				nDecodeStep=2;
+			}else{
+				if (m_tDeviceInfo.m_pWnd->isVisible())
+				{
+					nDecodeStep=2;
+					int nFrameType=evMap.value("frametype").toUInt();
+					if (nFrameType==0x01)
+					{
+						m_bIsSaveRenderFrame=false;
+						m_nInitHeight=0;
+						m_nInitWidth=0;
+					}else{
+						//do nothing
+					}
+				}else{
+					nDecodeStep=3;
+				}
+			}
+			   }
+			   break;
+		case 2:{
+			//解码
 			unsigned int nLength=evMap.value("length").toUInt();
 			char * lpdata=(char *)evMap.value("data").toUInt();
 			int frameType = evMap.value("frametype").toUInt();
@@ -921,15 +992,59 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 				m_pAudioPlay->Play(lpdata, nLength);
 			}
 			//视频解码
-			m_pIVideoDecoder->decode(lpdata,nLength);
-			return 0;
-		}else{
-			//do nothing
+			if (m_bIsSaveRenderFrame==true)
+			{
+				//do nothing
+				renderSaveFrame();
+			}else{
+				m_pIVideoDecoder->decode(lpdata,nLength);
+			}
+			nDecodeStep=4;
+			   }
+			   break;
+		case 3:{
+			//不解码
+			nDecodeStep=4;
+			   }
+			   break;
+		case 4:{
+			//返回
+			bDecodeStop=true;
+			   }
+			   break;
 		}
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoDecoder is null";
 	}
 	return 1;
+	//if (NULL!=m_pIVideoDecoder)
+	//{
+	//	if (m_tDeviceInfo.m_pWnd->isVisible())
+	//	{
+	//		unsigned int nLength=evMap.value("length").toUInt();
+	//		char * lpdata=(char *)evMap.value("data").toUInt();
+	//		int frameType = evMap.value("frametype").toUInt();
+	//		//音频
+	//		if (NULL!=m_pAudioPlay&&0==frameType&&m_bIsFocus==true)
+	//		{
+	//			int nSampleRate = evMap.value("samplerate").toUInt();
+	//			int nSampleWidth = evMap.value("samplewidth").toUInt();
+	//			if (nSampleRate != m_sampleRate || nSampleWidth != m_sampleWidth)
+	//			{
+	//				m_sampleRate = nSampleRate;
+	//				m_sampleWidth = nSampleWidth;
+	//				m_pAudioPlay->SetAudioParam(1, m_sampleRate, m_sampleWidth);
+	//			}
+	//			m_pAudioPlay->Play(lpdata, nLength);
+	//		}
+	//		//视频解码
+	//		m_pIVideoDecoder->decode(lpdata,nLength);
+	//		return 0;
+	//	}else{
+	//		//do nothing
+	//	}
+	//}else{
+	//	qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoDecoder is null";
+	//}
+	//return 1;
 }
 
 
@@ -1156,8 +1271,183 @@ static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *
 		}
 	} 
 }
+int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
+	int nRenderStep=0;
+	bool bRenderStop=false;
+	while(bRenderStop==false){
+		switch(nRenderStep){
+		case 0:{
+			//判断渲染指针
+			if (NULL!=m_pIVideoRender)
+			{
+				nRenderStep=1;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"render fail as the m_pIVideoRender is null";
+				nRenderStep=6;
+			}
+			   }
+			   break;
+		case 1:{
+			//判断是否可视
+			if (!m_tDeviceInfo.m_pWnd->isVisible()&&m_bIsSaveRenderFrame==false)
+			{
+				//save frame
+				if (m_tRenderInfo.pData!=NULL)
+				{
+					delete m_tRenderInfo.pData;
+					m_tRenderInfo.pData=NULL;
+				}else{
+					//do nothing
+				}
+				if (m_tRenderInfo.pUdata!=NULL)
+				{
+					delete m_tRenderInfo.pUdata;
+					m_tRenderInfo.pUdata=NULL;
+				}else{
+					//do nothing
+				}
+				if (m_tRenderInfo.pVdata!=NULL)
+				{
+					delete m_tRenderInfo.pVdata;
+					m_tRenderInfo.pVdata=NULL;
+				}else{
+					//do nothing
+				}
+				if (m_tRenderInfo.pYdata!=NULL)
+				{
+					delete m_tRenderInfo.pYdata;
+					m_tRenderInfo.pYdata=NULL;
+				}else{
+					//do nothing
+				}
+				m_tRenderInfo.nWidth=evMap.value("width").toInt();
+				m_tRenderInfo.nHeight=evMap.value("height").toInt();
+				m_tRenderInfo.nYStride=evMap.value("YStride").toInt();
+				m_tRenderInfo.nUVStride=evMap.value("UVStride").toInt();
+				m_tRenderInfo.nLineStride=evMap.value("lineStride").toInt();
+				m_tRenderInfo.sPixeFormat=evMap.value("pixelFormat").toString();
+				m_tRenderInfo.nFlags=evMap.value("flags").toInt();
 
-int QSubviewRun::cbCDecodeFrame( QString evName,QVariantMap evMap,void*pUser )
+				m_tRenderInfo.pData=new char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2];
+				memset(m_tRenderInfo.pData, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
+				memcpy(m_tRenderInfo.pData,(char*)evMap.value("data").toUInt(),m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
+
+				m_tRenderInfo.pUdata=new char[m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2];
+				memset(m_tRenderInfo.pUdata, 0, m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
+				memcpy(m_tRenderInfo.pUdata,(char*)evMap.value("Udata").toUInt(),m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
+
+				m_tRenderInfo.pVdata=new char[m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2];
+				memset(m_tRenderInfo.pVdata, 0, m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
+				memcpy(m_tRenderInfo.pVdata,(char*)evMap.value("Vdata").toUInt(),m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
+
+				m_tRenderInfo.pYdata=new char[m_tRenderInfo.nHeight*m_tRenderInfo.nYStride];
+				memset(m_tRenderInfo.pYdata, 0, m_tRenderInfo.nHeight*m_tRenderInfo.nYStride);
+				memcpy(m_tRenderInfo.pYdata,(char*)evMap.value("Ydata").toUInt(),m_tRenderInfo.nHeight*m_tRenderInfo.nYStride);
+				m_bIsSaveRenderFrame=true;
+				m_nInitHeight=0;
+				m_nInitWidth=0;
+				nRenderStep=2;
+			}else {
+				if (m_tDeviceInfo.m_pWnd->isVisible())
+				{
+					if (m_bIsSaveRenderFrame==true)
+					{
+						nRenderStep=2;
+					}else{
+						nRenderStep=3;
+					}
+				}else{
+					nRenderStep=4;
+				}
+			
+			}
+			   }
+			   break;
+		case 2:{
+			//渲染历史帧
+			nRenderStep=4;
+			if (m_nInitHeight!=m_tRenderInfo.nHeight||m_nInitWidth!=m_tRenderInfo.nWidth)
+			{
+				m_pIVideoRender->deinit();
+				m_pIVideoRender->init(m_tRenderInfo.nWidth,m_tRenderInfo.nHeight);
+				m_nInitWidth=m_tRenderInfo.nWidth;
+				m_nInitHeight=m_tRenderInfo.nHeight;
+			}
+			m_pIVideoRender->render(m_tRenderInfo.pData,m_tRenderInfo.pYdata,m_tRenderInfo.pUdata,m_tRenderInfo.pVdata,m_tRenderInfo.nWidth,m_tRenderInfo.nHeight,m_tRenderInfo.nYStride,m_tRenderInfo.nUVStride,m_tRenderInfo.nLineStride,m_tRenderInfo.sPixeFormat,m_tRenderInfo.nFlags);
+			//截屏
+			if (m_bScreenShot)
+			{
+				m_bScreenShot=false;
+				unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
+				memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
+				YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
+				QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+				img.save(m_sScreenShotPath, "JPG");
+				delete [] rgbBuff;
+			}
+			   }
+			   break;
+		case 3:{
+			//渲染当前帧
+			nRenderStep=4;
+			char* pData=(char*)evMap.value("data").toUInt();	
+			char* pYdata=(char*)evMap.value("Ydata").toUInt();
+			char* pUdata=(char*)evMap.value("Udata").toUInt();
+			char* pVdata=(char*)evMap.value("Vdata").toUInt();
+			int iWidth=evMap.value("width").toInt();
+			int iHeight=evMap.value("height").toInt();
+			int iYStride=evMap.value("YStride").toInt();
+			int iUVStride=evMap.value("UVStride").toInt();
+			int iLineStride=evMap.value("lineStride").toInt();
+			QString iPixeFormat=evMap.value("pixelFormat").toString();
+			int iFlags=evMap.value("flags").toInt();
+			if (m_nInitHeight!=iHeight||m_nInitWidth!=iWidth)
+			{
+				m_pIVideoRender->deinit();
+				m_pIVideoRender->init(iWidth,iHeight);
+				m_nInitWidth=iWidth;
+				m_nInitHeight=iHeight;
+			}
+			m_pIVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
+			//截屏
+			if (m_bScreenShot)
+			{
+				m_bScreenShot=false;
+				unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+				memset(rgbBuff, 0, iWidth*iHeight*3);
+				YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
+				QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
+				img.save(m_sScreenShotPath, "JPG");
+				delete [] rgbBuff;
+			}
+			   }
+			   break;
+		case 4:{
+			//do nothing
+
+			nRenderStep=5;
+			   }
+				break;
+		case 5:{
+			//成功
+			nRenderStep=7;
+			   }
+			   break;
+		case 6:{
+			//失败
+			nRenderStep=7;
+			   }
+			   break;
+		case 7:{
+			//结束
+			bRenderStop=true;
+			   }
+			   break;
+		}
+	}
+	return 0;
+}
+int QSubviewRun::cbCDecodeFrameEx( QString evName,QVariantMap evMap,void*pUser )
 {
 	if (NULL!=m_pIVideoRender)
 	{
@@ -1730,6 +2020,34 @@ int QSubviewRun::cbCConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 		qDebug()<<__FUNCTION__<<__LINE__<<"undefined callBack event,please checkout";
 	}
 	return 0;
+}
+
+void QSubviewRun::renderSaveFrame()
+{
+	if (NULL!=m_pIVideoRender)
+	{
+		if (m_nInitHeight!=m_tRenderInfo.nHeight||m_nInitWidth!=m_tRenderInfo.nWidth)
+		{
+			m_pIVideoRender->deinit();
+			m_pIVideoRender->init(m_tRenderInfo.nWidth,m_tRenderInfo.nHeight);
+			m_nInitWidth=m_tRenderInfo.nWidth;
+			m_nInitHeight=m_tRenderInfo.nHeight;
+		}
+		m_pIVideoRender->render(m_tRenderInfo.pData,m_tRenderInfo.pYdata,m_tRenderInfo.pUdata,m_tRenderInfo.pVdata,m_tRenderInfo.nWidth,m_tRenderInfo.nHeight,m_tRenderInfo.nYStride,m_tRenderInfo.nUVStride,m_tRenderInfo.nLineStride,m_tRenderInfo.sPixeFormat,m_tRenderInfo.nFlags);
+		//截屏
+		if (m_bScreenShot)
+		{
+			m_bScreenShot=false;
+			unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
+			memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
+			YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
+			QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+			img.save(m_sScreenShotPath, "JPG");
+			delete [] rgbBuff;
+		}
+	}else{
+		//do nothing
+	}
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
