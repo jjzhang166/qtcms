@@ -1079,18 +1079,22 @@ int commonlibEx::IsDevExistsInArea( int area_id, QString sDeviceName )
 	else
 	{
 		int dev_id = _query.value(0).toInt();
-
 		return dev_id;
 	}
 }
 
 int commonlibEx::AddDevice( int area_id,QString sDeviceName,QString sAddress,int port,int http,QString sEseeid,QString sUsername,QString sPassword,int chlCount,int connectMethod,QString sVendor )
 {
-	if (IsDevExistsInArea(area_id,sDeviceName))
+	//if (IsDevExistsInArea(area_id,sDeviceName))
+	//{
+	//	return -1;
+	//}
+	if (checkDeviceNameIsExist(sDeviceName))
 	{
 		return -1;
+	}else{
+		//keep going
 	}
-
 	QSqlQuery _query(*m_db);
 	int dev_id = 0;
 	QString command;
@@ -1146,7 +1150,7 @@ int commonlibEx::RemoveDevice( int dev_id )
 int commonlibEx::ModifyDeviceName( int dev_id,QString sDeviceName )
 {
 	Device_lock.lock();
-	if (!IsDeviceExist(dev_id))
+	if (!IsDeviceExist(dev_id)||checkDeviceNameIsExist(sDeviceName))
 	{
 		Device_lock.unlock();
 		return IDeviceManager::E_DEVICE_NOT_FOUND;
@@ -2633,4 +2637,43 @@ bool commonlibEx::getBootFromStart()
 	}
 
 	return bBootFromStart;
+}
+
+bool commonlibEx::checkDeviceNameIsExist( QString sDevcie )
+{
+
+	QSqlQuery _query(*m_db);
+	QString command=QString("select * from area");
+	_query.exec(command);
+	if(_query.isActive()){
+		int Id_Index=_query.record().indexOf("id");
+		while(_query.next()){
+			QSqlQuery tQuery(*m_db);
+			int nAreaId=_query.value(Id_Index).toInt();
+			QString sCommand=QString("select id from (select * from dev where area_id='%1')where name='%2'").arg(nAreaId).arg(sDevcie);
+			tQuery.exec(sCommand);
+			if (!tQuery.next())
+			{
+				//keep going
+			}else{
+				return true;
+			}
+		}
+		if (Id_Index==0)
+		{
+			QSqlQuery tQuery(*m_db);
+			int nAreaId=_query.value(Id_Index).toInt();
+			QString sCommand=QString("select id from (select * from dev where area_id='%1')where name='%2'").arg(nAreaId).arg(sDevcie);
+			tQuery.exec(sCommand);
+			if (!tQuery.next())
+			{
+				//keep going
+			}else{
+				return true;
+			}
+		}else{
+			//do nothing
+		}
+	}
+	return false;
 }

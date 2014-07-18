@@ -160,6 +160,7 @@ public:
 	bool getBootFromStart();
 private:
 	bool CheckTimeFormat(QString sTime);
+	bool checkDeviceNameIsExist(QString sDevcie);
 private:
 	QSqlDatabase * m_db;
 	static QMutex Group_lock;
