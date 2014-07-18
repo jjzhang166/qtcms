@@ -6,6 +6,7 @@
 #include <guid.h>
 #include "IEventRegister.h"
 #include "ILocalRecordSearchEx.h"
+#include "ILocalPlayerEx.h"
 
 RecordPlayer::RecordPlayer():
 QWebPluginFWBase(this),
@@ -89,6 +90,7 @@ int RecordPlayer::cbInit()
 	pEvRegister->registerEvent(QString("GetRecordDate"), cbGetRecordDate, this);
 	pEvRegister->registerEvent(QString("GetRecordFile"), cbGetRecordFile, this);
 	pEvRegister->registerEvent(QString("SearchStop"), cbSearchStop, this);
+	pEvRegister->registerEvent(QString("GetRecordFileEx"), cbGetRecordFile, this);
 
 	pEvRegister->Release();
 	return 0;
@@ -450,6 +452,10 @@ int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser)
 
 		qDebug()<<evMap["channelnum"].toInt()<<evMap["startTime"].toDateTime().toString("hh:mm:ss")<<evMap["stopTime"].toDateTime().toString("hh:mm:ss")<<evMap["filepath"].toString();
 	}
+	if ("GetRecordFileEx" == evName)
+	{
+		pRecordPlayer->transRecordFilesEx(evMap);
+	}
 	return 0;
 }
 int cbSearchStop(QString evName,QVariantMap evMap,void*pUser)
@@ -633,4 +639,83 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 
 	EventProcCall("GetRecordFile",fileMap);
 	return 0;
+}
+
+int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
+{
+	if (nWndId < 0 || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
+	{
+		return 1;
+	}
+	if (NULL == m_pLocalRecordSearch)
+	{
+		return 1;
+	}
+	fileMap.clear();
+	fileKey = "0";
+
+	//get query interface
+	ILocalRecordSearchEx *pRecSchEx = NULL;
+	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecSchEx);
+	if (NULL == pRecSchEx)
+	{
+		return 1;
+	}
+	int ret = pRecSchEx->searchVideoFileEx(nWndId, sDate, sStartTime, sEndTime, nTypes);
+	if (ILocalRecordSearchEx::OK != ret)
+	{
+		return 1;//call function error
+	}
+	pRecSchEx->Release();
+
+	EventProcCall("GetRecordFileEx",fileMap);
+	return 0;
+}
+
+void RecordPlayer::transRecordFilesEx( QVariantMap &evMap )
+{
+	QString fileinfo;
+	QStringList infoList;
+	QVariantMap::const_iterator it;
+	for(it=evMap.begin();it!=evMap.end();it++)
+	{
+		infoList<<"\\\"" + it.key() + "\\\":\\\"" + it.value().toString() + "\\\"";
+	}
+	fileinfo = "{" + infoList.join(",") + "}";
+	QString key;
+	key="index_";
+	fileMap.insert(key.append(fileKey),fileinfo);
+	int ifileKey=fileKey.toInt();
+	fileKey=QString::number(ifileKey+1);
+}
+
+int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDate,const QString & sStartTime,const QString & sEndTime,const int & nTypes )
+{
+	if (nWndId < 0 || nWndId >= ARRAY_SIZE(m_subRecPlayerView) || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
+	{
+		return 1;//input parameter error
+	}
+	QDate date = QDate::fromString(sDate, "yyyy-MM-dd");
+	QTime start = QTime::fromString(sStartTime, "hh:mm:ss");
+	QTime end = QTime::fromString(sEndTime, "hh:mm:ss");
+	if (!date.isValid() || !start.isValid() || !end.isValid() || end <= start)
+	{
+		return 1;//input parameter error
+	}
+	if (NULL == m_pLocalPlayer)
+	{
+		return 1;
+	}
+	
+	ILocalPlayerEx *pLocalPlayerEx = NULL;
+	m_pLocalPlayer->QueryInterface(IID_ILocalPlayerEx, (void**)&pLocalPlayerEx);
+	if (NULL == pLocalPlayerEx)
+	{
+		return 1;
+	}
+
+	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[nWndId], date, start, end, nTypes);
+	pLocalPlayerEx->Release();
+
+	return nRet;
 }

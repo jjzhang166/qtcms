@@ -2003,7 +2003,7 @@ bool commonlibEx::getLoopRecording()
 //设置磁盘预留空间(单位m)
 int commonlibEx::setDiskSpaceReservedSize( const int spacereservedsize )
 {
-	if (spacereservedsize > 5120 || spacereservedsize <= 0)
+	if (spacereservedsize <= 32*128)
 	{
 		return IDisksSetting::E_PARAMETER_ERROR;
 	}

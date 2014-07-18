@@ -17,7 +17,7 @@ m_bIsGroupPlaying(false),
 m_db(NULL),
 m_pCurView(NULL)
 {
-	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop";
+	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop"<<"GetRecordFileEx";
 
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void**)&m_pDiskSetting);
 
@@ -766,6 +766,7 @@ int LocalPlayer::GroupStop()
 // 	m_skipTime = 86400;
 // 	m_callTimes = 0;
 	m_lastPlayTime = 0;
+	m_filePeriodMap.clear();
 	
 	return 0;
 }
@@ -963,6 +964,10 @@ int LocalPlayer::queryEvent(QString eventName,QStringList& eventParams)
 	{
 		eventParams<<"stopevent";
 	}
+	if ("GetRecordFileEx" == eventName)
+	{
+		eventParams<<"wndId"<<"type"<<"startTime"<<"endTime";
+	}
 
 	return IEventRegister::OK;
 }
@@ -995,6 +1000,10 @@ long __stdcall LocalPlayer::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_ILocalPlayer == iid)
 	{
 		*ppv = static_cast<ILocalPlayer *>(this);
+	}
+	else if (IID_ILocalPlayerEx == iid)
+	{
+		*ppv = static_cast<ILocalPlayerEx *>(this);
 	}
 	else if (IID_IEventRegister == iid)
 	{
@@ -1130,7 +1139,62 @@ int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDat
 	stopInfo.insert("stopevent", QString("GetRecordFile"));
 	eventProcCall(QString("SearchStop"), stopInfo);
 
-	return ILocalRecordSearch::OK;
+	return ILocalRecordSearchEx::OK;
+}
+
+int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
+{
+	QDate date = QDate::fromString(sDate,"yyyy-MM-dd");
+	if (!date.isValid())
+	{
+		return ILocalRecordSearchEx::E_PARAMETER_ERROR;
+	}
+
+	//get available disk
+	QString sUsedDisks;
+	if (1 == checkUsedDisk(sUsedDisks))
+	{
+		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
+	}
+	if (sUsedDisks.isEmpty())
+	{
+		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
+	}
+	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
+	QString sqlType = getTypeList(nTypes);
+	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and start_time>'%3' and end_time<'%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
+
+	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
+	m_db->setDatabaseName(dbPath);
+	if (!m_db->open())
+	{
+		qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
+	}
+	QSqlQuery _query(*m_db);
+	_query.exec(command);
+
+	while(_query.next())
+	{
+		int recordType = _query.value(0).toInt();
+		QString start = _query.value(1).toString();
+		QString end = _query.value(2).toString();
+
+		QVariantMap info;
+		info.insert("wndId", nWndId);
+		info.insert("type", recordType);
+		info.insert("startTime", start);
+		info.insert("endTime", end);
+
+		eventProcCall(QString("GetRecordFileEx"), info);
+	}
+	_query.finish();
+	m_db->close();
+
+	QVariantMap stopInfo;
+	stopInfo.insert("stopevent", QString("GetRecordFile"));
+	eventProcCall(QString("SearchStop"), stopInfo);
+
+	return ILocalRecordSearchEx::OK;
 }
 
 QString LocalPlayer::getTypeList( int nTypes )
@@ -1149,4 +1213,94 @@ QString LocalPlayer::getTypeList( int nTypes )
 
 	typeList = "record_type=" + typeList.replace("*", " or record_type=");
 	return typeList;
+}
+
+int LocalPlayer::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWnd, const QDate& date, const QTime & startTime, const QTime & endTime, const int & nTypes )
+{
+	//group full
+	if (m_GroupMap.size() >= m_nGroupNum)
+	{
+		return 1;
+	}
+	//Window is occupied
+	if (m_GroupMap.contains(const_cast<QWidget*>(pWnd)))
+	{
+		return 1;
+	}
+	QVector<PeriodTime> vecPerTime;
+	QStringList fileList = getFileList(nWndId, date, startTime, endTime, nTypes, vecPerTime);
+	if (fileList.isEmpty())
+	{
+		return 1;//can't find file
+	}
+	
+	PrePlay prePlay;
+	prePlay.pPlayMgr = new PlayMgr();
+	prePlay.fileList = fileList;
+	prePlay.startTime = QDateTime(date, startTime);
+	prePlay.endTime = QDateTime(date, endTime);
+	prePlay.startPos = 0;
+	prePlay.skipTime = vecPerTime;
+
+	m_startTime = prePlay.startTime.toTime_t();
+	m_endTime = prePlay.endTime.toTime_t();
+	
+	m_GroupMap.insert(const_cast<QWidget*>(pWnd), prePlay);
+	return 0;
+}
+
+QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime end, int types, QVector<PeriodTime> &playTime )
+{
+	QStringList fileList;
+	//get available disk
+	QString sUsedDisks;
+	if (1 == checkUsedDisk(sUsedDisks))
+	{
+		return fileList;
+	}
+	if (sUsedDisks.isEmpty())
+	{
+		return fileList;
+	}
+	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
+	//create query command
+	QString sqlType = getTypeList(types);
+	QString sqlCommand = QString("select start_time, end_time, path from local_record where win_id='%1' and date='%2' and start_time>='%3' and end_time<='%4' and (%5) order by start_time")
+		.arg(wndId).arg(date.toString("yyyy-MM-dd")).arg(star.toString("hh:mm:ss")).arg(end.toString("hh:mm:ss")).arg(sqlType);
+	//query
+	foreach(QString disk, sltUsedDisk)
+	{
+		QString dbPath = disk + ":/REC/record.db";
+		m_db->setDatabaseName(dbPath);
+		if (!m_db->open())
+		{
+			qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
+			continue;
+		}
+		QSqlQuery _query(*m_db);
+		_query.exec(sqlCommand);
+		while (_query.next())
+		{
+			QTime startTime = _query.value(0).toTime();
+			QTime endTime = _query.value(1).toTime();
+			QString path = _query.value(2).toString();
+			fileList<<path;
+
+			QDateTime starDateTime;
+			QDateTime endDateTime;
+			starDateTime.setDate(date);
+			starDateTime.setTime(startTime);
+			endDateTime.setDate(date);
+			endDateTime.setTime(endTime);
+
+			PeriodTime item;
+			item.start = starDateTime.toTime_t();
+			item.end = endDateTime.toTime_t();
+			playTime.append(item);
+			m_filePeriodMap.insert(path, item);
+		}
+		_query.finish();
+		m_db->close();
+	}
+	return fileList;
 }

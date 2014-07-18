@@ -98,5 +98,6 @@ extern const CLSID CLSID_BackUpActivity;
 extern const CLSID CLSID_CommonlibEx;
 extern const IID IID_IRecorderEx;
 extern const IID IID_ILocalRecordSearchEx;
+extern const IID IID_ILocalPlayerEx;
 
 #endif

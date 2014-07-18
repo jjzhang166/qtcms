@@ -39,6 +39,7 @@ public:
 
 	void transRecordDate(QVariantMap &evMap);
 	void transRecordFiles(QVariantMap &evMap);
+	void transRecordFilesEx(QVariantMap &evMap);
 	void transSearchStop(QVariantMap &evMap);
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
@@ -55,6 +56,11 @@ public slots:
 	int searchVideoFileEx(const QString &sDevName,
 		const QString& sDate,
 		const int& nTypes);
+	int searchVideoFileEx2(const int & nWndId,
+		const QString & sDate,
+		const QString & sStartTime,
+		const QString & sEndTime,
+		const int & nTypes);
 
 	//ILocalPlayer
 	int AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime);
@@ -67,6 +73,10 @@ public slots:
 	int GroupSpeedSlow(int speed);
 	int GroupSpeedNormal();
 	QString GetNowPlayedTime();
+
+	//ILocalPlayerEx
+	int AddFileIntoPlayGroupEx(const int & nWndId,const QString& sDate,const QString & sStartTime,const QString & sEndTime,const int & nTypes);
+
 	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
 	QVariantMap ScreenShot();

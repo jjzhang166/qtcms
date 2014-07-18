@@ -4,6 +4,11 @@
 #include <QMutex>
 #include <QtSql>
 
+typedef struct _tagPeriod{
+	uint start;
+	uint end;
+}Period;
+
 class StorageMgr
 {
 	IDisksSetting* m_pDisksSetting;
@@ -30,9 +35,16 @@ public:
 // 	int addRecord(QString sDevName, int chl, int winId, QString sDate, QString sStart, int type, QString sPath);
 	bool updateRecord(QString sEnd, int size);
 	bool deleteRecord();
+	bool addSearchRecord(int wndId, int type, QString sDate, QString sStart, QString sEnd);
+	bool updateSearchRecord(QString sEnd);
+	bool deleteSearchRecord();
+	QString getNewestRecord(QString devname, int chl);
 private:
 	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate);
 	void deleteRecord(QString dbPath, QString date, QStringList filelist);
+	void createSearchRecordTable();
+	void deductPeriod(QString dbpath, QStringList deleteFile, QString date);
+	QMap<int, QString> getDeletedPeriod(QString dbpath, QStringList fileList, QString date);
 private:
 	QString getUsableDisk();
 	bool deleteOldDir(const QStringList& dirlist);
@@ -50,8 +62,12 @@ private:
 	int m_insertId;
 	QString m_curDisk;
 	QString m_connectId;
+	QString m_connectSearchId;
 	QSqlDatabase *m_db;
+	QSqlDatabase *m_dbSearch;
 	static QMutex m_dblock;
 	static QList<int > m_insertIdList;
+	static QMutex m_schRecLock;
+	int m_searchRecordId;
 };
 

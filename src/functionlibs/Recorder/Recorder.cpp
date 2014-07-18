@@ -178,6 +178,7 @@ void Recorder::run()
 	quint64 qDiskReservedSize=1024;
 	bool bAudioBeSet=false;
 	bool bThreadRunning = true;
+	bool bHasAddRecord = false;
 	QVariantMap parm;
 	parm.insert("RecordState",true);
 	enventProcCall("RecordState",parm);
@@ -250,6 +251,16 @@ void Recorder::run()
 			if (CreateSavePath(sSavePath,start)&&CreateDir(sSavePath))
 			{
 				nRecStep=OPEN_FILE;
+				//开始记录录像时间
+				QString curDate = QDate::currentDate().toString("yyyy-MM-dd");
+				if (!bHasAddRecord && !m_StorageMgr.addSearchRecord(m_windId, m_recordType, curDate, start.toString("hh:mm:ss"), QString("00:00:00")))
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"add serach record info failed!";
+				}
+				else
+				{
+					bHasAddRecord = true;
+				}
 			}else{
 				// fix me : 处理建立路径时产生的资源
 				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as create path fail";
@@ -548,6 +559,27 @@ void Recorder::run()
 			}else{
 				//do nothing
 			}
+			//更新录像结束时间
+			if (bHasAddRecord)
+			{
+				QTime endTime = QTime::currentTime();
+				if (start.secsTo(endTime) <= 3)
+				{
+					//录像时间不足3秒，认为录像失败，删除插入的数据
+					m_StorageMgr.deleteSearchRecord();
+				}
+				else
+				{
+					//更新录像的结束时间
+					QString endStr = m_StorageMgr.getNewestRecord(m_devname, m_channelnum);
+					if (endStr.isEmpty())
+					{
+						endStr = endTime.toString("hh:mm:ss");
+					}
+					m_StorageMgr.updateSearchRecord(endStr);
+				}
+			}
+
 			//删除无用文件
 			if (-1!=m_StorageMgr.getInsertId())
 			{

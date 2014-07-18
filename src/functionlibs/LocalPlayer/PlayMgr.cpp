@@ -348,6 +348,7 @@ void PlayMgr::stop()
 	m_who = NULL;
 	m_bIsPickThread = false;
 	m_bIsSkiped = false;
+	m_filePeriodMap.clear();
 }
 
 void PlayMgr::OpneAudio(bool bEnabled)

@@ -6,11 +6,13 @@
 #include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
+QMutex StorageMgr::m_schRecLock;
 QMutex StorageMgr::m_sLock;
 QMutex StorageMgr::m_dblock;
 QList<int > StorageMgr::m_insertIdList;
 StorageMgr::StorageMgr(void):
 	m_insertId(-1),
+	m_searchRecordId(-1),
 	m_pDisksSetting(NULL),
 	m_db(NULL)
 /*	m_currdisk('0')*/
@@ -30,6 +32,16 @@ StorageMgr::StorageMgr(void):
 		qDebug()<<"init database failed!";
 	}
 	m_dblock.unlock();
+
+	m_connectSearchId = QString::number((int)this) + QString::number(curTime.toTime_t());
+	QSqlDatabase dbSch = QSqlDatabase::addDatabase("QSQLITE", m_connectSearchId);
+	m_schRecLock.lock();
+	m_dbSearch = new QSqlDatabase(dbSch);
+	if (NULL == m_dbSearch)
+	{
+		qDebug()<<"init search database failed!";
+	}
+	m_schRecLock.unlock();
 }
 
 
@@ -46,6 +58,13 @@ StorageMgr::~StorageMgr(void)
 	m_db = NULL;
 	QSqlDatabase::removeDatabase(m_connectId);
 	m_dblock.unlock();
+
+	m_schRecLock.lock();
+	m_dbSearch->close();
+	delete m_dbSearch;
+	m_dbSearch = NULL;
+	QSqlDatabase::removeDatabase(m_connectSearchId);
+	m_schRecLock.unlock();
 }
 
 int StorageMgr::getFilePackageSize()
@@ -112,7 +131,7 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 
 		//find the newest record in database and create path base on it
 		QSqlQuery _query(*m_db);
-		QString command = QString("select path from local_record order by id desc limit 1");
+		QString command = QString("select path from local_record where win_id=%1 order by id desc limit 1").arg(winId);
 		_query.exec(command);
 
 		if (_query.next())//has find it
@@ -128,13 +147,14 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 				fileNum = 0;
 			}
 			QString temp;
-			temp = temp.sprintf("/%04d/%03d.avi", dirNum, fileNum);
+			temp = temp.sprintf("/WND%02d/%04d/%03d.avi", winId, dirNum, fileNum);
 			sFileSavePath += temp;
 		}
 		else
 		{
 			//use default path
-			sFileSavePath += "/0000/000.avi"; 
+			QString temp;
+			sFileSavePath += temp.sprintf("/WND%02d/0000/000.avi",winId); 
 		}
 
 		//insert new data into database
@@ -423,10 +443,13 @@ bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 		case 2:{
 			//É¾³ý
 			QList<RecInfo> recInfo = result.values(earlestDate);
-			foreach(RecInfo each, recInfo)
+			for(int i = recInfo.size() - 1; i >= 0; i--)
 			{
+				RecInfo each = recInfo.at(i);
 				//delete file from directory
 				QStringList hasDelete = deleteFile(each.fileLsit);
+				//deduct period from each window id in search_record table
+				deductPeriod(each.dbPath, hasDelete, earlestDate.toString("yyyy-MM-dd"));
 				//delete record from database
 				deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"), hasDelete);
 			}
@@ -739,7 +762,221 @@ int StorageMgr::getInsertId()
 	return m_insertId;
 }
 
+void StorageMgr::createSearchRecordTable()
+{
+	QSqlQuery _query(*m_dbSearch);
+	QString command = "create table search_record(";
+	command += "id integer primary key autoincrement,";
+	command += "wnd_id integer,";
+	command += "record_type integer,";
+	command += "date char(32),";
+	command += "start_time char(32),";
+	command += "end_time char(32))";
+	_query.exec(command);
+}
 
+bool StorageMgr::addSearchRecord( int wndId, int type, QString sDate, QString sStart, QString sEnd )
+{
+	if (wndId < 0 || sDate.isEmpty() || sStart.isEmpty() || sEnd.isEmpty())
+	{
+		return false;
+	}
+	
+	m_schRecLock.lock();
+	//check database exists, 
+	QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+	if (!QFile::exists(path))
+	{
+		m_dbSearch->setDatabaseName(path);
+		if (!m_dbSearch->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+			m_schRecLock.unlock();
+			return false;
+		}
+		createSearchRecordTable();
+	}
+	else if (!m_dbSearch->isOpen())
+	{
+		m_dbSearch->setDatabaseName(path);
+		if (!m_dbSearch->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+			m_schRecLock.unlock();
+			return false;
+		}
+	}
+	//insert data
+	QSqlQuery _query(*m_dbSearch);
+	QString command = QString("insert into search_record(wnd_id,record_type,date,start_time,end_time) values(%1,%2,'%3','%4','%5')").arg(wndId).arg(type).arg(sDate).arg(sStart).arg(sEnd);
+	if (!_query.exec(command))
+	{
+		_query.finish();
+		m_db->close();
+		m_dblock.unlock();
+		return false;
+	}
 
+	//save the id inserted just now
+	command = QString("select max(id) from search_record");
+	_query.exec(command);
+	if (_query.next())
+	{
+		m_searchRecordId = _query.value(0).toInt();
+	}
 
+	_query.finish();
+	m_dbSearch->close();
+	m_schRecLock.unlock();
+	return true;
+}
 
+bool StorageMgr::updateSearchRecord( QString sEnd )
+{
+	if (sEnd.isEmpty())
+	{
+		return false;
+	}
+	m_schRecLock.lock();
+
+	if (!m_dbSearch->open())
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+		m_schRecLock.unlock();
+		return false;
+	}
+	QSqlQuery _query(*m_dbSearch);
+	QString command = QString("update search_record set end_time='%1' where id=%2").arg(sEnd).arg(m_searchRecordId);
+	bool ret = _query.exec(command);
+
+	_query.finish();
+	m_dbSearch->close();
+	m_schRecLock.unlock();
+	return ret;
+}
+
+bool StorageMgr::deleteSearchRecord()
+{
+	m_schRecLock.lock();
+	if (!m_dbSearch->open())
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+		m_schRecLock.unlock();
+		return false;
+	}
+	QSqlQuery _query(*m_dbSearch);
+	QString command = QString("delete from serach_record where id=%2").arg(m_searchRecordId);
+	bool ret = _query.exec(command);
+
+	_query.finish();
+	m_dbSearch->close();
+	m_schRecLock.unlock();
+	return ret;
+}
+
+void StorageMgr::deductPeriod( QString dbpath, QStringList deleteFile, QString date )
+{
+	QMap<int, QString> perMap = getDeletedPeriod(dbpath, deleteFile, date);
+
+	m_schRecLock.lock();
+	if (!m_dbSearch->isOpen())
+	{
+		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+		m_dbSearch->setDatabaseName(path);
+		if (!m_dbSearch->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+			m_schRecLock.unlock();
+			return;
+		}
+	}
+
+	QSqlQuery _query(*m_dbSearch);
+	QString cmd;
+	QMap<int, QString>::iterator it = perMap.begin();
+	while (it != perMap.end())
+	{
+		QTime maxEnd = QTime::fromString(it.value(), "hh:mm:ss");
+		cmd = QString("delete from search_record where wnd_id=%1 and date='%2' and end_time<='%3'").arg(it.key()).arg(date).arg(it.value());
+		_query.exec(cmd);
+		
+		cmd = QString("select id, start_time, end_time from search_record where date='%1' and wnd_id=%2 order by start_time limit 1").arg(date).arg(it.key());
+		_query.exec(cmd);
+		if (_query.next())
+		{
+			int id = _query.value(0).toInt();
+			QTime start = _query.value(1).toTime();
+			QTime end = _query.value(2).toTime();
+			if (maxEnd > start && maxEnd < end)
+			{
+				cmd = QString("update search_record set start_time='%1' where id=%2").arg(it.value()).arg(id);
+				_query.exec(cmd);
+			}
+		}
+		it++;
+	}
+	_query.finish();
+	m_dbSearch->close();
+	m_schRecLock.unlock(); 
+}
+
+QMap<int, QString> StorageMgr::getDeletedPeriod( QString dbpath, QStringList fileList, QString date )
+{
+	QMap<int, QString> perMap;
+	if (!m_db->isOpen())
+	{
+		m_db->setDatabaseName(dbpath);
+		if (!m_db->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+			return perMap;
+		}
+	}
+
+	QString sqlpath = "'" + fileList.join("','") + "'";
+	QSqlQuery _query(*m_db);
+	QString command = QString("select win_id, end_time from local_record where date='%1' and path in (%2) order by win_id").arg(date).arg(sqlpath);
+	_query.exec(command);
+
+	while(_query.next())
+	{
+		int wndId = _query.value(0).toInt();
+		QString endStr = _query.value(1).toString();
+		QTime end = QTime::fromString(endStr, "hh:mm:ss");
+
+		if (!perMap.contains(wndId))//map is empty
+		{
+			perMap.insert(wndId, endStr);
+		}
+		else
+		{
+			QTime temp = QTime::fromString(perMap[wndId], "hh:mm:ss");
+			if (temp < end)
+			{
+				perMap[wndId] = endStr;
+			}
+		}
+	}
+	_query.finish();
+	m_db->close();
+
+	return perMap;
+}
+
+QString StorageMgr::getNewestRecord( QString devname, int chl )
+{
+	QString endTimeStr;
+	m_dblock.lock();
+	QSqlQuery _query(*m_db);
+	QString command = QString("select end_time from local_record where dev_name='%1' and dev_chl=%2 order by id desc limit 1").arg(devname).arg(chl + 1);
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		endTimeStr = _query.value(0).toString();
+	}
+	_query.finish();
+	m_dblock.unlock();
+
+	return endTimeStr;
+}

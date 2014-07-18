@@ -11,7 +11,7 @@
 #include "IDisksSetting.h"
 #include "ILocalPlayer.h"
 #include "ILocalRecordSearchEx.h"
-
+#include "ILocalPlayerEx.h"
 
 void cbTimeChange(QString evName, uint playTime, void* pUser);
 
@@ -19,6 +19,7 @@ class LocalPlayer : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearch,
 	public ILocalRecordSearchEx,
+	public ILocalPlayerEx,
 	public ILocalPlayer
 {
 public:
@@ -39,6 +40,11 @@ public:
 	virtual int searchVideoFileEx(const QString &sDevName,
 		const QString& sDate,
 		const int& nTypes);
+	virtual int searchVideoFileEx(const int & nWndId,
+		const QString & sDate,
+		const QString & sStartTime,
+		const QString & sEndTime,
+		const int & nTypes);
 
 	//ILocalPlayer
 	virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end);
@@ -54,6 +60,13 @@ public:
 	virtual bool GroupEnableAudio(bool bEnable);
 	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd);
 
+	//ILocalPlayerEx
+	virtual int AddFileIntoPlayGroupEx(const int & nWndId,
+		const QWidget * pWnd,
+		const QDate& date,
+		const QTime & startTime,
+		const QTime & endTime,
+		const int & nTypes);
 
 	//IEventRegister
 	virtual QStringList eventList();
@@ -78,6 +91,7 @@ private:
 	bool checkFileFromLong(QString path, unsigned long &tick, QDateTime & endTime);
 	QStringList sortFileList(QStringList const fileList);
 	QString getTypeList(int nTypes);
+	QStringList getFileList(int wndId, QDate date, QTime star, QTime end, int types, QVector<PeriodTime> &playTime);
 private:
 	int m_nRef;
 	QMutex m_csRef;
