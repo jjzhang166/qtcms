@@ -12,6 +12,8 @@
 #include "RecordPlayerView.h"
 #include <IAreaManager.h>
 #include <IDeviceManager.h>
+#include "searchprocess.h"
+
 
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser);
 int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser);
@@ -43,6 +45,7 @@ public:
 	void transSearchStop(QVariantMap &evMap);
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
+	SearchProcess *getCurProc(int wndId);
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 	//ILocalRecordSearch
@@ -81,6 +84,8 @@ public slots:
 	int AudioEnabled(bool bEnabled);
 	QVariantMap ScreenShot();
 	int GetCurrentState();
+	void sndToUI(int wnd, QVariantMap evMap);
+
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);
@@ -105,6 +110,7 @@ private:
 	RecordPlayStatus m_CurStatus;
 	QVariantMap fileMap;
 	QString fileKey;
+	QMap<int, SearchProcess*> m_schEvMap;
 };
 
 

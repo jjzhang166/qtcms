@@ -1144,33 +1144,26 @@ int LocalPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDat
 
 int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
 {
+	QElapsedTimer elsTimer;
+	elsTimer.start();
 	QDate date = QDate::fromString(sDate,"yyyy-MM-dd");
 	if (!date.isValid())
 	{
 		return ILocalRecordSearchEx::E_PARAMETER_ERROR;
 	}
 
-	//get available disk
-	QString sUsedDisks;
-	if (1 == checkUsedDisk(sUsedDisks))
-	{
-		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
-	}
-	if (sUsedDisks.isEmpty())
-	{
-		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
-	}
-	QStringList sltUsedDisk = sUsedDisks.split(":", QString::SkipEmptyParts);
 	QString sqlType = getTypeList(nTypes);
 	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and start_time>'%3' and end_time<'%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
-
 	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
-	m_db->setDatabaseName(dbPath);
-	if (!m_db->open())
+
+	QString cntId = QString::number(elsTimer.nsecsElapsed());
+	QSqlDatabase schDb = QSqlDatabase::addDatabase("QSQLITE", cntId);
+	schDb.setDatabaseName(dbPath);
+	if (!schDb.open())
 	{
 		qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
 	}
-	QSqlQuery _query(*m_db);
+	QSqlQuery _query(schDb);
 	_query.exec(command);
 
 	while(_query.next())
@@ -1188,11 +1181,9 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 		eventProcCall(QString("GetRecordFileEx"), info);
 	}
 	_query.finish();
-	m_db->close();
+	schDb.close();
+	QSqlDatabase::removeDatabase(cntId);
 
-	QVariantMap stopInfo;
-	stopInfo.insert("stopevent", QString("GetRecordFile"));
-	eventProcCall(QString("SearchStop"), stopInfo);
 
 	return ILocalRecordSearchEx::OK;
 }

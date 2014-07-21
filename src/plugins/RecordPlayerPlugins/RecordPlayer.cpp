@@ -454,7 +454,8 @@ int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser)
 	}
 	if ("GetRecordFileEx" == evName)
 	{
-		pRecordPlayer->transRecordFilesEx(evMap);
+		SearchProcess *pSchProc = pRecordPlayer->getCurProc(evMap.value("wndId").toInt());
+		pSchProc->transRecordFilesEx(evMap);
 	}
 	return 0;
 }
@@ -651,24 +652,35 @@ int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate,
 	{
 		return 1;
 	}
-	fileMap.clear();
-	fileKey = "0";
+// 	fileMap.clear();
+// 	fileKey = "0";
+// 
+// 	//get query interface
+// 	ILocalRecordSearchEx *pRecSchEx = NULL;
+// 	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecSchEx);
+// 	if (NULL == pRecSchEx)
+// 	{
+// 		return 1;
+// 	}
+// 	int ret = pRecSchEx->searchVideoFileEx(nWndId, sDate, sStartTime, sEndTime, nTypes);
+// 	if (ILocalRecordSearchEx::OK != ret)
+// 	{
+// 		return 1;//call function error
+// 	}
+// 	pRecSchEx->Release();
+// 
+// 	EventProcCall("GetRecordFileEx",fileMap);
 
-	//get query interface
-	ILocalRecordSearchEx *pRecSchEx = NULL;
-	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecSchEx);
-	if (NULL == pRecSchEx)
-	{
-		return 1;
-	}
-	int ret = pRecSchEx->searchVideoFileEx(nWndId, sDate, sStartTime, sEndTime, nTypes);
-	if (ILocalRecordSearchEx::OK != ret)
-	{
-		return 1;//call function error
-	}
-	pRecSchEx->Release();
+	SearchProcess *pSchProc = new SearchProcess();
+	connect(pSchProc, SIGNAL(sigSchRet(int, QVariantMap)), this, SLOT(sndToUI(int, QVariantMap)));
+	pSchProc->setContext(m_pLocalRecordSearch);
+	pSchProc->setPara(nWndId, sDate, sStartTime, sEndTime, nTypes);
+	pSchProc->start();
 
-	EventProcCall("GetRecordFileEx",fileMap);
+	m_schEvMap.insert(nWndId, pSchProc);
+
+	qDebug()<<"searchVideoFileEx2: "<<(int)this<<QThread::currentThreadId();
+
 	return 0;
 }
 
@@ -718,4 +730,18 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 	pLocalPlayerEx->Release();
 
 	return nRet;
+}
+
+SearchProcess * RecordPlayer::getCurProc( int wndId )
+{
+	return m_schEvMap.value(wndId);;
+}
+
+void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
+{
+	SearchProcess *pSch = m_schEvMap.value(wnd);
+	delete pSch;
+	m_schEvMap.remove(wnd);
+
+	EventProcCall("GetRecordFileEx", evMap);
 }
