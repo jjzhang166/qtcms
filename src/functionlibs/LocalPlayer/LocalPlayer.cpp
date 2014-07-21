@@ -1182,8 +1182,8 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 		QVariantMap info;
 		info.insert("wndId", nWndId);
 		info.insert("type", recordType);
-		info.insert("startTime", QDateTime(date,start).toString("yyyy-MM-dd hh:mm:ss"));
-		info.insert("endTime", QDateTime(date,end).toString("yyyy-MM-dd hh:mm:ss"));
+		info.insert("start", QDateTime(date,start).toString("yyyy-MM-dd hh:mm:ss"));
+		info.insert("end", QDateTime(date,end).toString("yyyy-MM-dd hh:mm:ss"));
 
 		eventProcCall(QString("GetRecordFileEx"), info);
 	}
