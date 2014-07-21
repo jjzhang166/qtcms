@@ -704,7 +704,7 @@ void QSubviewRun::run()
 	return;
 }
 
-void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
+void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 {
 	if (QThread::isRunning()||m_currentStatus!=STATUS_DISCONNECTED)
 	{
@@ -717,6 +717,7 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd)
 		backToMainThread(curStatusInfo);
 		m_tDeviceInfo.m_uiChannelIdInDataBase=chlId;
 		m_tDeviceInfo.m_pWnd=pWnd;
+		m_tDeviceInfo.m_pMainWnd=pMainWnd;
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
 		m_bIsdataBaseFlush=true;
@@ -1596,7 +1597,7 @@ void QSubviewRun::ipcAutoSwitchStream()
 		m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
 		if (NULL!=pSwitchStream)
 		{
-			if (m_tDeviceInfo.m_pWnd->parentWidget()->width()-m_tDeviceInfo.m_pWnd->width()<20)
+			if (m_tDeviceInfo.m_pMainWnd->width()-m_tDeviceInfo.m_pWnd->width()<20)
 			{
 				pSwitchStream->SwitchStream(0);
 				m_tDeviceInfo.m_uiStreamId=0;

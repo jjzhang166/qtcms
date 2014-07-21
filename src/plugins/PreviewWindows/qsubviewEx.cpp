@@ -488,7 +488,7 @@ void qsubviewEx::mousePressEvent( QMouseEvent * ev)
 
 int qsubviewEx::openPreview( int chlId )
 {
-	m_sSubviewRun.openPreview(m_tDeviceInfo.m_uiChannelIdInDataBase,m_pManageWidget->GetWidgetForVideo());
+	m_sSubviewRun.openPreview(m_tDeviceInfo.m_uiChannelIdInDataBase,m_pManageWidget->GetWidgetForVideo(),this->parentWidget());
 	return 0;
 }
 

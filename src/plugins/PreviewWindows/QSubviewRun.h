@@ -70,6 +70,7 @@ typedef struct _tagDeviceInfo{
 	QString m_sVendor;
 	QString m_sDeviceName;
 	QWidget *m_pWnd;
+	QWidget *m_pMainWnd;
 }tagDeviceInfo;
 typedef struct _tagRenderInfo{
 	char *pData;
@@ -92,7 +93,7 @@ public:
 	~QSubviewRun(void);
 public:
 	//‘§¿¿ ”∆µ
-	void openPreview(int chlId,QWidget *pWnd);
+	void openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd);
 	void stopPreview();
 	//«–ªª¬Î¡˜
 	void switchStream();
