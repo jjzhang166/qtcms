@@ -64,13 +64,8 @@ function addMouseStyle(obj,action){  //按钮UI响应
 }
 
 function setTables(){   // 回放页面底部表格最大化相应调整
-	$('table.table tr').each(function(index){
-		var oTds = $(this).find('td');
-		var W =  $('table.table').width()-120;
-
-		oTds.width((W)/24);
-		oTds.eq(0).width(80);
-	})
+	var W =  $('table.table').width()-120;
+	$('table.table td').not('.no_border').css('width',W/24)
 }
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 	/*var oNow=$('#now_time');

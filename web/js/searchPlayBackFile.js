@@ -105,9 +105,9 @@
 		setDevData2ocx();
 
 		if(bool){  // 本地
-			localSearchDevNum=0;
+			localSearchWindNum=0;
 
-			searchLocalFile(localSearchDevNum,date,type);
+			searchLocalFile(localSearchWindNum,date,type);
 
 			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
@@ -129,27 +129,29 @@
 				chl += 1 << i;
 			};
 			var sta = oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)
-			console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
+			/*console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
 			if(sta != 0){
 				//alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
-			}
+			}*/
 		}
 	}
 
-	function searchLocalFile(key,date,type){
-		//console.log('当前设备列表------------');
-		var oDevList = $('div.dev_list span.device');
-		if(key >  (oDevList.length-1))
-			return;
-		//console.log(localSearchDevNum);
-		var type = type ||  $('#type input[data]').attr('data');
+	function searchLocalFile(wind,date,type){
+		var type = type || $('#type input[data]').attr('data');
 		
 		var date = date || $("div.calendar span.nowDate").html();
 
-		var name = oDevList.eq(key).data('data').name;
+		/*var oDevList = $('div.dev_list span.device');
+		if(key >  (oDevList.length-1))
+			return;
+		//console.log(localSearchDevNum);
+		
+
+		var name = oDevList.eq(key).data('data').name;*/
 
 		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
-		oPlaybackLocl.searchVideoFileEx(name,date,type);
+		console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
+		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
 	}
 	function showRecProgress(now){  //回访检索文件进度
 			
