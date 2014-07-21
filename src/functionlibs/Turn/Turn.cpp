@@ -2,6 +2,7 @@
 #include "netlib.h"
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QVariantMap>
+#include <QDebug>
 #include <guid.h>
 
 #pragma pack(4)
@@ -9,7 +10,7 @@ typedef struct _tagAudioBufAttr{
 	int entries;
 	int packsize;
 	UINT64 pts;
-	time_t * gtime;
+	time_t gtime;
 	char encode[8];
 	int samplerate;
 	int samplewidth;
@@ -551,8 +552,9 @@ void Turn::StreamData(LPVOID pData,int nDataSize)
 	}
 	else if (0 == Frame->frametype)
 	{
-		AudioBufAttr * AudioHead = (AudioBufAttr *)pFrameData;
-		int nBufSize = AudioHead->entries * AudioHead->packsize;
+		//AudioBufAttr * AudioHead = (AudioBufAttr *)pFrameData;
+		//int nBufSize = AudioHead->entries * AudioHead->packsize;
+		unsigned int nBufSize=Frame->framesize;
 		//frameitem.insert("pts",(UINT64)AudioHead->pts);
 		frameitem.insert("pts",(UINT64)Frame->pts);
 		frameitem.insert("length",nBufSize);
@@ -563,6 +565,8 @@ void Turn::StreamData(LPVOID pData,int nDataSize)
 		frameitem.insert("samplewidth",Frame->_U.a.samplewidth);
 		frameitem.insert("acodec",(unsigned)Frame->_U.a.enc);
 		frameitem.insert("audiochannel",1);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"turn undefined data type";
 	}
 
 	applyEventProc("LiveStream",frameitem);

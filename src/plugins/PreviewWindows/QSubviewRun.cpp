@@ -992,13 +992,19 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 				m_pAudioPlay->Play(lpdata, nLength);
 			}
 			//ÊÓÆµ½âÂë
-			if (m_bIsSaveRenderFrame==true)
+			if (frameType==1||frameType==2)
 			{
-				//do nothing
-				renderSaveFrame();
+				if (m_bIsSaveRenderFrame==true)
+				{
+					//do nothing
+					renderSaveFrame();
+				}else{
+					m_pIVideoDecoder->decode(lpdata,nLength);
+				}
 			}else{
-				m_pIVideoDecoder->decode(lpdata,nLength);
+				//do nothing
 			}
+
 			nDecodeStep=4;
 			   }
 			   break;

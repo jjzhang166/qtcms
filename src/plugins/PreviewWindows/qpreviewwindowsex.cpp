@@ -356,7 +356,11 @@ int qpreviewwindowsex::SetVolume( unsigned int uiPersent )
 int qpreviewwindowsex::AudioEnabled( bool bEnabled )
 {
 	m_bAudioEnabled=bEnabled;
-	return m_sPreviewWnd[m_nCurrentWnd].audioEnabled(bEnabled);
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].audioEnabled(bEnabled);
+	}
+	return 0;
 }
 
 QVariantMap qpreviewwindowsex::ScreenShot()

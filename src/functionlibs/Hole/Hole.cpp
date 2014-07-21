@@ -589,8 +589,8 @@ void Hole::StreamData(LPVOID pData,int nDataSize)
 	}
 	else if (0 == Frame->frametype)
 	{
-		AudioBufAttr * AudioHead = (AudioBufAttr *)pFrameData;
-		int nBufSize = AudioHead->entries * AudioHead->packsize;
+		//AudioBufAttr * AudioHead = (AudioBufAttr *)pFrameData;
+		//int nBufSize = AudioHead->entries * AudioHead->packsize;
 		//frameitem.insert("pts",(UINT64)AudioHead->pts);
 		frameitem.insert("pts",(UINT64)Frame->pts);
 		//frameitem.insert("length",nBufSize);
