@@ -508,7 +508,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
