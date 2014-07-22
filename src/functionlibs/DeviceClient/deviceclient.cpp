@@ -279,11 +279,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 				nRet=m_DeviceConnectonBubble->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"bubble can't connect";
+					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble can't connect";
 					nStep=1;
 					break;
 				}
-				qDebug()<<"bubble success";
+				qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble success";
 				m_DeviceConnecton=m_DeviceConnectonBubble;
 
 				nStep=3;
@@ -312,11 +312,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 				nRet=m_DeviceConnectonHole->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"Hole can't connect";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Hole can't connect";
 					nStep=2;
 					break;
 				}
-				qDebug()<<"Hole success";
+				qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Hole success";
 				m_DeviceConnecton=m_DeviceConnectonHole;
 				nStep=3;
 			}
@@ -344,11 +344,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 				nRet=m_DeviceConnectonTurn->connectToDevice();
 				if (1==nRet)
 				{
-					qDebug()<<"turn can't connect";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"turn can't connect";
 					nStep=4;
 					break;
 				}
-				qDebug()<<"turn success";
+				qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"turn success";
 				m_DeviceConnecton=m_DeviceConnectonTurn;
 				nStep=3;
 			}
@@ -370,7 +370,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//Á¬½ÓÊ§°Ü
 		case 4:
 			{
-				qDebug()<<"connect fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<sAddr<<"connect fail";
 				bCloseingFlags=false;
 				if (IDeviceClient::STATUS_DISCONNECTED!=m_CurStatus)
 				{

@@ -53,7 +53,7 @@ qsubviewEx::~qsubviewEx(void)
 		ncount++;
 		if (ncount>500&&ncount%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount%100<<"there may be some error as thread can not terminal";
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount/100<<"there may be some error as thread can not terminal";
 		}
 	}
 	if (NULL!=m_pManageWidget)

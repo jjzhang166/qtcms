@@ -45,7 +45,7 @@ Recorder::~Recorder()
 		nCount++;
 		if (nCount>500&&nCount%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<m_devname<<nCount%100<<"there must exist some error ,thread block at :"<<m_nPosition;
+			qDebug()<<__FUNCTION__<<__LINE__<<m_devname<<nCount/100<<"there must exist some error ,thread block at :"<<m_nPosition;
 		}
 	}
 	cleardata();
@@ -191,6 +191,7 @@ void Recorder::run()
 		{
 			msleep(10);
 			nSleepTime=0;
+			m_nPosition=__LINE__;
 		}
 		nSleepTime++;
 

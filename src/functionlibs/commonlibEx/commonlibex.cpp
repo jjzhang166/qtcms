@@ -1149,6 +1149,11 @@ int commonlibEx::RemoveDevice( int dev_id )
 
 int commonlibEx::ModifyDeviceName( int dev_id,QString sDeviceName )
 {
+	QVariantMap tDeviceInfo=GetDeviceInfo(dev_id);
+	if (sDeviceName==tDeviceInfo.value("name").toString())
+	{
+		return IDeviceManager::OK;
+	}
 	Device_lock.lock();
 	if (!IsDeviceExist(dev_id)||checkDeviceNameIsExist(sDeviceName))
 	{

@@ -69,7 +69,7 @@ QSubviewRun::~QSubviewRun(void)
 		n++;
 		if (n>500&&n%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<n%100<<"terminate this thread had caused more time than 5s,there may be out of control";
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<n/100<<"terminate this thread had caused more time than 5s,there may be out of control";
 		}
 	}
 	m_checkIsBlockTimer.stop();
@@ -95,6 +95,7 @@ void QSubviewRun::run()
 			sleepEx(10);
 			/*msleep(10);*/
 			nstep=DEFAULT;
+			m_nPosition=__LINE__;
 		}
 		if (m_stop)
 		{
@@ -406,7 +407,7 @@ void QSubviewRun::run()
 						ncount++;
 						if (ncount>500&&ncount%100==0)
 						{
-							qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount%100<<"run is going terminate,but may be cause crash";
+							qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount/100<<"run is going terminate,but may be cause crash";
 						}
 					}
 					qDebug()<<__FUNCTION__<<__LINE__<<"autoReConnnect to device fail";
@@ -1091,6 +1092,7 @@ bool QSubviewRun::createDevice()
 			m_tDeviceInfo.m_sAddress=deviceInfo.value("address").toString();
 			m_tDeviceInfo.m_uiPort=deviceInfo.value("port").toInt();
 			m_tDeviceInfo.m_sDeviceName=deviceInfo.value("name").toString();
+			m_tDeviceInfo.m_sConnectMethod=deviceInfo.value("method").toString();
 			pDeviceManager->Release();
 			pDeviceManager=NULL;
 			if (m_tDeviceInfo.m_sVendor.isEmpty()==false)
@@ -1514,8 +1516,15 @@ bool QSubviewRun::connectToDevice()
 	{
 		pdeviceClient->checkUser(m_tDeviceInfo.m_sUsername,m_tDeviceInfo.m_sPassword);
 		pdeviceClient->setChannelName(m_tDeviceInfo.m_sCameraname);
-		pdeviceClient->setDeviceHost(m_tDeviceInfo.m_sAddress);
-		pdeviceClient->setDeviceId(m_tDeviceInfo.m_sEseeId);
+		if (m_tDeviceInfo.m_sConnectMethod=="0")
+		{
+			pdeviceClient->setDeviceHost(m_tDeviceInfo.m_sAddress);
+			pdeviceClient->setDeviceId("0");
+		}else{
+			pdeviceClient->setDeviceHost("");
+			pdeviceClient->setDeviceId(m_tDeviceInfo.m_sEseeId);
+		}
+
 		pdeviceClient->setDevicePorts(m_tDeviceInfo.m_uiPort);
 		if (0==pdeviceClient->connectToDevice())
 		{

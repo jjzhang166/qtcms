@@ -69,6 +69,7 @@ typedef struct _tagDeviceInfo{
 	QString m_sCameraname;
 	QString m_sVendor;
 	QString m_sDeviceName;
+	QString m_sConnectMethod;
 	QWidget *m_pWnd;
 	QWidget *m_pMainWnd;
 }tagDeviceInfo;
