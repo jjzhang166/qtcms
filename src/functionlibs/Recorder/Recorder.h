@@ -96,7 +96,7 @@ private:
 	unsigned int getSeconds(QString &fileName);
 	QString getFileEndTime(QString fileName, QTime start);
 	qint64 getFileSize(QString fileName);
-
+	void sleepEx(int time);
 	int m_nRef;
 	QMutex m_csRef;
 
@@ -132,6 +132,7 @@ private:
 	QTimer m_checkdisksize;
 	QTimer m_checkIsBlock;
 	int m_nPosition;
+	int m_nSleepSwitch;
 };
 
 #endif // RECORDER_H

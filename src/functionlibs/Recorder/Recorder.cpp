@@ -41,11 +41,11 @@ Recorder::~Recorder()
 	m_bFinish = true;
 	int nCount=0;
 	while(QThread::isRunning()){
-		msleep(10);
+		sleepEx(10);
 		nCount++;
 		if (nCount>500&&nCount%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"there must exist some error ,thread block at :"<<m_nPosition;
+			qDebug()<<__FUNCTION__<<__LINE__<<m_devname<<nCount%100<<"there must exist some error ,thread block at :"<<m_nPosition;
 		}
 	}
 	cleardata();
@@ -131,7 +131,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 			msleep(10);	
 			if (m_dataqueue.size()>20)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"size:"<<m_dataqueue.size()<<"record cause sleep!!!";
+				qDebug()<<__FUNCTION__<<__LINE__<<"size:"<<m_dataqueue.size()<<m_devname<<"record cause sleep!!!";
 			}
 		}
 		
@@ -255,7 +255,7 @@ void Recorder::run()
 				QString curDate = QDate::currentDate().toString("yyyy-MM-dd");
 				if (!bHasAddRecord && !m_StorageMgr.addSearchRecord(m_windId, m_recordType, curDate, start.toString("hh:mm:ss"), QString("00:00:00")))
 				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"add serach record info failed!";
+					qDebug()<<__FUNCTION__<<__LINE__<<"add search record info failed!";
 				}
 				else
 				{
@@ -505,6 +505,7 @@ void Recorder::run()
 				QString sEndTime=getFileEndTime(sSavePath,start);
 				if (!sEndTime.isEmpty())
 				{
+					m_nPosition=__LINE__;
 					if (m_StorageMgr.updateRecord(sEndTime,getFileSize(sSavePath)))
 					{
 						//keep going
@@ -512,19 +513,23 @@ void Recorder::run()
 						qDebug()<<__FUNCTION__<<__LINE__<<"recorder stop as updateRecord fail";
 						nRecStep=END;
 					}
+					m_nPosition=__LINE__;
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"record fail as it can not get file endTime";
 					//删除此文件，并删除数据库中此文件的记录
+					m_nPosition=__LINE__;
 					QFile fRemove;
 					if (fRemove.remove(sSavePath))
 					{
 						//删除数据库的记录
+						m_nPosition=__LINE__;
 						if (m_StorageMgr.deleteRecord())
 						{
 							//do nothing
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"deleteRecord fail ,please check";
 						}
+						m_nPosition=__LINE__;
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"it can not remove the crash file ,please check";
 					}			
@@ -560,6 +565,8 @@ void Recorder::run()
 				//do nothing
 			}
 			//更新录像结束时间
+			m_nPosition=__LINE__;
+			m_bIsblock=true;
 			if (bHasAddRecord)
 			{
 				QTime endTime = QTime::currentTime();
@@ -579,8 +586,10 @@ void Recorder::run()
 					m_StorageMgr.updateSearchRecord(endStr);
 				}
 			}
-
+			m_bIsblock=false;
 			//删除无用文件
+			m_nPosition=__LINE__;
+			m_bIsblock=true;
 			if (-1!=m_StorageMgr.getInsertId())
 			{
 				QFile fRemove;
@@ -595,6 +604,7 @@ void Recorder::run()
 			}else{
 				// do nothing 
 			}
+			m_bIsblock=false;
 			m_nPosition=__LINE__;
 			m_bIsblock=true;
 			cleardata();
@@ -842,6 +852,21 @@ void Recorder::slBackToMainThread( QVariantMap evMap )
 			m_checkdisksize.stop();
 		}
 	}
+}
+
+void Recorder::sleepEx( int time )
+{
+	if (m_nSleepSwitch<100)
+	{
+		msleep(time);
+		m_nSleepSwitch++;
+	}else{
+		QEventLoop eventloop;
+		QTimer::singleShot(2, &eventloop, SLOT(quit()));
+		eventloop.exec();
+		m_nSleepSwitch=0;
+	}
+	return;
 }
 
 

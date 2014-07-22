@@ -69,7 +69,7 @@ QSubviewRun::~QSubviewRun(void)
 		n++;
 		if (n>500&&n%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"terminate this thread had caused more time than 5s,there may be out of control";
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<n%100<<"terminate this thread had caused more time than 5s,there may be out of control";
 		}
 	}
 	m_checkIsBlockTimer.stop();
@@ -406,7 +406,7 @@ void QSubviewRun::run()
 						ncount++;
 						if (ncount>500&&ncount%100==0)
 						{
-							qDebug()<<__FUNCTION__<<__LINE__<<"run is going terminate,but may be cause crash";
+							qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount%100<<"run is going terminate,but may be cause crash";
 						}
 					}
 					qDebug()<<__FUNCTION__<<__LINE__<<"autoReConnnect to device fail";
@@ -583,7 +583,7 @@ void QSubviewRun::run()
 						m_pAudioPlay->EnablePlay(true);
 						m_pAudioPlay->SetVolume(m_volumePersent);
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"apply for IAudioPlayer inteface fail";
+						qDebug()<<__FUNCTION__<<__LINE__<<"apply for IAudioPlayer interface fail";
 					}
 				}
 			}else{
@@ -615,7 +615,7 @@ void QSubviewRun::run()
 					ncount++;
 					if (ncount>500&&ncount%100==0)
 					{
-						qDebug()<<__FUNCTION__<<__LINE__<<"run is going terminate,but may be cause crash";
+						qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"run is going terminate,but may be cause crash";
 					}
 				}
 				nstop=true;
@@ -1973,7 +1973,7 @@ void QSubviewRun::slcheckoutBlock()
 {
 	if (m_bIsBlock)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"block at:"<<m_nPosition;
 	}
 }
 

@@ -43,6 +43,7 @@ qsubviewEx::~qsubviewEx(void)
 {
 	m_sSubviewRun.stopPreview();
 	//need to wait m_sSubviewRun terminate
+	tagDeviceInfo tDeviceInfo=m_sSubviewRun.deviceInfo();
 	int ncount =0;
 	while(m_tCurConnectStatus!=STATUS_DISCONNECTED&&ncount<800){
 		QTime dieTime=QTime::currentTime().addMSecs(1);
@@ -52,7 +53,7 @@ qsubviewEx::~qsubviewEx(void)
 		ncount++;
 		if (ncount>500&&ncount%100==0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"there may be some error as thread can not terminal";
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<ncount%100<<"there may be some error as thread can not terminal";
 		}
 	}
 	if (NULL!=m_pManageWidget)
@@ -145,7 +146,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				update();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				/*qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";*/
+				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
 
 			}else if (m_tCurConnectStatus==STATUS_CONNECTING)
 			{
@@ -166,7 +167,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				QTimer::singleShot(500, this, SLOT(update()));
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				/*qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";*/
+				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
 			}
 			//Å×³öÊÂ¼þ
 			if (m_tHistoryConnectStatus!=m_tCurConnectStatus)
