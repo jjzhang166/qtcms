@@ -1,7 +1,7 @@
 var oBottom,oPlayBack,oPlaybacKLocl,
 	drag_timer = null, //播放时间拖拽的定时器
 	oSelected = [], //选中的播放的通道
-	recFile=null,	//搜索到的文件,窗口改变的时候重绘搜索文件
+	recFile=[],	//搜索到的文件,窗口改变的时候重绘搜索文件
 	//localRecFile=[],//本地回访搜索文件
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='', //搜索到的文件最大时间
@@ -215,7 +215,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
 							.end().end().next('ul').find('span.channel');
 		if(bool){ //本地回访
-			var k = 0;
+			var k=0;
 			$("#channelvideo").find('input:checked').each(function(){
 				/*//console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
 				var filepath =$('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]).data('filepath');
@@ -226,12 +226,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						alert(lang.play_Failed);
 					};
 				}*/
-				var status = oPlaybackLocl.AddFileIntoPlayGroupEx(k,date,begin.split(' ')[1],maxFileEndTime,type);
-				//console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
-				if(status !=0){
-					alert(lang.play_Failed);
+				var wind = $(this).next('label').attr('wind');
+				console.log(wind);
+				if(wind){
+					var status = oPlaybackLocl.AddFileIntoPlayGroupEx(wind,date,begin.split(' ')[1],maxFileEndTime,type);
+					if(status !=0){
+						console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
+						alert(lang.play_Failed);
+					}
+					k++;
 				}
-				k++;
 			});
 			oPlaybackLocl.GroupPlay();
 		}else{//远程回放
@@ -303,22 +307,28 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	var mergerNum = 0;  // 匹配重合的次数;
 
 	function RecFileInfoCallback(data){
-		recFile=null;
-		recFile=data;
-		
+		recFile.push(data);
+		if(data.index_0){
 		console.log('当前窗口:'+localSearchWindNum+'的本地路线个文件为----------------');
-		console.log(recFile);
-			
-		recFile.index_0 && initOxcDevListStatus();
+		console.log(data);
+		//console.time('--搜索到的文件回调描绘时间段---')
+		/*data.index_0 && */RecFileInfo2UI(data);
+		//console.timeEnd('--搜索到的文件回调描绘时间段---')
+		}
 
 		if(bool){
 			localSearchWindNum++
 
-			localSearchWindNum < 64 && searchLocalFile(localSearchWindNum);
+			if(localSearchWindNum < 64){
+				searchLocalFile(localSearchWindNum);
+			}else{
+				$('#channelvideo tr:gt(3)').not('[id]').remove();
+				$('#channelvideo tr').not('[id]').find(':checkbox').prop('checked',false);
+			}
 		}
 	}
 
-	function Deleteduplicate(data){ // 合并文件
+	function Deleteduplicate(data){ // 去重复
 		var maxChl = 0,
 			devFile = [],
 			file = [];
@@ -329,8 +339,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				chlfile.push(chlData);
 			}
 			chlfile.sort(TimeAsc);
+			/*console.log('---------同一通道下的文件-------------');
+			console.log(chlfile);
 
-			file.push(mergerOrderFile(chlfile));
+
+			console.log('---------合并完成接收到的文件-------------');
+			console.log(mergerOrderFile(chlfile));*/
+			file.push(mergerOrderFile(chlfile));			
+			//file.push(chlfile);
+			/*console.log('---------合并后的文件-------------');
+			console.log(file);*/
 		}else{
 			//console.time('遍历最大通道');
 			for(i in data){
@@ -364,10 +382,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}
 		}
 		//console.log(file);
+		/*console.log('---------合并后返回的文件-------------');
+		console.log(file);*/
 		return file;
 	}
 
 	function mergerOrderFile(oChlfile){  //合并时间连续的文件
+		/*console.log('合并开始接受到的文件————————————');
+		console.log(oChlfile);*/
 		if(oChlfile.length < 2 || !oChlfile){
 			return oChlfile;
 		}
@@ -375,9 +397,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			m=0,
 			chlData=[];
 		for(var i=0;i<oChlfile.length;i++){
-
 			if((i+1) < oChlfile.length){
-				if(time2Sec(oChlfile[i+1].start) - time2Sec(oChlfile[i].end) <60){  //间隔时间为60秒以内就认为为连续文件.
+				if(time2Sec(oChlfile[i+1].start.split(' ')[1]) - time2Sec(oChlfile[i].end.split(' ')[1]) < 60){  //间隔时间为60秒以内就认为为连续文件.
 					m++;
 				}else{
 					oChlfile[n].end = oChlfile[m+n].end;
@@ -388,11 +409,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}
 		}
 		oChlfile[n].end = oChlfile[m+n].end;
-		chlData.push(oChlfile[n]);		
+		chlData.push(oChlfile[n]);
+		/*console.log('合并完成后返回的的文件————————————');
+		console.log(oChlfile);*/
 		return chlData;
 	}	
 	
 	function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
+		return;
 		/*console.log('文件绑定时收到的数据!');
 		console.log(data);
 		console.log('===========================');*/
@@ -414,14 +438,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		return data;
 	}
 
-	function RecFileInfo2UI(){
+	function RecFileInfo2UI(filedata){
 		var oDev = bool ? $('div.dev_list span.device:eq('+localSearchWindNum+')') : $('div.dev_list li.sel span.device');
-		//console.log('-------------------当前设备:'+oDev.data('data').name+'----------start---------------');
-		var File = Deleteduplicate(recFile);
+		/*console.log('---------描绘接受到的文件------------------------');
+		console.log(filedata)*/
+		var File = Deleteduplicate(filedata);
+
+	/*	console.log('接收到的文件进行合并后的文件----------------------------');
+		console.log(File);*/
 
 		var p = ($('#channelvideo').width()-80)/(3600*24);
-		//console.time('文件描绘');
-		console.log(File);
+
 		var n=0;
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
@@ -456,7 +483,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					target.attr({
 						id:'wind_'+data.wndId,
 						title:'窗口: '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
-					}).find('label').html(wind);
+					}).find('label').html(wind).attr('wind',data.wndId);
 					//console.log(target);
 				}else{
 					var chl = parseInt(data.channelnum -1);
@@ -464,25 +491,25 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					target = target[0] ? target : $('#Rel_channel_'+ChannelData.channel_id);
 					/*console.log('-------------------------调整通道ID关联的对象!----------------------');
 					console.log(target);*/
-						if(!target[0]){
-							target = addRecFileTable('id="Rel_channel_'+ChannelData.channel_id+'"',ChannelData.channel_name,($('#channelvideo tr[id]').length+1))
-							/*console.log('-------------------------新添加的文件描绘对象通道----------------------');
-							console.log(target)*/
-						}else{
-							target.attr('id','Rel_channel_'+ChannelData.channel_id).find('label').html(ChannelData.channel_name);
-						}
-						target.attr('title','设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name);
+					if(!target[0]){
+						target = addRecFileTable('id="Rel_channel_'+ChannelData.channel_id+'"',ChannelData.channel_name,($('#channelvideo tr[id]').length+1))
+						/*console.log('-------------------------新添加的文件描绘对象通道----------------------');
+						console.log(target)*/
+					}else{
+						target.attr('id','Rel_channel_'+ChannelData.channel_id).find('label').html(ChannelData.channel_name);
+					}
+					target.attr('title','设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name);
 				}
 					
-						//console.log(target);
-					//}
+					/*	console.log(target);
+					}*/
 				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo(target);
 			}
 		}
 
 		oSelected = $('#channelvideo tr:lt(4)').find(':checkbox').prop('checked',true).toArray();
 
-		!bool &&	showRecProgress(n);
+		!bool && showRecProgress(n);
 		/*console.timeEnd('文件描绘');
 		console.log('-------------------当前设备:'+oDev.data('data').name+'-------------end------------');*/
 	}
@@ -508,7 +535,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
 			var left = initleft+p*nowPlayd;
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 			if(Math.ceil(left) >= Math.floor(max)){
 				dragStopMove();
 			}
@@ -540,25 +567,26 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oSelected = $.makeArray($("#channelvideo input:checkbox:checked"));*/
 		var str = '';
+		var str2 = bool ? lang['wind']:lang['Channel'];
 		for(var i=1;i<initWind;i++){
-			str+= '<tr><td class="no_border"><input id="chk_'+i+'" checked="checked" type="checkbox" /><label for="chk_'+i+'">'+(lang['wind']+' '+i)+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
+			var chk='checked="checked"';
+			if(i>4)
+				chk='';
+			str+= '<tr><td class="no_border"><input id="chk_'+i+'" '+chk+'  type="checkbox" /><label for="chk_'+i+'">'+str2+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
 		}
 
 		$(str).appendTo(oVideoList);
 
-		if(oVideoList.find('input:checkbox').length > 4){
-			oVideoList.find('input:checkbox:gt(3)').prop('checked',false);
-		}
 		setTables();
 	}
 
 	function addRecFileTable(id,name,index){
-		var a = $('<tr '+id+'><td class="no_border"><input id="chk_'+index+'" checked="checked" type="checkbox" /><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
+		var chk='checked="checked"';
+		if(index>4)
+			chk='';
+		var a = $('<tr '+id+'><td class="no_border"><input id="chk_'+index+'" '+chk+' type="checkbox" /><label for="chk_'+index+'">'+name+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>').appendTo($("#channelvideo"))
 
 		setTables();
-		if($('#channelvideo input:checkbox').length > 4){
-			$("#channelvideo input:checkbox:gt(3)").prop('checked',false);
-		}
 		return a;
 
 	}
@@ -581,9 +609,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playBackSerchFile(){
 
-		recFile=null;
+		recFile=[]
 
 		//PBrecFileTableInit();
+
 		$('#channelvideo').find('div.video').remove()
 						  .end().find('tr[id]').removeAttr('id');
 
@@ -598,8 +627,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		/*if(recFile){
 			loclFileDataIntoChannel(recFile);
 		}else{*/
+			//console.time('--重画设备列表菜单--');
 			areaList2Ui();
+			//console.timeEnd('--重画设备列表菜单--');
 			
+			//console.time('--设备列表事件添加--');
 			$('div.dev_list span.device').each(function(){
 				$(this).parent('li').on({
 					dblclick:function(){ //设备双击开始搜索
@@ -611,16 +643,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					}
 				})
 			})
+			//console.timeEnd('--设备列表事件添加--');
 		//}
 		/*areaList2Ui();
 		if(bool)
 			loclFileDataIntoChannel(recFile);*/
 
 		initrecFileOcx($('#channelvideo div.video'));
-		console.time('RecFileInfo2UI');
-		recFile && RecFileInfo2UI();
-		console.timeEnd('RecFileInfo2UI');
 
+		//console.time('--本地远程控件调整--');
 		if(bool){
 			oPlayBack.style.height='0px';
 			oPlayBack.GroupStop();
@@ -634,7 +665,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oPlayBack.style.height='100%';
 			$('#type').next('ul.option').find('li').show();
 		}	
-		
+		//console.timeEnd('--本地远程控件调整--')
+		//console.time('--本地远程控件状态同步--')
 		var objStatus = getAudioObj().GetCurrentState();
 
 		if(objStatus == 2){
@@ -647,4 +679,5 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			dragStartMove();
 			palybackspeed(nowSpeed<1 ? '1/'+1/nowSpeed+'X' : nowSpeed+'X');
 		}*/
+		//console.timeEnd('--本地远程控件状态同步--');
 	}

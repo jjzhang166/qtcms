@@ -13,7 +13,7 @@ var oCommonLibrary,
 	})
 	function refresh(data){
 		
-		if(data.Dsturl.indexOf('play_back') != -1){
+		/*if(data.Dsturl.indexOf('play_back') != -1){
 			
 			areaList2Ui();
 			
@@ -29,9 +29,9 @@ var oCommonLibrary,
 				})
 			})
 
-			/*if(recFile)
-				loclFileDataIntoChannel(recFile);*/
-		}
+			if(recFile)
+				loclFileDataIntoChannel(recFile);
+		}*/
 		window.initOxcDevListStatus();
 		//区域列表;
 
