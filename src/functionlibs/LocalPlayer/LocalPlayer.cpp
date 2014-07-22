@@ -1151,37 +1151,44 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 	{
 		return ILocalRecordSearchEx::E_PARAMETER_ERROR;
 	}
+	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
+	if (!QFile::exists(dbPath))
+	{
+		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
+	}
 
 	QString sqlType = getTypeList(nTypes);
 	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and start_time>'%3' and end_time<'%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
-	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
 
 	QString cntId = QString::number(elsTimer.nsecsElapsed());
-	QSqlDatabase schDb = QSqlDatabase::addDatabase("QSQLITE", cntId);
-	schDb.setDatabaseName(dbPath);
-	if (!schDb.open())
+	if (1)
 	{
-		qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
+		QSqlDatabase schDb = QSqlDatabase::addDatabase("QSQLITE", cntId);
+		schDb.setDatabaseName(dbPath);
+		if (!schDb.open())
+		{
+			qDebug()<<"open " + dbPath + " failed!"<<__LINE__;
+		}
+		QSqlQuery _query(schDb);
+		_query.exec(command);
+
+		while(_query.next())
+		{
+			int recordType = _query.value(0).toInt();
+			QTime start = _query.value(1).toTime();
+			QTime end = _query.value(2).toTime();
+
+			QVariantMap info;
+			info.insert("wndId", nWndId);
+			info.insert("type", recordType);
+			info.insert("start", QDateTime(date,start).toString("yyyy-MM-dd hh:mm:ss"));
+			info.insert("end", QDateTime(date,end).toString("yyyy-MM-dd hh:mm:ss"));
+
+			eventProcCall(QString("GetRecordFileEx"), info);
+		}
+		_query.finish();
+		schDb.close();
 	}
-	QSqlQuery _query(schDb);
-	_query.exec(command);
-
-	while(_query.next())
-	{
-		int recordType = _query.value(0).toInt();
-		QTime start = _query.value(1).toTime();
-		QTime end = _query.value(2).toTime();
-
-		QVariantMap info;
-		info.insert("wndId", nWndId);
-		info.insert("type", recordType);
-		info.insert("start", QDateTime(date,start).toString("yyyy-MM-dd hh:mm:ss"));
-		info.insert("end", QDateTime(date,end).toString("yyyy-MM-dd hh:mm:ss"));
-
-		eventProcCall(QString("GetRecordFileEx"), info);
-	}
-	_query.finish();
-	schDb.close();
 	QSqlDatabase::removeDatabase(cntId);
 
 

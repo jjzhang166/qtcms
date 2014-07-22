@@ -679,8 +679,6 @@ int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate,
 
 	m_schEvMap.insert(nWndId, pSchProc);
 
-	qDebug()<<"searchVideoFileEx2: "<<(int)this<<QThread::currentThreadId();
-
 	return 0;
 }
 
@@ -740,7 +738,7 @@ SearchProcess * RecordPlayer::getCurProc( int wndId )
 void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
 {
 	SearchProcess *pSch = m_schEvMap.value(wnd);
-	delete pSch;
+	pSch->deleteLater();
 	m_schEvMap.remove(wnd);
 
 	EventProcCall("GetRecordFileEx", evMap);

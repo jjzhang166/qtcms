@@ -13,7 +13,8 @@ SearchProcess::SearchProcess()
 
 SearchProcess::~SearchProcess()
 {
-
+	this->quit();
+	this->wait();
 }
 
 void SearchProcess::setPara( int wndId, QString date, QString start, QString end, int types )
@@ -47,8 +48,6 @@ void SearchProcess::run()
 	}
 	pRecSchEx->searchVideoFileEx(m_wndId, m_date, m_start, m_end, m_types);
 	pRecSchEx->Release();
-
-	qDebug()<<"run: "<<(int)this<<QThread::currentThreadId();
 
 	emit sigSchRet(m_wndId, m_fileMap);
 }
