@@ -17,6 +17,7 @@ m_currentWindID(0),
 m_bIsOpenAudio(false),
 m_bIsHide(false),
 m_uiPersent(50),
+m_wndNum(0),
 m_CurStatus(STATUS_STOP)
 {
 	//…Í«ÎILocalRecordSearchΩ”ø⁄
@@ -347,6 +348,7 @@ int RecordPlayer::GroupStop()
 	{
 		m_subRecPlayerView[i].update();
 	}
+	m_wndNum = 0;
 
 	return 0;
 }
@@ -701,7 +703,7 @@ void RecordPlayer::transRecordFilesEx( QVariantMap &evMap )
 
 int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDate,const QString & sStartTime,const QString & sEndTime,const int & nTypes )
 {
-	if (nWndId < 0 || nWndId >= ARRAY_SIZE(m_subRecPlayerView) || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
+	if (nWndId < 0|| sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{
 		return 1;//input parameter error
 	}
@@ -724,7 +726,7 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 		return 1;
 	}
 
-	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[nWndId], date, start, end, nTypes);
+	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[m_wndNum++], date, start, end, nTypes);
 	pLocalPlayerEx->Release();
 
 	return nRet;

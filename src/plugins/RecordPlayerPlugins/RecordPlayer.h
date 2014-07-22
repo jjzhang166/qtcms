@@ -103,6 +103,7 @@ private:
 
 	RecordPlayerView m_subRecPlayerView[4];
 	int m_currentWindID;
+	int m_wndNum;
 	bool m_bIsOpenAudio;
 	bool m_bIsHide;
 	unsigned int m_uiPersent;
