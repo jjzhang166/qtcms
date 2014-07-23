@@ -130,7 +130,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 			bufTemp.samplewidth = frameinfo["samplewidth"].toInt();
 		}
 		if (m_dataqueue.size()>10){
-			msleep(10);	
+			msleep(m_dataqueue.size());	
 			if (m_dataqueue.size()>20)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"size:"<<m_dataqueue.size()<<m_devname<<"record cause sleep!!!";
