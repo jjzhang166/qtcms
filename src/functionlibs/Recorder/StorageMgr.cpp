@@ -839,12 +839,18 @@ bool StorageMgr::updateSearchRecord( QString sEnd )
 	}
 	m_schRecLock.lock();
 
-	if (!m_dbSearch->open())
+	if (!m_dbSearch->isOpen())
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
-		m_schRecLock.unlock();
-		return false;
+		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+		m_dbSearch->setDatabaseName(path);
+		if (!m_dbSearch->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+			m_schRecLock.unlock();
+			return false;
+		}
 	}
+
 	QSqlQuery _query(*m_dbSearch);
 	QString command = QString("update search_record set end_time='%1' where id=%2").arg(sEnd).arg(m_searchRecordId);
 	bool ret = _query.exec(command);
