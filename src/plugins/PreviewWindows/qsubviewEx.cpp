@@ -1,7 +1,6 @@
 #include "qsubviewEx.h"
 #include <QTime>
 
-
 qsubviewEx::qsubviewEx(QWidget *parent):
 QWidget(parent),
 	m_tCurConnectStatus(STATUS_DISCONNECTED),
@@ -35,7 +34,6 @@ QWidget(parent),
 	connect(m_pClosePreviewAction,SIGNAL(triggered(bool)),this,SLOT(slclosePreview()));
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
-
 }
 
 
@@ -146,7 +144,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				update();
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
+				qWarning()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::connected";
 
 			}else if (m_tCurConnectStatus==STATUS_CONNECTING)
 			{
@@ -167,7 +165,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 				m_tConnectingTimer.stop();
 				QTimer::singleShot(500, this, SLOT(update()));
 				disconnect(&m_tConnectingTimer,SIGNAL(timeout()),this,SLOT(update()));
-				qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
+				qWarning()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"::disconnected";
 			}
 			//Å×³öÊÂ¼þ
 			if (m_tHistoryConnectStatus!=m_tCurConnectStatus)
@@ -185,6 +183,7 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 		QVariantMap evMapToUi;
 		evMapToUi.insert("ConnectRefuse",true);
 		evMapToUi.insert("ChannelId",m_tDeviceInfo.m_uiChannelIdInDataBase);
+		qWarning()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"stop preview because as the device resource had been full";
 		emit sgconnectRefuse(evMapToUi,this);
 	}else{
 		//do noting

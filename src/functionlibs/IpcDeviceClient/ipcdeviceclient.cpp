@@ -213,11 +213,11 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			{
 				if (true==TryToConnectProtocol(CLSID_BubbleProtocol))
 				{
-					qDebug()<<"bubble connect success";
+					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect success";
 					nStep=3;
 				}
 				else{
-					qDebug()<<"bubble connect fail";
+					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect fail";
 					nStep=1;
 					break;
 				}
@@ -228,11 +228,11 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			{
 				if (m_DeviceInfo.m_sEseeId!=""&&m_DeviceInfo.m_sEseeId!="0"&&true==TryToConnectProtocol(CLSID_Hole))
 				{
-					qDebug()<<"Hole connect success";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Hole connect success";
 					nStep=3;
 				}
 				else{
-					qDebug()<<"Hole connect fail";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Hole connect fail";
 					nStep=2;
 					break;
 				}
@@ -243,11 +243,11 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			{
 				if (m_DeviceInfo.m_sEseeId!=""&&m_DeviceInfo.m_sEseeId!="0"&&true==TryToConnectProtocol(CLSID_Turn))
 				{
-					qDebug()<<"Turn connect success";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Turn connect success";
 					nStep=3;
 				}
 				else{
-					qDebug()<<"Turn connect fail";
+					qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<"Turn connect fail";
 					nStep=4;
 					break;
 				}
@@ -264,7 +264,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			//Á¬½ÓÊ§°Ü
 		case 4:
 			{
-				qDebug()<<"connect fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<sEseeId<<"connect fail";
 				//fixme
 				nStep =5;
 				if (m_CurStatus!=IDeviceClient::STATUS_DISCONNECTED)

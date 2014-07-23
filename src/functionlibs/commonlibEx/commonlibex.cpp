@@ -1897,7 +1897,7 @@ QString commonlibEx::getEnableDisks()
 //设置录像文件包大小(单位m)
 int commonlibEx::setFilePackageSize( const int filesize )
 {
-	if (filesize > 512 || filesize <= 0)
+	if (filesize > 512 || filesize <= 10)
 	{
 		return IDisksSetting::E_PARAMETER_ERROR;
 	}
@@ -2273,7 +2273,7 @@ QString commonlibEx::getLanguage()
 //设置轮询时间,aptime为输入时间(单位秒)
 int commonlibEx::setAutoPollingTime(int aptime)
 {
-	if (aptime < 30 || aptime > 86400)
+	if (aptime < 1 || aptime > 60)
 	{
 		return ILocalSetting::E_PARAMETER_ERROR;
 	}
