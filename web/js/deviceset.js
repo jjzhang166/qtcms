@@ -1155,12 +1155,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				}
 			break;
 			case 4:  //自动轮训时间
-				if(!/^\d+$/.test(str) || parseInt(str) > 86400 || parseInt(str)<30){
+				if(!/^\d+$/.test(str) || parseInt(str) > 60 || parseInt(str)<1){
 					hint=lang['correct']+lang['rotation_time'];
 				}
 			break;
 			case 5:  //文件大小
-				if(!/^\d+$/.test(str) || parseInt(str) > 512 /*|| parseInt(str)<128*/){
+				if(!/^\d+$/.test(str) || parseInt(str) > 512 || parseInt(str)<10){
 					hint=lang['correct']+lang['File_size_range'];
 				}
 			break;

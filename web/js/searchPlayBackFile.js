@@ -58,11 +58,11 @@
 		return b;
 	}
   	function berorSerchShowHint() {
-  		$('#fileRec').show().find('span').width(0)
+  		$('#fileRec').stop(true,true).show().find('span').width(0)
 					 .end().find('h5').html('0/0')
 					 .end().find('h4').html(lang.Retrieving);
 		if(getAudioObj().id=='playbackLocl'){
-			$('#fileRec').hide();
+			$('#fileRec').stop(true,true).hide();
 		}
   	}
 	var typeHint = [];
@@ -80,7 +80,7 @@
 
 	function ocxsearchVideo(){
 
-		recTotal = 0;
+		recTotal = 0
 		
 		berorSerchShowHint();
 
@@ -91,13 +91,19 @@
 		
 		var date = $("div.calendar span.nowDate").html();
 
-		var devData = $('div.dev_list li.sel span.device').data('data');
+		var oList = $('div.dev_list')
 
+		var devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
+
+		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
 			if(!devData){
 				$('div.dev_list span.device,li').removeClass('sel');
 				devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
 							.end().data('data');
+			}else{
+				$('div.dev_list li,span').removeClass('sel');
+				$('#dev_'+devData.dev_id).parent('li').addClass('sel');
 			}
 
 		nowDevID = devData.dev_id;
@@ -150,30 +156,41 @@
 		var name = oDevList.eq(key).data('data').name;*/
 
 		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
-		console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
+		//console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
 		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
 	}
 	function showRecProgress(now){  //回访检索文件进度
-			
-		now = recTotal;
-	//	console.log(now+'//'+recTotal);
+		now = now || 0;
+		now = now>recTotal ? recTotal : now;
 		var con = lang.Retrieving,
-			p =now/recTotal*100;
+			p =now/recTotal*100,
+			str = (now/recTotal*100).toString().slice(0,5);
+			str = str == 'NaN'?'':str+'%';
 		if(recTotal == now){
 			con = lang.Retrieval_completed;
 		}
-		$('#fileRec').find('span').width(p-2)
-		             .end().find('h5').html(now+'/'+recTotal)
+		$('#fileRec').stop(true,true).find('span').width(p-2)
+		             .end().find('h5').html(str)
 		             .end().find('h4').html(con);
 	}
 
 	function recFileSearchFailCallback(data){
-		//console.log(data);
+
+		/*
+		远程文件过多后  导致请求次数变多.
+		请求过程中仍和一次请求都有可能失败.
+
+		后续所有文件信息接收到后 开始画到UI上
+
+		已经搜索到的文件如果显示达到前台的话。 那么没有搜索到的文件是否能继续播放.
+
+		*/
+
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
-		$('#fileRec h4').html('<h4 style="color:red;">'+hint[data.parm]+'</h4>')
+		$('#fileRec h4').html('<h4 style="color:red;">'+hint[(parseInt(data.parm)-1)]+'</h4>')
 						.end().show();
 		setTimeout(function(){
-			$('#fileRec').fadeOut(1500);
+			$('#fileRec').stop(true,true).fadeOut(1500);
 		},1000);
 	}
 
@@ -181,13 +198,13 @@
 		//console.log(data);
 		recTotal = data.total ? data.total : 0;	
 		
-		/*recTotal == 0 && */showRecProgress(recTotal);		
+		showRecProgress();
 	}
 
 	function initrecFileOcx(obj){
 		if(!$('#dev_'+nowDevID)[0]){
 			obj.remove();
-			$('#fileRec').hide();
+			$('#fileRec').stop(true,true).hide();
 			if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
 				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
 			}
