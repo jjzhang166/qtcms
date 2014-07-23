@@ -299,7 +299,7 @@ QVariantMap qpreviewwindowsex::GetWindowInfo( unsigned int uiWndIndex )
 {
 	if ((int)uiWndIndex+1<0||uiWndIndex>=ARRAY_SIZE(m_sPreviewWnd))
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"input uiWndIndex value is error ";
+		qDebug()<<__FUNCTION__<<__LINE__<<uiWndIndex<<"input uiWndIndex value is error ";
 		return QVariantMap();
 	}else{
 		return m_sPreviewWnd[uiWndIndex].getWindowInfo();

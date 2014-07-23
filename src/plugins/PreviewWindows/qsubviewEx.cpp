@@ -555,6 +555,12 @@ QVariantMap qsubviewEx::getWindowInfo()
 	vWindowInfo.insert("focus",m_bIsFocus);
 	vWindowInfo.insert("currentState",m_tCurConnectStatus);
 	vWindowInfo.insert("chlId",m_tDeviceInfo.m_uiChannelIdInDataBase);
+	if (m_sSubviewRun.isRunning())
+	{
+		vWindowInfo.insert("usable",false);
+	}else{
+		vWindowInfo.insert("usable",true);
+	}
 	return vWindowInfo;
 }
 
