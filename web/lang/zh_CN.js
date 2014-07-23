@@ -331,7 +331,7 @@
 	'The_current_list_of_all_channels_are_closed_under':'正在关闭当前列表下的所有通道.',
 
 	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_',
-	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败!  错误:当前窗口',
+	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败!  错误:当前窗口 当前窗口还被占用,请稍后再试!',
 
 	'channel_Manual_recording_data_binding_failed':'设备:_V_  下的通道:_V_ 的手动录像数据绑定失败!',
 	'channel_Manual_recording_fail':'设备:_V_  下的通道:_V_手动录像失败!',
