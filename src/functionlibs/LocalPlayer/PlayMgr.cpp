@@ -198,6 +198,8 @@ void PlayMgr::run()
 		avi_t *file = AVI_open_input_file(filePath.toLatin1().data(),1);
 		if (NULL != file)
 		{
+			qDebug()<<(int)this<<" open "<<filePath;
+
 			int frameRate = AVI_frame_rate(file);
 			int totalFrames = AVI_video_frames(file);
 
@@ -300,6 +302,8 @@ void PlayMgr::run()
 				}
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
 			}
+
+			qDebug()<<(int)this<<"close "<<filePath;
 
 			AVI_close(file);
 			if (bIsPlayTimeChg)

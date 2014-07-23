@@ -668,8 +668,10 @@ int LocalPlayer::countSkipTime()
 
 int LocalPlayer::GroupPlay()
 {
+	qDebug()<<"GroupPlay";
 	if (m_GroupMap.isEmpty())
 	{
+		qDebug()<<"GroupPlay groupmap is empty";
 		return 1;
 	}
 
@@ -1158,7 +1160,7 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 	}
 
 	QString sqlType = getTypeList(nTypes);
-	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and start_time>'%3' and end_time<'%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
+	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and end_time>='%3' and start_time<='%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
 
 	QString cntId = QString::number(elsTimer.nsecsElapsed());
 	if (1)
@@ -1229,9 +1231,12 @@ int LocalPlayer::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWn
 	QStringList fileList = getFileList(nWndId, date, startTime, endTime, nTypes, vecPerTime);
 	if (fileList.isEmpty())
 	{
+		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx  no file";
 		return 1;//can't find file
 	}
 	
+	qDebug()<<(int)this<<" wnd:"<<nWndId<<"filelist: "<<fileList;
+
 	PrePlay prePlay;
 	prePlay.pPlayMgr = new PlayMgr();
 	prePlay.fileList = fileList;

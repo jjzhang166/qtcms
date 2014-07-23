@@ -59,6 +59,8 @@ int Recorder::Start()
 	{
 		m_bFinish = false;
 		start();
+		connect(&m_updateSchRec, SIGNAL(timeout()), this, SLOT(updateSchRec()));
+		m_updateSchRec.start(1000*60);
 	}
 	return IRecorder::OK;
 }
@@ -71,7 +73,7 @@ int Recorder::Stop()
 		//do nothing
 		cleardata();
 	}
-	
+	m_updateSchRec.stop();
 	return IRecorder::OK;
 }
 int Recorder::InputFrame(QVariantMap& frameinfo)
@@ -870,8 +872,7 @@ void Recorder::sleepEx( int time )
 	return;
 }
 
-
-
-
-
-
+void Recorder::updateSchRec()
+{
+	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+}

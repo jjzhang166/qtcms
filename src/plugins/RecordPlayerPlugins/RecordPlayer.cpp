@@ -646,6 +646,8 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 
 int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
 {
+	qDebug()<<(int)this<<" searchVideoFileEx2"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
+	
 	if (nWndId < 0 || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{
 		return 1;
@@ -703,8 +705,10 @@ void RecordPlayer::transRecordFilesEx( QVariantMap &evMap )
 
 int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDate,const QString & sStartTime,const QString & sEndTime,const int & nTypes )
 {
+	qWarning()<<(int)this<<" AddFileIntoPlayGroupEx"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
 	if (nWndId < 0|| sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{
+		qDebug()<<(int)this<<" input error!";
 		return 1;//input parameter error
 	}
 	QDate date = QDate::fromString(sDate, "yyyy-MM-dd");
