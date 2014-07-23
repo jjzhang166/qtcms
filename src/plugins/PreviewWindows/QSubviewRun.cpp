@@ -1793,7 +1793,7 @@ void QSubviewRun::slplanRecord()
 					recTimeInfo.nEnable = timeInfo.value("enable").toInt();
 					recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
 					int weekDay = QDate::currentDate().dayOfWeek() - 1;
-
+					m_nHisWeekDay=QDate::currentDate().dayOfWeek();
 					if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
 					{
 						continue;
@@ -1810,6 +1810,12 @@ void QSubviewRun::slplanRecord()
 			}
 		}else{
 			//do nothing 
+			if (m_nHisWeekDay!=QDate::currentDate().dayOfWeek())
+			{
+				m_bIsdataBaseFlush=true;
+			}else{
+				//do nothing
+			}
 		}
 		//keep going
 		for (int j=0;j<m_lstReocrdTimeInfoList.size();++j)

@@ -205,5 +205,6 @@ private:
 	int m_nRecordType;
 	tagRenderInfo m_tRenderInfo;
 	volatile bool m_bIsSaveRenderFrame;
+	int m_nHisWeekDay;
 };
   
