@@ -6,6 +6,10 @@
 #include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
+
+#define qDebug() qDebug()<<"this:"<<(int)this
+
+
 QMutex StorageMgr::m_schRecLock;
 QMutex StorageMgr::m_sLock;
 QMutex StorageMgr::m_dblock;
@@ -671,6 +675,23 @@ bool StorageMgr::updateRecord( QString sEnd, int size )
 {
 	//update file end time and file size
 	m_dblock.lock();
+	if (!m_db->isOpen() && !m_db->open())
+	{
+		if ("0" == m_curDisk)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"current disk is empty!";
+			m_dblock.unlock();
+			return false;
+		}
+		QString path = m_curDisk + "/REC/record.db";
+		m_db->setDatabaseName(path);
+		if (!m_db->open())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open database error again!";
+			m_dblock.unlock();
+			return false;
+		}
+	}
 	QSqlQuery _query(*m_db);
 	QString command = QString("update local_record set end_time = '%1', file_size = %2 where id = %3").arg(sEnd).arg(QString::number(size)).arg(m_insertId);
 	if (_query.exec(command))

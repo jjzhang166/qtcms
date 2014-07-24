@@ -679,9 +679,8 @@ int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate,
 	connect(pSchProc, SIGNAL(sigSchRet(int, QVariantMap)), this, SLOT(sndToUI(int, QVariantMap)));
 	pSchProc->setContext(m_pLocalRecordSearch);
 	pSchProc->setPara(nWndId, sDate, sStartTime, sEndTime, nTypes);
-	pSchProc->start();
-
 	m_schEvMap.insert(nWndId, pSchProc);
+	pSchProc->start();
 
 	return 0;
 }

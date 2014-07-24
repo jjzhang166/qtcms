@@ -6,6 +6,8 @@
 
 #include <guid.h>
 
+#define qDebug() qDebug()<<"this:"<<(int)this
+
 #pragma pack(4)
 typedef struct _tagAudioBufAttr{
 	int entries;
@@ -249,6 +251,8 @@ void Recorder::run()
 			   break;
 		case CREATE_PATH:{
 			//申请空间 并 创建文件路径
+			qDebug()<<__FUNCTION__<<__LINE__<<"start create file";
+
 			m_nPosition=__LINE__;
 			m_bIsblock=true;
 			if (CreateSavePath(sSavePath,start)&&CreateDir(sSavePath))
@@ -279,10 +283,12 @@ void Recorder::run()
 			}
 			   }
 
-			qDebug()<<__FUNCTION__<<__LINE__<<"create file"<<sSavePath;
+			qDebug()<<__FUNCTION__<<__LINE__<<"stop create file"<<sSavePath<<"step:"<<nRecStep;
 			   break;
 		case OPEN_FILE:{
 			//打开文件
+			qDebug()<<__FUNCTION__<<__LINE__<<"start open file"<<sSavePath;
+
 			m_dataRef.lock();
 			if (m_dataqueue.size()>0)
 			{
@@ -299,7 +305,7 @@ void Recorder::run()
 			}
 			m_dataRef.unlock();
 			   }
-		   qDebug()<<__FUNCTION__<<__LINE__<<"open file"<<sSavePath<<AviFile;
+		   qDebug()<<__FUNCTION__<<__LINE__<<"stop open file"<<sSavePath<<AviFile<<"step:"<<nRecStep;
 			   break;
 		case SET_VIDEO_PARM:{
 			// 设置文件（视频）的各项参数
@@ -308,7 +314,7 @@ void Recorder::run()
 			m_dataRef.unlock();
 			nRecStep=WRITE_FRAME;
 			   }
-			qDebug()<<__FUNCTION__<<__LINE__<<"set parm"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight;
+			qDebug()<<__FUNCTION__<<__LINE__<<"set parm"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight<<"step:"<<nRecStep;
 			   break;
 		case SET_AUDIO_PARM:{
 			//设置文件（音频）的各项参数
@@ -353,6 +359,8 @@ void Recorder::run()
 			   }
 			   break;
 		case CHECK_DISK_SPACE:{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start check disk";
+
 			//检测硬盘空间
 			if (m_bcheckdiskfreesize)
 			{
@@ -390,6 +398,8 @@ void Recorder::run()
 				nRecStep=WRITE_FRAME;
 			}
 			   }
+			  qDebug()<<__FUNCTION__<<__LINE__<<"stop check disk"<<"step:"<<nRecStep;
+
 			   break;
 		case CHECK_FILE_SIZE:{
 			//检测文件大小
@@ -403,8 +413,12 @@ void Recorder::run()
 				nRecStep=WRITE_FRAME;
 			}
 			   }
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop check file size  step:"<<nRecStep;
+
 			   break;
 		case WAIT_FOR_PACK:{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start wait for pack";
+
 			//等待i帧过来，打包
 			int nCount=0;
 			bool nBwait=true;
@@ -446,6 +460,8 @@ void Recorder::run()
 						   }
 						   break;
 		case PACK:{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start pack";
+
 			//文件打包,打包是失败，跳转到end
 			//打包并保存到数据库成功，如果失败，跳转到end
 			//检测是否结束，如果结束，跳转到end，否则重头开始
@@ -553,9 +569,13 @@ void Recorder::run()
 			   break;
 		case ERROR:{
 			//错误
+			qDebug()<<__FUNCTION__<<__LINE__<<"ERROR step";
+
 				}
 				break;
 		case END:{
+			qDebug()<<__FUNCTION__<<__LINE__<<"END step";
+
 			//end
 			bThreadRunning=false;
 			m_bFinish=true;
@@ -587,6 +607,8 @@ void Recorder::run()
 						endStr = endTime.toString("hh:mm:ss");
 					}
 					m_StorageMgr.updateSearchRecord(endStr);
+
+					qDebug()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;
 				}
 			}
 			m_bIsblock=false;
