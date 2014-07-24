@@ -309,9 +309,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			recFile.push($.parseJSON(data[i]));	
 		}
 		
-		/*if(data.index_0){
-		console.log('当前窗口:'+localSearchWindNum+'的本地路线个文件为----------------');
-		console.log(data);*/
+		if(data.index_0){
+			console.log('当前窗口:'+localSearchWindNum+'的本地路线个文件为----------------');
+			console.log(data);
+		}
 		//console.time('--搜索到的文件回调描绘时间段---')
 		if(bool){
 			data.index_0 && RecFileInfo2UI(data);
@@ -451,16 +452,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		var oList = $('div.dev_list')
 		var oDev = bool ?  oList.find('span.device:eq('+localSearchWindNum+')')[0] : (oList.find('li.sel span.device')[0] || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device')[0]);
 		oDev = $(oDev);
-//		console.log(oDev);
-		/*console.log('---------描绘接受到的文件------------------------');
+		/*console.log(oDev);
+		console.log('---------描绘接受到的文件------------------------');
 		console.log(filedata)*/	
 		//console.time('---------合并接受到的文件------------------------');
 		var File = Deleteduplicate(filedata);
 		/*console.timeEnd('---------合并接受到的文件------------------------');
 		console.time('--接收到合并的文件回调描绘时间段---'+File.length);*/
 
-		/*console.log('接收到的文件进行合并后的文件----------------------------');
-		console.log(File);*/
+		console.log('接收到的文件进行合并后的文件----------------------------');
+		console.log(File);
 
 		var p = ($('#channelvideo').width()-80)/(3600*24);
 
@@ -497,7 +498,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					}*/
 					target.attr({
 						id:'wind_'+data.wndId,
-						title:lang.Wind+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
+						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
 					}).find('label').html(wind).attr('wind',data.wndId);
 					//console.log(target);
 				}else{

@@ -1183,9 +1183,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
-		areaList2Ui();
 		closeMenu();
-		reInitNowDev();
+		if(data.total!=0){
+			areaList2Ui();
+			reInitNowDev();	
+		}else{
+			Confirm(lang.Modified_device+lang.Failed)
+		}
+		
 	}
 	/*function ModifyDeviceSuccess(data){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
