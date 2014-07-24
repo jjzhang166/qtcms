@@ -17,7 +17,9 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		break;  
 
 	case QtWarningMsg:  
-		txt = QString("Warning: %1").arg(msg);  
+		txt = QString("Warning: %1").arg(msg);
+		txt.append("-----");
+		txt.append(QDateTime::currentDateTime().toString("dd.MM.yyyy-hh:mm:ss.zzz"));
 		break;  
 	case QtCriticalMsg:  
 		txt = QString("Critical: %1").arg(msg);  
