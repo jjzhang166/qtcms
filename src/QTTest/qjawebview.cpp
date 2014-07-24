@@ -32,6 +32,8 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	setContextMenuPolicy(Qt::NoContextMenu);
 #ifdef __USE_WEB_DEBUGER__
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
+	Dumper::setVersionInfo("cms_1.1.12_14_00_00", strlen("cms_1.1.12_14_00_00"));
+	m_pdup = new Dumper();
 #endif
 
 	// Set web plugin factory
@@ -111,6 +113,12 @@ QJaWebView::~QJaWebView()
 		m_Activity->Release();
 	}
 	setObjectName("NULL");
+#ifdef __USE_WEB_DEBUGER__
+	if (m_pdup)
+	{
+		delete m_pdup;
+	}
+#endif
 }
 
 void QJaWebView::keyPressEvent(QKeyEvent *ev)

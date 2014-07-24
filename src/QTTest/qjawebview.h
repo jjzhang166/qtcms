@@ -37,7 +37,7 @@ private:
 	IActivities * m_Activity;
 #ifdef __USE_WEB_DEBUGER__
 	QWebInspector m_webinspector;
-	Dumper m_dup;
+	Dumper *m_pdup;
 #endif
 };
 
