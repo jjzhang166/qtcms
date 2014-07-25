@@ -527,7 +527,8 @@ void Recorder::run()
 				m_dataRef.unlock();
 				m_nPosition=__LINE__;
 				m_bIsblock=true;
-				QString sEndTime=getFileEndTime(sSavePath,start);
+// 				QString sEndTime=getFileEndTime(sSavePath,start);
+				QString sEndTime = QTime::currentTime().toString("hh:mm:ss");
 				if (!sEndTime.isEmpty())
 				{
 					m_nPosition=__LINE__;
@@ -563,6 +564,7 @@ void Recorder::run()
 				m_bIsblock=false;
 				if (m_bFinish)
 				{
+					qWarning()<<"m_bFinish: "<<m_bFinish<<"switch to step:END";
 					nRecStep=END;
 				}else{
 					//keep going
@@ -607,11 +609,12 @@ void Recorder::run()
 				else
 				{
 					//更新录像的结束时间
-					QString endStr = m_StorageMgr.getNewestRecord(m_devname, m_channelnum);
-					if (endStr.isEmpty())
-					{
-						endStr = endTime.toString("hh:mm:ss");
-					}
+// 					QString endStr = m_StorageMgr.getNewestRecord(m_devname, m_channelnum);
+// 					if (endStr.isEmpty())
+// 					{
+// 						endStr = endTime.toString("hh:mm:ss");
+// 					}
+					QString endStr = endTime.toString("hh:mm:ss");
 					m_StorageMgr.updateSearchRecord(endStr);
 
 					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;

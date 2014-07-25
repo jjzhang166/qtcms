@@ -1231,11 +1231,11 @@ int LocalPlayer::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWn
 	QStringList fileList = getFileList(nWndId, date, startTime, endTime, nTypes, vecPerTime);
 	if (fileList.isEmpty())
 	{
-		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx  no file";
+		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx  wndId"<<nWndId<<"no file";
 		return 1;//can't find file
 	}
 	
-	qDebug()<<(int)this<<" wnd:"<<nWndId<<"filelist: "<<fileList;
+	qDebug()<<(int)this<<"AddFileIntoPlayGroupEx wnd:"<<nWndId<<"filelist: "<<fileList;
 
 	PrePlay prePlay;
 	prePlay.pPlayMgr = new PlayMgr();

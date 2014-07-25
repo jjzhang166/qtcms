@@ -383,6 +383,7 @@ bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 				//delete file from directory
 				m_nPosition=__LINE__;
 				QStringList hasDelete = deleteFile(each.fileLsit);
+				qDebug()<<__LINE__<<"files have deleted:"<<hasDelete;
 				//deduct period from each window id in search_record table
 				m_nPosition=__LINE__;
 				deductPeriod(each.dbPath, hasDelete, earlestDate.toString("yyyy-MM-dd"));
@@ -656,9 +657,20 @@ bool StorageMgr::addSearchRecord( int wndId, int type, QString sDate, QString sS
 	m_nPosition=__LINE__;
 	m_schRecLock.lock();
 	//check database exists, 
-	QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+// 	QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+	QString path = "C:/CMS_RECORD/search_record.db";
+
 	if (!QFile::exists(path))
 	{
+		QDir dbpath;
+		QString dir = path.left(path.lastIndexOf("/"));
+		if (!dbpath.exists(dir))
+		{
+			dbpath.mkpath(dir);
+			QFile file(path);
+			file.open(QIODevice::WriteOnly);
+			file.close();
+		}
 		m_dbSearch->setDatabaseName(path);
 		if (!m_dbSearch->open())
 		{
@@ -715,7 +727,8 @@ bool StorageMgr::updateSearchRecord( QString sEnd )
 
 	if (!m_dbSearch->isOpen())
 	{
-		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+// 		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+		QString path = "C:/CMS_RECORD/search_record.db";
 		m_dbSearch->setDatabaseName(path);
 		if (!m_dbSearch->open())
 		{
@@ -763,7 +776,8 @@ void StorageMgr::deductPeriod( QString dbpath, QStringList deleteFile, QString d
 	m_schRecLock.lock();
 	if (!m_dbSearch->isOpen())
 	{
-		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+// 		QString path = QCoreApplication::applicationDirPath() + "/search_record.db";
+		QString path = "C:/CMS_RECORD/search_record.db";
 		m_dbSearch->setDatabaseName(path);
 		if (!m_dbSearch->open())
 		{
@@ -782,6 +796,8 @@ void StorageMgr::deductPeriod( QString dbpath, QStringList deleteFile, QString d
 		cmd = QString("delete from search_record where wnd_id=%1 and date='%2' and end_time<='%3'").arg(it.key()).arg(date).arg(it.value());
 		_query.exec(cmd);
 		
+		qDebug()<<__LINE__<<"delete database sql:"<<cmd;
+
 		cmd = QString("select id, start_time, end_time from search_record where date='%1' and wnd_id=%2 order by start_time limit 1").arg(date).arg(it.key());
 		_query.exec(cmd);
 		if (_query.next())
