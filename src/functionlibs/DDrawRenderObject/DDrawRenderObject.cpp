@@ -250,6 +250,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 		default:
 			break;
 		}
+		m_csOffScreenSurface.Unlock();
 		return -1;
 	}
 
