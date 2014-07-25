@@ -267,6 +267,7 @@
 	//本地设置
 
 	'Operation_failed':'保存失败!',
+	'time_range':'请输入正确的时间范围!',
 
 	
 	'Video_settings':'录像设置',

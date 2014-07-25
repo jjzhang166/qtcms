@@ -162,6 +162,7 @@
 	function showRecProgress(now){  //回访检索文件进度
 		now = now || 0;
 		now = now>recTotal ? recTotal : now;
+
 		var con = lang.Retrieving,
 			p =now/recTotal*100,
 			str = (now/recTotal*100).toString().slice(0,5);
@@ -169,9 +170,11 @@
 		if(recTotal == now){
 			con = lang.Retrieval_completed;
 		}
+
 		$('#fileRec').stop(true,true).find('span').width(p-2)
 		             .end().find('h5').html(str)
 		             .end().find('h4').html(con);
+		return str; 
 	}
 
 	function recFileSearchFailCallback(data){
@@ -185,6 +188,7 @@
 		已经搜索到的文件如果显示达到前台的话。 那么没有搜索到的文件是否能继续播放.
 
 		*/
+		searchSTOP=1;
 
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
 		$('#fileRec h4').html('<h4 style="color:red;">'+hint[(parseInt(data.parm)-1)]+'</h4>')
@@ -192,6 +196,8 @@
 		setTimeout(function(){
 			$('#fileRec').stop(true,true).fadeOut(1500);
 		},1000);
+
+		recFile.length !=0 && file2UIFinish();
 	}
 
 	function RecfinishCallback(data){ //检索完成回调

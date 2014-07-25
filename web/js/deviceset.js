@@ -236,17 +236,11 @@ var oSearchOcx,
 
 		//录像设置验证正确的时间段.
 		$('#recordtime tbody tr:lt(4)').each(function(){
-			$(this).on('focusout','input:last',function(){
-				var obj = $(this).parent('div.timeInput');
-				if(obj.gettime() < obj.prev('div.timeInput').gettime()){
-					//obj.attr('b',1);
-					Confirm('请输入正确的时间范围!'/*,'',function(){
-						console.log('--------时间范围验证回调-------------');
-						$('#recordtime div.timeInput[b] input:last').focus();
-					}*/);
-				}/*else{
-					obj.removeAttr('b');
-				}*/
+			$(this).on('focusout','input:text',function(){
+				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
+				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime())
+					Confirm(lang.time_range);
+				$(this).val($(this).attr('default'));
 			});
 		});
 		
