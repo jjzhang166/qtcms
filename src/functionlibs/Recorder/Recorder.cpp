@@ -7,6 +7,7 @@
 #include <guid.h>
 
 #define qDebug() qDebug()<<"this:"<<(int)this
+#define qWarning() qWarning()<<"this:"<<(int)this
 
 #pragma pack(4)
 typedef struct _tagAudioBufAttr{
@@ -25,6 +26,8 @@ m_nRef(0),
 m_channelnum(1),
 m_windId(0),
 m_recordType(0),
+m_nUpdateCount(0),
+m_bUpdateEndTime(false),
 m_bFinish(true),
 m_bIsblock(false),
 m_bcheckdiskfreesize(false)
@@ -61,8 +64,8 @@ int Recorder::Start()
 	{
 		m_bFinish = false;
 		start();
-		connect(&m_updateSchRec, SIGNAL(timeout()), this, SLOT(updateSchRec()));
-		m_updateSchRec.start(1000*60);
+		/*connect(&m_updateSchRec, SIGNAL(timeout()), this, SLOT(updateSchRec()));*/
+		//m_updateSchRec.start(1000*60);
 	}
 	return IRecorder::OK;
 }
@@ -75,7 +78,7 @@ int Recorder::Stop()
 		//do nothing
 		cleardata();
 	}
-	m_updateSchRec.stop();
+	/*m_updateSchRec.stop();*/
 	return IRecorder::OK;
 }
 int Recorder::InputFrame(QVariantMap& frameinfo)
@@ -133,7 +136,7 @@ int Recorder::InputFrame(QVariantMap& frameinfo)
 		}
 		if (m_dataqueue.size()>10){
 			msleep(m_dataqueue.size());	
-			if (m_dataqueue.size()>20)
+			if (m_dataqueue.size()>20&&m_dataqueue.size()%10==0)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"size:"<<m_dataqueue.size()<<m_devname<<"record cause sleep!!!";
 			}
@@ -251,7 +254,7 @@ void Recorder::run()
 			   break;
 		case CREATE_PATH:{
 			//申请空间 并 创建文件路径
-			qDebug()<<__FUNCTION__<<__LINE__<<"start create file";
+			qWarning()<<__FUNCTION__<<__LINE__<<"start create file";
 
 			m_nPosition=__LINE__;
 			m_bIsblock=true;
@@ -283,11 +286,11 @@ void Recorder::run()
 			}
 			   }
 
-			qDebug()<<__FUNCTION__<<__LINE__<<"stop create file"<<sSavePath<<"step:"<<nRecStep;
+			qWarning()<<__FUNCTION__<<__LINE__<<"stop create file"<<sSavePath<<"step:"<<nRecStep;
 			   break;
 		case OPEN_FILE:{
 			//打开文件
-			qDebug()<<__FUNCTION__<<__LINE__<<"start open file"<<sSavePath;
+			qWarning()<<__FUNCTION__<<__LINE__<<"start open file"<<sSavePath;
 
 			m_dataRef.lock();
 			if (m_dataqueue.size()>0)
@@ -305,7 +308,7 @@ void Recorder::run()
 			}
 			m_dataRef.unlock();
 			   }
-		   qDebug()<<__FUNCTION__<<__LINE__<<"stop open file"<<sSavePath<<AviFile<<"step:"<<nRecStep;
+		   qWarning()<<__FUNCTION__<<__LINE__<<"stop open file"<<sSavePath<<AviFile<<"step:"<<nRecStep;
 			   break;
 		case SET_VIDEO_PARM:{
 			// 设置文件（视频）的各项参数
@@ -314,7 +317,7 @@ void Recorder::run()
 			m_dataRef.unlock();
 			nRecStep=WRITE_FRAME;
 			   }
-			qDebug()<<__FUNCTION__<<__LINE__<<"set parm"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight<<"step:"<<nRecStep;
+			qWarning()<<__FUNCTION__<<__LINE__<<"set parm"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight<<"step:"<<nRecStep;
 			   break;
 		case SET_AUDIO_PARM:{
 			//设置文件（音频）的各项参数
@@ -359,7 +362,6 @@ void Recorder::run()
 			   }
 			   break;
 		case CHECK_DISK_SPACE:{
-			qDebug()<<__FUNCTION__<<__LINE__<<"start check disk";
 
 			//检测硬盘空间
 			if (m_bcheckdiskfreesize)
@@ -398,12 +400,18 @@ void Recorder::run()
 				nRecStep=WRITE_FRAME;
 			}
 			   }
-			  qDebug()<<__FUNCTION__<<__LINE__<<"stop check disk"<<"step:"<<nRecStep;
-
 			   break;
 		case CHECK_FILE_SIZE:{
 			//检测文件大小
+			//更新结束时间5min
 			//文件不够大，接着录像 ，否则打包文件,跳转到等待I帧
+			if (m_bUpdateEndTime)
+			{
+				m_bUpdateEndTime=false;
+				m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+			}else{
+				//do nothing
+			}
 			long nWritenSize=AVI_bytes_written(AviFile);
 			if (nWritenSize>1024*1024*nFileMaxSize)
 			{
@@ -413,11 +421,9 @@ void Recorder::run()
 				nRecStep=WRITE_FRAME;
 			}
 			   }
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop check file size  step:"<<nRecStep;
-
 			   break;
 		case WAIT_FOR_PACK:{
-			qDebug()<<__FUNCTION__<<__LINE__<<"start wait for pack";
+			qWarning()<<__FUNCTION__<<__LINE__<<"start wait for pack";
 
 			//等待i帧过来，打包
 			int nCount=0;
@@ -460,7 +466,7 @@ void Recorder::run()
 						   }
 						   break;
 		case PACK:{
-			qDebug()<<__FUNCTION__<<__LINE__<<"start pack";
+			qWarning()<<__FUNCTION__<<__LINE__<<"start pack";
 
 			//文件打包,打包是失败，跳转到end
 			//打包并保存到数据库成功，如果失败，跳转到end
@@ -608,7 +614,7 @@ void Recorder::run()
 					}
 					m_StorageMgr.updateSearchRecord(endStr);
 
-					qDebug()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;
+					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;
 				}
 			}
 			m_bIsblock=false;
@@ -806,6 +812,12 @@ void Recorder::enventProcCall( QString sEvent,QVariantMap parm )
 void Recorder::checkdiskfreesize()
 {
 	m_bcheckdiskfreesize=true;
+	m_nUpdateCount++;
+	if (m_nUpdateCount>150)
+	{
+		m_nUpdateCount=0;
+		m_bUpdateEndTime=true;
+	}
 }
 QString Recorder::getFileEndTime( QString fileName, QTime start )
 {
@@ -860,7 +872,7 @@ void Recorder::checkIsBlock()
 {
 	if (m_bIsblock)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition;
+		qDebug()<<__FUNCTION__<<__LINE__<<"block at:"<<m_nPosition<<"StorageMgr run to:"<<m_StorageMgr.getBlockPosition();
 	}else{
 		//do nothing
 	}
@@ -894,7 +906,7 @@ void Recorder::sleepEx( int time )
 	return;
 }
 
-void Recorder::updateSchRec()
-{
-	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
-}
+//void Recorder::updateSchRec()
+//{
+//	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+//}

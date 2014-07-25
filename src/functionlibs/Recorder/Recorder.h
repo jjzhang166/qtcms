@@ -86,7 +86,7 @@ signals:
 public slots:
 	void checkdiskfreesize();
 	void checkIsBlock();
-	void updateSchRec();
+	/*void updateSchRec();*/
 protected:
 	void run();
 private:
@@ -129,12 +129,14 @@ private:
 
 	//checkdiskfreesize
 	bool m_bcheckdiskfreesize;
+	bool m_bUpdateEndTime;
 	bool m_bIsblock;
 	QTimer m_checkdisksize;
 	QTimer m_checkIsBlock;
-	QTimer m_updateSchRec;
+	/*QTimer m_updateSchRec;*/
 	int m_nPosition;
 	int m_nSleepSwitch;
+	int m_nUpdateCount;
 };
 
 #endif // RECORDER_H

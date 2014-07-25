@@ -24,6 +24,7 @@ public:
 	int getFreeSizeForDisk();
 	bool freeDisk();
 	int getInsertId();
+	int getBlockPosition();
 	//
 
 	QString getFileSavePath(QString devname,int nChannelNum,int winId, int type, QTime &start);
@@ -69,5 +70,6 @@ private:
 	static QList<int > m_insertIdList;
 	static QMutex m_schRecLock;
 	int m_searchRecordId;
+	int m_nPosition;
 };
 
