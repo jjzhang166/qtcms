@@ -143,6 +143,10 @@
 	}
 
 	function searchLocalFile(wind,date,type){
+		if(wind > 64){
+			searchSTOP=1;
+			return;
+		}
 		var type = type || $('#type input[data]').attr('data');
 		
 		var date = date || $("div.calendar span.nowDate").html();
@@ -156,7 +160,7 @@
 		var name = oDevList.eq(key).data('data').name;*/
 
 		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
-		//console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
+		console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
 		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
 	}
 	function showRecProgress(now){  //回访检索文件进度
@@ -196,8 +200,8 @@
 		setTimeout(function(){
 			$('#fileRec').stop(true,true).fadeOut(1500);
 		},1000);
-
-		recFile.length !=0 && file2UIFinish();
+		//console.log(recFile)
+		recFile.length !=0 && RecFileInfo2UI(recFile);
 	}
 
 	function RecfinishCallback(data){ //检索完成回调

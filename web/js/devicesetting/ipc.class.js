@@ -204,24 +204,6 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			$('#PC_time').val(renewtime());
 		},1000);
 
-		function renewtime(){
-			var myDate = new Date,
-
-			yy=myDate.getFullYear(),
-
-			mm=addZero(parseInt(myDate.getMonth())+1),
-
-			dd=addZero(myDate.getDate()),
-
-			hh=addZero(myDate.getHours()),
-
-			mi=addZero(myDate.getMinutes()),
-
-			ss=addZero(myDate.getSeconds());
-
-			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
-		}
-
 		this.ipczoneInfoPut = function(){ //设置时区
 
 			var warp = $('#set_content div.ipc_list:visible');

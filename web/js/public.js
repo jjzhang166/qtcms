@@ -599,3 +599,21 @@ function _t(obj){
 		$(this).val(str);
 	})
 }
+
+function renewtime(){
+	var myDate = new Date,
+
+	yy=myDate.getFullYear(),
+
+	mm=addZero(parseInt(myDate.getMonth())+1),
+
+	dd=addZero(myDate.getDate()),
+
+	hh=addZero(myDate.getHours()),
+
+	mi=addZero(myDate.getMinutes()),
+
+	ss=addZero(myDate.getSeconds());
+
+	return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
+}
