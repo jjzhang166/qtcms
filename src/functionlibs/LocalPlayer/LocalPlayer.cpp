@@ -1153,7 +1153,8 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 	{
 		return ILocalRecordSearchEx::E_PARAMETER_ERROR;
 	}
-	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
+// 	QString dbPath = QCoreApplication::applicationDirPath() + "/search_record.db";
+	QString dbPath = "C:/CMS_RECORD/search_record.db";
 	if (!QFile::exists(dbPath))
 	{
 		return ILocalRecordSearchEx::E_SYSTEM_FAILED;
