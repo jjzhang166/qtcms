@@ -62,7 +62,7 @@ void QSubviewThread::OpenCameraInWnd()
 		m_IDeviceClient->QueryInterface(IID_IAutoSycTime, (void**)&pAutoSycTime);
 		if (NULL != pAutoSycTime)
 		{
-			pAutoSycTime->SetAutoSycTime(m_bIsSysTime);
+			pAutoSycTime->setAutoSycTime(m_bIsSysTime);
 			pAutoSycTime->Release();
 		}
 	}

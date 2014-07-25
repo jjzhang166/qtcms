@@ -182,6 +182,8 @@ private:
 	bool m_bIsPtzAutoOpen;
 	bool m_bIsAutoRecording;
 	bool m_bIsRecord;
+	bool m_bIsPreDecode;
+	bool m_bIsPreRender;
 	QTimer m_planRecordTimer;
 	bool m_bIsdataBaseFlush;
 	QList<tagRecorderTimeInfo> m_lstReocrdTimeInfoList;
@@ -206,5 +208,6 @@ private:
 	tagRenderInfo m_tRenderInfo;
 	volatile bool m_bIsSaveRenderFrame;
 	int m_nHisWeekDay;
+	int m_nCheckPreCount;
 };
   

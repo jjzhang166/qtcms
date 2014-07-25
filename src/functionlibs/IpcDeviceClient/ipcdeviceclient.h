@@ -12,7 +12,7 @@
 #include "IAutoSycTime.h"
 #include "IPTZControl.h"
 #include "IProtocolPTZ.h"
-
+#include "SetAutoSycTime.h"
 //主码流的回调函数
 int cbXLiveStream_Primary(QString evName,QVariantMap evMap,void*pUser);//预览码流
 int cbXSocketError_Primary(QString evName,QVariantMap evMap,void*pUser);//连接错误
@@ -59,7 +59,7 @@ public:
 	virtual int SwitchStream(int StreamNum);
 
 	//IAutoSycTime
-	virtual int SetAutoSycTime(bool bEnabled);
+	virtual int setAutoSycTime(bool bEnabled);
 
 	//IPTZControl
 	virtual int ControlPTZUp(const int &nChl, const int &nSpeed);
@@ -91,16 +91,16 @@ public:
 
 private:
 // 	void SyncTime();
-	int sndGetVesionInfo();
-	int sndSyncTimeForPreVersion();
-	int sndGetLocalSystemTime();
-	int sndSyncTimeCmd();
+	//int sndGetVesionInfo();
+	//int sndSyncTimeForPreVersion();
+	//int sndGetLocalSystemTime();
+	//int sndSyncTimeCmd();
 	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
-signals:
-	void sigSyncTime();
-private slots:
-	void Reveived();
-	void SyncTime();
+//signals:
+//	void sigSyncTime();
+//private slots:
+//	void Reveived();
+//	void SyncTime();
 
 private:
 	int m_nRef;
@@ -128,11 +128,12 @@ private:
 	volatile bool bHadCallCloseAll;
 
 	bool m_bIsSycTime;
-	QTcpSocket *m_tcpSocket;
-	QByteArray m_timeZone;
-	QByteArray m_softwareVersion;
+	//QTcpSocket *m_tcpSocket;
+	//QByteArray m_timeZone;
+	//QByteArray m_softwareVersion;
 	int m_steps;
 
 	IProtocolPTZ *m_pProtocolPTZ;
+	SetAutoSycTime m_tSetAutoSycTime;
 };
 

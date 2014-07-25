@@ -4,7 +4,7 @@
 
 interface IAutoSycTime : public IPComBase
 {
-	virtual int SetAutoSycTime(bool bEnabled) = 0;
+	virtual int setAutoSycTime(bool bEnabled) = 0;
 };
 
 #endif

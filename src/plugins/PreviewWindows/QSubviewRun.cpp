@@ -28,6 +28,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bClosePreview(false),
 	m_bIsBlock(false),
 	m_bIsSaveRenderFrame(false),
+	m_bIsPreRender(false),
+	m_bIsPreDecode(false),
 	m_nWindId(0),
 	m_nRecordType(0),
 	m_nPosition(0),
@@ -36,7 +38,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_sampleRate(0),
 	m_nInitHeight(0),
 	m_nInitWidth(0),
-	m_nSleepSwitch(0)
+	m_nSleepSwitch(0),
+	m_nCheckPreCount(0)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
@@ -64,7 +67,7 @@ QSubviewRun::~QSubviewRun(void)
 	}
 	int n=0;
 	while(QThread::isRunning()){
-		//sleepEx(2);
+		/*sleepEx(10);*/
 		msleep(10);
 		n++;
 		if (n>500&&n%100==0)
@@ -525,7 +528,7 @@ void QSubviewRun::run()
 						{
 							m_bIsBlock=true;
 							m_nPosition=__LINE__;
-							pAutoSysTime->SetAutoSycTime(m_bIsSysTime);
+							pAutoSysTime->setAutoSycTime(m_bIsSysTime);
 							m_bIsBlock=false;
 							pAutoSysTime->Release();
 							pAutoSysTime=NULL;
@@ -996,6 +999,7 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 			//视频解码
 			if (frameType==1||frameType==2)
 			{
+				m_bIsPreDecode=true;
 				if (m_bIsSaveRenderFrame==true)
 				{
 					//do nothing
@@ -1023,36 +1027,6 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 		}
 	}
 	return 1;
-	//if (NULL!=m_pIVideoDecoder)
-	//{
-	//	if (m_tDeviceInfo.m_pWnd->isVisible())
-	//	{
-	//		unsigned int nLength=evMap.value("length").toUInt();
-	//		char * lpdata=(char *)evMap.value("data").toUInt();
-	//		int frameType = evMap.value("frametype").toUInt();
-	//		//音频
-	//		if (NULL!=m_pAudioPlay&&0==frameType&&m_bIsFocus==true)
-	//		{
-	//			int nSampleRate = evMap.value("samplerate").toUInt();
-	//			int nSampleWidth = evMap.value("samplewidth").toUInt();
-	//			if (nSampleRate != m_sampleRate || nSampleWidth != m_sampleWidth)
-	//			{
-	//				m_sampleRate = nSampleRate;
-	//				m_sampleWidth = nSampleWidth;
-	//				m_pAudioPlay->SetAudioParam(1, m_sampleRate, m_sampleWidth);
-	//			}
-	//			m_pAudioPlay->Play(lpdata, nLength);
-	//		}
-	//		//视频解码
-	//		m_pIVideoDecoder->decode(lpdata,nLength);
-	//		return 0;
-	//	}else{
-	//		//do nothing
-	//	}
-	//}else{
-	//	qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoDecoder is null";
-	//}
-	//return 1;
 }
 
 
@@ -1374,6 +1348,7 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			   break;
 		case 2:{
 			//渲染历史帧
+			m_bIsPreRender=true;
 			nRenderStep=4;
 			if (m_nInitHeight!=m_tRenderInfo.nHeight||m_nInitWidth!=m_tRenderInfo.nWidth)
 			{
@@ -1398,6 +1373,7 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			   break;
 		case 3:{
 			//渲染当前帧
+			m_bIsPreRender=true;
 			nRenderStep=4;
 			char* pData=(char*)evMap.value("data").toUInt();	
 			char* pYdata=(char*)evMap.value("Ydata").toUInt();
@@ -1990,6 +1966,27 @@ void QSubviewRun::slcheckoutBlock()
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"block at:"<<m_nPosition;
 	}
+	if (m_nCheckPreCount>12&&m_currentStatus==STATUS_CONNECTED&&m_tDeviceInfo.m_pWnd->isVisible())
+	{
+		m_nCheckPreCount=0;
+		if (m_bIsPreDecode==false)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<m_tDeviceInfo.m_uiChannelId<<"it had continue 60s without preStream,please check";
+		}else{
+			//do nothing
+		}
+		if (m_bIsPreDecode==true&&m_bIsPreRender==false)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<m_tDeviceInfo.m_uiChannelId<<"it had continue 60s without preRenderData,please check";
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
+	m_bIsPreRender=false;
+	m_bIsPreDecode=false;
+	m_nCheckPreCount++;
 }
 
 void QSubviewRun::backToMainThread( QVariantMap evMap )

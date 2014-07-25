@@ -12,7 +12,7 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	bHadCallCloseAll(false),
 	bCloseingFlags(false),
 	m_bIsSycTime(false),
-	m_tcpSocket(NULL),
+	//m_tcpSocket(NULL),
 	m_pProtocolPTZ(NULL),
 	m_steps(0),
 	m_IfSwithStream(0)
@@ -632,14 +632,15 @@ int IpcDeviceClient::SwitchStream( int StreamNum )
 	m_IfSwithStream=StreamNum;
 	return 0;
 }
-int IpcDeviceClient::SetAutoSycTime(bool bEnabled)
+int IpcDeviceClient::setAutoSycTime(bool bEnabled)
 {
 	m_bIsSycTime = bEnabled;
 	//change 
 	if (m_bIsSycTime)
 	{
-		connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
-		emit sigSyncTime();//同步时间
+		//connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
+		//emit sigSyncTime();//同步时间
+		m_tSetAutoSycTime.setAutoSycTime(m_sAddr,(quint16)m_DeviceInfo.m_ports["media"].toUInt(),m_DeviceInfo.m_sUserName,m_DeviceInfo.m_sPassword);
 	}
 	return 0;
 }
@@ -754,186 +755,186 @@ void IpcDeviceClient::DeInitProtocl()
 	m_csDeInit.unlock();
 }
 
-int IpcDeviceClient::sndGetVesionInfo()
-{
-	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=%3Cjuan%20ver%3D%22%22%20seq%3D%22%22%3E%3Cconf%20type%3D%22read%22%20user%3D%22admin%22%20password%3D%22%22%3E%3Cspec%20vin%3D%22%22%20ain%3D%22%22%20io_sensor%3D%22%22%20io_alarm%3D%22%22%20hdd%3D%22%22%20sd_card%3D%22%22%20%2F%3E%3Cinfo%20device_name%3D%22%22%20device_model%3D%22%22%20device_sn%3D%22%22%20hardware_version%3D%22%22%20software_version%3D%22%22%20build_date%3D%22%22%20build_time%3D%22%22%20%2F%3E%3C%2Fconf%3E%3C%2Fjuan%3E HTTP/1.1\r\n";
-	block += "Connection: Keep-Alive\r\n";
-	block += "\r\n";
-	m_tcpSocket->write(block);
-	if (m_tcpSocket->waitForBytesWritten(500))
-	{
-		return 0;
-	}
-	else
-		return 1;
-}
-int IpcDeviceClient::sndSyncTimeForPreVersion()
-{
-	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=";
-	QDateTime time = QDateTime::currentDateTime();
-
-	QString xmlStr = "<juan ver=\"\" seq=\"\"><setup type=\"write\" user=\"";
-	xmlStr += m_DeviceInfo.m_sUserName + "\"" + " password=\"" + m_DeviceInfo.m_sPassword + "\">";
-	xmlStr += "<time value=\"" + QString::number(time.toTime_t()) + "\" /></setup></juan>";
-	
-	block += QUrl::toPercentEncoding(xmlStr, "", "");
-	block += " HTTP/1.1\r\n";
-	block += "Connection: keep-alive\r\n";
-	block += "\r\n";
-
-	m_tcpSocket->write(block);
-	if (m_tcpSocket->waitForBytesWritten(500))
-	{
-		return 0;
-	}
-	else
-		return 1;
-}
-int IpcDeviceClient::sndGetLocalSystemTime()
-{
-	QByteArray block;
-	block += "GET /netsdk/system/time/localtime HTTP/1.1\r\n";
-	block += "Authorization: Basic YWRtaW46\r\n";
-	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
-	block += "X-Requested-With: XMLHttpRequest\r\n";
-	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
-	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
-	block += "DNT: 1\r\n";
-	block += "Connection: Keep-Alive\r\n";
-	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
-	block += "\r\n";
-	m_tcpSocket->write(block);
-	if (m_tcpSocket->waitForBytesWritten(500))
-	{
-		return 0;
-	}
-	else
-		return 1;
-}
-int IpcDeviceClient::sndSyncTimeCmd()
-{
-	QByteArray block;
-	block += "PUT /netsdk/system/time/localtime HTTP/1.1\r\n";
-	block += "Authorization: Basic YWRtaW46\r\n";
-	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
-	block += "X-Requested-With: XMLHttpRequest\r\n";
-	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
-	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
-	block += "DNT: 1\r\n";
-	block += "Content-Length: 27Connection: Keep-Alive\r\n";
-	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
-	block += "\r\n";
-
-	QDateTime curTime = QDateTime::currentDateTime();
-	QString timeStr = curTime.toString("yyyy-MM-ddThh:mm:ss") + m_timeZone;
-	block += "\"" + timeStr.toLatin1() + "\"";
-	m_tcpSocket->write(block);
-	if (m_tcpSocket->waitForBytesWritten(500))
-	{
-		return 0;
-	}
-	else
-		return 1;
-}
-void IpcDeviceClient::SyncTime()
-{
-	if (m_DeviceInfo.m_sAddr.isEmpty() || m_DeviceInfo.m_ports.isEmpty())
-	{
-		return;
-	}
-
-	m_tcpSocket = new QTcpSocket(this);
-	connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(Reveived()));
-
-	m_tcpSocket->connectToHost(QHostAddress(m_DeviceInfo.m_sAddr), (quint16)m_DeviceInfo.m_ports["media"].toUInt());
-	if (m_tcpSocket->waitForConnected(1000))
-	{
-		//get version info
-		sndGetVesionInfo();
-		m_steps = 1;
-	}
-}
-void IpcDeviceClient::Reveived()
-{
-	QVariantMap item;
-	if (m_tcpSocket->bytesAvailable() > 0)
-	{
-		QByteArray buffer = m_tcpSocket->readAll();
-		if (buffer.contains("HTTP/1.1 200 OK"))
-		{
-			if (1 == m_steps)
-			{
-				int posStart = buffer.indexOf("software_version") + qstrlen("software_version=\\\"");
-				int posEnd = buffer.indexOf("\\\"", posStart);
-
-				QByteArray ms = buffer.mid(posStart);
-
-				m_softwareVersion = buffer.mid(posStart, posEnd - posStart);
-				if (m_softwareVersion.left(5) <= "1.1.3")
-				{
-					sndSyncTimeForPreVersion();
-					m_steps = 2;
-				}
-				else
-				{
-					sndGetLocalSystemTime();
-					m_steps = 3;
-				}
-			}
-			else if (2 == m_steps)
-			{
-				//sync time over
-				item.insert("statusCode", 0);
-				item.insert("statusMsg", "OK");
-				eventProcCall("SyncTimeMsg", item);
-
-				m_steps = 0;
-				m_tcpSocket->deleteLater();
-				return;
-			}
-			else if (3 == m_steps)
-			{
-				int posStart = buffer.indexOf("\"") + 1;
-				int posEnd = buffer.lastIndexOf("\"");
-				QByteArray localSysTime = buffer.mid(posStart, posEnd - posStart);
-				m_timeZone = localSysTime.right(6);
-				sndSyncTimeCmd();
-				m_steps = 4;
-			}
-			else if (4 == m_steps)
-			{
-				QString status;
-				int code;
-				QRegExp rx("[a-zA-Z]+");
-				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusMessage") + qstrlen("statusMessage")))
-				{
-					status = rx.cap(0);
-				}
-				rx = QRegExp("\\d+");
-				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusCode") + qstrlen("statusCode")))
-				{
-					code = rx.cap(0).toUInt();
-				}
-
-				item.insert("statusCode", code);
-				item.insert("statusMsg", status);
-				eventProcCall("SyncTimeMsg", item);
-
-				m_steps = 0;
-				m_tcpSocket->deleteLater();
-			}
-		}
-		else
-		{
-			item.insert("statusCode", -1);
-			item.insert("statusMsg", "failure");
-			eventProcCall("SyncTimeMsg", item);
-
-			m_steps = 0;
-			m_tcpSocket->deleteLater();
-		}
-	}
-}
+//int IpcDeviceClient::sndGetVesionInfo()
+//{
+//	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=%3Cjuan%20ver%3D%22%22%20seq%3D%22%22%3E%3Cconf%20type%3D%22read%22%20user%3D%22admin%22%20password%3D%22%22%3E%3Cspec%20vin%3D%22%22%20ain%3D%22%22%20io_sensor%3D%22%22%20io_alarm%3D%22%22%20hdd%3D%22%22%20sd_card%3D%22%22%20%2F%3E%3Cinfo%20device_name%3D%22%22%20device_model%3D%22%22%20device_sn%3D%22%22%20hardware_version%3D%22%22%20software_version%3D%22%22%20build_date%3D%22%22%20build_time%3D%22%22%20%2F%3E%3C%2Fconf%3E%3C%2Fjuan%3E HTTP/1.1\r\n";
+//	block += "Connection: Keep-Alive\r\n";
+//	block += "\r\n";
+//	m_tcpSocket->write(block);
+//	if (m_tcpSocket->waitForBytesWritten(500))
+//	{
+//		return 0;
+//	}
+//	else
+//		return 1;
+//}
+//int IpcDeviceClient::sndSyncTimeForPreVersion()
+//{
+//	QByteArray block = "GET /cgi-bin/gw2.cgi?f=j&xml=";
+//	QDateTime time = QDateTime::currentDateTime();
+//
+//	QString xmlStr = "<juan ver=\"\" seq=\"\"><setup type=\"write\" user=\"";
+//	xmlStr += m_DeviceInfo.m_sUserName + "\"" + " password=\"" + m_DeviceInfo.m_sPassword + "\">";
+//	xmlStr += "<time value=\"" + QString::number(time.toTime_t()) + "\" /></setup></juan>";
+//	
+//	block += QUrl::toPercentEncoding(xmlStr, "", "");
+//	block += " HTTP/1.1\r\n";
+//	block += "Connection: keep-alive\r\n";
+//	block += "\r\n";
+//
+//	m_tcpSocket->write(block);
+//	if (m_tcpSocket->waitForBytesWritten(500))
+//	{
+//		return 0;
+//	}
+//	else
+//		return 1;
+//}
+//int IpcDeviceClient::sndGetLocalSystemTime()
+//{
+//	QByteArray block;
+//	block += "GET /netsdk/system/time/localtime HTTP/1.1\r\n";
+//	block += "Authorization: Basic YWRtaW46\r\n";
+//	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
+//	block += "X-Requested-With: XMLHttpRequest\r\n";
+//	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
+//	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
+//	block += "DNT: 1\r\n";
+//	block += "Connection: Keep-Alive\r\n";
+//	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
+//	block += "\r\n";
+//	m_tcpSocket->write(block);
+//	if (m_tcpSocket->waitForBytesWritten(500))
+//	{
+//		return 0;
+//	}
+//	else
+//		return 1;
+//}
+//int IpcDeviceClient::sndSyncTimeCmd()
+//{
+//	QByteArray block;
+//	block += "PUT /netsdk/system/time/localtime HTTP/1.1\r\n";
+//	block += "Authorization: Basic YWRtaW46\r\n";
+//	block += "Accept: application/json, text/javascript, */*; q=0.01\r\n";
+//	block += "X-Requested-With: XMLHttpRequest\r\n";
+//	block += "Referer: http://" + m_DeviceInfo.m_sAddr.toLatin1() + "/view.html\r\n";
+//	block += "Host: " + m_DeviceInfo.m_sAddr.toLatin1() + "\r\n";
+//	block += "DNT: 1\r\n";
+//	block += "Content-Length: 27Connection: Keep-Alive\r\n";
+//	block += "Cookie: juanipcam_lang=zh-cn; login=admin%2C; sync_time=true; usr=" + m_DeviceInfo.m_sUserName + "; pwd=" + m_DeviceInfo.m_sPassword + "\r\n";
+//	block += "\r\n";
+//
+//	QDateTime curTime = QDateTime::currentDateTime();
+//	QString timeStr = curTime.toString("yyyy-MM-ddThh:mm:ss") + m_timeZone;
+//	block += "\"" + timeStr.toLatin1() + "\"";
+//	m_tcpSocket->write(block);
+//	if (m_tcpSocket->waitForBytesWritten(500))
+//	{
+//		return 0;
+//	}
+//	else
+//		return 1;
+//}
+//void IpcDeviceClient::SyncTime()
+//{
+//	if (m_DeviceInfo.m_sAddr.isEmpty() || m_DeviceInfo.m_ports.isEmpty())
+//	{
+//		return;
+//	}
+//
+//	m_tcpSocket = new QTcpSocket(this);
+//	connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(Reveived()));
+//
+//	m_tcpSocket->connectToHost(QHostAddress(m_DeviceInfo.m_sAddr), (quint16)m_DeviceInfo.m_ports["media"].toUInt());
+//	if (m_tcpSocket->waitForConnected(1000))
+//	{
+//		//get version info
+//		sndGetVesionInfo();
+//		m_steps = 1;
+//	}
+//}
+//void IpcDeviceClient::Reveived()
+//{
+//	QVariantMap item;
+//	if (m_tcpSocket->bytesAvailable() > 0)
+//	{
+//		QByteArray buffer = m_tcpSocket->readAll();
+//		if (buffer.contains("HTTP/1.1 200 OK"))
+//		{
+//			if (1 == m_steps)
+//			{
+//				int posStart = buffer.indexOf("software_version") + qstrlen("software_version=\\\"");
+//				int posEnd = buffer.indexOf("\\\"", posStart);
+//
+//				QByteArray ms = buffer.mid(posStart);
+//
+//				m_softwareVersion = buffer.mid(posStart, posEnd - posStart);
+//				if (m_softwareVersion.left(5) <= "1.1.3")
+//				{
+//					sndSyncTimeForPreVersion();
+//					m_steps = 2;
+//				}
+//				else
+//				{
+//					sndGetLocalSystemTime();
+//					m_steps = 3;
+//				}
+//			}
+//			else if (2 == m_steps)
+//			{
+//				//sync time over
+//				item.insert("statusCode", 0);
+//				item.insert("statusMsg", "OK");
+//				eventProcCall("SyncTimeMsg", item);
+//
+//				m_steps = 0;
+//				m_tcpSocket->deleteLater();
+//				return;
+//			}
+//			else if (3 == m_steps)
+//			{
+//				int posStart = buffer.indexOf("\"") + 1;
+//				int posEnd = buffer.lastIndexOf("\"");
+//				QByteArray localSysTime = buffer.mid(posStart, posEnd - posStart);
+//				m_timeZone = localSysTime.right(6);
+//				sndSyncTimeCmd();
+//				m_steps = 4;
+//			}
+//			else if (4 == m_steps)
+//			{
+//				QString status;
+//				int code;
+//				QRegExp rx("[a-zA-Z]+");
+//				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusMessage") + qstrlen("statusMessage")))
+//				{
+//					status = rx.cap(0);
+//				}
+//				rx = QRegExp("\\d+");
+//				if (-1 != rx.indexIn(buffer, buffer.indexOf("statusCode") + qstrlen("statusCode")))
+//				{
+//					code = rx.cap(0).toUInt();
+//				}
+//
+//				item.insert("statusCode", code);
+//				item.insert("statusMsg", status);
+//				eventProcCall("SyncTimeMsg", item);
+//
+//				m_steps = 0;
+//				m_tcpSocket->deleteLater();
+//			}
+//		}
+//		else
+//		{
+//			item.insert("statusCode", -1);
+//			item.insert("statusMsg", "failure");
+//			eventProcCall("SyncTimeMsg", item);
+//
+//			m_steps = 0;
+//			m_tcpSocket->deleteLater();
+//		}
+//	}
+//}
 
 int IpcDeviceClient::ControlPTZUp( const int &nChl, const int &nSpeed )
 {
