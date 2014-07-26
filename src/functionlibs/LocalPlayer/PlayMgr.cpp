@@ -200,8 +200,9 @@ void PlayMgr::run()
 		{
 			qDebug()<<(int)this<<" open "<<filePath;
 
-			int frameRate = AVI_frame_rate(file);
+// 			int frameRate = AVI_frame_rate(file);
 			int totalFrames = AVI_video_frames(file);
+			int frameRate = totalFrames/(per.end - per.start);
 
 //			int isKeyFrame = 0;
 			long length = 0;
@@ -268,14 +269,24 @@ void PlayMgr::run()
 						isFirstKeyFrame = true;
 						continue;
 					}
-					int waitmilliSeconds = 0;
-					waitmilliSeconds = 1000000/frameRate + m_nSpeedRate*10*1000;
+// 					int waitmilliSeconds = 0;
+// 					waitmilliSeconds = 1000000/frameRate + m_nSpeedRate*10*1000;
+// 					qint64 before = frameTimer.nsecsElapsed()/1000;
+// 					if (waitmilliSeconds - spend > 0)
+// 					{
+// 						usleep(waitmilliSeconds - spend);
+// 					}
+// 					spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
+
+					int waitmilliSeconds = 1000000*(per.end - per.start)/totalFrames + m_nSpeedRate*10*1000 - frameTimer.nsecsElapsed()/1000;
 					qint64 before = frameTimer.nsecsElapsed()/1000;
-					if (waitmilliSeconds - spend > 0)
+					qint64 sec = 0;
+					if (waitmilliSeconds > 0)
 					{
-						usleep(waitmilliSeconds - spend);
+						sec = waitmilliSeconds - frameTimer.nsecsElapsed()/1000 + before - spend;
+						usleep(sec > 0 ? sec : 0);
 					}
-					spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
+					spend = frameTimer.nsecsElapsed()/1000 - before - sec;
 
 					m_pVedioDecoder->decode(vedioBuff, length);
 					frameTimer.start();

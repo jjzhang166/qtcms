@@ -536,7 +536,7 @@ void RecordPlayer::showEvent( QShowEvent * )
 			}
 		}else{
 			GroupContinue();
-			GroupStop();
+// 			GroupStop();
 		}
 	}
 }
