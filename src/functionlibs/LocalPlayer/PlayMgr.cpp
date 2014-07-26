@@ -278,7 +278,7 @@ void PlayMgr::run()
 // 					}
 // 					spend = frameTimer.nsecsElapsed()/1000 - before - waitmilliSeconds;
 
-					int waitmilliSeconds = 1000000*(per.end - per.start)/totalFrames + m_nSpeedRate*10*1000 - frameTimer.nsecsElapsed()/1000;
+					qint64 waitmilliSeconds = (qint64)1000000*(per.end - per.start)/totalFrames + m_nSpeedRate*10*1000 - frameTimer.nsecsElapsed()/1000;
 					qint64 before = frameTimer.nsecsElapsed()/1000;
 					qint64 sec = 0;
 					if (waitmilliSeconds > 0)
