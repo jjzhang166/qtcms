@@ -16,11 +16,12 @@ int						g_nDDrawRef = 0;
 void InitDDrawGlobal()
 {
 	g_csClipper.Lock();
-/*	if (g_nDDrawRef > 0)
+	if (g_nDDrawRef > 0)
 	{
+		g_nDDrawRef ++;
 		g_csClipper.Unlock();
 		return;
-	}*/
+	}
 
 	// InitSource
 	HRESULT hr;
