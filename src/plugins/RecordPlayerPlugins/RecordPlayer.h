@@ -112,6 +112,7 @@ private:
 	QVariantMap fileMap;
 	QString fileKey;
 	QMap<int, SearchProcess*> m_schEvMap;
+	int m_wndCount;
 };
 
 

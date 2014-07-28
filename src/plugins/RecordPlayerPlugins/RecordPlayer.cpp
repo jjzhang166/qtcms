@@ -18,6 +18,7 @@ m_bIsOpenAudio(false),
 m_bIsHide(false),
 m_uiPersent(50),
 m_wndNum(0),
+m_wndCount(0),
 m_CurStatus(STATUS_STOP)
 {
 	//ÉêÇëILocalRecordSearch½Ó¿Ú
@@ -683,6 +684,7 @@ int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate,
 		pSchProc->setContext(m_pLocalRecordSearch);
 		pSchProc->setPara(nWndId, sDate, sStartTime, sEndTime, nTypes);
 		pSchProc->start();
+		m_wndCount++;
 	}
 
 
@@ -751,4 +753,19 @@ void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
 	m_schEvMap.remove(wnd);
 
 	EventProcCall("GetRecordFileEx", evMap);
+
+	if (m_wndCount < 64 && m_schEvMap.isEmpty())
+	{
+		QVariantMap item;
+		item.insert("searchResult", "INCOMPLETE");
+		EventProcCall("SearchRecordOver", item);
+	}
+
+	if (m_wndCount >= 64 && m_schEvMap.isEmpty())
+	{
+		QVariantMap item;
+		item.insert("searchResult", "SUCCESS");
+		EventProcCall("SearchRecordOver", item);
+		m_wndCount = 0;
+	}
 }
