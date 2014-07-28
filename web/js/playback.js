@@ -9,6 +9,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	localSearchWindNum=0; //要搜索的本地回放文件的设备
 	searchSTOP=0;  //搜索停止. 包括搜索结束,搜索过程中失败
 
+	localsearchSTOP = 1; //本地搜索是否停止
+
 	$(function(){
 		oBottom = $('#operating');
 		
@@ -111,7 +113,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		//return false;
 
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
-		/*oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');*/
+		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
 
 		bFullScreen = 0;
 
@@ -322,8 +324,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		if(bool && data.index_0){
 			RecFileInfo2UI(data)
-			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);
+			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);*/
 		}
 
 		localSearchWindNum++;
@@ -653,6 +655,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},200);
 	}*/
 	function playBackSerchFile(){
+		if(bool){
+			if(localsearchSTOP){
+				localsearchSTOP = 0;
+			}else{
+				console.log('正在搜索');
+				return;
+			}
+		}
+
+
 		dragStopMove();
 		localSearchWindNum=0;
 		searchSTOP=0;
@@ -668,6 +680,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						  		.find('input').removeProp('disabled').removeProp('checked');
 
 		ocxsearchVideo();
+	}
+
+	function SearchRecordOverCallback(data){
+		//console.log(data);
+		if(data.searchResult){
+			localsearchSTOP = 1;
+		}
 	}
 
 	//初始化控件与文件列表的关系.
