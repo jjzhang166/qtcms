@@ -411,30 +411,6 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	num = num.toString();
 	return num = num<10 ? '0'+num : num;
 }
-function showdata(id,type){  //显示表单下有ID的元素的val值
-	return;
-	var submit = $('#'+type).find('.confirm:visible').attr('id');
-	var str =submit+'/'+id +'/';
-	$('#'+type).find('input[id]').each(function(){ 
-		str += $(this).attr('id')+':'+$(this).val()+'/';
-	})
-	debugData(str);
-}
-function debugData(data){  // 在ID为test的div元素中打印对象数据
-	return;
-	var index='default',
-		str = 'Null';
-	$('#test').html('');
-	if(typeof(data) == 'number' || typeof(data) == 'string'){
-		$('<span>'+index+'</span>:<span>"'+data+'"/</span>').prependTo($('#test'));
-	}else{
-		for(i in data){ 
-			index = i;
-			str = data[i];
-			$('<span>'+index+'</span>:<span>'+str+'</span>/').prependTo($('#test'));
-		}
-	}
-}
 
 //弹出框部分操作
 function closeMenu(){ 

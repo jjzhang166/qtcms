@@ -91,15 +91,15 @@ function ignoreKey(key){
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
-	async && emptyDevSetMenu(); //异步请求时清空表单.
+	if(typeof(beforeSend) == 'string' && async)emptyDevSetMenu(); //异步请求时清空表单.
 
 	type = 'GET'
 
-	__AJAXconstruct(url,data,beforeSend,success,function(){
+	__AJAXconstruct(url,data,beforeSend,success,function(str){
 		dataType='json';
 		jsonp='';
 		
-		typeof(complete) == 'function' && complete();
+		typeof(complete) == 'function' && complete(str);
 	});								
 }
 
@@ -127,11 +127,13 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 
 function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始化方法.
 
-	var str = type == 'GET' ? 'loading' : 'saveing' ;
+	var str = type == 'GET' ? 'loading' : 'saveing',
 
-	var targetMenu = $('#set_content div.ipc_list:visible');
+		warp = $('#set_content div.ipc_list:visible');
 
-		oHint = showAJAXHint(str).css('top',targetMenu.height() + 46);
+		if(typeof(beforeSend) != 'boolean'){
+			var oHint = showAJAXHint(str).css('top',warp.height() + 46);	
+		}		
 
 	//console.log('----------usr:--'+nowDev._USR+'-----password:--'+nowDev._PWD+'----');
 
@@ -166,11 +168,13 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			console.log('+++++++++++++++++++++++++++++++');*/
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
-
-			showAJAXHint(str);
+			if(typeof(beforeSend) != 'boolean'){
+				showAJAXHint(str);
+			}
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
 			console.log(Data);
+
 			typeof(success) == 'function' && success(Data);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -186,7 +190,8 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 				nowDev._VER = 'no auth';
 			}
 
-			str != 'abort' && showAJAXHint(str);
+			if(str != 'abort' && typeof(beforeSend) != 'boolean')
+				showAJAXHint(str);
 
 /*
 			if(str != 'abort'){
@@ -208,16 +213,17 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 		},
 		complete: function(XMLHttpRequest, textStatus){
 			console.log('-------------complete-----------'+str);
-			if(str != 'abort'){
-				if(str == 'loading_success' || str == 'save_success'){
-					oHint.fadeOut(2000);
-					checkAJAX();
-				}else{
-					showAJAXHint(str);
-				}
 
-				typeof(complete) == 'function' && complete();
-			}
+			typeof(complete) == 'function' && complete(str);
+		
+			if(str == 'abort' || typeof(beforeSend) == 'boolean' )return;
+
+			if(str == 'loading_success' || str == 'save_success'){
+				oHint.fadeOut(2000);
+				checkAJAX();
+			}else{
+				showAJAXHint(str);
+			}	
 		}
 	});
 }

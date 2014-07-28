@@ -229,6 +229,8 @@ var oSearchOcx,
 				for(i in data){
 					$('#'+i).val(data[i]);
 				}
+			}else{
+				$('#Allocation tbody input:text').val('');
 			}
 			$('#SerachedDevList').find('tr').removeClass('sel')
 			$(this).addClass('sel');

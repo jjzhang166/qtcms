@@ -82,36 +82,58 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfo2UI = function(){ //获取网络信息
+		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 
 		emptyDevSetMenu();
+
+		var warp = $('#set_content div.ipc_list:visible'),
+
+			str = 'loading',
+
+			oHint = showAJAXHint(str).css('top',warp.height() + 46),
+
+			before = false,
+
+			Request=[];
 		
 		//async=false;
 
-		console.log('-------------------ipcnetworkInfo2UI--------------------------');
-		var warp = $('#set_content div.ipc_list:visible');
-
-		_AJAXget(this.getRequestURL()+'/netsdk/System/deviceInfo/macAddress','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/System/deviceInfo/macAddress','',before,function(data){
 			warp.find('input[data-UI="mac"]').val(data);
-		});
+		},finish);
 
-		_AJAXget(this.getRequestURL()+'/netsdk/Network/Interface/1','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Interface/1','',before,function(data){
 			data2UI(data);
 			warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
 			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns') : disable('ddns',true);
 			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);
-		});
+		},finish);
 
-		_AJAXget(this.getRequestURL()+'/netsdk/Network/Esee','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Esee','',before,function(data){
 			warp.find('input[name="esee"][value="'+data.enabled+'"]').prop('checked',true);
-		});
+		},finish);
 
-		_AJAXget(this.getRequestURL()+'/netsdk/Network/Dns','','',data2UI);
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Dns','',before,data2UI,finish);
 
-		_AJAXget(this.getRequestURL()+'/netsdk/Network/Port/1','','',function(data){
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Port/1','',before,function(data){
 			warp.find('input[data-UI="value"]').val(data.value);
-		});
+		},finish);
 
 		//async=true;
+
+		function finish(str){
+			//return;
+			Request.push(str);
+			var s = '';
+			if(Request.length > 4){
+				if(/^(loading_success\,?){5}$/.test(Request.join(','))){
+					s ='loading_success';
+				}else{
+					s ='loading_fail';
+				}
+				showAJAXHint(s).fadeOut(2000);
+			}
+		}
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息

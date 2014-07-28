@@ -5,7 +5,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	//localRecFile=[],//本地回访搜索文件
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
-	minFileEndTime='23:59:59', //搜索到的文件最小时间
+	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	localSearchWindNum=0; //要搜索的本地回放文件的设备
 	searchSTOP=0;  //搜索停止. 包括搜索结束,搜索过程中失败
 
@@ -193,7 +193,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 	function playVideo(event){
 		//alert(event.pageX);
-		if(event.pageX<81 || (maxFileEndTime < minFileEndTime)) return;
+		if(event.pageX<81 || (maxFileEndTime < minFileStartTime)) return;
 
 		dragStopMove();
 		nowSpeed = 1;
@@ -211,10 +211,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
 
-			if(begin<minFileEndTime){
-				begin =date+' '+minFileEndTime;
+			if(begin<minFileStartTime){
+				begin =date+' '+minFileStartTime;
 				var p = ($('#channelvideo').width()-79)/(3600*24);
-				$('div.play_time').css('left',p*time2Sec(minFileEndTime)+79);
+				$('div.play_time').css('left',p*time2Sec(minFileStartTime)+79);
 			}else{
 				begin = date+' '+begin;
 			}
@@ -254,18 +254,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	/*function getDragSart(X2,left,date){
 		var time=returnTime((left-81)/(X2-81)*24*3600);
 
-		time = time > minFileEndTime ? time : minFileEndTime;
+		time = time > minFileStartTime ? time : minFileStartTime;
 
 		return  date+' '+time;
 	}*/
 	function playAction(str){
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
-			//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
-			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
-				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
-			}else{
-				obj[str]();
-			}
+		//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
+		if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
+			obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
+		}else{
+			obj[str]();
+		}
 	}
 
 	var nowSpeed = 1;
@@ -505,7 +505,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				//console.log(data);
 				var start = data.start.split(' ')[1];
 
-					minFileEndTime = start < minFileEndTime ? start : minFileEndTime;
+					minFileStartTime = start < minFileStartTime ? start : minFileStartTime;
 
 					start = time2Sec(start);
 
@@ -543,7 +543,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}
 			$(str).appendTo(target);
 		}
-		//console.log('minFileEndTime:'+minFileEndTime+'-----------------maxFileEndTime:'+maxFileEndTime);
+		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
 		/*console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
 		console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);*/
 	}
@@ -556,7 +556,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function dragStartMove(){
-		if(maxFileEndTime<minFileEndTime) return;
+		if(maxFileEndTime<minFileStartTime) return;
 
 		var SynTimeUnits = 1000;//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
 		var oPlay = bool ? oPlaybackLocl : oPlayBack;
@@ -658,7 +658,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		recFile=[];
 
 		maxFileEndTime='00:00:00';
-		minFileEndTime='23:59:59';
+		minFileStartTime='23:59:59';
 
 		//!bool && PBrecFileTableInit();
 
