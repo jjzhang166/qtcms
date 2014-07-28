@@ -5,6 +5,8 @@
 #include <QElapsedTimer>
 #include <QDebug>
 
+#define qDebug() qDebug()<<"======="<<__FUNCTION__<<(int)this
+
 QMutex g_mtxPause;
 QWaitCondition g_waitConPause;
 
@@ -150,9 +152,12 @@ void PlayMgr::run()
 		PeriodTime per = m_filePeriodMap.value(filePath);
 		start = per.start;
 
+		qDebug()<<filePath;
+
 		while (skipPos < m_skipTime.size() || m_skipTime.isEmpty())
 		{
 			timeOffset = currentPlayTime.toTime_t() - start;
+			qDebug()<<"timeoff :"<<timeOffset;
 			if (timeOffset >= 0)
 			{
 				break;
@@ -168,7 +173,7 @@ void PlayMgr::run()
 				{
 					waitSec = m_skipTime[skipPos].start - currentPlayTime.toTime_t();
 				}
-
+				qDebug()<<"wait:"<<waitSec;
 				if (waitSec > 0)
 				{
 					m_mutex.lock();
@@ -186,6 +191,7 @@ void PlayMgr::run()
 					skipTime = m_skipTime[skipPos].end - m_skipTime[skipPos].start;
 					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip)
 					{
+						qDebug()<<"skip:"<<skipTime;
 						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
 					}
 					currentPlayTime = currentPlayTime.addSecs(skipTime);

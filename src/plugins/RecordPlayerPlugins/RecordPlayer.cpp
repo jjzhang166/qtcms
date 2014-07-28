@@ -647,7 +647,7 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 
 int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
 {
-	qDebug()<<(int)this<<" searchVideoFileEx2"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
+// 	qDebug()<<(int)this<<" searchVideoFileEx2"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
 	
 	if (nWndId < 0 || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{

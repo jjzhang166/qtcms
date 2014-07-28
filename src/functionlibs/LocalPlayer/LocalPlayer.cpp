@@ -668,7 +668,7 @@ int LocalPlayer::countSkipTime()
 
 int LocalPlayer::GroupPlay()
 {
-	qDebug()<<"GroupPlay";
+	qDebug()<<"GroupPlay mapSize:"<<m_GroupMap.size();
 	if (m_GroupMap.isEmpty())
 	{
 		qDebug()<<"GroupPlay groupmap is empty";
@@ -1272,6 +1272,8 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 	QString sqlCommand = QString("select start_time, end_time, path from local_record where win_id='%1' and date='%2' and end_time>='%3' and start_time<='%4' and (%5) order by start_time")
 		.arg(wndId).arg(date.toString("yyyy-MM-dd")).arg(star.toString("hh:mm:ss")).arg(end.toString("hh:mm:ss")).arg(sqlType);
 	//query
+
+	qDebug()<<__FUNCTION__<<"wndID:"<<wndId<<" sql: "<<sqlCommand;
 	foreach(QString disk, sltUsedDisk)
 	{
 		QString dbPath = disk + ":/REC/record.db";
@@ -1302,9 +1304,10 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 			item.end = endDateTime.toTime_t();
 			playTime.append(item);
 			m_filePeriodMap.insert(path, item);
+			qDebug()<<__FUNCTION__<<str;
 		}
 		_query.finish();
 		m_db->close();
 	}
-	return fileList;
+	return sortFileList(fileList);
 }
