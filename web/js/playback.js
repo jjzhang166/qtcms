@@ -591,6 +591,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function PBrecFileTableInit(){
 		var currOdevData= $('div.dev_list').find('li.sel span.device').data('data') || $('div.dev_list').find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 		var initWind = bool ? 64 : currOdevData.channel_count;
+		console.log('+++++++++++++要初始化的文件列表数量+++++++++++++++++++:'+initWind);
 		initWind+=1;
 		initWind = initWind < 5 ? 5 : initWind;
 
@@ -616,7 +617,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/*var chk='checked="checked"';
 			if(i>4)
 				chk='';*/
-			str+= '<tr><td class="no_border"><input id="chk_'+i+'" type="checkbox" /><label for="chk_'+i+'">'+str2+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
+			str+= '<tr><td class="no_border"><input id="chk_'+i+'" type="checkbox" /><label for="chk_'+i+'">'+str2+' '+i+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
 		}
 
 		$(str).appendTo(oVideoList);

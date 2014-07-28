@@ -69,7 +69,7 @@ function setTables(){   // 回放页面底部表格最大化相应调整
 }
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 	/*var oNow=$('#now_time');
-	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/
+	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/	
 	var b=oDrag.hasClass('now_sound'),
 		left;
 	if(b){
@@ -84,11 +84,11 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			if(veiwObj.id == 'playback'){
+			/*if(veiwObj.id == 'playback'){
 				document.getElementById('playbackLocl').SetVolume(left);
 			}else if(veiwObj.id == 'playbackLocl'){
 				document.getElementById('playback').SetVolume(left);
-			}
+			}*/
 			//veiwObj.vol = left;
 		}/*else{
 			showNowPlayBackTime(oNow,left,X2);

@@ -7,6 +7,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	this._TYPE = type;
 	this._VER = 0;
 	this._Upgrade = '1.3.0';  // CMS 支持的最低版本IPC
+	
+	_Request=[];
 
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);
 
@@ -82,6 +84,10 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfo2UI = function(){ //获取网络信息
+		var This = this;
+
+		_Request=new Array(5);
+
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 
 		emptyDevSetMenu();
@@ -94,7 +100,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 			before = false,
 
-			Request=[];
+			finish = this.checkMultRequests;
+
 		
 		//async=false;
 
@@ -115,25 +122,12 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 		_AJAXget(this.getRequestURL()+'/netsdk/Network/Dns','',before,data2UI,finish);
 
+
 		_AJAXget(this.getRequestURL()+'/netsdk/Network/Port/1','',before,function(data){
 			warp.find('input[data-UI="value"]').val(data.value);
 		},finish);
 
 		//async=true;
-
-		function finish(str){
-			//return;
-			Request.push(str);
-			var s = '';
-			if(Request.length > 4){
-				if(/^(loading_success\,?){5}$/.test(Request.join(','))){
-					s ='loading_success';
-				}else{
-					s ='loading_fail';
-				}
-				showAJAXHint(s).fadeOut(2000);
-			}
-		}
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
@@ -203,22 +197,32 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.ipczoneInfo2UI = function(){ //获取时区信息
 
+		_Request=new Array(3);
+
+		var warp = $('#set_content div.ipc_list:visible'),
+
+			str = 'loading',
+
+			oHint = showAJAXHint(str).css('top',warp.height() + 46),
+
+			finish = this.checkMultRequests;
+
 		$('#PC_time').val(renewtime());
 
 		console.log('-------------------timeZone--------------------------');
-		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/timeZone','','',function(data){
+		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/timeZone','',false,function(data){
 			$('#time_zone').val(data).attr('data',data);
-		});
+		},finish);
 
 		//console.log('-------------------ntp-------------'+this.getRequestURL()+'/netsdk/system/time/ntp-------------');
-		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/ntp','','',data2UI);
+		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/ntp','',false,data2UI,finish);
 
 		//console.log('-------------------localTime-------------'+this.getRequestURL()+'/NetSDK/System/time/localTime-------------');
-		_AJAXget(this.getRequestURL()+'/NetSDK/System/time/localTime','','',function(data){
+		_AJAXget(this.getRequestURL()+'/NetSDK/System/time/localTime','',false,function(data){
 			var time = data.split('+')[0].replace('T','  ');
 			$('#curent_time').val(time).attr('data',time);
 			//console.log(data);
-		})
+		},finish)
 
 		//console.log('-------------------PCTime--------------------------');
 
@@ -233,6 +237,34 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			_AJAXput(this.getRequestURL()+'/netsdk/system/time/timeZone','"'+$('#time_zone').val()+'"');
 
 			_AJAXput(this.getRequestURL()+'/netsdk/system/time/ntp','{"ntpEnabled":'+(warp.find('input[data-UI="ntpEnabled"]:checked').val() == 'true' ? true : false)+',"ntpServerDomain":"'+warp.find('input[data-UI="ntpServerDomain"]').val()+'"}')
+		}
+	}
+
+	this.checkMultRequests = function(str){
+
+		var arr = RequesePush(_Request,str),
+			l = arr.length -1,
+			s = '';
+
+		if(!arr[l])
+			return;
+
+		for(var i=0;i<arr.length;i++){
+			arr
+			if(arr[i]!='loading_success'){
+				showAJAXHint('loading_fail');
+			}else{
+				showAJAXHint('loading_success').fadeOut(2000);
+			}
+
+		}
+		function RequesePush(arr,str){
+			for(var i=0;i<arr.length;i++){
+				if(!arr[i]){
+					arr[i]=str;
+					return arr; 
+				}
+			}
 		}
 	}
 

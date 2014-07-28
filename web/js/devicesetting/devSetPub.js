@@ -166,16 +166,19 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			console.log(textStatus);
 
 			console.log('+++++++++++++++++++++++++++++++');*/
+			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
+
+			console.log(Data);
+
+			console.time('数据填充时间');
+			typeof(success) == 'function' && success(Data);
+			console.timeEnd('数据填充时间');
+
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
 			if(typeof(beforeSend) != 'boolean'){
 				showAJAXHint(str);
 			}
-			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
-
-			console.log(Data);
-
-			typeof(success) == 'function' && success(Data);
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
 
@@ -193,7 +196,6 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			if(str != 'abort' && typeof(beforeSend) != 'boolean')
 				showAJAXHint(str);
 
-/*
 			if(str != 'abort'){
 				console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
 				console.log(XMLHttpRequest.status);
@@ -207,9 +209,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 				console.log(errorThrown);
 
 				console.log('+++++++++++++++++++++++++++++++');
-			}*/
-			
-			//alert("error:" + textStatus);
+			}
 		},
 		complete: function(XMLHttpRequest, textStatus){
 			console.log('-------------complete-----------'+str);
@@ -230,7 +230,35 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 //IPC
 function PCTime2dev(){
+
+	showAJAXHint('saveing');
+
+	dataType='jsonp';
+	jsonp='jsoncallback';
+
 	$('#curent_time').val($('#PC_time').val());
+	var nowTime = new Date();
+
+	var xmlstr = '';
+	xmlstr += '<juan ver="1.0" seq="0">';
+	xmlstr += '<setup type="write" user="admin" password="">';
+	xmlstr += '<time value="' + nowTime.getTime()/1000 + '" />';
+	xmlstr += '</setup>';
+	xmlstr += '</juan>';
+
+	_AJAXget(nowDev.getRequestURL()+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,false,'',function(str){
+
+		dataType='json';
+		jsonp='';
+
+		if(str == 'loading_success' || str == 'save_success'){
+			showAJAXHint('save_success').fadeOut(2000);
+			checkAJAX();
+		}else{
+			showAJAXHint(str);
+		}
+	});
+
 }
 
 function checkAJAX(){
@@ -254,6 +282,8 @@ function checkAJAX(){
 
 //setting
 function submitThisMenu(str){
+	$('#ajaxHint').html('').stop(true,true).hide();
+	AJAX && AJAX.abort();
 	nowDev[str+'Put']();
 }
 

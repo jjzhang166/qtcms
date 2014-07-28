@@ -366,19 +366,20 @@ var oPlayBack={},  // 远程回访控件对象
 		now = 0;
 		path = data.path;
 		if(path != '')
+			var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
+			if(oList.length == 0){
+				return;
+			}
 			startDownload();
 	}
 
 	function startDownload(){
-		var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
-		if(oList.length == 0){
-			return;
-		}
-/*		if(now >= oList.length){
+		/*if(now >= oList.length){
 			show('所有选择的文件下载完成!');
 			now=0;
 			return false;
 		}*/
+		var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		var fileData = oList.eq(now).attr('uid').split('_');
 		console.log(fileData);

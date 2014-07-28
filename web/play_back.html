@@ -17,6 +17,7 @@
 
 <style type="text/css">
 	#channelvideo tr{position: relative;}
+	#operating #channelvideo { top: 38px; height: 76px; overflow: auto;}
 	#channelvideo .video{height:16px; position: absolute;top:1px;}
 	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
 
@@ -212,19 +213,17 @@
 <!-- 		<div style=" z-index:2; position: relative;height:96px; overflow:auto; top:38px;" id="recFile"> -->
 		<div class="play_time"></div>
 		<table class="table" cellpadding="0" cellspacing="0" style="over">
-			<thead>
 				<tr><td class="no_border" id="now_time" style="text-algin:center"><!-- 00:00:00 --></td><td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
-			</thead>
-			<tbody id="channelvideo">	
-				<tr><td class="no_border"><input id="chk_1" type="checkbox" /><label for="chk_1"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
-				</tr>
-				<tr><td class="no_border"><input id="chk_2" type="checkbox" /><label for="chk_2"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
-				</tr>
-				<tr><td class="no_border"><input id="chk_3" type="checkbox" /><label for="chk_3"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
-				</tr>
-				<tr><td class="no_border"><input id="chk_4" type="checkbox" /><label for="chk_4"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
-				</tr>
-			</tbody>
+		</table>
+		<table id="channelvideo" cellpadding="0" cellspacing="0" style="over" class="table">
+			<tr><td class="no_border"><input id="chk_1" type="checkbox" /><label for="chk_1"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_2" type="checkbox" /><label for="chk_2"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_3" type="checkbox" /><label for="chk_3"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_4" type="checkbox" /><label for="chk_4"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
 		</table>
 <!-- 	</div> -->
 	</div>
