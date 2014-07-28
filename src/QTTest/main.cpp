@@ -8,6 +8,8 @@
 #include <QDateTime>
 #include <QTextStream>
 #include <MyEventSender.h>
+
+QFile outFile; 
 void customMessageHandler(QtMsgType type, const char *msg){
 	QString txt;  
 	switch (type) {  
@@ -29,9 +31,12 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		txt = QString("Fatal: %1").arg(msg);  
 		abort();  
 	}  
-
-	QFile outFile("debug.log");  
-	outFile.open(QIODevice::WriteOnly | QIODevice::Append);  
+	if (outFile.isOpen())
+	{
+		//do nothing
+	}else{
+		outFile.open(QIODevice::WriteOnly | QIODevice::Append);  
+	}
 	QTextStream ts(&outFile);  
 	ts << txt << endl; 
 
@@ -44,8 +49,24 @@ int main(int argc, char *argv[])
 	MyEventSender a(argc,argv);
 	//debug log
 	qInstallMsgHandler(customMessageHandler);
-	QFile outFile("debug.log");  
-	outFile.open(QIODevice::WriteOnly | QIODevice::Append);  
+	QString sAppPath=QCoreApplication::applicationDirPath();
+	sAppPath+="/log";
+	QDir tLogDir;
+	if (tLogDir.exists(sAppPath))
+	{
+		//do nothing
+	}else{
+		tLogDir.mkpath(sAppPath);
+	}
+	
+	QString sLogName=sAppPath+"/"+QDate::currentDate().toString("dd.MM.yyyy")+".log";
+	outFile.setFileName(sLogName);
+	if (outFile.isOpen())
+	{
+		//do nothing
+	}else{
+		outFile.open(QIODevice::WriteOnly | QIODevice::Append);  
+	}
 	QTextStream ts(&outFile);  
 	QString txt="\r\n\r\n=====start=====\r\n\r\n";
 	ts << txt << endl; 
