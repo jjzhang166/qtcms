@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QTextStream>
+#include <MyEventSender.h>
 void customMessageHandler(QtMsgType type, const char *msg){
 	QString txt;  
 	switch (type) {  
@@ -39,7 +40,8 @@ void customMessageHandler(QtMsgType type, const char *msg){
 }
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+   /* QApplication a(argc, argv);*/
+	MyEventSender a(argc,argv);
 	//debug log
 	qInstallMsgHandler(customMessageHandler);
 	QFile outFile("debug.log");  

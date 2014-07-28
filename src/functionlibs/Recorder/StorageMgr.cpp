@@ -420,15 +420,15 @@ QStringList StorageMgr::deleteFile(const QStringList& fileList)
 	QStringList hasDelete;
 	if (!fileList.isEmpty())
 	{
-		quint64 FreeByteAvailable = 0;
-		quint64 TotalNumberOfBytes = 0;
-		quint64 TotalNumberOfFreeBytes = 0;
-		int filesize = 0;
-		if(0 != m_pDisksSetting->getFilePackageSize(filesize))
-			filesize = 128;
-		int freesizem = 0;
-		if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
-			freesizem = 4096;
+		//quint64 FreeByteAvailable = 0;
+		//quint64 TotalNumberOfBytes = 0;
+		//quint64 TotalNumberOfFreeBytes = 0;
+		//int filesize = 0;
+		//if(0 != m_pDisksSetting->getFilePackageSize(filesize))
+		//	filesize = 128;
+		//int freesizem = 0;
+		//if(0 != m_pDisksSetting->getDiskSpaceReservedSize(freesizem))
+		//	freesizem = 4096;
 
 		m_nPosition=__LINE__;
 		foreach(QString file, fileList)
@@ -442,14 +442,14 @@ QStringList StorageMgr::deleteFile(const QStringList& fileList)
 			{
 				dir.rmpath(dirpath);
 			}
-			QString sdisk = file.left(2);
-			GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
-			qint64 freeSize = (qint64)TotalNumberOfFreeBytes - (qint64)freesizem*1024*1024;
-			qint64 fiveFile = filesize * 1024 * 1024 * 5;
-			if (freeSize > fiveFile)//Ensure that the free space can store 5 files
-			{
-				break;
-			}
+			//QString sdisk = file.left(2);
+			//GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+			//qint64 freeSize = (qint64)TotalNumberOfFreeBytes - (qint64)freesizem*1024*1024;
+			//qint64 fiveFile = filesize * 1024 * 1024 * 5;
+			//if (freeSize > fiveFile)//Ensure that the free space can store 5 files
+			//{
+			//	break;
+			//}
 		}
 	}
 	return hasDelete;
