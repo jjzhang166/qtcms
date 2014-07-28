@@ -6,10 +6,42 @@
 #include <QList>
 #include "netlib.h"
 #pragma comment(lib,"netlib.lib")
-
+#include <QList>
+#include <QMultiMap>
 #define qDebug() qDebug()<<"this:"<<(int)this
 
+typedef struct __tagDataBaseInfo{
+	QString sDatabaseName;
+	QSqlDatabase *pDatabase;
+	int nCount;
+	QMultiMap<int *,QList<int>> tThisThread;
+}tagDataBaseInfo;
+QMultiMap<QString ,tagDataBaseInfo> g_tDataBase;
+void initDataBase(QString sDatabaseName,int *nThis,int nThreadId,QList<int>& nThreadIdList){
+	//¼ì²âsDatabaseName ÊÇ·ñ´æÔÚ
+	if (g_tDataBase.contains(sDatabaseName))
+	{
+		
+	}else{
+		tagDataBaseInfo tDataBaseInfo;
+		tDataBaseInfo.sDatabaseName=sDatabaseName;
+		tDataBaseInfo.nCount=1;
+		tDataBaseInfo.pDatabase=new QSqlDatabase;
+		tDataBaseInfo.pDatabase->addDatabase("QSQLITE",sDatabaseName);
+		QList <int> tThreadIdList;
+		tThreadIdList.append(nThreadId);
+		tDataBaseInfo.tThisThread.insert(nThis,tThreadIdList);
+		if (tDataBaseInfo.pDatabase->open())
+		{
+			//do nothing
+		}else{
 
+		}
+	}
+}
+void deInitDataBase(QList<int > nThreadIdList){
+
+}
 QMutex StorageMgr::m_schRecLock;
 QMutex StorageMgr::m_sLock;
 QMutex StorageMgr::m_dblock;

@@ -17,9 +17,16 @@ bool MyEventSender::notify( QObject *receiver, QEvent *e )
 	try
 	{
 		bFlag=QApplication::notify(receiver,e);
-	}catch(QEvent *){
-		qDebug()<<__FUNCTION__<<__LINE__<<"there catch a exception"<<receiver<<e->type();
+	}catch(QEvent *pe){
+		qDebug()<<__FUNCTION__<<__LINE__<<"there catch a exception"<<receiver<<pe->type();
 		throw;
+	}catch(std::exception &exp){
+		qDebug()<<__FUNCTION__<<__LINE__<<"there catch a exception"<<exp.what();
+		throw exp;
+	}
+	catch(...){
+		qDebug()<<__FUNCTION__<<__LINE__<<"unkown exception";
+		throw ;
 	}
 	return bFlag;
 }
