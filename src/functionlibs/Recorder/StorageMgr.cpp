@@ -382,14 +382,13 @@ bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 				RecInfo each = recInfo.at(i);
 				//delete file from directory
 				m_nPosition=__LINE__;
-				QStringList hasDelete = deleteFile(each.fileLsit);
-				qDebug()<<__LINE__<<"files have deleted:"<<hasDelete;
+				deleteFile(each.fileLsit);
 				//deduct period from each window id in search_record table
 				m_nPosition=__LINE__;
-				deductPeriod(each.dbPath, hasDelete, earlestDate.toString("yyyy-MM-dd"));
+				deductPeriod(each.dbPath, earlestDate.toString("yyyy-MM-dd"));
 				//delete record from database
 				m_nPosition=__LINE__;
-				deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"), hasDelete);
+				deleteRecord(each.dbPath, earlestDate.toString("yyyy-MM-dd"));
 			}
 			nStep=0;
 			   }
@@ -415,9 +414,8 @@ QDate StorageMgr::minDate(QList<QDate> dateList)
 	return minDate;
 }
 
-QStringList StorageMgr::deleteFile(const QStringList& fileList)
+void StorageMgr::deleteFile(const QStringList& fileList)
 {
-	QStringList hasDelete;
 	if (!fileList.isEmpty())
 	{
 		//quint64 FreeByteAvailable = 0;
@@ -434,7 +432,6 @@ QStringList StorageMgr::deleteFile(const QStringList& fileList)
 		foreach(QString file, fileList)
 		{
 			QFile::remove(file);
-			hasDelete<<file;
 			QString dirpath = file.left(file.lastIndexOf("/"));
 			QDir dir(dirpath);
 			dir.setFilter(QDir::Files);
@@ -452,7 +449,6 @@ QStringList StorageMgr::deleteFile(const QStringList& fileList)
 			//}
 		}
 	}
-	return hasDelete;
 }
 
 bool StorageMgr::GetDiskFreeSpaceEx(char* lpDirectoryName, quint64* lpFreeBytesAvailableToCaller, quint64* lpTotalNumberOfBytes, quint64* lpTotalNumberOfFreeBytes)
@@ -594,7 +590,7 @@ QStringList StorageMgr::findEarlestRecord( QString dbPath, QDate &earlestDate )
 	return pathList;
 }
 
-void StorageMgr::deleteRecord( QString dbPath, QString date, QStringList filelist )
+void StorageMgr::deleteRecord( QString dbPath, QString date)
 {
 	m_db->setDatabaseName(dbPath);
 	if (!m_db->open())
@@ -602,11 +598,13 @@ void StorageMgr::deleteRecord( QString dbPath, QString date, QStringList filelis
 		qDebug()<<"open " + dbPath + "failed!";
 	}
 	QSqlQuery _query(*m_db);
-	foreach(QString path, filelist)
-	{
-		QString command = QString("delete from local_record where date = '%1' and path = '%2'").arg(date).arg(path);
-		_query.exec(command);
-	}
+// 	foreach(QString path, filelist)
+// 	{
+// 		QString command = QString("delete from local_record where date = '%1' and path = '%2'").arg(date).arg(path);
+// 		_query.exec(command);
+// 	}
+	QString command = QString("delete from local_record where date = '%1'").arg(date);
+	_query.exec(command);
 
 	_query.finish();
 	m_db->close();
@@ -768,9 +766,9 @@ bool StorageMgr::deleteSearchRecord()
 	return ret;
 }
 
-void StorageMgr::deductPeriod( QString dbpath, QStringList deleteFile, QString date )
+void StorageMgr::deductPeriod( QString dbpath, QString date )
 {
-	QMap<int, QString> perMap = getDeletedPeriod(dbpath, deleteFile, date);
+// 	QMap<int, QString> perMap = getDeletedPeriod(dbpath, deleteFile, date);
 
 	m_nPosition=__LINE__;
 	m_schRecLock.lock();
@@ -788,78 +786,80 @@ void StorageMgr::deductPeriod( QString dbpath, QStringList deleteFile, QString d
 	}
 
 	QSqlQuery _query(*m_dbSearch);
-	QString cmd;
-	QMap<int, QString>::iterator it = perMap.begin();
-	while (it != perMap.end())
-	{
-		QTime maxEnd = QTime::fromString(it.value(), "hh:mm:ss");
-		cmd = QString("delete from search_record where wnd_id=%1 and date='%2' and end_time<='%3'").arg(it.key()).arg(date).arg(it.value());
-		_query.exec(cmd);
-		
-		qDebug()<<__LINE__<<"delete database sql:"<<cmd;
-
-		cmd = QString("select id, start_time, end_time from search_record where date='%1' and wnd_id=%2 order by start_time limit 1").arg(date).arg(it.key());
-		_query.exec(cmd);
-		if (_query.next())
-		{
-			int id = _query.value(0).toInt();
-			QTime start = _query.value(1).toTime();
-			QTime end = _query.value(2).toTime();
-			if (maxEnd > start && maxEnd < end)
-			{
-				cmd = QString("update search_record set start_time='%1' where id=%2").arg(it.value()).arg(id);
-				_query.exec(cmd);
-			}
-		}
-		it++;
-	}
+// 	QString cmd;
+// 	QMap<int, QString>::iterator it = perMap.begin();
+// 	while (it != perMap.end())
+// 	{
+// 		QTime maxEnd = QTime::fromString(it.value(), "hh:mm:ss");
+// 		cmd = QString("delete from search_record where wnd_id=%1 and date='%2' and end_time<='%3'").arg(it.key()).arg(date).arg(it.value());
+// 		_query.exec(cmd);
+// 		
+// 		qDebug()<<__LINE__<<"delete database sql:"<<cmd;
+// 
+// 		cmd = QString("select id, start_time, end_time from search_record where date='%1' and wnd_id=%2 order by start_time limit 1").arg(date).arg(it.key());
+// 		_query.exec(cmd);
+// 		if (_query.next())
+// 		{
+// 			int id = _query.value(0).toInt();
+// 			QTime start = _query.value(1).toTime();
+// 			QTime end = _query.value(2).toTime();
+// 			if (maxEnd > start && maxEnd < end)
+// 			{
+// 				cmd = QString("update search_record set start_time='%1' where id=%2").arg(it.value()).arg(id);
+// 				_query.exec(cmd);
+// 			}
+// 		}
+// 		it++;
+// 	}
+	QString cmd = QString("delete from search_record where date='%1'").arg(date);
+	_query.exec(cmd);
 	_query.finish();
 	m_dbSearch->close();
 	m_schRecLock.unlock(); 
 }
 
-QMap<int, QString> StorageMgr::getDeletedPeriod( QString dbpath, QStringList fileList, QString date )
-{
-	QMap<int, QString> perMap;
-	if (!m_db->isOpen())
-	{
-		m_db->setDatabaseName(dbpath);
-		if (!m_db->open())
-		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
-			return perMap;
-		}
-	}
-
-	QString sqlpath = "'" + fileList.join("','") + "'";
-	QSqlQuery _query(*m_db);
-	QString command = QString("select win_id, end_time from local_record where date='%1' and path in (%2) order by win_id").arg(date).arg(sqlpath);
-	_query.exec(command);
-
-	while(_query.next())
-	{
-		int wndId = _query.value(0).toInt();
-		QString endStr = _query.value(1).toString();
-		QTime end = QTime::fromString(endStr, "hh:mm:ss");
-
-		if (!perMap.contains(wndId))//map is empty
-		{
-			perMap.insert(wndId, endStr);
-		}
-		else
-		{
-			QTime temp = QTime::fromString(perMap[wndId], "hh:mm:ss");
-			if (temp < end)
-			{
-				perMap[wndId] = endStr;
-			}
-		}
-	}
-	_query.finish();
-	m_db->close();
-
-	return perMap;
-}
+// QMap<int, QString> StorageMgr::getDeletedPeriod( QString dbpath, QStringList fileList, QString date )
+// {
+// 	QMap<int, QString> perMap;
+// 	if (!m_db->isOpen())
+// 	{
+// 		m_db->setDatabaseName(dbpath);
+// 		if (!m_db->open())
+// 		{
+// 			qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+// 			return perMap;
+// 		}
+// 	}
+// 
+// 	QString sqlpath = "'" + fileList.join("','") + "'";
+// 	QSqlQuery _query(*m_db);
+// 	QString command = QString("select win_id, end_time from local_record where date='%1' and path in (%2) order by win_id").arg(date).arg(sqlpath);
+// 	_query.exec(command);
+// 
+// 	while(_query.next())
+// 	{
+// 		int wndId = _query.value(0).toInt();
+// 		QString endStr = _query.value(1).toString();
+// 		QTime end = QTime::fromString(endStr, "hh:mm:ss");
+// 
+// 		if (!perMap.contains(wndId))//map is empty
+// 		{
+// 			perMap.insert(wndId, endStr);
+// 		}
+// 		else
+// 		{
+// 			QTime temp = QTime::fromString(perMap[wndId], "hh:mm:ss");
+// 			if (temp < end)
+// 			{
+// 				perMap[wndId] = endStr;
+// 			}
+// 		}
+// 	}
+// 	_query.finish();
+// 	m_db->close();
+// 
+// 	return perMap;
+// }
 
 QString StorageMgr::getNewestRecord( QString devname, int chl )
 {

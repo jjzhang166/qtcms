@@ -42,16 +42,16 @@ public:
 	QString getNewestRecord(QString devname, int chl);
 private:
 	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate);
-	void deleteRecord(QString dbPath, QString date, QStringList filelist);
+	void deleteRecord(QString dbPath, QString date);
 	void createSearchRecordTable();
-	void deductPeriod(QString dbpath, QStringList deleteFile, QString date);
-	QMap<int, QString> getDeletedPeriod(QString dbpath, QStringList fileList, QString date);
+	void deductPeriod(QString dbpath, QString date);
+// 	QMap<int, QString> getDeletedPeriod(QString dbpath, QStringList fileList, QString date);
 private:
 	QString getUsableDisk();
 	bool deleteOldDir(const QStringList& dirlist);
 	/*bool deleteOldDirEx(const QStringList& dirlist);*/
 // 	bool deleteDir(const QString& diskslist);
-	QStringList deleteFile(const QStringList& fileList);
+	void deleteFile(const QStringList& fileList);
 	QDate minDate(QList<QDate> dateList);
 	static QMutex m_sLock;
 

@@ -1304,7 +1304,6 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 			item.end = endDateTime.toTime_t();
 			playTime.append(item);
 			m_filePeriodMap.insert(path, item);
-			qDebug()<<__FUNCTION__<<str;
 		}
 		_query.finish();
 		m_db->close();
