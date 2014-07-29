@@ -1163,7 +1163,7 @@ int LocalPlayer::searchVideoFileEx( const int & nWndId, const QString & sDate, c
 	QString sqlType = getTypeList(nTypes);
 	QString command = QString("select record_type, start_time, end_time from search_record where wnd_id='%1' and date='%2' and end_time>='%3' and start_time<='%4' and (%5) order by start_time").arg(nWndId).arg(sDate).arg(sStartTime).arg(sEndTime).arg(sqlType);
 
-	QString cntId = QString::number(elsTimer.nsecsElapsed());
+	QString cntId = QString::number(elsTimer.nsecsElapsed() + nWndId);
 	if (1)
 	{
 		QSqlDatabase schDb = QSqlDatabase::addDatabase("QSQLITE", cntId);

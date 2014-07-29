@@ -528,10 +528,15 @@ void Recorder::run()
 				m_nPosition=__LINE__;
 				m_bIsblock=true;
 // 				QString sEndTime=getFileEndTime(sSavePath,start);
-				QString sEndTime = QTime::currentTime().toString("hh:mm:ss");
+				QTime end = QTime::currentTime();
+				QString sEndTime = end.toString("hh:mm:ss");
 				if (!sEndTime.isEmpty())
 				{
 					m_nPosition=__LINE__;
+					if (end < start)
+					{
+						sEndTime = "23:59:59";
+					}
 					if (m_StorageMgr.updateRecord(sEndTime,getFileSize(sSavePath)))
 					{
 						//keep going
