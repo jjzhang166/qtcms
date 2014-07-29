@@ -7,9 +7,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	localSearchWindNum=0; //要搜索的本地回放文件的设备
-	searchSTOP=0;  //搜索停止. 包括搜索结束,搜索过程中失败
-
-	localsearchSTOP = 1; //本地搜索是否停止
+	searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
 
 	$(function(){
 		oBottom = $('#operating');
@@ -324,8 +322,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		if(bool && data.index_0){
 			RecFileInfo2UI(data)
-			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);*/
+			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);
 		}
 
 		localSearchWindNum++;
@@ -489,12 +487,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		/*console.timeEnd('---------合并接受到的文件------------------------');
 		console.time('--接收到合并的文件回调描绘时间段---'+File.length);*/
 
-		/*console.log('接收到的文件进行合并后的文件----------------------------');
-		console.log(File);*/
-
-			p = ($('#channelvideo').width()-80)/(3600*24),
+			p = ($('#channelvideo').width()-100)/(3600*24),
 
 			nowTime = renewtime().split('  ')[1];
+
+		/*console.log('接收到的文件进行合并后的文件----------------------------');
+		console.log(File);*/
 
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
@@ -516,9 +514,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 
 			  		//本地回放录像文件的结束时间不能大于当前描绘的时间.
-					if( bool && end > nowTime){
+					/*if( bool && end > nowTime){
 						end = nowTime
-					}
+					}*/
 
 					//console.log(maxFileEndTime);
 				var width = (time2Sec(end)-start)*p;
@@ -655,19 +653,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},200);
 	}*/
 	function playBackSerchFile(){
-		if(bool){
-			if(localsearchSTOP){
-				localsearchSTOP = 0;
-			}else{
-				console.log('正在搜索');
-				return;
-			}
+		if(searchSTOP){
+			searchSTOP = 0;
+		}else{
+			console.log('正在搜索');
+			return;
 		}
 
 
 		dragStopMove();
+		
 		localSearchWindNum=0;
-		searchSTOP=0;
+
 		recFile=[];
 
 		maxFileEndTime='00:00:00';
@@ -685,7 +682,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function SearchRecordOverCallback(data){
 		//console.log(data);
 		if(data.searchResult){
-			localsearchSTOP = 1;
+			searchSTOP = 1;
 		}
 	}
 
