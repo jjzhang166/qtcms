@@ -112,6 +112,7 @@ void previewactivity::OnTopActDbClick()
 void previewactivity::OnCloseWindow()
 {
 	m_MainView->close();
+	qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM QUIT BUTTON";
 }
 
 void previewactivity::OnMaxsizeWindow()

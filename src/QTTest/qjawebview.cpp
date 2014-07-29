@@ -128,6 +128,7 @@ void QJaWebView::keyPressEvent(QKeyEvent *ev)
     case Qt::Key_Escape:
         {
             close();
+			qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM Key_Escape";
         }
         break;
 #ifdef __USE_WEB_DEBUGER__

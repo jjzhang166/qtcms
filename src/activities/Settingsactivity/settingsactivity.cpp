@@ -173,6 +173,7 @@ void settingsActivity::OnMaxClick()
 void settingsActivity::OnCloseClick()
 {
 	m_MainView->close();
+	qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM QUIT BUTTON";
 }
 
 void settingsActivity::OnMouseDown()
