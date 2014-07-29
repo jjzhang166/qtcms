@@ -17,6 +17,10 @@ bool MyEventSender::notify( QObject *receiver, QEvent *e )
 	try
 	{
 		bFlag=QApplication::notify(receiver,e);
+		if (e->type()==QEvent::Close)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"CMS CLOSE EVENT";
+		}
 	}catch(QEvent *pe){
 		qDebug()<<__FUNCTION__<<__LINE__<<"there catch a exception"<<receiver<<pe->type();
 		throw;
