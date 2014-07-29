@@ -8,9 +8,11 @@
 #include <QDateTime>
 #include <QTextStream>
 #include <MyEventSender.h>
-
+#include <QMutex>
+QMutex g_tMessage;
 QFile outFile; 
 void customMessageHandler(QtMsgType type, const char *msg){
+	g_tMessage.lock();
 	QString txt;  
 	switch (type) {  
 	case QtDebugMsg:  
@@ -42,6 +44,7 @@ void customMessageHandler(QtMsgType type, const char *msg){
 
 	QTextStream stds(stdout);
 	stds << txt << endl;
+	g_tMessage.unlock();
 }
 int main(int argc, char *argv[])
 {

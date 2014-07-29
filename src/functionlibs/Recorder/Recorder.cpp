@@ -374,7 +374,7 @@ void Recorder::run()
 				quint64 FreeByteAvailable;
 				quint64 TotalNumberOfBytes;
 				quint64 TotalNumberOfFreeBytes;
-				m_StorageMgr.GetDiskFreeSpaceEx(sDisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
+				m_StorageMgr.GetDiskFreeSpace(sDisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes);
 				if (TotalNumberOfFreeBytes<=qDiskReservedSize*1024*1024)
 				{
 					m_nPosition=__LINE__;
@@ -554,7 +554,7 @@ void Recorder::run()
 					{
 						//删除数据库的记录
 						m_nPosition=__LINE__;
-						if (m_StorageMgr.deleteRecord())
+						if (m_StorageMgr.deleteRecord(sSavePath))
 						{
 							//do nothing
 						}else{
@@ -639,7 +639,7 @@ void Recorder::run()
 					// do nothing
 				}
 				//删除数据库中的记录
-				m_StorageMgr.deleteRecord();
+				m_StorageMgr.deleteRecord(sSavePath);
 			}else{
 				// do nothing 
 			}
