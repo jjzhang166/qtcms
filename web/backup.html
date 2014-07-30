@@ -379,7 +379,7 @@ var oPlayBack={},  // 远程回访控件对象
 			now=0;
 			return false;
 		}*/
-		var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
+		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		var fileData = oList.eq(now).attr('uid').split('_');
 		console.log(fileData);

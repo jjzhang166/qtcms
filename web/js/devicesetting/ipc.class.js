@@ -245,19 +245,15 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 		RequesePush(str);
 
-		var	l = _Request.length -1,
-			s = '';
-
-		if(!_Request[l]){
+		var	l = _Request.length -1;
+		
+		if(!_Request[l])
 			return;
-		}
 
 		for(var i=0;i<_Request.length;i++){
 			if(_Request[i]!='loading_success' && _Request[i]!='save_success'){
-				console.log(0);
 				showAJAXHint(_Request[i]);
 			}else{
-				console.log(1);
 				showAJAXHint(_Request[i]).fadeOut(2000);
 			}
 		}
@@ -266,6 +262,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			for(var i=0;i<_Request.length;i++){
 				if(!_Request[i]){
 					_Request[i]=str;
+					return;
 				}
 			}
 		}

@@ -205,7 +205,8 @@
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		//console.log(data);
+		console.log('------------文件总数-----------');
+		console.log(data);
 		recTotal = data.total ? data.total : 0;	
 		
 		showRecProgress();
