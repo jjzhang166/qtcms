@@ -1945,15 +1945,27 @@ int AVI_seek_pos( avi_t *AVI, int frame )
 		return -1;
 	}
 	//find the nearest key frame
-	while(frame < AVI->video_frames)
+	int loop = 0;
+	int offset = 0;
+	while(frame + loop < AVI->video_frames && frame - loop >= 0)
 	{
-		if (AVI->video_index[frame].key > 0)
+		if (AVI->video_index[frame + loop].key > 0)
 		{
+			offset = loop;
 			break;
 		}
-		frame++;
+		if (AVI->video_index[frame - loop].key > 0)
+		{
+			offset = 0 - loop;
+			break;
+		}
+		loop++;
 	}
-	int video_pos = AVI->video_index[frame].pos - 8;
+	if (frame + loop == AVI->video_frames)
+	{
+		offset = loop - 1;
+	}
+	int video_pos = AVI->video_index[frame + offset].pos - 8;
 	if (lseek(AVI->fdes, video_pos, SEEK_SET) < 0)
 	{
 		return -1;

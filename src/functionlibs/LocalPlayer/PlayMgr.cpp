@@ -49,6 +49,9 @@ PlayMgr::~PlayMgr(void)
 // 	{
 // 		wait(1000);
 // 	}
+
+	qDebug()<<"start sleep m_bStop:"<<m_bStop;
+
 	while(QThread::isRunning())
 	{
 		msleep(10);
@@ -57,6 +60,8 @@ PlayMgr::~PlayMgr(void)
 	m_pVedioDecoder = NULL;
 	m_pVedioRender->Release();
 	m_pVedioRender = NULL;
+
+	qDebug()<<"end sleep";
 }
 
 int PlayMgr::initCb()
@@ -69,6 +74,9 @@ int PlayMgr::initCb()
 	}
 	QString eventName = "DecodedFrame";
 	pEventRegister->registerEvent(eventName, cbDecodedFrame, this);
+
+	qDebug()<<"render:"<<m_pVedioRender;
+	qDebug()<<"init wnd;"<<m_pRenderWnd;
 
 	m_pVedioRender->setRenderWnd(m_pRenderWnd);
 	pEventRegister->Release();
@@ -318,6 +326,11 @@ void PlayMgr::run()
 					}
 				}
 				nRet = AVI_read_data(file, vedioBuff, sizeof(vedioBuff), audioBuff, sizeof(audioBuff), &length);		
+			}
+			if (currentPlayTime.toTime_t() < per.end && i < m_lstfileList.size() - 1)
+			{
+				QString nextFile = m_lstfileList[i + 1];
+				currentPlayTime = QDateTime::fromTime_t(m_filePeriodMap.value(nextFile).start);
 			}
 
 			qDebug()<<(int)this<<"close "<<filePath;

@@ -13,8 +13,12 @@ SearchProcess::SearchProcess()
 
 SearchProcess::~SearchProcess()
 {
-	this->quit();
-	this->wait();
+// 	this->quit();
+// 	this->wait();
+	while (QThread::isRunning())
+	{
+		msleep(10);
+	}
 }
 
 void SearchProcess::setPara( int wndId, QString date, QString start, QString end, int types )
