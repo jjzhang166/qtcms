@@ -143,10 +143,10 @@
 	}
 
 	function searchLocalFile(wind,date,type){
-		if(wind > 64){
+		/*if(wind > 64){
 			searchSTOP=1;
 			return;
-		}
+		}*/
 		var type = type || $('#type input[data]').attr('data');
 		
 		var date = date || $("div.calendar span.nowDate").html();

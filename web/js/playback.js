@@ -58,12 +58,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					//alert('try:'+e);
 				};
 				var left = event.pageX
-			    	if(left < 81){
-			    		return;
-			    	}
-			    	if(left > channelvideo.width()){ 
-			    		return;
-			    	}
+
+		    	if(left < 81 || left > channelvideo.width()){
+		    		return;
+		    	}
+
 				//event.stopPropagation();
 				var moveObj = $('div.play_time').css('left',left-1);
 				set_drag(80,channelvideo.width()-1,moveObj);
@@ -78,8 +77,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if(channel_id){
 				$('div.dev_list span,li').removeClass('sel');
 				$('#channel_'+channel_id).addClass('sel');
-			}
-			
+			}	
 		})
 
 		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
@@ -95,6 +93,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			$(this).click(function(){
 				
 				bool = index;
+
+				searchSTOP=1;
 
 				//保存当前选中的设备
 				if(!bool){
@@ -224,6 +224,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						.end().end().next('ul').find('span.channel');
 
 		console.log(bool+'//开始时间:'+begin+'//结束时间'+end+'//类型'+type);
+		$('#testTIME').val(begin);
 		if(bool){ //本地回访
 			$("#channelvideo").find('input:checked').each(function(){
 				/*//console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
@@ -326,6 +327,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			console.log(data);
 		}
 
+		if(!bool)
+			console.log(data);
+		
 		localSearchWindNum++;
 		if(bool){
 			if(localSearchWindNum < 64){
@@ -343,7 +347,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if(localSearchWindNum*100 > recTotal)
 				searchSTOP=1;
 
-			console.log(recFile.length+'---'+recTotal);
+			console.log(recFile.length+'------------'+recTotal);
 			searchSTOP && RecFileInfo2UI(recFile);
 		}
 
@@ -653,11 +657,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},200);
 	}*/
 	function playBackSerchFile(){
-		if(searchSTOP){
-			searchSTOP = 0;
-		}else{
-			console.log('正在搜索');
-			return;
+		console.log(searchSTOP);
+		if(bool){
+			if(searchSTOP){
+				searchSTOP = 0;
+			}else{
+				console.log('正在搜索');
+				return;
+			}
 		}
 
 
@@ -670,11 +677,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		maxFileEndTime='00:00:00';
 		minFileStartTime='23:59:59';
 
-		//!bool && PBrecFileTableInit();
-
 		$('#channelvideo').find('div.video').remove()
 						  .end().find('tr').removeAttr('id title')
 						  		.find('input').removeProp('disabled').removeProp('checked');
+
+		!bool && PBrecFileTableInit();						  		
 
 		ocxsearchVideo();
 	}
@@ -688,6 +695,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
+			searchSTOP=1;
 		
 		/*if(recFile){
 			loclFileDataIntoChannel(recFile);
@@ -700,8 +708,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			$('div.dev_list span.device').each(function(){
 				$(this).parent('li').on({
 					dblclick:function(){ //设备双击开始搜索
-						if(bool)return;
-						PBrecFileTableInit();
+						/*if(bool)return;
+						PBrecFileTableInit();*/
 						playBackSerchFile();
 						/*//保存当前选中的设备
 						nowDevID = $(this).find('span.device').data('data').dev_id;*/
@@ -751,4 +759,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			palybackspeed(nowSpeed<1 ? '1/'+1/nowSpeed+'X' : nowSpeed+'X');
 		}*/
 		//console.timeEnd('--本地远程控件状态同步--');
+	}
+
+
+
+
+	//
+
+	function testTIME(){
+		val = $('#testTIME').val().split(' ')[1];
+		var p = ($('#channelvideo').width()-79)/(3600*24);
+		$('div.play_time').css('left',p*time2Sec(val)+79);
+		playVideo(event);
 	}

@@ -84,23 +84,21 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfo2UI = function(){ //获取网络信息
-		var This = this;
-
 		_Request=new Array(5);
 
 		console.log('-------------------ipcnetworkInfo2UI--------------------------');
 
 		emptyDevSetMenu();
 
-		var warp = $('#set_content div.ipc_list:visible'),
+		var This = this,
 
-			str = 'loading',
-
-			oHint = showAJAXHint(str).css('top',warp.height() + 46),
+			warp = $('#set_content div.ipc_list:visible'),
 
 			before = false,
 
 			finish = this.checkMultRequests;
+
+			showAJAXHint('loading').css('top',warp.height() + 46);
 
 		
 		//async=false;
@@ -131,35 +129,38 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
+		showAJAXHint('saveing');
+
+		_Request =new Array(4);
+
+		var This = this,
+
+			warp = $('#set_content div.ipc_list:visible'),
+			
+
+			interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}',
+
+			finish = this.checkMultRequests;
 
 		async=false;
 
-		var warp = $('#set_content div.ipc_list:visible'),
-			This = this,
-
-			interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
-
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}'/*,'','',function(){
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}',async,'',finish/*,'','',function(){
 			console.log('Esee状态修改完成{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}++++++++++2');
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Dns','{"preferredDns": "'+warp.find('input[data-UI="preferredDns"]').val()+'", "staticAlternateDns": "'+warp.find('input[data-UI="staticAlternateDns"]').val()+'" }'/*,'','',function(){
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Dns','{"preferredDns": "'+warp.find('input[data-UI="preferredDns"]').val()+'", "staticAlternateDns": "'+warp.find('input[data-UI="staticAlternateDns"]').val()+'" }',async,'',finish/*,'','',function(){
 			console.log('Dns状态修改完成++++++++++3');
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}'/*,'',function(){
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}',async,'',finish/*,'',function(){
 			This._PORT = warp.find('input[data-UI="value"]').val();
 			console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,'',function(){
-			//This._IP = warp.find('input[data-UI="staticIP"]').val();
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,async,'',function(a){
+			finish(a);
 			qob.OnModifyDeviceEx();
-			/*console.log('--修改端口和地址重新同步设备状态----');
-			areaList2Ui();
-			console.log('--修改端口和地址重新加载设备列表----');*/
 			reInitNowDev();
-			//console.log('IP修改成功++1'+This.getRequestURL());
 		});
 
 		function getBoolean(name){
@@ -242,27 +243,29 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.checkMultRequests = function(str){
 
-		var arr = RequesePush(_Request,str),
-			l = arr.length -1,
+		RequesePush(str);
+
+		var	l = _Request.length -1,
 			s = '';
 
-		if(!arr[l])
+		if(!_Request[l]){
 			return;
-
-		for(var i=0;i<arr.length;i++){
-			arr
-			if(arr[i]!='loading_success'){
-				showAJAXHint('loading_fail');
-			}else{
-				showAJAXHint('loading_success').fadeOut(2000);
-			}
-
 		}
-		function RequesePush(arr,str){
-			for(var i=0;i<arr.length;i++){
-				if(!arr[i]){
-					arr[i]=str;
-					return arr; 
+
+		for(var i=0;i<_Request.length;i++){
+			if(_Request[i]!='loading_success' && _Request[i]!='save_success'){
+				console.log(0);
+				showAJAXHint(_Request[i]);
+			}else{
+				console.log(1);
+				showAJAXHint(_Request[i]).fadeOut(2000);
+			}
+		}
+
+		function RequesePush(str){
+			for(var i=0;i<_Request.length;i++){
+				if(!_Request[i]){
+					_Request[i]=str;
 				}
 			}
 		}
