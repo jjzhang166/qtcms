@@ -22,7 +22,7 @@
 			console.log(oChannel);
 			console.log('-------------参数填充到控件------------------')*/
 
-			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
+			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){
 				//alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
 				b = 0;
 			}
@@ -80,31 +80,30 @@
 
 	function ocxsearchVideo(){
 
-		recTotal = 0
+		recTotal = 0;
 		
 		berorSerchShowHint();
 
 		getAudioObj().GroupStop();
 
-
-		var type = $('#type input[data]').attr('data');
+		var type = $('#type input[data]').attr('data'),
 		
-		var date = $("div.calendar span.nowDate").html();
+			date = $("div.calendar span.nowDate").html(),
 
-		var oList = $('div.dev_list')
+			oList = $('div.dev_list'),
 
-		var devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
+			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
 
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
-			if(!devData){
-				$('div.dev_list span.device,li').removeClass('sel');
-				devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
-							.end().data('data');
-			}else{
-				$('div.dev_list li,span').removeClass('sel');
-				$('#dev_'+devData.dev_id).parent('li').addClass('sel');
-			}
+		if(!devData){
+			$('div.dev_list span.device,li').removeClass('sel');
+			devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
+						.end().data('data');
+		}else{
+			$('div.dev_list li,span').removeClass('sel');
+			$('#dev_'+devData.dev_id).parent('li').addClass('sel');
+		}
 
 		nowDevID = devData.dev_id;
 

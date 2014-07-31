@@ -153,6 +153,7 @@ function dvr_devinfo_load_content()
 				alert_error(dvr_data.juan.envload.errno);
 				return;
 			}
+			console.log(dvr_data);
 			$("#Dvr_Device_name")[0].value = dvr_data.juan.devinfo.name;
 			$("#Dvr_Device_model")[0].value = dvr_data.juan.devinfo.model;
 			$("#Dvr_Hardware_version")[0].value = dvr_data.juan.devinfo.hwver;

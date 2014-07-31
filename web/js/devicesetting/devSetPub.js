@@ -20,12 +20,13 @@ function data2UI(objData,oWarp){
 		showAJAXHint('Unauthorized').show();
 	}
 	var defaultWarp = $('#set_content div.ipc_list:visible')
+
 	var warp = (oWarp && oWarp[0]) ? oWarp : defaultWarp;
 
 	for(var i in objData){
 
 			var dataKey = '[data-UI~="'+i+'"]',
-				warpKey = '[data-WARP~="'+i+'"]'
+				warpKey = '[data-WARP~="'+i+'"]';
 			if(typeof objData[i] == 'object' && ignoreKey(i)){
 				/*/^\d+$/.test(objData[i][0])*/
 				if(objData[i]['opt']){
@@ -68,7 +69,7 @@ function data2UI(objData,oWarp){
 								oTag.prop('checked',objData[i]);
 							break;
 							default: 
-								oTag.val(lang[objData[i]] ? lang[objData[i]] : objData[i]).attr('data',objData[i]);
+								oTag.val(_T(objData[i])).attr('data',objData[i]);
 							break;
 						}
 					}

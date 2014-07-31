@@ -270,7 +270,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var warp = $(this);
 			var warpId = warp.attr('id');
 			var oSelectAll=$('#'+warpId+'_SelectAll');
-
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee									
 			if(warpId == 'SerachedDevList' || warpId == 'search_resultFile'){
 				warp.on('click','tr',function(){
 					$(this).find('input:checkbox').click();
@@ -512,7 +512,7 @@ function fuckParseInt(str){
 } 
 function checkHasObj(oSil,obj){
 	var b = 0;			
-	oSil.each(function(){
+	oSil.each(function(){ddd
 		if($(this).is(obj)){
 			return b=1;
 		}

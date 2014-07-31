@@ -28,12 +28,12 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		var This = this;
 		console.log('-------------------ipcBasicInfo2UI--------------------------');
 		var xmlstr = '';
-		xmlstr += '<juan ver="" seq="">';
-		xmlstr += '<conf type="read" user="'+this._USR+'" password="'+this._PWD+'">';
-		xmlstr += '<spec vin="" ain="" io_sensor="" io_alarm="" hdd="" sd_card="" />';
-		xmlstr += '<info device_name="" device_model="" device_soc="" device_sn="" sensor_type="" hardware_version="" software_version="" build_date="" build_time="" />';
-		xmlstr += '</conf>';
-		xmlstr += '</juan>';
+			xmlstr += '<juan ver="" seq="">';
+			xmlstr += '<conf type="read" user="'+this._USR+'" password="'+this._PWD+'">';
+			xmlstr += '<spec vin="" ain="" io_sensor="" io_alarm="" hdd="" sd_card="" />';
+			xmlstr += '<info device_name="" device_model="" device_soc="" device_sn="" sensor_type="" hardware_version="" software_version="" build_date="" build_time="" />';
+			xmlstr += '</conf>';
+			xmlstr += '</juan>';
 
 		dataType='jsonp';
 		jsonp='jsoncallback';

@@ -66,10 +66,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				//event.stopPropagation();
 				var moveObj = $('div.play_time').css('left',left-1);
 				set_drag(80,channelvideo.width()-20,moveObj);
-			},
+			}/*,
 			dblclick:function(){
 				playVideo(event);
-			}
+			}*/
 		})
 
 		channelvideo.on('mouseover','tr',function(){
@@ -84,9 +84,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			dblclick:function(){
 				playVideo(event);
 			},
-			mousedown:function(){
+			/*mousedown:function(){
 				set_drag(80,channelvideo.width()-1,$('div.play_time'));
-			}	
+			}	*/
 		});
 
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
@@ -294,6 +294,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		palybackspeed(show);
 	}
+
 	function groupStop(){
 		$('#togglePlay').removeAttr('hasFile').removeAttr('toggle').css('background-position','0px 0px');
 		dragStopMove();
@@ -301,20 +302,20 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		obj.GroupStop();
 	}
 
-	function palybackspeed(str){
+	function palybackspeed(str){	
 		$('#palybackspeed').html(str);
 	}
 
 	/*function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
-			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)
+			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)	
 			var startDate = $('div.calendar span.nowDate').html().split('-');
 			var start = parseInt(chlData[4])-Date.UTC(startDate[0],parseInt(startDate[1])-1,startDate[2])/1000;
 			var p = ($('#channelvideo').width()-80)/(3600*24);
 			var width = (chlData[5]-chlData[4])*p
 			var left = start*p+81;
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
-		})		
+		})
 	}*/
 
 	function RecFileInfoCallback(data){
@@ -377,7 +378,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			console.log('---------合并完成接收到的文件-------------');
 			console.log(mergerOrderFile(chlfile));*/
-			file.push(mergerOrderFile(chlfile));			
+			file.push(mergerOrderFile(chlfile));
 			//file.push(chlfile);
 			/*console.log('---------合并后的文件-------------');
 			console.log(file);*/
@@ -394,7 +395,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			//console.log(devFile);
 			console.timeEnd('遍历最大通道');*/
 			for(i=1;i<=maxChl;i++){  //按通道分类文件
-				var chlfile = [];   //对应通道空数组
+				var chlfile = [];    //对应通道空数组
 				//console.time('按通道分类文件');
 				for(var k=0;k<devFile.length;k++){ //便利所有文件
 					var nowfile = devFile[k]
@@ -404,7 +405,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				}
 				/*console.timeEnd('按通道分类文件');
 				console.log(chlfile);
-				console.time('时间生序排列')*/;
+				console.time('时间生序排列');*/
 				chlfile.sort(TimeAsc);
 				/*console.timeEnd('时间生序排列');
 				console.time('合并重复文件');*/
@@ -425,9 +426,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(oChlfile.length < 2 || !oChlfile){
 			return oChlfile;
 		}
+
 		var	n=0,
 			m=0,
 			chlData=[];
+
 		for(var i=0;i<oChlfile.length;i++){
 			if((i+1) < oChlfile.length){
 				if((time2Sec(oChlfile[i+1].start.split(' ')[1]) - time2Sec(oChlfile[i].end.split(' ')[1]) < 60) && (oChlfile[i].types == oChlfile[i+1].types)){  //间隔时间为60秒以内就认为为连续文件.
@@ -440,6 +443,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				}
 			}
 		}
+		
 		oChlfile[n].end = oChlfile[m+n].end;
 		chlData.push(oChlfile[n]);
 		/*console.log('合并完成后返回的的文件————————————');
