@@ -402,8 +402,8 @@
 	'rate_range':'码率范围!',
 	'frame_rate_range':'帧率范围!',
 	'check_to_put':'请填写正确的参数或者等数据加载完后在提交.',
-	'rotation_time':'自动轮训时间!(30秒~86400秒)!',
-	'File_size_range':'文件大小范围!(128M~512MB)!',
+	'rotation_time':'自动轮训时间!(1~60秒)!',
+	'File_size_range':'文件大小范围!(10M~512MB)!',
 	'Disk_space_reserved':'磁盘预留空间要大于4096MB!'
 
 }
