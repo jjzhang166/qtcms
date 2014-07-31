@@ -32,7 +32,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	setContextMenuPolicy(Qt::NoContextMenu);
 #ifdef __USE_WEB_DEBUGER__
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
-	Dumper::setVersionInfo("cms_1.1.12_07_29_20", strlen("cms_1.1.12_07_29_20"));
+	Dumper::setVersionInfo("cms_1.1.12_07_31_21", strlen("cms_1.1.12_07_31_21"));
 	m_pdup = new Dumper();
 #endif
 
