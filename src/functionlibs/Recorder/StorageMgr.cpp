@@ -235,24 +235,37 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 		*/
 		//find the newest record in database and create path base on it
 		QSqlQuery _query(*pDataBase);
-		QString command = QString("select path from local_record where win_id=%1 order by id desc limit 1").arg(winId);
+		QString command = QString("select path, id, start_time, end_time from local_record where win_id=%1 order by id desc limit 1").arg(winId);
 		_query.exec(command);
 
 		if (_query.next())//has find it
 		{
 			QString path = _query.value(0).toString();
-			int pos = path.lastIndexOf("/");
-			int fileNum = path.mid(pos + 1, 3).toInt();
-			int dirNum = path.mid(pos - 3, 3).toInt();
-			fileNum++;
-			if (fileNum > 127)//Ensure that each directory only 128 files
+			int id = _query.value(1).toInt();
+			QString start_time = _query.value(2).toString();
+			QString end_time = _query.value(3).toString();
+
+			if (start_time == end_time)//end_time is not updated
 			{
-				dirNum++;
-				fileNum = 0;
+				QFile::remove(path);
+				_query.exec(QString("delete from local_record where id=%1").arg(id));
+				sFileSavePath = path;
 			}
-			QString temp;
-			temp = temp.sprintf("/WND%02d/%04d/%03d.avi", winId, dirNum, fileNum);
-			sFileSavePath += temp;
+			else
+			{
+				int pos = path.lastIndexOf("/");
+				int fileNum = path.mid(pos + 1, 3).toInt();
+				int dirNum = path.mid(pos - 3, 3).toInt();
+				fileNum++;
+				if (fileNum > 127)//Ensure that each directory only 128 files
+				{
+					dirNum++;
+					fileNum = 0;
+				}
+				QString temp;
+				temp = temp.sprintf("/WND%02d/%04d/%03d.avi", winId, dirNum, fileNum);
+				sFileSavePath += temp;
+			}
 		}
 		else
 		{
@@ -262,13 +275,14 @@ QString StorageMgr::getFileSavePath( QString devname,int nChannelNum,int winId, 
 		}
 
 		//insert new data into database
-		_query.prepare("insert into local_record(dev_name,dev_chl,win_id,date,start_time,record_type,path) values(:dev_name,:dev_chl,:win_id,:date,:start_time,:record_type,:path)");
+		_query.prepare("insert into local_record(dev_name,dev_chl,win_id,date,start_time,end_time,record_type,path) values(:dev_name,:dev_chl,:win_id,:date,:start_time,:end_time,:record_type,:path)");
 		_query.bindValue(":dev_name",devname);
 		_query.bindValue(":dev_chl",nChannelNum + 1);//ensure chl num start with 1
 		_query.bindValue(":win_id",winId);
 		_query.bindValue(":date",QDate::currentDate().toString("yyyy-MM-dd"));
 		start = QTime::currentTime();
 		_query.bindValue(":start_time",start.toString("hh:mm:ss"));
+		_query.bindValue(":end_time", start.toString("hh:mm:ss"));
 		_query.bindValue(":record_type", type);
 		_query.bindValue(":path", sFileSavePath);
 		_query.exec();
@@ -1042,7 +1056,7 @@ void StorageMgr::deductPeriod( QString dbpath, QString date )
 	if (NULL!=pDataBase)
 	{
 		QSqlQuery _query(*pDataBase);
-		QString cmd = QString("delete from search_record where date='%1'").arg(date);
+		QString cmd = QString("delete from search_record where date<='%1'").arg(date);
 		_query.exec(cmd);
 		_query.finish();
 		m_dblock.unlock();
