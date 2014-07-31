@@ -93,7 +93,7 @@ private:
 	bool CreateSavePath(QString& sSavePath, QTime &start);
 	bool CreateDir(QString fullname);
 	void cleardata();
-	void enventProcCall(QString sEvent,QVariantMap parm);
+	void eventProcCall(QString sEvent,QVariantMap parm);
 	unsigned int getSeconds(QString &fileName);
 	QString getFileEndTime(QString fileName, QTime start);
 	qint64 getFileSize(QString fileName);

@@ -188,7 +188,7 @@ void Recorder::run()
 	bool bHasAddRecord = false;
 	QVariantMap parm;
 	parm.insert("RecordState",true);
-	enventProcCall("RecordState",parm);
+	eventProcCall("RecordState",parm);
 	QTime start;
 	QVariantMap vCheckDisk;
 	vCheckDisk.insert("checkdiskfreesize",true);
@@ -660,7 +660,7 @@ void Recorder::run()
 	parm.insert("RecordState",false);
 	m_nPosition=__LINE__;
 	m_bIsblock=true;
-	enventProcCall("RecordState",parm);
+	eventProcCall("RecordState",parm);
 	m_bIsblock=false;
 }
 
@@ -805,7 +805,7 @@ int Recorder::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVari
 	return IEventRegister::OK;
 }
 
-void Recorder::enventProcCall( QString sEvent,QVariantMap parm )
+void Recorder::eventProcCall( QString sEvent,QVariantMap parm )
 {
 	if (m_eventList.contains(sEvent))
 	{
