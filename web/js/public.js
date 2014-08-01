@@ -433,7 +433,7 @@ function Confirm(str,b,fn){
 		obj.find('close').off('click').click(function(){
 			oVisible.css('z-index','1000');
 			$('#confirm').find('h4,span').html('').end().hide();
-		})	
+		})
 	}else{
 		obj.find('close').click(function(){
 			closeMenu();

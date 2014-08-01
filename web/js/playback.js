@@ -6,18 +6,19 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
-	localSearchWindNum=0; //要搜索的本地回放文件的设备
+	localSearchWindNum=0, //要搜索的本地回放文件的设备
 	searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
 
 	$(function(){
 		oBottom = $('#operating');
 		
-		oPlayBack = $('#playback')[0];	
+		oPlayBack = $('#playback')[0];
 
 		oPlaybackLocl = $('#playbackLocl')[0];
 		
 		var channelvideo = $("#channelvideo");
-		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
+
+			channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 			//console.log('~~~~~~~~~~~~~~~~~~~~');
 			if($(this).prop('checked')){
@@ -29,7 +30,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					console.log(oSelected);*/			
 					$(oSelected.shift()).prop('checked',false);
 				}
-			}else{ 
+			}else{
 				oSelected.pop();
 			}
 
@@ -50,16 +51,19 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		channelvideo.on({  //整个搜索的文件列表事件
 			mousedown:function(event){
 				try{
-					dragStopMove();
+					groupStop();
+					/*dragStopMove();
 					oPlaybackLocl.GroupStop();
 					oPlayBack.GroupStop();
+					nowSpeed = 1;
+					palybackspeed(nowSpeed+'X');*/
 					$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
 				}catch(e){
 					//alert('try:'+e);
 				};
 				var left = event.pageX
 
-		    	if(left < 81 || left > channelvideo.width()){
+		    	if(left < 81 || left > channelvideo.width()-20){
 		    		return;
 		    	}
 
@@ -77,14 +81,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if(channel_id){
 				$('div.dev_list span,li').removeClass('sel');
 				$('#channel_'+channel_id).addClass('sel');
-			}	
+			}
 		})
 
 		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
 			dblclick:function(){
 				playVideo(event);
-			},
-			/*mousedown:function(){
+			}/*,
+			mousedown:function(){
 				set_drag(80,channelvideo.width()-1,$('div.play_time'));
 			}	*/
 		});
@@ -195,16 +199,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		//alert(event.pageX);
 		if(event.pageX<81 || (maxFileEndTime < minFileStartTime)) return;
 
-		dragStopMove();
-		nowSpeed = 1;
 		var obj = $('#togglePlay');
 			obj.attr({
 				toggle:'1',
 				hasFile:'1'
 			}).css('background-position','0px'+' '+(-obj.height())+'px');
-
+		groupStop();
+		/*dragStopMove();
 		oPlaybackLocl.GroupStop();
 		oPlayBack.GroupStop();
+
+		nowSpeed = 1;
+		palybackspeed(nowSpeed+'X');*/
 
 		var date = $("div.calendar span.nowDate").html(),
 			begin =returnTime(($('div.play_time').offset().left+2-81)/($('#channelvideo').width()-81)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
@@ -300,6 +306,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		dragStopMove();
 		var obj = bool ? oPlaybackLocl : oPlayBack;
 		obj.GroupStop();
+		nowSpeed = 1;
+		palybackspeed(nowSpeed+'X');
 	}
 
 	function palybackspeed(str){	
@@ -375,7 +383,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/*console.log('---------同一通道下的文件-------------');
 			console.log(chlfile);
 
-
 			console.log('---------合并完成接收到的文件-------------');
 			console.log(mergerOrderFile(chlfile));*/
 			file.push(mergerOrderFile(chlfile));
@@ -389,7 +396,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				devFile.push(chlData);
 				var nowchl = parseInt(chlData.channelnum);
 				maxChl = maxChl > nowchl ? maxChl : nowchl;
-
 			}
 			/*console.log('-----最大通道:'+maxChl+'------');
 			//console.log(devFile);
@@ -731,16 +737,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initrecFileOcx($('#channelvideo div.video'));
 
+		groupStop();
 		//console.time('--本地远程控件调整--');
 		if(bool){
 			oPlayBack.style.height='0px';
-			oPlayBack.GroupStop();
+			//oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();
 			oPlaybackLocl.style.height='100%';
 			$('#type').next('ul.option').find('li:gt(1)').hide();
 		}else{
 			oPlaybackLocl.style.height='0px';
-			oPlaybackLocl.GroupStop();
+			//oPlaybackLocl.GroupStop();
 			oPlaybackLocl.GroupSpeedNormal();
 			oPlayBack.style.height='100%';
 			$('#type').next('ul.option').find('li').show();
