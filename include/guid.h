@@ -99,5 +99,5 @@ extern const CLSID CLSID_CommonlibEx;
 extern const IID IID_IRecorderEx;
 extern const IID IID_ILocalRecordSearchEx;
 extern const IID IID_ILocalPlayerEx;
-
+extern const CLSID CLSID_Bubble;
 #endif

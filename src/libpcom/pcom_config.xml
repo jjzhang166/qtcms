@@ -31,6 +31,7 @@
 		<item clsid="C46890FD-8603-4BBB-975C-FE0410F3AF45" name="device.juan_ipc" file="IpcDeviceClient.dll" vendor="IPC" /> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
+		<item clsid="3E5FD83E-81DF-40F4-94CF-BA0AC3266505" name="protocols.Bubble" file="BubbleProtocolEx.dll" type="Bubble"/>
 		<item clsid="8EB66A1C-D1E6-4B0A-AAF5-8FF03F28A970" name="protocols.dvrsearch" file="dvrsearch.dll" type="dvrsearch"/> 
 		<item clsid="BF780F86-4FFB-41ED-B916-A370978A0312" name="protocols.winipcsearch" file="WinIpcSearch.dll" type="winipcsearch"/> 
 		<item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 

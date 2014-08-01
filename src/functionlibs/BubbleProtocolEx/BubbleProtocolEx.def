@@ -1,0 +1,3 @@
+LIBRARY "BubbleProtocolEx.dll"
+EXPORTS
+	CreateInstance @1
