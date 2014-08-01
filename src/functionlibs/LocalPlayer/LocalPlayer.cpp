@@ -1221,18 +1221,20 @@ int LocalPlayer::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWn
 	//group full
 	if (m_GroupMap.size() >= m_nGroupNum)
 	{
+		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx wndId"<<nWndId<<" group fulled!";
 		return 1;
 	}
 	//Window is occupied
 	if (m_GroupMap.contains(const_cast<QWidget*>(pWnd)))
 	{
+		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx wndId"<<nWndId<<" windows repeat!";
 		return 1;
 	}
 	QVector<PeriodTime> vecPerTime;
 	QStringList fileList = getFileList(nWndId, date, startTime, endTime, nTypes, vecPerTime);
 	if (fileList.isEmpty())
 	{
-		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx  wndId"<<nWndId<<"no file";
+		qDebug()<<(int)this<<" AddFileIntoPlayGroupEx  wndId"<<nWndId<<" no file";
 		return 1;//can't find file
 	}
 	

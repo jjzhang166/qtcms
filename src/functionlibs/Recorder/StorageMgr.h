@@ -37,20 +37,22 @@ public:
 	bool deleteSearchRecord();
 	/*QString getNewestRecord(QString devname, int chl);*/
 private:
-	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate);
-	void deleteRecord(QString dbPath, QString date);
+	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate, QMap<int, QString> &maxEndTimeMap);
+	void deleteRecord(QString dbPath, QString date, QMap<int, QString> &maxEndTimeMap);
 	bool createSearchRecordTable();
-	void deductPeriod(QString dbpath, QString date);
+	void deductPeriod(QString dbpath, QMap<int, QString> &maxEndTimeMap, QString date);
+	void deductPeriod(int wndId, QString date, QString newEnd);
 private:
 	QString getUsableDisk();
 	bool deleteOldDir(const QStringList& dirlist);
-	void deleteFile(const QStringList& fileList);
+	QStringList deleteFile(const QStringList& fileList);
 	QDate minDate(QList<QDate> dateList);
 	static QMutex m_sLock;
 
 	typedef struct _tagRecInfo{
 		QString dbPath;
 		QStringList fileLsit;
+		QMap<int, QString> maxEndTimeMap;
 	}RecInfo;
 
 	int m_insertId;

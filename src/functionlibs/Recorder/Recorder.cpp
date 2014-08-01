@@ -269,6 +269,7 @@ void Recorder::run()
 				}
 				else
 				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"add search record: wndId:"<<m_windId<<" start:"<<start.toString("hh:mm:ss")<<"end: 00:00:00";
 					bHasAddRecord = true;
 				}
 			}else{
@@ -606,23 +607,25 @@ void Recorder::run()
 			if (bHasAddRecord)
 			{
 				QTime endTime = QTime::currentTime();
-				if (start.secsTo(endTime) <= 3)
+				if (start < endTime)//当天的录像
 				{
-					//录像时间不足3秒，认为录像失败，删除插入的数据
-					m_StorageMgr.deleteSearchRecord();
+					if (start.secsTo(endTime) <= 3)
+					{
+						//录像时间不足3秒，认为录像失败，删除插入的数据
+						m_StorageMgr.deleteSearchRecord();
+					}
+					else
+					{
+						QString endStr = endTime.toString("hh:mm:ss");
+						m_StorageMgr.updateSearchRecord(endStr);
+
+						qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;
+					}
 				}
 				else
 				{
-					//更新录像的结束时间
-// 					QString endStr = m_StorageMgr.getNewestRecord(m_devname, m_channelnum);
-// 					if (endStr.isEmpty())
-// 					{
-// 						endStr = endTime.toString("hh:mm:ss");
-// 					}
-					QString endStr = endTime.toString("hh:mm:ss");
-					m_StorageMgr.updateSearchRecord(endStr);
-
-					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:"<<endStr;
+					m_StorageMgr.updateSearchRecord(QString("23:59:59"));//跨天录像，从零点截断
+					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:23：59：59";
 				}
 			}
 			m_bIsblock=false;
