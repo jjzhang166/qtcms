@@ -353,12 +353,25 @@ void BubbleProtocolEx::run()
 									  break;
 			case BUBBLE_STOPSTREAM:{
 				//停止预览
-				bFlag=cmdStopStream();
+				if (m_bIsSupportHttp)
+				{
+					bFlag=cmdStopStream();
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"old version do not support StopStream cmd,it will disConnect the device";
+					bFlag=false;
+				}
+				
 								   }
 								   break;
 			case BUBBLE_PAUSESTREAM:{
 				//暂停预览
-				bFlag=cmdPauseStream();
+				if (m_bIsSupportHttp)
+				{
+					bFlag=cmdPauseStream();
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"old version do not support PauseStream cmd,it will disConnect the device";
+					bFlag=false;
+				}
 									}
 									break;
 			case BUBBLE_HEARTBEAT:{
@@ -791,58 +804,151 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 
 bool BubbleProtocolEx::cmdAuthority()
 {
-	char cBuffer[100];
-	QByteArray tBlock;
-	qint64 nLen=0;
-	tagBubbleMessageInfo *pMessageInfo=NULL;
-	tagBubbleAuthoritySend *pAuthoritySend=NULL;
-	memset(cBuffer,0,100);
-	tagBubbleInfo *pBubbleInfo=(tagBubbleInfo*)cBuffer;
-	pBubbleInfo->cHead=(char)0xaa;
+	if (NULL!=m_pTcpSocket)
+	{
+		char cBuffer[100];
+		QByteArray tBlock;
+		qint64 nLen=0;
+		tagBubbleMessageInfo *pMessageInfo=NULL;
+		tagBubbleAuthoritySend *pAuthoritySend=NULL;
+		memset(cBuffer,0,100);
+		tagBubbleInfo *pBubbleInfo=(tagBubbleInfo*)cBuffer;
+		pBubbleInfo->cHead=(char)0xaa;
 
-	QDateTime tTime=QDateTime::currentDateTime();
-	pBubbleInfo->uiTicket=qToBigEndian((unsigned int)tTime.toMSecsSinceEpoch()*1000);
-	pBubbleInfo->cCmd=(char)0x00;
+		QDateTime tTime=QDateTime::currentDateTime();
+		pBubbleInfo->uiTicket=qToBigEndian((unsigned int)tTime.toMSecsSinceEpoch()*1000);
+		pBubbleInfo->cCmd=(char)0x00;
 
-	pMessageInfo=(tagBubbleMessageInfo*)pBubbleInfo->pLoad;
-	pMessageInfo->cMessage=(char)0x00;
-	memset(pMessageInfo->cReverse,(char)0x00,3);
+		pMessageInfo=(tagBubbleMessageInfo*)pBubbleInfo->pLoad;
+		pMessageInfo->cMessage=(char)0x00;
+		memset(pMessageInfo->cReverse,(char)0x00,3);
+		pMessageInfo->uiLength=sizeof(tagBubbleMessageInfo)+sizeof(tagBubbleAuthoritySend)-sizeof(pMessageInfo->uiLength)-sizeof(pMessageInfo->cParameters);
 
-	pAuthoritySend=(tagBubbleAuthoritySend*)pMessageInfo->cParameters;
-	qstrcpy(pAuthoritySend->cUserName,m_tDeviceInfo.sUserName.toUtf8().data());
-	qstrcpy(pAuthoritySend->cPassWord,m_tDeviceInfo.sPassword.toUtf8().data());
+		pAuthoritySend=(tagBubbleAuthoritySend*)pMessageInfo->cParameters;
+		qstrcpy(pAuthoritySend->cUserName,m_tDeviceInfo.sUserName.toUtf8().data());
+		qstrcpy(pAuthoritySend->cPassWord,m_tDeviceInfo.sPassword.toUtf8().data());
 
-	return true;
+		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)+sizeof(tagBubbleMessageInfo)+sizeof(tagBubbleAuthoritySend)-sizeof(pMessageInfo->cParameters)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength)-sizeof(pBubbleInfo->pLoad);
+		nLen=(qint64)(pBubbleInfo->uiLength+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength));
+		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
+		pMessageInfo->uiLength=qToBigEndian(pMessageInfo->uiLength);
+		tBlock.append(cBuffer,nLen);
+		if (-1!=m_pTcpSocket->write(tBlock))
+		{
+			if (m_pTcpSocket->waitForBytesWritten(2000))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"cmdAuthority fail as it write buffer to socket fail within 2s";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdAuthority fail as m_pTcpSocket write buffer to socket fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdAuthority fail as m_pTcpSocket is null,please check";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdDisConnect()
 {
+	m_bStop=true;
 	return true;
 }
 
 bool BubbleProtocolEx::cmdGetLiveStream()
 {
-	return true;
+	if (NULL!=m_pTcpSocket)
+	{
+
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdGetLiveStream fail as m_pTcpSocket is null,please check";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdGetLiveStreamEx()
 {
-	return true;
+	if (NULL!=m_pTcpSocket)
+	{
+		if (sendLiveStreamCmdEx(true))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdGetLiveStreamEx fail as sendLiveStreamCmdEx fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdGetLiveStreamEx fail as m_pTcpSocket is null,please check";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdStopStream()
 {
-	return true;
+	if (NULL!=m_pTcpSocket)
+	{
+		if (sendLiveStreamCmdEx(false))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdStopStream fail as sendLiveStreamCmdEx fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdStopStream fail as m_pTcpSocket is null";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdPauseStream()
 {
-	return true;
+	if (NULL!=m_pTcpSocket)
+	{
+		if (sendLiveStreamCmdEx(m_tDeviceInfo.bPrePause))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdPauseStream fail as sendLiveStreamCmdEx fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdPauseStream fail as m_pTcpSocket is null,please check";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdHeartBeat()
 {
-	return true;
+	//暂时不区分 预览和回放的心脏指令，此指令仅仅用于检测是否还保持连接，不保证对方正确接收
+	if (NULL!=m_pTcpSocket)
+	{
+		char cBuffer[100];
+		qint64 nLength=0;
+		tagBubbleInfo *pBubbleInfo=(tagBubbleInfo*)cBuffer;
+
+		pBubbleInfo->cHead=(char)0xaa;
+		pBubbleInfo->cCmd=(char)0x02;
+		QDateTime tTime=QDateTime::currentDateTime();
+		pBubbleInfo->uiTicket=qToBigEndian((unsigned int)(tTime.toMSecsSinceEpoch()*1000));
+		pBubbleInfo->pLoad[0]=(char)0x02;
+
+		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
+		nLength=(quint64)(pBubbleInfo->uiLength+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength));
+		QByteArray tBlock;
+		tBlock.append(cBuffer,nLength);
+		if (-1!=m_pTcpSocket->write(tBlock))
+		{
+			if (m_pTcpSocket->waitForBytesWritten(2000))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"cmdHeartBeat fail as it write buffer to socket fail within 2s";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdHeartBeat fail as m_pTcpSocket write buffer to socket fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdHeartBeat fail as m_pTcpSocket is null";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdGetPlayBackStreamByTime()
@@ -868,4 +974,50 @@ bool BubbleProtocolEx::cmdPtz()
 bool BubbleProtocolEx::cmdStopPlayBackStream()
 {
 	return true;
+}
+
+bool BubbleProtocolEx::sendLiveStreamCmdEx( bool flags )
+{
+	if (NULL!=m_pTcpSocket)
+	{
+		char cBuffer[100];
+		qint64 nLength=0;
+		tagBubbleInfo *pBubbleInfo=NULL;
+
+		memset(pBubbleInfo,0,100);
+
+		pBubbleInfo=(tagBubbleInfo*)cBuffer;
+		pBubbleInfo->cHead=(char)0xaa;
+		pBubbleInfo->cCmd=(char)0x0a;
+		QDateTime tTime=QDateTime::currentDateTime();
+		unsigned int uiTicket=(unsigned int)(tTime.toMSecsSinceEpoch()*1000);
+		pBubbleInfo->uiTicket=qToBigEndian(uiTicket);
+
+		tagBubbleLiveStreamRequireEx *pLiveStreamRequireEx=(tagBubbleLiveStreamRequireEx*)pBubbleInfo->pLoad;
+		pLiveStreamRequireEx->uiChannel=m_tDeviceInfo.nPreChannel;
+		pLiveStreamRequireEx->uiStream=m_tDeviceInfo.nPreStream;
+		pLiveStreamRequireEx->uiOperation=flags;
+		pLiveStreamRequireEx->uiReversed=0;
+
+		nLength=qint64(sizeof(tagBubbleInfo)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->pLoad));
+		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->pLoad)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
+
+		QByteArray tBlock;
+		tBlock.append(cBuffer,nLength);
+
+		if (-1!=m_pTcpSocket->write(tBlock))
+		{
+			if (m_pTcpSocket->waitForBytesWritten(2000))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"sendLiveStreamCmdEx fail as it write buffer to socket fail within 2s";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"sendLiveStreamCmdEx fail as m_pTcpSocket write buffer to socket fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"sendLiveStreamCmdEx fail as m_pTcpSocket is null";
+	}
+	return false;
 }

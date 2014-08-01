@@ -144,6 +144,7 @@ private:
 	bool cmdPausePlayBackStream();
 	bool cmdStopPlayBackStream();
 	bool cmdPtz();
+	bool sendLiveStreamCmdEx(bool flags);
 private slots:
 	void slCheckoutBlock();
 	void slBackToMainThread(QVariantMap evMap);

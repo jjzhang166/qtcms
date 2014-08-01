@@ -26,5 +26,11 @@ typedef struct __tagBubbleAuthorityReceive{
 	char sReversed[3];
 	char sAuth[13];
 }tagBubbleAuthorityReceive;
+typedef struct __tagBubbleLiveStreamRequireEx{
+	unsigned int uiChannel;
+	unsigned int uiStream;
+	unsigned int uiOperation;
+	unsigned int uiReversed;
+}tagBubbleLiveStreamRequireEx;
 #pragma pack()
 #endif // BUBBLEPROTOCOLEX_GLOBAL_H
