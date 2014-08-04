@@ -20,6 +20,7 @@
 #include <QtNetwork/QTcpSocket>
 #include <QByteArray>
 #include <QList>
+#include <QDomDocument>
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagBubbleProInfo{
 	bubbleProtocolEventCb proc;
@@ -44,6 +45,7 @@ typedef struct __tagBubbleDeviceInfo{
 	QDateTime tRemotePlayEndTime;
 	QString sRemotePlayFile;
 	bool bRemotePlayPause;
+	QString sRemotePlayFileName;
 }tagBubbleDeviceInfo;
 typedef enum __tagBubbleConnectStatusInfo{
 	BUBBLE_DISCONNECTED,
@@ -145,6 +147,9 @@ private:
 	bool cmdStopPlayBackStream();
 	bool cmdPtz();
 	bool sendLiveStreamCmdEx(bool flags);
+	bool sendLiveStreamCmd(bool flags);
+	bool checkRemoteFileIsExist();
+	QString checkXML(QString sSource);
 private slots:
 	void slCheckoutBlock();
 	void slBackToMainThread(QVariantMap evMap);
@@ -170,6 +175,7 @@ private:
 	QList<char> m_tPreviewCode;
 	QList<char> m_tRemoteCode;
 	bool m_bIsSupportHttp;
+	QList<QList<tagBubbleHttpStreamInfo>>m_tHttpStreamList;
 };
 
 #endif // BUBBLEPROTOCOLEX_H
