@@ -176,6 +176,8 @@ int Recorder::SetDevInfoEx(const int &nWindId, const int &nRecordType)
 
 void Recorder::run()
 {
+	qDebug()<<"----------------run start-----------------";
+
 	QString sSavePath;
 	int nRecStep=INIT;
 	avi_t * AviFile = NULL;
@@ -263,14 +265,26 @@ void Recorder::run()
 				nRecStep=OPEN_FILE;
 				//开始记录录像时间
 				QString curDate = QDate::currentDate().toString("yyyy-MM-dd");
-				if (!bHasAddRecord && !m_StorageMgr.addSearchRecord(m_windId, m_recordType, curDate, start.toString("hh:mm:ss"), QString("00:00:00")))
+// 				if (!bHasAddRecord && !m_StorageMgr.addSearchRecord(m_windId, m_recordType, curDate, start.toString("hh:mm:ss"), QString("00:00:00")))
+// 				{
+// 					qDebug()<<__FUNCTION__<<__LINE__<<"add search record info failed!";
+// 				}
+// 				else
+// 				{
+// 					qDebug()<<__FUNCTION__<<__LINE__<<"add search record: wndId:"<<m_windId<<" start:"<<start.toString("hh:mm:ss")<<"end: 00:00:00";
+// 					bHasAddRecord = true;
+// 				}
+				if (!bHasAddRecord)
 				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"add search record info failed!";
-				}
-				else
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"add search record: wndId:"<<m_windId<<" start:"<<start.toString("hh:mm:ss")<<"end: 00:00:00";
-					bHasAddRecord = true;
+					if (m_StorageMgr.addSearchRecord(m_windId, m_recordType, curDate, start.toString("hh:mm:ss"), QString("00:00:00")))
+					{
+						bHasAddRecord = true;
+						qDebug()<<__FUNCTION__<<__LINE__<<"add search record: wndId:"<<m_windId<<" start:"<<start.toString("hh:mm:ss")<<"end: 00:00:00";
+					}
+					else
+					{
+						qDebug()<<__FUNCTION__<<__LINE__<<"add search record info failed!";
+					}
 				}
 			}else{
 				// fix me : 处理建立路径时产生的资源
@@ -665,6 +679,9 @@ void Recorder::run()
 	m_bIsblock=true;
 	eventProcCall("RecordState",parm);
 	m_bIsblock=false;
+
+	qDebug()<<"----------------run end-----------------";
+
 }
 
 void Recorder::cleardata()

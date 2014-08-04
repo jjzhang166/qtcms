@@ -735,8 +735,10 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 		return 1;
 	}
 
-	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[m_wndNum++], date, start, end, nTypes);
+	qDebug()<<(int)this<<" AddFileIntoPlayGroupEx m_wndNum:"<<m_wndNum;
+	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[m_wndNum%ARRAY_SIZE(m_subRecPlayerView)], date, start, end, nTypes);
 	pLocalPlayerEx->Release();
+	m_wndNum++;
 
 	return nRet;
 }
