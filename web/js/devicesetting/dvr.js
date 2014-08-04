@@ -253,6 +253,7 @@ function dvr_common_load_content()
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
 			dvr_data = xml2json.parser(data.xml, "", false)
+			console.log(dvr_data);
 			if(dvr_data.juan.envload.errno != 0)
 			{
 				alert_error(dvr_data.juan.envload.errno);

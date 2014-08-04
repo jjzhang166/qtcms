@@ -63,19 +63,15 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	})
 }
 
-function setTables(){   // 回放页面底部表格最大化相应调整
-	var W =  $('table.table').width()-120;
-	$('table.table td').not('.no_border').css('width',W/24)
-}
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
-	/*var oNow=$('#now_time');
-	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/	
+	var oNow=$('#now_time');	
 	var b=oDrag.hasClass('now_sound'),
 		left;
 	if(b){
 		var veiwObj = getAudioObj();
 		var oWarpLeft = $('#sound');
-	}	
+	}
+
 	$(document).mousemove(function(event){
 			left = event.pageX;
 		    left = left < X1 ? X1 : left;
@@ -84,23 +80,17 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			/*if(veiwObj.id == 'playback'){
-				document.getElementById('playbackLocl').SetVolume(left);
-			}else if(veiwObj.id == 'playbackLocl'){
-				document.getElementById('playback').SetVolume(left);
-			}*/
-			//veiwObj.vol = left;
-		}/*else{
-			showNowPlayBackTime(oNow,left,X2);
-		}*/
+		}else{
+			showNowPlayBackTime(oNow,left-X1,X2-X1);
+		}
 		oDrag.css('left',left-1);
 	}).mouseup(function(){
 		$(this).off();
 	})
 }
 function showNowPlayBackTime(oNow,oleft,X2){
-	return;
-	oNow.html(returnTime((oleft-81)/(X2-81)*24*3600));
+	//return;
+	oNow.html(returnTime((oleft/X2)*24*3600));
 }
 (function($){   // 
 	$.fn.extend({

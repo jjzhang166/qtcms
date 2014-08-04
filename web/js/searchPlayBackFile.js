@@ -1,6 +1,7 @@
 	var bool = 0, //本地远程回放控制  0为远程 1为本地
 		recTotal = 0,  //文件检索总数。
-		nowDevID=null; //当前选中设备ID
+		nowDevID=null, //当前选中设备ID
+		searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
 	//搜索远程录像
 	function setDevData2ocx(){
 
@@ -164,7 +165,13 @@
 	}
 	function showRecProgress(now){  //回访检索文件进度
 		now = now || 0;
-		now = now>recTotal ? recTotal : now;
+
+		if(now != 0 && now>=recTotal){
+			searchSTOP=1;
+			now=recTotal;
+		}
+
+		//console.log(now+'---------------'+recTotal);
 
 		var con = lang.Retrieving,
 			p =now/recTotal*100,
@@ -204,9 +211,12 @@
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		console.log('------------文件总数-----------');
-		console.log(data);
+		/*console.log('------------文件总数-----------');
+		console.log(data);*/
 		recTotal = data.total ? data.total : 0;	
+
+		if(recTotal==0)
+			searchSTOP=1;
 		
 		showRecProgress();
 	}

@@ -50,12 +50,6 @@ function data2UI(objData,oWarp){
 					var oTag = warp.find(dataKey)[0] ? warp.find(dataKey) : defaultWarp.find(dataKey);
 
 				if(oTag[0]){
-					/*console.log('__data.key: __ |'+i+'| __data.key.value: __ |'+objData[i]+'|  ____warp.attr("data-UI")~= '+ warp.attr('data-UI')
-							+'____oTag.attr("data-UI") = '+ oTag.attr('data-UI'));
-					console.log(warp);
-					console.log(oTag);*/
-						/*warp.css('border','1px solid red');
-						console.log(warp.attr('type'));*/
 
 						switch(oTag.attr('type')){
 							case 'radio' :

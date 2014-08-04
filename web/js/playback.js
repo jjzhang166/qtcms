@@ -6,10 +6,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
-	localSearchWindNum=0, //要搜索的本地回放文件的设备
-	searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
+	localSearchWindNum=0; //要搜索的本地回放文件的设备
 
 	$(function(){
+
 		oBottom = $('#operating');
 		
 		oPlayBack = $('#playback')[0];
@@ -18,7 +18,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		var channelvideo = $("#channelvideo");
 
-			channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
+		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 			//console.log('~~~~~~~~~~~~~~~~~~~~');
 			if($(this).prop('checked')){
@@ -48,32 +48,31 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/* 有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
 		})
 
-		channelvideo.on({  //整个搜索的文件列表事件
-			mousedown:function(event){
-				try{
-					groupStop();
-					/*dragStopMove();
-					oPlaybackLocl.GroupStop();
-					oPlayBack.GroupStop();
-					nowSpeed = 1;
-					palybackspeed(nowSpeed+'X');*/
-					$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
-				}catch(e){
-					//alert('try:'+e);
-				};
-				var left = event.pageX
+		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
+			var min = $('table.table .no_border').width(),
+				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
+			try{
+				groupStop();
+				/*dragStopMove();
+				oPlaybackLocl.GroupStop();
+				oPlayBack.GroupStop();
+				nowSpeed = 1;
+				palybackspeed(nowSpeed+'X');*/
+				//$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
+			}catch(e){
+				//alert('try:'+e);
+			};
+			var left = event.pageX
 
-		    	if(left < 81 || left > channelvideo.width()-20){
-		    		return;
-		    	}
+	    	if(left < min || left > max){
+	    		return;
+	    	}
+			//event.stopPropagation();
+			var moveObj = $('div.play_time').css('left',left-1);
 
-				//event.stopPropagation();
-				var moveObj = $('div.play_time').css('left',left-1);
-				set_drag(80,channelvideo.width()-20,moveObj);
-			}/*,
-			dblclick:function(){
-				playVideo(event);
-			}*/
+			showNowPlayBackTime($('#now_time'),left-min,max-min);
+
+			set_drag(min,max,moveObj);
 		})
 
 		channelvideo.on('mouseover','tr',function(){
@@ -84,13 +83,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}
 		})
 
-		$('div.play_time').on({  //文件搜索的下的事件滑动条事件
-			dblclick:function(){
-				playVideo(event);
-			}/*,
+		$('div.play_time').on({ //文件搜索的下的事件滑动条事件
+			dblclick:function(){  
+				playVideo();
+			},
 			mousedown:function(){
-				set_drag(80,channelvideo.width()-1,$('div.play_time'));
-			}	*/
+				var min = $('table.table .no_border').width();
+				var max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
+				set_drag(min,max,$(this));
+			}
 		});
 
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
@@ -166,6 +167,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		});
 		
 		setTables();
+		$('div.play_time').css('left',$('table.table .no_border').width()-1);
 
 		$('#foot').css({
 			top:oView.height()+212
@@ -192,19 +194,20 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}
 		}else{
 			//alert('播放');
-			playVideo(event);		
+			playVideo();		
 		}
 	}
-	function playVideo(event){
+	function playVideo(){
 		//alert(event.pageX);
-		if(event.pageX<81 || (maxFileEndTime < minFileStartTime)) return;
+		if(maxFileEndTime < minFileStartTime) return;
+
+		groupStop();
 
 		var obj = $('#togglePlay');
 			obj.attr({
 				toggle:'1',
 				hasFile:'1'
 			}).css('background-position','0px'+' '+(-obj.height())+'px');
-		groupStop();
 		/*dragStopMove();
 		oPlaybackLocl.GroupStop();
 		oPlayBack.GroupStop();
@@ -213,14 +216,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		palybackspeed(nowSpeed+'X');*/
 
 		var date = $("div.calendar span.nowDate").html(),
-			begin =returnTime(($('div.play_time').offset().left+2-81)/($('#channelvideo').width()-81)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
+			begin =$('#now_time').html(),//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
 
 			if(begin<minFileStartTime){
-				begin =date+' '+minFileStartTime;
-				var p = ($('#channelvideo').width()-79)/(3600*24);
-				$('div.play_time').css('left',p*time2Sec(minFileStartTime)+79);
+				var min = $('table.table .no_border').width(),
+				max = $('#channelvideo tr').length > 4 ? $('#channelvideo').width()-17:$('#channelvideo').width();
+				begin = date+' '+minFileStartTime;
+				var p = (max-min)/(3600*24);
+				$('div.play_time').css('left',p*time2Sec(minFileStartTime)+min);
 			}else{
 				begin = date+' '+begin;
 			}
@@ -303,11 +308,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	function groupStop(){
 		$('#togglePlay').removeAttr('hasFile').removeAttr('toggle').css('background-position','0px 0px');
-		dragStopMove();
 		var obj = bool ? oPlaybackLocl : oPlayBack;
 		obj.GroupStop();
 		nowSpeed = 1;
 		palybackspeed(nowSpeed+'X');
+		dragStopMove();
 	}
 
 	function palybackspeed(str){	
@@ -336,8 +341,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			console.log(data);
 		}
 
-		if(!bool)
-			console.log(data);
+		/*if(!bool)
+			console.log(data);*/
 		
 		localSearchWindNum++;
 		if(bool){
@@ -348,9 +353,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}		
 		}else{
 			showRecProgress(localSearchWindNum*100);
-
-			if(localSearchWindNum*100 >= recTotal)
-				searchSTOP=1;
 
 			console.log(recFile.length+'------------'+recTotal);
 			searchSTOP && RecFileInfo2UI(recFile);
@@ -484,9 +486,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		console.time('--接收到的文件回调描绘时间段---'+filedata.length);
 		var oList = $('div.dev_list'),
 
+			channelvideo = $('#channelvideo'),
+
 			oDev = bool ?  oList.find('span.device:eq('+localSearchWindNum+')')[0] : (oList.find('li.sel span.device')[0] || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device')[0]),
 
-			oFileUIwarp = $('#channelvideo tr'),
+			oFileUIwarp = channelvideo.find('tr'),
 
 			oDev = $(oDev),
 		/*console.log(oDev);
@@ -497,7 +501,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		/*console.timeEnd('---------合并接受到的文件------------------------');
 		console.time('--接收到合并的文件回调描绘时间段---'+File.length);*/
 
-			p = ($('#channelvideo').width()-100)/(3600*24),
+			min = $('table.table .no_border').width(),
+
+			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
+
+			p = (max-min)/(3600*24),
 
 			nowTime = renewtime().split('  ')[1];
 
@@ -505,8 +513,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		console.log(File);*/
 
 		for( var i=0;i<File.length;i++){
-			console.log('--------当前填充的通道文件----------');
-			console.log(File[i]);
+			/*console.log('--------当前填充的通道文件----------');
+			console.log(File[i]);*/
 			var str = '';
 			/*console.log('-------------------------初始化的添加对象!----------------------');
 			console.log(target);*/
@@ -531,7 +539,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					//console.log(maxFileEndTime);
 				var width = (time2Sec(end)-start)*p;
 					width = width < 1 ? 1 : width;
-				var left = start*p+81;
+				var left = start*p+min;
 				var types = data.types || 8;
 				if(bool){ // 本地回放
 					var target = oFileUIwarp.eq(localSearchWindNum);
@@ -566,6 +574,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function dragStartMove(){
+		var channelvideo = $('#channelvideo'),
+			min = $('table.table .no_border').width(),
+			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
 		if(maxFileEndTime<minFileStartTime) return;
 
 		var SynTimeUnits = 1000;//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
@@ -579,10 +590,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			//if(nowPlayd == -1)return;
 
-			var max = $('#channelvideo').width();
-			var p = (max-79)/(3600*24);
 
-				max = time2Sec(maxFileEndTime)*p+79 < max ? time2Sec(maxFileEndTime)*p+79 : max;
+			var p = (max-min)/(3600*24);
+
+				max = time2Sec(maxFileEndTime)*p+min < max ? time2Sec(maxFileEndTime)*p+min : max;
 
 			var left = initleft+p*nowPlayd;
 			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
@@ -599,6 +610,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 	//回放页面文件显示表格初始化
 	function PBrecFileTableInit(){
+		$('table.table').width('100%');
 		var currOdevData= $('div.dev_list').find('li.sel span.device').data('data') || $('div.dev_list').find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 		var initWind = bool ? 64 : currOdevData.channel_count;
 		console.log('+++++++++++++要初始化的文件列表数量+++++++++++++++++++:'+initWind);
@@ -632,6 +644,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		$(str).appendTo(oVideoList);
 
+		if(initWind>5 ){
+			$('table.table').eq(0).width($('table.table').eq(0).width()-17);
+		}
+
 		setTables();
 	}
 
@@ -664,17 +680,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playBackSerchFile(){
 		console.log('当前搜索状态:'+searchSTOP);
-		//if(bool){
-			if(searchSTOP){
-				searchSTOP = 0;
-			}else{
-				console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
-				return;
-			}
-		//}
+		if(searchSTOP){
+			searchSTOP = 0;
+		}else{
+			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			return;
+		}
 
 
-		dragStopMove();
+		groupStop();
 		
 		localSearchWindNum=0;
 
@@ -767,4 +781,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			palybackspeed(nowSpeed<1 ? '1/'+1/nowSpeed+'X' : nowSpeed+'X');
 		}*/
 		//console.timeEnd('--本地远程控件状态同步--');
+	}
+	function setTables(){   // 回放页面底部表格最大化相应调整
+		var W =  $('table.table').width()-70,
+			p=W/24;
+		$('table.table td').not('.no_border').css('width',p)
+		$('table.table .no_border').width($('table.table').width()-p*24);
 	}
