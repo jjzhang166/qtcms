@@ -64,8 +64,8 @@ int Recorder::Start()
 	{
 		m_bFinish = false;
 		start();
-		/*connect(&m_updateSchRec, SIGNAL(timeout()), this, SLOT(updateSchRec()));*/
-		//m_updateSchRec.start(1000*60);
+		connect(&m_updateSchRec, SIGNAL(timeout()), this, SLOT(updateSchRec()));
+		m_updateSchRec.start(1000*60);
 	}
 	return IRecorder::OK;
 }
@@ -78,7 +78,7 @@ int Recorder::Stop()
 		//do nothing
 		cleardata();
 	}
-	/*m_updateSchRec.stop();*/
+	m_updateSchRec.stop();
 	return IRecorder::OK;
 }
 int Recorder::InputFrame(QVariantMap& frameinfo)
@@ -423,7 +423,7 @@ void Recorder::run()
 			if (m_bUpdateEndTime)
 			{
 				m_bUpdateEndTime=false;
-				m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+// 				m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
 			}else{
 				//do nothing
 			}
@@ -887,13 +887,7 @@ QString Recorder::getFileEndTime( QString fileName, QTime start )
 
 qint64 Recorder::getFileSize( QString fileName )
 {
-	QFile file(fileName);
-	if (file.exists())
-	{
-		return file.size();
-	}
-	else
-		return 0;
+	return m_StorageMgr.getFileSize(fileName);
 }
 
 void Recorder::checkIsBlock()
@@ -934,7 +928,12 @@ void Recorder::sleepEx( int time )
 	return;
 }
 
-//void Recorder::updateSchRec()
-//{
-//	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
-//}
+int Recorder::FixExceptionalData()
+{
+	return m_StorageMgr.fixExceptionalData();
+}
+
+void Recorder::updateSchRec()
+{
+	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+}

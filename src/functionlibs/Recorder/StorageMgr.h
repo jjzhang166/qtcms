@@ -24,6 +24,7 @@ public:
 	bool freeDisk();
 	int getInsertId();
 	int getBlockPosition();
+	quint64 getFileSize(QString fileName);
 
 	QString getFileSavePath(QString devname,int nChannelNum,int winId, int type, QTime &start);
 	bool GetDiskFreeSpace(char* lpDirectoryName, quint64* lpFreeBytesAvailableToCaller, quint64* lpTotalNumberOfBytes, quint64* lpTotalNumberOfFreeBytes);
@@ -36,12 +37,26 @@ public:
 	bool updateSearchRecord(QString sEnd);
 	bool deleteSearchRecord();
 	/*QString getNewestRecord(QString devname, int chl);*/
+	int fixExceptionalData();
 private:
 	QStringList findEarlestRecord(QString dbPath, QDate &earlestDate, QMap<int, QString> &maxEndTimeMap);
 	void deleteRecord(QString dbPath, QString date, QMap<int, QString> &maxEndTimeMap);
 	bool createSearchRecordTable();
 	void deductPeriod(QString dbpath, QMap<int, QString> &maxEndTimeMap, QString date);
 	void deductPeriod(int wndId, QString date, QString newEnd);
+
+	typedef struct _tagRecordInfo{
+		bool fixMethod;
+		int id;
+		QString dbPath;
+		QString startTime;
+		QString endTime;
+		QString filePath;
+	}RecordInfo;
+
+	void getRecInfo(QMap<int, RecordInfo> &recInfoMap);
+	void judgeFixMethod(QMap<int, RecordInfo> &recInfoMap);
+	void processRecord(QMap<int, RecordInfo> &recInfoMap);
 private:
 	QString getUsableDisk();
 	bool deleteOldDir(const QStringList& dirlist);

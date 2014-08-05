@@ -10,6 +10,8 @@ interface IRecorderEx : public IPComBase
 
 	virtual int SetDevInfoEx(const int &nWindId, const int &nRecordType) = 0;
 
+	virtual int FixExceptionalData() = 0;
+
 	enum _emError{
 		OK = 0,          //成功
 		E_PARAMETER_ERROR, //输入参数不正确

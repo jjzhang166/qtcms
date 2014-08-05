@@ -50,7 +50,7 @@ PlayMgr::~PlayMgr(void)
 // 		wait(1000);
 // 	}
 
-	qDebug()<<"start sleep m_bStop:"<<m_bStop;
+// 	qDebug()<<"start sleep m_bStop:"<<m_bStop;
 
 	while(QThread::isRunning())
 	{
@@ -61,7 +61,7 @@ PlayMgr::~PlayMgr(void)
 	m_pVedioRender->Release();
 	m_pVedioRender = NULL;
 
-	qDebug()<<"end sleep";
+// 	qDebug()<<"end sleep";
 }
 
 int PlayMgr::initCb()
@@ -75,9 +75,9 @@ int PlayMgr::initCb()
 	QString eventName = "DecodedFrame";
 	pEventRegister->registerEvent(eventName, cbDecodedFrame, this);
 
-	qDebug()<<"render:"<<m_pVedioRender;
-	qDebug()<<"init wnd;"<<m_pRenderWnd;
-
+// 	qDebug()<<"render:"<<m_pVedioRender;
+// 	qDebug()<<"init wnd;"<<m_pRenderWnd;
+// 
 	m_pVedioRender->setRenderWnd(m_pRenderWnd);
 	pEventRegister->Release();
 	return 0;

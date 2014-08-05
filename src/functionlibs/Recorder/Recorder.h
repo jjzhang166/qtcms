@@ -50,6 +50,7 @@ public:
 	virtual int SetDevInfo(const QString& devname,int nChannelNum);
 	//IRecordEx
 	virtual int SetDevInfoEx(const int &nWindId, const int &nRecordType);
+	virtual int FixExceptionalData();
 
 	virtual QString getModeName();
 
@@ -79,6 +80,7 @@ public:
 		int samplewidth;
 		char encode[8];
 	}RecBufferNode;
+
 private slots:
 	void slBackToMainThread(QVariantMap evMap);
 signals:
@@ -86,7 +88,7 @@ signals:
 public slots:
 	void checkdiskfreesize();
 	void checkIsBlock();
-	/*void updateSchRec();*/
+	void updateSchRec();
 protected:
 	void run();
 private:
@@ -133,7 +135,7 @@ private:
 	bool m_bIsblock;
 	QTimer m_checkdisksize;
 	QTimer m_checkIsBlock;
-	/*QTimer m_updateSchRec;*/
+	QTimer m_updateSchRec;
 	int m_nPosition;
 	int m_nSleepSwitch;
 	int m_nUpdateCount;

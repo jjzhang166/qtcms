@@ -1198,3 +1198,137 @@ int StorageMgr::getBlockPosition()
 {
 	return m_nPosition;
 }
+
+int StorageMgr::fixExceptionalData()
+{
+	QMap<int, RecordInfo> recInfoMap;
+	//get all record which need to fix
+	getRecInfo(recInfoMap);
+	if (recInfoMap.isEmpty())
+	{
+		return 0;//no exceptional data
+	}
+
+	//judge record is to delete or fix
+	judgeFixMethod(recInfoMap);
+
+	//delete or fix record
+	processRecord(recInfoMap);
+	return 0;
+}
+
+void StorageMgr::getRecInfo( QMap<int, RecordInfo> &recInfoMap )
+{
+	QString disks = getUseDisks();
+	QStringList diskList = disks.split(":");
+	foreach(QString disk, diskList)
+	{
+		QString dbPath = disk + ":/REC/record.db";
+		if (!QFile::exists(dbPath))
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"file:"<<dbPath<<" is not exist";
+			continue;
+		}
+		QSqlDatabase *pDataBase = initDataBase(dbPath, (int*)this);
+		if (NULL == pDataBase)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"can't open database "<<dbPath;
+			continue;
+		}
+		QSqlQuery query(*pDataBase);
+		QString cmd = "select id, win_id, start_time, end_time, path from local_record where start_time=end_time";
+		query.exec(cmd);
+
+		while(query.next())
+		{
+			RecordInfo item;
+			item.dbPath = dbPath;
+			item.id = query.value(0).toInt();
+			item.startTime = query.value(2).toString();
+			item.endTime = query.value(3).toString();
+			item.filePath = query.value(4).toString();
+			item.fixMethod = 0;//init for delete
+			recInfoMap.insert(query.value(1).toInt(), item);
+		}
+		query.finish();
+	}
+}
+
+void StorageMgr::judgeFixMethod( QMap<int, RecordInfo> &recInfoMap )
+{
+	QSqlDatabase *pDataBase = initDataBase(g_sSearchRecord, (int*)this);
+	if (NULL == pDataBase)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"can't open database "<<g_sSearchRecord;
+		return;
+	}
+	QSqlQuery query(*pDataBase);
+	QMap<int, RecordInfo>::iterator iter = recInfoMap.begin();
+	while(iter != recInfoMap.end())
+	{
+		QString cmd = QString("select id, end_time from search_record where wnd_id=%1 order by id desc limit 1").arg(iter.key());
+		query.exec(cmd);
+		if(query.next())
+		{
+			QString endTime = query.value(1).toString();
+			if (endTime > iter->startTime)
+			{
+				iter->endTime = endTime;
+				iter->fixMethod = 1;//this record is to fix
+			}
+			else
+			{
+				cmd = QString("delete from search_record where id=%1").arg(query.value(0).toInt());
+				query.exec(cmd);
+			}
+		}
+		iter++;
+	}
+}
+
+void StorageMgr::processRecord( QMap<int, RecordInfo> &recInfoMap )
+{
+	QMap<int, RecordInfo>::iterator iter = recInfoMap.begin();
+	while(iter != recInfoMap.end())
+	{
+		QSqlDatabase *pDataBase = initDataBase(iter->dbPath, (int*)this);
+		if (NULL == pDataBase)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"can't open database "<<iter->dbPath<<" wnd:"<<iter.key();
+			continue;
+		}
+		QSqlQuery query(*pDataBase);
+		if (iter->fixMethod)//can be fixed
+		{
+			QString cmd = QString("update local_record set end_time='%1', file_size=%2 where id=%3").arg(iter->endTime).arg(getFileSize(iter->filePath)).arg(iter->id);
+			query.exec(cmd);
+		}
+		else//can't be fixed, then delete
+		{
+			QString cmd = QString("delete from local_record where id=%1").arg(iter->id);
+			query.exec(cmd);
+			if (QFile::remove(iter->filePath))
+			{
+				QString dirpath = iter->filePath.left(iter->filePath.lastIndexOf("/"));
+				QDir dir(dirpath);
+				dir.setFilter(QDir::Files);
+				if (!dir.count())
+				{
+					dir.rmpath(dirpath);
+				}
+			}
+		}
+		iter++;
+	}
+}
+
+quint64 StorageMgr::getFileSize( QString fileName )
+{
+	QFile file(fileName);
+	if (file.exists())
+	{
+		return file.size();
+	}
+	else
+		return 0;
+}

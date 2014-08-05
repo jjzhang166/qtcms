@@ -1,5 +1,6 @@
 #include "qpreviewwindowsex.h"
-
+#include "guid.h"
+#include "IRecorderEx.h"
 
 qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 	:QWidget(parent),
@@ -54,6 +55,15 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 
 	file->close();
 	delete file;
+
+	//fix exceptional record
+	IRecorderEx *pRecorderEx = NULL;
+	pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorderEx,(void**)&pRecorderEx);
+	if (pRecorderEx)
+	{
+		pRecorderEx->FixExceptionalData();
+		pRecorderEx->Release();
+	}
 }
 
 
