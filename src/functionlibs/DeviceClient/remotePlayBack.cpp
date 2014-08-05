@@ -351,7 +351,8 @@ void remotePlayBack::run()
 				case 1:{
 					//step 1:尝试bubble协议
 					int nret=-1;
-					pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IRemotePlayback,(void**)&m_pRemotePlayback);
+					pcomCreateInstance(CLSID_Bubble,NULL,IID_IRemotePlayback,(void**)&m_pRemotePlayback);
+					//pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IRemotePlayback,(void**)&m_pRemotePlayback);
 					if (NULL!=m_pRemotePlayback)
 					{
 						//注册回调函数

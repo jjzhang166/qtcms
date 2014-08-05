@@ -498,7 +498,7 @@ void BubbleProtocolEx::run()
 				qDebug()<<__FUNCTION__<<__LINE__<<"there is an undefined cmd,please check! it will cause device reConnect";
 					}
 			}
-			if (!bFlag)
+			if (bFlag)
 			{
 				nRunStep=BUBBLE_RUN_DEFAULT;	
 			}else{

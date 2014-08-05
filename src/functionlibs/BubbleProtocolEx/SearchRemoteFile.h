@@ -40,6 +40,7 @@ private:
 	void eventCallBack(QString sEventName,QVariantMap evMap);
 	int parseSearchData();
 	int extractRecordInfo(QDomDocument* pDom);
+	void setRecordInfo(tagSearchRecordInfo &tRecord,QStringList tStrList);
 private:
 	QStringList m_tEventNameList;
 	QMultiMap<QString,tagSearchRemoteFileProcInfo>m_tEventMap;

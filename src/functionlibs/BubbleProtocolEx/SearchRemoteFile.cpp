@@ -256,9 +256,79 @@ int SearchRemoteFile::extractRecordInfo( QDomDocument* pDom )
 	{
 		QDomNodeList tSearchNodeList=pDom->elementsByTagName("recsearch");
 		QDomNode tSubNode=tSearchNodeList.at(0);
+		int nTotalNum=tSubNode.toElement().attribute("session_total").toInt();
+		QDomNodeList tRecordList=pDom->elementsByTagName("s");
+		int nRecordNum=tRecordList.size();
+		QVariantMap tRecordTotal;
+		tRecordTotal.insert("total",QString("%1").arg(nTotalNum));
+		if (m_tSearchInfo.nSessionIndex==0)
+		{
+			eventCallBack("recFileSearchFinished",tRecordTotal);
+		}else{
+			//do nothing
+		}
+		for(int i=0;i<nRecordNum;i++){
+			tagSearchRecordInfo tRecordInfo;
+			QDomNode tRecNode=tRecordList.at(i);
+			QDomElement tElement=tRecNode.toElement();
+			QString sRecordValue=tElement.text();
+			QStringList tStrList=sRecordValue.split("|");
+			setRecordInfo(tRecordInfo,tStrList);
+			m_tRecordList.append(tRecordInfo);
+			QVariantMap tItem;
+			tItem.insert("channelnum", tRecordInfo.cChannel+1);
+			tItem.insert("types", tRecordInfo.cTypes);
+			tItem.insert("start", tRecordInfo.tStartTime.toString("yyyy-MM-dd hh:mm:ss"));
+			tItem.insert("end", tRecordInfo.tEndTime.toString("yyyy-MM-dd hh:mm:ss"));
+			tItem.insert("filename", tRecordInfo.sFileName);
+			tItem.insert("index",m_tSearchInfo.nSessionIndex+i);
+			eventCallBack("foundFile",tItem);
+		}
+		m_tSearchInfo.nSessionTotal=nTotalNum;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"extractRecordInfo fail as pDom is null";
 		return 1;
 	}
 	return 0;
+}
+
+void SearchRemoteFile::setRecordInfo( tagSearchRecordInfo &tRecord,QStringList tStrList )
+{
+	if (!tStrList.isEmpty())
+	{
+		QDateTime time1 = QDateTime::currentDateTime();
+		QDateTime time2 = QDateTime::currentDateTimeUtc();
+		int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
+
+		int nTypeNum=tStrList.at(3).toInt();
+		tRecord.cChannel=tStrList.at(2).toInt();
+		tRecord.cTypes=nTypeNum;
+		tRecord.tStartTime=QDateTime::fromTime_t(tStrList.at(4).toInt());
+		tRecord.tStartTime=tRecord.tStartTime.addSecs(0-timeDifference);
+		tRecord.tEndTime=QDateTime::fromTime_t(tStrList.at(5).toInt());
+		tRecord.tEndTime=tRecord.tEndTime.addSecs(0-timeDifference);
+		tRecord.sFileName=tRecord.tStartTime.toString("yyyyMMddhhmmss")+"_"+tRecord.tEndTime.toString("yyyyMMddhhmmss");
+
+		QString sType;
+		if (1 == (int)(nTypeNum & 1) )
+		{
+			sType += "T";
+		}
+		if (2 == (int)(nTypeNum & 2))
+		{
+			sType += "M";
+		}
+		if (4 == (int)(nTypeNum & 4))
+		{
+			sType += "S";
+		}
+		if (8 == (int)(nTypeNum & 8))
+		{
+			sType += "H";
+		}
+		tRecord.sFileName+="_"+sType;
+		return;
+	}else{
+		return;
+	}
 }
