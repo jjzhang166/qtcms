@@ -17,8 +17,8 @@ DeviceClient::DeviceClient():m_nRef(0),
 	m_bGroupStop(false),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
-	pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
-	/*pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);*/
+	/*pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);*/
+	pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
 	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse";

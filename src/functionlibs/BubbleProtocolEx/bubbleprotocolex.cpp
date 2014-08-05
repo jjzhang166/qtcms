@@ -2,6 +2,7 @@
 #include <guid.h>
 #include <QtEndian>
 #include "h264wh.h"
+#include <QElapsedTimer>
 int cbXBubbleFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
@@ -29,6 +30,7 @@ BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 
 	m_tRemoteCode.append((char)0x01);//Record Stream
 	m_tRemoteCode.append((char)0x02);//Heart Beat
+	m_tRemoteCode.append((char)0x09);//undefined
 	//注册远程文件搜索回调事件
 	m_tSearchRemoteFile.registerEvent("foundFile",cbXBubbleFoundFile,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFail",cbXBubbleRecFileSearchFail,this);
@@ -315,7 +317,7 @@ void BubbleProtocolEx::run()
 								m_nPosition=__LINE__;
 								if (analyzeRemoteInfo())
 								{
-									nFrameStep=4;
+									nFrameStep=0;
 								}else{
 									nFrameStep=3;
 								}
@@ -324,12 +326,15 @@ void BubbleProtocolEx::run()
 								//解析预览数据
 								m_bBlock=true;
 								m_nPosition=__LINE__;
+								QElapsedTimer timer;
+								timer.start();
 								if (analyzePreviewInfo())
 								{
-									nFrameStep=4;
+									nFrameStep=0;
 								}else{
 									nFrameStep=3;
 								}
+								 /*qDebug() << "The slow analyzePreviewInfo took" << timer.elapsed() << "milliseconds";*/
 								m_bBlock=false;
 							}
 							   }
@@ -348,8 +353,8 @@ void BubbleProtocolEx::run()
 							   break;
 						case 4:{
 							//接着解析数据 
-							nFrameStep=5;
-							nReceiveStep=BUBBLE_RECEIVE_HTTP;
+							//nFrameStep=5;
+							//nReceiveStep=BUBBLE_RECEIVE_HTTP;
 							   }
 						case 5:{
 							//end
@@ -620,6 +625,7 @@ void BubbleProtocolEx::run()
 			m_tDeviceInfo.sUserName.clear();
 			m_tDeviceInfo.tIpAddr.clear();
 			m_tDeviceInfo.tPorts.clear();
+			m_tBuffer.clear();
 							}
 							break;
 		}
@@ -1133,7 +1139,10 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("audiochannel", pLiveStream->cChannel);
 					tStreamInfo.insert("acodec", pLiveStreamAudio->cEnCode);
 					tStreamInfo.insert("gentime", pLiveStreamAudio->uiGtime);
+					QElapsedTimer timer;
+					timer.start();
 					eventProcCall("LiveStream",tStreamInfo);
+					qDebug() << "The slow 0 LiveStream took" << timer.elapsed() << "milliseconds";
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
 				}else if (1==pLiveStream->cType||2==pLiveStream->cType)
@@ -1150,7 +1159,10 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("width", nWidth);
 					tStreamInfo.insert("height", nHeight);
 					tStreamInfo.insert("vcodec", "H264");
+					QElapsedTimer timer;
+					timer.start();
 					eventProcCall("LiveStream",tStreamInfo);
+					qDebug() << "The slow 1 2 LiveStream took" << timer.elapsed() << "milliseconds"<<"type::"<<pLiveStream->cType;
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
 				}else{
@@ -1270,7 +1282,17 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as the datas are unCorrect";
 				}
-			}else{
+			}else if (pBufferInfo->cCmd=='\x09')
+			{
+				if (uiBubbleLength==18)
+				{
+					m_tBuffer.remove(0,uiBubbleLength);
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as the datas are unCorrect";
+				}
+			}
+			else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as it cmd is not \x01 or \x02";
 			}
 		}else{
