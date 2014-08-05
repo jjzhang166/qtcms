@@ -87,5 +87,11 @@ typedef struct __tagBubbleLiveStreamAudio{
 	unsigned int uiSampleRate;
 	unsigned int uiSampleWidth;
 }tagBubbleLiveStreamAudio;
+typedef struct __tagBubbleReceiveMessage{
+	unsigned int uiLength;
+	char cMessage;
+	char cReverse[3];
+	char	cParameters;
+}tagBubbleReceiveMessage;
 #pragma pack()
 #endif // BUBBLEPROTOCOLEX_GLOBAL_H

@@ -2,12 +2,16 @@
 #include <guid.h>
 #include <QtEndian>
 #include "h264wh.h"
+int cbXBubbleFoundFile(QString evName,QVariantMap evMap,void*pUser);
+int cbXBubbleRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
+int cbXBubbleRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 	m_nSleepSwitch(0),
 	m_nPosition(0),
 	m_bIsSupportHttp(true),
 	m_bStop(true),
 	m_bBlock(false),
+	m_bWaitForConnect(true),
 	m_tCurrentConnectStatus(BUBBLE_DISCONNECTED),
 	m_tHistoryConnectStatus(BUBBLE_DISCONNECTED),
 	m_pTcpSocket(NULL)
@@ -25,6 +29,10 @@ BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 
 	m_tRemoteCode.append((char)0x01);//Record Stream
 	m_tRemoteCode.append((char)0x02);//Heart Beat
+	//注册远程文件搜索回调事件
+	m_tSearchRemoteFile.registerEvent("foundFile",cbXBubbleFoundFile,this);
+	m_tSearchRemoteFile.registerEvent("recFileSearchFail",cbXBubbleRecFileSearchFail,this);
+	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()
@@ -50,7 +58,17 @@ long __stdcall BubbleProtocolEx::QueryInterface( const IID & iid,void **ppv )
 	}else if (IID_IEventRegister==iid)
 	{
 		*ppv=static_cast<IEventRegister *>(this);
-	}else{
+	}else if (IID_IRemotePreview==iid)
+	{
+		*ppv=static_cast<IRemotePreview*>(this);
+	}else if (IID_IRemotePlayback==iid)
+	{
+		*ppv=static_cast<IRemotePlayback*>(this);
+	}else if (IID_IDeviceConnection==iid)
+	{
+		*ppv = static_cast<IDeviceConnection *>(this);
+	}
+	else{
 		*ppv=NULL;
 		return E_NOINTERFACE;
 	}
@@ -134,13 +152,7 @@ void BubbleProtocolEx::run()
 	bool bRunStop=false;
 	m_bStop=false;
 	int nHeartBeat=0;
-	QVariantMap evMap;
-	m_tCurrentConnectStatus=BUBBLE_CONNECTTING;
-	evMap.insert("status",m_tCurrentConnectStatus);
-	m_bBlock=true;
 	m_nPosition=__LINE__;
-	sgBackToMainThread(evMap);
-	m_bBlock=false;
 	while(bRunStop==false){
 		switch(nRunStep){
 		case BUBBLE_RUN_CONNECT:{
@@ -148,7 +160,7 @@ void BubbleProtocolEx::run()
 			if (NULL!=m_pTcpSocket)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"m_pTcpSocket should be null on here,please check";
-				delete m_pTcpSocket;
+				/*delete m_pTcpSocket;*/
 				m_pTcpSocket=NULL;
 			}else{
 				//keep going  
@@ -179,6 +191,12 @@ void BubbleProtocolEx::run()
 				nRunStep=BUBBLE_RUN_DISCONNECT;
 			}
 			m_bBlock=false;
+			if (nRunStep==BUBBLE_RUN_DISCONNECT)
+			{
+				m_bWaitForConnect=false;
+			}else{
+				//keep going
+			}
 								}
 								break;
 		case BUBBLE_RUN_RECEIVE:{
@@ -209,11 +227,7 @@ void BubbleProtocolEx::run()
 								//keep going
 								nReceiveStep=BUBBLE_RECEIVE_FRAME;
 								m_tCurrentConnectStatus=BUBBLE_CONNECTED;
-								QVariantMap evMap;
-								m_nPosition=__LINE__;
-								m_bBlock=true;
-								evMap.insert("status",m_tCurrentConnectStatus);
-								m_bBlock=false;
+								m_bWaitForConnect=false;
 							}else{
 								//解析失败，断开连接
 								nReceiveStep=BUBBLE_RECEIVE_END;
@@ -484,17 +498,19 @@ void BubbleProtocolEx::run()
 				qDebug()<<__FUNCTION__<<__LINE__<<"there is an undefined cmd,please check! it will cause device reConnect";
 					}
 			}
-			if (bFlag)
+			if (!bFlag)
 			{
-				nRunStep=BUBBLE_RUN_DISCONNECT;
+				nRunStep=BUBBLE_RUN_DEFAULT;	
 			}else{
-				nRunStep=BUBBLE_RUN_DEFAULT;
+				nRunStep=BUBBLE_RUN_DISCONNECT;
+				qDebug()<<__FUNCTION__<<__LINE__<<"send cmd fail,cmd::"<<nRunControlStep;
 			}
 			
 								}
 								break;
 		case BUBBLE_RUN_DISCONNECT:{
 			//断开连接
+			m_bWaitForConnect=false;
 			if (m_tCurrentConnectStatus==BUBBLE_CONNECTTING||m_tCurrentConnectStatus==BUBBLE_CONNECTED)
 			{
 				m_tCurrentConnectStatus=BUBBLE_DISCONNECTING;
@@ -518,7 +534,8 @@ void BubbleProtocolEx::run()
 					m_nPosition=__LINE__;
 					m_pTcpSocket->disconnectFromHost();
 					//等待2s。超过2s没有断开返回，给出错误的提示信息
-					if (m_pTcpSocket->waitForDisconnected(2000))
+
+					if (QAbstractSocket::UnconnectedState==m_pTcpSocket->state()||m_pTcpSocket->waitForDisconnected(2000))
 					{
 						//成功断开
 					}else{
@@ -607,7 +624,7 @@ void BubbleProtocolEx::run()
 							break;
 		}
 	}
-	evMap.clear();
+	QVariantMap evMap;
 	m_tCurrentConnectStatus=BUBBLE_DISCONNECTED;
 	evMap.insert("status",m_tCurrentConnectStatus);
 	sgBackToMainThread(evMap);
@@ -685,18 +702,43 @@ int BubbleProtocolEx::connectToDevice()
 {
 	//0：连接成功
 	//1：连接失败
+	//连接修改成阻塞型更为合适
 	if (!QThread::isRunning())
 	{
 		m_csStepCode.lock();
 		m_tStepCode.clear();
 		m_csStepCode.unlock();
+		QVariantMap evMap;
+		m_tCurrentConnectStatus=BUBBLE_CONNECTTING;
+		evMap.insert("status",m_tCurrentConnectStatus);
+		slBackToMainThread(evMap);
 		QThread::start();
-
+		m_bWaitForConnect=true;
+		int nCount=0;
+		//最长等待6s
+		while (m_bWaitForConnect&&nCount<600)
+		{
+			sleepEx(10);
+			nCount++;
+		}
+		if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+		{
+			evMap.clear();
+			evMap.insert("status",m_tCurrentConnectStatus);
+			slBackToMainThread(evMap);
+			return 0;
+		}else{
+			m_tCurrentConnectStatus=BUBBLE_DISCONNECTED;
+			evMap.clear();
+			evMap.insert("status",m_tCurrentConnectStatus);
+			slBackToMainThread(evMap);
+			m_bStop=true;
+			return 1;
+		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"connectToDevice fail ,if you want to connect to device ,please wait last connect thread terminate";
 		return 1;
 	}
-	return 0;
 }
 
 int BubbleProtocolEx::authority()
@@ -849,8 +891,7 @@ int BubbleProtocolEx::startSearchRecFile( int nChannel,int nTypes,const QDateTim
 	//	0:调用成功
 	//	1:调用失败
 	//	2:参数错误
-	//fix me
-	return 0;
+	return m_tSearchRemoteFile.startSearchRecFile(nChannel,nTypes,startTime,endTime,m_tDeviceInfo.tIpAddr,m_tDeviceInfo.tPorts,m_tDeviceInfo.sUserName,m_tDeviceInfo.sPassword);
 }
 
 int BubbleProtocolEx::getPlaybackStreamByTime( int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime )
@@ -996,7 +1037,7 @@ bool BubbleProtocolEx::analyzeBubbleInfo()
 		QString sTemp=sXml;
 		sXml=checkXML(sTemp);
 		QDomDocument *pDom=new QDomDocument();
-		if (!(NULL==pDom||pDom->setContent(sXml)))
+		if (!(NULL==pDom||pDom->setContent(sXml)==false))
 		{
 			QDomNode tRoot=pDom->firstChild();
 			int nChannelCount=tRoot.toElement().attribute("vin").toInt();
@@ -1061,6 +1102,16 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 			{
 				//Message
 				//暂时不解析这部分的内容
+				tagBubbleReceiveMessage *pReceiveMessage=(tagBubbleReceiveMessage*)(pBubbleInfo->pLoad);
+				if (pReceiveMessage->cMessage=='\x03')
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"UserName and PassWord check-back";
+				}else if (pReceiveMessage->cMessage=='\x04')
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"device channels number";
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"pReceiveMessage->cMessage is an undefined cMessage"<<pReceiveMessage->cMessage;
+				}
 				m_tBuffer.remove(0,uiBubbleLength);
 				return true;
 			}else if (pBubbleInfo->cCmd=='\x01')
@@ -1624,7 +1675,7 @@ bool BubbleProtocolEx::sendLiveStreamCmdEx( bool flags )
 		qint64 nLength=0;
 		tagBubbleInfo *pBubbleInfo=NULL;
 
-		memset(pBubbleInfo,0,100);
+		memset(cBuffer,0,100);
 
 		pBubbleInfo=(tagBubbleInfo*)cBuffer;
 		pBubbleInfo->cHead=(char)0xaa;
@@ -1641,7 +1692,7 @@ bool BubbleProtocolEx::sendLiveStreamCmdEx( bool flags )
 
 		nLength=qint64(sizeof(tagBubbleInfo)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->pLoad));
 		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->pLoad)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
-
+		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
 		QByteArray tBlock;
 		tBlock.append(cBuffer,nLength);
 
@@ -1720,4 +1771,58 @@ QString BubbleProtocolEx::checkXML( QString sSource )
 		nPos=sSource.lastIndexOf(QString("vin%1").arg(i));
 	}
 	return sSource;
+}
+
+int BubbleProtocolEx::cbFoundFile( QVariantMap &evmap )
+{
+	eventProcCall("foundFile",evmap);
+	return 0;
+}
+
+int BubbleProtocolEx::cbRecFileSearchFinished( QVariantMap &evmap )
+{
+	eventProcCall("recFileSearchFinished",evmap);
+	return 0;
+}
+
+int BubbleProtocolEx::cbRecFileSearchFail( QVariantMap &evmap )
+{
+	eventProcCall("recFileSearchFail",evmap);
+	return 0;
+}
+
+int cbXBubbleFoundFile( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("foundFile"==evName)
+	{
+		((BubbleProtocolEx*)pUser)->cbFoundFile(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"evName is not match the func,evName:"<<evName;
+		return 1;
+	}
+}
+
+int cbXBubbleRecFileSearchFail( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("recFileSearchFail"==evName)
+	{
+		((BubbleProtocolEx*)pUser)->cbRecFileSearchFail(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"evName is not match the func,evName:"<<evName;
+		return 1;
+	}
+}
+
+int cbXBubbleRecFileSearchFinished( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("recFileSearchFinished"==evName)
+	{
+		((BubbleProtocolEx*)pUser)->cbRecFileSearchFinished(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"evName is not match the func,evName:"<<evName;
+		return 1;
+	}
 }

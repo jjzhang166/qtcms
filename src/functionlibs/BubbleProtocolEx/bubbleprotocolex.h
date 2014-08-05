@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QDomDocument>
+#include "SearchRemoteFile.h"
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagBubbleProInfo{
 	bubbleProtocolEventCb proc;
@@ -83,7 +84,9 @@ typedef enum __tagBubbleRunStep{
 
 class  BubbleProtocolEx:public QThread,
 	public IEventRegister,
-	public IRemotePreview
+	public IRemotePreview,
+	public IDeviceConnection,
+	public IRemotePlayback
 {
 	Q_OBJECT
 public:
@@ -126,6 +129,10 @@ public:
 	virtual int getPlaybackStreamByFileName(int nChannel,const QString &sFileName);
 	virtual int pausePlaybackStream(bool bPause);
 	virtual int stopPlaybackStream();
+	//callback
+	int cbFoundFile(QVariantMap &evmap);
+	int cbRecFileSearchFinished(QVariantMap &evmap);
+	int cbRecFileSearchFail(QVariantMap &evmap);
 protected:
 	void run();
 private:
@@ -176,6 +183,8 @@ private:
 	QList<char> m_tRemoteCode;
 	bool m_bIsSupportHttp;
 	QList<QList<tagBubbleHttpStreamInfo>>m_tHttpStreamList;
+	volatile bool m_bWaitForConnect;
+	SearchRemoteFile m_tSearchRemoteFile;
 };
 
 #endif // BUBBLEPROTOCOLEX_H
