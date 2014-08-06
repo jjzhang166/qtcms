@@ -43,6 +43,7 @@ BubbleProtocolEx::~BubbleProtocolEx()
 	int nCount=0;
 	while(QThread::isRunning()){
 		sleepEx(10);
+		/*msleep(10);*/
 		nCount++;
 		if (nCount>500&&nCount%100==0)
 		{
@@ -326,15 +327,12 @@ void BubbleProtocolEx::run()
 								//Ω‚Œˆ‘§¿¿ ˝æ›
 								m_bBlock=true;
 								m_nPosition=__LINE__;
-								QElapsedTimer timer;
-								timer.start();
 								if (analyzePreviewInfo())
 								{
 									nFrameStep=0;
 								}else{
 									nFrameStep=3;
 								}
-								 /*qDebug() << "The slow analyzePreviewInfo took" << timer.elapsed() << "milliseconds";*/
 								m_bBlock=false;
 							}
 							   }
@@ -570,13 +568,13 @@ void BubbleProtocolEx::run()
 					if (m_tStepCode.size()>0)
 					{
 						nRunStep=BUBBLE_RUN_CONTROL;
-						sleepEx(10);
+						sleepEx(3);
 					}else{
 						if (m_pTcpSocket->bytesAvailable()>0)
 						{
 							nRunStep=BUBBLE_RUN_RECEIVE;
 						}else{
-							sleepEx(10);
+							sleepEx(3);
 							nRunStep=BUBBLE_RUN_DEFAULT;
 						}
 					}
@@ -992,7 +990,7 @@ int BubbleProtocolEx::stopPlaybackStream()
 
 void BubbleProtocolEx::sleepEx( int nTime )
 {
-	if (m_nSleepSwitch<100)
+	if (m_nSleepSwitch<5)
 	{
 		msleep(nTime);
 		m_nSleepSwitch++;
@@ -1139,10 +1137,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("audiochannel", pLiveStream->cChannel);
 					tStreamInfo.insert("acodec", pLiveStreamAudio->cEnCode);
 					tStreamInfo.insert("gentime", pLiveStreamAudio->uiGtime);
-					QElapsedTimer timer;
-					timer.start();
 					eventProcCall("LiveStream",tStreamInfo);
-					qDebug() << "The slow 0 LiveStream took" << timer.elapsed() << "milliseconds";
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
 				}else if (1==pLiveStream->cType||2==pLiveStream->cType)
@@ -1159,10 +1154,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("width", nWidth);
 					tStreamInfo.insert("height", nHeight);
 					tStreamInfo.insert("vcodec", "H264");
-					QElapsedTimer timer;
-					timer.start();
 					eventProcCall("LiveStream",tStreamInfo);
-					qDebug() << "The slow 1 2 LiveStream took" << timer.elapsed() << "milliseconds"<<"type::"<<pLiveStream->cType;
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
 				}else{

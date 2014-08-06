@@ -655,7 +655,7 @@ void remotePlayBack::run()
 			}
 			switch(m_tPlaybackProtocol){
 			case BUBBLE:{
-				pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IRemotePlayback,(void**)&m_pRemotePlayback);
+				pcomCreateInstance(CLSID_Bubble,NULL,IID_IRemotePlayback,(void**)&m_pRemotePlayback);
 						}
 						break;
 			case TURN:{
