@@ -3,6 +3,7 @@
 #include <QtEndian>
 #include "h264wh.h"
 #include <QElapsedTimer>
+#include <QCoreApplication>
 int cbXBubbleFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
@@ -42,8 +43,11 @@ BubbleProtocolEx::~BubbleProtocolEx()
 	m_bStop=true;
 	int nCount=0;
 	while(QThread::isRunning()){
-		sleepEx(10);
-		/*msleep(10);*/
+		/*sleepEx(10);*/
+		QTime dieTime=QTime::currentTime().addMSecs(1);
+		while(QTime::currentTime()<dieTime){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+		}
 		nCount++;
 		if (nCount>500&&nCount%100==0)
 		{
