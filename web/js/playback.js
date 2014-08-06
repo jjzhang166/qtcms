@@ -51,6 +51,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
 			var min = $('table.table .no_border').width(),
 				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
+			if(event.pageX < min || event.pageX > max) return;
 			try{
 				groupStop();
 				/*dragStopMove();
