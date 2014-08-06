@@ -211,7 +211,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			//≥¢ ‘bubble
 		case 0:
 			{
-				if (true==TryToConnectProtocol(CLSID_BubbleProtocol))
+				if (true==TryToConnectProtocol(CLSID_Bubble))
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect success";
 					nStep=3;

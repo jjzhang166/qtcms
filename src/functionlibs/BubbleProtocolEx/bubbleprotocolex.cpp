@@ -36,12 +36,22 @@ BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 	m_tSearchRemoteFile.registerEvent("foundFile",cbXBubbleFoundFile,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFail",cbXBubbleRecFileSearchFail,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
+	m_nBuiltTreadId=(int )QThread::currentThreadId();
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()
 {
 	m_bStop=true;
 	int nCount=0;
+	int nCurrentThreadId=(int )QThread::currentThreadId();
+	QVariantMap tItem;
+	tItem.insert("Timer",false);
+	if (nCurrentThreadId==m_nBuiltTreadId)
+	{
+		slBackToMainThread(tItem);
+	}else{
+		sgBackToMainThread(tItem);
+	}
 	while(QThread::isRunning()){
 		/*sleepEx(10);*/
 		QTime dieTime=QTime::currentTime().addMSecs(1);
@@ -54,7 +64,6 @@ BubbleProtocolEx::~BubbleProtocolEx()
 			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.tIpAddr.toString()<<m_tDeviceInfo.sEseeId<<"terminate this thread had caused more time than 5s,there may be out of control,"<<"please check position at:"<<m_nPosition;
 		}
 	}
-	m_tCheckoutBlockTimer.stop();
 }
 
 long __stdcall BubbleProtocolEx::QueryInterface( const IID & iid,void **ppv )
@@ -1029,7 +1038,11 @@ void BubbleProtocolEx::slBackToMainThread( QVariantMap evMap )
 		}else{
 			//do nothing
 		}
-	}else{
+	}else if (evMap.contains("Timer")&&m_tCheckoutBlockTimer.isActive())
+	{
+		m_tCheckoutBlockTimer.stop();
+	}
+	else{
 		//do nothing
 	}
 }

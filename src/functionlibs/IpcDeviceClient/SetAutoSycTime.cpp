@@ -24,6 +24,7 @@ SetAutoSycTime::~SetAutoSycTime(void)
 			//do nothing
 		}
 	}
+	m_tCheckTimer.stop();
 }
 
 void SetAutoSycTime::setAutoSycTime(QString sAddr,quint16 uiPort,QString sUserName,QString sPassWord)

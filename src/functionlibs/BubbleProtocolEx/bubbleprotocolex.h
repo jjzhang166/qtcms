@@ -185,6 +185,7 @@ private:
 	QList<QList<tagBubbleHttpStreamInfo>>m_tHttpStreamList;
 	volatile bool m_bWaitForConnect;
 	SearchRemoteFile m_tSearchRemoteFile;
+	int m_nBuiltTreadId;
 };
 
 #endif // BUBBLEPROTOCOLEX_H
