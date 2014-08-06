@@ -226,6 +226,8 @@ void RemoteBackup::run()
 	bool bFirstFlame=true;
 	int nSleepCount=0;
 	QString fullname;
+	bool bKeepGoing=false;
+	int nPackPart=0;
 	while(bStop==false){
 		switch(nStep){
 		case INIT:{
@@ -366,6 +368,7 @@ void RemoteBackup::run()
 			   break;
 		case INITPACK:{
 			m_nPosition=__LINE__;
+			m_bAudioBeSet=false;
 			nStep=FIRST_I_FRAME;
 					  }
 					  break;
@@ -447,7 +450,7 @@ void RemoteBackup::run()
 					fullname += "/" + m_tBackUpInfo.sDeviceName
 						+"_"+"CHL" + QString("%1").arg(QString(sChannelNum))
 						+"_" + m_tBackUpInfo.startTime.toString("yyyy-MM-dd(hhmmss)") 
-						+"_"+ m_tBackUpInfo.endTime.toString("yyyy-MM-dd(hhmmss)")+".avi";
+						+"_"+ m_tBackUpInfo.endTime.toString("yyyy-MM-dd(hhmmss)")+"_"+QString::number(nPackPart)+".avi";
 					QFile file;
 					file.setFileName(fullname);
 					if (file.exists())
@@ -599,7 +602,16 @@ void RemoteBackup::run()
 				if (getUsableDisk(m_tBackUpInfo.sPath))
 				{
 					//keep going
-					nStep=WRITE_FRAME;
+					if (256*1024*1024<AVI_bytes_written(pAviFile))
+					{
+						nStep=WAIT_FOR_PACK;
+						nPackPart++;
+						bKeepGoing=true;
+						qDebug()<<__FUNCTION__<<__LINE__<<"as file size >256,it going to pack ";
+					}else{
+						nStep=WRITE_FRAME;
+					}
+					
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"back up fail as there is no enough space in disk";
 					nStep=WAIT_FOR_PACK;
@@ -699,13 +711,19 @@ void RemoteBackup::run()
 				AVI_close(pAviFile);
 				pAviFile = NULL;
 				m_bufflock.unlock();
-				if (m_progress<0.9f)
+				if (bKeepGoing)
 				{
-					// 下载量少于90%认为下载失败，并删除文件
-					nStep=FAIL;
-					qDebug()<<__FUNCTION__<<__LINE__<<"back fail as the m_progress::"<<m_progress<<"less than 90%";
+					nStep=INITPACK;
+					bKeepGoing=false;
 				}else{
-					nStep=SUCCESS;
+					if (m_progress<0.9f)
+					{
+						// 下载量少于90%认为下载失败，并删除文件
+						nStep=FAIL;
+						qDebug()<<__FUNCTION__<<__LINE__<<"back fail as the m_progress::"<<m_progress<<"less than 90%";
+					}else{
+						nStep=SUCCESS;
+					}
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"back up fail as pAviFile is null";
