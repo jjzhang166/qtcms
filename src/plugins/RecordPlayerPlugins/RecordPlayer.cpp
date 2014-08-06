@@ -19,6 +19,7 @@ m_bIsHide(false),
 m_uiPersent(50),
 m_wndNum(0),
 m_wndCount(0),
+m_lastStatus(STATUS_STOP),
 m_CurStatus(STATUS_STOP)
 {
 	//…Í«ÎILocalRecordSearchΩ”ø⁄
@@ -294,7 +295,7 @@ int RecordPlayer::GroupPlay()
 	/*SetVolume(0xAECBCA);*/
 	AudioEnabled(m_bIsOpenAudio);
 	SetVolume(m_uiPersent);
-	m_CurStatus=STATUS_PLAY;
+	m_CurStatus=STATUS_NORMAL_PLAY;
 	return 0;
 }
 int RecordPlayer::GroupPause()
@@ -310,6 +311,7 @@ int RecordPlayer::GroupPause()
 	{
 		return 1;
 	}
+	m_lastStatus = (RecordPlayStatus)GetCurrentState();
 	m_CurStatus=STATUS_PAUSE;
 	return 0;
 }
@@ -326,7 +328,7 @@ int RecordPlayer::GroupContinue()
 	{
 		return 1;
 	}
-	m_CurStatus=STATUS_CONTINUE;
+	m_CurStatus = m_lastStatus;
 	return 0;
 }
 int RecordPlayer::GroupStop()
@@ -366,7 +368,7 @@ int RecordPlayer::GroupSpeedFast(int speed)
 	{
 		return 1;
 	}
-	m_CurStatus=STATUS_FAST;
+	m_CurStatus=STATUS_FAST_PLAY;
 	return 0;
 }
 int RecordPlayer::GroupSpeedSlow(int speed)
@@ -382,7 +384,7 @@ int RecordPlayer::GroupSpeedSlow(int speed)
 	{
 		return 1;
 	}
-	m_CurStatus=STATUS_SLOW;
+	m_CurStatus=STATUS_SLOW_PLAY;
 	return 0;
 }
 int RecordPlayer::GroupSpeedNormal()
@@ -398,7 +400,7 @@ int RecordPlayer::GroupSpeedNormal()
 	{
 		return 1;
 	}
-	m_CurStatus=STATUS_NORMAL;
+	m_CurStatus=STATUS_NORMAL_PLAY;
 	return 0;
 }
 
@@ -545,7 +547,7 @@ void RecordPlayer::showEvent( QShowEvent * )
 void RecordPlayer::hideEvent( QHideEvent * )
 {
 	m_subRecPlayerView[0].AudioEnabled(false);
-	if (m_CurStatus==STATUS_PLAY)
+	if (m_CurStatus<STATUS_PAUSE)
 	{
 		GroupPause();
 		m_bIsHide=true;

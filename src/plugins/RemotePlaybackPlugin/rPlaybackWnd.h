@@ -28,13 +28,11 @@ typedef struct _tagDevCliSetInfo{
 	QString m_sVendor;
 }DevCliSetInfo;
 typedef enum __enRemotePlayBackStatus{
-	STATUS_PLAY,
+	STATUS_NORMAL_PLAY,
+	STATUS_FAST_PLAY,
+	STATUS_SLOW_PLAY,
 	STATUS_PAUSE,
-	STATUS_STOP,
-	STATUS_SLOW,
-	STATUS_FAST,
-	STATUS_NORMAL,
-	STATUS_CONTINUE
+	STATUS_STOP
 }RemotePlayBackStatus;
 class RPlaybackWnd : public QWidget,
 	public QWebPluginFWBase
@@ -152,6 +150,7 @@ private:
 	DevCliSetInfo m_DevCliSetInfo;
 	int m_chlID;
 	RemotePlayBackStatus m_CurStatus;
+	RemotePlayBackStatus m_lastStatus;
 	rPlayBackRun m_rplaybackrun;
 	private:
 	int  cbInit();

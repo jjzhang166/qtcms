@@ -26,6 +26,7 @@ _curConnectState(STATUS_DISCONNECTED),
 _curConnectType(TYPE_NULL),
 bIsOpenAudio(false),
 m_uiPersent(50),
+m_lastStatus(STATUS_STOP),
 m_CurStatus(STATUS_STOP),
 bIsHide(false)
 // m_DeviceClient(NULL)
@@ -251,7 +252,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 		}
 		_mutexWidList.unlock();
 	}
-	m_CurStatus=STATUS_PLAY;
+	m_CurStatus=STATUS_NORMAL_PLAY;
 	/*SetVolume(0xAECBCA);*/
 	AudioEnabled(bIsOpenAudio);
 	SetVolume(m_uiPersent);
@@ -264,8 +265,10 @@ int   RPlaybackWnd::GroupPause()
     if (NULL != m_GroupPlayback)
     {
         nRet = m_GroupPlayback->GroupPause();
-    } 
+    }
+	m_lastStatus = (RemotePlayBackStatus)GetCurrentState();
 	m_CurStatus=STATUS_PAUSE;
+
     return nRet;
 }
 int   RPlaybackWnd::GroupContinue()
@@ -275,7 +278,7 @@ int   RPlaybackWnd::GroupContinue()
     {
         nRet = m_GroupPlayback->GroupContinue();
     } 
-	m_CurStatus=STATUS_CONTINUE;
+	m_CurStatus = m_lastStatus;
     return nRet;
 }
 int   RPlaybackWnd::GroupStop()
@@ -316,7 +319,7 @@ int   RPlaybackWnd::GroupSpeedFast()
     {
         nRet = m_GroupPlayback->GroupSpeedFast();
     } 
-	m_CurStatus=STATUS_FAST;
+	m_CurStatus=STATUS_FAST_PLAY;
     return nRet;
 }
 int   RPlaybackWnd::GroupSpeedSlow()
@@ -326,7 +329,7 @@ int   RPlaybackWnd::GroupSpeedSlow()
     {
         nRet = m_GroupPlayback->GroupSpeedSlow();
     } 
-	m_CurStatus=STATUS_SLOW;
+	m_CurStatus=STATUS_SLOW_PLAY;
     return nRet;
 }
 int   RPlaybackWnd::GroupSpeedNormal()
@@ -336,7 +339,7 @@ int   RPlaybackWnd::GroupSpeedNormal()
     {
         nRet = m_GroupPlayback->GroupSpeedNormal();
     } 
-	m_CurStatus=STATUS_NORMAL;
+	m_CurStatus=STATUS_NORMAL_PLAY;
     return nRet;
 }
 
@@ -466,7 +469,7 @@ void RPlaybackWnd::CacheState( QVariantMap evMap )
 void RPlaybackWnd::hideEvent( QHideEvent * )
 {
 	m_PlaybackWnd[0].AudioEnabled(false);
-	if (m_CurStatus==STATUS_PLAY)
+	if (m_CurStatus<STATUS_PAUSE)
 	{
 		GroupPause();
 		bIsHide=true;
