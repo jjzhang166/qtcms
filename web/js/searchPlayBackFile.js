@@ -177,7 +177,8 @@
 			p =now/recTotal*100,
 			str = (now/recTotal*100).toString().slice(0,5);
 			str = str == 'NaN'?'':str+'%';
-		if(recTotal == now){
+
+		if(recTotal == now && now != 0){
 			con = lang.Retrieval_completed;
 		}
 
@@ -191,13 +192,14 @@
 
 		/*
 		远程文件过多后  导致请求次数变多.
+
 		请求过程中仍和一次请求都有可能失败.
 
 		后续所有文件信息接收到后 开始画到UI上
 
 		已经搜索到的文件如果显示达到前台的话。 那么没有搜索到的文件是否能继续播放.
-
 		*/
+
 		searchSTOP=1;
 
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
@@ -231,7 +233,6 @@
 		}else{
 			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
 		}
-
 		//console.log('初始化后的设备ID:'+nowDevID);
 	}
 

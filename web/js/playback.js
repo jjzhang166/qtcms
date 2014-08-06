@@ -16,7 +16,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oPlaybackLocl = $('#playbackLocl')[0];
 		
-		var channelvideo = $("#channelvideo");
+		var channelvideo = $('#channelvideo');
 
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
@@ -27,7 +27,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				console.log(oSelected);	*/	
 				if(oSelected.length>4){
 					/*console.log('++++++++++++'+oSelected.length);
-					console.log(oSelected);*/			
+					console.log(oSelected);*/
 					$(oSelected.shift()).prop('checked',false);
 				}
 			}else{
@@ -146,8 +146,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function ViewMax(){
 		var W = $(window).width(),
 			H = $(window).height();
-			W = W <= 1000 ? 1000: W;
-			H = H <= 600 ? 600: H;
+		W = W <= 1000 ? 1000: W;
+		H = H <= 600 ? 600: H;
 
 		var oView = $('#viewWarp').css({
 			width:W-236,
@@ -187,10 +187,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				}else{*/
 					//alert('继续');
 					playAction('GroupContinue');
+					dragStartMove();
 				//}
 			}else{
 				//alert('暂停');
 				playAction('GroupPause')
+				dragStopMove();
 			}
 		}else{
 			//alert('播放');
@@ -198,27 +200,25 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 	}
 	function playVideo(){
-		//alert(event.pageX);
-		if(maxFileEndTime < minFileStartTime) return;
-
-		groupStop();
-
-		var obj = $('#togglePlay');
-			obj.attr({
-				toggle:'1',
-				hasFile:'1'
-			}).css('background-position','0px'+' '+(-obj.height())+'px');
-		/*dragStopMove();
-		oPlaybackLocl.GroupStop();
-		oPlayBack.GroupStop();
-
-		nowSpeed = 1;
-		palybackspeed(nowSpeed+'X');*/
+		//console.log(maxFileEndTime+'//'+minFileStartTime);
+		if(maxFileEndTime < minFileStartTime)return;
 
 		var date = $("div.calendar span.nowDate").html(),
 			begin =$('#now_time').html(),//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
+
+			begin = begin >= '23:59:59' ? '23:59:59' : begin;
+
+			if(begin>=maxFileEndTime)return;
+
+			groupStop();
+
+			var obj = $('#togglePlay');
+			obj.attr({
+				toggle:'1',
+				hasFile:'1'
+			}).css('background-position','0px'+' '+(-obj.height())+'px');
 
 			if(begin<minFileStartTime){
 				var min = $('table.table .no_border').width(),
@@ -229,6 +229,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}else{
 				begin = date+' '+begin;
 			}
+
 			setDevData2ocx();
 
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
@@ -262,6 +263,91 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oPlayBack.GroupPlay(type,begin,end);
 		}
 		dragStartMove();
+	}
+	function dragStartMove(){
+
+		if(maxFileEndTime<minFileStartTime) return;
+
+		var channelvideo = $('#channelvideo'),
+
+			min = $('table.table .no_border').width(),
+
+			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
+
+			p = (max-min)/(3600*24),
+
+			SynTimeUnits = 1000,//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
+
+			oPlay = bool ? oPlaybackLocl : oPlayBack,
+
+			oDrag=$('div.play_time'),
+
+			//FileEndTime = time2Sec(maxFileEndTime)*p+min < max ? time2Sec(maxFileEndTime)*p+min : max,
+
+			initleft = parseInt(oDrag.offset().left);
+
+			oNow = $('#now_time');
+
+			nowTime = oNow.html();
+
+		drag_timer = setInterval(function(){
+
+			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()),
+				
+				left = initleft+p*nowPlayd;
+			
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+
+			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
+				dragStopMove();*/
+			
+			oDrag.css('left',left);
+
+			asyncPlayTime2UI(nowTime,nowPlayd,oNow);
+
+		},SynTimeUnits);
+	}
+
+	function dragStopMove(){
+		//console.log('播放结束');
+		clearInterval(drag_timer);
+	}
+
+	function asyncPlayTime2UI(now,playdeTime,obj){
+		console.log=function(){
+			return;
+		};
+		console.log('当前播放的开始时间:'+now+'已经播放的时间:'+playdeTime);
+		var arr = now.split(':');
+		arr[0]=parseInt(arr[0]);
+		arr[1]=parseInt(arr[1]);
+		arr[2]=parseInt(arr[2]);
+		console.log(arr);
+
+		arr[2]+=playdeTime;
+		console.log('秒1:'+arr[2]);
+		var addM = parseInt(arr[2]/60);
+		console.log('分1/addM:'+addM);
+		arr[2] %=60;
+		console.log('秒2:'+arr[2]);
+
+		arr[1] +=addM;
+		console.log('分2:'+arr[1]);
+		var addH = parseInt(arr[1]/60);
+		console.log('时1/addH:'+addH);
+		arr[1] %=60;
+		console.log('分3:'+arr[1]);
+
+		arr[0]+=addH;
+		console.log('时2:'+arr[0]);
+		if(arr[0]>=24){
+			obj.html('24:00:00');
+			//dragStopMove();
+			groupStop();
+		}else{
+			obj.html(addZero(arr[0])+':'+addZero(arr[1])+':'+addZero(arr[2]));	
+		}
+		console.log(obj.html());
 	}
 	/*function getDragSart(X2,left,date){
 		var time=returnTime((left-81)/(X2-81)*24*3600);
@@ -537,9 +623,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					}*/
 
 					//console.log(maxFileEndTime);
-				var width = (time2Sec(end)-start)*p;
+				var width = (time2Sec(end)-start)*p-1;
 					width = width < 1 ? 1 : width;
-				var left = start*p+min;
+				var left = start*p+min+1;
 				var types = data.types || 8;
 				if(bool){ // 本地回放
 					var target = oFileUIwarp.eq(localSearchWindNum);
@@ -573,45 +659,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		return a - b;
 	}
 
-	function dragStartMove(){
-		var channelvideo = $('#channelvideo'),
-			min = $('table.table .no_border').width(),
-			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
-		if(maxFileEndTime<minFileStartTime) return;
-
-		var SynTimeUnits = 1000;//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
-		var oPlay = bool ? oPlaybackLocl : oPlayBack;
-		//return false;
-		var oDrag=$('div.play_time');
-		var initleft = parseInt(oDrag.offset().left);
-		drag_timer = setInterval(function(){
-
-			var nowPlayd = parseInt(oPlay.GetNowPlayedTime());
-
-			//if(nowPlayd == -1)return;
-
-
-			var p = (max-min)/(3600*24);
-
-				max = time2Sec(maxFileEndTime)*p+min < max ? time2Sec(maxFileEndTime)*p+min : max;
-
-			var left = initleft+p*nowPlayd;
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
-			if(Math.ceil(left) >= Math.floor(max)){
-				dragStopMove();
-			}
-			oDrag.css('left',left);
-			//showNowPlayBackTime($('#now_time'),left,max);
-		},SynTimeUnits);
-	}
-	function dragStopMove(){
-		//console.log('播放结束');
-		clearInterval(drag_timer);
-	}
 	//回放页面文件显示表格初始化
 	function PBrecFileTableInit(){
 		$('table.table').width('100%');
-		var currOdevData= $('div.dev_list').find('li.sel span.device').data('data') || $('div.dev_list').find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
+		var currOdevData = $('div.dev_list').find('li.sel span.device').data('data') || $('div.dev_list').find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 		var initWind = bool ? 64 : currOdevData.channel_count;
 		console.log('+++++++++++++要初始化的文件列表数量+++++++++++++++++++:'+initWind);
 		initWind+=1;
