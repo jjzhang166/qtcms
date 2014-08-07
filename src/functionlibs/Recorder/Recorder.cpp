@@ -30,6 +30,7 @@ m_nUpdateCount(0),
 m_bUpdateEndTime(false),
 m_bFinish(true),
 m_bIsblock(false),
+m_bIsRecording(false),
 m_bcheckdiskfreesize(false)
 {
 	m_nFrameCount = 0;
@@ -73,6 +74,7 @@ int Recorder::Stop()
 {
 	if (QThread::isRunning())
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"set m_bFinish=true to stop record";
 		m_bFinish = true;
 	}else{
 		//do nothing
@@ -262,6 +264,7 @@ void Recorder::run()
 			m_bIsblock=true;
 			if (CreateSavePath(sSavePath,start)&&CreateDir(sSavePath))
 			{
+				m_bIsRecording = true;//it's recording
 				nRecStep=OPEN_FILE;
 				//开始记录录像时间
 				QString curDate = QDate::currentDate().toString("yyyy-MM-dd");
@@ -535,6 +538,7 @@ void Recorder::run()
 				}
 				AVI_set_video(AviFile,m_nRecWidth,m_nRecHeight,iFrameCount,"X264");
 				AVI_close(AviFile);
+				m_bIsRecording = false;//this file stop record;
 
 				qDebug()<<__FUNCTION__<<__LINE__<<"pack file"<<sSavePath<<"W: "<<m_nRecWidth<<" H: "<<m_nRecHeight<<"frameRate: "<<iFrameCount;
 
@@ -584,7 +588,7 @@ void Recorder::run()
 				m_bIsblock=false;
 				if (m_bFinish)
 				{
-					qWarning()<<"m_bFinish: "<<m_bFinish<<"switch to step:END";
+					qWarning()<<__FUNCTION__<<__LINE__<<"m_bFinish: "<<m_bFinish<<"switch to step:END";
 					nRecStep=END;
 				}else{
 					//keep going
@@ -604,6 +608,7 @@ void Recorder::run()
 		case END:{
 			qDebug()<<__FUNCTION__<<__LINE__<<"END step";
 
+			m_bIsRecording = false;//file stop record because of exceptional reason
 			//end
 			bThreadRunning=false;
 			m_bFinish=true;
@@ -639,7 +644,7 @@ void Recorder::run()
 				else
 				{
 					m_StorageMgr.updateSearchRecord(QString("23:59:59"));//跨天录像，从零点截断
-					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:23：59：59";
+					qWarning()<<__FUNCTION__<<__LINE__<<"update search record wnd:"<<m_windId<<"endtime:23:59:59";
 				}
 			}
 			m_bIsblock=false;
@@ -935,5 +940,8 @@ int Recorder::FixExceptionalData()
 
 void Recorder::updateSchRec()
 {
-	m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+	if (m_bIsRecording)
+	{
+		m_StorageMgr.updateSearchRecord(QTime::currentTime().toString("hh:mm:ss"));
+	}
 }

@@ -53,7 +53,7 @@ QSqlDatabase * initDataBase(QString sDatabaseName,int *nThis){
 	}
 }
 void deInitDataBase(int * nThis){
-	QMultiMap<QString,tagDataBaseInfo>::Iterator it;
+	QMultiMap<QString,tagDataBaseInfo>::iterator it;
 	QStringList sDeleteList;
 	for (it=g_tDataBase.begin();it!=g_tDataBase.end();it++)
 	{
@@ -363,10 +363,13 @@ QString StorageMgr::getUsableDisk()
 									{
 										//keep going
 									}else{
-										qDebug()<<__FUNCTION__<<__LINE__<<"open data base fail,please check";
+										qDebug()<<__FUNCTION__<<__LINE__<<"create table error in "<<dbpath;
 									}
 								}else{
-									//do nothing
+									if (1 == checkTableExist(dbpath, QString("local_record")))
+									{
+										createTable(dbpath);
+									}
 								}
 								/*使用只打开一次数据库的方法
 								if (!QFile::exists(dbpath) && !m_db->isOpen())
@@ -503,7 +506,7 @@ bool StorageMgr::deleteOldDir( const QStringList& diskslist )
 				//delete file from directory
 				m_nPosition=__LINE__;
 				QStringList hasDelete = deleteFile(each.fileLsit);
-				qDebug()<<__LINE__<<"files have deleted:"<<hasDelete;
+				qDebug()<<__LINE__<<"earlydate:"<<earlestDate.toString("yyyy-MM-dd")<<"files have deleted:"<<hasDelete;
 				//deduct period from each window id in search_record table
 				m_nPosition=__LINE__;
 				deductPeriod(each.dbPath, each.maxEndTimeMap, earlestDate.toString("yyyy-MM-dd"));
@@ -846,6 +849,7 @@ bool StorageMgr::createTable(QString sPath)
 {
 	/*使用只打开一次数据库的方法
 	QSqlQuery _query(*m_db);*/
+	m_dblock.lock();
 	QSqlDatabase *pDataBase=NULL;
 	pDataBase=initDataBase(sPath,(int *)this);
 	QSqlQuery _query(*pDataBase);
@@ -862,9 +866,11 @@ bool StorageMgr::createTable(QString sPath)
 		command += "file_size integer,";
 		command += "path char(64))";
 		_query.exec(command);
+		m_dblock.unlock();
 		return true;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"createTable fail as open database fail";
+		m_dblock.unlock();
 		return false;
 	}
 }
@@ -1113,8 +1119,10 @@ void StorageMgr::deductPeriod( QString dbpath, QMap<int, QString> &maxEndTimeMap
 		while(iter != maxEndTimeMap.end())
 		{
 			QString maxEndTime = iter.value();
-			cmd = QString("delete from search_record where wnd_id=%1 and ((date='%2' and end_time<='%3') or date<'%4')").arg(iter.key()).arg(date).arg(iter.value()).arg(date);
+			cmd = QString("delete from search_record where (wnd_id=%1 and (date='%2' and end_time<='%3')) or date<'%4'").arg(iter.key()).arg(date).arg(iter.value()).arg(date);
 			_query.exec(cmd);
+
+			qDebug()<<__FUNCTION__<<__LINE__<<cmd;
 
 			cmd = QString("select id, start_time, end_time from search_record where date='%1' and wnd_id=%2 order by start_time limit 1").arg(date).arg(iter.key());
 			_query.exec(cmd);
@@ -1331,4 +1339,39 @@ quint64 StorageMgr::getFileSize( QString fileName )
 	}
 	else
 		return 0;
+}
+
+int StorageMgr::checkTableExist( QString dbpath, QString table )
+{
+	m_dblock.lock();
+	QSqlDatabase *pDataBase = initDataBase(dbpath, (int*)this);
+	if (NULL != pDataBase)
+	{
+		QSqlQuery query(*pDataBase);
+		QString cmd = QString("select count(*) from sqlite_master where type='table' and name='%1'").arg(table);
+		query.exec(cmd);
+		if (query.next())
+		{
+			if (query.value(0).toInt() > 0)
+			{
+				m_dblock.unlock();
+				return 0;//table has find
+			}
+			else
+			{
+				m_dblock.unlock();
+				return 1;//don't find table
+			}
+		}
+		else
+		{
+			m_dblock.unlock();
+			return 2;//sql does not execute properly
+		}
+	}
+	else
+	{
+		m_dblock.unlock();
+		return 3;//can't open database
+	}
 }

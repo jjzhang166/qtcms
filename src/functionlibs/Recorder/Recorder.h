@@ -133,6 +133,7 @@ private:
 	bool m_bcheckdiskfreesize;
 	bool m_bUpdateEndTime;
 	bool m_bIsblock;
+	bool m_bIsRecording;
 	QTimer m_checkdisksize;
 	QTimer m_checkIsBlock;
 	QTimer m_updateSchRec;

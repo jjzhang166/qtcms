@@ -44,7 +44,7 @@ private:
 	bool createSearchRecordTable();
 	void deductPeriod(QString dbpath, QMap<int, QString> &maxEndTimeMap, QString date);
 	void deductPeriod(int wndId, QString date, QString newEnd);
-
+	int checkTableExist(QString dbpath, QString table);
 	typedef struct _tagRecordInfo{
 		bool fixMethod;
 		int id;
