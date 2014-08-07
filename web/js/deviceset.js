@@ -18,11 +18,11 @@ var oSearchOcx,
 				$('#device input:radio').removeAttr('id');
 				$(this).attr('id','method_ID');
 				var oSwitch = $('#device tr').slice(2,6);
-				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
+				oSwitch.removeClass('tr1').find('input').removeProp('disabled');
 				if(index == 0){
-					oSwitch.slice(3,4).addClass('tr1').find('input').removeProp('disabled');
+					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
 				}else{
-					oSwitch.slice(0,3).addClass('tr1').find('input').removeProp('disabled');
+					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
 				}
 			})
 		})
@@ -1167,7 +1167,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			break;
 		}
 		if(hint){
-			type>3 ? Confirm(hint) : Confirm(hint,true);
+			type > 3 ? Confirm(hint) : Confirm(hint,true);
 			obj.value = '';	
 		}
 		

@@ -89,6 +89,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				playVideo();
 			},
 			mousedown:function(){
+				groupStop();
 				var min = $('table.table .no_border').width();
 				var max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
 				set_drag(min,max,$(this));
@@ -114,7 +115,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			})
 		})
 		
-		//return false;
+		$('#top div.top_nav li').not('.active').click(function(){
+			dragStopMove();
+		})
 
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
@@ -263,6 +266,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}else{//远程回放
 			oPlayBack.GroupPlay(type,begin,end);
 		}
+
+		//console.log(getAudioObj().GetCurrentState());
+
 		dragStartMove();
 	}
 	function dragStartMove(){
@@ -297,7 +303,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				
 				left = initleft+p*nowPlayd;
 			
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 
 			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
 				dragStopMove();*/
@@ -310,37 +316,26 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function dragStopMove(){
-		//console.log('播放结束');
+		//console.log('UI播放同步停止');
 		clearInterval(drag_timer);
 	}
 
 	function asyncPlayTime2UI(now,playdeTime,obj){
-		console.log=function(){
-			return;
-		};
-		console.log('当前播放的开始时间:'+now+'已经播放的时间:'+playdeTime);
+
 		var arr = now.split(':');
-		arr[0]=parseInt(arr[0]);
-		arr[1]=parseInt(arr[1]);
-		arr[2]=parseInt(arr[2]);
-		console.log(arr);
+		arr[0]=parseInt(arr[0],10);
+		arr[1]=parseInt(arr[1],10);
+		arr[2]=parseInt(arr[2],10);
 
 		arr[2]+=playdeTime;
-		console.log('秒1:'+arr[2]);
 		var addM = parseInt(arr[2]/60);
-		console.log('分1/addM:'+addM);
 		arr[2] %=60;
-		console.log('秒2:'+arr[2]);
 
 		arr[1] +=addM;
-		console.log('分2:'+arr[1]);
 		var addH = parseInt(arr[1]/60);
-		console.log('时1/addH:'+addH);
 		arr[1] %=60;
-		console.log('分3:'+arr[1]);
 
 		arr[0]+=addH;
-		console.log('时2:'+arr[0]);
 		if(arr[0]>=24){
 			obj.html('24:00:00');
 			//dragStopMove();
@@ -348,7 +343,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}else{
 			obj.html(addZero(arr[0])+':'+addZero(arr[1])+':'+addZero(arr[2]));	
 		}
-		console.log(obj.html());
 	}
 	/*function getDragSart(X2,left,date){
 		var time=returnTime((left-81)/(X2-81)*24*3600);
@@ -394,9 +388,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function groupStop(){
+		//console.log('手动停止了。。。。');
 		$('#togglePlay').removeAttr('hasFile').removeAttr('toggle').css('background-position','0px 0px');
-		var obj = bool ? oPlaybackLocl : oPlayBack;
-		obj.GroupStop();
+		getAudioObj().GroupStop();
 		nowSpeed = 1;
 		palybackspeed(nowSpeed+'X');
 		dragStopMove();
@@ -424,8 +418,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		if(bool && data.index_0){
 			RecFileInfo2UI(data)
-			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);
+			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);*/
 		}
 
 		/*if(!bool)
@@ -570,7 +564,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function RecFileInfo2UI(filedata){
-		console.time('--接收到的文件回调描绘时间段---'+filedata.length);
+		//console.time('--接收到的文件回调描绘时间段---'+filedata.length);
 		var oList = $('div.dev_list'),
 
 			channelvideo = $('#channelvideo'),
@@ -650,7 +644,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
 		/*console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);*/
-		console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
+		//console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
 	}
 
 	function SortByfileTime(a,b){  //文件路径时间升序排列
@@ -739,7 +733,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			return;
 		}
 
-
 		groupStop();
 		
 		localSearchWindNum=0;
@@ -768,33 +761,30 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
-			searchSTOP=1;
+		searchSTOP=1;
+	
+		//console.time('--重画设备列表菜单--');
+		areaList2Ui('','','closed');
+		//console.timeEnd('--重画设备列表菜单--');
 		
-		/*if(recFile){
-			loclFileDataIntoChannel(recFile);
-		}else{*/
-			//console.time('--重画设备列表菜单--');
-			areaList2Ui('','','closed');
-			//console.timeEnd('--重画设备列表菜单--');
-			
-			//console.time('--设备列表事件添加--');
-			$('div.dev_list span.device').each(function(){
-				$(this).parent('li').on({
-					dblclick:function(){ //设备双击开始搜索
-						/*if(bool)return;
-						PBrecFileTableInit();*/
-						playBackSerchFile();
-						/*//保存当前选中的设备
-						nowDevID = $(this).find('span.device').data('data').dev_id;*/
-					},
-					click:function(){ //单击同步选中状态
-						if(bool)return;
-						$('div.dev_list li,span').removeClass('sel');
-						nowDevID = $(this).addClass('sel').find('span.device').data('data').dev_id;
-						//PBrecFileTableInit();
-					}
-				})
+		//console.time('--设备列表事件添加--');
+		$('div.dev_list span.device').each(function(){
+			$(this).parent('li').on({
+				dblclick:function(){ //设备双击开始搜索
+					/*if(bool)return;
+					PBrecFileTableInit();*/
+					playBackSerchFile();
+					/*//保存当前选中的设备
+					nowDevID = $(this).find('span.device').data('data').dev_id;*/
+				},
+				click:function(){ //单击同步选中状态
+					if(bool)return;
+					$('div.dev_list li,span').removeClass('sel');
+					nowDevID = $(this).addClass('sel').find('span.device').data('data').dev_id;
+					//PBrecFileTableInit();
+				}
 			})
+		})
 			//console.timeEnd('--设备列表事件添加--');
 		//}
 		/*areaList2Ui();
@@ -803,35 +793,38 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initrecFileOcx($('#channelvideo div.video'));
 
-		groupStop();
+		//groupStop();
 		//console.time('--本地远程控件调整--');
 		if(bool){
 			oPlayBack.style.height='0px';
-			//oPlayBack.GroupStop();
-			oPlayBack.GroupSpeedNormal();
+			/*oPlayBack.GroupStop();
+			oPlayBack.GroupSpeedNormal();*/
 			oPlaybackLocl.style.height='100%';
 			$('#type').next('ul.option').find('li:gt(1)').hide();
 		}else{
 			oPlaybackLocl.style.height='0px';
-			//oPlaybackLocl.GroupStop();
-			oPlaybackLocl.GroupSpeedNormal();
+			/*oPlaybackLocl.GroupStop();
+			oPlaybackLocl.GroupSpeedNormal();*/
 			oPlayBack.style.height='100%';
 			$('#type').next('ul.option').find('li').show();
 		}	
-		//console.timeEnd('--本地远程控件调整--')
-		//console.time('--本地远程控件状态同步--')
+
 		var objStatus = getAudioObj().GetCurrentState();
 
-		if(objStatus == 2){
-			recFile=null;
+		//console.log('当前控件的播放状态:'+objStatus);
 
-			palybackspeed('1X');
+		if(objStatus == 4 || objStatus == 3){
+			//recFile=null;
+
+			//palybackspeed('1X');
 
 			dragStopMove();
-		}/*else{
+		}else{
+			/*var arr=['1/X','2X','1/2X'];
+			palybackspeed(arr[objStatus]);*/
+			//console.log('当前控件继续播放的返回值:'+getAudioObj().GroupContinue());
 			dragStartMove();
-			palybackspeed(nowSpeed<1 ? '1/'+1/nowSpeed+'X' : nowSpeed+'X');
-		}*/
+		}
 		//console.timeEnd('--本地远程控件状态同步--');
 	}
 	function setTables(){   // 回放页面底部表格最大化相应调整

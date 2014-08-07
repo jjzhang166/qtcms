@@ -11,67 +11,9 @@ var oCommonLibrary,
 		})
 		_t($('input:text'));
 	})
+
 	function refresh(data){
-		
-		/*if(data.Dsturl.indexOf('play_back') != -1){
-			
-			areaList2Ui();
-			
-			$('div.dev_list span.device').each(function(){
-				$(this).parent('li').on({
-					dblclick:function(){ //设备双击开始搜索
-						playBackSerchFile();
-					},
-					click:function(){ //单击同步选中状态
-						$('div.dev_list li,span').removeClass('sel');
-						$(this).addClass('sel');
-					}
-				})
-			})
-
-			if(recFile)
-				loclFileDataIntoChannel(recFile);
-		}*/
 		window.initOxcDevListStatus();
-		//区域列表;
-
-		/*if(data.Dsturl == 'null'){
-			$('span.channel').removeClass('channel_1');
-			for(var i=0;i<64;i++){
-				var oWinInfo = oPreView.GetWindowInfo(i);
-				if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
-					var chlData = $('#channel_'+oWinInfo.chlId).attr({
-						wind:i,
-						state:oWinInfo.currentState
-					}).addClass('channel_1').data('data');
-					checkDevAllOpen(chlData.dev_id);
-				}
-			}	
-		}else if(data.Dsturl.indexOf('backup') != -1){
-			
-			areaList2Ui(0,1);
-			initrecFileOcx($('tbody.search_result tr'))
-			
-		}else if(data.Dsturl.indexOf('play_back') != -1){
-			initrecFileOcx($('#channelvideo div.video'));
-			dragStopMove();
-			palybackspeed('1X');
-
-		}else if(data.Dsturl.indexOf('device') != -1){
-			//分组列表;
-			groupList2Ui();
-			areaList2Ui(key);
-
-			set_contentMax();
-
-			searchEdDev();
-
-			if(key == 0){
-				searchFlush();
-			}else{
-				oSearchOcx.Stop();
-			}
-		}*/
 	}
 	
 	//区域分组,属性菜单输出.
@@ -85,6 +27,7 @@ var oCommonLibrary,
 			obj.each(function(){
 				$(this).treeview({remove:$(this).find('li:first')});	
 			})
+			
 			obj = obj.eq(num);
 
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})

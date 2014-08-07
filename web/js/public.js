@@ -418,9 +418,10 @@ function closeMenu(){
 }
 function Confirm(str,b,fn){
 	var obj = $('#confirm');
+	console.log(b);
 	if(b){
 		var oVisible = $('#menusList div.menu:visible').not('#confirm').css('z-index','0');
-		obj.find('close').off('click').click(function(){
+		obj.find('.close').off('click').click(function(){
 			oVisible.css('z-index','1000');
 			$('#confirm').find('h4,span').html('').end().hide();
 		})
@@ -489,17 +490,9 @@ function gettime(objs){
 }
 function time2Sec(str){  //把时间转换成秒
 	var a =str.split(':');
-	return fuckParseInt(a[0])*60*60+fuckParseInt(a[1])*60+fuckParseInt(a[2]);
+	return parseInt(a[0],10)*60*60+parseInt(a[1],10)*60+parseInt(a[2],10);
 }
-// parseInt('08') == 0;  fuck it;
-function fuckParseInt(str){
-	var s = str.split('');
-	if(parseInt(s[0]) == 0){
-		return parseInt(s[1]);
-	}else{ 
-		return parseInt(str);
-	}
-} 
+ 
 function checkHasObj(oSil,obj){
 	var b = 0;			
 	oSil.each(function(){ddd
