@@ -175,6 +175,7 @@ private:
 	bool m_bStop;
 	int m_nSleepSwitch;
 	int m_nPosition;
+	int m_nSecondPosition;
 	bool m_bBlock;
 	QTimer m_tCheckoutBlockTimer;
 	QTcpSocket *m_pTcpSocket;

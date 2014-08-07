@@ -10,6 +10,7 @@ int cbXBubbleRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 	m_nSleepSwitch(0),
 	m_nPosition(0),
+	m_nSecondPosition(0),
 	m_bIsSupportHttp(true),
 	m_bStop(true),
 	m_bBlock(false),
@@ -617,6 +618,7 @@ void BubbleProtocolEx::run()
 								break;
 		case BUBBLE_RUN_END:{
 			//½áÊø
+			m_nPosition=__LINE__;
 			bRunStop=true;
 			if (NULL!=m_pTcpSocket)
 			{
@@ -644,7 +646,14 @@ void BubbleProtocolEx::run()
 	QVariantMap evMap;
 	m_tCurrentConnectStatus=BUBBLE_DISCONNECTED;
 	evMap.insert("status",m_tCurrentConnectStatus);
+	m_nPosition=__LINE__;
+	m_bBlock=true;
 	sgBackToMainThread(evMap);
+	QEventLoop tEventLoop;
+	QTimer::singleShot(10,&tEventLoop,SLOT(quit()));
+	tEventLoop.exec();
+	m_bBlock=false;
+	m_nPosition=__LINE__;
 }
 
 int BubbleProtocolEx::setDeviceHost( const QString &sIpAddr )
@@ -1009,7 +1018,7 @@ void BubbleProtocolEx::sleepEx( int nTime )
 		m_nSleepSwitch++;
 	}else{
 		QEventLoop tEventLoop;
-		QTimer::singleShot(2,&tEventLoop,SLOT(quit()));
+		QTimer::singleShot(5,&tEventLoop,SLOT(quit()));
 		tEventLoop.exec();
 		m_nSleepSwitch=0;
 	}
@@ -1154,6 +1163,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("audiochannel", pLiveStream->cChannel);
 					tStreamInfo.insert("acodec", pLiveStreamAudio->cEnCode);
 					tStreamInfo.insert("gentime", pLiveStreamAudio->uiGtime);
+					m_nSecondPosition=__LINE__;
 					eventProcCall("LiveStream",tStreamInfo);
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
@@ -1171,6 +1181,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("width", nWidth);
 					tStreamInfo.insert("height", nHeight);
 					tStreamInfo.insert("vcodec", "H264");
+					m_nSecondPosition=__LINE__;
 					eventProcCall("LiveStream",tStreamInfo);
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
@@ -1253,6 +1264,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 						tStreamInfo.insert("samplewidth"	,pRecordStream->uiAudioDataWidth);
 						tStreamInfo.insert("audiochannel"	,pRecordStream->uiChannel);
 						tStreamInfo.insert("acodec"			,pRecordStream->cAudioFormat);
+						m_nSecondPosition=__LINE__;
 						eventProcCall("RecordStream",tStreamInfo);
 						m_tBuffer.remove(0,uiBubbleLength);
 						return true;
@@ -1270,6 +1282,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 						tStreamInfo.insert("gentime"      ,pRecordStream->uiGenTime - nTimeDifference);
 						int nOffSet=sizeof(pRecordStream->uiLength)+sizeof(pRecordStream->cType)+sizeof(pRecordStream->cChannel)+128;
 						tStreamInfo.insert("data",(uint)((char*)pRecordStream+nOffSet));
+						m_nSecondPosition=__LINE__;
 						eventProcCall("RecordStream",tStreamInfo);
 						m_tBuffer.remove(0,uiBubbleLength);
 						return true;

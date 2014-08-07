@@ -38,11 +38,21 @@ m_bStop(false)
 PlayManager::~PlayManager(void)
 {
 	m_bStop = true;
-	if(this->isRunning())
-	{
+	//if(this->isRunning())
+	//{
+	//	wait(1000);
+	//}
+	int nCount=0;
+	while(this->isRunning()&&nCount<50){
 		wait(100);
+		nCount++;
 	}
+	if (nCount>49)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"it may be cuase crash,as the qthread is still running";
+	}else{
 
+	}
 	m_pVedioDecoder->Release();
 	m_pVedioDecoder = NULL;
 	if (!m_bRendFinished)
@@ -138,7 +148,8 @@ void PlayManager::run()
 // 			g_mutex.lock();
 // 			g_pause.wait(&g_mutex);
 // 			g_mutex.unlock();
-			usleep(40);
+			//usleep(40);
+			msleep(10);
 			continue;
 		}
 
@@ -148,6 +159,7 @@ void PlayManager::run()
 		if (1 == m_pBufferManager->readStream(recStream))
 		{
 			m_pBufferManager->removeItem(&recStream);
+			msleep(10);
 			continue;
 		}
 

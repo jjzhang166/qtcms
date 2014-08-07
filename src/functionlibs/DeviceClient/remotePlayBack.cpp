@@ -1058,7 +1058,7 @@ int remotePlayBack::addChannelIntoPlayGroup( int nChannel,QWidget * wnd )
 		}
 	}else{
 		//do nothing
-		qDebug()<<__FUNCTION__<<__LINE__<<"addChannelIntoPlayGroup fail as the work thread han been running";
+		qDebug()<<__FUNCTION__<<__LINE__<<"addChannelIntoPlayGroup fail as the work thread had been running";
 	}
 	return 1;
 }
