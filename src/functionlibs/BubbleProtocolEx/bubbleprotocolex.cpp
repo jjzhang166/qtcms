@@ -1095,8 +1095,16 @@ bool BubbleProtocolEx::analyzeBubbleInfo()
 			delete pDom;
 			pDom=NULL;
 			nPos=m_tBuffer.indexOf("HTTP/1.1 200");
-			m_tBuffer.remove(0,1024+nPos);
-			return true;
+			if (1024+nPos<=m_tBuffer.size())
+			{
+				m_tBuffer.remove(0,1024+nPos);
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"there are unCorrect data,please check,as for debug,i will throw the error";
+				throw(1024+nPos);
+				m_tBuffer.clear();
+				return false;
+			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"analyzeBubbleInfo fail as pDom is null or pDom->setContent(sXml) fail";
 			if (NULL!=pDom)
@@ -1111,7 +1119,16 @@ bool BubbleProtocolEx::analyzeBubbleInfo()
 	}else{
 		m_bIsSupportHttp=false;
 		int nPos=m_tBuffer.indexOf("HTTP/1.1 404");
-		m_tBuffer.remove(0,1024+nPos);
+		if (1024+nPos>m_tBuffer.size())
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"there are unCorrect data,please check,as for debug,i will throw the error";
+			throw(1024+nPos);
+			m_tBuffer.clear();
+			return false;
+		}else{
+			m_tBuffer.remove(0,1024+nPos);
+		}
+		
 		return true;
 	}
 }
