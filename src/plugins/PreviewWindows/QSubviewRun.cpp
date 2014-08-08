@@ -625,14 +625,6 @@ void QSubviewRun::run()
 				}
 				nstop=true;
 				//释放此函数生成的所有资源
-				if (NULL!=m_pIVideoRender)
-				{
-					m_bIsBlock=true;
-					m_nPosition=__LINE__;
-					m_pIVideoRender->Release();
-					m_bIsBlock=false;
-					m_pIVideoRender=NULL;
-				}
 				if (NULL!=m_pdeviceClient)
 				{
 					m_bIsBlock=true;
@@ -641,6 +633,7 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pdeviceClient=NULL;
 				}
+
 				if (NULL!=m_pIVideoDecoder)
 				{
 					m_bIsBlock=true;
@@ -649,6 +642,16 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pIVideoDecoder=NULL;
 				}
+
+				if (NULL!=m_pIVideoRender)
+				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
+					m_pIVideoRender->Release();
+					m_bIsBlock=false;
+					m_pIVideoRender=NULL;
+				}
+
 				if (NULL!=m_pRecorder)
 				{
 					m_bIsBlock=true;
