@@ -14,6 +14,7 @@
 #include "ILocalPlayerEx.h"
 
 void cbTimeChange(QString evName, uint playTime, void* pUser);
+void cbThrowException(QString evName, QVariantMap item, void* pUser);
 
 class LocalPlayer : public QObject,
 	public IEventRegister,
@@ -81,9 +82,11 @@ public:
 	}ProcInfoItem;
 	void setPlayTime(uint &playTime);
 	void setBaseTime(uint &baseTime);
+	void throwException(QVariantMap item);
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);
 	int checkUsedDisk(QString &strDisk);
+	int getUseableDisk(QString &useableDisk);
 	bool checkChannel(const QString& schannellist);
 	int checkFileExist(QStringList const fileList, const QDateTime& startTime, const QDateTime& endTime, QVector<PeriodTime> &perTimeVec);
 	bool checkChannelInFileList(QStringList const filelist);

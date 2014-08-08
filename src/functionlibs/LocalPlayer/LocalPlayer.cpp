@@ -17,7 +17,7 @@ m_bIsGroupPlaying(false),
 m_db(NULL),
 m_pCurView(NULL)
 {
-	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop"<<"GetRecordFileEx";
+	m_eventList<<"GetRecordDate"<<"GetRecordFile"<<"SearchStop"<<"GetRecordFileEx"<<"ThrowException";
 
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void**)&m_pDiskSetting);
 
@@ -65,6 +65,16 @@ int LocalPlayer::checkUsedDisk(QString &strDisk)
 	}
 
 	int nRet = m_pDiskSetting->getUseDisks(strDisk);
+	return nRet;
+}
+
+int LocalPlayer::getUseableDisk(QString &useableDisk)
+{
+	if (NULL == m_pDiskSetting)
+	{
+		return 1;
+	}
+	int nRet = m_pDiskSetting->getEnableDisks(useableDisk);
 	return nRet;
 }
 
@@ -690,6 +700,7 @@ int LocalPlayer::GroupPlay()
 			continue;
 		}
 		iter->pPlayMgr->setCbTimeChange(cbTimeChange, this);
+		iter->pPlayMgr->setCbThreowExcepion(cbThrowException, this);
 		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos, iter->skipTime);
 		iter->pPlayMgr->setFileInfo(m_filePeriodMap);
 		if (iter->pPlayMgr->isRunning())
@@ -944,6 +955,14 @@ void cbTimeChange(QString evName, uint playTime, void* pUser)
 	}
 }
 
+void cbThrowException( QString evName, QVariantMap item, void* pUser )
+{
+	if (!item.isEmpty() && pUser && "ThrowException" == evName)
+	{
+		((LocalPlayer*)pUser)->throwException(item);
+	}
+}
+
 QStringList LocalPlayer::eventList()
 {
 	return m_eventList;
@@ -969,6 +988,10 @@ int LocalPlayer::queryEvent(QString eventName,QStringList& eventParams)
 	if ("GetRecordFileEx" == eventName)
 	{
 		eventParams<<"wndId"<<"type"<<"startTime"<<"endTime";
+	}
+	if ("ThrowException" == eventName)
+	{
+		eventParams<<"file"<<"expCode"<<"pWnd";
 	}
 
 	return IEventRegister::OK;
@@ -1260,7 +1283,7 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 	QStringList fileList;
 	//get available disk
 	QString sUsedDisks;
-	if (1 == checkUsedDisk(sUsedDisks))
+	if (1 == getUseableDisk(sUsedDisks))
 	{
 		return fileList;
 	}
@@ -1279,6 +1302,11 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 	foreach(QString disk, sltUsedDisk)
 	{
 		QString dbPath = disk + ":/REC/record.db";
+		if (!QFile::exists(dbPath))
+		{
+			qDebug()<<"file "<<dbPath<<" not exist!";
+			continue;
+		}
 		m_db->setDatabaseName(dbPath);
 		if (!m_db->open())
 		{
@@ -1311,4 +1339,21 @@ QStringList LocalPlayer::getFileList( int wndId, QDate date, QTime star, QTime e
 		m_db->close();
 	}
 	return sortFileList(fileList);
+}
+
+void LocalPlayer::throwException( QVariantMap item )
+{
+	PlayMgr *pplay = (PlayMgr*)item.value("pWnd").toUInt();
+	QMap<QWidget*, PrePlay>::iterator iter = m_GroupMap.begin();
+	while (iter != m_GroupMap.end())
+	{
+		if (iter->pPlayMgr == pplay)
+		{
+			item["pWnd"] = (uint)iter.key();
+
+			eventProcCall(QString("ThrowException"), item);
+			break;
+		}
+		iter++;
+	}
 }

@@ -94,6 +94,7 @@ int RecordPlayer::cbInit()
 	pEvRegister->registerEvent(QString("GetRecordFile"), cbGetRecordFile, this);
 	pEvRegister->registerEvent(QString("SearchStop"), cbSearchStop, this);
 	pEvRegister->registerEvent(QString("GetRecordFileEx"), cbGetRecordFile, this);
+	pEvRegister->registerEvent(QString("ThrowException"), cbThrowException, this);
 
 	pEvRegister->Release();
 	return 0;
@@ -473,7 +474,15 @@ int cbSearchStop(QString evName,QVariantMap evMap,void*pUser)
 	}
 	return 0;
 }
-
+int cbThrowException(QString evName, QVariantMap evMap, void* pUser)
+{
+	RecordPlayer *pRecordPlayer = (RecordPlayer*)pUser;
+	if ("ThrowException" == evName)
+	{
+		pRecordPlayer->throwException(evMap);
+	}
+	return 0;
+}
 void RecordPlayer::transRecordDate(QVariantMap &evMap)
 {
 	QDateTime date = evMap["date"].toDateTime();
@@ -772,4 +781,11 @@ void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
 		EventProcCall("SearchRecordOver", item);
 		m_wndCount = 0;
 	}
+}
+
+void RecordPlayer::throwException( QVariantMap &evMap )
+{
+	RecordPlayerView *pWnd = (RecordPlayerView*)evMap.take("pWnd").toUInt();
+	evMap.insert("wndId", pWnd - m_subRecPlayerView);
+	EventProcCall("ThrowException", evMap);
 }

@@ -1227,7 +1227,13 @@ int StorageMgr::fixExceptionalData()
 
 void StorageMgr::getRecInfo( QMap<int, RecordInfo> &recInfoMap )
 {
-	QString disks = getUseDisks();
+	if (NULL == m_pDisksSetting)
+	{
+		return;
+	}
+	
+	QString disks;
+	m_pDisksSetting->getEnableDisks(disks);
 	QStringList diskList = disks.split(":");
 	foreach(QString disk, diskList)
 	{

@@ -481,6 +481,7 @@ void Recorder::run()
 			}
 			m_bIsblock=false;
 			nRecStep=PACK;
+			qDebug()<<__FUNCTION__<<__LINE__<<"switch to PACK nCount="<<nCount;
 						   }
 						   break;
 		case PACK:{

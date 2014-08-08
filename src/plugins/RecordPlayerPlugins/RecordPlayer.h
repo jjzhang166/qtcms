@@ -18,6 +18,7 @@
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser);
 int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser);
 int cbSearchStop(QString evName,QVariantMap evMap,void*pUser);
+int cbThrowException(QString evName, QVariantMap evMap, void* pUser);
 typedef enum __enRecordPlayStatus{
 	STATUS_NORMAL_PLAY,
 	STATUS_FAST_PLAY,
@@ -41,6 +42,7 @@ public:
 	void transRecordFiles(QVariantMap &evMap);
 	void transRecordFilesEx(QVariantMap &evMap);
 	void transSearchStop(QVariantMap &evMap);
+	void throwException(QVariantMap &evMap);
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
 	SearchProcess *getCurProc(int wndId);
