@@ -278,7 +278,7 @@ var oPreView,oDiv,
 
 	function openWind(wind,data){
 		var windState = oPreView.GetWindowInfo(wind).usable;
-		console.log('当前窗口:'+wind+'的状态'+windState);
+		//console.log('当前窗口:'+wind+'的状态'+windState);
 		if(!windState){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
 			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)/*+'  '+winState[windState]*/;
@@ -310,7 +310,7 @@ var oPreView,oDiv,
 			c = '',
 			chlData = getChlFullInfo(obj),
 			str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
-		console.log('befor------data---------state:'+ev.CurrentState+'-----------wind:'+ev.WPageId+'------channel_ID:'+ev.ChannelId);
+		//console.log('befor------data---------state:'+ev.CurrentState+'-----------wind:'+ev.WPageId+'------channel_ID:'+ev.ChannelId);
 		obj.attr({state:ev.CurrentState,wind:ev.WPageId});
 		if(ev.CurrentState == 2){
 			obj.removeAttr('state wind').removeClass('channel_1');
@@ -323,7 +323,7 @@ var oPreView,oDiv,
 		}else{
 			str=''
 		}
-		console.log('after-----.channel----------state:'+obj.attr('state')+'-----------wind:'+obj.attr('wind'));
+		//console.log('after-----.channel----------state:'+obj.attr('state')+'-----------wind:'+obj.attr('wind'));
 		writeActionLog(str);		
 		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
 			writeActionLog('所以窗口正在使用!!',errorcolor);
@@ -441,8 +441,8 @@ var oPreView,oDiv,
 		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
 				data =getChlFullInfo($(this));
-				console.log('------------1-------------');
-				console.log(data);
+				/*console.log('------------1-------------');
+				console.log(data);*/
 				if(oPreView.SetDevInfo(data.device_name,data.channel_number,$(this).attr('wind'))){
 					transKey = 'channel_Manual_recording_data_binding_failed'
 				}else{
@@ -463,8 +463,8 @@ var oPreView,oDiv,
 			$('div.dev_list span.channel[wind]').each(function(){
 				data = getChlFullInfo($(this)),
 				backStatus = oPreView.StopRecord($(this).attr('wind'));
-				console.log('------------12-------------');
-				console.log(data);
+				/*console.log('------------12-------------');
+				console.log(data);*/
 				if(backStatus){ 
 					transKey = 'Close_the_manual_recording_failed'
 					if(backStatus == 2){
@@ -525,11 +525,13 @@ var oPreView,oDiv,
 		for(var i=0;i<64;i++){
 			var oWinInfo = oPreView.GetWindowInfo(i);
 			if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
-				var chlData = $('#channel_'+oWinInfo.chlId).attr({
-					wind:i,
-					state:oWinInfo.currentState
-				}).addClass('channel_1').data('data');
-				checkDevAllOpen(chlData.dev_id);
+				if(chlData.dev_id){
+					var chlData = $('#channel_'+oWinInfo.chlId).attr({
+						wind:i,
+						state:oWinInfo.currentState
+					}).addClass('channel_1').data('data');
+					checkDevAllOpen(chlData.dev_id);
+				}
 			}
 		}
 	}

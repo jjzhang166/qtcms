@@ -205,10 +205,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 	function playVideo(){
 		//console.log(maxFileEndTime+'//'+minFileStartTime);
+		
+		$('#now_time').attr('begin',$('#now_time').html())
+
 		if(maxFileEndTime < minFileStartTime)return;
 
 		var date = $("div.calendar span.nowDate").html(),
-			begin =$('#now_time').html(),//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
+			begin =$('#now_time').attr('begin') ,//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
 
@@ -295,7 +298,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			oNow = $('#now_time');
 
-			nowTime = oNow.html();
+			nowTime = oNow.attr('begin');
 
 		drag_timer = setInterval(function(){
 
@@ -322,6 +325,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	function asyncPlayTime2UI(now,playdeTime,obj){
 
+		//console.log(now+'-----------------'+playdeTime)
+
 		var arr = now.split(':');
 		arr[0]=parseInt(arr[0],10);
 		arr[1]=parseInt(arr[1],10);
@@ -341,8 +346,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			//dragStopMove();
 			groupStop();
 		}else{
-			obj.html(addZero(arr[0])+':'+addZero(arr[1])+':'+addZero(arr[2]));	
+			obj.html(addZero(arr[0])+':'+addZero(arr[1])+':'+addZero(arr[2]));
 		}
+
+		//console.log(obj.html());
 	}
 	/*function getDragSart(X2,left,date){
 		var time=returnTime((left-81)/(X2-81)*24*3600);

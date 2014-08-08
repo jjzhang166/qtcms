@@ -418,7 +418,6 @@ function closeMenu(){
 }
 function Confirm(str,b,fn){
 	var obj = $('#confirm');
-	console.log(b);
 	if(b){
 		var oVisible = $('#menusList div.menu:visible').not('#confirm').css('z-index','0');
 		obj.find('.close').off('click').click(function(){
@@ -426,7 +425,7 @@ function Confirm(str,b,fn){
 			$('#confirm').find('h4,span').html('').end().hide();
 		})
 	}else{
-		obj.find('close').click(function(){
+		obj.find('.close').click(function(){
 			closeMenu();
 			typeof(fn) == 'function' && fn();
 		})

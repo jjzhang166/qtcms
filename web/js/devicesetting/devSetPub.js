@@ -9,7 +9,7 @@ var auth,nowDev,
 	async=true;
 
 $.ajaxSetup({
-	processData: false, 
+	processData: false,
 	cache: false,
 	timeout:5000
 })
