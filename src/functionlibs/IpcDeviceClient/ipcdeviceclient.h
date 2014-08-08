@@ -88,19 +88,8 @@ public:
 	void DeInitProtocl();
 
 	int RegisterProc(IEventRegister *m_RegisterProc,int m_Stream);
-
 private:
-// 	void SyncTime();
-	//int sndGetVesionInfo();
-	//int sndSyncTimeForPreVersion();
-	//int sndGetLocalSystemTime();
-	//int sndSyncTimeCmd();
 	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
-//signals:
-//	void sigSyncTime();
-//private slots:
-//	void Reveived();
-//	void SyncTime();
 
 private:
 	int m_nRef;

@@ -1557,6 +1557,7 @@ bool QSubviewRun::connectToDevice()
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"apply pdeviceClient fail";
 	}
+	m_nSecondPosition=__LINE__;
 	return false;
 }
 
@@ -1984,7 +1985,7 @@ void QSubviewRun::slcheckoutBlock()
 {
 	if (m_bIsBlock)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"block at:"<<m_nPosition;
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"block at:"<<m_nPosition<<m_nSecondPosition;
 	}
 	if (m_nCheckPreCount>12&&m_currentStatus==STATUS_CONNECTED&&m_tDeviceInfo.m_pWnd->isVisible())
 	{

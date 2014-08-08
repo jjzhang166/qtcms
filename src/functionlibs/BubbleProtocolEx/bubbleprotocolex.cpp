@@ -57,10 +57,11 @@ BubbleProtocolEx::~BubbleProtocolEx()
 		/*sleepEx(10);*/
 		QTime dieTime=QTime::currentTime().addMSecs(1);
 		while(QTime::currentTime()<dieTime){
-			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+			QCoreApplication::processEvents(QEventLoop::AllEvents,100);
 		}
+		msleep(1);
 		nCount++;
-		if (nCount>500&&nCount%100==0)
+		if (nCount>5000&&nCount%1000==0)
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.tIpAddr.toString()<<m_tDeviceInfo.sEseeId<<"terminate this thread had caused more time than 5s,there may be out of control,"<<"please check position at:"<<m_nPosition;
 		}
@@ -267,7 +268,7 @@ void BubbleProtocolEx::run()
 						switch(nFrameStep){
 						case 0:{
 							//еп╤о
-							if (m_tBuffer.size()>11)
+							if (m_tBuffer.size()>=11)
 							{
 								if (m_tBuffer.startsWith("\xab")||m_tBuffer.startsWith("\xaa"))
 								{

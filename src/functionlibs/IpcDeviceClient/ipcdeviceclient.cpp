@@ -523,25 +523,25 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTED;
-					m_StreamCurStatus.insert(0,m_statusInfo);
+					m_StreamCurStatus.replace(0,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Disconnected==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-					m_StreamCurStatus.insert(0,m_statusInfo);
+					m_StreamCurStatus.replace(0,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Disconnecting==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
-					m_StreamCurStatus.insert(0,m_statusInfo);
+					m_StreamCurStatus.replace(0,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Connectting==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTING;
-					m_StreamCurStatus.insert(0,m_statusInfo);
+					m_StreamCurStatus.replace(0,m_statusInfo);
 				}
 			}
 		}
@@ -557,25 +557,25 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTED;
-					m_StreamCurStatus.insert(1,m_statusInfo);
+					m_StreamCurStatus.replace(1,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Disconnected==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
-					m_StreamCurStatus.insert(1,m_statusInfo);
+					m_StreamCurStatus.replace(1,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Disconnecting==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
-					m_StreamCurStatus.insert(1,m_statusInfo);
+					m_StreamCurStatus.replace(1,m_statusInfo);
 				}
 				else if (IDeviceConnection::CS_Connectting==it.value().toInt())
 				{
 					CurStatusInfo m_statusInfo;
 					m_statusInfo.m_CurStatus=IDeviceClient::STATUS_CONNECTING;
-					m_StreamCurStatus.insert(1,m_statusInfo);
+					m_StreamCurStatus.replace(1,m_statusInfo);
 				}
 			}
 		}
@@ -618,7 +618,9 @@ int IpcDeviceClient::cbConnectStatusProc( QVariantMap evMap )
 		{
 			if (false==bHadCallCloseAll)
 			{
-				//closeAll();
+				QVariantMap CurStatusParm;
+				CurStatusParm.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+				eventProcCall("CurrentStatus",CurStatusParm);
 			}
 		}
 	}

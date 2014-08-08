@@ -163,7 +163,7 @@ private slots:
 signals:
 	void sgBackToMainThread(QVariantMap evMap);
 private:
-	int m_nRef;
+	volatile int m_nRef;
 	QMutex m_csRef;
 	QMutex m_csStepCode;
 	QStringList m_sEventList;
