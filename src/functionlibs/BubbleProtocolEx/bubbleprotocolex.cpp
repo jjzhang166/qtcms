@@ -51,7 +51,7 @@ BubbleProtocolEx::~BubbleProtocolEx()
 	{
 		slBackToMainThread(tItem);
 	}else{
-		sgBackToMainThread(tItem);
+		emit sgBackToMainThread(tItem);
 	}
 	while(QThread::isRunning()){
 		/*sleepEx(10);*/
@@ -535,7 +535,7 @@ void BubbleProtocolEx::run()
 				evMap.insert("status",evMap);
 				m_bBlock=true;
 				m_nPosition=__LINE__;
-				sgBackToMainThread(evMap);
+				emit sgBackToMainThread(evMap);
 				m_bBlock=false;
 			}else{
 				//do nothing
@@ -648,7 +648,7 @@ void BubbleProtocolEx::run()
 	evMap.insert("status",m_tCurrentConnectStatus);
 	m_nPosition=__LINE__;
 	m_bBlock=true;
-	sgBackToMainThread(evMap);
+	emit sgBackToMainThread(evMap);
 	QEventLoop tEventLoop;
 	QTimer::singleShot(10,&tEventLoop,SLOT(quit()));
 	tEventLoop.exec();
@@ -1042,6 +1042,7 @@ void BubbleProtocolEx::slBackToMainThread( QVariantMap evMap )
 		//״̬�ı䣬�׳�״̬
 		if (evMap.value("status").toInt()!=m_tHistoryConnectStatus)
 		{
+			m_nSecondPosition=__LINE__;
 			eventProcCall("StateChangeed",evMap);
 			m_tHistoryConnectStatus=(tagBubbleConnectStatusInfo)evMap.value("status").toInt();
 		}else{

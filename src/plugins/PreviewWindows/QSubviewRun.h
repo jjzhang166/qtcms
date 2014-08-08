@@ -201,6 +201,7 @@ private:
 	QTimer m_checkIsBlockTimer;
 	volatile bool m_bIsBlock;
 	int m_nPosition;
+	int m_nSecondPosition;
 	Qt::HANDLE m_hMainThread;
 	int m_nSleepSwitch;
 	int m_nWindId;

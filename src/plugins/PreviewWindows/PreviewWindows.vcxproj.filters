@@ -52,47 +52,11 @@
     <ClCompile Include="..\..\common\guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qpreviewwindows.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qpreviewwindows.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qpreviewwindows.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qsubview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qsubview.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qsubview.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="PreviewWindowsGlobalSetting.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="QSubviewThread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QSubviewThread.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QSubviewThread.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="QSubViewObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QSubViewObject.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QSubViewObject.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="ManageWidget.cpp">
       <Filter>Source Files</Filter>
@@ -170,20 +134,8 @@
     <CustomBuild Include="previewwindows.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="qpreviewwindows.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qsubview.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="TitleView.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QSubviewThread.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QSubViewObject.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ManageWidget.h">
       <Filter>Header Files</Filter>

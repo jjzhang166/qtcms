@@ -39,7 +39,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitHeight(0),
 	m_nInitWidth(0),
 	m_nSleepSwitch(0),
-	m_nCheckPreCount(0)
+	m_nCheckPreCount(0),
+	m_nSecondPosition(0)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
@@ -1157,7 +1158,7 @@ bool QSubviewRun::registerCallback(int registcode)
 				pRegist=NULL;
 				return true;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"recoder register fail as pRegist is null";
+				qDebug()<<__FUNCTION__<<__LINE__<<"recorder register fail as pRegist is null";
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"register fail as m_pRecorder is null";
@@ -1194,6 +1195,7 @@ int QSubviewRun::cbCConnectError( QString evName,QVariantMap evMap,void*pUser )
 		int nCurrentStatus=STATUS_DISCONNECTED;
 		QVariantMap curStatusInfo;
 		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+		m_nSecondPosition=__LINE__;
 		backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 	}
 	return 0;
@@ -1352,11 +1354,13 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			nRenderStep=4;
 			if (m_nInitHeight!=m_tRenderInfo.nHeight||m_nInitWidth!=m_tRenderInfo.nWidth)
 			{
+				m_nSecondPosition=__LINE__;
 				m_pIVideoRender->deinit();
 				m_pIVideoRender->init(m_tRenderInfo.nWidth,m_tRenderInfo.nHeight);
 				m_nInitWidth=m_tRenderInfo.nWidth;
 				m_nInitHeight=m_tRenderInfo.nHeight;
 			}
+			m_nSecondPosition=__LINE__;
 			m_pIVideoRender->render(m_tRenderInfo.pData,m_tRenderInfo.pYdata,m_tRenderInfo.pUdata,m_tRenderInfo.pVdata,m_tRenderInfo.nWidth,m_tRenderInfo.nHeight,m_tRenderInfo.nYStride,m_tRenderInfo.nUVStride,m_tRenderInfo.nLineStride,m_tRenderInfo.sPixeFormat,m_tRenderInfo.nFlags);
 			//截屏
 			if (m_bScreenShot)
@@ -1388,11 +1392,13 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			int iFlags=evMap.value("flags").toInt();
 			if (m_nInitHeight!=iHeight||m_nInitWidth!=iWidth)
 			{
+				m_nSecondPosition=__LINE__;
 				m_pIVideoRender->deinit();
 				m_pIVideoRender->init(iWidth,iHeight);
 				m_nInitWidth=iWidth;
 				m_nInitHeight=iHeight;
 			}
+			m_nSecondPosition=__LINE__;
 			m_pIVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 			//截屏
 			if (m_bScreenShot)
@@ -1460,11 +1466,13 @@ int QSubviewRun::cbCDecodeFrameEx( QString evName,QVariantMap evMap,void*pUser )
 		}
 		if (m_nInitHeight!=iHeight||m_nInitWidth!=iWidth)
 		{
+			m_nSecondPosition=__LINE__;
 			m_pIVideoRender->deinit();
 			m_pIVideoRender->init(iWidth,iHeight);
 			m_nInitWidth=iWidth;
 			m_nInitHeight=iHeight;
 		}
+		m_nSecondPosition=__LINE__;
 		m_pIVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoRender is null";
@@ -1502,6 +1510,7 @@ bool QSubviewRun::connectToDevice()
 		}
 
 		pdeviceClient->setDevicePorts(m_tDeviceInfo.m_uiPort);
+		m_nSecondPosition=__LINE__;
 		if (0==pdeviceClient->connectToDevice())
 		{
 			int ncount=0;
@@ -1523,6 +1532,7 @@ bool QSubviewRun::connectToDevice()
 					int nCurrentStatus=STATUS_DISCONNECTED;
 					QVariantMap curStatusInfo;
 					curStatusInfo.insert("CurrentStatus",nCurrentStatus);
+					m_nSecondPosition=__LINE__;
 					backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 				}
 			}
@@ -1555,6 +1565,7 @@ bool QSubviewRun::liveSteamRequire()
 		m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
 		if (NULL !=pdeviceClient)
 		{
+			m_nSecondPosition=__LINE__;
 			if (pdeviceClient->liveStreamRequire(m_tDeviceInfo.m_uiChannelId,m_tDeviceInfo.m_uiStreamId,true)==0)
 			{
 				pdeviceClient->Release();
@@ -1708,6 +1719,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//停止录像
 				m_stepCode.enqueue(STOPRECORD);
 				//抛出事件
+				m_nSecondPosition=__LINE__;
 				eventCallBack("CurrentStatus",evMap);
 				//自动重连
 				if (m_historyStatus==STATUS_CONNECTED)
@@ -1723,6 +1735,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			//抛出事件
 			if (m_historyStatus!=m_currentStatus)
 			{
+				m_nSecondPosition=__LINE__;
 				eventCallBack("CurrentStatus",evMap);
 			}
 			m_historyStatus=m_currentStatus;
@@ -1733,6 +1746,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			//抛出事件
 			if (m_historyStatus!=m_currentStatus)
 			{
+				m_nSecondPosition=__LINE__;
 				eventCallBack("CurrentStatus",evMap);
 			}
 			m_historyStatus=m_currentStatus;
@@ -1744,6 +1758,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 	//其他事件也在此处处理
 	if (evMap.contains("eventName")&&evMap.value("eventName")=="setRenderWnd")
 	{
+		m_nSecondPosition=__LINE__;
 		m_pIVideoRender->setRenderWnd(m_tDeviceInfo.m_pWnd);
 	}
 }
@@ -1927,6 +1942,7 @@ void QSubviewRun::slstopPreviewrun()
 			m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdisconnet);
 			if (NULL!=pdisconnet)
 			{
+				m_nSecondPosition=__LINE__;
 				pdisconnet->closeAll();
 				pdisconnet->Release();
 				pdisconnet=NULL;
@@ -1944,6 +1960,7 @@ void QSubviewRun::slstopPreviewrun()
 			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
 			if (NULL!=pRecorder)
 			{
+				m_nSecondPosition=__LINE__;
 				pRecorder->Stop();
 				pRecorder->Release();
 				pRecorder=NULL;
@@ -2033,6 +2050,7 @@ int QSubviewRun::cbCConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 	if (evMap.contains("ConnectRefuse"))
 	{
 		m_stop=true;
+		m_nSecondPosition=__LINE__;
 		eventCallBack("ConnectRefuse",evMap);
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient resource had been full load";
 	}else{
