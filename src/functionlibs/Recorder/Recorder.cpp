@@ -448,7 +448,7 @@ void Recorder::run()
 			bool nBwait=true;
 			m_nPosition=__LINE__;
 			m_bIsblock=true;
-			while(nBwait&&nCount<300){
+			while(nBwait&&nCount<300&&!m_bFinish){//没有等到I帧&&循环次数少于300&&没有停止录像
 				m_dataRef.lock();
 				if (m_dataqueue.size()>0)
 				{

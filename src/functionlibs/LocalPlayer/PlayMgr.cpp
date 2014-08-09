@@ -196,7 +196,7 @@ void PlayMgr::run()
 					waitSec = m_skipTime[skipPos].start - currentPlayTime.toTime_t();
 				}
 				qDebug()<<"wait:"<<waitSec;
-				if (waitSec > 0)
+				if (waitSec > 0 && !m_bStop)
 				{
 					m_mutex.lock();
 					m_waitForPlay.wait(&m_mutex, waitSec*1000);

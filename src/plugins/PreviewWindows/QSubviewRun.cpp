@@ -481,6 +481,7 @@ void QSubviewRun::run()
 			//Í£Ö¹Â¼Ïñ
 			if (NULL!=m_pRecorder&&m_bIsRecord==true&&m_bIsAutoRecording==false)
 			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
 				m_pRecorder->Stop();
 				m_bIsRecord=false;
 			}else{
@@ -1676,6 +1677,7 @@ int QSubviewRun::stopRecord()
 		}else{
 			if (m_bIsRecord)
 			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
 				m_stepCode.enqueue(STOPRECORD);
 			}else{
 				//do nothing 
@@ -1721,6 +1723,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//Í£Ö¹¼Æ»®Â¼Ïñ²éÑ¯
 				m_planRecordTimer.stop();
 				//Í£Ö¹Â¼Ïñ
+				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
 				m_stepCode.enqueue(STOPRECORD);
 				//Å×³öÊÂ¼þ
 				m_nSecondPosition=__LINE__;
@@ -1829,6 +1832,8 @@ void QSubviewRun::slplanRecord()
 			}
 			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
 			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+
 				m_stepCode.enqueue(STOPRECORD);
 				m_bIsAutoRecording=false;
 			}
@@ -1836,6 +1841,8 @@ void QSubviewRun::slplanRecord()
 			{
 				if (m_bIsAutoRecording==true)
 				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+
 					m_stepCode.enqueue(STOPRECORD);
 					m_bIsAutoRecording=false;
 				}
@@ -1845,6 +1852,8 @@ void QSubviewRun::slplanRecord()
 		{
 			if (m_bIsAutoRecording==true)
 			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+
 				m_stepCode.enqueue(STOPRECORD);
 				m_bIsAutoRecording=false;
 			}else{
@@ -1965,6 +1974,7 @@ void QSubviewRun::slstopPreviewrun()
 			if (NULL!=pRecorder)
 			{
 				m_nSecondPosition=__LINE__;
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
 				pRecorder->Stop();
 				pRecorder->Release();
 				pRecorder=NULL;
