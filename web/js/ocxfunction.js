@@ -9,6 +9,7 @@ var oCommonLibrary,
 		$('li[title],div[title],a[title],span[title]').each(function(){
 			$(this).attr('title',lang[$(this).attr('title')])
 		})
+
 		_t($('input:text'));
 	})
 
@@ -18,10 +19,12 @@ var oCommonLibrary,
 	
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool,closed){ //区域菜单输出
-		num = num || key ;
+		num = num || key;
+
 		if(num != 0){
 			closed='';
 		}
+		
 		var obj = $('ul.filetree').not('[id]');
 
 			obj.each(function(){
@@ -38,6 +41,8 @@ var oCommonLibrary,
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();
+		/*所有返回数据为Array遍历最好用标准的for循环*/
+
 		for(n in areaList){
 			var id = areaList[n];
 			var name = oCommonLibrary.GetAreaName(areaList[n]);
@@ -45,10 +50,10 @@ var oCommonLibrary,
 			var pareaname = pid == 0 ? lang.Area : oCommonLibrary.GetAreaName(pid);
 			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
 			pidList.push(pid);
-
 		}
 		var arr =del(pidList.sort(sortNumber)); //  返回pid升序的PID数组
 		deviceList2Ui('0',num,bool,closed);
+
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		

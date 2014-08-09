@@ -62,8 +62,8 @@ var oSearchOcx,
 						}
 					}
 					//分组设置下的右键菜单调整
-					$('#menu0 li').show()
-					$('#menu0 li').eq(index).hide();
+					$('#menu0 li').show().eq(index).hide();
+
 					if(index == 1){
 						$('#menu0 li:eq(2)').hide();
 					}
@@ -478,7 +478,7 @@ var oSearchOcx,
 	function adddoubdevIntoArea(){
 		selectEdparent('area');
 		var devList = $('#SerachedDevList input:checked');
-		initDevIntoAreaXml($('#SerachedDevList input:checked'),$('#adddevicedouble_ID'));
+		initDevIntoAreaXml(devList,$('#adddevicedouble_ID'));
 	}
 	/*//一键添加
 	function (){
@@ -759,6 +759,7 @@ function showContextMenu(y,x,obj){
 
 //遮罩层和弹出框方法.
 var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
+
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -771,7 +772,7 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 		}
 	}else{ 
 		if(!$('span.sel')[0]){
-			$('span.'+objclass+':eq(0)').addClass('sel');
+			$('span.'+objclass+':first').addClass('sel');
 		}
 	}
 	if(action == 'Remove'){ 
@@ -804,6 +805,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}else{ 
 		$('#channel input:text').attr('id','channel_name_ID');
 	}*/
+	console.log(data);
 	for(i in data){
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html(lang.delete+data[i]);
@@ -923,13 +925,13 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	//设备搜索回调函数
 	function callback(data){
-		var bUsed = 1;
+		//var bUsed = 1;
 		/*$('#SerachDevList tbody tr').each(function(){ 
 			if(parseInt($(this).find('td:eq(1)').html()) == data.SearchSeeId_ID || $(this).find('td:eq(2)').html() == data.SearchIP_ID){
 				bUsed =0;
 			}
 		})*/
-		var key = data.SearchSeeId_ID ?  data.SearchSeeId_ID : data.SearchIP_ID;
+		var key = data.SearchSeeId_ID || data.SearchIP_ID;
 		/*$('div.dev_list:eq(0) span.device').each(function(){ 
 			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
 				bUsed = 0;
