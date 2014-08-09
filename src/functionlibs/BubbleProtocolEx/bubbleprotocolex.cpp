@@ -1480,6 +1480,7 @@ bool BubbleProtocolEx::cmdHeartBeat()
 
 		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
 		nLength=(quint64)(pBubbleInfo->uiLength+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength));
+		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
 		QByteArray tBlock;
 		tBlock.append(cBuffer,nLength);
 		if (-1!=m_pTcpSocket->write(tBlock))

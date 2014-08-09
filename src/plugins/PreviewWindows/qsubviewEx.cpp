@@ -34,6 +34,7 @@ QWidget(parent),
 	connect(m_pClosePreviewAction,SIGNAL(triggered(bool)),this,SLOT(slclosePreview()));
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
+	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 }
 
 
