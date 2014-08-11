@@ -33,6 +33,8 @@ typedef struct __tagRecorderExInfo{
 	QString sFilePath;
 	QString sDeviceName;
 	int iChannel;
+	unsigned int uiRecorderId;
+	unsigned int uiSearchId;
 }tagRecorderExInfo;
 typedef enum __tagRecorderStepCode{
 	REC_INIT,//新文件的各项参数初始化
@@ -84,6 +86,9 @@ private:
 	int checkDiskSize();//0:表示磁盘空间足够，接着录像；1：表示磁盘空间不足
 	bool upDateDataBase();//更新数据库，0：表示更新成功；1：表示更新失败
 	bool packFile(avi_t *pAviFile);
+	bool applyDiskSpace();//申请空间
+	bool createRecordItem();//创建录像数据条目
+	bool createSearchItem();//创建搜索表条目
 private:
 	int m_nRef;
 	QMutex m_csRef;

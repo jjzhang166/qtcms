@@ -1,5 +1,47 @@
 #include "RecorderEx.h"
 #include <guid.h>
+#include "StorageMgrEx.h"
+unsigned int g_uiStorageMgrCount=0;
+QMutex g_tStorageMgrLock;
+StorageMgrEx * g_pStorageMgrEx=NULL;
+
+StorageMgrEx * applyStorageMgrEX()
+{
+	if (g_uiStorageMgrCount==0)
+	{
+		if (g_pStorageMgrEx!=NULL)
+		{
+			delete g_pStorageMgrEx;
+			g_pStorageMgrEx=NULL;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"g_pStorageMgrEx should be null,please check";
+		}
+		g_pStorageMgrEx=new StorageMgrEx;
+		g_pStorageMgrEx->startMgr();
+	}else{
+		// do nothing
+	}
+	g_uiStorageMgrCount++;
+	return g_pStorageMgrEx;
+}
+
+void releaseStorageMgrEx()
+{
+	g_uiStorageMgrCount--;
+	if (g_uiStorageMgrCount==0)
+	{
+		if (g_pStorageMgrEx!=NULL)
+		{
+			g_pStorageMgrEx->stopMgr();
+			delete g_pStorageMgrEx;
+			g_pStorageMgrEx=NULL;
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
+}
 
 RecorderEx::RecorderEx(void):m_nRef(0),
 	m_iPosition(0),
@@ -27,6 +69,17 @@ RecorderEx::~RecorderEx(void)
 
 void RecorderEx::run()
 {
+	g_tStorageMgrLock.lock();
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (pStorageMgrEx==NULL)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"run fail as applyStorageMgrEX fail";
+		g_tStorageMgrLock.unlock();
+		return;
+	}else{
+		//keep going
+	}
+	g_tStorageMgrLock.unlock();
 	int iRecStep=REC_INIT;
 	avi_t *pAviFile=NULL;
 	bool bRunStop=false;
@@ -92,7 +145,7 @@ void RecorderEx::run()
 							   }
 							   break;
 		case REC_CREATE_PATH:{
-			//创建文件路径：创建录像数据表，录像搜索表，申请空间，创建文件夹
+			//创建文件路径：申请空间,创建录像数据表，录像搜索表，创建文件夹
 			if (createFilePath())
 			{
 				iRecStep=REC_OPEN_FILE;
@@ -285,8 +338,10 @@ void RecorderEx::run()
 					}
 				}else{
 					iRecStep=REC_END;
+					qDebug()<<__FUNCTION__<<__LINE__<<"recorder stop as m_bStop is ture";
 				}
 			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as REC_PACK step fail";
 				iRecStep=REC_END;
 			}
 					  }
@@ -305,6 +360,9 @@ void RecorderEx::run()
 					 break;
 		}
 	}
+	g_tStorageMgrLock.lock();
+	releaseStorageMgrEx();
+	g_tStorageMgrLock.unlock();
 }
 
 int RecorderEx::Start()
@@ -585,6 +643,23 @@ void RecorderEx::slCheckBlock()
 
 bool RecorderEx::createFilePath()
 {
+	//创建文件路径：申请空间,创建录像数据表，录像搜索表
+	if (applyDiskSpace())
+	{
+		if (createRecordItem())
+		{
+			if (createSearchItem())
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createSearchItem fail";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createRecordItem fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as applyDiskSpace fail";
+	}
 	return false;
 }
 
@@ -703,3 +778,21 @@ int RecorderEx::checkFileSize()
 	//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
 	return 0;
 }
+
+bool RecorderEx::createRecordItem()
+{
+	return false;
+}
+
+bool RecorderEx::createSearchItem()
+{
+	return false;
+}
+
+bool RecorderEx::applyDiskSpace()
+{
+	return false;
+}
+
+
+
