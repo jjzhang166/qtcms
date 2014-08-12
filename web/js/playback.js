@@ -3,7 +3,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	oSelected = [], //选中的播放的通道
 	recFile=null,	//搜索到的文件,窗口改变的时候重绘搜索文件
 	//localRecFile=[],//本地回访搜索文件
-	bNoResize=1,   //当前窗口是否在改变
+	//bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='', //搜索到的文件最大时间
 	localSearchDevNum=0; //要搜索的本地回放文件的设备
 
@@ -40,37 +40,43 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if($("#channelvideo :checked").length >4){
 				/*console.log('设置失败,修正!');*/
 				$("#channelvideo :checkbox").prop('checked',false);
-				for( i in oSelected){
+				/*for( i in oSelected){
 					oSelected[i].checked = true;
-				}
+				}*/
+				oSelected.each(function(){
+					$(this).prop('checked',true);
+				})
 			}
 			/* 有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
 		})
 
-		channelvideo.on({  //整个搜索的文件列表事件
-			mousedown:function(event){
-				try{
-					dragStopMove();
-					oPlaybackLocl.GroupStop();
-					oPlayBack.GroupStop();
-					$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
-				}catch(e){
-					//alert('try:'+e);
-				};
-				var left = event.pageX
-			    	if(left < 81){
-			    		return;
-			    	}
-			    	if(left > channelvideo.width()){ 
-			    		return;
-			    	}
-				//event.stopPropagation();
-				var moveObj = $('div.play_time').css('left',left-1);
-				set_drag(80,channelvideo.width()-1,moveObj);
-			},
-			dblclick:function(){
-				playVideo(event);
-			}
+		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
+			var min = $('table.table .no_border').width(),
+				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
+
+			if(event.pageX < min || event.pageX > max) return;
+
+			groupStop();
+			/*try{
+				groupStop();
+				dragStopMove();
+				oPlaybackLocl.GroupStop();
+				oPlayBack.GroupStop();
+				nowSpeed = 1;
+				palybackspeed(nowSpeed+'X');
+				//$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
+			}catch(e){
+				//alert('try:'+e);
+			};*/
+			var left = event.pageX
+
+	    	if(left < min || left > max)return;	    	
+			//event.stopPropagation();
+			var moveObj = $('div.play_time').css('left',left-1);
+
+			showNowPlayBackTime($('#now_time'),left-min,max-min);
+
+			set_drag(min,max,moveObj);
 		})
 
 		channelvideo.on('mouseover','tr',function(){
@@ -235,11 +241,49 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		dragStartMove();
 	}
-	function getDragSart(X2,left,date){
-		return  date+' '+returnTime((left-81)/(X2-81)*24*3600);
+	function dragStartMove(){
+
+		if(maxFileEndTime<minFileStartTime) return;
+
+		var channelvideo = $('#channelvideo'),
+
+			min = $('table.table .no_border').width(),
+
+			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
+
+			p = (max-min)/(3600*24),
+
+			SynTimeUnits = 1000,//nowSpeed<1 ? 1000*nowSpeed:1000/nowSpeed;
+
+			oDrag=$('div.play_time'),
+
+			//FileEndTime = time2Sec(maxFileEndTime)*p+min < max ? time2Sec(maxFileEndTime)*p+min : max,
+
+			initleft = parseInt(oDrag.offset().left);
+
+			oNow = $('#now_time');
+
+			nowTime = oNow.attr('begin');
+
+		drag_timer = setInterval(function(){
+
+			var nowPlayd = parseInt(getAudioObj().GetNowPlayedTime()),
+				
+				left = initleft+p*nowPlayd;
+			
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+
+			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
+				dragStopMove();*/
+			
+			oDrag.css('left',left);
+
+			asyncPlayTime2UI(nowTime,nowPlayd,oNow);
+
+		},SynTimeUnits);
 	}
 	function playAction(str){
-		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
+		var obj = getAudioObj() //回放插件对象
 			//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
 			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
 				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);

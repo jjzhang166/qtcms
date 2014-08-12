@@ -218,6 +218,8 @@ var oPlayBack={},  // 远程回访控件对象
 				}
 				reSort_2UI($(this).attr('sort')+sorType);			
 			}
+		}).mouseout(function(){
+			$(this).css('background-position','0 0');
 		})
 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
@@ -228,7 +230,7 @@ var oPlayBack={},  // 远程回访控件对象
 
 	})///
 
-	$(window).resize(contentMax);
+	//$(window).resize(contentMax);
 
 	function RecFileInfoCallback(data){
 		console.log('---------------搜索到文件回调---------------');
@@ -253,14 +255,15 @@ var oPlayBack={},  // 远程回访控件对象
 		console.time('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
 		//console.log();
 
-		var b = 1;
-			//n=0;
-		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
-		var str = '';
-		for(var i=0;i<recFile.length;i++){ 
-			//n++;
-			var data = recFile[i];
-			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
+			
+		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
+			str ='',
+			oParent = $('#file_warp');
+
+		for(var i=0;i<nowPageFile.length;i++){ 
+			var b = 1;
+			var data = nowPageFile[i];
+			var uid = sDevName+'_'+data.channelnum+'_'+data.types+'_'+data.start+'_'+data.end;
 			var type =typeHint[data.types];
 			var typeColor = color[data.types];
 			$('#search_resultFile tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
@@ -272,9 +275,15 @@ var oPlayBack={},  // 远程回访控件对象
 				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
 			}
 		}
-		$(str).appendTo('#search_resultFile')
-		for(var i=0;i<recFile.length;i++){ 
-			//n++;
+		var obj = $(str).appendTo(oParent);
+
+		if((nowPageFile.length*22)>oParent.height()){
+			theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+		}
+
+
+		console.time('++++++文件列表完成后数据绑定+++++++++');	
+		/*for(var i=0;i<recFile.length;i++){ 
 			var data = recFile[i];
 			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
 		}

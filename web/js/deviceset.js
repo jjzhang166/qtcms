@@ -971,13 +971,13 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			}
 		})*/
 
+		var warp = $('#SerachDevList');
+
 		if(searchDevAvailable(key)){
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
-			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
+			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachedDevList')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
-
-		var warp = $('#SerachDevList');
 
 		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
 			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
