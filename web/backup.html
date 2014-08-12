@@ -226,6 +226,8 @@ var oPlayBack={},  // 远程回访控件对象
 
 				reSort_2UI($(this).attr('sort')+sorType);			
 			}
+		}).mouseout(function(){
+			$(this).css('background-position','0 0');
 		})
 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
@@ -236,7 +238,7 @@ var oPlayBack={},  // 远程回访控件对象
 
 	})///
 
-	$(window).resize(contentMax);
+	//$(window).resize(contentMax);
 
 	function RecFileInfoCallback(data){
 		//console.time('---------------搜索到文件回调---------------');
@@ -289,7 +291,7 @@ var oPlayBack={},  // 远程回访控件对象
 			
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
 			str ='',
-			oParent = $('#search_resultFile');
+			oParent = $('#file_warp');
 
 		for(var i=0;i<nowPageFile.length;i++){ 
 			var b = 1;
@@ -309,6 +311,12 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 		}
 		var obj = $(str).appendTo(oParent);
+
+		if((nowPageFile.length*22)>oParent.height()){
+			theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+		}
+
+
 		console.time('++++++文件列表完成后数据绑定+++++++++');	
 		/*for(var i=0;i<recFile.length;i++){ 
 			var data = recFile[i];
