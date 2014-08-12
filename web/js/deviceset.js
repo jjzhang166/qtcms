@@ -960,7 +960,6 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
 
-
 		var warp = $('#SerachDevList');
 
 		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
