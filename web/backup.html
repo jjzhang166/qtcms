@@ -279,13 +279,6 @@ var oPlayBack={},  // 远程回访控件对象
 			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
 		}
 
-
-		console.time('++++++文件列表完成后数据绑定+++++++++');	
-		/*for(var i=0;i<recFile.length;i++){ 
-			var data = recFile[i];
-			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
-		}
-
 		theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
 
 		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
