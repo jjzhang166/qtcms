@@ -10,4 +10,24 @@ typedef struct _tagProcInfoItem
 	PreviewEventCB proc;
 	void		*puser;
 }ProcInfoItem;
+typedef struct __tagStorageMgrExInfo{
+	unsigned int uiRecordDataBaseId;
+	unsigned int uiSearchDataBaseId;
+	QString sRecordFilePath;
+	QString sAllRecordDisks;//e:
+	QString sCreateRecordItemDisk;
+	int iCreateRecordItemWindId;
+	int iCreateRecordItemType;
+	int iCreateRecordItemChannelNum;
+	int iCreateSearchItemWindId;
+	int iCreateSearchItemType;
+	QString sCreateSearchItemStartTime;
+	QString sCreateSearchItemEndTime;
+	QString sCreateRecordItemDevName;
+	QString sCreateSearchItemDate;
+	bool bRecoverRecorder;
+	int iFileMaxSize;
+	int iDiskReservedSize;
+	QString sApplyDisk;
+}tagStorageMgrExInfo;
 #endif // RECORDER_GLOBAL_H

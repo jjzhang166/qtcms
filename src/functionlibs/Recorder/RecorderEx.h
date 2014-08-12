@@ -2,6 +2,7 @@
 #include <QThread>
 #include <IEventRegister.h>
 #include <IRecorder.h>
+#include "IRecorderEx.h"
 #include <QMutex>
 #include <QMultiMap>
 #include <QDebug>
@@ -9,6 +10,8 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <avilib.h>
+#include <Recorder_global.h>
+
 
 #define AVENC_IDR		0x01
 #define AVENC_PSLICE	0x02
@@ -30,11 +33,14 @@ typedef struct __tagRecorderExNode{
 	char cEncode[8];
 }tagRecorderExNode;
 typedef struct __tagRecorderExInfo{
+	QString sApplyDisk;//e:
 	QString sFilePath;
 	QString sDeviceName;
 	int iChannel;
 	unsigned int uiRecorderId;
 	unsigned int uiSearchId;
+	int iWindId;
+	int iRecordType;
 }tagRecorderExInfo;
 typedef enum __tagRecorderStepCode{
 	REC_INIT,//新文件的各项参数初始化
@@ -52,6 +58,7 @@ typedef enum __tagRecorderStepCode{
 }tagRecorderStepCode;
 class RecorderEx:public QThread,
 	public IRecorder,
+	public IRecorderEx,
 	public IEventRegister
 {
 	Q_OBJECT
@@ -64,6 +71,10 @@ public:
 	virtual int Stop();
 	virtual int InputFrame(QVariantMap& frameinfo);
 	virtual int SetDevInfo(const QString& devname,int nChannelNum);
+
+	//IRecordEx
+	virtual int SetDevInfoEx(const int &nWindId, const int &nRecordType);
+	virtual int FixExceptionalData();
 
 	virtual long __stdcall QueryInterface( const IID & iid,void **ppv );
 	virtual unsigned long __stdcall AddRef();

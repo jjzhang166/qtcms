@@ -1,6 +1,8 @@
 #include "RecorderEx.h"
 #include <guid.h>
 #include "StorageMgrEx.h"
+#include "netlib.h"
+#pragma comment(lib,"netlib.lib")
 unsigned int g_uiStorageMgrCount=0;
 QMutex g_tStorageMgrLock;
 StorageMgrEx * g_pStorageMgrEx=NULL;
@@ -681,7 +683,7 @@ int RecorderEx::checkALL()
 				{
 					iCheckStep=4;
 				}else if(iRet==1){
-					iCheckStep=1;
+					iCheckStep=4;
 				}else{
 					iCheckStep=5;
 					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as checkFileSize fail";
@@ -701,9 +703,11 @@ int RecorderEx::checkALL()
 				if (iRec==0)
 				{
 					iCheckStep=2;
-				}else{
+				}else if(iRec==1){
 					iCheckStep=5;
 					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as checkDiskSize fail,there is not disk space for recorder";
+				}else{
+
 				}
 			}else{
 				iCheckStep=2;
@@ -769,29 +773,114 @@ bool RecorderEx::upDateDataBase()
 
 int RecorderEx::checkDiskSize()
 {
-	//0:表示磁盘空间足够，接着录像；1：表示磁盘空间不足
+	//0:表示磁盘空间足够，接着录像；1：表示磁盘空间不足;2 :表示系统错误
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (pStorageMgrEx!=NULL)
+	{
+		tagStorageMgrExInfo tMgrExInfo=pStorageMgrEx->getStorageMgrExInfo();
+		QString sDisk=m_tRecorderInfo.sApplyDisk;
+		quint64 uiFreeByteAvailable;
+		quint64 uiTotalNumberOfbytes;
+		quint64 uiTotalNumberOfFreeBytes;
+		if (GetDiskFreeSpaceExQ(sDisk.toAscii().data(),&uiFreeByteAvailable,&uiTotalNumberOfbytes,&uiTotalNumberOfFreeBytes))
+		{
+			if (uiTotalNumberOfFreeBytes<=tMgrExInfo.iDiskReservedSize*1024*1024)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"disk had been full,turn to pack";
+				return 1;
+			}else{
+				return 0;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"checkFileSize fail as GetDiskFreeSpaceExQ fail";
+			return 2;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"checkFileSize fail as pStorageMgrEx is null";
+		return 2;
+	}
 	return 0;
 }
 
 int RecorderEx::checkFileSize()
 {
 	//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
-	return 0;
+
 }
 
 bool RecorderEx::createRecordItem()
 {
+	m_tRecorderInfo.uiRecorderId=0;
+	m_tRecorderInfo.sFilePath.clear();
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (NULL!=pStorageMgrEx)
+	{
+		if (pStorageMgrEx->createRecordItem(m_tRecorderInfo.sApplyDisk,m_tRecorderInfo.sDeviceName,m_tRecorderInfo.iWindId,m_tRecorderInfo.iChannel,m_tRecorderInfo.iRecordType,m_tRecorderInfo.uiRecorderId,m_tRecorderInfo.sFilePath))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createRecordItem fail as pStorageMgrEx->createRecordItem fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createRecordItem fail as pStorageMgrEx is null";
+	}
 	return false;
 }
 
 bool RecorderEx::createSearchItem()
 {
+	m_tRecorderInfo.uiSearchId=0;
+	StorageMgrEx *pStorageMgrEX=applyStorageMgrEX();
+	if (NULL!=pStorageMgrEX)
+	{
+		QString sDate=QDate::currentDate().toString("yyyy-MM-dd");
+		QString sStartTime=QTime::currentTime().toString("hh:mm:ss");
+		if (pStorageMgrEX->createSearchItem(m_tRecorderInfo.uiSearchId,m_tRecorderInfo.iWindId,m_tRecorderInfo.iRecordType,sDate,sStartTime,QString("00:00:00")))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createSearchItem fail as pStorageMgrEX->createSearchItem fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createSearchItem fail as pStorageMgrEx is null";
+	}
 	return false;
 }
 
 bool RecorderEx::applyDiskSpace()
 {
+	m_tRecorderInfo.sApplyDisk.clear();
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (NULL!=pStorageMgrEx)
+	{
+		if (pStorageMgrEx->applyDiskSpace(m_tRecorderInfo.sApplyDisk))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"applyDiskSpace fail as pStorageMgrEx->applyDiskSpace fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"applyDiskSpace fail as pStorageMgrEx is null";
+	}
 	return false;
+}
+
+int RecorderEx::SetDevInfoEx( const int &nWindId, const int &nRecordType )
+{
+	if (!(nWindId<0||nRecordType>3||nRecordType<0))
+	{
+		m_tRecorderInfo.iWindId=nWindId;
+		m_tRecorderInfo.iRecordType=nRecordType;
+		return IRecorderEx::OK;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"SetDevInfoEx fail as the input param is unCorrect";
+		return IRecorderEx::E_PARAMETER_ERROR;
+	}
+}
+
+int RecorderEx::FixExceptionalData()
+{
+	return 0;
 }
 
 
