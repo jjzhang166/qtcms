@@ -279,6 +279,8 @@ var oPlayBack={},  // 远程回访控件对象
 			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
 		}
 
+		theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+
 		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
 		//showRecProgress(n);
 	}

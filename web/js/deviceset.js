@@ -919,17 +919,26 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 
 	//搜索设备控件方法.
 	function searchFlushReal(){
-		$('#SerachDevList tbody tr').remove();
+		var warp = $('#SerachDevList').removeAttr('b');
+
+		warp.find('tbody tr').remove();
+
 		oSearchOcx.Flush();
+
+		theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
 	}
 	
 	function searchFlush(){
+
+		var warp = $('#SerachDevList').removeAttr('b');
+
 		oSearchOcx.Stop();
-		$('#SerachDevList tbody tr').remove(); //删除搜索显示设备的表格	 
-		oSearchOcx.Start();  //重新搜索设备并显示
-		/*setTimeout(function(){
-			oSearchOcx.Stop();
-		},5000)*/
+
+		warp.find('tbody tr').remove();	 
+
+		oSearchOcx.Start();
+
+		theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
 	}
 	//设备搜索回调函数
 	function callback(data){
@@ -951,14 +960,22 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
+
+		var warp = $('#SerachDevList');
+
+		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
+			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
+			warp.attr('b',0);
+		}
 				
 	}
+
 	function AddAreaSuccess(data){
 		var name = $('#area_name_ID').val();
 		var pid = $('#pid_ID').val();
 		var pidname = oCommonLibrary.GetAreaName(pid);
 		var id = data.areaid;
-		var add = $('<li><span class="area" id="area_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+pid).next('ul'));
+		var add = $('<li><span class="area" id="area_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#area_'+pid).next('ul'));
 		add.find('span.area').data('data',{'area_name':name,'pareaname':pidname,'area_id':id,'pid':pid});
 		$('ul.filetree:eq(0)').treeview({add:add});
 		closeMenu();
