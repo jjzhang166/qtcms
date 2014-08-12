@@ -509,12 +509,11 @@ var oPreView,oDiv,
 		//分组列表;
 		groupList2Ui();
 
-		//$('span.channel').removeClass('channel_1');
+		$('span.channel').removeClass('channel_1');
 
 		for(var i=0;i<64;i++){
 			var oWinInfo = oPreView.GetWindowInfo(i);
-			//console.log(oWinInfo);
-			if(oWinInfo.chlId>0 && oWinInfo.currentState == 0){
+			if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
 				var chlData = $('#channel_'+oWinInfo.chlId).attr({
 					wind:i,
 					state:oWinInfo.currentState

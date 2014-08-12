@@ -167,22 +167,6 @@ var oSearchOcx,
 			
 								}
 							})
-                         
-							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();
-							/*console.log('------------new DVR()--------------');
-							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
-							
-							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
-								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
-								AJAX && AJAX.abort();//并停止正在进行的ajax请求
-								
-								if($(this).attr('action')){
-									AJAX && AJAX.abort();
-									nowDev[$(this).attr('action')+'2UI']();
-			
-								}
-							})
 
 							nowDev.dvrBasicInfo2UI();*/
 						}
@@ -971,17 +955,10 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			}
 		})*/
 
-		var warp = $('#SerachDevList');
-
 		if(searchDevAvailable(key)){
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
-			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachedDevList')).data('data',data);
+			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
-		}
-
-		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
-			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
-			warp.attr('b',0);
 		}
 				
 	}
