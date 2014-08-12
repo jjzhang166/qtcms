@@ -805,7 +805,7 @@ int RecorderEx::checkDiskSize()
 int RecorderEx::checkFileSize()
 {
 	//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
-
+	return 0;
 }
 
 bool RecorderEx::createRecordItem()
