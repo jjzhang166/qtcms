@@ -89,15 +89,9 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			if(veiwObj.id == 'playback'){
-				document.getElementById('playbackLocl').SetVolume(left);
-			}else if(veiwObj.id == 'playbackLocl'){
-				document.getElementById('playback').SetVolume(left);
-			}
-			//veiwObj.vol = left;
-		}/*else{
-			showNowPlayBackTime(oNow,left,X2);
-		}*/
+		}else{
+			showNowPlayBackTime(oNow,left-X1,X2-X1);
+		}
 		oDrag.css('left',left-2);
 	}).mouseup(function(){
 		$(this).off();

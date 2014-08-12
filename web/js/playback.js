@@ -4,8 +4,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	recFile=null,	//搜索到的文件,窗口改变的时候重绘搜索文件
 	//localRecFile=[],//本地回访搜索文件
 	//bNoResize=1,   //当前窗口是否在改变
-	maxFileEndTime='', //搜索到的文件最大时间
-	localSearchDevNum=0; //要搜索的本地回放文件的设备
+	maxFileEndTime='00:00:00', //搜索到的文件最大时间
+	minFileStartTime='23:59:59', //搜索到的文件最小时间
+	localSearchWindNum=0; //要搜索的本地回放文件的设备
 
 	$(function(){
 		oBottom = $('#operating');
@@ -284,12 +285,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 	function playAction(str){
 		var obj = getAudioObj() //回放插件对象
-			//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
-			if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
-				obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
-			}else{
-				obj[str]();
-			}
+		//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
+		if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
+			obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
+		}else{
+			obj[str]();
+		}
 	}
 
 	var nowSpeed = 1;
