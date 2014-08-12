@@ -1938,6 +1938,17 @@ uint64_t AVI_max_size()
   return((uint64_t) AVI_MAX_LEN);
 }
 
+static bool AVI_check_key_frame( avi_t *AVI)
+{
+	for (int frame = 0; frame < AVI->video_frames; ++frame)
+	{
+		if (AVI->video_index[frame].key > 0)
+		{
+			return true;//has key frame
+		}
+	}
+	return false;//no key frame
+}
 int AVI_seek_pos( avi_t *AVI, int frame )
 {
 	if (frame >= AVI->video_frames)
@@ -1947,23 +1958,26 @@ int AVI_seek_pos( avi_t *AVI, int frame )
 	//find the nearest key frame
 	int loop = 0;
 	int offset = 0;
-	while(frame + loop < AVI->video_frames && frame - loop >= 0)
+	if (AVI_check_key_frame(AVI))
 	{
-		if (AVI->video_index[frame + loop].key > 0)
+		while(frame + loop < AVI->video_frames && frame - loop >= 0)
 		{
-			offset = loop;
-			break;
+			if (AVI->video_index[frame + loop].key > 0)
+			{
+				offset = loop;
+				break;
+			}
+			if (AVI->video_index[frame - loop].key > 0)
+			{
+				offset = 0 - loop;
+				break;
+			}
+			loop++;
 		}
-		if (AVI->video_index[frame - loop].key > 0)
+		if (frame + loop == AVI->video_frames)
 		{
-			offset = 0 - loop;
-			break;
+			offset = loop - 1;
 		}
-		loop++;
-	}
-	if (frame + loop == AVI->video_frames)
-	{
-		offset = loop - 1;
 	}
 	int video_pos = AVI->video_index[frame + offset].pos - 8;
 	if (lseek(AVI->fdes, video_pos, SEEK_SET) < 0)
