@@ -1,7 +1,6 @@
 	var bool = 0, //本地远程回放控制  0为远程 1为本地
 		recTotal = 0,  //文件检索总数。
-		nowDevID=null, //当前选中设备ID
-		searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
+		nowDevID=null; //当前选中设备ID
 	//搜索远程录像
 	function setDevData2ocx(){
 
@@ -23,7 +22,7 @@
 			console.log(oChannel);
 			console.log('-------------参数填充到控件------------------')*/
 
-			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){
+			if(oPlayBack.setDeviceHostInfo(oDevData.address,oDevData.port,oDevData.eseeid)){ 
 				//alert(lang.Failed_to_set_the_IP_address_or_port_is_not_legal);
 				b = 0;
 			}
@@ -59,11 +58,11 @@
 		return b;
 	}
   	function berorSerchShowHint() {
-  		$('#fileRec').stop(true,true).show().find('span').width(0)
+  		$('#fileRec').show().find('span').width(0)
 					 .end().find('h5').html('0/0')
 					 .end().find('h4').html(lang.Retrieving);
 		if(getAudioObj().id=='playbackLocl'){
-			$('#fileRec').stop(true,true).hide();
+			$('#fileRec').hide();
 		}
   	}
 	var typeHint = [];
@@ -87,33 +86,28 @@
 
 		getAudioObj().GroupStop();
 
-		var type = $('#type input[data]').attr('data'),
+
+		var type = $('#type input[data]').attr('data');
 		
-			date = $("div.calendar span.nowDate").html(),
+		var date = $("div.calendar span.nowDate").html();
 
-			oList = $('div.dev_list'),
+		var devData = $('div.dev_list li.sel span.device').data('data');
 
-			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
-
-		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
-		if(!devData){
-			$('div.dev_list span.device,li').removeClass('sel');
-			devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
-						.end().data('data');
-		}else{
-			$('div.dev_list li,span').removeClass('sel');
-			$('#dev_'+devData.dev_id).parent('li').addClass('sel');
-		}
+			if(!devData){
+				$('div.dev_list span.device,li').removeClass('sel');
+				devData = $('div.dev_list span.device:first').parent('li').addClass('sel')
+							.end().data('data');
+			}
 
 		nowDevID = devData.dev_id;
 
 		setDevData2ocx();
 
 		if(bool){  // 本地
-			localSearchWindNum=0;
+			localSearchDevNum=0;
 
-			searchLocalFile(localSearchWindNum,date,type);
+			searchLocalFile(localSearchDevNum,date,type);
 
 			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
@@ -135,104 +129,70 @@
 				chl += 1 << i;
 			};
 			var sta = oPlayBack.startSearchRecFile(chl,type,date+' '+startTime,date+' '+endTime)
-			/*console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
+			console.log(chl+'+'+type+'+'+startTime+'+'+endTime+'搜索文件的状态:'+sta);
 			if(sta != 0){
 				//alert(T('Failed_to_retrieve_video',devData.name,typeHint[type]));
-			}*/
+			}
 		}
 	}
 
-	function searchLocalFile(wind,date,type){
-		/*if(wind > 64){
-			searchSTOP=1;
-			return;
-		}*/
-		var type = type || $('#type input[data]').attr('data');
-		
-		var date = date || $("div.calendar span.nowDate").html();
-
-		/*var oDevList = $('div.dev_list span.device');
+	function searchLocalFile(key,date,type){
+		//console.log('当前设备列表------------');
+		var oDevList = $('div.dev_list span.device');
 		if(key >  (oDevList.length-1))
 			return;
 		//console.log(localSearchDevNum);
+		var type = type ||  $('#type input[data]').attr('data');
 		
+		var date = date || $("div.calendar span.nowDate").html();
 
-		var name = oDevList.eq(key).data('data').name;*/
+		var name = oDevList.eq(key).data('data').name;
 
 		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
-		//console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
-		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
+		oPlaybackLocl.searchVideoFileEx(name,date,type);
 	}
 	function showRecProgress(now){  //回访检索文件进度
-		now = now || 0;
-
-		if(now != 0 && now>=recTotal){
-			searchSTOP=1;
-			now=recTotal;
-		}
-
-		//console.log(now+'---------------'+recTotal);
-
+			
+		now = recTotal;
+	//	console.log(now+'//'+recTotal);
 		var con = lang.Retrieving,
-			p =now/recTotal*100,
-			str = (now/recTotal*100).toString().slice(0,5);
-			str = str == 'NaN'?'':str+'%';
-
-		if(recTotal == now && now != 0){
+			p =now/recTotal*100;
+		if(recTotal == now){
 			con = lang.Retrieval_completed;
 		}
-
-		$('#fileRec').stop(true,true).find('span').width(p-2)
-		             .end().find('h5').html(str)
+		$('#fileRec').find('span').width(p-2)
+		             .end().find('h5').html(now+'/'+recTotal)
 		             .end().find('h4').html(con);
-		return str; 
 	}
 
 	function recFileSearchFailCallback(data){
-
-		/*
-		远程文件过多后  导致请求次数变多.
-
-		请求过程中仍和一次请求都有可能失败.
-
-		后续所有文件信息接收到后 开始画到UI上
-
-		已经搜索到的文件如果显示达到前台的话。 那么没有搜索到的文件是否能继续播放.
-		*/
-
-		searchSTOP=1;
-
+		//console.log(data);
 		var hint = [lang.Parameter_error,lang.Connection_Failed,lang.not_complete];
-		$('#fileRec h4').html('<h4 style="color:red;">'+hint[(parseInt(data.parm)-1)]+'</h4>')
+		$('#fileRec h4').html('<h4 style="color:red;">'+hint[data.parm]+'</h4>')
 						.end().show();
 		setTimeout(function(){
-			$('#fileRec').stop(true,true).fadeOut(1500);
+			$('#fileRec').fadeOut(1500);
 		},1000);
-		//console.log(recFile)
-		recFile.length !=0 && RecFileInfo2UI(recFile);
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		/*console.log('------------文件总数-----------');
-		console.log(data);*/
+		//console.log(data);
 		recTotal = data.total ? data.total : 0;	
-
-		if(recTotal==0)
-			searchSTOP=1;
 		
-		showRecProgress();
+		/*recTotal == 0 && */showRecProgress(recTotal);		
 	}
 
 	function initrecFileOcx(obj){
 		if(!$('#dev_'+nowDevID)[0]){
 			obj.remove();
-			$('#fileRec').stop(true,true).hide();
+			$('#fileRec').hide();
 			if($('ul.filetree:eq(0) span.device:eq(0)')[0]){
 				nowDevID = $('ul.filetree:eq(0) span.device:eq(0)').parent('li').addClass('sel').end().data('data').dev_id;
 			}
 		}else{
 			nowDevID = $('#dev_'+nowDevID).parent('li').addClass('sel').end().data('data').dev_id;
 		}
+
 		//console.log('初始化后的设备ID:'+nowDevID);
 	}
 

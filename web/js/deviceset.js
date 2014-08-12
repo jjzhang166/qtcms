@@ -3,7 +3,8 @@ var oSearchOcx,
 	$(function(){
 
 		oSearchOcx = document.getElementById('devSearch');
-		var oTreeWarp = $('div.dev_list').slice(2);
+		var oTreeWarp = $('div.dev_list').slice(2); //slice()方法主要是拿来复制用的，可以传入1或者2个参数，如果传入两个，表示复制从第一个参数到第二个参数为止的数组项，
+		                                           // 但不包括最后一项；如果传入一个参数，则表示复制从该位置到数组结尾的数组项。
 
 		oTreeWarp.hide();
 
@@ -18,11 +19,11 @@ var oSearchOcx,
 				$('#device input:radio').removeAttr('id');
 				$(this).attr('id','method_ID');
 				var oSwitch = $('#device tr').slice(2,6);
-				oSwitch.removeClass('tr1').find('input').removeProp('disabled');
+				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
 				if(index == 0){
-					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
+					oSwitch.slice(3,4).addClass('tr1').find('input').removeProp('disabled');
 				}else{
-					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
+					oSwitch.slice(0,3).addClass('tr1').find('input').removeProp('disabled');
 				}
 			})
 		})
@@ -62,8 +63,8 @@ var oSearchOcx,
 						}
 					}
 					//分组设置下的右键菜单调整
-					$('#menu0 li').show().eq(index).hide();
-
+					$('#menu0 li').show()
+					$('#menu0 li').eq(index).hide();
 					if(index == 1){
 						$('#menu0 li:eq(2)').hide();
 					}
@@ -85,46 +86,46 @@ var oSearchOcx,
 		
 		//左侧二级菜单
 		$('#set_content div.left li').each(function(index){
-			$(this).click(function(){
+			$(this).click(function(){  //单击左侧菜单时
 				key = index;
-				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
-				oTreeWarp.show();
-				set_contentMax();
+				var warp = $('#set_content div.right div.right_content').hide().eq(index).show(); //单击到的二级菜单相应的右边div显示
+				oTreeWarp.show();  //显示设备树形菜单
+				set_contentMax();  //布局自适应
 
-				areaList2Ui('','','closed');
+				areaList2Ui('','','closed'); //树形菜单没有展开子项
 
 
 				/*emptyDevSetMenu();*/
-				$('#ajaxHint').html('').stop(true,true).hide();
+				$('#ajaxHint').html('').stop(true,true).hide(); //隐藏提示信息
 
-				if(key == 0){
-					searchFlush();
-				}else{
-					oSearchOcx.Stop();
+				if(key == 0){ //单击到“设备管理”时
+					searchFlush();  //刷新页面
+				}else{ //单击到其他时
+					oSearchOcx.Stop();//停止搜索更新表格
 				}
-				if(key == 1){
+				if(key == 1){  //单击到“设备设置”
 					
-					reInitNowDev()
+					reInitNowDev();  //重新加载设备信息
 
-					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){
+					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){  //单击树形菜单的设备时
 
-						$('#ajaxHint').html('').stop(true,true).hide();
+						$('#ajaxHint').html('').stop(true,true).hide();  //隐藏提示信息
 
-						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
-						$(this).addClass('sel')
+						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');  //将之前已经选中的设备去除class 'sel'
+						$(this).addClass('sel')  //给现在选中的设备添加样式 sel
 
-						var oDevData = $(this).data('data');
+						var oDevData = $(this).data('data');  //当前设备的基本信息
 
-						var _url = 'http://'+oDevData.address+':'+oDevData.port;
+						var _url = 'http://'+oDevData.address+':'+oDevData.port;  //URL
 
 						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
 
 						$('#dev_id_ID_Ex').val(oDevData.dev_id);
 
-						AJAX && AJAX.abort();
+						AJAX && AJAX.abort();  //请求停止
 
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
-							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
+							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show(); //ipc相应的右边菜单显示
 							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
 							//emptyDevSetMenu();
 							//ipc(_url,oDevData.username,oDevData.password);
@@ -134,7 +135,9 @@ var oSearchOcx,
 							
 							console.log('------------new IPC()--------------');
 							
-							$('#set_content ul.ipc_list0 li').click(function(){
+							$('#set_content ul.ipc_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
+								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
+								AJAX && AJAX.abort();//并停止正在进行的ajax请求
 								if($(this).attr('action')){
 									AJAX && AJAX.abort();
 									nowDev[$(this).attr('action')+'2UI']();
@@ -147,15 +150,30 @@ var oSearchOcx,
 						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
-							//emptyDevSetMenu();
-
+							 /*emptyDevSetMenu();
+                         
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();	
+							dvr_devinfo_load_content();*/
+							console.log('------------new DVR()--------------');
+							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+							
+							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
+								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
+								AJAX && AJAX.abort();//并停止正在进行的ajax请求
+								
+								if($(this).attr('action')){
+									AJAX && AJAX.abort();
+									nowDev[$(this).attr('action')+'2UI']();
+			
+								}
+							})
+
+							nowDev.dvrBasicInfo2UI();
 						}
 
 			 	   });
 
-				}else if(key == 2){
+				}else if(key == 2){  //单击“本地设置”
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}/*else if(key == 3){ 
 					userList2Ui();
@@ -229,22 +247,10 @@ var oSearchOcx,
 				for(i in data){
 					$('#'+i).val(data[i]);
 				}
-			}else{
-				$('#Allocation tbody input:text').val('');
 			}
 			$('#SerachedDevList').find('tr').removeClass('sel')
 			$(this).addClass('sel');
 		})
-
-		//录像设置验证正确的时间段.
-		$('#recordtime tbody tr:lt(4)').each(function(){
-			$(this).on('focusout','input:text',function(){
-				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
-				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime())
-					Confirm(lang.time_range);
-				$(this).val($(this).attr('default'));
-			});
-		});
 		
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
@@ -361,20 +367,24 @@ var oSearchOcx,
 	}
 	//record setting  回放设置;
 	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
-	/*function FillRecordTimeData(){
+	function FillRecordTimeData(){
 		areaList2Ui();
 		SettingRecordDoubleTimeParm();
+		/*$('ul.week a').each(function(index){ 
+			$(this).click(function(){
+				$('#week').html($(this).html());
+			})
+		})*/
 		_t($('#RecordTime input:text'));
 		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
-	}*/
+	}
 
 	function FillChannleRecordTime(obj){
 		SettingRecordDoubleTimeParm();  //清空回放表单的数据
-
-
 		//通道选中状态唯一
 		$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 		obj.addClass('sel');
+		console.log(obj);
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
 		var allChlID = [];  //所有通道ID
@@ -478,7 +488,7 @@ var oSearchOcx,
 	function adddoubdevIntoArea(){
 		selectEdparent('area');
 		var devList = $('#SerachedDevList input:checked');
-		initDevIntoAreaXml(devList,$('#adddevicedouble_ID'));
+		initDevIntoAreaXml($('#SerachedDevList input:checked'),$('#adddevicedouble_ID'));
 	}
 	/*//一键添加
 	function (){
@@ -595,8 +605,8 @@ var oSearchOcx,
 
 		$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
-									  		  .end().find(':checkbox,:radio').prop('checked',false);
+		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
+									  		  .end().find(':checkbox,:radio').prop('checked',false); //清除
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
@@ -759,7 +769,6 @@ function showContextMenu(y,x,obj){
 
 //遮罩层和弹出框方法.
 var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
-
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -772,7 +781,7 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 		}
 	}else{ 
 		if(!$('span.sel')[0]){
-			$('span.'+objclass+':first').addClass('sel');
+			$('span.'+objclass+':eq(0)').addClass('sel');
 		}
 	}
 	if(action == 'Remove'){ 
@@ -805,7 +814,6 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}else{ 
 		$('#channel input:text').attr('id','channel_name_ID');
 	}*/
-	console.log(data);
 	for(i in data){
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html(lang.delete+data[i]);
@@ -917,38 +925,31 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	
 	function searchFlush(){
 		oSearchOcx.Stop();
-		$('#SerachDevList tbody tr').remove();	 
-		oSearchOcx.Start();
+		$('#SerachDevList tbody tr').remove(); //删除搜索显示设备的表格	 
+		oSearchOcx.Start();  //重新搜索设备并显示
 		/*setTimeout(function(){
 			oSearchOcx.Stop();
 		},5000)*/
 	}
 	//设备搜索回调函数
 	function callback(data){
-		//var bUsed = 1;
+		var bUsed = 1;
 		/*$('#SerachDevList tbody tr').each(function(){ 
 			if(parseInt($(this).find('td:eq(1)').html()) == data.SearchSeeId_ID || $(this).find('td:eq(2)').html() == data.SearchIP_ID){
 				bUsed =0;
 			}
 		})*/
-		var key = data.SearchSeeId_ID || data.SearchIP_ID;
+		var key = data.SearchSeeId_ID ?  data.SearchSeeId_ID : data.SearchIP_ID;
 		/*$('div.dev_list:eq(0) span.device').each(function(){ 
 			if($(this).data('data')['eseeid'] == data.SearchSeeId_ID){ 
 				bUsed = 0;
 			}
 		})*/
 
-		var warp = $('#SerachDevList');
-
 		if(searchDevAvailable(key)){
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
-			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachedDevList')).data('data',data);
+			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
-		}
-
-		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
-			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
-			warp.attr('b',0);
 		}
 				
 	}
@@ -1132,12 +1133,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					hint=lang['correct']+lang['IP_format'];	
 				};
 			break;
-			case 1: //端口
-				if(parseInt(str) > 65535 || parseInt(str) < 0 || !/^\d{1,5}$/.test(str)){
+			case 1:
+				if(parseInt(str) > 65535 || parseInt(str) < 0 || str == ''){
 					hint=lang['correct']+lang['Port'];		
 				};
 			break;
-			case 2:  // eseeID
+			case 2:
 				if(str == '')
 					hint=lang['correct']+lang['Esee_ID'];
 
@@ -1154,29 +1155,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					}
 				}
 			break;
-			case 3:  //通道数。
-				if(!(str == 1 || str == 4 || str == 8 || str == 16 ||  str == 24 ||  str == 32)){
-					hint=lang['correct']+lang['Channels']+'(1,4,8,16,24,32)';
-				}
-			break;
-			case 4:  //自动轮训时间
-				if(!/^\d+$/.test(str) || parseInt(str) > 60 || parseInt(str)<1){
-					hint=lang['correct']+lang['rotation_time'];
-				}
-			break;
-			case 5:  //文件大小
-				if(!/^\d+$/.test(str) || parseInt(str) > 512 || parseInt(str)<10){
-					hint=lang['correct']+lang['File_size_range'];
-				}
-			break;
-			case 6:  //磁盘预留空间
-				if(!/^\d+$/.test(str) || parseInt(str) < (32*128)){
-					hint=lang['correct']+lang['Disk_space_reserved'];
+			case 3:
+				if(!(str == 1 || str == 4 || str == 8 || str == 16 || str == 32)){
+					hint=lang['correct']+lang['Channels']+'(1,4,8,16,32)';
 				}
 			break;
 		}
 		if(hint){
-			type > 3 ? Confirm(hint) : Confirm(hint,true);
+			Confirm(hint,true);
 			obj.value = '';	
 		}
 		
@@ -1188,14 +1174,9 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
+		areaList2Ui();
 		closeMenu();
-		if(data.total!=0){
-			areaList2Ui();
-			reInitNowDev();	
-		}else{
-			Confirm(lang.Modified_device+lang.Failed)
-		}
-		
+		reInitNowDev();
 	}
 	/*function ModifyDeviceSuccess(data){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}

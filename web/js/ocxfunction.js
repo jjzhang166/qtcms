@@ -9,28 +9,82 @@ var oCommonLibrary,
 		$('li[title],div[title],a[title],span[title]').each(function(){
 			$(this).attr('title',lang[$(this).attr('title')])
 		})
-
 		_t($('input:text'));
 	})
-
 	function refresh(data){
+		
+		if(data.Dsturl.indexOf('play_back') != -1){
+			
+			areaList2Ui();
+			
+			$('div.dev_list span.device').each(function(){
+				$(this).parent('li').on({
+					dblclick:function(){ //设备双击开始搜索
+						playBackSerchFile();
+					},
+					click:function(){ //单击同步选中状态
+						$('div.dev_list li,span').removeClass('sel');
+						$(this).addClass('sel');
+					}
+				})
+			})
+
+			/*if(recFile)
+				loclFileDataIntoChannel(recFile);*/
+		}
 		window.initOxcDevListStatus();
+		//区域列表;
+
+		/*if(data.Dsturl == 'null'){
+			$('span.channel').removeClass('channel_1');
+			for(var i=0;i<64;i++){
+				var oWinInfo = oPreView.GetWindowInfo(i);
+				if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
+					var chlData = $('#channel_'+oWinInfo.chlId).attr({
+						wind:i,
+						state:oWinInfo.currentState
+					}).addClass('channel_1').data('data');
+					checkDevAllOpen(chlData.dev_id);
+				}
+			}	
+		}else if(data.Dsturl.indexOf('backup') != -1){
+			
+			areaList2Ui(0,1);
+			initrecFileOcx($('tbody.search_result tr'))
+			
+		}else if(data.Dsturl.indexOf('play_back') != -1){
+			initrecFileOcx($('#channelvideo div.video'));
+			dragStopMove();
+			palybackspeed('1X');
+
+		}else if(data.Dsturl.indexOf('device') != -1){
+			//分组列表;
+			groupList2Ui();
+			areaList2Ui(key);
+
+			set_contentMax();
+
+			searchEdDev();
+
+			if(key == 0){
+				searchFlush();
+			}else{
+				oSearchOcx.Stop();
+			}
+		}*/
 	}
 	
 	//区域分组,属性菜单输出.
 	function areaList2Ui(num,bool,closed){ //区域菜单输出
-		num = num || key;
-
+		num = num || key ;
 		if(num != 0){
 			closed='';
 		}
-		
 		var obj = $('ul.filetree').not('[id]');
 
 			obj.each(function(){
 				$(this).treeview({remove:$(this).find('li:first')});	
 			})
-			
 			obj = obj.eq(num);
 
 		var add = $('<li><span class="area" id="area_0">'+lang.Area+'</span><ul></ul</li>').find('span.area:first').data('data',{'area_id':'0','area_name':lang.Area,'pid':'0','pareaname':'root'})
@@ -41,8 +95,6 @@ var oCommonLibrary,
 		var areaListArrar=[];
 		var pidList=[];
 		var areaList = oCommonLibrary.GetAreaList();
-		/*所有返回数据为Array遍历最好用标准的for循环*/
-
 		for(n in areaList){
 			var id = areaList[n];
 			var name = oCommonLibrary.GetAreaName(areaList[n]);
@@ -50,10 +102,10 @@ var oCommonLibrary,
 			var pareaname = pid == 0 ? lang.Area : oCommonLibrary.GetAreaName(pid);
 			areaListArrar.push({'area_id':id,'pid':pid,'area_name':name,'pareaname':pareaname});
 			pidList.push(pid);
+
 		}
 		var arr =del(pidList.sort(sortNumber)); //  返回pid升序的PID数组
 		deviceList2Ui('0',num,bool,closed);
-
 		for(j in arr){
 			for(k in areaListArrar){		
 				if(areaListArrar[k]['pid'] == arr[j]){		

@@ -204,10 +204,8 @@ h4{
 	text-align: left; 
 	display: block; 
 	width: 132px; 
-	background: url(../images/playback/select_bg.png) repeat-x; 	
-}
-.option a{
-	color: #585858;
+	background: url(../images/playback/select_bg.png) repeat-x; 
+	float: left;
 }
 /* .option li:hover{background: url(../images/playback/select_bg.png) repeat-x 0 -16px;} */
 
@@ -381,7 +379,7 @@ h4{
 	left: 0;
 }
 .play_time{ 
-	height: 92px;
+	height: 86px;
 	width: 3px;
 	position:absolute;
 	background: #B21E36;
@@ -459,6 +457,7 @@ h4{
 	width: 100%;
 	border-collapse: collapse;
 	position: relative;
+	height:96px; 
 	overflow:auto; 
 	overflow-x:hidden;
 	top:38px;

@@ -243,7 +243,7 @@ var oPreView,oDiv,
 
 			$('div.dev_list:visible span.channel').not('[wind]').each(function(){
 				wind = getWind(wind);
-				if(wind  == -1)return;
+				if(wind  == -1) {return;}
 				openWind(wind,getChlFullInfo($(this)));
 				wind++;
 			})
@@ -277,18 +277,13 @@ var oPreView,oDiv,
 	}
 
 	function openWind(wind,data){
-		var windState = oPreView.GetWindowInfo(wind).usable;
-		//console.log('当前窗口:'+wind+'的状态'+windState);
-		if(!windState){ //该窗口不可用.
+		var windState = oPreView.GetWindowConnectionStatus(wind);
+		if(windState != 2 ){ //该窗口不可用.
 			var sWind = parseInt(wind)+1;
-			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)/*+'  '+winState[windState]*/;
+			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)+'  '+winState[windState];
 			writeActionLog(str,errorcolor);
-			wind = getWind(wind)
-			//console.log('调整后的窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
-		}		
-
-		//console.log('最终确定窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
-
+		}
+		wind = getWind(wind)
 		if(wind  == -1) {return;}
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
@@ -310,8 +305,7 @@ var oPreView,oDiv,
 			c = '',
 			chlData = getChlFullInfo(obj),
 			str=T('device_in_window_action',chlData.name,chlData.channel_name,(parseInt(ev.WPageId)+1))+currentWinStateChange[ev.CurrentState];
-		//console.log('befor------data---------state:'+ev.CurrentState+'-----------wind:'+ev.WPageId+'------channel_ID:'+ev.ChannelId);
-		obj.attr({state:ev.CurrentState,wind:ev.WPageId});
+
 		if(ev.CurrentState == 2){
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
@@ -322,8 +316,8 @@ var oPreView,oDiv,
 			//checkAllchannelOpen()
 		}else{
 			str=''
+			obj.attr({state:ev.CurrentState,wind:ev.WPageId});
 		}
-		//console.log('after-----.channel----------state:'+obj.attr('state')+'-----------wind:'+obj.attr('wind'));
 		writeActionLog(str);		
 		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
 			writeActionLog('所以窗口正在使用!!',errorcolor);
@@ -338,7 +332,7 @@ var oPreView,oDiv,
 				i = 0;
 			}
 		}
-		if(!oPreView.GetWindowInfo(i).usable){
+		if(oPreView.GetWindowConnectionStatus(i)!=2){
 			i++;
 			return getWind(i);
 		}else{ 
@@ -347,7 +341,7 @@ var oPreView,oDiv,
 	}
 	function checkOcxAllUsed(){
 		for(var i=0;i<63;i++){
-			if(oPreView.GetWindowInfo(i).usable){
+			if(oPreView.GetWindowConnectionStatus(i)==2){
 				return false;
 			}
 		}
@@ -440,10 +434,8 @@ var oPreView,oDiv,
 		c = errorcolor;
 		if(obj.attr('toggle')){
 			$('div.dev_list span.channel[wind]').each(function(){
-				data =getChlFullInfo($(this));
-				/*console.log('------------1-------------');
-				console.log(data);*/
-				if(oPreView.SetDevInfo(data.device_name,data.channel_number,$(this).attr('wind'))){
+				data = $(this).data('data');
+				if(oPreView.SetDevInfo(data.name,data.channel_number,$(this).attr('wind'))){
 					transKey = 'channel_Manual_recording_data_binding_failed'
 				}else{
 					backStatus = oPreView.StartRecord($(this).attr('wind'))
@@ -457,14 +449,11 @@ var oPreView,oDiv,
 						c = '';
 					}
 				}
-				writeActionLog(T(transKey,data.name,data.channel_name),c);
 			})
 		}else{
 			$('div.dev_list span.channel[wind]').each(function(){
-				data = getChlFullInfo($(this)),
+				data = $(this).data('data'),
 				backStatus = oPreView.StopRecord($(this).attr('wind'));
-				/*console.log('------------12-------------');
-				console.log(data);*/
 				if(backStatus){ 
 					transKey = 'Close_the_manual_recording_failed'
 					if(backStatus == 2){
@@ -474,9 +463,9 @@ var oPreView,oDiv,
 					transKey = 'Close_the_manual_recording';
 					c = '';
 				}
-				writeActionLog(T(transKey,data.device_name,data.channel_name),c);
 			})	
 		}
+		writeActionLog(T(transKey,data.name,data.channel_name),c);
 		/*obj.blur(function(){
 			if(backStatus){
 				obj.attr('toggle',1).css('background-position','-120px -108px');
@@ -520,12 +509,11 @@ var oPreView,oDiv,
 		//分组列表;
 		groupList2Ui();
 
-		//$('span.channel').removeClass('channel_1');
+		$('span.channel').removeClass('channel_1');
 
 		for(var i=0;i<64;i++){
 			var oWinInfo = oPreView.GetWindowInfo(i);
-			console.log(oWinInfo);
-			if(oWinInfo.chlId>0 && oWinInfo.currentState == 0){
+			if(oWinInfo.chlId!=-1 && oWinInfo.currentState == 0){
 				var chlData = $('#channel_'+oWinInfo.chlId).attr({
 					wind:i,
 					state:oWinInfo.currentState

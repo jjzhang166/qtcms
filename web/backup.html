@@ -40,8 +40,6 @@
 	#fileRec h4{float: left; border: none;}
 
 	#list .sel li{background-color: #ABCDEF}
-	#page span{ cursor: pointer; margin: 8px 2px; text-decoration: underline; line-height: 16px; width: 16px; height: 16px; display: block; float: left;}
-	#page span.sel{ color: #F05133};
 </style>
 </head>
 
@@ -170,11 +168,10 @@
 			</table>
 	</div>
 	<div id="file_bottom">
+		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
 		<a style="margin-left:30px;" class="hover" onclick="selectAll();"><script>T("Select")</script></a>
 		<a class="hover" onclick="backupstop();" id="tableAntiElection"><script>T("Stop_backup")</script></a>
 		<a class="hover" onclick="getDir();"><script>T("Start_Backup")</script></a>
-		<span id="page"></span>
-		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5></h5><p><span></span></p></div>
 	</div>
 	<div id="foot"></div>
 	<script type="text/javascript" src="js/calendar.js"></script>
@@ -187,11 +184,7 @@
 var oPlayBack={},  // 远程回访控件对象
 	oBackup={},    // 备份控件对象
 	now = 0,	   // 当前下载的第几个文件
-	recFile=[],    // 搜索文件
-	usedUid = [],
-	nowPage=-1;
-	perPageNum=100;
-
+	recFile=[];    // 搜索文件
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
@@ -223,11 +216,8 @@ var oPlayBack={},  // 远程回访控件对象
 					$(this).attr('sorType',1);
 					
 				}
-
 				reSort_2UI($(this).attr('sort')+sorType);			
 			}
-		}).mouseout(function(){
-			$(this).css('background-position','0 0');
 		})
 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
@@ -238,100 +228,59 @@ var oPlayBack={},  // 远程回访控件对象
 
 	})///
 
-	//$(window).resize(contentMax);
+	$(window).resize(contentMax);
 
 	function RecFileInfoCallback(data){
-		//console.time('---------------搜索到文件回调---------------');
-		
+		console.log('---------------搜索到文件回调---------------');
+
 		for ( i in data){
 			recFile.push($.parseJSON(data[i]));
 		}
 
-		//console.log(recTotal+'//'+recFile.length);
+		console.log(recTotal+'//'+recFile.length);
 
-		//if(recTotal==recFile.length)
-		var l = $('#page span').length;
-		$('<span onclick="selectPage('+l+',this)">'+(l+1)+'</span>').appendTo($('#page'));
-
-		if(nowPage == -1){
-			//console.log('-----------第一页--------')
-			$('#page span:first').addClass('sel');
-			nowPage=0;
-			selectPage(nowPage);
-		}
-		
-		showRecProgress((l+1)*100);
-
-		//console.timeEnd('---------------搜索到文件回调---------------');
-
+		if(recTotal==recFile.length)
+			reSort_2UI('TimeDes');
 	}
 
 	function reSort_2UI(sortfn){
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})
-		}
-		var fn = window[sortfn],
-			start = nowPage*perPageNum;
-			nowPageFile = recFile.slice(start,(start+perPageNum+1)).sort(fn);
-		console.log('----------文件重绘第:'+nowPage+'页-'+start+'到'+(start+perPageNum+1)+'------');
-		//console.log(nowPageFile);
-		RecFile2UI(nowPageFile);
+		var fn = window[sortfn];
+		recFile.sort(fn);
+		RecFile2UI();
 	}
 
-	function RecFile2UI(nowPageFile){
-		console.time('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
+	function RecFile2UI(){
+		console.time('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
+		//console.log();
 
-			
-		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
-			str ='',
-			oParent = $('#file_warp');
-
-		for(var i=0;i<nowPageFile.length;i++){ 
-			var b = 1;
-			var data = nowPageFile[i];
-			var uid = sDevName+'_'+data.channelnum+'_'+data.types+'_'+data.start+'_'+data.end;
+		var b = 1;
+			//n=0;
+		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name
+		var str = '';
+		for(var i=0;i<recFile.length;i++){ 
+			//n++;
+			var data = recFile[i];
+			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 			var type =typeHint[data.types];
 			var typeColor = color[data.types];
-
-			for(var k=0;k<usedUid.length;k++){
-				if(usedUid[k] == uid){
+			$('#search_resultFile tr').has(':checked').each(function(){  //正在下载的文件不被重新添加
+				if(uid == $(this).attr('uid')){
 					b=0;
 				}
-			}
-			
+			})
 			if(b){
 				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
 			}
 		}
-		var obj = $(str).appendTo(oParent);
-
-		if((nowPageFile.length*22)>oParent.height()){
-			theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+		$(str).appendTo('#search_resultFile')
+		for(var i=0;i<recFile.length;i++){ 
+			//n++;
+			var data = recFile[i];
+			$('#search_resultFile').eq(i).find('input:checkbox').data('data',data);
 		}
 
-
-		console.time('++++++文件列表完成后数据绑定+++++++++');	
-		/*for(var i=0;i<recFile.length;i++){ 
-			var data = recFile[i];
-			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
-			//console.log(uid);
-			//obj.is('[uid="'+uid+'"]').find(':checkbox').data('data',data);
-			obj.each(function(){
-				if($(this).attr('uid') == uid){
-					$(this).find(':checkbox').data('data',data);
-				}
-			})
-		}*/
-		console.timeEnd('++++++文件列表完成后数据绑定+++++++++');	
-
-		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
+		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+recFile.length);
+		//showRecProgress(n);
 	}
 
 	function contentMax(){
@@ -374,32 +323,24 @@ var oPlayBack={},  // 远程回访控件对象
 		now = 0;
 		path = data.path;
 		if(path != '')
-			var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
-			if(oList.length == 0){
-				return;
-			}
 			startDownload();
 	}
 
 	function startDownload(){
-		/*if(now >= oList.length){
+		var oList = $('#search_result input:checked');
+		if(oList.length == 0){
+			return;
+		}
+		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!');
+/*		if(now >= oList.length){
 			show('所有选择的文件下载完成!');
 			now=0;
 			return false;
 		}*/
-		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
-		var fileData = oList.eq(now).attr('uid').split('_');
-		console.log(fileData);
-		console.log('--------选中设备--------')
-		/*console.log($('div.dev_list li.sel span.device'));
-		console.log(oDevData);
-		console.log('--------选中通道--------')
-		console.log(oList.eq(now));
-		console.log(fileData);*/
-		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!');
-		console.log('-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
+		var fileData = oList.eq(now).data('data');
+		//console.log('当前第'+now+'/'+oList.length+'个下载的文件数据');
+		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData.channelnum-1),fileData.types,oDevData.device_name,fileData.start,fileData.end,path) != 0){
 			alert(T('File_download_failed',now));
 			now++;
 			startDownload();
@@ -420,8 +361,8 @@ var oPlayBack={},  // 远程回访控件对象
 				//show('当前第'+now+'个任务已被终止!');
 				return;
 			})
-		var width = (data.parm/100)*oWarp.find('div').width();
-			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
+		var width = (data.parm/100)*oWarp.find('div').width()+1;
+			oWarp.find('.progess span').stop(false,true).animate({width:width},1000);
 	}
 	
 	function syndownload(){   //同步下载文件状态.
@@ -437,7 +378,7 @@ var oPlayBack={},  // 远程回访控件对象
 			i++;
 			var p = oBackup.getProgress();
 			var width = p*oWarp.find('div').width();
-			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
+			oWarp.find('.progess span').stop(false,true).animate({width:width},1000);
 			//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
 /*			if(p == 1){
 				//clearInterval(timer);
@@ -497,28 +438,11 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function backupSearchFile(){
-		console.log('当前搜索状态:'+searchSTOP);
-		if(searchSTOP){
-			searchSTOP = 0;
-		}else{
-			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
-			return;
-		}
-		usedUid = [];
 		recFile=[];
-		nowPage=-1;
-		$('#page').html('');
 		console.log('++++++++开始搜索+++++++++++');
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			/*obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})*/
-		}
+		$('#search_resultFile tr').filter(function(){
+			return !$(this).find(':checkbox').is(':checked');
+		}).remove();//远程备份中正在下载的文件不被删除.
 		ocxsearchVideo();
 	}
 
@@ -557,32 +481,6 @@ var oPlayBack={},  // 远程回访控件对象
 		})
 		oCheckbox.prop('checked',b);
 	}
-
-	function selectPage(num,oSel){
-		$(oSel).addClass('sel').siblings('span').removeClass('sel');
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})
-		}
-		usedUid = unique(usedUid);
-		/*console.log('----------------重新选择的页数:'+num+'--------------------------');
-		console.log(usedUid);*/
-		nowPage=num;
-		reSort_2UI('ChlAsc');
-	}
-	function unique(arr){ 
-		var str = []; 
-		for(var i = 0,len = arr.length;i < len;i++){ 
-		! RegExp(arr[i],"g").test(str.join(",")) && (str.push(arr[i])); 
-		} 
-		return str; 
-	} 
 </script>
 <script type="text/javascript" src="js/searchPlayBackFile.js"></script>
 </body>
