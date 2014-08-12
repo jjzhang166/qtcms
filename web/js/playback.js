@@ -300,6 +300,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		alert(T('ThrowException',(parseInt(data.wndId)+1),filepath,arr[data.expCode]));
 	}
 
+	var mergerNum = 0;  // 匹配重合的次数;
+
 	function RecFileInfoCallback(data){
 
 		recFile=data;

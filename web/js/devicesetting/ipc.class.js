@@ -209,7 +209,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipczoneInfo2UI = function(){ //获取时区信息
-
+         
 		emptyDevSetMenu();
          
 		_Request=new Array(3);
@@ -244,21 +244,20 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		setInterval(function(){
 			$('#PC_time').val(renewtime());
 		},1000);
-
         function renewtime(){
 			var myDate = new Date,
 
-				yy=myDate.getFullYear(),
+			yy=myDate.getFullYear(),
 
-				mm=addZero(parseInt(myDate.getMonth())+1),
+			mm=addZero(parseInt(myDate.getMonth())+1),
 
-				dd=addZero(myDate.getDate()),
+			dd=addZero(myDate.getDate()),
 
-				hh=addZero(myDate.getHours()),
+			hh=addZero(myDate.getHours()),
 
-				mi=addZero(myDate.getMinutes()),
+			mi=addZero(myDate.getMinutes()),
 
-				ss=addZero(myDate.getSeconds());
+			ss=addZero(myDate.getSeconds());
 
 			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 		}
@@ -313,7 +312,6 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			}
 		}
 	}
-
 	this.getBoolean = function (name){
 		var warp = $('#set_content div.ipc_list:visible');
 		return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false

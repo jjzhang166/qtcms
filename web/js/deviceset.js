@@ -150,7 +150,23 @@ var oSearchOcx,
 						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
-							//emptyDevSetMenu();
+							 /*emptyDevSetMenu();
+                         
+							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
+							dvr_devinfo_load_content();*/
+							console.log('------------new DVR()--------------');
+							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+							
+							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
+								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
+								AJAX && AJAX.abort();//并停止正在进行的ajax请求
+								
+								if($(this).attr('action')){
+									AJAX && AJAX.abort();
+									nowDev[$(this).attr('action')+'2UI']();
+			
+								}
+							})
                          
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();
@@ -605,7 +621,8 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','').css('border','0').end().find(':checkbox,:radio').prop('checked',false); //清除
+		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
+									  		  .end().find(':checkbox,:radio').prop('checked',false); //清除
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}

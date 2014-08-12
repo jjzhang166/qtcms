@@ -231,7 +231,12 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			}*/
 		},
 		complete: function(XMLHttpRequest, textStatus){
-						
+			
+			warp.find('input').filter(function(){ 
+				var a = $(this).parent()[0].nodeName
+				return  ((a=='TD' || a == 'DIV') && $(this).parent().attr('class') != 'select');
+			}).attr("disabled",false);
+			
 			console.log('-------------complete-----------'+str);
 
 			typeof(complete) == 'function' && complete(str);
@@ -302,7 +307,7 @@ function checkAJAX(){
 		}
 	}
 
-	a && showAJAXHint(a)
+	a && showAJAXHint(a) 
 
 	return a;
 }
