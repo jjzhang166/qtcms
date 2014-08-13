@@ -11,23 +11,34 @@ typedef struct _tagProcInfoItem
 	void		*puser;
 }ProcInfoItem;
 typedef struct __tagStorageMgrExInfo{
-	unsigned int uiRecordDataBaseId;
-	unsigned int uiSearchDataBaseId;
+	volatile unsigned int uiRecordDataBaseId;
+	volatile unsigned int uiSearchDataBaseId;
 	QString sRecordFilePath;
 	QString sAllRecordDisks;//e:
 	QString sCreateRecordItemDisk;
-	int iCreateRecordItemWindId;
-	int iCreateRecordItemType;
-	int iCreateRecordItemChannelNum;
-	int iCreateSearchItemWindId;
-	int iCreateSearchItemType;
+	volatile int iCreateRecordItemWindId;
+	volatile int iCreateRecordItemType;
+	volatile int iCreateRecordItemChannelNum;
+	volatile int iCreateSearchItemWindId;
+	volatile int iCreateSearchItemType;
 	QString sCreateSearchItemStartTime;
 	QString sCreateSearchItemEndTime;
 	QString sCreateRecordItemDevName;
 	QString sCreateSearchItemDate;
-	bool bRecoverRecorder;
-	int iFileMaxSize;
-	int iDiskReservedSize;
+	volatile bool bRecoverRecorder;
+	volatile int iFileMaxSize;
+	volatile int iDiskReservedSize;
 	QString sApplyDisk;
+	volatile int iUpdateRecordId;
+	volatile int iUpdateSearchId;
+	volatile int iUpdateFileSize;
+	QString sUpdateEndTime;
+	QString sUpdateDisk;
+	volatile int iResetCurrentRecordId;
+	volatile int iResetCurrentRecordWindId;
+	volatile int sResetCurrentRecordDisk;
+	volatile int iDeleteSearchDataBaseItemId;
+	QString sUpdateSearchDataBaseEndTime;
+	volatile int iUpdateSearchDataBaseId;
 }tagStorageMgrExInfo;
 #endif // RECORDER_GLOBAL_H

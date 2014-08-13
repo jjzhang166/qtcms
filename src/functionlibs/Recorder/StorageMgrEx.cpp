@@ -85,6 +85,16 @@ StorageMgrEx::StorageMgrEx(void):m_bStop(false),
 
 StorageMgrEx::~StorageMgrEx(void)
 {
+	m_bStop=true;
+	int iCount=0;
+	while(QThread::isRunning()){
+		msleep(10);
+		if (iCount>500&&iCount%100==0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"there must exist some error ,thread block at :"<<m_iPosition;
+		}
+	}
+	deInitMgrDataBase((int *)this);
 }
 
 void StorageMgrEx::run()
@@ -142,6 +152,50 @@ void StorageMgrEx::run()
 			iRunStep=MGR_DEFAULT;
 								  }
 								  break;
+		case MGR_UPDATABASE:{
+			if (priUpdateDataBase())
+			{
+				m_bExecuteFlag=true;
+			}else{
+				m_bExecuteFlag=false;
+			}
+			m_bIsExecute=true;
+			iRunStep=MGR_DEFAULT;
+							}
+							break;
+		case MGR_RESETCURRENTRECORDID:{
+			if (priResetCurrentRecordId())
+			{
+				m_bExecuteFlag=true;
+			}else{
+				m_bExecuteFlag=false;
+			}
+			m_bIsExecute=true;
+			iRunStep=MGR_DEFAULT;
+									  }
+									  break;
+		case MGR_DELETESEARCHDATABASEITEM:{
+			if (priDeleteSearchDataBaseItem())
+			{
+				m_bExecuteFlag=true;
+			}else{
+				m_bExecuteFlag=false;
+			}
+			m_bIsExecute=true;
+			iRunStep=MGR_DEFAULT;
+										  }
+										  break;
+		case MGR_UPDATESEARCHDATABASE:{
+			if (priUpdateSearchDataBase(m_tStorageMgrExInfo.iUpdateSearchDataBaseId,m_tStorageMgrExInfo.sUpdateSearchDataBaseEndTime))
+			{
+				m_bExecuteFlag=true;
+			}else{
+				m_bExecuteFlag=false;
+			}
+			m_bIsExecute=true;
+			iRunStep=MGR_DEFAULT;
+									  }
+									  break;
 		case MGR_UPDATASYSTEMDATABASE:{
 			if (priUpdateSystemDataBaseData())
 			{
@@ -160,7 +214,9 @@ void StorageMgrEx::run()
 			{
 				if (m_tStepCode.size()>0)
 				{
+					m_csStepLock.lock();
 					iRunStep=m_tStepCode.dequeue();
+					m_csStepLock.unlock();
 				}else{
 					msleep(1);
 					iRunStep=MGR_DEFAULT;
@@ -191,7 +247,9 @@ void StorageMgrEx::startMgr()
 	m_tFuncLock.lock();
 	if (!QThread::isRunning())
 	{
+		m_csStepLock.lock();
 		m_tStepCode.clear();
+		m_csStepLock.unlock();
 		QThread::start();
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"the thread had been running,there is no need to call this func again";
@@ -220,6 +278,165 @@ void StorageMgrEx::stopMgr()
 	m_tFuncLock.unlock();
 }
 
+bool StorageMgrEx::updateDataBase( int nRecordId,int nSearchId,int nFileSize,QString sEndTime,QString sDisk )
+{
+	m_tFuncLock.lock();
+	if (QThread::isRunning())
+	{
+		bool bFlag=false;
+		for(int i=0;i<m_tCurrentUseRecordId.size();i++){
+			if (m_tCurrentUseRecordId.value(i)==nRecordId)
+			{
+				bFlag=true;
+				break;
+			}else{
+				//keep going
+				}
+		}
+		if (bFlag)
+		{
+			m_bIsExecute=false;
+			m_bExecuteFlag=false;
+			m_tStorageMgrExInfo.iUpdateRecordId=nRecordId;
+			m_tStorageMgrExInfo.iUpdateSearchId=nSearchId;
+			m_tStorageMgrExInfo.iUpdateFileSize=nFileSize;
+			m_tStorageMgrExInfo.sUpdateDisk=sDisk;
+			m_tStorageMgrExInfo.sUpdateEndTime=sEndTime;
+			m_csStepLock.lock();
+			m_tStepCode.enqueue(MGR_UPDATABASE);
+			m_csStepLock.unlock();
+			int iCount=0;
+			while(m_bIsExecute==false&&QThread::isRunning()){
+				sleepEx(10);
+				if (iCount>500&&iCount%100==0)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"the thread may be block at::"<<m_iPosition<<"or may be out of control";
+				}
+			}
+			if (m_bExecuteFlag)
+			{
+				m_tFuncLock.unlock();
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"updateDataBase fail as m_bExecuteFlag is false";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateDataBase fail as nRecordId is not in m_tCurrentUseRecordId list";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"updateDataBase fail as the thread is not running";
+	}
+	m_tFuncLock.unlock();
+	return false;
+}
+bool StorageMgrEx::resetCurrentRecordId( int nWindId,int nRecordId ,QString sDisk)
+{
+	m_tFuncLock.lock();
+	if (QThread::isRunning())
+	{
+		m_bIsExecute=false;
+		m_bExecuteFlag=false;
+		m_tStorageMgrExInfo.iResetCurrentRecordId=nRecordId;
+		m_tStorageMgrExInfo.iResetCurrentRecordWindId=nWindId;
+		m_csStepLock.lock();
+		m_tStepCode.enqueue(MGR_RESETCURRENTRECORDID);
+		m_csStepLock.unlock();
+		int iCount=0;
+		while(m_bIsExecute==false&&QThread::isRunning()){
+			sleepEx(10);
+			if (iCount>500&&iCount%100==0)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"the thread may be block at::"<<m_iPosition<<"or may be out of control";
+			}
+		}
+		if (m_bExecuteFlag)
+		{
+			m_tFuncLock.unlock();
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"resetCurrentRecordId fail as m_bExecuteFlag is false";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"resetCurrentRecordId fail as the thread is not running";
+	}
+	m_tFuncLock.unlock();
+	return false;
+}
+bool StorageMgrEx::updateSearchDataBase( int nSearchId,QString sEndTime )
+{
+	m_tFuncLock.lock();
+	if (QThread::isRunning())
+	{
+		if (nSearchId!=-1)
+		{
+			m_bExecuteFlag=false;
+			m_bIsExecute=false;
+			int iCount =0;
+			m_tStorageMgrExInfo.iUpdateSearchDataBaseId=nSearchId;
+			m_tStorageMgrExInfo.sUpdateSearchDataBaseEndTime=sEndTime;
+			m_csStepLock.lock();
+			m_tStepCode.enqueue(MGR_UPDATESEARCHDATABASE);
+			m_csStepLock.unlock();
+			while(m_bIsExecute==false&&QThread::isRunning()){
+				sleepEx(10);
+				if (iCount>500&&iCount%100==0)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"the thread may be block at::"<<m_iPosition<<"or may be out of control";
+				}
+			}
+			if (m_bExecuteFlag)
+			{
+				m_tFuncLock.unlock();
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as m_bExecuteFlag is false";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as the id ==-1";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as the thread is not running";
+	}
+	m_tFuncLock.unlock();
+	return false;
+}
+bool StorageMgrEx::deleteSearchDataBaseItem( int nSearchId )
+{
+	m_tFuncLock.lock();
+	if (QThread::isRunning())
+	{
+		if (nSearchId!=-1)
+		{
+			m_bExecuteFlag=false;
+			m_bIsExecute=false;
+			int iCount =0;
+			m_tStorageMgrExInfo.iDeleteSearchDataBaseItemId=nSearchId;
+			m_csStepLock.lock();
+			m_tStepCode.enqueue(MGR_DELETESEARCHDATABASEITEM);
+			m_csStepLock.unlock();
+			while(m_bIsExecute==false&&QThread::isRunning()){
+				sleepEx(10);
+				if (iCount>500&&iCount%100==0)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"the thread may be block at::"<<m_iPosition<<"or may be out of control";
+				}
+			}
+			if (m_bExecuteFlag)
+			{
+				m_tFuncLock.unlock();
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as m_bExecuteFlag is false";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as the id ==-1";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as the thread is not running";
+	}
+	m_tFuncLock.unlock();
+	return false;
+}
 bool StorageMgrEx::applyDiskSpace(QString &sApplyDisk)
 {
 	//申请空间，创建文件路径，创建文件夹
@@ -228,7 +445,9 @@ bool StorageMgrEx::applyDiskSpace(QString &sApplyDisk)
 	{
 		m_bIsExecute=false;
 		m_bExecuteFlag=false;
+		m_csStepLock.lock();
 		m_tStepCode.enqueue(MGR_APPLYDISKSPACE);
+		m_csStepLock.unlock();
 		int iCount=0;
 		while(m_bIsExecute==false&&QThread::isRunning()){
 			sleepEx(10);
@@ -252,7 +471,7 @@ bool StorageMgrEx::applyDiskSpace(QString &sApplyDisk)
 	return false;
 }
 
-bool StorageMgrEx::createRecordItem( QString sDisk,QString sDevName,int iWindId,int iChannelNum,int iType,unsigned int &uiItem,QString &sFilePath )
+bool StorageMgrEx::createRecordItem( QString sDisk,QString sDevName,int iWindId,int iChannelNum,int iType,int &uiItem,QString &sFilePath )
 {
 	m_tFuncLock.lock();
 	if (QThread::isRunning())
@@ -265,7 +484,9 @@ bool StorageMgrEx::createRecordItem( QString sDisk,QString sDevName,int iWindId,
 		m_tStorageMgrExInfo.iCreateRecordItemChannelNum=iChannelNum;
 		m_tStorageMgrExInfo.iCreateRecordItemWindId=iWindId;
 		m_tStorageMgrExInfo.iCreateRecordItemType=iType;
+		m_csStepLock.lock();
 		m_tStepCode.enqueue(MGR_CREATERECORDITEM);
+		m_csStepLock.unlock();
 		int iCount=0;
 		while(m_bIsExecute==false&&QThread::isRunning()){
 			sleepEx(10);
@@ -290,7 +511,7 @@ bool StorageMgrEx::createRecordItem( QString sDisk,QString sDevName,int iWindId,
 	return false;
 }
 
-bool StorageMgrEx::createSearchItem( unsigned int &uiItem,int nWindId,int nType,QString sDate,QString sStartTime,QString sEndTime)
+bool StorageMgrEx::createSearchItem( int &uiItem,int nWindId,int nType,QString sDate,QString sStartTime,QString sEndTime)
 {
 	m_tFuncLock.lock();
 	if (QThread::isRunning())
@@ -302,7 +523,9 @@ bool StorageMgrEx::createSearchItem( unsigned int &uiItem,int nWindId,int nType,
 		m_tStorageMgrExInfo.iCreateSearchItemType=nType;
 		m_tStorageMgrExInfo.sCreateSearchItemEndTime=sEndTime;
 		m_tStorageMgrExInfo.sCreateSearchItemStartTime=sStartTime;
+		m_csStepLock.lock();
 		m_tStepCode.enqueue(MGR_CREATESEARCHITEM);
+		m_csStepLock.unlock();
 		int iCount=0;
 		while(m_bIsExecute==false&&QThread::isRunning()){
 			sleepEx(10);
@@ -335,7 +558,7 @@ void StorageMgrEx::sleepEx( int iTime )
 	}else{
 		m_iSleepSwitch=0;
 		QEventLoop tEventLoop;
-		QTimer::singleShot(2,&tEventLoop,SLOT(quit));
+		QTimer::singleShot(2,&tEventLoop,SLOT(quit()));
 		tEventLoop.exec();
 	}
 }
@@ -346,7 +569,8 @@ bool StorageMgrEx::priApplyDiskSpace()
 	QString sDisk;
 	if (freeDisk(sDisk))
 	{
-		m_tStorageMgrExInfo.sAllRecordDisks=sDisk;
+		m_tStorageMgrExInfo.sApplyDisk=sDisk;
+		return true;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"priApplyDiskSpace fail freeDisk fail";
 	}
@@ -503,15 +727,17 @@ bool StorageMgrEx::priUpdateSystemDataBaseData()
 			//获取是否循环录像
 			tMgrExInfo.bRecoverRecorder=m_pDisksSetting->getLoopRecording();
 			//获取文件建议打包大小
-			m_pDisksSetting->getFilePackageSize(tMgrExInfo.iFileMaxSize);
+			int iFileSize;
+			m_pDisksSetting->getFilePackageSize(iFileSize);
 			//获取磁盘建议保留空间
-			m_pDisksSetting->getDiskSpaceReservedSize(tMgrExInfo.iDiskReservedSize);
+			int iDiskReservedSize;
+			m_pDisksSetting->getDiskSpaceReservedSize(iDiskReservedSize);
 			m_tGetMgrInfoLock.lock();
 			m_tStorageMgrExInfo.sAllRecordDisks.clear();
 			m_tStorageMgrExInfo.sAllRecordDisks=tMgrExInfo.sAllRecordDisks;
 			m_tStorageMgrExInfo.bRecoverRecorder=tMgrExInfo.bRecoverRecorder;
-			m_tStorageMgrExInfo.iFileMaxSize=tMgrExInfo.iFileMaxSize;
-			m_tStorageMgrExInfo.iDiskReservedSize=tMgrExInfo.iDiskReservedSize;
+			m_tStorageMgrExInfo.iFileMaxSize=iFileSize;
+			m_tStorageMgrExInfo.iDiskReservedSize=iDiskReservedSize;
 			m_tGetMgrInfoLock.unlock();
 			return true;
 		}else{
@@ -564,7 +790,7 @@ bool StorageMgrEx::freeDisk(QString &sDisk)
 						if (uiTotalNumberOfFreeByte/1024/1024>(quint64)m_tStorageMgrExInfo.iDiskReservedSize)
 						{
 							bFound=true;
-							sDisk=sDiskItem;
+							sDisk=sDiskEx;
 							break;
 						}else{
 							//keep going 
@@ -689,6 +915,7 @@ QStringList StorageMgrEx::findEarliestRecord( QString tDbPath,QDate &tEarlestDat
 			if (_query.next())
 			{
 				sEarlyDate=_query.value(0).toString();
+				tEarlestDate=QDate::fromString(sEarlyDate,"yyyy-MM-dd");
 				sCommand.clear();
 				sCommand=QString("select date, path,id, win_id, end_time ,start_time from local_record where date='%1' order by start_time").arg(sEarlyDate);
 				if (_query.exec(sCommand))
@@ -861,6 +1088,7 @@ bool StorageMgrEx::removeSearchDataBaseItem( QStringList tRemoveFileItem,QList<t
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem fail as exec cmd fail::"<<sCommond;
 				}
+				iter++;
 			}
 		}
 		return true;
@@ -889,7 +1117,15 @@ bool StorageMgrEx::createRecordTable( QString sPath )
 		sCommand += "path char(64))";
 		if (_query.exec(sCommand))
 		{
-			return true;
+			sCommand.clear();
+			sCommand=QString("PRAGMA journal_mode=off");
+			if (_query.exec(sCommand))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"createRecordTable fail as exec cmd fail::"<<sCommand;
+			}
+			
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"createRecordTable fail as exec cmd fail::"<<sCommand;
 		}
@@ -1142,7 +1378,15 @@ bool StorageMgrEx::createSearchTable()
 			command += "end_time char(32))";
 			if (_query.exec(command))
 			{
-				return true;
+				command.clear();
+				command=QString("PRAGMA journal_mode=off");
+				if (_query.exec(command))
+				{
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"createSearchTable fail as exec cmd fail::"<<command;
+				}
+				
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"createSearchTable fail as exec cmd fail::"<<command;
 				return false;
@@ -1155,3 +1399,150 @@ bool StorageMgrEx::createSearchTable()
 		return true;
 	}
 }
+
+bool StorageMgrEx::priUpdateDataBase()
+{
+	//更新录像表
+	//更新搜索表
+	if (updateRecordDataBase())
+	{
+		if (priUpdateSearchDataBase(m_tStorageMgrExInfo.iUpdateSearchId,m_tStorageMgrExInfo.sUpdateEndTime))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"priUpdateDataBase fail as updateSearchDataBase fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"priUpdateDataBase fail as updateRecordDataBase fail";
+	}
+	return false;
+}
+
+bool StorageMgrEx::priUpdateSearchDataBase(int nSearchId,QString sEndTime)
+{
+	if (QFile::exists(g_sMgrSearchRecord))
+	{
+		QSqlDatabase *pDataBase=initMgrDataBase(g_sMgrSearchRecord,(int *)this);
+		if (NULL!=pDataBase)
+		{
+			QSqlQuery _query(*pDataBase);
+			QString sCommand=QString("update search_record set end_time='%1' where id=%2").arg(sEndTime).arg(nSearchId);
+			if (_query.exec(sCommand))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as exec cmd fail::"<<sCommand;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as pDataBase is null";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as g_sMgrSearchRecord file is not exists"<<g_sMgrSearchRecord;
+	}
+	return false;
+}
+bool StorageMgrEx::priDeleteSearchDataBaseItem()
+{
+	if (QFile::exists(g_sMgrSearchRecord))
+	{
+		QSqlDatabase *pDataBase=initMgrDataBase(g_sMgrSearchRecord,(int *)this);
+		if (NULL!=pDataBase)
+		{
+			QSqlQuery _query(*pDataBase);
+			QString sCommand=QString("delete from search_record where id=%1").arg(m_tStorageMgrExInfo.iDeleteSearchDataBaseItemId);
+			if (_query.exec(sCommand))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"priDeleteSearchDataBaseItem fail as exec cmd fail::"<<sCommand;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"priDeleteSearchDataBaseItem fail as pDataBase is null";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"priDeleteSearchDataBaseItem fail as g_sMgrSearchRecord file is not exists"<<g_sMgrSearchRecord;
+	}
+	return false;
+}
+
+bool StorageMgrEx::updateRecordDataBase()
+{
+	QString sPath=m_tStorageMgrExInfo.sUpdateDisk+"/REC/record.db";
+	if (QFile::exists(sPath))
+	{
+		QSqlDatabase *pDataBase=initMgrDataBase(sPath,(int *)this);
+		if (NULL!=pDataBase)
+		{
+			QSqlQuery _query(*pDataBase);
+			QString sCommand= QString("update local_record set end_time = '%1', file_size = %2 where id = %3").arg(m_tStorageMgrExInfo.sUpdateEndTime).arg(QString::number(m_tStorageMgrExInfo.iUpdateFileSize)).arg(m_tStorageMgrExInfo.iUpdateRecordId);
+			if (_query.exec(sCommand))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"priUpdateDataBase fail as exec cmd fail:"<<sCommand;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"priUpdateDataBase fail as pDataBase is null";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"priUpdateDataBase fail as sPath is not exist::"<<sPath;
+	}
+	return false;
+}
+
+bool StorageMgrEx::priResetCurrentRecordId()
+{
+	//step1:把当前录像列表中对应的窗口 id 致-1
+	//检测文件与录像表中的记录是否一致
+	m_tCurrentUseRecordId.replace(m_tStorageMgrExInfo.iResetCurrentRecordWindId,-1);
+	QString sPath=m_tStorageMgrExInfo.sUpdateDisk+"/REC/record.db";
+	if (QFile::exists(sPath))
+	{
+		QSqlDatabase *pDataBase=initMgrDataBase(sPath,(int *)this);
+		if (NULL!=pDataBase)
+		{
+			QSqlQuery _query(*pDataBase);
+			QString sCommand=QString("select path from local_record where id=%1").arg(m_tStorageMgrExInfo.iResetCurrentRecordId);
+			if (_query.exec(sCommand))
+			{
+				if (_query.next())
+				{
+					QString sFilePath=_query.value(0).toString();
+					if (QFile::exists(sFilePath))
+					{
+						//do nothing
+						return true;
+					}else{
+						//文件不存在 删除录像记录
+						sCommand.clear();
+						sCommand=QString("delete from local_record where id=%").arg(m_tStorageMgrExInfo.iResetCurrentRecordId);
+						if (_query.exec(sCommand))
+						{
+							return true;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"priResetCurrentRecordId fail as exec cmd fail:"<<sCommand;
+						}
+					}
+				}else{
+					//do nothing
+					return true;
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"priResetCurrentRecordId fail as exec cmd fail:"<<sCommand;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"priResetCurrentRecordId fail as initMgrDataBase fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"priResetCurrentRecordId fail as record path is not exists::"<<sPath;
+	}
+	return false;
+}
+
+
+
+
+
+
+
+

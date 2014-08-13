@@ -31,6 +31,7 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		break;  
 	case QtFatalMsg:  
 		txt = QString("Fatal: %1").arg(msg);  
+		g_tMessage.unlock();
 		abort();  
 	}  
 	if (outFile.isOpen())

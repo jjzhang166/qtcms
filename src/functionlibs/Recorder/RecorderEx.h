@@ -16,7 +16,7 @@
 #define AVENC_IDR		0x01
 #define AVENC_PSLICE	0x02
 #define AVENC_AUDIO		0x00
-#define DATA_QUEUE_MAX_SIZE 120 //最大存储5分钟的缓存，如果超过，就会丢弃
+#define DATA_QUEUE_MAX_SIZE 240 //最大存储5分钟的缓存，如果超过，就会丢弃
 typedef int (__cdecl *recorderExEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagRecorderExProcInfo{
 	recorderExEventCb proc;
@@ -36,9 +36,13 @@ typedef struct __tagRecorderExInfo{
 	QString sApplyDisk;//e:
 	QString sFilePath;
 	QString sDeviceName;
+	QString sStartTime;
+	QString sEndTime;
+	QString sStartDate;
 	int iChannel;
-	unsigned int uiRecorderId;
-	unsigned int uiSearchId;
+	int iFileSize;
+	int uiRecorderId;
+	int uiSearchId;
 	int iWindId;
 	int iRecordType;
 }tagRecorderExInfo;
@@ -92,14 +96,18 @@ private:
 	void sleepEx(int iTime);
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
 	bool createFilePath();
-	int checkALL();//0:接着录像；1：录像打包；2：产生错误，停止录像
-	int checkFileSize();//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
+	int checkALL(avi_t *pAviFile);//0:接着录像；1：录像打包；2：产生错误，停止录像
+	int checkFileSize(avi_t *pAviFile);//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
 	int checkDiskSize();//0:表示磁盘空间足够，接着录像；1：表示磁盘空间不足
-	bool upDateDataBase();//更新数据库，0：表示更新成功；1：表示更新失败
+	bool upDateDataBase(QString sEndTime);//更新数据库，0：表示更新成功；1：表示更新失败
 	bool packFile(avi_t *pAviFile);
 	bool applyDiskSpace();//申请空间
 	bool createRecordItem();//创建录像数据条目
 	bool createSearchItem();//创建搜索表条目
+	bool createFileDir();
+	bool resetCurrentRecordId();
+	bool updateSearchDataBase(QString sEndTime);
+	bool deleteSearchDataBaseItem();
 private:
 	int m_nRef;
 	QMutex m_csRef;
@@ -125,5 +133,6 @@ private:
 	bool m_bChecKFileSize;
 	bool m_bCheckDiskSize;
 	bool m_bUpdateDatabase;
+	bool m_bIsCreateSearchItem;
 };
 

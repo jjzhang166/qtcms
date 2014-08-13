@@ -9,14 +9,16 @@ StorageMgrEx * g_pStorageMgrEx=NULL;
 
 StorageMgrEx * applyStorageMgrEX()
 {
+	g_tStorageMgrLock.lock();
 	if (g_uiStorageMgrCount==0)
 	{
 		if (g_pStorageMgrEx!=NULL)
 		{
 			delete g_pStorageMgrEx;
 			g_pStorageMgrEx=NULL;
-		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"g_pStorageMgrEx should be null,please check";
+		}else{
+			//do nothing
 		}
 		g_pStorageMgrEx=new StorageMgrEx;
 		g_pStorageMgrEx->startMgr();
@@ -24,11 +26,13 @@ StorageMgrEx * applyStorageMgrEX()
 		// do nothing
 	}
 	g_uiStorageMgrCount++;
+	g_tStorageMgrLock.unlock();
 	return g_pStorageMgrEx;
 }
 
 void releaseStorageMgrEx()
 {
+	g_tStorageMgrLock.lock();
 	g_uiStorageMgrCount--;
 	if (g_uiStorageMgrCount==0)
 	{
@@ -43,6 +47,7 @@ void releaseStorageMgrEx()
 	}else{
 		//do nothing
 	}
+	g_tStorageMgrLock.unlock();
 }
 
 RecorderEx::RecorderEx(void):m_nRef(0),
@@ -61,35 +66,51 @@ RecorderEx::RecorderEx(void):m_nRef(0),
 	m_bUpdateDatabase(false)
 {
 	connect(&m_tCheckBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckBlock()));
-	m_tCheckBlockTimer.start(1000);
+	m_tCheckBlockTimer.start(90000);
+	m_tEventList<<"RecordState";
 }
 
 
 RecorderEx::~RecorderEx(void)
 {
+	m_bStop=true;
+	int nCount=0;
+	while(QThread::isRunning()){
+		sleepEx(10);
+		nCount++;
+		if (nCount>1000&&nCount%200)
+		{
+			nCount=0;
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tRecorderInfo.sDeviceName<<"there must exist some error ,thread block at :"<<m_iPosition;
+		}
+	}
+	clearData();
+	m_tCheckBlockTimer.stop();
 }
 
 void RecorderEx::run()
 {
-	g_tStorageMgrLock.lock();
 	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
 	if (pStorageMgrEx==NULL)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"run fail as applyStorageMgrEX fail";
-		g_tStorageMgrLock.unlock();
 		return;
 	}else{
 		//keep going
 	}
-	g_tStorageMgrLock.unlock();
 	int iRecStep=REC_INIT;
 	avi_t *pAviFile=NULL;
 	bool bRunStop=false;
 	QVariantMap tInfo;
 	int iSleepTime=0;
 	bool bAudioSet=false;
+	m_tRecorderInfo.uiSearchId=-1;
+	m_bIsCreateSearchItem=false;
 	tInfo.insert("RecordState",true);
+	m_iPosition=__LINE__;
+	m_bBlock=true;
 	eventProcCall("RecordState",tInfo);
+	m_bBlock=false;
 	while(bRunStop==false){
 		if (m_tDataQueue.size()<2||iSleepTime>100)
 		{
@@ -99,6 +120,7 @@ void RecorderEx::run()
 		iSleepTime++;
 		switch(iRecStep){
 		case REC_INIT:{
+			m_iPosition=__LINE__;
 			//新文件的各项参数初始化
 			m_csDataLock.lock();
 			//统计帧率相关的参数
@@ -110,6 +132,8 @@ void RecorderEx::run()
 			m_csDataLock.unlock();
 			//音频的参数
 			bAudioSet=false;
+			//
+			m_tRecorderInfo.uiRecorderId=-1;
 			if (m_bStop)
 			{
 				iRecStep=REC_END;
@@ -120,6 +144,7 @@ void RecorderEx::run()
 					  break;
 		case REC_FRIST_I_FRAME:{
 			//等待第一个I帧
+			m_iPosition=__LINE__;
 			m_csDataLock.lock();
 			if (m_tDataQueue.size()>0)
 			{
@@ -148,6 +173,8 @@ void RecorderEx::run()
 							   break;
 		case REC_CREATE_PATH:{
 			//创建文件路径：申请空间,创建录像数据表，录像搜索表，创建文件夹
+			m_iPosition=__LINE__;
+			m_bBlock=true;
 			if (createFilePath())
 			{
 				iRecStep=REC_OPEN_FILE;
@@ -155,6 +182,7 @@ void RecorderEx::run()
 				iRecStep=REC_END;
 				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as createFilePath fail";
 			}
+			m_bBlock=false;
 			if (m_bStop)
 			{
 				iRecStep=REC_END;
@@ -164,6 +192,7 @@ void RecorderEx::run()
 							 }
 							 break;
 		case REC_OPEN_FILE:{
+			m_iPosition=__LINE__;
 			m_csDataLock.lock();
 			if (m_tDataQueue.size()>0)
 			{
@@ -180,11 +209,12 @@ void RecorderEx::run()
 				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as it should not be here ,i will exit recorder";
 				iRecStep=REC_END;
 			}
-			m_csDataLock.lock();
+			m_csDataLock.unlock();
 						   }
 						   break;
 		case REC_SET_VIDEO_PARM:{
 			// 设置文件（视频）的各项参数
+			m_iPosition=__LINE__;
 			m_csDataLock.lock();
 			AVI_set_video(pAviFile,m_iVideoWidth,m_iVideoHeight,25,"X264");
 			m_csDataLock.unlock();
@@ -193,9 +223,11 @@ void RecorderEx::run()
 								break;
 		case REC_SET_AUDIO_PARM:{
 			//设置文件（音频）的各项参数,弃用，不在此处使用
+			m_iPosition=__LINE__;
 								}
 								break;
 		case REC_WRITE_FRAME:{
+			m_iPosition=__LINE__;
 			//写文件
 			m_csDataLock.lock();
 			if (m_tDataQueue.size()>0)
@@ -237,11 +269,15 @@ void RecorderEx::run()
 			}else{
 				iRecStep=REC_CHECK_AND_UPDATE;
 			}
+			m_csDataLock.unlock();
 							 }
 							 break;
 		case REC_CHECK_AND_UPDATE:{
+			m_iPosition=__LINE__;
+			m_bBlock=true;
 			//检测硬盘空间,检测文件大小,更新数据库
-			int iRet=checkALL();
+			int iRet=checkALL(pAviFile);
+			m_bBlock=false;
 			if (iRet==0)
 			{
 				iRecStep=REC_WRITE_FRAME;
@@ -256,6 +292,8 @@ void RecorderEx::run()
 								  }
 								  break;
 		case REC_WAIT_FOR_PACK:{
+			m_iPosition=__LINE__;
+			m_bBlock=true;
 			int iCount=0;
 			bool bWait=true;
 			while(bWait&&iCount<300&&!m_bStop){//没有等到I帧&&循环次数少于300&&没有停止录像
@@ -288,6 +326,7 @@ void RecorderEx::run()
 				iCount++;
 				m_csDataLock.unlock();
 			}
+			m_bBlock=false;
 			iRecStep=REC_PACK;
 							   }
 							   break;
@@ -296,20 +335,56 @@ void RecorderEx::run()
 			//更新数据库，如果失败，跳转到end
 			//检测是否结束，如果结束，跳转到end，否则重头开始
 			int iRet=0;//0:表示成功，继续录像；1：表示失败，停止录像
-			if (packFile(pAviFile))
+			m_iPosition=__LINE__;
+			m_bBlock=true;
+			if (NULL!=pAviFile)
 			{
-				//keep going
+				if (packFile(pAviFile))
+				{
+					//keep going
+				}else{
+					iRet=1;
+					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as packFile fail";
+				}
 			}else{
-				iRet=1;
-				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as packFile fail";
+				//keep going
 			}
-			if (upDateDataBase())
+			m_bBlock=false;
+			QString sEndTime=QTime::currentTime().toString("hh:mm:ss");
+
+			if (sEndTime<m_tRecorderInfo.sStartTime)
+			{
+				sEndTime="23:59:59";
+			}else{
+				//do nothing
+			}
+			m_tRecorderInfo.sEndTime=sEndTime;
+			m_iPosition=__LINE__;
+			m_bBlock=true;
+			if (upDateDataBase(sEndTime))
 			{
 				//keep going
 			}else{
 				iRet=1;
 				qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as upDateDataBase fail";
 			}
+			m_bBlock=false;
+			m_iPosition=__LINE__;
+			m_bBlock=true;
+			if (m_tRecorderInfo.uiRecorderId!=-1)
+			{
+				if (resetCurrentRecordId())
+				{
+					//keep going
+				}else{
+					iRet=1;
+					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as resetCurrentRecordId fail";
+				}
+			}else{
+				//keep going
+			}
+			m_bBlock=false;
+			m_tRecorderInfo.uiRecorderId=-1;
 			if (iRet!=1)
 			{
 				if (!m_bStop)
@@ -326,7 +401,10 @@ void RecorderEx::run()
 							{
 								iRecStep=REC_FRIST_I_FRAME;
 							}else{
+								m_iPosition=__LINE__;
+								m_bBlock=true;
 								clearData();
+								m_bBlock=false;
 								iRecStep=REC_INIT;
 								m_bFull=false;
 							}
@@ -358,13 +436,85 @@ void RecorderEx::run()
 			//删除废弃的文件
 			//删除数据库中无用的条目
 			//end
+			if (m_tRecorderInfo.uiRecorderId!=-1)
+			{
+				m_iPosition=__LINE__;
+				m_bBlock=true;
+				if (resetCurrentRecordId())
+				{
+					//keep going
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as resetCurrentRecordId fail";
+				}
+				m_bBlock=false;
+			}else{
+				//do nothing
+			}
+			if (m_bIsCreateSearchItem)
+			{
+				QString sEndTime=QTime::currentTime().toString("hh:mm:ss");
+
+				QDateTime tDateTime=QDateTime::currentDateTime();
+				QDate tDate=QDate::currentDate();
+				tDateTime.setDate(tDate);
+				QDate tStartDate=QDate::fromString(m_tRecorderInfo.sStartDate,"yyyy-MM-dd");
+				QDateTime tStartTime=QDateTime::fromString(m_tRecorderInfo.sStartTime,"hh:mm:ss");
+				tStartTime.setDate(tDate);
+				//开始时间与结束时间小于3s的文件，搜索列表删除
+				if (tDateTime.toTime_t()-tStartTime.toTime_t()<3)
+				{
+					//删除记录
+					m_iPosition=__LINE__;
+					m_bBlock=true;
+					if (deleteSearchDataBaseItem())
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail";
+					}
+					m_bBlock=false;
+				}else{
+					//更新记录
+					if (m_tRecorderInfo.sStartTime>m_tRecorderInfo.sEndTime)
+					{
+						sEndTime="23:59:59";
+					}else{
+						//do nothing
+					}
+					m_bBlock=true;
+					m_iPosition=__LINE__;
+					if (updateSearchDataBase(m_tRecorderInfo.sEndTime))
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail";
+					}
+					m_bBlock=false;
+				}
+				
+
+			}else{
+				//do nothing
+			}
+			bRunStop=true;
 					 }
 					 break;
 		}
 	}
-	g_tStorageMgrLock.lock();
+	m_bBlock=true;
+	m_iPosition=__LINE__;
+	clearData();
+	m_bBlock=false;
+	tInfo.clear();
+	tInfo.insert("RecordState",false);
+	m_bBlock=true;
+	m_iPosition=__LINE__;
+	eventProcCall("RecordState",tInfo);
+	m_bBlock=false;
+	m_bBlock=true;
+	m_iPosition=__LINE__;
 	releaseStorageMgrEx();
-	g_tStorageMgrLock.unlock();
+	m_bBlock=false;
 }
 
 int RecorderEx::Start()
@@ -462,12 +612,12 @@ int RecorderEx::InputFrame( QVariantMap& frameinfo )
 					m_csDataLock.unlock();
 					return IRecorder::OK;
 				}else{
+					m_bFull=true;
 					qDebug()<<__FUNCTION__<<__LINE__<<"InputFrame fail as the m_tDataQueue.size had been full,it must wait for more space";
 					return IRecorder::E_SYSTEM_FAILED;
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"InputFrame fail as malloc buffer fail";
-				m_bFull=true;
 				return IRecorder::E_SYSTEM_FAILED;
 			}
 		}else{
@@ -504,6 +654,10 @@ long __stdcall RecorderEx::QueryInterface( const IID & iid,void **ppv )
 	if (IID_IRecorder == iid)
 	{
 		*ppv = static_cast<IRecorder *>(this);
+	}
+	else if (IID_IRecorderEx==iid)
+	{
+		*ppv = static_cast<IRecorderEx *>(this);
 	}
 	else if (IID_IPcomBase == iid)
 	{
@@ -597,7 +751,7 @@ void RecorderEx::sleepEx(int iTime)
 	}else{
 		m_iSleepSwitch=0;
 		QEventLoop tEventLoop;
-		QTimer::singleShot(2,&tEventLoop,SLOT(quit));
+		QTimer::singleShot(2,&tEventLoop,SLOT(quit()));
 		tEventLoop.exec();
 	}
 }
@@ -625,7 +779,7 @@ void RecorderEx::slCheckBlock()
 	if (m_bBlock&&m_iCheckBlockCount>3)
 	{
 		m_iCheckBlockCount=0;
-		qDebug()<<__FUNCTION__<<__LINE__<<"thread block at position::"<<m_iPosition<<"please check";
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tRecorderInfo.sDeviceName<<"thread block at position::"<<m_iPosition<<"please check";
 	}else{
 		//do nothing
 		if (m_iCheckBlockCount>100)
@@ -650,11 +804,22 @@ bool RecorderEx::createFilePath()
 	{
 		if (createRecordItem())
 		{
-			if (createSearchItem())
+			if (createFileDir())
 			{
-				return true;
+				if (m_bIsCreateSearchItem==false)
+				{
+					if (createSearchItem())
+					{
+						m_bIsCreateSearchItem=true;
+						return true;
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createSearchItem fail";
+					}
+				}else{
+					return true;
+				}
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createSearchItem fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createFileDir fail";
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"createFilePath fail as createRecordItem fail";
@@ -665,7 +830,7 @@ bool RecorderEx::createFilePath()
 	return false;
 }
 
-int RecorderEx::checkALL()
+int RecorderEx::checkALL(avi_t *pAviFile)
 {
 	//0:接着录像；1：录像打包；2：产生错误，停止录像
 	int iFlags=2;
@@ -678,12 +843,13 @@ int RecorderEx::checkALL()
 			if (m_bChecKFileSize)
 			{
 				m_bChecKFileSize=false;
-				int iRet=checkFileSize();
+				int iRet=checkFileSize(pAviFile);
 				if (iRet==0)
 				{
-					iCheckStep=4;
+					iCheckStep=1;
 				}else if(iRet==1){
 					iCheckStep=4;
+					qDebug()<<__FUNCTION__<<__FUNCTION__<<"turn to pack,as file size had been over 128m";
 				}else{
 					iCheckStep=5;
 					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as checkFileSize fail";
@@ -704,10 +870,11 @@ int RecorderEx::checkALL()
 				{
 					iCheckStep=2;
 				}else if(iRec==1){
+					iCheckStep=4;
+					qDebug()<<__FUNCTION__<<__LINE__<<"turn to pack as there is not disk space for recorder";
+				}else{
 					iCheckStep=5;
 					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as checkDiskSize fail,there is not disk space for recorder";
-				}else{
-
 				}
 			}else{
 				iCheckStep=2;
@@ -719,7 +886,14 @@ int RecorderEx::checkALL()
 			if (m_bUpdateDatabase)
 			{
 				m_bUpdateDatabase=false;
-				bool bRet=upDateDataBase();
+				QString sEndTime=QTime::currentTime().toString("hh:mm:ss");
+				if (sEndTime<m_tRecorderInfo.sStartTime)
+				{
+					sEndTime="23:59:59";
+				}else{
+
+				}
+				bool bRet=upDateDataBase(sEndTime);
 				if (bRet)
 				{
 					iCheckStep=3;
@@ -762,12 +936,81 @@ int RecorderEx::checkALL()
 
 bool RecorderEx::packFile( avi_t *pAviFile )
 {
+	if (pAviFile!=NULL)
+	{
+		int iMaxFramerate=0;
+		int iMaxFramerateCount=0;
+		int iFrameCount=0;
+		int i;
+		m_csDataLock.lock();
+		for (i=0;i<31;i++)
+		{
+			if (m_uiFrameCountArray[i]!=0)
+			{
+				iMaxFramerate=i;
+			}
+		}
+		for (i=iMaxFramerate-3>=0?iMaxFramerate-3:0;i<iMaxFramerate;i++)
+		{
+			if (m_uiFrameCountArray[i]>(unsigned int)iMaxFramerateCount)
+			{
+				iMaxFramerateCount=m_uiFrameCountArray[i];
+				iFrameCount=i;
+			}
+		}
+		if (iFrameCount==0)
+		{
+			int totalFrame=AVI_video_frames(pAviFile);
+			quint64 totalTime=0;
+			totalTime=m_iLastPts-m_iFristPts;
+			if (totalTime/1000>0)
+			{
+				iFrameCount=totalFrame/(totalTime/1000);
+				if (iFrameCount>25)
+				{
+					iFrameCount=25;
+				}else{
+					//do nothing
+				}
+			}else{
+				if (totalFrame<25)
+				{
+					iFrameCount=totalFrame;
+				}else{
+					iFrameCount=25;
+				}	
+			}
+		}else{
+			//do nothing
+		}
+		m_tRecorderInfo.iFileSize=AVI_bytes_written(pAviFile);
+		AVI_set_video(pAviFile,m_iVideoWidth,m_iVideoHeight,iFrameCount,"X264");
+		AVI_close(pAviFile);
+		pAviFile=NULL;
+		m_csDataLock.unlock();
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"packFile fail as pAviFile is null";
+	}
 	return false;
 }
 
-bool RecorderEx::upDateDataBase()
+bool RecorderEx::upDateDataBase(QString sEndTime)
 {
 	//更新数据库，0：表示更新成功；1：表示更新失败
+	//step1：更新录像数据库，step2：更新搜索数据库
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (NULL!=pStorageMgrEx)
+	{
+		if (pStorageMgrEx->updateDataBase(m_tRecorderInfo.uiRecorderId,m_tRecorderInfo.uiSearchId,m_tRecorderInfo.iFileSize,sEndTime,m_tRecorderInfo.sApplyDisk))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"upDateDataBase fail as pStorageMgrEx->updateDataBase fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"upDateDataBase fail as pStorageMgrEx is null";
+	}
 	return false;
 }
 
@@ -799,13 +1042,34 @@ int RecorderEx::checkDiskSize()
 		qDebug()<<__FUNCTION__<<__LINE__<<"checkFileSize fail as pStorageMgrEx is null";
 		return 2;
 	}
-	return 0;
 }
 
-int RecorderEx::checkFileSize()
+int RecorderEx::checkFileSize(avi_t *pAviFile)
 {
-	//0:文件大小足够了，可以打包；1：表示文件大小还不足，接着录像，2：表示有错误
-	return 0;
+	//0:表示文件大小还不足；1：文件大小足够了，可以打包，接着录像，2：表示有错误
+	if (NULL!=pAviFile)
+	{
+		long nWritenSize=AVI_bytes_written(pAviFile);
+		m_tRecorderInfo.iFileSize=nWritenSize;
+		StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+		if (NULL!=pStorageMgrEx)
+		{
+			tagStorageMgrExInfo tMgrExInfo=pStorageMgrEx->getStorageMgrExInfo();
+			if (nWritenSize>1024*1024*tMgrExInfo.iFileMaxSize)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"turn to pack,as file size had been max";
+				return 1;
+			}else{
+				return 0;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"checkFileSize fail as pStorageMgrEx is null";
+			return 2;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"checkFileSize fail as pAviFile is null";
+		return 2;
+	}
 }
 
 bool RecorderEx::createRecordItem()
@@ -817,6 +1081,8 @@ bool RecorderEx::createRecordItem()
 	{
 		if (pStorageMgrEx->createRecordItem(m_tRecorderInfo.sApplyDisk,m_tRecorderInfo.sDeviceName,m_tRecorderInfo.iWindId,m_tRecorderInfo.iChannel,m_tRecorderInfo.iRecordType,m_tRecorderInfo.uiRecorderId,m_tRecorderInfo.sFilePath))
 		{
+			m_tRecorderInfo.sStartTime=QTime::currentTime().toString("hh:mm:ss");
+			m_tRecorderInfo.sStartDate=QDate::currentDate().toString("yyyy-MM-dd");
 			return true;
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"createRecordItem fail as pStorageMgrEx->createRecordItem fail";
@@ -829,7 +1095,7 @@ bool RecorderEx::createRecordItem()
 
 bool RecorderEx::createSearchItem()
 {
-	m_tRecorderInfo.uiSearchId=0;
+	m_tRecorderInfo.uiSearchId=-1;
 	StorageMgrEx *pStorageMgrEX=applyStorageMgrEX();
 	if (NULL!=pStorageMgrEX)
 	{
@@ -864,7 +1130,65 @@ bool RecorderEx::applyDiskSpace()
 	}
 	return false;
 }
+bool RecorderEx::deleteSearchDataBaseItem()
+{
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (pStorageMgrEx!=NULL)
+	{
+		if (m_tRecorderInfo.uiSearchId!=-1)
+		{
+			if (pStorageMgrEx->deleteSearchDataBaseItem(m_tRecorderInfo.uiSearchId))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as deleteSearchDataBaseItem fail";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as the id ==-1";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"deleteSearchDataBaseItem fail as applyStorageMgrEX fail";
+	}
+	return false;
+}
 
+bool RecorderEx::updateSearchDataBase( QString sEndTime )
+{
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (pStorageMgrEx!=NULL)
+	{
+		if (m_tRecorderInfo.uiSearchId!=-1)
+		{
+			if (pStorageMgrEx->updateSearchDataBase(m_tRecorderInfo.uiSearchId,sEndTime))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as updateSearchDataBase fail";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as the SearchId==-1";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDataBase fail as applyStorageMgrEX fail";
+	}
+	return false;
+}
+bool RecorderEx::resetCurrentRecordId()
+{
+	StorageMgrEx *pStorageMgrEx=applyStorageMgrEX();
+	if (NULL!=pStorageMgrEx)
+	{
+		if (pStorageMgrEx->resetCurrentRecordId(m_tRecorderInfo.iWindId,m_tRecorderInfo.uiRecorderId,m_tRecorderInfo.sApplyDisk))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"resetCurrentRecordId fail as resetCurrentRecordId fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"resetCurrentRecordId fail as applyStorageMgrEX fail";
+	}
+	return false;
+}
 int RecorderEx::SetDevInfoEx( const int &nWindId, const int &nRecordType )
 {
 	if (!(nWindId<0||nRecordType>3||nRecordType<0))
@@ -882,6 +1206,42 @@ int RecorderEx::FixExceptionalData()
 {
 	return 0;
 }
+
+bool RecorderEx::createFileDir()
+{
+	QFileInfo tInfo(m_tRecorderInfo.sFilePath);
+	QString sFileName=tInfo.fileName();
+	QString sFilePath=tInfo.path();
+	if (!sFileName.isEmpty())
+	{
+		QFile tFile(m_tRecorderInfo.sFilePath);
+		if (!tFile.exists())
+		{
+			QDir tDir;
+			if (!tDir.exists(sFilePath))
+			{
+				if (tDir.mkpath(sFilePath))
+				{
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"createFileDir fail as mkdir fail";
+					return false;
+				}
+			}else{
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createFileDir fail as sFileName is empty";
+	}
+	return false;
+}
+
+
+
+
 
 
 

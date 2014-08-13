@@ -20,7 +20,11 @@ typedef enum __tagStorageMgrExStepCode{
 	MGR_APPLYDISKSPACE,
 	MGR_CREATERECORDITEM,
 	MGR_CREATESEARCHITEM,
+	MGR_UPDATABASE,
 	MGR_UPDATASYSTEMDATABASE,
+	MGR_RESETCURRENTRECORDID,
+	MGR_DELETESEARCHDATABASEITEM,
+	MGR_UPDATESEARCHDATABASE,
 	MGR_DEFAULT,
 	MGR_END,
 }tagStorageMgrExStepCode;
@@ -34,8 +38,12 @@ public:
 	void startMgr();
 	void stopMgr();
 	bool applyDiskSpace(QString &sApplyDisk);
-	bool createRecordItem(QString sDisk,QString sDevName,int iWindId,int iChannelNum,int iType,unsigned int &uiItem,QString &sFilePath);
-	bool createSearchItem(unsigned int &uiItem,int nWindId,int nType,QString sDate,QString sStartTime,QString sEndTime);
+	bool createRecordItem(QString sDisk,QString sDevName,int iWindId,int iChannelNum,int iType,int &uiItem,QString &sFilePath);
+	bool createSearchItem(int &uiItem,int nWindId,int nType,QString sDate,QString sStartTime,QString sEndTime);
+	bool updateDataBase(int nRecordId,int nSearchId,int nFileSize,QString sEndTime,QString sDisk);
+	bool resetCurrentRecordId(int nWindId,int nRecordId,QString sDisk);
+	bool updateSearchDataBase(int nSearchId,QString sEndTime);
+	bool deleteSearchDataBaseItem(int nSearchId);
 	tagStorageMgrExInfo getStorageMgrExInfo();
 protected:
 	void run();
@@ -46,6 +54,9 @@ private:
 	bool priCreateRecordItem();
 	bool priCreateSearchItem();
 	bool priUpdateSystemDataBaseData();
+	bool priUpdateDataBase();
+	bool priResetCurrentRecordId();
+	bool priDeleteSearchDataBaseItem();
 	QStringList findEarliestRecord(QString tDbPath,QDate &tEarlestDate,QMap<int ,QString>&tMaxEndTimeMap);
 	QDate minDate(QList<QDate> tDateList);
 	QStringList removeFile(QStringList tItemList);
@@ -56,6 +67,8 @@ private:
 	bool insertItemIntoRecordTable();
 	bool updateSearchItem(int nWindId,QString sDate,QString sNewEndTime);
 	bool createSearchTable();
+	bool priUpdateSearchDataBase(int nSearchId,QString sEndTime);
+	bool updateRecordDataBase();
 private slots:
 	void slCheckBlock();
 private:
@@ -72,5 +85,6 @@ private:
 	bool m_bIsBlock;
 	IDisksSetting *m_pDisksSetting;
 	QList<int> m_tCurrentUseRecordId;
+	QMutex m_csStepLock;
 };
 
