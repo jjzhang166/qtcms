@@ -108,6 +108,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		//return false;
 
 		oPlaybackLocl.AddEventProc('GetRecordFile','RecFileInfoCallback(data)'); //本地回访回调
+		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
 		/*oPlaybackLocl.AddEventProc('GetRecordFile','RecfinishCallback(data)');*/
 
 		bFullScreen = 0;
@@ -222,7 +223,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				if(filepath){
 					//console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 					if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
-						alert(lang.play_Failed);
+						alert(_T('wind')+k+':'+lang.play_Failed);
 					};
 				}
 				k++;
@@ -294,8 +295,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
 		})		
 	}*/
-
-	var mergerNum = 0;  // 匹配重合的次数;
+	function ThrowExceptionCallback(data){
+		var arr = [_T('Available'),_T('Abnormal_damaged')];
+		alert(T('ThrowException',(parseInt(data.wndId)+1),filepath,arr[data.expCode]));
+	}
 
 	function RecFileInfoCallback(data){
 
@@ -435,7 +438,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						}else{
 							target.attr('id','Rel_channel_'+ChannelData.channel_id).find('label').html(ChannelData.channel_name);
 						}
-						target.attr('title','设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name);
+						target.attr('title',T('device_channel',oDev.data('data').name,ChannelData.channel_name));
 						//console.log(target);
 					//}
 				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo(target);

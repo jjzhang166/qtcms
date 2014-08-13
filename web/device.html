@@ -206,111 +206,107 @@
 			<div class="right_content">
 				<input id="dev_id_ID_Ex" value="" type="hidden" />
 				<ul class="ope_list nav1 dvr_list0">
-					<li class="ope_listAct" onclick="dvr_devinfo_load_content();" action="dvrBasicInfo"><script>T("Device_info")</script></li>
-					<li click="dvr_common_load_content();" action="dvrGenSet"><script>T("General_Settings")</script></li>
-					<li click="dvr_network_load_content();" action="dvrnetworkInfo"><script>T("Network_Settings")</script></li>
-					<li click="dvr_load('dvr_enc_chn_sel');" action="dvrencodeInfo"><script>T("Encoding_settings")</script></li>
-					<li click="dvr_load('dvr_record_chn_sel');" action="dvrVideoInfo"><script>T("Video_settings")</script></li>
-					<li click="dvr_load('dvr_screen_chn_sel' );" style="clear:both;" action="dvrScreenInfo"><script>T("Screen_settings")</script></li>
-					<li click="dvr_load('dvr_ptz_chn_sel');" action="dvrPTZInfo"><script>T("PTZ_settings")</script></li>
-					<li click="dvr_load('dvr_detect_chn_sel');" action="dvrVideoCkeck"><script>T("Video_detection_settings")</script></li>
-					<li click="dvr_load('dvr_alarm_chn_sel');" action="dvrAlarmInfo"><script>T("Alarm_settings")</script></li>
+					<li class="ope_listAct" onclick="dvr_devinfo_load_content();"><script>T("Device_info")</script></li>
+					<li onclick="dvr_common_load_content();"><script>T("General_Settings")</script></li>
+					<li onclick="dvr_network_load_content();"><script>T("Network_Settings")</script></li>
+					<li onclick="dvr_load('dvr_enc_chn_sel');"><script>T("Encoding_settings")</script></li>
+					<li onclick="dvr_load('dvr_record_chn_sel');"><script>T("Video_settings")</script></li>
+					<li onclick="dvr_load('dvr_screen_chn_sel');"style="clear:both;"><script>T("Screen_settings")</script></li>
+					<li onclick="dvr_load('dvr_ptz_chn_sel');"><script>T("PTZ_settings")</script></li>
+					<li onclick="dvr_load('dvr_detect_chn_sel');"><script>T("Video_detection_settings")</script></li>
+					<li onclick="dvr_load('dvr_alarm_chn_sel');"><script>T("Alarm_settings")</script></li>
 				</ul>
 				<div class="switch dvr_list"  style="display:block;">
-					<table data-UI="devinfo">
-						<tr><td><script>T("Device_name")</script></td><td><input type="text" id="Dvr_Device_name" data-UI="name" readonly="readonly" /></td></tr>
-						<tr><td><script>T("Model")</script></td><td><input type="text" id="Dvr_Device_model" data-UI="model" readonly="readonly" /></td></tr>
-						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" data-UI="hwver" readonly="readonly"/></td></tr>
-						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" data-UI="swver" readonly="readonly"/></td></tr>
-						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" data-UI="reldatetime" readonly="readonly"/></td></tr>
-						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" data-UI="camcnt" readonly="readonly"/></td></tr>
+					<table>
+						<tr><td><script>T("Device_name")</script></td><td><input type="text" id="Dvr_Device_name"  readonly="readonly" /></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" id="Dvr_Device_model" readonly="readonly" /></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text" id="Dvr_Hardware_version" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" id="Dvr_Software_version" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input type="text" id="Dvr_Build_time" readonly="readonly"/></td></tr>
+						<tr><td><script>T("Total_number_of_channels")</script></td><td><input type="text" id="Dvr_Sum_of_channels" readonly="readonly"/></td></tr>
 						<!-- <tr><td><script>T("Channel_sound")</script></td><td><input type="text" id="Dvr_Audio_of_channels" /></td></tr>
 						<tr><td><script>T("Alarm_input")</script></td><td><input type="text" id="Dvr_Alarm_inputs" /></td></tr>
 						<tr><td><script>T("Alarm_output")</script></td><td><input type="text" id="Dvr_Alarm_outputs" /></td></tr> -->
 					</table>
 				</div>
 				<div class="switch dvr_list">
-					<table data-WARP="misc">
+					<table>
 						<tr>
 							<td><script>T("Date_Format")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-                                    <!--<span id="dvr_common_date_format"></span>-->
-									<input type="select" data-UI="datefmt" value="" data="" />
+									<span id="dvr_common_date_format"></span>
 									<a class="hover"></a>
 								</div>
-								<ul class="option" >
-									<li><input value="YYYY/MM/DD" type="text" data="" /></li>
-									<li><input value="MM/DD/YYYY" type="text" data="" /></li>
-									<li><input value="DD/MM/YYYY" type="text" data="" /></li>
+								<ul class="option">
+									<li><a>YYYY/MM/DD</a></li>
+									<li><a>MM/DD/YYYY</a></li>
+									<li><a>DD/MM/YYYY</a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td><input id="dvr_common_keypad" type="checkbox" data-UI="keylock"/><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox"  data-UI="keybuzzer"/><script>T("Keypad_sound")</script></td></tr>
+						<tr><td><input id="dvr_common_keypad" type="checkbox" /><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox" /><script>T("Keypad_sound")</script></td></tr>
 						<tr>
 							<td><script>T("Video_Format")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-									<input type="select" data-UI="standard" value="" data="" />
-                                    <!--<span id="dvr_common_standard"></span>-->
+									<span id="dvr_common_standard"></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input value="PAL" type="text" data="" /></li>
-									<li><input value="NTST" type="text" data="" /></li>
+									<li><a>PAL</a></li>
+									<li><a>NTST</a></li>
 								</ul></td>
 						</tr>
 						<tr>
 							<td><script>T("Remote_Control_No")</script></td>
-							<td><input type="text" id="dvr_common_dvrid"  data-UI="dvrid"/></td>
+							<td><input type="text" id="dvr_common_dvrid" /></td>
 						</tr>
 						<tr>
-							<td><input id="dvr_common_over_harddisk" type="checkbox"  data-UI="hddoverwrite"/><script>T("Overwrite_the_hard_drive")</script></td><td></td>
+							<td><input id="dvr_common_over_harddisk" type="checkbox" /><script>T("Overwrite_the_hard_drive")</script></td><td></td>
 						</tr>
 						<tr>
 							<td><script>T("OSD_Transparency")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-                                <!--<span id="dvr_common_OSD_alpha"></span>-->
-									<input type="select" data-UI="alpha" data="" /></span>
+									<span id="dvr_common_OSD_alpha"></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-			                        <li><input value="0" type="text" data="" /></li>                          
-									<li><input value="1" type="text" data="" /></li>
-									<li><input value="2" type="text" data="" /></li>
-									<li><input value="3" type="text" data="" /></li>
-			                        <li><input value="4" type="text" data="" /></li>
-									<li><input value="5" type="text" data="" /></li>
-									<li><input value="6" type="text" data="" /></li>
-			                        <li><input value="7" type="text" data="" /></li>
-									<li><input value="8" type="text" data="" /></li>
-									<li><input value="9" type="text" data="" /></li>
-			                        <li><input value="10" type="text" data="" /></li>
-									<li><input value="11" type="text" data="" /></li>
-									<li><input value="12" type="text" data="" /></li>
-			                        <li><input value="13" type="text" data="" /></li>
-									<li><input value="14" type="text" data="" /></li>
-									<li><input value="15" type="text" data="" /></li>
+			                        <li><a>0</a></li>                          
+									<li><a>1</a></li>
+									<li><a>2</a></li>
+									<li><a>3</a></li>
+			                        <li><a>4</a></li>
+									<li><a>5</a></li>
+									<li><a>6</a></li>
+			                        <li><a>7</a></li>
+									<li><a>8</a></li>
+									<li><a>9</a></li>
+			                        <li><a>10</a></li>
+									<li><a>11</a></li>
+									<li><a>12</a></li>
+			                        <li><a>13</a></li>
+									<li><a>14</a></li>
+									<li><a>15</a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2"><input id="dvr_common_autoswi" type="checkbox" data-UI="autoswi"/><script>T("Automatic_round_robin")</script></td></tr>
+						<tr><td colspan="2"><input id="dvr_common_autoswi" type="checkbox" /><script>T("Automatic_round_robin")</script></td></tr>
 						<tr>
 							<td><script>T("Automatic_polling_interval")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-                                   <!-- <span id="dvr_common_autoswiinterval"></span>-->
-									<input type="select" data-UI="autoswiinterval" data="" />
+									<span id="dvr_common_autoswiinterval"></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input value="2s" type="text"  /></li>
-									<li><input value="3s" type="text"  /></li>
-									<li><input value="4s" type="text"  /></li>
-			                        <li><input value="5s" type="text"  /></li>
-									<li><input value="8s" type="text"  /></li>
-									<li><input value="10s" type="text" /></li>
+									<li><a>2s</a></li>
+									<li><a>3s</a></li>
+									<li><a>4s</a></li>
+			                        <li><a>5s</a></li>
+									<li><a>8s</a></li>
+									<li><a>10s</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -318,52 +314,40 @@
 							<td><script>T("Automatic_round_robin_type")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-                                <!--<span id="dvr_common_autoswimode"></span>-->
-									<input type="select" data-UI="autoswimode" data=""/>
+									<span id="dvr_common_autoswimode"></span>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
-                                	<!--<input type="hidden" id="dvr_common_autoswimode_ID" >-->
-									<li value="0"><input type="text" value="Full_screen" data="Full_screen"/></li>
-									<li value="1"><input type="text" value="Split_screen" data="Split_screen"/></li>
+                                	<input type="hidden" id="dvr_common_autoswimode_ID" value="">
+									<li value="0"><a><script>T("Full_screen")</script></a></li>
+									<li value="1"><a><script>T("Split_screen")</script></a></li>
 								</ul>
 							</td>
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" click="dvr_common_save_content();" onclick="submitThisMenu('dvrGenSet')"><script>T("Save")</script></div></td></tr>
+						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="dvr_common_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
-					<table data-WARP="network">
-						<tr><td><script>T("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" data-UI="mac" readonly="readonly"/></td><td></td><td></td></tr>
+					<table>
+						<tr><td><script>T("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
 						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" data-UI="dhcp" onclick="dvr_disable('dhcp');"/><script>T("Open_DHCP")</script></td></tr>
-							 		<tr><td ><script>T("IP_address")</script></td><td><input id="dvr_ip_addr" type="text" data-UI="ip"/></td></tr>
-							 		<tr><td><script>T("Subnet_Mask")</script></td><td><input id="dvr_subnet_mask" type="text" data-UI="submask"/></td></tr>
-							 		<tr><td><script>T("Network_Address")</script></td><td><input id="dvr_network_addr" type="text" data-UI="gateway"/></td></tr>
-							 		<tr><td><script>T("DNS_address")</script></td><td><input id="dvr_dns_addr" type="text" data-UI="dns"/></td></tr>
+							 		<tr><td colspan="2"><input id="dvr_openDH" type="checkbox" /><script>T("Open_DHCP")</script></td></tr>
+							 		<tr><td ><script>T("IP_address")</script></td><td><input id="dvr_ip_addr" type="text"/></td></tr>
+							 		<tr><td><script>T("Subnet_Mask")</script></td><td><input id="dvr_subnet_mask" type="text"/></td></tr>
+							 		<tr><td><script>T("Network_Address")</script></td><td><input id="dvr_network_addr" type="text"/></td></tr>
+							 		<tr><td><script>T("DNS_address")</script></td><td><input id="dvr_dns_addr" type="text"/></td></tr>
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
-						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" data-UI="ddns" onclick="dvr_disable('ddns');"/><script>T("Open_DD")</script></td></tr>
-						 			<tr><td><script>T("Provider")</script></td>
-                                    <td><div class="select" style="width:133px;">
-									<input type="select"  data-UI="ddnsprovider" data=""/>
-									<a class="hover"></a>
-								</div>
-								<ul class="option">
-									<li><input type="text" value="dyndns.org" data="dyndns.org"/></li>
-									<li><input type="text" value="3322.org" data="3322.org"/></li>
-                                    <li><input type="text" value="changeip.com" data="changeip.com"/></li>            
-								</ul>
-                                </td>
-                                    </tr>
-						 			<tr><td><script>T("Domain")</script></td><td><input id="dvr_domain" type="text" data-UI="ddnsurl"/></td></tr>
-						 			<tr><td><script>T("Username")</script></td><td><input id="dvr_user_DD" type="text" data-UI="ddnsusr"/></td></tr>
-						 			<tr><td><script>T("Password")</script></td><td><input id="dvr_password_DD" type="password" data-UI="ddnspwd"/></td></tr>
+						 			<tr><td colspan="2"><input id="dvr_openDD" type="checkbox" /><script>T("Open_DD")</script></td></tr>
+						 			<tr><td><script>T("Provider")</script></td><td><input id="dvr_supplier" type="text"/></td></tr>
+						 			<tr><td><script>T("Domain")</script></td><td><input id="dvr_domain" type="text"/></td></tr>
+						 			<tr><td><script>T("Username")</script></td><td><input id="dvr_user_DD" type="text"/></td></tr>
+						 			<tr><td><script>T("Password")</script></td><td><input id="dvr_password_DD" type="password"/></td></tr>
 							 	</table>
 							</td>
 						</tr>
@@ -371,28 +355,28 @@
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr><td style="width:84px;"><script>T("Network_port")</script></td><td><input id="dvr_web_port" type="text" data-UI="httpport" /></td></tr>
-									<tr><td style="width:84px;"><script>T("Client_port")</script></td><td><input id="dvr_client_port" type="text" data-UI="clientport" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Network_port")</script></td><td><input id="dvr_web_port" type="text" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Client_port")</script></td><td><input id="dvr_client_port" type="text" /></td></tr>
 									<tr><td style="width:84px;"><script>T("Phone_port")</script></td><td><input type="text" /></td></tr>
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
 								<table class="tb1">
-									<tr><td colspan="2"><input id="dvr_Open_PPPOE" type="checkbox" data-UI="pppoe" onclick="dvr_disable('pppoe');"/><script>T("Open_PPPOE")</script></td></tr>
-									<tr><td><script>T("Username")</script></td><td><input id="dvr_user_PPPOE" type="text" data-UI="pppoeusr"/></td></tr>
-									<tr><td><script>T("Password")</script></td><td><input id="dvr_password_PPPOE" type="password" data-UI="pppoepwd"/></td></tr>
+									<tr><td colspan="2"><input id="dvr_Open_PPPOE" type="checkbox" /><script>T("Open_PPPOE")</script></td></tr>
+									<tr><td><script>T("Username")</script></td><td><input id="dvr_user_PPPOE" type="text" /></td></tr>
+									<tr><td><script>T("Password")</script></td><td><input id="dvr_password_PPPOE" type="password" /></td></tr>
 								</table>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
-									<tr style="background:#282828;"><td><script>T("Esee_ID")</script></td><td><input id="dvr_eseeID" type="text" data-UI="enetid"/></tr>
+									<tr style="background:#282828;"><td><script>T("Esee_ID")</script></td><td><input id="dvr_eseeID" type="text" /></tr>
 								</table>
 							</td>
 							<td colspan="2"></td>
 						</tr>
-						<tr><td colspan="4" class="tdBtn"><div class="hover" click="dvr_network_save_content();" onclick="submitThisMenu('dvrnetworkInfo')"><script>T("Save")</script></div></td></tr>
+						<tr><td colspan="4" class="tdBtn"><div class="hover" onclick="dvr_network_save_content();"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
@@ -401,11 +385,10 @@
 							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-									<!--<span id="dvr_enc_chn_sel0"></span>-->
-                                    <input type="select" data-UI="chn" data=""/>
+									<span id="dvr_enc_chn_sel0"></span>
 									<a class="hover"></a>
 								</div>
-								<ul id="dvr_enc_chn_sel" data-WARP="envload"  class="option">
+								<ul id="dvr_enc_chn_sel" class="option">
 								
 								</ul>
 							</td>
@@ -414,19 +397,19 @@
 						</tr>
 						<tr class="title"><td colspan="2"><h5><script>T("Main_stream")</script></h5></td><td style="padding-left:40px;" colspan="2"><h5><script>T("Sub_stream")</script></h5></td></tr>
 						<tr>
-							<td colspan="2" data-WARP="encode">
+							<td colspan="2">
 								<table class="tb1">
 								<tr>
 									<td><script>T("Coding_mode")</script></td>
-									<td >
+									<td>
 										<div class="select" style="width:133px;">
-                                        <!--<span id="dvr_enc_main_mode"></span>-->
-                                             <input type="select" data-UI="mode" data=""/>
+											<span id="dvr_enc_main_mode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-                                            <li><input type="text" value="Video_streaming" /></li>
-											<li><input type="text" value="Audio_and_video_streaming" /></li>
+                                        	<input type="hidden" id="dvr_enc_main_mode_ID" value="">
+											<li value="0"><a><script>T("Video_streaming")</script></a></li>
+											<li value="1"><a><script>T("Audio_and_video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -434,15 +417,14 @@
 									<td><script>T("Encoding_format")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_main_format"><li></li></span>-->
-                                            <input type="select" data-UI="fmt" data=""/>
+											<span id="dvr_enc_main_format"><li></li></span>
 											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li value="0"><input type="text" value="QCIF" /></li>
-											<li value="1"><input type="text" value="CIF" /></li>
-											<li value="2"><input type="text" value="HD1" /></li>
-			                                <li value="3"><input type="text" value="D1" /></li>
+											<li value="0"><a>QCIF</a></li>
+											<li value="1"><a>CIF</a></li>
+											<li value="2"><a>HD1</a></li>
+			                                <li value="3"><a>D1</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -450,16 +432,15 @@
 									<td><script>T("Image_quality")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-										<!--<span id="dvr_enc_main_image"></span>-->
-                                        <input type="select" data-UI="piclv" data=""/>
+										<span id="dvr_enc_main_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_enc_main_image_ID" value="">-->
-											<li value="0"><input type="text" value="Highest" /></li>
-											<li value="1"><input type="text" value="High" /></li>
-											<li value="2"><input type="text" value="Moderate" /></li>
-			                                <li value="3"><input type="text" value="Low" /></li>
-											<li value="4"><input type="text" value="Minimum" /></li>
+                                        	<input type="hidden" id="dvr_enc_main_image_ID" value="">
+											<li value="0"><a><script>T("Highest")</script></a></li>
+											<li value="1"><a><script>T("High")</script></a></li>
+											<li value="2"><a><script>T("Moderate")</script></a></li>
+			                                <li value="3"><a><script>T("Low")</script></a></li>
+											<li value="4"><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -467,15 +448,14 @@
 									<td><script>T("Stream_control")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_main_bitmode"></span>-->
-                                            <input type="select" data-UI="bitmode" data=""/>
+											<span id="dvr_enc_main_bitmode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<!--<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">-->
-                                            <li value="1"><input type="text" value="CBR" /></li>
-                                            <li value="0"><input type="text" value="VBR" /></li>
-											<li value="2"><input type="text" value="Moderate_rate" /></li>
+											<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">
+                                            <li value="0"><a><script>T("Variable_rate")</script></a></li>
+											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -483,20 +463,19 @@
 									<td><script>T("Stream_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_main_bitvalue"></span>-->
-                                             <input type="select" data-UI="bitvalue" data=""/>
+											<span id="dvr_enc_main_bitvalue"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><input type="text" value="64kbps" /></li>
-											<li><input type="text" value="128kbps" /></li>
-											<li><input type="text" value="256kbps" /></li>
-			                                <li><input type="text" value="384kbps" /></li>
-											<li><input type="text" value="512kbps" /></li>
-                                            <li><input type="text" value="768kbps" /></li>
-                                            <li><input type="text" value="1Mbps" /></li>
-                                            <li><input type="text" value="1.5Mbps" /></li>
-                                            <li><input type="text" value="2Mbps" /></li>
+											<li><a>64kbps</a></li>
+											<li><a>128kbps</a></li>
+											<li><a>256kbps</a></li>
+			                                <li><a>384kbps</a></li>
+											<li><a>512kbps</a></li>
+                                            <li><a>768kbps</a></li>
+                                            <li><a>1Mbps</a></li>
+                                            <li><a>1.5Mbps</a></li>
+                                            <li><a>2Mbps</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -504,39 +483,37 @@
 									<td><script>T("Stream_frame_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_main_framerate"></span>-->
-                                              <input type="select" data-UI="framerate" data=""/>
+											<span id="dvr_enc_main_framerate"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><input type="text" value="1FPS" /></li>
-											<li><input type="text" value="2FPS" /></li>
-											<li><input type="text" value="3FPS" /></li>
-			                                <li><input type="text" value="5FPS" /></li>
-											<li><input type="text" value="8FPS" /></li>
-											<li><input type="text" value="10FPS" /></li>
-			                                <li><input type="text" value="12FPS" /></li>
-											<li><input type="text" value="15FPS" /></li>
-											<li><input type="text" value="20FPS" /></li>
-			                                <li><input type="text" value="25FPS" /></li>
+											<li><a>1FPS</a></li>
+											<li><a>2FPS</a></li>
+											<li><a>3FPS</a></li>
+			                                <li><a>5FPS</a></li>
+											<li><a>8FPS</a></li>
+											<li><a>10FPS</a></li>
+			                                <li><a>12FPS</a></li>
+											<li><a>15FPS</a></li>
+											<li><a>20FPS</a></li>
+			                                <li><a>25FPS</a></li>
 										</ul>
 									</td>
 								</tr>
 								</table>
 							</td>
-							<td colspan="2" style="padding-left:40px;" data-WARP="encodesub">
-								<table class="tb1" >
+							<td colspan="2" style="padding-left:40px;">
+								<table class="tb1">
 									<tr>
 										<td><script>T("Coding_mode")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_sub_mode"></span>-->
-                                             <input type="select" data-UI="mode" data=""/>
+											<span id="dvr_enc_sub_mode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_enc_sub_mode_ID" value="0">-->
-											<li value="0"><input value="Video_streaming" /></li>
+                                        	<input type="hidden" id="dvr_enc_sub_mode_ID" value="0">
+											<li value="0"><a><script>T("Video_streaming")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -544,13 +521,12 @@
 									<td><script>T("Encoding_format")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_sub_format"><li></li></span>-->
-                                             <input type="select" data-UI="fmt" data=""/>
+											<span id="dvr_enc_sub_format"><li></li></span>
 											<a class="hover"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
-											<li value="0"><input type="text" value="QCIF" /></li>
-											<li value="1"><input type="text" value="CIF" /></li>
+											<li><a>QCIF</a></li>
+											<li><a>CIF</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -558,17 +534,15 @@
 									<td><script>T("Image_quality")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-										<!--<span id="dvr_enc_sub_image"></span>-->
-                                         <input type="select" data-UI="piclv" data=""/>
+										<span id="dvr_enc_sub_image"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_enc_sub_image_ID" value="">-->
-											<!--<li value="0"><a><script>T("Highest")</script></a></li>-->
-											<li value="0"><input type="text" value="Highest" /></li>
-											<li value="1"><input type="text" value="High" /></li>
-											<li value="2"><input type="text" value="Moderate" /></li>
-			                                <li value="3"><input type="text" value="Low" /></li>
-											<li value="4"><input type="text" value="Minimum" /></li>
+                                        	<input type="hidden" id="dvr_enc_sub_image_ID" value="">
+											<li value="0"><a><script>T("Highest")</script></a></li>
+											<li value="1"><a><script>T("High")</script></a></li>
+											<li value="2"><a><script>T("Moderate")</script></a></li>
+			                                <li value="3"><a><script>T("Low")</script></a></li>
+											<li value="4"><a><script>T("Minimum")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -576,15 +550,14 @@
 									<td><script>T("Stream_control")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_sub_bitmode"></span>-->
-                                             <input type="select" data-UI="bitmode" data=""/>
+											<span id="dvr_enc_sub_bitmode"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">-->
-                                           <li value="0"><input type="text" value="CBR" /></li>
-											<li value="1"><input type="text" value="VBR" /></li>
-											<li value="2"><input type="text" value="Moderate_rate" /></li>
+                                        	<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">
+											<li value="0"><a><script>T("Variable_rate")</script></a></li>
+											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -592,15 +565,14 @@
 									<td><script>T("Stream_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_sub_bitvalue"></span>-->
-                                             <input type="select" data-UI="bitvalue" data=""/>
+											<span id="dvr_enc_sub_bitvalue"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-                                            <li><input type="text" value="64kbps" /></li>
-											<li><input type="text" value="128kbps" /></li>
-											<li><input type="text" value="256kbps" /></li>
-			                                <li><input type="text" value="384kbps" /></li>
+											<li><a>64kbps</a></li>
+											<li><a>128kbps</a></li>
+											<li><a>256kbps</a></li>
+			                                <li><a>384kbps</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -608,18 +580,17 @@
 									<td><script>T("Stream_frame_rate")</script></td>
 									<td>
 										<div class="select" style="width:133px;">
-											<!--<span id="dvr_enc_sub_framerate"></span>-->
-                                             <input type="select" data-UI="framerate" data=""/>
+											<span id="dvr_enc_sub_framerate"></span>
 											<a class="hover"></a>
 										</div>
 										<ul class="option">
-											<li><input type="text" value="1FPS" /></li>
-											<li><input type="text" value="2FPS" /></li>
-											<li><input type="text" value="3FPS" /></li>
-			                                <li><input type="text" value="5FPS" /></li>
-											<li><input type="text" value="8FPS" /></li>
-											<li><input type="text" value="10FPS" /></li>
-			                                <li><input type="text" value="12FPS" /></li>
+											<li><a>1FPS</a></li>
+											<li><a>2FPS</a></li>
+											<li><a>3FPS</a></li>
+			                                <li><a>5FPS</a></li>
+											<li><a>8FPS</a></li>
+											<li><a>10FPS</a></li>
+			                                <li><a>12FPS</a></li>
 										</ul>
 									</td>
 								</tr>
@@ -691,7 +662,7 @@
 					</table>
 				</div>
 				<div class="switch dvr_list">
-				<table data-WARP="record">
+				<table>
 					<tr class="title"><td><h5><script>T("General_Settings")</script></h5></td><td></td><td></td><td></td></tr>
 					<tr><td colspan="4">
 					<table class="tb1">
@@ -699,34 +670,22 @@
 							<td class="td1"><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-								<!--<span id="dvr_record_chn_sel0"></span>-->
-                                <input type="select"  data-UI="chn" hidden />
-                                 <input data=""  data-UI="chn1" />
+								<span id="dvr_record_chn_sel0"></span>
 								<a class="hover"></a></div>
-								<ul id="dvr_record_chn_sel" data-WARP="envload" class="option">
-			                       
+								<ul id="dvr_record_chn_sel" class="option">
+			                                
 								</ul>
 							</td>
 							<td class="td1"><script>T("Week")</script></td>
 							<td style="width:244px;">
 								<div class="select" style="width:133px;">
-									<!--<span id="dvr_record_week"></span>-->
-                                     <!--<input type="select" data="" data-UI="weekday" />-->
-                                      <input id="week" value="Monday" data=""  />
+									<span id="dvr_record_week"></span>
 									<a class="hover"></a>
 								</div>
-								<!--<ul id="dvr_record_week_sel" class="option" >-->
-                                	<!--<input type="hidden" id="dvr_record_week_ID" value="">-->
-			                    <ul class="option week" style="width:133px;" >
-									<li style="width:133px;"><input data="0" value="Monday"/></li>
-									<li style="width:133px;"><input data="1" value="Tuesday"/></li>
-									<li style="width:133px;"><input data="2" value="Wednesday"/></li>
-									<li style="width:133px;"><input data="3" value="Thursday"/></li>
-									<li style="width:133px;"><input data="4" value="Friday"/></li>
-									<li style="width:133px;"><input data="5" value="Saturday"/></li>
-									<li style="width:133px;"><input data="6" value="Sunday"/></li>    
+								<ul id="dvr_record_week_sel" class="option" >
+                                	<input type="hidden" id="dvr_record_week_ID" value="">
+			
 								</ul>
-                                
 							</td>
 						</tr>
 						<tr><td class="td1"></td>
@@ -737,37 +696,26 @@
 							<span style="margin-left:50px;"><script>T("Warning")</script></span></td></tr>
 						<tr><td class="td1"><span><script>T("Time_d")</script></span> 1</td>
 			                        <td>
-			                            <!--<input id="dvr_record_begin_0" type="text" class="iput1" />
-			                            <input id="dvr_record_end_0" type="text" class="iput1" />-->
-                                        <input type="hidden" value="" class="timeid" />
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                        
+			                            <input id="dvr_record_begin_0" type="text" class="iput1" />
+			                            <input id="dvr_record_end_0" type="text" class="iput1" />
 			                        </td>
 			                        <td colspan="2">
-			                            <input id="dvr_record_types_0_0" class="chk1" type="checkbox" />
-			                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox" />
-			                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox" />
+			                            <input id="dvr_record_types_0_0" class="chk1" type="checkbox"/>
+			                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox"/>
+			                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox"/>
 			                        </td></tr>
 						<tr><td class="td1"><span><script>T("Time_d")</script></span> 2</td>
 			                        <td>
-			                            <!--<input id="dvr_record_begin_1" type="text" class="iput1"style="float: left;width:78px;" />
-			                            <input id="dvr_record_end_1" type="text" class="iput1" />-->
-                                        <input type="hidden" value="" class="timeid" />
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                    </td>
+			                            <input id="dvr_record_begin_1" type="text" style="float: left;width:78px;" />
+			                            <input id="dvr_record_end_1" type="text" class="iput1" /></td>
 			                        <td colspan="2">
 			                            <input id="dvr_record_types_1_0" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_1" class="chk1" type="checkbox"/>
 			                            <input id="dvr_record_types_1_2" class="chk1" type="checkbox"/></td></tr>
 						<tr><td class="td1"><span><script>T("Time_d")</script></span> 3</td>
 			                        <td>
-			                            <!--<input id="dvr_record_begin_2" type="text" class="iput1" style="float: left;width:78px;" />
-			                            <input id="dvr_record_end_2" type="text" class="iput1" />-->
-                                        <input type="hidden" value="" class="timeid" />
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+			                            <input id="dvr_record_begin_2" type="text" style="float: left;width:78px;" />
+			                            <input id="dvr_record_end_2" type="text" class="iput1" />
 			                        </td>
 			                        <td colspan="2">
 			                            <input id="dvr_record_types_2_0" class="chk1" type="checkbox"/>
@@ -776,11 +724,8 @@
 			                        </td></tr>
 						<tr><td class="td1"><span><script>T("Time_d")</script></span> 4</td>
 			                        <td>
-			                            <!--<input id="dvr_record_begin_3" type="text" style="float: left;width:78px;" />
-			                            <input id="dvr_record_end_3" type="text" class="iput1" />-->
-                                        <input type="hidden" value="" class="timeid" />
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+			                            <input id="dvr_record_begin_3" type="text" style="float: left;width:78px;" />
+			                            <input id="dvr_record_end_3" type="text" class="iput1" />
 			                        </td>
 			                        <td colspan="2">
 			                            <input id="dvr_record_types_3_0" class="chk1" type="checkbox"/>
@@ -861,71 +806,68 @@
 				</table>
 				</div>
 				<div class="switch dvr_list">
-					<table data-WARP="screen">
+					<table>
 						<tr>
 							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-								<!--<span id="dvr_screen_chn_sel0"></span>-->
-                                <input type="select" data-UI="chn" data="" /><!---->
+								<span id="dvr_screen_chn_sel0"></span>
 								<a class="hover"></a></div>
-								<ul id="dvr_screen_chn_sel" data-WARP="envload" class="option">
+								<ul id="dvr_screen_chn_sel" class="option">
 							
 								</ul>
 							</td>
 						</tr>
-						<tr><td><script>T("Name")</script></td><td><input id="dvr_screen_name" data-UI="title" type="text" style="width:133px;" /><!-- --></td></tr>
+						<tr><td><script>T("Name")</script></td><td><input id="dvr_screen_name" type="text" style="width:133px;" /></td></tr>
 						<tr><td colspan="2" class="tdBtn">
-							<div class="hover" onclick="submitThisMenu('dvrScreenInfo')"><script>T("Save")</script></div></td></tr>
+							<div class="hover" onclick="dvr_screen_save_content()"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
-					<table class="tb1" data-WARP="ptz">
+					<table class="tb1">
 						<tr>
 							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-									<!--<span id="dvr_ptz_chn_sel0"></span>-->
-                                     <input type="select" data-UI="chn" data="" />
+									<span id="dvr_ptz_chn_sel0"></span>
 									<a class="hover"></a>
 								</div>
-								<ul id="dvr_ptz_chn_sel" class="option" data-WARP="envload">
+								<ul id="dvr_ptz_chn_sel" class="option">
 			
 								</ul>
 							</td>
 							<td></td>
 						</tr>
-						<tr><td><script>T("Device_Address")</script></td><td colspan="2"><input id="dvr_ptz_device_addr" type="text"  style="width:133px;" data-UI="id" /></td></tr>
+						<tr><td><script>T("Device_Address")</script></td><td colspan="2"><input id="dvr_ptz_device_addr" type="text"  style="width:133px;"/></td></tr>
 						<tr>
 							<td><script>T("Protocol")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-										<input type="select" data-UI="protocal" data=""/>
+										<span id="dvr_ptz_agreement"></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-                                	<!--<input type="hidden" id="dvr_ptz_agreement_ID" value="">-->
-									<li value="0"><input  type="text" value="pelco-D" data=""/></li>
-									<li value="1"><input  type="text" value="pelco-P" data=""/></li>
-                                   
+                                	<input type="hidden" id="dvr_ptz_agreement_ID" value="">
+									<li value="0"><a>pelco-D</a></li>
+									<li value="1"><a>pelco-P</a></li>
 								</ul>
 							</td>
-						</tr> 
+						</tr>
 						<tr>
 							<td><script>T("Baud_rate")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-										<input type="select" data-UI="baudrate" data=""/>
+										<span id="dvr_ptz_baud_rate"></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input  type="text" value="2400" /></li>
-									<li><input  type="text" value="4800" /></li>
-									<li><input  type="text" value="9600" /></li>
-			                        <li><input  type="text" value="19200" /></li>
-									<li><input  type="text" value="38400" /></li>
-									<li><input  type="text" value="57600" /></li>
-			                        <li><input  type="text" value="115200" /></li>
+									<li><a>2400</a></li>
+									<li><a>4800</a></li>
+									<li><a>9600</a></li>
+			                        <li><a>19200</a></li>
+									<li><a>38400</a></li>
+									<li><a>57600</a></li>
+			                        <li><a>115200</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -934,13 +876,13 @@
 							<td><script>T("Stop_bits")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<input type="select" data-UI="stopbit" data=""/>
+										<span></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input  type="text" value="1" /></li>
-									<li><input  type="text" value="1.5" /></li>
-									<li><input  type="text" value="2" /></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -948,13 +890,13 @@
 							<td><script>T("Parity")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-										<input type="select" data-UI="parity" data=""/>
+										<span></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input  type="text" value="Parity_NONE" /></li>
-									<li><input  type="text" value="Parity_ODD" /></li>
-									<li><input  type="text" value="Parity_EVEN" /></li>
+									<li><a></a></li>
+									<li><a></a></li>
+									<li><a></a></li>
 								</ul>
 							</td>
 						</tr>
@@ -962,15 +904,14 @@
 							<td><script>T("Data_rate")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-										<!--<span id="dvr_ptz_data_rate"></span>-->
-                                        <input type="select" data-UI="databit" data=""/>
+										<span id="dvr_ptz_data_rate"></span>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
-									<li><input  type="text" value="5" /></li>
-									<li><input  type="text" value="6" /></li>
-									<li><input  type="text" value="7" /></li>
-                                    <li><input  type="text" value="8" /></li>
+									<li><a>5</a></li>
+									<li><a>6</a></li>
+									<li><a>7</a></li>
+                                    <li><a>8</a></li>
 								</ul>
 							</td>
 						</tr>
@@ -1034,19 +975,18 @@
 							</td>
 						</tr>
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;">
-							<div class="hover" click="dvr_save('dvr_ptz_chn_sel');" onclick="submitThisMenu('dvrPTZInfo')"><script>T("Save")</script></div></td></tr>
+							<div class="hover" onclick="dvr_save('dvr_ptz_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
 				<div class="switch dvr_list">
-					<table data-WARP="detection">
+					<table>
 						<tr>
 							<td class="td1"><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-                                <!--<span id="dvr_detect_chn_sel0"></span>-->
-								<input type="select" data-UI="chn" data=""/>
+								<span id="dvr_detect_chn_sel0"></span>
 								<a class="hover"></a></div>
-								<ul id="dvr_detect_chn_sel" data-WARP="envload" class="option">
+								<ul id="dvr_detect_chn_sel" class="option">
 									
 								</ul>
 							</td>
@@ -1056,16 +996,15 @@
 							<td class="td1"><script>T("Sensitivity")</script></td>
 								<td style="width:278px;">
 			                                    <div class="select" style="width:133px;">
-                                                 <!--<span id="dvr_detect_sens"></span>-->
-			                                    <input type="select" data-UI="sens" data=""/>
+			                                    <span id="dvr_detect_sens"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-                                                	<!--<input type="hidden" id="dvr_detect_sens_ID" value="" />-->
-			                                        
-											            <li value="1"><input type="text" value="High" /></li>
-											            <li value="2"><input type="text" value="Moderate" /></li>
-			                                            <li value="3"><input type="text" value="Low" /></li>
-											            <li value="4"><input type="text" value="Minimum" /></li>
+                                                	<input type="hidden" id="dvr_detect_sens_ID" value="" />
+			                                        <li value="0"><a><script>T("Highest")</script></a></li>
+			                                        <li value="1"><a><script>T("High")</script></a></li>
+			                                        <li value="2"><a><script>T("Moderate")</script></a></li>
+			                                        <li value="3"><a><script>T("Low")</script></a></li>
+			                                        <li value="4"><a><script>T("Minimum")</script></a></li>
 			                                    </ul>
 			                                </td>
 							<td></td>
@@ -1077,26 +1016,25 @@
 									<td class="td1"><script>T("Duration")</script></td>
 									<td style="width:278px;">
 										<div class="select" style="width:133px;">
-										<!--<span id="dvr_detect_mduration"></span>-->
-                                         <input type="select" data-UI="mdalarmduration" data=""/>
+										<span id="dvr_detect_mduration"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_detect_mduration_ID" value="" />-->
-											<li value="0"><input type="text" value="1s" /></li>
-											<li value="1"><input type="text" value="2s" /></li>
-											<li value="2"><input type="text" value="3s" /></li>
-			                                <li value="3"><input type="text" value="4s" /></li>
-											<li value="4"><input type="text" value="5s" /></li>
-											<li value="5"><input type="text" value="8s" /></li>
-			                                <li value="6"><input type="text" value="10s" /></li>
-											<li value="7"><<input type="text" value="Continuous" /></li>
+                                        	<input type="hidden" id="dvr_detect_mduration_ID" value="" />
+											<li value="0"><a>1s</a></li>
+											<li value="1"><a>2s</a></li>
+											<li value="2"><a>3s</a></li>
+			                                <li value="3"><a>4s</a></li>
+											<li value="4"><a>5s</a></li>
+											<li value="5"><a>8s</a></li>
+			                                <li value="6"><a>10s</a></li>
+											<li value="7"><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;">
-								<input id="dvr_detect_mAlarm" type="checkbox" data-UI="mdalarm" /><script>T("Alert")</script>
-								<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" data-UI="mdbuzzer" /><script>T("Buzzer")</script>
-								<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox" data-UI="" /><script>T("Screen_Display")</script></td></tr>
+								<input id="dvr_detect_mAlarm" type="checkbox" /><script>T("Alert")</script>
+								<input id="dvr_detect_mBuzzer" type="checkbox" style="margin-left:20px;" /><script>T("Buzzer")</script>
+								<input id="dvr_detect_mOsd" style="margin-left:20px;" type="checkbox"/><script>T("Screen_Display")</script></td></tr>
 							</table>
 						</td></tr>
 						<tr><td colspan="3" class="title"><h5><script>T("Video_loss")</script></h5></td></tr>
@@ -1106,26 +1044,25 @@
 									<td class="td1"><script>T("Duration")</script></td>
 									<td style="width:262px;">
 										<div class="select" style="width:133px;">
-										<!--<span id="dvr_detect_vduration"></span>-->
-                                        <input type="select" data-UI="vlalarmduration" data=""/>
+										<span id="dvr_detect_vduration"></span>
 										<a class="hover"></a></div>
 										<ul class="option">
-                                        	<!--<input type="hidden" id="dvr_detect_vduration_ID" value="" />-->
-											<li value="0"><input type="text" value="1s" /></li>
-											<li value="1"><input type="text" value="2s" /></li>
-											<li value="2"><input type="text" value="3s" /></li>
-			                                <li value="3"><input type="text" value="4s" /></li>
-											<li value="4"><input type="text" value="5s" /></li>
-											<li value="5"><input type="text" value="8s" /></li>
-			                                <li value="6"><input type="text" value="10s" /></li>
-											<li value="7"><input type="text" value="Continuous" /></li>
+                                        	<input type="hidden" id="dvr_detect_vduration_ID" value="" />
+											<li value="0"><a>1s</a></li>
+											<li value="1"><a>2s</a></li>
+											<li value="2"><a>3s</a></li>
+			                                <li value="3"><a>4s</a></li>
+											<li value="4"><a>5s</a></li>
+											<li value="5"><a>8s</a></li>
+			                                <li value="6"><a>10s</a></li>
+											<li value="7"><a><script>T("Continuous")</script></a></li>
 										</ul>
 									</td>
 								</tr>
 								<tr><td colspan="3" style="text-indent:16px;">
-								<input id="dvr_detect_vAlarm" type="checkbox"  data-UI="vlalarm"/><script>T("Alert")</script>
-								<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" data-UI="vlbuzzer" /><script>T("Buzzer")</script>
-								<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox" data-UI="" /><script>T("Screen_Display")</script></td></tr>
+								<input id="dvr_detect_vAlarm" type="checkbox" /><script>T("Alert")</script>
+								<input id="dvr_detect_vBuzzer" type="checkbox" style="margin-left:20px;" /><script>T("Buzzer")</script>
+								<input id="dvr_detect_vOsd" style="margin-left:20px;" type="checkbox"/><script>T("Screen_Display")</script></td></tr>
 							</table>
 						</td></tr>
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to_other")</script></h5></td></tr>
@@ -1189,17 +1126,16 @@
 					</table>
 				</div>	
 				<div class="switch dvr_list">
-					<table class="tb1" data-WARP="sensor">
-						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" data-UI="alarm" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"  data-UI="buzzer" /><script>T("Buzzer")</script></td></tr>
+					<table class="tb1">
+						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"/><script>T("Buzzer")</script></td></tr>
 						<tr>
 							<td><script>T("Channel")</script></td>
 							<td>
 								<div class="select" style="width:133px;">
-									<!--<span id="dvr_alarm_chn_sel0"></span>-->
-                                    <input type="select" data-UI="chn" data=""/>
+									<span id="dvr_alarm_chn_sel0"></span>
 									<a class="hover"></a>
 								</div>
-								<ul id="dvr_alarm_chn_sel" class="option" data-WARP="envload">
+								<ul id="dvr_alarm_chn_sel" class="option">
 									
 								</ul>
 							</td>
@@ -1209,14 +1145,13 @@
 							<td><script>T("Operating_mode")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-			                                    <!--<span id="dvr_alarm_opermode"></span>-->
-                                                <input type="select" data-UI="mode" data=""/>
-			                                    <a class="hover"></a>
-                                </div>
+			                                    <span id="dvr_alarm_opermode"></span>
+			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-                                                    <li ><input type="text" value="Close"  /></li>
-											        <li ><input type="text" value="Normally_open" /></li>
-			                                        <li ><input type="text" value="Normally_closed" /></li>
+                                                	<input type="hidden" id="dvr_alarm_opermode_ID" value="" />
+			                                        <li value="0"><a><script>T("Close")</script></a></li>
+			                                        <li value="1"><a><script>T("Normally_open")</script></a></li>
+			                                        <li value="2"><a><script>T("Normally_closed")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>
@@ -1224,19 +1159,18 @@
 							<td><script>T("Alarm_duration")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-										<!--<span id="dvr_alarm_duration"></span>-->
-                                         <input type="select" data-UI="alarmduration" data=""/>
+										<span id="dvr_alarm_duration"></span>
 			                                    <a class="hover"></a></div>
 			                                    <ul class="option">
-                                                	<!--<input type="hidden" id="dvr_alarm_duration_ID" value="" />-->
-			                                       <li value="0"><input type="text" value="1s" /></li>
-											       <li value="1"><input type="text" value="2s" /></li>
-											       <li value="2"><input type="text" value="3s" /></li>
-			                                       <li value="3"><input type="text" value="4s" /></li>
-											       <li value="4"><input type="text" value="5s" /></li>
-											       <li value="5"><input type="text" value="8s" /></li>
-			                                       <li value="6"><input type="text" value="10s" /></li>
-											       <li value="7"><input type="text" value="Continuous" /></li>
+                                                	<input type="hidden" id="dvr_alarm_duration_ID" value="" />
+			                                        <li value="0"><a>1s</a></li>
+			                                        <li value="1"><a>2s</a></li>
+			                                        <li value="2"><a>3s</a></li>
+			                                        <li value="3"><a>4s</a></li>
+			                                        <li value="4"><a>5s</a></li>
+			                                        <li value="5"><a>8s</a></li>
+			                                        <li value="6"><a>10s</a></li>
+			                                        <li value="7"><a><script>T("Continuous")</script></a></li>
 			                                    </ul>
 			                                </td>
 						</tr>

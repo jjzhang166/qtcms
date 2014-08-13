@@ -105,7 +105,7 @@ var oSearchOcx,
 				}
 				if(key == 1){  //单击到“设备设置”
 					
-					reInitNowDev();  //重新加载设备信息
+					//reInitNowDev();  //重新加载设备信息
 
 					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){  //单击树形菜单的设备时
 
@@ -150,11 +150,11 @@ var oSearchOcx,
 						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
-							 /*emptyDevSetMenu();
+							//emptyDevSetMenu();
                          
 							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();*/
-							console.log('------------new DVR()--------------');
+							dvr_devinfo_load_content();
+							/*console.log('------------new DVR()--------------');
 							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
 							
 							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
@@ -168,7 +168,7 @@ var oSearchOcx,
 								}
 							})
 
-							nowDev.dvrBasicInfo2UI();
+							nowDev.dvrBasicInfo2UI();*/
 						}
 
 			 	   });
@@ -601,12 +601,11 @@ var oSearchOcx,
 
 	function emptyDevSetMenu(){
 		//console.log('清空表单的数据');
-		$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
+		//$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
 
-		$('#set_content div.switch input[class]').val('').prop('checked',false);
+		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
-									  		  .end().find(':checkbox,:radio').prop('checked',false); //清除
+		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','').css('border','0').end().find(':checkbox,:radio').prop('checked',false); //清除
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
@@ -960,6 +959,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
+
 
 		var warp = $('#SerachDevList');
 

@@ -80,6 +80,10 @@
 	'Slow':'慢放',
 	'Fast':'快进',
 	'wind':'窗口',
+	'ThrowException':'窗口_V_:下的文件(_V_),_V_!',
+	'Available':'可用',
+	'Abnormal_damaged':'异常或者损坏!',
+	'device_channel':'设备:_V_下的通道:_V_',
 
 	'Device_name':'设备名',
 	'Channel':'通道',

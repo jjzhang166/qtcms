@@ -235,7 +235,7 @@ function encode_save_content()
 		ipc_enc_freeResolution = false;
 	}
 	var encode_data = '{"channelName": "'+ ipc_enc_channelname +'","resolution":"'+ipc_enc_resolution+'","freeResolution":'+ipc_enc_freeResolution+',"resolutionWidth":'+ ipc_enc_resolutionWidth +',"resolutionHeight":'+ ipc_enc_resolutionHeight +',"bitRateControlType":"'+ipc_enc_BitRateControlType+'","constantBitRate":'+ ipc_enc_bps +',"frameRate":'+ ipc_enc_fps +'}';
-	console.log(encode_data);
+	//console.log(encode_data);
 	
 	//	alert(encode_data); 
 	 

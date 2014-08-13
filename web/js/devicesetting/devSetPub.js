@@ -102,9 +102,9 @@ function ignoreKey(key){//不常用的选项变量
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
-	if(typeof(beforeSend) == 'string' && async)emptyDevSetMenu(); //异步请求时清空表单.
+	if(typeof(beforeSend) != 'boolean' && async) emptyDevSetMenu(); //异步请求时清空表单.
 
-	type = 'GET'
+	type = 'GET';
 
 	__AJAXconstruct(url,data,beforeSend,success,function(str){
 		dataType='json';
@@ -183,9 +183,14 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			console.log(Data);
 
-			console.time('数据填充时间');
+			//console.time('数据填充时间');
 			typeof(success) == 'function' && success(Data);
-			console.timeEnd('数据填充时间');
+			//console.timeEnd('数据填充时间');
+
+			warp.find('input').filter(function(){ 
+				var a = $(this).parent()[0].nodeName
+				return  ((a=='TD' || a == 'DIV') && $(this).parent().attr('class') != 'select');
+			}).attr("disabled",false);
 
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
@@ -203,13 +208,14 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			if(errorThrown=='Unauthorized'){
 				str='Unauthorized';				
-				nowDev._VER = 'no auth';
 			}
 
-			if(str != 'abort' && typeof(beforeSend) != 'boolean')
+			if(str != 'abort' && typeof(beforeSend) != 'boolean'){
+				nowDev._VER = str;
 				showAJAXHint(str);
+			}
 
-			if(str != 'abort'){
+			/*if(str != 'abort'){
 				console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
 				console.log(XMLHttpRequest.status);
 
@@ -222,15 +228,10 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 				console.log(errorThrown);
 
 				console.log('+++++++++++++++++++++++++++++++');
-			}
+			}*/
 		},
 		complete: function(XMLHttpRequest, textStatus){
-			
-			warp.find('input').filter(function(){ 
-				var a = $(this).parent()[0].nodeName
-				return  ((a=='TD' || a == 'DIV') && $(this).parent().attr('class') != 'select');
-			}).attr("disabled",false);
-			
+						
 			console.log('-------------complete-----------'+str);
 
 			typeof(complete) == 'function' && complete(str);
@@ -284,20 +285,24 @@ function PCTime2dev(){
 }
 //检测设备软件版本和用户登录情况
 function checkAJAX(){
-
+	var warp = $('#set_content div.ipc_list:visible')
+	//console.log(nowDev);
 	var a = '';
-
-	if(nowDev._VER && nowDev._VER == 'no auth'){ //默认用户:admin,默认空密码.登陆失败!
-		$('#set_content div.ipc_list:eq(0) input:text').val(''); //表单置为空
-		a = 'Unauthorized';//提示信息
-
-		console.log('=======nowDev._VER=========='+nowDev._VER);
-
-	}else if(nowDev._VER < nowDev._Upgrade){ //当前设备软件版本低于CMS 支持的最低版本IPC
-		a = 'low_ver';//提示信息
+	if(nowDev._VER < nowDev._Upgrade){ //当前设备软件版本低于CMS 支持的最低版本IPC
+		a = warp.attr('action') != "ipcBasicInfo" ? 'low_ver' : '';//提示信息
+	}else{
+		if(!/^(\w+_?)+$/.test(nowDev._VER)){
+			a = '';
+		}else{
+			a = nowDev._VER;//提示信息
+			if(nowDev._VER == 'Unauthorized'){ //默认用户:admin,默认空密码.登陆失败!
+				$('#set_content div.ipc_list:eq(0) input:text').val(''); //表单置为空
+				//console.log('=======nowDev._VER=========='+nowDev._VER);
+			}
+		}
 	}
 
-	a && showAJAXHint(a) 
+	a && showAJAXHint(a)
 
 	return a;
 }
@@ -309,7 +314,7 @@ function submitThisMenu(str){
 	nowDev[str+'Put']();
 }
 
-function getPutDataJSON(){
+/*function getPutDataJSON(){
 	var warp = $('#set_content div.ipc_list:visible'),
 		str = '{',
 		node = {};
@@ -336,7 +341,7 @@ function getPutDataJSON(){
 	str = str.slice(0,-1) + '}';
 
 	return str;
-}
+}*/
 //input表单的可写/不可写
 function disable(warp,str){
 	var oInput = $('#set_content div.ipc_list:visible [data-WARP="'+warp+'"]').find('input:text,input:password');
@@ -353,10 +358,10 @@ function dvr_disable(data_ui){
 	var oInput = warp.parents('table').find('input:text,input:password,input[type="select"]');
 	
 	if(warp.prop('checked') == true){
-		 oInput.prop('disabled',false);
+			oInput.prop('disabled',false);
 		}else{
 			oInput.prop('disabled',true);
-			}
+		}
 	
 	}
 /*
@@ -380,6 +385,7 @@ function showAJAXHint(str){
 //检查IP格式
 
 function chkInput(type,obj,str){//设备类型  当前input对象 “文本框前的名称”
+
 	var hint = '';
 		val = obj.value;
 	switch(type){  
@@ -444,9 +450,8 @@ function portAsync(){
 //DVR 点击通道数时触发的事件
 //屏幕设置
 function getTitle(num){
-
    nowDev._dvrScreenInfo2UI(num);
-	}
+}
 //编码设置
 function getencode(num){
 
@@ -465,15 +470,13 @@ function getVideo(num){
 //警报设置
 function getAlarm(num){
 	
-	nowDev._dvrAlarmInfo2UI(num);
-	
+	nowDev._dvrAlarmInfo2UI(num);	
 }
 //录像设置
 function getRecord(num,week){
 	
-	nowDev._dvrVideoInfo2UI(num,week);
-	
-	}
+	nowDev._dvrVideoInfo2UI(num,week);	
+}
 
 /*function AJAXabort(){
 	for(i in AJAX){
