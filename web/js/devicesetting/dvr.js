@@ -153,6 +153,7 @@ function dvr_devinfo_load_content()
 				alert_error(dvr_data.juan.envload.errno);
 				return;
 			}
+			console.log(dvr_data);
 			$("#Dvr_Device_name")[0].value = dvr_data.juan.devinfo.name;
 			$("#Dvr_Device_model")[0].value = dvr_data.juan.devinfo.model;
 			$("#Dvr_Hardware_version")[0].value = dvr_data.juan.devinfo.hwver;
@@ -252,6 +253,7 @@ function dvr_common_load_content()
 		success: function(data, textStatus){
 //			alert("recv:" + data.xml);
 			dvr_data = xml2json.parser(data.xml, "", false)
+			console.log(dvr_data);
 			if(dvr_data.juan.envload.errno != 0)
 			{
 				alert_error(dvr_data.juan.envload.errno);
@@ -528,6 +530,7 @@ function setAjax(xmlstr,fun){
 }
 function dvr_encoding_data2ui(dvr_selected_chn)
 {
+	console.log(dvr_data);
 	$("#dvr_enc_chn_sel0").html(dvr_selected_chn+1);
 	//main_stream
 	$('#dvr_enc_main_mode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].mode);
@@ -573,8 +576,8 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 	$('#dvr_enc_main_bitmode_ID').val(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encode[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Variable_rate;break;
-		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 0:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.CBR;break;
+		case 1:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.VBR;break;
 		case 2:	$("#dvr_enc_main_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}
@@ -636,8 +639,8 @@ function dvr_encoding_data2ui(dvr_selected_chn)
 	$('#dvr_enc_sub_bitmode_ID').val(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode);
 	switch(dvr_data.juan.envload.encodesub[dvr_selected_chn].bitmode)
 	{
-		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Variable_rate;break;
-		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Fixed_rate;break;
+		case 0:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.CBR;break;
+		case 1:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.VBR;break;
 		case 2:	$("#dvr_enc_sub_bitmode")[0].innerHTML = lang.Moderate_rate;break;
 		default: break;
 	}
@@ -746,10 +749,10 @@ function dvr_encoding_save_content(ret)
 		case '5FPS': dvr_enc_sub_framerate = 3;break;
 		case '8FPS': dvr_enc_sub_framerate = 4;break;
 		case '10FPS': dvr_enc_sub_framerate = 5;break;
-		case '12FPS': dvr_enc_sub_framerate = 6;break;		default: break;
+		case '12FPS': dvr_enc_sub_framerate = 6;break;
+		default: break;
 	}
 	var xmlstr = '';
-
 	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	xmlstr += '<envload type="1" usr="' + dvr_usr + '" pwd="' + dvr_pwd + '">';
 	xmlstr += '<encode';
@@ -1338,7 +1341,6 @@ function dvr_ptz_load_content()
 	}
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
-	
 //	alert(xmlstr);
 
 	dvr_ajax = $.ajax({ 

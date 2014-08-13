@@ -17,6 +17,7 @@
 
 <style type="text/css">
 	#channelvideo tr{position: relative;}
+	#operating #channelvideo { top: 38px; height: 76px; overflow: auto;}
 	#channelvideo .video{height:16px; position: absolute;top:1px;}
 	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
 
@@ -27,14 +28,16 @@
 	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
 	#fileRec h5{ border: none; line-height: 38px;}
 	#fileRec h4{float: left; border: none;}
-	#list .sel li{background-color: #ABCDEF}
+	#list .sel li{background-color: #ABCDEF;}
+	.no_border{width: 80px;}
+
 </style>
 </head>
 
 <body>
 <object type="application/cms-common-library" id="commonLibrary" style="position: absolute;width:0; height:0" ></object>
 <script type="text/javascript">
-	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;;
+	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
 <!-- <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 <div id="confirm" class="menu">
@@ -65,7 +68,6 @@
 				<li class="active"><a style="background-position: -36px 0;"></a><script>T("Playback")</script></li>
 				<li><a style="background-position: -62px 0;"></a><script>T("Backup")</script></li>
 				<li><a style="background-position: -88px 0; width:36px;"></a><script>T("Set_up")</script></li>
-
 				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li> 
 				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li>-->
 			</ul>
@@ -134,7 +136,7 @@
 								<li><a>2013-07-15 00:00:00</a></li>
 							</ul>
 						</td>
-					</tr> -->	
+					</tr> -->
 			</table>
 		</div>
 	<div class="calendar">
@@ -170,7 +172,7 @@
 		</div>
 		<div class="hover seek" onclick="playBackSerchFile();" title="Start_Search"><script>T("Start_Search")</script></div>
 	</div>
-		</div> 
+		</div>
 	<div id="operating">
 		<div class="operat">
 			<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
@@ -185,7 +187,8 @@
 				<li class="hover" style="background-position: 0 -108px;" onclick="playSpeed(1);" title="Fast"></li><!--
 				<li class="hover" style="background-position: -120px -180px;" onclick="playAction('GroupSpeedNormal');"></li>
 				<li class="hover" style="background-position: 0 -144px;" onclick="playAction('GroupPause');"></li>
-				--><li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF; cursor:default">1x</li>
+				-->
+				<li id="palybackspeed" style="width:60px;text-align:center; background:0; line-height:36px; color:#FFF; cursor:default">1x</li>
 				<!--				
 				<li class="warn"><div style="background:#7BC345"></div>Time</li>
 				<li class="warn"><div style="background:#FFE62E"></div>Motion</li>
@@ -202,27 +205,28 @@
 				</li>
 				<!-- <li class="hover" style="background-position: -120px -252px;"></li>
 				<li class="setViewNum hover" style="background-position: 0 -252px;"></li>
-				<li class="setViewNum hover" style="background-position: -30px -216px;"></li> -->
-				<!-- <li class="setViewNum hover" style="background-position: 0 -288px;"></li> -->
+				<li class="setViewNum hover" style="background-position: -30px -216px;"></li>
+				<li class="setViewNum hover" style="background-position: 0 -288px;"></li> -->
 				<li class="hover" style="background-position: -120px -288px;" onclick="viewFullScreen()" title="Full_screen"></li>
 				<li class="hover" style="background-position: 0 -324px;" onclick="ScreenShot()" title="Screenshot"></li>
 			</ul>
 		</div>
-<!-- 		<div style=" z-index:2; position: relative;height:96px; overflow:auto; top:38px;" id="recFile"> -->
+		<!--<div style=" z-index:2; position: relative;height:96px; overflow:auto; top:38px;" id="recFile"> -->
 		<div class="play_time"></div>
-		<table class="table" cellpadding="0" cellspacing="0" style="over">
-			<thead>
-				<tr><td class="no_border" id="now_time" style="text-algin:center"><!-- 00:00:00 --></td><td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
-			</thead>
-			<tbody id="channelvideo">	
-				<tr><td class="no_border"><input id="chk_1" type="checkbox" checked="checked" /><label for="chk_1"><span><script>T("wind")</script></span> 01</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><label for="chk_2"><input id="chk_2" type="checkbox" checked="checked" /><span><script>T("wind")</script></span> 02</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr>
-				<td class="no_border"><input id="chk_3" type="checkbox" checked="checked" /><label for="chk_3"><span><script>T("wind")</script></span> 03</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-				<tr><td class="no_border"><input id="chk_4" type="checkbox" checked="checked" /><label for="chk_4"><span><script>T("wind")</script></span> 04</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>
-			</tbody>
+		<table class="table" style="height:18px; overflow:auto;" cellpadding="0" cellspacing="0" style="over">
+				<tr><td class="no_border" id="now_time" style="text-algin:center">00:00:00</td><td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
 		</table>
-<!-- 	</div> -->
+		<table id="channelvideo" cellpadding="0" cellspacing="0" style="over" class="table">
+			<tr><td class="no_border"><input id="chk_1" type="checkbox" /><label for="chk_1"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_2" type="checkbox" /><label for="chk_2"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_3" type="checkbox" /><label for="chk_3"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_4" type="checkbox" /><label for="chk_4"><span><script>T("Channel")</script></span></span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td>
+			</tr>
+		</table>
+	<!--</div>-->
 	</div>
 	<div id="foot"></div>
 	<script type="text/javascript" src="js/calendar.js"></script>	
@@ -235,5 +239,24 @@
 
 	<script type="text/javascript" src="js/playback.js"></script>
 	<script type="text/javascript" src="js/searchPlayBackFile.js"></script>
+	<script type="text/javascript">
+	/*$(function(){
+		$('div.play_time').dblclick(function(event){
+			var begin =$("div.calendar span.nowDate").html()+' '+returnTime(($(this).offset().left+2-81)/($('#channelvideo').width()-81)*24*3600);
+			$('#testTIME').val(begin);
+		})
+
+		$('<div style="float:left; position: absolute; top:0;"><input id="testTIME" /><input type="button" value="test" /></div>').appendTo($('.operat')).find(':button').click(function(){
+			testTIME();
+		});
+
+		function testTIME(){
+			val = $('#testTIME').val().split(' ')[1];
+			var p = ($('#channelvideo').width()-79)/(3600*24);
+			$('div.play_time').css('left',p*time2Sec(val)+79);
+			playVideo(event);
+		}
+	})*/
+	</script>
 </body>
 </html>

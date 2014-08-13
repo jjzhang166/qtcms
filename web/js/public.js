@@ -63,24 +63,15 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	})
 }
 
-function setTables(){   // 回放页面底部表格最大化相应调整
-	$('table.table tr').each(function(index){
-		var oTds = $(this).find('td');
-		var W =  $('table.table').width()-120;
-
-		oTds.width((W)/24);
-		oTds.eq(0).width(80);
-	})
-}
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
-	/*var oNow=$('#now_time');
-	showNowPlayBackTime(oNow,oDrag.offset().left,X2);*/
+	var oNow=$('#now_time');	
 	var b=oDrag.hasClass('now_sound'),
 		left;
 	if(b){
 		var veiwObj = getAudioObj();
 		var oWarpLeft = $('#sound');
-	}	
+	}
+
 	$(document).mousemove(function(event){
 			left = event.pageX;
 		    left = left < X1 ? X1 : left;
@@ -89,23 +80,17 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 			left=left-oWarpLeft.offset().left;
 			oWarpLeft.find('p:last').width(left);
 			veiwObj.SetVolume(left);
-			if(veiwObj.id == 'playback'){
-				document.getElementById('playbackLocl').SetVolume(left);
-			}else if(veiwObj.id == 'playbackLocl'){
-				document.getElementById('playback').SetVolume(left);
-			}
-			//veiwObj.vol = left;
-		}/*else{
-			showNowPlayBackTime(oNow,left,X2);
-		}*/
+		}else{
+			showNowPlayBackTime(oNow,left-X1,X2-X1);
+		}
 		oDrag.css('left',left-1);
 	}).mouseup(function(){
 		$(this).off();
 	})
 }
 function showNowPlayBackTime(oNow,oleft,X2){
-	return;
-	oNow.html(returnTime((oleft-81)/(X2-81)*24*3600));
+	//return;
+	oNow.html(returnTime((oleft/X2)*24*3600));
 }
 (function($){   // 
 	$.fn.extend({
@@ -190,7 +175,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var opts = $.extend(defaults, options);
 			var times = opts.initTime.split(':');
 			for(var i=0;i<3;i++){
-				$('<input  maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
+				$('<input type="text" maxlength="2"  value="'+times[i]+'" default="'+times[i]+'"/>').appendTo(warp);
 				if(i<2){
 					warp.html(warp.html()+opts.Delimiter);
 				}
@@ -275,7 +260,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			var warp = $(this);
 			var warpId = warp.attr('id');
 			var oSelectAll=$('#'+warpId+'_SelectAll');
-
+								
 			if(warpId == 'SerachedDevList' || warpId == 'search_resultFile'){
 				warp.on('click','tr',function(){
 					$(this).find('input:checkbox').click();
@@ -416,30 +401,6 @@ function addZero(num){   //数字小于0的时候用0补一位.
 	num = num.toString();
 	return num = num<10 ? '0'+num : num;
 }
-function showdata(id,type){  //显示表单下有ID的元素的val值
-	return;
-	var submit = $('#'+type).find('.confirm:visible').attr('id');
-	var str =submit+'/'+id +'/';
-	$('#'+type).find('input[id]').each(function(){ 
-		str += $(this).attr('id')+':'+$(this).val()+'/';
-	})
-	debugData(str);
-}
-function debugData(data){  // 在ID为test的div元素中打印对象数据
-	return;
-	var index='default',
-		str = 'Null';
-	$('#test').html('');
-	if(typeof(data) == 'number' || typeof(data) == 'string'){
-		$('<span>'+index+'</span>:<span>"'+data+'"/</span>').prependTo($('#test'));
-	}else{
-		for(i in data){ 
-			index = i;
-			str = data[i];
-			$('<span>'+index+'</span>:<span>'+str+'</span>/').prependTo($('#test'));
-		}
-	}
-}
 
 //弹出框部分操作
 function closeMenu(){ 
@@ -455,19 +416,21 @@ function closeMenu(){
 		$(this).find('div.close:last').html(lang.Cancel);
 	})*/
 }
-function Confirm(str,b){
+function Confirm(str,b,fn){
+	var obj = $('#confirm');
 	if(b){
 		var oVisible = $('#menusList div.menu:visible').not('#confirm').css('z-index','0');
-		$('#confirm .close').off('click').click(function(){
+		obj.find('.close').off('click').click(function(){
 			oVisible.css('z-index','1000');
 			$('#confirm').find('h4,span').html('').end().hide();
-		})	
+		})
 	}else{
-		$('#confirm .close').click(function(){
+		obj.find('.close').click(function(){
 			closeMenu();
+			typeof(fn) == 'function' && fn();
 		})
 	}
-	$('#confirm h4').append('<p>'+str+'</p>');
+	obj.find('h4').append('<p>'+str+'</p>');
 	objShowCenter($('#confirm'));
 }
 function objShowCenter(obj){ //调整弹出框定位 居中
@@ -477,6 +440,13 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 		left:($(window).width() - obj.width())/2,
 		zIndex:'1000'
 	}).show();
+	if(obj.attr('id') == 'confirm'){
+		if(obj.find('div.confirm:visible').length == 0){
+			obj.find('div.close').html(_T('Confirm'));
+		}else{
+			obj.find('div.close').html(_T('Cancel'));
+		}
+	}
 }
 
 
@@ -519,20 +489,12 @@ function gettime(objs){
 }
 function time2Sec(str){  //把时间转换成秒
 	var a =str.split(':');
-	return fuckParseInt(a[0])*60*60+fuckParseInt(a[1])*60+fuckParseInt(a[2]);
+	return parseInt(a[0],10)*60*60+parseInt(a[1],10)*60+parseInt(a[2],10);
 }
-// parseInt('08') == 0;  fuck it;
-function fuckParseInt(str){
-	var s = str.split('');
-	if(parseInt(s[0]) == 0){
-		return parseInt(s[1]);
-	}else{ 
-		return parseInt(str);
-	}
-} 
+ 
 function checkHasObj(oSil,obj){
 	var b = 0;			
-	oSil.each(function(){
+	oSil.each(function(){ddd
 		if($(this).is(obj)){
 			return b=1;
 		}
@@ -594,4 +556,22 @@ function _t(obj){
 		}
 		$(this).val(str);
 	})
+}
+
+function renewtime(){
+	var myDate = new Date,
+
+	yy=myDate.getFullYear(),
+
+	mm=addZero(parseInt(myDate.getMonth())+1),
+
+	dd=addZero(myDate.getDate()),
+
+	hh=addZero(myDate.getHours()),
+
+	mi=addZero(myDate.getMinutes()),
+
+	ss=addZero(myDate.getSeconds());
+
+	return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 }

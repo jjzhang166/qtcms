@@ -80,10 +80,6 @@
 	'Slow':'慢放',
 	'Fast':'快进',
 	'wind':'窗口',
-	'ThrowException':'窗口_V_:下的文件(_V_),_V_!',
-	'Available':'可用',
-	'Abnormal_damaged':'异常或者损坏!',
-	'device_channel':'设备:_V_下的通道:_V_',
 
 	'Device_name':'设备名',
 	'Channel':'通道',
@@ -217,9 +213,6 @@
 	'Data_rate':'数据位',
 	'Stop_bits':'停止位',
 	'Parity':'奇偶校验',
-	'Parity_NONE':'无校验',
-	'Parity_ODD':'奇校验',
-	'Parity_EVEN':'偶校验',
 	'Sensitivity':'灵敏度',
 	'Motion_detection':'移动侦测',
 	'Duration':'持续时间',
@@ -274,6 +267,7 @@
 	//本地设置
 
 	'Operation_failed':'保存失败!',
+	'time_range':'请输入正确的时间范围!',
 
 	
 	'Video_settings':'录像设置',
@@ -338,11 +332,11 @@
 	'The_current_list_of_all_channels_are_closed_under':'正在关闭当前列表下的所有通道.',
 
 	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_',
-	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败!  错误:当前窗口',
+	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败!  错误:当前窗口 当前窗口还被占用,请稍后再试!',
 
 	'channel_Manual_recording_data_binding_failed':'设备:_V_  下的通道:_V_ 的手动录像数据绑定失败!',
 	'channel_Manual_recording_fail':'设备:_V_  下的通道:_V_手动录像失败!',
-	'channel_has_been_in_the_planning_Video_state':'设备:_V_ 已经处于计划录像状态!',
+	'channel_has_been_in_the_planning_Video_state':'设备:_V_ 下的通道:_V_已经处于计划录像状态!',
 	'Start_manual_recording':'设备:_V_  下的通道:_V_ 开始手动录像.',
 	'Close_the_manual_recording_failed':'设备:_V_  下的通道:_V_ 关闭手动录像失败!',
 	'Close_the_manual_recording':'设备:_V_  下的通道:_V_ 关闭手动录像.',
@@ -392,7 +386,6 @@
 	'loading_success':'加载成功!',
 	'save_success':'修改成功!',
 	'loading_fail':'加载失败,请检查设备参数或者网络后,稍后再试!',
-	'save_fail':'保存失败，请检查设备参数或者网络后,稍后再试!',
 	'low_ver':'当前设备软件版本过低！为保证在该客户端中的正常使用,请手动升级!',
 	'timeout':'连接超时,请检查网络,稍后再试!',
 	'error':'请求出现错误,稍后再试!',
@@ -409,9 +402,8 @@
 	'rate_range':'码率范围!',
 	'frame_rate_range':'帧率范围!',
 	'check_to_put':'请填写正确的参数或者等数据加载完后在提交.',
-	//初始化设置
-	'rebooting':'正在重启摄像机',
-	'reboot_success':'摄像机重启成功',
-	'reboot_fail':'摄像机重启失败，请稍后再试!'
+	'rotation_time':'自动轮训时间!(1~60秒)!',
+	'File_size_range':'文件大小范围!(10M~512MB)!',
+	'Disk_space_reserved':'磁盘预留空间要大于4096MB!'
 
 }

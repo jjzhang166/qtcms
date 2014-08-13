@@ -453,8 +453,8 @@
 										</div>
 										<ul class="option">
 											<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">
-                                            <li value="0"><a><script>T("Variable_rate")</script></a></li>
-											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+                                            <li value="0"><a><script>T("CBR")</script></a></li>
+											<li value="1"><a><script>T("VBR")</script></a></li>
 											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
@@ -555,8 +555,8 @@
 										</div>
 										<ul class="option">
                                         	<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">
-											<li value="0"><a><script>T("Variable_rate")</script></a></li>
-											<li value="1"><a><script>T("Fixed_rate")</script></a></li>
+											<li value="0"><a><script>T("CBR")</script></a></li>
+											<li value="1"><a><script>T("VBR")</script></a></li>
 											<li value="2"><a><script>T("Moderate_rate")</script></a></li>
 										</ul>
 									</td>
@@ -1589,7 +1589,8 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID"/></td></tr>
+						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" />1-60(s)
+</td></tr>
 						<!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
 						<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
@@ -1718,13 +1719,13 @@
 										</td>
 									</tr>
 								</tbody>
-									<tr><td><input id="Storage_Settings_SelectAll" type="checkbox" /><label id="Storage_Settings_SelectAll"><script>T("Select")</script></label><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>	
-								</table>
+									<tr><td><input id="Storage_Settings_SelectAll" type="checkbox" /><label id="Storage_Settings_SelectAll"><script>T("Select")</script></label><td></td><td><input id="UseDisks_ID" type="hidden" value=""/></td></tr>
+									</table>
 							</td>
 						</tr>
-						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
+						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(5,this)" />10-512(MB)</td></tr>
 						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:6px" /></td></tr>
-						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" />MB</td></tr>
+						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(6,this)" />>4096(M)</td></tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="SettingStorageParmData();" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
@@ -1771,8 +1772,8 @@
 	<div style="position: relative;" class="right_content">
 			<div class="switch" style="display:block;top:0;">
 				<table>
-					<tr><td><script>T("The_current_version")</script></td><td><input disabled="disabled" type="text" value="cms_v1.1.5" /></td></tr>
-					<tr><td><script>T("Release_Date")</script></td><td><input disabled="disabled" type="text" value="2014/4/26" /></td></tr>
+					<tr><td><script>T("The_current_version")</script></td><td><input disabled="disabled" type="text" value="cms_v1.1.12" /></td></tr>
+					<tr><td><script>T("Release_Date")</script></td><td><input disabled="disabled" type="text" value="2014/08/08/17" /></td></tr>
 				</table>
 			</div>
 		</div>
@@ -1904,7 +1905,7 @@
 		<div style="padding:10px;">
 			<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 			<table style="margin:0 auto;">
-				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close" onclick="showdata('确认','confirm')"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close"><script>T("Cancel")</script></div></td></tr>
 			</table>
 		</div>
 	</div>

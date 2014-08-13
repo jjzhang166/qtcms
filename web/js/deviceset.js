@@ -3,8 +3,7 @@ var oSearchOcx,
 	$(function(){
 
 		oSearchOcx = document.getElementById('devSearch');
-		var oTreeWarp = $('div.dev_list').slice(2); //slice()方法主要是拿来复制用的，可以传入1或者2个参数，如果传入两个，表示复制从第一个参数到第二个参数为止的数组项，
-		                                           // 但不包括最后一项；如果传入一个参数，则表示复制从该位置到数组结尾的数组项。
+		var oTreeWarp = $('div.dev_list').slice(2);
 
 		oTreeWarp.hide();
 
@@ -19,11 +18,11 @@ var oSearchOcx,
 				$('#device input:radio').removeAttr('id');
 				$(this).attr('id','method_ID');
 				var oSwitch = $('#device tr').slice(2,6);
-				oSwitch.removeClass('tr1').find('input').prop('disabled',false);
+				oSwitch.removeClass('tr1').find('input').removeProp('disabled');
 				if(index == 0){
-					oSwitch.slice(3,4).addClass('tr1').find('input').removeProp('disabled');
+					oSwitch.slice(3,4).addClass('tr1').find('input').prop('disabled',true);
 				}else{
-					oSwitch.slice(0,3).addClass('tr1').find('input').removeProp('disabled');
+					oSwitch.slice(0,3).addClass('tr1').find('input').prop('disabled',true);
 				}
 			})
 		})
@@ -86,46 +85,46 @@ var oSearchOcx,
 		
 		//左侧二级菜单
 		$('#set_content div.left li').each(function(index){
-			$(this).click(function(){  //单击左侧菜单时
+			$(this).click(function(){
 				key = index;
-				var warp = $('#set_content div.right div.right_content').hide().eq(index).show(); //单击到的二级菜单相应的右边div显示
-				oTreeWarp.show();  //显示设备树形菜单
-				set_contentMax();  //布局自适应
+				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
+				oTreeWarp.show();
+				set_contentMax();
 
-				areaList2Ui('','','closed'); //树形菜单没有展开子项
+				areaList2Ui('','','closed');
 
 
 				/*emptyDevSetMenu();*/
-				$('#ajaxHint').html('').stop(true,true).hide(); //隐藏提示信息
+				$('#ajaxHint').html('').stop(true,true).hide();
 
-				if(key == 0){ //单击到“设备管理”时
-					searchFlush();  //刷新页面
-				}else{ //单击到其他时
-					oSearchOcx.Stop();//停止搜索更新表格
+				if(key == 0){
+					searchFlush();
+				}else{
+					oSearchOcx.Stop();
 				}
-				if(key == 1){  //单击到“设备设置”
+				if(key == 1){
 					
-					//reInitNowDev();  //重新加载设备信息
+					reInitNowDev()
 
-					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){  //单击树形菜单的设备时
+					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){
 
-						$('#ajaxHint').html('').stop(true,true).hide();  //隐藏提示信息
+						$('#ajaxHint').html('').stop(true,true).hide();
 
-						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');  //将之前已经选中的设备去除class 'sel'
-						$(this).addClass('sel')  //给现在选中的设备添加样式 sel
+						$('ul.filetree:eq(2)').find('span.device').removeClass('sel');
+						$(this).addClass('sel')
 
-						var oDevData = $(this).data('data');  //当前设备的基本信息
+						var oDevData = $(this).data('data');
 
-						var _url = 'http://'+oDevData.address+':'+oDevData.port;  //URL
+						var _url = 'http://'+oDevData.address+':'+oDevData.port;
 
 						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
 
 						$('#dev_id_ID_Ex').val(oDevData.dev_id);
 
-						AJAX && AJAX.abort();  //请求停止
+						AJAX && AJAX.abort();
 
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
-							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show(); //ipc相应的右边菜单显示
+							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
 							//emptyDevSetMenu();
 							//ipc(_url,oDevData.username,oDevData.password);
@@ -135,9 +134,7 @@ var oSearchOcx,
 							
 							console.log('------------new IPC()--------------');
 							
-							$('#set_content ul.ipc_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
-								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
-								AJAX && AJAX.abort();//并停止正在进行的ajax请求
+							$('#set_content ul.ipc_list0 li').click(function(){
 								if($(this).attr('action')){
 									AJAX && AJAX.abort();
 									nowDev[$(this).attr('action')+'2UI']();
@@ -151,29 +148,14 @@ var oSearchOcx,
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
 							//emptyDevSetMenu();
-                         
-							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();
-							/*console.log('------------new DVR()--------------');
-							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
-							
-							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
-								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
-								AJAX && AJAX.abort();//并停止正在进行的ajax请求
-								
-								if($(this).attr('action')){
-									AJAX && AJAX.abort();
-									nowDev[$(this).attr('action')+'2UI']();
-			
-								}
-							})
 
-							nowDev.dvrBasicInfo2UI();*/
+							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
+							dvr_devinfo_load_content();	
 						}
 
 			 	   });
 
-				}else if(key == 2){  //单击“本地设置”
+				}else if(key == 2){
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}/*else if(key == 3){ 
 					userList2Ui();
@@ -247,10 +229,22 @@ var oSearchOcx,
 				for(i in data){
 					$('#'+i).val(data[i]);
 				}
+			}else{
+				$('#Allocation tbody input:text').val('');
 			}
 			$('#SerachedDevList').find('tr').removeClass('sel')
 			$(this).addClass('sel');
 		})
+
+		//录像设置验证正确的时间段.
+		$('#recordtime tbody tr:lt(4)').each(function(){
+			$(this).on('focusout','input:text',function(){
+				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
+				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime())
+					Confirm(lang.time_range);
+				$(this).val($(this).attr('default'));
+			});
+		});
 		
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
@@ -367,24 +361,20 @@ var oSearchOcx,
 	}
 	//record setting  回放设置;
 	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
-	function FillRecordTimeData(){
+	/*function FillRecordTimeData(){
 		areaList2Ui();
 		SettingRecordDoubleTimeParm();
-		/*$('ul.week a').each(function(index){ 
-			$(this).click(function(){
-				$('#week').html($(this).html());
-			})
-		})*/
 		_t($('#RecordTime input:text'));
 		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
-	}
+	}*/
 
 	function FillChannleRecordTime(obj){
 		SettingRecordDoubleTimeParm();  //清空回放表单的数据
+
+
 		//通道选中状态唯一
 		$('div.dev_list:eq(3) span.channel').removeClass('sel')	
 		obj.addClass('sel');
-		console.log(obj);
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
 		var allChlID = [];  //所有通道ID
@@ -601,11 +591,12 @@ var oSearchOcx,
 
 	function emptyDevSetMenu(){
 		//console.log('清空表单的数据');
-		//$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
+		$('#dev_'+nowDev._ID).addClass('sel').parent('li').siblings('li').find('span').removeClass('sel');
 
-		//$('#set_content div.switch input[class]').val('').prop('checked',false);
+		$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','').css('border','0').end().find(':checkbox,:radio').prop('checked',false); //清除
+		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
+									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
 	}
@@ -918,26 +909,17 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 
 	//搜索设备控件方法.
 	function searchFlushReal(){
-		var warp = $('#SerachDevList').removeAttr('b');
-
-		warp.find('tbody tr').remove();
-
+		$('#SerachDevList tbody tr').remove();
 		oSearchOcx.Flush();
-
-		theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
 	}
 	
 	function searchFlush(){
-
-		var warp = $('#SerachDevList').removeAttr('b');
-
 		oSearchOcx.Stop();
-
-		warp.find('tbody tr').remove();	 
-
+		$('#SerachDevList tbody tr').remove();	 
 		oSearchOcx.Start();
-
-		theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
+		/*setTimeout(function(){
+			oSearchOcx.Stop();
+		},5000)*/
 	}
 	//设备搜索回调函数
 	function callback(data){
@@ -959,23 +941,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
-
-
-		var warp = $('#SerachDevList');
-
-		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
-			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
-			warp.attr('b',0);
-		}
 				
 	}
-
 	function AddAreaSuccess(data){
 		var name = $('#area_name_ID').val();
 		var pid = $('#pid_ID').val();
 		var pidname = oCommonLibrary.GetAreaName(pid);
 		var id = data.areaid;
-		var add = $('<li><span class="area" id="area_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('#area_'+pid).next('ul'));
+		var add = $('<li><span class="area" id="area_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+pid).next('ul'));
 		add.find('span.area').data('data',{'area_name':name,'pareaname':pidname,'area_id':id,'pid':pid});
 		$('ul.filetree:eq(0)').treeview({add:add});
 		closeMenu();
@@ -1150,12 +1123,12 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					hint=lang['correct']+lang['IP_format'];	
 				};
 			break;
-			case 1:
-				if(parseInt(str) > 65535 || parseInt(str) < 0 || str == ''){
+			case 1: //端口
+				if(parseInt(str) > 65535 || parseInt(str) < 0 || !/^\d{1,5}$/.test(str)){
 					hint=lang['correct']+lang['Port'];		
 				};
 			break;
-			case 2:
+			case 2:  // eseeID
 				if(str == '')
 					hint=lang['correct']+lang['Esee_ID'];
 
@@ -1172,14 +1145,29 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					}
 				}
 			break;
-			case 3:
-				if(!(str == 1 || str == 4 || str == 8 || str == 16 || str == 32)){
-					hint=lang['correct']+lang['Channels']+'(1,4,8,16,32)';
+			case 3:  //通道数。
+				if(!(str == 1 || str == 4 || str == 8 || str == 16 ||  str == 24 ||  str == 32)){
+					hint=lang['correct']+lang['Channels']+'(1,4,8,16,24,32)';
+				}
+			break;
+			case 4:  //自动轮训时间
+				if(!/^\d+$/.test(str) || parseInt(str) > 60 || parseInt(str)<1){
+					hint=lang['correct']+lang['rotation_time'];
+				}
+			break;
+			case 5:  //文件大小
+				if(!/^\d+$/.test(str) || parseInt(str) > 512 || parseInt(str)<10){
+					hint=lang['correct']+lang['File_size_range'];
+				}
+			break;
+			case 6:  //磁盘预留空间
+				if(!/^\d+$/.test(str) || parseInt(str) < (32*128)){
+					hint=lang['correct']+lang['Disk_space_reserved'];
 				}
 			break;
 		}
 		if(hint){
-			Confirm(hint,true);
+			type > 3 ? Confirm(hint) : Confirm(hint,true);
 			obj.value = '';	
 		}
 		
@@ -1191,9 +1179,14 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			dataIndex[i] = $('#'+i+'_ID').val();
 		}
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
-		areaList2Ui();
 		closeMenu();
-		reInitNowDev();
+		if(data.total!=0){
+			areaList2Ui();
+			reInitNowDev();	
+		}else{
+			Confirm(lang.Modified_device+lang.Failed)
+		}
+		
 	}
 	/*function ModifyDeviceSuccess(data){
 		var dataIndex={'area_id':'','address':'','port':'','http':'','eseeid':'','username':'','password':'','device_name':'','channel_count':'','connect_method':'','vendor':'','dev_id':'','parea_name':$('#parea_name_ID').val()}
