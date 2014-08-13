@@ -86,9 +86,9 @@ function ignoreKey(key){
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
 
-	if(typeof(beforeSend) == 'string' && async)emptyDevSetMenu(); //异步请求时清空表单.
+	if(typeof(beforeSend) != 'boolean' && async) emptyDevSetMenu(); //异步请求时清空表单.
 
-	type = 'GET'
+	type = 'GET';
 
 	__AJAXconstruct(url,data,beforeSend,success,function(str){
 		dataType='json';
@@ -165,9 +165,14 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			console.log(Data);
 
-			console.time('数据填充时间');
+			//console.time('数据填充时间');
 			typeof(success) == 'function' && success(Data);
-			console.timeEnd('数据填充时间');
+			//console.timeEnd('数据填充时间');
+
+			warp.find('input').filter(function(){ 
+				var a = $(this).parent()[0].nodeName
+				return  ((a=='TD' || a == 'DIV') && $(this).parent().attr('class') != 'select');
+			}).attr("disabled",false);
 
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
@@ -185,13 +190,14 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			if(errorThrown=='Unauthorized'){
 				str='Unauthorized';				
-				nowDev._VER = 'no auth';
 			}
 
-			if(str != 'abort' && typeof(beforeSend) != 'boolean')
+			if(str != 'abort' && typeof(beforeSend) != 'boolean'){
+				nowDev._VER = str;
 				showAJAXHint(str);
+			}
 
-			if(str != 'abort'){
+			/*if(str != 'abort'){
 				console.log('++++++++++++++++XMLHttpRequest+++++++++++++++');
 				console.log(XMLHttpRequest.status);
 
@@ -204,7 +210,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 				console.log(errorThrown);
 
 				console.log('+++++++++++++++++++++++++++++++');
-			}
+			}*/
 		},
 		complete: function(XMLHttpRequest, textStatus){
 			console.log('-------------complete-----------'+str);
@@ -257,17 +263,21 @@ function PCTime2dev(){
 }
 
 function checkAJAX(){
-
+	var warp = $('#set_content div.ipc_list:visible')
+	//console.log(nowDev);
 	var a = '';
-
-	if(nowDev._VER && nowDev._VER == 'no auth'){
-		$('#set_content div.ipc_list:eq(0) input:text').val('');
-		a = 'Unauthorized';
-
-		console.log('=======nowDev._VER=========='+nowDev._VER);
-
-	}else if(nowDev._VER < nowDev._Upgrade){
-		a = 'low_ver';
+	if(nowDev._VER < nowDev._Upgrade){ //当前设备软件版本低于CMS 支持的最低版本IPC
+		a = warp.attr('action') != "ipcBasicInfo" ? 'low_ver' : '';//提示信息
+	}else{
+		if(!/^(\w+_?)+$/.test(nowDev._VER)){
+			a = '';
+		}else{
+			a = nowDev._VER;//提示信息
+			if(nowDev._VER == 'Unauthorized'){ //默认用户:admin,默认空密码.登陆失败!
+				$('#set_content div.ipc_list:eq(0) input:text').val(''); //表单置为空
+				//console.log('=======nowDev._VER=========='+nowDev._VER);
+			}
+		}
 	}
 
 	a && showAJAXHint(a)
@@ -282,7 +292,7 @@ function submitThisMenu(str){
 	nowDev[str+'Put']();
 }
 
-function getPutDataJSON(){
+/*function getPutDataJSON(){
 	var warp = $('#set_content div.ipc_list:visible'),
 		str = '{',
 		node = {};
@@ -309,7 +319,7 @@ function getPutDataJSON(){
 	str = str.slice(0,-1) + '}';
 
 	return str;
-}
+}*/
 
 function disable(warp,str){
 	var oInput = $('#set_content div.ipc_list:visible [data-WARP="'+warp+'"]').find('input:text,input:password');
@@ -319,9 +329,25 @@ function disable(warp,str){
 	 												  .end().next('ul.option').find('input').prop('disabled',true);
 	
 }
-
-//检车通道名是否为中文.
-
+//dvr表单的可写、不可写
+function dvr_disable(data_ui){
+	
+	var warp = $('#set_content div.dvr_list:visible').find('input[data-UI="'+data_ui+'"]');
+	var oInput = warp.parents('table').find('input:text,input:password,input[type="select"]');
+	
+	if(warp.prop('checked') == true){
+			oInput.prop('disabled',false);
+		}else{
+			oInput.prop('disabled',true);
+		}
+	
+	}
+/*
+   --检车通道名是否为中文--
+匹配中文字符的正则表达式： [\u4e00-\u9fa5] 
+匹配双字节字符(包括汉字在内)：[^\x00-\xff]
+/[\u4e00-\u9fa5]+/g  多个汉字
+*/ 
 function hasChinese(str){
 	if(/[\u4e00-\u9fa5]+/g.test(str)){
 		showAJAXHint('channelName_NOT_chinese').val('');
@@ -336,6 +362,7 @@ function showAJAXHint(str){
 }
 //检查IP格式
 function chkInput(type,obj,str){
+
 	var hint = '';
 		val = obj.value;
 	switch(type){  //IPC编码设备码率
@@ -391,6 +418,34 @@ function reInitNowDev(){
 
 function portAsync(){
 	$('#http_ID_Ex').val($('#port_ID_Ex').val());
+}
+function getTitle(num){
+   nowDev._dvrScreenInfo2UI(num);
+}
+//编码设置
+function getencode(num){
+
+	nowDev._dvrencodeInfo2UI(num);
+}
+//云台设置
+function getPTZ(num){
+	
+	nowDev._dvrPTZInfo2UI(num);
+}
+//视频检测设置
+function getVideo(num){
+	
+	nowDev._dvrVideoCkeck2UI(num);
+}
+//警报设置
+function getAlarm(num){
+	
+	nowDev._dvrAlarmInfo2UI(num);	
+}
+//录像设置
+function getRecord(num,week){
+	
+	nowDev._dvrVideoInfo2UI(num,week);	
 }
 
 /*function AJAXabort(){

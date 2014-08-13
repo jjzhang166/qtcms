@@ -25,6 +25,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcBasicInfo2UI = function(){ //获取设备信息
+		reInitNowDev();
 		var This = this;
 		console.log('-------------------ipcBasicInfo2UI--------------------------');
 		var xmlstr = '';
@@ -53,8 +54,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this._ipcencodeInfo2UI = function(num){
 		var warp = $('#set_content div.ipc_list:visible');
-		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+num+'/properties','','',
-			function(data){
+			warp.find('input[data-ui="constantBitRate"],[data-ui="frameRate"]').removeAttr('max min');
+		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+num+'/properties','','',function(data){
 				data2UI(data);
 				warp.find('input[data-UI="constantBitRate"]').attr({
 					max:data.constantBitRateProperty.max,
@@ -69,17 +70,23 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.ipcencodeInfoPut = function(){ //设置编码信息
 
-		var warp = $('#set_content div.ipc_list:visible');
+		var warp = $('#set_content div.ipc_list:visible'),
+
+			getVlue = this.getVlue,
+
+			getData = this.getData;
 	
 		console.log('---------------put----------------------');
-		var str = getPutDataJSON().replace('可变码率','VBR');
-			str = str.replace('固定码率','CBR');
+		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","resolution":"'+getVlue('resolution')+'","freeResolution":'+getVlue('freeResolution')+',"resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
+
+		/*var str = getPutDataJSON().replace('可变码率','VBR');
+			str = str.replace('固定码率','CBR');*/
 		//console.log(str);
 
 		/*var oJSON = $.parseJSON(getPutDataJSON())
 			oJSON.bitRateControlType = warp.find('input[data-UI="bitRateControlType"]').attr('data');
 		console.log(json2str(oJSON));*/
-		_AJAXput(this.getRequestURL() + '/netsdk/video/encode/channel/'+warp.find('input[data]:first').attr('data'),str);
+		_AJAXput(this.getRequestURL() + '/netsdk/video/encode/channel/'+warp.find('input[data]:first').attr('data'),encodePutJSON);
 
 	}
 
@@ -129,30 +136,34 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
-		showAJAXHint('saveing');
-
-		_Request =new Array(4);
-
-		var This = this,
-
-			warp = $('#set_content div.ipc_list:visible'),
-			
-
-			interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}',
-
-			finish = this.checkMultRequests;
-
+	    _Request=new Array(4);
 		async=false;
+        console.log('-------------------ipcnetworkInfoPut--------------------------');
+        var  This = this,
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}',async,'',finish/*,'','',function(){
+        	 warp = $('#set_content div.ipc_list:visible'),
+		
+		     str='saveing',
+			 
+		     oHint = showAJAXHint(str).css('top',warp.height() + 46),
+			 
+			 end = this.checkMultRequests,
+
+			 getVlue = This.getVlue,
+
+			 getBoolean = This.getBoolean,
+			 
+		     interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
+
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}',false,'',end/*function(){
 			console.log('Esee状态修改完成{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}++++++++++2');
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Dns','{"preferredDns": "'+warp.find('input[data-UI="preferredDns"]').val()+'", "staticAlternateDns": "'+warp.find('input[data-UI="staticAlternateDns"]').val()+'" }',async,'',finish/*,'','',function(){
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Dns','{"preferredDns": "'+getVlue('preferredDns')+'", "staticAlternateDns": "'+getVlue('staticAlternateDns')+'" }',false,'',end/*function(){
 			console.log('Dns状态修改完成++++++++++3');
 		}*/);
 
-		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+warp.find('input[data-UI="value"]').val()+'}',async,'',finish/*,'',function(){
+		_AJAXput(this.getRequestURL()+'/netsdk/Network/Port/1','{ "value": '+getVlue('value')+'}',false,'',end/*function(){
 			This._PORT = warp.find('input[data-UI="value"]').val();
 			console.log('端口修改成功+++++++++++++++++++++++++4'+This.getRequestURL());
 		}*/);
@@ -162,14 +173,6 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			qob.OnModifyDeviceEx();
 			reInitNowDev();
 		});
-
-		function getBoolean(name){
-			return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false
-		}
-
-		function getVlue(name){
-			return warp.find('input[data-UI="'+name+'"]:checked').val() || warp.find('input[data-UI="'+name+'"]').val()
-		}
 
 		async=true;
 	}
@@ -198,6 +201,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.ipczoneInfo2UI = function(){ //获取时区信息
 
+		emptyDevSetMenu();
+         
 		_Request=new Array(3);
 
 		var warp = $('#set_content div.ipc_list:visible'),
@@ -231,13 +236,22 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			$('#PC_time').val(renewtime());
 		},1000);
 
-		this.ipczoneInfoPut = function(){ //设置时区
+        function renewtime(){
+			var myDate = new Date,
 
-			var warp = $('#set_content div.ipc_list:visible');
+				yy=myDate.getFullYear(),
 
-			_AJAXput(this.getRequestURL()+'/netsdk/system/time/timeZone','"'+$('#time_zone').val()+'"');
+				mm=addZero(parseInt(myDate.getMonth())+1),
 
-			_AJAXput(this.getRequestURL()+'/netsdk/system/time/ntp','{"ntpEnabled":'+(warp.find('input[data-UI="ntpEnabled"]:checked').val() == 'true' ? true : false)+',"ntpServerDomain":"'+warp.find('input[data-UI="ntpServerDomain"]').val()+'"}')
+				dd=addZero(myDate.getDate()),
+
+				hh=addZero(myDate.getHours()),
+
+				mi=addZero(myDate.getMinutes()),
+
+				ss=addZero(myDate.getSeconds());
+
+			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 		}
 	}
 
@@ -245,7 +259,12 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 		RequesePush(str);
 
-		var	l = _Request.length -1;
+	this.checkMultRequests = function(str){
+      /* console.log(str);
+	   console.log(_Request.length);
+	   console.log(_Request);*/
+	   
+		RequesePush(_Request,str);
 		
 		if(!_Request[l])
 			return;
@@ -266,6 +285,21 @@ var IPC = function(usr,pwd,ip,port,id,type){
 				}
 			}
 		}
+	}
+
+	this.getBoolean = function (name){
+		var warp = $('#set_content div.ipc_list:visible');
+		return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false
+	}
+
+	this.getVlue=function (name){
+		var warp = $('#set_content div.ipc_list:visible');
+		return warp.find('input[data-UI="'+name+'"]:checked').val() || warp.find('input[data-UI="'+name+'"]').val()
+	}
+
+	this.getData=function (name){
+		var warp = $('#set_content div.ipc_list:visible');
+		return warp.find('input[data-UI="'+name+'"]:checked').val() || warp.find('input[data-UI="'+name+'"]').attr('data')
 	}
 
 	return this;

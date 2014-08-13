@@ -252,7 +252,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				if(filepath){
 					//console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
 					if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
-						alert(lang.play_Failed);
+						alert(_T('wind')+k+':'+lang.play_Failed);
 					};
 				}*/
 				var wind = $(this).next('label').attr('wind');
@@ -418,6 +418,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			$('<div class="video" style="background:'+color[chlData[3]]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo('#channelvideo tr:eq('+(parseInt(chlData[2]))+')');
 		})
 	}*/
+	function ThrowExceptionCallback(data){
+		var arr = [_T('Available'),_T('Abnormal_damaged')];
+		alert(T('ThrowException',(parseInt(data.wndId)+1),filepath,arr[data.expCode]));
+	}
 
 	function RecFileInfoCallback(data){
 		for(i in data){
@@ -629,23 +633,20 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					width = width < 1 ? 1 : width;
 				var left = start*p+min+1;
 				var types = data.types || 8;
-				if(bool){ // 本地回放
-					var target = oFileUIwarp.eq(localSearchWindNum);
-					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
-					target.attr({
-						id:'wind_'+data.wndId,
-						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
-					}).find('label').html(wind).attr('wind',data.wndId);
-				}else{
-					var chl = parseInt(data.channelnum -1),
-						ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
-					var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
-							id:'Rel_channel_'+ChannelData.channel_id,
-							title:'设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name
-						}).find('label').html(ChannelData.channel_name).end();
-				}
-
-				str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+					target = target[0] ? target : $('#Rel_channel_'+ChannelData.channel_id);
+					/*console.log('-------------------------调整通道ID关联的对象!----------------------');
+					console.log(target);*/
+						if(!target[0]){
+							target = addRecFileTable('id="Rel_channel_'+ChannelData.channel_id+'"',ChannelData.channel_name,($('#channelvideo tr[id]').length+1))
+							/*console.log('-------------------------新添加的文件描绘对象通道----------------------');
+							console.log(target)*/
+						}else{
+							target.attr('id','Rel_channel_'+ChannelData.channel_id).find('label').html(ChannelData.channel_name);
+						}
+						target.attr('title',T('device_channel',oDev.data('data').name,ChannelData.channel_name));
+						//console.log(target);
+					//}
+				$('<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>').appendTo(target);
 			}
 			$(str).appendTo(target);
 		}
