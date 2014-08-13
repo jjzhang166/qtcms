@@ -1385,6 +1385,7 @@ bool StorageMgrEx::createSearchTable()
 					return true;
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"createSearchTable fail as exec cmd fail::"<<command;
+					return false;
 				}
 				
 			}else{
