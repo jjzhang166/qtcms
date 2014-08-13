@@ -121,6 +121,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
+		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
+		
 
 		bFullScreen = 0;
 

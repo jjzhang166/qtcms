@@ -256,10 +256,6 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.checkMultRequests = function(str){
-
-		RequesePush(str);
-
-	this.checkMultRequests = function(str){
       /* console.log(str);
 	   console.log(_Request.length);
 	   console.log(_Request);*/
