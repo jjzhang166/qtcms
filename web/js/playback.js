@@ -228,6 +228,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			}).css('background-position','0px'+' '+(-obj.height())+'px');
 
 			if(begin<minFileStartTime){
+				$('#now_time').html(minFileStartTime).attr('begin',minFileStartTime);
 				var min = $('table.table .no_border').width(),
 				max = $('#channelvideo tr').length > 4 ? $('#channelvideo').width()-17:$('#channelvideo').width();
 				begin = date+' '+minFileStartTime;
