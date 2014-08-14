@@ -376,12 +376,14 @@ var oSearchOcx,
 	}
 	//record setting  回放设置;
 	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
-	/*function FillRecordTimeData(){
+	function FillRecordTimeData(){
+		/*SettingRecordDoubleTimeParm();
+		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));*/
 		areaList2Ui();
-		SettingRecordDoubleTimeParm();
+		/*SettingRecordDoubleTimeParm();*/
 		_t($('#RecordTime input:text'));
 		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
-	}*/
+	}
 
 	function FillChannleRecordTime(obj){
 		SettingRecordDoubleTimeParm();  //清空回放表单的数据
@@ -447,14 +449,7 @@ var oSearchOcx,
 			nowWeek = $('#week').attr('data').split(','),
 			nowWeekTimeID = [];
 		var copy = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
-/*		console.log('----------------初始的通道ID-------------');
-		console.log(copyTo);
-		console.log('----------------要拷贝到的通道ID-------------');
-		console.log(copyID);
-		console.log('----------------合并后的-------------');
-		console.log(copy);
-		console.log('--------------当前星期-------------------');
-		console.log(nowWeek);*/
+
 		// 返回符合当天星期的时间ID
 		for(i in copy){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copy[i]);
@@ -467,9 +462,7 @@ var oSearchOcx,
 				}
 			}
 		}
-		/*else{
-					nowWeekTimeID.push([timeID[j],timeinfo.schedle_id]);
-				}*/
+
 		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
 			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')');
@@ -1184,7 +1177,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				}
 			break;
 			case 6:  //磁盘预留空间
-				if(!/^\d+$/.test(str) || parseInt(str) < (32*128)){
+				if(!/^\d+$/.test(str) || parseInt(str) <= (32*128)){
 					hint=lang['correct']+lang['Disk_space_reserved'];
 				}
 			break;
