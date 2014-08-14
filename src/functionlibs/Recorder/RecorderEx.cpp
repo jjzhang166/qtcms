@@ -1027,7 +1027,7 @@ int RecorderEx::checkDiskSize()
 		quint64 uiTotalNumberOfFreeBytes;
 		if (GetDiskFreeSpaceExQ(sDisk.toAscii().data(),&uiFreeByteAvailable,&uiTotalNumberOfbytes,&uiTotalNumberOfFreeBytes))
 		{
-			if (uiTotalNumberOfFreeBytes<=tMgrExInfo.iDiskReservedSize*1024*1024)
+			if (uiTotalNumberOfFreeBytes/1024<=(tMgrExInfo.iDiskReservedSize*1024))
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"disk had been full,turn to pack";
 				return 1;

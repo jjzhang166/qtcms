@@ -171,6 +171,7 @@ void BubbleProtocolEx::run()
 	m_bStop=false;
 	int nHeartBeat=0;
 	m_nPosition=__LINE__;
+	m_tDeviceInfo.bRemotePlayPause=false;
 	while(bRunStop==false){
 		switch(nRunStep){
 		case BUBBLE_RUN_CONNECT:{
@@ -983,6 +984,7 @@ int BubbleProtocolEx::pausePlaybackStream( bool bPause )
 	{
 		if (m_tDeviceInfo.bRemotePlayPause!=bPause)
 		{
+			m_tDeviceInfo.bRemotePlayPause=bPause;
 			m_csStepCode.lock();
 			m_tStepCode.enqueue(BUBBLE_PAUSEPLAYBACKSTREAM);
 			m_csStepCode.unlock();

@@ -45,7 +45,7 @@ typedef struct __tagBubbleDeviceInfo{
 	QDateTime tRemotePlayStartTime;
 	QDateTime tRemotePlayEndTime;
 	QString sRemotePlayFile;
-	bool bRemotePlayPause;
+	volatile bool bRemotePlayPause;
 	QString sRemotePlayFileName;
 }tagBubbleDeviceInfo;
 typedef enum __tagBubbleConnectStatusInfo{
