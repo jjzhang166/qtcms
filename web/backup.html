@@ -309,6 +309,13 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 		}
 		var obj = $(str).appendTo(oParent);
+
+		var warp = $('#file_warp');
+
+		if($('#search_resultFile').height() > warp.height() && !warp.attr('b')){
+			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
+			warp.attr('b',0);
+		}
 		console.time('++++++文件列表完成后数据绑定+++++++++');	
 		/*for(var i=0;i<recFile.length;i++){ 
 			var data = recFile[i];
@@ -416,7 +423,7 @@ var oPlayBack={},  // 远程回访控件对象
 			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
 	}
 	
-	function syndownload(){   //同步下载文件状态.
+	/*function syndownload(){   //同步下载文件状态.
 		return;
 		var i=0;
 		var oWarp = $('#search_result tr').has('input:checked').eq(now);
@@ -431,13 +438,13 @@ var oPlayBack={},  // 远程回访控件对象
 			var width = p*oWarp.find('div').width();
 			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
 			//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
-/*			if(p == 1){
+			if(p == 1){
 				//clearInterval(timer);
 				$('#search_result tr').has('input:checked').eq(now).prop('checked',false).find('span').width(oWarp.find('div').width());
-			}*/
+			}
 		},1000);
 		//show('正在下载当前选中文件的第'+now+'个!');
-	}
+	}*/
 
 	function BackupStatusChangeCallback(data){
 		var oList = $('#search_result input:checked'),
@@ -496,6 +503,7 @@ var oPlayBack={},  // 远程回访控件对象
 			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 			return;
 		}
+		$('#file_warp').removeAttr('b');
 		usedUid = [];
 		recFile=[];
 		nowPage=-1;
