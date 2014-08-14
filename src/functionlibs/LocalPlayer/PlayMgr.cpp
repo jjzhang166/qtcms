@@ -187,13 +187,20 @@ void PlayMgr::run()
 			else
 			{
 				int waitSec = 0;
-				if (m_skipTime[skipPos].start > start)
+				if (m_skipTime.isEmpty())
 				{
 					waitSec = start - currentPlayTime.toTime_t();
 				}
 				else
 				{
-					waitSec = m_skipTime[skipPos].start - currentPlayTime.toTime_t();
+					if (m_skipTime[skipPos].start > start)
+					{
+						waitSec = start - currentPlayTime.toTime_t();
+					}
+					else
+					{
+						waitSec = m_skipTime[skipPos].start - currentPlayTime.toTime_t();
+					}
 				}
 				qDebug()<<"wait:"<<waitSec;
 				if (waitSec > 0 && !m_bStop)
