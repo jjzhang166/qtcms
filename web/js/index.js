@@ -524,7 +524,7 @@ var oPreView,oDiv,
 
 		for(var i=0;i<64;i++){
 			var oWinInfo = oPreView.GetWindowInfo(i);
-			if(oWinInfo.chlId>0 && oWinInfo.currentState == 0){
+			if(oWinInfo.chlId>0 && oWinInfo.currentState == 0 && $('#channel_'+oWinInfo.chlId)[0]){
 				var chlData = $('#channel_'+oWinInfo.chlId).attr({
 					wind:i,
 					state:oWinInfo.currentState

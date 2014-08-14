@@ -226,6 +226,8 @@ var oPlayBack={},  // 远程回访控件对象
 
 				reSort_2UI($(this).attr('sort')+sorType);			
 			}
+		}).mouseout(function(){
+			$(this).css('background-position','0 0');
 		})
 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
