@@ -255,9 +255,11 @@ var oSearchOcx,
 		$('#recordtime tbody tr:lt(4)').each(function(){
 			$(this).on('focusout','input:text',function(){
 				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
-				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime())
+				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime()){
 					Confirm(lang.time_range);
-				$(this).val($(this).attr('default'));
+					FillChannleRecordTime($('div.dev_list:eq(3) span.channel.sel'));
+					//$(this).val($(this).attr('default'));
+				}
 			});
 		});
 		
