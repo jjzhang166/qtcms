@@ -25,11 +25,7 @@ public:
 	DeviceSearchWindows(QWidget *parent = 0);
 	~DeviceSearchWindows(void);
 private:
-	int __GetNetworkInfo(QString &address,QString &netmask);
 	QVariant __QueryValue(QString sElementId);
-	int __GetInitAddress(QString address,QString netmask);
-	int __flushAddress();
-	int __ApplyAddress(QString &sAddress,QString lSAddress);
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 

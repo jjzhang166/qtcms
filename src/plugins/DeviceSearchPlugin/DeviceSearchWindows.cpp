@@ -132,13 +132,13 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 
 void DeviceSearchWindows::addItemMap(QVariantMap item)
 {
+	m_DeviceItemMutex.lock();
 	if (!m_DeviceItem.contains(item.value("SearchIP_ID").toString()))
 	{
-		m_DeviceItemMutex.lock();
 		m_DeviceItem.insert(item.value("SearchIP_ID").toString(),item);
-		m_DeviceItemMutex.unlock();
 		emit addItemToUI(item);
 	}
+	m_DeviceItemMutex.unlock();
 }
 
 void DeviceSearchWindows::sendToHtml(QVariantMap item)
@@ -160,101 +160,8 @@ int DeviceSearchWindows::AutoSetNetworkInfo()
 	QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
 	QDomNodeList itemList=lDevNetworkInfoNode.childNodes();
 	return m_setnetwork.AutoSetNetworkInfo(itemList);
-	//QString lSAddress;
-	//QString lSNetmask;
-	//if (0==__GetNetworkInfo(lSAddress,lSNetmask))
-	//{
-	//	__GetInitAddress(lSAddress,lSNetmask);
-	//	//读入数据
-	//	QVariant lDevNetworkInfoFile=__QueryValue("AutoSetNetworkInfoID");
-	//	QDomDocument lConfFile;
-	//	lConfFile.setContent(lDevNetworkInfoFile.toString());
-	//	QDomNode lDevNetworkInfoNode=lConfFile.elementsByTagName("devnetworkInfo").at(0);
-	//	QDomNodeList itemList=lDevNetworkInfoNode.childNodes();
-	//	if (0==itemList.count())
-	//	{
-	//		return 0;
-	//	}
-	//	else{
-	//		for (int n=0;n<itemList.count();n++){
-	//			QDomNode itemDev;
-	//			itemDev=itemList.at(n);
-	//			QString sDeviceID=itemDev.toElement().attribute("sDeviceID");
-	//			QString sAddress=itemDev.toElement().attribute("sAddress");
-	//			QString sGateway=itemDev.toElement().attribute("sGateway");
-	//			QString sMask=itemDev.toElement().attribute("sMask");
-	//			QString sMac=itemDev.toElement().attribute("sMac");
-	//			QString sPort=itemDev.toElement().attribute("sPort");
-	//			QString sUsername=itemDev.toElement().attribute("sUsername");
-	//			QString sPassword=itemDev.toElement().attribute("sPassword");
-	//			
-	//			QString lSNewAddress;
-	//			if (1==__ApplyAddress(lSNewAddress,lSAddress))
-	//			{
-	//				return 1;
-	//			}
-	//			qDebug()<<"lSNewAddress"<<lSNewAddress;
-	//			qDebug()<<"lSNetmask"<<lSNetmask;
-	//			// Set sAddress
-	//			sAddress.clear();
-	//			sAddress=lSNewAddress;
-	//			//设置子网掩码
-	//			sMask.clear();
-	//			sMask=lSNetmask;
-	//			//设置网关
-	//			sGateway.clear();
-	//			sGateway=QString().append(m_HistoryGateWay.IpPart1).append(".").append(m_HistoryGateWay.IpPart2).append(".").append(m_HistoryGateWay.IpPart3).append(".").append(m_HistoryGateWay.IpPart4);
-	//			qDebug()<<"sGateway"<<sGateway;
-	//			//Call SetNetworkInfo
-
-	//			//SetNetworkInfo(sDeviceID,sAddress,sMask,sGateway,sMac,sPort,sUsername,sPassword);
-	//		}
-	//	}
-	//}else{
-	//	return 1;
-	//}
 }
 
-int DeviceSearchWindows::__GetNetworkInfo( QString &address,QString &netmask )
-{
-	//限于单网卡的环境下进行设置
-	//获取可用ip和掩码
-	QList<QNetworkInterface> lHostInterface;
-	lHostInterface=QNetworkInterface::allInterfaces();
-	QList<QNetworkInterface>::const_iterator it;
-	bool lBMatch=false;
-	for (it=lHostInterface.constBegin();it!=lHostInterface.constEnd();it++)
-	{
-		//step1：获取可用的网卡
-		
-		if (it->hardwareAddress()!=NULL&&it->hardwareAddress().count()==17&&it->flags().testFlag(QNetworkInterface::IsLoopBack)!=true)
-		{
-			QList<QNetworkAddressEntry> lHostEntry=it->addressEntries();
-			QList<QNetworkAddressEntry>::const_iterator itEntry;
-			for(itEntry=lHostEntry.constBegin();itEntry!=lHostEntry.constEnd();itEntry++){
-				if (itEntry->ip().protocol()==QAbstractSocket::IPv4Protocol)
-				{
-					address=itEntry->ip().toString();
-					netmask=itEntry->netmask().toString();
-
-					lBMatch=true;
-					break;
-				}
-			}
-		}
-		if (lBMatch==true)
-		{
-			break;
-		}
-	}
-	if (lBMatch==true)
-	{
-		return 0;
-	}
-	else{
-		return 1;
-	}
-}
 
 QVariant DeviceSearchWindows::__QueryValue( QString sElementId )
 {
@@ -263,101 +170,6 @@ QVariant DeviceSearchWindows::__QueryValue( QString sElementId )
 	return elementTemp.evaluateJavaScript("document.getElementById('" + sElementId + "').value");
 }
 
-int DeviceSearchWindows::__GetInitAddress(QString lSAddress,QString lSNetmask)
-{
-	DevNetworkInfo lSAddressInfo;
-	DevNetworkInfo lSNetmaskInfo;
-	lSAddressInfo.IpPart1=lSAddress.section(".",0,0);
-	lSAddressInfo.IpPart2=lSAddress.section(".",1,1);
-	lSAddressInfo.IpPart3=lSAddress.section(".",2,2);
-	lSAddressInfo.IpPart4=lSAddress.section(".",3,3);
-
-	lSNetmaskInfo.IpPart1=lSNetmask.section(".",0,0);
-	lSNetmaskInfo.IpPart2=lSNetmask.section(".",1,1);
-	lSNetmaskInfo.IpPart3=lSNetmask.section(".",2,2);
-	lSNetmaskInfo.IpPart4=lSNetmask.section(".",3,3);
-	
-	m_HistoryNetMask.IpPart1=lSNetmask.section(".",0,0);
-	m_HistoryNetMask.IpPart2=lSNetmask.section(".",1,1);
-	m_HistoryNetMask.IpPart3=lSNetmask.section(".",2,2);
-	m_HistoryNetMask.IpPart4=lSNetmask.section(".",3,3);
-	if (lSNetmaskInfo.IpPart1.toInt()!=0)
-	{
-		m_HistoryAddress.IpPart1=lSAddressInfo.IpPart1;
-	}else{
-		m_HistoryAddress.IpPart1="1";
-	}
-	if (lSNetmaskInfo.IpPart2.toInt()!=0)
-	{
-		m_HistoryAddress.IpPart2=lSAddressInfo.IpPart2;
-	}else{
-		m_HistoryAddress.IpPart2="1";
-	}
-	if (lSNetmaskInfo.IpPart3.toInt()!=0)
-	{
-		m_HistoryAddress.IpPart3=lSAddressInfo.IpPart3;
-	}else{
-		m_HistoryAddress.IpPart3="1";
-	}
-	if (lSNetmaskInfo.IpPart4.toInt()!=0)
-	{
-		m_HistoryAddress.IpPart4=lSAddressInfo.IpPart4;
-	}else{
-		m_HistoryAddress.IpPart4="1";
-	}
-	m_HistoryGateWay.IpPart1=m_HistoryAddress.IpPart1;
-	m_HistoryGateWay.IpPart2=m_HistoryAddress.IpPart2;
-	m_HistoryGateWay.IpPart3=m_HistoryAddress.IpPart3;
-	m_HistoryGateWay.IpPart4=m_HistoryAddress.IpPart4;
-	return 0;
-}
-
-int DeviceSearchWindows::__flushAddress()
-{
-	if (m_HistoryAddress.IpPart4.toInt()<254)
-	{
-		m_HistoryAddress.IpPart4=QString("%1").arg(m_HistoryAddress.IpPart4.toInt()+1);
-		goto FoundAddress;
-	}else if(m_HistoryAddress.IpPart3.toInt()<255){
-		m_HistoryAddress.IpPart4=QString("1");
-		m_HistoryAddress.IpPart3=QString("%1").arg(m_HistoryAddress.IpPart3.toInt()+1);
-		goto FoundAddress;
-	}else if (m_HistoryAddress.IpPart2.toInt()<255)
-	{
-		m_HistoryAddress.IpPart3=QString("1");
-		goto FoundAddress;
-	}
-	else{
-		//没有可分配的ip
-		return 1;
-	}
-
-FoundAddress:
-	return 0;
-}
-
-int DeviceSearchWindows::__ApplyAddress(QString &lSNewAddress ,QString lSAddress )
-{
-	if (__flushAddress()==1)
-	{
-		//没有可用的ip
-		return 1;
-	}
-	//判断该ip是否为主机ip
-	lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
-	//lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append("29").append(".").append(m_HistoryAddress.IpPart4);
-	if (lSNewAddress==lSAddress)
-	{
-		if (__flushAddress()==1)
-		{
-			return 1;
-		}
-		lSNewAddress.clear();
-		lSNewAddress.append(m_HistoryAddress.IpPart1).append(".").append(m_HistoryAddress.IpPart2).append(".").append(m_HistoryAddress.IpPart3).append(".").append(m_HistoryAddress.IpPart4);
-		return 0;
-	}
-	return 0;
-}
 
 int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {
