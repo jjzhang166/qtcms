@@ -278,7 +278,7 @@ void PlayMgr::run()
 				continue;
 			}
 			//start frame
-			int startframe = (per.end > per.start) ? (qAbs(timeOffset)*totalFrames/(per.end - per.start)) : 0;
+			int startframe = (per.end > per.start) ? ((int)((timeOffset*(qint64)totalFrames)/(per.end - per.start))) : 0;
 			if (startframe > 0)
 			{
 				AVI_seek_pos(file, startframe);
