@@ -33,8 +33,19 @@ QSqlDatabase *initMgrDataBase(QString sDatabaseName,int *nThis){
 		if (tDataBaseInfo.pDatabase->open())
 		{
 			//do nothing
+			QSqlQuery _query(*tDataBaseInfo.pDatabase);
+			QString sCommand="pragma journal_mode =off";
+			if (_query.exec(sCommand))
+			{
+			}else{
+				tDataBaseInfo.pDatabase->close();
+				delete tDataBaseInfo.pDatabase;
+				tDataBaseInfo.pDatabase=NULL;
+				printf("exec cmd fail:pragma journal_mode =off,in initMgrDataBase function /n");
+				return NULL;
+			}
 		}else{
-			printf("open database fail,in initDataBase function/n");
+			printf("open database fail,in initMgrDataBase function/n");
 			return NULL;
 		}
 		g_tMgrDataBase.insert(sDatabaseName,tDataBaseInfo);
@@ -239,6 +250,11 @@ void StorageMgrEx::run()
 					 }
 					 break;
 		}
+	}
+	if (NULL!=m_pDisksSetting)
+	{
+		m_pDisksSetting->Release();
+		m_pDisksSetting=NULL;
 	}
 }
 

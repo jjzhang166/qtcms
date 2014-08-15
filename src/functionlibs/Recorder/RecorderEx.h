@@ -11,7 +11,7 @@
 #include <QTimer>
 #include <avilib.h>
 #include <Recorder_global.h>
-
+#include "RepairDatabase.h"
 
 #define AVENC_IDR		0x01
 #define AVENC_PSLICE	0x02

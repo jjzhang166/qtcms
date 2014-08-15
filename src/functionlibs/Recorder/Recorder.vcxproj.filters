@@ -74,6 +74,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_StorageMgrEx.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="RepairDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
@@ -92,6 +95,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RepairDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

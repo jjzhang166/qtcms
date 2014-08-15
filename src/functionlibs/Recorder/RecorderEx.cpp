@@ -1204,7 +1204,18 @@ int RecorderEx::SetDevInfoEx( const int &nWindId, const int &nRecordType )
 
 int RecorderEx::FixExceptionalData()
 {
-	return 0;
+	//0:成功，1：没有进行修复行为，2：存在修复失败的条目
+	RepairDatabase *pRepairDataBase=new RepairDatabase;
+	if (pRepairDataBase!=NULL)
+	{
+		int nRet=pRepairDataBase->fixExceptionalData();
+		delete pRepairDataBase;
+		pRepairDataBase=NULL;
+		return nRet;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"FixExceptionalData fail as pRepairDataBase is null";
+		return 1;
+	}
 }
 
 bool RecorderEx::createFileDir()
