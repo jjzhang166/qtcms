@@ -1,0 +1,789 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Bubble Protocol</title>
+<script language="javascript">
+window.onscroll = scall;
+window.onresize = scall;
+window.onload = scall;
+function scall(){
+	var mydiv = document.getElementById("sky");
+	var height = Math.abs(window.innerHeight + document.body.scrollTop - 30) + 'px';
+	mydiv.style.top = height;
+}
+</script>
+<style type="text/css">
+.table_title {
+	font-size: 14px;
+	font-weight: bold;
+}
+.code {
+	color: #C00;
+}
+#sky{
+	position:absolute;
+	right:0; 
+	bottom:0;
+	width:30px;
+	height:22px;
+	border-right:3px outset;
+	border-top:3px outset;
+	background:#FFFFFF;
+	border-left:3px outset;
+	border-bottom:3px outset;
+}
+</style>
+</head>
+
+<body>
+<p id="top"><a href="../Index.html">Back</a></p>
+<h1>Bubble</h1>
+<h2>Contains</h2>
+<p><a href="#char_1">1.Summarize</a><br />
+  <a href="#char_2">2.Device information</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1">2.1.Stream Information of  Device</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_1">2.1.1bubble node</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_2">2.1.2vinX node</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_1_3">2.1.3streamX node</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_2_2">2.2.Record Search cgi</a><br />
+  <a href="#char_3">3.Data&nbsp;Format</a><br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_1">3.1.Preview Data&nbsp;Format</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_3_2">3.2.Playback Data&nbsp;Format</a> <br />
+<a href="#char_4">4.C Language code&nbsp;sample</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_4_1">4.1Data Structure</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#char_4_2">4.2How To Build A Packet</a></p>
+<p>&nbsp;</p>
+<h2 id="char_1">1.Summarize</h2>
+<p>Bubble protocol contains 3 parts: Stream Information of Device, instructions of RT preview and playback.</p>
+<p>&nbsp;</p>
+<h2 id="char_2">2.Device information</h2>
+<h3 id="char_2_1">2.1Stream Information of Device</h3>
+<p>The bubble protocol can be directly sent by TCP or over Http. Stream  information supported by the current device can be got when use the Http. It’s needed to add the follow http header before sending the bubble instruction.</p>
+<p class="code"><span class="code">GET /bubble/live?ch=0&amp;stream=0 HTTP/1.1</span></p>
+<p>It is important to note that the end mark of http header is double "\r\n".</p>
+<p>When the device gets the http header information, it will return different data according to its current state. If Bubble Over Http is unsupported by the device, it will return a Http 404 error, these devices usually have no stream optional but only one main stream. If supported, it will return a Http 200 0K information. The detail is as follows:</p>
+<p class="code">HTTP/1.1 200 OK<br />
+  Server:HiIpcam<br />
+  Content-Type:video/bubble<br />
+  Connection:keep-alive</p>
+<p class="code">&lt;bubble version=&quot;1.0&quot; vin=&quot;1&quot;&gt;&lt;vin0 stream=&quot;3&quot;&gt;&lt;stream0 name=&quot;720p.264&quot; size=&quot;1280x720&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;stream1 name=&quot;360p.264&quot; size=&quot;640x360&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;stream2 name=&quot;qvga.264&quot; size=&quot;320x240&quot; x1=&quot;yes&quot; x2=&quot;yes&quot; x4=&quot;yes&quot; /&gt;<br />
+  &lt;vin0&gt;<br />
+  &lt;/bubble&gt;#######################################################################################</p>
+<p>Server field include information of the current device. Content-Type is fixed as video/bubble. Entity content, which have 1024 bytes, some parts of it are expressed by xml and the lacking parts completed by #. The following details are about this xml.</p>
+<h4 id="char_2_1_1">2.1.1bubble node</h4>
+<p>Two properties in node: Version describes version number of current bubble protocol, vin describes amount of video input channel in current device. A vinX node is a sub node. X means the number of video input channel, which takes the value from 0 to total channels minus 1. When more than one video input channels in device, the corresponding vinX nodes will be more than one.</p>
+<h4 id="char_2_1_2">2.1.2vinX node</h4>
+<p>Only one property in this node: stream shows amount of streams which supported by current channel. A streamX node is a sub node. X means the stream number supported by the channel, which takes the value from 0 to total streams minus 1. When channel support more than one streams, the corresponding streamX nodes will be more than one.</p>
+<h4 id="char_2_1_3">2.1.3streamX node</h4>
+<p>Properties in node: name is the description of the current stream; size is the resolution of the current stream.</p>
+<h3 id="char_2_2">2.2Record Search cgi</h3>
+<p>&nbsp;</p>
+<h2 id="char_3">3.Data Format</h2>
+<h3 id="char_3_1">3.1Preview Data Format</h3>
+<p>Preview data format of Bubble is composed of FH(frame header) and load. FH includes header check information, frame length, instruction byte and timestamp. Load is a dynamic length which determine by specific data and parameter. For detailed description see table 3.1-1.</p>
+<p class="table_title">Table 3.1-1 Data of Preview Instruction</p>
+<table width="39%" border="1">
+  <tr>
+    <td width="25%" height="30">Data segment</td>
+    <td width="15%">Head</td>
+    <td width="15%">Length</td>
+    <td width="15%">Cmd</td>
+    <td width="15%">Ticket</td>
+    <td width="15%">Load</td>
+  </tr>
+  <tr>
+    <td height="30">Length</td>
+    <td>1 Byte</td>
+    <td>4 Bytes</td>
+    <td>1 Byte</td>
+    <td>4 Bytes</td>
+    <td>n Bytes</td>
+  </tr>
+</table>
+<p>Descriptions of every field are as following table:</p>
+<p class="table_title">Tabel 3.1-2 Introductions of Protocol Field </p>
+<table width="62%" border="1">
+  <tr>
+    <td width="14%">Name</td>
+    <td width="11%">Length(byte)</td>
+    <td width="45%">Description</td>
+    <td width="30%">Remarks</td>
+  </tr>
+  <tr>
+    <td>Head</td>
+    <td>1</td>
+    <td>Header check information of  data frame is fixed as Oxaa.</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td><p align="left">The length in of data frame exclude Head and Length segment.The data adopts big endian.</p></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Cmd</td>
+    <td>1</td>
+    <td>Instruction byte of data  frame has different load according to different instruction</td>
+    <td>Detailed description of instruction see table 3.1-3</td>
+  </tr>
+  <tr>
+    <td>Ticket</td>
+    <td>4</td>
+    <td>Timestamp of data frame use  big endian</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>Load</td>
+    <td>n</td>
+    <td>Content and length of load  data of data frame will be different according to Cmd field.</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-3 Description of Cmd field in preview protocol</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">Value</td>
+    <td width="18%">Name</td>
+    <td width="18%">Transmit Direction</td>
+    <td width="58%">Description</td>
+  </tr>
+  <tr>
+    <td>0x00</td>
+    <td>Message</td>
+    <td><p>Client To Server<br />
+      Server To Client
+    </p></td>
+    <td>Indicating  that it is a Message data which the Load of this frame including. Specific  format of Load see table 3.1-4</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Live Stream</td>
+    <td>Server To Client</td>
+    <td>Indicating that it is a stream data which the Load of this frame including. Specific format of Load see table 3.1-5</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Heartbeat</td>
+    <td><p>Client To Server<br />
+      Server To Client
+    </p></td>
+    <td>Heartbeat instruction, which length of Load is one byte and content is fixed as 0x02.</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>Live Stream Require</td>
+    <td>Client To Server</td>
+    <td>Instruction of Live Stream Require, which parameter of requiring is included in Load. Specific format of Load see table 3.1-6</td>
+  </tr>
+  <tr>
+    <td>0x08</td>
+    <td>Connect Refuse</td>
+    <td>Server To Client</td>
+    <td>Connect is refused. When device  resources isn’t enough, the pack will appear. Only one byte in Load, and this  byte is reserved. </td>
+  </tr>
+  <tr>
+    <td>0x0a</td>
+    <td>Live Stream Require Extension</td>
+    <td>Client To Server</td>
+    <td>An  extended live stream require instruction,  which parameter of  requiring is included in Load. Specific format of Load see table 3.1-7</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-4<strong> Description of  Message Instruction parameter</strong></p>
+<table width="71%" border="1">
+  <tr>
+    <td width="8%">Name</td>
+    <td width="16%">Length(byte)</td>
+    <td width="76%">Description</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>Length of message exclude Length field.It adopts big endian.</td>
+  </tr>
+  <tr>
+    <td>Message</td>
+    <td>1</td>
+    <td><p>Type of message, value is as follows:<br />
+      0: Password check of username. The message is client to sever, which adopts to check username and password. Specific parameter see table 3.1-8<br />
+      1: Amount of channels obtained. The message is client to sever, which adopts to obtain the amount of channel in device. There is no parameter in this message.<br />
+      2: PTZ. The message adopts to control PTZ of device. Specific parameter see table 3.1-8<br />
+    3: Return of password check of username. The message is server to client, which returns consequence of password check. Specific parameter see table 3.1-8<br />
+    4: Return of amount of  channels. The message is server to client, whose parameter includes the data of  amount of channels. Specific parameter see table 3.1-8</p></td>
+  </tr>
+  <tr>
+    <td>Reverse</td>
+    <td>3</td>
+    <td>Reserved bytes</td>
+  </tr>
+  <tr>
+    <td>Parameters</td>
+    <td>n</td>
+    <td>The field has different type of message according to different length and data. Specific information see table 3.1-8</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-5 Description of Live Stream parameter </p>
+<table width="71%" border="1">
+  <tr>
+    <td width="9%">Name</td>
+    <td width="15%">Length(byte)</td>
+    <td width="76%">Description</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>The Length of stream data adopts the big endian, excluding Length, Type, and the Channel field.</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>1</td>
+    <td><p>The specific types of current frame are as follows:<br />
+      0: audio frame<br />
+      1: video I frame<br />
+    2: video P frame</p></td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>The channel number of current frame,the data start from 0.</td>
+  </tr>
+  <tr>
+    <td>Data</td>
+    <td>n</td>
+    <td>Stream data.  When current frame is video, it’s a H.264 
+ stream and so can be decoded by any H.264 decoder. When current frame is audio, it includes a description data of audio and an audio stream. Description data of audio see table 3.1-9
+</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-6 Description of Live Stream Require parameter</p>
+<table width="71%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>Channel number of operation, star from 0, the minimum is 0 and the maximum is amount of channels minus 1</td>
+  </tr>
+  <tr>
+    <td>Operation</td>
+    <td>1</td>
+    <td>Operation byte. When field is 0, it closes RT stream of the corresponding channel and when field is 1, it opens.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-7 Description of Live Stream Require Extention parameter</p>
+<table width="71%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>4</td>
+    <td>Channel number of operation, star from 0, the minimum is 0 and the maximum is amount of channels minus 1</td>
+  </tr>
+  <tr>
+    <td>Stream</td>
+    <td>4</td>
+    <td>Stream number of operation,  the minimum is 0 and the maximum is amount of stream that supported by device  minus 1. Obtaining description of stream see the chapter 2.</td>
+  </tr>
+  <tr>
+    <td>Operation</td>
+    <td>4</td>
+    <td>Operation bytes. When field is 0, it closes RT stream of the corresponding channel and when field is 1, it opens.</td>
+  </tr>
+  <tr>
+    <td>Reserved</td>
+    <td>4</td>
+    <td>Reserved bytes.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-8 Description of message parameter</p>
+<table width="72%" border="1">
+  <tr>
+    <td>Message Value</td>
+    <td>Name</td>
+    <td>Parameters</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0x00</td>
+    <td rowspan="2">Verification of username  and password</td>
+    <td>username</td>
+    <td>20</td>
+    <td>Username to be verified</td>
+  </tr>
+  <tr>
+    <td>password</td>
+    <td>20</td>
+    <td>Password to be verified</td>
+  </tr>
+  <tr>
+    <td rowspan="4">0x02</td>
+    <td rowspan="4">PTZ</td>
+    <td>Channel</td>
+    <td>1</td>
+    <td>The channel number of PTZ</td>
+  </tr>
+  <tr>
+    <td>Action</td>
+    <td>1</td>
+    <td><p>PTZ action code, specific codes  and significants are as follows:<br />
+    0:up<br />
+    1:down<br />
+    2:left<br />
+    3:right<br />
+    4:auto pan scan<br />
+    5:far focus<br />
+    6:near focus<br />
+    7：zoom out<br />
+    8：zoom in<br />
+    9：iris open<br />
+    10：iris close
+    </p></td>
+  </tr>
+  <tr>
+    <td>Start</td>
+    <td>1</td>
+    <td>Start code. When data is 1, PTZ start to work. When data is 0, PTZ end work.</td>
+  </tr>
+  <tr>
+    <td>Param</td>
+    <td>1</td>
+    <td>The byte is speed of PTZ movement. Value range from 0-7. 0 is slowest and 7 fastest.</td>
+  </tr>
+  <tr>
+    <td rowspan="3">0x03</td>
+    <td rowspan="3">Return to verification of username  and password</td>
+    <td>Verified</td>
+    <td>1</td>
+    <td>The byte is result. When  value is 1 and so verification is successful, if not, it’s failed.</td>
+  </tr>
+  <tr>
+    <td>Reserved</td>
+    <td>3</td>
+    <td>Reserved bytes</td>
+  </tr>
+  <tr>
+    <td>Auth</td>
+    <td>13</td>
+    <td>Authority of this user, it is out of use.</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>Channel Count</td>
+    <td>Channel Count</td>
+    <td>4</td>
+    <td>Amount of channel in device</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.1-9 <strong>Description data of  audio frame</strong></p>
+<table width="72%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>entries</td>
+    <td>4</td>
+    <td>The count of audio packet of this frame</td>
+  </tr>
+  <tr>
+    <td>packsize</td>
+    <td>4</td>
+    <td>Size of every Audio Pack.  Data size of whole audio data in the frame is entries*packsize.</td>
+  </tr>
+  <tr>
+    <td>pts</td>
+    <td>8</td>
+    <td>A 64 bits data descripes timestamp in microsecond(us).</td>
+  </tr>
+  <tr>
+    <td>general time</td>
+    <td>4</td>
+    <td>The generate time of  current audio frame, in second.</td>
+  </tr>
+  <tr>
+    <td>encode</td>
+    <td>8</td>
+    <td>Encode type of audio, current  value is &quot;g711&quot;</td>
+  </tr>
+  <tr>
+    <td>samplerate</td>
+    <td>4</td>
+    <td>Samplerate of audio</td>
+  </tr>
+  <tr>
+    <td>samplewidth</td>
+    <td>4</td>
+    <td>Samplewidth of audio</td>
+  </tr>
+</table>
+<h3 id="char_3_2">3.2 Playback Data Format</h3>
+<p>The playback data structure of Bubble is the same with preview data structure. Definition of specific Cmd field has different meaning according to different transmit direction. Specific descriptions see table 3.2-1 and table 3.2-2.</p>
+<p class="table_title">Table 3.2-1 Description of Cmd field of Client to Server in playback protocol</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">Value</td>
+    <td width="18%">Name</td>
+    <td width="18%">Transmit Direction</td>
+    <td width="58%">Description</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Record Require</td>
+    <td>Client To Server</td>
+    <td>Requiring records from device and its specific parameters of requiring are included in Load. Specific descriptions see table 3.2-3. The instruction is applied to device in 1.2.0.5611B2 versions and before. Subsequent versions are suggested to use Record Require V2 instruction.</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Pause</td>
+    <td>Client To Server</td>
+    <td>Pause to transmit playback  data. The instruction has no Load data.</td>
+  </tr>
+  <tr>
+    <td>0x03</td>
+    <td>Continue</td>
+    <td>Client To Server</td>
+    <td>Continue to transmit  playback data. The instruction has no Load data.</td>
+  </tr>
+  <tr>
+    <td>0x04</td>
+    <td>Stop</td>
+    <td>Client To Server</td>
+    <td>Stop to transmit playback  data. The instruction has no Load data and will reset a playback task.</td>
+  </tr>
+  <tr>
+    <td>0x05</td>
+    <td>Record Require V2</td>
+    <td>Client To Server</td>
+    <td>Requiring records from device  and its specific parameters of requiring are included in Load. Specific descriptions  see table 3.2-4. The instruction is valid in version after 1.2.0.5611B2. The  previous version pls use Record Require instruction.</td>
+  </tr>
+  <tr>
+    <td>0x07</td>
+    <td>Heart Beat</td>
+    <td>Client To Server</td>
+    <td>Heart Beat, which only  includes one byte in Load. It’s fixed as 0x02.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.2-2 Description of Cmd field of Server to Client in playback protocol</p>
+<table width="64%" border="1">
+  <tr>
+    <td width="6%">Value</td>
+    <td width="18%">Name</td>
+    <td width="18%">Transmit Direction</td>
+    <td width="58%">Description</td>
+  </tr>
+  <tr>
+    <td>0x01</td>
+    <td>Record Stream</td>
+    <td>Server To Client</td>
+    <td>Record data sent from Server.  Specific parameters see table 3.2-5.</td>
+  </tr>
+  <tr>
+    <td>0x02</td>
+    <td>Heart Beat</td>
+    <td>Server To Client</td>
+    <td>Heart Beat, which only  includes one byte in Load. It’s fixed as 0x02.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.2-3 <strong>Description of parameters in Record  Require command</strong></p>
+<table width="72%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>ReqListCount</td>
+    <td>4</td>
+    <td>Amount of Reqlists included  in the instruction</td>
+  </tr>
+  <tr>
+    <td>Channels</td>
+    <td>4</td>
+    <td>32 digits, each bit is a  channel. When its value is 1, it shows that its bit is from low to high  configuration when requesting a video of the corresponding channel. When the  position No.0 1, it means its requesting the video of channel 1; and when  position No.1 1, it means its requesting of the video of channel 2 and so on.  Such as 0 x03 means requesting video of channel 1 and channel 2.</td>
+  </tr>
+  <tr>
+    <td>Reserved</td>
+    <td>4</td>
+    <td>Reserved bytes.</td>
+  </tr>
+  <tr>
+    <td>ReqList</td>
+    <td>ReqListCount*12</td>
+    <td>ReqList, specific parameter  see table 3.2-6.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.2-4 <strong>Description of parameters in Record Require V2 command </strong></p>
+<table width="72%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(in byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>Channels</td>
+    <td>4</td>
+    <td>32 digits, each bit is a  channel. When its value is 1, it shows that its bit is from low to high  configuration when requesting a video of the corresponding channel. When the  position No.0 1, it means its requesting the video of channel 1; and when  position No.1 1, it means its requesting of the video of channel 2 and so on.  Such as 0 x03 means requesting video of channel 1 and channel 2.</td>
+  </tr>
+  <tr>
+    <td>Types</td>
+    <td>4</td>
+    <td>32 digits, indicated the  type of the requested playback by bit. In which No.0 bit means timing records,  No.1 means MD records, and No.2 means alarm records,No.3 means manual records.</td>
+  </tr>
+  <tr>
+    <td>Start</td>
+    <td>4</td>
+    <td>The starting time of the  requested records, adopting the GMT.</td>
+  </tr>
+  <tr>
+    <td>End</td>
+    <td>4</td>
+    <td>The ending time of the  requested records, adopting the GMT.</td>
+  </tr>
+</table>
+<p class="table_title">Table 3.2-5 Description of parameters in Record Stream command</p>
+<table width="72%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>Length</td>
+    <td>4</td>
+    <td>The Length of stream data adopts  the big endian, excluding Length, Type, and the Channel field.</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>1</td>
+    <td><p>The specific types of current frame are as follows:<br />
+      0:audio frame<br />
+      1:video I frame<br />
+    2:video P frame</p></td>
+  </tr>
+  <tr>
+    <td>Channel</td>
+    <td>1</td>
+    <td>The channel number  of this frame,starts from 0</td>
+  </tr>
+  <tr>
+    <td>magic</td>
+    <td>4</td>
+    <td>Magic number of the frame</td>
+  </tr>
+  <tr>
+    <td>session_rnd</td>
+    <td>4</td>
+    <td>the random  number of session</td>
+  </tr>
+  <tr>
+    <td>frame_width</td>
+    <td>4</td>
+    <td>Video width, if it  is audio frame this parameter is ignored</td>
+  </tr>
+  <tr>
+    <td>frame_height</td>
+    <td>4</td>
+    <td>Video height, if it  is audio frame this parameter is ignored</td>
+  </tr>
+  <tr>
+    <td>frame_rate</td>
+    <td>4</td>
+    <td>Video frame rate,  if it's audio frame this parameter is ignored</td>
+  </tr>
+  <tr>
+    <td>audio_sample_rate</td>
+    <td>4</td>
+    <td>Audio sample rate,  if it is a video frame, this parameter is ignored</td>
+  </tr>
+  <tr>
+    <td>audio_format</td>
+    <td>8</td>
+    <td>Audio coding  format, using string representation, such as &quot;g711&quot;, etc</td>
+  </tr>
+  <tr>
+    <td>audio_data_width</td>
+    <td>4</td>
+    <td>Audio frame samplewidth, if  it is a video frame, this parameter is ignored</td>
+  </tr>
+  <tr>
+    <td>frame_type</td>
+    <td>4</td>
+    <td>Frame type, 0 is audio, 1  is video I frame, 2 is video P frame</td>
+  </tr>
+  <tr>
+    <td>session_id</td>
+    <td>4</td>
+    <td>Session ID.</td>
+  </tr>
+  <tr>
+    <td>channel</td>
+    <td>4</td>
+    <td>Channel number, starting  from 0</td>
+  </tr>
+  <tr>
+    <td>rec_type</td>
+    <td>4</td>
+    <td>The current video types, according  to the calculation, No.0 bit means timing recording, No.1 means motion  detecting recording, No.2 recording alarm   recording, No.3 means recording manually</td>
+  </tr>
+  <tr>
+    <td>frame_index</td>
+    <td>8</td>
+    <td>Index of the frame in session</td>
+  </tr>
+  <tr>
+    <td>nSize</td>
+    <td>4</td>
+    <td>The frame size doesn’t  exclude the frame head</td>
+  </tr>
+  <tr>
+    <td>u64TSP</td>
+    <td>8</td>
+    <td>Timestamp,accurate to microseconds</td>
+  </tr>
+  <tr>
+    <td>nGenTime</td>
+    <td>4</td>
+    <td>The generation time of this frame in second,adopting the GMT.</td>
+  </tr>
+  <tr>
+    <td>Reserved</td>
+    <td>x</td>
+    <td>Reserved bytes, the field  size guarantee there are  128 bytes from magic field starting to the end of this field.</td>
+  </tr>
+  <tr>
+    <td>Data</td>
+    <td>n</td>
+    <td>Stream data,if it's audio frame and so it needs to shift  back to 4 bytes</td>
+  </tr>
+</table>
+<p>In  ReqList, the value of each field is through video to inquire the return value  of the cgi, specific information see the second chapter “read equipment  information”</p>
+<p class="table_title">Table 3.2-6 <strong>Description of parameters in ReqList command</strong></p>
+<table width="72%" border="1">
+  <tr>
+    <td>Name</td>
+    <td>Length(byte)</td>
+    <td>Description</td>
+  </tr>
+  <tr>
+    <td>Disk</td>
+    <td>4</td>
+    <td>The disk number  where the video is</td>
+  </tr>
+  <tr>
+    <td>StartNum</td>
+    <td>4</td>
+    <td>The file number that  the recording starts</td>
+  </tr>
+  <tr>
+    <td>EndNum</td>
+    <td>4</td>
+    <td>The file number that  recording ends</td>
+  </tr>
+</table>
+<h2 id="char_4">4.C Language Code Examples</h2>
+<h3 id="char_4_1">4.1Data Struture</h3>
+<p class="code">struct _tagBubble{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char         cHead;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char         cCmd;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiTicket;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pLoad[1];
+<br />
+};</p>
+<p class="code">struct _tagMessage{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cMessage;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cReverse[3];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pParameters[1];
+<br />
+  };
+</p>
+<p class="code">struct _tagLiveStream{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiLength;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cType;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char pData[1];
+<br />
+  };</p>
+<p class="code">struct _tagLiveStreamRequire{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char cOperation;
+  <br />
+  };
+</p>
+<p class="code">struct_tagLiveStreamRequireEx{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiStream;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiOperation;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiReserved;
+  <br />
+  };
+</p>
+<p class="code">struct _tagLiveStreamAudio{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiEntries;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int 
+  uiPacksize;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned long long ui64Pts;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiGtime;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;char sEncode[8];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiSampleRate;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned int uiSampleWidth;
+<br />
+};</p>
+<p class="code">struct _tagPtzCtrl{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cChannel;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cAction;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cStart;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;unsigned char cParam;
+<br />
+};</p>
+<h3 id="char_4_2">4.2How To Build A Packet</h3>
+<p>The following code is a example of how to build and send a PTZ control instruction package.</p>
+<p><span class="code">char Data[1024];<br />
+struct _tagBubble * bubble;<br />
+struct _tagMessage *msg;<br />
+struct _tagPtzCtrl *msgParam;<br />
+<br />
+memset(Data,0,sizeof(Data));<br />
+<br />
+bubble = (struct _tagBubble *)Data;<br />
+bubble-&gt;cHead = 0xaa;<br />
+bubble-&gt;uiLength=;
+<br />
+bubble-&gt;cCmd = MACRO_BUBBLE_MSG;<br />
+bubble-&gt;uiTicket = GetTicket();
+<br />
+<br />
+msg = 
+(struct _tagMessage *)bubble-&gt;pLoad;<br />
+msg-&gt;uiLength=sizeof(struct _tagMessage) - STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength) - STRUCT_MEMBER_SIZE(struct _tagMessage,pParameters) + sizeof(struct _tagPtzCtrl);
+<br />
+msg-&gt;cMessage=MACRO_MSG_LSR;<br />
+<br />
+msgParam = (struct _tagPtzCtrl *)msg-&gt;pParameters;<br />
+msgParam-&gt;cChannel=nChannel;<br />
+msgParam-&gt;cAction=MSG_PTZ_UP;<br />
+msgParam-&gt;cStart=TRUE;<br />
+msgParam-&gt;cParam=7;<br />
+<br />
+bubble-&gt;uiLength=sizeof(struct _tagBubble) - STRUCT_MEMBER_SIZE(struct _tagBubble,cHead) - STRUCT_MEMBER_SIZE(struct _tagBubble,uiLength) - STRUCT_MEMER_SIZE(struct _tagBubble,pLoad) + msg-&gt;uiLength + STRUCT_MEMBER_SIZE(struct _tagMessage,uiLength);<br />
+<br />
+nPackSize = bubble-&gt;uiLength + STRUCT_MEMBER_SIZE(struct _tagBubble,cHead) + STRUCT_MEMBER_SIZE(struct _tagBubble,uiLength);<br />
+send(s,Data,nPackSize,0);
+</span><br />
+  <br />
+</p>
+<div id="sky"><span><a href="#top" style="text-decoration:none">Top</a></span></div>
+</body>
+</html>
