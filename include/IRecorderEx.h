@@ -10,7 +10,7 @@ interface IRecorderEx : public IPComBase
 
 	virtual int SetDevInfoEx(const int &nWindId, const int &nRecordType) = 0;
 
-	virtual int FixExceptionalData() = 0;
+	virtual int FixExceptionalData() = 0;//0:成功，1：没有进行修复行为，2：存在修复失败的条目
 
 	enum _emError{
 		OK = 0,          //成功

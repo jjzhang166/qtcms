@@ -10,7 +10,9 @@
 #include <MyEventSender.h>
 #include <QMutex>
 QMutex g_tMessage;
+QString g_sLocalPath;
 QFile outFile; 
+#define  FILESIZE 52428800//50M
 void customMessageHandler(QtMsgType type, const char *msg){
 	g_tMessage.lock();
 	QString txt;  
@@ -33,7 +35,25 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		txt = QString("Fatal: %1").arg(msg);  
 		g_tMessage.unlock();
 		abort();  
-	}  
+	} 
+	if (outFile.size()>FILESIZE)
+	{
+		QString sFilePath;
+		sFilePath=g_sLocalPath+"/"+QDate::currentDate().toString("dd.MM.yyyy")+"-"+QTime::currentTime().toString("hh-mm-ss")+".log";
+		outFile.close();
+		outFile.setFileName(sFilePath);
+		if (outFile.isOpen())
+		{
+			//do nothing
+		}else{
+			outFile.open(QIODevice::WriteOnly | QIODevice::Append);  
+		}
+		QTextStream ts(&outFile);  
+		QString txt="\r\n\r\n=====start=====\r\n\r\n";
+		ts << txt << endl; 
+	}else{
+		//keep going 
+	}
 	if (outFile.isOpen())
 	{
 		//do nothing
@@ -62,7 +82,7 @@ int main(int argc, char *argv[])
 	}else{
 		tLogDir.mkpath(sAppPath);
 	}
-	
+	g_sLocalPath=sAppPath;
 	QString sLogName=sAppPath+"/"+QDate::currentDate().toString("dd.MM.yyyy")+".log";
 	outFile.setFileName(sLogName);
 	if (outFile.isOpen())
