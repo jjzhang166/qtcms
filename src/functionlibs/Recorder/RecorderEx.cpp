@@ -543,6 +543,16 @@ int RecorderEx::Stop()
 	if (QThread::isRunning())
 	{
 		m_bStop=true;
+		int nCount=0;
+		while(QThread::isRunning()){
+			sleepEx(10);
+			nCount++;
+			if (nCount>1000&&nCount%200)
+			{
+				nCount=0;
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tRecorderInfo.sDeviceName<<"there must exist some error ,thread block at :"<<m_iPosition;
+			}
+		}
 	}else{
 		clearData();
 	}
