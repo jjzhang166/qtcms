@@ -787,5 +787,5 @@ void RecordPlayer::throwException( QVariantMap &evMap )
 {
 	RecordPlayerView *pWnd = (RecordPlayerView*)evMap.take("pWnd").toUInt();
 	evMap.insert("wndId", pWnd - m_subRecPlayerView);
-	EventProcCall("ThrowException", evMap);
+	EventProcCall(QString("ThrowException"), evMap);
 }

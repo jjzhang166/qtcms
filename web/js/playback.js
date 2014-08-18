@@ -772,7 +772,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 	function ThrowExceptionCallback(data){
 		var arr = [_T('Available'),_T('Abnormal_damaged')];
-		alert(T('ThrowException',(parseInt(data.wndId)+1),filepath,arr[data.expCode]));
+		alert(T('ThrowException',(parseInt(data.wndId)+1),data.filePath,arr[data.expCode]));
 	}
 
 	//初始化控件与文件列表的关系.

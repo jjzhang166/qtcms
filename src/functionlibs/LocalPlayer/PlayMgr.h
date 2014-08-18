@@ -21,7 +21,7 @@ typedef struct _tagPeriodTime{
 }PeriodTime;
 
 typedef void (*pcbTimeChange)(QString evName, uint playTime, void* pUser);
-typedef void (*pcbThreowException)(QString evName, QVariantMap item, void* pUser);
+// typedef void (*pcbThreowException)(QString evName, QVariantMap item, void* pUser);
 
 class PlayMgr :
 	public QThread
@@ -34,13 +34,15 @@ public:
 	void setFileInfo(QMap<QString, PeriodTime> fileInfoMap);
 	void setPlaySpeed(int speedRate);
 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
-	void setCbThreowExcepion(pcbThreowException pro, void* pUser);
+// 	void setCbThreowExcepion(pcbThreowException pro, void* pUser);
 	void pause(bool isPause);
 	void stop();
 	int prePlay(QVariantMap item);
 	void OpneAudio(bool bEnabled);
 	int setVolume(unsigned int &uiPersent);
 	void AudioSwitch(bool bOpen);
+signals:
+    void sigThrowException(QVariantMap item);
 private:
 	int initCb();
 
@@ -67,7 +69,7 @@ private:
 	QVector<PeriodTime> m_skipTime;
 	static uint m_playingTime;
 	pcbTimeChange m_pcbTimeChg;
-	pcbThreowException m_pcbThrowExp;
+// 	pcbThreowException m_pcbThrowExp;
 	void *m_pUser;
 	static bool m_bIsSkiped;
 	static bool m_bIsPickThread;

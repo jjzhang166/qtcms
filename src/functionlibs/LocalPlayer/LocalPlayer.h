@@ -14,7 +14,7 @@
 #include "ILocalPlayerEx.h"
 
 void cbTimeChange(QString evName, uint playTime, void* pUser);
-void cbThrowException(QString evName, QVariantMap item, void* pUser);
+// void cbThrowException(QString evName, QVariantMap item, void* pUser);
 
 class LocalPlayer : public QObject,
 	public IEventRegister,
@@ -23,6 +23,7 @@ class LocalPlayer : public QObject,
 	public ILocalPlayerEx,
 	public ILocalPlayer
 {
+	Q_OBJECT
 public:
 	LocalPlayer();
 	~LocalPlayer();
@@ -82,6 +83,7 @@ public:
 	}ProcInfoItem;
 	void setPlayTime(uint &playTime);
 	void setBaseTime(uint &baseTime);
+public slots:
 	void throwException(QVariantMap item);
 private:
 	void eventProcCall(QString sEvent,QVariantMap param);

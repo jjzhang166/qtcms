@@ -21,7 +21,7 @@ PlayMgr::PlayMgr(void):
 	m_pRenderWnd(NULL),
 	m_pVedioDecoder(NULL),
 	m_pVedioRender(NULL),
-	m_pcbThrowExp(NULL),
+// 	m_pcbThrowExp(NULL),
 	m_nInitHeight(0),
 	m_nInitWidth(0),
 	m_nSpeedRate(0),
@@ -93,17 +93,17 @@ void PlayMgr::setCbTimeChange(pcbTimeChange pro, void* pUser)
 	}
 }
 
-void PlayMgr::setCbThreowExcepion( pcbThreowException pro, void* pUser )
-{
-	if (pro && pUser)
-	{
-		if (m_pUser != pUser)
-		{
-			m_pUser = pUser;
-		}
-		m_pcbThrowExp = pro;
-	}
-}
+// void PlayMgr::setCbThreowExcepion( pcbThreowException pro, void* pUser )
+// {
+// 	if (pro && pUser)
+// 	{
+// 		if (m_pUser != pUser)
+// 		{
+// 			m_pUser = pUser;
+// 		}
+// 		m_pcbThrowExp = pro;
+// 	}
+// }
 
 void PlayMgr::setFileInfo(QMap<QString, PeriodTime> fileInfoMap)
 {
@@ -240,15 +240,12 @@ void PlayMgr::run()
 			int frameRate = totalFrames/(per.end - per.start);
 			if (!frameRate)//gave a tip when file has a exception
 			{
-				if (m_pcbThrowExp)
-				{
-					QVariantMap item;
-					item.insert("filePath", filePath);
-					item.insert("expCode", 1);
-					item.insert("pWnd", (uint)this);
+				QVariantMap item;
+				item.insert("filePath", filePath);
+				item.insert("expCode", 1);
+				item.insert("pWnd", (uint)this);
 
-					m_pcbThrowExp(QString("ThrowException"), item, m_pUser);
-				}
+				emit sigThrowException(item);
 				continue;
 			}
 

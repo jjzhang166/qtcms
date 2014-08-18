@@ -700,7 +700,7 @@ int LocalPlayer::GroupPlay()
 			continue;
 		}
 		iter->pPlayMgr->setCbTimeChange(cbTimeChange, this);
-		iter->pPlayMgr->setCbThreowExcepion(cbThrowException, this);
+// 		iter->pPlayMgr->setCbThreowExcepion(cbThrowException, this);
 		iter->pPlayMgr->setParamter(iter->fileList, iter.key(), iter->startTime, iter->endTime, iter->startPos, iter->skipTime);
 		iter->pPlayMgr->setFileInfo(m_filePeriodMap);
 		if (iter->pPlayMgr->isRunning())
@@ -711,6 +711,7 @@ int LocalPlayer::GroupPlay()
 	}
 
 	m_bIsGroupPlaying = true;
+	m_playTime = 0;//clear old data
 
 	return 0;
 }
@@ -955,13 +956,13 @@ void cbTimeChange(QString evName, uint playTime, void* pUser)
 	}
 }
 
-void cbThrowException( QString evName, QVariantMap item, void* pUser )
-{
-	if (!item.isEmpty() && pUser && "ThrowException" == evName)
-	{
-		((LocalPlayer*)pUser)->throwException(item);
-	}
-}
+// void cbThrowException( QString evName, QVariantMap item, void* pUser )
+// {
+// 	if (!item.isEmpty() && pUser && "ThrowException" == evName)
+// 	{
+// 		((LocalPlayer*)pUser)->throwException(item);
+// 	}
+// }
 
 QStringList LocalPlayer::eventList()
 {
@@ -1274,6 +1275,8 @@ int LocalPlayer::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWn
 	m_startTime = prePlay.startTime.toTime_t();
 	m_endTime = prePlay.endTime.toTime_t();
 	
+	connect(prePlay.pPlayMgr, SIGNAL(sigThrowException(QVariantMap)), this, SLOT(throwException(QVariantMap)));
+
 	m_GroupMap.insert(const_cast<QWidget*>(pWnd), prePlay);
 	return 0;
 }
