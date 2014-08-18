@@ -25,6 +25,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcBasicInfo2UI = function(){ //获取设备信息
+
 		reInitNowDev();
 		var This = this;
 		console.log('-------------------ipcBasicInfo2UI--------------------------');

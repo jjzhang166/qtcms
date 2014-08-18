@@ -11,8 +11,8 @@ function addMouseStyle(obj,action){  //按钮UI响应
 	var width = obj.width();
 	var left,top;
 	obj.hover(function(){
-		left = document.all ? parseInt(obj.css('backgroundPositionX')) : parseInt(obj.css('background-position').split('px')[0]);
-		top = document.all ? parseInt(obj.css('backgroundPositionY')) : parseInt(obj.css('background-position').split('px')[1]);
+		left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
+		top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
 		if(left != -width){
 			obj.css('background-position',left-width+'px'+' '+top+'px');
 		}
@@ -36,7 +36,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 				obj.attr('toggle',1);
 				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
 			}	
-			top = parseInt(obj.css('backgroundPositionY')) || parseInt(obj.css('background-position').split('px')[1]);	
+			top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
 		}else if(action == 'hover'){
 			obj.css('background-position',left-width+'px'+' '+top+'px');	
 		}else{
@@ -46,7 +46,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 				var ev = ev || window.event;
 				var oSwitch = $('div .setViewNum');	
 				oSwitch.each(function(index){
-				var T = document.all ? parseInt($(this).css('backgroundPositionY')) : parseInt($(this).css('background-position').split('px')[1]);
+				var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
 				$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
 				/*var oView = $('#playback_view');
 				if(oView.length != 0){
@@ -236,7 +236,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 		//数据填充部分
 		'toCheck':function(){ 
 			$(this).click(function(){
-				return $(this).val($(this).prop('checked'));
+				return $(this).val($(this).prop('checked'));	
 			})
 		},
 		'dataIntoVal':function (val){
@@ -282,6 +282,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			oSelectAll.click(function(){
 				warp.find(':checkbox:enabled').prop('checked',$(this).is(':checked'));
 			})
+
 			return warp
 
 			/*$('#tableSelectAll').on('click',function(){  // 全选
@@ -451,12 +452,12 @@ function objShowCenter(obj){ //调整弹出框定位 居中
 
 
 function returnTime(sInt){  //秒转换时间.
-	var H = parseInt(sInt)/3600;
-		H = addZero(parseInt(H));
+	var H = parseInt(sInt,10)/3600;
+		H = addZero(parseInt(H,10));
 	var M = (sInt-H*3600)/60
-		M = addZero(parseInt(M));
+		M = addZero(parseInt(M,10));
 	var S = sInt-H*3600-M*60;
-		S = addZero(parseInt(S));
+		S = addZero(parseInt(S,10));
 	/*if(sHours[1]){
 		var sM = sHours[1].slice(0,2),
     	M = addZero(parseInt(sM*0.6));
@@ -563,7 +564,7 @@ function renewtime(){
 
 	yy=myDate.getFullYear(),
 
-	mm=addZero(parseInt(myDate.getMonth())+1),
+	mm=addZero(parseInt(myDate.getMonth(),10)+1),
 
 	dd=addZero(myDate.getDate()),
 

@@ -98,6 +98,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
+
+				getAudioObj().GroupStop();
 				
 				bool = index;
 
@@ -121,6 +123,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
+		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
 
 		bFullScreen = 0;
 
@@ -261,7 +264,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				if(wind){
 					var status = oPlaybackLocl.AddFileIntoPlayGroupEx(wind,date,begin.split(' ')[1],maxFileEndTime,type);
 					if(status !=0){
-						console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
+						//console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
 						alert(lang.wind+':'+wind+lang.play_Failed);
 					}
 				}
@@ -767,12 +770,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 	}
 
+	function ThrowExceptionCallback(data){
+		var arr = [_T('Available'),_T('Abnormal_damaged')];
+		alert(T('ThrowException',(parseInt(data.wndId)+1),filepath,arr[data.expCode]));
+	}
+
 	//初始化控件与文件列表的关系.
 	function initOxcDevListStatus(){
 		searchSTOP=1;
 	
 		//console.time('--重画设备列表菜单--');
-		areaList2Ui('','','closed');
+		areaList2Ui();
 		//console.timeEnd('--重画设备列表菜单--');
 		
 		//console.time('--设备列表事件添加--');
@@ -801,7 +809,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initrecFileOcx($('#channelvideo div.video'));
 
-		//groupStop();
+		groupStop();
 		//console.time('--本地远程控件调整--');
 		if(bool){
 			oPlayBack.style.height='0px';
@@ -819,7 +827,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		var objStatus = getAudioObj().GetCurrentState();
 
-		//console.log('当前控件的播放状态:'+objStatus);
+		console.log('当前控件的播放状态:'+objStatus);
 
 		if(objStatus == 4 || objStatus == 3){
 			//recFile=null;

@@ -9,9 +9,7 @@ var oSearchOcx,
 
 		$('#iframe').hide();
 		
-		$('div.menu .close').click(function(){  //弹出操作框下部分元素添加关闭窗口事件
-			closeMenu();
-		});
+		$('div.menu .close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
 
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){

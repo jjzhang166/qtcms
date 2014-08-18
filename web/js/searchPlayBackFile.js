@@ -178,7 +178,7 @@
 			str = (now/recTotal*100).toString().slice(0,5);
 			str = str == 'NaN'?'':str+'%';
 
-		if(recTotal == now && now != 0){
+		if(recTotal == now){
 			con = lang.Retrieval_completed;
 		}
 
@@ -189,6 +189,8 @@
 	}
 
 	function recFileSearchFailCallback(data){
+		/*console.log('recFileSearchFailCallback');
+		console.log(data);*/
 
 		/*
 		远程文件过多后  导致请求次数变多.
@@ -214,6 +216,7 @@
 
 	function RecfinishCallback(data){ //检索完成回调
 		/*console.log('------------文件总数-----------');
+		console.log('RecfinishCallback');
 		console.log(data);*/
 		recTotal = data.total ? data.total : 0;	
 
