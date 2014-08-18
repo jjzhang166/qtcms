@@ -99,7 +99,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
 
-				getAudioObj().GroupStop();
+				groupStop();
 				
 				bool = index;
 
@@ -310,7 +310,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				
 				left = initleft+p*nowPlayd;
 			
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 
 			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
 				dragStopMove();*/
@@ -809,7 +809,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initrecFileOcx($('#channelvideo div.video'));
 
-		groupStop();
+		//groupStop();
 		//console.time('--本地远程控件调整--');
 		if(bool){
 			oPlayBack.style.height='0px';
@@ -827,7 +827,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		var objStatus = getAudioObj().GetCurrentState();
 
-		console.log('当前控件的播放状态:'+objStatus);
+		//console.log('当前控件的播放状态:'+objStatus);
 
 		if(objStatus == 4 || objStatus == 3){
 			//recFile=null;
@@ -836,8 +836,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			dragStopMove();
 		}else{
-			/*var arr=['1/X','2X','1/2X'];
-			palybackspeed(arr[objStatus]);*/
+			var arr=['1/X','2X','1/2X'];
+			palybackspeed(arr[objStatus]);
+			getAudioObj().GroupContinue();
 			//console.log('当前控件继续播放的返回值:'+getAudioObj().GroupContinue());
 			dragStartMove();
 		}
