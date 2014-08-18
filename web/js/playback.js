@@ -771,6 +771,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function ThrowExceptionCallback(data){
+		dragStopMove();
 		var arr = [_T('Available'),_T('Abnormal_damaged')];
 		alert(T('ThrowException',(parseInt(data.wndId)+1),data.filePath,arr[data.expCode]));
 	}

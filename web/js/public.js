@@ -83,7 +83,7 @@ function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 		}else{
 			showNowPlayBackTime(oNow,left-X1,X2-X1);
 		}
-		oDrag.css('left',left-1);
+		oDrag.css('left',left-1.5);
 	}).mouseup(function(){
 		$(this).off();
 	})
