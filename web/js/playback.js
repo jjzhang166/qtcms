@@ -189,20 +189,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(hasFile){
 			if(to){
 				/*if(speed){
-					alert('正常速度');
 					GroupSpeedNormal();
 				}else{*/
-					//alert('继续');
 					playAction('GroupContinue');
 					dragStartMove();
 				//}
 			}else{
-				//alert('暂停');
 				playAction('GroupPause')
 				dragStopMove();
 			}
 		}else{
-			//alert('播放');
 			playVideo();		
 		}
 	}
@@ -250,22 +246,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		if(bool){ //本地回访
 			$("#channelvideo").find('input:checked').each(function(){
-				/*//console.log($('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]));
-				var filepath =$('#channel_'+$(this).parent('td').parent('tr').attr('id').split('_')[2]).data('filepath');
-				//var filepath = oChannel.eq(index).data('filepath');
-				if(filepath){
-					//console.log('本地回放文件:'+filepath+'//通道:'+k+'//开始时间:'+begin+'//结束时间:'+end);
-					if(oPlaybackLocl.AddFileIntoPlayGroup(filepath,k,begin,end) != 0){
-						alert(lang.play_Failed);
-					};
-				}*/
+
 				var wind = $(this).next('label').attr('wind');
 				//console.log(wind);
 				if(wind){
 					var status = oPlaybackLocl.AddFileIntoPlayGroupEx(wind,date,begin.split(' ')[1],maxFileEndTime,type);
 					if(status !=0){
 						//console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
-						alert(lang.wind+':'+wind+lang.play_Failed);
+						alert(lang.wind+':'+(parseInt(wind,10)+1)+lang.play_Failed);
 					}
 				}
 			});
@@ -364,7 +352,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playAction(str){
 		var obj = bool ? oPlaybackLocl : oPlayBack; //回放插件对象
-		//alert(str+'::当前速度:'+(nowSpeed>1?nowSpeed:1/nowSpeed));
 		if(bool && (str == 'GroupSpeedFast' || str == 'GroupSpeedSlow')){
 			obj[str](nowSpeed>1?nowSpeed:1/nowSpeed);
 		}else{
@@ -385,7 +372,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			nowSpeed = nowSpeed < (1/max) ? (1/max) : nowSpeed;
 		}
 		if(nowSpeed == 1){
-			//alert(nowSpeed+'==');
 			playAction('GroupSpeedNormal');
 			show='1X';
 		}else if(nowSpeed<1){

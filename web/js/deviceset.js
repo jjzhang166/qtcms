@@ -859,7 +859,7 @@ function autoSetIP(){  //批量分配IP
 	})
 	str+='</devnetworkInfo>';
 	$('#AutoSetNetworkInfoID').val(str);
-	//alert($('#AutoSetNetworkInfoID').val());
+
 	oSearchOcx.AutoSetNetworkInfo();
 	setTimeout(searchFlush,2000);
 	

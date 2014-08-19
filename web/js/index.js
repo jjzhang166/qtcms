@@ -70,9 +70,7 @@ var oPreView,oDiv,
 		})
 
 		//显示分屏的文字
-		$('div.operat li.setViewNum').click(function(){ 
-			setViewNumNow();
-		})
+		$('div.operat li.setViewNum').click(setViewNumNow)
 
 		//日志区域右键从菜单
 		$('#actionLog').mouseup(function(event){

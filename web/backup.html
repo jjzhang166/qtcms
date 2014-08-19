@@ -230,11 +230,11 @@ var oPlayBack={},  // 远程回访控件对象
 			$(this).css('background-position','0 0');
 		})
 
+		initOxcDevListStatus();
+
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
-
-		initOxcDevListStatus();
 
 	})///
 
@@ -280,13 +280,13 @@ var oPlayBack={},  // 远程回访控件对象
 		var fn = window[sortfn],
 			start = nowPage*perPageNum;
 			nowPageFile = recFile.slice(start,(start+perPageNum+1)).sort(fn);
-		console.log('----------文件重绘第:'+nowPage+'页-'+start+'到'+(start+perPageNum+1)+'------');
+		//console.log('----------文件重绘第:'+nowPage+'页-'+start+'到'+(start+perPageNum+1)+'------');
 		//console.log(nowPageFile);
 		RecFile2UI(nowPageFile);
 	}
 
 	function RecFile2UI(nowPageFile){
-		console.time('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
+		//console.time('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
 
 			
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
@@ -318,8 +318,8 @@ var oPlayBack={},  // 远程回访控件对象
 			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
 			warp.attr('b',0);
 		}
-		console.time('++++++文件列表完成后数据绑定+++++++++');	
-		/*for(var i=0;i<recFile.length;i++){ 
+		/*console.time('++++++文件列表完成后数据绑定+++++++++');	
+		for(var i=0;i<recFile.length;i++){ 
 			var data = recFile[i];
 			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
 			//console.log(uid);
@@ -329,10 +329,10 @@ var oPlayBack={},  // 远程回访控件对象
 					$(this).find(':checkbox').data('data',data);
 				}
 			})
-		}*/
-		console.timeEnd('++++++文件列表完成后数据绑定+++++++++');	
+		}
+		console.timeEnd('++++++文件列表完成后数据绑定+++++++++');	*/
 
-		console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
+		//console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
 	}
 
 	function contentMax(){
@@ -374,9 +374,11 @@ var oPlayBack={},  // 远程回访控件对象
 	function getDirCallback(data){ 
 		now = 0;
 		path = data.path;
-		if(path != '')
+		if(path == '')
+			return;
+
 			var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
-			if(oList.length == 0){
+			if(!oList.length || oList.length == 0){
 				return;
 			}
 			startDownload();
@@ -391,17 +393,16 @@ var oPlayBack={},  // 远程回访控件对象
 		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		var fileData = oList.eq(now).attr('uid').split('_');
-		console.log(fileData);
-		console.log('--------选中设备--------')
+/*		console.log(fileData);
+		console.log('--------选中设备--------')*/
 		/*console.log($('div.dev_list li.sel span.device'));
 		console.log(oDevData);
 		console.log('--------选中通道--------')
 		console.log(oList.eq(now));
 		console.log(fileData);*/
-		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!');
-		console.log('-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
+		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
 		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
-			alert(T('File_download_failed',now));
+			alert(T('File_download_failed',(parseInt(now,10)+1)));
 			now++;
 			startDownload();
 		}
@@ -498,7 +499,7 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function backupSearchFile(){
-		console.log('当前搜索状态:'+searchSTOP);
+		console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 		if(searchSTOP){
 			searchSTOP = 0;
 		}else{
