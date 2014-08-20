@@ -113,7 +113,7 @@ function _AJAXput(url,data,beforeSend,success,complete){ // put方法
 		return;
 	}
 
-	console.log('-------------------_AJAXget  init------------------------');
+	//console.log('-------------------_AJAXget  init------------------------');
 
 	type ='PUT'
 
@@ -160,10 +160,10 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			console.log(textStatus);
 
-			console.log('+++++++++++++++++++++++++++++++');*/
+			console.log('+++++++++++++++++++++++++++++++');
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
-			console.log(Data);
+			console.log(Data);*/
 
 			//console.time('数据填充时间');
 			typeof(success) == 'function' && success(Data);

@@ -7,6 +7,9 @@
 <link rel="stylesheet" type="text/css" href="css/play_back.css">
 <link rel="stylesheet" href="treeview/jquery.treeview.css" />
 
+<!--jtimepicker相关的css文件-->
+<link href="css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<link href="css/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet" />
 <!-- 语言文件 -->
 <script type="text/javascript" src="lang/zh_CN.js"></script>
 <!-- 语言文件 end -->
@@ -44,6 +47,7 @@
 	table .chk1{margin:0 52px 0 14px;}
 	table .iput{float: right; margin-right: 6px;}
 	table .iput1{float: left; width:78px;}
+	table .iput2{float: left; width:100px;height:18px;}
 	table .inpt2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; line-height: 22px; text-align: center;}
 	table .select,table .option{ margin-left:4px; text-indent: 0;}
 	.title{color: #FF6400;}
@@ -78,6 +82,8 @@
 	#SerachDevList thead td{height:0;}
 
 	.week input,.week li{width: 63px; clear:both;}
+	 #ui-datepicker-div{background-color:#1E1E1E;}/*改变jtimepicker背景颜色*/
+
 }
  </style>
 </head>
@@ -166,7 +172,19 @@
 					</ul>
 				</div>
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="height:146px;position: absolute;">
-					<thead><tr><td colspan="4" style=" text-align:left"><input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" /><label for="SerachedDevList_SelectAll"><script>T("Select")</script></label></td></tr></thead>
+					<thead>
+                    <tr>
+                    <td colspan="2" style=" text-align:left">
+                    <input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" />
+                    <label for="SerachedDevList_SelectAll"><script>T("Select")</script></label>
+                    </td>
+                    <td  colspan="2" style=" text-align:right;"> 
+                    <div style="float:left;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text" /></div>
+                    <div  id="search_btn" onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:left;margin-left:10px;"><script>T("search_btn")</script></div>
+                    <div  id="quit_btn"  onclick="quitbtn();" class="hover inpt2"  style="background-position: 0px 0px;float:left;margin-left:10px;"><script>T("quit_btn")</script></div>
+                    </td>
+                    </tr>
+                    </thead>
 					<tbody>
 						<tr>
 							<td style="width:70px;"><script>T("Device_IP")</script></td>
@@ -1272,7 +1290,7 @@
 					<li click="network_load_content();" action="ipcnetworkInfo"><script>T("Network_Settings")</script></li>
 					<!-- <li click="user_management_load_content();" action="ipcuserManagementInfo2UI"><script>T("User_Settings")</script></li> -->
 					<li click="time_zone_load();" action="ipczoneInfo"><script>T("Time_Set")</script></li>
-			        <li><script>T("Initial_setup")</script></li>
+			        <li action="initialSetup"><script>T("Initial_setup")</script></li>
 				</ul>
 			    <div class="switch ipc_list">
 					<table data-UI="spec info">
@@ -1551,9 +1569,10 @@
 					</table>
 			    </div>
 			    <div class="switch ipc_list">
+			    <input id="RemoveDeviceEx_ok" type="hidden"/>
 					<table>
-						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onClick="reboot()"><script>T("Restart")</script></div></td></tr>
-			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onClick="default_setting()"><script>T("Restore")</script></div></td></tr>
+						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onclick="submitThisMenu('reboot');"><script>T("Restart")</script></div></td></tr>
+			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onclick="submitThisMenu('default_setting');"><script>T("Restore")</script></div></td></tr>
 			                       <!--<tr><td><script>T("Select_the_upgrade_file")</script></td>
 			                        <td>
 			                        <div id="swfupload-control"></div>
@@ -1655,13 +1674,41 @@
 							<td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>1</td>
 							<td class="td2 schedle_id">
 							<input type="hidden" value="" class="timeid" />
-								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+								<!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
+                                <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
+                                <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>
 							</td>
 						</tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>2</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>3</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>4</td><td class="td2 schedle_id"><input type="hidden" value="" class="timeid" /><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div><div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div></td></tr>
+						<tr>
+                        <td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>2</td>
+                        <td class="td2 schedle_id">
+                        <input type="hidden" value="" class="timeid" />
+                        <!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
+                        <input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
+                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>
+                        </td>
+                        </tr>
+						<tr>
+                        <td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>3</td>
+                        <td class="td2 schedle_id">
+                        <input type="hidden" value="" class="timeid" />
+                        <!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
+                        <input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
+                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>
+                        </td>
+                        </tr>
+						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>4</td>
+                        <td class="td2 schedle_id">
+                        <input type="hidden" value="" class="timeid" />
+                        <!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
+                        <input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
+                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>
+                        </td>
+                        </tr>
 						<tr>
 							<td class="td1"><script>T("Copy_to")</script></td>
 							<td class="td2 copyTo">
@@ -1824,7 +1871,7 @@
 						</ul>
 					</td>
 				</tr>
-				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm" onclick=""><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('设备','device')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm" onclick=""><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 			</table>
 	</div>
 	<div id="area" class="menu">
@@ -1832,7 +1879,7 @@
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Zone_name")</script></td><td><input type="text" id="area_name_ID"/></td></tr>
 			<tr><td><script>T("Main_area")</script></td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
-			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加区域','area')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="group" class="menu">
@@ -1840,7 +1887,7 @@
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Group_name")</script></td><td><input type="text" id="group_name_ID"/></td></tr>
 			<!-- <tr><td><script>T("Primary_group")</script></td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
-			<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('分组','group')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="channel" class="menu">
@@ -1848,7 +1895,7 @@
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Channel_name")</script></td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
 			<tr><td colspan="2" style="height:10px;"></td></tr>
-			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改通道.','channel')" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
@@ -1873,7 +1920,7 @@
 					</ul>
 				</td>
 			</tr>
-			<tr class="tdBtn"><td><div class="hover" id="AddUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('添加用户','menu2')"><script>T("Confirm")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover" id="AddUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close"><script>T("Confirm")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="menu3" class="menu">
@@ -1897,7 +1944,7 @@
 					</ul>
 				</td>
 			</tr>
-			<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" onclick="showdata('修改用户','menu3')"><script>T("Confirm")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close"><script>T("Confirm")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="confirm" class="menu">
@@ -1928,5 +1975,9 @@
 <script type="text/javascript" src="js/devicesetting/devSetPub.js"></script>
 <script type="text/javascript" src="js/devicesetting/ipc.class.js"></script>
 <script type="text/javascript" src="js/devicesetting/dvr.class.js"></script>
+<!--本地设置相关文件jtimepicker-->
+<script src="js/timepick/jquery-ui.js" type="text/javascript"></script>
+<script src="js/timepick/jquery-ui-sliderAccess.js" type="text/javascript"></script>
+<script src="js/timepick/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 </body>
 </html>

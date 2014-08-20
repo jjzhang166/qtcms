@@ -51,7 +51,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
 			var min = $('table.table .no_border').width(),
 				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
-			if(event.pageX < min || event.pageX > max) return;
+			if(event.pageX > max) return;
 			try{
 				groupStop();
 				/*dragStopMove();
@@ -242,7 +242,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		var oChannel = $('#dev_'+nowDevID).parent('li').addClass('sel').siblings('li').removeClass('sel')
 						.end().end().next('ul').find('span.channel');
 
-		console.log(bool+'//开始时间:'+begin+'//结束时间'+end+'//类型'+type);
+		//console.log(bool+'//开始时间:'+begin+'//结束时间'+end+'//类型'+type);
 
 		if(bool){ //本地回访
 			$("#channelvideo").find('input:checked').each(function(){
@@ -298,7 +298,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				
 				left = initleft+p*nowPlayd;
 			
-			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 
 			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
 				dragStopMove();*/
@@ -432,7 +432,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}else{
 			showRecProgress(localSearchWindNum*100);
 
-			console.log(recFile.length+'------------'+recTotal);
+			//console.log(recFile.length+'------------'+recTotal);
 			searchSTOP && RecFileInfo2UI(recFile);
 		}
 
@@ -537,13 +537,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		return chlData;
 	}	
 	
-	function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
-		return;
-		/*console.log('文件绑定时收到的数据!');
-		console.log(data);
-		console.log('===========================');*/
-		//console.log(oChannels);
-		//for(var k=0;k<data.length;k++){
+	/*function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
+		for(var k=0;k<data.length;k++){
 			var oChannels = $('div.dev_list span.device:eq('+localSearchWindNum+')').next('ul').find('span.channel');
 			for(i in data){
 				var fileData = $.parseJSON(data[i]);
@@ -556,9 +551,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					oChannel.data('filepath',filepathArr);
 				}
 			}
-		//}
+		}
 		return data;
-	}
+	}*/
 
 	function RecFileInfo2UI(filedata){
 		//console.time('--接收到的文件回调描绘时间段---'+filedata.length);
@@ -722,11 +717,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},200);
 	}*/
 	function playBackSerchFile(){
-		console.log('当前搜索状态:'+searchSTOP);
+		//console.log('当前搜索状态:'+searchSTOP);
 		if(searchSTOP){
 			searchSTOP = 0;
 		}else{
-			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 			return;
 		}
 

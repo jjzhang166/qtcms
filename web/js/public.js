@@ -407,7 +407,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 function closeMenu(){ 
 	$('#iframe,div.confirm,div.menu').hide();
 	$('#confirm').find('h4,span').html('');
-	$('#menusList div.menu').find(':text,:password').not('[default]').val('').end().find(':hidden').remove();
+	$('#menusList div.menu').find('input:hidden').remove().end().find(':text,:password').not('[default]').val('');
 		/*.end().end().each(function(){
 			$(this).find('div.close:last').html(lang.Cancel);	
 		})*/

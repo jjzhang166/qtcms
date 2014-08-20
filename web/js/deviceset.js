@@ -168,7 +168,84 @@ var oSearchOcx,
 
 			 	   });
 
-				}else if(key == 2){
+				}else if(key == 2){  //单击“本地设置”
+				   //对本地设置中的时间控件初始化
+	   
+		         /*  $('input.time_picker').timepicker({
+	                           timeFormat: 'HH:mm:00',
+							   showTime: false,
+							   showButtonPanel: false,
+							   timeOnlyTitle: lang.Choose_time,
+		                       hourText: lang.Hour,
+		                       minuteText: lang.Minute
+			            });	*/
+				
+				
+				
+				$('.iput2.time_picker_start').each(function(i){
+					
+					var startDateTextBox =$(this);
+					var endDateTextBox = $('.iput2.time_picker_end').eq(i);
+					
+		            startDateTextBox.timepicker({
+						 
+					    timeFormat: 'HH:mm:ss',
+					    showTime: false,
+					    showButtonPanel: false,
+					    timeOnlyTitle: lang.Choose_time,
+		                hourText: lang.Hour,
+		                minuteText: lang.Minute,
+						secondText: lang.Second,
+					   
+					   onClose: function(dateText, inst) {
+						  
+						  if (endDateTextBox.val() != '') {
+							
+							var testStartDate = startDateTextBox.datetimepicker('getDate');
+							var testEndDate = endDateTextBox.datetimepicker('getDate');
+							if (testStartDate > testEndDate){
+								 
+								Confirm(lang.Start_end_time_error);
+								endDateTextBox.datetimepicker('setDate', testStartDate);
+							}
+						  }else {
+							endDateTextBox.val(dateText);
+						  }
+					
+					  }
+				  });	
+			   });
+				$('.iput2.time_picker_end').each(function(i){
+					
+					var startDateTextBox =$('.iput2.time_picker_start').eq(i);
+					var endDateTextBox =$(this);
+					        
+				   endDateTextBox.timepicker({ 
+				   
+					 timeFormat: 'HH:mm:ss',
+			         showTime: false,
+				     showButtonPanel: false,
+					 timeOnlyTitle: lang.Choose_time,
+		             hourText: lang.Hour,
+		             minuteText: lang.Minute,
+					 secondText: lang.Second,
+					 
+					onClose: function(dateText, inst) {
+						if (startDateTextBox.val() != '') {
+							
+							var testStartDate = startDateTextBox.datetimepicker('getDate');
+							var testEndDate = endDateTextBox.datetimepicker('getDate');
+							if (testStartDate > testEndDate){
+								Confirm(lang.Start_end_time_error);
+								startDateTextBox.datetimepicker('setDate', testEndDate);
+							}
+						}
+						else {
+							startDateTextBox.val(dateText);
+						}
+					}
+				});
+			 });
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}/*else if(key == 3){ 
 					userList2Ui();
@@ -317,6 +394,10 @@ var oSearchOcx,
 			$(this).SynchekboxClick();
 		})
 
+		$('#searchtxt').focus(function(){
+			$(this).val('');
+		})
+
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -435,8 +516,10 @@ var oSearchOcx,
 			var n = data.schedle_id;
 			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
 			oTimes.eq(n).find('input.timeid').val(timeid);
-			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
-			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
+			/*oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
+			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});*/
+			oTimes.eq(n).find('input.time_picker:eq(0)').val(start).end().find('input.time_picker:eq(0)').attr("data",start);
+			oTimes.eq(n).find('input.time_picker:eq(1)').val(end).end().find('input.time_picker:eq(1)').attr("data",end);
 			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 		}
 		str +='</recordtime>';
@@ -904,7 +987,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 
 	function Fail(data){
-		console.log(data);
+		//console.log(data);
 		/*var str='';
 		if(data.name){
 			str +=data.name+': ';
@@ -1046,14 +1129,16 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		data.total == 0 && Confirm('添加失败!');
 	}
 	function RemoveDeviceFeedBackSuccess(data){
+		/*console.log('RemoveDeviceFeedBackSuccess');
+		console.log(data);*/
 		//areaList2Ui(0);
 		closeMenu();
 		var succeedId = data.succeedId.split(';');
 		var b = succeedId.length > 10 ? 1 : 0;
 		for(i in succeedId){
 			if(succeedId[i]){
-				$('ul.filetree:eq(0)').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
-				$('ul.filetree:eq(1) span.channel').each(function(){ 
+				$('ul.filetree').treeview({remove:$('#dev_'+succeedId[i]).parent('li')});
+				$('ul.filetree span.channel').each(function(){ 
 					if($(this).data('data')['dev_id'] == succeedId[i]){
 						$('ul.filetree:eq(1)').treeview({remove:$(this).parent('li')});
 					}
@@ -1062,6 +1147,8 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		}
 		
 		searchEdDev();
+
+		//console.log(searchedDev)
 		if(b)
 			searchFlushReal();
 	}
@@ -1329,3 +1416,57 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			oSearchOcx.Stop();
 		}
 	}
+		//设备管理中的IP/ID模糊搜索
+	function searchbtn(){
+ 
+            var searchText=$("#searchtxt").val(),//获取搜索框的关键词
+                count = 0;
+			   //去除已存在行样式，避免重复
+			$('#SerachedDevList tr').removeClass('sel');
+			   
+			$('#SerachedDevList tr input:checkbox').prop("checked",false);
+			   
+            if(searchText!=""){//用indexof()模糊匹配，从而找到相应的数据
+                      
+                $('#SerachedDevList tr').each(function(){
+						
+				    if($(this).children('td:gt(0):lt(3)').text().indexOf(searchText)!=-1){ 
+						   //将匹配的结果置顶
+					    $(this).find('td input:checkbox').prop("checked",true).parent('td').parent('tr').prependTo('#SerachedDevList');
+
+						count++;
+					}
+			    });
+					
+				count == 0 &&	Confirm(lang.Not_Found);
+
+            }else{
+				   
+				Confirm(lang.Not_Null_Enter_Keywords); 
+		    } 
+        } 
+ //搜索取消按钮
+	function quitbtn(){
+		
+		$('#SerachedDevList tr input:checkbox').prop("checked",false);
+		
+		$("#searchtxt").val('');
+	}
+//检验输入的时分秒格式是否正确
+	function checkTime_Jtp_fmt(goal){
+		   
+          if(!chk_value_time(goal.val())){//判断输入的时间格式是否正确
+	
+			Confirm(lang.Time_format_error);
+			goal.val(goal.attr("data"));//若格式错误，恢复原值
+					 
+					}
+	}
+   function chk_value_time(str)
+   {
+	
+	var a = str.match(/^(\d{1,2})(:)?(\d{1,2})\2(\d{1,2})$/);
+	if (a == null) return false;
+	if (a[1]>23 || a[3]>59 || a[4]>59) return false;
+	return true;
+    }	

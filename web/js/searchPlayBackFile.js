@@ -189,9 +189,9 @@
 	}
 
 	function recFileSearchFailCallback(data){
-		console.log('recFileSearchFailCallback');
+		/*console.log('recFileSearchFailCallback');
 		console.log(data);
-
+*/
 		/*
 		远程文件过多后  导致请求次数变多.
 
@@ -215,7 +215,7 @@
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		console.log('------------RecfinishCallback文件总数-----------'+data.total);
+		//console.log('------------RecfinishCallback文件总数-----------'+data.total);
 
 		recTotal = data.total || 0;	
 

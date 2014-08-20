@@ -7,7 +7,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	this._TYPE = type;
 	this._VER = 0;
 	this._Upgrade = '1.3.0';  // CMS 支持的最低版本IPC
-	
+
 	_Request=[];
 
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);
@@ -104,7 +104,12 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 			before = false,
 
-			finish = this.checkMultRequests;
+			finish = function(a){
+				This.checkMultRequests(a);
+				warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
+				warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns') : disable('ddns',true);
+				warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);	
+			}
 
 			showAJAXHint('loading').css('top',warp.height() + 46);
 
@@ -115,12 +120,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			warp.find('input[data-UI="mac"]').val(data);
 		},finish);
 
-		_AJAXget(this.getRequestURL()+'/netsdk/Network/Interface/1','',before,function(data){
-			data2UI(data);
-			warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
-			warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns') : disable('ddns',true);
-			warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);
-		},finish);
+		_AJAXget(this.getRequestURL()+'/netsdk/Network/Interface/1','',before,data2UI,finish);
 
 		_AJAXget(this.getRequestURL()+'/netsdk/Network/Esee','',before,function(data){
 			warp.find('input[name="esee"][value="'+data.enabled+'"]').prop('checked',true);
@@ -137,24 +137,25 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
+		var warp = $('#set_content div.ipc_list:visible');
+
+		showAJAXHint(str).css('top',warp.height() + 46);
+
 	    _Request=new Array(4);
+
 		async=false;
         console.log('-------------------ipcnetworkInfoPut--------------------------');
-        var  This = this,
+		var This = this,
 
-        	 warp = $('#set_content div.ipc_list:visible'),
-		
-		     str='saveing',
-			 
-		     oHint = showAJAXHint(str).css('top',warp.height() + 46),
-			 
-			 end = this.checkMultRequests,
+			str='saveing',
 
-			 getVlue = This.getVlue,
+			end = this.checkMultRequests,
 
-			 getBoolean = This.getBoolean,
-			 
-		     interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
+			getVlue = This.getVlue,
+
+			getBoolean = This.getBoolean,
+
+			interFaceJSON = '{"lan":{"addressingType":"'+getVlue('addressingType')+'", "staticIP": "'+getVlue('staticIP')+'","staticNetmask": "'+getVlue('staticNetmask')+'", "staticGateway": "'+getVlue('staticGateway')+'" },"pppoe": { "enabled": '+getBoolean('pppoe')+', "pppoeUserName": "'+getVlue('pppoeUserName')+'", "pppoePassword": "'+getVlue('pppoePassword')+'" }, "ddns": { "enabled": '+getBoolean('ddns')+', "ddnsProvider": "'+getVlue('ddnsProvider')+'", "ddnsUrl": "'+getVlue('ddnsUrl')+'", "ddnsUserName": "'+getVlue('ddnsUserName')+'", "ddnsPassword": "'+getVlue('ddnsPassword')+'" }}';
 
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Esee','{"enabled":'+(getBoolean('esee'))+'}',false,'',end/*function(){
 			console.log('Esee状态修改完成{"enabled":'+(warp.find('input[data-warp="esee"] input:checked').val()=='true'? true:false)+'}++++++++++2');
@@ -170,7 +171,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		}*/);
 
 		_AJAXput(this.getRequestURL()+'/netsdk/Network/Interface/1',interFaceJSON,async,'',function(a){
-			finish(a);
+			end(a);
 			qob.OnModifyDeviceEx();
 			reInitNowDev();
 		});
@@ -201,16 +202,15 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipczoneInfo2UI = function(){ //获取时区信息
+		var warp = $('#set_content div.ipc_list:visible');
+
+		showAJAXHint(str).css('top',warp.height() + 46);
 
 		emptyDevSetMenu();
          
 		_Request=new Array(3);
 
-		var warp = $('#set_content div.ipc_list:visible'),
-
-			str = 'loading',
-
-			oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		var	str = 'loading',
 
 			finish = this.checkMultRequests;
 
@@ -254,14 +254,98 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 		}
+		this.ipczoneInfoPut = function(){ //设置时区
+			var warp = $('#set_content div.ipc_list:visible');
+
+			showAJAXHint(str).css('top',warp.height() + 46);
+
+			async=false;
+
+			_Request=new Array(2);
+
+			var	finish = this.checkMultRequests,
+			 
+			 	str="saveing";
+
+			_AJAXput(this.getRequestURL()+'/netsdk/system/time/timeZone','"'+$('#time_zone').val()+'"',false,'',finish);
+
+			_AJAXput(this.getRequestURL()+'/netsdk/system/time/ntp','{"ntpEnabled":'+(warp.find('input[data-UI="ntpEnabled"]:checked').val() == 'true' ? true : false)+',"ntpServerDomain":"'+warp.find('input[data-UI="ntpServerDomain"]').val()+'"}',false,'',finish)
+		    
+			async=true;
+		}
 	}
 
+	this.initialSetup2UI = function(){
+		$('#ajaxHint').html('').stop(true,true).hide();
+	}
+    
+    this.rebootPut =function(){
+		   
+		var warp = $('#set_content div.ipc_list:visible'), 
+			
+			str = 'Restarting',
+
+			This = this;
+
+		showAJAXHint(str).css('top',warp.height() + 46);
+					
+	    var xmlstr = '';
+		xmlstr += '<juan ver="1.0" seq="0">';
+		xmlstr += '<setup type="write" user="' + This._USR + '" password="' + This._PWD + '">';
+		xmlstr += '<system operation="reboot" />';
+		xmlstr += '</setup>';
+		xmlstr += '</juan>';
+				
+	    dataType='jsonp';  //数据类型
+        jsonp='jsoncallback'; // 回调函数
+			 
+	    _AJAXget(this.getRequestURL()+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,false,'',function(str){
+		    if(str=='loading_success')
+	           showAJAXHint('Restart_success').fadeOut(2000);
+	        else
+	          showAJAXHint(str);
+	   	});
+			
+	}
+    this.default_settingPut =function(){
+
+    	var warp = $('#set_content div.ipc_list:visible'), 
+
+		    str = 'factory_reseting',
+
+		    This = this,
+
+			dev_id = $('div.dev_list:eq(2) span.device.sel').attr("id").slice(4);
+
+    	showAJAXHint(str).css('top',warp.height() + 46);
+
+		var xmlstr = '';
+			xmlstr += '<juan ver="1.0" seq="0">';
+		  	xmlstr += '<setup type="write" user="' + This._USR + '" password="' + This._PWD + '">';
+		    xmlstr += '<system operation="default factory" />';
+		    xmlstr += '</setup>';
+		    xmlstr += '</juan>';
+	     
+		dataType='jsonp';  //数据类型
+        jsonp='jsoncallback'; // 回调函数
+	 
+	    _AJAXget(this.getRequestURL()+'/cgi-bin/gw2.cgi?f=j','xml='+xmlstr,false,'',function(str){
+
+	    	if(str=='loading_success')
+	          showAJAXHint('factory_reset_success').fadeOut(2000);
+	        else
+	          showAJAXHint(str);
+
+    		$('<input value="'+dev_id+'" type="hidden" id="dev_id_ID" />').appendTo('#confirm');
+   
+    		$('#RemoveDeviceEx_ok').click();
+		});		  
+    }
 	this.checkMultRequests = function(str){
-      /* console.log(str);
-	   console.log(_Request.length);
-	   console.log(_Request);*/
+
+	    var l = _Request.length-1;
 	   
-		RequesePush(_Request,str);
+	    RequesePush(str);
 		
 		if(!_Request[l])
 			return;
