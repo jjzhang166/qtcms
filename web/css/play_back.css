@@ -207,6 +207,8 @@ h4{
 	background: url(../images/playback/select_bg.png) repeat-x; 	
 }
 .option a{
+	display: block;
+	width: 100%;
 	color: #585858;
 }
 /* .option li:hover{background: url(../images/playback/select_bg.png) repeat-x 0 -16px;} */
