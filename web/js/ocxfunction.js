@@ -17,8 +17,8 @@ var oCommonLibrary,
 	}
 	
 	//区域分组,属性菜单输出.
-	function areaList2Ui(num,bool,closed){ //区域菜单输出
-		num = num || key ;
+	function areaList2Ui(bool,closed){ //区域菜单输出
+		var num = key || 0 ;
 		if(num != 0){
 			closed='';
 		}

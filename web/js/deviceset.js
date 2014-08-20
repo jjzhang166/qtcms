@@ -31,7 +31,7 @@ var oSearchOcx,
 		})*/
 
 		// 添加设备下的 设备列表下的鼠标事件
-		$('div.dev_list:lt(3)').each(function(index){
+		$('div.dev_list').each(function(index){
 			var This = $(this);
 			This.mouseup(function(event){ 
 				event.stopPropagation();	
@@ -51,6 +51,14 @@ var oSearchOcx,
 					//SetChannelIntoGroupData();
 				}
 				if(event.which == 3){ 
+					//分组设置下的右键菜单调整
+					$('#menu0 li').show()
+					console.log(index);
+					if(index == 1){
+						$('#menu0').find('li:eq(1),li:eq(2)').hide();
+					}else{
+						$('#menu0 li:eq(0)').hide();
+					}
 					if(obj[0].nodeName == 'SPAN'){ 
 						$('div.dev_list span').removeClass('sel');
 						obj.addClass('sel');
@@ -58,12 +66,6 @@ var oSearchOcx,
 						if(!$(this).find('span.sel')[0]){
 							$(this).find('span:eq(0)').addClass('sel');
 						}
-					}
-					//分组设置下的右键菜单调整
-					$('#menu0 li').show()
-					$('#menu0 li').eq(index).hide();
-					if(index == 1){
-						$('#menu0 li:eq(2)').hide();
 					}
 					showContextMenu(event.clientY,event.clientX,obj);
 				}else{ 
@@ -89,7 +91,7 @@ var oSearchOcx,
 				oTreeWarp.show();
 				set_contentMax();
 
-				areaList2Ui('','','closed');
+				areaList2Ui('','closed');
 
 
 				/*emptyDevSetMenu();*/
@@ -516,10 +518,10 @@ var oSearchOcx,
 			var n = data.schedle_id;
 			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
 			oTimes.eq(n).find('input.timeid').val(timeid);
-			/*oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
-			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});*/
-			oTimes.eq(n).find('input.time_picker:eq(0)').val(start).end().find('input.time_picker:eq(0)').attr("data",start);
-			oTimes.eq(n).find('input.time_picker:eq(1)').val(end).end().find('input.time_picker:eq(1)').attr("data",end);
+			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
+			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
+			/*oTimes.eq(n).find('input.time_picker:eq(0)').val(start).end().find('input.time_picker:eq(0)').attr("data",start);
+			oTimes.eq(n).find('input.time_picker:eq(1)').val(end).end().find('input.time_picker:eq(1)').attr("data",end);*/
 			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 		}
 		str +='</recordtime>';
@@ -849,7 +851,7 @@ function showContextMenu(y,x,obj){
 }
 
 //遮罩层和弹出框方法.
-var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
+var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.Channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -1284,7 +1286,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		$('#dev_'+dataIndex.dev_id).data('data',dataIndex).html(dataIndex.device_name);*/
 		closeMenu();
 		if(data.total!=0){
-			areaList2Ui();
+			areaList2Ui('','closed');
 			reInitNowDev();	
 		}else{
 			Confirm(lang.Modified_device+lang.Failed)
@@ -1403,7 +1405,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		//分组列表;
 		groupList2Ui();
 
-		areaList2Ui(key,'','closed');
+		areaList2Ui('','closed');
 
 		// UI 调整
 		set_contentMax();
