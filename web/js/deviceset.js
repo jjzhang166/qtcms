@@ -1045,7 +1045,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	function AddAreaSuccess(data){
 		var name = $('#area_name_ID').val();
 		var pid = $('#pid_ID').val();
-		var pidname = oCommonLibrary.GetAreaName(pid);
+		var pidname = oCommonLibrary.GetAreaName(pid) || _T('Area');
 		var id = data.areaid;
 		var add = $('<li><span class="area" id="area_'+id+'">'+name+'</span><ul></ul></li>').appendTo($('div.dev_list:eq(0) #area_'+pid).next('ul'));
 		add.find('span.area').data('data',{'area_name':name,'pareaname':pidname,'area_id':id,'pid':pid});

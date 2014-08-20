@@ -336,7 +336,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	        else
 	          showAJAXHint(str);
 
-    		$('<input value="'+dev_id+'" type="hidden" id="dev_id_ID" />').appendTo('#confirm');
+    		$('<input value="'+dev_id+'" type="hidden" class="data" id="dev_id_ID" />').appendTo('#confirm');
    
     		$('#RemoveDeviceEx_ok').click();
 		});		  
