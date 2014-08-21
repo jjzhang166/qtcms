@@ -46,6 +46,9 @@ PlayMgr::PlayMgr(void):
 PlayMgr::~PlayMgr(void)
 {
 	m_bStop = true;
+	m_waitForPlay.wakeOne();
+	g_waitConPause.wakeAll();
+
 // 	if(this->isRunning())
 // 	{
 // 		wait(1000);
@@ -218,7 +221,7 @@ void PlayMgr::run()
 						m_bIsSkiped = true;
 					}
 					skipTime = m_skipTime[skipPos].end - m_skipTime[skipPos].start;
-					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip)
+					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip && !m_bStop)
 					{
 						qDebug()<<"skip:"<<skipTime;
 						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
@@ -245,7 +248,10 @@ void PlayMgr::run()
 				item.insert("expCode", 1);
 				item.insert("pWnd", (uint)this);
 
-				emit sigThrowException(item);
+				if (!m_bStop)
+				{
+					emit sigThrowException(item);
+				}
 				AVI_close(file);
 				continue;
 			}
@@ -403,6 +409,7 @@ void PlayMgr::stop()
 	m_bPlaying = false;
 	m_bStop = true;
 	m_waitForPlay.wakeOne();
+	g_waitConPause.wakeAll();
 
 	m_nInitWidth = 0;
 	m_nInitHeight = 0;

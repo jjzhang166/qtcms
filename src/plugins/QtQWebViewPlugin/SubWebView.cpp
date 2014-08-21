@@ -140,7 +140,7 @@ void SubWebView::keyPressEvent( QKeyEvent* ev )
 	switch(ev->key()){
 	case  Qt::Key_Escape:
 		{
-//			close();
+			/*close();*/
 			//hide();
 			//emit CloseAllPage();
 		}
