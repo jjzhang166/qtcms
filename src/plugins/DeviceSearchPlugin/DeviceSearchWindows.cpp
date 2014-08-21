@@ -133,10 +133,11 @@ int DeviceSearchWindows::SetNetworkInfo(const QString &sDeviceID,
 void DeviceSearchWindows::addItemMap(QVariantMap item)
 {
 	m_DeviceItemMutex.lock();
-	if (!m_DeviceItem.contains(item.value("SearchIP_ID").toString()))
+	QVariantMap tItem=item;
+	if (!m_DeviceItem.contains(tItem.value("SearchIP_ID").toString()))
 	{
-		m_DeviceItem.insert(item.value("SearchIP_ID").toString(),item);
-		emit addItemToUI(item);
+		m_DeviceItem.insert(tItem.value("SearchIP_ID").toString(),tItem);
+		emit addItemToUI(tItem);
 	}
 	m_DeviceItemMutex.unlock();
 }

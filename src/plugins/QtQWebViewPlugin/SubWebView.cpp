@@ -141,8 +141,8 @@ void SubWebView::keyPressEvent( QKeyEvent* ev )
 	case  Qt::Key_Escape:
 		{
 //			close();
-			hide();
-			emit CloseAllPage();
+			//hide();
+			//emit CloseAllPage();
 		}
 		break;
 #ifdef __USE_WEB_DEBUGER__

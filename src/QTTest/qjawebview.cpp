@@ -32,7 +32,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 	setContextMenuPolicy(Qt::NoContextMenu);
 #ifdef __USE_WEB_DEBUGER__
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
-	Dumper::setVersionInfo("cms_1.1.12_08_20_21", strlen("cms_1.1.12_08_20_21"));
+	Dumper::setVersionInfo("cms_1.1.12_08_21_13", strlen("cms_1.1.12_08_21_13"));
 	m_pdup = new Dumper();
 #endif
 
@@ -127,8 +127,8 @@ void QJaWebView::keyPressEvent(QKeyEvent *ev)
     {
     case Qt::Key_Escape:
         {
-            close();
-			qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM Key_Escape";
+   //         close();
+			//qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM Key_Escape";
         }
         break;
 #ifdef __USE_WEB_DEBUGER__
