@@ -163,7 +163,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		var oLeft = $('#search_device').css({
 			left:oView.width(),
-			height:oView.height()+113
+			height:oView.height()+135
 		});
 
 		$('div.dev_list').height(oLeft.height()-222);

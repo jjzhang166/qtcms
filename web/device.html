@@ -207,18 +207,18 @@
 						</tr>
 					</tbody>
 				</table>
-				<div id="left_list" style="position: absolute;">
+				<div id="left_list" style="position: absolute; top:4px;">
 					<div class="dev_list" style="height:300px;">
 						<ul class="filetree">
 						</ul>
 						<input type="hidden" id="addchannelingroupdouble_ID" value="">
 					</div>
-					<div class="action" style="height:42px; width:auto;margin:6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;"><script>T("Add_to_Group")</script></li><li id="RemoveChannelFromGroup_ok" class="hover"><script>T("Remove_out_Group")</script></li></ul></div>
+					<!-- <div class="action" style="height:42px; width:auto;margin:6px;"><ul class="groupAction"><li id="AddChannelInGroupDouble_ok" class="hover" style="margin-right:6px;"><script>T("Add_to_Group")</script></li><li id="RemoveChannelFromGroup_ok" class="hover"><script>T("Remove_out_Group")</script></li></ul></div>
 					<div class="dev_list" style="height:300px;">
 						<input type="hidden" id="r_chl_group_id_ID" value="" />
 						<ul class="filetree" id="group_0">	
 						</ul>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="right_content">
@@ -1260,7 +1260,7 @@
 						<tr><td colspan="4" class="tdBtn" style="background:#282828;"><div class="hover" onclick="dvr_save('dvr_alarm_chn_sel');"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
-				<div class="dev_list" style="height:600px;  position: absolute; top:0; right:0;">
+				<div class="dev_list" style="height:600px;  position: absolute; top:4px; right:4px;">
 					<ul class="filetree">
 						<!-- <li><span class="device">dvr</span>
 							<ul>
@@ -1363,7 +1363,7 @@
 			    </div>
 			   	<div class="switch ipc_list">
 			        <table data-WARP="network">
-			            <tr><td colspan="4"><script>T("MAC_address")</script><input style="margin-left:14px;" data-UI="mac" type="text" disabled="disabled" /></td></tr>
+			            <tr><td colspan="4"><script>T("MAC_address")</script><input disabled style="margin-left:14px;" data-UI="mac" type="text" /></td></tr>
 						<tr class="title"><td colspan="2"><h5><script>T("Local")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5><script>T("Remote")</script></h5></td></tr>
 						<tr>
 							<td colspan="2">
@@ -1830,7 +1830,7 @@
 <div id="menusList">
 	<div id="menu0" class="menu menu0">
 		<ul>
-			<li onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
+			<!-- <li onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li> -->
 			<li onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
 			<li onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
 			<li><script>T("modify")</script></li>

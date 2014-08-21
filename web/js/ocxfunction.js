@@ -25,7 +25,7 @@ var oCommonLibrary,
 		var obj = $('ul.filetree').not('[id]');
 
 			obj.each(function(){
-				$(this).treeview({remove:$(this).find('li:first')});	
+				$(this).treeview({remove:$(this).find('li:first')});
 			})
 			
 			obj = obj.eq(num);
@@ -101,6 +101,7 @@ var oCommonLibrary,
 		}
 	}
 	function groupList2Ui(){   //分组菜单输出
+		return;
 		var obj = $('#group_0')
 		$('ul.filetree:eq(1)').treeview({remove:obj.find('li')})
 		if(!obj[0]){

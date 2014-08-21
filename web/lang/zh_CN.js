@@ -414,6 +414,9 @@
 	'rate_range':'码率范围!',
 	'frame_rate_range':'帧率范围!',
 	'check_to_put':'请填写正确的参数或者等数据加载完后在提交.',
+	'rotation_time':'时间范围!(1~60秒)!',
+	'File_size_range':'文件大小范围!!(10M~512MB)!',
+	'Disk_space_reserved':'磁盘预留空间大小(>4096MB!)',
 	//初始化设置
 	'rebooting':'正在重启摄像机',
 	'reboot_success':'摄像机重启成功',
@@ -422,7 +425,7 @@
 	//设备管理
 	'search_btn':'搜索',
 	'quit_btn':'取消',
-	'Not_Found':'查无此项!',
+	'Not_Found':'搜索出的设备列表中,没有该设备!',
 	'Not_Null_Enter_Keywords':'搜索内容不能为空，请输入关键字!',
 	
 	//

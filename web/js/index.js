@@ -216,7 +216,7 @@ var oPreView,oDiv,
 
 		var oLeft= $('#search_device').css({
 			left:oView.width(),
-			height:oView.height()+123
+			height:oView.height()+144
 		});
 
 		oDiv.height(oLeft.height()-266);
@@ -516,7 +516,7 @@ var oPreView,oDiv,
 		//区域列表;
 		areaList2Ui();
 		//分组列表;
-		groupList2Ui();
+		//groupList2Ui();
 
 		$('span.channel').removeClass('channel_1');
 

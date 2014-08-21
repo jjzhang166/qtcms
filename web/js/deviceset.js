@@ -42,23 +42,23 @@ var oSearchOcx,
 				if(event.which == 1){
 					if(obj[0].nodeName == 'SPAN'){
 						obj.toggleClass('sel');
-						if(obj.hasClass('channel')){
+						This.find('span').not(obj).removeClass('sel');
+						/*if(obj.hasClass('channel')){
 							This.find('span').not('span.channel').removeClass('sel');
 						}else{ 
 							This.find('span').not(obj).removeClass('sel');
-						}
+						}*/
 					}
 					//SetChannelIntoGroupData();
 				}
 				if(event.which == 3){ 
 					//分组设置下的右键菜单调整
 					$('#menu0 li').show()
-					console.log(index);
-					if(index == 1){
+					/*if(index == 1){
 						$('#menu0').find('li:eq(1),li:eq(2)').hide();
 					}else{
 						$('#menu0 li:eq(0)').hide();
-					}
+					}*/
 					if(obj[0].nodeName == 'SPAN'){ 
 						$('div.dev_list span').removeClass('sel');
 						obj.addClass('sel');
@@ -93,8 +93,6 @@ var oSearchOcx,
 
 				areaList2Ui('','closed');
 
-
-				/*emptyDevSetMenu();*/
 				$('#ajaxHint').html('').stop(true,true).hide();
 
 				if(key == 0){
@@ -103,6 +101,8 @@ var oSearchOcx,
 					oSearchOcx.Stop();
 				}
 				if(key == 1){
+					emptyDevSetMenu();
+					/*(nowDev && nowDev._ID) && $('#dev_'+nowDev._ID).addClass('sel');*/
 					
 					//reInitNowDev();  //重新加载设备信息
 
@@ -177,14 +177,14 @@ var oSearchOcx,
 	                           timeFormat: 'HH:mm:00',
 							   showTime: false,
 							   showButtonPanel: false,
-							   timeOnlyTitle: lang.Choose_time,
-		                       hourText: lang.Hour,
-		                       minuteText: lang.Minute
+							   timeOnlyTitle: _T('Choose_time'),
+		                       hourText: _T('Hour'),
+		                       minuteText: _T('Minute')
 			            });	*/
 				
 				
 				
-				$('.iput2.time_picker_start').each(function(i){
+				/*$('.iput2.time_picker_start').each(function(i){
 					
 					var startDateTextBox =$(this);
 					var endDateTextBox = $('.iput2.time_picker_end').eq(i);
@@ -194,12 +194,12 @@ var oSearchOcx,
 					    timeFormat: 'HH:mm:ss',
 					    showTime: false,
 					    showButtonPanel: false,
-					    timeOnlyTitle: lang.Choose_time,
-		                hourText: lang.Hour,
-		                minuteText: lang.Minute,
-						secondText: lang.Second,
+					    timeOnlyTitle: _T('Choose_time'),
+		                hourText: _T('Hour'),
+		                minuteText: _T('Minute'),
+						secondText: _T('Second'),
 					   
-					   onClose: function(dateText, inst) {
+					    onClose: function(dateText, inst) {
 						  
 						  if (endDateTextBox.val() != '') {
 							
@@ -207,47 +207,46 @@ var oSearchOcx,
 							var testEndDate = endDateTextBox.datetimepicker('getDate');
 							if (testStartDate > testEndDate){
 								 
-								Confirm(lang.Start_end_time_error);
+								Confirm(_T('Start_end_time_error'));
 								endDateTextBox.datetimepicker('setDate', testStartDate);
 							}
 						  }else {
 							endDateTextBox.val(dateText);
 						  }
 					
-					  }
-				  });	
-			   });
+					    }
+				    });	
+			    });
 				$('.iput2.time_picker_end').each(function(i){
 					
 					var startDateTextBox =$('.iput2.time_picker_start').eq(i);
 					var endDateTextBox =$(this);
 					        
-				   endDateTextBox.timepicker({ 
+				    endDateTextBox.timepicker({ 
 				   
-					 timeFormat: 'HH:mm:ss',
-			         showTime: false,
-				     showButtonPanel: false,
-					 timeOnlyTitle: lang.Choose_time,
-		             hourText: lang.Hour,
-		             minuteText: lang.Minute,
-					 secondText: lang.Second,
+						timeFormat: 'HH:mm:ss',
+				        showTime: false,
+					    showButtonPanel: false,
+						timeOnlyTitle: _T('Choose_time'),
+			            hourText: _T('Hour'),
+			            minuteText: _T('Minute'),
+						secondText: _T('Second'),
 					 
-					onClose: function(dateText, inst) {
-						if (startDateTextBox.val() != '') {
-							
-							var testStartDate = startDateTextBox.datetimepicker('getDate');
-							var testEndDate = endDateTextBox.datetimepicker('getDate');
-							if (testStartDate > testEndDate){
-								Confirm(lang.Start_end_time_error);
-								startDateTextBox.datetimepicker('setDate', testEndDate);
+						onClose: function(dateText, inst) {
+							if (startDateTextBox.val() != '') {
+								
+								var testStartDate = startDateTextBox.datetimepicker('getDate');
+								var testEndDate = endDateTextBox.datetimepicker('getDate');
+								if (testStartDate > testEndDate){
+									Confirm(_T('Start_end_time_error'));
+									startDateTextBox.datetimepicker('setDate', testEndDate);
+								}
+							}else{
+								startDateTextBox.val(dateText);
 							}
 						}
-						else {
-							startDateTextBox.val(dateText);
-						}
-					}
-				});
-			 });
+					});
+				});*/
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}/*else if(key == 3){ 
 					userList2Ui();
@@ -333,8 +332,8 @@ var oSearchOcx,
 			$(this).on('focusout','input:text',function(){
 				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
 				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime()){
-					Confirm(lang.time_range);
-					FillChannleRecordTime($('div.dev_list:eq(3) span.channel.sel'));
+					Confirm(_T('time_range'));
+					FillChannleRecordTime($('div.dev_list:eq(2) span.channel.sel'));
 					//$(this).val($(this).attr('default'));
 				}
 			});
@@ -387,7 +386,7 @@ var oSearchOcx,
 			SetChannelIntoGroupData();
 		});
 		 /*client_setting*/
-		$('div.dev_list:eq(3)').on('click','span.channel',function(){  //回访设置通道点击
+		$('div.dev_list:eq(2)').on('click','span.channel',function(){  //回访设置通道点击
 			FillChannleRecordTime($(this));			
 		})
 
@@ -423,7 +422,7 @@ var oSearchOcx,
 
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
 		for(i in SplitScreenMode){
-			SplitScreenMode[i]=SplitScreenMode[i]+lang.Screen;
+			SplitScreenMode[i]=SplitScreenMode[i]+_T('Screen');
 		}
 	function FillCommonParmData(){ 
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
@@ -458,14 +457,14 @@ var oSearchOcx,
 		//areaList2Ui();
 	}
 	//record setting  回放设置;
-	var weeks = [lang.Monday,lang.Tuesday,lang.Wednesday,lang.Thursday,lang.Friday,lang.Saturday,lang.Sunday];
+	var weeks = [_T('Monday'),_T('Tuesday'),_T('Wednesday'),_T('Thursday'),_T('Friday'),_T('Saturday'),_T('Sunday')];
 	function FillRecordTimeData(){
 		/*SettingRecordDoubleTimeParm();
-		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));*/
+		FillChannleRecordTime($('div.dev_list:eq(2) span.channel:first'));*/
 		areaList2Ui();
 		/*SettingRecordDoubleTimeParm();*/
 		_t($('#RecordTime input:text'));
-		FillChannleRecordTime($('div.dev_list:eq(3) span.channel:first'));
+		FillChannleRecordTime($('div.dev_list:eq(2) span.channel:first'));
 	}
 
 	function FillChannleRecordTime(obj){
@@ -473,8 +472,8 @@ var oSearchOcx,
 
 
 		//通道选中状态唯一
-		$('div.dev_list:eq(3) span.channel').removeClass('sel')	
-		obj.addClass('sel');
+		/*$('div.dev_list:eq(2) span.channel').removeClass('sel')	
+		obj.addClass('sel');*/
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
 		var allChlID = [];  //所有通道ID
@@ -486,7 +485,7 @@ var oSearchOcx,
 
 		//拷贝到所有通道选项的value写入;
 		
-		$('<li><input class="all" data="" value="'+lang.Select+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+		$('<li><input class="all" data="" value="'+_T('Select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
 
 		//console.log(allChlID);
 
@@ -691,7 +690,7 @@ var oSearchOcx,
 		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
-		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(lang.loading).show();
+		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
 	}
 	
 	function set_contentMax(){
@@ -723,21 +722,21 @@ var oSearchOcx,
 				width:main.width()
 			}).find('tbody .aa').width((main.width()-176)/2)
 
-			warp.find('div.dev_list').height((warp.height()-54)/2)
+			warp.find('div.dev_list').height(warp.height()-6)
 
 			warp.find('div.action:eq(0)').css('left',main.width()-30);
 
-			$('#left_list').css('left',main.width()+120);
+			$('#left_list').css('left',main.width()+118);
 
 			searchFlush();
 
-		}/*else if(key == 1){
-			var devLeft=0;
+		}else if(key == 1){
+			/*var devLeft=0;
 			warp.find('div.switch').each(function(){
 				devLeft = $(this).width()>devLeft ? $(this).width(): devLeft + 2;
-			})
-			warp.find('div.dev_list').css('left',devLeft);
-		}*/
+			})*/
+			warp.find('div.dev_list').height(warp.height()-6);
+		}
 		
 		$('#foot').css('top',$('#set_content div.right').height()+78);
 	}
@@ -763,7 +762,7 @@ var oSearchOcx,
 		if(obj == 'menu3' || obj == 'confirm'){
 			var str = $('table.UserMan input:hidden').val().split(',');
 			if(str == ''){ 
-				Confirm(lang.please_select_user);
+				Confirm(_T('please_select_user'));
 				return;
 			}
 			if(obj == 'menu3'){
@@ -776,7 +775,7 @@ var oSearchOcx,
 	function pwdTest(obj){
 		var str = obj.val();
 		if(str == '' || !/[\d\w_]{4,}$/.test(str)){
-			Confirm(lang.Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6);
+			Confirm(_T('Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6'));
 		}else{
 			obj.attr('enable','1');
 			valueIsSame($('#add_again_passwd'),$('#add_passwd'));
@@ -787,7 +786,7 @@ var oSearchOcx,
 		if(obj.val() && obj2.val() && obj.val() != obj2.val()){ 
 			obj.attr('enable','0');
 			obj2.attr('enable','0');
-			Confirm(lang.twice_the_password_is_not_the_same);
+			Confirm(_T('twice_the_password_is_not_the_same'));
 			return;
 		}else{ 
 			obj.attr('enable','1')
@@ -820,23 +819,23 @@ function showContextMenu(y,x,obj){
 	menu.find('li').off();
 	if(obj[0].nodeName == 'SPAN'){
 		if(obj[0].id == 'area_0' || obj[0].id == 'group_0' ){
-			$('#menu0 li:gt(2)').hide();
+			$('#menu0 li:gt(1)').hide();
 		}else if(obj.hasClass('group')){
-			menu.find('li:lt(2)').hide();
+			menu.find('li:lt(1)').hide();
 		}else if(obj.hasClass('device')){ 
-			menu.find('li:lt(3)').hide();
+			menu.find('li:lt(2)').hide();
 		}else if(obj.hasClass('channel')){ 
-			menu.find('li').not(':eq(3)').hide();
-			menu.find('li:eq(3)').show();
+			menu.find('li').not(':eq(2)').hide();
+			menu.find('li:eq(2)').show();
 		}	
-		menu.find('li:eq(3)').one('click',function(){
+		menu.find('li:eq(2)').one('click',function(){
 			showObjActBox('Modify',obj.attr('class').split(' ')[0]);
 		})
 		menu.find('li:last').one('click',function(){ 
 			showObjActBox('Remove',obj.attr('class').split(' ')[0]);
 		})
 	}else{ 
-		$('#menu0 li:gt(2)').hide();
+		$('#menu0 li:gt(1)').hide();
 	}
 	menu.css({
 		top:y,
@@ -851,7 +850,7 @@ function showContextMenu(y,x,obj){
 }
 
 //遮罩层和弹出框方法.
-var trance = {'area':lang.Area,'device':lang.Device,'channel':lang.Channel,'group':lang.Grouping,'Add':lang.Add,'Remove':lang.delete,'Modify':lang.modify,'GroupChannelName':lang.Channel_under_the_device_name};
+var trance = {'area':_T('Area'),'device':_T('Device'),'channel':_T('channel'),'group':_T('Grouping'),'Add':_T('Add'),'Remove':_T('delete'),'Modify':_T('modify'),'GroupChannelName':_T('Channel_under_the_device_name')};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -881,7 +880,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	console.log('----------------');
 	console.log(data);*/
 	if(!data){ 
-		Confirm(lang.Please_select_a_device);
+		Confirm(_T('Please_select_a_device'));
 		return ;
 	}
 	var pObjType = firstUp(pObj.attr('class').split(' ')[0]);
@@ -899,7 +898,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	}*/
 	for(i in data){
 		if(i.match(objclass+'_name') && action == 'Remove'){
-			$('#confirm h4').attr('id',i+'_ID').html(lang.delete+data[i]);
+			$('#confirm h4').attr('id',i+'_ID').html(_T('delete')+data[i]);
 		}
 		var str = data[i];		
 
@@ -930,7 +929,7 @@ function cleanDev(){  //清空设备
 function setIP(){ //设置IP
 	var oData = $('#SerachedDevList tr.sel').data('data')
 	if(oSearchOcx.SetNetworkInfo(oData.SearchDeviceId_ID,$('#SearchIP_ID').val(),$('#SearchMask_ID').val(),$('#SearchGateway_ID').val(),oData.SearchMac_ID,$('#SearchHttpport_ID').val(),'admin','')){
-		Confirm(lang.IP_setup_failed);
+		Confirm(_T('IP_setup_failed'));
 	}else{
 		setTimeout(searchFlush,2000);
 	}
@@ -954,7 +953,7 @@ function autoSetIPcallBack(data){
 }
 
 //// oCommonLibrary, 操作做数据库回调方法.
-var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
+var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	
 	function AddUserSuccess(ev){
 		var userCom= $('#menu2 select input').val();
@@ -997,7 +996,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			str +=data.name+': ';
 		}
 		str += data.fail*/
-		Confirm(lang.Operation_failed);
+		Confirm(_T('Operation_failed'));
 	}
 
 	//搜索设备控件方法.
@@ -1225,49 +1224,49 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 				var pre = /^(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.)(([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))\.){2}([1-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))$/;
 				
 				if(!pre.test(str)){
-					hint=lang['correct']+lang['IP_format'];	
+					hint=_T('correct')+_T('IP_format');	
 				};
 			break;
 			case 1: //端口
 				if(parseInt(str) > 65535 || parseInt(str) < 0 || !/^\d{1,5}$/.test(str)){
-					hint=lang['correct']+lang['Port'];		
+					hint=_T('correct')+_T('Port');		
 				};
 			break;
 			case 2:  // eseeID
 				if(str == '')
-					hint=lang['correct']+lang['Esee_ID'];
+					hint=_T('correct')+_T('Esee_ID');
 
 				if(/^\d+$/.test(str)){
 					if(!/^[1-9]\d{8,}$/.test(str)){
 						//console.log('数字');
-						hint=lang['correct']+lang['Esee_ID'];
+						hint=_T('correct')+_T('Esee_ID');
 					}
 				}else{
 					//console.log(/^\w+\d+$/.test(str)+'前缀11--------------'+str.length);
 					if(!/^\w+\d+$/.test(str) || str.length > 11){
 						//console.log('前缀');
-						hint=lang['correct']+lang['Esee_ID'];
+						hint=_T('correct')+_T('Esee_ID');
 					}
 				}
 			break;
 			case 3:  //通道数。
 				if(!(str == 1 || str == 4 || str == 8 || str == 16 ||  str == 24 ||  str == 32)){
-					hint=lang['correct']+lang['Channels']+'(1,4,8,16,24,32)';
+					hint=_T('correct')+_T('Channels')+'(1,4,8,16,24,32)';
 				}
 			break;
 			case 4:  //自动轮训时间
 				if(!/^\d+$/.test(str) || parseInt(str) > 60 || parseInt(str)<1){
-					hint=lang['correct']+lang['rotation_time'];
+					hint=_T('correct')+_T('rotation_time');
 				}
 			break;
 			case 5:  //文件大小
 				if(!/^\d+$/.test(str) || parseInt(str) > 512 || parseInt(str)<10){
-					hint=lang['correct']+lang['File_size_range'];
+					hint=_T('correct')+_T('File_size_range');
 				}
 			break;
 			case 6:  //磁盘预留空间
 				if(!/^\d+$/.test(str) || parseInt(str) <= (32*128)){
-					hint=lang['correct']+lang['Disk_space_reserved'];
+					hint=_T('correct')+_T('Disk_space_reserved');
 				}
 			break;
 		}
@@ -1289,7 +1288,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 			areaList2Ui('','closed');
 			reInitNowDev();	
 		}else{
-			Confirm(lang.Modified_device+lang.Failed)
+			Confirm(_T('Modified_device')+_T('Failed'))
 		}
 		
 	}
@@ -1403,7 +1402,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 	}
 	function initOxcDevListStatus(){
 		//分组列表;
-		groupList2Ui();
+		//groupList2Ui();
 
 		areaList2Ui('','closed');
 
@@ -1440,11 +1439,11 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 					}
 			    });
 					
-				count == 0 &&	Confirm(lang.Not_Found);
+				count == 0 &&	Confirm(_T('Not_Found'));
 
             }else{
 				   
-				Confirm(lang.Not_Null_Enter_Keywords); 
+				Confirm(_T('Not_Null_Enter_Keywords')); 
 		    } 
         } 
  //搜索取消按钮
@@ -1459,7 +1458,7 @@ var userLev = [lang.Super_Admin,lang.Admin,lang.User,lang.Tourists];
 		   
           if(!chk_value_time(goal.val())){//判断输入的时间格式是否正确
 	
-			Confirm(lang.Time_format_error);
+			Confirm(_T('Time_format_error'));
 			goal.val(goal.attr("data"));//若格式错误，恢复原值
 					 
 					}

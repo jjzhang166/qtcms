@@ -108,7 +108,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 				This.checkMultRequests(a);
 				warp.find('[data-WARP="lan"] [data-UI="addressingType"]:checked').val() == 'dynamic' ? disable('lan',true) : disable('lan');
 				warp.find('[data-WARP="ddns"] [data-UI="enabled"]:checked').val() == 'true' ? disable('ddns') : disable('ddns',true);
-				warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);	
+				warp.find('[data-WARP="pppoe"] [data-UI="enabled"]:checked').val() == 'true' ? disable('pppoe') : disable('pppoe',true);
+				warp.find('input[data-UI="mac"]').prop('disabled',true);
 			}
 
 			showAJAXHint('loading').css('top',warp.height() + 46);

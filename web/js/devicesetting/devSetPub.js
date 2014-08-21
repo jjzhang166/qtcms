@@ -32,7 +32,7 @@ function data2UI(objData,oWarp){
 				if(objData[i]['opt']){
 					warp.find('ul'+warpKey).html('');
 					for(var k in objData[i]['opt']){
-						warp.find('ul'+warpKey).append('<li><input type="text" value="'+objData[i]['opt'][k]+'"></li>');
+						warp.find('ul'+warpKey).append('<li><input type="text" value="'+objData[i]['opt'][k]+'" disabled></li>');
 					}
 				}
 
@@ -85,6 +85,7 @@ function ignoreKey(key){
 }
 
 function _AJAXget(url,data,beforeSend,success,complete){   //  get方法
+	$('#dev_'+nowDev._ID).addClass('sel');
 
 	if(typeof(beforeSend) != 'boolean' && async) emptyDevSetMenu(); //异步请求时清空表单.
 
@@ -162,6 +163,12 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 			console.log('+++++++++++++++++++++++++++++++');
 			*/
+
+			warp.find('input').filter(function(){ 
+				var a = $(this).parent()[0].nodeName
+				return  ((a=='TD' || a =='DIV') && $(this).parent().attr('class') != 'select');
+			}).removeProp('disabled');
+
 			var Data = jsonp ? xml2json.parser(data.xml,'', false) : data;
 
 			console.log(Data);
@@ -169,11 +176,6 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 			//console.time('数据填充时间');
 			typeof(success) == 'function' && success(Data);
 			//console.timeEnd('数据填充时间');
-
-			warp.find('input').filter(function(){ 
-				var a = $(this).parent()[0].nodeName
-				return  ((a=='TD' || a == 'DIV') && $(this).parent().attr('class') != 'select');
-			}).attr("disabled",false);
 
 			str =  type == 'GET' ? 'loading_success' : 'save_success';
 			//console.log('---------------ajaxSuccess------------------');
