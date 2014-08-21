@@ -503,11 +503,11 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function backupSearchFile(){
-		console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+		//console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 		if(searchSTOP){
 			searchSTOP = 0;
 		}else{
-			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 			return;
 		}
 		$('#file_warp').removeAttr('b');
