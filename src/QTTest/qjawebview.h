@@ -9,7 +9,7 @@
 #pragma comment(lib, "minidump.lib")
 
 
-#define __USE_WEB_DEBUGER__
+#define __USE_WEB_DEBUGER__DUMP__
 
 class QJaWebView : public QWebView
 {
@@ -35,7 +35,7 @@ public slots:
 	virtual QWebView * createWindow( QWebPage::WebWindowType type );
 private:
 	IActivities * m_Activity;
-#ifdef __USE_WEB_DEBUGER__
+#ifdef __USE_WEB_DEBUGER__DUMP__
 	QWebInspector m_webinspector;
 	Dumper *m_pdup;
 #endif

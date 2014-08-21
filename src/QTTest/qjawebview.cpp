@@ -30,9 +30,9 @@ QJaWebView::QJaWebView(QWidget *parent) :
 
 	// Disable context menu
 	setContextMenuPolicy(Qt::NoContextMenu);
-#ifdef __USE_WEB_DEBUGER__
+#ifdef __USE_WEB_DEBUGER__DUMP__
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
-	Dumper::setVersionInfo("cms_1.1.12_08_21_13", strlen("cms_1.1.12_08_21_13"));
+	Dumper::setVersionInfo("cms_1.1.12_08_21_17", strlen("cms_1.1.12_08_21_17"));
 	m_pdup = new Dumper();
 #endif
 
@@ -113,7 +113,7 @@ QJaWebView::~QJaWebView()
 		m_Activity->Release();
 	}
 	setObjectName("NULL");
-#ifdef __USE_WEB_DEBUGER__
+#ifdef __USE_WEB_DEBUGER__DUMP__
 	if (m_pdup)
 	{
 		delete m_pdup;
@@ -127,7 +127,7 @@ void QJaWebView::keyPressEvent(QKeyEvent *ev)
     {
     case Qt::Key_Escape:
         {
-   //         close();
+           /* close();*/
 			//qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM Key_Escape";
         }
         break;
