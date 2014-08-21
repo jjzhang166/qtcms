@@ -72,6 +72,7 @@
 	'Retrieving':'正在检索:',
 	'Parameter_error':'参数错误',
 	'Connection_Failed':'连接失败',
+	'no_Channle_Preview':'没有通道接入预览!',
 	'play_Failed':'播放失败',
 	'not_complete':'搜索不完整',
 	'Retrieval_completed':'检索完成:',

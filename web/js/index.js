@@ -431,50 +431,81 @@ var oPreView,oDiv,
 		return H+':'+M+':'+S;	
 	}
 
+	function oPreviewIsAllUsed(){
+		var b = false;
+		for(var i=0;i<64;i++){
+			if(!oPreView.GetWindowInfo(i).usable){
+				b = true;
+			}
+		}
+		return b;
+	}
+
 	function Record(obj){ //录像
 		var transKey = '',
 		backStatus= 0,
 		data = {},
 		c = errorcolor;
-		if(obj.attr('toggle')){
-			$('div.dev_list span.channel[wind]').each(function(){
-				data =getChlFullInfo($(this));
-				/*console.log('------------1-------------');
-				console.log(data);*/
-				if(oPreView.SetDevInfo(data.device_name,data.channel_number,$(this).attr('wind'))){
-					transKey = 'channel_Manual_recording_data_binding_failed'
-				}else{
-					backStatus = oPreView.StartRecord($(this).attr('wind'))
-					if(backStatus){
-						transKey = 'channel_Manual_recording_fail';
+
+		obj.mouseleave(function(){
+			setTimeout(function(){
+				if(!oPreviewIsAllUsed()){
+					//writeActionLog(_T('没有接入的通道!'),c);
+					obj.css('background-position','-120px -72px').removeAttr('toggle');
+					//return;
+				}
+			},1)
+		})
+
+		setTimeout(function(){
+			if(!oPreviewIsAllUsed()){
+				writeActionLog(_T('no_Channle_Preview'),c);
+				obj.css('background-position','-120px -72px').removeAttr('toggle');
+				return;
+			}
+			if(obj.attr('toggle')){
+				$('div.dev_list span.channel[wind]').each(function(){
+
+					data =getChlFullInfo($(this));
+					/*console.log('------------1-------------');
+					console.log(data);*/
+					if(oPreView.SetDevInfo(data.device_name,data.channel_number,$(this).attr('wind'))){
+						transKey = 'channel_Manual_recording_data_binding_failed'
+					}else{
+						backStatus = oPreView.StartRecord($(this).attr('wind'))
+						console.log('backStatus'+backStatus);
+						if(backStatus){
+							transKey = 'channel_Manual_recording_fail';
+							if(backStatus == 2){
+								transKey = 'channel_has_been_in_the_planning_Video_state';
+							}
+						}else{ 
+							transKey = 'Start_manual_recording';
+							c = '';
+						}
+					}
+					writeActionLog(T(transKey,data.name,data.channel_name),c);
+				})
+			}else{
+				$('div.dev_list span.channel[wind]').each(function(){
+					data = getChlFullInfo($(this)),
+					backStatus = oPreView.StopRecord($(this).attr('wind'));
+					/*console.log('------------12-------------');
+					console.log(data);*/
+					if(backStatus){ 
+						transKey = 'Close_the_manual_recording_failed'
 						if(backStatus == 2){
 							transKey = 'channel_has_been_in_the_planning_Video_state';
 						}
 					}else{ 
-						transKey = 'Start_manual_recording';
+						transKey = 'Close_the_manual_recording';
 						c = '';
 					}
-				}
-				writeActionLog(T(transKey,data.name,data.channel_name),c);
-			})
-		}else{
-			$('div.dev_list span.channel[wind]').each(function(){
-				data = getChlFullInfo($(this)),
-				backStatus = oPreView.StopRecord($(this).attr('wind'));
-				/*console.log('------------12-------------');
-				console.log(data);*/
-				if(backStatus){ 
-					transKey = 'Close_the_manual_recording_failed'
-					if(backStatus == 2){
-						transKey = 'channel_has_been_in_the_planning_Video_state';
-					}
-				}else{ 
-					transKey = 'Close_the_manual_recording';
-					c = '';
-				}
-				writeActionLog(T(transKey,data.device_name,data.channel_name),c);
-			})	
-		}
+					writeActionLog(T(transKey,data.device_name,data.channel_name),c);
+				})	
+			}
+		},500)
+
 		/*obj.blur(function(){
 			if(backStatus){
 				obj.attr('toggle',1).css('background-position','-120px -108px');
