@@ -58,6 +58,9 @@ RecorderEx::RecorderEx(void):m_nRef(0),
 	m_iFrameCount(0),
 	m_iLastTicket(0),
 	m_iCheckBlockCount(0),
+	m_iCheckDiskSizeCount(0),
+	m_iChecKFileSizeCount(0),
+	m_iUpdateDatabaseCount(0),
 	m_bStop(true),
 	m_bBlock(false),
 	m_bFull(false),
@@ -66,7 +69,7 @@ RecorderEx::RecorderEx(void):m_nRef(0),
 	m_bUpdateDatabase(false)
 {
 	connect(&m_tCheckBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckBlock()));
-	m_tCheckBlockTimer.start(90000);
+	m_tCheckBlockTimer.start(30000);
 	m_tEventList<<"RecordState";
 }
 
@@ -263,11 +266,16 @@ void RecorderEx::run()
 					//do nothing
 				}
 			}
-			if (m_bStop)
+			if (iRecStep==REC_PACK)
 			{
-				iRecStep=REC_WAIT_FOR_PACK;
+				//do nothing
 			}else{
-				iRecStep=REC_CHECK_AND_UPDATE;
+				if (m_bStop)
+				{
+					iRecStep=REC_WAIT_FOR_PACK;
+				}else{
+					iRecStep=REC_CHECK_AND_UPDATE;
+				}
 			}
 			m_csDataLock.unlock();
 							 }
@@ -776,7 +784,7 @@ void RecorderEx::slCheckBlock()
 {
 	//三分钟检测一次run函数是否阻塞
 	m_iCheckBlockCount++;
-	if (m_bBlock&&m_iCheckBlockCount>3)
+	if (m_bBlock&&m_iCheckBlockCount>9)
 	{
 		m_iCheckBlockCount=0;
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tRecorderInfo.sDeviceName<<"thread block at position::"<<m_iPosition<<"please check";
@@ -792,9 +800,24 @@ void RecorderEx::slCheckBlock()
 	//一分钟检测一次磁盘空间
 	//一分钟检测一次文件大小
 	//一分钟更新一次数据库
-	m_bCheckDiskSize=true;
 	m_bChecKFileSize=true;
-	m_bUpdateDatabase=true;
+	m_iCheckDiskSizeCount++;
+	m_iUpdateDatabaseCount++;
+	if (m_iCheckDiskSizeCount>3)
+	{
+		m_bCheckDiskSize=true;
+		m_iCheckDiskSizeCount=0;
+	}else{
+		//do nothing
+	}
+	if (m_iUpdateDatabaseCount>3)
+	{
+		m_bUpdateDatabase=true;
+		m_iUpdateDatabaseCount=0;
+	}else{
+		//do nothing
+	}
+	
 }
 
 bool RecorderEx::createFilePath()

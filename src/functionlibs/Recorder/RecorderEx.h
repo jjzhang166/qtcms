@@ -125,11 +125,14 @@ private:
 	int m_iFrameCount;
 	int m_iLastTicket;
 	unsigned int m_uiFrameCountArray[31];
-	bool m_bFull;
+	volatile bool m_bFull;
 	tagRecorderExInfo m_tRecorderInfo;
 	quint64 m_iFristPts;
 	quint64 m_iLastPts;
 	int m_iCheckBlockCount;
+	int m_iChecKFileSizeCount;
+	int m_iCheckDiskSizeCount;
+	int m_iUpdateDatabaseCount;
 	bool m_bChecKFileSize;
 	bool m_bCheckDiskSize;
 	bool m_bUpdateDatabase;

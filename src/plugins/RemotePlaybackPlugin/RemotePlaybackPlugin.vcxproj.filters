@@ -104,6 +104,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_rPlayBackRunEx.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="rPlaybackWndEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_rPlaybackWndEx.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_rPlaybackWndEx.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
@@ -148,6 +157,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="rPlayBackRunEx.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="rPlaybackWndEx.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

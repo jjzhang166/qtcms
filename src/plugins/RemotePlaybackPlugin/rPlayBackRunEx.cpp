@@ -202,7 +202,7 @@ void rPlayBackRunEx::run()
 						}
 						break;
 		case RECEND:{
-
+			bRecRunStop=true;
 					}
 					break;
 		}
