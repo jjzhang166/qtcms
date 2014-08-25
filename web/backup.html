@@ -419,7 +419,10 @@ var oPlayBack={},  // 远程回访控件对象
 		});
 	}
 
-	function getDir(){ 
+	function getDir(){
+		if($('#search_resultFile input:checked').length == 0){
+			return;
+		}
 		oBackup.ChooseDir();
 	};
 

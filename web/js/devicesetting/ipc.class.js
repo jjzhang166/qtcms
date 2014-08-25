@@ -314,9 +314,9 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 		    str = 'factory_reseting',
 
-		    This = this,
+		    This = this;
 
-			dev_id = $('div.dev_list:eq(2) span.device.sel').attr("id").slice(4);
+			//dev_id = $('div.dev_list:eq(2) span.device.sel').attr("id").slice(4);
 
     	showAJAXHint(str).css('top',warp.height() + 46);
 
@@ -337,7 +337,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	        else
 	          showAJAXHint(str);
 
-    		$('<input value="'+dev_id+'" type="hidden" class="data" id="dev_id_ID" />').appendTo('#confirm');
+    		$('<input value="'+This._ID+'" type="hidden" class="data" id="dev_id_ID" />').appendTo('#confirm');
    
     		$('#RemoveDeviceEx_ok').click();
 		});		  
