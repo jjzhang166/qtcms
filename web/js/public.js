@@ -304,9 +304,9 @@ function showNowPlayBackTime(oNow,oleft,X2){
 })(jQuery)
 
 $(function(){
-	console.log = function(){
+	/*console.log = function(){
 		return;
-	}
+	}*/
 	// 导航页面跳转
 	var url =['index.html','play_back.html','backup.html','device.html','log.html'];
 	$('div.top_nav li').each(function(index){

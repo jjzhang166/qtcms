@@ -290,6 +290,9 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function RecFile2UI(nowPageFile){
+		/*console.log(nowPageFile);
+		console.log(splitBY1Hour(nowPageFile));*/
+		nowPageFile = splitBY1Hour(nowPageFile);
 		//console.time('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
 
 			
@@ -337,6 +340,55 @@ var oPlayBack={},  // 远程回访控件对象
 		console.timeEnd('++++++文件列表完成后数据绑定+++++++++');	*/
 
 		//console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
+	}
+
+	function splitBY1Hour(arr){
+		var a=[];
+		for(var i=0,j=arr.length;i<j;i++){
+			
+			//console.log(arr[i]);
+			if(time2Sec(arr[i].end.split(' ')[1]) - time2Sec(arr[i].start.split(' ')[1]) > 3600){
+				/*console.log('当前文件时间大于一小时');
+				console.log(arr[i]);*/
+				a = a.concat(SPLIT(arr[i]));
+			}else{
+				a.push(arr[i]);
+			}
+		}
+
+		return a;
+
+		function SPLIT(obj){
+			var date = obj.start.split(' ')[0] || obj.end.split(' ')[0],
+				start = obj.start.split(' ')[1],
+				end = obj.end.split(' ')[1],
+				aa=[],
+				st = start;
+
+			for(var j=0;j<24;j++){
+
+				var o = {},
+
+					newed = returnTime(parseInt((time2Sec(st)/3600),10)*3600+3600);
+
+					newed = newed > end ? end : newed;
+				if(st >= end){
+					/*console.log(st+'//'+end+'-----------------'+(st > end));
+					console.log();*/
+					return aa;
+				}
+				o.channelnum = obj.channelnum;
+				o.filename = obj.filename;
+				o.index = obj.index;
+				o.start = date +' '+st;
+				o.types = obj.types;
+				o.end = date +' '+ newed;
+				st = newed;
+
+				aa.push(o);
+			}
+		}
+
 	}
 
 	function contentMax(){
