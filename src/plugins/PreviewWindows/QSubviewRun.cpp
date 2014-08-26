@@ -1811,6 +1811,7 @@ void QSubviewRun::slplanRecord()
 			if (m_nHisWeekDay!=QDate::currentDate().dayOfWeek())
 			{
 				m_bIsdataBaseFlush=true;
+				m_lstReocrdTimeInfoList.clear();
 			}else{
 				//do nothing
 			}
