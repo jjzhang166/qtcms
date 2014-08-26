@@ -150,9 +150,9 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 		QPainter p(this);
 
 		QString image;
-		QColor LineColor;
+		QColor LineColor(45,49,54);
+		QColor FontColor(32,151,219);
 		QColor LineCurColor;
-		QColor FontColor;
 		int FontSize;
 		QString FontFamily;
 
@@ -161,9 +161,9 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 		QSettings IniFile(path, QSettings::IniFormat, 0);
 
 		image = IniFile.value("background/background-image", NULL).toString();
-		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+	/*	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
+		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
 
@@ -191,14 +191,14 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 			pen.setWidth(2);
 			pen.setColor(LineCurColor);
 			p.setPen(pen);
-			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+			p.drawRect(QRect(x,y,width, height));
 		}
 		else
 		{
 			p.drawRect(rcClient);
 		}
 
-		QFont font(FontFamily, FontSize, QFont::Bold);
+		QFont font(FontFamily, FontSize, QFont::Bold|QFont::System);
 
 		p.setFont(font);
 
@@ -217,9 +217,9 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		QPainter p(this);
 
 		QString image;
-		QColor LineColor;
+		QColor LineColor(45,49,54);
 		QColor LineCurColor;
-		QColor FontColor;
+		QColor FontColor(32,151,219);
 		int FontSize;
 		QString FontFamily;
 
@@ -228,9 +228,9 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		QSettings IniFile(path, QSettings::IniFormat, 0);
 
 		image = IniFile.value("background/background-image", NULL).toString();
-		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		/*LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
+		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
 
@@ -258,15 +258,14 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 			pen.setWidth(2);
 			pen.setColor(LineCurColor);
 			p.setPen(pen);
-			p.drawRect(QRect(x + 2,y + 2,width - 2, height - 2));
+			p.drawRect(QRect(x,y,width, height));
 		}
 		else
 		{
 			p.drawRect(rcClient);
 		}
 
-		QFont font(FontFamily, FontSize, QFont::Bold);
-
+		QFont font(FontFamily, FontSize, QFont::Bold|QFont::System);
 		p.setFont(font);
 
 		pen.setColor(FontColor);
@@ -297,9 +296,11 @@ void RSubView::paintEventCache( QPaintEvent * )
 		QPainter p(this);
 
 		QString image;
-		QColor LineColor;
+		/*QColor LineColor;*/
+		QColor LineColor(45,49,54);
 		QColor LineCurColor;
-		QColor FontColor;
+		/*QColor FontColor;*/
+		QColor FontColor(32,151,219);
 		int FontSize;
 		QString FontFamily;
 
@@ -308,9 +309,9 @@ void RSubView::paintEventCache( QPaintEvent * )
 		QSettings IniFile(path, QSettings::IniFormat, 0);
 
 		image = IniFile.value("background/background-image", NULL).toString();
-		LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
+		/*LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
+		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
 
@@ -365,7 +366,8 @@ void RSubView::_cacheLableShow()
 		_cacheLable->setParent(this);
 		_cacheLable->raise();
 		QPalette pa;
-		pa.setColor(QPalette::WindowText,Qt::red);
+		QColor FontColor(32,151,219);
+		pa.setColor(QPalette::WindowText,FontColor);
 		_cacheLable->setPalette(pa);
 		QFont ft;
 		ft.setPointSize(20);
@@ -379,7 +381,7 @@ void RSubView::_cacheLableShow()
 	{
 		_cacheLable->hide();
 	}
-	QString cachePercent("load  ");
+	QString cachePercent("load ");
 	cachePercent+=QString("%1").arg(_curCache);
 	cachePercent.append("%");
 	_cacheLable->setText(cachePercent);

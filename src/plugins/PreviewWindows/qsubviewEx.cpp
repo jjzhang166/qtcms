@@ -196,7 +196,7 @@ void qsubviewEx::paintEventConnected( QPaintEvent *ev )
 	Q_UNUSED(ev);
 	QPainter p(this);
 	QString image;
-	QColor LineColor;
+	QColor LineColor(45,49,54);
 	QColor LineCurColor;
 	QColor FontColor;
 	int FontSize;
@@ -207,7 +207,7 @@ void qsubviewEx::paintEventConnected( QPaintEvent *ev )
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
@@ -253,9 +253,9 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	Q_UNUSED(ev);
 	QPainter p(this);
 	QString image;
-	QColor LineColor;
+	QColor LineColor(45,49,54);
 	QColor LineCurColor;
-	QColor FontColor;
+	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
 
@@ -264,9 +264,9 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
 
@@ -311,7 +311,7 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	int aFontSize=10;
 	int aw=400;
 	aFontSize=awidth*FontSize/(aw);
-	QFont font(FontFamily, aFontSize, QFont::Bold);
+	QFont font(FontFamily, aFontSize, QFont::Bold|QFont::System);
 	p.setFont(font);
 	pen.setColor(FontColor);
 	p.setPen(pen);
@@ -323,9 +323,9 @@ void qsubviewEx::paintEventConnecting( QPaintEvent *ev )
 	Q_UNUSED(ev);
 	QPainter p(this);
 	QString image;
-	QColor LineColor;
+	QColor LineColor(45,49,54);
 	QColor LineCurColor;
-	QColor FontColor;
+	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
 
@@ -334,9 +334,9 @@ void qsubviewEx::paintEventConnecting( QPaintEvent *ev )
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
 
@@ -410,9 +410,11 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	Q_UNUSED(ev);
 	QPainter p(this);
 	QString image;
-	QColor LineColor;
+	/*QColor LineColor;*/
+	QColor LineColor(45,49,54);
 	QColor LineCurColor;
-	QColor FontColor;
+	/*QColor FontColor;*/
+	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
 
@@ -421,9 +423,9 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
+	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
 
@@ -468,7 +470,7 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	int aFontSize=10;
 	int aw=400;
 	aFontSize=awidth*FontSize/(aw);
-	QFont font(FontFamily, aFontSize, QFont::Bold);
+	QFont font(FontFamily, aFontSize, QFont::Bold|QFont::System);
 	p.setFont(font);
 	pen.setColor(FontColor);
 	p.setPen(pen);

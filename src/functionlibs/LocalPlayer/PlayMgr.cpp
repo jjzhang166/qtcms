@@ -246,6 +246,7 @@ void PlayMgr::run()
 				item.insert("pWnd", (uint)this);
 
 				emit sigThrowException(item);
+				AVI_close(file);
 				continue;
 			}
 

@@ -350,6 +350,7 @@ void RecorderEx::run()
 				if (packFile(pAviFile))
 				{
 					//keep going
+					pAviFile=NULL;
 				}else{
 					iRet=1;
 					qDebug()<<__FUNCTION__<<__LINE__<<"recorder fail as packFile fail";
@@ -360,7 +361,7 @@ void RecorderEx::run()
 			m_bBlock=false;
 			QString sEndTime=QTime::currentTime().toString("hh:mm:ss");
 
-			if (sEndTime<m_tRecorderInfo.sStartTime)
+			if (sEndTime<m_tRecorderInfo.sEndTime)
 			{
 				sEndTime="23:59:59";
 			}else{
@@ -483,12 +484,13 @@ void RecorderEx::run()
 					m_bBlock=false;
 				}else{
 					//¸üÐÂ¼ÇÂ¼
-					if (m_tRecorderInfo.sStartTime>m_tRecorderInfo.sEndTime)
+					if (sEndTime<m_tRecorderInfo.sEndTime)
 					{
 						sEndTime="23:59:59";
 					}else{
 						//do nothing
 					}
+					m_tRecorderInfo.sEndTime=sEndTime;
 					m_bBlock=true;
 					m_iPosition=__LINE__;
 					if (updateSearchDataBase(m_tRecorderInfo.sEndTime))
@@ -920,12 +922,13 @@ int RecorderEx::checkALL(avi_t *pAviFile)
 			{
 				m_bUpdateDatabase=false;
 				QString sEndTime=QTime::currentTime().toString("hh:mm:ss");
-				if (sEndTime<m_tRecorderInfo.sStartTime)
+				if (sEndTime<m_tRecorderInfo.sEndTime)
 				{
 					sEndTime="23:59:59";
 				}else{
 
 				}
+				m_tRecorderInfo.sEndTime=sEndTime;
 				bool bRet=upDateDataBase(sEndTime);
 				if (bRet)
 				{
@@ -1115,6 +1118,7 @@ bool RecorderEx::createRecordItem()
 		if (pStorageMgrEx->createRecordItem(m_tRecorderInfo.sApplyDisk,m_tRecorderInfo.sDeviceName,m_tRecorderInfo.iWindId,m_tRecorderInfo.iChannel,m_tRecorderInfo.iRecordType,m_tRecorderInfo.uiRecorderId,m_tRecorderInfo.sFilePath))
 		{
 			m_tRecorderInfo.sStartTime=QTime::currentTime().toString("hh:mm:ss");
+			m_tRecorderInfo.sEndTime=QTime::currentTime().toString("hh:mm:ss");
 			m_tRecorderInfo.sStartDate=QDate::currentDate().toString("yyyy-MM-dd");
 			return true;
 		}else{
