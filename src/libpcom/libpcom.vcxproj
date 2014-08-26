@@ -148,6 +148,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClInclude Include="..\..\include\IGroupManager.h" />
     <ClInclude Include="..\..\include\IIpcSearch.h" />
     <ClInclude Include="..\..\include\ILcalPlayer.h" />
+    <ClInclude Include="..\..\include\IRecordDat.h" />
     <ClInclude Include="..\..\include\ISetRecordTime.h" />
     <ClInclude Include="..\..\include\IUserManager.h" />
     <ClInclude Include="..\..\include\IWebPluginBase.h" />

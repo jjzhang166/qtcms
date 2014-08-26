@@ -36,7 +36,8 @@
 		<item clsid="BF780F86-4FFB-41ED-B916-A370978A0312" name="protocols.winipcsearch" file="WinIpcSearch.dll" type="winipcsearch"/> 
 		<item clsid="83C76012-CF4D-49B2-9B77-8EFB2817F95F" name="protocols.ipcsearch" file="HiChipSearch.dll" type="ipcsearch"/> 
 		<item clsid="9291E9A4-9E2B-4FC1-A145-8FBDEC96F0C4" name="protocols.Preview_Playback" file="BubbleProtocol.dll" type="Preview_Playback"/>
-		<item clsid="8647B818-B4D9-4839-B93D-CCA117DAD28D" name="record.Recorder" file="Recorder.dll" type="recorder"/>   
+		<item clsid="8647B818-B4D9-4839-B93D-CCA117DAD28D" name="record.Recorder" file="Recorder.dll" type="recorder"/>  
+		<item clsid="2DE3FBA7-4AB8-4AAD-8E49-9FC925B46580" name="record.RecordDat" file="recordDat.dll" type="recorder"/>   
 		<item clsid="175D5C43-CBF1-4BA4-962B-820F3DD56DE7" name="record.LocalPlayer" file="LocalPlayer.dll" type="LocalPlayer"/>
 		<item clsid="C7E581AB-4B51-4A24-898A-1A5406CF4B97" name="decoder.AudioDecoder" file="AudioDecoder.dll" type="AudioDecoder"/>
 		<item clsid="CDAAF783-0143-47AB-B5A5-4159CE25A61E" name="AudioDevice" file="AudioDevice.dll" type="AudioDevice"/>
