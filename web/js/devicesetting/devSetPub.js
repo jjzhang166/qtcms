@@ -32,7 +32,7 @@ function data2UI(objData,oWarp){
 				if(objData[i]['opt']){
 					warp.find('ul'+warpKey).html('');
 					for(var k in objData[i]['opt']){
-						warp.find('ul'+warpKey).append('<li><input type="text" value="'+objData[i]['opt'][k]+'" disabled></li>');
+						warp.find('ul'+warpKey).append('<li><input type="text" value="'+objData[i]['opt'][k]+'" disabled /></li>');
 					}
 				}
 
@@ -422,6 +422,11 @@ function reInitNowDev(){
 function portAsync(){
 	$('#http_ID_Ex').val($('#port_ID_Ex').val());
 }
+
+function dvrGET(fn,num,week){
+	week ? nowDev[fn](num,week) : nowDev[fn](num);
+}
+
 function getTitle(num){
    nowDev._dvrScreenInfo2UI(num);
 }
@@ -441,13 +446,11 @@ function getVideo(num){
 	nowDev._dvrVideoCkeck2UI(num);
 }
 //警报设置
-function getAlarm(num){
-	
+function getAlarm(num){	
 	nowDev._dvrAlarmInfo2UI(num);	
 }
 //录像设置
-function getRecord(num,week){
-	
+function getRecord(num,week){	
 	nowDev._dvrVideoInfo2UI(num,week);	
 }
 

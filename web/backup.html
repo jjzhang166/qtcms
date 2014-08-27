@@ -1,4 +1,4 @@
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -189,7 +189,7 @@ var oPlayBack={},  // 远程回访控件对象
 	now = 0,	   // 当前下载的第几个文件
 	recFile=[],    // 搜索文件
 	usedUid = [],
-	nowPage=-1;
+	nowPage=-1,
 	perPageNum=100;
 
 	$(function(){
@@ -206,9 +206,8 @@ var oPlayBack={},  // 远程回访控件对象
 			$(this).SynchekboxClick();
 		})
 
-
 		//文件排序
-		$('#search_result thead:eq(0) td:gt(0)').mousedown(function(){ 
+		$('#search_result thead:eq(0) td:gt(1)').mousedown(function(){ 
 			$(this).css('background-position','0 -20px');
 		}).mouseup(function(){ 
 			$(this).css('background-position','0 0');
@@ -436,11 +435,12 @@ var oPlayBack={},  // 远程回访控件对象
 		if(path == '')
 			return;
 
-			var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
-			if(!oList.length || oList.length == 0){
-				return;
-			}
-			startDownload();
+		var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
+		if(!oList.length || oList.length == 0){
+			return;
+		}
+
+		startDownload();
 	}
 
 	function startDownload(){
@@ -452,7 +452,7 @@ var oPlayBack={},  // 远程回访控件对象
 		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
 		var oDevData = $('div.dev_list li.sel span.device').data('data');
 		var fileData = oList.eq(now).attr('uid').split('_');
-/*		console.log(fileData);
+		/*console.log(fileData);
 		console.log('--------选中设备--------')*/
 		/*console.log($('div.dev_list li.sel span.device'));
 		console.log(oDevData);
@@ -537,7 +537,7 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 			if( types == 'stopBackup'){
 				console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
-				clearInterval(timer);
+				//clearInterval(timer);
 				now++;
 				if(now == oList.length){
 					backupstop();
@@ -554,7 +554,7 @@ var oPlayBack={},  // 远程回访控件对象
 		oBackup.stopBackup();
 		now=0;
 		$('#search_result input:checked').prop('checked',false);
-		clearInterval(timer);
+		//clearInterval(timer);
 	}
 
 	function backupSearchFile(){

@@ -123,6 +123,7 @@
 		}
 	});
 })(jQuery);
+
 $(function(){
 	$('div.calendar').each(function(index){
 		$(this).initCalendar();

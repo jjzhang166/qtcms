@@ -58,8 +58,7 @@ function addMouseStyle(obj,action){  //按钮UI响应
 			obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
 			obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
 			left=-width;
-		}
-		
+		}		
 	})
 }
 

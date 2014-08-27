@@ -85,7 +85,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		})
 
 		$('div.play_time').on({ //文件搜索的下的事件滑动条事件
-			dblclick:function(){  
+			dblclick:function(){
 				playVideo();
 			},
 			mousedown:function(){
@@ -752,9 +752,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function ThrowExceptionCallback(data){
+		console.log(data);
 		dragStopMove();
 		var arr = [_T('Available'),_T('Abnormal_damaged')];
-		alert(T('ThrowException',(parseInt(data.wndId)+1),data.filePath,arr[data.expCode]));
+		alert(T('ThrowException',data.wndId,data.filepath,arr[data.expCode]));
 	}
 
 	//初始化控件与文件列表的关系.

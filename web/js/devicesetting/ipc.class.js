@@ -371,7 +371,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 	this.getBoolean = function (name){
 		var warp = $('#set_content div.ipc_list:visible');
-		return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false
+		return warp.find('input[name="'+name+'"]:checked').val()=='true'? true:false;
 	}
 
 	this.getVlue=function (name){
