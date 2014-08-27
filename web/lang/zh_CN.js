@@ -282,7 +282,7 @@
 	'Language':'语言',
 	'Automatic_polling_time':'自动轮巡时间',
 	'Screenshot_save_location':'截屏保存路径',
-	'Default_screen_split_mode':'默认屏幕分割模式',
+	'Default_screen_split_mode':'启动时分屏模式',
 	'Screen':'分屏',
 	'Auto_Login':'自动登录',
 	'Automatically_synchronize_time':'自动同步时间',
