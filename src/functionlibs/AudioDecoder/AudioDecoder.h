@@ -13,7 +13,7 @@ class AudioDecoder :
 {
 public:
 	AudioDecoder();
-	~AudioDecoder();
+    virtual ~AudioDecoder();
 
 	virtual int Decode(char *OutPutBuffer,char *InputBuffer,int nInputBufferSize);
 

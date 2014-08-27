@@ -95,8 +95,8 @@ private:
  	bool m_bMouseTrace;
 	QPoint m_pos;
 	SettingsactivityThread *m_SettingThread;
-	bool m_bIsAdding;
 	bool m_bIsRemoving;
+    bool m_bIsAdding;
 signals:
 	void DeleteAllDevSig();
 

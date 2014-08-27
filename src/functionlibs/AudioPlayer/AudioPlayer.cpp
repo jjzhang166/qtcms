@@ -53,7 +53,7 @@ int AudioPlayer::SetAudioParam(int nChannel,int nSampleRate,int nSampleWidth)
 }
 int AudioPlayer::SetVolume(unsigned int uiPersent)
 {
-	if (NULL == m_pAudioDev || uiPersent < 0 || uiPersent > 100)
+    if (NULL == m_pAudioDev || (int)uiPersent < 0 || uiPersent > 100)
 	{
 		return 1;
 	}

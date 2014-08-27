@@ -10,17 +10,17 @@
 
 
 BubbleProtocol::BubbleProtocol(void):
-m_nRef(0),
-m_bIsPreviewPaused(false),
-m_bIsPreviewStopped(true),
-m_bIsPlaybackPaused(false),
-m_bIsPlaybackStopped(true),
-m_bIsResearch(false),
-m_nRecordNum(0),
-m_bIsPostSuccessed(false),
-m_channelNum(0),
-m_streamNum(0),
-m_streanCount(0)
+    m_nRecordNum(0),
+    m_bIsPostSuccessed(false),
+    m_bIsPreviewPaused(false),
+    m_bIsPreviewStopped(true),
+    m_bIsPlaybackPaused(false),
+    m_bIsPlaybackStopped(true),
+    m_bIsResearch(false),
+    m_channelNum(0),
+    m_streamNum(0),
+    m_streanCount(0),
+    m_nRef(0)
 {
 	m_eventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
                <<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail"<<"ConnectRefuse";
@@ -352,7 +352,7 @@ int BubbleProtocol::writeBuff(QByteArray &block, int nChannel, int nTypes, uint 
     nLength = sizeof(Bubble) - sizeof(bubble->pLoad) + sizeof(RecordRequireV2);
     bubble->uiLength = qToBigEndian(nLength - sizeof(bubble->cHead) -sizeof(bubble->uiLength));
     QDateTime time = QDateTime::currentDateTime();
-    bubble->uiTicket = qToBigEndian(unsigned int (time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
 
     RecordRequireV2 *pRecordRequire = (RecordRequireV2 *)bubble->pLoad;
     pRecordRequire->nChannels = nChannel;
@@ -481,7 +481,7 @@ int BubbleProtocol::pausePlaybackStream(bool bPause)
         bubble->cCmd  = (char)0x02; //pause
         bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
         QDateTime time = QDateTime::currentDateTime();
-        bubble->uiTicket = qToBigEndian(unsigned int (time.toMSecsSinceEpoch() * 1000));
+        bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
         QByteArray block;
         block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
         emit sigWriteSocket(block);
@@ -498,7 +498,7 @@ int BubbleProtocol::pausePlaybackStream(bool bPause)
         bubble->cCmd  = (char)0x03; //continue
         bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
         QDateTime time = QDateTime::currentDateTime();
-        bubble->uiTicket = qToBigEndian(unsigned int (time.toMSecsSinceEpoch() * 1000));
+        bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
         QByteArray block;
         block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
         emit sigWriteSocket(block);
@@ -521,7 +521,7 @@ int BubbleProtocol::stopPlaybackStream()
     bubble->cCmd  = (char)0x04; //stop
     bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
     QDateTime time = QDateTime::currentDateTime();
-    bubble->uiTicket = qToBigEndian(unsigned int (time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
     QByteArray block;
     block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
     emit sigWriteSocket(block);

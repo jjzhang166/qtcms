@@ -1,19 +1,16 @@
 QT += core webkit
 
-TEMPLATE = lib
-TARGET = previewactivity
+VERSION=1.1.12.0
+TARGET=PlaybackActivity
+TEMPLATE=lib
 
-VERSION = 1.1.12.0
-
-SOURCES += \
-    dllmain.cpp \
-    previewactivity.cpp \
+SOURCES += dllmain.cpp \
+    playbackactivity.cpp \
     ../../common/guid.cpp
 
-HEADERS += \
-    dllmain.h \
-    previewactivity_global.h \
-    previewactivity.h \
+HEADERS += dllmain.h \
+    playbackactivity.h \
+    playbackactivity_global.h \
     ../../../include/qwfw.h
 
 INCLUDEPATH += ../../../include

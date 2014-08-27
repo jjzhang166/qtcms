@@ -7,15 +7,15 @@
 
 
 StreamProcess::StreamProcess():
-m_nRemainBytes(0),
-m_nTotalBytes(0),
-m_bIsHead(true),
-m_nPort(80),
-m_bIsSupportBubble(true),
-m_bStop(false),
-m_nVerifyResult(0),
-m_hearttimer(NULL),
-m_tcpSocket(NULL)
+    m_bIsHead(true),
+    m_bStop(false),
+    m_nPort(80),
+    m_tcpSocket(NULL),
+    m_nTotalBytes(0),
+    m_nRemainBytes(0),
+    m_nVerifyResult(0),
+    m_bIsSupportBubble(true),
+    m_hearttimer(NULL)
 {
 	m_curstate=IDeviceConnection::CS_Disconnecting;
 }
@@ -90,6 +90,7 @@ void StreamProcess::socketWrites(QByteArray block)
 	if (NULL != m_tcpSocket && QAbstractSocket::ConnectedState == m_tcpSocket->state())
 	{
         int size=m_tcpSocket->write(block);
+        Q_UNUSED(size);
         if (!m_tcpSocket->waitForBytesWritten(300))
         {
             qDebug()<<__FUNCTION__<<__LINE__<<"socket write failure:\t"<<"time out";
@@ -225,7 +226,7 @@ void StreamProcess::receiveStream()
 			m_curHead = '\xab';
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
-			if (m_buffer.size() >= m_nTotalBytes)
+            if ((uint)m_buffer.size() >= m_nTotalBytes)
 			{
 				analyzeRecordStream();
 			}
@@ -235,7 +236,7 @@ void StreamProcess::receiveStream()
 			m_curHead = '\xaa';
 			pBubble = (Bubble *)m_buffer.data();
 			m_nTotalBytes = qToBigEndian(pBubble->uiLength) + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
-			if (m_buffer.size() >= m_nTotalBytes)
+            if ((uint)m_buffer.size() >= m_nTotalBytes)
 			{
 				analyzePreviewStream();
 			}
@@ -294,7 +295,7 @@ void StreamProcess::analyzePreviewStream()
 	AuthorityBack *pAutoBack = NULL;
 	LiveStream *liveStreamInfo = NULL;
 
-	while(m_buffer.size() >= m_nTotalBytes)
+    while((uint)m_buffer.size() >= m_nTotalBytes)
 	{
 		char *dataArr = new char[m_nTotalBytes];
 
@@ -406,7 +407,7 @@ void StreamProcess::analyzeRecordStream()
 	QDateTime time2 = QDateTime::currentDateTimeUtc();
 	int timeDifference = qAbs(time1.time().hour() - time2.time().hour())*3600;
 
-	while(m_buffer.size() >= m_nTotalBytes)
+    while((uint)m_buffer.size() >= m_nTotalBytes)
 	{
 		char *dataArr = new char[m_nTotalBytes];
 
@@ -528,6 +529,7 @@ int StreamProcess::getStreamListInfo(QList<QList<Stream>> &lstStreamList)
 
 void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 {
+    Q_UNUSED(sockerror);
 	QVariantMap mStreamInfo;
 
 	mStreamInfo.insert("connectionStatus", m_tcpSocket->state());
@@ -546,6 +548,7 @@ void StreamProcess::showError(QAbstractSocket::SocketError sockerror)
 
 void StreamProcess::stateChanged(QAbstractSocket::SocketState socketState)
 {
+    Q_UNUSED(socketState);
 	QVariantMap mStreamInfo;
 
 	int nStatus = m_tcpSocket->state();

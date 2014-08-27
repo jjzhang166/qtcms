@@ -1,19 +1,18 @@
-QT += core webkit
+QT += core xml webkit
 
 TEMPLATE = lib
-TARGET = previewactivity
+TARGET = Settingsactivity
 
 VERSION = 1.1.12.0
 
-SOURCES += \
-    dllmain.cpp \
-    previewactivity.cpp \
+SOURCES += dllmain.cpp \
+    SettingsactivityThread.cpp \
+    settingsactivity.cpp \
     ../../common/guid.cpp
 
-HEADERS += \
-    dllmain.h \
-    previewactivity_global.h \
-    previewactivity.h \
+HEADERS += SettingsactivityThread.h \
+    settingsactivity.h \
+    settingsactivity_global.h \
     ../../../include/qwfw.h
 
 INCLUDEPATH += ../../../include
@@ -27,7 +26,7 @@ debug{
     LIBS += -L../../../mac/release
     OBJECTS_DIR = ./objs/release
     MOC_DIR = ./moc/release
-    DESTDIR = ../../../mac/debug/activities
+    DESTDIR = ../../../mac/release/activities
 }
 
 LIBS += -lpcom

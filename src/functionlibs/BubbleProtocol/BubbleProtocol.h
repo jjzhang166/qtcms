@@ -112,7 +112,7 @@ private:
 	QString                m_deviceId;
 	QString                m_deviceUsername;
 	QString                m_devicePassword;
-	QList<QList<Stream>>   m_lstStreamList;
+    QList< QList<Stream> >   m_lstStreamList;
 	bool                   m_isSupportBubble;
 
 	QMultiMap<QString, ProcInfoItem> m_eventMap;

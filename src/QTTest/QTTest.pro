@@ -18,16 +18,20 @@ debug{
     LIBS += -L../../mac/release
 }
 
+VERSION=1.1.12.0
+
 LIBS += -lpcom
 
 SOURCES += main.cpp \
     qjawebview.cpp \
     ../common/guid.cpp\
-    webkitpluginsfactory.cpp
+    webkitpluginsfactory.cpp \
+    MyEventSender.cpp \
 
 HEADERS  += \
     qjawebview.h \
-    webkitpluginsfactory.h
+    webkitpluginsfactory.h \
+    MyEventSender.cpp
 
 FORMS    +=
 

@@ -5,9 +5,10 @@
 #include <IActivities.h>
 #include <QWebInspector>
 
+#ifdef WIN32
 #include "minidumphead.h"
 #pragma comment(lib, "minidump.lib")
-
+#endif
 
 #define __USE_WEB_DEBUGER__DUMP__
 
@@ -37,7 +38,10 @@ private:
 	IActivities * m_Activity;
 #ifdef __USE_WEB_DEBUGER__DUMP__
 	QWebInspector m_webinspector;
+
+#ifdef WIN32
 	Dumper *m_pdup;
+#endif
 #endif
 };
 

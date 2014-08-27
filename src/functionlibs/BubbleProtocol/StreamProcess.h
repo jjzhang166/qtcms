@@ -21,7 +21,7 @@ public:
     int getSocketState();
 	int getVerifyResult();
 	bool getSupportState();
-	int getStreamListInfo(QList<QList<Stream>> &lstStreamList);
+    int getStreamListInfo(QList< QList<Stream> > &lstStreamList);
 	~StreamProcess(void);
 public slots:
     void stopStream();
@@ -48,7 +48,7 @@ private:
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 	int m_nVerifyResult;
 	bool m_bIsSupportBubble;
-	QList<QList<Stream>> m_lstStreamList;
+    QList< QList<Stream> > m_lstStreamList;
 	char m_curHead;
 	int m_curstate;
 	QTimer *m_hearttimer;

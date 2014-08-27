@@ -8,7 +8,7 @@ QT       += xml
 
 QT       -= gui
 
-VERSION = 1.0.0
+VERSION = 1.1.12.0
 
 TARGET = pcom
 TEMPLATE = lib
@@ -17,9 +17,9 @@ DEFINES += LIBPCOM_LIBRARY
 
 SOURCES += libpcom.cpp
 
-HEADERS += libpcom.h
-
 INCLUDEPATH += ../../include
+
+HEADERS += ../../include/libpcom.h
 
 unix:!symbian {
     maemo5 {

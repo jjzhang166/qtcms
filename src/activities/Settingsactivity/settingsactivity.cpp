@@ -1109,6 +1109,7 @@ void settingsActivity::OnRemoveChannel()
 void settingsActivity::OnAddChannelInGroupDouble()
 {
 	int nRet_id=-1;
+    Q_UNUSED(nRet_id);
 	IGroupManager *IGroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&IGroup);
 	DEF_EVENT_PARAM(arg);

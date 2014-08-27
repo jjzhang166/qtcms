@@ -13,7 +13,7 @@ class AudioPlayer : public IAudioPlayer
 {
 public:
 	AudioPlayer();
-	~AudioPlayer();
+    virtual ~AudioPlayer();
 
 	virtual int SetPlayWnd(int nWnd);
 	virtual int SetAudioParam(int nChannel,int nSampleRate,int nSampleWidth);
@@ -29,11 +29,11 @@ public:
 
 
 private:
-	bool m_bEnabledPlay;
+    int m_nRef;
+    bool m_bEnabledPlay;
 	IAudioDecoder *m_pAudioDec;
 	IAudioDevice *m_pAudioDev;
 
-	int m_nRef;
 	QMutex m_csRef;
 };
 
