@@ -13,6 +13,7 @@
 'add_group':'Add group',
 'add_area':'Add area',
 'add_device':'Add device',
+'add_failed':'Add failed',
 'modify':'Modify',
 'delete':'Delete',
 'Close':'Close',
@@ -47,8 +48,8 @@
 
 'Download_Progress':'Download Progress',
 'Login_account':'User:',
-'Remote_File':'Remote records',
-'Local_File':'Local records',
+'Remote_File':'Remote',
+'Local_File':'Local',
 'File_Type':'Records type',
 'All':'All',
 'Timing':'Timing',
@@ -68,7 +69,7 @@
 'Thur':'Thur.',
 'Fir':'Fir.',
 'Satu':'Sat.',
-'Start_Search':'Start searching',
+'Start_Search':'Search',
 'Retrieving':'Searching:',
 'Parameter_error':'Paramater error',
 'Connection_Failed':'Connection failed',
@@ -384,7 +385,7 @@
 'Wed':'Wed.',
 'Thu':'Thu.',
 'Fri':'Fri.',
-'Sat':'Sat.'
+'Sat':'Sat.',
 
 	//語言索引
 

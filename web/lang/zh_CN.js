@@ -13,6 +13,7 @@
 	'add_group':'添加分组',
 	'add_area':'添加区域',
 	'add_device':'添加设备',
+	'add_failed':'添加失败',
 	'modify':'修改',
 	'delete':'删除',
 	'Close':'关闭',
