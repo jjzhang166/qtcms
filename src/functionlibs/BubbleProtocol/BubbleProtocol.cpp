@@ -227,13 +227,13 @@ void BubbleProtocol::sendHeartBeat()
     }
 
     QDateTime time = QDateTime::currentDateTime();
-    bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
     
     bubble->pLoad[0] = 0x02;
     bubble->uiLength = sizeof(Bubble) - sizeof(bubble->cHead) - sizeof(bubble->uiLength);
 
     nLen = (qint64)(bubble->uiLength + sizeof(bubble->cHead) + sizeof(bubble->uiLength));
-    bubble->uiLength = qToBigEndian(bubble->uiLength);
+    bubble->uiLength = qToBigEndian((quint32)(bubble->uiLength));
 
     QByteArray block;
     block.append(buff, nLen);
@@ -257,7 +257,7 @@ int BubbleProtocol::authority()
 	bubble->cHead = (char)0xaa;
 
 	QDateTime time = QDateTime::currentDateTime();
-	bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
 	bubble->cCmd = 0x00;
 
 	msgParam = (Message *)bubble->pLoad;
@@ -274,8 +274,8 @@ int BubbleProtocol::authority()
 
 
 	nLen = (qint64)(bubble->uiLength + sizeof(bubble->cHead) + sizeof(bubble->uiLength));
-	bubble->uiLength =  qToBigEndian(bubble->uiLength);
-	msgParam->uiLength = qToBigEndian(msgParam->uiLength);
+    bubble->uiLength =  qToBigEndian((quint32)(bubble->uiLength));
+    msgParam->uiLength = qToBigEndian((quint32)(msgParam->uiLength));
 	
 	block.append(buff, nLen);
 
@@ -350,9 +350,9 @@ int BubbleProtocol::writeBuff(QByteArray &block, int nChannel, int nTypes, uint 
     bubble->cHead = (char)0xab;
     bubble->cCmd  = (char)0x05; 
     nLength = sizeof(Bubble) - sizeof(bubble->pLoad) + sizeof(RecordRequireV2);
-    bubble->uiLength = qToBigEndian(nLength - sizeof(bubble->cHead) -sizeof(bubble->uiLength));
+    bubble->uiLength = qToBigEndian((quint32)(nLength - sizeof(bubble->cHead) -sizeof(bubble->uiLength)));
     QDateTime time = QDateTime::currentDateTime();
-    bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
 
     RecordRequireV2 *pRecordRequire = (RecordRequireV2 *)bubble->pLoad;
     pRecordRequire->nChannels = nChannel;
@@ -479,9 +479,9 @@ int BubbleProtocol::pausePlaybackStream(bool bPause)
         bubble = (Bubble *)cBuff;
         bubble->cHead = (char)0xab;
         bubble->cCmd  = (char)0x02; //pause
-        bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
+        bubble->uiLength = qToBigEndian((quint32)(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket)));
         QDateTime time = QDateTime::currentDateTime();
-        bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+        bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
         QByteArray block;
         block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
         emit sigWriteSocket(block);
@@ -496,9 +496,9 @@ int BubbleProtocol::pausePlaybackStream(bool bPause)
         bubble = (Bubble *)cBuff;
         bubble->cHead = (char)0xab;
         bubble->cCmd  = (char)0x03; //continue
-        bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
+        bubble->uiLength = qToBigEndian((quint32)(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket)));
         QDateTime time = QDateTime::currentDateTime();
-        bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+        bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
         QByteArray block;
         block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
         emit sigWriteSocket(block);
@@ -519,9 +519,9 @@ int BubbleProtocol::stopPlaybackStream()
     bubble = (Bubble *)cBuff;
     bubble->cHead = (char)0xab;
     bubble->cCmd  = (char)0x04; //stop
-    bubble->uiLength = qToBigEndian(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket));
+    bubble->uiLength = qToBigEndian((quint32)(sizeof(bubble->cCmd) + sizeof(bubble->uiTicket)));
     QDateTime time = QDateTime::currentDateTime();
-    bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
     QByteArray block;
     block.append(cBuff, (qint64)(sizeof(Bubble) - 1));
     emit sigWriteSocket(block);
@@ -574,7 +574,7 @@ void BubbleProtocol::sendLiveStreamRequire(bool option)
 	bubble->cHead = (char)0xaa;
 
 	QDateTime time = QDateTime::currentDateTime();
-	bubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch() * 1000));
+    bubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch() * 1000));
 	bubble->cCmd = 0x04;
 	bubble->uiLength = sizeof(Bubble) - sizeof(bubble->pLoad) + sizeof(LiveStreamRequire)\
 		- sizeof(bubble->cHead) - sizeof(bubble->uiLength);
@@ -583,7 +583,7 @@ void BubbleProtocol::sendLiveStreamRequire(bool option)
 	msgParam->cChannel = m_channelNum;
 	msgParam->cOperation = option;
 	nLen = (qint64)(bubble->uiLength + sizeof(bubble->cHead) + sizeof(bubble->uiLength));
-	bubble->uiLength =  qToBigEndian(bubble->uiLength);
+    bubble->uiLength =  qToBigEndian((quint32)(bubble->uiLength));
 
 	QByteArray block;
 	block.append(buff, nLen);
@@ -607,7 +607,7 @@ void BubbleProtocol::sendLiveStreamRequireEx(bool option)
 
 	QDateTime time = QDateTime::currentDateTime();
 	unsigned int ticket = (unsigned int)(time.toMSecsSinceEpoch() * 1000);
-	data->uiTicket = qToBigEndian(ticket);
+    data->uiTicket = qToBigEndian((quint32)ticket);
 
 	LiveStreamRequireEx *plsre = (LiveStreamRequireEx*)data->pLoad;
 	plsre->uiChannel = m_channelNum;
@@ -619,7 +619,7 @@ void BubbleProtocol::sendLiveStreamRequireEx(bool option)
 	data->uiLength = sizeof(Bubble) - sizeof(data->pLoad) + sizeof(LiveStreamRequireEx)\
 		- sizeof(data->cHead) - sizeof(data->uiLength);
 
-	data->uiLength = qToBigEndian(data->uiLength);
+    data->uiLength = qToBigEndian((quint32)(data->uiLength));
 
 	QByteArray block;
 	block.append(buff, nlength);
@@ -837,13 +837,13 @@ int BubbleProtocol::OperatePTZ( const unsigned int &uiChl, const int &nCmd, cons
 	pBubble->cCmd = (char)0x00;
 
 	QDateTime time = QDateTime::currentDateTime();
-	pBubble->uiTicket = qToBigEndian((unsigned int)(time.toMSecsSinceEpoch()*1000));
+    pBubble->uiTicket = qToBigEndian((quint32)(time.toMSecsSinceEpoch()*1000));
 
 	msgParam = (Message *)pBubble->pLoad;
 	msgParam->cMessage = 0x02;
 	memset(msgParam->cReverse, 0x00, 3);
 	msgParam->uiLength = sizeof(Message) + sizeof(PTZControl) - sizeof(msgParam->uiLength) - sizeof(msgParam->pParameters);
-	msgParam->uiLength = qToBigEndian(msgParam->uiLength);
+    msgParam->uiLength = qToBigEndian((quint32)(msgParam->uiLength));
 
 	ptzControl = (PTZControl *)msgParam->pParameters;
 	ptzControl->cChannel = uiChl;
@@ -863,7 +863,7 @@ int BubbleProtocol::OperatePTZ( const unsigned int &uiChl, const int &nCmd, cons
 		- sizeof(pBubble->cHead) - sizeof(pBubble->uiLength) - sizeof(pBubble->pLoad);
 
 	nlength = pBubble->uiLength + sizeof(pBubble->cHead) + sizeof(pBubble->uiLength);
-	pBubble->uiLength = qToBigEndian(pBubble->uiLength);
+    pBubble->uiLength = qToBigEndian((quint32)(pBubble->uiLength));
 
 	block.append(buff, nlength);
 	emit sigWriteSocket(block);

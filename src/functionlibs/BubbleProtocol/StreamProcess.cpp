@@ -330,7 +330,7 @@ void StreamProcess::analyzePreviewStream()
 				mStreamInfo.insert("channel", liveStreamInfo->cChannel);
 				mStreamInfo.insert("pts", audioStream->ui64Pts);
 				mStreamInfo.insert("length", audioStream->uiEntries * audioStream->uiPacksize);
-				mStreamInfo.insert("data", (int)((char*)audioStream + sizeof(LiveStreamAudio)));
+                mStreamInfo.insert("data", (quintptr)((char*)audioStream + sizeof(LiveStreamAudio)));
 				mStreamInfo.insert("frametype", liveStreamInfo->cType);
 				mStreamInfo.insert("samplerate", audioStream->uiSampleRate);
 				mStreamInfo.insert("samplewidth", audioStream->uiSampleWidth);
@@ -352,7 +352,7 @@ void StreamProcess::analyzePreviewStream()
 				mStreamInfo.insert("channel", liveStreamInfo->cChannel);
 				mStreamInfo.insert("pts", (unsigned long long)qToBigEndian(pBubble->uiTicket)*1000);
 				mStreamInfo.insert("length", qToBigEndian(liveStreamInfo->uiLength));
-				mStreamInfo.insert("data", (int)(liveStreamInfo->pData));
+                mStreamInfo.insert("data", (quintptr)(liveStreamInfo->pData));
 				mStreamInfo.insert("frametype", liveStreamInfo->cType);
 				mStreamInfo.insert("width", width);
 				mStreamInfo.insert("height", height);
@@ -455,7 +455,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("pts"            ,pRecordStream->nU64TSP);
 				mStreamInfo.insert("gentime"        ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128 + 4;
-				mStreamInfo.insert("data"           ,(uint)((char*)pRecordStream + offSet));
+                mStreamInfo.insert("data"           ,(quintptr)((char*)pRecordStream + offSet));
 
 				mStreamInfo.insert("samplerate"		,pRecordStream->nAudioSampleRate);
 				mStreamInfo.insert("samplewidth"	,pRecordStream->nAudioDataWidth);
@@ -478,7 +478,7 @@ void StreamProcess::analyzeRecordStream()
 				mStreamInfo.insert("pts"          ,pRecordStream->nU64TSP);
 				mStreamInfo.insert("gentime"      ,pRecordStream->nGenTime - timeDifference);
 				int offSet = sizeof(pRecordStream->nLength) + sizeof(pRecordStream->cType) + sizeof(pRecordStream->cChannel) + 128;
-				mStreamInfo.insert("data"         ,(uint)((char*)pRecordStream + offSet));
+                mStreamInfo.insert("data"         ,(quintptr)((char*)pRecordStream + offSet));
 
 				eventProcCall(QString("RecordStream"), mStreamInfo);
 			}
@@ -517,7 +517,7 @@ bool StreamProcess::getSupportState()
 	return m_bIsSupportBubble;
 }
 
-int StreamProcess::getStreamListInfo(QList<QList<Stream>> &lstStreamList)
+int StreamProcess::getStreamListInfo(QList< QList<Stream> > &lstStreamList)
 {
 	if (m_lstStreamList.isEmpty())
 	{

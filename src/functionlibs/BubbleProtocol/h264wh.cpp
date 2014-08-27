@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <qglobal.h>
 
 typedef unsigned int UINT;
 typedef unsigned char BYTE;
@@ -133,7 +134,7 @@ static void decode_scaling_list(BYTE *buffer,unsigned int nLen,unsigned int & st
 					break;
 				}
 				last = factors[scan[i]] = next ? next : last;
-			}
+            }
 }
 
 
@@ -143,6 +144,8 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 	int forbidden_zero_bit=u(1,buf,StartBit);
 	int nal_ref_idc=u(2,buf,StartBit);
 	int nal_unit_type=u(5,buf,StartBit);
+    Q_UNUSED(forbidden_zero_bit);
+    Q_UNUSED(nal_ref_idc);
 	if(nal_unit_type==7)
 	{
 		int profile_idc=u(8,buf,StartBit);
@@ -156,11 +159,20 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 		int level_idc=u(8,buf,StartBit);
 
 		int seq_parameter_set_id=Ue(buf,nLen,StartBit);
+        Q_UNUSED(constraint_set0_flag);
+        Q_UNUSED(constraint_set1_flag);
+        Q_UNUSED(constraint_set2_flag);
+        Q_UNUSED(constraint_set3_flag);
+        Q_UNUSED(constraint_set4_flag);
+        Q_UNUSED(constraint_set5_flag);
+        Q_UNUSED(reserved_zero_4bits);
+        Q_UNUSED(level_idc);
+        Q_UNUSED(seq_parameter_set_id);
 
 		if( profile_idc == 100 || profile_idc == 110 ||
 			profile_idc == 122 || profile_idc == 144 )
 		{
-			int chroma_format_idc=Ue(buf,nLen,StartBit);
+            unsigned int chroma_format_idc=Ue(buf,nLen,StartBit);
 			if (chroma_format_idc > 3U )
 			{
 				return false;
@@ -173,8 +185,8 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 					return false;
 				}
 			}
-			int bit_depth_luma_minus8=Ue(buf,nLen,StartBit) + 8;
-			int bit_depth_chroma_minus8=Ue(buf,nLen,StartBit) + 8;
+            unsigned int bit_depth_luma_minus8=Ue(buf,nLen,StartBit) + 8;
+            unsigned int bit_depth_chroma_minus8=Ue(buf,nLen,StartBit) + 8;
 			if (bit_depth_luma_minus8 > 14U
 				|| bit_depth_chroma_minus8 > 14U
 				|| bit_depth_chroma_minus8 != bit_depth_luma_minus8)
@@ -182,6 +194,7 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 				return false;
 			}
 			int qpprime_y_zero_transform_bypass_flag=u(1,buf,StartBit);
+            Q_UNUSED(qpprime_y_zero_transform_bypass_flag);
 			int seq_scaling_matrix_present_flag=u(1,buf,StartBit);
 			if (seq_scaling_matrix_present_flag)
 			{
@@ -213,14 +226,21 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 			}
 		}
 		int log2_max_frame_num_minus4=Ue(buf,nLen,StartBit);
+        Q_UNUSED(log2_max_frame_num_minus4);
 		int pic_order_cnt_type=Ue(buf,nLen,StartBit);
 		if( pic_order_cnt_type == 0 )
+        {
 			int log2_max_pic_order_cnt_lsb_minus4=Ue(buf,nLen,StartBit);
+            Q_UNUSED(log2_max_pic_order_cnt_lsb_minus4);
+        }
 		else if( pic_order_cnt_type == 1 )
 		{
 			int delta_pic_order_always_zero_flag=u(1,buf,StartBit);
 			int offset_for_non_ref_pic=Se(buf,nLen,StartBit);
 			int offset_for_top_to_bottom_field=Se(buf,nLen,StartBit);
+            Q_UNUSED(delta_pic_order_always_zero_flag);
+            Q_UNUSED(offset_for_non_ref_pic);
+            Q_UNUSED(offset_for_top_to_bottom_field);
 			int num_ref_frames_in_pic_order_cnt_cycle=Ue(buf,nLen,StartBit);
 
 			int *offset_for_ref_frame=new int[num_ref_frames_in_pic_order_cnt_cycle];
@@ -230,7 +250,9 @@ bool h264_decode_seq_parameter_set(BYTE * buf,UINT nLen,int *Width,int *Height)
 		}
 		int num_ref_frames=Ue(buf,nLen,StartBit);
 		int gaps_in_frame_num_value_allowed_flag=u(1,buf,StartBit);
-		int pic_width_in_mbs_minus1=Ue(buf,nLen,StartBit);
+        Q_UNUSED(num_ref_frames);
+        Q_UNUSED(gaps_in_frame_num_value_allowed_flag);
+        int pic_width_in_mbs_minus1=Ue(buf,nLen,StartBit);
 		int pic_height_in_map_units_minus1=Ue(buf,nLen,StartBit);
 
 		*Width=(pic_width_in_mbs_minus1+1)*16;
@@ -246,8 +268,6 @@ bool isIFrame(char *stream,int stream_len)
 {
 	BYTE startcode4[4] = {0x00,0x00,0x00,0x01};
 	BYTE startcode3[3] = {0x00,0x00,0x01};
-	BYTE streaminfo[16]={0x23,0x00,0x00,0x00,0x01,0x67,0x64,0x08,0x1F,0xAC,0x34,0xC1,0x08,0x28,0x0F,0x64};
-
 
 	int i = 0;	
 	while(i < stream_len-4 )
@@ -258,7 +278,9 @@ bool isIFrame(char *stream,int stream_len)
 			unsigned char * buf = (unsigned char *)stream +i +4;
 			int forbidden_zero_bit=u(1,buf,StartBit);
 			int nal_ref_idc=u(2,buf,StartBit);
-			int nal_unit_type=u(5,buf,StartBit);
+            Q_UNUSED(forbidden_zero_bit);
+            Q_UNUSED(nal_ref_idc);
+            int nal_unit_type=u(5,buf,StartBit);
 			if (5 == nal_unit_type)
 			{
 				return true;
@@ -272,7 +294,9 @@ bool isIFrame(char *stream,int stream_len)
 			unsigned char * buf = (unsigned char *)stream +i +3;
 			int forbidden_zero_bit=u(1,buf,StartBit);
 			int nal_ref_idc=u(2,buf,StartBit);
-			int nal_unit_type=u(5,buf,StartBit);
+            Q_UNUSED(forbidden_zero_bit);
+            Q_UNUSED(nal_ref_idc);
+            int nal_unit_type=u(5,buf,StartBit);
 			if (5 == nal_unit_type)
 			{
 				return true;
@@ -287,8 +311,6 @@ int GetWidthHeight(char *stream,int stream_len,int *width,int *height)
 {
 	BYTE startcode4[4] = {0x00,0x00,0x00,0x01};
 	BYTE startcode3[3] = {0x00,0x00,0x01};
-	BYTE streaminfo[16]={0x23,0x00,0x00,0x00,0x01,0x67,0x64,0x08,0x1F,0xAC,0x34,0xC1,0x08,0x28,0x0F,0x64};
-
 
 	int i = 0;	
 	while(i < stream_len-4 )
