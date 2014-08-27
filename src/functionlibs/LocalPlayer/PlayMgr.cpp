@@ -244,7 +244,7 @@ void PlayMgr::run()
 			if (!frameRate)//gave a tip when file has a exception
 			{
 				QVariantMap item;
-				item.insert("filePath", filePath);
+				item.insert("filepath", filePath);
 				item.insert("expCode", 1);
 				item.insert("pWnd", (uint)this);
 
