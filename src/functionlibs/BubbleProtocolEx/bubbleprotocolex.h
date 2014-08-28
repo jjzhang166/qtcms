@@ -183,10 +183,10 @@ private:
 	QList<char> m_tPreviewCode;
 	QList<char> m_tRemoteCode;
 	bool m_bIsSupportHttp;
-	QList<QList<tagBubbleHttpStreamInfo>>m_tHttpStreamList;
+    QList< QList<tagBubbleHttpStreamInfo> >m_tHttpStreamList;
 	volatile bool m_bWaitForConnect;
 	SearchRemoteFile m_tSearchRemoteFile;
-	int m_nBuiltTreadId;
+    Qt::HANDLE m_nBuiltTreadId;
 };
 
 #endif // BUBBLEPROTOCOLEX_H

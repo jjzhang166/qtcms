@@ -4,20 +4,23 @@
 #include "h264wh.h"
 #include <QElapsedTimer>
 #include <QCoreApplication>
+
 int cbXBubbleFoundFile(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
 int cbXBubbleRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
-BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
+
+BubbleProtocolEx::BubbleProtocolEx():
+    m_nRef(0),
+    m_tCurrentConnectStatus(BUBBLE_DISCONNECTED),
+    m_tHistoryConnectStatus(BUBBLE_DISCONNECTED),
+    m_bStop(true),
 	m_nSleepSwitch(0),
 	m_nPosition(0),
-	m_nSecondPosition(0),
-	m_bIsSupportHttp(true),
-	m_bStop(true),
-	m_bBlock(false),
-	m_bWaitForConnect(true),
-	m_tCurrentConnectStatus(BUBBLE_DISCONNECTED),
-	m_tHistoryConnectStatus(BUBBLE_DISCONNECTED),
-	m_pTcpSocket(NULL)
+    m_nSecondPosition(0),
+    m_bBlock(false),
+    m_pTcpSocket(NULL),
+    m_bIsSupportHttp(true),
+    m_bWaitForConnect(true)
 {
 	m_sEventList<<"LiveStream"           <<"SocketError"<<"StateChangeed"<<"foundFile"
 		<<"recFileSearchFinished"<<"RecordStream"  <<"SocketError"  <<"StateChanged"<<"recFileSearchFail"<<"ConnectRefuse";
@@ -37,14 +40,14 @@ BubbleProtocolEx::BubbleProtocolEx():m_nRef(0),
 	m_tSearchRemoteFile.registerEvent("foundFile",cbXBubbleFoundFile,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFail",cbXBubbleRecFileSearchFail,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
-	m_nBuiltTreadId=(int )QThread::currentThreadId();
+    m_nBuiltTreadId=QThread::currentThreadId();
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()
 {
 	m_bStop=true;
 	int nCount=0;
-	int nCurrentThreadId=(int )QThread::currentThreadId();
+    Qt::HANDLE nCurrentThreadId=QThread::currentThreadId();
 	QVariantMap tItem;
 	tItem.insert("Timer",false);
 	if (nCurrentThreadId==m_nBuiltTreadId)
@@ -123,6 +126,7 @@ QStringList BubbleProtocolEx::eventList()
 
 int BubbleProtocolEx::queryEvent( QString eventName,QStringList& eventParams )
 {
+    Q_UNUSED(eventParams);
 	if (!m_sEventList.contains(eventName))
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<eventName<<"is undefined";
@@ -275,7 +279,7 @@ void BubbleProtocolEx::run()
 								{
 									//step1:findÖ¡Í·
 									tagBubbleInfo *pBubbleInfo=(tagBubbleInfo *)m_tBuffer.data();
-									int nBubbleSize=qToBigEndian(pBubbleInfo->uiLength)+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength);
+                                    int nBubbleSize=qToBigEndian((quint32)(pBubbleInfo->uiLength))+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength);
 									if (nBubbleSize<1024*500)
 									{
 										//ÅÐ¶ÏÖ¸ÁîÂë
@@ -1144,7 +1148,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 	unsigned int uiBufferSize=m_tBuffer.size();
 	tagBubbleInfo *pBubbleInfo=NULL;
 	pBubbleInfo=(tagBubbleInfo*)m_tBuffer.data();
-	unsigned int uiBubbleLength=qToBigEndian(pBubbleInfo->uiLength)+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength);
+    unsigned int uiBubbleLength=qToBigEndian((quint32)(pBubbleInfo->uiLength))+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength);
 	if (uiBubbleLength<=uiBufferSize)
 	{
 		if (m_tBuffer.startsWith('\xaa'))
@@ -1177,7 +1181,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("channel", pLiveStream->cChannel);
 					tStreamInfo.insert("pts", pLiveStreamAudio->ui64Pts);
 					tStreamInfo.insert("length", pLiveStreamAudio->uiEntries * pLiveStreamAudio->uiPackSize);
-					tStreamInfo.insert("data", (int)((char*)pLiveStreamAudio + sizeof(tagBubbleLiveStreamAudio)));
+                    tStreamInfo.insert("data", (quintptr)((char*)pLiveStreamAudio + sizeof(tagBubbleLiveStreamAudio)));
 					tStreamInfo.insert("frametype", pLiveStream->cType);
 					tStreamInfo.insert("samplerate", pLiveStreamAudio->uiSampleRate);
 					tStreamInfo.insert("samplewidth", pLiveStreamAudio->uiSampleWidth);
@@ -1193,11 +1197,11 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					//ÊÓÆµ
 					int nWidth=0;
 					int nHeight=0;
-					GetWidthHeight(pLiveStream->pData,qToBigEndian(pLiveStream->uiLength),&nWidth,&nHeight);
+                    GetWidthHeight(pLiveStream->pData,qToBigEndian((quint32)(pLiveStream->uiLength)),&nWidth,&nHeight);
 					tStreamInfo.insert("channel", pLiveStream->cChannel);
-					tStreamInfo.insert("pts", (unsigned long long)qToBigEndian(pBubbleInfo->uiTicket)*1000);
-					tStreamInfo.insert("length", qToBigEndian(pLiveStream->uiLength));
-					tStreamInfo.insert("data", (int)(pLiveStream->pData));
+                    tStreamInfo.insert("pts", (unsigned long long)qToBigEndian((quint32)(pBubbleInfo->uiTicket))*1000);
+                    tStreamInfo.insert("length", qToBigEndian((quint32)(pLiveStream->uiLength)));
+                    tStreamInfo.insert("data", (quintptr)(pLiveStream->pData));
 					tStreamInfo.insert("frametype", pLiveStream->cType);
 					tStreamInfo.insert("width", nWidth);
 					tStreamInfo.insert("height", nHeight);
@@ -1252,7 +1256,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 	unsigned int uiBufferSize=m_tBuffer.size();
 	tagBubbleInfo *pBufferInfo=NULL;
 	pBufferInfo=(tagBubbleInfo *)m_tBuffer.data();
-	unsigned int uiBubbleLength=qToBigEndian(pBufferInfo->uiLength)+sizeof(pBufferInfo->cHead)+sizeof(pBufferInfo->uiLength);
+    unsigned int uiBubbleLength=qToBigEndian((quint32)(pBufferInfo->uiLength))+sizeof(pBufferInfo->cHead)+sizeof(pBufferInfo->uiLength);
 	if (uiBubbleLength<=uiBufferSize)
 	{
 		if (m_tBuffer.startsWith('\xab'))
@@ -1265,12 +1269,12 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 				QDateTime tTime1=QDateTime::currentDateTime();
 				QDateTime tTime2=QDateTime::currentDateTimeUtc();
 				int nTimeDifference=qAbs(tTime1.time().hour()-tTime2.time().hour())*3600;
-				if (qToBigEndian(pRecordStream->uiLength)-132<uiBubbleLength)
+                if (qToBigEndian((quint32)(pRecordStream->uiLength))-132<uiBubbleLength)
 				{
 					//ÒôÆµ
 					if (0==pRecordStream->cType)
 					{
-						int nLength=qToBigEndian(pRecordStream->uiLength)-132;
+                        int nLength=qToBigEndian((quint32)(pRecordStream->uiLength))-132;
 						tStreamInfo.insert("length"         ,nLength);
 						tStreamInfo.insert("frametype"      ,pRecordStream->cType);
 						tStreamInfo.insert("channel"        ,pRecordStream->cChannel);
@@ -1280,7 +1284,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 						tStreamInfo.insert("pts"            ,pRecordStream->nU64TSP);
 						tStreamInfo.insert("gentime"        ,pRecordStream->uiGenTime - nTimeDifference);
 						int nOffSet=sizeof(pRecordStream->uiLength)+sizeof(pRecordStream->cType)+sizeof(pRecordStream->cChannel)+128+4;
-						tStreamInfo.insert("data",(uint)((char*)pRecordStream+nOffSet));
+                        tStreamInfo.insert("data",(quintptr)((char*)pRecordStream+nOffSet));
 						tStreamInfo.insert("samplerate"		,pRecordStream->uiAudioSampleRate);
 						tStreamInfo.insert("samplewidth"	,pRecordStream->uiAudioDataWidth);
 						tStreamInfo.insert("audiochannel"	,pRecordStream->uiChannel);
@@ -1292,7 +1296,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 					}else if (1==pRecordStream->cType||2==pRecordStream->cType)
 					{
 						//ÊÓÆµ
-						int nLength=qToBigEndian(pRecordStream->uiLength)-128;
+                        int nLength=qToBigEndian((quint32)(pRecordStream->uiLength))-128;
 						tStreamInfo.insert("length"       ,nLength);
 						tStreamInfo.insert("frametype"    ,pRecordStream->cType);
 						tStreamInfo.insert("channel"      ,pRecordStream->cChannel);
@@ -1302,7 +1306,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 						tStreamInfo.insert("pts"          ,pRecordStream->nU64TSP);
 						tStreamInfo.insert("gentime"      ,pRecordStream->uiGenTime - nTimeDifference);
 						int nOffSet=sizeof(pRecordStream->uiLength)+sizeof(pRecordStream->cType)+sizeof(pRecordStream->cChannel)+128;
-						tStreamInfo.insert("data",(uint)((char*)pRecordStream+nOffSet));
+                        tStreamInfo.insert("data",(quintptr)((char*)pRecordStream+nOffSet));
 						m_nSecondPosition=__LINE__;
 						eventProcCall("RecordStream",tStreamInfo);
 						m_tBuffer.remove(0,uiBubbleLength);
@@ -1312,7 +1316,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
 						qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as pRecordStream->cType is a undefined type"<<pRecordStream->cType;
 					}
 				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as pRecordStream->uiLength is  larger than uiBubbleLength :"<<qToBigEndian(pRecordStream->uiLength);
+                    qDebug()<<__FUNCTION__<<__LINE__<<"analyzeRemoteInfo fail as pRecordStream->uiLength is  larger than uiBubbleLength :"<<qToBigEndian((quint32)(pRecordStream->uiLength));
 				}
 			}else if (pBufferInfo->cCmd=='\x02')
 			{
@@ -1361,7 +1365,7 @@ bool BubbleProtocolEx::cmdAuthority()
 		pBubbleInfo->cHead=(char)0xaa;
 
 		QDateTime tTime=QDateTime::currentDateTime();
-		pBubbleInfo->uiTicket=qToBigEndian((unsigned int)tTime.toMSecsSinceEpoch()*1000);
+        pBubbleInfo->uiTicket=qToBigEndian((quint32)tTime.toMSecsSinceEpoch());
 		pBubbleInfo->cCmd=(char)0x00;
 
 		pMessageInfo=(tagBubbleMessageInfo*)pBubbleInfo->pLoad;
@@ -1375,8 +1379,8 @@ bool BubbleProtocolEx::cmdAuthority()
 
 		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)+sizeof(tagBubbleMessageInfo)+sizeof(tagBubbleAuthoritySend)-sizeof(pMessageInfo->cParameters)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength)-sizeof(pBubbleInfo->pLoad);
 		nLen=(qint64)(pBubbleInfo->uiLength+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength));
-		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
-		pMessageInfo->uiLength=qToBigEndian(pMessageInfo->uiLength);
+        pBubbleInfo->uiLength=qToBigEndian((quint32)(pBubbleInfo->uiLength));
+        pMessageInfo->uiLength=qToBigEndian((quint32)(pMessageInfo->uiLength));
 		tBlock.append(cBuffer,nLen);
 		if (-1!=m_pTcpSocket->write(tBlock))
 		{
@@ -1477,12 +1481,12 @@ bool BubbleProtocolEx::cmdHeartBeat()
 		pBubbleInfo->cHead=(char)0xaa;
 		pBubbleInfo->cCmd=(char)0x02;
 		QDateTime tTime=QDateTime::currentDateTime();
-		pBubbleInfo->uiTicket=qToBigEndian((unsigned int)(tTime.toMSecsSinceEpoch()*1000));
+        pBubbleInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 		pBubbleInfo->pLoad[0]=(char)0x02;
 
 		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
 		nLength=(quint64)(pBubbleInfo->uiLength+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength));
-		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
+        pBubbleInfo->uiLength=qToBigEndian((quint32)(pBubbleInfo->uiLength));
 		QByteArray tBlock;
 		tBlock.append(cBuffer,nLength);
 		if (-1!=m_pTcpSocket->write(tBlock))
@@ -1529,9 +1533,9 @@ bool BubbleProtocolEx::cmdGetPlayBackStreamByTime()
 					pBubbleInfo->cHead=(char)0xab;
 					pBubbleInfo->cCmd=(char)0x05;
 					uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->pLoad)+sizeof(tagBubbleRemotePlayRecordRequireV2);
-					pBubbleInfo->uiLength=qToBigEndian(uiLength-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength));
+                    pBubbleInfo->uiLength=qToBigEndian((quint32)(uiLength-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength)));
 					QDateTime tTime=QDateTime::currentDateTime();
-					pBubbleInfo->uiTicket=qToBigEndian(unsigned int(tTime.toMSecsSinceEpoch()*1000));
+                    pBubbleInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 					tagBubbleRemotePlayRecordRequireV2 *pRecordRequireV2=(tagBubbleRemotePlayRecordRequireV2 *)pBubbleInfo->pLoad;
 					pRecordRequireV2->nChannels=m_tDeviceInfo.nRemotePlayChannel;
 					pRecordRequireV2->nTypes=m_tDeviceInfo.nRemotePlayTypes;
@@ -1616,9 +1620,9 @@ bool BubbleProtocolEx::cmdGetPlayBackStreamByFileName()
 						pBubbleInfo->cHead=(char)0xab;
 						pBubbleInfo->cCmd=(char)0x05;
 						uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->pLoad)+sizeof(tagBubbleRemotePlayRecordRequireV2);
-						pBubbleInfo->uiLength=qToBigEndian(uiLength-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength));
+                        pBubbleInfo->uiLength=qToBigEndian((quint32)(uiLength-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength)));
 						QDateTime tTime=QDateTime::currentDateTime();
-						pBubbleInfo->uiTicket=qToBigEndian(unsigned int (tTime.toMSecsSinceEpoch()*1000));
+                        pBubbleInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 						tagBubbleRemotePlayRecordRequireV2 *pRecordRequireV2=(tagBubbleRemotePlayRecordRequireV2*)pBubbleInfo->pLoad;
 						pRecordRequireV2->nChannels=m_tDeviceInfo.nRemotePlayChannel;
 						pRecordRequireV2->nTypes=nTmp;
@@ -1672,9 +1676,9 @@ bool BubbleProtocolEx::cmdPausePlayBackStream()
 			//continue
 			pBufferInfo->cCmd=(char)0x03;
 		}
-		pBufferInfo->uiLength=qToBigEndian(sizeof(pBufferInfo->cCmd)+sizeof(pBufferInfo->uiTicket));
+        pBufferInfo->uiLength=qToBigEndian((quint32)(sizeof(pBufferInfo->cCmd)+sizeof(pBufferInfo->uiTicket)));
 		QDateTime tTime=QDateTime::currentDateTime();
-		pBufferInfo->uiTicket=qToBigEndian(unsigned int (tTime.toMSecsSinceEpoch()*1000));
+        pBufferInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 		QByteArray tBlock;
 		quint64 uiLength=(quint64)(sizeof(tagBubbleInfo)-1);
 		tBlock.append(cBuffer,uiLength);
@@ -1710,9 +1714,9 @@ bool BubbleProtocolEx::cmdStopPlayBackStream()
 		pBufferInfo=(tagBubbleInfo*)cBuffer;
 		pBufferInfo->cHead=(char)0xab;
 		pBufferInfo->cCmd=(char)0x04;
-		pBufferInfo->uiLength=qToBigEndian(sizeof(pBufferInfo->cCmd)+sizeof(pBufferInfo->uiTicket));
+        pBufferInfo->uiLength=qToBigEndian((quint32)(sizeof(pBufferInfo->cCmd)+sizeof(pBufferInfo->uiTicket)));
 		QDateTime tTime=QDateTime::currentDateTime();
-		pBufferInfo->uiTicket=qToBigEndian(unsigned int(tTime.toMSecsSinceEpoch()*1000));
+        pBufferInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 		quint64 uiLength=(quint64)(sizeof(tagBubbleInfo)-1);
 		QByteArray tBlock;
 		tBlock.append(cBuffer,uiLength);
@@ -1747,8 +1751,8 @@ bool BubbleProtocolEx::sendLiveStreamCmdEx( bool flags )
 		pBubbleInfo->cHead=(char)0xaa;
 		pBubbleInfo->cCmd=(char)0x0a;
 		QDateTime tTime=QDateTime::currentDateTime();
-		unsigned int uiTicket=(unsigned int)(tTime.toMSecsSinceEpoch()*1000);
-		pBubbleInfo->uiTicket=qToBigEndian(uiTicket);
+        unsigned int uiTicket=(unsigned int)(tTime.toMSecsSinceEpoch());
+        pBubbleInfo->uiTicket=qToBigEndian((quint32)uiTicket);
 
 		tagBubbleLiveStreamRequireEx *pLiveStreamRequireEx=(tagBubbleLiveStreamRequireEx*)pBubbleInfo->pLoad;
 		pLiveStreamRequireEx->uiChannel=m_tDeviceInfo.nPreChannel;
@@ -1758,7 +1762,7 @@ bool BubbleProtocolEx::sendLiveStreamCmdEx( bool flags )
 
 		nLength=qint64(sizeof(tagBubbleInfo)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->pLoad));
 		pBubbleInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBubbleInfo->pLoad)+sizeof(tagBubbleLiveStreamRequireEx)-sizeof(pBubbleInfo->cHead)-sizeof(pBubbleInfo->uiLength);
-		pBubbleInfo->uiLength=qToBigEndian(pBubbleInfo->uiLength);
+        pBubbleInfo->uiLength=qToBigEndian((quint32)(pBubbleInfo->uiLength));
 		QByteArray tBlock;
 		tBlock.append(cBuffer,nLength);
 
@@ -1789,14 +1793,14 @@ bool BubbleProtocolEx::sendLiveStreamCmd( bool flags )
 		tagBubbleInfo *pBufferInfo=(tagBubbleInfo*)cBuffer;
 		pBufferInfo->cHead=(char)0xaa;
 		QDateTime tTime=QDateTime::currentDateTime();
-		pBufferInfo->uiTicket=qToBigEndian((unsigned int )(tTime.toMSecsSinceEpoch()*1000));
+        pBufferInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
 		pBufferInfo->cCmd=(char)0x04;
 		pBufferInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(pBufferInfo->pLoad)-sizeof(pBufferInfo->cHead)+sizeof(tagBubbleLiveStreamRequire)-sizeof(pBufferInfo->uiLength);
 		pStreamRequire=(tagBubbleLiveStreamRequire*)pBufferInfo->pLoad;
 		pStreamRequire->cChannel=m_tDeviceInfo.nPreChannel;
 		pStreamRequire->cOperation=flags;
 		nLen=(qint64)(pBufferInfo->uiLength+sizeof(pBufferInfo->cHead)+sizeof(pBufferInfo->uiLength));
-		pBufferInfo->uiLength=qToBigEndian(pBufferInfo->uiLength);
+        pBufferInfo->uiLength=qToBigEndian((quint32)(pBufferInfo->uiLength));
 
 		QByteArray tBlock;
 		tBlock.append(cBuffer,nLen);

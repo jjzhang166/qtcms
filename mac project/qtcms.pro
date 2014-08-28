@@ -12,5 +12,6 @@ SUBDIRS += \
     ../src/functionlibs/AudioDecoder \
 #    ../src/functionlibs/AudioDevice \ need to be another component to run under MAC OS
     ../src/functionlibs/AudioPlayer \
-    ../src/functionlibs/BubbleProtocol
+    ../src/functionlibs/BubbleProtocol \
+    ../src/functionlibs/BubbleProtocolEx
 
