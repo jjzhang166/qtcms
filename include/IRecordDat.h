@@ -5,7 +5,7 @@
 //详细接口说明参见doc\Interface\IRecordDat.html
 interface IRecordDat:public IPComBase{
 	//录像初始化
-	virtual bool init()=0;
+	virtual bool init(int nWnd)=0;
 	//退出录像
 	virtual bool deinit()=0;
 	//输入 录像数据

@@ -50,12 +50,45 @@
     <ClCompile Include="..\..\common\guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BufferQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Allocation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recordDatCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_recordDatCore.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_recordDatCore.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="OperationDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="recorddat_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dllmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OperationDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,6 +99,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="recorddat.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="recordDatCore.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

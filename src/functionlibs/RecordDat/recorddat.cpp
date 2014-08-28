@@ -1,4 +1,35 @@
 #include "recorddat.h"
+
+recordDatCore *g_pRecordDatCore=NULL;
+uint g_nRecordDatCoreCount=0;
+QMutex g_tRecordDatCoreLock;
+void initRecordDatCore(recordDatCore **pRecordDatCore){
+	g_tRecordDatCoreLock.lock();
+	if (NULL==g_pRecordDatCore)
+	{
+		g_pRecordDatCore=new recordDatCore;
+	}else{
+		//do nothing
+	}
+	g_nRecordDatCoreCount++;
+	*pRecordDatCore=g_pRecordDatCore;
+	g_tRecordDatCoreLock.unlock();
+}
+void deinitRecordDatCore(){
+	g_tRecordDatCoreLock.lock();
+	g_nRecordDatCoreCount--;
+	if (g_nRecordDatCoreCount==0)
+	{
+		if (NULL!=g_pRecordDatCore)
+		{
+			delete g_pRecordDatCore;
+			g_pRecordDatCore=NULL;
+		}
+	}else{
+		//do nothing
+	}
+	g_tRecordDatCoreLock.unlock();
+}
 #include <guid.h>
 RecordDat::RecordDat():m_nRef(0),
 	m_nStatus(0),
@@ -6,11 +37,13 @@ RecordDat::RecordDat():m_nRef(0),
 	m_bInit(false)
 {
 	m_tEventList<<"RecordState"<<"RecordCore";
+	recordDatCore *m_pRecordDatCore;
+	initRecordDatCore(&m_pRecordDatCore);
 }
 
 RecordDat::~RecordDat()
 {
-
+	deinitRecordDatCore();
 }
 
 long __stdcall RecordDat::QueryInterface( const IID & iid,void **ppv )
@@ -100,19 +133,65 @@ void RecordDat::eventProcCall( QString sEvent,QVariantMap tInfo )
 	}
 }
 
-bool RecordDat::init()
+bool RecordDat::init(int nWid)
 {
+	m_tFuncLock.lock();
+	recordDatCore *pRecordDatCore=NULL;
+	initRecordDatCore(&pRecordDatCore);
+	if (pRecordDatCore!=NULL)
+	{
+		pRecordDatCore->setBufferQueue(nWid,m_tBufferQueue);
+		deinitRecordDatCore();
+		pRecordDatCore=NULL;
 
-	return true;
+		connect(&m_tTimeRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckTimeRecord()));
+		connect(&m_tMotionRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckMotionRecord()));
+		m_tTimeRecordTimer.start(1000);
+		m_nWnd=nWid;
+
+		m_bInit=true;
+		m_tFuncLock.unlock();
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"init fail as pRecordDatCore is null";
+		m_tFuncLock.unlock();
+		return false;
+	}
 }
 
 bool RecordDat::deinit()
 {
+	m_tFuncLock.lock();
+	m_tTimeRecordTimer.stop();
+	disconnect(&m_tTimeRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckTimeRecord()));
+	disconnect(&m_tMotionRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckMotionRecord()));
+	m_bInit=false;
+	m_tBufferQueue.clear();
+	setRecordType(MOTIONRECORD,false);
+	setRecordType(TIMERECORD,false);
+	setRecordType(MANUALRECORD,false);
+	recordDatCore *pRecordDatCore=NULL;
+	initRecordDatCore(&pRecordDatCore);
+	if (pRecordDatCore!=NULL)
+	{
+		pRecordDatCore->removeBufferQueue(m_nWnd);
+		deinitRecordDatCore();
+		pRecordDatCore=NULL;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"there may be some error,please check";
+	}
+	m_tFuncLock.unlock();
 	return true;
 }
 
 int RecordDat::inputFrame( QVariantMap &tFrameInfo )
 {
+	if (m_bInit)
+	{
+		m_tBufferQueue.enqueue(tFrameInfo);
+	}else{
+		//do nothing
+	}
 	return IRecordDat::OK;
 }
 
@@ -158,13 +237,20 @@ bool RecordDat::motionRecordStart( int nTime )
 	m_tFuncLock.lock();
 	if (m_bInit)
 	{
-		m_nMotionTime=nTime;
-		if (setRecordType(MOTIONRECORD,true))
+		if (checkMotionRecordSchedule())
 		{
-			m_tFuncLock.unlock();
-			return true;
+			if (setRecordType(MOTIONRECORD,true))
+			{
+				m_tMotionRecordTimer.stop();
+				m_tMotionRecordTimer.start(nTime);
+				m_tFuncLock.unlock();
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as setRecordType fail";
+			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as setRecordType fail";
+			//do nothing
+			qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as current time is not in MotionRecordSchedule";
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as m_bInit is fail";
@@ -232,10 +318,91 @@ bool RecordDat::setRecordType( int nType,bool bFlags )
 
 void RecordDat::slCheckTimeRecord()
 {
+	int nCurrentWeekDay=QDate::currentDate().dayOfWeek()-1;
+	QTime tCurrentTime=QTime::currentTime();
+	bool bRecordFlags=false;
+	for(int i=0;i<m_tRecordDatTimeList.size();i++){
+		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
+		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay)
+		{
+			if (tRecTimeInfo.tStartTime<=tCurrentTime&&tRecTimeInfo.tEndTime>tCurrentTime)
+			{
+				bRecordFlags=true;
+				break;
+			}
+		}else{
+			//do nothing
+		}
+	}
+	if (bRecordFlags)
+	{
+		//开启定时录像
+		if (setRecordType(TIMERECORD,true))
+		{
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start time record fail as setRecordType fail";
+		}
+	}else{
+		//停止定时录像
+		if (setRecordType(TIMERECORD,false))
+		{
 
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"stop time record fail as setRecordType fail";
+		}
+	}
 }
 
 bool RecordDat::updateRecordSchedule(int nChannelId )
 {
-	return true;
+	ISetRecordTime *pSetRecordTime=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_ISetRecordTime,(void**)&pSetRecordTime);
+	if (NULL!=pSetRecordTime)
+	{
+		QStringList tRecordIdList=pSetRecordTime->GetRecordTimeBydevId(nChannelId);
+		tagRecordDatTimeInfo tRecTimeInfo;
+		m_tRecordDatTimeListLock.lock();
+		m_tRecordDatTimeList.clear();
+		for (int i=0;i<tRecordIdList.size();i++)
+		{
+			QString sRecordId=tRecordIdList[i];
+			QVariantMap tTimeInfo=pSetRecordTime->GetRecordTimeInfo(sRecordId.toInt());
+			tRecTimeInfo.nEnable=tTimeInfo.value("enable").toInt();
+			tRecTimeInfo.nWeekDay=tTimeInfo.value("weekday").toInt();
+			tRecTimeInfo.tStartTime=QTime::fromString(tTimeInfo.value("starttime").toString().mid(11),"hh:mm:ss");
+			tRecTimeInfo.tEndTime=QTime::fromString(tTimeInfo.value("endtime").toString().mid(11),"hh:mm:ss");
+			if (tRecTimeInfo.nEnable==1)
+			{
+				m_tRecordDatTimeList.append(tRecTimeInfo);
+			}else{
+				//do nothing
+			}
+		}
+		m_tRecordDatTimeListLock.unlock();
+		pSetRecordTime->Release();
+		pSetRecordTime=NULL;
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"updateRecordSchedule fail as pSetRecordTime is null";
+	}
+	return false;
+}
+
+void RecordDat::slCheckMotionRecord()
+{
+	if (m_nStatus&4)
+	{
+		if (setRecordType(MOTIONRECORD,false))
+		{
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"stop motion record fail";
+		}
+	}else{
+		//do nothing
+	}
+}
+
+bool RecordDat::checkMotionRecordSchedule()
+{
+	return false;
 }

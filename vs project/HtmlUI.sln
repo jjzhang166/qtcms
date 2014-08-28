@@ -177,6 +177,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonlibEx", "..\src\funct
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BubbleProtocolEx", "..\src\functionlibs\BubbleProtocolEx\BubbleProtocolEx.vcxproj", "{2594B54A-A982-4A70-8F30-44C0C66DD968}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RecordDat", "..\src\functionlibs\RecordDat\RecordDat.vcxproj", "{8D80627D-CC88-478E-9B0C-130591900749}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -362,6 +364,10 @@ Global
 		{2594B54A-A982-4A70-8F30-44C0C66DD968}.Debug|Win32.Build.0 = Debug|Win32
 		{2594B54A-A982-4A70-8F30-44C0C66DD968}.Release|Win32.ActiveCfg = Release|Win32
 		{2594B54A-A982-4A70-8F30-44C0C66DD968}.Release|Win32.Build.0 = Release|Win32
+		{8D80627D-CC88-478E-9B0C-130591900749}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8D80627D-CC88-478E-9B0C-130591900749}.Debug|Win32.Build.0 = Debug|Win32
+		{8D80627D-CC88-478E-9B0C-130591900749}.Release|Win32.ActiveCfg = Release|Win32
+		{8D80627D-CC88-478E-9B0C-130591900749}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
