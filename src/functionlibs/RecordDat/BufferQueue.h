@@ -17,6 +17,7 @@ public:
 	bool isEmpty();
 	void clear();
 	RecBufferNode *dequeue();
+	RecBufferNode *front();
 private:
 	QQueue<RecBufferNode*> m_tDataQueue;
 	QMutex m_tDataLock;

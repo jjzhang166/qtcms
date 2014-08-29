@@ -23,7 +23,7 @@ int  RecBufferNode::release()
 	{
 		if (NULL!=m_pFrameHead)
 		{
-			delete m_pFrameHead;
+			free(m_pFrameHead);
 			m_pFrameHead=NULL;
 		}else{
 			//do nothing

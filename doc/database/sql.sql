@@ -142,7 +142,7 @@ insert into general_setting (name,value) values('storage_cover','true');
 insert into general_setting (name,value) values('storage_filesize','128');
 insert into general_setting (name,value) values('storage_reservedsize','4096');
 insert into general_setting (name,value) values('misc_slanguage','zh_CN');
-insert into general_setting (name,value) values('misc_aptime','120');
+insert into general_setting (name,value) values('misc_aptime','30');
 insert into general_setting (name,value) values('misc_smode','div4_4');
 insert into general_setting (name,value) values('misc_alogin','true');
 insert into general_setting (name,value) values('misc_synctime','true');

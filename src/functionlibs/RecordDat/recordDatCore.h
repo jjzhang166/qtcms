@@ -12,6 +12,8 @@
 #include <QFile>
 #include <QByteArray>
 #include <QIODevice>
+#include <IDisksSetting.h>
+#include <QEventLoop>
 #define OVERWRITE 0
 #define  ADDWRITE 1
 #define  BUFFERSIZE 120//单位：M
@@ -40,8 +42,18 @@ typedef enum __tagRecordDatStepCode{
 	recordDat_writeDisk,//内存块写到磁盘
 	recordDat_default,//检测是否需要写到磁盘，检测是否有数据帧到达
 	recordDat_error,//出错
+	recordDat_reset,//出错后重启
 	recordDat_end//结束
 }tagRecordDatStepCode;
+typedef enum __tagRecordDatReset{
+	recordDatReset_fileError,//文件错误
+	recordDatReset_outOfDisk//磁盘空间不足
+}tagRecordDatReset;
+typedef enum __tagRecordDatToDiskType{
+	recordDatToDiskType_null,//不操作
+	recordDatToDiskType_outOfTime,//定时写硬盘
+	recordDatToDiskType_bufferFull,//缓存满写硬盘
+}tagRecordDatToDiskType;
 typedef enum __tagObtainFilePathStepCode{
 	obtainFilePath_getDrive,//获取可录像盘符
 	obtainFilePath_diskUsable,//有剩余空间的可录像的盘符
@@ -51,6 +63,13 @@ typedef enum __tagObtainFilePathStepCode{
 	obtainFilePath_fail,//获取录像文件路径失败
 	obtainFilePath_end//结束
 }tagObtainFilePathStepCode;
+typedef enum __tagRecordDatTurnType{
+	recordDatTurnType_noRecord,//historyType==currentType==0,无任何操作
+	recordDatTurnType_beginRecord,//historyType==0,currentType!=0,开始录像，需要等待I帧
+	recordDatTurnType_stopRecord,//historyType!=0,currentType==0,停止录像
+	recordDatTurnType_noTurn,//historyType==currentType!=0,类型没有转变，接着录像
+	recordDatTurnType_turnType//historyType!=currentType!=0,类型转换，接着录像
+}tagRecordDatTurnType;
 class recordDatCore:public QThread
 {
 	Q_OBJECT
@@ -67,6 +86,7 @@ protected:
 	void run();
 private slots:
 	void slcheckBlock();
+	void slsetWriteDiskFlag();
 private:
 	void eventCallBack(QString sEventName,QVariantMap tInfo);
 	int obtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
@@ -74,6 +94,9 @@ private:
 	QString getLatestItem(QString sDisk);
 	bool checkFileIsFull(QString sFilePath);
 	bool createNewFile(QString sFilePath);
+	bool getIsRecover();
+	void sleepEx(quint64 uiTime);
+	int writeToBuffer(int nChannel);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
 private:
 	QMap<int ,BufferQueue *> m_tBufferQueueMap;
 	tagRecordDatCoreFileInfo m_tFileInfo;
@@ -83,11 +106,18 @@ private:
 	QMultiMap<QString ,tagRecordDatCoreProcInfo> m_tEventMap;
 	int m_nPosition;
 	QTimer m_tCheckIsBlockTimer;
+	QTimer m_tWriteDiskTimer;
 	bool m_bIsBlock;
 	OperationDatabase m_tOperationDatabase;
 	QByteArray m_tFileHead;
 	char *m_pDataBuffer1;
 	char *m_pDataBuffer2;
 	char *m_pDataBuffer;
+	tagRecordDatReset m_tResetType;
+	tagRecordDatToDiskType m_tToDiskType;
+	int m_nSleepSwitch;
+	int m_nWriteMemoryChannel;
+	bool m_bWriteDiskTimeFlags;
+	int m_nWriteDiskTimeCount;
 };
 

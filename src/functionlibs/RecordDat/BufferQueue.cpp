@@ -105,3 +105,17 @@ RecBufferNode* BufferQueue::dequeue()
 	m_tDataLock.unlock();
 	return pRecBufferNode;
 }
+
+RecBufferNode * BufferQueue::front()
+{
+	RecBufferNode* pRecBufferNode=NULL;
+	m_tDataLock.lock();
+	if (m_tDataQueue.size()>0)
+	{
+		pRecBufferNode=m_tDataQueue.front();
+	}else{
+
+	}
+	m_tDataLock.unlock();
+	return pRecBufferNode;
+}

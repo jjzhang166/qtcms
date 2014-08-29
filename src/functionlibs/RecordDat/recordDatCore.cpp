@@ -10,12 +10,28 @@ recordDatCore::recordDatCore(void):m_bStop(true),
 	for(int i=0;i<WNDMAXSIZE;i++)
 	{
 		tagRecordDatCoreWndInfo tWndInfo;
+		tWndInfo.uiCurrentRecordType=0;
+		tWndInfo.uiHistoryRecordType=0;
+		tWndInfo.uiChannelInDatabaseId=0;
+		tWndInfo.uiPreFrame=0;
+		tWndInfo.uiPreIFrame=0;
 		m_tFileInfo.tWndInfo.insert(i,tWndInfo);
 	}
 	m_pDataBuffer1=(char*)malloc(BUFFERSIZE*1024*1024);
 	m_pDataBuffer2=(char*)malloc(BUFFERSIZE*1024*1024);
+	if (m_pDataBuffer2==NULL||m_pDataBuffer1==NULL)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"malloc fail";
+		abort();
+	}else{
+		//do nothing
+	}
+	memset(m_pDataBuffer1,0,BUFFERSIZE*1024*1024);
+	memset(m_pDataBuffer2,0,BUFFERSIZE*1024*1024);
 	connect(&m_tCheckIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckBlock()));
-	m_tCheckIsBlockTimer.start(5000);
+	connect(&m_tWriteDiskTimer,SIGNAL(timeout()),this,SLOT(slsetWriteDiskFlag()));
+	m_tCheckIsBlockTimer.start(5000);//5s
+	
 }
 
 
@@ -33,29 +49,50 @@ recordDatCore::~recordDatCore(void)
 	}
 	if (NULL!=m_pDataBuffer2)
 	{
+		free(m_pDataBuffer2);
+		m_pDataBuffer2=NULL;
+	}else{
+		//do nothing
 	}
+	if (NULL!=m_pDataBuffer1)
+	{
+		free(m_pDataBuffer1);
+		m_pDataBuffer1=NULL;
+	}else{
+		//do nothing
+	}
+	m_tCheckIsBlockTimer.stop();
+	m_pDataBuffer=NULL;
 }
 
 void recordDatCore::run()
 {
 	bool bRunStop=false;
 	int nRunStep=recordDat_init;
+	int nSleepCount=0;
 	int nWriteType=2;//0:覆盖写；1：续写文件；2：没有文件可写
 	QString sWriteFilePath;
+	m_tWriteDiskTimer.start(60000);
 	while(bRunStop==false){
 		switch(nRunStep){
 		case recordDat_init:{
 			//各项参数初始化
+			m_tToDiskType=recordDatToDiskType_null;
+			m_nWriteMemoryChannel=0;
 			nRunStep=recordDat_filePath;
+			m_pDataBuffer=m_pDataBuffer1;
 							}
 							break;
 		case recordDat_filePath:{
 			//查找写文件的路径
+			//step1:创建文件（或者获取到已有的文件）
+			//step2:数据库中锁定文件
 			nWriteType=obtainFilePath(sWriteFilePath);
 			if (nWriteType!=OVERWRITE&&nWriteType!=ADDWRITE)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteType mode is unable";
-				nRunStep=recordDat_error;
+				m_tResetType=recordDatReset_outOfDisk;
+				nRunStep=recordDat_reset;
 			}else{
 				nRunStep=recordDat_initMemory;
 			}
@@ -65,27 +102,256 @@ void recordDatCore::run()
 			//初始化内存块
 			if (nWriteType==OVERWRITE)
 			{
-
+				//覆盖写文件
+				memset(m_pDataBuffer,0,BUFFERSIZE*1024*1024);
 			}else{
 				//nWriteType==ADDWRITE
+				//把原文件的内容读到内存中，进行续写
+				memset(m_pDataBuffer,0,BUFFERSIZE*1024*1024);
+				QFile tFile;
+				tFile.setFileName(sWriteFilePath);
+				if (tFile.open(QIODevice::ReadOnly))
+				{
+					m_tFileHead.clear();
+					m_tFileHead=tFile.read(sizeof(tagFileHead));
+					if (m_tFileHead.size()==sizeof(tagFileHead))
+					{
+						tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
+						if (m_tFileHead.contains("JUAN"))
+						{
+							if (pFileHead->uiIndex<=BUFFERSIZE*1024*1024)
+							{
+								(QByteArray)m_pDataBuffer=tFile.read(pFileHead->uiIndex);
+							}else{
+								//do nothing
+								qDebug()<<__FUNCTION__<<__LINE__<<"this file is out of length,i will over write it";
+							}		
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"this file is undefined type,i will over write it";
+							//do nothing
+						}
+					}else{
+						//do nothing
+						qDebug()<<__FUNCTION__<<__LINE__<<"this file is undefined type,i will over write it";
+					}
+					tFile.close();
+				}else{
+					//出现文件打开错误，启动重启
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as open file fail";
+					m_tResetType=recordDatReset_fileError;
+					nRunStep=recordDat_reset;
+					break;
+				}
+			}
+			//写文件头到内存中
+			tagFileHead *pFileHead=(tagFileHead*)m_pDataBuffer;
+			char *pMagic="JUAN";
+			if (memcmp(pMagic,pFileHead->ucMagic,4)==0)
+			{
+				//do nothing
+			}else{
+				memcpy(pFileHead->ucMagic,pMagic,4);
+				pFileHead->uiChannels[0]=0;
+				pFileHead->uiChannels[1]=0;
+				pFileHead->uiEnd=0;
+				pFileHead->uiStart=0;
+				pFileHead->uiVersion=0;
+				pFileHead->uiIndex=sizeof(tagFileHead);
 			}
 			nRunStep=recordDat_default;
 								  }
 								  break;
 		case recordDat_writeMemory:{
 			//数据帧写到内存块里，数据库条目更新
+			//step 1：查找出需要写的通道
+			m_tBufferQueueMapLock.lock();
+			QMap<int,BufferQueue*>::Iterator tItem=m_tBufferQueueMap.begin();
+			int nMinChannel=m_nWriteMemoryChannel;
+			int nMinChannelEx=0;
+			bool bFlag=false;
+			bool bFlagNext=false;
+			while(tItem!=m_tBufferQueueMap.end()){
+				BufferQueue *pBuffer=tItem.value();
+				int nKey=tItem.key();
+				if (!pBuffer->isEmpty())
+				{
+					bFlag=true;
+					if (nKey>m_nWriteMemoryChannel)
+					{
+						if (bFlagNext==false)
+						{
+							nMinChannelEx=nKey;
+						}else{
+							//do nothing
+						}
+						bFlagNext=true;
+						if (nKey<=nMinChannelEx)
+						{
+							nMinChannelEx=nKey;
+						}else{
+							//keep going
+						}
+						m_nWriteMemoryChannel=nKey;
+					}else{
+						if (nKey<=nMinChannel)
+						{
+							nMinChannel=nKey;
+						}else{
+							//keep going
+						}
+					}
+				}else{
+					//keep going
+				}
+				tItem++;
+			}
+			int nWriteToBuffer=0;
+			if (bFlag)
+			{
+				if (!bFlagNext)
+				{
+					m_nWriteMemoryChannel=nMinChannel;
+				}else{
+					//do nothing
+					m_nWriteMemoryChannel=nMinChannelEx;
+				}
+				nWriteToBuffer=writeToBuffer(m_nWriteMemoryChannel);
+				if (nWriteToBuffer==0)
+				{
+					//00：buffer未满&&没写入buffer
+					nRunStep=recordDat_default;
+				}else if (nWriteToBuffer==1)
+				{
+					//01：buffer未满&&写入buffer
+					nRunStep=recordDat_default;
+					nSleepCount=0;
+				}else if (nWriteToBuffer==2)
+				{
+					//10：buffer已满&&未写入buffer；
+					m_tToDiskType=recordDatToDiskType_bufferFull;
+					nRunStep=recordDat_default;
+				}else if (nWriteToBuffer==3)
+				{
+					//11：buffer已满&&写入buffer
+					m_tToDiskType=recordDatToDiskType_bufferFull;
+					nRunStep=recordDat_default;
+					nSleepCount=0;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteToBuffer is undefined";
+					abort();
+				}
+			}else{
+				nRunStep=recordDat_default;
+			}
+			m_tBufferQueueMapLock.unlock();
+			nSleepCount++;
+			if (nSleepCount>64)
+			{
+				sleepEx(10);
+				nSleepCount=0;
+			}else{
+				//do nothing
+			}
 								   }
 								   break;
 		case recordDat_writeDisk:{
 			//内存块写到磁盘
+			// step 1:把各个窗口的item同步到数据库中
+			//step 2;解锁文件
+			if (m_tToDiskType==recordDatToDiskType_outOfTime)
+			{
+				//
+			}else if (m_tToDiskType==recordDatToDiskType_bufferFull)
+			{
+				//step1:解锁文件(数据库置位)
+				//step2:更新搜索表
+				//step3:更新录像表
+				//step4:通知线程写磁盘
+				//step5:切换buffer指针
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as m_tToDiskType is undefined";
+				abort();
+			}
+			m_tToDiskType=recordDatToDiskType_null;
+			m_nWriteDiskTimeCount=0;
 								 }
 								 break;
 		case recordDat_default:{
 			//检测是否需要写到磁盘，检测是否有数据帧到达
+			//step 1:检测是否需要把文件写到磁盘
+			//step 2:检测是否有新的buffer需要写到内存
+			if (m_bWriteDiskTimeFlags)
+			{
+				m_nWriteDiskTimeCount++;
+				m_bWriteDiskTimeFlags=false;
+			}else{
+				//do nothing
+			}
+			if (m_nWriteDiskTimeCount>3)
+			{
+				m_tToDiskType=recordDatToDiskType_outOfTime;
+			}else{
+				//do nothing
+			}
+			if (m_tToDiskType==recordDatToDiskType_null)
+			{
+				//检测buffer 是否有数据
+				m_tBufferQueueMapLock.lock();
+				QMap<int,BufferQueue*>::Iterator tItem=m_tBufferQueueMap.begin();
+				bool bFlag=false;
+				while(tItem!=m_tBufferQueueMap.end()){
+					BufferQueue *pBuffer=tItem.value();
+					if (!pBuffer->isEmpty())
+					{
+						bFlag=true;
+						break;
+					}else{
+						//keep going
+					}
+					tItem++;
+				}
+				if (bFlag==true)
+				{
+					nRunStep=recordDat_writeMemory;
+				}else{
+					sleepEx(10);
+					nRunStep=recordDat_default;
+				}
+				m_tBufferQueueMapLock.unlock();
+			}else
+			{
+				//把buffer写到硬盘中
+				nRunStep=recordDat_writeDisk;
+			}
+			if (m_bStop)
+			{
+				nRunStep=recordDat_end;
+			}else{
+				//do nothing
+			}
 							   }
 							   break;
+		case recordDat_reset:{
+			//出错后重启
+			if (m_tResetType==recordDatReset_fileError)
+			{
+				//fix me
+			}else if (m_tResetType==recordDatReset_outOfDisk)
+			{
+				//fix me
+			}else{
+				//fix me
+			}
+			if (m_bStop)
+			{
+				nRunStep=recordDat_end;
+			}else{
+				//do nothing
+			}
+							 }
+							 break;
 		case recordDat_error:{
-			//出错
+			//不可恢复的出错
 							 }
 							 break;
 		case recordDat_end:{
@@ -94,6 +360,7 @@ void recordDatCore::run()
 						   break;
 		}
 	}
+	m_tWriteDiskTimer.stop();
 }
 
 bool recordDatCore::setBufferQueue( int nWnd,BufferQueue &tBufferQueue )
@@ -145,7 +412,23 @@ void recordDatCore::eventCallBack( QString sEventName,QVariantMap tInfo )
 
 bool recordDatCore::setRecordType( int nWnd,int nType,bool bFlags )
 {
-	return false;
+	m_tBufferQueueMapLock.lock();
+	int nHisRecordType=m_tFileInfo.tWndInfo.value(nWnd).uiHistoryRecordType;
+	int nTotal=MANUALRECORD+TIMERECORD+MOTIONRECORD;
+	if (nType==MANUALRECORD||nType==MOTIONRECORD||TIMERECORD)
+	{
+		if (bFlags)
+		{
+			nHisRecordType=nType|nHisRecordType;
+		}else{
+			nHisRecordType=(nTotal-nType)&nHisRecordType;
+		}
+		m_tFileInfo.tWndInfo[nWnd].uiCurrentRecordType=nHisRecordType;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType Not working as nType is undefined";
+	}
+	m_tBufferQueueMapLock.unlock();
+	return true;
 }
 
 void recordDatCore::slcheckBlock()
@@ -194,81 +477,89 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 									   }
 									   break;
 		case obtainFilePath_diskFull:{
-			//每个盘符都已经录满
-			QStringList sDiskListInDatabase=sDiskList.split(":");
-			QList<QString> tFilePathList;
-			foreach(QString sDiskEx,sDiskListInDatabase){
-				QString sFilePathItem=m_tOperationDatabase.getLatestItem(sDiskEx);
-				if (!sFilePathItem.isEmpty())
-				{
-					tFilePathList.append(sFilePathItem);
-				}else{
-					//do nothing
-				}
-			}
-			if (!tFilePathList.isEmpty())
+			//判断是否覆盖录像
+			bool bIsRecover=getIsRecover();
+			if (bIsRecover)
 			{
-				//查找出几个盘符最早的文件
-				//把查找到最早文件的数据库内的相关信息删除
-				//fix me
-				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
-				QString sOldestFile;
-				for (int i=0;i<tFilePathList.size();i++)
-				{
-					QString sFilePathItem=tFilePathList.at(i);
-					if (QFile::exists(sFilePathItem))
+				//每个盘符都已经录满
+				QStringList sDiskListInDatabase=sDiskList.split(":");
+				QList<QString> tFilePathList;
+				foreach(QString sDiskEx,sDiskListInDatabase){
+					QString sFilePathItem=m_tOperationDatabase.getLatestItem(sDiskEx);
+					if (!sFilePathItem.isEmpty())
 					{
-						QFile tFile;
-						tFile.setFileName(sFilePathItem);
-						if (tFile.open(QIODevice::ReadOnly|QIODevice::Text))
+						tFilePathList.append(sFilePathItem);
+					}else{
+						//do nothing
+					}
+				}
+				if (!tFilePathList.isEmpty())
+				{
+					//查找出几个盘符最早的文件
+					//把查找到最早文件的数据库内的相关信息删除
+					//fix me
+					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+					QString sOldestFile;
+					for (int i=0;i<tFilePathList.size();i++)
+					{
+						QString sFilePathItem=tFilePathList.at(i);
+						if (QFile::exists(sFilePathItem))
 						{
-							if (tFile.size()>=sizeof(tagFileHead))
+							QFile tFile;
+							tFile.setFileName(sFilePathItem);
+							if (tFile.open(QIODevice::ReadOnly|QIODevice::Text))
 							{
-								m_tFileHead.clear();
-								m_tFileHead=tFile.read(sizeof(tagFileHead));
-								tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
-								if (NULL!=pFileHead)
+								if (tFile.size()>=sizeof(tagFileHead))
 								{
-									if (m_tFileHead.contains("JUAN"))
+									m_tFileHead.clear();
+									m_tFileHead=tFile.read(sizeof(tagFileHead));
+									tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
+									if (NULL!=pFileHead)
 									{
-										if (pFileHead->uiStart<uiStartTime)
+										if (m_tFileHead.contains("JUAN"))
 										{
-											uiStartTime=pFileHead->uiStart;
-											sOldestFile=sFilePathItem;
+											if (pFileHead->uiStart<uiStartTime)
+											{
+												uiStartTime=pFileHead->uiStart;
+												sOldestFile=sFilePathItem;
+											}else{
+												//do nothing
+											}
 										}else{
 											//do nothing
 										}
 									}else{
 										//do nothing
 									}
+									tFile.close();
 								}else{
-									//do nothing
+									sOldestFile=sFilePathItem;
+									tFile.close();
+									break;
 								}
-								tFile.close();
 							}else{
-								sOldestFile=sFilePathItem;
-								tFile.close();
-								break;
+								//do nothing
 							}
 						}else{
 							//do nothing
-						}
+						}	
+					}
+					if (sOldestFile.isEmpty())
+					{
+						sOldestFile=tFilePathList.at(0);
 					}else{
 						//do nothing
-					}	
-				}
-				if (sOldestFile.isEmpty())
-				{
-					sOldestFile=tFilePathList.at(0);
+					}
+					sFilePath=sOldestFile;
+					m_tOperationDatabase.clearInfoInDatabase(sFilePath);
+					bFlag=0;
+					nStep=obtainFilePath_createFile;
 				}else{
-					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
+					nStep=obtainFilePath_fail;
 				}
-				sFilePath=sOldestFile;
-				m_tOperationDatabase.clearInfoInDatabase(sFilePath);
-				bFlag=0;
-				nStep=obtainFilePath_createFile;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space and bIsRecover is false";
 				nStep=obtainFilePath_fail;
 			}
 									 }
@@ -351,6 +642,58 @@ bool recordDatCore::startRecord()
 		//do nothing
 	}
 	return false;
+}
+
+bool recordDatCore::getIsRecover()
+{
+	return false;
+}
+
+void recordDatCore::sleepEx( quint64 uiTime )
+{
+	if (m_nSleepSwitch<100)
+	{
+		msleep(uiTime);
+		m_nSleepSwitch++;
+	}else{
+		QEventLoop eventloop;
+		QTimer::singleShot(2, &eventloop, SLOT(quit()));
+		eventloop.exec();
+		m_nSleepSwitch=0;
+	}
+	return;
+}
+
+int recordDatCore::writeToBuffer( int nChannel )
+{
+	//返回值（按位）：00(0)：buffer未满&&没写入buffer；01(1)：buffer未满&&写入buffer；10(2)：buffer已满&&未写入buffer；11(3)：buffer已满&&写入buffer
+	int nHistoryType=m_tFileInfo.tWndInfo.value(nChannel).uiHistoryRecordType;
+	int nCurrentType=m_tFileInfo.tWndInfo.value(nChannel).uiCurrentRecordType;
+	if (nHistoryType==nHistoryType&&nHistoryType==0)
+	{
+		//historyType==currentType==0,无任何操作
+	}else if (nHistoryType==0&&nCurrentType!=0)
+	{
+		//historyType==0,currentType!=0,开始录像，需要等待I帧
+	}else if (nHistoryType!=0&&nCurrentType==0)
+	{
+		//historyType!=0,currentType==0,停止录像
+	}else if (nHistoryType==nCurrentType&&nCurrentType==0)
+	{
+		//historyType==currentType!=0,类型没有转变，接着录像
+	}else if (nHistoryType!=nCurrentType&&nCurrentType!=0&&nCurrentType!=0)
+	{
+		//historyType!=currentType!=0,类型转换，接着录像
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as tagRecordDatTurnType is undefined";
+		abort();
+	}
+	return 0;
+}
+
+void recordDatCore::slsetWriteDiskFlag()
+{
+	m_bWriteDiskTimeFlags=true;
 }
 
 

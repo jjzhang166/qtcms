@@ -19,3 +19,11 @@ void * Allocation::applySpace( unsigned int uiSize )
 {
 	return malloc(uiSize);
 }
+
+void Allocation::freeSpace( char *pChar )
+{
+	if (pChar!=NULL)
+	{
+		free(pChar);
+	}
+}
