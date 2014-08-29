@@ -67,7 +67,7 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		recStream.uiGenTime = evMap["gentime"].toUInt();
 
 		recStream.pData = new char[recStream.uiLength];
-		memcpy(recStream.pData, (char*)evMap["data"].toUInt(), recStream.uiLength);
+        memcpy(recStream.pData, (char*)evMap["data"].value<quintptr>(), recStream.uiLength);
 	}
 	else if (1 == frameType || 2 == frameType)
 	{
@@ -80,7 +80,7 @@ int BufferManager::recordStream(QVariantMap &evMap)
 		recStream.ui64TSP = evMap.value("pts").toULongLong();
 		recStream.uiGenTime = evMap.value("gentime").toUInt();
 		recStream.pData = new char[recStream.uiLength];
-		memcpy(recStream.pData, (char*)evMap["data"].toUInt(), recStream.uiLength);
+        memcpy(recStream.pData, (char*)evMap["data"].value<quintptr>(), recStream.uiLength);
 	}
 
 	m_mutex.lock();

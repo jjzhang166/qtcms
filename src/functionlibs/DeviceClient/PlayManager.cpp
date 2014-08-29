@@ -14,17 +14,17 @@ int PlayManager::m_nSampleWidth = 0;
 
 
 PlayManager::PlayManager(void):
-m_nInitWidth(0),
-m_nInitHeight(0),
-m_ui64TSP(0),
-m_uiCurrentFrameTime(0),
-m_pRenderWnd(NULL),
-m_speed(SpeedNomal),
-m_nSpeedRate(0),
-m_bPause(false),
-m_bFirstFrame(true),
-m_bRendFinished(false),
-m_bStop(false)
+    m_bPause(false),
+    m_bStop(false),
+    m_bFirstFrame(true),
+    m_bRendFinished(false),
+    m_nInitHeight(0),
+    m_nInitWidth(0),
+    m_nSpeedRate(0),
+    m_speed(SpeedNomal),
+    m_ui64TSP(0),
+    m_uiCurrentFrameTime(0),
+    m_pRenderWnd(NULL)
 {
 	//ÉêÇë½âÂëÆ÷½Ó¿Ú
 	pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pVedioDecoder);
@@ -71,8 +71,7 @@ int PlayManager::initCb()
 	{
 		return 1;
 	}
-	QString eventName = "DecodedFrame";
-	pEventRegister->registerEvent(eventName, cbDecodedFrame, this);
+    pEventRegister->registerEvent(QString("DecodedFrame"), cbDecodedFrame, this);
 
 	m_pVedioRender->setRenderWnd(m_pRenderWnd);
 	pEventRegister->Release();
@@ -244,10 +243,10 @@ int PlayManager::prePlay(QVariantMap item)
 	}
 
 	m_bRendFinished = false;
-	char* pData=(char*)item.value("data").toUInt();
-	char* pYdata=(char*)item.value("Ydata").toUInt();
-	char* pUdata=(char*)item.value("Udata").toUInt();
-	char* pVdata=(char*)item.value("Vdata").toUInt();
+    char* pData=(char*)item.value("data").value<quintptr>();
+    char* pYdata=(char*)item.value("Ydata").value<quintptr>();
+    char* pUdata=(char*)item.value("Udata").value<quintptr>();
+    char* pVdata=(char*)item.value("Vdata").value<quintptr>();
 	int iWidth=item.value("width").toInt();
 	int iHeight=item.value("height").toInt();
 	int iYStride=item.value("YStride").toInt();
@@ -310,7 +309,7 @@ void PlayManager::AudioSwitch(bool enabled)
 
 int PlayManager::setVolume(unsigned int &uiPersent)
 {
-	if (NULL == m_pAudioPlayer || uiPersent < 0)
+    if (NULL == m_pAudioPlayer || (int)uiPersent < 0)
 	{
 		return 1;
 	}

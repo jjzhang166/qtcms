@@ -6,19 +6,21 @@ int cbRecSearchRFail(QString sEventName,QVariantMap evMap,void *pUser);
 int cbRecSearchRFinished(QString sEventName,QVariantMap evMap,void *pUser);
 int cbRecSocketRError(QString sEventName,QVariantMap evMap,void *pUser);
 int cbRecRStream(QString sEventName,QVariantMap evMap,void *pUser);
-remotePlayBack::remotePlayBack(void):m_bStop(true),
+
+remotePlayBack::remotePlayBack(void):
+    m_bStop(true),
 	m_nSleepSwitch(0),
-	m_nPosition(0),
-	m_uiVolumePersent(50),
-	m_uiCurrentFrameTime(0),
-	m_pRemotePlayback(NULL),
-	m_pAudioPlayer(NULL),
-	m_pCurrentWin(NULL),
+    m_pRemotePlayback(NULL),
+    m_pAudioPlayer(NULL),
+    m_bBlock(false),
+    m_bStreamPuase(false),
+    m_bEnableAudio(false),
+    m_uiVolumePersent(50),
+    m_nPosition(0),
+    m_pCurrentWin(NULL),
+    m_uiCurrentFrameTime(0),
 	m_tPlaybackProtocol(BUBBLE),
-	m_tRecConnectStatus(REC_STATUS_DISCONNECTED),
-	m_bEnableAudio(false),
-	m_bStreamPuase(false),
-	m_bBlock(false)
+    m_tRecConnectStatus(REC_STATUS_DISCONNECTED)
 {
 	m_sEventNameList<<"foundFile"<<"StateChangeed"<<"recFileSearchFinished"<<"SocketError"<<"recFileSearchFail"<<"bufferStatus";
 	connect(&m_tCheckBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckBlock()));
@@ -524,8 +526,8 @@ void remotePlayBack::run()
 					   }
 					   break;
 				case RECPLAYSTREAM:{
-						unsigned int uiLength=0;
-						char *pData=NULL;
+//						unsigned int uiLength=0;
+//						char *pData=NULL;
 						tagRecStreamFrame tRecStreamFrame;
 						memset(&tRecStreamFrame,0,sizeof(tagRecStreamFrame));
 						m_nPosition=__LINE__;
@@ -595,7 +597,7 @@ void remotePlayBack::run()
 										if (RECSPEEDFAST!=m_tSpeedType&&ui64WaitSeconds>0)
 										{
 											quint64 ui64Sec=ui64WaitSeconds-it->tElapsedTimer.nsecsElapsed()/1000+ui64Before-it->ui64Spend;
-											usleep(ui64Sec>=0?ui64Sec:0);
+                                            usleep((qint64)ui64Sec>=0?ui64Sec:0);
 										}else{
 											//keep going
 										}
@@ -1065,6 +1067,8 @@ int remotePlayBack::addChannelIntoPlayGroup( int nChannel,QWidget * wnd )
 
 int remotePlayBack::cbConnectStatusChange( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(sEventName);
+    Q_UNUSED(pUser);
 	//eventCallBack(sEventName,evMap);
 	emit sgBackToMainThread("CurrentStatus",evMap);
 	return 0;
@@ -1072,30 +1076,36 @@ int remotePlayBack::cbConnectStatusChange( QString sEventName,QVariantMap evMap,
 
 int remotePlayBack::cbRecFileFound( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(pUser);
 	eventCallBack(sEventName,evMap);
 	return 0;
 }
 
 int remotePlayBack::cbRecSearchFail( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(pUser);
 	eventCallBack(sEventName,evMap);
 	return 0;
 }
 
 int remotePlayBack::cbRecSearchFinished( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(pUser);
 	eventCallBack(sEventName,evMap);
 	return 0;
 }
 
 int remotePlayBack::cbRecSocketError( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(pUser);
 	eventCallBack(sEventName,evMap);
 	return 0;
 }
 
 int remotePlayBack::cbRecStream( QString sEventName,QVariantMap evMap,void *pUser )
 {
+    Q_UNUSED(sEventName);
+    Q_UNUSED(pUser);
 	if (!m_bStop&&!evMap.isEmpty())
 	{
 		//±£´æÂëÁ÷
@@ -1112,7 +1122,7 @@ int remotePlayBack::cbRecStream( QString sEventName,QVariantMap evMap,void *pUse
 			tRecStreamInfo.ui64TSP=evMap.value("pts").toULongLong();
 			tRecStreamInfo.uiGenTime=evMap.value("gentime").toUInt();
 			tRecStreamInfo.pData=new char[tRecStreamInfo.uiLength];
-			memcpy(tRecStreamInfo.pData,(char*)evMap.value("data").toUInt(),tRecStreamInfo.uiLength);
+            memcpy(tRecStreamInfo.pData,(char*)evMap.value("data").value<quintptr>(),tRecStreamInfo.uiLength);
 		}else if (1==nFrameType||2==nFrameType)
 		{
 			tRecStreamInfo.uiLength = evMap.value("length").toUInt();
@@ -1124,7 +1134,7 @@ int remotePlayBack::cbRecStream( QString sEventName,QVariantMap evMap,void *pUse
 			tRecStreamInfo.ui64TSP = evMap.value("pts").toULongLong();
 			tRecStreamInfo.uiGenTime = evMap.value("gentime").toUInt();
 			tRecStreamInfo.pData = new char[tRecStreamInfo.uiLength];
-			memcpy(tRecStreamInfo.pData, (char*)evMap["data"].toUInt(), tRecStreamInfo.uiLength);
+            memcpy(tRecStreamInfo.pData, (char*)evMap["data"].value<quintptr>(), tRecStreamInfo.uiLength);
 		}else{
 			//do nothing
 			qDebug()<<__FUNCTION__<<__LINE__<<"there is a undefined stream type,please check it ";
@@ -1142,7 +1152,7 @@ int remotePlayBack::cbRecStream( QString sEventName,QVariantMap evMap,void *pUse
 			if (iter->tRecStreamFrame.size()<=100)
 			{
 				QVariantMap item;
-				int nWind=(int)iter->wPlayWidget;
+                quintptr nWind=(quintptr)iter->wPlayWidget;
 				item.insert("Persent", iter->tRecStreamFrame.size());
 				item.insert("wind", nWind);
 				eventCallBack("bufferStatus",item);

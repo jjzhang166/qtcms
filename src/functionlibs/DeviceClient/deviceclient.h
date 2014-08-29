@@ -137,8 +137,8 @@ private:
 	QVariantMap m_ports;
 	QString m_sChannelName;
 
-	bool bIsInitFlags;
-	volatile bool bCloseingFlags;
+    bool m_bIsInitFlags;
+    volatile bool m_bCloseingFlags;
 
 	IDeviceClient::ConnectStatus m_CurStatus;
 	IRemotePlayback *m_pRemotePlayback;

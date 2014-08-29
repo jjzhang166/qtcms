@@ -1323,7 +1323,7 @@ int avi_parse_input_file(avi_t *AVI, int getIndex)
 	    char *nwfe;
             int wfes;
             
-            if ((hdrl_len - i) < sizeof(WAVEFORMATEX_avilib))
+            if ((hdrl_len - i) < (long)sizeof(WAVEFORMATEX_avilib))
               wfes = hdrl_len - i;
             else
               wfes = sizeof(WAVEFORMATEX_avilib);
@@ -1870,21 +1870,21 @@ int AVI_read_data(avi_t *AVI, char *vidbuf, long max_vidbuf,
 
 char *(avi_errors[]) =
 {
-  /*  0 */ "avilib - No Error",
-  /*  1 */ "avilib - AVI file size limit reached",
-  /*  2 */ "avilib - Error opening AVI file",
-  /*  3 */ "avilib - Error reading from AVI file",
-  /*  4 */ "avilib - Error writing to AVI file",
-  /*  5 */ "avilib - Error writing index (file may still be useable)",
-  /*  6 */ "avilib - Error closing AVI file",
-  /*  7 */ "avilib - Operation (read/write) not permitted",
-  /*  8 */ "avilib - Out of memory (malloc failed)",
-  /*  9 */ "avilib - Not an AVI file",
-  /* 10 */ "avilib - AVI file has no header list (corrupted?)",
-  /* 11 */ "avilib - AVI file has no MOVI list (corrupted?)",
-  /* 12 */ "avilib - AVI file has no video data",
-  /* 13 */ "avilib - operation needs an index",
-  /* 14 */ "avilib - Unkown Error"
+  /*  0 */ (char *)"avilib - No Error",
+  /*  1 */ (char *)"avilib - AVI file size limit reached",
+  /*  2 */ (char *)"avilib - Error opening AVI file",
+  /*  3 */ (char *)"avilib - Error reading from AVI file",
+  /*  4 */ (char *)"avilib - Error writing to AVI file",
+  /*  5 */ (char *)"avilib - Error writing index (file may still be useable)",
+  /*  6 */ (char *)"avilib - Error closing AVI file",
+  /*  7 */ (char *)"avilib - Operation (read/write) not permitted",
+  /*  8 */ (char *)"avilib - Out of memory (malloc failed)",
+  /*  9 */ (char *)"avilib - Not an AVI file",
+  /* 10 */ (char *)"avilib - AVI file has no header list (corrupted?)",
+  /* 11 */ (char *)"avilib - AVI file has no MOVI list (corrupted?)",
+  /* 12 */ (char *)"avilib - AVI file has no video data",
+  /* 13 */ (char *)"avilib - operation needs an index",
+  /* 14 */ (char *)"avilib - Unkown Error"
 };
 static int num_avi_errors = sizeof(avi_errors)/sizeof(char*);
 

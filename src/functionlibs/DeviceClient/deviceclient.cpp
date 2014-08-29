@@ -1,21 +1,22 @@
 #include "deviceclient.h"
 #include <guid.h>
 
-DeviceClient::DeviceClient():m_nRef(0),
+DeviceClient::DeviceClient():
+    m_nRef(0),
 	m_DeviceConnecton(NULL),
-	m_pRemotePlayback(NULL),
+    m_DeviceConnectonBubble(NULL),
+    m_DeviceConnectonHole(NULL),
+    m_DeviceConnectonTurn(NULL),
+    m_bIsInitFlags(false),
+    m_bCloseingFlags(false),
+    m_CurStatus(IDeviceClient::STATUS_DISCONNECTED),
+    m_pRemotePlayback(NULL),
 	m_nChannels(0),
 	m_nSpeedRate(0),
-	m_nStartTimeSeconds(0),
+    m_nStartTimeSeconds(0),
+    m_bGroupStop(false),
 	m_channelWithAudio(-1),
-	m_DeviceConnectonBubble(NULL),
-	m_DeviceConnectonHole(NULL),
-	m_DeviceConnectonTurn(NULL),
-	m_pProtocolPTZ(NULL),
-	bIsInitFlags(false),
-	bCloseingFlags(false),
-	m_bGroupStop(false),
-	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED)
+    m_pProtocolPTZ(NULL)
 {
 	pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
 	/*pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);*/
@@ -107,7 +108,7 @@ DeviceClient::~DeviceClient()
 	m_groupMap.clear();
 }
 
-long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
+long __stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 {
 	if (IID_IDeviceClient==iid)
 	{
@@ -146,7 +147,7 @@ long _stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 	return S_OK;
 }
 
-unsigned long _stdcall DeviceClient::AddRef()
+unsigned long __stdcall DeviceClient::AddRef()
 {
 	m_csRef.lock();
 	m_nRef++;
@@ -154,7 +155,7 @@ unsigned long _stdcall DeviceClient::AddRef()
 	return m_nRef;
 }
 
-unsigned long _stdcall DeviceClient::Release()
+unsigned long __stdcall DeviceClient::Release()
 {
 	int nRet=0;
 	m_csRef.lock();
@@ -236,10 +237,10 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 {
 	// 检测状态
 	// 已连接则返回错误
-	bCloseingFlags=false;
+    m_bCloseingFlags=false;
 	m_ports.insert("media",uiPort);
 	//注册回调函数
-	if (false==bIsInitFlags)
+    if (false==m_bIsInitFlags)
 	{
 		cbInit();
 	}
@@ -265,7 +266,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					break;
 				}
 				m_DeviceConnecton=m_DeviceConnectonBubble;
-				if (true==bCloseingFlags)
+                if (true==m_bCloseingFlags)
 				{
 					nStep=1;
 					break;
@@ -305,7 +306,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 				}
 				int nRet=1;
 				m_DeviceConnecton=m_DeviceConnectonHole;
-				if (true==bCloseingFlags)
+                if (true==m_bCloseingFlags)
 				{
 					nStep=2;
 					break;
@@ -337,7 +338,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 				}
 				int nRet=1;
 				m_DeviceConnecton=m_DeviceConnectonTurn;
-				if (true==bCloseingFlags)
+                if (true==m_bCloseingFlags)
 				{
 					nStep=4;
 					break;
@@ -357,7 +358,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 			//连接成功
 		case 3:
 			{
-				bCloseingFlags=false;
+                m_bCloseingFlags=false;
 				if (IDeviceClient::STATUS_CONNECTED!=m_CurStatus)
 				{
 					m_CurStatus=IDeviceClient::STATUS_CONNECTED;
@@ -372,7 +373,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 		case 4:
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<sEseeId<<sAddr<<"connect fail";
-				bCloseingFlags=false;
+                m_bCloseingFlags=false;
 				if (IDeviceClient::STATUS_DISCONNECTED!=m_CurStatus)
 				{
 					m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -456,7 +457,7 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 int DeviceClient::closeAll()
 {
 	m_csCloseAll.lock();
-	bCloseingFlags=true;
+    m_bCloseingFlags=true;
 	//释放云台控制相关资源
 	if (NULL != m_pProtocolPTZ)
 	{
@@ -467,7 +468,8 @@ int DeviceClient::closeAll()
 	if (IDeviceClient::STATUS_DISCONNECTED==m_CurStatus)
 	{
 		m_csCloseAll.unlock();
-		goto end;
+        m_bCloseingFlags = false;
+        return 0;
 	}
 	//设置正在断开的状态，并抛出
 	m_CurStatus=IDeviceClient::STATUS_DISCONNECTING;
@@ -481,9 +483,9 @@ int DeviceClient::closeAll()
 	if (NULL==m_DeviceConnecton)
 	{
 		m_csCloseAll.unlock();
-		goto end;
+        m_bCloseingFlags = false;
+        return 0;
 	}
-
 
 	m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&m_CloseAllConnect);
 	if (NULL!=m_CloseAllConnect)
@@ -492,8 +494,8 @@ int DeviceClient::closeAll()
 		m_CloseAllConnect->Release();
 	}
 	m_csCloseAll.unlock();
-end:
-	bCloseingFlags=false;
+
+    m_bCloseingFlags=false;
 	return 0;
 }
 
@@ -538,7 +540,7 @@ int DeviceClient::ConnectStatusProc(QVariantMap evMap)
 	}
 	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED)
 	{
-		bCloseingFlags=true;
+        m_bCloseingFlags=true;
 	}
 	return 0;
 }
@@ -609,7 +611,7 @@ int DeviceClient::cbInit()
 			IEventReg->Release();
 		}
 	}
-	bIsInitFlags=true;
+    m_bIsInitFlags=true;
 	return 0;
 }
 int cbXStateChange(QString evName,QVariantMap evMap,void*pUser)
@@ -675,7 +677,7 @@ void DeviceClient::bufferStatus(int persent, BufferManager* pBuff)
 // 	void* wind = (void*)iter->wnd;
 // 	int *wind = reinterpret_cast<int*>(iter->wnd);
 
-	int wind = (int)iter->wnd;
+    quintptr wind = (quintptr)iter->wnd;
 
 	QVariantMap item;
 	item.insert("Persent", persent);
@@ -711,7 +713,7 @@ int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & s
 		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
 		return 2;
 	}
-	if (false==bIsInitFlags)
+    if (false==m_bIsInitFlags)
 	{
 		cbInit();
 	}
@@ -751,7 +753,7 @@ int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
 
 	//insert new item into the map
 	WndPlay wndPlay;
-	if (1 != (m_nChannels>>(nChannel))&1)
+    if (1 != ((m_nChannels>>(nChannel))&1))
 	{
 		m_nChannels |= 1<<(nChannel);
 
@@ -794,7 +796,7 @@ int DeviceClient::GroupPlay(int nTypes,const QDateTime & start,const QDateTime &
 		QMap<int, WndPlay>::iterator iter = m_groupMap.begin();
 		while(iter != m_groupMap.end())
 		{
-			int wind = (int)iter->wnd;
+            quintptr wind = (quintptr)iter->wnd;
 			QVariantMap item;
 			item.insert("Persent", 0);
 			item.insert("wind", wind);
@@ -936,7 +938,7 @@ bool DeviceClient::GroupEnableAudio(bool bEnable)
 }
 int DeviceClient::GroupSetVolume(unsigned int uiPersent, QWidget* pWnd)
 {
-	if (uiPersent < 0)
+    if ((int)uiPersent < 0)
 	{
 		return 1;
 	}
@@ -1233,6 +1235,7 @@ int DeviceClient::cbConnectRefuse( QVariantMap &evMap )
 
 int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)
 {
+    Q_UNUSED(evName);
 	int nRet = 0;
 	DeviceClient *pClient = (DeviceClient*)pUser;
 

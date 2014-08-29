@@ -12,15 +12,15 @@
 int __cdecl cbGetStream(QString evName,QVariantMap evMap,void*pUser);
 
 RemoteBackup::RemoteBackup(void):
-m_pBackupConnect(NULL),
-m_backuping(false),
-m_bAudioBeSet(false),
-m_bCheckDisk(false),
-m_bCheckBlock(false),
-m_nPosition(0),
-m_progress(0.0f),
-m_videoHeight(0),
-m_videoWidth(0)
+    m_pBackupConnect(NULL),
+    m_videoHeight(0),
+    m_videoWidth(0),
+    m_bAudioBeSet(false),
+    m_backuping(false),
+    m_bCheckDisk(false),
+    m_bCheckBlock(false),
+    m_nPosition(0),
+    m_progress(0.0f)
 {
 	m_backproc.backproc = NULL;
 	m_backproc.pUser = NULL;
@@ -95,7 +95,7 @@ int RemoteBackup::WriteFrameData(QVariantMap &frameinfo)
 	recframe.pdata = new char[recframe.datasize];
 	if(NULL == recframe.pdata)
 		return 2;
-	char* pfdata = (char*)frameinfo["data"].toUInt();
+    char* pfdata = (char*)frameinfo["data"].value<quintptr>();
 	memcpy(recframe.pdata,pfdata,recframe.datasize);
 	
 	//Calculation the frame
@@ -497,7 +497,7 @@ void RemoteBackup::run()
 		case SET_VIDEO:{
 			m_nPosition=__LINE__;
 			m_bufflock.lock();
-			AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,25,"X264");
+            AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,25,(char *)"X264");
 			nStep=WRITE_FRAME;
 			m_bufflock.unlock();
 					   }
@@ -707,7 +707,7 @@ void RemoteBackup::run()
 						iFrameCount = i;
 					}
 				}
-				AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,iFrameCount,"X264");
+                AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,iFrameCount,(char *)"X264");
 				AVI_close(pAviFile);
 				pAviFile = NULL;
 				m_bufflock.unlock();
@@ -737,7 +737,7 @@ void RemoteBackup::run()
 			m_nPosition=__LINE__;
 			if (pAviFile!=NULL)
 			{
-				AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,25,"X264");
+                AVI_set_video(pAviFile,m_videoWidth,m_videoHeight,25,(char *)"X264");
 				AVI_close(pAviFile);
 				pAviFile=NULL;
 			}else{
