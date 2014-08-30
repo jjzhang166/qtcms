@@ -16,5 +16,6 @@ SUBDIRS += \
     ../src/functionlibs/BubbleProtocolEx \
 #   ../src/functionlibs/DDrawRenderObject \
 #   ../src/functionlibs/DdrawRender \ must use another component to instead it
-    ../src/functionlibs/DeviceClient
+    ../src/functionlibs/DeviceClient \
+    ../src/functionlibs/UnixCommonTools
 
