@@ -45,13 +45,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					oSelected[i].checked = true;
 				}
 			}
-			/* 有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
+			/*有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
 		})
 
 		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
 			var min = $('table.table .no_border').width(),
 				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
-			if(event.pageX > max) return;
+			//if(event.pageX > max) return;
 			try{
 				groupStop();
 				/*dragStopMove();
@@ -69,7 +69,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	    		return;
 	    	}
 			//event.stopPropagation();
-			var moveObj = $('div.play_time').css('left',left-1);
+			var moveObj = $('div.play_time').css('left',left-1.5);
 
 			showNowPlayBackTime($('#now_time'),left-min,max-min);
 
@@ -614,6 +614,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					width = width < 1 ? 1 : width;
 				var left = start*p+min+1;
 				var types = data.types || 8;
+
 				if(bool){ // 本地回放
 					var target = oFileUIwarp.eq(localSearchWindNum);
 					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
@@ -752,10 +753,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function ThrowExceptionCallback(data){
-		console.log(data);
 		dragStopMove();
 		var arr = [_T('Available'),_T('Abnormal_damaged')];
-		alert(T('ThrowException',data.wndId,data.filepath,arr[data.expCode]));
+		alert(T('ThrowException',data.wndId,data.filePath,arr[data.expCode]));
 	}
 
 	//初始化控件与文件列表的关系.

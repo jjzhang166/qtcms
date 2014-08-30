@@ -11,7 +11,7 @@
 <link href="css/jquery-ui.css" type="text/css" rel="stylesheet" />
 <link href="css/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet" />
 <!-- 语言文件 -->
-<script type="text/javascript" src="lang/en_GB.js"></script>
+<script type="text/javascript" src="lang/zh_CN.js"></script>
 <!-- 语言文件 end -->
 
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -90,7 +90,7 @@
 <body style="background:#282828;">
 <object type="application/cms-common-library" id="commonLibrary" style="width:0; height:0; position: absolute;"></object>
 <script type="text/javascript">
-	lang = window[document.getElementById('commonLibrary').getLanguage()] || en_GB;
+	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
 <object type="application/cms-dsview-windows" id="devSearch" style="width:0; height:0;position: absolute;"></object>
 	<div id="top">
@@ -174,14 +174,12 @@
 				<table id="Allocation" class="tb1 tb2" cellpadding="0" style="height:146px;position: absolute;">
 					<thead>
                     <tr>
-                    <td colspan="2" style=" text-align:left">
+                    <td colspan="4" style=" text-align:left">
                     <input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" />
                     <label for="SerachedDevList_SelectAll"><script>T("Select")</script></label>
-                    </td>
-					<td  colspan="2" style=" text-align:right;"> 
-					<div style="float:left;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text" /></div>
-					<div  id="search_btn" onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:left;margin-left:10px;"><script>T("search_btn")</script></div>
-					<div  id="quit_btn"  onclick="quitbtn();" class="hover inpt2"  style="background-position: 0px 0px;float:left;margin-left:10px;"><script>T("quit_btn")</script></div>
+					<div  id="quit_btn"  onclick="quitbtn();" class="hover inpt2"  style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("quit_btn")</script></div>
+					<div  id="search_btn" onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("search_btn")</script></div>
+					<div style="float:right;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text" /></div>
 					</td>
                     </tr>
                     </thead>

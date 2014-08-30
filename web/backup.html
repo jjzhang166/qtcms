@@ -371,11 +371,7 @@ var oPlayBack={},  // 远程回访控件对象
 					newed = returnTime(parseInt((time2Sec(st)/3600),10)*3600+3600);
 
 					newed = newed > end ? end : newed;
-				if(st >= end){
-					/*console.log(st+'//'+end+'-----------------'+(st > end));
-					console.log();*/
-					return aa;
-				}
+
 				o.channelnum = obj.channelnum;
 				o.filename = obj.filename;
 				o.index = obj.index;
@@ -385,6 +381,12 @@ var oPlayBack={},  // 远程回访控件对象
 				st = newed;
 
 				aa.push(o);
+
+				if(newed >= end){
+					//console.log(st+'//'+newed+'-----------------'+(newed >= end));
+					//console.log(aa);
+					return aa;
+				}
 			}
 		}
 
