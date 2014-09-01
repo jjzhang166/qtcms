@@ -200,6 +200,9 @@ var oPreView,oDiv,
 
 
 		initOxcDevListStatus();
+		
+		//设备是否自动连接功能
+		DevAutoConnected();
 
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
@@ -566,6 +569,15 @@ var oPreView,oDiv,
 			}
 		}
 	}
+    
+	  function DevAutoConnected(){ //判断在页面加载完之后是否自动连接列表中所有设备
+	    var booll =$("#search_device .dev_list ul:gt(0) span").hasClass("device");
+		
+		if(booll && oCommonLibrary.getAutoConnect()) //如果设备列表不为空，且自动连接设备为true
+		{	   
+		    openCloseAll(1); //打开列表中的全部设备
+		   }
+	   }
 
 	function viewFullScreen(){
 		if(bFullScreen){
