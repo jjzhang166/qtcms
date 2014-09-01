@@ -1,0 +1,6 @@
+#ifndef WINSTORAGEUTINITY_GLOBAL_H
+#define WINSTORAGEUTINITY_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#endif // WINSTORAGEUTINITY_GLOBAL_H

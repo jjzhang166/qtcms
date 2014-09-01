@@ -15,6 +15,7 @@
 #include <QStringList>
 #include <QMultiMap>
 #include <QTimer>
+#include <IStorage.h>
 typedef struct __tagBackUpInfo{
 	QString sAddr;
 	unsigned int uiPort;
@@ -80,6 +81,10 @@ protected:
 private slots:
 	void slCheckDisk();
 	void slCheckBlock();
+
+private:
+	void initFileSystem();
+	void deinitFileSystem();
 private:
 	typedef int (__cdecl *BackProc)(QString,QVariantMap,void *);
 	typedef struct _evItem{
@@ -92,7 +97,7 @@ private:
 	void eventProcCall(QString sEventName,QVariantMap parm);
 
 	void clearbuffer();
-	bool getUsableDisk(QString disk);
+	bool getUsableDisk(QString sPath);
 
 	QMutex m_bufflock;
 	QQueue<RecFrame> m_bufferqueue;
@@ -127,5 +132,6 @@ private:
 	QMultiMap<QString,evItem> m_eventMap;
 	QTimer m_tCheckDisk;
 	QTimer m_tCheckBlock;
+	IStorage * m_iStorage;
 };
 

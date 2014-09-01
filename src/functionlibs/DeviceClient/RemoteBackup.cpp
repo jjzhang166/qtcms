@@ -2,6 +2,9 @@
 #include <QtCore/QDir>
 #include "netlib.h"
 #include "guid.h"
+#include <QtCore/QCoreApplication>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomNode>
 //#include <QtCore/QElapsedTimer>
 
 #define AVENC_IDR		0x01
@@ -20,7 +23,8 @@ RemoteBackup::RemoteBackup(void):
     m_bCheckDisk(false),
     m_bCheckBlock(false),
     m_nPosition(0),
-    m_progress(0.0f)
+    m_progress(0.0f),
+	m_iStorage(NULL)
 {
 	m_backproc.backproc = NULL;
 	m_backproc.pUser = NULL;
@@ -33,6 +37,8 @@ RemoteBackup::RemoteBackup(void):
 	connect(&m_tCheckDisk,SIGNAL(timeout()),this,SLOT(slCheckDisk()));
 	m_tCheckDisk.start(3000);
 	m_tCheckBlock.start(5000);
+
+	initFileSystem();
 }
 
 
@@ -41,6 +47,7 @@ RemoteBackup::~RemoteBackup(void)
 	m_backuping=false;
 	wait();
 	clearbuffer();
+	deinitFileSystem();
 }
 
 int RemoteBackup::StartByParam( const QString &sAddr,unsigned int uiPort,const QString &sEseeId, int nChannel, int nTypes, const QString &sDeviceName,const QDateTime & startTime, const QDateTime & endTime, const QString & sbkpath )
@@ -799,26 +806,25 @@ void RemoteBackup::run()
 	}
 }
 
-bool RemoteBackup::getUsableDisk(QString sdisk)
+bool RemoteBackup::getUsableDisk(QString sPath)
 {
 	bool flags=false;
-	int freesizem;
-	QStringList distlist=sdisk.split(":");
-	sdisk=distlist.at(0);
-	sdisk.append(":");
-		//使用默认大小
-	freesizem=1024;
+	int freesizem = 1024;
 	quint64 FreeByteAvailable=0;
 	quint64 TotalNumberOfBytes=0;
 	quint64 TotalNumberOfFreeBytes=0;
-	if (GetDiskFreeSpaceExQ(sdisk.toAscii().data(),&FreeByteAvailable,&TotalNumberOfBytes,&TotalNumberOfFreeBytes))
+	if (NULL == m_iStorage)
 	{
-		if (TotalNumberOfFreeBytes>(quint64)freesizem*1024*1024*2)
+		return false;
+	}
+	if (m_iStorage->GetFreeSpace(sPath,FreeByteAvailable,TotalNumberOfBytes,TotalNumberOfFreeBytes))
+	{
+		if (FreeByteAvailable>(quint64)freesizem*1024*1024*2)
 		{
-			flags=true;
+			return true;
 		}
 	}
-	return flags;
+	return false;
 }
 
 
@@ -846,6 +852,55 @@ void RemoteBackup::slCheckBlock()
 		qDebug()<<__FUNCTION__<<__LINE__<<"block at position ::"<<m_nPosition;
 	}else{
 		// do nothing
+	}
+}
+
+void RemoteBackup::initFileSystem()
+{
+	// 打开配置文件
+	QString sConfFilePath = QCoreApplication::applicationDirPath() + QString("/pcom_config.xml");
+	QDomDocument confFile;
+	QFile * file = new QFile(sConfFilePath);
+	file->open(QIODevice::ReadOnly);
+	confFile.setContent(file);
+
+	// 获取filesystem类的组件
+	QDomNode clsidNode = confFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList items = clsidNode.childNodes();
+	int i;
+	for (i = 0; i < items.count(); i++)
+	{
+		QDomNode node = items.at(i);
+		QString name = node.toElement().attribute("name");
+		// filesystem 类型的组件
+		if (name.contains(QRegExp("^filesystem\\.")))
+		{
+			QString sCLSID = node.toElement().attribute("clsid");
+			GUID clsid_node = pcomString2GUID(sCLSID);
+			m_iStorage = NULL;
+			// 是否支持IStorage接口
+			pcomCreateInstance(clsid_node,NULL,IID_IStorage,(void **)&m_iStorage);
+			if (NULL == m_iStorage)
+			{
+				continue;
+			}
+			break;
+		}
+	}
+
+	Q_ASSERT_X(NULL != m_iStorage,__FUNCTION__,"create system file componet");
+
+	// 释放资源处 file
+	file->close();
+	delete file;
+}
+
+void RemoteBackup::deinitFileSystem()
+{
+	if (NULL != m_iStorage)
+	{
+		m_iStorage->Release();
+		m_iStorage = NULL;
 	}
 }
 

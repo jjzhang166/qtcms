@@ -1,0 +1,4 @@
+LIBRARY winStorageUtinity.dll
+EXPORTS
+	CreateInstance @1
+	

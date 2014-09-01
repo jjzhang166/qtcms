@@ -179,6 +179,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BubbleProtocolEx", "..\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RecordDat", "..\src\functionlibs\RecordDat\RecordDat.vcxproj", "{8D80627D-CC88-478E-9B0C-130591900749}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winStorageUtinity", "..\src\functionlibs\winStorageUtinity\winStorageUtinity.vcxproj", "{8B88E949-54B7-433E-A434-88169E4739AC}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -368,6 +370,10 @@ Global
 		{8D80627D-CC88-478E-9B0C-130591900749}.Debug|Win32.Build.0 = Debug|Win32
 		{8D80627D-CC88-478E-9B0C-130591900749}.Release|Win32.ActiveCfg = Release|Win32
 		{8D80627D-CC88-478E-9B0C-130591900749}.Release|Win32.Build.0 = Release|Win32
+		{8B88E949-54B7-433E-A434-88169E4739AC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B88E949-54B7-433E-A434-88169E4739AC}.Debug|Win32.Build.0 = Debug|Win32
+		{8B88E949-54B7-433E-A434-88169E4739AC}.Release|Win32.ActiveCfg = Release|Win32
+		{8B88E949-54B7-433E-A434-88169E4739AC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -103,4 +103,6 @@ extern const CLSID CLSID_Bubble;
 extern const CLSID CLSID_RecordDat;
 extern const IID IID_IRecordDat;
 extern const IID IID_IStorage;
+extern const CLSID CLSID_UnixCommonTools;
+extern const CLSID CLSID_winStorageUtinity;
 #endif
