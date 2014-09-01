@@ -12,6 +12,7 @@ BufferQueue::~BufferQueue()
 
 bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 {
+	m_tEnqueueDataLock.lock();
 	m_tDataLock.lock();
 	if (m_tDataQueue.size()>m_nQueueMaxSize)
 	{
@@ -30,6 +31,15 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	int nDataLength=tFrameInfo["length"].toInt();
 	int nFrameHeadLength=sizeof(tagFrameHead);
 	int nApplyLength=nDataLength+nFrameHeadLength-sizeof(char*);
+	if (tFrameInfo["frametype"].toUInt()==IFRAME)
+	{
+		nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
+	}else if (tFrameInfo["frametype"].toUInt()==AFRMAE)
+	{
+		nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);
+	}else{
+		//do nothing
+	}
 	RecBufferNode tRecBufferNode;
 	tagFrameHead *pFrameHead=NULL;
 	pFrameHead=(tagFrameHead*)m_tAllocation.applySpace(nApplyLength);
@@ -45,15 +55,32 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 		pFrameHead->uiType=tFrameInfo["frametype"].toUInt();
 		char *pData=(char*)tFrameInfo["data"].toUInt();
 		memcpy(pFrameHead->pBuffer,pData,nDataLength);
+		if (pFrameHead->uiType==AFRMAE)
+		{
+			tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*)+1);
+			pVideoConfigFrame->uiHeight=tFrameInfo["height"].toInt();
+			pVideoConfigFrame->uiWidth=tFrameInfo["width"].toInt();
+			pVideoConfigFrame->ucReversed;//δ֪
+			pVideoConfigFrame->ucVideoDec;//δ֪
+		}else if (pFrameHead->uiType==PFRAME)
+		{
+			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*)+1);
+			pAudioConfigFrame->uiSamplebit=tFrameInfo["samplewidth"].toInt();
+			pAudioConfigFrame->uiSamplerate
+		}else{
+			//do nothing
+		}
 		tRecBufferNode.setDataPointer(pFrameHead);
 		m_tDataQueue.enqueue(&tRecBufferNode);
 		m_tDataLock.unlock();
+		m_tEnqueueDataLock.unlock();
 		return true;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"enqueue fail as allocation fail,there may be run out of memory";
 		abort();
 	}
 	m_tDataLock.unlock();
+	m_tEnqueueDataLock.unlock();
 	return false;
 }
 
@@ -113,9 +140,21 @@ RecBufferNode * BufferQueue::front()
 	if (m_tDataQueue.size()>0)
 	{
 		pRecBufferNode=m_tDataQueue.front();
+		pRecBufferNode->addRef();
 	}else{
 
 	}
 	m_tDataLock.unlock();
 	return pRecBufferNode;
 }
+
+void BufferQueue::enqueueDataLock()
+{
+	m_tEnqueueDataLock.lock();
+}
+
+void BufferQueue::enqueueDataUnLock()
+{
+	m_tEnqueueDataLock.unlock();
+}
+

@@ -14,6 +14,7 @@
 #include <QIODevice>
 #include <IDisksSetting.h>
 #include <QEventLoop>
+#include <QList>
 #define OVERWRITE 0
 #define  ADDWRITE 1
 #define  BUFFERSIZE 120//单位：M
@@ -34,6 +35,11 @@ typedef struct __tagRecordDatCoreFileInfo{
 	QMap<int ,tagRecordDatCoreWndInfo> tWndInfo;
 	QMap<int ,int> tFristIFrameIndex;
 }tagRecordDatCoreFileInfo;
+typedef struct __tagRecordDatDatabaseInfo{
+	QList<int > tRemoveChannel;
+	QMap<int ,int> tChannelInRecordDatabaseId;
+	QMap<int ,int> tChannelInSearchDatabaseId;
+}tagRecordDatDatabaseInfo;
 typedef enum __tagRecordDatStepCode{
 	recordDat_init,//各项参数初始化
 	recordDat_filePath,//查找写文件的路径
@@ -47,7 +53,10 @@ typedef enum __tagRecordDatStepCode{
 }tagRecordDatStepCode;
 typedef enum __tagRecordDatReset{
 	recordDatReset_fileError,//文件错误
-	recordDatReset_outOfDisk//磁盘空间不足
+	recordDatReset_outOfDisk,//磁盘空间不足
+	recordDatReset_searchDatabase,//搜索数据库操作失败
+	rrecordDatReset_recordDatabase,//录像数据库操作失败
+	rrecordDatReset_writeToDisk,//写磁盘失败
 }tagRecordDatReset;
 typedef enum __tagRecordDatToDiskType{
 	recordDatToDiskType_null,//不操作
@@ -96,7 +105,12 @@ private:
 	bool createNewFile(QString sFilePath);
 	bool getIsRecover();
 	void sleepEx(quint64 uiTime);
-	int writeToBuffer(int nChannel);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
+	bool updateSearchDatabase();
+	bool updateRecordDatabase();
+	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
+	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
+	bool writeTodisk();
+	int writeToBuffer(int nChannel,QString sFilePath);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
 private:
 	QMap<int ,BufferQueue *> m_tBufferQueueMap;
 	tagRecordDatCoreFileInfo m_tFileInfo;
@@ -119,5 +133,6 @@ private:
 	int m_nWriteMemoryChannel;
 	bool m_bWriteDiskTimeFlags;
 	int m_nWriteDiskTimeCount;
+	tagRecordDatDatabaseInfo m_tDatabaseInfo;
 };
 

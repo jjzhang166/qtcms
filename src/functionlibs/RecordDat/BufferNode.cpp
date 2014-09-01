@@ -10,6 +10,13 @@ RecBufferNode::RecBufferNode(void):m_nRef(0),
 
 RecBufferNode::~RecBufferNode(void)
 {
+	m_tDataLock.lock();
+	if (NULL!=m_pFrameHead)
+	{
+		free(m_pFrameHead);
+		m_pFrameHead=NULL;
+	}
+	m_tDataLock.unlock();
 }
 
 int  RecBufferNode::release()
@@ -21,6 +28,7 @@ int  RecBufferNode::release()
 	m_csRef.unlock();
 	if (0 == nRet)
 	{
+		m_tDataLock.lock();
 		if (NULL!=m_pFrameHead)
 		{
 			free(m_pFrameHead);
@@ -28,6 +36,7 @@ int  RecBufferNode::release()
 		}else{
 			//do nothing
 		}
+		m_tDataLock.unlock();
 		delete this;
 	}
 	return nRet;
@@ -35,13 +44,16 @@ int  RecBufferNode::release()
 
 void RecBufferNode::setDataPointer( tagFrameHead *pFrameHead )
 {
+	m_tDataLock.lock();
 	m_pFrameHead=pFrameHead;
+	m_tDataLock.unlock();
 }
 
 void RecBufferNode::getDataPointer( tagFrameHead **pFrameHead )
 {
+	m_tDataLock.lock();
 	*pFrameHead=m_pFrameHead;
-	addRef();
+	m_tDataLock.unlock();
 }
 
 int RecBufferNode::addRef()
