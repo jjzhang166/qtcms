@@ -12,6 +12,9 @@ BufferQueue::~BufferQueue()
 
 bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 {
+	//I:tagFrameHead+tagVideoConfigFrame
+	//P:tagFrameHead
+	//A:tagFrameHead+tagAudioConfigFrame
 	m_tEnqueueDataLock.lock();
 	m_tDataLock.lock();
 	if (m_tDataQueue.size()>m_nQueueMaxSize)
@@ -57,16 +60,17 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 		memcpy(pFrameHead->pBuffer,pData,nDataLength);
 		if (pFrameHead->uiType==AFRMAE)
 		{
-			tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*)+1);
+			tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 			pVideoConfigFrame->uiHeight=tFrameInfo["height"].toInt();
 			pVideoConfigFrame->uiWidth=tFrameInfo["width"].toInt();
-			pVideoConfigFrame->ucReversed;//δ֪
-			pVideoConfigFrame->ucVideoDec;//δ֪
+			pVideoConfigFrame->ucReversed;//未填充
+			pVideoConfigFrame->ucVideoDec;//未填充
 		}else if (pFrameHead->uiType==PFRAME)
 		{
-			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*)+1);
+			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 			pAudioConfigFrame->uiSamplebit=tFrameInfo["samplewidth"].toInt();
-			pAudioConfigFrame->uiSamplerate
+			pAudioConfigFrame->uiSamplerate=tFrameInfo["samplerate"].toInt();
+			pAudioConfigFrame->uiChannels=tFrameInfo["channel"].toInt();
 		}else{
 			//do nothing
 		}

@@ -13,7 +13,7 @@
 typedef struct __tagFrameHead{
 	unsigned int uiType;
 	unsigned int uiLength;
-	unsigned int uiChannel;
+	unsigned int uiChannel;//¥∞ø⁄∫≈
 	unsigned int uiPts;
 	unsigned int uiGentime;
 	unsigned int uiRecType;
@@ -21,14 +21,7 @@ typedef struct __tagFrameHead{
 	unsigned int uiSessionId;
 	char *pBuffer;
 }tagFrameHead;
-typedef struct __tagFileHead{
-	unsigned char ucMagic[4];//JUAN
-	unsigned int uiVersion;
-	unsigned int uiChannels[2];
-	unsigned int uiStart;
-	unsigned int uiEnd;
-	unsigned int uiIndex;
-}tagFileHead;
+
 typedef struct __tagVideoConfigFrame{
 	unsigned int uiWidth;
 	unsigned int uiHeight;
@@ -42,12 +35,33 @@ typedef struct __tagAudioConfigFrame{
 	unsigned char ucAudioDec[4];
 }tagAudioConfigFrame;
 typedef struct __tagIFrameIndex{
-	unsigned int uiFirstIFrame[64];
+	unsigned int uiFirstIFrame[64];//I÷°µƒ≈‰÷√÷°Œª÷√
 }tagIFrameIndex;
+typedef struct __tagFileHead{
+	unsigned char ucMagic[4];//JUAN
+	unsigned int uiVersion;
+	unsigned int uiChannels[2];
+	unsigned int uiStart;
+	unsigned int uiEnd;
+	unsigned int uiIndex;
+	tagIFrameIndex tIFrameIndex;
+}tagFileHead;
 typedef struct __tagPerFrameIndex{
 	unsigned int uiPreFrame;
-	unsigned int uiPreIFrame;
+	unsigned int uiPreIFrame;//I÷°µƒ≈‰÷√÷°Œª÷√
 	unsigned int uiNextFrame;
-	unsigned int uiNextIFrame;
+	unsigned int uiNextIFrame;//I÷°µƒ≈‰÷√÷°Œª÷√
 }tagPerFrameIndex;
+typedef struct __tagFileFrameHead{
+	tagPerFrameIndex tPerFrameIndex;
+	tagFrameHead tFrameHead;
+}tagFileFrameHead;
+typedef enum __tagFrameType{
+	FT_Audio,//00
+	FT_IFrame,//01
+	FT_PFrame,//02
+	FT_BFrame,
+	FT_AudioConfig,
+	FT_VideoConfig
+}tagFrameType;
 #endif // RECORDDAT_GLOBAL_H

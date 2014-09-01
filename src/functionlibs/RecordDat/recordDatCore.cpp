@@ -149,6 +149,7 @@ void recordDatCore::run()
 			if (memcmp(pMagic,pFileHead->ucMagic,4)==0)
 			{
 				//do nothing
+
 			}else{
 				memcpy(pFileHead->ucMagic,pMagic,4);
 				pFileHead->uiChannels[0]=0;
@@ -157,6 +158,43 @@ void recordDatCore::run()
 				pFileHead->uiStart=0;
 				pFileHead->uiVersion=0;
 				pFileHead->uiIndex=sizeof(tagFileHead);
+				for(int i=0;i<sizeof(tagIFrameIndex);i++){
+					pFileHead->tIFrameIndex.uiFirstIFrame[i]=0;
+				}
+				m_tFileInfo.tFristIFrameIndex.clear();
+				m_tFileInfo.tHistoryFrameIndex.clear();
+				m_tFileInfo.tHistoryIFrameIndex.clear();
+			}
+			//建立buffer内所有通道的位置索引
+			unsigned int uiCurrentIndex=sizeof(tagFileHead);
+			bool bStop=false;
+			while(bStop==false){
+				if (uiCurrentIndex<pFileHead->uiIndex)
+				{
+					tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+uiCurrentIndex);
+					int nChannel=pFileFrameHead->tFrameHead.uiChannel;
+
+					if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
+					{
+						//通道的第一个I帧
+						if (!m_tFileInfo.tFristIFrameIndex.contains(nChannel))
+						{
+							m_tFileInfo.tFristIFrameIndex.insert(nChannel,uiCurrentIndex);
+						}else{
+							//do nothing
+						}
+						//通道的最后一个I帧的位置
+						m_tFileInfo.tHistoryIFrameIndex[nChannel]=uiCurrentIndex;
+					}else{
+						//do nothing
+					}
+					//通道最后一个帧的位置
+					m_tFileInfo.tHistoryFrameIndex.insert(nChannel,uiCurrentIndex);
+
+					uiCurrentIndex=uiCurrentIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFileFrameHead->tFrameHead.pBuffer);
+				}else{
+					bStop=true;
+				}
 			}
 			nRunStep=recordDat_default;
 								  }
@@ -716,12 +754,326 @@ void recordDatCore::sleepEx( quint64 uiTime )
 	}
 	return;
 }
+int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
+{
+	//返回值（按位）：00(0)：buffer未满&&没写入buffer；01(1)：buffer未满&&写入buffer；10(2)：buffer已满&&未写入buffer；11(3)：buffer已满&&写入buffer
+	int nFlags=0;
+	if (m_tBufferQueueMap.contains(nChannel))
+	{
+		BufferQueue *pBufferQueue=m_tBufferQueueMap.value(nChannel);
+		pBufferQueue->enqueueDataLock();
+		tagFileHead *pFileHead=(tagFileHead*)m_pDataBuffer;
+		int nHistoryType=m_tFileInfo.tWndInfo.value(nChannel).uiHistoryRecordType;
+		int nCurrentType=m_tFileInfo.tWndInfo.value(nChannel).uiCurrentRecordType;
+		uint nRecType=0;
+		quint64 uiTotalLength=BUFFERSIZE*1024*1024;
+		quint64 uiFrameSize=0;
+		uint nSearchItemId=0;
+		uint nRecordItemId=0;
+		int nStep=WriteToBuffer_Init;
+		bool bStop=false;
+		while(bStop==false){
+			switch(nStep){
+			case WriteToBuffer_Init:{
+				if (nHistoryType==nCurrentType&&nCurrentType==0)
+				{
+					nStep=WriteToBuffer_00;
+				}else if (nHistoryType==0&&nCurrentType!=0)
+				{
+					nStep=WriteToBuffer_01;
+				}else if (nHistoryType!=0&&nCurrentType==0)
+				{
+					nStep=WriteToBuffer_10;
+				}else if (nHistoryType==nCurrentType&&nCurrentType!=0)
+				{
+					nStep=WriteToBuffer_011;
+				}else if (nHistoryType!=0&&nCurrentType!=0)
+				{
+					nStep=WriteToBuffer_111;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"undefined record type change,terminate the thread";
+					abort();
+				}
+									}
+									break;
+			case WriteToBuffer_00:{
+				//historyType==currentType==0,无任何操作
+				nStep=WriteToBuffer_end;
+				nFlags=0;
+								  }
+								  break;
+			case WriteToBuffer_01:{
+				//historyType==0,currentType!=0,开始录像，需要等待I帧
+				//step 1:等待I帧
+				//step 2:创建数据库条目
+				//step 3:写帧
+				bool bFindIFrame=false;
+				RecBufferNode *pRecBufferNodeTemp=NULL;
+				//step 1:等待I帧
+				while(pBufferQueue->isEmpty()==false&&bFindIFrame==false){
+					pRecBufferNodeTemp=pBufferQueue->front();
+					if (NULL!=pRecBufferNodeTemp)
+					{
+						tagFrameHead *pFrameHead=NULL;
+						pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+						if (NULL!=pFrameHead)
+						{
+							if (pFrameHead->uiType==IFRAME)
+							{
+								bFindIFrame=true;
+							}else{
+								RecBufferNode *pRecBufferNodeTakeOut=NULL;
+								pRecBufferNodeTakeOut=pBufferQueue->dequeue();
+								pRecBufferNodeTakeOut->release();
+								pRecBufferNodeTakeOut=NULL;
+							}
+							pRecBufferNodeTemp->release();
+							pFrameHead=NULL;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
+							abort();
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
+						abort();
+					}
+				}
+				//step 2:创建数据库条目
+				if (bFindIFrame)
+				{
+					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+					quint64 uiEndTime=uiStartTime;
+					//step1:建立录像数据库条目
+					//step2:建立搜索数据库条目
+					if (createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,nSearchItemId))
+					{
+						if (createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nRecordItemId))
+						{
+							m_tDatabaseInfo.tChannelInRecordDatabaseId.insert(nChannel,nRecordItemId);
+							m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
+							m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
+							nHistoryType=nCurrentType;
+							if (nHistoryType&MOTIONRECORD)
+							{
+								nRecType=MOTIONRECORD;
+							}else if (nHistoryType&MANUALRECORD)
+							{
+								nRecType=MANUALRECORD;
+							}else if (nHistoryType&TIMERECORD)
+							{
+								nRecType=TIMERECORD;
+							}else{
+								//do nothing
+							}
+							nStep=WriteToBuffer_Write;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail,there must exist a error,i will terminate the thread";
+							abort();
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail,there must exist a error,i will terminate the thread";
+						abort();
+					}
+				}else{
+					nFlags=0;
+					nStep=WriteToBuffer_end;
+				}
+								  }
+								  break;
+			case WriteToBuffer_10:{
+				//historyType!=0,currentType==0,停止录像
+				//step 1:更新数据库
+								  }
+								  break;
+			case WriteToBuffer_011:{
+				//historyType==currentType!=0,类型没有转变，接着录像
+				//step 1:写帧
+								   }
+								   break;
+			case WriteToBuffer_111:{
+				//historyType!=currentType!=0,类型转换，接着录像
+				//step1：更新数据库
+				//step 2:创建数据库条目
+								   }
+								   break;
+			case WriteToBuffer_Write:{
+				//写一帧数据
+				bool bStopWrite=false;
+				RecBufferNode *pRecBufferNodeTemp=NULL;
+				while(bStopWrite==false&&pBufferQueue->isEmpty()==false){
+					nCurrentType=m_tFileInfo.tWndInfo.value(nChannel).uiCurrentRecordType;
+					if (nCurrentType==nHistoryType)
+					{
+						quint64 uiUnusedLength=uiTotalLength-pFileHead->uiIndex;
+						pRecBufferNodeTemp=pBufferQueue->front();
+						tagFrameHead *pFrameHead=NULL;
+						pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+						if (NULL!=pFrameHead)
+						{
+							//step1:判断buffer的长度是否还够
+							if (pFrameHead->uiType==IFRAME)
+							{
+								//补上配置帧
+								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFrameHead->pBuffer);
+							}else if (pFrameHead->uiType==PFRAME)
+							{
+								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer);
+							}else if (pFrameHead->uiType==AFRMAE)
+							{
+								//补上配置帧
+								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagAudioConfigFrame)-sizeof(pFrameHead->pBuffer);
+							}else{
+								qDebug()<<__FUNCTION__<<__LINE__<<"there is a undefined frame type,i will terminate the thread";
+								abort();
+							}
+							//step 2;写帧
+							if (uiUnusedLength<uiFrameSize)
+							{
+								//step1:写入配置帧			
+								if (pFrameHead->uiType==FT_IFrame)
+								{
+									tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileHead->uiIndex);
+									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead);
+									pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
+									pFrameHeadBuffer->uiExtension=pFrameHead->uiExtension;
+									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
+									pFrameHeadBuffer->uiLength=sizeof(tagVideoConfigFrame);
+									pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
+									pFrameHeadBuffer->uiRecType=nRecType;
+									pFrameHeadBuffer->uiSessionId=nRecordItemId;
+									pFrameHeadBuffer->uiType=FT_VideoConfig;
 
-int recordDatCore::writeToBuffer( int nChannel ,QString sFilePath)
+									tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFileFrameHead+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFrameHeadBuffer->pBuffer));
+									tagVideoConfigFrame *pVideoConfigFrameTemp=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
+									pVideoConfigFrame->uiHeight=pVideoConfigFrameTemp->uiHeight;
+									pVideoConfigFrame->uiWidth=pVideoConfigFrameTemp->uiWidth;
+									memcpy(pVideoConfigFrame->ucReversed,pVideoConfigFrameTemp->ucReversed,4);
+									memcpy(pVideoConfigFrame->ucVideoDec,pVideoConfigFrameTemp->ucVideoDec,4);
+									//tFristIFrameIndex
+									if (!m_tFileInfo.tFristIFrameIndex.contains(pFrameHead->uiChannel))
+									{
+										m_tFileInfo.tFristIFrameIndex.insert(pFrameHead->uiChannel,pFileHead->uiIndex);
+										pFileHead->tIFrameIndex.uiFirstIFrame[pFrameHead->uiChannel]=pFileHead->uiIndex;
+									}else{
+										//do nothing
+									}
+									//tHistoryIFrameIndex
+									//set uiPreIFrame
+									//set uiNextIFrame
+									if (!m_tFileInfo.tHistoryIFrameIndex.contains(nChannel))
+									{
+										m_tFileInfo.tHistoryIFrameIndex.insert(nChannel,pFileHead->uiIndex);
+										pFileFrameHead->tPerFrameIndex.uiPreIFrame=0;
+									}else{
+										pFileFrameHead->tPerFrameIndex.uiPreIFrame=m_tFileInfo.tHistoryIFrameIndex.value(nChannel);
+										m_tFileInfo.tHistoryIFrameIndex.insert(nChannel,pFileHead->uiIndex);
+										tagFileFrameHead *pLastFrameHead=(tagFileFrameHead*)(pFileHead+pFileFrameHead->tPerFrameIndex.uiPreIFrame);
+										pLastFrameHead->tPerFrameIndex.uiNextIFrame=pFileHead->uiIndex;
+									}
+									//tHistoryFrameIndex
+									//set uiPreFrame
+									//set uiNextFrame
+									if (!m_tFileInfo.tHistoryFrameIndex.contains(nChannel))
+									{
+										m_tFileInfo.tHistoryFrameIndex.insert(nChannel,pFileHead->uiIndex);
+										pFileFrameHead->tPerFrameIndex.uiPreFrame=0;
+									}else{
+										pFileFrameHead->tPerFrameIndex.uiPreFrame=m_tFileInfo.tHistoryFrameIndex.value(nChannel);
+										m_tFileInfo.tHistoryFrameIndex.insert(nChannel,pFileHead->uiIndex);
+										tagFileFrameHead *pLastFrameHead=(tagFileFrameHead*)(pFileHead+pFileFrameHead->tPerFrameIndex.uiPreFrame);
+										pLastFrameHead->tPerFrameIndex.uiNextFrame=pFileHead->uiIndex;
+									}
+
+									pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFileFrameHead->tFrameHead.pBuffer);
+								}else if (pFrameHead->uiType==FT_Audio)
+								{
+
+								}else if (pFrameHead->uiType==FT_PFrame)
+								{
+									//do nothing
+								}else{
+									qDebug()<<__FUNCTION__<<__LINE__<<"there is a undefined frame type,i will terminate the thread";
+									abort();
+								}
+								//step2:写入帧
+
+								//step 2:写入帧数据
+								tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileHead->uiIndex);
+								tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead);
+								pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
+								pFrameHeadBuffer->uiExtension=pFrameHead->uiExtension;
+								pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
+								pFrameHeadBuffer->uiLength=pFrameHead->uiLength;
+								pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
+								pFrameHeadBuffer->uiRecType=nRecType;
+								pFrameHeadBuffer->uiSessionId=nRecordItemId;
+								pFrameHeadBuffer->uiType=pFrameHead->uiType;
+								memcpy(pFrameHeadBuffer->pBuffer,pFrameHead->pBuffer,pFrameHead->uiLength);
+
+								//set uiPreIFrame
+								//set uiNextIFrame
+								if (m_tFileInfo.tHistoryIFrameIndex.contains(nChannel))
+								{
+									pFileFrameHead->tPerFrameIndex.uiPreIFrame=m_tFileInfo.tHistoryIFrameIndex.value(nChannel);
+								}else{
+									pFileFrameHead->tPerFrameIndex.uiPreIFrame=0;
+								}
+								pFileFrameHead->tPerFrameIndex.uiNextIFrame=0;
+
+								//set uiPreFrame
+								//set uiNextFrame
+								if (m_tFileInfo.tHistoryFrameIndex.contains(nChannel))
+								{
+									pFileFrameHead->tPerFrameIndex.uiPreFrame=m_tFileInfo.tHistoryFrameIndex.value(nChannel);
+									tagFileFrameHead *pLastFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileFrameHead->tPerFrameIndex.uiPreFrame);
+									pLastFileFrameHead->tPerFrameIndex.uiNextFrame=pFileHead->uiIndex;
+								}else{
+									pFileFrameHead->tPerFrameIndex.uiPreFrame=0;
+								}
+								pFileFrameHead->tPerFrameIndex.uiNextFrame=0;
+								m_tFileInfo.tHistoryFrameIndex.insert(nChannel,pFileHead->uiIndex);
+
+								pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFrameHead->pBuffer);
+								nFlags=nFlags|1;
+
+								//删除节点数据
+								RecBufferNode *pRecBufferNodeToken=pBufferQueue->dequeue();
+								pRecBufferNodeToken->release();
+								pRecBufferNodeToken=NULL;
+							}else{
+								nStep=WriteToBuffer_end;
+								bStopWrite=true;
+								nFlags=nFlags|2;
+							}
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
+							abort();
+						}
+						pRecBufferNodeTemp->release();
+						pRecBufferNodeTemp=NULL;
+					}else{
+						nStep=WriteToBuffer_end;
+						bStopWrite=true;
+					}
+				}
+									 }
+									 break;
+			case WriteToBuffer_end:{
+
+								   }
+			}
+		}
+		return nFlags;
+	}else{
+		return nFlags;
+	}
+}
+int recordDatCore::writeToBufferEx( int nChannel ,QString sFilePath)
 {
 	//返回值（按位）：00(0)：buffer未满&&没写入buffer；01(1)：buffer未满&&写入buffer；10(2)：buffer已满&&未写入buffer；11(3)：buffer已满&&写入buffer
 	int nHistoryType=m_tFileInfo.tWndInfo.value(nChannel).uiHistoryRecordType;
 	int nCurrentType=m_tFileInfo.tWndInfo.value(nChannel).uiCurrentRecordType;
+	uint nRecType=0;
 	if (m_tBufferQueueMap.contains(nChannel))
 	{
 		BufferQueue *pBufferQueue=m_tBufferQueueMap.value(nChannel);
@@ -791,6 +1143,18 @@ int recordDatCore::writeToBuffer( int nChannel ,QString sFilePath)
 							m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
 							m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
 							nHistoryType=nCurrentType;
+							if (nHistoryType&MOTIONRECORD)
+							{
+								nRecType=MOTIONRECORD;
+							}else if (nHistoryType&MANUALRECORD)
+							{
+								nRecType=MANUALRECORD;
+							}else if (nHistoryType&TIMERECORD)
+							{
+								nRecType=TIMERECORD;
+							}else{
+								//do nothing
+							}
 							nStep=2;
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
@@ -838,21 +1202,59 @@ int recordDatCore::writeToBuffer( int nChannel ,QString sFilePath)
 								if (pFrameHead->uiType==IFRAME)
 								{
 									//step1:写入配置帧
-									//step 2:写入I帧
-									tagVideoConfigFrame tVideoConfigFrame;
-									
-								}else if (pFrameHead->uiType==PFRAME)
-								{
+									tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFileHead+pFileHead->uiIndex);
+									tagVideoConfigFrame *pVideoConfigFramTemp=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
+									pVideoConfigFrame->uiHeight=pVideoConfigFramTemp->uiHeight;
+									pVideoConfigFrame->uiWidth=pVideoConfigFramTemp->uiWidth;
 
-								}else{
+									//偏移文件最后写入位置的索引
+									pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagVideoConfigFrame);
+								}else if (pFrameHead->uiType==AFRMAE)
+								{
 									//step1:写入配置帧
-									//step 2:写入I帧
+									tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFileHead+pFileHead->uiIndex);
+									tagAudioConfigFrame *pAudioConfigFrameTemp=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
+									pAudioConfigFrame->uiChannels=pAudioConfigFrameTemp->uiChannels;
+									pAudioConfigFrame->uiSamplebit=pAudioConfigFrameTemp->uiSamplebit;
+									pAudioConfigFrame->uiSamplerate=pAudioConfigFrameTemp->uiSamplerate;
+
+									//偏移文件最后写入位置的索引
+									pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagAudioConfigFrame);
+								}else {
+									// do nothing
 								}
+								if (pFrameHead->uiType==IFRAME||pFrameHead->uiType==PFRAME||pFrameHead->uiType==AFRMAE)
+								{				
+									//step 2:写入帧数据
+									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileHead+pFileHead->uiIndex);
+									pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
+									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
+									pFrameHeadBuffer->uiLength=pFrameHead->uiLength;
+									pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
+									pFrameHeadBuffer->uiRecType=nRecType;
+									pFrameHeadBuffer->uiSessionId=m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel);
+									pFrameHeadBuffer->uiType=pFrameHead->uiType;
+									memcpy(pFrameHeadBuffer->pBuffer,pFrameHead->pBuffer,pFrameHead->uiLength);
+
+									//偏移文件最后写入位置的索引
+									pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*);
+
+									//step 3:写入帧之间的位置索引关系
+									
+								}else{
+									qDebug()<<__FUNCTION__<<__LINE__<<"undefined frame type ,i will terminate the thread";
+									abort();
+								}
+								nStep=2;
+								nFlags=nFlags|1;
+								pRecBufferNodeTemp->release();
+								pRecBufferNodeTemp=NULL;
 							}else{
 								//buffer长度不足
 								pRecBufferNodeTemp->release();
 								pRecBufferNodeTemp=NULL;
 								nStep=3;
+								nFlags=nFlags|2;
 							}
 							
 						}else{
@@ -920,6 +1322,8 @@ bool recordDatCore::createRecordDatabaseItem( int nChannel,quint64 uiStartTime,q
 {
 	return m_tOperationDatabase.createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,uiType,sFileName, uiItemId);
 }
+
+
 
 
 

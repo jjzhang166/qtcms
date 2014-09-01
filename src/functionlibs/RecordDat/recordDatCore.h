@@ -34,6 +34,8 @@ typedef struct __tagRecordDatCoreFileInfo{
 	QString sFilePath;
 	QMap<int ,tagRecordDatCoreWndInfo> tWndInfo;
 	QMap<int ,int> tFristIFrameIndex;
+	QMap<int ,int> tHistoryFrameIndex;
+	QMap<int ,int >tHistoryIFrameIndex;
 }tagRecordDatCoreFileInfo;
 typedef struct __tagRecordDatDatabaseInfo{
 	QList<int > tRemoveChannel;
@@ -51,6 +53,16 @@ typedef enum __tagRecordDatStepCode{
 	recordDat_reset,//出错后重启
 	recordDat_end//结束
 }tagRecordDatStepCode;
+typedef enum __tagRecordDatWriteToBufferStepCode{
+	WriteToBuffer_Init,
+	WriteToBuffer_00,//historyType==currentType==0,无任何操作
+	WriteToBuffer_01,//historyType==0,currentType!=0,开始录像，需要等待I帧
+	WriteToBuffer_10,//historyType!=0,currentType==0,停止录像
+	WriteToBuffer_011,//historyType==currentType!=0,类型没有转变，接着录像
+	WriteToBuffer_111,//historyType!=currentType!=0,类型转换，接着录像
+	WriteToBuffer_Write,//写一帧数据
+	WriteToBuffer_end,
+}tagRecordDatWriteToBufferStepCode;
 typedef enum __tagRecordDatReset{
 	recordDatReset_fileError,//文件错误
 	recordDatReset_outOfDisk,//磁盘空间不足
@@ -110,6 +122,7 @@ private:
 	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	bool writeTodisk();
+	int writeToBufferEx(int nChannel,QString sFilePath);
 	int writeToBuffer(int nChannel,QString sFilePath);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
 private:
 	QMap<int ,BufferQueue *> m_tBufferQueueMap;
