@@ -808,7 +808,6 @@ void RemoteBackup::run()
 
 bool RemoteBackup::getUsableDisk(QString sPath)
 {
-	bool flags=false;
 	int freesizem = 1024;
 	quint64 FreeByteAvailable=0;
 	quint64 TotalNumberOfBytes=0;

@@ -2,7 +2,7 @@ TEMPLATE=lib
 VERSION=1.1.12.0
 TARGET=DeviceClient
 
-QT += core
+QT += core xml
 
 SOURCES += BufferManager.cpp \
     GlobalSettings.cpp \
