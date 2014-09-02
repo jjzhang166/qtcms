@@ -17,5 +17,7 @@ SUBDIRS += \
 #   ../src/functionlibs/DDrawRenderObject \
 #   ../src/functionlibs/DdrawRender \ must use another component to instead it
     ../src/functionlibs/DeviceClient \
-    ../src/functionlibs/UnixCommonTools
+    ../src/functionlibs/UnixCommonTools \
+    ../src/functionlibs/DvrSearch \
+    ../src/functionlibs/HiChipSearch
 

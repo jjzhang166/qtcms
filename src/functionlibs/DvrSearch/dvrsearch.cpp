@@ -89,6 +89,7 @@ int DvrSearch::SendSearchMessage(QList<QUdpSocket *> socklist)
 	Q_FOREACH(QUdpSocket * s,socklist)
 	{
 		qint64 nLen = s->writeDatagram(SENDBUFF,strlen(SENDBUFF),QHostAddress::Broadcast ,UDP_PORT);
+        if(-1 == nLen) return -1;
 	}
 	return 0;
 }
@@ -110,7 +111,6 @@ void DvrSearch::run()
 	QElapsedTimer timer;
 	timer.start();
 	SendSearchMessage(socketList);
-	int nSleepTime = 0;
 	while (m_running)
 	{
 		if (timer.elapsed() > m_nTimeInterval*1000 || m_bFlush)

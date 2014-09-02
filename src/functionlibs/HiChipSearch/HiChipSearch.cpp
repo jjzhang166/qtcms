@@ -3,7 +3,7 @@
 #include <QtNetwork/QHostAddress>
 #include <QDateTime>
 #include <QDebug>
-#include <QtNetwork>
+#include <QtNetwork/QNetworkInterface>
 
 HiChipSearch::HiChipSearch() :
 m_nRef(0),
@@ -83,7 +83,7 @@ void HiChipSearch::run()
 	{
 		if (timeStart.elapsed() >= m_nInterval || m_bFlush)
 		{
-			qint64 bytes = m_Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
+            m_Socket->writeDatagram(arr,QHostAddress(QString(MCASTADDR)), MCASTPORT);
 			timeStart.start();
 			m_bFlush = false;
 		}
@@ -251,7 +251,7 @@ int HiChipSearch::SetNetworkInfo(const QString &sDeviceID,
 		content += "\r\n";
 	}
 	unsigned int uiPort = sPort.toUInt();
-	if(!sPort.isEmpty() && uiPort >= 0 && uiPort < 65536)
+    if(!sPort.isEmpty() && (int)uiPort >= 0 && uiPort < 65536)
 	{
 		content += "httpport set -httpport " + QString("%1").arg(uiPort) + "\r\n";
 	}
