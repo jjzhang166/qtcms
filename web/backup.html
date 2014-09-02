@@ -368,9 +368,17 @@ var oPlayBack={},  // 远程回访控件对象
 
 				var o = {},
 
-					newed = returnTime(parseInt((time2Sec(st)/3600),10)*3600+3600);
+					newed = returnTime(parseInt((time2Sec(st)/3600),10)*3600+3599);
 
 					newed = newed > end ? end : newed;
+
+				//console.log(newed);
+
+				if(newed >= end){
+					//console.log(st+'//'+newed+'-----------------'+(newed >= end));
+					//console.log(aa);
+					return aa;
+				}
 
 				o.channelnum = obj.channelnum;
 				o.filename = obj.filename;
@@ -378,15 +386,9 @@ var oPlayBack={},  // 远程回访控件对象
 				o.start = date +' '+st;
 				o.types = obj.types;
 				o.end = date +' '+ newed;
-				st = newed;
+				st = returnTime(parseInt(time2Sec(newed))+1);
 
 				aa.push(o);
-
-				if(newed >= end){
-					//console.log(st+'//'+newed+'-----------------'+(newed >= end));
-					//console.log(aa);
-					return aa;
-				}
 			}
 		}
 
@@ -643,7 +645,7 @@ var oPlayBack={},  // 远程回访控件对象
 	function unique(arr){ 
 		var str = []; 
 		for(var i = 0,len = arr.length;i < len;i++){ 
-		! RegExp(arr[i],"g").test(str.join(",")) && (str.push(arr[i])); 
+			!RegExp(arr[i],'g').test(str.join(",")) && (str.push(arr[i])); 
 		} 
 		return str; 
 	} 
