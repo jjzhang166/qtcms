@@ -30,12 +30,12 @@ void OperationDatabase::clearInfoInDatabase( QString sFilePath )
 
 }
 
-bool OperationDatabase::updateRecordDatabase( int nId )
+bool OperationDatabase::updateRecordDatabase( int nId,QVariantMap tInfo )
 {
 	return false;
 }
 
-bool OperationDatabase::updateSearchDatabase( int nId )
+bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo)
 {
 	return false;
 }

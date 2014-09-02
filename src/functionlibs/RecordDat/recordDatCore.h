@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QByteArray>
 #include <QIODevice>
+#include "WriteToDisk.h"
 #include <IDisksSetting.h>
 #include <QEventLoop>
 #include <QList>
@@ -118,11 +119,11 @@ private:
 	bool getIsRecover();
 	void sleepEx(quint64 uiTime);
 	bool updateSearchDatabase();
-	bool updateRecordDatabase();
+	bool updateRecordDatabase(int nUpdateType);
 	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	bool writeTodisk();
-	int writeToBufferEx(int nChannel,QString sFilePath);
+	void setChannelNumInFileHead();
 	int writeToBuffer(int nChannel,QString sFilePath);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
 private:
 	QMap<int ,BufferQueue *> m_tBufferQueueMap;
@@ -147,5 +148,6 @@ private:
 	bool m_bWriteDiskTimeFlags;
 	int m_nWriteDiskTimeCount;
 	tagRecordDatDatabaseInfo m_tDatabaseInfo;
+	WriteToDisk m_tWriteToDisk;
 };
 

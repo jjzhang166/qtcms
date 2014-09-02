@@ -51,7 +51,7 @@ int SearchRemoteFile::startSearchRecFile( int nChannel,int nTypes,const QDateTim
 				QString user_agent="User-Agent: Mozilla/5.0\r\n";
 				QString host="Host: ";
 				host.append(tAddr.toString()).append(":").append(QString::number(tPorts["media"].toInt())).append("\r\n\r\n");
-				QString sendData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(sUserName).arg(sPassWord).arg((unsigned int)nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_tSearchInfo.nSessionIndex).arg(m_tSearchInfo.nSessionCount));
+				QString sendData(QString("<juan ver=\"%1\" squ=\"%2\" dir=\"%3\">\n    <recsearch usr=\"%4\" pwd=\"%5\" channels=\"%6\" types=\"%7\" date=\"%8\" begin=\"%9\" end=\"%10\" session_index=\"%11\" session_count=\"%12\" />\n</juan>\n").arg("").arg(1).arg("").arg(sUserName).arg(sPassWord).arg(nChannel).arg(nTypes).arg(startTime.date().toString("yyyy-MM-dd")).arg(startTime.time().toString("hh:mm:ss")).arg(endTime.time().toString("hh:mm:ss")).arg(m_tSearchInfo.nSessionIndex).arg(m_tSearchInfo.nSessionCount));
 				QString content_length="Content-Length: ";
 				content_length.append(QString::number(sendData.size())).append("\r\n");
 				QString block=post+content_type+content_length+connecttion+accept_encoding+accept_language+user_agent+host+sendData;
