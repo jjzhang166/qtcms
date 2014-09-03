@@ -1,9 +1,16 @@
 create table search_record
-{
+(
 id integer primary key autoincrement,
-win_id integer,
-record_type integer,
-start_time char(32),
-end_time char(32),
-path char(64)
-};
+nWndId integer,
+nRecordType integer,
+nStartTime integer,
+nEndTime integer,
+);
+create table record(
+id integer primary key autoincrement,
+nWndId integer,
+nRecordType integer,
+nStartTime integer,
+nEndTime integer,
+sFilePath char(64)
+);
