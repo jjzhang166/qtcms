@@ -93,7 +93,7 @@
 'Current_search_date':'Searching date',
 'Inspection':'Inspection',
 'Select':'Select all',
-'Modified_device':'Modified device',
+'Modified_device':'Modify device',
 'Device_Connection':'Connection method',
 'IP_addresses_link':'By IP address',
 'Http_port':'Http port',
