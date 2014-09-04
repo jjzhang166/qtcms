@@ -2,6 +2,7 @@
 
 
 recordDatCore::recordDatCore(void):m_bStop(true),
+	m_bReloadSystemDatabase(false),
 	m_nPosition(0),
 	m_pDataBuffer(NULL),
 	m_pDataBuffer1(NULL),
@@ -80,6 +81,7 @@ void recordDatCore::run()
 			//各项参数初始化
 			m_tToDiskType=recordDatToDiskType_null;
 			m_nWriteMemoryChannel=0;
+			m_tOperationDatabase.reloadSystemDatabase();
 			nRunStep=recordDat_filePath;
 			m_pDataBuffer=m_pDataBuffer1;
 							}
@@ -337,7 +339,9 @@ void recordDatCore::run()
 									m_pDataBuffer=m_pDataBuffer2;
 								}
 								//step1:解锁文件(数据库置位)
-								m_tOperationDatabase.setFileIsLock(sWriteFilePath,false);
+								QVariantMap tInfo;
+								tInfo.insert("nLock",0);
+								m_tOperationDatabase.setRecordFileStatus(sWriteFilePath,tInfo);
 								nRunStep=recordDat_filePath;
 							}
 							bFlags=true;
@@ -422,6 +426,13 @@ void recordDatCore::run()
 			{
 				//把buffer写到硬盘中
 				nRunStep=recordDat_writeDisk;
+			}
+			if (m_bReloadSystemDatabase)
+			{
+				m_tOperationDatabase.reloadSystemDatabase();
+				m_bReloadSystemDatabase=false;
+			}else{
+				//do nothing
 			}
 			if (m_bStop)
 			{
@@ -591,7 +602,8 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 				QStringList sDiskListInDatabase=sDiskList.split(":");
 				QList<QString> tFilePathList;
 				foreach(QString sDiskEx,sDiskListInDatabase){
-					QString sFilePathItem=m_tOperationDatabase.getLatestItem(sDiskEx);
+					sDiskEx=sDiskEx+":";
+					QString sFilePathItem=m_tOperationDatabase.getOldestItem(sDiskEx);
 					if (!sFilePathItem.isEmpty())
 					{
 						tFilePathList.append(sFilePathItem);
@@ -606,6 +618,7 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 					//fix me
 					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
 					QString sOldestFile;
+					QString sOldestFileTemp;
 					for (int i=0;i<tFilePathList.size();i++)
 					{
 						QString sFilePathItem=tFilePathList.at(i);
@@ -615,10 +628,10 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 							tFile.setFileName(sFilePathItem);
 							if (tFile.open(QIODevice::ReadOnly|QIODevice::Text))
 							{
-								if (tFile.size()>=sizeof(tagFileHead))
+								m_tFileHead.clear();
+								m_tFileHead=tFile.read(sizeof(tagFileHead));
+								if (m_tFileHead.size()>=sizeof(tagFileHead))
 								{
-									m_tFileHead.clear();
-									m_tFileHead=tFile.read(sizeof(tagFileHead));
 									tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
 									if (NULL!=pFileHead)
 									{
@@ -630,12 +643,16 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 												sOldestFile=sFilePathItem;
 											}else{
 												//do nothing
+												sOldestFileTemp=sFilePathItem;
 											}
 										}else{
 											//do nothing
+											sOldestFileTemp=sFilePathItem;
 										}
 									}else{
 										//do nothing
+										qDebug()<<__FUNCTION__<<__LINE__<<"pFileHead should not been null";
+										abort();
 									}
 									tFile.close();
 								}else{
@@ -645,21 +662,31 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 								}
 							}else{
 								//do nothing
+								QVariantMap tInfo;
+								tInfo.insert("nDamage",1);
+								m_tOperationDatabase.setRecordFileStatus(sFilePathItem,tInfo);
 							}
 						}else{
 							//do nothing
+							sOldestFileTemp=sFilePathItem;
 						}	
 					}
 					if (sOldestFile.isEmpty())
 					{
-						sOldestFile=tFilePathList.at(0);
+						sOldestFile=sOldestFileTemp;
 					}else{
 						//do nothing
 					}
-					sFilePath=sOldestFile;
-					m_tOperationDatabase.clearInfoInDatabase(sFilePath);
-					bFlag=0;
-					nStep=obtainFilePath_createFile;
+					if (sOldestFile.isEmpty())
+					{
+						qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
+						nStep=obtainFilePath_fail;
+					}else{
+						sFilePath=sOldestFile;
+						m_tOperationDatabase.clearInfoInDatabase(sFilePath);
+						bFlag=0;
+						nStep=obtainFilePath_createFile;
+					}
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
 					nStep=obtainFilePath_fail;
@@ -683,7 +710,9 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 									   break;
 		case obtainFilePath_success:{
 			//获取录像文件路径成功
-			m_tOperationDatabase.setFileIsLock(sFilePath,true);
+			QVariantMap tInfo;
+			tInfo.insert("nLock",1);
+			m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
 			nStep=obtainFilePath_end;
 									}
 									break;
@@ -705,7 +734,8 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 
 QString recordDatCore::getUsableDisk( QString &sDiskLisk )
 {
-	return "";
+	//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
+	return m_tOperationDatabase.getUsableDisk(sDiskLisk);
 }
 
 QString recordDatCore::getLatestItem(QString sDisk)
@@ -730,12 +760,84 @@ QString recordDatCore::getLatestItem(QString sDisk)
 
 bool recordDatCore::checkFileIsFull( QString sFilePath )
 {
-	return false;
+	QFile tFile;
+	tFile.setFileName(sFilePath);
+	if (tFile.exists())
+	{
+		if (tFile.open(QIODevice::ReadWrite))
+		{
+			QByteArray mtFilehead=tFile.read(sizeof(tagFileHead));
+			if (mtFilehead.size()<sizeof(tagFileHead))
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"undefined file,it can not bee use";
+				QVariantMap tInfo;
+				tInfo.insert("nDamage",1);
+				m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
+				return true;
+			}else{
+				tagFileHead *pFileHead=(tagFileHead*)mtFilehead.data();
+				char *pChar="JUAN";
+				if (memcmp(pChar,pFileHead->ucMagic,4)==0)
+				{
+					if (pFileHead->uiIndex<BUFFERSIZE*1024*1024-1024*1024)
+					{
+						return false;
+					}else{
+						return true;
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"undefined file,it can not bee use";
+					QVariantMap tInfo;
+					tInfo.insert("nDamage",1);
+					m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
+					return true;
+				}
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"open file fail,it can not been use, create new file"<<sFilePath;
+			QVariantMap tInfo;
+			tInfo.insert("nDamage",1);
+			m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
+			return true;
+		}
+	}else{
+		return false;
+	}
 }
 
 bool recordDatCore::createNewFile( QString sFilePath )
 {
-	return false;
+	QFile tFile;
+	tFile.setFileName(sFilePath);
+	if (!tFile.exists())
+	{
+		QFileInfo tFileInfo(tFile);
+		QString sDirPath=tFileInfo.absolutePath();
+		QDir tDir;
+		if (!tDir.exists(sDirPath))
+		{
+			if (tDir.mkpath(sDirPath))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"mkpath fail"<<sDirPath;
+				abort();
+			}
+		}else{
+			//keep going
+		}
+		if (tFile.open(QIODevice::ReadWrite))
+		{
+			tFile.close();
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"new file fail"<<sFilePath;
+			abort();
+			return false;
+		}
+	}else{
+		return true;
+	}
 }
 
 bool recordDatCore::startRecord()
@@ -752,7 +854,7 @@ bool recordDatCore::startRecord()
 
 bool recordDatCore::getIsRecover()
 {
-	return false;
+	return m_tOperationDatabase.getIsRecover();
 }
 
 void recordDatCore::sleepEx( quint64 uiTime )
@@ -1051,7 +1153,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								if (pFrameHead->uiType==FT_IFrame)
 								{
 									tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileHead->uiIndex);
-									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead);
+									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead+sizeof(tagPerFrameIndex));
 									pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
 									pFrameHeadBuffer->uiExtension=pFrameHead->uiExtension;
 									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
@@ -1107,7 +1209,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								}else if (pFrameHead->uiType==FT_Audio)
 								{
 									tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileHead->uiIndex);
-									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead);
+									tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead+sizeof(tagPerFrameIndex));
 									pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
 									pFrameHeadBuffer->uiExtension=pFrameHead->uiExtension;
 									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
@@ -1159,7 +1261,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 
 								//step 2:写入帧数据
 								tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)(pFileHead+pFileHead->uiIndex);
-								tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead);
+								tagFrameHead *pFrameHeadBuffer=(tagFrameHead*)(pFileFrameHead+sizeof(tagPerFrameIndex));
 								pFrameHeadBuffer->uiChannel=pFrameHead->uiChannel;
 								pFrameHeadBuffer->uiExtension=pFrameHead->uiExtension;
 								pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
@@ -1314,6 +1416,13 @@ void recordDatCore::setChannelNumInFileHead()
 	}
 	pFileHead->uiChannels[0]=uiChannel1;
 	pFileHead->uiChannels[1]=uiChannel2;
+}
+
+void recordDatCore::reloadSystemDatabase()
+{
+	m_tBufferQueueMapLock.lock();
+	m_bReloadSystemDatabase=true;
+	m_tBufferQueueMapLock.unlock();
 }
 
 

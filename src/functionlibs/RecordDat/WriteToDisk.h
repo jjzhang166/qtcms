@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QMutex>
 #include <QFile>
+#include <QDir>
 #include <QIODevice>
 #include <QVariantMap>
 #include <QMultiMap>

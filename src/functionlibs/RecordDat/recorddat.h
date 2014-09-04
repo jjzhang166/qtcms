@@ -52,6 +52,7 @@ public:
 	virtual bool motionRecordStart(int nTime);//µ¥Î»ÎªÃë
 	virtual int getRecordStatus();
 	virtual bool updateRecordSchedule(int nChannelId );
+
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
 	bool checkMotionRecordSchedule();

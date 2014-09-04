@@ -104,6 +104,7 @@ public:
 	bool removeBufferQueue(int nWnd);
 	bool setRecordType(int nWnd,int nType,bool bFlags);
 	void registerEvent(QString sEventName,int(__cdecl *proc)(QString,QVariantMap,void*),void *pUser);
+	void reloadSystemDatabase();
 protected:
 	void run();
 private slots:
@@ -112,8 +113,8 @@ private slots:
 private:
 	void eventCallBack(QString sEventName,QVariantMap tInfo);
 	int obtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
-	QString getUsableDisk(QString &sDiskLisk);
-	QString getLatestItem(QString sDisk);
+	QString getUsableDisk(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
+	QString getLatestItem(QString sDisk);//参数格式：D：
 	bool checkFileIsFull(QString sFilePath);
 	bool createNewFile(QString sFilePath);
 	bool getIsRecover();
@@ -149,5 +150,6 @@ private:
 	int m_nWriteDiskTimeCount;
 	tagRecordDatDatabaseInfo m_tDatabaseInfo;
 	WriteToDisk m_tWriteToDisk;
+	volatile bool m_bReloadSystemDatabase;
 };
 

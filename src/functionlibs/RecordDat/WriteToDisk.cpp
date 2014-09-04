@@ -72,9 +72,12 @@ void WriteToDisk::run()
 		case 1:{
 			//write
 			bool bFlags=false;
+			m_bBlock=true;
+			m_nPosition=__LINE__;
 			m_tBufferLock.lock();
 			if (NULL!=m_pBuffer)
 			{
+				m_nPosition=__LINE__;
 				if (ensureFileExist())
 				{
 					QFile tFile;
@@ -83,6 +86,7 @@ void WriteToDisk::run()
 					{
 						if (tFile.reset())
 						{
+							m_nPosition=__LINE__;
 							if (tFile.write(m_pBuffer,m_uiBufferSize)==m_uiBufferSize)
 							{
 								//do nothing
@@ -108,7 +112,10 @@ void WriteToDisk::run()
 				qDebug()<<__FUNCTION__<<__LINE__<<"m_pBuffer should not been null";
 				abort();
 			}
+			m_bBlock=false;
 			m_tBufferLock.unlock();
+			m_bBlock=true;
+			m_nPosition=__LINE__;
 			if (!bFlags)
 			{
 				QVariantMap tInfo;
@@ -117,6 +124,7 @@ void WriteToDisk::run()
 			}else{
 				//do nothing
 			}
+			m_bBlock=false;
 			m_bWrite=false;
 			   }
 			   break;
@@ -183,7 +191,37 @@ void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiB
 
 bool WriteToDisk::ensureFileExist()
 {
-	return false;
+	QFile tFile;
+	tFile.setFileName(m_sFilePath);
+	if (!tFile.exists())
+	{
+		QFileInfo tFileInfo(tFile);
+		QString sDirPath=tFileInfo.absolutePath();
+		QDir tDir;
+		if (!tDir.exists(sDirPath))
+		{
+			if (tDir.mkpath(sDirPath))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"create dirPath fail"<<sDirPath;
+				return false;
+			}
+		}else{
+			//keep going
+		}
+		if (tFile.open(QIODevice::WriteOnly))
+		{
+			//keep going
+			tFile.close();
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"create file fail:"<<m_sFilePath;
+			return false;
+		}
+	}else{
+		//do nothing
+	}
+	return true;
 }
 
 void WriteToDisk::registerEvent( QString sEventName,int(__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
