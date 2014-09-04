@@ -151,12 +151,6 @@ var oPreView,oDiv,
 				}
 			}
 		})*/
-			
-		/*bFullScreen = oCommonLibrary.getAutoFullscreen();
-		
-		if(bFullScreen){
-			viewFullScreen();
-		}*/
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
@@ -192,15 +186,17 @@ var oPreView,oDiv,
 			})	
 		})
 
-		//控件UI最大化
-		ViewMax();
+		bFullScreen = oCommonLibrary.getAutoFullscreen();
+
+		viewFullScreen();
+
 
 		initOxcDevListStatus();
 
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
 	
-	$(window).resize(ViewMax);
+	//$(window).resize(ViewMax);
 	
 	function ViewMax(){
 		var W = $(window).width();
@@ -561,4 +557,20 @@ var oPreView,oDiv,
 				checkDevAllOpen(chlData.dev_id);
 			}
 		}
+	}
+
+	function viewFullScreen(){
+		if(bFullScreen){
+			$('#viewWarp').css({
+				width:'100%',
+				height:'100%',
+				top:0,
+				left:0,
+				position: 'absolute'
+			})
+		}else{
+			ViewMax();
+		}
+
+		bFullScreen = !bFullScreen;
 	}
