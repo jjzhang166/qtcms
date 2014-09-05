@@ -403,7 +403,7 @@ void recordDatCore::run()
 						quint64 uiEndTime=QDateTime::currentDateTime().toTime_t();
 						QVariantMap tInfo;
 						tInfo.insert("uiEndTime",uiEndTime);
-						m_tOperationDatabase.updateRecordDatabase(m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel),tInfo);
+						m_tOperationDatabase.updateRecordDatabase(m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel),tInfo,sWriteFilePath);
 						m_tDatabaseInfo.tChannelInRecordDatabaseId.remove(nChannel);
 					}else{
 						//do nothing
@@ -413,7 +413,7 @@ void recordDatCore::run()
 						quint64 uiEndTime=QDateTime::currentDateTime().toTime_t();
 						QVariantMap tInfo;
 						tInfo.insert("uiEndTime",uiEndTime);
-						m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo);
+						m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo,sWriteFilePath);
 						m_tDatabaseInfo.tChannelInSearchDatabaseId.remove(nChannel);
 					}else{
 						//do nothing
@@ -1010,7 +1010,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				tInfo.insert("uiEndTime",uiEndTime);
 				if (m_tDatabaseInfo.tChannelInRecordDatabaseId.contains(nChannel))
 				{
-					if (m_tOperationDatabase.updateRecordDatabase(m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel),tInfo))
+					if (m_tOperationDatabase.updateRecordDatabase(m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel),tInfo,sFilePath))
 					{
 						//keep going
 					}else{
@@ -1023,7 +1023,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				tInfo.insert("uiType",nCurrentType);
 				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
 				{
-					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo))
+					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo,sFilePath))
 					{
 						//keep going
 					}else{
@@ -1056,7 +1056,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					QVariantMap tInfo;
 					tInfo.insert("uiEndTime",uiEndTime);
 					tInfo.insert("uiType",nCurrentType);
-					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo))
+					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo,sFilePath))
 					{
 						//keep going
 					}else{
@@ -1080,7 +1080,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					quint64 uiEndTime=QDateTime::currentDateTime().toTime_t();
 					QVariantMap tInfo;
 					tInfo.insert("uiEndTime",uiEndTime);
-					if (m_tOperationDatabase.updateRecordDatabase(nChannel,tInfo))
+					if (m_tOperationDatabase.updateRecordDatabase(nChannel,tInfo,sFilePath))
 					{
 						//keep going
 					}else{
@@ -1343,7 +1343,7 @@ bool recordDatCore::updateSearchDatabase()
 	QVariantMap tInfo;
 	tInfo.insert("uiEndTime",uiEndTime);
 	while(tItem!=m_tDatabaseInfo.tChannelInSearchDatabaseId.constEnd()){
-		if (m_tOperationDatabase.updateSearchDatabase(tItem.value(),tInfo))
+		if (m_tOperationDatabase.updateSearchDatabase(tItem.value(),tInfo,m_tFileInfo.sFilePath))
 		{
 			//keep going
 		}else{
@@ -1361,7 +1361,7 @@ bool recordDatCore::updateRecordDatabase(int nUpdateType)
 	QVariantMap tInfo;
 	tInfo.insert("uiEndTime",uiEndTime);
 	while(tItem!=m_tDatabaseInfo.tChannelInRecordDatabaseId.constEnd()){
-		if (m_tOperationDatabase.updateRecordDatabase(tItem.value(),tInfo))
+		if (m_tOperationDatabase.updateRecordDatabase(tItem.value(),tInfo,m_tFileInfo.sFilePath))
 		{
 			//keep going
 		}else{

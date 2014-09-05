@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QtSql>
 #include <QMap>
+#include "freeDisk.h"
 //使用安全条件
 //1.单盘大小不能超过：256*256*256*128M
 //2.
@@ -27,8 +28,8 @@ public:
 	QString getOldestItem(QString sDisk);//d:
 	QString createLatestItem(QString sDisk);//用于磁盘还有空间，递增模式
 	void clearInfoInDatabase(QString sFilePath);
-	bool updateRecordDatabase(int nId,QVariantMap tInfo);//uiEndTime,uiType
-	bool updateSearchDatabase(int nId,QVariantMap tInfo);//uiEndTime,uiType
+	bool updateRecordDatabase(int nId,QVariantMap tInfo,QString sFilePath);//uiEndTime,uiType
+	bool updateSearchDatabase(int nId,QVariantMap tInfo,QString sFilePath);//uiEndTime,uiType
 	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	void setRecordFileStatus(QString sFilePath,QVariantMap tInfo);
@@ -36,10 +37,11 @@ public:
 private:
 	bool createRecordDatabase(QString sDatabasePath);
 	void priSetRecordFileStatus(QString sFilePath,QVariantMap tInfo);
-	bool freeDisk();//删除1.1.13版本的录像，按天删除
+	quint64 countFileNum(QString sFilePath);
 private:
 	IDisksSetting *m_pDisksSetting;
 	tagSystemDatabaseInfo m_tSystemDatabaseInfo;
 	QMap<QString,QMap<int ,QString>> m_tDeleteFileList;
+	freeDisk m_tFreeDisk;
 };
 

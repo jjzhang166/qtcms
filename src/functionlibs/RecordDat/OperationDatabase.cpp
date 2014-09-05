@@ -344,12 +344,12 @@ void OperationDatabase::clearInfoInDatabase( QString sFilePath )
 	//删除 record 表中记录
 	//删除 search_record表中记录
 	//更新 RecordFileStatus
-	QSqlDatabase *pDatabase=NULL;
 	QString sDatabasePath=sFilePath.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sDatabasePath);
 	if (tDatabaseFile.exists())
 	{
+		QSqlDatabase *pDatabase=NULL;
 		pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
 		if (NULL!=pDatabase)
 		{
@@ -425,13 +425,109 @@ void OperationDatabase::clearInfoInDatabase( QString sFilePath )
 	}
 }
 
-bool OperationDatabase::updateRecordDatabase( int nId,QVariantMap tInfo )
+bool OperationDatabase::updateRecordDatabase( int nId,QVariantMap tInfo,QString sFilePath )
 {
+	//可被更新的条目：nEndTime
+	if (tInfo.contains("nEndTime")||tInfo.contains("nStartTime"))
+	{
+		QString sDatabasePath=sFilePath.left(1)+":/recEx/record.db";
+		QFile tDatabaseFile;
+		tDatabaseFile.setFileName(sDatabasePath);
+		if (tDatabaseFile.exists())
+		{
+			QSqlDatabase *pDatabase=NULL;
+			pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+			if (NULL!=pDatabase)
+			{
+				QList<QString> tKeyList=tInfo.keys();
+				QString sKey=tKeyList.at(0);
+				QSqlQuery _query(*pDatabase);
+				QString sCommand=QString("select * from record where id=%1").arg(nId);
+				if (_query.exec(sCommand))
+				{
+					if (_query.next())
+					{
+						sCommand.clear();
+						sCommand="update record set "+sKey+QString("=%1 where id=%2").arg(tInfo.value(sKey).toInt()).arg(nId);
+						if (_query.exec(sCommand))
+						{
+							//done
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand;
+							abort();
+						}
+					}else{
+						//do nothing
+					}
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand;
+					abort();
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not been null";
+				abort();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateRecordDatabase fail as tDatabaseFile is no exists"<<sDatabasePath;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"undefined updateRecord type,i will abort the thread";
+		abort();
+	}
 	return false;
 }
 
-bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo)
+bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo,QString sFilePath)
 {
+	//可被更新的条目：nEndTime nStartTime
+	if (tInfo.contains("nEndTime")||tInfo.contains("nStartTime"))
+	{
+		QString sDatabasePath=sFilePath.left(1)+":/recEx/record.db";
+		QFile tDatabaseFile;
+		tDatabaseFile.setFileName(sDatabasePath);
+		if (tDatabaseFile.exists())
+		{
+			QSqlDatabase *pDatabase=NULL;
+			pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+			if (NULL!=pDatabase)
+			{
+				QList<QString> tKeyList=tInfo.keys();
+				QString sKey=tKeyList.at(0);
+				QSqlQuery _query(*pDatabase);
+				QString sCommand=QString("select * from search_record where id=%1").arg(nId);
+				if (_query.exec(sCommand))
+				{
+					if (_query.next())
+					{
+						sCommand.clear();
+						sCommand="update search_record set "+sKey+QString("=%1 where id=%2").arg(tInfo.value(sKey).toInt()).arg(nId);
+						if (_query.exec(sCommand))
+						{
+							//done
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+							abort();
+						}
+					}else{
+						//do nothing
+					}
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+					abort();
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not been null";
+				abort();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDatabase fail as tDatabaseFile is no exists"<<sDatabasePath;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"undefined updateSearchDatabase type,i will abort the thread";
+		abort();
+	}
 	return false;
 }
 
@@ -495,8 +591,8 @@ QString OperationDatabase::getUsableDisk( QString &sDiskLisk )
 			   }
 			   break;
 		case 1:{
-			//删除1.1.13版本录像
-			if (freeDisk())
+			//删除1.1.13版本录像,按天删除
+			if ( m_tFreeDisk.freeDiskEx(m_tSystemDatabaseInfo.sAllRecordDisk,m_tSystemDatabaseInfo.uiDiskReservedSize))
 			{
 				nStep=0;
 			}else{
@@ -506,6 +602,7 @@ QString OperationDatabase::getUsableDisk( QString &sDiskLisk )
 			   break;
 		case 2:{
 			//end
+			bStop=true;
 			   }
 		}
 	}
@@ -608,10 +705,12 @@ bool OperationDatabase::createRecordDatabase( QString sDatabasePath )
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
 				abort();
+				return false;
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not be null";
 			abort();
+			return false;
 		}
 	}else{
 		return true;
@@ -625,7 +724,83 @@ void OperationDatabase::setRecordFileStatus( QString sFilePath,QVariantMap tInfo
 
 void OperationDatabase::priSetRecordFileStatus( QString sFilePath,QVariantMap tInfo )
 {
-
+	QString sDisk=sFilePath.left(1)+":/recEx/record.db";
+	QFile tDatabaseFile;
+	tDatabaseFile.setFileName(sDisk);
+	if (tDatabaseFile.exists())
+	{
+		//keep going
+	}else{
+		if (createRecordDatabase(sDisk))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"priSetRecordFileStatus fail as file is not exist"<<sDisk;
+		}
+	}
+	QSqlDatabase *pDatabase=NULL;
+	pDatabase=initMgrDataBase(sDisk,(quintptr*)this);
+	if (NULL!=pDatabase)
+	{
+		QSqlQuery _query(*pDatabase);
+		QString sCommand;
+		if (tInfo.contains("nLock")||tInfo.contains("nDamage")||tInfo.contains("nInUse"))
+		{
+			//判断是否有这个文件的条目，有的话，就更新，没的话就创建
+			sCommand=QString("select id from RecordFileStatus where sFilePath='%1'").arg(sFilePath);
+			if (_query.exec(sCommand))
+			{
+				if (_query.next())
+				{
+					//更新
+					sCommand.clear();
+					int nId=_query.value(0).toInt();
+					QList<QString> tKeyList=tInfo.keys();
+					QString sKey=tKeyList.at(0);
+					sCommand="update RecordFileStatus set "+sKey+QString("=%1 where id=%2").arg(tInfo.value(sKey).toInt()).arg(nId);
+					if (_query.exec(sCommand))
+					{
+						//done
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCommand;
+						abort();
+					}
+				}else{
+					//创建
+					sCommand.clear();
+					quint64 nFileNum=countFileNum(sFilePath);
+					sCommand=QString("insert into RecordFileStatus(sFilePath,nLock,nDamage,nInUse,nFileNum)values('%1',0,0,0,%2)").arg(sFilePath).arg(nFileNum);
+					if (_query.exec(sCommand))
+					{
+						//keep going
+						QList<QString> tKeyList=tInfo.keys();
+						QString sKey=tKeyList.at(0);
+						sCommand.clear();
+						sCommand="update RecordFileStatus set "+sKey+QString("=%1 where sFilePath='%2'").arg(tInfo.value(sKey).toInt()).arg(sFilePath);
+						if (_query.exec(sCommand))
+						{
+							//done
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCommand;
+							abort();
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCommand;
+						abort();
+					}
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCommand;
+				abort();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"undefined type";
+			abort();
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not be null";
+		abort();
+	}
 }
 
 bool OperationDatabase::getIsRecover()
@@ -633,9 +808,15 @@ bool OperationDatabase::getIsRecover()
 	return m_tSystemDatabaseInfo.bIsRecover;
 }
 
-bool OperationDatabase::freeDisk()
+quint64 OperationDatabase::countFileNum( QString sFilePath )
 {
-	return false;
+	int nFrist=sFilePath.mid(sFilePath.length()-8-5-5-5,4).toInt();
+	int nSecond=sFilePath.mid(sFilePath.length()-8-5-5,4).toInt();
+	int nThird=sFilePath.mid(sFilePath.length()-8-5,4).toInt();
+	int nFourth=sFilePath.mid(sFilePath.length()-8,4).toInt();
+	quint64 uiNum=MAXFILENUM*(MAXFILENUM*(MAXFILENUM*nFrist+nSecond)+nThird)+nFourth;
+	return uiNum;
 }
+
 
 

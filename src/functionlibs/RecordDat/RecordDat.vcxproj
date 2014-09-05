@@ -88,6 +88,7 @@
     <ClCompile Include="BufferNode.cpp" />
     <ClCompile Include="BufferQueue.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="freeDisk.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_recorddat.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -146,6 +147,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DRECORDDAT_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-Id:\Program Files (x86)\Visual Leak Detector\include"</Command>
     </CustomBuild>
+    <ClInclude Include="freeDisk.h" />
     <ClInclude Include="netlib.h" />
     <ClInclude Include="OperationDatabase.h" />
     <ClInclude Include="recorddat_global.h" />
