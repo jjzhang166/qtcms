@@ -871,22 +871,22 @@ bool StorageMgrEx::freeDisk(QString &sDisk)
 						QStringList tItemList=removeFile(tEach.tFileList);
 						tRemoteItemList<<tItemList;
 					}
+					//step3:删除录像表的条目
+					if (removeRecordDataBaseItem(tRemoteItemList,tRecInfo))
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail ,please check";
+					}
+					//step4:删除搜索表中的条目
+					if (removeSearchDataBaseItem(tRemoteItemList,tRecInfo,tEarlestDate.toString("yyyy-MM-dd")))
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem fail ,please check";
+					}
 					if (!tRemoteItemList.isEmpty())
 					{
-						//step3:删除录像表的条目
-						if (removeRecordDataBaseItem(tRemoteItemList,tRecInfo))
-						{
-							//keep going
-						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail ,please check";
-						}
-						//step4:删除搜索表中的条目
-						if (removeSearchDataBaseItem(tRemoteItemList,tRecInfo,tEarlestDate.toString("yyyy-MM-dd")))
-						{
-							//keep going
-						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem fail ,please check";
-						}
 						iFreeDiskStep=0;
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"delete file fail,as the tRemoteItemList is empty";
@@ -1032,25 +1032,28 @@ bool StorageMgrEx::removeRecordDataBaseItem( QStringList tRemoveFileItem,QList<t
 	//tRemoveFileItem :已删除的文件路径
 	//tRecInfo:筛选出来最早一天的记录
 	//this func need to test
-
-	foreach(QString sItem,tRemoveFileItem){
-		QSqlDatabase *pDataBase=NULL;
-		int nPos=sItem.indexOf("/REC/");
-		int nEndPos=nPos+5;
-		QString sFind=sItem.left(nEndPos)+"record.db";
-		pDataBase=initMgrDataBase(sFind,(int*)this);
-		if (pDataBase!=NULL)
-		{
-			QSqlQuery _query(*pDataBase);
-			QString sCommond=QString("delete from local_record where path ='").append(sItem).append("'");
-			if (_query.exec(sCommond))
+	for (int i=0;i<tRecInfo.size();i++)
+	{
+		QStringList tRemoteList=tRecInfo.value(i).tFileList;
+		foreach(QString sItem,tRemoteList){
+			QSqlDatabase *pDataBase=NULL;
+			int nPos=sItem.indexOf("/REC/");
+			int nEndPos=nPos+5;
+			QString sFind=sItem.left(nEndPos)+"record.db";
+			pDataBase=initMgrDataBase(sFind,(int*)this);
+			if (pDataBase!=NULL)
 			{
-				//do nothing
+				QSqlQuery _query(*pDataBase);
+				QString sCommond=QString("delete from local_record where path ='").append(sItem).append("'");
+				if (_query.exec(sCommond))
+				{
+					//do nothing
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as exec the cmd fail::"<<sCommond;
+				}
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as exec the cmd fail::"<<sCommond;
+				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as pDataBase is null,i will keep going without any handle";
 			}
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as pDataBase is null,i will keep going without any handle";
 		}
 	}
 	return true;
