@@ -1127,7 +1127,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 			}
 		}
 		searchEdDev();
-		data.total == 0 && Confirm('添加失败!');
+		data.total == 0 && Confirm(_T('add_failed'));
 	}
 	function RemoveDeviceFeedBackSuccess(data){
 		/*console.log('RemoveDeviceFeedBackSuccess');

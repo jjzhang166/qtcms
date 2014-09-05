@@ -346,7 +346,7 @@
 				<div class="switch dvr_list">
 					<table>
 						<tr><td><script>T("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" /></td><td></td><td></td></tr>
-						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
+						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDNS</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
@@ -369,11 +369,11 @@
 						</tr>
 						<tr class="title"><td colspan="2" ><h5><script>T("Port")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5>PPPOE</h5></td></tr>
 						<tr>
-							<td colspan="2">
+							<td colspan="2" style="vertical-align:top">
 								<table class="tb1">
 									<tr><td style="width:84px;"><script>T("Network_port")</script></td><td><input id="dvr_web_port" type="text" /></td></tr>
-									<tr><td style="width:84px;"><script>T("Client_port")</script></td><td><input id="dvr_client_port" type="text" /></td></tr>
-									<tr><td style="width:84px;"><script>T("Phone_port")</script></td><td><input type="text" /></td></tr>
+									<!--tr><td style="width:84px;"><script>T("Client_port")</script></td><td><input id="dvr_client_port" type="text" /></td></tr>
+									<tr><td style="width:84px;"><script>T("Phone_port")</script></td><td><input type="text" /></td></tr-->
 								</table>
 							</td>
 							<td colspan="2" style="padding-left:30px;">
@@ -1394,11 +1394,11 @@
 			                            <td><input data-UI="staticNetmask" type="text" onblur="chkInput(2,this,'Mask_format')"/></td>
 			                        </tr>
 							 		<tr>
-							 			<td>优先 DNS</td>
+							 			<td><script>T("Priority")</script> DNS</td>
 			                            <td><input data-UI="preferredDns" type="text" onblur="chkInput(1,this,'DNS')"/></td>
 			                        </tr>
 			                        <tr>
-			                        	<td>备用 DNS</td>
+			                        	<td><script>T("Spare")</script> DNS</td>
 			                            <td><input data-UI="staticAlternateDns" type="text" onblur="chkInput(1,this,'DNS')"/></td>
 			                        </tr>
 			                        <tr data-WARP="port0">
