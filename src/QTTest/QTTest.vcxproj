@@ -203,6 +203,15 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   <ItemGroup>
     <ClInclude Include="MyEventSender.h" />
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="turk.ts">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).qm</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).qm</Outputs>
+    </CustomBuild>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>

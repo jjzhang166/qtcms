@@ -78,6 +78,9 @@
     <CustomBuild Include="english.ts">
       <Filter>Source Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="turk.ts">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyEventSender.h">
