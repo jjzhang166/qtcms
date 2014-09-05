@@ -54,5 +54,9 @@
         <source>Stop Record</source>
         <translation >停止录像</translation>
     </message>
+    <message>
+      <source>Back to Main Window</source>
+      <translation>返回主界面</translation>
+    </message>
 </context>
 </TS>

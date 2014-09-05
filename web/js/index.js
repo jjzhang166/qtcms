@@ -151,6 +151,12 @@ var oPreView,oDiv,
 				}
 			}
 		})*/
+			
+		bFullScreen = oCommonLibrary.getAutoFullscreen();
+		
+		if(bFullScreen){
+			viewFullScreen();
+		}
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
@@ -171,6 +177,8 @@ var oPreView,oDiv,
 
 		oPreView.AddEventProc('ConnectRefuse','ConnectRefuse(ev)');
 		
+		oPreView.AddEventProc('wndStatus','viewFullScreen()');
+
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
@@ -567,7 +575,8 @@ var oPreView,oDiv,
 				top:0,
 				left:0,
 				position: 'absolute'
-			})
+			});
+			getAudioObj().SetFullScreenFlag();
 		}else{
 			ViewMax();
 		}

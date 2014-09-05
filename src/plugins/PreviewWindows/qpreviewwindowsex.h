@@ -64,6 +64,9 @@ public slots:
 	int AudioEnabled(bool bEnabled);
 	//½ØÆÁ
 	QVariantMap ScreenShot();
+	//È«ÆÁ
+	void SetFullScreenFlag();
+	void OnBackToMainWnd();
 	//ÔÆÌ¨
 	int OpenPTZ(int nCmd, int nSpeed);
 	int ClosePTZ(int nCmd);

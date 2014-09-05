@@ -17,6 +17,8 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(subWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
+		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
+
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -484,5 +486,25 @@ void qpreviewwindowsex::subWindowConnectRefuse( QVariantMap evMap,QWidget *wnd )
 	evMap.insert("WPageId",i);
 	EventProcCall("ConnectRefuse",evMap);
 	return ;
+}
+
+void qpreviewwindowsex::SetFullScreenFlag()
+{
+	for (int i = 0; i < ARRAY_SIZE(m_sPreviewWnd); i++)
+	{
+		m_sPreviewWnd[i].SetFullScreen(true);
+	}
+}
+
+void qpreviewwindowsex::OnBackToMainWnd()
+{
+	for (int i = 0; i < ARRAY_SIZE(m_sPreviewWnd); ++i)
+	{
+		m_sPreviewWnd[i].SetFullScreen(false);
+	}
+
+	DEF_EVENT_PARAM(item);
+	EP_ADD_PARAM(item,"wndStatus","NormalScreen");
+	EventProcCall("wndStatus",item);
 }
 

@@ -47,6 +47,8 @@ public:
 	int audioEnabled(bool bEnable);
 	//½ØÆÁ
 	QVariantMap screenShot();
+	//È«ÆÁ
+	int SetFullScreen(bool bFullScreen);
 	//ÔÆÌ¨¿ØÖÆ
 	int openPTZ(int ncmd,int nspeed);
 	int closePTZ(int ncmd);
@@ -68,6 +70,7 @@ public slots:
 	void slswitchStreamEx();
 	void slclosePreview();
 	void slMenRecorder();
+	void slbackToManiWnd();
 signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgmouseDoubleClick(QWidget *,QMouseEvent*);
@@ -77,6 +80,7 @@ signals:
 	void sgmouseMenu();
 	void sgconnectStatus(QVariantMap,QWidget *);
 	void sgconnectRefuse(QVariantMap,QWidget *);
+	void sgbackToMainWnd();
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
@@ -103,9 +107,11 @@ private:
 	QAction *m_pClosePreviewAction;
 	QAction *m_pSwitchStreamAciton;
 	QAction *m_pRecorderAction;
+	QAction *m_pBackMainViewAction;
 	tagDeviceInfo m_tDeviceInfo;
 	QTranslator *m_pTtanslator;
 	int m_nConnectingCount;
 	QTimer m_tConnectingTimer;
+	static bool ms_bIsFullScreen;
 };
 

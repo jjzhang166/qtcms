@@ -1,6 +1,7 @@
 #include "qsubviewEx.h"
 #include <QTime>
 
+bool qsubviewEx::ms_bIsFullScreen = false;
 qsubviewEx::qsubviewEx(QWidget *parent):
 QWidget(parent),
 	m_tCurConnectStatus(STATUS_DISCONNECTED),
@@ -11,6 +12,7 @@ QWidget(parent),
 	m_pClosePreviewAction(NULL),
 	m_pSwitchStreamAciton(NULL),
 	m_pRecorderAction(NULL),
+	m_pBackMainViewAction(NULL),
 	m_pTtanslator(NULL),
 	m_nConnectingCount(0)
 {
@@ -24,6 +26,7 @@ QWidget(parent),
 	m_pClosePreviewAction=m_mRightMenu.addAction(tr("Close Preview"));
 	m_pSwitchStreamAciton=m_mRightMenu.addAction(tr("Switch Stream"));
 	m_pRecorderAction=m_mRightMenu.addAction(tr("Start Record"));
+	m_pBackMainViewAction = m_mRightMenu.addAction(tr("Back to Main Window"));
 	//¶àÓïÑÔ
 	m_pTtanslator=new QTranslator();
 	QApplication::installTranslator(m_pTtanslator);
@@ -34,6 +37,8 @@ QWidget(parent),
 	connect(m_pClosePreviewAction,SIGNAL(triggered(bool)),this,SLOT(slclosePreview()));
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
+	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
+
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 }
 
@@ -698,6 +703,10 @@ void qsubviewEx::translateLanguage()
 	{
 		m_pClosePreviewAction->setText(tr("Close Preview"));
 	}
+	if (NULL != m_pBackMainViewAction)
+	{
+		m_pBackMainViewAction->setText(tr("Back to Main Window"));
+	}
 }
 
 void qsubviewEx::setDataBaseFlush()
@@ -729,6 +738,19 @@ int qsubviewEx::cbCConnectRefuse( QVariantMap evMap )
 {
 	evMap.insert("eventName","cbCConnectRefuse");
 	emit sgbackToMainThread(evMap);
+	return 0;
+}
+
+void qsubviewEx::slbackToManiWnd()
+{
+	ms_bIsFullScreen = false;
+	emit sgbackToMainWnd();
+}
+
+int qsubviewEx::SetFullScreen( bool bFullScreen )
+{
+	ms_bIsFullScreen = bFullScreen;
+	m_pBackMainViewAction->setEnabled(bFullScreen);
 	return 0;
 }
 
