@@ -74,10 +74,10 @@
 		typeHint[15] = lang.All;
 
 	var color = [];
-		color[1] = '#7BC345';
-		color[2] = '#FFE62E';
-		color[4] = '#F00';
-		color[8] = '#F78445';
+		color[1] = '#F00';
+		color[2] = '#33CC00';
+		color[4] = '#FFFF00';
+		color[8] = '#0000FF';
 
 	function ocxsearchVideo(){
 
