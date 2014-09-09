@@ -19,8 +19,8 @@ function data2UI(objData,oWarp){
 	if(nowDev._USR && nowDev._USR == 'no auth'){
 		showAJAXHint('Unauthorized').show();
 	}
-	var defaultWarp = $('#set_content div.ipc_list:visible')
-
+  var defaultWarp = $('#set_content div.switch:visible');
+  // var defaultWarp = $('#set_content div.dvr_list:visible');
 	var warp = (oWarp && oWarp[0]) ? oWarp : defaultWarp;
 
 	for(var i in objData){
@@ -62,6 +62,10 @@ function data2UI(objData,oWarp){
 							case 'checkbox' :
 								oTag.prop('checked',objData[i]);
 							break;
+							case 'select':
+								var o = oTag.parent('div.select').next('ul.option').find('input:eq('+objData[i]+')');
+								oTag.val(o.val()).attr('data',o.attr('data'));
+							break;
 							default: 
 								oTag.val(_T(objData[i])).attr('data',objData[i]);
 							break;
@@ -75,7 +79,7 @@ function data2UI(objData,oWarp){
 }
 
 function ignoreKey(key){
-	var ignoreKey = ['type','mode','ver','seq','object','__proto__','upnp','wireless'];
+	var ignoreKey = ['type','ver','seq','object','__proto__','upnp','wireless'];
 	for(var i=0;i<ignoreKey.length;i++){
 		if(key == ignoreKey[i]){
 			return false;
@@ -125,7 +129,7 @@ function __AJAXconstruct(url,data,beforeSend,success,complete){  //AJAX 初始�
 
 	var str = type == 'GET' ? 'loading' : 'saveing',
 
-		warp = $('#set_content div.ipc_list:visible');
+		warp = $('#set_content div.switch:visible').find('input').attr("disabled",true).end(); //确保DVR和IPC界面的提示信息在适当的位置
 
 		if(typeof(beforeSend) != 'boolean'){
 			var oHint = showAJAXHint(str).css('top',warp.height() + 46);	
@@ -333,15 +337,17 @@ function disable(warp,str){
 	
 }
 //dvr表单的可写、不可写
-function dvr_disable(data_ui){
+function dvr_disable(data_ui,str1,str2){
 	
 	var warp = $('#set_content div.dvr_list:visible').find('input[data-UI="'+data_ui+'"]');
-	var oInput = warp.parents('table').find('input:text,input:password,input[type="select"]');
+	var oInput = warp.parents('table:first').find('input:text,input:password');
 	
 	if(warp.prop('checked') == true){
-			oInput.prop('disabled',false);
+		   
+			oInput.prop('disabled',str1);
 		}else{
-			oInput.prop('disabled',true);
+			
+			oInput.prop('disabled',str2);
 		}
 	
 	}
@@ -414,7 +420,14 @@ function reInitNowDev(){
 		var odev = $('#dev_'+nowDev._ID).addClass('sel')
 		odev.parent('li').siblings('li').find('span').removeClass('sel');
 		var oDevData = odev.data('data');
-		nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+
+		if(oDevData.vendor=='IPC'){
+		
+		   nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+		}else{
+		   nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+		   
+			}
 	}
 }
 
@@ -423,37 +436,20 @@ function portAsync(){
 	$('#http_ID_Ex').val($('#port_ID_Ex').val());
 }
 
-function dvrGET(fn,num,week){
-	week ? nowDev[fn](num,week) : nowDev[fn](num);
-}
-
-function getTitle(num){
-   nowDev._dvrScreenInfo2UI(num);
-}
-//编码设置
-function getencode(num){
-
-	nowDev._dvrencodeInfo2UI(num);
-}
-//云台设置
-function getPTZ(num){
+//DVR 点击通道数时触发的事件
+function getDataByChn(num){
+	var s = $('.right_content .dvr_list:visible').attr("data");
+	nowDev['_dvr'+s+'Info2UI'](num);
+	}
+//dvr 的录像data2ui
+function DataByChn(obj1,obj2){
 	
-	nowDev._dvrPTZInfo2UI(num);
-}
-//视频检测设置
-function getVideo(num){
-	
-	nowDev._dvrVideoCkeck2UI(num);
-}
-//警报设置
-function getAlarm(num){	
-	nowDev._dvrAlarmInfo2UI(num);	
-}
-//录像设置
-function getRecord(num,week){	
-	nowDev._dvrVideoInfo2UI(num,week);	
-}
-
+	var	num  = obj1?obj1.attr("data"):$("#dvr_record_chn_sel0").val()-1;
+	var	week = obj2?obj2.find("input").attr("data"):$("#recweek").attr("data");
+ 
+	nowDev['_dvrVideoInfo2UI'](num,week);
+	    
+	}
 /*function AJAXabort(){
 	for(i in AJAX){
 		AJAX[i].abort();

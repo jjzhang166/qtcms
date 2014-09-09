@@ -8,6 +8,70 @@ var oSearchOcx,
 		oTreeWarp.hide();
 
 		$('#iframe').hide();
+				
+		$('.iput2.time_picker_start').each(function(i){
+					
+					var startDateTextBox =$(this);
+					var endDateTextBox = $('.iput2.time_picker_end').eq(i);
+					
+		            startDateTextBox.timepicker({
+						 
+					    timeFormat: 'HH:mm:ss',
+						controlType:'select',
+					    showTime: false,
+					  /* // showButtonPanel: false,
+					    timeOnlyTitle: _T('Choose_time'),
+						timeText:_T('Time'),
+		                hourText: _T('Hour'),
+		                minuteText: _T('Minute'),
+						secondText: _T('Second'),*/
+					   
+					    onClose: function(dateText, inst) {
+						  
+						  if (endDateTextBox.val() != '') {
+							
+							var testStartDate = startDateTextBox.datetimepicker('getDate');
+							var testEndDate = endDateTextBox.datetimepicker('getDate');
+							if (testStartDate > testEndDate){
+								 
+								Confirm(_T('Start_end_time_error'));
+							startDateTextBox.datetimepicker('setDate', testEndDate);	
+							}
+						  }else {
+							endDateTextBox.val(dateText);
+						  }
+					
+					    }
+				    });	
+			    });
+				$('.iput2.time_picker_end').each(function(i){
+					
+					var startDateTextBox =$('.iput2.time_picker_start').eq(i);
+					var endDateTextBox =$(this);
+					        
+				    endDateTextBox.timepicker({ 
+				   
+						timeFormat: 'HH:mm:ss',
+	                    controlType:'select',
+				        showTime: false,
+					    //showButtonPanel: false,
+					 
+						onClose: function(dateText, inst) {
+							if (startDateTextBox.val() != '') {
+								
+								var testStartDate = startDateTextBox.datetimepicker('getDate');
+								var testEndDate = endDateTextBox.datetimepicker('getDate');
+								if (testStartDate > testEndDate){
+									Confirm(_T('Start_end_time_error'));
+									endDateTextBox.datetimepicker('setDate', testStartDate);
+								}
+							}else{
+								startDateTextBox.val(dateText);
+							}
+						}
+					});
+				});
+				
 		
 		$('div.menu .close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
 
@@ -149,9 +213,9 @@ var oSearchOcx,
 							$('.dvr_list').eq(0).show();
 							//emptyDevSetMenu();
                          
-							dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();
-							/*console.log('------------new DVR()--------------');
+							/*dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
+							dvr_devinfo_load_content();*/
+							console.log('------------new DVR()--------------');
 							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
 							
 							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
@@ -165,88 +229,13 @@ var oSearchOcx,
 								}
 							})
 
-							nowDev.dvrBasicInfo2UI();*/
+							nowDev.dvrBasicInfo2UI();
 						}
 
 			 	   });
 
 				}else if(key == 2){  //单击“本地设置”
-				   //对本地设置中的时间控件初始化
-	   
-		         /*  $('input.time_picker').timepicker({
-	                           timeFormat: 'HH:mm:00',
-							   showTime: false,
-							   showButtonPanel: false,
-							   timeOnlyTitle: _T('Choose_time'),
-		                       hourText: _T('Hour'),
-		                       minuteText: _T('Minute')
-			            });	*/
-				
-				
-				
-				/*$('.iput2.time_picker_start').each(function(i){
-					
-					var startDateTextBox =$(this);
-					var endDateTextBox = $('.iput2.time_picker_end').eq(i);
-					
-		            startDateTextBox.timepicker({
-						 
-					    timeFormat: 'HH:mm:ss',
-					    showTime: false,
-					    showButtonPanel: false,
-					    timeOnlyTitle: _T('Choose_time'),
-		                hourText: _T('Hour'),
-		                minuteText: _T('Minute'),
-						secondText: _T('Second'),
-					   
-					    onClose: function(dateText, inst) {
-						  
-						  if (endDateTextBox.val() != '') {
-							
-							var testStartDate = startDateTextBox.datetimepicker('getDate');
-							var testEndDate = endDateTextBox.datetimepicker('getDate');
-							if (testStartDate > testEndDate){
-								 
-								Confirm(_T('Start_end_time_error'));
-								endDateTextBox.datetimepicker('setDate', testStartDate);
-							}
-						  }else {
-							endDateTextBox.val(dateText);
-						  }
-					
-					    }
-				    });	
-			    });
-				$('.iput2.time_picker_end').each(function(i){
-					
-					var startDateTextBox =$('.iput2.time_picker_start').eq(i);
-					var endDateTextBox =$(this);
-					        
-				    endDateTextBox.timepicker({ 
-				   
-						timeFormat: 'HH:mm:ss',
-				        showTime: false,
-					    showButtonPanel: false,
-						timeOnlyTitle: _T('Choose_time'),
-			            hourText: _T('Hour'),
-			            minuteText: _T('Minute'),
-						secondText: _T('Second'),
-					 
-						onClose: function(dateText, inst) {
-							if (startDateTextBox.val() != '') {
-								
-								var testStartDate = startDateTextBox.datetimepicker('getDate');
-								var testEndDate = endDateTextBox.datetimepicker('getDate');
-								if (testStartDate > testEndDate){
-									Confirm(_T('Start_end_time_error'));
-									startDateTextBox.datetimepicker('setDate', testEndDate);
-								}
-							}else{
-								startDateTextBox.val(dateText);
-							}
-						}
-					});
-				});*/
+				  
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}/*else if(key == 3){ 
 					userList2Ui();
@@ -553,6 +542,8 @@ var oSearchOcx,
 			var timeid = nowWeekTimeID[i][0];
 			var start = warp.find('div.timeInput:eq(0)').gettime();
 			var end = warp.find('div.timeInput:eq(1)').gettime();
+			/*var start = warp.find('.iput2.time_picker:eq(0)').val();
+			var end = warp.find('.iput2.time_picker:eq(1)').val();*/
 			var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
 			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
 		}
@@ -687,7 +678,7 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.ipc_list:visible').find('input[data-UI]:text,input[data-UI]:password').val('').attr('data','')
+		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
@@ -1350,8 +1341,10 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 			var n = 0;
 			for(j in weekData){
 				var newTimeWarp = $('#recordtime tbody tr:eq('+n+')')
-				weekData[j].starttime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(0)').gettime();
-				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(1)').gettime();
+				/*weekData[j].starttime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(0)').gettime();
+				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(1)').gettime();*/
+				weekData[j].starttime='1970-01-01 '+newTimeWarp.find('.iput2.time_picker:eq(0)').val();
+				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('.iput2.time_picker:eq(1)').val();
 				weekData[j].enable=newTimeWarp.find(':checkbox').is(':checked') ? 1 : 0;
 				n++;
 			}
