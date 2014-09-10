@@ -52,10 +52,10 @@ public:
 	virtual bool motionRecordStart(int nTime);//单位为秒
 	virtual int getRecordStatus();
 	virtual bool updateRecordSchedule(int nChannelId );
-
+	virtual bool upDateSystemDatabase();
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
-	bool checkMotionRecordSchedule();
+	bool checkMotionRecordSchedule();//暂时使用与定时录像一样的录像表
 	bool setRecordType(int nType,bool bFlags);//4:移动录像，2：手动录像，1：定时录像
 private slots:
 	void slCheckTimeRecord();

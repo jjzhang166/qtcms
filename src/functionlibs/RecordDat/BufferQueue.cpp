@@ -43,7 +43,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	}else{
 		//do nothing
 	}
-	RecBufferNode tRecBufferNode;
+	RecBufferNode *pRecBufferNode=new RecBufferNode;;
 	tagFrameHead *pFrameHead=NULL;
 	pFrameHead=(tagFrameHead*)m_tAllocation.applySpace(nApplyLength);
 	if (pFrameHead!=NULL)
@@ -57,25 +57,25 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 		pFrameHead->uiSessionId=0;//
 		pFrameHead->uiType=tFrameInfo["frametype"].toUInt();
 		char *pData=(char*)tFrameInfo["data"].toUInt();
-		memcpy(pFrameHead->pBuffer,pData,nDataLength);
-		if (pFrameHead->uiType==AFRMAE)
+		memcpy(&pFrameHead->pBuffer,pData,nDataLength);
+		if (pFrameHead->uiType==IFRAME)
 		{
-			tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
+			tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)((char*)pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 			pVideoConfigFrame->uiHeight=tFrameInfo["height"].toInt();
 			pVideoConfigFrame->uiWidth=tFrameInfo["width"].toInt();
 			pVideoConfigFrame->ucReversed;//未填充
 			pVideoConfigFrame->ucVideoDec;//未填充
-		}else if (pFrameHead->uiType==PFRAME)
+		}else if (pFrameHead->uiType==AFRMAE)
 		{
-			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
+			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)((char*)pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 			pAudioConfigFrame->uiSamplebit=tFrameInfo["samplewidth"].toInt();
 			pAudioConfigFrame->uiSamplerate=tFrameInfo["samplerate"].toInt();
 			pAudioConfigFrame->uiChannels=tFrameInfo["channel"].toInt();
 		}else{
 			//do nothing
 		}
-		tRecBufferNode.setDataPointer(pFrameHead);
-		m_tDataQueue.enqueue(&tRecBufferNode);
+		pRecBufferNode->setDataPointer(pFrameHead);
+		m_tDataQueue.enqueue(pRecBufferNode);
 		m_tDataLock.unlock();
 		m_tEnqueueDataLock.unlock();
 		return true;
@@ -90,6 +90,8 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 
 bool BufferQueue::setSize( int nMax )
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"setSize fail as this func is wait for fill out";
+	abort();
 	return false;
 }
 

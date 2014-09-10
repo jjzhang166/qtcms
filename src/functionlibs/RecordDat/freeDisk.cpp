@@ -255,7 +255,7 @@ QStringList freeDisk::findEarliestRecord( QString tDbPath,QDate &tEarlestDate,QM
 							QDate tDate=QDate::fromString(sEarlyDate,"yyyy-MM-dd");
 							tDateTime.setDate(tDate);
 							unsigned int iDate=tDateTime.toTime_t();
-							if ((iCurrentDate-iDate)>18000)
+							if ((iCurrentDate-iDate)>10)
 							{
 								int iWidId=_query.value(3).toInt();
 								QString sEndTime=_query.value(4).toString();

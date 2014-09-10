@@ -87,11 +87,12 @@ void WriteToDisk::run()
 						if (tFile.reset())
 						{
 							m_nPosition=__LINE__;
-							if (tFile.write(m_pBuffer,m_uiBufferSize)==m_uiBufferSize)
+							quint64 uiWriteLength=tFile.write(m_pBuffer,m_uiBufferSize);
+							if (uiWriteLength==m_uiBufferSize)
 							{
 								//do nothing
 							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<"write buffer size unCorrect,please checkout";
+								qDebug()<<__FUNCTION__<<__LINE__<<"write buffer size unCorrect,please checkout"<<uiWriteLength<<m_uiBufferSize<<m_sFilePath;
 								abort();
 							}
 							tFile.close();
@@ -164,7 +165,7 @@ void WriteToDisk::slCheckBlock()
 
 void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiBufferSize)
 {
-	if (QThread::isRunning())
+	if (!QThread::isRunning())
 	{
 		QThread::start();
 	}else{

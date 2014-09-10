@@ -114,7 +114,7 @@ void recordDatCore::run()
 				memset(m_pDataBuffer,0,BUFFERSIZE*1024*1024);
 				QFile tFile;
 				tFile.setFileName(sWriteFilePath);
-				if (tFile.open(QIODevice::ReadOnly))
+				if (tFile.open(QIODevice::ReadWrite))
 				{
 					m_tFileHead.clear();
 					m_tFileHead=tFile.read(sizeof(tagFileHead));
@@ -347,11 +347,11 @@ void recordDatCore::run()
 							bFlags=true;
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"writeTodisk fail";
-							m_tResetType=rrecordDatReset_writeToDisk;
+							m_tResetType=recordDatReset_writeToDisk;
 						}
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"updateRecordDatabase fail";
-						m_tResetType=rrecordDatReset_recordDatabase;
+						m_tResetType=recordDatReset_recordDatabase;
 					}
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchRecord fail";
@@ -363,11 +363,16 @@ void recordDatCore::run()
 			}
 			m_tToDiskType=recordDatToDiskType_null;
 			m_nWriteDiskTimeCount=0;
-			if (bFlags)
+			if (m_bStop)
 			{
-				//do nothing
+				nRunStep=recordDat_end;
 			}else{
-				nRunStep=recordDat_reset;
+				if (bFlags)
+				{
+					//do nothing
+				}else{
+					nRunStep=recordDat_reset;
+				}
 			}
 								 }
 								 break;
@@ -420,6 +425,7 @@ void recordDatCore::run()
 					}
 					m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=0;
 				}
+				m_tDatabaseInfo.tRemoveChannel.clear();
 				m_tBufferQueueMapLock.unlock();
 				nRunStep=recordDat_writeMemory;
 			}else
@@ -436,7 +442,8 @@ void recordDatCore::run()
 			}
 			if (m_bStop)
 			{
-				nRunStep=recordDat_end;
+				nRunStep=recordDat_writeDisk;
+				m_tToDiskType=recordDatToDiskType_bufferFull;
 			}else{
 				//do nothing
 			}
@@ -446,12 +453,75 @@ void recordDatCore::run()
 			//出错后重启
 			if (m_tResetType==recordDatReset_fileError)
 			{
-				//fix me
+				//文件错误
+				QVariantMap tInfo;
+				tInfo.insert("nLock",1);
+				m_tOperationDatabase.setRecordFileStatus(sWriteFilePath,tInfo);
+				nRunStep=recordDat_init;
+				qDebug()<<__FUNCTION__<<__LINE__<<"recordDat_reset to add sWriteFilePath to lock status"<<sWriteFilePath;
+				msleep(10);
 			}else if (m_tResetType==recordDatReset_outOfDisk)
 			{
-				//fix me
+				//磁盘空间不足
+				//是否循环录像
+				//是否有盘符
+				//是否有磁盘空间
+				//1.1.13版本之前的数据库是否有条目
+				//1.1.13版本之后的数据是否有条目
+				tagSystemDatabaseInfo tSystemDatabaseInfo=m_tOperationDatabase.getSystemDatabaseInfo();
+				if (!tSystemDatabaseInfo.sAllRecordDisk.isEmpty())
+				{
+					if (m_tOperationDatabase.isDiskSpaceOverReservedSize())
+					{
+						nRunStep=recordDat_init;
+					}else{
+						if (tSystemDatabaseInfo.bIsRecover==true)
+						{
+							if (m_tOperationDatabase.isRecordDataExistItem())
+							{
+								nRunStep=recordDat_init;
+							}else{
+								//do nothing
+								qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no space for relase to record";
+							}
+						}else{
+							//do nothing
+							qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as diskSpace is full and IsRecover is false";
+						}
+					}
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk for record";
+				}
+				if (nRunStep==recordDat_reset)
+				{
+					sleepEx(2000);
+				}else{
+					//keep going
+				}
+			}else if(m_tResetType==recordDatReset_searchDatabase){
+				//搜索数据库操作失败
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread ,as m_tResetType is recordDatReset_searchDatabase,There is no way to recover";
+				abort();
+			}else if (m_tResetType==recordDatReset_recordDatabase)
+			{
+				//录像数据库操作失败
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread ,as m_tResetType is rrecordDatReset_recordDatabase,There is no way to recover";
+				abort();
+			}else if (m_tResetType==recordDatReset_writeToDisk)
+			{
+				//写磁盘失败
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread ,as m_tResetType is rrecordDatReset_writeToDisk,There is no way to recover";
 			}else{
-				//fix me
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread,as m_tResetType is undefined";
+				abort();
+			}
+			if (m_bReloadSystemDatabase)
+			{
+				m_tOperationDatabase.reloadSystemDatabase();
+				m_bReloadSystemDatabase=false;
+			}else{
+				// do nothing
 			}
 			if (m_bStop)
 			{
@@ -467,6 +537,13 @@ void recordDatCore::run()
 							 break;
 		case recordDat_end:{
 			//结束
+			//step 1:确保写硬盘线程结束
+			m_tWriteToDisk.stopWriteToDisk();
+			//step 2:清理录像数据库
+			m_tDatabaseInfo.tChannelInRecordDatabaseId.clear();
+			//step 3:清理搜索数据库
+			m_tDatabaseInfo.tChannelInSearchDatabaseId.clear();
+			bRunStop=true;
 						   }
 						   break;
 		}
@@ -478,6 +555,23 @@ bool recordDatCore::setBufferQueue( int nWnd,BufferQueue &tBufferQueue )
 {
 	m_tBufferQueueMapLock.lock();
 	m_tBufferQueueMap.insert(nWnd,&tBufferQueue);
+	int nRemoveWnd=-1;
+	for (int i=0;i<m_tDatabaseInfo.tRemoveChannel.size();i++)
+	{
+		int nRemoveWnd=m_tDatabaseInfo.tRemoveChannel.at(i);
+		if (nRemoveWnd==nWnd)
+		{
+			break;
+		}else{
+			//do nothing
+		}
+	}
+	if (nRemoveWnd!=-1)
+	{
+		m_tDatabaseInfo.tRemoveChannel.removeAt(nRemoveWnd);
+	}else{
+		//do nothing
+	}
 	m_tBufferQueueMapLock.unlock();
 	return true;
 }
@@ -532,7 +626,7 @@ bool recordDatCore::setRecordType( int nWnd,int nType,bool bFlags )
 	m_tBufferQueueMapLock.lock();
 	int nHisRecordType=m_tFileInfo.tWndInfo.value(nWnd).uiHistoryRecordType;
 	int nTotal=MANUALRECORD+TIMERECORD+MOTIONRECORD;
-	if (nType==MANUALRECORD||nType==MOTIONRECORD||TIMERECORD)
+	if (nType==MANUALRECORD||nType==MOTIONRECORD||nType==TIMERECORD)
 	{
 		if (bFlags)
 		{
@@ -704,6 +798,9 @@ int  recordDatCore::obtainFilePath(QString &sWriteFilePath)
 				nStep=obtainFilePath_success;
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as createNewFile fail";
+				QVariantMap tInfo;
+				tInfo.insert("nLock",1);
+				m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
 				nStep=obtainFilePath_fail;
 			}
 									   }
@@ -766,8 +863,8 @@ bool recordDatCore::checkFileIsFull( QString sFilePath )
 	{
 		if (tFile.open(QIODevice::ReadWrite))
 		{
-			QByteArray mtFilehead=tFile.read(sizeof(tagFileHead));
-			if (mtFilehead.size()<sizeof(tagFileHead))
+			QByteArray tFilehead=tFile.read(sizeof(tagFileHead));
+			if (tFilehead.size()<sizeof(tagFileHead))
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"undefined file,it can not bee use";
 				QVariantMap tInfo;
@@ -775,7 +872,7 @@ bool recordDatCore::checkFileIsFull( QString sFilePath )
 				m_tOperationDatabase.setRecordFileStatus(sFilePath,tInfo);
 				return true;
 			}else{
-				tagFileHead *pFileHead=(tagFileHead*)mtFilehead.data();
+				tagFileHead *pFileHead=(tagFileHead*)tFilehead.data();
 				char *pChar="JUAN";
 				if (memcmp(pChar,pFileHead->ucMagic,4)==0)
 				{
@@ -908,7 +1005,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				{
 					//historyType==currentType!=0,类型没有转变，接着录像
 					nStep=WriteToBuffer_011;
-				}else if (nHistoryType!=0&&nCurrentType!=0)
+				}else if (nHistoryType!=0&&nCurrentType!=0&&nHistoryType!=nCurrentType)
 				{
 					//historyType!=currentType!=0,类型转换，接着录像
 					nStep=WriteToBuffer_111;
@@ -949,12 +1046,12 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								pRecBufferNodeTakeOut->release();
 								pRecBufferNodeTakeOut=NULL;
 							}
-							pRecBufferNodeTemp->release();
-							pFrameHead=NULL;
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
 							abort();
 						}
+						pRecBufferNodeTemp->release();
+						pFrameHead=NULL;
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"there must exist a error,i will terminate the thread";
 						abort();
@@ -967,7 +1064,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					quint64 uiEndTime=uiStartTime;
 					//step1:建立录像数据库条目
 					//step2:建立搜索数据库条目
-					if (createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,nSearchItemId))
+					if (createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nSearchItemId))
 					{
 						if (createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nRecordItemId))
 						{
@@ -975,13 +1072,13 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 							m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
 							m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
 							nHistoryType=nCurrentType;
-							if (nHistoryType&MOTIONRECORD)
+							if (nCurrentType&MOTIONRECORD)
 							{
 								nRecType=MOTIONRECORD;
-							}else if (nHistoryType&MANUALRECORD)
+							}else if (nCurrentType&MANUALRECORD)
 							{
 								nRecType=MANUALRECORD;
-							}else if (nHistoryType&TIMERECORD)
+							}else if (nCurrentType&TIMERECORD)
 							{
 								nRecType=TIMERECORD;
 							}else{
@@ -1066,7 +1163,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					//创建搜索条目
 					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
 					quint64 uiEndTime=uiStartTime;
-					if (m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,nSearchItemId))
+					if (m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nSearchItemId))
 					{
 						m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
 					}else{
@@ -1163,7 +1260,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 									pFrameHeadBuffer->uiSessionId=nRecordItemId;
 									pFrameHeadBuffer->uiType=FT_VideoConfig;
 
-									tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFileFrameHead+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFrameHeadBuffer->pBuffer));
+									tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)(pFileFrameHead+sizeof(tagFileFrameHead)-sizeof(pFrameHeadBuffer->pBuffer));
 									tagVideoConfigFrame *pVideoConfigFrameTemp=(tagVideoConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 									pVideoConfigFrame->uiHeight=pVideoConfigFrameTemp->uiHeight;
 									pVideoConfigFrame->uiWidth=pVideoConfigFrameTemp->uiWidth;
@@ -1219,7 +1316,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 									pFrameHeadBuffer->uiSessionId=nRecordItemId;
 									pFrameHeadBuffer->uiType=FT_Audio;
 
-									tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFileFrameHead+sizeof(tagFileFrameHead)+sizeof(tagAudioConfigFrame)-sizeof(pFrameHeadBuffer->pBuffer));
+									tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)(pFileFrameHead+sizeof(tagFileFrameHead)-sizeof(pFrameHeadBuffer->pBuffer));
 									tagAudioConfigFrame *pAudioConfigFrameTemp=(tagAudioConfigFrame*)(pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 									pAudioConfigFrame->uiChannels=pAudioConfigFrameTemp->uiChannels;
 									pAudioConfigFrame->uiSamplebit=pAudioConfigFrameTemp->uiSamplebit;
@@ -1384,9 +1481,9 @@ bool recordDatCore::writeTodisk()
 	return true;
 }
 
-bool recordDatCore::createSearchDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId )
+bool recordDatCore::createSearchDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFilePath,uint &uiItemId )
 {
-	return m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,uiType, uiItemId);
+	return m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,uiType,sFilePath, uiItemId);
 }
 
 bool recordDatCore::createRecordDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId )

@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QtSql>
 #include <QMap>
+#include "recorddat_global.h"
 #include "freeDisk.h"
 //使用安全条件
 //1.单盘大小不能超过：256*256*256*128M
@@ -30,10 +31,13 @@ public:
 	void clearInfoInDatabase(QString sFilePath);
 	bool updateRecordDatabase(int nId,QVariantMap tInfo,QString sFilePath);//uiEndTime,uiType
 	bool updateSearchDatabase(int nId,QVariantMap tInfo,QString sFilePath);//uiEndTime,uiType
-	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
+	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	void setRecordFileStatus(QString sFilePath,QVariantMap tInfo);
 	bool getIsRecover();
+	tagSystemDatabaseInfo getSystemDatabaseInfo();
+	bool isDiskSpaceOverReservedSize();
+	bool isRecordDataExistItem();
 private:
 	bool createRecordDatabase(QString sDatabasePath);
 	void priSetRecordFileStatus(QString sFilePath,QVariantMap tInfo);

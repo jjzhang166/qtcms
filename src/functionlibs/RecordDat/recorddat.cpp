@@ -8,6 +8,7 @@ void initRecordDatCore(recordDatCore **pRecordDatCore){
 	if (NULL==g_pRecordDatCore)
 	{
 		g_pRecordDatCore=new recordDatCore;
+		g_nRecordDatCoreCount=0;
 	}else{
 		//do nothing
 	}
@@ -51,7 +52,11 @@ long __stdcall RecordDat::QueryInterface( const IID & iid,void **ppv )
 	if (IID_IEventRegister==iid)
 	{
 		*ppv=static_cast<IEventRegister*>(this);
-	}else{
+	}else if (IID_IRecordDat==iid)
+	{
+		*ppv=static_cast<IRecordDat*>(this);
+	}
+	else{
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
@@ -154,6 +159,7 @@ bool RecordDat::init(int nWid)
 		return true;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"init fail as pRecordDatCore is null";
+		abort();
 		m_tFuncLock.unlock();
 		return false;
 	}
@@ -271,24 +277,29 @@ bool RecordDat::setRecordType( int nType,bool bFlags )
 	m_tSetRecordTypeLock.lock();
 	bool bSetFlags=false;
 	int nHisStatus=m_nStatus;
-	if (nType==MANUALRECORD)
+	int nTotal=MANUALRECORD+TIMERECORD+MOTIONRECORD;
+	recordDatCore *pRecordDatCore=NULL;
+	initRecordDatCore(&pRecordDatCore);
+	if (pRecordDatCore!=NULL)
 	{
-		int nType;
+		bSetFlags=pRecordDatCore->setRecordType(m_nWnd,nType,bFlags);
+		deinitRecordDatCore();
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType fail as pRecordDatCore should not been null";
+		m_tSetRecordTypeLock.unlock();
+		abort();
+		return false;
+	}
+	if (nType==MANUALRECORD||nType==TIMERECORD||nType==MOTIONRECORD)
+	{
 		if (bFlags)
 		{
-			nType=2;
-			m_nStatus=m_nStatus|nType;
+			m_nStatus=nType|m_nStatus;
 		}else{
-			nType=5;
-			m_nStatus=m_nStatus&nType;
+			m_nStatus=(nTotal-nType)&m_nStatus;
 		}
-	}else if(nType=MOTIONRECORD){
-
-	}else if (nType==TIMERECORD)
-	{
-
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType fail as nType is undefined";
+		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType fail as nType is undefined"<<nType;
 	}
 	//Å×³öÍ£Ö¹Â¼Ïñ×´Ì¬
 	if (m_nStatus==0&&nHisStatus!=0&&bSetFlags==true)
@@ -321,6 +332,7 @@ void RecordDat::slCheckTimeRecord()
 	int nCurrentWeekDay=QDate::currentDate().dayOfWeek()-1;
 	QTime tCurrentTime=QTime::currentTime();
 	bool bRecordFlags=false;
+	m_tRecordDatTimeListLock.lock();
 	for(int i=0;i<m_tRecordDatTimeList.size();i++){
 		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
 		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay)
@@ -334,6 +346,7 @@ void RecordDat::slCheckTimeRecord()
 			//do nothing
 		}
 	}
+	m_tRecordDatTimeListLock.unlock();
 	if (bRecordFlags)
 	{
 		//¿ªÆô¶¨Ê±Â¼Ïñ
@@ -390,7 +403,7 @@ bool RecordDat::updateRecordSchedule(int nChannelId )
 
 void RecordDat::slCheckMotionRecord()
 {
-	if (m_nStatus&4)
+	if (m_nStatus&MOTIONRECORD)
 	{
 		if (setRecordType(MOTIONRECORD,false))
 		{
@@ -404,5 +417,44 @@ void RecordDat::slCheckMotionRecord()
 
 bool RecordDat::checkMotionRecordSchedule()
 {
-	return false;
+	int nCurrentWeekDay=QDate::currentDate().dayOfWeek()-1;
+	QTime tCurrentTime=QTime::currentTime();
+	bool bRecordFlags=false;
+	m_tRecordDatTimeListLock.lock();
+	for(int i=0;i<m_tRecordDatTimeList.size();i++){
+		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
+		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay)
+		{
+			if (tRecTimeInfo.tStartTime<=tCurrentTime&&tRecTimeInfo.tEndTime>tCurrentTime)
+			{
+				bRecordFlags=true;
+				break;
+			}
+		}else{
+			//do nothing
+		}
+	}
+	m_tRecordDatTimeListLock.unlock();
+	if (bRecordFlags)
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+
+bool RecordDat::upDateSystemDatabase()
+{
+	recordDatCore *pRecordDatCore=NULL;
+	initRecordDatCore(&pRecordDatCore);
+	if (pRecordDatCore!=NULL)
+	{
+		pRecordDatCore->reloadSystemDatabase();
+		deinitRecordDatCore();
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"upDateSystemDatabase fail as pRecordDatCore is null";
+		abort();
+		return false;
+	}
 }

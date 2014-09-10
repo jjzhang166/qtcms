@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>录像数据库有有三个表：</p>
+<p>search_record：搜索表，用于本地回放时搜索对于窗口的录像</p>
+<p>record：录像表，记录每个文件中所包含通道不同录像类型的条目</p>
+<p>RecordFileStatus：录像文件状态表，记录文件的状态是否锁定，是否损坏</p>
+<p>create table search_record<br />
+  (<br />
+  id integer primary key autoincrement,<br />
+  nWndId integer,//录像的窗口号<br />
+  nRecordType integer,//录像类型，100：移动录像，010手动录像，001定时录像<br />
+  nStartTime integer,//录像开始时间<br />
+  nEndTime integer//录像结束时间<br />
+  );<br />
+  create table record(<br />
+  id integer primary key autoincrement,<br />
+  nWndId integer,//录像窗口<br />
+  nRecordType integer,//录像类型，100：移动录像，010手动录像，001定时录像<br />
+  nStartTime integer,//录像开始时间<br />
+  nEndTime integer,//录像结束时间<br />
+  sFilePath char(64)//文件录像：000/0000/0000/0001.dat ，每层文件数为256<br />
+  );<br />
+  create table RecordFileStatus(<br />
+  id integer primary key autoincrement,<br />
+  sFilePath char(64),文件录像：000/0000/0000/0001.dat ，每层文件数为256<br />
+  nLock integer, //0 :解锁，1：锁定<br />
+  nDamage integer, //0:可用，1：文件损坏<br />
+  nInUse integer, //0：没用使用，1:已经使用<br />
+  nFileNum integer//路径值：0000/0000/0000/0001.dat ==1; <br />
+  );</p>
+</body>
+</html>

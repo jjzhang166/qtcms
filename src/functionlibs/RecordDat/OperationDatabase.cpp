@@ -531,13 +531,129 @@ bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo,QString
 	return false;
 }
 
-bool OperationDatabase::createSearchDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType ,uint &uiItemId)
+bool OperationDatabase::createSearchDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType ,QString sFilename,uint &uiItemId)
 {
+	if (uiStartTime>uiEndTime)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail as uiStartTime>uiEndTime"<<uiStartTime<<uiEndTime;
+		abort();
+		return false;
+	}else{
+		//keep going
+	}
+	QString sDatabasePath=sFilename.left(1)+":/recEx/record.db";
+	QFile tDatabaseFile;
+	tDatabaseFile.setFileName(sDatabasePath);
+	if (tDatabaseFile.exists())
+	{
+		//keep going
+	}else{
+		//创建搜索表
+		if (createRecordDatabase(sDatabasePath))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail as createRecordDatabase fail";
+			return false;
+		}
+	}
+	QSqlDatabase *pDatabase=NULL;
+	pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+	if (NULL!=pDatabase)
+	{
+		QSqlQuery _query(*pDatabase);
+		QString sCommand=QString("insert into search_record(nWndId,nRecordType,nStartTime,nEndTime)values(%1,%2,%3,%4)").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime);
+		if (_query.exec(sCommand))
+		{
+			sCommand.clear();
+			sCommand=QString("select id from search_record where nWndId=%1 and nRecordType=%2 and nStartTime=%3 and nEndTime=%4").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime);
+			if (_query.exec(sCommand))
+			{
+				if (_query.next())
+				{
+					uiItemId=_query.value(0).toUInt();
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"there must something error,it may exec cmd fail"<<sCommand;
+					abort();
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand;
+				abort();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand;
+			abort();
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not been null";
+		abort();
+	}
 	return false;
 }
 
 bool OperationDatabase::createRecordDatabaseItem( int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName ,uint &uiItemId)
 {
+	if (uiStartTime>uiEndTime)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail as uiStartTime>uiEndTime :"<<uiStartTime<<uiEndTime;
+		abort();
+		return false;
+	}else{
+		//keep going
+	}
+	QString sDatabasePath=sFileName.left(1)+":/recEx/record.db";
+	QFile tDatabaseFile;
+	tDatabaseFile.setFileName(sFileName);
+	if (tDatabaseFile.exists())
+	{
+		//keep going
+	}else{
+		if (createRecordDatabase(sDatabasePath))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail as createRecordDatabase fail";
+			abort();
+			return false;
+		}
+	}
+	QSqlDatabase *pDatabase=NULL;
+	pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+	if (NULL!=pDatabase)
+	{
+		QSqlQuery _query(*pDatabase);
+		QString sCommand=QString("insert into record(nWndId,nRecordType,nStartTime,nEndTime,sFilePath)values(%1,%2,%3,%4,'%5')").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime).arg(sFileName);
+		if (_query.exec(sCommand))
+		{
+			sCommand.clear();
+			sCommand=QString("select id from record where nWndId=%1,nRecordType=%2,nStartTime=%3,nEndTime=%4").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime);
+			if (_query.exec(sCommand))
+			{
+				if (_query.next())
+				{
+					uiItemId=_query.value(0).toUInt();
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"there must be something error as exec cmd"<<sCommand;
+					abort();
+					return false;
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail as exec cmd fail:"<<sCommand;
+				abort();
+				return false;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail as exec cmd fail:"<<sCommand;
+			abort();
+			return false;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail as pDatabase should not been null";
+		abort();
+		return false;
+	}
 	return false;
 }
 
@@ -817,6 +933,130 @@ quint64 OperationDatabase::countFileNum( QString sFilePath )
 	quint64 uiNum=MAXFILENUM*(MAXFILENUM*(MAXFILENUM*nFrist+nSecond)+nThird)+nFourth;
 	return uiNum;
 }
+
+tagSystemDatabaseInfo OperationDatabase::getSystemDatabaseInfo()
+{
+	return m_tSystemDatabaseInfo;
+}
+
+bool OperationDatabase::isDiskSpaceOverReservedSize()
+{
+	QString sDiskFound;
+	QString sDiskLisk=m_tSystemDatabaseInfo.sAllRecordDisk;
+	QStringList tDiskList=m_tSystemDatabaseInfo.sAllRecordDisk.split(":");
+	if (tDiskList.size()!=0)
+	{
+		quint64 uiFreeByteAvailable=0;
+		quint64 uiTotalNumberOfBytes=0;
+		quint64 uiTotalNumberOfFreeByte=0;
+		foreach(QString sDiskItem,tDiskList){
+			QString sDiskEx=sDiskItem+":";
+			if (GetDiskFreeSpaceExQ(sDiskEx.toAscii().data(),&uiFreeByteAvailable,&uiTotalNumberOfBytes,&uiTotalNumberOfFreeByte))
+			{
+				if (uiTotalNumberOfFreeByte/1024/1024>(quint64)m_tSystemDatabaseInfo.uiDiskReservedSize)
+				{
+					sDiskFound=sDiskEx;
+					break;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<sDiskEx<<"do not have enough space for recorder,find next disk";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<sDiskEx<<"can not been gotten message,it may be a system disk";
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"there is no disk for record as tDiskList size==0";
+	}
+	if (!sDiskFound.isEmpty())
+	{
+		return true;
+	}else{
+		return false;
+	}
+}
+
+bool OperationDatabase::isRecordDataExistItem()
+{
+	//1.1.13版本之前的数据库是否有条目
+	//1.1.13版本之后的数据是否有条目
+	QString sDiskFound;
+	QString sDiskLisk=m_tSystemDatabaseInfo.sAllRecordDisk;
+	QStringList tDiskList=m_tSystemDatabaseInfo.sAllRecordDisk.split(":");
+	if (tDiskList.size()!=0)
+	{
+		quint64 uiFreeByteAvailable=0;
+		quint64 uiTotalNumberOfBytes=0;
+		quint64 uiTotalNumberOfFreeByte=0;
+		foreach(QString sDiskItem,tDiskList){
+			QString sDiskEx=sDiskItem+":";
+			//step1:1.1.13版本之前的数据库是否有条目
+			QString sDatabasePath=sDiskEx+"rec/record.db";
+			QFile tDatabaseFile;
+			tDatabaseFile.setFileName(sDatabasePath);
+			if (tDatabaseFile.exists())
+			{
+				QSqlDatabase *pDatabase=NULL;
+				pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+				if (NULL!=pDatabase)
+				{
+					QSqlQuery _query(*pDatabase);
+					QString sCommand=QString("select *from local_record");
+					if (_query.exec(sCommand))
+					{
+						if (_query.next())
+						{
+							return true;
+						}else{
+							// do nothing
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"isRecordDataExistItem fail as exec cmd fail:"<<sCommand;
+						abort();
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as pDatabase should not been null";
+					abort();
+				}
+			}else{
+				//do nothing
+			}
+			//step1:1.1.13版本之后的数据是否有条目
+			sDatabasePath.clear();
+			sDatabasePath=sDiskEx+"recEx/record.db";
+			tDatabaseFile.setFileName(sDatabasePath);
+			if (tDatabaseFile.exists())
+			{
+				QSqlDatabase *pDatabase=NULL;
+				pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+				if (NULL!=pDatabase)
+				{
+					QSqlQuery _query(*pDatabase);
+					QString sCommand=QString("select *from record");
+					if (_query.exec(sCommand))
+					{
+						if (_query.next())
+						{
+							return true;
+						}else{
+							//do nothing
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"isRecordDataExistItem fail as exec cmd fail:"<<sCommand;
+						abort();
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as pDatabase should not been null";
+					abort();
+				}
+			}else{
+				//do nothing
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"there is no disk for record as tDiskList size==0";
+	}
+	return false;
+}			
 
 
 

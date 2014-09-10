@@ -68,8 +68,8 @@ typedef enum __tagRecordDatReset{
 	recordDatReset_fileError,//ÎÄ¼þ´íÎó
 	recordDatReset_outOfDisk,//´ÅÅÌ¿Õ¼ä²»×ã
 	recordDatReset_searchDatabase,//ËÑË÷Êý¾Ý¿â²Ù×÷Ê§°Ü
-	rrecordDatReset_recordDatabase,//Â¼ÏñÊý¾Ý¿â²Ù×÷Ê§°Ü
-	rrecordDatReset_writeToDisk,//Ð´´ÅÅÌÊ§°Ü
+	recordDatReset_recordDatabase,//Â¼ÏñÊý¾Ý¿â²Ù×÷Ê§°Ü
+	recordDatReset_writeToDisk,//Ð´´ÅÅÌÊ§°Ü
 }tagRecordDatReset;
 typedef enum __tagRecordDatToDiskType{
 	recordDatToDiskType_null,//²»²Ù×÷
@@ -121,7 +121,7 @@ private:
 	void sleepEx(quint64 uiTime);
 	bool updateSearchDatabase();
 	bool updateRecordDatabase(int nUpdateType);
-	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,uint &uiItemId);
+	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
 	bool writeTodisk();
 	void setChannelNumInFileHead();
