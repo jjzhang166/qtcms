@@ -105,4 +105,5 @@ extern const IID IID_IRecordDat;
 extern const IID IID_IStorage;
 extern const CLSID CLSID_UnixCommonTools;
 extern const CLSID CLSID_winStorageUtinity;
+extern const IID IID_IRemoteMotionDetection;
 #endif

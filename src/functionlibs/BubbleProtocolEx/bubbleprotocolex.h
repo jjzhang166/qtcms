@@ -11,6 +11,7 @@
 #include <IDeviceConnection.h>
 #include <IRemotePreview.h>
 #include <IRemotePlayback.h>
+#include <IRemoteMotionDetection.h>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QHostAddress>
 #include <QDateTime>
@@ -21,6 +22,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QDomDocument>
+#include <mdworkobject.h>
 #include "SearchRemoteFile.h"
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagBubbleProInfo{
@@ -86,7 +88,8 @@ class  BubbleProtocolEx:public QThread,
 	public IEventRegister,
 	public IRemotePreview,
 	public IDeviceConnection,
-	public IRemotePlayback
+	public IRemotePlayback,
+	public IRemoteMotionDetection
 {
 	Q_OBJECT
 public:
@@ -129,6 +132,11 @@ public:
 	virtual int getPlaybackStreamByFileName(int nChannel,const QString &sFileName);
 	virtual int pausePlaybackStream(bool bPause);
 	virtual int stopPlaybackStream();
+
+	// IRemoteMotionDetection
+	virtual int startMotionDetection();
+	virtual int stopMotionDetection();
+
 	//callback
 	int cbFoundFile(QVariantMap &evmap);
 	int cbRecFileSearchFinished(QVariantMap &evmap);
@@ -157,11 +165,17 @@ private:
 	bool sendLiveStreamCmd(bool flags);
 	bool checkRemoteFileIsExist();
 	QString checkXML(QString sSource);
+
 private slots:
 	void slCheckoutBlock();
 	void slBackToMainThread(QVariantMap evMap);
 signals:
 	void sgBackToMainThread(QVariantMap evMap);
+public slots:
+	void mdSocketStateChange(QAbstractSocket::SocketState sockState);
+	void mdSocketConnetced();
+	void mdSocketDisconnected();
+	void mdSocketError(QAbstractSocket::SocketError socketError);
 private:
 	volatile int m_nRef;
 	QMutex m_csRef;
@@ -187,6 +201,18 @@ private:
 	volatile bool m_bWaitForConnect;
 	SearchRemoteFile m_tSearchRemoteFile;
     Qt::HANDLE m_nBuiltTreadId;
+
+// motion detection
+private:
+	QTcpSocket m_sockMD;
+	QTimer m_MdTimer;
+	QThread m_MdThread;
+	MDWorkObject m_MdWorkObj;
+	QMutex m_csMdEcho;
+	bool m_bQuitMd;
+
+public:
+	void motionDetectionEcho();
 };
 
 #endif // BUBBLEPROTOCOLEX_H

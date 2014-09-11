@@ -4,6 +4,13 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QUrl>
+#include <IRemoteMotionDetection.h>
+
+int mdsignal_proc(QString sEvent,QVariantMap param,void * pUser)
+{
+	qDebug() << "Md" << param["signal"];
+	return 0;
+}
 
 IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED),
@@ -186,6 +193,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	m_DeviceInfo.m_sAddr=sAddr;
 	m_DeviceInfo.m_ports.clear();
 	m_DeviceInfo.m_ports.insert("media",uiPort);
+	m_DeviceInfo.m_ports.insert("http",uiPort);
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
 
@@ -215,6 +223,26 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect success";
 					nStep=3;
+
+					// ×¢²áÒÆ¶¯Õì²âÐÅºÅ
+					IEventRegister * iEg;
+					m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void **)&iEg);
+					if (NULL != iEg)
+					{
+						iEg->registerEvent("MDSignal",mdsignal_proc,this);
+						iEg->Release();
+						iEg = NULL;
+					}
+
+					// Æô¶¯ÒÆ¶¯Õì²â
+					IRemoteMotionDetection * iMd;
+					m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
+					if (NULL != iMd)
+					{
+						iMd->startMotionDetection();
+						iMd->Release();
+						iMd = NULL;
+					}
 				}
 				else{
 					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect fail";

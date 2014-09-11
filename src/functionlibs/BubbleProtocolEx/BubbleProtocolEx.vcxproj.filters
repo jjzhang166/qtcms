@@ -56,6 +56,18 @@
     <ClCompile Include="SearchRemoteFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteMotionDetection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mdworkobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mdworkobject.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mdworkobject.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bubbleprotocolex_global.h">
@@ -78,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bubbleprotocolex.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mdworkobject.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
