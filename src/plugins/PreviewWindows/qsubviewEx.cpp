@@ -537,13 +537,13 @@ void qsubviewEx::slmouseMenu()
 	}else{
 		//do nothing 
 	}
-	if (m_tCurConnectStatus==STATUS_CONNECTED&&getAutoRecordStatus()==false)
+	if (m_tCurConnectStatus==STATUS_CONNECTED)
 	{
 		m_pRecorderAction->setEnabled(true);
 	}else{
 		m_pRecorderAction->setDisabled(true);
 	}
-	if (m_bIsRecording)
+	if (2&m_sSubviewRun.getRecordStatus())
 	{
 		m_pRecorderAction->setText(tr("Stop Record"));
 	}else{
@@ -586,12 +586,12 @@ void qsubviewEx::slswitchStreamEx()
 
 int qsubviewEx::startRecord()
 {
-	return m_sSubviewRun.startRecord();
+	return m_sSubviewRun.startManualRecord();
 }
 
 int qsubviewEx::stopRecord()
 {
-	return m_sSubviewRun.stopRecord();
+	return m_sSubviewRun.stopManualRecord();
 }
 
 int qsubviewEx::setPlayWnd( int nwnd )
@@ -716,7 +716,7 @@ void qsubviewEx::setDataBaseFlush()
 
 void qsubviewEx::slMenRecorder()
 {
-	if (m_bIsRecording)
+	if (2&m_sSubviewRun.getRecordStatus())
 	{
 		stopRecord();
 	}else{
@@ -724,10 +724,6 @@ void qsubviewEx::slMenRecorder()
 	}
 }
 
-bool qsubviewEx::getAutoRecordStatus()
-{
-	return m_sSubviewRun.getAutoRecordStatus();
-}
 
 void qsubviewEx::setCurWindId( int nWindId )
 {
@@ -752,6 +748,11 @@ int qsubviewEx::SetFullScreen( bool bFullScreen )
 	ms_bIsFullScreen = bFullScreen;
 	m_pBackMainViewAction->setEnabled(bFullScreen);
 	return 0;
+}
+
+int qsubviewEx::getRecordStatus()
+{
+	return m_sSubviewRun.getRecordStatus();
 }
 
 

@@ -205,12 +205,12 @@ QString OperationDatabase::getLatestItem( QString sDisk )
 				{
 					QString sFilePath=_query.value(1).toString();
 					sCommand.clear();
-					sCommand=QString("id,nLock,nDamage from RecordFileStatus where sFilePath='%1'").arg(sFilePath);
+					sCommand=QString("select id,nLock,nDamage from RecordFileStatus where sFilePath='%1'").arg(sFilePath);
 					if (_query.exec(sCommand))
 					{
 						if (_query.next())
 						{
-							if (_query.value(1).toInt()==1|_query.value(2).toInt()==0)
+							if (_query.value(1).toInt()==1||_query.value(2).toInt()==1)
 							{
 								return "";
 							}else{
@@ -255,12 +255,11 @@ QString OperationDatabase::createLatestItem( QString sDisk )
 			QString sCommandTest=QString("select id,sFilePath from RecordFileStatus where nInUse=0 and nDamage=0 and nLock=0");
 			if (_query.exec(sCommandTest))
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"createLatestItem fail exec sCommand fail :"<<sCommandTest;
 				if (_query.next())
 				{
 					sFilePath=_query.value(1).toString();
 				}else{
-					QString sCommand=QString("select id,nFileNum from RecordFileStatus where nFileNum=(select max(nFileNum) from RecordFileStatus");
+					QString sCommand=QString("select id,nFileNum from RecordFileStatus where nFileNum=(select max(nFileNum) from RecordFileStatus)");
 					if (_query.exec(sCommand))
 					{
 						if (_query.next())
@@ -310,6 +309,7 @@ QString OperationDatabase::createLatestItem( QString sDisk )
 							}else{
 								//do nothing
 							}
+							sFilePath=sFilePathTemp;
 						}else{
 							sFilePath=sDisk+"/recEx/0000/0000/0000/0000.dat";
 						}
@@ -319,6 +319,7 @@ QString OperationDatabase::createLatestItem( QString sDisk )
 					}
 				}
 			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"createLatestItem fail exec sCommand fail :"<<sCommandTest;
 				abort();
 			}
 		}else{
@@ -480,8 +481,8 @@ bool OperationDatabase::updateRecordDatabase( int nId,QVariantMap tInfo,QString 
 
 bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo,QString sFilePath)
 {
-	//可被更新的条目：nEndTime nStartTime
-	if (tInfo.contains("nEndTime")||tInfo.contains("nStartTime"))
+	//可被更新的条目：nEndTime nStartTime nRecordType
+	if (tInfo.contains("nEndTime")||tInfo.contains("nStartTime")||tInfo.contains("nRecordType"))
 	{
 		QString sDatabasePath=sFilePath.left(1)+":/recEx/record.db";
 		QFile tDatabaseFile;
@@ -627,7 +628,7 @@ bool OperationDatabase::createRecordDatabaseItem( int nChannel,quint64 uiStartTi
 		if (_query.exec(sCommand))
 		{
 			sCommand.clear();
-			sCommand=QString("select id from record where nWndId=%1,nRecordType=%2,nStartTime=%3,nEndTime=%4").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime);
+			sCommand=QString("select id from record where nWndId=%1 and nRecordType=%2 and nStartTime=%3 and nEndTime=%4").arg(nChannel).arg(uiType).arg(uiStartTime).arg(uiEndTime);
 			if (_query.exec(sCommand))
 			{
 				if (_query.next())
@@ -810,6 +811,7 @@ bool OperationDatabase::createRecordDatabase( QString sDatabasePath )
 			}
 			//create table search_record
 			sCommand.clear();
+			sCommand+="create table search_record(";
 			sCommand+="id integer primary key autoincrement,";
 			sCommand+="nWndId integer,";
 			sCommand+="nRecordType integer,";

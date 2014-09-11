@@ -15,6 +15,7 @@
 #include <IVideoRender.h>
 #include <IEventRegister.h>
 #include <IRecorder.h>
+#include <IRecordDat.h>
 #include <ISwitchStream.h>
 #include <IPTZControl.h>
 #include <QTimer>
@@ -40,6 +41,10 @@ typedef enum __tagStepCode{
 	IPCAUTOSWITCHSTREAM,//ipc 自动切换码流
 	STARTRECORD,//开启录像
 	STOPRECORD,//关闭录像
+	INITRECORD,//初始化录像
+	UPDATEDATABASE,//更新数据库
+	DEINITRECORD,//关闭录像
+	SETMANUALRECORD,//设置人工录像
 	AUTOSYNTIME,//自动同步时间
 	AUDIOENABLE,//声音开关
 	SETVOLUME,//设置声音
@@ -106,17 +111,20 @@ public:
 	//注册回调函数
 	void registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void*),void *pUser);
 	//录像
-	int startRecord();
-	int stopRecord();
-	bool getAutoRecordStatus();
-
+	int startManualRecord();
+	int stopManualRecord();
+	int getRecordStatus();
+	
+	//更新数据库
 	void setDatabaseFlush(bool flag);
+
 	void setFoucs(bool bEnable);
 	void setWindId(int nWindId);
 	//音频
 	void setVolume(unsigned int uiPersent);
 	void audioEnabled(bool bEnable);
 	
+
 	QVariantMap screenShot();
 	tagDeviceInfo deviceInfo();
 public:
@@ -147,7 +155,7 @@ public slots:
 	void slstopPreviewrun();
 private slots:
 	void slbackToMainThread(QVariantMap evMap);
-	void slplanRecord();
+//	void slplanRecord();
 	void slsetRenderWnd();
 	void slcheckoutBlock();
 	void slstopPreview();
@@ -171,6 +179,7 @@ private:
 	IVideoRender *m_pIVideoRender;
 	IVideoDecoder *m_pIVideoDecoder;
 	IRecorder *m_pRecorder;
+	IRecordDat *m_pRecordDat;
 	IAudioPlayer *m_pAudioPlay;
 	QMultiMap<QString ,tagProcInfo> m_eventMap;
 	QStringList m_eventNameList;
@@ -182,6 +191,7 @@ private:
 	bool m_bIsPtzAutoOpen;
 	bool m_bIsAutoRecording;
 	bool m_bIsRecord;
+	bool m_bIsManualRecord;
 	bool m_bIsPreDecode;
 	bool m_bIsPreRender;
 	QTimer m_planRecordTimer;

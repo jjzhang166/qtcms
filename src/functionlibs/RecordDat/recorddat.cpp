@@ -145,6 +145,7 @@ bool RecordDat::init(int nWid)
 	initRecordDatCore(&pRecordDatCore);
 	if (pRecordDatCore!=NULL)
 	{
+		pRecordDatCore->startRecord();
 		pRecordDatCore->setBufferQueue(nWid,m_tBufferQueue);
 		deinitRecordDatCore();
 		pRecordDatCore=NULL;
@@ -194,6 +195,7 @@ int RecordDat::inputFrame( QVariantMap &tFrameInfo )
 {
 	if (m_bInit)
 	{
+		tFrameInfo.insert("winid",m_nWnd);
 		m_tBufferQueue.enqueue(tFrameInfo);
 	}else{
 		//do nothing

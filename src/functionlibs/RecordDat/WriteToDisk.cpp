@@ -6,9 +6,11 @@ WriteToDisk::WriteToDisk(void):m_pBuffer(NULL),
 	m_bBlock(false),
 	m_bWrite(false),
 	m_nSleepSwitch(0),
-	m_uiBufferSize(0)
+	m_uiBufferSize(0),
+	m_nPosition(0)
 {
 	connect(&m_tCheckBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckBlock()));	
+	m_tCheckBlockTimer.start(4000);
 	m_tEventList<<"sFilePath";
 }
 
@@ -17,6 +19,7 @@ WriteToDisk::~WriteToDisk(void)
 {
 	m_bStop=true;
 	int nCount=0;
+	m_tCheckBlockTimer.stop();
 	while(QThread::isRunning()){
 		sleepEx(10);
 		if (nCount>500&&nCount%100==0)
@@ -48,13 +51,14 @@ void WriteToDisk::stopWriteToDisk()
 
 void WriteToDisk::run()
 {
-	m_tCheckBlockTimer.start(4000);
 	bool bStop=false;
 	int nStep=0;
 	while(bStop==false){
 		switch(nStep){
 		case 0:{
 			//check
+			m_bBlock=true;
+			m_nPosition=__LINE__;
 			if (m_bWrite)
 			{
 				nStep=1;
@@ -67,6 +71,7 @@ void WriteToDisk::run()
 					nStep=0;
 				}
 			}
+			m_bBlock=false;
 			   }
 			   break;
 		case 1:{
@@ -127,6 +132,7 @@ void WriteToDisk::run()
 			}
 			m_bBlock=false;
 			m_bWrite=false;
+			nStep=2;
 			   }
 			   break;
 		case 2:{
@@ -136,7 +142,7 @@ void WriteToDisk::run()
 			   break;
 		}
 	}
-	m_tCheckBlockTimer.stop();
+	
 }
 
 void WriteToDisk::sleepEx( int nTime )

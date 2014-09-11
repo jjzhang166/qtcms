@@ -41,6 +41,7 @@ public:
 	//ÊÖ¶¯Â¼Ïñ
 	int startRecord();
 	int stopRecord();
+	int getRecordStatus();
 	//ÒôÆµ ²¥·Å
 	int setPlayWnd(int nwnd);//unnecessary
 	int setVolume(unsigned int uiPersent);
@@ -89,7 +90,6 @@ private:
 	tagDeviceInfo getDeviceInfo();
 	QString getLanguageInfo(QString tags);
 	void translateLanguage();
-	bool getAutoRecordStatus();
 private:
 	typedef enum __tagConnectStatus{
 		STATUS_CONNECTED,

@@ -17,6 +17,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_pIVideoDecoder(NULL),
 	m_pIVideoRender(NULL),
 	m_pRecorder(NULL),
+	m_pRecordDat(NULL),
 	m_stop(false),
 	m_bIsPtzAutoOpen(false),
 	m_bIsAutoRecording(false),
@@ -30,6 +31,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_bIsSaveRenderFrame(false),
 	m_bIsPreRender(false),
 	m_bIsPreDecode(false),
+	m_bIsManualRecord(false),
 	m_nWindId(0),
 	m_nRecordType(0),
 	m_nPosition(0),
@@ -44,7 +46,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
-	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
+//	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(5000);
@@ -142,7 +144,13 @@ void QSubviewRun::run()
 							m_pRecorder=NULL;
 						}
 						pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void**)&m_pRecorder);
-						if (NULL!=m_pIVideoRender&&NULL!=m_pIVideoDecoder&&NULL!=m_pRecorder)
+						if (NULL!=m_pRecordDat)
+						{
+							m_pRecordDat->Release();
+							m_pRecordDat=NULL;
+						}
+						pcomCreateInstance(CLSID_RecordDat,NULL,IID_IRecordDat,(void**)&m_pRecordDat);
+						if (NULL!=m_pIVideoRender&&NULL!=m_pIVideoDecoder&&NULL!=m_pRecorder&&NULL!=m_pRecordDat)
 						{
 							//create deviceClient succeed
 							nOpenStep=1;
@@ -154,7 +162,11 @@ void QSubviewRun::run()
 							}else if (NULL==m_pIVideoRender)
 							{
 								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create render fail";
-							}else{
+							}else if (NULL==m_pRecordDat)
+							{
+								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create m_pRecordDat fail";
+							}
+							else{
 								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create  decoder fail";
 							}
 										
@@ -451,6 +463,61 @@ void QSubviewRun::run()
 			}
 						   }
 						   break;
+		case INITRECORD:{
+			//³õÊ¼»¯Â¼Ïñ
+			if (NULL!=m_pRecordDat)
+			{
+				if (m_pRecordDat->init(m_nWindId))
+				{
+					m_pRecordDat->updateRecordSchedule(m_tDeviceInfo.m_uiChannelIdInDataBase);
+					m_pRecordDat->upDateSystemDatabase();
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"INITRECORD fail as m_pRecordDat->init(m_nWindId) fail";
+				}
+			}else{
+				//do nothing
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as m_pRecordDat is null";
+				abort();
+			}
+						}
+						break;
+		case DEINITRECORD:{
+			//Í£Ö¹Â¼Ïñ
+			if (NULL!=m_pRecordDat)
+			{
+				if (m_pRecordDat->deinit())
+				{
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"INITRECORD fail as m_pRecordDat->deinit() fail";
+				}
+			}else{
+				//do nothing
+			}
+						  }
+						  break;
+		case SETMANUALRECORD:{
+			//ÉèÖÃÈË¹¤Â¼Ïñ
+			if (NULL!=m_pRecordDat)
+			{
+				if (m_bIsManualRecord)
+				{
+					if (m_pRecordDat->manualRecordStart())
+					{
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"SETMANUALRECORD fail as m_pRecordDat->manualRecordStart() fail";
+					}
+				}else{
+					if (m_pRecordDat->manualRecordStop())
+					{
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"SETMANUALRECORD fail as m_pRecordDat->manualRecordStop() fail";
+					}
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"SETMANUALRECORD fail as m_pRecordDat is null";
+			}
+							 }
+							 break;
 		case STARTRECORD:{
 			//¿ªÆôÂ¼Ïñ
 			if (NULL!=m_pRecorder&&m_bIsRecord==false)
@@ -477,6 +544,16 @@ void QSubviewRun::run()
 			}
 						 }
 						 break;
+		case UPDATEDATABASE:{
+			//¸üÐÂÊý¾Ý¿â
+			if (m_pRecordDat!=NULL)
+			{
+				m_pRecordDat->updateRecordSchedule(m_tDeviceInfo.m_uiChannelIdInDataBase);
+				m_pRecordDat->upDateSystemDatabase();
+			}else{
+				//do nothing
+			}
+							}
 		case STOPRECORD:{
 			//Í£Ö¹Â¼Ïñ
 			if (NULL!=m_pRecorder&&m_bIsRecord==true&&m_bIsAutoRecording==false)
@@ -660,6 +737,15 @@ void QSubviewRun::run()
 					m_pRecorder->Release();
 					m_bIsBlock=false;
 					m_pRecorder=NULL;
+				}
+				if (NULL!=m_pRecordDat)
+				{
+					m_bIsBlock=true;
+					m_nPosition=__LINE__;
+					m_pRecordDat->deinit();
+					m_pRecordDat->Release();
+					m_pRecordDat=NULL;
+					m_bIsBlock=false;
 				}
 				if (NULL!=m_pAudioPlay)
 				{
@@ -1043,6 +1129,12 @@ int QSubviewRun::cbCRecorderData( QString evName,QVariantMap evMap,void*pUser )
 	}else{
 		// do nothing
 	}
+	if (NULL!=m_pRecordDat)
+	{
+		m_pRecordDat->inputFrame(evMap);
+	}else{
+		//do nothing
+	}
 	return 0;
 }
 
@@ -1160,12 +1252,27 @@ bool QSubviewRun::registerCallback(int registcode)
 				pRegist->registerEvent("RecordState",cbRecordRState,this);
 				pRegist->Release();
 				pRegist=NULL;
-				return true;
+				/*return true;*/
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"recorder register fail as pRegist is null";
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"register fail as m_pRecorder is null";
+		}
+		if (NULL!=m_pRecordDat)
+		{
+			m_pRecordDat->QueryInterface(IID_IEventRegister,(void**)&pRegist);
+			if (NULL!=pRegist)
+			{
+				pRegist->registerEvent("RecordState",cbRecordRState,this);
+				pRegist->Release();
+				pRegist=NULL;
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"recorder register fail as pRegist is null";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"recorder register fail as m_pRecordDat is null";
 		}
 				}
 				break;
@@ -1644,52 +1751,6 @@ void QSubviewRun::saveToDataBase()
 	return;
 }
 
-int QSubviewRun::startRecord()
-{
-	if (QThread::isRunning())
-	{
-		if (m_bIsAutoRecording)
-		{
-			return 2;
-		}else{
-			if (m_bIsRecord)
-			{
-				//do nothing 
-				qDebug()<<__FUNCTION__<<__LINE__<<"it had been recording";
-			}else{
-				m_stepCode.enqueue(STARTRECORD);
-				m_nRecordType = 3;// Manual recording
-			}
-			return 0;
-		}
-	}else{
-		return 1;
-	}
-}
-
-int QSubviewRun::stopRecord()
-{
-	if (QThread::isRunning())
-	{
-		if (m_bIsAutoRecording)
-		{
-			return 2;
-		}else{
-			if (m_bIsRecord)
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-				m_stepCode.enqueue(STOPRECORD);
-			}else{
-				//do nothing 
-				qDebug()<<__FUNCTION__<<__LINE__<<" it is not in recording";
-			}
-			return 0;
-		}
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<" it is not in recording";
-		return 0;
-	}
-}
 
 void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 {
@@ -1709,6 +1770,14 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				m_stepCode.enqueue(AUTOSYNTIME);
 				//¿ªÆô¼Æ»®Â¼Ïñ²éÑ¯
 				m_planRecordTimer.start(1000);
+				//initÂ¼Ïñ
+				m_stepCode.enqueue(INITRECORD);
+				if (m_bIsManualRecord)
+				{
+					m_stepCode.enqueue(SETMANUALRECORD);
+				}else{
+					//do nothing
+				}
 				//Å×³öÊÂ¼þ£»
 				eventCallBack("CurrentStatus",evMap);
 			}
@@ -1725,6 +1794,8 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//Í£Ö¹Â¼Ïñ
 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
 				m_stepCode.enqueue(STOPRECORD);
+				//Í£Ö¹Â¼Ïñ
+				m_stepCode.enqueue(DEINITRECORD);
 				//Å×³öÊÂ¼þ
 				m_nSecondPosition=__LINE__;
 				eventCallBack("CurrentStatus",evMap);
@@ -1770,108 +1841,114 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 	}
 }
 
-void QSubviewRun::slplanRecord()
-{
-	if (NULL!=m_pRecorder)
-	{
-		if (m_bIsdataBaseFlush)
-		{
-			m_bIsdataBaseFlush=false;
-			ISetRecordTime *pSetRecordTime=NULL;
-			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
-			if (NULL!=pSetRecordTime)
-			{
-				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_tDeviceInfo.m_uiChannelIdInDataBase);
-				tagRecorderTimeInfo recTimeInfo;
-				m_lstReocrdTimeInfoList.clear();
-				for (int i=0;i<recordIdList.size();i++)
-				{
-					QString recordId=recordIdList[i];
-					QVariantMap timeInfo=pSetRecordTime->GetRecordTimeInfo(recordId.toInt());
-					recTimeInfo.nEnable = timeInfo.value("enable").toInt();
-					recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
-					int weekDay = QDate::currentDate().dayOfWeek() - 1;
-					m_nHisWeekDay=QDate::currentDate().dayOfWeek();
-					if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
-					{
-						continue;
-					}
-					recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
-					recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
-					m_lstReocrdTimeInfoList.append(recTimeInfo);
-				}
-				pSetRecordTime->Release();
-				pSetRecordTime=NULL;
-			}else{
-				m_planRecordTimer.stop();
-				qDebug()<<__FUNCTION__<<__LINE__<<"plan record fail as apply for ISetRecordTime interface fail";
-			}
-		}else{
-			//do nothing 
-			if (m_nHisWeekDay!=QDate::currentDate().dayOfWeek())
-			{
-				m_bIsdataBaseFlush=true;
-				m_lstReocrdTimeInfoList.clear();
-			}else{
-				//do nothing
-			}
-		}
-		//keep going
-		for (int j=0;j<m_lstReocrdTimeInfoList.size();++j)
-		{
-			if (0==m_lstReocrdTimeInfoList[j].nEnable||QDate::currentDate().dayOfWeek()-1!=m_lstReocrdTimeInfoList[j].nWeekDay)
-			{
-				continue;
-			}
-			QTime currentTime; 
-			currentTime=QTime::currentTime();
-			if (m_currentStatus==STATUS_CONNECTED&&currentTime>=m_lstReocrdTimeInfoList[j].startTime&&currentTime<m_lstReocrdTimeInfoList[j].endTime&&m_bIsAutoRecording==false)
-			{
-				m_stepCode.enqueue(STARTRECORD);
-				m_nRecordType = 0;//Scheduled recording
-				m_bIsAutoRecording=true;
-			}
-			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-
-				m_stepCode.enqueue(STOPRECORD);
-				m_bIsAutoRecording=false;
-			}
-			if (!m_lstReocrdTimeInfoList.size())
-			{
-				if (m_bIsAutoRecording==true)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-
-					m_stepCode.enqueue(STOPRECORD);
-					m_bIsAutoRecording=false;
-				}
-			}
-		}
-		if (m_lstReocrdTimeInfoList.size()==0)
-		{
-			if (m_bIsAutoRecording==true)
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-
-				m_stepCode.enqueue(STOPRECORD);
-				m_bIsAutoRecording=false;
-			}else{
-
-			}
-		}else{
-
-		}
-	}else{
-		//do nothing
-		m_planRecordTimer.stop();
-	}
-}
+// void QSubviewRun::slplanRecord()
+// {
+// 	if (NULL!=m_pRecorder)
+// 	{
+// 		if (m_bIsdataBaseFlush)
+// 		{
+// 			m_bIsdataBaseFlush=false;
+// 			ISetRecordTime *pSetRecordTime=NULL;
+// 			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
+// 			if (NULL!=pSetRecordTime)
+// 			{
+// 				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_tDeviceInfo.m_uiChannelIdInDataBase);
+// 				tagRecorderTimeInfo recTimeInfo;
+// 				m_lstReocrdTimeInfoList.clear();
+// 				for (int i=0;i<recordIdList.size();i++)
+// 				{
+// 					QString recordId=recordIdList[i];
+// 					QVariantMap timeInfo=pSetRecordTime->GetRecordTimeInfo(recordId.toInt());
+// 					recTimeInfo.nEnable = timeInfo.value("enable").toInt();
+// 					recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
+// 					int weekDay = QDate::currentDate().dayOfWeek() - 1;
+// 					m_nHisWeekDay=QDate::currentDate().dayOfWeek();
+// 					if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
+// 					{
+// 						continue;
+// 					}
+// 					recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
+// 					recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
+// 					m_lstReocrdTimeInfoList.append(recTimeInfo);
+// 				}
+// 				pSetRecordTime->Release();
+// 				pSetRecordTime=NULL;
+// 			}else{
+// 				m_planRecordTimer.stop();
+// 				qDebug()<<__FUNCTION__<<__LINE__<<"plan record fail as apply for ISetRecordTime interface fail";
+// 			}
+// 		}else{
+// 			//do nothing 
+// 			if (m_nHisWeekDay!=QDate::currentDate().dayOfWeek())
+// 			{
+// 				m_bIsdataBaseFlush=true;
+// 				m_lstReocrdTimeInfoList.clear();
+// 			}else{
+// 				//do nothing
+// 			}
+// 		}
+// 		//keep going
+// 		for (int j=0;j<m_lstReocrdTimeInfoList.size();++j)
+// 		{
+// 			if (0==m_lstReocrdTimeInfoList[j].nEnable||QDate::currentDate().dayOfWeek()-1!=m_lstReocrdTimeInfoList[j].nWeekDay)
+// 			{
+// 				continue;
+// 			}
+// 			QTime currentTime; 
+// 			currentTime=QTime::currentTime();
+// 			if (m_currentStatus==STATUS_CONNECTED&&currentTime>=m_lstReocrdTimeInfoList[j].startTime&&currentTime<m_lstReocrdTimeInfoList[j].endTime&&m_bIsAutoRecording==false)
+// 			{
+// 				m_stepCode.enqueue(STARTRECORD);
+// 				m_nRecordType = 0;//Scheduled recording
+// 				m_bIsAutoRecording=true;
+// 			}
+// 			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
+// 			{
+// 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+// 
+// 				m_stepCode.enqueue(STOPRECORD);
+// 				m_bIsAutoRecording=false;
+// 			}
+// 			if (!m_lstReocrdTimeInfoList.size())
+// 			{
+// 				if (m_bIsAutoRecording==true)
+// 				{
+// 					qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+// 
+// 					m_stepCode.enqueue(STOPRECORD);
+// 					m_bIsAutoRecording=false;
+// 				}
+// 			}
+// 		}
+// 		if (m_lstReocrdTimeInfoList.size()==0)
+// 		{
+// 			if (m_bIsAutoRecording==true)
+// 			{
+// 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+// 
+// 				m_stepCode.enqueue(STOPRECORD);
+// 				m_bIsAutoRecording=false;
+// 			}else{
+// 
+// 			}
+// 		}else{
+// 
+// 		}
+// 	}else{
+// 		//do nothing
+// 		m_planRecordTimer.stop();
+// 	}
+// }
 
 void QSubviewRun::setDatabaseFlush( bool flag )
 {
 	m_bIsdataBaseFlush=flag;
+	if (QThread::isRunning())
+	{
+		m_stepCode.enqueue(UPDATEDATABASE);
+	}else{
+		//do nothing
+	}
 }
 
 void QSubviewRun::setVolume( unsigned int uiPersent )
@@ -1985,6 +2062,23 @@ void QSubviewRun::slstopPreviewrun()
 		}else{
 
 		}
+		if (NULL!=m_pRecordDat)
+		{
+			IRecordDat *pRecorder=NULL;
+			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
+			if (NULL!=pRecorder)
+			{
+				m_nSecondPosition=__LINE__;
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
+				pRecorder->deinit();
+				pRecorder->Release();
+				pRecorder=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop recorder can not apply for IRecorder interface";
+			}
+		}else{
+
+		}
 		//
 	}else{
 
@@ -2046,10 +2140,6 @@ void QSubviewRun::sleepEx( int time )
 	return;
 }
 
-bool QSubviewRun::getAutoRecordStatus()
-{
-	return m_bIsAutoRecording;
-}
 
 void QSubviewRun::setWindId( int nWindId )
 {
@@ -2099,6 +2189,45 @@ void QSubviewRun::renderSaveFrame()
 		}
 	}else{
 		//do nothing
+	}
+}
+
+int QSubviewRun::startManualRecord()
+{
+	m_bIsManualRecord=true;
+	if (QThread::isRunning())
+	{
+		if (m_currentStatus==STATUS_CONNECTED)
+		{
+			m_stepCode.enqueue(SETMANUALRECORD);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"startManualRecord fail as m_currentStatus!=STATUS_CONNECTED";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"startManualRecord fail as the thread is not running";
+	}
+	return 0;
+}
+
+int QSubviewRun::stopManualRecord()
+{
+	m_bIsManualRecord=false;
+	if (QThread::isRunning())
+	{
+		m_stepCode.enqueue(SETMANUALRECORD);
+	}else{
+		//do nothing
+	}
+	return 0;
+}
+
+int QSubviewRun::getRecordStatus()
+{
+	if (NULL!=m_pRecordDat)
+	{
+		return m_pRecordDat->getRecordStatus();
+	}else{
+		return 0;
 	}
 }
 
