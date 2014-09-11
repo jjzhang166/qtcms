@@ -713,11 +713,11 @@
 				<div class="switch dvr_list" data="Video">
 				<table data-WARP="record">
 					<tr class="title"><td><h5><script>T("General_Settings")</script></h5></td><td></td><td></td><td></td></tr>
-					<tr><td colspan="4">
-					<table class="tb1">
+					<tr><td colspan="6">
+					<table class="tb1" style="text-align:center;">
 						<tr>
 							<td class="td1"><script>T("Channel")</script></td>
-							<td>
+							<td colspan="2" class="td2">
 								<div class="select" style="width:133px;">
 								<!--<span id="dvr_record_chn_sel0"></span>-->
                                 <input  data-UI="chn" hidden />
@@ -727,9 +727,9 @@
 			                       
 								</ul>
 							</td>
-							<td class="td1"><script>T("Week")</script></td>
-							<td style="width:244px;">
-								<div class="select" style="width:133px;">
+							<td colspan="3">
+                                <span style="float:left"><script>T("Week")</script></span>
+								<div style="float:left;margin-left:5px;"><div class="select" style="width:133px;">
 									<!--<span id="dvr_record_week"></span>-->
                                      <!--<input type="select" data="" data-UI="weekday" />-->
                                       <input id="recweek" value="" data="" type="select" data-UI="weekday"/>
@@ -746,74 +746,72 @@
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="5" value="Saturday"/></li>
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="6" value="Sunday"/></li>    
 								</ul>
+                               </div>
 							</td>
+                          
 						</tr>
 						<tr><td class="td1"></td>
-						<td style="width:200px;"><script>T("Start_Time")</script>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>T("End_Time")</script></td>
-						<td colspan="2">
-							<script>T("Timing")</script>
-							<span style="margin-left:60px;"><script>T("Mobile")</script></span>
-							<span style="margin-left:50px;"><script>T("Warning")</script></span></td></tr>
-						<tr><td class="td1"><span><script>T("Time_d")</script></span> 1</td>
-			                        <td class="td2 schedle_id" style="width:220px;">
-			                            <input id="dvr_record_begin_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-			                            <input id="dvr_record_end_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-                                        <input type="hidden" value="" class="timeid" />
+						    <td style="width:100px;"><script>T("Start_Time")</script></td>
+                            <td><script>T("End_Time")</script></td>
+							<td><script>T("Timing")</script></td>
+							<td><script>T("Mobile")</script></td>
+							<td><script>T("Warning")</script></td>
+                       </tr>
+						<tr class="schedle_id"><td class="td1 "><span><script>T("Time_d")</script></span> 1</td>
+			                
+			                <td><input id="dvr_record_begin_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+			                <td><input id="dvr_record_end_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+                                       <!-- <input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
                                         <!--<input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
                                         <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
                                         
-			                        </td>
-			                        <td colspan="2">
-			                            <input id="dvr_record_types_0_0" class="chk1" type="checkbox" />
-			                            <input id="dvr_record_types_0_1" class="chk1" type="checkbox" />
-			                            <input id="dvr_record_types_0_2" class="chk1" type="checkbox" />
-			                        </td></tr>
-						<tr><td class="td1"><span><script>T("Time_d")</script></span> 2</td>
-			                        <td class="td2 schedle_id" >
-			                            <input id="dvr_record_begin_1" type="text" class="iput2"  onblur="checkTime_Jtp_fmt($(this));" data=""/>
-			                            <input id="dvr_record_end_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-                                        <input type="hidden" value="" class="timeid" />
+			                      
+			               <td> <input id="dvr_record_types_0_0" class="chk1" type="checkbox" /></td>             
+                           <td><input id="dvr_record_types_0_1" class="chk1" type="checkbox" /></td>
+                           <td><input id="dvr_record_types_0_2" class="chk1" type="checkbox" /></td>
+			          
+                          </tr>
+						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 2</td>
+			                <td><input id="dvr_record_begin_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+			                <td><input id="dvr_record_end_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+                                        <!--<input type="hidden" value="" class="timeid" />-->
                                         <!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
                                       <!--  <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
                                         <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
-                                    </td>
-			                        <td colspan="2">
-			                            <input id="dvr_record_types_1_0" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_1_1" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_1_2" class="chk1" type="checkbox"/></td></tr>
-						<tr><td class="td1"><span><script>T("Time_d")</script></span> 3</td>
-			                        <td class="td2 schedle_id">
-			                            <input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" />
-			                            <input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-                                        <input type="hidden" value="" class="timeid" />
+    
+                           <td> <input id="dvr_record_types_1_0" class="chk1" type="checkbox" /></td>             
+                           <td><input id="dvr_record_types_1_1" class="chk1" type="checkbox" /></td>
+                           <td><input id="dvr_record_types_1_2" class="chk1" type="checkbox" /></td>
+			                     
+                        </tr>
+						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 3</td>
+			                <td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+                                        <!--<input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
                                        <!-- <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
                                         <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
-			                        </td>
-			                        <td colspan="2">
-			                            <input id="dvr_record_types_2_0" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_2_1" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_2_2" class="chk1" type="checkbox"/>
-			                        </td></tr>
-						<tr><td class="td1"><span><script>T("Time_d")</script></span> 4</td>
-			                        <td class="td2 schedle_id">
-			                            <input id="dvr_record_begin_3" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-			                            <input id="dvr_record_end_3" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/>
-                                        <input type="hidden" value="" class="timeid" />
+			               <td> <input id="dvr_record_types_2_0" class="chk1" type="checkbox" /></td>             
+                           <td><input id="dvr_record_types_2_1" class="chk1" type="checkbox" /></td>
+                           <td><input id="dvr_record_types_2_2" class="chk1" type="checkbox" /></td>
+                        </tr>
+						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 4</td>
+			                <td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data=""/></td>
+                                        <!--<input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
                                         <!--<input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
                                          <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
-			                        </td>
-			                        <td colspan="2">
-			                            <input id="dvr_record_types_3_0" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_3_1" class="chk1" type="checkbox"/>
-			                            <input id="dvr_record_types_3_2" class="chk1" type="checkbox"/>
-			                        </table>
+			               <td> <input id="dvr_record_types_2_0" class="chk1" type="checkbox" /></td>             
+                           <td><input id="dvr_record_types_2_1" class="chk1" type="checkbox" /></td>
+                           <td><input id="dvr_record_types_2_2" class="chk1" type="checkbox" /></td>
+                          </tr>
+			              </table>
 						</td></tr>
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to")</script></h5></td></tr>
 						<tr><td colspan="4">
