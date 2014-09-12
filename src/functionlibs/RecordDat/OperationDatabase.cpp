@@ -482,6 +482,17 @@ bool OperationDatabase::updateRecordDatabase( int nId,QVariantMap tInfo,QString 
 bool OperationDatabase::updateSearchDatabase( int nId ,QVariantMap tInfo,QString sFilePath)
 {
 	//可被更新的条目：nEndTime nStartTime nRecordType
+	if (tInfo.contains("nRecordType"))
+	{
+		uint uiType=tInfo.value("nRecordType").toUInt();
+		if (uiType==MOTIONRECORD||uiType==TIMERECORD||uiType==MANUALRECORD)
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as uiType is undefine;"<<uiType;
+			abort();
+		}
+	}
 	if (tInfo.contains("nEndTime")||tInfo.contains("nStartTime")||tInfo.contains("nRecordType"))
 	{
 		QString sDatabasePath=sFilePath.left(1)+":/recEx/record.db";
@@ -541,6 +552,13 @@ bool OperationDatabase::createSearchDatabaseItem( int nChannel,quint64 uiStartTi
 		return false;
 	}else{
 		//keep going
+	}
+	if (uiType==MOTIONRECORD||uiType==TIMERECORD||uiType==MANUALRECORD)
+	{
+		//keep going
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as uiType is undefine;"<<uiType;
+		abort();
 	}
 	QString sDatabasePath=sFilename.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
@@ -602,6 +620,13 @@ bool OperationDatabase::createRecordDatabaseItem( int nChannel,quint64 uiStartTi
 		return false;
 	}else{
 		//keep going
+	}
+	if (uiType==MOTIONRECORD||uiType==TIMERECORD||uiType==MANUALRECORD)
+	{
+		//keep going
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as uiType is undefine;"<<uiType;
+		abort();
 	}
 	QString sDatabasePath=sFileName.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;

@@ -205,6 +205,33 @@ void recordDatCore::run()
 				{
 					tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
 					int nChannel=pFileFrameHead->tFrameHead.uiChannel;
+					//test file first: 
+					if (pFileFrameHead->tFrameHead.uiChannel>=0&&pFileFrameHead->tFrameHead.uiChannel<64)
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiChannel is out of range"<<pFileFrameHead->tFrameHead.uiChannel;
+						abort();
+					}
+					if (pFileFrameHead->tFrameHead.uiRecType==MOTIONRECORD||pFileFrameHead->tFrameHead.uiRecType==TIMERECORD||pFileFrameHead->tFrameHead.uiRecType==MANUALRECORD)
+					{
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiRecType is undefined";
+						abort();
+					}
+					if (pFileFrameHead->tFrameHead.uiSessionId>0)
+					{
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiSessionId is out of range"<<pFileFrameHead->tFrameHead.uiSessionId;
+						abort();
+					}
+					if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig||pFileFrameHead->tFrameHead.uiType==FT_AudioConfig||pFileFrameHead->tFrameHead.uiType==FT_PFrame||pFileFrameHead->tFrameHead.uiType==FT_Audio||pFileFrameHead->tFrameHead.uiType==FT_IFrame)
+					{
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiType is undefined"<<pFileFrameHead->tFrameHead.uiType;
+						abort();
+					}
+					//test file first: over
 
 					if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
 					{
@@ -227,6 +254,109 @@ void recordDatCore::run()
 				}else{
 					bStop=true;
 				}
+			}
+			//test file second:
+			//test step 1:I frame
+			QMap<int ,int >::const_iterator tItem=m_tFileInfo.tFristIFrameIndex.constBegin();
+			while(tItem!=m_tFileInfo.tFristIFrameIndex.constEnd()){
+				unsigned int uiChannel=tItem.key();
+				unsigned int uiCurrentIndex=tItem.value();
+				tagFileFrameHead *pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
+				unsigned int uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
+				tagFileFrameHead *pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
+				while(uiNextIndex!=0&&uiCurrentIndex<pFileHead->uiIndex&&uiNextIndex<pFileHead->uiIndex){
+					if (pNextFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiType!=FT_VideoConfig";
+						abort();
+					}
+					if (pNextFileFrameHead->tFrameHead.uiChannel==uiChannel)
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiChannel!=uiChannel"<<uiChannel<<pNextFileFrameHead->tFrameHead.uiChannel;
+						abort();
+					}
+					uiCurrentIndex=uiNextIndex;
+					pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
+					uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
+					pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
+					if (uiNextIndex==0)
+					{
+						if (m_tFileInfo.tHistoryIFrameIndex.contains(uiChannel))
+						{
+							if (uiCurrentIndex==m_tFileInfo.tHistoryIFrameIndex.value(uiChannel))
+							{
+							}else{
+								qDebug()<<__FUNCTION__<<__LINE__<<"please checkout ,there must some error while write file";
+								abort();
+							}
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"please checkout ,there must some error while write file";
+							abort();
+						}
+					}else{
+						//do nothing
+					}
+				}
+				++tItem;
+			}
+			//test setp 2:per frame
+			QMap<int ,int >::const_iterator tItemPerFrame=m_tFileInfo.tHistoryFrameIndex.constBegin();
+			while(tItemPerFrame!=m_tFileInfo.tHistoryFrameIndex.constEnd()){
+				unsigned int uiChannel=tItem.key();
+				unsigned int uiCurrentIndex=tItem.value();
+				tagFileFrameHead *pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
+				unsigned int uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextFrame;
+				tagFileFrameHead *pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
+				bool bIframe=false;
+				if (m_tFileInfo.tFristIFrameIndex.contains(uiChannel))
+				{
+					bIframe=true;
+				}else{
+					//do nothing
+				}
+				while(uiNextIndex!=0&&uiNextIndex<pFileHead->uiIndex&&uiCurrentIndex<pFileHead->uiIndex){
+					if (pNextFileFrameHead->tFrameHead.uiChannel==uiChannel)
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiChannel!=uiChannel"<<uiChannel<<pNextFileFrameHead->tFrameHead.uiChannel;
+						abort();
+					}
+					if (bIframe)
+					{
+						uint uiPerIFrameIndex=pNextFileFrameHead->tPerFrameIndex.uiPreIFrame;
+						if (uiPerIFrameIndex!=0)
+						{
+							tagFileFrameHead *pPerIFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiPerIFrameIndex);
+							if (pPerIFrameHead->tFrameHead.uiChannel==uiChannel)
+							{
+								//keep going
+							}else{
+								qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pPerIFrameHead->tFrameHead.uiChannel!=uiChannel";
+								abort();
+							}
+							if (pPerIFrameHead->tFrameHead.uiType==FT_VideoConfig)
+							{
+							}else{
+								qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pPerIFrameHead->tFrameHead.uiType!=FT_VideoConfig";
+								abort();
+							}
+						}else{
+							//do nothing
+						}
+					}else{
+						//do nothing
+					}
+					uiCurrentIndex=uiNextIndex;
+					pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
+					uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
+					pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
+				}
+				++tItemPerFrame;
 			}
 			m_bIsBlock=false;
 			nRunStep=recordDat_default;
@@ -1125,26 +1255,28 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					quint64 uiEndTime=uiStartTime;
 					//step1:建立录像数据库条目
 					//step2:建立搜索数据库条目
-					if (createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nSearchItemId))
+					if (nCurrentType&MOTIONRECORD)
 					{
-						if (createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nRecordItemId))
+						nRecType=MOTIONRECORD;
+					}else if (nCurrentType&MANUALRECORD)
+					{
+						nRecType=MANUALRECORD;
+					}else if (nCurrentType&TIMERECORD)
+					{
+						nRecType=TIMERECORD;
+					}else{
+						//do nothing
+						qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nCurrentType==0";
+						abort();
+					}
+					if (createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nSearchItemId))
+					{
+						if (createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nRecordItemId))
 						{
 							m_tDatabaseInfo.tChannelInRecordDatabaseId.insert(nChannel,nRecordItemId);
 							m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
 							m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
 							nHistoryType=nCurrentType;
-							if (nCurrentType&MOTIONRECORD)
-							{
-								nRecType=MOTIONRECORD;
-							}else if (nCurrentType&MANUALRECORD)
-							{
-								nRecType=MANUALRECORD;
-							}else if (nCurrentType&TIMERECORD)
-							{
-								nRecType=TIMERECORD;
-							}else{
-								//do nothing
-							}
 							nStep=WriteToBuffer_Write;
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail,there must exist a error,i will terminate the thread";
@@ -1179,7 +1311,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					//do nothing
 				}
 				tInfo.clear();
-				tInfo.insert("nRecordType",nCurrentType);
+				tInfo.insert("nEndTime",uiEndTime);
 				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
 				{
 					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo,sFilePath))
@@ -1202,11 +1334,63 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 			case WriteToBuffer_011:{
 				//historyType==currentType!=0,类型没有转变，接着录像
 				//step 1:写帧
+				if (nCurrentType&MOTIONRECORD)
+				{
+					nRecType=MOTIONRECORD;
+				}else if (nCurrentType&MANUALRECORD)
+				{
+					nRecType=MANUALRECORD;
+				}else if (nCurrentType&TIMERECORD)
+				{
+					nRecType=TIMERECORD;
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nCurrentType==0";
+					abort();
+				}
+				if (m_tDatabaseInfo.tChannelInRecordDatabaseId.contains(nChannel))
+				{
+					nRecordItemId=m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel);
+				}else{
+					//create new record item
+					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+					quint64 uiEndTime=uiStartTime;
+					if (createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nRecordItemId))
+					{
+						m_tDatabaseInfo.tChannelInRecordDatabaseId.insert(nChannel,nRecordItemId);
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem ,i will abort the thread";
+						abort();
+					}
+				}
+				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
+				{
+					nSearchItemId=m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel);
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"there must some error in m_tDatabaseInfo.tChannelInSearchDatabaseId,please checkout";
+					abort();
+				}
 				nStep=WriteToBuffer_Write;
 								   }
 								   break;
 			case WriteToBuffer_111:{
 				//historyType!=currentType!=0,类型转换，接着录像
+				
+				//保存当前的录像状态
+				m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
+				nHistoryType=nCurrentType;
+				if (nHistoryType&MOTIONRECORD)
+				{
+					nRecType=MOTIONRECORD;
+				}else if (nHistoryType&MANUALRECORD)
+				{
+					nRecType=MANUALRECORD;
+				}else if (nHistoryType&TIMERECORD)
+				{
+					nRecType=TIMERECORD;
+				}else{
+					//do nothing
+				}
 				//step1:处理搜索数据库
 				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
 				{
@@ -1220,25 +1404,18 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDatabase fail,please checkout";
 					}
-					tInfo.clear();
-					tInfo.insert("nRecordType",nCurrentType);
-					if (m_tOperationDatabase.updateSearchDatabase(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel),tInfo,sFilePath))
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDatabase fail,please checkout";
-					}
 				}else{
-					//创建搜索条目
-					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
-					quint64 uiEndTime=uiStartTime;
-					if (m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nSearchItemId))
-					{
-						m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail,i will terminate the thread";
-						abort();
-					}
+					//do nothing
+				}
+				//创建搜索条目
+				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+				quint64 uiEndTime=uiStartTime;
+				if (m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nSearchItemId))
+				{
+					m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail,i will terminate the thread";
+					abort();
 				}
 				//step2:处理录像数据库
 				if (m_tDatabaseInfo.tChannelInRecordDatabaseId.contains(nChannel))
@@ -1255,30 +1432,14 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				}else{
 					//do nothing
 				}
-				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
-				quint64 uiEndTime=uiStartTime;
-				if (m_tOperationDatabase.createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nCurrentType,sFilePath,nRecordItemId))
+				if (m_tOperationDatabase.createRecordDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nRecordItemId))
 				{
 					m_tDatabaseInfo.tChannelInRecordDatabaseId.insert(nChannel,nRecordItemId);
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"createRecordDatabaseItem fail,please checkout";
 					abort();
 				}
-				//保存当前的录像状态
-				m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
-				nHistoryType=nCurrentType;
-				if (nHistoryType&MOTIONRECORD)
-				{
-					nRecType=MOTIONRECORD;
-				}else if (nHistoryType&MANUALRECORD)
-				{
-					nRecType=MANUALRECORD;
-				}else if (nHistoryType&TIMERECORD)
-				{
-					nRecType=TIMERECORD;
-				}else{
-					//do nothing
-				}
+
 				nStep=WriteToBuffer_Write;
 								   }
 								   break;
@@ -1325,8 +1486,21 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
 									pFrameHeadBuffer->uiLength=sizeof(tagVideoConfigFrame);
 									pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
-									pFrameHeadBuffer->uiRecType=nRecType;
-									pFrameHeadBuffer->uiSessionId=nRecordItemId;
+									if (nRecType==1||nRecType==2||nRecType==4)
+									{
+										pFrameHeadBuffer->uiRecType=nRecType;
+									}else{
+										qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecType is error";
+										abort();
+									}
+									if (nRecordItemId!=0)
+									{
+										pFrameHeadBuffer->uiSessionId=nRecordItemId;
+									}else{
+										qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecordItemId==0";
+										abort();
+									}
+									
 									pFrameHeadBuffer->uiType=FT_VideoConfig;
 
 									tagVideoConfigFrame *pVideoConfigFrame=(tagVideoConfigFrame*)((char*)pFileFrameHead+sizeof(tagFileFrameHead)-sizeof(pFrameHeadBuffer->pBuffer));
@@ -1357,6 +1531,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 										tagFileFrameHead *pLastFrameHead=(tagFileFrameHead*)((char*)pFileHead+pFileFrameHead->tPerFrameIndex.uiPreIFrame);
 										pLastFrameHead->tPerFrameIndex.uiNextIFrame=pFileHead->uiIndex;
 									}
+									pFileFrameHead->tPerFrameIndex.uiNextIFrame=0;
 									//tHistoryFrameIndex
 									//set uiPreFrame
 									//set uiNextFrame
@@ -1370,7 +1545,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 										tagFileFrameHead *pLastFrameHead=(tagFileFrameHead*)((char*)pFileHead+pFileFrameHead->tPerFrameIndex.uiPreFrame);
 										pLastFrameHead->tPerFrameIndex.uiNextFrame=pFileHead->uiIndex;
 									}
-
+									pFileFrameHead->tPerFrameIndex.uiNextFrame=0;
 									pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFileFrameHead->tFrameHead.pBuffer);
 								}else if (pFrameHead->uiType==FT_Audio)
 								{
@@ -1381,9 +1556,21 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 									pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
 									pFrameHeadBuffer->uiLength=sizeof(tagAudioConfigFrame);
 									pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
-									pFrameHeadBuffer->uiRecType=nRecType;
-									pFrameHeadBuffer->uiSessionId=nRecordItemId;
-									pFrameHeadBuffer->uiType=FT_Audio;
+									if (nRecType==1||nRecType==2||nRecType==4)
+									{
+										pFrameHeadBuffer->uiRecType=nRecType;
+									}else{
+										qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecType is error";
+										abort();
+									}
+									if (nRecordItemId!=0)
+									{
+										pFrameHeadBuffer->uiSessionId=nRecordItemId;
+									}else{
+										qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecordItemId==0";
+										abort();
+									}
+									pFrameHeadBuffer->uiType=FT_AudioConfig;
 
 									tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)((char*)pFileFrameHead+sizeof(tagFileFrameHead)-sizeof(pFrameHeadBuffer->pBuffer));
 									tagAudioConfigFrame *pAudioConfigFrameTemp=(tagAudioConfigFrame*)((char*)pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
@@ -1433,8 +1620,20 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								pFrameHeadBuffer->uiGentime=pFrameHead->uiGentime;
 								pFrameHeadBuffer->uiLength=pFrameHead->uiLength;
 								pFrameHeadBuffer->uiPts=pFrameHead->uiPts;
-								pFrameHeadBuffer->uiRecType=nRecType;
-								pFrameHeadBuffer->uiSessionId=nRecordItemId;
+								if (nRecType==1||nRecType==2||nRecType==4)
+								{
+									pFrameHeadBuffer->uiRecType=nRecType;
+								}else{
+									qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecType is error";
+									abort();
+								}
+								if (nRecordItemId!=0)
+								{
+									pFrameHeadBuffer->uiSessionId=nRecordItemId;
+								}else{
+									qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecordItemId==0";
+									abort();
+								}
 								pFrameHeadBuffer->uiType=pFrameHead->uiType;
 								memcpy(&pFrameHeadBuffer->pBuffer,&pFrameHead->pBuffer,pFrameHead->uiLength);
 

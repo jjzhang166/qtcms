@@ -195,6 +195,13 @@ int RecordDat::inputFrame( QVariantMap &tFrameInfo )
 {
 	if (m_bInit)
 	{
+		if (m_nWnd<64&&m_nWnd>=0)
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"m_nWnd is illegal :"<<m_nWnd;
+			abort();
+		}
 		tFrameInfo.insert("winid",m_nWnd);
 		m_tBufferQueue.enqueue(tFrameInfo);
 	}else{
