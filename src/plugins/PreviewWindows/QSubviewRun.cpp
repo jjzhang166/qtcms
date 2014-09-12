@@ -16,13 +16,9 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_historyStatus(STATUS_DISCONNECTED),
 	m_pIVideoDecoder(NULL),
 	m_pIVideoRender(NULL),
-	m_pRecorder(NULL),
 	m_pRecordDat(NULL),
 	m_stop(false),
 	m_bIsPtzAutoOpen(false),
-	m_bIsAutoRecording(false),
-	m_bIsRecord(false),
-	m_bIsdataBaseFlush(true),
 	m_bIsSysTime(false),
 	m_bIsFocus(false),
 	m_bScreenShot(false),
@@ -85,8 +81,6 @@ void QSubviewRun::run()
 {
 	//此函数内生成的资源，必须仅在此函数内销毁
 	m_stop=false;
-	m_bIsRecord=false;
-	m_bIsAutoRecording=false;
 	m_nInitHeight=0;
 	m_nInitWidth=0;
 
@@ -138,28 +132,19 @@ void QSubviewRun::run()
 							m_pIVideoRender=NULL;
 						}
 						pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_pIVideoRender);
-						if (NULL!=m_pRecorder)
-						{
-							m_pRecorder->Release();
-							m_pRecorder=NULL;
-						}
-						pcomCreateInstance(CLSID_Recorder,NULL,IID_IRecorder,(void**)&m_pRecorder);
 						if (NULL!=m_pRecordDat)
 						{
 							m_pRecordDat->Release();
 							m_pRecordDat=NULL;
 						}
 						pcomCreateInstance(CLSID_RecordDat,NULL,IID_IRecordDat,(void**)&m_pRecordDat);
-						if (NULL!=m_pIVideoRender&&NULL!=m_pIVideoDecoder&&NULL!=m_pRecorder&&NULL!=m_pRecordDat)
+						if (NULL!=m_pIVideoRender&&NULL!=m_pIVideoDecoder&&NULL!=m_pRecordDat)
 						{
 							//create deviceClient succeed
 							nOpenStep=1;
 							break;
 						}else{
-							if (NULL==m_pRecorder)
-							{
-								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create recorder fail";
-							}else if (NULL==m_pIVideoRender)
+							if (NULL==m_pIVideoRender)
 							{
 								qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<"::"<<m_tDeviceInfo.m_uiChannelId<<"create render fail";
 							}else if (NULL==m_pRecordDat)
@@ -518,32 +503,6 @@ void QSubviewRun::run()
 			}
 							 }
 							 break;
-		case STARTRECORD:{
-			//开启录像
-			if (NULL!=m_pRecorder&&m_bIsRecord==false)
-			{
-				//set device info for record
-				IRecorderEx *pRecordEx = NULL;
-				m_pRecorder->QueryInterface(IID_IRecorderEx, (void**)&pRecordEx);
-				if (NULL != pRecordEx)
-				{
-					pRecordEx->SetDevInfoEx(m_nWindId, m_nRecordType);
-					pRecordEx->Release();
-				}
-
-				m_pRecorder->SetDevInfo(m_tDeviceInfo.m_sDeviceName,m_tDeviceInfo.m_uiChannelId);
-				m_pRecorder->Start();
-				m_bIsRecord=true;
-			}else{
-				if (m_bIsRecord==true)
-				{
-					// do nothing ,it may had been in recorder
-				}else{		
-					qDebug()<<__FUNCTION__<<__LINE__<<"STARTRECORD fail";
-				}
-			}
-						 }
-						 break;
 		case UPDATEDATABASE:{
 			//更新数据库
 			if (m_pRecordDat!=NULL)
@@ -554,23 +513,7 @@ void QSubviewRun::run()
 				//do nothing
 			}
 							}
-		case STOPRECORD:{
-			//停止录像
-			if (NULL!=m_pRecorder&&m_bIsRecord==true&&m_bIsAutoRecording==false)
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
-				m_pRecorder->Stop();
-				m_bIsRecord=false;
-			}else{
-				if (m_bIsRecord==false||m_bIsAutoRecording==true)
-				{
-					//do nothing
-				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"STOPRECORD fail";
-				}
-			}
-						}
-						break;
+							break;
 		case AUTOSYNTIME:{
 			//自动同步时间
 			// fix me
@@ -729,15 +672,6 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pIVideoRender=NULL;
 				}
-
-				if (NULL!=m_pRecorder)
-				{
-					m_bIsBlock=true;
-					m_nPosition=__LINE__;
-					m_pRecorder->Release();
-					m_bIsBlock=false;
-					m_pRecorder=NULL;
-				}
 				if (NULL!=m_pRecordDat)
 				{
 					m_bIsBlock=true;
@@ -815,7 +749,6 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 		m_tDeviceInfo.m_pMainWnd=pMainWnd;
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
-		m_bIsdataBaseFlush=true;
 		QThread::start();
 		return;
 	}
@@ -1123,12 +1056,6 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 
 int QSubviewRun::cbCRecorderData( QString evName,QVariantMap evMap,void*pUser )
 {
-	if (NULL!=m_pRecorder)
-	{
-		m_pRecorder->InputFrame(evMap);
-	}else{
-		// do nothing
-	}
 	if (NULL!=m_pRecordDat)
 	{
 		m_pRecordDat->inputFrame(evMap);
@@ -1244,21 +1171,6 @@ bool QSubviewRun::registerCallback(int registcode)
 					  break;
 	case RECORD:{
 		//设置录像回调函数
-		if (NULL!=m_pRecorder)
-		{
-			m_pRecorder->QueryInterface(IID_IEventRegister,(void**)&pRegist);
-			if (NULL!=pRegist)
-			{
-				pRegist->registerEvent("RecordState",cbRecordRState,this);
-				pRegist->Release();
-				pRegist=NULL;
-				/*return true;*/
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"recorder register fail as pRegist is null";
-			}
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"register fail as m_pRecorder is null";
-		}
 		if (NULL!=m_pRecordDat)
 		{
 			m_pRecordDat->QueryInterface(IID_IEventRegister,(void**)&pRegist);
@@ -1594,12 +1506,6 @@ int QSubviewRun::cbCDecodeFrameEx( QString evName,QVariantMap evMap,void*pUser )
 int QSubviewRun::cbCRecordState( QString evName,QVariantMap evMap,void*pUser )
 {
 	eventCallBack(evName,evMap);
-	if (evMap.value("RecordState").toBool()==true)
-	{
-	}else{
-		m_bIsAutoRecording=false;
-		m_bIsRecord=false;
-	}
 	return 0;
 }
 
@@ -1768,8 +1674,6 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				m_stepCode.enqueue(AUDIOENABLE);
 				//自动同步时间
 				m_stepCode.enqueue(AUTOSYNTIME);
-				//开启计划录像查询
-				m_planRecordTimer.start(1000);
 				//init录像
 				m_stepCode.enqueue(INITRECORD);
 				if (m_bIsManualRecord)
@@ -1789,12 +1693,8 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			{
 				//停止声音
 
-				//停止计划录像查询
-				m_planRecordTimer.stop();
 				//停止录像
 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-				m_stepCode.enqueue(STOPRECORD);
-				//停止录像
 				m_stepCode.enqueue(DEINITRECORD);
 				//抛出事件
 				m_nSecondPosition=__LINE__;
@@ -1942,7 +1842,6 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 
 void QSubviewRun::setDatabaseFlush( bool flag )
 {
-	m_bIsdataBaseFlush=flag;
 	if (QThread::isRunning())
 	{
 		m_stepCode.enqueue(UPDATEDATABASE);
@@ -2045,27 +1944,10 @@ void QSubviewRun::slstopPreviewrun()
 			// don nothing;
 		}
 		//停止录像
-		if (NULL!=m_pRecorder)
-		{
-			IRecorder *pRecorder=NULL;
-			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
-			if (NULL!=pRecorder)
-			{
-				m_nSecondPosition=__LINE__;
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
-				pRecorder->Stop();
-				pRecorder->Release();
-				pRecorder=NULL;
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop recorder can not apply for IRecorder interface";
-			}
-		}else{
-
-		}
 		if (NULL!=m_pRecordDat)
 		{
 			IRecordDat *pRecorder=NULL;
-			m_pRecorder->QueryInterface(IID_IRecorder,(void**)&pRecorder);
+			m_pRecordDat->QueryInterface(IID_IRecordDat,(void**)&pRecorder);
 			if (NULL!=pRecorder)
 			{
 				m_nSecondPosition=__LINE__;

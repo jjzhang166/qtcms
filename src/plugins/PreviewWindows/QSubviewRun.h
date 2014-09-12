@@ -39,8 +39,6 @@ typedef enum __tagStepCode{
 	CLOSEPTZ,//关闭云台操作
 	AUTORECONNECT,//自动重连
 	IPCAUTOSWITCHSTREAM,//ipc 自动切换码流
-	STARTRECORD,//开启录像
-	STOPRECORD,//关闭录像
 	INITRECORD,//初始化录像
 	UPDATEDATABASE,//更新数据库
 	DEINITRECORD,//关闭录像
@@ -56,12 +54,7 @@ typedef enum __tagStepRegistCode{
 	DECODE,//注册解码回调函数
 	RECORD,//注册录像回调函数
 }tagStepRegistCode;
-typedef struct __tagRecorderTimeInfo{
-	int nEnable;
-	int nWeekDay;
-	QTime startTime;
-	QTime endTime;
-}tagRecorderTimeInfo;
+
 typedef struct _tagDeviceInfo{
 	QString m_sAddress;
 	unsigned int m_uiPort;
@@ -155,7 +148,6 @@ public slots:
 	void slstopPreviewrun();
 private slots:
 	void slbackToMainThread(QVariantMap evMap);
-//	void slplanRecord();
 	void slsetRenderWnd();
 	void slcheckoutBlock();
 	void slstopPreview();
@@ -178,7 +170,6 @@ private:
 	IDeviceClient *m_pdeviceClient;
 	IVideoRender *m_pIVideoRender;
 	IVideoDecoder *m_pIVideoDecoder;
-	IRecorder *m_pRecorder;
 	IRecordDat *m_pRecordDat;
 	IAudioPlayer *m_pAudioPlay;
 	QMultiMap<QString ,tagProcInfo> m_eventMap;
@@ -189,14 +180,9 @@ private:
 	int m_ptzSpeed;
 	int m_ptzCmdEx;
 	bool m_bIsPtzAutoOpen;
-	bool m_bIsAutoRecording;
-	bool m_bIsRecord;
 	bool m_bIsManualRecord;
 	bool m_bIsPreDecode;
 	bool m_bIsPreRender;
-	QTimer m_planRecordTimer;
-	bool m_bIsdataBaseFlush;
-	QList<tagRecorderTimeInfo> m_lstReocrdTimeInfoList;
 	bool m_bIsSysTime;
 	static unsigned int m_volumePersent;
 	static bool m_bIsAudioOpen;

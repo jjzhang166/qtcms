@@ -4,7 +4,9 @@
 recordDatCore::recordDatCore(void):m_bStop(true),
 	m_bReloadSystemDatabase(false),
 	m_bIsBlock(false),
+	m_bWriteDiskTimeFlags(false),
 	m_nPosition(0),
+	m_nSleepSwitch(0),
 	m_pDataBuffer(NULL),
 	m_pDataBuffer1(NULL),
 	m_pDataBuffer2(NULL)
@@ -83,6 +85,7 @@ void recordDatCore::run()
 			//各项参数初始化
 			m_tToDiskType=recordDatToDiskType_null;
 			m_nWriteMemoryChannel=0;
+			m_nWriteDiskTimeCount=0;
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
 			m_tOperationDatabase.reloadSystemDatabase();
