@@ -29,6 +29,8 @@ interface IRecordDat:public IPComBase{
 	//更新录像日程表
 	//nChannelId:通道在日程表中id号
 	virtual bool updateRecordSchedule(int nChannelId)=0;
+	//更新系统数据库
+	virtual bool upDateSystemDatabase()=0;
 	enum _emError{
 			OK = 0,          //成功
 			E_PARAMETER_ERROR, //输入参数不正确
