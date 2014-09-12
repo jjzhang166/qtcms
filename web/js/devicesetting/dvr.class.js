@@ -33,7 +33,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 			data2UI(data);
 			This._VER = $('#set_content div.dvr_list:visible input[data-UI="swver"]').val();  //软件版本号
 			This._CHN = $('#set_content div.dvr_list:visible input[data-UI="camcnt"]').val(); //设备通道数
-			console.log(This._CHN+"---通道数---");
+			//console.log(This._CHN+"---通道数---");
 		}); 
 		   
 	
@@ -87,7 +87,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 	  xmlstr += ' />';
 	  xmlstr += '</envload>';
 	  xmlstr += '</juan>';
-	  console.log(xmlstr);
+	  //console.log(xmlstr);
 	  
 	  dataType='jsonp';  //数据类型
 	  jsonp='jsoncallback'; // 回调函数
@@ -168,7 +168,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 	         xmlstr += ' />';
 	         xmlstr += '</envload>';
 	         xmlstr += '</juan>';
-            console.log(xmlstr);
+           // console.log(xmlstr);
 			
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',function(str){
 		  if(str=='loading_success'){
@@ -245,6 +245,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 				 getCheckbox = this.getCheckbox,
 			     getSelect = this.getSelect,
 			     getValue = this.getValue,
+				 chn_val = parseInt(getValue('chn'));
 			    
 				 
 		     dataType='jsonp';
@@ -292,6 +293,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
 		}
+		 $('#Encoding_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
+		  $('#Encoding_settings_SelectAll').prop('checked',false);
 		async=true;
 		}
 
@@ -345,10 +348,10 @@ var DVR = function(usr,pwd,ip,port,id,type){
 				for(var i =0;i<4;i++){
 					 var start =This.timeZero(arr[i].begin);
 					 var end =This.timeZero(arr[i].end);
-					 warp.find(".schedle_id").eq(i).find("input:visible").eq(0).val(start);
-					 warp.find(".schedle_id").eq(i).find("input:visible").eq(0).attr("data",start);
-					 warp.find(".schedle_id").eq(i).find("input:visible").eq(1).val(end);
-					 warp.find(".schedle_id").eq(i).find("input:visible").eq(1).attr("data",end);
+					 warp.find(".schedle_id").eq(i).find("input:text").eq(0).val(start);
+					 warp.find(".schedle_id").eq(i).find("input:text").eq(0).attr("data",start);
+					 warp.find(".schedle_id").eq(i).find("input:text").eq(1).val(end);
+					 warp.find(".schedle_id").eq(i).find("input:text").eq(1).attr("data",end);
 	
 					 
 					var types = parseInt(arr[i].types);
@@ -356,10 +359,10 @@ var DVR = function(usr,pwd,ip,port,id,type){
 					{
 						if(types == 0)
 						{
-							warp.find(".schedle_id").eq(i).next().find('input:checkbox').eq(j).prop("checked",false);
+							warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",false);
 						}else{
 						 	
-						   warp.find(".schedle_id").eq(i).next().find('input:checkbox').eq(j).prop("checked",(types & (1 << j)));
+						   warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",(types & (1 << j)));
 						 
 						}
 					}			
@@ -381,7 +384,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 				 finish = this.checkMultRequests,
 				 getCheckbox = this.getCheckbox,
 			     getSelect = this.getSelect,
-			     getValue = this.getValue;
+			     getValue = this.getValue,
+				 chn_val = parseInt(getValue('chn1'));
 			    
 				 
 		     dataType='jsonp';
@@ -425,11 +429,13 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		
 			xmlstr += '</envload>';
 			xmlstr += '</juan>';
-			console.log(xmlstr);
+			//console.log(xmlstr);
 			
 			 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
 		}
+		 $('#Video_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
+		 $('#Video_settings_SelectAll').prop('checked',false);
 		async=true;	  
 				  
 				  
@@ -494,7 +500,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 	         xmlstr += ' />';
 	         xmlstr += '</envload>';
 	         xmlstr += '</juan>';
-         console.log(xmlstr);
+        // console.log(xmlstr);
 			
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',function(str){
 		  if(str=='loading_success')
@@ -563,7 +569,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 			 finish = this.checkMultRequests,
 			 getCheckbox = this.getCheckbox,
 			 getSelect = this.getSelect,
-			 getValue = this.getValue;
+			 getValue = this.getValue,
+			 chn_val = parseInt(getValue('chn'));
 		
 	    dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
@@ -592,10 +599,12 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		xmlstr += ' />';
 		xmlstr += '</envload>';
 		xmlstr += '</juan>';
-		console.log(xmlstr);
+		//console.log(xmlstr);
 		
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		}
+		 $('#PTZ_settings input:checkbox:visible').prop('checked',false).eq(chn_val-1).prop('checked',true);
+		 $('#PTZ_settings_SelectAll').prop('checked',false);
 		async=true;
 		}
 	//获取视频检验设置信息
@@ -650,7 +659,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 			 finish = this.checkMultRequests,
 			 getCheckbox = this.getCheckbox,
 			 getSelect = this.getSelect,
-			 getValue = this.getValue;
+			 getValue = this.getValue,
+			 chn_val = parseInt(getValue('chn'));
 			 
 		dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
@@ -689,6 +699,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
 		}
+		 $('#Video_detection_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
+		 $('#Video_detection_settings_SelectAll').prop('checked',false);
 		async=true;
 		}
 		 
@@ -753,7 +765,8 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		    getSelect = this.getSelect,
 		    getValue = this.getValue,
 			finish = this.checkMultRequests,
-		    oHint = showAJAXHint(str).css('top',warp.height() + 46);
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46)
+			chn_val = parseInt(getValue("chn"));
 			 
 		     
 		dataType='jsonp';  //数据类型
@@ -789,6 +802,10 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
 		}
+		
+		 $('#Alarm_settings input[type="checkbox"]:visible').prop('checked',false).eq(chn_val-1).prop('checked',true);
+		 $('#Alarm_settings_SelectAll').prop('checked',false);
+		 
 		async=true;
 		
 	}
@@ -806,16 +823,19 @@ var DVR = function(usr,pwd,ip,port,id,type){
 
 		if(!_Request[l]) return; //当ajax请求时，数组的最后一个数据仍为undefined，则退出函数，继续循环执行请求，直到所以请求都完成
 			
-
+        var warp = $('#set_content div.dvr_list:visible');
+		warp.find('.synCheckboxClick input:checked:visible').prop('disabled',true);
 		for(var i=0;i<_Request.length;i++){
 			
 			if(_Request[i]=='loading_success' || _Request[i]=='save_success' ){
 				showAJAXHint('save_success').fadeOut(2000);
+				
 			}else{
 				showAJAXHint(_Request[i]);
 				}
 
 		}
+		
 		function RequesePush(arr,str){
 			for(var i=0;i<arr.length;i++){
 				if(!arr[i]){ //空数组的类型为undefined，！undefined即为true
