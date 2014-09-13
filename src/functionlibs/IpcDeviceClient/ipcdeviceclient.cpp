@@ -716,6 +716,7 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 			DeInitProtocl();
 			return false;
 		}
+
 		//save to struct 
 		SingleConnect m_SingleConnect;
 		m_SingleConnect.m_DeviceConnecton=NULL;
@@ -733,6 +734,9 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		}
 		RegisterProc(m_RegisterProc,mount);
 		m_RegisterProc->Release();
+
+		// 用户校验信息
+		m_DeviceConnectProtocol->setDeviceAuthorityInfomation(m_DeviceInfo.m_sUserName,m_DeviceInfo.m_sPassword);
 
 		//设置设备参数
 		if (1==m_DeviceConnectProtocol->setDeviceHost(m_DeviceInfo.m_sAddr)||1==m_DeviceConnectProtocol->setDevicePorts(m_DeviceInfo.m_ports)||1==m_DeviceConnectProtocol->setDeviceId(m_DeviceInfo.m_sEseeId))

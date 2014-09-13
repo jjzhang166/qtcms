@@ -736,15 +736,9 @@ int BubbleProtocolEx::setDeviceAuthorityInfomation( QString sUserName,QString sP
 {
 	//0：设置成功
 	//1：设置失败
-	if (!QThread::isRunning())
-	{
-		m_tDeviceInfo.sPassword=sPassword;
-		m_tDeviceInfo.sUserName=sUserName;
-		return 0;
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"setDeviceAuthorityInfomation fail as the thread had been running,you should set it before the thread start";
-		return 1;
-	}
+	m_tDeviceInfo.sPassword=sPassword;
+	m_tDeviceInfo.sUserName=sUserName;
+	return 0;
 }
 
 int BubbleProtocolEx::connectToDevice()

@@ -40,8 +40,8 @@ void MDWorkObject::setUserInfo( QString sUsername,QString sPassword )
 	m_sPassword = sPassword;
 
 	// for test
-	m_sUsername = QString("admin");
-	m_sPassword = QString("");
+/*	m_sUsername = QString("admin");
+	m_sPassword = QString("");*/
 }
 
 int MDWorkObject::startMd()
