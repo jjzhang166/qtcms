@@ -105,6 +105,10 @@ long __stdcall IpcDeviceClient::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv=static_cast<IPTZControl*>(this);
 	}
+	else if (IID_IDeviceAuth == iid)
+	{
+		*ppv=static_cast<IDeviceAuth *>(this);
+	}
 	else 
 	{
 		*ppv=NULL;
@@ -223,26 +227,6 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect success";
 					nStep=3;
-
-					// 注册移动侦测信号
-					IEventRegister * iEg;
-					m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void **)&iEg);
-					if (NULL != iEg)
-					{
-						iEg->registerEvent("MDSignal",mdsignal_proc,this);
-						iEg->Release();
-						iEg = NULL;
-					}
-
-					// 启动移动侦测
-					IRemoteMotionDetection * iMd;
-					m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
-					if (NULL != iMd)
-					{
-						iMd->startMotionDetection();
-						iMd->Release();
-						iMd = NULL;
-					}
 				}
 				else{
 					qDebug()<<__FUNCTION__<<__LINE__<<sAddr<<"bubble connect fail";
@@ -284,6 +268,36 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 			//连接成功
 		case 3:
 			{
+				// 认证信息
+				int i;
+				for (i = 0; i < 2; i ++)
+				{
+					if (m_DeviceClentMap.contains(i))
+					{
+						m_DeviceClentMap.value(i).m_DeviceConnecton->setDeviceAuthorityInfomation(m_DeviceInfo.m_sUserName,m_DeviceInfo.m_sPassword);
+					}
+				}
+
+				// 注册移动侦测信号
+				IEventRegister * iEg;
+				m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void **)&iEg);
+				if (NULL != iEg)
+				{
+					iEg->registerEvent("MDSignal",mdsignal_proc,this);
+					iEg->Release();
+					iEg = NULL;
+				}
+
+				// 启动移动侦测
+				IRemoteMotionDetection * iMd;
+				m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
+				if (NULL != iMd)
+				{
+					iMd->startMotionDetection();
+					iMd->Release();
+					iMd = NULL;
+				}
+
 			//fixme
 				bCloseingFlags=false;
 				nStep=5;
@@ -389,6 +403,18 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 
 int IpcDeviceClient::closeAll()
 {
+	// 停止md
+	IRemoteMotionDetection * iMd;
+	if (m_DeviceClentMap.contains(0))
+	{
+		m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
+		if (NULL != iMd)
+		{
+			iMd->stopMotionDetection();
+			iMd->Release();
+			iMd = NULL;
+		}
+	}
 
 	//中断正在连接的状态
 	bHadCallCloseAll=true;
@@ -782,6 +808,7 @@ void IpcDeviceClient::DeInitProtocl()
 			it->m_DeviceConnecton=NULL;
 		}
 	}
+	m_DeviceClentMap.clear();
 	m_csDeInit.unlock();
 }
 
@@ -1103,6 +1130,12 @@ int IpcDeviceClient::cbConnectRefuse( QVariantMap evMap )
 		qDebug()<<__FUNCTION__<<__LINE__<<"call back cbConnectRefuse fail,as evMap is error";
 		return 1;
 	}
+}
+
+void IpcDeviceClient::setDeviceAuth( const QString & sUsername, const QString & sPassword )
+{
+	m_DeviceInfo.m_sUserName = sUsername;
+	m_DeviceInfo.m_sPassword = sPassword;
 }
 
 

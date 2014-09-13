@@ -8,6 +8,7 @@
 #include <IRemotePreview.h>
 #include <ISwitchStream.h>
 #include <IDeviceConnection.h>
+#include <IDeviceAuth.h>
 #include <QtNetwork/QTcpSocket>
 #include "IAutoSycTime.h"
 #include "IPTZControl.h"
@@ -28,7 +29,8 @@ class IpcDeviceClient:public QThread,
 	public IEventRegister,
 	public IAutoSycTime,
 	public IPTZControl,
-	public ISwitchStream
+	public ISwitchStream,
+	public IDeviceAuth
 {
 	Q_OBJECT
 public:
@@ -54,6 +56,9 @@ public:
 	virtual int closeAll();
 	virtual QString getVendor();
 	virtual int getConnectStatus();
+
+	// IDeviceAuth
+	virtual void setDeviceAuth( const QString & sUsername, const QString & sPassword );
 
 	//ISwitchStream
 	virtual int SwitchStream(int StreamNum);

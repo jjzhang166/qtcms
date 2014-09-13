@@ -138,6 +138,10 @@ long __stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 	{
 		*ppv=static_cast<IPTZControl*>(this);
 	}
+	else if (IID_IDeviceAuth == iid)
+	{
+		*ppv=static_cast<IDeviceAuth *>(this);
+	}
 	else 
 	{
 		*ppv=NULL;
@@ -1231,6 +1235,12 @@ int DeviceClient::cbConnectRefuse( QVariantMap &evMap )
 {
 	eventProcCall("ConnectRefuse",evMap);
 	return 0;
+}
+
+void DeviceClient::setDeviceAuth( const QString & sUsername, const QString & sPassword )
+{
+	m_sUserName = sUsername;
+	m_sPassWord = sPassword;
 }
 
 int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)

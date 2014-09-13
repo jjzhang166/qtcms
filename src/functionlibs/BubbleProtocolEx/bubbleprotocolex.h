@@ -171,11 +171,7 @@ private slots:
 	void slBackToMainThread(QVariantMap evMap);
 signals:
 	void sgBackToMainThread(QVariantMap evMap);
-public slots:
-	void mdSocketStateChange(QAbstractSocket::SocketState sockState);
-	void mdSocketConnetced();
-	void mdSocketDisconnected();
-	void mdSocketError(QAbstractSocket::SocketError socketError);
+
 private:
 	volatile int m_nRef;
 	QMutex m_csRef;
@@ -204,15 +200,10 @@ private:
 
 // motion detection
 private:
-	QTcpSocket m_sockMD;
-	QTimer m_MdTimer;
-	QThread m_MdThread;
 	MDWorkObject m_MdWorkObj;
-	QMutex m_csMdEcho;
-	bool m_bQuitMd;
 
 public:
-	void motionDetectionEcho();
+	void mdSignal(QString sEvent,QVariantMap eParam);
 };
 
 #endif // BUBBLEPROTOCOLEX_H

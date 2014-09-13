@@ -18,6 +18,7 @@
 #include <IRemotePlayback.h>
 #include <IEventRegister.h>
 #include <IRemoteBackup.h>
+#include <IDeviceAuth.h>
 #include "RemoteBackup.h"
 #include "IPTZControl.h"
 #include "IProtocolPTZ.h"
@@ -39,7 +40,8 @@ class  DeviceClient:public QThread,
 	public IDeviceSearchRecord,
 	public IDeviceGroupRemotePlayback,
 	public IPTZControl,
-	public IRemoteBackup
+	public IRemoteBackup,
+	public IDeviceAuth
 {
 	Q_OBJECT
 public:
@@ -67,7 +69,9 @@ public:
 
 	int ConnectStatusProc(QVariantMap evMap);
 
-	
+	// IDeviceAuth
+	virtual void setDeviceAuth( const QString & sUsername, const QString & sPassword );
+
 	//IDeviceSearchRecord
 	virtual int startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime);
 	//IDeviceGroupRemotePlayback
@@ -163,7 +167,7 @@ private:
 	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
 signals:
 	void TerminateConnectSignal();
-	
+
 };
 
 #endif // DEVICECLIENT_H

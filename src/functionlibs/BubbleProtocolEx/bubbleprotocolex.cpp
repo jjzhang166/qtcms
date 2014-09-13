@@ -21,7 +21,7 @@ BubbleProtocolEx::BubbleProtocolEx():
     m_pTcpSocket(NULL),
     m_bIsSupportHttp(true),
     m_bWaitForConnect(true),
-	m_MdWorkObj(this)
+	m_MdWorkObj(NULL)
 {
 	m_sEventList << "LiveStream"
 		<<"SocketError"
@@ -52,11 +52,6 @@ BubbleProtocolEx::BubbleProtocolEx():
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
     m_nBuiltTreadId=QThread::currentThreadId();
 
-	// for motion detection
-	connect(&m_sockMD,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(mdSocketStateChange(QAbstractSocket::SocketState)));
-	connect(&m_sockMD,SIGNAL(connected()),this,SLOT(mdSocketConnetced()));
-	connect(&m_sockMD,SIGNAL(disconnected()),this,SLOT(mdSocketDisconnected()));
-	connect(&m_sockMD,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(mdSocketError(QAbstractSocket::SocketError)));
 
 }
 
@@ -87,11 +82,6 @@ BubbleProtocolEx::~BubbleProtocolEx()
 		}
 	}
 
-	// for motion detection
-	QObject::disconnect(&m_sockMD,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(mdSocketStateChange(QAbstractSocket::SocketState)));
-	QObject::disconnect(&m_sockMD,SIGNAL(connected()),this,SLOT(mdSocketConnetced()));
-	QObject::disconnect(&m_sockMD,SIGNAL(disconnected()),this,SLOT(mdSocketDisconnected()));
-	QObject::disconnect(&m_sockMD,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(mdSocketError(QAbstractSocket::SocketError)));
 }
 
 long __stdcall BubbleProtocolEx::QueryInterface( const IID & iid,void **ppv )
@@ -112,10 +102,10 @@ long __stdcall BubbleProtocolEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IDeviceConnection *>(this);
 	}
-//	else if (IID_IRemoteMotionDetection==iid)
-//	{
-//		*ppv = static_cast<IRemoteMotionDetection *>(this);
-//	}
+	else if (IID_IRemoteMotionDetection==iid)
+	{
+		*ppv = static_cast<IRemoteMotionDetection *>(this);
+	}
 	else{
 		*ppv=NULL;
 		return E_NOINTERFACE;

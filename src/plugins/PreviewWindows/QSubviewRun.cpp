@@ -1,6 +1,7 @@
 #include "QSubviewRun.h"
 #include <QEventLoop>
 #include "IRecorderEx.h"
+#include <IDeviceAuth.h>
 
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
@@ -1511,6 +1512,16 @@ int QSubviewRun::cbCRecordState( QString evName,QVariantMap evMap,void*pUser )
 
 bool QSubviewRun::connectToDevice()
 {
+	// 设置认证信息
+	IDeviceAuth * pDa = NULL;
+	m_pdeviceClient->QueryInterface(IID_IDeviceAuth,(void **)&pDa);
+	if (NULL != pDa)
+	{
+		pDa->setDeviceAuth(m_tDeviceInfo.m_sUsername,m_tDeviceInfo.m_sPassword);
+		pDa->Release();
+		pDa = NULL;
+	}
+
 	IDeviceClient *pdeviceClient=NULL;
 	m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
 	if (NULL!=pdeviceClient)
