@@ -39,6 +39,7 @@
 		<item clsid="8647B818-B4D9-4839-B93D-CCA117DAD28D" name="record.Recorder" file="Recorder.dll" type="recorder"/>  
 		<item clsid="2DE3FBA7-4AB8-4AAD-8E49-9FC925B46580" name="record.RecordDat" file="recordDat.dll" type="recorder"/>   
 		<item clsid="175D5C43-CBF1-4BA4-962B-820F3DD56DE7" name="record.LocalPlayer" file="LocalPlayer.dll" type="LocalPlayer"/>
+		<item clsid="11E18B26-A448-44BE-BF14-6D84CD6B122D" name="record.LocalPlayerEx" file="LocalPlayerEx.dll" type="LocalPlayerEx"/>
 		<item clsid="C7E581AB-4B51-4A24-898A-1A5406CF4B97" name="decoder.AudioDecoder" file="AudioDecoder.dll" type="AudioDecoder"/>
 		<item clsid="CDAAF783-0143-47AB-B5A5-4159CE25A61E" name="AudioDevice" file="AudioDevice.dll" type="AudioDevice"/>
 		<item clsid="3641CDC2-EDDB-4287-B723-3A770199ECAD" name="AudioPlayer" file="AudioPlayer.dll" type="AudioPlayer"/>

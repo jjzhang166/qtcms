@@ -23,7 +23,9 @@ m_lastStatus(STATUS_STOP),
 m_CurStatus(STATUS_STOP)
 {
 	//申请ILocalRecordSearch接口
-	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
+// 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalRecordSearch,(void **)&m_pLocalRecordSearch);
+	pcomCreateInstance(CLSID_LocalPlayerEx,NULL,IID_ILocalRecordSearchEx,(void **)&m_pLocalRecordSearch);
+
 	//申请ILocalPlayer接口
 // 	pcomCreateInstance(CLSID_LocalPlayer,NULL,IID_ILocalPlayer,(void **)&m_pLocalPlayer);
 	//申请IWindowDivMode接口
@@ -424,11 +426,7 @@ QString RecordPlayer::GetNowPlayedTime()
 int RecordPlayer::AudioEnabled(bool bEnabled)
 {
 	m_bIsOpenAudio=bEnabled;
-	if (NULL != m_pLocalPlayer)
-	{
-		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
-	}
-	return m_subRecPlayerView[0].AudioEnabled(bEnabled);
+	return m_subRecPlayerView[m_currentWindID].AudioEnabled(bEnabled);
 }
 int RecordPlayer::SetVolume(const unsigned int &uiPersent)
 {

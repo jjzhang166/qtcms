@@ -107,4 +107,5 @@ extern const CLSID CLSID_UnixCommonTools;
 extern const CLSID CLSID_winStorageUtinity;
 extern const IID IID_IRemoteMotionDetection;
 extern const IID IID_IDeviceAuth;
+extern const GUID CLSID_LocalPlayerEx;
 #endif

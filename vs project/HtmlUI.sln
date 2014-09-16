@@ -181,6 +181,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RecordDat", "..\src\functio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winStorageUtinity", "..\src\functionlibs\winStorageUtinity\winStorageUtinity.vcxproj", "{8B88E949-54B7-433E-A434-88169E4739AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalPlayerEx", "..\src\functionlibs\LocalPlayerEx\LocalPlayerEx.vcxproj", "{C61A72A5-B78A-465E-820E-B5C506B215CA}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -374,6 +376,10 @@ Global
 		{8B88E949-54B7-433E-A434-88169E4739AC}.Debug|Win32.Build.0 = Debug|Win32
 		{8B88E949-54B7-433E-A434-88169E4739AC}.Release|Win32.ActiveCfg = Release|Win32
 		{8B88E949-54B7-433E-A434-88169E4739AC}.Release|Win32.Build.0 = Release|Win32
+		{C61A72A5-B78A-465E-820E-B5C506B215CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C61A72A5-B78A-465E-820E-B5C506B215CA}.Debug|Win32.Build.0 = Debug|Win32
+		{C61A72A5-B78A-465E-820E-B5C506B215CA}.Release|Win32.ActiveCfg = Release|Win32
+		{C61A72A5-B78A-465E-820E-B5C506B215CA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
