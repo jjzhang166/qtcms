@@ -153,6 +153,7 @@ bool RecordDat::init(int nWid)
 		connect(&m_tTimeRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckTimeRecord()));
 		connect(&m_tMotionRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckMotionRecord()));
 		m_tTimeRecordTimer.start(1000);
+		m_tMotionRecordTimer.start(1000);
 		m_nWnd=nWid;
 
 		m_bInit=true;
@@ -170,6 +171,7 @@ bool RecordDat::deinit()
 {
 	m_tFuncLock.lock();
 	m_tTimeRecordTimer.stop();
+	m_tMotionRecordTimer.stop();
 	disconnect(&m_tTimeRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckTimeRecord()));
 	disconnect(&m_tMotionRecordTimer,SIGNAL(timeout()),this,SLOT(slCheckMotionRecord()));
 	m_bInit=false;
@@ -256,8 +258,7 @@ bool RecordDat::motionRecordStart( int nTime )
 		{
 			if (setRecordType(MOTIONRECORD,true))
 			{
-				m_tMotionRecordTimer.stop();
-				m_tMotionRecordTimer.start(nTime);
+				m_nMotionTime=nTime;
 				m_tFuncLock.unlock();
 				return true;
 			}else{
@@ -307,8 +308,10 @@ bool RecordDat::setRecordType( int nType,bool bFlags )
 		}else{
 			m_nStatus=(nTotal-nType)&m_nStatus;
 		}
+		m_tBufferQueue.setRecordStatus(m_nStatus);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType fail as nType is undefined"<<nType;
+		abort();
 	}
 	//Å×³öÍ£Ö¹Â¼Ïñ×´Ì¬
 	if (m_nStatus==0&&nHisStatus!=0&&bSetFlags==true)
@@ -359,18 +362,28 @@ void RecordDat::slCheckTimeRecord()
 	if (bRecordFlags)
 	{
 		//¿ªÆô¶¨Ê±Â¼Ïñ
-		if (setRecordType(TIMERECORD,true))
+		if (!(m_nStatus&TIMERECORD))
 		{
+			if (setRecordType(TIMERECORD,true))
+			{
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"start time record fail as setRecordType fail";
+			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"start time record fail as setRecordType fail";
+			//do nothing
 		}
 	}else{
 		//Í£Ö¹¶¨Ê±Â¼Ïñ
-		if (setRecordType(TIMERECORD,false))
+		if (m_nStatus&TIMERECORD)
 		{
+			if (setRecordType(TIMERECORD,false))
+			{
 
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop time record fail as setRecordType fail";
+			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"stop time record fail as setRecordType fail";
+
 		}
 	}
 }
@@ -414,11 +427,22 @@ void RecordDat::slCheckMotionRecord()
 {
 	if (m_nStatus&MOTIONRECORD)
 	{
-		if (setRecordType(MOTIONRECORD,false))
+		if (m_nMotionTime==0)
 		{
+			if (setRecordType(MOTIONRECORD,false))
+			{
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"stop motion record fail";
+			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"stop motion record fail";
+			//do nothing
 		}
+	}else{
+		//do nothing
+	}
+	if (m_nMotionTime>0)
+	{
+		m_nMotionTime--;
 	}else{
 		//do nothing
 	}

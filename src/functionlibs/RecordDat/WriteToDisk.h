@@ -11,6 +11,7 @@
 #include <QVariantMap>
 #include <QMultiMap>
 #include <QStringList>
+#include "recorddat_global.h"
 typedef int (__cdecl *writeToDiskEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagWriteToDiskProcInfo{
 	writeToDiskEventCb proc;

@@ -495,6 +495,7 @@ int DeviceClient::closeAll()
 	if (NULL!=m_CloseAllConnect)
 	{
 		m_CloseAllConnect->disconnect();
+		msleep(20);
 		m_CloseAllConnect->Release();
 	}
 	m_csCloseAll.unlock();

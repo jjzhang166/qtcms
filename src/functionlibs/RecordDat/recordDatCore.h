@@ -18,7 +18,7 @@
 #include <QList>
 #define OVERWRITE 0
 #define  ADDWRITE 1
-#define  BUFFERSIZE 120//单位：M
+
 typedef int (__cdecl *recordDatCoreEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagRecordDatCoreProcInfo{
 	recordDatCoreEventCb proc;
@@ -43,6 +43,10 @@ typedef struct __tagRecordDatDatabaseInfo{
 	QMap<int ,int> tChannelInRecordDatabaseId;
 	QMap<int ,int> tChannelInSearchDatabaseId;
 }tagRecordDatDatabaseInfo;
+typedef struct __tagRecordDatabaseMaxID{
+	quint64 uiMaxRecordId;
+	quint64 uiMaxSearchId;
+}tagRecordDatabaseMaxID;
 typedef enum __tagRecordDatStepCode{
 	recordDat_init,//各项参数初始化
 	recordDat_filePath,//查找写文件的路径
@@ -76,15 +80,7 @@ typedef enum __tagRecordDatToDiskType{
 	recordDatToDiskType_outOfTime,//定时写硬盘
 	recordDatToDiskType_bufferFull,//缓存满写硬盘
 }tagRecordDatToDiskType;
-typedef enum __tagObtainFilePathStepCode{
-	obtainFilePath_getDrive,//获取可录像盘符
-	obtainFilePath_diskUsable,//有剩余空间的可录像的盘符
-	obtainFilePath_diskFull,//每个盘符都已经录满
-	obtainFilePath_createFile,//如果文件不存在，则创建文件
-	obtainFilePath_success,//获取录像文件路径成功
-	obtainFilePath_fail,//获取录像文件路径失败
-	obtainFilePath_end//结束
-}tagObtainFilePathStepCode;
+
 typedef enum __tagRecordDatTurnType{
 	recordDatTurnType_noRecord,//historyType==currentType==0,无任何操作
 	recordDatTurnType_beginRecord,//historyType==0,currentType!=0,开始录像，需要等待I帧
@@ -113,16 +109,16 @@ private slots:
 private:
 	void eventCallBack(QString sEventName,QVariantMap tInfo);
 	int obtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
-	QString getUsableDisk(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
-	QString getLatestItem(QString sDisk);//参数格式：D：
-	bool checkFileIsFull(QString sFilePath);
-	bool createNewFile(QString sFilePath);
+	//QString getUsableDisk(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
+	//QString getLatestItem(QString sDisk);//参数格式：D：
+	/*bool checkFileIsFull(QString sFilePath);*/
+	/*bool createNewFile(QString sFilePath);*/
 	bool getIsRecover();
 	void sleepEx(quint64 uiTime);
 	bool updateSearchDatabase();
 	bool updateRecordDatabase(int nUpdateType);
-	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
-	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,uint &uiItemId);
+	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);
+	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);
 	bool writeTodisk();
 	void setChannelNumInFileHead();
 	int writeToBuffer(int nChannel,QString sFilePath);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
@@ -151,5 +147,6 @@ private:
 	tagRecordDatDatabaseInfo m_tDatabaseInfo;
 	WriteToDisk m_tWriteToDisk;
 	volatile bool m_bReloadSystemDatabase;
+	QMultiMap<QString,tagRecordDatabaseMaxID> m_tRecordDatabaseMaxId;
 };
 

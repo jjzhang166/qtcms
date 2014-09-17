@@ -70,7 +70,7 @@ BubbleProtocolEx::~BubbleProtocolEx()
 	}
 	while(QThread::isRunning()){
 		/*sleepEx(10);*/
-		QTime dieTime=QTime::currentTime().addMSecs(1);
+		QTime dieTime=QTime::currentTime().addMSecs(10);
 		while(QTime::currentTime()<dieTime){
 			QCoreApplication::processEvents(QEventLoop::AllEvents,100);
 		}
@@ -362,15 +362,12 @@ void BubbleProtocolEx::run()
 								m_bBlock=false;
 							}else{
 								//½âÎöÔ¤ÀÀÊý¾Ý
-								m_bBlock=true;
-								m_nPosition=__LINE__;
 								if (analyzePreviewInfo())
 								{
 									nFrameStep=0;
 								}else{
 									nFrameStep=3;
 								}
-								m_bBlock=false;
 							}
 							   }
 							   break;
@@ -1200,6 +1197,12 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("acodec", pLiveStreamAudio->cEnCode);
 					tStreamInfo.insert("gentime", pLiveStreamAudio->uiGtime);
 					m_nSecondPosition=__LINE__;
+					if (tStreamInfo.value("length").toInt()>uiBubbleLength)
+					{
+						return false;
+					}else{
+						//keep going
+					}
 					eventProcCall("LiveStream",tStreamInfo);
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;
@@ -1218,6 +1221,12 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("height", nHeight);
 					tStreamInfo.insert("vcodec", "H264");
 					m_nSecondPosition=__LINE__;
+					if (tStreamInfo.value("length").toInt()>uiBubbleLength)
+					{
+						return false;
+					}else{
+						//keep going
+					}
 					eventProcCall("LiveStream",tStreamInfo);
 					m_tBuffer.remove(0,uiBubbleLength);
 					return true;

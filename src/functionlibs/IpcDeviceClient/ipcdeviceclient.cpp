@@ -450,6 +450,7 @@ int IpcDeviceClient::closeAll()
 			IDeviceConnection *m_CloseAllConnect=NULL;
 			it->m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&m_CloseAllConnect);
 			m_CloseAllConnect->disconnect();
+			msleep(20);
 			m_CloseAllConnect->Release();
 		}
 	}

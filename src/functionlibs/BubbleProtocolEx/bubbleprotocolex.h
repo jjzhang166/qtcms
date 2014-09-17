@@ -24,6 +24,7 @@
 #include <QDomDocument>
 #include <mdworkobject.h>
 #include "SearchRemoteFile.h"
+#define MAXSIZEONETIME 2097152
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagBubbleProInfo{
 	bubbleProtocolEventCb proc;

@@ -6,8 +6,14 @@
 #include <QDateTime>
 #include <QQueue>
 #include <QMutex>
-class BufferQueue
+#include <QEventLoop>
+#include <QTimer>
+#include <QThread>
+#define MAXFRAMERATE 30 //最大帧率
+#define FRAMERATERESTARTTIME  79200000//计时器 重启时间
+class BufferQueue:public QThread
 {
+	Q_OBJECT
 public:
 	BufferQueue();
 	~BufferQueue();
@@ -20,11 +26,17 @@ public:
 	void clear();
 	RecBufferNode *dequeue();
 	RecBufferNode *front();
+	void setRecordStatus(int nStatus);
 private:
 	QQueue<RecBufferNode*> m_tDataQueue;
 	QMutex m_tDataLock;
 	QMutex m_tEnqueueDataLock;
 	int m_nQueueMaxSize;
 	Allocation m_tAllocation;
+	int m_nRecordStatus;
+	int m_nLoseFrameCount;
+	QTime m_tEnqueueControlTime;
+	quint64 m_uiLastFrameEnqueueTime;
+	int m_nWaitTime;
 };
 

@@ -9,13 +9,17 @@
 #include <QTextStream>
 #include <MyEventSender.h>
 #include <QMutex>
+
+#include "vld.h"
+
 QMutex g_tMessage;
 QString g_sLocalPath;
 QFile outFile; 
 #define  FILESIZE 52428800//50M
 void customMessageHandler(QtMsgType type, const char *msg){
 	g_tMessage.lock();
-	QString txt;  
+	QString txt; 
+	QString sIgnore="QNativeSocketEngine::hasPendingDatagrams() was called in QAbstractSocket::UnconnectedState";
 	switch (type) {  
 	case QtDebugMsg:  
 		txt = QString("Debug: %1").arg(msg);
@@ -25,8 +29,17 @@ void customMessageHandler(QtMsgType type, const char *msg){
 
 	case QtWarningMsg:  
 		txt = QString("Warning: %1").arg(msg);
+		if (txt.contains(sIgnore))
+		{
+			g_tMessage.unlock();
+			return;
+		}else{
+			//keep going
+		}
 		txt.append("-----");
 		txt.append(QDateTime::currentDateTime().toString("dd.MM.yyyy-hh:mm:ss.zzz"));
+		
+
 		break;  
 	case QtCriticalMsg:  
 		txt = QString("Critical: %1").arg(msg);  
@@ -35,6 +48,7 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		txt = QString("Fatal: %1").arg(msg);  
 		g_tMessage.unlock();
 		abort();  
+	
 	} 
 	if (outFile.size()>FILESIZE)
 	{
@@ -69,7 +83,6 @@ void customMessageHandler(QtMsgType type, const char *msg){
 }
 int main(int argc, char *argv[])
 {
-   /* QApplication a(argc, argv);*/
 	MyEventSender a(argc,argv);
 	//debug log
 	qInstallMsgHandler(customMessageHandler);

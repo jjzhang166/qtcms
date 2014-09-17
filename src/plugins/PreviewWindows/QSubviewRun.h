@@ -43,6 +43,7 @@ typedef enum __tagStepCode{
 	UPDATEDATABASE,//更新数据库
 	DEINITRECORD,//关闭录像
 	SETMANUALRECORD,//设置人工录像
+	SETMOTIONRECORD,//移动录像
 	AUTOSYNTIME,//自动同步时间
 	AUDIOENABLE,//声音开关
 	SETVOLUME,//设置声音
@@ -206,5 +207,6 @@ private:
 	volatile bool m_bIsSaveRenderFrame;
 	int m_nHisWeekDay;
 	int m_nCheckPreCount;
+	int m_nMotionRecordTime;
 };
   

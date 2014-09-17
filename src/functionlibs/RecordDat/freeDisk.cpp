@@ -139,8 +139,9 @@ bool freeDisk::freeDiskEx( QString sAllDisk ,quint64 uiDiskReservedSize)
 			case 2:{
 				//空间不足 删除空间
 				//step1:查找出最早的记录，不能删除当天，同时满足相隔3个小时，必须保证硬盘空间足够录像一天
-				tPreDeleteItem.empty();
+				tPreDeleteItem.clear();
 				QDate tEarlestDate;
+				qDebug()<<__FUNCTION__<<__LINE__<<"findEarliestRecord in";
 				foreach (QString sDiskEx,sDiskList)
 				{
 					QString sDataBasePath=sDiskEx+":/REC/record.db";
@@ -165,10 +166,12 @@ bool freeDisk::freeDiskEx( QString sAllDisk ,quint64 uiDiskReservedSize)
 						qDebug()<<__FUNCTION__<<__LINE__<<"warn::"<<sDataBasePath<<"do not exists";
 					}
 				}
+				qDebug()<<__FUNCTION__<<__LINE__<<"findEarliestRecord out";
 				//step2:删除文件
 				if (!tPreDeleteItem.isEmpty())
 				{
 					//查找各个磁盘之中最早的一天的录像
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeFile in";
 					tEarlestDate=minDate(tPreDeleteItem.keys());
 					QList<tagMgrRecInfo> tRecInfo=tPreDeleteItem.values(tEarlestDate);
 					QStringList tRemoteItemList;
@@ -177,13 +180,17 @@ bool freeDisk::freeDiskEx( QString sAllDisk ,quint64 uiDiskReservedSize)
 						QStringList tItemList=removeFile(tEach.tFileList);
 						tRemoteItemList<<tItemList;
 					}
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeFile out";
 					//step3:删除录像表的条目
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem in";
 					if (removeRecordDataBaseItem(tRemoteItemList,tRecInfo))
 					{
 						//keep going
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail ,please check";
 					}
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem out";
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem in";
 					//step4:删除搜索表中的条目
 					if (removeSearchDataBaseItem(tRemoteItemList,tRecInfo,tEarlestDate.toString("yyyy-MM-dd")))
 					{
@@ -191,7 +198,8 @@ bool freeDisk::freeDiskEx( QString sAllDisk ,quint64 uiDiskReservedSize)
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem fail ,please check";
 					}
-					if (!tRemoteItemList.isEmpty())
+					qDebug()<<__FUNCTION__<<__LINE__<<"removeSearchDataBaseItem out";
+					if (!(tRemoteItemList.isEmpty()&&tRecInfo.isEmpty()))
 					{
 						iFreeDiskStep=0;
 					}else{
@@ -298,6 +306,67 @@ bool freeDisk::removeRecordDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 	//this func need to test
 	for (int i=0;i<tRecInfo.size();i++)
 	{
+		QString sDatabasePath=tRecInfo.value(i).sDbPath;
+		QStringList sRemoveFile=tRecInfo.value(i).tFileList;
+		if (sRemoveFile.size()>0)
+		{
+			QString sFileName=sRemoveFile.value(0);
+			QSqlDatabase *pDataBase=NULL;
+			pDataBase=initFreeDiskDataBase(sDatabasePath,(quintptr*)this);
+			if (NULL!=pDataBase)
+			{
+				QSqlQuery _query(*pDataBase);
+				QString sCommand=QString("select date from local_record where path='%1'").arg(sFileName);
+				if (_query.exec(sCommand))
+				{
+					if (_query.next())
+					{
+						QString sDate=_query.value(0).toString();
+						sCommand.clear();
+						sCommand=QString("select max(id) from local_record where date='%1'").arg(sDate);
+						if (_query.exec(sCommand))
+						{
+							if (_query.next())
+							{
+								int nId=_query.value(0).toInt();
+								sCommand.clear();
+								sCommand=QString("delete from local_record where id=%1 or id<%2").arg(nId).arg(nId);
+								if (_query.exec(sCommand))
+								{
+								}else{
+									qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+									abort();
+								}
+							}else{
+								//do nothing
+								qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+								abort();
+							}
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+							abort();
+						}
+					}else{
+						//do nothing
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+						abort();
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+					abort();
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as pDataBase should not be null";
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+	}
+	return true;
+	//使用上面的代码可以大大节省删除数据库的时间，下面的代码不再使用
+	for (int i=0;i<tRecInfo.size();i++)
+	{
 		QStringList tRemoteList=tRecInfo.value(i).tFileList;
 		foreach(QString sItem,tRemoteList){
 			QSqlDatabase *pDataBase=NULL;
@@ -307,14 +376,19 @@ bool freeDisk::removeRecordDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 			pDataBase=initFreeDiskDataBase(sFind,(quintptr*)this);
 			if (pDataBase!=NULL)
 			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one in";
 				QSqlQuery _query(*pDataBase);
 				QString sCommond=QString("delete from local_record where path ='").append(sItem).append("'");
+				sCommond.clear();
+				sCommond=QString("delete from local_record where id<800");
 				if (_query.exec(sCommond))
 				{
 					//do nothing
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as exec the cmd fail::"<<sCommond;
 				}
+				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one out";
+				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one out";
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as pDataBase is null,i will keep going without any handle";
 			}

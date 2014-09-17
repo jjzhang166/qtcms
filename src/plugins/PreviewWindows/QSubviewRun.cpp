@@ -1,8 +1,7 @@
 #include "QSubviewRun.h"
 #include <QEventLoop>
 #include "IRecorderEx.h"
-#include <IDeviceAuth.h>
-
+#include "vld.h"#include <IDeviceAuth.h>
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
 int cbRecorderRData(QString evName,QVariantMap evMap,void*pUser);
@@ -39,14 +38,15 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nInitWidth(0),
 	m_nSleepSwitch(0),
 	m_nCheckPreCount(0),
-	m_nSecondPosition(0)
+	m_nSecondPosition(0),
+	m_nMotionRecordTime(3)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 //	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
-	m_checkIsBlockTimer.start(5000);
+	m_checkIsBlockTimer.start(4000);
 	m_hMainThread=QThread::currentThreadId();
 	m_tRenderInfo.pData=NULL;
 	m_tRenderInfo.pUdata=NULL;
@@ -67,11 +67,11 @@ QSubviewRun::~QSubviewRun(void)
 	}
 	int n=0;
 	while(QThread::isRunning()){
-		/*sleepEx(10);*/
 		msleep(10);
 		n++;
 		if (n>500&&n%100==0)
 		{
+			sleepEx(10);
 			qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sDeviceName<<n/100<<"terminate this thread had caused more time than 5s,there may be out of control";
 		}
 	}
@@ -93,10 +93,10 @@ void QSubviewRun::run()
 		{
 			nstep=m_stepCode.dequeue();
 		}else{
-			sleepEx(10);
+			sleepEx(2);
 			/*msleep(10);*/
 			nstep=DEFAULT;
-			m_nPosition=__LINE__;
+			/*m_nPosition=__LINE__;*/
 		}
 		if (m_stop)
 		{
@@ -501,6 +501,16 @@ void QSubviewRun::run()
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"SETMANUALRECORD fail as m_pRecordDat is null";
+			}
+							 }
+							 break;
+		case SETMOTIONRECORD:{
+			//ÉèÖÃÒÆ¶¯Â¼Ïñ
+			if (NULL!=m_pRecordDat)
+			{
+				m_pRecordDat->motionRecordStart(m_nMotionRecordTime);
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"SETMOTIONRECORD fail as m_pRecordDat is null";
 			}
 							 }
 							 break;
@@ -966,7 +976,7 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 {
 	int nDecodeStep=0;
 	int bDecodeStop=false;
-	while(bDecodeStop==false){
+	while(bDecodeStop==false&&m_stop==false){
 		switch(nDecodeStep){
 		case 0:{
 			//½âÂëÖ¸ÕëÊÇ·ñÎª¿Õ
@@ -1057,7 +1067,7 @@ int QSubviewRun::cbCPreviewData( QString evName,QVariantMap evMap,void *pUuer )
 
 int QSubviewRun::cbCRecorderData( QString evName,QVariantMap evMap,void*pUser )
 {
-	if (NULL!=m_pRecordDat)
+	if (NULL!=m_pRecordDat&&m_stop==false)
 	{
 		m_pRecordDat->inputFrame(evMap);
 	}else{
@@ -1952,27 +1962,8 @@ void QSubviewRun::slstopPreviewrun()
 				qDebug()<<__FUNCTION__<<__LINE__<<"can not apply for disconnect interface";
 			}
 		}else{
-			// don nothing;
+			// do nothing;
 		}
-		//Í£Ö¹Â¼Ïñ
-		if (NULL!=m_pRecordDat)
-		{
-			IRecordDat *pRecorder=NULL;
-			m_pRecordDat->QueryInterface(IID_IRecordDat,(void**)&pRecorder);
-			if (NULL!=pRecorder)
-			{
-				m_nSecondPosition=__LINE__;
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop record";
-				pRecorder->deinit();
-				pRecorder->Release();
-				pRecorder=NULL;
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"stop recorder can not apply for IRecorder interface";
-			}
-		}else{
-
-		}
-		//
 	}else{
 
 	}
@@ -2003,6 +1994,13 @@ void QSubviewRun::slcheckoutBlock()
 	}else{
 		//do nothing
 	}
+	//test ÒÆ¶¯Õì²â
+	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
+	{
+		/*m_stepCode.enqueue(SETMOTIONRECORD);*/
+	}else{
+		//do nothing
+	}
 	m_bIsPreRender=false;
 	m_bIsPreDecode=false;
 	m_nCheckPreCount++;
@@ -2020,13 +2018,13 @@ void QSubviewRun::backToMainThread( QVariantMap evMap )
 
 void QSubviewRun::sleepEx( int time )
 {
-	if (m_nSleepSwitch<100)
+	if (m_nSleepSwitch<5)
 	{
 		msleep(time);
 		m_nSleepSwitch++;
 	}else{
 		QEventLoop eventloop;
-		QTimer::singleShot(2, &eventloop, SLOT(quit()));
+		QTimer::singleShot(20, &eventloop, SLOT(quit()));
 		eventloop.exec();
 		m_nSleepSwitch=0;
 	}
