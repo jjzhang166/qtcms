@@ -207,7 +207,7 @@ var oPreView,oDiv,
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
 	
-	//$(window).resize(ViewMax);
+	$(window).resize(ViewMax);
 	
 	function ViewMax(){
 		var W = $(window).width();

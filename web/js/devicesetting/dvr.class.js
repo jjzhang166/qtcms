@@ -418,7 +418,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 				var types = 0;
 				for(var j = 0; j < 3; j++)
 				{
-					if( warp.find(".schedle_id").eq(i).next().find('input:checkbox').eq(j).prop("checked"))
+					if( warp.find(".schedle_id").eq(i).find('input:checkbox').eq(j).prop("checked"))
 					{
 						types += Math.pow(2, j);
 					}
@@ -429,7 +429,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		
 			xmlstr += '</envload>';
 			xmlstr += '</juan>';
-			//console.log(xmlstr);
+			console.log(xmlstr);
 			
 			 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		

@@ -178,8 +178,8 @@
                     <input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" />
                     <label for="SerachedDevList_SelectAll"><script>T("Select")</script></label>
 					<div  id="quit_btn"  onclick="quitbtn();" class="hover inpt2"  style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("quit_btn")</script></div>
-					<div  id="search_btn" onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("search_btn")</script></div>
-					<div style="float:right;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text" /></div>
+					<div  id="search_btn"  onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("search_btn")</script></div>
+					<div style="float:right;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text" onkeypress="if(event.keyCode == 13) searchbtn();"/></div>
 					</td>
                     </tr>
                     </thead>
