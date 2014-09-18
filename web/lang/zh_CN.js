@@ -346,7 +346,9 @@
 
 	'Shutting_down_device':'正在关闭设备:',
 	'All_channelsare_open_under_the_current_list':'正在打开当前列表下的所有通道.',
+	'All_channel_already_open_under_the_current_list':'当前列表下的所有通道已经全部打开.',
 	'The_current_list_of_all_channels_are_closed_under':'正在关闭当前列表下的所有通道.',
+	'The_current_list_of_all_channels_already_closed_under':'当前列表下的所有通道已经全部关闭.',
 
 	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_',
 	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败! ',

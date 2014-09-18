@@ -244,28 +244,57 @@ var oPreView,oDiv,
 	function openCloseAll(bool){  //打开关闭所有窗口
 		var str = '';
 		if(bool){
-			var wind = 0;
+			if(!checkAlldevAllOpen()){
+			     var wind = 0;
 
-			$('div.dev_list:visible span.channel').not('[wind]').each(function(){
-				wind = getWind(wind);
-				if(wind  == -1)return;
-				openWind(wind,getChlFullInfo($(this)));
-				wind++;
-			})
+			  $('div.dev_list:visible span.channel').not('[wind]').each(function(){
+				   wind = getWind(wind);
+				   if(wind  == -1)return;
+				   openWind(wind,getChlFullInfo($(this)));
+				   wind++;
+			     })
 
-			str = lang.All_channelsare_open_under_the_current_list;
+			  str = lang.All_channelsare_open_under_the_current_list;
+			}else{
+				str = lang.All_channel_already_open_under_the_current_list;
+				}
 		}else{
-
-			oPreView.CloseAll();
+            
+			if(checkAllchannelClose()){
+				str = lang.The_current_list_of_all_channels_already_closed_under;
+			}else{
+					 oPreView.CloseAll();
 
 			/*$('div.dev_list:visible span.channel[wind]').each(function(){
 				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
 			})*/
-			str = lang.The_current_list_of_all_channels_are_closed_under
+			    str = lang.The_current_list_of_all_channels_are_closed_under;
+					}
+			 
+			
 		}
 		writeActionLog(str);
 	}
-
+    function checkAlldevAllOpen(){
+		var b = 1;
+		$('div.dev_list:visible span.device').each(function(){
+			if(!$(this).attr('bAllopen')){
+				b = 0;
+			}
+		})
+	  return b;
+		
+		}
+	function checkAllchannelClose(){
+	  var b = 1;
+	  $('div.dev_list:visible span.channel').each(function(){
+		  if($(this).attr('wind')){
+			  b = 0;
+		  }
+	  })
+	return b;
+	  
+	  }
 	function checkAllchannelOpen(){
 		var b = 1;
 		$('div.dev_list:visible span.channel').each(function(){
@@ -273,12 +302,13 @@ var oPreView,oDiv,
 				b = 0;
 			}
 		})
-		var obj = $('#openAllchannel');
+		/*var obj = $('#openAllchannel');
 		if(b){
 			obj.attr('toggle',1).css('background-position','0px'+' '+(-obj.height())+'px');
 		}else{
 			obj.removeAttr('toggle').css('background-position','0 0');
-		}	
+		}	*/
+	  return b;
 	}
 
 	function openWind(wind,data){
