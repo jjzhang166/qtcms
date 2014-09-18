@@ -5,10 +5,13 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QDateTime>
+
+#define qDebug() qDebug()<<(int)this<<__FUNCTION__<<__LINE__
 
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 
-
+bool PlayMgr::m_bIsSkiped = false;
 bool PlayMgr::m_bPause = false;
 QMutex PlayMgr::m_mxPause;
 QWaitCondition PlayMgr::m_wcPause;
@@ -25,6 +28,8 @@ PlayMgr::PlayMgr( void )
 	m_i32AudioChl(1),
 	m_i32SmapleRate(0),
 	m_i32SmapleWidth(0),
+	m_i32FileStartPos(0),
+	m_i32SkipStartPos(0),
 	m_bStop(false),
 	m_bIsAudioOpen(false),
 	m_pcbTimeChg(NULL),
@@ -97,6 +102,24 @@ void PlayMgr::setCbTimeChange( pcbTimeChange pro, void* pUser )
 	}
 }
 
+void PlayMgr::setSkipTime( const QVector<PeriodTime> &skipTime )
+{
+	if (!skipTime.isEmpty())
+	{
+		m_skipTime = skipTime;
+		m_i32SkipStartPos = findStartPos(skipTime);
+	}
+}
+
+void PlayMgr::setFilePeriod( const QVector<PeriodTime> &filePeriod )
+{
+	if (!filePeriod.isEmpty())
+	{
+		m_filePeriod = filePeriod;
+		m_i32FileStartPos = findStartPos(filePeriod);
+	}
+}
+
 void PlayMgr::pause( bool bIsPause )
 {
 	m_bPause = bIsPause;
@@ -120,6 +143,7 @@ void PlayMgr::stop()
 	m_uiCurrentGMT = 0;
 	m_i32Width = 0;
 	m_i32Height = 0;
+	m_bIsSkiped = false;
 	m_bStop = true;
 	if (m_bPause)
 	{
@@ -133,12 +157,19 @@ void PlayMgr::stop()
 
 void PlayMgr::run()
 {
+	qDebug()<<"----------start run-----------\t";
 	QElapsedTimer frameTimer;
 
 	bool bFirstFrame = true;
+	bool bSkip = false;
 	uint uiLastPts = 0;
+	uint start = 0;
+	qint32 skipTime = 0;
+	qint32 timeOffset = 0;
 	qint64 i64Spend = 0;
 	m_uiCurrentGMT = m_uiStartSec;
+	PeriodTime per = m_filePeriod.value(m_i32FileStartPos);
+
 	while (!m_bStop)
 	{
 		//check is pause
@@ -158,15 +189,67 @@ void PlayMgr::run()
 			msleep(10);//wait for new frames
 			continue;
 		}
-		
+
 		//wait when no frames in this period time
-		qint32 timeOffset = pFrameData->uiGentime - m_uiCurrentGMT - m_uiSkipTime;
-		if (timeOffset > 1)
+		if (pFrameData->uiGentime > per.end)
 		{
-			m_mxWait.lock();
-			m_wcWait.wait(&m_mxWait, timeOffset*1000);
-			m_mxWait.unlock();
+			per = m_filePeriod.value(++m_i32FileStartPos);
+			uiLastPts = pFrameData->uiPts;
 		}
+		start = per.start;
+		while (!m_bStop && m_i32SkipStartPos < m_skipTime.size() || m_skipTime.isEmpty())
+		{
+			timeOffset = m_uiCurrentGMT - start;
+// 			qDebug()<<"timeoff :"<<timeOffset;
+			if (timeOffset >= 0)
+			{
+				break;
+			}
+			else
+			{
+				int waitSec = 0;
+				if (m_skipTime.isEmpty())
+				{
+					waitSec = start - m_uiCurrentGMT;
+				}
+				else
+				{
+					if (m_skipTime[m_i32SkipStartPos].start > start)
+					{
+						waitSec = start - m_uiCurrentGMT;
+					}
+					else
+					{
+						waitSec = m_skipTime[m_i32SkipStartPos].start - m_uiCurrentGMT;
+					}
+				}
+// 				qDebug()<<"wait:"<<waitSec;
+				if (waitSec > 0 && !m_bStop)
+				{
+					m_mxWait.lock();
+					m_wcWait.wait(&m_mxWait, waitSec*1000);
+					m_mxWait.unlock();
+					m_uiCurrentGMT += waitSec;
+				}
+				else
+				{
+					if (!m_bIsSkiped)
+					{
+						bSkip = true;
+						m_bIsSkiped = true;
+					}
+					skipTime = m_skipTime[m_i32SkipStartPos].end - m_skipTime[m_i32SkipStartPos].start;
+					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip && !m_bStop)
+					{
+						qDebug()<<"skip:"<<skipTime;
+						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
+					}
+					m_uiCurrentGMT += skipTime;
+					m_i32SkipStartPos++;
+				}
+			}
+		}
+
 		//decode audio frame
 		if (FT_Audio == pFrameData->uiType)
 		{
@@ -242,6 +325,12 @@ void PlayMgr::run()
 	{
 		clearBuffer();
 	}
+	if (bSkip)
+	{
+		m_bIsSkiped = false;
+	}
+
+	qDebug()<<"-----------stop run----------\t";
 }
 
 qint32 PlayMgr::prePlay(QVariantMap &item)
@@ -331,6 +420,22 @@ PlayMgr * PlayMgr::getPlayMgrPointer( QWidget *pwnd )
 void PlayMgr::onSkipTime( uint seconds )
 {
 	m_uiSkipTime = seconds;
+}
+
+qint32 PlayMgr::findStartPos( const QVector<PeriodTime> &vecPeriod )
+{
+	qint32 startPos = 0;
+	QVector<PeriodTime>::const_iterator it = vecPeriod.constBegin();
+	while (it != vecPeriod.constEnd())
+	{
+		if (it->end > m_uiStartSec)
+		{
+			startPos = it - vecPeriod.constBegin();
+			break;
+		}
+		++it;
+	}
+	return startPos;
 }
 
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)

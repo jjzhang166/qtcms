@@ -84,9 +84,10 @@ private:
 	QString getTypeList(int nTypes);
 	void eventProcCall(QString sEvent,QVariantMap param);
 	void getWndIdList(QList<qint32> &wndList);
-	QStringList getFileList(qint32 &i32Pos);
+	QStringList getFileList(qint32 &i32Pos, QMap<uint, QVector<PeriodTime> >& filePeriodMap);
 	QString intToStr(QList<qint32> &wndList);
 	PlayMgr* getPlayMgrPointer(QWidget* pwnd);
+	qint32 countSkipTime(const QMap<uint, QVector<PeriodTime> >& filePeriodMap, QVector<PeriodTime> &skipTime);
 private:
 	qint32 m_nRef;
 	qint32 m_i32GroupNum;

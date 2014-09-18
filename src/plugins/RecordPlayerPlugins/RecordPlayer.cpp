@@ -415,13 +415,12 @@ QString RecordPlayer::GetNowPlayedTime()
 		return playedTime;
 	}
 
-	QDateTime ptime = m_pLocalPlayer->GetNowPlayedTime();
-	playedTime = ptime.toString("yyyy-MM-dd hh:mm:ss");
-	QDateTime pCurdate;
-	pCurdate.setDate(QDate::currentDate());
-	QString CurrentTime;
-	CurrentTime=QString("%1").arg(ptime.toTime_t()-pCurdate.toTime_t());
-	return CurrentTime;
+	QDateTime curDateTime = m_pLocalPlayer->GetNowPlayedTime();
+	QTime curTime = curDateTime.time();
+	QTime baseTime(0, 0, 0);
+	playedTime = QString::number(baseTime.secsTo(curTime));
+
+	return playedTime;
 }
 int RecordPlayer::AudioEnabled(bool bEnabled)
 {

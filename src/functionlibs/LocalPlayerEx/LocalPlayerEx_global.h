@@ -110,5 +110,9 @@ typedef enum __tagFrameType{
 
 typedef void (*pcbTimeChange)(QString evName, uint playTime, void* pUser);
 
+typedef struct _tagPeriodTime{
+	uint start;
+	uint end;
+}PeriodTime;
 
 #endif // LOCALPLAYEREX_GLOBAL_H

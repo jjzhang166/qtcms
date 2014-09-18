@@ -38,7 +38,7 @@ LocalPlayerEx::LocalPlayerEx()
 		PlayMgr *pplayMgr = new PlayMgr();
 		m_arrPlayInfo[i32Loop].pPlayMgr = pplayMgr;
 		m_arrPlayInfo[i32Loop].i32WndId = NO_WINDOW_ID;
-		connect(m_pFileData, SIGNAL(sigSkipTime(uint)), pplayMgr, SLOT(onSkipTime(uint)));
+// 		connect(m_pFileData, SIGNAL(sigSkipTime(uint)), pplayMgr, SLOT(onSkipTime(uint)));
 		connect(m_pFileData, SIGNAL(sigStartPlay(uint)), this, SLOT(onStartPlayMgr(uint)));
 	}
 }
@@ -344,8 +344,22 @@ int LocalPlayerEx::GroupPlay()
 {
 	qint32 i32BufferNum = 0;
 	qint32 i32StartPos = 0;
+	QVector<PeriodTime> skipTime;
+	QMap<uint, QVector<PeriodTime> > filePeriodMap;
 	//get file list for playing
-	QStringList fileList = getFileList(i32StartPos);
+	QStringList fileList = getFileList(i32StartPos, filePeriodMap);
+	//count skip time
+	countSkipTime(filePeriodMap, skipTime);
+	//set skip time and each file period for playing thread
+	for (qint32 i32Loop = 0; i32Loop < MAX_PLAY_THREAD; ++i32Loop)
+	{
+		uint wndId = m_arrPlayInfo[i32Loop].i32WndId;
+		if (NO_WINDOW_ID != wndId && filePeriodMap.contains(wndId))
+		{
+			m_arrPlayInfo[i32Loop].pPlayMgr->setSkipTime(skipTime);
+			m_arrPlayInfo[i32Loop].pPlayMgr->setFilePeriod(filePeriodMap.value(wndId));
+		}
+	}
 	//set parameter into thread for reading 
 	m_pFileData->setParamer(fileList, m_uiStartSec, m_uiEndSec, i32StartPos);
 	//start read file thread
@@ -444,10 +458,12 @@ int LocalPlayerEx::GroupSpeedNormal()
 
 QDateTime LocalPlayerEx::GetNowPlayedTime()
 {
-/*	return QDateTime::fromTime_t(m_uiPlayTime);*/
+	QDateTime date = QDateTime::fromTime_t(m_uiPlayTime);
+	qDebug()<<__FUNCTION__<<__LINE__<<date.toString("hh:mm:ss");
+	return QDateTime::fromTime_t(m_uiPlayTime);
 
-	QDateTime datetime(QDate::currentDate(), QTime(0, 0, 0));
-	return datetime;
+// 	QDateTime datetime(QDate::currentDate(), QTime(0, 0, 0));
+// 	return datetime;
 }
 
 bool LocalPlayerEx::GroupEnableAudio( bool bEnable )
@@ -514,14 +530,14 @@ QString LocalPlayerEx::intToStr( QList<qint32> &wndList )
 	return wndStr.left(wndStr.size() - 1);
 }
 
-QStringList LocalPlayerEx::getFileList( qint32 &i32Pos )
+QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<PeriodTime> >& filePeriodMap )
 {
 	bool find = false;
 	QString startPath;
 	QStringList fileList;
 	QList<qint32> wndList;
 	getWndIdList(wndList);
-	QString sqlCommand = QString("select nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types));
+	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types));
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
@@ -537,16 +553,21 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos )
 		
 		while (query.next())
 		{
-			QString path = query.value(1).toString();
+			uint wndId = query.value(0).toUInt();
+			uint start = query.value(1).toUInt();
+			uint end = query.value(2).toUInt();
+			QString path = query.value(3).toString();
 			if (!fileList.contains(path))
 			{
 				fileList<<path;
 			}
-			if(!find && query.value(0).toUInt() > m_uiStartSec)
+			if(!find && end > m_uiStartSec)
 			{
 				startPath = path;
 				find = true;
 			}
+			PeriodTime item = {start, end};
+			filePeriodMap[wndId].append(item);
 		}
 		query.finish();
 	}
@@ -593,6 +614,117 @@ void LocalPlayerEx::onStartPlayMgr( uint wndId )
 		}
 		++pplayInfo;
 	}
+}
+
+qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& filePeriodMap, QVector<PeriodTime> &totalSkipTime )
+{
+	if (filePeriodMap.isEmpty())
+	{
+		return 1;
+	}
+
+	//for test
+// 	QMap<uint, QVector<PeriodTime> >::const_iterator it = filePeriodMap.constBegin();
+// 	while (it != filePeriodMap.constEnd())
+// 	{
+// 		qDebug()<<"=================="<<it.key()<<"=====================";
+// 		for (qint32 index = 0; index < it->size(); ++index)
+// 		{
+// 			qDebug()<<QDateTime::fromTime_t(it->at(index).start).toString("hh:mm:ss")<<"-----"<<QDateTime::fromTime_t(it->at(index).end).toString("hh:mm:ss");
+// 		}
+// 		++it;
+// 	}
+
+
+	QVector<PeriodTime> skipTime;
+	QMap<uint, QVector<PeriodTime> >::iterator iter = filePeriodMap.begin();
+	while (iter != filePeriodMap.end())
+	{
+		for (int i = 0; i < iter->size(); ++i)
+		{
+			if (skipTime.isEmpty())
+			{
+				skipTime.append(iter->at(i));
+				continue;
+			}
+			int j = 0;
+			while(j < skipTime.size())
+			{ 
+				if (iter->at(i).start == skipTime[j].start && iter->at(i).end == skipTime[j].end)
+				{
+					break;
+				}
+				if (iter->at(i).end < skipTime[j].start)
+				{
+					if ((j >= 1  && iter->at(i).start > skipTime[j - 1].end))
+					{
+						skipTime.insert(j - 1, iter->at(i));
+						break;
+					}
+					else if (0 == j)
+					{
+						skipTime.prepend(iter->at(i));
+					}
+				}
+				if (iter->at(i).start > skipTime[j].end)
+				{
+					if ((j + 1 < skipTime.size() && iter->at(i).end < skipTime[j + 1].start) || (j + 1 == skipTime.size()))
+					{
+						skipTime.insert(j + 1, iter->at(i));
+						break;
+					}
+				}
+				if ((iter->at(i).start < skipTime[j].start && iter->at(i).end >= skipTime[j].start)|| (iter->at(i).end > skipTime[j].end) && (iter->at(i).start <= skipTime[j].end))
+				{
+					skipTime[j].start = qMin(skipTime[j].start, iter->at(i).start);
+					skipTime[j].end = qMax(skipTime[j].end, iter->at(i).end);
+					break;
+				}
+				++j;
+			}
+		}
+		++iter;
+	}
+
+	PeriodTime perTime;
+	for (int i = 0 ; i <= skipTime.size(); ++i)
+	{
+		if (0 == i && skipTime[i].start >= m_uiStartSec)
+		{
+			perTime.start = m_uiStartSec;
+			perTime.end = skipTime[i].start;
+		}
+		else if (i == skipTime.size() && skipTime[i - 1].end != m_uiEndSec)
+		{
+			perTime.start = skipTime[i - 1].end;
+			perTime.end = m_uiEndSec;
+		}
+		else if (i > 0 && i < skipTime.size())
+		{
+			perTime.start = skipTime[i - 1].end;
+			perTime.end = skipTime[i].start;
+		}
+		else
+		{
+			//nothing
+		}
+
+		if (perTime.start < perTime.end)
+		{
+			totalSkipTime.append(perTime);
+			perTime.start = 0;
+			perTime.end = 0;
+		}
+	}
+
+// 	for (qint32 i = 0; i < totalSkipTime.size(); ++i)
+// 	{
+// 		qDebug()<<QDateTime::fromTime_t(totalSkipTime[i].start).toString("hh:mm:ss")<<"<------------>"<<QDateTime::fromTime_t(totalSkipTime[i].end).toString("hh:mm:ss");
+// 	}
+
+
+	return 0;
+
 }
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)

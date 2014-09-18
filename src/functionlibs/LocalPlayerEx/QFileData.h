@@ -19,7 +19,7 @@ public:
 	void setParamer(QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos);
 	void setWndIdList(QList<qint32> &wndList);
 	void setBuffer(qint32 wndId, QList<FrameData> *pquFrameBuffer);
-	void setCbTimeChange(pcbTimeChange pro, void* pUser);
+// 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void startReadFile();
 	void stopThread();
 
@@ -39,7 +39,7 @@ public:
 	}CurBuffInfo;
 signals:
 	void sigThrowException(QVariantMap &msg);
-	void sigSkipTime(uint seconds);
+// 	void sigSkipTime(uint seconds);
 	void sigStartPlay(uint wndId);
 protected:
 	void run();

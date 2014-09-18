@@ -20,15 +20,18 @@ public:
 	PlayMgr(void);
 	~PlayMgr(void);
 	void setParamter(QWidget* pWnd, uint uiStartSec, uint uiEndSec);
+	void setSkipTime(const QVector<PeriodTime> &skipTime);
+	void setFilePeriod(const QVector<PeriodTime> &filePeriod);
 	QList<FrameData>* getBufferPointer();
 	void startPlay();
-	static void pause(bool bIsPause);
 	void stop();
 	void setSpeedRate(qint32 i32Speed);
 	qint32 prePlay(QVariantMap &item);
 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	PlayMgr *getPlayMgrPointer(QWidget *pwnd);
 	void openAudio(bool bEnable);
+
+	static void pause(bool bIsPause);
 	static qint32 setVolume(uint uiPersent);
 	static void audioSwitch(bool bOpen);
 public slots:
@@ -38,6 +41,8 @@ protected:
 private:
 	qint32 initCbFuction();
 	void clearBuffer();
+	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
+
 private:
 	QList<FrameData> m_quFrameBuffer;
 	volatile bool m_bStop;
@@ -53,6 +58,8 @@ private:
 	qint32 m_i32AudioChl;
 	qint32 m_i32SmapleRate;
 	qint32 m_i32SmapleWidth;
+	qint32 m_i32FileStartPos;
+	qint32 m_i32SkipStartPos;
 
 	QMutex m_mxWait;
 	QWaitCondition m_wcWait;
@@ -62,6 +69,10 @@ private:
 	pcbTimeChange m_pcbTimeChg;
 	void* m_pUser;
 
+	QVector<PeriodTime> m_skipTime;
+	QVector<PeriodTime> m_filePeriod;
+
+	static bool m_bIsSkiped;
 	static bool m_bPause;
 	static QMutex m_mxPause;
 	static QWaitCondition m_wcPause;

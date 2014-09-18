@@ -34,7 +34,7 @@ QFileData::QFileData()
 	m_i32StartPos(0),
 	m_bStop(false),
 	m_bPlayDirection(true),
-	m_pcbTimeChg(NULL),
+// 	m_pcbTimeChg(NULL),
 	m_pUser(NULL)
 {
 
@@ -71,14 +71,14 @@ void QFileData::setBuffer(qint32 wndId, QList<FrameData> *pquFrameBuffer )
 	}
 }
 
-void QFileData::setCbTimeChange( pcbTimeChange pro, void* pUser )
-{
-	if (pro && pUser)
-	{
-		m_pcbTimeChg = pro;
-		m_pUser = pUser;
-	}
-}
+// void QFileData::setCbTimeChange( pcbTimeChange pro, void* pUser )
+// {
+// 	if (pro && pUser)
+// 	{
+// 		m_pcbTimeChg = pro;
+// 		m_pUser = pUser;
+// 	}
+// }
 
 void QFileData::startReadFile()
 {
@@ -206,10 +206,10 @@ void QFileData::run()
 				iter->bIsFirstRead = false;
 			}
 			// ensure uninterrupted when read frames
-			if (iter->curGMT - iter->lastGMT > 1)
-			{
-				iter->lastGMT = iter->curGMT;
-			}
+// 			if (iter->curGMT - iter->lastGMT > 1)
+// 			{
+// 				iter->lastGMT = iter->curGMT;
+// 			}
 			//copy frames
 // 			while (!m_bStop && iter->pBuffList->size() != MAX_FRAME_NUM)
 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
@@ -221,11 +221,11 @@ void QFileData::run()
 				}
 
 				//has a period time between two frames
-				if (iter->curGMT - iter->lastGMT > 2)
-				{
-					skiptime = qMin(skiptime, iter->curGMT - iter->lastGMT);
-					break;
-				}
+// 				if (iter->curGMT - iter->lastGMT > 2)
+// 				{
+// 					skiptime = qMin(skiptime, iter->curGMT - iter->lastGMT);
+// 					break;
+// 				}
 				//copy data to FrameData
 				switch (pFileFrameHead->tFrameHead.uiType)
 				{
@@ -267,11 +267,11 @@ void QFileData::run()
 			}
 			++iter;
 		}
-		if (!m_bStop && skiptime && m_pcbTimeChg)
-		{
-			m_pcbTimeChg(QString("SkipTime"), skiptime, m_pUser);
-			sigSkipTime(skiptime);
-		}
+// 		if (!m_bStop && skiptime && m_pcbTimeChg)
+// 		{
+// 			m_pcbTimeChg(QString("SkipTime"), skiptime, m_pUser);
+// 			sigSkipTime(skiptime);
+// 		}
 
 	}
 
