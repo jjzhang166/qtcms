@@ -96,12 +96,8 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClCompile Include="GeneratedFiles\Debug\moc_SetAutoSycTime.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ipcdeviceclient.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_SetAutoSycTime.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ipcdeviceclient.cpp" />
+    <ClCompile Include="GeneratedFiles\Release\moc_SetAutoSycTime.cpp" />
     <ClCompile Include="ipcdeviceclient.cpp" />
     <ClCompile Include="SetAutoSycTime.cpp" />
   </ItemGroup>
