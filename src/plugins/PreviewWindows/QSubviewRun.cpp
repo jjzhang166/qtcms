@@ -1,7 +1,8 @@
 #include "QSubviewRun.h"
 #include <QEventLoop>
 #include "IRecorderEx.h"
-#include "vld.h"#include <IDeviceAuth.h>
+#include "vld.h"
+#include <IDeviceAuth.h>
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
 int cbRecorderRData(QString evName,QVariantMap evMap,void*pUser);

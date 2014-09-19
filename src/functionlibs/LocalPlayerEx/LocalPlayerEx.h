@@ -74,7 +74,6 @@ public:
 		void		*puser;
 	}ProcInfoItem;
 
-	void setBaseTime(uint &baseTime);
 	void setPlayTime(uint &playtime);
 public slots:
 	void onStartPlayMgr(uint wndId);
@@ -95,7 +94,6 @@ private:
 	uint m_uiStartSec;
 	uint m_uiEndSec;
 	uint m_uiPlayTime;
-	uint m_uiLastPlayTime;
 	QMutex m_csRef;
 
 	QStringList m_eventList;

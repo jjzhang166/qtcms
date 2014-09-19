@@ -34,14 +34,13 @@ public:
 	static void pause(bool bIsPause);
 	static qint32 setVolume(uint uiPersent);
 	static void audioSwitch(bool bOpen);
-public slots:
-	void onSkipTime(uint seconds);
 protected:
 	void run();
 private:
 	qint32 initCbFuction();
 	void clearBuffer();
 	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
+	qint32 adjustTimeLine(uint uiStart);
 
 private:
 	QList<FrameData> m_quFrameBuffer;
@@ -51,7 +50,6 @@ private:
 	uint m_uiStartSec;
 	uint m_uiEndSec;
 	uint m_uiCurrentGMT;
-	uint m_uiSkipTime;
 	qint32 m_i32SpeedRate;
 	qint32 m_i32Width;
 	qint32 m_i32Height;

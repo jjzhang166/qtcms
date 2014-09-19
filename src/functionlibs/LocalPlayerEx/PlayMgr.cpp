@@ -21,7 +21,6 @@ PlayMgr::PlayMgr( void )
 	:m_uiStartSec(0),
 	m_uiEndSec(0),
 	m_uiCurrentGMT(0),
-	m_uiSkipTime(0),
 	m_i32SpeedRate(0),
 	m_i32Width(0),
 	m_i32Height(0),
@@ -145,13 +144,12 @@ void PlayMgr::stop()
 	m_i32Height = 0;
 	m_bIsSkiped = false;
 	m_bStop = true;
+	m_wcWait.wakeAll();//wake all if thread is sleep
 	if (m_bPause)
 	{
 		m_wcPause.wakeAll();
 		m_bPause = false;
 	}
-	//clear buffer
-// 	clearBuffer();
 	wait();
 }
 
@@ -162,10 +160,9 @@ void PlayMgr::run()
 
 	bool bFirstFrame = true;
 	bool bSkip = false;
+	uint uiLastGMT = 0;
 	uint uiLastPts = 0;
 	uint start = 0;
-	qint32 skipTime = 0;
-	qint32 timeOffset = 0;
 	qint64 i64Spend = 0;
 	m_uiCurrentGMT = m_uiStartSec;
 	PeriodTime per = m_filePeriod.value(m_i32FileStartPos);
@@ -195,62 +192,11 @@ void PlayMgr::run()
 		{
 			per = m_filePeriod.value(++m_i32FileStartPos);
 			uiLastPts = pFrameData->uiPts;
+			uiLastGMT = pFrameData->uiGentime;
 		}
 		start = per.start;
-		while (!m_bStop && m_i32SkipStartPos < m_skipTime.size() || m_skipTime.isEmpty())
-		{
-			timeOffset = m_uiCurrentGMT - start;
-// 			qDebug()<<"timeoff :"<<timeOffset;
-			if (timeOffset >= 0)
-			{
-				break;
-			}
-			else
-			{
-				int waitSec = 0;
-				if (m_skipTime.isEmpty())
-				{
-					waitSec = start - m_uiCurrentGMT;
-				}
-				else
-				{
-					if (m_skipTime[m_i32SkipStartPos].start > start)
-					{
-						waitSec = start - m_uiCurrentGMT;
-					}
-					else
-					{
-						waitSec = m_skipTime[m_i32SkipStartPos].start - m_uiCurrentGMT;
-					}
-				}
-// 				qDebug()<<"wait:"<<waitSec;
-				if (waitSec > 0 && !m_bStop)
-				{
-					m_mxWait.lock();
-					m_wcWait.wait(&m_mxWait, waitSec*1000);
-					m_mxWait.unlock();
-					m_uiCurrentGMT += waitSec;
-				}
-				else
-				{
-					if (!m_bIsSkiped)
-					{
-						bSkip = true;
-						m_bIsSkiped = true;
-					}
-					skipTime = m_skipTime[m_i32SkipStartPos].end - m_skipTime[m_i32SkipStartPos].start;
-					if (NULL != m_pcbTimeChg && NULL != m_pUser && bSkip && !m_bStop)
-					{
-						qDebug()<<"skip:"<<skipTime;
-						m_pcbTimeChg(QString("skipTime"), skipTime, m_pUser);
-					}
-					m_uiCurrentGMT += skipTime;
-					m_i32SkipStartPos++;
-				}
-			}
-		}
+		adjustTimeLine(start);
 
-		//decode audio frame
 		if (FT_Audio == pFrameData->uiType)
 		{
 			if (m_bIsAudioOpen && m_pAudioPlayer)
@@ -286,6 +232,7 @@ void PlayMgr::run()
 				return;
 			}
 			uiLastPts = pFrameData->uiPts;
+			uiLastGMT = pFrameData->uiGentime;
 			m_uiCurrentGMT = pFrameData->uiGentime;
 			m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);//decode
 			delete[] pFrameData->pBuffer;
@@ -296,9 +243,16 @@ void PlayMgr::run()
 			continue;
 		}
 		m_uiCurrentGMT = pFrameData->uiGentime;
-		if (!m_bStop && m_pcbTimeChg && m_pUser)
+		if (!m_bIsSkiped)
 		{
-			m_pcbTimeChg(QString("playingTime"), pFrameData->uiGentime, m_pUser);
+			bSkip = true;
+			m_bIsSkiped = true;
+		}
+		qint32 diff = m_uiCurrentGMT - uiLastGMT;
+		if (!m_bStop && diff > 0 && bSkip && m_pcbTimeChg && m_pUser)
+		{
+			m_pcbTimeChg(QString("playingTime"), m_uiCurrentGMT, m_pUser);
+			uiLastGMT = m_uiCurrentGMT;
 		}
 		
 		//keep play speed
@@ -417,11 +371,6 @@ PlayMgr * PlayMgr::getPlayMgrPointer( QWidget *pwnd )
 	return (m_pRenderWnd == pwnd) ? this : NULL;
 }
 
-void PlayMgr::onSkipTime( uint seconds )
-{
-	m_uiSkipTime = seconds;
-}
-
 qint32 PlayMgr::findStartPos( const QVector<PeriodTime> &vecPeriod )
 {
 	qint32 startPos = 0;
@@ -436,6 +385,73 @@ qint32 PlayMgr::findStartPos( const QVector<PeriodTime> &vecPeriod )
 		++it;
 	}
 	return startPos;
+}
+
+qint32 PlayMgr::adjustTimeLine( uint uiStart )
+{
+	/* comments means:
+	** |_____| skip time
+	** |XXXXX| wait time
+	** |FFFFF| file time
+	*/
+
+	if (!m_skipTime.isEmpty() && (m_i32SkipStartPos < 0 || m_i32SkipStartPos >= m_skipTime.size()))
+	{
+// 		qDebug()<<"skipStartPos: "<<m_i32SkipStartPos<<" is out of range";
+		return 1;
+	}
+	do 
+	{
+		//skip time table is not empty
+		if (!m_skipTime.isEmpty())
+		{
+			qint32 timeOffset = m_uiCurrentGMT - uiStart;
+// 			qDebug()<<"timeoffse: "<<timeOffset;
+			if (timeOffset >= 0)// |FFFFF|_____|XXXXX| or |FFFFF|XXXXX|_____|
+			{
+				break;
+			}
+			else
+			{
+				timeOffset = m_uiCurrentGMT - m_skipTime[m_i32SkipStartPos].start;
+				if (timeOffset < 0)// |XXXXX|_____|FFFFF| or |XXXXX|FFFFF|_____|
+				{
+					qint32 waitSec = qMin(m_skipTime[m_i32SkipStartPos].start, uiStart) - m_uiCurrentGMT;
+// 					qDebug()<<"waitSec: "<<waitSec;
+					m_mxWait.lock();
+					m_wcWait.wait(&m_mxWait, waitSec*1000);
+					m_mxWait.unlock();
+					m_uiCurrentGMT += waitSec;
+				}
+				else// |_____|XXXXX|FFFFF| or |_____|FFFFF|XXXXX|
+				{
+					m_uiCurrentGMT += m_skipTime[m_i32SkipStartPos].end - m_uiCurrentGMT;
+					m_i32SkipStartPos++;
+					if (m_i32SkipStartPos >= m_skipTime.size())
+					{
+						//skip pos is out of range
+						break;
+					}
+				}
+			}
+		}
+		else//skip time table is empty
+		{
+			qint32 timeOffset = m_uiCurrentGMT - uiStart;
+			if (timeOffset >= 0)//|FFFFF|XXXXX|
+			{
+				break;
+			}
+			else //|XXXXX|FFFFF|
+			{
+				m_mxWait.lock();
+				m_wcWait.wait(&m_mxWait, (0 - timeOffset)*1000);
+				m_mxWait.unlock();
+				m_uiCurrentGMT += 0 - timeOffset;
+			}
+		}
+	} while (!m_bStop);
+	return 0;
 }
 
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)

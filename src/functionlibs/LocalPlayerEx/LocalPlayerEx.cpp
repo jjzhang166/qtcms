@@ -13,7 +13,6 @@ LocalPlayerEx::LocalPlayerEx()
 	m_uiStartSec(0),
 	m_uiEndSec(0),
 	m_uiPlayTime(0),
-	m_uiLastPlayTime(0),
 	m_pCurAudioWnd(NULL),
 	m_pFileData(NULL)
 {
@@ -398,7 +397,6 @@ int LocalPlayerEx::GroupStop()
 	m_uiStartSec = 0;
 	m_uiEndSec = 0;
 	m_uiPlayTime = 0;
-	m_uiLastPlayTime = 0;
 	return 0;
 }
 
@@ -458,12 +456,11 @@ int LocalPlayerEx::GroupSpeedNormal()
 
 QDateTime LocalPlayerEx::GetNowPlayedTime()
 {
-	QDateTime date = QDateTime::fromTime_t(m_uiPlayTime);
-	qDebug()<<__FUNCTION__<<__LINE__<<date.toString("hh:mm:ss");
-	return QDateTime::fromTime_t(m_uiPlayTime);
-
-// 	QDateTime datetime(QDate::currentDate(), QTime(0, 0, 0));
-// 	return datetime;
+	QDateTime datetime = QDateTime::fromTime_t(m_uiStartSec);
+	qint32 diff = m_uiPlayTime - m_uiStartSec;
+	QTime spend(diff/3600, diff%3600/60, diff%60);
+	datetime.setTime(spend);
+	return datetime;
 }
 
 bool LocalPlayerEx::GroupEnableAudio( bool bEnable )
@@ -589,18 +586,9 @@ PlayMgr* LocalPlayerEx::getPlayMgrPointer( QWidget* pwnd )
 	return NULL;
 }
 
-void LocalPlayerEx::setBaseTime( uint &baseTime )
-{
-	m_uiPlayTime += baseTime;
-}
-
 void LocalPlayerEx::setPlayTime(uint &playtime)
 {
-	if (m_uiLastPlayTime < playtime)
-	{
-		m_uiPlayTime += playtime - m_uiLastPlayTime;
-	}
-	m_uiLastPlayTime = playtime;
+	m_uiPlayTime = playtime;
 }
 
 void LocalPlayerEx::onStartPlayMgr( uint wndId )
@@ -729,10 +717,6 @@ qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& fil
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)
 {
-	if (pUser && "skipTime" == evName)
-	{
-		((LocalPlayerEx*)pUser)->setBaseTime(playTime);
-	}
 	if (pUser && "playingTime" == evName)
 	{
 		((LocalPlayerEx*)pUser)->setPlayTime(playTime);
