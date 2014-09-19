@@ -121,6 +121,7 @@ private:
 	bool createRecordDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);
 	bool writeTodisk();
 	void setChannelNumInFileHead();
+	void setFileStartTime();
 	int writeToBuffer(int nChannel,QString sFilePath);//返回值（按位）：00：buffer未满&&没写入buffer；01：buffer未满&&写入buffer；10：buffer已满&&未写入buffer；11：buffer已满&&写入buffer
 private:
 	QMap<int ,BufferQueue *> m_tBufferQueueMap;

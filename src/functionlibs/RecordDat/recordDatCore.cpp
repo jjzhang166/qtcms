@@ -553,6 +553,7 @@ void recordDatCore::run()
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
 			setChannelNumInFileHead();
+			setFileStartTime();
 			m_bIsBlock=false;
 			bool bFlags=false;
 			if (m_tToDiskType==recordDatToDiskType_outOfTime||m_tToDiskType==recordDatToDiskType_bufferFull)
@@ -1348,6 +1349,30 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				if (bFindIFrame)
 				{
 					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+
+					RecBufferNode *pRecBufferNodeTemp=NULL;
+					if (!pBufferQueue->isEmpty())
+					{
+						pRecBufferNodeTemp=pBufferQueue->front();
+						if (pRecBufferNodeTemp!=NULL)
+						{
+							tagFrameHead *pFrameHead=NULL;
+							pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+							if (pFrameHead!=NULL)
+							{
+								uiStartTime=pFrameHead->uiGentime;
+							}else{
+								//do nothing
+							}
+							pRecBufferNodeTemp->release();
+							pFrameHead=NULL;
+						}else{
+							//do nothing
+						}
+					}else{
+						//do nothing
+					}
+
 					quint64 uiEndTime=uiStartTime;
 					//step1:建立录像数据库条目
 					//step2:建立搜索数据库条目
@@ -1467,6 +1492,30 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				}else{
 					//create new record item
 					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+
+					RecBufferNode *pRecBufferNodeTemp=NULL;
+					if (!pBufferQueue->isEmpty())
+					{
+						pRecBufferNodeTemp=pBufferQueue->front();
+						if (pRecBufferNodeTemp!=NULL)
+						{
+							tagFrameHead *pFrameHead=NULL;
+							pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+							if (pFrameHead!=NULL)
+							{
+								uiStartTime=pFrameHead->uiGentime;
+							}else{
+								//do nothing
+							}
+							pRecBufferNodeTemp->release();
+							pFrameHead=NULL;
+						}else{
+							//do nothing
+						}
+					}else{
+						//do nothing
+					}
+
 					quint64 uiEndTime=uiStartTime;
 					QString sRecordDisk=sFilePath.left(1);
 					if (m_tRecordDatabaseMaxId.contains(sRecordDisk))
@@ -1535,6 +1584,30 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				}
 				//创建搜索条目
 				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+
+				RecBufferNode *pRecBufferNodeTemp=NULL;
+				if (!pBufferQueue->isEmpty())
+				{
+					pRecBufferNodeTemp=pBufferQueue->front();
+					if (pRecBufferNodeTemp!=NULL)
+					{
+						tagFrameHead *pFrameHead=NULL;
+						pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+						if (pFrameHead!=NULL)
+						{
+							uiStartTime=pFrameHead->uiGentime;
+						}else{
+							//do nothing
+						}
+						pRecBufferNodeTemp->release();
+						pFrameHead=NULL;
+					}else{
+						//do nothing
+					}
+				}else{
+					//do nothing
+				}
+
 				quint64 uiEndTime=uiStartTime;
 				QString sSearchDatabaseDisk;
 				sSearchDatabaseDisk=sFilePath.left(1);
@@ -1785,6 +1858,7 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 									abort();
 								}
 								pFrameHeadBuffer->uiType=pFrameHead->uiType;
+								pFileHead->uiEnd=pFrameHead->uiGentime;
 								memcpy(&pFrameHeadBuffer->pBuffer,&pFrameHead->pBuffer,pFrameHead->uiLength);
 
 								//set uiPreIFrame
@@ -1934,6 +2008,25 @@ void recordDatCore::reloadSystemDatabase()
 	m_tBufferQueueMapLock.lock();
 	m_bReloadSystemDatabase=true;
 	m_tBufferQueueMapLock.unlock();
+}
+
+void recordDatCore::setFileStartTime()
+{
+	tagFileHead *pFileHead=(tagFileHead*)(m_pDataBuffer);
+	quint64 uiCurrent=sizeof(tagFileHead);
+	if (uiCurrent<pFileHead->uiIndex)
+	{
+		tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)m_pDataBuffer+uiCurrent);
+		pFileHead->uiStart=pFileFrameHead->tFrameHead.uiGentime;
+		if (pFileHead->uiEnd==0)
+		{
+			pFileHead->uiEnd=pFileHead->uiStart;
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
 }
 
 

@@ -2369,16 +2369,19 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 			//É¾³ý record ±íÖÐ¼ÇÂ¼
 			if (tRecordIdList.size()>0)
 			{
-				QString sReoveRecordIdList;
-				for(int i=0;i<tRecordIdList.size();i++){
-					if (i==0)
-					{
-						sReoveRecordIdList=QString::number(tRecordIdList.value(i));
-					}else{
-						sReoveRecordIdList=sReoveRecordIdList+","+QString::number(tRecordIdList.value(i));
-					}
-				}
-				sCommand=QString("delete from record where id in ")+"("+sReoveRecordIdList+")";
+				//QString sReoveRecordIdList;
+				//for(int i=0;i<tRecordIdList.size();i++){
+				//	if (i==0)
+				//	{
+				//		sReoveRecordIdList=QString::number(tRecordIdList.value(i));
+				//	}else{
+				//		sReoveRecordIdList=sReoveRecordIdList+","+QString::number(tRecordIdList.value(i));
+				//	}
+				//}
+				sCommand.clear();
+				sCommand=QString("delete from record where sFilePath='%1'").arg(sFilePath);
+				/*sCommand=QString("delete from record where id in ")+"("+sReoveRecordIdList+")";*/
+				qDebug()<<__FUNCTION__<<__LINE__<<"step in";
 				if (_query.exec(sCommand))
 				{
 					//keep going
@@ -2386,6 +2389,7 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
 					abort();
 				}
+				qDebug()<<__FUNCTION__<<__LINE__<<"step out";
 			}else{
 				//do nothing
 			}
@@ -2724,7 +2728,7 @@ bool OperationDatabase::checkFileIsFull( QString sFilePath )
 				{
 					if (pFileHead->uiIndex<BUFFERSIZE*1024*1024-1024*1024)
 					{
-						return false;
+						return true;
 					}else{
 						return true;
 					}
