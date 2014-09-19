@@ -2,7 +2,6 @@
 #define CHECKDATFILE_H
 
 #include <QtGui/QMainWindow>
-#include "ui_checkdatfile.h"
 #include "checkdatfile_global.h"
 #include <QWidget>
 #include <QPushButton>
