@@ -114,10 +114,11 @@ var oPreView,oDiv,
 			}
 
 		})
-		/*//云台控制速度
+		//云台控制速度
 		$('#PTZ_control .ptz_speed span').each(function(index){
 			$(this).click(function(){
 				$('#PTZ_control .ptz_speed span').removeClass('act').slice(0,index+1).addClass('act');
+				writeActionLog(_T('PTZ_speed')+(index+1));
 			})
 		})
 
@@ -128,7 +129,7 @@ var oPreView,oDiv,
 				PTZcontrol($(this).attr('PTZ',1).index());
 			},
 			mouseup:function(){
-				//writeActionLog('停止PTZ');
+				writeActionLog(_T('stop_PTZ'));
 				oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
 			},
 			mouseleave:function(){
@@ -141,7 +142,7 @@ var oPreView,oDiv,
 		$('#Dire_Control div:last').on({
 			mouseup:function(){
 				if($(this).attr('PTZ')){
-					//writeActionLog('停止自动PTZ');
+				 writeActionLog('停止自动PTZ');
 					$(this).removeAttr('PTZ');
 					oPreView.ClosePTZ($(this).index());
 				}else{
@@ -150,7 +151,7 @@ var oPreView,oDiv,
 					PTZcontrol($(this).attr('PTZ',1).index());		
 				}
 			}
-		})*/
+		})
 			
 		bFullScreen = oCommonLibrary.getAutoFullscreen();
 		
@@ -574,12 +575,19 @@ var oPreView,oDiv,
 		}
 		writeActionLog(str,c);
 	}
-
-	/*function PTZcontrol(code){
-		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
+    //ptz云台控制函数
+	function PTZcontrol(code){
+		if(!oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
+			var a =['up','down','left','right','auto_PTZ','Near_focus','Far_focus','Zoom_-','Zoom_+','Iris_On','Iris_Off'];
+		    str = _T('operating_ptz_operation_is') + _T(a[code]);
+			writeActionLog(str);
+			
+		}else{
 			alert(lang.PTZ_operation_failed);
-		};
-	}*/
+			}
+			   
+		
+	}
 	function initOxcDevListStatus(){  //  初始化控件,设备列表,以及之间的状态
 		//区域列表;
 		areaList2Ui();
