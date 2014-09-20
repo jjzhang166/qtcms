@@ -106,6 +106,9 @@ int main(int argc, char *argv[])
 	QTextStream ts(&outFile);  
 	QString txt="\r\n\r\n=====start=====\r\n\r\n";
 	ts << txt << endl; 
+	QString sTemp = QCoreApplication::applicationDirPath();
+	QString sExternLib(sTemp + "/exlibs");
+	QApplication::addLibraryPath(sExternLib);
 	checkDatFile w;
 	w.setText(&g_pTest);
 	w.show();

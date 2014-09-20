@@ -341,7 +341,7 @@ bool checkDatFile::createRecordDatabase( QString sDatabasePath )
 				return false;
 			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase should not be null";
+			qDebug()<<__FUNCTION__<<__LINE__<<sDatabasePath<<"pDatabase should not be null";
 			abort();
 			return false;
 		}
