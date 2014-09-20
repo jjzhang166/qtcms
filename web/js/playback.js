@@ -6,8 +6,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	bNoResize=1,   //当前窗口是否在改变
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
-	localSearchWindNum=0; //要搜索的本地回放文件的设备
-
+	localSearchWindNum=0,//要搜索的本地回放文件的设备
+    initleft;
 	$(function(){
 
 		oBottom = $('#operating');
@@ -191,12 +191,14 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				/*if(speed){
 					GroupSpeedNormal();
 				}else{*/
+				    dragStartMove();
 					playAction('GroupContinue');
-					dragStartMove();
+					
 				//}
 			}else{
-				playAction('GroupPause')
 				dragStopMove();
+				playAction('GroupPause')
+				
 			}
 		}else{
 			playVideo();		
@@ -213,7 +215,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			begin =$('#now_time').attr('begin') ,//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
-
+          
 			begin = begin >= '23:59:59' ? '23:59:59' : begin;
 
 			if(begin>=maxFileEndTime)return;
@@ -243,7 +245,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						.end().end().next('ul').find('span.channel');
 
 		//console.log(bool+'//开始时间:'+begin+'//结束时间'+end+'//类型'+type);
-
+        
 		if(bool){ //本地回访
 			$("#channelvideo").find('input:checked').each(function(){
 
@@ -251,8 +253,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				//console.log(wind);
 				if(wind){
 					var status = oPlaybackLocl.AddFileIntoPlayGroupEx(wind,date,begin.split(' ')[1],maxFileEndTime,type);
+					
 					if(status !=0){
-						//console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
+						console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
 						alert(lang.wind+':'+(parseInt(wind,10)+1)+lang.play_Failed);
 					}
 				}
@@ -263,12 +266,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 
 		//console.log(getAudioObj().GetCurrentState());
-
+        initleft = parseInt($('div.play_time').offset().left);//修复了按暂停-->播放时出现的时间轴跳跃情况
 		dragStartMove();
 	}
 	function dragStartMove(){
 
 		if(maxFileEndTime<minFileStartTime) return;
+		
 
 		var channelvideo = $('#channelvideo'),
 
@@ -286,19 +290,20 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			//FileEndTime = time2Sec(maxFileEndTime)*p+min < max ? time2Sec(maxFileEndTime)*p+min : max,
 
-			initleft = parseInt(oDrag.offset().left);
+			//initleft = parseInt(oDrag.offset().left);
 
 			oNow = $('#now_time');
 
 			nowTime = oNow.attr('begin');
-
+			
+          
 		drag_timer = setInterval(function(){
 
 			var nowPlayd = parseInt(oPlay.GetNowPlayedTime()),
-				
+
 				left = initleft+p*nowPlayd;
 			
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//当前已播放时间:'+nowPlayd+'秒//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits*1/nowSpeed+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//时间轴的位置：'+left+'//当前已播放时间:'+nowPlayd+'//当前页面上的时间：'+$('#now_time').html()+'秒//maxFileEndTime:'+minFileStartTime+' '+maxFileEndTime+'//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 
 			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
 				dragStopMove();*/
@@ -306,8 +311,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oDrag.css('left',left);
 
 			asyncPlayTime2UI(nowTime,nowPlayd,oNow);
-
+			
+            //修复了视频播放结束后，setInterval()依然运行的情况，包括视频播放结束好播放/暂停按钮的恢复
+			if( oNow.html() >= maxFileEndTime ){ 
+			     groupStop();
+				}
+				
 		},SynTimeUnits);
+		
+		
 	}
 
 	function dragStopMove(){
@@ -565,16 +577,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			oFileUIwarp = channelvideo.find('tr'),
 
-			oDev = $(oDev),
+			oDev = $(oDev);
 		/*console.log(oDev);
 		console.log('---------描绘接受到的文件------------------------');
-		console.log(filedata)*/	
-		//console.time('---------合并接受到的文件------------------------');
-			File = Deleteduplicate(filedata),
+		console.log(filedata)	
+		console.time('---------合并接受到的文件------------------------');*/
+			var File = Deleteduplicate(filedata);
 		/*console.timeEnd('---------合并接受到的文件------------------------');
-		console.time('--接收到合并的文件回调描绘时间段---'+File.length);*/
-
-			min = $('table.table .no_border').width(),
+		console.time('--接收到合并的文件回调描绘时间段---'+File.length);
+*/
+			var min = $('table.table .no_border').width(),
 
 			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
 
