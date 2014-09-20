@@ -129,7 +129,7 @@ var oPreView,oDiv,
 				PTZcontrol($(this).attr('PTZ',1).index());
 			},
 			mouseup:function(){
-				writeActionLog(_T('stop_PTZ'));
+				//writeActionLog(_T('stop_PTZ'));
 				oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
 			},
 			mouseleave:function(){
@@ -142,7 +142,7 @@ var oPreView,oDiv,
 		$('#Dire_Control div:last').on({
 			mouseup:function(){
 				if($(this).attr('PTZ')){
-				 writeActionLog('停止自动PTZ');
+				// writeActionLog('停止自动PTZ');
 					$(this).removeAttr('PTZ');
 					oPreView.ClosePTZ($(this).index());
 				}else{
@@ -576,16 +576,23 @@ var oPreView,oDiv,
 		writeActionLog(str,c);
 	}
     //ptz云台控制函数
+	  var a =['up','down','left','right','auto_PTZ','Near_focus','Far_focus','Zoom_-','Zoom_+','Iris_On','Iris_Off'];
 	function PTZcontrol(code){
+		var c;
+	 if(oPreView.GetWindowInfo(oPreView.GetCurrentWnd()).currentState == 0 ){
 		if(!oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
-			var a =['up','down','left','right','auto_PTZ','Near_focus','Far_focus','Zoom_-','Zoom_+','Iris_On','Iris_Off'];
+			
 		    str = _T('operating_ptz_operation_is') + _T(a[code]);
-			writeActionLog(str);
+			c='';
 			
 		}else{
 			alert(lang.PTZ_operation_failed);
 			}
-			   
+	}else{
+			str=_T('window_no_Preview');
+			c = errorcolor;
+			}
+		writeActionLog(str,c);	   
 		
 	}
 	function initOxcDevListStatus(){  //  初始化控件,设备列表,以及之间的状态
