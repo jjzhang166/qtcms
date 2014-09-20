@@ -1193,7 +1193,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					tStreamInfo.insert("frametype", pLiveStream->cType);
 					tStreamInfo.insert("samplerate", pLiveStreamAudio->uiSampleRate);
 					tStreamInfo.insert("samplewidth", pLiveStreamAudio->uiSampleWidth);
-					tStreamInfo.insert("audiochannel", pLiveStream->cChannel);
+					tStreamInfo.insert("audiochannel", 1);
 					tStreamInfo.insert("acodec", pLiveStreamAudio->cEnCode);
 					tStreamInfo.insert("gentime", pLiveStreamAudio->uiGtime);
 					m_nSecondPosition=__LINE__;

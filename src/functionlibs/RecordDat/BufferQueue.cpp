@@ -107,7 +107,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 			tagAudioConfigFrame *pAudioConfigFrame=(tagAudioConfigFrame*)((char*)pFrameHead+sizeof(tagFrameHead)+pFrameHead->uiLength-sizeof(char*));
 			pAudioConfigFrame->uiSamplebit=tFrameInfo["samplewidth"].toInt();
 			pAudioConfigFrame->uiSamplerate=tFrameInfo["samplerate"].toInt();
-			pAudioConfigFrame->uiChannels=tFrameInfo["channel"].toInt();
+			pAudioConfigFrame->uiChannels=tFrameInfo["audiochannel"].toInt();
 		}else{
 			//do nothing
 		}

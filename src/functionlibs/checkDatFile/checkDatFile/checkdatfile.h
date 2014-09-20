@@ -44,6 +44,7 @@ private:
 	void clearDatFileInfo();
 	bool saveItemToDatabase(QString sFilePath);
 	bool builtSearch_recordItem(QString sDiskTtem);
+	void printfFileData(QString sFilePath);
 private:
 	QVBoxLayout *m_pLayout;
 	QPushButton *m_pPushButton;

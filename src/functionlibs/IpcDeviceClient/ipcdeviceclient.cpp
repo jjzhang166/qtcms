@@ -8,7 +8,7 @@
 
 int mdsignal_proc(QString sEvent,QVariantMap param,void * pUser)
 {
-	qDebug() << "Md" << param["signal"];
+	/*qDebug() << "Md" << param["signal"];*/
 	return 0;
 }
 

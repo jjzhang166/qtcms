@@ -357,6 +357,7 @@ void checkDatFile::analysisDatFile( QString sFilePath )
 	if (isJUANRecordDatFile(sFilePath))
 	{
 		//done
+		printfFileData(sFilePath);
 	}else{
 		QString sKey="nDamage";
 		int nFlags=1;
@@ -498,26 +499,32 @@ bool checkDatFile::testPerFrame( tagFileHead *pFileHead ,QString sFilePath)
 			m_tFileHeadInfo.tIFrameIndex.uiFirstIFrame[i]=pFileHead->tIFrameIndex.uiFirstIFrame[i];
 		}
 		//step1:test uiStartTime and uiEndTime
-		quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
-		if (m_tFileHeadInfo.uiStart>uiCurrentTime||m_tFileHeadInfo.uiEnd>uiCurrentTime||m_tFileHeadInfo.uiStart>m_tFileHeadInfo.uiEnd||m_tFileHeadInfo.uiStart<=0||m_tFileHeadInfo.uiEnd<=0)
+		unsigned int uiCurrentIndex=sizeof(tagFileHead);
+		if (uiCurrentIndex<pFileHead->uiIndex)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"uiCurrentTime;"<<uiCurrentTime<<"uiStartTime:"<<m_tFileHeadInfo.uiStart<<"uiEndTime"<<m_tFileHeadInfo.uiEnd;
-			abort();
-		}else{
-			//keep going
-			QString sStartTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiStart).toString("dd.MM.yyyy");
-			QString sEndTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiEnd).toString("dd.MM.yyyy");
-			QString sCmpTime="01.01.2014";
-			if (sEndTime<sCmpTime||sStartTime<sCmpTime)
+			quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
+			if (m_tFileHeadInfo.uiStart>uiCurrentTime||m_tFileHeadInfo.uiEnd>uiCurrentTime||m_tFileHeadInfo.uiStart>m_tFileHeadInfo.uiEnd||m_tFileHeadInfo.uiStart<=0||m_tFileHeadInfo.uiEnd<=0)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"uiStartTime"<<sStartTime<<"uiEndTime"<<sEndTime;
+				qDebug()<<__FUNCTION__<<__LINE__<<"uiCurrentTime;"<<uiCurrentTime<<"uiStartTime:"<<m_tFileHeadInfo.uiStart<<"uiEndTime"<<m_tFileHeadInfo.uiEnd;
 				abort();
 			}else{
 				//keep going
+				QString sStartTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiStart).toString("dd.MM.yyyy");
+				QString sEndTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiEnd).toString("dd.MM.yyyy");
+				QString sCmpTime="01.01.2014";
+				if (sEndTime<sCmpTime||sStartTime<sCmpTime)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"uiStartTime"<<sStartTime<<"uiEndTime"<<sEndTime;
+					abort();
+				}else{
+					//keep going
+				}
 			}
+		}else{
+			//do nothing
 		}
 		//step 2: test frame
-		unsigned int uiCurrentIndex=sizeof(tagFileHead);
+		
 		unsigned int uiFileSize=DATFILESIZE*1024*1024;
 		if (pFileHead->uiIndex>=uiFileSize)
 		{
@@ -526,6 +533,7 @@ bool checkDatFile::testPerFrame( tagFileHead *pFileHead ,QString sFilePath)
 		}else{
 			//keep going
 		}
+
 		while(uiCurrentIndex<uiFileSize&&uiCurrentIndex<pFileHead->uiIndex){
 			tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
 			//step 2.1:检测 帧头
@@ -926,4 +934,30 @@ bool checkDatFile::builtSearch_recordItem( QString sDiskTtem )
 void checkDatFile::setText( QTextEdit **tText )
 {
 	*tText=m_pText;
+}
+
+void checkDatFile::printfFileData(QString sFilePath)
+{
+	qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<":detection report start";
+	//开始时间，结束时间
+	//录像的通道
+	//每个通道的录像条目
+	QString sFileStartTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiStart).toString("dd.MM.yyyy:hh:mm:ss");
+	QString sFileEndTime=QDateTime::fromTime_t(m_tFileHeadInfo.uiEnd).toString("dd.MM.yyyy:hh:mm:ss");
+	qDebug()<<__FUNCTION__<<__LINE__<<"file start time:"<<sFileStartTime;
+	qDebug()<<__FUNCTION__<<__LINE__<<"file end time:"<<sFileEndTime;
+	QMap<int,tagWndRecordItemInfo>::const_iterator tItem=m_tWndRecordItemInfo.constBegin();
+	while(tItem!=m_tWndRecordItemInfo.constEnd()){
+		qDebug()<<__FUNCTION__<<__LINE__<<"wnd id:"<<tItem.key();
+		tagWndRecordItemInfo tWndRecordItemInfo=tItem.value();
+		for (int i=0;i<tWndRecordItemInfo.tRecordItemList.size();i++)
+		{
+			tagRecordItemInfo tRecordItemInfo=tWndRecordItemInfo.tRecordItemList.value(i);
+			QString sStartTime=QDateTime::fromTime_t(tRecordItemInfo.uiStartTime).toString("hh:mm:ss");
+			QString sEndTime=QDateTime::fromTime_t(tRecordItemInfo.uiEndTime).toString("hh:mm:ss");
+			qDebug()<<__FUNCTION__<<__LINE__<<"wnd id:"<<tItem.key()<<"uiRecordType"<<tRecordItemInfo.uiRecordType<<"startTime:"<<sStartTime<<"endTime:"<<sEndTime;
+		}
+		++tItem;
+	}
+	qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<":detection report end";
 }
