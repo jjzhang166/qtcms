@@ -30,6 +30,7 @@ public:
 	void setText(QTextEdit **tText);
 public slots:
 	void slCheckFile();
+	void slDateTime();
 private:
 	QString getRecordDisk();//D,E,F;
 	void checkDiskItem(QString sDiskTtem);
@@ -45,9 +46,13 @@ private:
 	bool saveItemToDatabase(QString sFilePath);
 	bool builtSearch_recordItem(QString sDiskTtem);
 	void printfFileData(QString sFilePath);
+	void changeDateTime(QString sDiskItem);
+	bool createDateTime(QString sDiskItem);
+	bool insertDateTime(QString sDatabasePath,QList<tagSearch_recordItem> tSearchRecordItem,QList<tagRecordItemInfo> tRecordItemInfo);
 private:
 	QVBoxLayout *m_pLayout;
 	QPushButton *m_pPushButton;
+	QPushButton *m_pDateTimeButton;
 	QTextEdit *m_pText;
 	QString m_sDatabasePath;
 	QByteArray m_tFileData;
@@ -55,6 +60,7 @@ private:
 	tagFileHead m_tFileHeadInfo;
 	QList<int> m_tRecordType;
 	QList<tagSearch_recordItem> m_tSearchRecordItem;
+	QList<tagRecordItemInfo> m_tRecordItemInfo;
 };
 
 #endif // CHECKDATFILE_H

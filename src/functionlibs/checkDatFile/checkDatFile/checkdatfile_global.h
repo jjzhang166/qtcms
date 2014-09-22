@@ -22,9 +22,11 @@ typedef struct __tagFileHead{
 	tagIFrameIndex tIFrameIndex;
 }tagFileHead;
 typedef struct __tagRecordItemInfo{
+	int nWndId;
 	unsigned int uiRecordType;
 	quint64 uiStartTime;
 	quint64 uiEndTime;
+	QString sFilePath;
 }tagRecordItemInfo;
 
 typedef struct __tagWndRecordItemInfo{

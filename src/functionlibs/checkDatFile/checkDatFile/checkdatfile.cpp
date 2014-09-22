@@ -25,6 +25,8 @@ QSqlDatabase *initMgrDataBase(QString sDatabaseName,quintptr *nThis){
 		tDataBaseInfo.nCount=1;
 		tDataBaseInfo.tThis.append(nThis);
 
+		QDateTime tCurrentTime=QDateTime::currentDateTime();
+		QString sDatabaseId=QString::number(tCurrentTime.toTime_t());
 		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseName);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);
@@ -83,11 +85,15 @@ checkDatFile::checkDatFile(QWidget *parent):m_pPushButton(NULL),
 {
 	m_pLayout=new QVBoxLayout(this);
 	m_pPushButton=new QPushButton;
+	m_pDateTimeButton=new QPushButton;
 	m_pText=new QTextEdit;
 	m_pLayout->addWidget(m_pPushButton);
+	m_pLayout->addWidget(m_pDateTimeButton);
 	m_pLayout->addWidget(m_pText);
 	connect(m_pPushButton,SIGNAL(pressed()),this,SLOT(slCheckFile()));
+	connect(m_pDateTimeButton,SIGNAL(pressed()),this,SLOT(slDateTime()));
 	m_pPushButton->setText(tr("checkDatFile"));
+	m_pDateTimeButton->setText(tr("dateTime"));
 	m_tRecordType.append(MOTIONRECORD);
 	m_tRecordType.append(MANUALRECORD);
 	m_tRecordType.append(TIMERECORD);
@@ -960,4 +966,240 @@ void checkDatFile::printfFileData(QString sFilePath)
 		++tItem;
 	}
 	qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<":detection report end";
+}
+
+void checkDatFile::slDateTime()
+{
+	deInitMgrDataBase((quintptr*)this);
+	QString sAllDisk=getRecordDisk();
+	QStringList tDiskLisk=sAllDisk.split(",");
+	foreach(QString sDiskItem,tDiskLisk){
+		changeDateTime(sDiskItem);
+	}
+}
+
+void checkDatFile::changeDateTime( QString sDiskItem )
+{
+	QFile tDatabaseFile;
+	QString sDatabasseDir=sDiskItem+":/recEx/record.db";
+	tDatabaseFile.setFileName(sDatabasseDir);
+	if (tDatabaseFile.exists())
+	{
+		if (createDateTime(sDiskItem))
+		{
+			QSqlDatabase *pDatabase=NULL;
+			pDatabase=initMgrDataBase(sDatabasseDir,(quintptr*)this);
+			if (pDatabase!=NULL)
+			{
+				QSqlQuery _query(*pDatabase);
+				QString sCommand=QString("select nWndId,nRecordType,nStartTime,nEndTime from search_record;");
+				if (_query.exec(sCommand))
+				{
+					m_tSearchRecordItem.clear();
+					while(_query.next()){
+						tagSearch_recordItem tSearch_recordItem;
+						tSearch_recordItem.uiWnd=_query.value(0).toInt();
+						tSearch_recordItem.uiRecordType=_query.value(1).toInt();
+						tSearch_recordItem.uiStartTime=_query.value(2).toUInt();
+						tSearch_recordItem.uiEndTime=_query.value(3).toUInt();
+						m_tSearchRecordItem.append(tSearch_recordItem);
+					}
+					sCommand.clear();
+					sCommand=QString("select nWndId,nRecordType,nStartTime,nEndTime,sFilePath from record");
+					if (_query.exec(sCommand))
+					{
+						m_tRecordItemInfo.clear();
+						while(_query.next()){
+							tagRecordItemInfo tRecordItem;
+							tRecordItem.nWndId=_query.value(0).toInt();
+							tRecordItem.uiRecordType=_query.value(1).toInt();
+							tRecordItem.uiStartTime=_query.value(2).toUInt();
+							tRecordItem.uiEndTime=_query.value(3).toUInt();
+							tRecordItem.sFilePath=_query.value(4).toString();
+							m_tRecordItemInfo.append(tRecordItem);
+						}
+						if (insertDateTime(sDiskItem,m_tSearchRecordItem,m_tRecordItemInfo))
+						{
+							return ;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"insertDateTime fail";
+							abort();
+						}
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+						abort();
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+					abort();
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase==null";
+				abort();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"createDateTime fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<sDatabasseDir<<"do no exist";
+	}
+}
+
+bool checkDatFile::createDateTime( QString sDiskItem )
+{
+	QString sDatabasePath=sDiskItem+":/recEx/record_dateTime.db";
+	QFile tDateTimeFile;
+	tDateTimeFile.setFileName(sDatabasePath);
+	if (tDateTimeFile.exists())
+	{
+		return true;
+	}else{
+		QFileInfo tFileInfo(tDateTimeFile);
+		QString sDirPath=tFileInfo.absolutePath();
+		QDir tDir;
+		if (!tDir.exists(sDirPath))
+		{
+			if (tDir.mkpath(sDirPath))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"create dirpath fail:"<<sDirPath;
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+		if (tDateTimeFile.open(QIODevice::ReadWrite))
+		{
+			tDateTimeFile.close();
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"create file fail:"<<sDatabasePath;
+			abort();
+		}
+		QSqlDatabase *pDatabase=NULL;
+		pDatabase=initMgrDataBase(sDatabasePath,(quintptr*)this);
+		if (NULL!=pDatabase)
+		{
+			QSqlQuery _query(*pDatabase);
+			QString sCommand="create table RecordFileStatus(";
+			sCommand+="id integer primary key autoincrement,";
+			sCommand+="sFilePath char(64),";
+			sCommand+="nLock integer,";
+			sCommand+="nDamage integer,";
+			sCommand+="nInUse integer,";
+			sCommand+="nFileNum integer)";
+			//create table RecordFileStatus
+			if (_query.exec(sCommand))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+				abort();
+			}
+			//create table record
+			sCommand.clear();
+			sCommand+="create table record(";
+			sCommand+="id integer primary key autoincrement,";
+			sCommand+="nWndId integer,";
+			sCommand+="nRecordType integer,";
+			sCommand+="nStartTime  char(64),";
+			sCommand+="nEndTime  char(64),";
+			sCommand+="nStartDate  char(64),";
+			sCommand+="nEndDate  char(64),";
+			sCommand+="sFilePath char(64))";
+			if (_query.exec(sCommand))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+				abort();
+			}
+			//create table search_record
+			sCommand.clear();
+			sCommand+="create table search_record(";
+			sCommand+="id integer primary key autoincrement,";
+			sCommand+="nWndId integer,";
+			sCommand+="nRecordType  integer,";
+			sCommand+="nStartTime  char(64),";
+			sCommand+="nEndTime  char(64),";
+			sCommand+="nStartDate  char(64),";
+			sCommand+="nEndDate  char(64))";
+			if (_query.exec(sCommand))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
+				abort();
+				return false;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<sDatabasePath<<"pDatabase should not be null";
+			abort();
+			return false;
+		}
+	}
+}
+
+bool checkDatFile::insertDateTime( QString sDatabasePath,QList<tagSearch_recordItem> tSearchRecordItem,QList<tagRecordItemInfo> tRecordItemInfo )
+{
+	QString sPath=sDatabasePath+":/recEx/record_dateTime.db";
+	QSqlDatabase *pDatabase=NULL;
+	pDatabase=initMgrDataBase(sPath,(quintptr*)this);
+	if (NULL!=pDatabase)
+	{
+		QSqlQuery _query(*pDatabase);
+		QString sCommand;
+		sCommand=QString("delete from search_record");
+		if (_query.exec(sCommand))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+			abort();
+		}
+		for (int i=0;i<tSearchRecordItem.size();i++)
+		{
+			tagSearch_recordItem tSearchItem=tSearchRecordItem.value(i);
+			QString sStartTime=QDateTime::fromTime_t(tSearchItem.uiStartTime).toString("hh:mm:ss");
+			QString sEndTime=QDateTime::fromTime_t(tSearchItem.uiEndTime).toString("hh:mm:ss");
+			QString sStartDate=QDateTime::fromTime_t(tSearchItem.uiStartTime).toString("dd.MM.yyyy");
+			QString sEndDate=QDateTime::fromTime_t(tSearchItem.uiEndTime).toString("dd.MM.yyyy");
+			sCommand=QString("insert into search_record(nWndId,nRecordType,nStartTime,nEndTime,nStartDate,nEndDate) values(%1,%2,'%3','%4','%5','%6')").arg(tSearchItem.uiWnd).arg(tSearchItem.uiRecordType).arg(sStartTime).arg(sEndTime).arg(sStartDate).arg(sEndDate);
+			if (_query.exec(sCommand))
+			{
+				//keep going
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+				abort();
+			}
+		}
+		sCommand=QString("delete from record");
+		if (_query.exec(sCommand))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+			abort();
+		}
+		for (int i=0;i<tRecordItemInfo.size();i++)
+		{
+			tagRecordItemInfo tRecordItem=tRecordItemInfo.value(i);
+			QString sStartTime=QDateTime::fromTime_t(tRecordItem.uiStartTime).toString("hh:mm:ss");
+			QString sEndTime=QDateTime::fromTime_t(tRecordItem.uiEndTime).toString("hh:mm:ss");
+			QString sStartDate=QDateTime::fromTime_t(tRecordItem.uiStartTime).toString("dd.MM.yyyy");
+			QString sEndDate=QDateTime::fromTime_t(tRecordItem.uiEndTime).toString("dd.MM.yyyy");
+			sCommand=QString("insert into record(nWndId,nRecordType,nStartTime,nEndTime,sFilePath,nStartDate,nEndDate) values(%1,%2,'%3','%4','%5','%6','%7')").arg(tRecordItem.nWndId).arg(tRecordItem.uiRecordType).arg(sStartTime).arg(sEndTime).arg(tRecordItem.sFilePath).arg(sStartDate).arg(sEndDate);
+			if (_query.exec(sCommand))
+			{
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+				abort();
+			}
+		}
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"pDatabase==null";
+		abort();
+		return false;
+	}
 }

@@ -26,7 +26,9 @@ QSqlDatabase *initFreeDiskDataBase(QString sDatabaseName,quintptr *nThis){
 		tDataBaseInfo.nCount=1;
 		tDataBaseInfo.tThis.append(nThis);
 
-		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseName);
+		QDateTime tCurrentTime=QDateTime::currentDateTime();
+		QString sDatabaseId=QString::number(tCurrentTime.toTime_t());
+		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseId);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);
 		if (tDataBaseInfo.pDatabase->open())
