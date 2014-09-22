@@ -296,8 +296,8 @@ int RecordPlayer::GroupPlay()
 		return 1;
 	}
 	/*SetVolume(0xAECBCA);*/
-	AudioEnabled(m_bIsOpenAudio);
-	SetVolume(m_uiPersent);
+// 	AudioEnabled(m_bIsOpenAudio);
+// 	SetVolume(m_uiPersent);
 	m_CurStatus=STATUS_NORMAL_PLAY;
 	return 0;
 }
@@ -528,11 +528,11 @@ void RecordPlayer::transSearchStop(QVariantMap &evMap)
 
 void RecordPlayer::showEvent( QShowEvent * )
 {
-	if (NULL != m_pLocalPlayer)
-	{
-		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
-	}
-	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
+// 	if (NULL != m_pLocalPlayer)
+// 	{
+// 		m_pLocalPlayer->GroupSetVolume(0xAECBCA, &m_subRecPlayerView[m_currentWindID]);
+// 	}
+// 	m_subRecPlayerView[0].AudioEnabled(m_bIsOpenAudio);
 	if(m_CurStatus!=STATUS_STOP){
 		if (DevIsExit(m_devicename))
 		{
@@ -552,7 +552,7 @@ void RecordPlayer::showEvent( QShowEvent * )
 
 void RecordPlayer::hideEvent( QHideEvent * )
 {
-	m_subRecPlayerView[0].AudioEnabled(false);
+// 	m_subRecPlayerView[0].AudioEnabled(false);
 	if (m_CurStatus<STATUS_PAUSE)
 	{
 		GroupPause();
@@ -655,7 +655,7 @@ int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDa
 
 int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
 {
-	qDebug()<<(int)this<<" searchVideoFileEx2"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
+// 	qDebug()<<(int)this<<" searchVideoFileEx2"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
 	
 	if (nWndId < 0 || sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{
@@ -743,7 +743,7 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 		return 1;
 	}
 
-	qDebug()<<(int)this<<" AddFileIntoPlayGroupEx m_wndNum:"<<m_wndNum;
+// 	qDebug()<<(int)this<<" AddFileIntoPlayGroupEx m_wndNum:"<<m_wndNum;
 	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[m_wndNum%ARRAY_SIZE(m_subRecPlayerView)], date, start, end, nTypes);
 	pLocalPlayerEx->Release();
 	m_wndNum++;

@@ -72,6 +72,8 @@ qint32 PlayMgr::initCbFuction()
 
 void PlayMgr::setParamter( QWidget* pWnd, uint uiStartSec, uint uiEndSec )
 {
+	qDebug()<<"pWnd: "<<(int)pWnd;
+
 	m_pRenderWnd = pWnd;
 	m_uiStartSec = uiStartSec;
 	m_uiEndSec = uiEndSec;
@@ -98,6 +100,20 @@ void PlayMgr::setCbTimeChange( pcbTimeChange pro, void* pUser )
 	{
 		m_pcbTimeChg = pro;
 		m_pUser = pUser;
+	}
+}
+
+void PlayMgr::printVector(uint types, const QVector<PeriodTime> &vec)
+{
+	for (qint32 i = 0; i < vec.size(); ++i)
+	{
+		QString str = QDateTime::fromTime_t(vec[i].start).toString("hh:mm:ss");
+		QString typ = "------";
+		if (types)
+		{
+			typ = "<------------>";
+		}
+	 	qDebug()<<str<<typ<<QDateTime::fromTime_t(vec[i].end).toString("hh:mm:ss");
 	}
 }
 
@@ -156,6 +172,11 @@ void PlayMgr::stop()
 void PlayMgr::run()
 {
 	qDebug()<<"----------start run-----------\t";
+// 	qDebug()<<"fileStartPos: "<<m_i32FileStartPos;
+// 	qDebug()<<"skipStartPos: "<<m_i32SkipStartPos;
+// 	printVector(0, m_filePeriod);
+
+
 	QElapsedTimer frameTimer;
 
 	bool bFirstFrame = true;
@@ -208,7 +229,9 @@ void PlayMgr::run()
 					m_i32SmapleRate = pFrameData->AudioConfig.uiSamplerate;
 					m_i32SmapleWidth = pFrameData->AudioConfig.uiSamplebit;
 					m_i32AudioChl = pFrameData->AudioConfig.uiChannels;
-					m_pAudioPlayer->SetAudioParam(m_i32AudioChl, m_i32SmapleRate,m_i32SmapleWidth);
+
+// 					m_pAudioPlayer->SetAudioParam(m_i32AudioChl, m_i32SmapleRate,m_i32SmapleWidth);
+					m_pAudioPlayer->SetAudioParam(1, m_i32SmapleRate,m_i32SmapleWidth);
 				}
 				m_pAudioPlayer->Play(pFrameData->pBuffer, pFrameData->uiLength);
 
@@ -331,6 +354,8 @@ void PlayMgr::clearBuffer()
 
 void PlayMgr::openAudio( bool bEnable )
 {
+	qDebug()<<bEnable;
+
 	m_bIsAudioOpen = bEnable;
 	if (!bEnable)
 	{
@@ -406,7 +431,7 @@ qint32 PlayMgr::adjustTimeLine( uint uiStart )
 		if (!m_skipTime.isEmpty())
 		{
 			qint32 timeOffset = m_uiCurrentGMT - uiStart;
-// 			qDebug()<<"timeoffse: "<<timeOffset;
+			qDebug()<<"timeoffse: "<<timeOffset;
 			if (timeOffset >= 0)// |FFFFF|_____|XXXXX| or |FFFFF|XXXXX|_____|
 			{
 				break;

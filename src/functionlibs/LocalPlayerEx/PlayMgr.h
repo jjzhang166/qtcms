@@ -42,6 +42,8 @@ private:
 	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
 	qint32 adjustTimeLine(uint uiStart);
 
+	//for test
+	void printVector(uint types, const QVector<PeriodTime> &vec);
 private:
 	QList<FrameData> m_quFrameBuffer;
 	volatile bool m_bStop;

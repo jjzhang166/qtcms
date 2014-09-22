@@ -309,7 +309,7 @@ bool QFileData::readFile( QStringList &filePathList, qint32 &startPos, char* buf
 		file.close();
 		return false;
 	}
-
+	qDebug()<<__FUNCTION__<<__LINE__<<"read file "<<filePath;
 	file.close();
 	return true;
 }

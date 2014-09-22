@@ -241,7 +241,7 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 		QString sDbName = disk + ":/recEx/record.db";
 		if (!QFile::exists(sDbName))
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"file "<<sDbName<<" didn't exist";
+// 			qDebug()<<__FUNCTION__<<__LINE__<<"file "<<sDbName<<" didn't exist";
 			continue;
 		}
 		QSqlDatabase *pdb = initDataBase(sDbName);
@@ -341,12 +341,22 @@ int LocalPlayerEx::SetSynGroupNum( int num )
 
 int LocalPlayerEx::GroupPlay()
 {
+	//no wndId 
+	if (NO_WINDOW_ID ==  m_arrPlayInfo->i32WndId)
+	{
+		return 1;
+	}
+
 	qint32 i32BufferNum = 0;
 	qint32 i32StartPos = 0;
 	QVector<PeriodTime> skipTime;
 	QMap<uint, QVector<PeriodTime> > filePeriodMap;
 	//get file list for playing
 	QStringList fileList = getFileList(i32StartPos, filePeriodMap);
+	if (fileList.isEmpty())
+	{
+		return 1;
+	}
 	//count skip time
 	countSkipTime(filePeriodMap, skipTime);
 	//set skip time and each file period for playing thread
@@ -534,7 +544,14 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 	QStringList fileList;
 	QList<qint32> wndList;
 	getWndIdList(wndList);
-	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types));
+	if (wndList.isEmpty())
+	{
+		return fileList;
+	}
+	QDateTime dateTime = QDateTime::fromTime_t(m_uiStartSec);
+	QDateTime startTime(dateTime.date(), QTime(0, 0, 0));
+	QDateTime endTime(dateTime.date(), QTime(23, 59, 59));
+	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime >= %3 and nEndTime <= %4 and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types)).arg(startTime.toTime_t()).arg(endTime.toTime_t());
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
@@ -705,10 +722,10 @@ qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& fil
 		}
 	}
 
-// 	for (qint32 i = 0; i < totalSkipTime.size(); ++i)
-// 	{
-// 		qDebug()<<QDateTime::fromTime_t(totalSkipTime[i].start).toString("hh:mm:ss")<<"<------------>"<<QDateTime::fromTime_t(totalSkipTime[i].end).toString("hh:mm:ss");
-// 	}
+	for (qint32 i = 0; i < totalSkipTime.size(); ++i)
+	{
+		qDebug()<<QDateTime::fromTime_t(totalSkipTime[i].start).toString("hh:mm:ss")<<"<------------>"<<QDateTime::fromTime_t(totalSkipTime[i].end).toString("hh:mm:ss");
+	}
 
 
 	return 0;
