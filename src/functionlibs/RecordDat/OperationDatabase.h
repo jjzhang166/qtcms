@@ -46,11 +46,6 @@ public:
 	~OperationDatabase(void);
 public:
 	void reloadSystemDatabase();
-	//QString getUsableDisk(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
-	//QString getLatestItem(QString sDisk);//d:
-	//QString getOldestItem(QString sDisk);//d:
-	//QString createLatestItem(QString sDisk);//用于磁盘还有空间，递增模式
-	//void clearInfoInDatabase(QString sFilePath);
 	bool updateRecordDatabase(QList<int> tIdList,QVariantMap tInfo,QString sFilePath);//uiEndTime
 	bool updateSearchDatabase(QList<int> tIdList,QVariantMap tInfo,QString sFilePath);//uiEndTime
 	bool createSearchDatabaseItem(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);
@@ -62,16 +57,9 @@ public:
 	bool isRecordDataExistItem();
 	//
 	int obtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
-	//bool updateRecordDatabaseEx(QList<int> tIdList,QVariantMap tInfo,QString sFilePath);//uiEndTime
-	//bool updateSearchDatabaseEx(QList<int> tIdList,QVariantMap tInfo,QString sFilePath);//uiEndTime
-	//bool createSearchDatabaseItemEx(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);
-	/*bool createRecordDatabaseItemEx(int nChannel,quint64 uiStartTime,quint64 uiEndTime,uint uiType,QString sFileName,quint64 &uiItemId);*/
-	/*void setRecordFileStatusEx(QString sFilePath,QVariantMap tInfo);*/
-	/*void reloadSystemDatabaseEx();*/
 	void clearInfoInDatabaseEx(QString sFilePath);//unuse
 	bool startOperationDatabase();
 	bool stopOperationDatabase();
-	//bool isRecordDataExistItemEx();
 	bool getMaxDatabaseId(quint64 &uiMaxRecordId,quint64 &uiMaxSearchId,QString sFilePath);
 protected:
 	void run();

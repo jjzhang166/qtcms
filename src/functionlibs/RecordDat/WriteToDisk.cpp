@@ -182,6 +182,7 @@ void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiB
 		sleepEx(10);
 		if (nCount>500&&nCount%100==0)
 		{
+			QThread::start();
 			qDebug()<<__FUNCTION__<<__LINE__<<"please checkout here";
 		}else{
 			//do nothing

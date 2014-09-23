@@ -105,6 +105,7 @@ void recordDatCore::run()
  			nWriteType=obtainFilePath(sWriteFilePath);
 			m_bIsBlock=false;
 			m_tFileInfo.sFilePath=sWriteFilePath;
+			qDebug()<<__FUNCTION__<<__LINE__<<"file path:"<<sWriteFilePath;
 			if (nWriteType!=OVERWRITE&&nWriteType!=ADDWRITE)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteType mode is unable";

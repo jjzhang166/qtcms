@@ -60,7 +60,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 		m_nLoseFrameCount++;
 		if (m_nRecordStatus!=0)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"lose frame :"<<m_nLoseFrameCount<<tFrameInfo["winid"].toUInt();
+			//qDebug()<<__FUNCTION__<<__LINE__<<"lose frame :"<<m_nLoseFrameCount<<tFrameInfo["winid"].toUInt();
 		}else{
 			//do nothing
 		}	

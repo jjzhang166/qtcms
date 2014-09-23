@@ -52,7 +52,6 @@ BubbleProtocolEx::BubbleProtocolEx():
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
     m_nBuiltTreadId=QThread::currentThreadId();
 
-
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()
