@@ -105,6 +105,10 @@ long __stdcall BubbleProtocolEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IRemoteMotionDetection *>(this);
 	}
+	else if (IID_IProtocolPTZ == iid)
+	{
+		*ppv = static_cast<IProtocolPTZ *>(this);
+	}
 	else{
 		*ppv=NULL;
 		return E_NOINTERFACE;
@@ -526,7 +530,125 @@ void BubbleProtocolEx::run()
 				//云台控制
 				m_bBlock=true;
 				m_nPosition=__LINE__;
-				bFlag=cmdPtz();
+				if (!m_tBubblePtz.isEmpty())
+				{
+					tagPtzItem tPtzItem=m_tBubblePtz.dequeue();
+					int nPtzStep=tPtzItem.nAction;
+					switch(nPtzStep){
+					case Ptz_Up:{
+						//
+						int nAction=0;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								}
+								break;
+					case Ptz_Down:{
+						//
+						int nAction=1;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								  }
+								  break;
+					case Ptz_Left:{
+						//
+						int nAction=2;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								  }
+								  break;
+					case Ptz_Right:{
+						//
+						int nAction=3;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								   }
+								   break;
+					case Ptz_IrisOpen:{
+						//
+						int nAction=9;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									  }
+									  break;
+					case Ptz_IrisClose:{
+						//
+						int nAction=10;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									   }
+									   break;
+					case Ptz_FocusFar:{
+						//
+						int nAction=5;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									  }
+									  break;
+					case Ptz_FocusNear:{
+						//
+						int nAction=6;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									   }
+									   break;
+					case Ptz_ZoomIn:{
+						//
+						int nAction=7;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									}
+									break;
+					case Ptz_ZoomOut:{
+						//
+						int nAction=8;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+									 }
+									 break;
+					case Ptz_Auto:{
+						//
+						int nAction=4;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=1;
+						int nParm=tPtzItem.nSpeed;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								  }
+								  break;
+					case Ptz_Stop:{
+						//
+						int nAction=tPtzItem.nSpeed;
+						int nChannel=tPtzItem.nChannel;
+						int nStart=0;
+						int nParm=0;
+						bFlag=cmdPtz(nAction,nChannel,nStart,nParm);
+								  }
+								  break;
+					}
+				}else{
+					//do nothing
+				}
+				
+				
 				m_bBlock=false;
 							}
 							break;
@@ -648,6 +770,7 @@ void BubbleProtocolEx::run()
 			//重置参数
 			m_csStepCode.lock();
 			m_tStepCode.clear();
+			m_tBubblePtz.clear();
 			m_csStepCode.unlock();
 			m_tDeviceInfo.bPrePause=false;
 			m_tDeviceInfo.bRemotePlayPause=false;
@@ -746,6 +869,7 @@ int BubbleProtocolEx::connectToDevice()
 	{
 		m_csStepCode.lock();
 		m_tStepCode.clear();
+		m_tBubblePtz.clear();
 		m_csStepCode.unlock();
 		QVariantMap evMap;
 		m_tCurrentConnectStatus=BUBBLE_CONNECTTING;
@@ -1718,9 +1842,47 @@ bool BubbleProtocolEx::cmdPausePlayBackStream()
 	return false;
 }
 
-bool BubbleProtocolEx::cmdPtz()
+bool BubbleProtocolEx::cmdPtz(int nAction,int nChannel,int nStart,int nParm)
 {
-	return true;
+	if (NULL!=m_pTcpSocket)
+	{
+		char cBuffer[100];
+		tagBubbleInfo *pBufferInfo=NULL;
+		memset(cBuffer,0,sizeof(cBuffer));
+		pBufferInfo=(tagBubbleInfo *)cBuffer;
+		pBufferInfo->cHead=(char)0xaa;
+		pBufferInfo->cCmd=(char)0x00;
+		QDateTime tTime=QDateTime::currentDateTime();
+		pBufferInfo->uiTicket=qToBigEndian((quint32)(tTime.toMSecsSinceEpoch()));
+		tagBubbleMessageInfo *pBubbleMessageInfo=(tagBubbleMessageInfo*)pBufferInfo->pLoad;
+		pBubbleMessageInfo->cMessage=(char)0x02;
+		pBubbleMessageInfo->uiLength=sizeof(tagBubbleMessageInfo)-sizeof(char)-sizeof(pBubbleMessageInfo->uiLength)+sizeof(tagBubblePtz);
+		pBubbleMessageInfo->uiLength=qToBigEndian((quint32)pBubbleMessageInfo->uiLength);
+		pBufferInfo->uiLength=sizeof(tagBubbleInfo)-sizeof(char)-sizeof(pBufferInfo->cHead)-sizeof(pBufferInfo->uiLength)+sizeof(tagBubbleMessageInfo)-sizeof(char)+sizeof(tagBubblePtz);
+		quint32 uiLength=pBufferInfo->uiLength+sizeof(pBufferInfo->uiLength)+sizeof(pBufferInfo->cHead);
+		pBufferInfo->uiLength=qToBigEndian((quint32)pBufferInfo->uiLength);
+		tagBubblePtz *pBubblePtz=(tagBubblePtz*)pBubbleMessageInfo->cParameters;
+		pBubblePtz->cAction=(char)nAction;
+		pBubblePtz->cChannel=(char)nChannel;
+		pBubblePtz->cParam=(char)nParm;
+		pBubblePtz->cStart=(char)nStart;
+		QByteArray tBlock;
+		tBlock.append(cBuffer,uiLength);
+		if (-1!=m_pTcpSocket->write(tBlock))
+		{
+			if (m_pTcpSocket->waitForBytesWritten(2000))
+			{
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"cmdPtz fail as it write cBuffer to socket fail within 2s"<<m_pTcpSocket->error();
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"cmdPtz fail as it write cBuffer to socket fail"<<m_pTcpSocket->error();
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cmdPtz fail as m_pTcpSocket is null";
+	}
+	return false;
 }
 
 bool BubbleProtocolEx::cmdStopPlayBackStream()
@@ -1878,6 +2040,234 @@ int BubbleProtocolEx::cbRecFileSearchFail( QVariantMap &evmap )
 {
 	eventProcCall("recFileSearchFail",evmap);
 	return 0;
+}
+
+int BubbleProtocolEx::PTZUp( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Up;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZDown( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Down;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZLeft( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Left;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZRight( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Right;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_IrisOpen;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_IrisClose;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_FocusFar;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_FocusNear;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_ZoomIn;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_ZoomOut;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nSpeed;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZAuto( const int &nChl, bool bOpend )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Auto;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=bOpend;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
+}
+
+int BubbleProtocolEx::PTZStop( const int &nChl, const int &nCmd )
+{
+	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
+	{
+		m_csStepCode.lock();
+		tagPtzItem tPtzItem;
+		tPtzItem.nAction=Ptz_Stop;
+		tPtzItem.nChannel=nChl;
+		tPtzItem.nSpeed=nCmd;
+		m_tBubblePtz.enqueue(tPtzItem);
+		m_tStepCode.enqueue(BUBBLE_PTZ);
+		m_csStepCode.unlock();
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"PTZUp as current connect status is not in connected";
+		return 1;
+	}
 }
 
 int cbXBubbleFoundFile( QString evName,QVariantMap evMap,void*pUser )

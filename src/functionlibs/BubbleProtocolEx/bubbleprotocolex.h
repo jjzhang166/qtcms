@@ -24,12 +24,18 @@
 #include <QDomDocument>
 #include <mdworkobject.h>
 #include "SearchRemoteFile.h"
+#include "IProtocolPTZ.h"
 #define MAXSIZEONETIME 2097152
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagBubbleProInfo{
 	bubbleProtocolEventCb proc;
 	void *pUser;
 }tagBubbleProInfo;
+typedef struct __tagPtzItem{
+	int nChannel;
+	int nSpeed;
+	int nAction;
+}tagPtzItem;
 typedef struct __tagBubbleDeviceInfo{
 	QHostAddress tIpAddr;
 	QVariantMap tPorts;
@@ -84,13 +90,27 @@ typedef enum __tagBubbleRunStep{
 	BUBBLE_RUN_DEFAULT,//缺省动作
 	BUBBLE_RUN_END//结束
 }tagBubbleRunStep;
-
+typedef enum __tagBubblePtzAction{
+	Ptz_Up,
+	Ptz_Down,
+	Ptz_Left,
+	Ptz_Right,
+	Ptz_IrisOpen,
+	Ptz_IrisClose,
+	Ptz_FocusFar,
+	Ptz_FocusNear,
+	Ptz_ZoomIn,
+	Ptz_ZoomOut,
+	Ptz_Auto,
+	Ptz_Stop
+}tagBubblePtzAction;
 class  BubbleProtocolEx:public QThread,
 	public IEventRegister,
 	public IRemotePreview,
 	public IDeviceConnection,
 	public IRemotePlayback,
-	public IRemoteMotionDetection
+	public IRemoteMotionDetection,
+	public IProtocolPTZ
 {
 	Q_OBJECT
 public:
@@ -134,6 +154,20 @@ public:
 	virtual int pausePlaybackStream(bool bPause);
 	virtual int stopPlaybackStream();
 
+	//interface for protocol ptz
+	virtual int PTZUp(const int &nChl, const int &nSpeed);
+	virtual int PTZDown(const int &nChl, const int &nSpeed);
+	virtual int PTZLeft(const int &nChl, const int &nSpeed);
+	virtual int PTZRight(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int PTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int PTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int PTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int PTZAuto(const int &nChl, bool bOpend);
+	virtual int PTZStop(const int &nChl, const int &nCmd);
+
 	// IRemoteMotionDetection
 	virtual int startMotionDetection();
 	virtual int stopMotionDetection();
@@ -161,7 +195,7 @@ private:
 	bool cmdGetPlayBackStreamByFileName();
 	bool cmdPausePlayBackStream();
 	bool cmdStopPlayBackStream();
-	bool cmdPtz();
+	bool cmdPtz(int nAction,int nChannel,int nStart,int nParm);
 	bool sendLiveStreamCmdEx(bool flags);
 	bool sendLiveStreamCmd(bool flags);
 	bool checkRemoteFileIsExist();
@@ -183,6 +217,7 @@ private:
 	tagBubbleConnectStatusInfo m_tHistoryConnectStatus;
 	tagBubbleDeviceInfo m_tDeviceInfo;
 	QQueue<int> m_tStepCode;
+	QQueue<tagPtzItem> m_tBubblePtz;
 	bool m_bStop;
 	int m_nSleepSwitch;
 	int m_nPosition;

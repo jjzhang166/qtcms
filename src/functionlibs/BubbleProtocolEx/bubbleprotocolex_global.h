@@ -93,5 +93,11 @@ typedef struct __tagBubbleReceiveMessage{
 	char cReverse[3];
 	char	cParameters;
 }tagBubbleReceiveMessage;
+typedef struct __tagBubblePtz{
+	char cChannel;
+	char cAction;
+	char cStart;
+	char cParam;
+}tagBubblePtz;
 #pragma pack()
 #endif // BUBBLEPROTOCOLEX_GLOBAL_H
