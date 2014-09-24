@@ -431,7 +431,7 @@ qint32 PlayMgr::adjustTimeLine( uint uiStart )
 		if (!m_skipTime.isEmpty())
 		{
 			qint32 timeOffset = m_uiCurrentGMT - uiStart;
-			qDebug()<<"timeoffse: "<<timeOffset;
+// 			qDebug()<<"timeoffse: "<<timeOffset;
 			if (timeOffset >= 0)// |FFFFF|_____|XXXXX| or |FFFFF|XXXXX|_____|
 			{
 				break;

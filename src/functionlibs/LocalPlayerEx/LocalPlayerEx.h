@@ -87,6 +87,7 @@ private:
 	QString intToStr(QList<qint32> &wndList);
 	PlayMgr* getPlayMgrPointer(QWidget* pwnd);
 	qint32 countSkipTime(const QMap<uint, QVector<PeriodTime> >& filePeriodMap, QVector<PeriodTime> &skipTime);
+	void appendFile(QStringList &fileList, QString fileName, QVector<uint> &vecTime, uint time);
 private:
 	qint32 m_nRef;
 	qint32 m_i32GroupNum;

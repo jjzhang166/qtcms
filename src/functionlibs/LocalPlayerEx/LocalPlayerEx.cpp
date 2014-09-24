@@ -234,7 +234,7 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 	QString sEnd = sDate + " " + sEndTime;
 	QDateTime dtStart = QDateTime::fromString(sStart, "yyyy-MM-dd hh:mm:ss");
 	QDateTime dtEnd = QDateTime::fromString(sEnd, "yyyy-MM-dd hh:mm:ss");
-	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId='%1' and nEndTime>='%2' and nStartTime<='%3' and (%4) order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
+	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId='%1' and nEndTime>='%2' and nStartTime<='%3' and (%4) and nStartTime!=nEndTime order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
@@ -542,6 +542,7 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 	bool find = false;
 	QString startPath;
 	QStringList fileList;
+	QVector<uint> vecTime;
 	QList<qint32> wndList;
 	getWndIdList(wndList);
 	if (wndList.isEmpty())
@@ -562,6 +563,7 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			qDebug()<<__FUNCTION__<<__LINE__<<"get database point error!";
 			continue;
 		}
+		uint lastEnd = 0;
 		QSqlQuery query(*pdb);
 		query.exec(sqlCommand);
 		
@@ -573,13 +575,20 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			QString path = query.value(3).toString();
 			if (!fileList.contains(path))
 			{
-				fileList<<path;
+// 				fileList<<path;
+				appendFile(fileList, path, vecTime, start);
 			}
-			if(!find && end > m_uiStartSec)
+// 			if(!find && end > m_uiStartSec)
+// 			{
+// 				startPath = path;
+// 				find = true;
+// 			}
+			if (!find && ((lastEnd < m_uiStartSec && m_uiStartSec < start) || (start <= m_uiStartSec && m_uiStartSec < end)))
 			{
 				startPath = path;
 				find = true;
 			}
+			lastEnd = end;
 			PeriodTime item = {start, end};
 			filePeriodMap[wndId].append(item);
 		}
@@ -722,14 +731,42 @@ qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& fil
 		}
 	}
 
-	for (qint32 i = 0; i < totalSkipTime.size(); ++i)
-	{
-		qDebug()<<QDateTime::fromTime_t(totalSkipTime[i].start).toString("hh:mm:ss")<<"<------------>"<<QDateTime::fromTime_t(totalSkipTime[i].end).toString("hh:mm:ss");
-	}
+// 	for (qint32 i = 0; i < totalSkipTime.size(); ++i)
+// 	{
+// 		qDebug()<<QDateTime::fromTime_t(totalSkipTime[i].start).toString("hh:mm:ss")<<"<------------>"<<QDateTime::fromTime_t(totalSkipTime[i].end).toString("hh:mm:ss");
+// 	}
 
 
 	return 0;
 
+}
+
+void LocalPlayerEx::appendFile( QStringList &fileList, QString fileName, QVector<uint> &vecTime, uint time )
+{
+	if (fileList.isEmpty())
+	{
+		fileList<<fileName;
+		vecTime.append(time);
+		return;
+	}
+	qint32 pos = fileList.size() - 1;
+	if (vecTime[pos] < time)
+	{
+		fileList<<fileName;
+		vecTime.append(time);
+	}
+	else
+	{
+		while (vecTime[--pos] > time)
+		{
+			if (pos < 0)
+			{
+				return;
+			}
+		}
+		fileList.insert(pos + 1, fileName);
+		vecTime.insert(pos + 1, time);
+	}
 }
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)
