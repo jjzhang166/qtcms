@@ -61,7 +61,7 @@ var DVR = function(usr,pwd,ip,port,id,type){
 	  	}
 	//设置常规信息
 	this.dvrGenSetPut = function(){
-		console.log("-------------------dvrnetworkInfo2UI------------------------------");
+		console.log("-------------------dvrGenSetPut ------------------------------");
 		var warp = $('#set_content div.dvr_list:visible'),
 		    str="saveing",
 		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
@@ -69,38 +69,37 @@ var DVR = function(usr,pwd,ip,port,id,type){
 			getSelect = this.getSelect,
 			getValue = this.getValue;
 	
+	var xmlstr = '';
+	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
+	xmlstr += '<envload type="1" usr="' +this._USR + '" pwd="' + this._PWD + '">';
+	xmlstr += '<misc';
+	xmlstr += ' datefmt="' + getSelect("datefmt")+ '"';
+	xmlstr += ' keylock="' + getCheckbox("keylock")+ '"';
+	xmlstr += ' keybuzzer="' + getCheckbox("keybuzzer") + '"';
+	xmlstr += ' standard="' + getSelect("standard") + '"';
+	xmlstr += ' dvrid="' +  getValue("dvrid") + '"';
+	xmlstr += ' hddoverwrite="' + getCheckbox("hddoverwrite") + '"';
+	xmlstr += ' alpha="' + getValue("alpha") + '"';
+	xmlstr += ' autoswi="' + getCheckbox("autoswi") + '"';
+	xmlstr += ' autoswiinterval="' + getSelect("autoswiinterval") + '"';
+	xmlstr += ' autoswimode="' +  getSelect(" autoswimode") + '"';
+	xmlstr += ' />';
+	xmlstr += '</envload>';
+	xmlstr += '</juan>';
+	console.log(xmlstr);
 	
-	  var xmlstr = '';
-	  xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
-	  xmlstr += '<envload type="1" usr="' +this._USR + '" pwd="' + this._PWD + '">';
-	  xmlstr += '<misc';
-	  xmlstr += ' datefmt="' + getSelect("datefmt") + '"';
-	  xmlstr += ' keylock="' + getCheckbox("keylock"); + '"';
-	  xmlstr += ' keybuzzer="' + getCheckbox("keybuzzer") + '"';
-	  xmlstr += ' standard="' + getSelect("standard") + '"';
-	  xmlstr += ' dvrid="' +  getValue("dvrid") + '"';
-	  xmlstr += ' hddoverwrite="' + getCheckbox("hddoverwrite") + '"';
-	  xmlstr += ' alpha="' + getSelect("alpha") + '"';
-	  xmlstr += ' autoswi="' + getCheckbox("autoswi") + '"';
-	  xmlstr += ' autoswiinterval="' + getSelect("autoswiinterval") + '"';
-	  xmlstr += ' autoswimode="' + getSelect("autoswimode") + '"';
-	  xmlstr += ' />';
-	  xmlstr += '</envload>';
-	  xmlstr += '</juan>';
-	  //console.log(xmlstr);
-	  
-	  dataType='jsonp';  //数据类型
-	  jsonp='jsoncallback'; // 回调函数
-	   
-	  _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',function(str){
-			if(str=='loading_success')
-			   showAJAXHint("save_success").fadeOut(2000);
-			 else
-				showAJAXHint(str);
-		  
-		  });
-		  
-		  }
+    dataType='jsonp';  //数据类型
+	jsonp='jsoncallback'; // 回调函数
+	 
+	_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',function(str){
+		  if(str=='loading_success')
+		     showAJAXHint("save_success").fadeOut(2000);
+		   else
+		      showAJAXHint(str);
+		
+		});
+		
+		}
 	
 	//获取网络设置信息
 	this.dvrnetworkInfo2UI = function(){
@@ -281,14 +280,14 @@ var DVR = function(usr,pwd,ip,port,id,type){
 	      xmlstr += ' mode="' + getSelect("mode","encodesub") + '"';
 	      xmlstr += ' fmt="' +  getSelect("fmt","encodesub") + '"';
 	      xmlstr += ' piclv="' + getSelect("piclv","encodesub") + '"';
-	      xmlstr += ' bitmode="' + getSelect("framerate","encodesub") + '"';
-	      xmlstr += ' bitvalue="' + getSelect("bitmode","encodesub") + '"';
+	      xmlstr += ' bitmode="' + getSelect("bitmode","encodesub") + '"';
+	      xmlstr += ' bitvalue="' + getSelect("bitvalue","encodesub") + '"';
 	      xmlstr += ' framerate="' + getSelect("framerate","encodesub") + '"';
 	      xmlstr += ' />';
 	      xmlstr += '</envload>';
 	      xmlstr += '</juan>';
 		  
-	   //console.log(xmlstr);	
+	   console.log(xmlstr);	
 	  
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
@@ -735,10 +734,10 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
 			var warpKey='[data-WARP="envload"]';
 			
-			 warp.find('ul'+warpKey).html('');
+			warp.find('ul'+warpKey).html('');
 			 
 			 warp.find('#Alarm_settings div').hide();
-			for(var j=0;j<This._CHN;j++)
+			for(var j=0;j<4;j++)
 			{
 				 warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+');"><input type="text" value="'+(j+1)+'" disabled /></li>');
 				 warp.find('#Alarm_settings div').eq(j).show();

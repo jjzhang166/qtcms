@@ -351,7 +351,7 @@
 				<div class="switch dvr_list">
 					<table data-WARP="network">
 						<tr><td><script>T("MAC_address")</script></td><td><input id="dvr_mac_addr" type="text" data-UI="mac" readonly="readonly"/></td><td></td><td></td></tr>
-						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDSN</h5></td></tr>
+						<tr class="title"><td colspan="2"><h5>IP</h5></td><td style="padding-left:30px;" colspan="2"><h5>DDNS</h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
@@ -493,9 +493,9 @@
 										</div>
 										<ul class="option">
 											<!--<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">-->
-                                            <li value="0"><input type="text" value="VBR" /></li>
-                                            <li value="1"><input type="text" value="CBR" /></li>
-											<li value="2"><input type="text" value="Moderate_rate" /></li>
+                                            <li value="0"><input type="text" value="VBR"  data="0" /></li>
+                                            <li value="1"><input type="text" value="CBR" data="1"/></li>
+											<li value="2"><input type="text" value="Moderate_rate" data="2"/></li>
 										</ul>
 									</td>
 								</tr>
@@ -1228,8 +1228,7 @@
                                     <input type="select" data-UI="chn" data=""/>
 									<a class="hover"></a>
 								</div>
-								<ul id="dvr_alarm_chn_sel" class="option" data-WARP="envload">
-									
+								<ul id="dvr_alarm_chn_sel" class="option" data-WARP="envload">	
 								</ul>
 							</td>
 							<td></td>
