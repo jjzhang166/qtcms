@@ -1,16 +1,15 @@
-var DVR = function(usr,pwd,ip,port,id,type){
+var DVR = function(usr,pwd,ip,port,id,type,chn){
 	this._IP = ip;  //ip地址
 	this._PORT = port; //端口
 	this._USR = usr; //用户名
 	this._PWD = pwd;  //密码
 	this._ID = id;  //设备ID
-	this._CHN = 0;//通道数
+	this._CHN = chn;//通道数
 	this._TYPE = type; 
 	this._VER = 0;  //设备版本号
 	this._Upgrade = '';  // CMS 支持的最低版本IPC
     var _Request=[];  //判断数据加载与提示信息出现顺序是否合理的全局数组
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);  //用户信息，base64加密
-	
 	this.getRequestURL = function(){  //生成URL地址
 		return 'http://'+this._IP+':'+this._PORT;
 	}
@@ -32,8 +31,6 @@ var DVR = function(usr,pwd,ip,port,id,type){
 		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,'',function(data){
 			data2UI(data);
 			This._VER = $('#set_content div.dvr_list:visible input[data-UI="swver"]').val();  //软件版本号
-			This._CHN = $('#set_content div.dvr_list:visible input[data-UI="camcnt"]').val(); //设备通道数
-			//console.log(This._CHN+"---通道数---");
 		}); 
 		   
 	

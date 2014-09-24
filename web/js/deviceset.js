@@ -156,17 +156,22 @@ var oSearchOcx,
 				set_contentMax();
 
 				areaList2Ui('','closed');
-
+                
 				$('#ajaxHint').html('').stop(true,true).hide();
-
+               
+				
 				if(key == 0){
 					searchFlush();
 				}else{
 					oSearchOcx.Stop();
 				}
+				
 				if(key == 1){
+					AJAX && AJAX.abort();
 					emptyDevSetMenu();
-					/*(nowDev && nowDev._ID) && $('#dev_'+nowDev._ID).addClass('sel');*/
+					if(nowDev && nowDev._ID){
+						nowDev =null;
+						}
 					
 					//reInitNowDev();  //重新加载设备信息
 
@@ -178,7 +183,7 @@ var oSearchOcx,
 						$(this).addClass('sel')
 
 						var oDevData = $(this).data('data');
-
+                   
 						var _url = 'http://'+oDevData.address+':'+oDevData.port;
 
 						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
@@ -216,7 +221,7 @@ var oSearchOcx,
 							/*dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
 							dvr_devinfo_load_content();*/
 							console.log('------------new DVR()--------------');
-							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor,oDevData.channel_count);
 							
 							$('#set_content ul.dvr_list0 li').click(function(){//stop(true,true)解决不断用鼠标点击产生的积累
 								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示

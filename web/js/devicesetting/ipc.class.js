@@ -25,7 +25,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcBasicInfo2UI = function(){ //获取设备信息
-
+        emptyDevSetMenu();
 		reInitNowDev();
 		var This = this;
 		console.log('-------------------ipcBasicInfo2UI--------------------------');
@@ -54,6 +54,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this._ipcencodeInfo2UI = function(num){
+		emptyDevSetMenu();
 		var warp = $('#set_content div.ipc_list:visible');
 			warp.find('input[data-ui="constantBitRate"],[data-ui="frameRate"]').removeAttr('max min');
 		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+num+'/properties','','',function(data){
@@ -181,7 +182,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipcuserManagementInfo2UI = function(){ //获取用户信息
-
+         emptyDevSetMenu();
 		dataType='';
 
 		console.log('-------------------ipcuserManagementInfo2UI--------------------------');
@@ -203,6 +204,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 	}
 
 	this.ipczoneInfo2UI = function(){ //获取时区信息
+	   emptyDevSetMenu();
 		var warp = $('#set_content div.ipc_list:visible');
 
 		showAJAXHint(str).css('top',warp.height() + 46);
