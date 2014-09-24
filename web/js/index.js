@@ -140,16 +140,18 @@ var oPreView,oDiv,
 			}
 		})
 		$('#Dire_Control div:last').on({
-			mouseup:function(){
+			mousedown:function(){
+				/*alert($(this).attr('PTZ'));
 				if($(this).attr('PTZ')){
 				// writeActionLog('停止自动PTZ');
 					$(this).removeAttr('PTZ');
 					oPreView.ClosePTZ($(this).index());
 				}else{
 					//writeActionLog('开始自动PTZ');
-					$(this).attr('PTZ',1);
+					//$(this).attr('PTZ',1);
 					PTZcontrol($(this).attr('PTZ',1).index());		
-				}
+				}*/
+				PTZcontrol($(this).index());
 			}
 		})
 			
@@ -576,24 +578,15 @@ var oPreView,oDiv,
 		writeActionLog(str,c);
 	}
     //ptz云台控制函数
-	  var a =['up','down','left','right','auto_PTZ','Near_focus','Far_focus','Zoom_-','Zoom_+','Iris_On','Iris_Off'];
 	function PTZcontrol(code){
-		var c;
-	 if(oPreView.GetWindowInfo(oPreView.GetCurrentWnd()).currentState == 0 ){
-		if(!oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
-			
-		    str = _T('operating_ptz_operation_is') + _T(a[code]);
-			c='';
-			
-		}else{
+	 if(oPreView.GetWindowInfo(oPreView.GetCurrentWnd()).currentState == 0 ){  //当窗口接入预览时
+		if(oPreView.OpenPTZ(code,$('#PTZ_control .act').length)){
 			alert(lang.PTZ_operation_failed);
 			}
-	}else{
-			str=_T('window_no_Preview');
-			c = errorcolor;
-			}
-		writeActionLog(str,c);	   
-		
+	 }else{
+			writeActionLog(_T('window_no_Preview'),errorcolor);	 
+	 }
+
 	}
 	function initOxcDevListStatus(){  //  初始化控件,设备列表,以及之间的状态
 		//区域列表;

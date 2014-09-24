@@ -32,7 +32,6 @@
 	'Iris_Off':'光圈关',
 	'Iris_On':'光圈开',
 	'auto_PTZ':'自动PTZ',
-	'operating_ptz_operation_is':'正在进行的PTZ云台操作是：',
 	'stop_PTZ':'停止PTZ',
 	'PTZ_speed':'当前的云台运动速度：',
 	'Light':'灯光',
