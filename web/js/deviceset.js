@@ -139,11 +139,16 @@ var oSearchOcx,
 		})	
 			
 		//跳转其他页面之前 先关闭搜索。
-		$('#top_nav li').each(function(index){
+		$('div.top_nav li').each(function(index){
 			$(this).click(function(){
 				if(index != 3){
 					oSearchOcx.Stop();
 				}
+			   AJAX && AJAX.abort();
+			   emptyDevSetMenu();
+			  if(nowDev && nowDev._ID){
+						nowDev =null;
+			  }
 			})
 		})
 		
@@ -683,7 +688,7 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch:visible').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
+		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
@@ -1210,7 +1215,49 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		oChannel.data('data')['channel_name'] = name;
 		closeMenu();
 	}
+    function judgeIpId(type,obj){
+		
+		var str = obj.val(),hint='';
+		switch(type){ 
+		  case 0:
+		      var pre = /(^((25[0-5])|(2[0-4]\d)|(1\d{2})|([1-9]\d)|[1-9])(\.((25[0-5])|(2[0-4]\d)|(1\d{2})|([1-9]?\d))){3}$)|(^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$)/;
+				if(!pre.test(str)){
+					hint=_T('correct')+_T('IP_domainName');
+				}else{
+					$('#device_name_ID').val(obj.val());
+				}
+			break;
+		 case 1:
+		       var b=true;
+		       if(str == ''){
+					hint=_T('correct')+_T('Esee_ID');
+					b=false;
+			   }
 
+				if(/^\d+$/.test(str)){
+					if(!/^[1-9]\d{8,}$/.test(str)){
+						//console.log('数字');
+						hint=_T('correct')+_T('Esee_ID');
+						b=false;
+					}
+				}else{
+					//console.log(/^\w+\d+$/.test(str)+'前缀11--------------'+str.length);
+					if(!/^\w+\d+$/.test(str) || str.length > 11){
+						//console.log('前缀');
+						hint=_T('correct')+_T('Esee_ID');
+						b=false;
+					}
+				} 
+				if(b){
+					$('#device_name_ID').val(obj.val());
+					} 
+		 break;
+		}
+		if(hint){
+			type > 3 ? Confirm(hint) : Confirm(hint,true);
+			obj.val('');	
+		}
+		}
 	function VerifidevMenu(type,obj){
 		var hint='',
 			str = obj.value;

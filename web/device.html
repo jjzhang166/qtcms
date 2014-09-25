@@ -1925,14 +1925,14 @@
 				<td><input style="width:18px;" type="radio" name="Connection" value="1" />
 					<script>T("Easy_Link_Watch")</script></td>
 				</tr>
-				<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" nblur="VerifidevMenu(0,this)" /></td></tr>
-				<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" onblur="VerifidevMenu(1,this)" /></td></tr>
-				<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" onblur="VerifidevMenu(1,this)" /></td></tr>
-				<tr class="tr1"><td class="td1"><script>T("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" onblur="VerifidevMenu(2,this)" /></td></tr>
-				<tr><td class="td1"><script>T("Username")</script></td><td><input type="text" id="username_ID" /></td></tr>
+				<tr><td class="td1"><script>T("Device_Address")</script></td><td><input type="text" id="address_ID" onblur="judgeIpId(0,$(this));" /></td></tr>
+				<tr><td class="td1"><script>T("Device_port")</script></td><td><input type="text" id="port_ID" onblur="VerifidevMenu(1,this)" value="80" default/></td></tr>
+				<tr><td class="td1"><script>T("Http_port")</script></td><td><input type="text" id="http_ID" onblur="VerifidevMenu(1,this)" value="80" default/></td></tr>
+				<tr class="tr1"><td class="td1"><script>T("Esee_ID")</script></td><td><input type="text" disabled="disabled" id="eseeid_ID" onblur="judgeIpId(1,$(this));" /></td></tr>
+				<tr><td class="td1"><script>T("Username")</script></td><td><input type="text" id="username_ID" value="admin" default/></td></tr>
 				<tr><td class="td1"><script>T("Password")</script></td><td><input type="password" id="password_ID" value="" /></td></tr>
 				<tr><td class="td1"><script>T("Device_name")</script></td><td><input type="text" id="device_name_ID" /></td></tr>
-				<tr><td class="td1"><script>T("Channels")</script></td><td><input type="text" id="channel_count_ID" onblur="VerifidevMenu(3,this)" /></td></tr>
+				<tr><td class="td1"><script>T("Channels")</script></td><td><input type="text" id="channel_count_ID" onblur="VerifidevMenu(3,this)" value="1" default/></td></tr>
 				<tr><td class="td1"><script>T("Current_Area")</script></td><td><input readonly="readonly" id="parea_name_ID" class="parentArea" type="text" /></td></tr>
 				<tr>
 					<td class="td1"><script>T("Device_Type")</script></td>
