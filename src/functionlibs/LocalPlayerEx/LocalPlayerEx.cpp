@@ -573,28 +573,38 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			uint start = query.value(1).toUInt();
 			uint end = query.value(2).toUInt();
 			QString path = query.value(3).toString();
-			if (!fileList.contains(path))
+			if (!fileList.contains(path) || end - lastEnd > 60)
 			{
 // 				fileList<<path;
-				appendFile(fileList, path, vecTime, start);
+				appendFile(fileList, path, vecTime, end);
 			}
 // 			if(!find && end > m_uiStartSec)
 // 			{
 // 				startPath = path;
 // 				find = true;
 // 			}
-			if (!find && ((lastEnd < m_uiStartSec && m_uiStartSec < start) || (start <= m_uiStartSec && m_uiStartSec < end)))
-			{
-				startPath = path;
-				find = true;
-			}
+// 			if (!find && ((lastEnd < m_uiStartSec && m_uiStartSec < start) || (start <= m_uiStartSec && m_uiStartSec < end)))
+// 			{
+// 				startPath = path;
+// 				find = true;
+// 			}
 			lastEnd = end;
 			PeriodTime item = {start, end};
 			filePeriodMap[wndId].append(item);
 		}
 		query.finish();
 	}
-	i32Pos = fileList.indexOf(startPath);
+// 	i32Pos = fileList.indexOf(startPath);
+
+	for (qint32 i32loop = 0; i32loop < vecTime.size(); ++i32loop)
+	{
+		if (m_uiStartSec < vecTime[i32loop])
+		{
+			i32Pos = i32loop;
+			break;
+		}
+	}
+
 
 	return fileList;
 }

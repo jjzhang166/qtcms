@@ -166,7 +166,7 @@ void PlayMgr::stop()
 		m_wcPause.wakeAll();
 		m_bPause = false;
 	}
-	wait();
+// 	wait();
 }
 
 void PlayMgr::run()

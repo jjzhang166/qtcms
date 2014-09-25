@@ -186,8 +186,8 @@ void QFileData::run()
 			tagFileFrameHead *pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
 			if (iter->bIsFirstRead)
 			{
-				iter->lastGMT = pFileFrameHead->tFrameHead.uiGentime;
-				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
+// 				iter->lastGMT = pFileFrameHead->tFrameHead.uiGentime;
+// 				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
 				if (pFileFrameHead->tFrameHead.uiGentime >= m_uiStartSec)
 				{
 					skiptime = qMin(skiptime, pFileFrameHead->tFrameHead.uiGentime - m_uiStartSec);
@@ -198,8 +198,8 @@ void QFileData::run()
 					{
 						iter->lastPos = iter->curPos;
 						iter->curPos = CURRENT_POSITION(pFileFrameHead);
-						iter->lastGMT = iter->curGMT;
-						iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
+// 						iter->lastGMT = iter->curGMT;
+// 						iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
 						pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
 					}
 				}
@@ -256,8 +256,8 @@ void QFileData::run()
 				}
 				iter->lastPos = iter->curPos;
 				iter->curPos = CURRENT_POSITION(pFileFrameHead);
-				iter->lastGMT = iter->curGMT;
-				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
+// 				iter->lastGMT = iter->curGMT;
+// 				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
 				//across two files
 				if (iter->lastPos > iter->curPos || !iter->curPos)
 				{
