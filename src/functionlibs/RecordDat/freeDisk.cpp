@@ -8,6 +8,7 @@ typedef struct __tagFreeDiskDataBaseInfo{
 	int nCount;
 	QList<quintptr *> tThis;
 }tagFreeDiskDataBaseInfo;
+quint64 g_uiDatabaseFreeDiskId=0;
 QMultiMap<QString ,tagFreeDiskDataBaseInfo> g_tFreeDiskDataBase;
 QSqlDatabase *initFreeDiskDataBase(QString sDatabaseName,quintptr *nThis){
 	if (g_tFreeDiskDataBase.contains(sDatabaseName))
@@ -27,7 +28,12 @@ QSqlDatabase *initFreeDiskDataBase(QString sDatabaseName,quintptr *nThis){
 		tDataBaseInfo.tThis.append(nThis);
 
 		QDateTime tCurrentTime=QDateTime::currentDateTime();
-		QString sDatabaseId=QString::number(tCurrentTime.toTime_t())+QString::number((quint64)nThis);
+		g_uiDatabaseFreeDiskId++;
+		QString sDatabaseId=QString::number(tCurrentTime.toTime_t())+QString::number((quint64)nThis)+QString::number(g_uiDatabaseFreeDiskId);
+		while(QSqlDatabase::connectionNames().contains(sDatabaseId)){
+			g_uiDatabaseFreeDiskId++;
+			sDatabaseId=QString::number(tCurrentTime.toTime_t())+QString::number((quint64)nThis)+QString::number(g_uiDatabaseFreeDiskId);
+		}
 		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseId);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);

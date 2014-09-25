@@ -210,7 +210,12 @@ void checkDatFile::checkDiskItem( QString sDiskTtem )
 											//do nothing
 										}
 										//½âÎöÎÄ¼þ
-										analysisDatFile(sDatFilePath);
+										if (sDatFilePath=="D:/recEx/0000/0000/0000/0019.dat")
+										{
+											analysisDatFile(sDatFilePath);
+										}else{
+											//do nothing
+										}
 									}else{
 										//do nothing
 									}

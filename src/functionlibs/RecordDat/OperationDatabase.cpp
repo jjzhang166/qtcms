@@ -9,6 +9,7 @@ typedef struct __tagMgrDataBaseInfo{
 	QList<quintptr *> tThis;
 }tagMgrDataBaseInfo;
 QMultiMap<QString ,tagMgrDataBaseInfo> g_tMgrDataBase;
+quint64 g_uiDatabaseId=0;
 QSqlDatabase *initMgrDataBase(QString sDatabaseName,quintptr *nThis){
 	if (g_tMgrDataBase.contains(sDatabaseName))
 	{
@@ -27,7 +28,12 @@ QSqlDatabase *initMgrDataBase(QString sDatabaseName,quintptr *nThis){
 		tDataBaseInfo.tThis.append(nThis);
 
 		QDateTime tCurrentTime=QDateTime::currentDateTime();
-		QString sDatabaseId=QString::number(tCurrentTime.toMSecsSinceEpoch())+QString::number((quint64)nThis);
+		g_uiDatabaseId++;
+		QString sDatabaseId=QString::number(tCurrentTime.toTime_t())+QString::number(g_uiDatabaseId)+QString::number((quint64)nThis);
+		while(QSqlDatabase::connectionNames().contains(sDatabaseId)){
+			g_uiDatabaseId++;
+			 sDatabaseId=QString::number(tCurrentTime.toTime_t())+QString::number(g_uiDatabaseId)+QString::number((quint64)nThis);
+		}
 		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseId);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);
@@ -345,6 +351,7 @@ void OperationDatabase::run()
 	while(bRunStop==false){
 		switch(nStepCode){
 		case OperationDatabase_init:{
+			priReloadSystemDatabase();
 			nStepCode=OperationDatabase_obtainFilePath;
 									}
 									break;
@@ -637,6 +644,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 					//把查找到最早文件的数据库内的相关信息删除
 					//fix me
 					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+					quint64 uiCurrentDateTime=uiStartTime;
 					QString sOldestFile;
 					QString sOldestFileTemp;
 					for (int i=0;i<tFilePathList.size();i++)
@@ -646,10 +654,11 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 						{
 							QFile tFile;
 							tFile.setFileName(sFilePathItem);
-							if (tFile.open(QIODevice::ReadOnly|QIODevice::Text))
+							if (tFile.open(QIODevice::ReadWrite))
 							{
 								m_tFileHead.clear();
 								m_tFileHead=tFile.read(sizeof(tagFileHead));
+								/*m_tFileHead=tFile.readAll();*/
 								if (m_tFileHead.size()>=sizeof(tagFileHead))
 								{
 									tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
@@ -657,13 +666,21 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 									{
 										if (m_tFileHead.contains("JUAN"))
 										{
-											if (pFileHead->uiStart<uiStartTime)
+											if (pFileHead->uiStart>uiCurrentDateTime)
 											{
-												uiStartTime=pFileHead->uiStart;
-												sOldestFile=sFilePathItem;
+												priClearInfoInDatabase(sFilePath);
+												QVariantMap tInfo;
+												tInfo.insert("nDamage",1);
+												priSetRecordFileStatusEx(sFilePathItem,tInfo);
 											}else{
-												//do nothing
-												sOldestFileTemp=sFilePathItem;
+												if (pFileHead->uiStart<uiStartTime)
+												{
+													uiStartTime=pFileHead->uiStart;
+													sOldestFile=sFilePathItem;
+												}else{
+													//do nothing
+													sOldestFileTemp=sFilePathItem;
+												}
 											}
 										}else{
 											//do nothing
@@ -1583,7 +1600,6 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 				sCommand.clear();
 				sCommand=QString("delete from record where sFilePath='%1'").arg(sFilePath);
 				/*sCommand=QString("delete from record where id in ")+"("+sReoveRecordIdList+")";*/
-				qDebug()<<__FUNCTION__<<__LINE__<<"step in";
 				if (_query.exec(sCommand))
 				{
 					//keep going
@@ -1591,7 +1607,6 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
 					abort();
 				}
-				qDebug()<<__FUNCTION__<<__LINE__<<"step out";
 			}else{
 				//do nothing
 			}
