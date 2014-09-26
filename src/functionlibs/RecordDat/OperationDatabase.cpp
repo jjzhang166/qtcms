@@ -684,6 +684,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 											}
 										}else{
 											//do nothing
+											priClearInfoInDatabase(sFilePathItem);
 											sOldestFileTemp=sFilePathItem;
 										}
 									}else{
@@ -705,6 +706,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 							}
 						}else{
 							//do nothing
+							priClearInfoInDatabase(sFilePathItem);
 							sOldestFileTemp=sFilePathItem;
 						}
 					}
