@@ -471,21 +471,25 @@ var oSearchOcx,
 
 
 		//通道选中状态唯一
-		/*$('div.dev_list:eq(2) span.channel').removeClass('sel')	
-		obj.addClass('sel');*/
+		$('div.dev_list:eq(2) span.channel').removeClass('sel')	
+		obj.addClass('sel');
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
-		var allChlID = [];  //所有通道ID
+		var allChlID = [],allDevID=[];  //所有通道ID
 		obj.parent('li').siblings().each(function(){
 			var chlData = $(this).find('.channel').data('data');
 			$('<li><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
 			allChlID.push(chlData.channel_id);
 		})
-
+        $('div.dev_list:eq(2) span.channel').not('.sel').each(function(){
+			var devData = $(this).data('data');
+			allDevID.push(devData.channel_id);
+			})
 		//拷贝到所有通道选项的value写入;
 		
 		$('<li><input class="all" data="" value="'+_T('Select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
-
+        //拷贝到所有设备的所有通道上
+		$('<li><input class="all" data="" value="'+_T('Select_all')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
 		//console.log(allChlID);
 
 		var chlData = obj.data('data');
@@ -493,16 +497,25 @@ var oSearchOcx,
 		var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
 		for(var i in sTimeID){
 			var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
+			//console.log("--获取到的星期--get"+sTimeIDdata.weekday);
 			//时间段数据和对应的星期关联
 			for(var j in weeks){
 				if(j == sTimeIDdata.weekday){
-					$('ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
+				   $('#RecordTime ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
+				  // console.log( $('#RecordTime ul.week.option li:eq('+j+')').data('data_'+sTimeID[i]));
 				}
 			}
 		}
-		initChannlrecTime($('ul.week.option li:eq(0)')); //填充具体时间到页面
+		$('#RecordTime ul.week.option li').each(function(index){
+			$(this).on('click',function(){
+				initChannlrecTime($(this));
+			})
+		})
+		initChannlrecTime($('#RecordTime ul.week.option li:eq(0)')); //填充具体时间到页面
+		
 	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
+         //console.log(obj.data());
 		var oTimes=$('#recordtime tbody tr:lt(4)');
 		var str = '<recordtime num="4">';
 
@@ -523,6 +536,7 @@ var oSearchOcx,
 			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 		}
 		str +='</recordtime>';
+	    // console.log(str);
 		$('#recordtimedouble_ID').val(str);
 	}
 	//添加前获取要修改的时间ID的类容XML;
@@ -555,9 +569,12 @@ var oSearchOcx,
 			/*var start = warp.find('.iput2.time_picker:eq(0)').val();
 			var end = warp.find('.iput2.time_picker:eq(1)').val();*/
 			var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
-			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />'
+			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
+			var str1 = '<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
+			//console.log(str1);
 		}
 		str +='</recordtime>';
+		
 		$('#recordtimedouble_ID').val(str);
 	}
 
@@ -1407,11 +1424,6 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 				nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
 			})*/
 		}
-		$('ul.week.option li').each(function(index){
-			$(this).on('click',function(){
-				initChannlrecTime($(this));
-			})
-		})
 	}
 	function SettingRecordDoubleTimeParm(){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
