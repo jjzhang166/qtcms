@@ -1,13 +1,10 @@
 #include "BufferQueue.h"
 #include <QDebug>
 
-BufferQueue::BufferQueue():m_nQueueMaxSize(120),
+BufferQueue::BufferQueue():m_nQueueMaxSize(0),
 	m_nRecordStatus(0),
-	m_nLoseFrameCount(0),
-	m_uiLastFrameEnqueueTime(0)
+	m_nLoseFrameCount(0)
 {
-	m_tEnqueueControlTime.start();
-	m_nWaitTime=1000/MAXFRAMERATE;
 }
 
 
@@ -20,60 +17,85 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	//I:tagFrameHead+tagVideoConfigFrame
 	//P:tagFrameHead
 	//A:tagFrameHead+tagAudioConfigFrame
-	quint64 uiCurrentTime=m_tEnqueueControlTime.elapsed();
-	quint64 uiPastTime=uiCurrentTime-m_uiLastFrameEnqueueTime;
-	if (uiPastTime<m_nWaitTime)
-	{
-		int nSleepTime=m_nWaitTime-uiPastTime;
-		if (nSleepTime>0)
-		{
-			//QEventLoop eventloop;
-			//QTimer::singleShot(m_nWaitTime-uiPastTime, &eventloop, SLOT(quit()));
-			//eventloop.exec();
-		}else{
-			//do nothing
-		}
-	}else{
-		//keep going
-	}
-	m_uiLastFrameEnqueueTime=uiCurrentTime;
-	if (uiCurrentTime>FRAMERATERESTARTTIME)
-	{
-		m_uiLastFrameEnqueueTime=0;
-		m_tEnqueueControlTime.restart();
-	}else{
-		//do nothing
-	}
+
 	m_tEnqueueDataLock.lock();
 	m_tDataLock.lock();
-	if (m_tDataQueue.size()>m_nQueueMaxSize)
+	if (m_nQueueMaxSize>=3)
 	{
-		RecBufferNode *pRecBufferNode=NULL;
-		pRecBufferNode=m_tDataQueue.dequeue();
-		if (NULL!=pRecBufferNode)
-		{
-			pRecBufferNode->release();
-			pRecBufferNode=NULL;
-		}else{
-			//do nothing
+		bool bFlag=false;
+		int nCount=0;
+		while(bFlag==false){
+			RecBufferNode *pRecBufferNode=NULL;
+			if (m_tDataQueue.size()>0)
+			{
+				pRecBufferNode=m_tDataQueue.front();
+				tagFrameHead *pFrameHead=NULL;
+				pRecBufferNode->getDataPointer(&pFrameHead);
+				if (NULL!=pFrameHead)
+				{
+					if (pFrameHead->uiType==IFRAME)
+					{
+						if (m_nRecordStatus!=0)
+						{
+							qDebug()<<__FUNCTION__<<__LINE__<<"remove I Frame"<<"and total num:"<<nCount;
+						}else{
+							//do nothing
+						}
+						bFlag=true;
+					}else{
+						//keep going
+					}
+					RecBufferNode *pRemoveRecBufferNode=NULL;
+					pRemoveRecBufferNode=m_tDataQueue.dequeue();
+					if (NULL!=pRemoveRecBufferNode)
+					{
+						nCount++;
+						pRemoveRecBufferNode->release();
+						pRemoveRecBufferNode=NULL;
+					}else{
+						bFlag=true;
+					}
+				}else{
+					//do nothing
+					bFlag=true;
+				}
+			}else{
+				bFlag=true;
+			}
 		}
-		m_nLoseFrameCount++;
-		if (m_nRecordStatus!=0)
-		{
-			//qDebug()<<__FUNCTION__<<__LINE__<<"lose frame :"<<m_nLoseFrameCount<<tFrameInfo["winid"].toUInt();
-		}else{
-			//do nothing
-		}	
+		m_nQueueMaxSize--;
 	}else{
 		//keep going
-		m_nLoseFrameCount=0;
 	}
+	//if (m_tDataQueue.size()>m_nQueueMaxSize)
+	//{
+	//	RecBufferNode *pRecBufferNode=NULL;
+	//	pRecBufferNode=m_tDataQueue.dequeue();
+	//	if (NULL!=pRecBufferNode)
+	//	{
+	//		pRecBufferNode->release();
+	//		pRecBufferNode=NULL;
+	//	}else{
+	//		//do nothing
+	//	}
+	//	m_nLoseFrameCount++;
+	//	if (m_nRecordStatus!=0)
+	//	{
+	//		qDebug()<<__FUNCTION__<<__LINE__<<"lose frame :"<<m_nLoseFrameCount<<tFrameInfo["winid"].toUInt();
+	//	}else{
+	//		//do nothing
+	//	}	
+	//}else{
+	//	//keep going
+	//	m_nLoseFrameCount=0;
+	//}
 	int nDataLength=tFrameInfo["length"].toInt();
 	int nFrameHeadLength=sizeof(tagFrameHead);
 	int nApplyLength=nDataLength+nFrameHeadLength-sizeof(char*);
 	if (tFrameInfo["frametype"].toUInt()==IFRAME)
 	{
 		nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
+		m_nQueueMaxSize++;
 	}else if (tFrameInfo["frametype"].toUInt()==AFRMAE)
 	{
 		nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);
@@ -169,6 +191,24 @@ RecBufferNode* BufferQueue::dequeue()
 	if (m_tDataQueue.size()>0)
 	{
 		pRecBufferNode=m_tDataQueue.dequeue();
+		tagFrameHead *pFrameHead=NULL;
+		pRecBufferNode->getDataPointer(&pFrameHead);
+		if (NULL!=pFrameHead)
+		{
+			if (pFrameHead->uiType==IFRAME)
+			{
+				if (m_nQueueMaxSize>0)
+				{
+					m_nQueueMaxSize--;
+				}else{
+					//do nothing
+				}
+			}else{
+				//do nothing
+			}
+		}else{
+			//
+		}
 	}else{
 
 	}

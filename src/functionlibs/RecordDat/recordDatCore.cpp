@@ -76,6 +76,7 @@ void recordDatCore::run()
 	bool bRunStop=false;
 	int nRunStep=recordDat_init;
 	int nSleepCount=0;
+	QString sHisRecordDiks;
 	int nWriteType=2;//0:覆盖写；1：续写文件；2：没有文件可写
 	QString sWriteFilePath;
 	
@@ -130,6 +131,19 @@ void recordDatCore::run()
 				}else{
 					//do nothing
 				}
+				if (sHisRecordDiks!=sDisk)
+				{
+					if (m_tDatabaseInfo.tChannelInSearchDatabaseId.size()>0)
+					{
+						updateSearchDatabase();
+						m_tDatabaseInfo.tChannelInSearchDatabaseId.clear();
+					}else{
+						//do nothing
+					}
+				}else{
+					//do nothing
+				}
+				sHisRecordDiks=sDisk;
 				nRunStep=recordDat_initMemory;
 			}
 								}
@@ -1487,37 +1501,35 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nCurrentType==0";
 					abort();
 				}
+				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
+				RecBufferNode *pRecBufferNodeTemp=NULL;
+				if (!pBufferQueue->isEmpty())
+				{
+					pRecBufferNodeTemp=pBufferQueue->front();
+					if (pRecBufferNodeTemp!=NULL)
+					{
+						tagFrameHead *pFrameHead=NULL;
+						pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+						if (pFrameHead!=NULL)
+						{
+							uiStartTime=pFrameHead->uiGentime;
+						}else{
+							//do nothing
+						}
+						pRecBufferNodeTemp->release();
+						pFrameHead=NULL;
+					}else{
+						//do nothing
+					}
+				}else{
+					//do nothing
+				}
+				quint64 uiEndTime=uiStartTime;
 				if (m_tDatabaseInfo.tChannelInRecordDatabaseId.contains(nChannel))
 				{
 					nRecordItemId=m_tDatabaseInfo.tChannelInRecordDatabaseId.value(nChannel);
 				}else{
 					//create new record item
-					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
-
-					RecBufferNode *pRecBufferNodeTemp=NULL;
-					if (!pBufferQueue->isEmpty())
-					{
-						pRecBufferNodeTemp=pBufferQueue->front();
-						if (pRecBufferNodeTemp!=NULL)
-						{
-							tagFrameHead *pFrameHead=NULL;
-							pRecBufferNodeTemp->getDataPointer(&pFrameHead);
-							if (pFrameHead!=NULL)
-							{
-								uiStartTime=pFrameHead->uiGentime;
-							}else{
-								//do nothing
-							}
-							pRecBufferNodeTemp->release();
-							pFrameHead=NULL;
-						}else{
-							//do nothing
-						}
-					}else{
-						//do nothing
-					}
-
-					quint64 uiEndTime=uiStartTime;
 					QString sRecordDisk=sFilePath.left(1);
 					if (m_tRecordDatabaseMaxId.contains(sRecordDisk))
 					{
@@ -1537,12 +1549,30 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 						abort();
 					}
 				}
-				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
+				//创建搜索条目（出现在转盘录像时）
+				if (!m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
 				{
-					nSearchItemId=m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel);
+					QString sSearchDatabaseDisk;
+					sSearchDatabaseDisk=sFilePath.left(1);
+					if (m_tRecordDatabaseMaxId.contains(sSearchDatabaseDisk))
+					{
+						tagRecordDatabaseMaxID tMaxIdInfo=m_tRecordDatabaseMaxId.value(sSearchDatabaseDisk);
+						nSearchItemId=tMaxIdInfo.uiMaxSearchId+1;
+						tMaxIdInfo.uiMaxSearchId=tMaxIdInfo.uiMaxSearchId+1;
+						m_tRecordDatabaseMaxId.replace(sSearchDatabaseDisk,tMaxIdInfo);
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"m_tRecordDatabaseMaxId do not contain :"<<sSearchDatabaseDisk<<"please check";
+						abort();
+					}
+					if (m_tOperationDatabase.createSearchDatabaseItem(nChannel,uiStartTime,uiEndTime,nRecType,sFilePath,nSearchItemId))
+					{
+						m_tDatabaseInfo.tChannelInSearchDatabaseId.insert(nChannel,nSearchItemId);
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"createSearchDatabaseItem fail,i will terminate the thread";
+						abort();
+					}
 				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"there must some error in m_tDatabaseInfo.tChannelInSearchDatabaseId,please checkout";
-					abort();
+					//do nothing
 				}
 				nStep=WriteToBuffer_Write;
 								   }

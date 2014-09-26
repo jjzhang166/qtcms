@@ -35,8 +35,5 @@ private:
 	Allocation m_tAllocation;
 	int m_nRecordStatus;
 	int m_nLoseFrameCount;
-	QTime m_tEnqueueControlTime;
-	quint64 m_uiLastFrameEnqueueTime;
-	int m_nWaitTime;
 };
 
