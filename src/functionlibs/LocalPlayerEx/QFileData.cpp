@@ -119,7 +119,7 @@ void QFileData::run()
 
 	while(!m_bStop)
 	{
-		uint skiptime = MAX_SECONDS;
+// 		uint skiptime = MAX_SECONDS;
 		QMap<uint, CurBuffInfo>::iterator iter = m_wndBuffMap.begin(); 
 		//Prevent excessive buffering
 		if (getMinBufferSize() > MIN_FRAME_NUM)
@@ -184,24 +184,37 @@ void QFileData::run()
 			}
 			//find right position
 			tagFileFrameHead *pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+			while (pFileFrameHead->tPerFrameIndex.uiPreFrame > 0)
+			{
+				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + pFileFrameHead->tPerFrameIndex.uiPreFrame);
+				iter->curPos = pFileFrameHead->tPerFrameIndex.uiPreFrame;
+			}
 			if (iter->bIsFirstRead)
 			{
 // 				iter->lastGMT = pFileFrameHead->tFrameHead.uiGentime;
 // 				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
-				if (pFileFrameHead->tFrameHead.uiGentime >= m_uiStartSec)
-				{
-					skiptime = qMin(skiptime, pFileFrameHead->tFrameHead.uiGentime - m_uiStartSec);
-				}
-				else
-				{
-					while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
-					{
-						iter->lastPos = iter->curPos;
-						iter->curPos = CURRENT_POSITION(pFileFrameHead);
+// 				if (pFileFrameHead->tFrameHead.uiGentime >= m_uiStartSec)
+// 				{
+// 					skiptime = qMin(skiptime, pFileFrameHead->tFrameHead.uiGentime - m_uiStartSec);
+// 				}
+// 				else
+// 				{
+// 					while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
+// 					{
+// 						iter->lastPos = iter->curPos;
+// 						iter->curPos = CURRENT_POSITION(pFileFrameHead);
 // 						iter->lastGMT = iter->curGMT;
 // 						iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
-						pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-					}
+// 						pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+// 					}
+// 				}
+				while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
+				{
+					iter->lastPos = iter->curPos;
+					iter->curPos = CURRENT_POSITION(pFileFrameHead);
+					iter->lastGMT = iter->curGMT;
+					iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
+					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
 				}
 				iter->bIsFirstRead = false;
 			}
