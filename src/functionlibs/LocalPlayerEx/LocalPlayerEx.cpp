@@ -767,8 +767,9 @@ void LocalPlayerEx::appendFile( QStringList &fileList, QString fileName, QVector
 	}
 	else
 	{
-		while (vecTime[--pos] > time)
+		while (vecTime[pos] > time)
 		{
+			--pos;
 			if (pos < 0)
 			{
 				return;
