@@ -33,7 +33,7 @@ QJaWebView::QJaWebView(QWidget *parent) :
 #ifdef __USE_WEB_DEBUGER__DUMP__
 	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
 #ifdef WIN32
-	Dumper::setVersionInfo("cms_1.1.14_09_26_11", strlen("cms_1.1.14_09_26_11"));
+	Dumper::setVersionInfo("cms_1.1.14_09_28_17", strlen("cms_1.1.14_09_28_17"));
 	m_pdup = new Dumper();
 #endif
 #endif
