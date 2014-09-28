@@ -3,6 +3,7 @@
 #include <QElapsedTimer>
 #include "IEventRegister.h"
 
+#include "vld.h"
 #include <QDebug>
 #include <QFile>
 #include <QDateTime>
@@ -51,7 +52,18 @@ PlayMgr::~PlayMgr( void )
 	{
 		msleep(10);
 	}
-
+	if (m_pVedioRender)
+	{
+		m_pVedioRender->deinit();
+		m_pVedioRender->Release();
+		m_pVedioRender = NULL;
+	}
+	if (m_pVedioDecoder)
+	{
+		m_pVedioDecoder->deinit();
+		m_pVedioDecoder->Release();
+		m_pVedioDecoder = NULL;
+	}
 	//clear buffer
 	clearBuffer();
 }
@@ -155,19 +167,36 @@ void PlayMgr::startPlay()
 
 void PlayMgr::stop()
 {
+	qDebug()<<"call stop start";
 	m_uiCurrentGMT = 0;
 	m_i32Width = 0;
 	m_i32Height = 0;
 	m_bIsSkiped = false;
-	m_bStop = true;
+// 	m_bStop = true;
 	m_wcWait.wakeAll();//wake all if thread is sleep
 	if (m_bPause)
 	{
 		m_wcPause.wakeAll();
 		m_bPause = false;
 	}
-	qDebug()<<"call playMgr::stop()";
+	if (isRunning())
+	{
+		m_bStop = true;
+		wait();
+	}
 
+	m_skipTime.clear();
+	m_filePeriod.clear();
+
+	if (m_pVedioDecoder)
+	{
+		m_pVedioDecoder->deinit();
+	}
+	if (m_pVedioRender)
+	{
+		m_pVedioRender->deinit();
+	}
+	qDebug()<<"call stop end";
 // 	wait();
 }
 

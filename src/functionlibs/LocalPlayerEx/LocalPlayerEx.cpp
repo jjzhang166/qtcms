@@ -3,7 +3,7 @@
 #include <QtCore/QDir>
 #include <guid.h>
 #include "IDisksSetting.h"
-
+#include "vld.h"
 
 
 LocalPlayerEx::LocalPlayerEx()
@@ -51,7 +51,9 @@ LocalPlayerEx::~LocalPlayerEx()
 		{
 			m_pFileData->stopThread();
 		}
-		m_pFileData->deleteLater();
+// 		m_pFileData->deleteLater();
+		delete m_pFileData;
+		m_pFileData = NULL;
 	}
 	//clear play thread
 	for (qint32 i32Loop = 0; i32Loop < MAX_PLAY_THREAD; ++i32Loop)
@@ -60,7 +62,9 @@ LocalPlayerEx::~LocalPlayerEx()
 		{
 			m_arrPlayInfo[i32Loop].pPlayMgr->stop();
 		}
-		m_arrPlayInfo[i32Loop].pPlayMgr->deleteLater();
+// 		m_arrPlayInfo[i32Loop].pPlayMgr->deleteLater();
+		delete m_arrPlayInfo[i32Loop].pPlayMgr;
+		m_arrPlayInfo[i32Loop].pPlayMgr = NULL;
 	}
 	deInitDataBase();
 }

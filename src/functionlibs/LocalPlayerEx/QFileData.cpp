@@ -1,7 +1,7 @@
 #include "QFileData.h"
 #include <QFile>
 
-
+#include "vld.h"
 
 #include <QDebug>
 
@@ -91,17 +91,23 @@ void QFileData::startReadFile()
 
 void QFileData::stopThread()
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"stop thread start";
 	if (isRunning())
 	{
 		m_bStop = true;
 		wait();
 	}
 	m_wndBuffMap.clear();
+	m_wndList.clear();
+	m_lstFileList.clear();
+
 	qDebug()<<__FUNCTION__<<__LINE__<<"stop thread end";
 }
 
 void QFileData::run()
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"start run";
+
 	char *pFileBuff1 = new char[BUFFER_SIZE];
 	char *pFileBuff2 = new char[BUFFER_SIZE];
 	char *pFileBuff = pFileBuff1;
@@ -248,6 +254,8 @@ void QFileData::run()
 			++iter;
 		}
 	}
+
+	qDebug()<<__FUNCTION__<<__LINE__<<"stop run";
 
 	delete[] pFileBuff1;
 	delete[] pFileBuff2;
