@@ -5,6 +5,7 @@ QString g_sMgrSearchRecord="C:/CMS_RECORD/search_record.db";
 typedef struct __tagFreeDiskDataBaseInfo{
 	QString sDatabaseName;
 	QSqlDatabase *pDatabase;
+	QString sConnectDatabaseId;
 	int nCount;
 	QList<quintptr *> tThis;
 }tagFreeDiskDataBaseInfo;
@@ -37,6 +38,7 @@ QSqlDatabase *initFreeDiskDataBase(QString sDatabaseName,quintptr *nThis){
 		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseId);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);
+		tDataBaseInfo.sConnectDatabaseId=sDatabaseId;
 		if (tDataBaseInfo.pDatabase->open())
 		{
 			//do nothing
@@ -73,7 +75,7 @@ void deInitFreeDiskDataBase(quintptr *nThis){
 				delete it.value().pDatabase;
 				it.value().pDatabase=NULL;
 				sDeleteList.append(it.value().sDatabaseName);
-				QSqlDatabase::removeDatabase(it.value().sDatabaseName);
+				QSqlDatabase::removeDatabase(it.value().sConnectDatabaseId);
 			}else{
 				it.value().tThis.removeOne(nThis);
 			}

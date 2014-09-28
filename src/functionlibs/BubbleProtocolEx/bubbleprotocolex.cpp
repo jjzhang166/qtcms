@@ -72,6 +72,7 @@ BubbleProtocolEx::~BubbleProtocolEx()
 		QTime dieTime=QTime::currentTime().addMSecs(10);
 		while(QTime::currentTime()<dieTime){
 			QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+			msleep(1);
 		}
 		msleep(1);
 		nCount++;
@@ -725,6 +726,13 @@ void BubbleProtocolEx::run()
 						nRunStep=BUBBLE_RUN_CONTROL;
 						sleepEx(3);
 					}else{
+						//if (m_pTcpSocket->waitForReadyRead(20))
+						//{
+						//	nRunStep=BUBBLE_RUN_RECEIVE;
+						//}else{
+						//	sleepEx(3);
+						//	nRunStep=BUBBLE_RUN_DEFAULT;
+						//}
 						if (m_pTcpSocket->bytesAvailable()>0)
 						{
 							nRunStep=BUBBLE_RUN_RECEIVE;

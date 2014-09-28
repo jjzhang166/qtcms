@@ -6,6 +6,7 @@ typedef struct __tagMgrDataBaseInfo{
 	QString sDatabaseName;
 	QSqlDatabase *pDatabase;
 	int nCount;
+	QString sConnectDatabaseId;
 	QList<quintptr *> tThis;
 }tagMgrDataBaseInfo;
 QMultiMap<QString ,tagMgrDataBaseInfo> g_tMgrDataBase;
@@ -37,6 +38,7 @@ QSqlDatabase *initMgrDataBase(QString sDatabaseName,quintptr *nThis){
 		QSqlDatabase db=QSqlDatabase::addDatabase("QSQLITE",sDatabaseId);
 		tDataBaseInfo.pDatabase=new QSqlDatabase(db);
 		tDataBaseInfo.pDatabase->setDatabaseName(sDatabaseName);
+		tDataBaseInfo.sConnectDatabaseId=sDatabaseId;
 		if (tDataBaseInfo.pDatabase->open())
 		{
 			//do nothing
@@ -73,7 +75,7 @@ void deInitMgrDataBase(quintptr *nThis){
 				delete it.value().pDatabase;
 				it.value().pDatabase=NULL;
 				sDeleteList.append(it.value().sDatabaseName);
-				QSqlDatabase::removeDatabase(it.value().sDatabaseName);
+				QSqlDatabase::removeDatabase(it.value().sConnectDatabaseId);
 			}else{
 				it.value().tThis.removeOne(nThis);
 			}
@@ -1821,8 +1823,18 @@ QString OperationDatabase::getOldestItemEx( QString sDisk )
 												tAbandonFilePath.append(sFilePathTemp);
 												sFilePathTemp.clear();
 											}else{
-												sOldestFile=sFilePathTemp;
-												nStep=1;
+												QFile sFileFound;
+												sFileFound.setFileName(sFilePathTemp);
+												if (sFileFound.exists())
+												{
+													sOldestFile=sFilePathTemp;
+													nStep=1;
+												}else{
+													nStep=0;
+													tAbandonFilePath.append(sFilePathTemp);
+													priClearInfoInDatabase(sFilePathTemp);
+													sFilePathTemp.clear();
+												}
 											}
 										}else{
 											QFile tFile;

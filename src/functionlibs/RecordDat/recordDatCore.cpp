@@ -534,12 +534,6 @@ void recordDatCore::run()
 					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteToBuffer is undefined";
 					abort();
 				}
-				if (nWriteToBuffer==0)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"do nothing"<<nSleepCount;
-				}else{
-
-				}
 			}else{
 				nRunStep=recordDat_default;
 				sleepEx(100);

@@ -218,7 +218,7 @@ private:
 	tagBubbleDeviceInfo m_tDeviceInfo;
 	QQueue<int> m_tStepCode;
 	QQueue<tagPtzItem> m_tBubblePtz;
-	bool m_bStop;
+	volatile bool m_bStop;
 	int m_nSleepSwitch;
 	int m_nPosition;
 	int m_nSecondPosition;
