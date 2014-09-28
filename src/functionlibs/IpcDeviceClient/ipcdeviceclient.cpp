@@ -272,15 +272,19 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				int i;
 				for (i = 0; i < 2; i ++)
 				{
+					m_csDeInit.lock();
 					if (m_DeviceClentMap.contains(i))
 					{
 						m_DeviceClentMap.value(i).m_DeviceConnecton->setDeviceAuthorityInfomation(m_DeviceInfo.m_sUserName,m_DeviceInfo.m_sPassword);
 					}
+					m_csDeInit.unlock();
 				}
 
 				// 注册移动侦测信号
 				IEventRegister * iEg;
+				m_csDeInit.lock();
 				m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void **)&iEg);
+				m_csDeInit.unlock();
 				if (NULL != iEg)
 				{
 					iEg->registerEvent("MDSignal",mdsignal_proc,this);
@@ -290,7 +294,9 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 
 				// 启动移动侦测
 				IRemoteMotionDetection * iMd;
+				m_csDeInit.lock();
 				m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
+				m_csDeInit.unlock();
 				if (NULL != iMd)
 				{
 					iMd->startMotionDetection();
@@ -361,7 +367,9 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 	if (m_DeviceClentMap.value(0).m_DeviceConnecton!=NULL)
 	{
 		IRemotePreview *m_LiveStreamRequire=NULL;
+		m_csDeInit.lock();
 		m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemotePreview,(void**)&m_LiveStreamRequire);
+		m_csDeInit.unlock();
 		if (true==bOpen)
 		{
 			//默认主码流为0
@@ -382,7 +390,9 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 	if (m_DeviceClentMap.value(1).m_DeviceConnecton!=NULL)
 	{
 		IRemotePreview *m_LiveStreamRequire=NULL;
+		m_csDeInit.lock();
 		m_DeviceClentMap.value(1).m_DeviceConnecton->QueryInterface(IID_IRemotePreview,(void**)&m_LiveStreamRequire);
+		m_csDeInit.unlock();
 		if (true==bOpen)
 		{
 			//默认次码流为1
@@ -405,6 +415,7 @@ int IpcDeviceClient::closeAll()
 {
 	// 停止md
 	IRemoteMotionDetection * iMd;
+	m_csDeInit.lock();
 	if (m_DeviceClentMap.contains(0))
 	{
 		m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IRemoteMotionDetection,(void **)&iMd);
@@ -415,7 +426,7 @@ int IpcDeviceClient::closeAll()
 			iMd = NULL;
 		}
 	}
-
+	m_csDeInit.unlock();
 	//中断正在连接的状态
 	bHadCallCloseAll=true;
 	m_csRefDelete.lock();
@@ -441,6 +452,7 @@ int IpcDeviceClient::closeAll()
 
 
 	QMultiMap<int,SingleConnect>::iterator it;
+	m_csDeInit.lock();
 	for (it=m_DeviceClentMap.begin();it!=m_DeviceClentMap.end();it++)
 	{
 		
@@ -454,6 +466,7 @@ int IpcDeviceClient::closeAll()
 			m_CloseAllConnect->Release();
 		}
 	}
+	m_csDeInit.unlock();
 	//释放资源
 	DeInitProtocl();
 
@@ -722,7 +735,9 @@ bool IpcDeviceClient::TryToConnectProtocol( CLSID clsid )
 		SingleConnect m_SingleConnect;
 		m_SingleConnect.m_DeviceConnecton=NULL;
 		m_DeviceConnectProtocol->QueryInterface(IID_IDeviceConnection,(void**)&m_SingleConnect.m_DeviceConnecton);
+		m_csDeInit.lock();
 		m_DeviceClentMap.insert(mount,m_SingleConnect);
+		m_csDeInit.unlock();
 		//注册事件
 		IEventRegister *m_RegisterProc=NULL;
 		m_DeviceConnectProtocol->QueryInterface(IID_IEventRegister,(void**)&m_RegisterProc);
