@@ -1417,6 +1417,12 @@ bool OperationDatabase::priCreateRecordDatabaseItem( int nChannel,quint64 uiStar
 
 void OperationDatabase::priSetRecordFileStatusEx( QString sFilePath,QVariantMap tInfo )
 {
+	if (sFilePath.isEmpty())
+	{
+		return;
+	}else{
+		//keep going
+	}
 	QString sDisk=sFilePath.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sDisk);

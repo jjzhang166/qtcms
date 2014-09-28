@@ -889,7 +889,11 @@ int BubbleProtocolEx::connectToDevice()
 		//×î³¤µÈ´ý6s
 		while (m_bWaitForConnect&&nCount<600)
 		{
-			sleepEx(10);
+			/*sleepEx(10);*/
+			msleep(10);
+			QEventLoop tEventLoop;
+			QTimer::singleShot(5,&tEventLoop,SLOT(quit()));
+			tEventLoop.exec();
 			nCount++;
 		}
 		if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
