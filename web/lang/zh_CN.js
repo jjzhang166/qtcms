@@ -217,6 +217,7 @@
 	'Week':'星期',
 	'Copy':'拷贝',
 	'Copy_to':'拷贝到　',
+	'time_range':'开始时间必须小于结束时间',
 	'Name':'名字',
 	'Protocol':'协议',
 	'Baud_rate':'波特率',

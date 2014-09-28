@@ -388,7 +388,10 @@ var oSearchOcx,
 		$('div.dev_list:eq(2)').on('click','span.channel',function(){  //回访设置通道点击
 			FillChannleRecordTime($(this));			
 		})
-
+        /*$('#SettingRecordDoubleTimeParm_ok').click(function(){
+			setTimeout(FillChannleRecordTime($('div.dev_list:eq(2) span.channel.sel')),1000);
+		   
+			});*/
 		//搜索设备全选和 TR 同步选中
 		$('tbody.synCheckboxClick').each(function(){
 			$(this).SynchekboxClick();
@@ -471,7 +474,7 @@ var oSearchOcx,
 
 
 		//通道选中状态唯一
-		$('div.dev_list:eq(2) span.channel').removeClass('sel')	
+		$('div.dev_list:eq(2) span.channel').removeClass('sel');
 		obj.addClass('sel');
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
@@ -506,12 +509,13 @@ var oSearchOcx,
 				}
 			}
 		}
+		
+		initChannlrecTime($('#RecordTime ul.week.option li:eq(0)')); //填充具体时间到页面
 		$('#RecordTime ul.week.option li').each(function(index){
 			$(this).on('click',function(){
 				initChannlrecTime($(this));
 			})
 		})
-		initChannlrecTime($('#RecordTime ul.week.option li:eq(0)')); //填充具体时间到页面
 		
 	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
@@ -543,13 +547,15 @@ var oSearchOcx,
 	function getRecrodxml(){
 		var copyTo = [$('#RecordTime span.channel.sel').data('data').channel_id], // 初始的通道ID
 			copyID = $('#RecordTime td.copyTo input:first').attr('data').split(','), // 要拷贝到的通道ID
-			nowWeek = $('#week').attr('data').split(','),
+			nowWeek = $('#week').attr('data').split(','), //要保存的星期
 			nowWeekTimeID = [];
+		    //console.log(nowWeek+"---nowWeek----");
 		var copy = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
 
 		// 返回符合当天星期的时间ID
 		for(i in copy){ 
 			var timeID = oCommonLibrary.GetRecordTimeBydevId(copy[i]);
+			//console.log(timeID+"---timeID--");
 			for(j in timeID){
 				var timeinfo = oCommonLibrary.GetRecordTimeInfo(timeID[j])
 				for(k in nowWeek){
@@ -559,7 +565,7 @@ var oSearchOcx,
 				}
 			}
 		}
-
+        console.log(nowWeekTimeID+"----nowWeekTimeID-------");
 		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
 			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')');
@@ -570,12 +576,13 @@ var oSearchOcx,
 			var end = warp.find('.iput2.time_picker:eq(1)').val();*/
 			var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
 			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
-			var str1 = '<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
+			//var str1 = '<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 			//console.log(str1);
 		}
 		str +='</recordtime>';
-		
+		//console.log(str);
 		$('#recordtimedouble_ID').val(str);
+		
 	}
 
 	// 全选
@@ -942,7 +949,8 @@ function cleanDev(){  //清空设备
 	$('div.dev_list span.device').each(function(){
 		arr.push($(this).data('data').dev_id);
 	})
-	$('#removedeviceall_ID').val(arr.join(','))
+	$('#removedeviceall_ID').val(arr.join(','));
+	searchFlushReal();
 }
 function setIP(){ //设置IP
 	var oData = $('#SerachedDevList tr.sel').data('data')
@@ -1404,26 +1412,30 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		//
 	}
 	function SettingRecordDoubleTimeParmSuccess(data){
-		var week = $('#week').attr('data').split(',');
+		/*var week = $('#week').attr('data').split(',');
 		for(i in week){
 			var weekData = $('ul.week.option li:eq('+week[i]+')').data()
 			var n = 0;
 			for(j in weekData){
 				var newTimeWarp = $('#recordtime tbody tr:eq('+n+')')
-				/*weekData[j].starttime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(0)').gettime();
-				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(1)').gettime();*/
+				weekData[j].starttime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(0)').gettime();
+				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('div.timeInput:eq(1)').gettime();
 				weekData[j].starttime='1970-01-01 '+newTimeWarp.find('.iput2.time_picker:eq(0)').val();
 				weekData[j].endtime='1970-01-01 '+newTimeWarp.find('.iput2.time_picker:eq(1)').val();
 				weekData[j].enable=newTimeWarp.find(':checkbox').is(':checked') ? 1 : 0;
 				n++;
 			}
-			/*$('#recordtime tbody tr:lt(4)').each(function(){
+			$('#recordtime tbody tr:lt(4)').each(function(){
 				var nowWeekData = $('ul.week.option li:eq('+i+')').data('data_'+$(this).find('input.timeid').val());
 				nowWeekData.starttime='1970-01-01 '+$(this).find('div.timeInput:eq(0)').gettime();
 				nowWeekData.endtime='1970-01-01 '+$(this).find('div.timeInput:eq(1)').gettime();
 				nowWeekData.enable=$(this).find(':checkbox').is(':checked') ? 1 : 0;
-			})*/
-		}
+			})
+		}*/
+		var week = $('#week').attr('data').split(',');
+		FillChannleRecordTime($('div.dev_list:eq(2) span.channel.sel'));
+		week.length == 1 && $('#RecordTime ul.week.option li').eq(week[0]).click();
+		
 	}
 	function SettingRecordDoubleTimeParm(){ //清空回放时间表单的数据
 		$('#recordtime div.timeInput input').val('');
