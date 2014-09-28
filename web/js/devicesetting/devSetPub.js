@@ -425,7 +425,7 @@ function reInitNowDev(){
 		
 		   nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
 		}else{
-		   nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
+		   nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor,oDevData.channel_count);
 		   
 			}
 	}

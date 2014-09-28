@@ -490,7 +490,7 @@ var oSearchOcx,
 			})
 		//拷贝到所有通道选项的value写入;
 		
-		$('<li><input class="all" data="" value="'+_T('Select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+		$('<li><input class="all" data="" value="'+_T('select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
         //拷贝到所有设备的所有通道上
 		$('<li><input class="all" data="" value="'+_T('Select_all')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
 		//console.log(allChlID);

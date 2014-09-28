@@ -199,7 +199,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		
 		dataType='jsonp';
 		jsonp='jsoncallback';
-		
+		console.log(This._CHN);
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	        xmlstr += '<envload type="0" usr="' + this._USR + '" pwd="' + this._PWD+ '">';
