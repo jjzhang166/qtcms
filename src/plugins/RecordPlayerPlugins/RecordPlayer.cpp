@@ -337,7 +337,7 @@ int RecordPlayer::GroupContinue()
 int RecordPlayer::GroupStop()
 {
 	qDebug()<<"RecordPlayer :GroupStop:";
-	if (NULL == m_pLocalPlayer)
+	if (NULL == m_pLocalPlayer || STATUS_STOP == m_CurStatus)
 	{
 		return 1;
 	}

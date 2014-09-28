@@ -166,6 +166,8 @@ void PlayMgr::stop()
 		m_wcPause.wakeAll();
 		m_bPause = false;
 	}
+	qDebug()<<"call playMgr::stop()";
+
 // 	wait();
 }
 
@@ -300,6 +302,8 @@ void PlayMgr::run()
 
 	if (!m_quFrameBuffer.isEmpty())
 	{
+		qDebug()<<"clear buffer";
+
 		clearBuffer();
 	}
 	if (bSkip)

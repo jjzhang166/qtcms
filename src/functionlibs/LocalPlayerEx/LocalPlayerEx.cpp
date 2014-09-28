@@ -69,7 +69,8 @@ QSqlDatabase * LocalPlayerEx::initDataBase( QString sDatabaseName )
 {
 	if (!m_dbMap.contains(sDatabaseName))
 	{
-		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", sDatabaseName);
+		QString connectId = sDatabaseName + QString::number((int)this);
+		QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectId);
 		QSqlDatabase *pdb = new QSqlDatabase(db);
 		pdb->setDatabaseName(sDatabaseName);
 		if (!pdb->open())
@@ -93,7 +94,7 @@ void LocalPlayerEx::deInitDataBase()
 	{
 		(*iter)->close();
 		delete *iter;
-		QSqlDatabase::removeDatabase(iter.key());
+		QSqlDatabase::removeDatabase(iter.key() + QString::number((int)this));
 		++iter;
 	}
 	m_dbMap.clear();
@@ -241,7 +242,7 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 		QString sDbName = disk + ":/recEx/record.db";
 		if (!QFile::exists(sDbName))
 		{
-// 			qDebug()<<__FUNCTION__<<__LINE__<<"file "<<sDbName<<" didn't exist";
+			qDebug()<<__FUNCTION__<<__LINE__<<"file "<<sDbName<<" didn't exist";
 			continue;
 		}
 		QSqlDatabase *pdb = initDataBase(sDbName);

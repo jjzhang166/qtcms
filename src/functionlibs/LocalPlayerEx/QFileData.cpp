@@ -97,6 +97,7 @@ void QFileData::stopThread()
 		wait();
 	}
 	m_wndBuffMap.clear();
+	qDebug()<<__FUNCTION__<<__LINE__<<"stop thread end";
 }
 
 void QFileData::run()
@@ -119,7 +120,6 @@ void QFileData::run()
 
 	while(!m_bStop)
 	{
-// 		uint skiptime = MAX_SECONDS;
 		QMap<uint, CurBuffInfo>::iterator iter = m_wndBuffMap.begin(); 
 		//Prevent excessive buffering
 		if (getMinBufferSize() > MIN_FRAME_NUM)
@@ -191,38 +191,14 @@ void QFileData::run()
 			}
 			if (iter->bIsFirstRead)
 			{
-// 				iter->lastGMT = pFileFrameHead->tFrameHead.uiGentime;
-// 				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
-// 				if (pFileFrameHead->tFrameHead.uiGentime >= m_uiStartSec)
-// 				{
-// 					skiptime = qMin(skiptime, pFileFrameHead->tFrameHead.uiGentime - m_uiStartSec);
-// 				}
-// 				else
-// 				{
-// 					while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
-// 					{
-// 						iter->lastPos = iter->curPos;
-// 						iter->curPos = CURRENT_POSITION(pFileFrameHead);
-// 						iter->lastGMT = iter->curGMT;
-// 						iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
-// 						pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-// 					}
-// 				}
 				while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
 				{
 					iter->lastPos = iter->curPos;
 					iter->curPos = CURRENT_POSITION(pFileFrameHead);
-					iter->lastGMT = iter->curGMT;
-					iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
 					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
 				}
 				iter->bIsFirstRead = false;
 			}
-			// ensure uninterrupted when read frames
-// 			if (iter->curGMT - iter->lastGMT > 1)
-// 			{
-// 				iter->lastGMT = iter->curGMT;
-// 			}
 			//copy frames
 // 			while (!m_bStop && iter->pBuffList->size() != MAX_FRAME_NUM)
 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
@@ -232,13 +208,6 @@ void QFileData::run()
 				{
 					emit sigStartPlay(iter.key());
 				}
-
-				//has a period time between two frames
-// 				if (iter->curGMT - iter->lastGMT > 2)
-// 				{
-// 					skiptime = qMin(skiptime, iter->curGMT - iter->lastGMT);
-// 					break;
-// 				}
 				//copy data to FrameData
 				switch (pFileFrameHead->tFrameHead.uiType)
 				{
@@ -269,8 +238,6 @@ void QFileData::run()
 				}
 				iter->lastPos = iter->curPos;
 				iter->curPos = CURRENT_POSITION(pFileFrameHead);
-// 				iter->lastGMT = iter->curGMT;
-// 				iter->curGMT = pFileFrameHead->tFrameHead.uiGentime;
 				//across two files
 				if (iter->lastPos > iter->curPos || !iter->curPos)
 				{
@@ -280,12 +247,6 @@ void QFileData::run()
 			}
 			++iter;
 		}
-// 		if (!m_bStop && skiptime && m_pcbTimeChg)
-// 		{
-// 			m_pcbTimeChg(QString("SkipTime"), skiptime, m_pUser);
-// 			sigSkipTime(skiptime);
-// 		}
-
 	}
 
 	delete[] pFileBuff1;
