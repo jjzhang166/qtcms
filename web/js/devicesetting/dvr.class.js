@@ -192,7 +192,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		emptyDevSetMenu();
 		console.log("-------------------_dvrencodeInfo2UI------------------------------");
         var This = this;
-		
+	
 		this.Adjust(This._CHN,$('#Encoding_settings'));
 		
 		var warp = $('#set_content div.dvr_list:visible');
@@ -302,10 +302,10 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	   this._dvrVideoInfo2UI = function(num,week){
 		   num =parseInt(num,10);
 		   emptyDevSetMenu();
-		   console.log("-------------------_dvrVideoInfo2UI------------------------------");
+		   
 		   
 		   var This = this;
-		   
+		   console.log("-------------------_dvrVideoInfo2UI------------------------------"+This._CHN);
 		   this.Adjust(This._CHN,$('#Video_settings'));
 			
 		   var warp = $('#set_content div.dvr_list:visible');
@@ -859,10 +859,11 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	}
 	//对copyto的界面调整
 	this.Adjust = function(num,str){
-		
+		var warp = $('#set_content div.dvr_list:visible');
+		warp.find('tbody.synCheckboxClick tr').show();
 		if(num >0 && num<=8){
 			str.find('tr:gt(0)').hide();
-		}else if(num > 8 && num <=16){
+		}else if(num ==16){
 			str.find('tr:gt(1)').hide();
 		}else if(num > 16 && num<=24){
 			str.find('tr:gt(2)').hide();
