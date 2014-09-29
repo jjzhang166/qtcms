@@ -10,7 +10,7 @@
 #define  IFRAME 0x01
 #define  PFRAME 0x02
 #define  AFRMAE 0x00
-#define  BUFFERSIZE 120//单位：M
+#define  BUFFERSIZE 128//单位：M
 typedef struct __tagFrameHead{
 	unsigned int uiType;
 	unsigned int uiLength;

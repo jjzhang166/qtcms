@@ -86,6 +86,7 @@ private:
 	QString getLatestItemEx(QString sDisk);//d:
 	QString getLatestItemExx(QString sDisk);//d:
 	QString getOldestItemEx(QString sDisk);//d:
+	QString getOldestItemExx(QString sDisk);//d:
 	QString getUsableDiskEx(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
 private:
 	IDisksSetting *m_pDisksSetting;

@@ -6,7 +6,7 @@
 #define  NO_WINDOW_ID -1
 #define  MAX_BUFF_NUM 4
 #define  MAX_PLAY_THREAD 4
-#define  BUFFER_SIZE 120*1024*1024
+#define  BUFFER_SIZE 128*1024*1024
 #define  WNDMAX_SIZE 64
 #define  MAX_FRAME_NUM 100
 #define  MIN_FRAME_NUM 20

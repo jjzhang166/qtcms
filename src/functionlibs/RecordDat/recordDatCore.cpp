@@ -562,7 +562,9 @@ void recordDatCore::run()
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
 			setChannelNumInFileHead();
-			setFileStartTime();
+			quint64 uiStartTime=0;
+			quint64 uiEndTime=0;
+			setFileStartTime(uiStartTime,uiEndTime);
 			m_bIsBlock=false;
 			bool bFlags=false;
 			if (m_tToDiskType==recordDatToDiskType_outOfTime||m_tToDiskType==recordDatToDiskType_bufferFull)
@@ -582,6 +584,12 @@ void recordDatCore::run()
 						{
 							QVariantMap tInfo;
 							tInfo.insert("nInUse",1);
+							m_tOperationDatabase.setRecordFileStatus(sWriteFilePath,tInfo);
+							tInfo.clear();
+							tInfo.insert("nStartTime",uiStartTime);
+							m_tOperationDatabase.setRecordFileStatus(sWriteFilePath,tInfo);
+							tInfo.clear();
+							tInfo.insert("nEndTime",uiEndTime);
 							m_tOperationDatabase.setRecordFileStatus(sWriteFilePath,tInfo);
 							m_nPosition=__LINE__;
 							if (m_tToDiskType==recordDatToDiskType_outOfTime)
@@ -2035,7 +2043,7 @@ void recordDatCore::reloadSystemDatabase()
 	m_tBufferQueueMapLock.unlock();
 }
 
-void recordDatCore::setFileStartTime()
+void recordDatCore::setFileStartTime(quint64 &uiStartTime,quint64 &uiEndTime)
 {
 	tagFileHead *pFileHead=(tagFileHead*)(m_pDataBuffer);
 	quint64 uiCurrent=sizeof(tagFileHead);
@@ -2049,6 +2057,8 @@ void recordDatCore::setFileStartTime()
 		}else{
 			//do nothing
 		}
+		uiStartTime=pFileHead->uiStart;
+		uiEndTime=pFileHead->uiEnd;
 	}else{
 		//do nothing
 	}
