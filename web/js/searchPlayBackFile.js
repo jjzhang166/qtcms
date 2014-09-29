@@ -72,13 +72,11 @@
 		typeHint[4] = lang.Warning;
 		typeHint[8] = lang.Manual;
 		typeHint[15] = lang.All;
-
-	var color = [];
-		color[1] = '#F00';
-		color[2] = '#33CC00';
-		color[4] = '#FFFF00';
-		color[8] = '#0000FF';
-
+    /*var color = [];
+	  color[1] = '#F00';
+	  color[2] = '#33CC00';
+	  color[4] = '#FFFF00';
+	  color[8] = '#0000FF';*/
 	function ocxsearchVideo(){
 
 		recTotal = 0;
@@ -93,8 +91,8 @@
 
 			oList = $('div.dev_list'),
 
-			//devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
-           devData = bool ? '' : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
+			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
+         
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
 		if(!devData){

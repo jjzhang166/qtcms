@@ -625,25 +625,37 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				var width = (time2Sec(end)-start)*p-1;
 					width = width < 1 ? 1 : width;
 				var left = start*p+min+1;
-				var types = data.types || 8;
+				var types = data.types || data.type;
 
 				if(bool){ // 本地回放
 					var target = oFileUIwarp.eq(localSearchWindNum);
 					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
+						var color = [];
+		                    color[1] = '#F00';
+		                    color[8] = '#33CC00';
+		                    color[2] = '#0000FF';
 					target.attr({
 						id:'wind_'+data.wndId,
 						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
 					}).find('label').html(wind).attr('wind',data.wndId);
+					
+					str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+					
 				}else{
 					var chl = parseInt(data.channelnum -1),
 						ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
+					var color = [];
+						color[1] = '#F00';
+						color[2] = '#33CC00';
+						color[4] = '#FFFF00';
+						color[8] = '#0000FF';
 					var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
 							id:'Rel_channel_'+ChannelData.channel_id,
 							title:'设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name
 						}).find('label').html(ChannelData.channel_name).end();
+						
+				    str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 				}
-
-				str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 			}
 			$(str).appendTo(target);
 		}
@@ -806,18 +818,21 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		//groupStop();
 		//console.time('--本地远程控件调整--');
+		$('#type').next('ul.option').find('li').show();
 		if(bool){
 			oPlayBack.style.height='0px';
 			/*oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();*/
 			oPlaybackLocl.style.height='100%';
-			$('#type').next('ul.option').find('li:eq(3)').hide();
+			$('#type').next('ul.option').find('li').show();
+			$('#type').next('ul.option').find('li:gt(1):lt(3)').hide();
 		}else{
 			oPlaybackLocl.style.height='0px';
 			/*oPlaybackLocl.GroupStop();
 			oPlaybackLocl.GroupSpeedNormal();*/
 			oPlayBack.style.height='100%';
 			$('#type').next('ul.option').find('li').show();
+			$('#type').next('ul.option').find('li:gt(4)').hide();
 		}	
 
 		var objStatus = getAudioObj().GetCurrentState();
