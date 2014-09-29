@@ -216,20 +216,19 @@ int LocalPlayerEx::searchVideoFileEx( const QString &sDevName, const QString& sD
 
 QString LocalPlayerEx::getTypeList( int nTypes )
 {
-	QString typeList;
-	int pos = 0;
+	QStringList typeList;
+	int pos = 1;
 	while (nTypes > 0)
 	{
 		if (nTypes & 1)
 		{
-			typeList += (0 == pos) ? QString::number(pos) : ("*" + QString::number(pos));
+			typeList<<"nRecordType=" + QString::number(pos);
 		}
 		pos++;
 		nTypes = nTypes>>1;
 	}
 
-	typeList = "nRecordType=" + typeList.replace("*", " or nRecordType=");
-	return typeList;
+	return typeList.join(" or ");
 }
 
 int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )

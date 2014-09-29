@@ -188,13 +188,29 @@ void QFileData::run()
 			{
 				iter->curPos = fileHead->tIFrameIndex.uiFirstIFrame[iter.key()];
 			}
-			//find right position
-			tagFileFrameHead *pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-			while (pFileFrameHead->tPerFrameIndex.uiPreFrame > 0)
+			//find first frame for current channel in file
+			tagFileFrameHead *pFileFrameHead = NULL;
+			if (!iter->curPos)
 			{
-				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + pFileFrameHead->tPerFrameIndex.uiPreFrame);
-				iter->curPos = pFileFrameHead->tPerFrameIndex.uiPreFrame;
+				//no I frame in this file
+				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + sizeof(tagFileHead));
+				while (pFileFrameHead->tFrameHead.uiChannel != iter.key())
+				{
+					pFileFrameHead = (tagFileFrameHead *)((char*)pFileFrameHead + sizeof(tagFileFrameHead) - sizeof(pFileFrameHead->tFrameHead.pBuffer) + pFileFrameHead->tFrameHead.uiLength);
+				}
+			} 
+			else
+			{
+				//find first I frame
+				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+				while (pFileFrameHead->tPerFrameIndex.uiPreFrame > 0)
+				{
+					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + pFileFrameHead->tPerFrameIndex.uiPreFrame);
+					iter->curPos = pFileFrameHead->tPerFrameIndex.uiPreFrame;
+				}
 			}
+
+			//find right position
 			if (iter->bIsFirstRead)
 			{
 				while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
@@ -251,7 +267,11 @@ void QFileData::run()
 				}
 				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
 			}
+
+			qDebug()<<__FUNCTION__<<__LINE__<<"wndId: "<<iter.key()<<" buff size: "<<iter->pBuffList->size();
+
 			++iter;
+
 		}
 	}
 
