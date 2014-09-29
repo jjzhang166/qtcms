@@ -426,9 +426,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			recFile.push($.parseJSON(data[i]));	
 		}
 		if(bool && data.index_0){
-			RecFileInfo2UI(data)
-			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);*/
+			RecFileInfo2UI(data);
+			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);
 		}
 
 		/*if(!bool)
@@ -811,7 +811,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/*oPlayBack.GroupStop();
 			oPlayBack.GroupSpeedNormal();*/
 			oPlaybackLocl.style.height='100%';
-			$('#type').next('ul.option').find('li:gt(1)').hide();
+			$('#type').next('ul.option').find('li:eq(3)').hide();
 		}else{
 			oPlaybackLocl.style.height='0px';
 			/*oPlaybackLocl.GroupStop();
