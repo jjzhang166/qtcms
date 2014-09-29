@@ -88,7 +88,8 @@ void deInitMgrDataBase(quintptr *nThis){
 		g_tMgrDataBase.remove(sDeleteList.at(i));
 	}
 }
-OperationDatabase::OperationDatabase(void):m_pDisksSetting(NULL)
+OperationDatabase::OperationDatabase(void):m_pDisksSetting(NULL),
+	m_pNewFile(NULL)
 {
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IDiskSetting,(void**)&m_pDisksSetting);
 	if (NULL==m_pDisksSetting)
@@ -100,6 +101,8 @@ OperationDatabase::OperationDatabase(void):m_pDisksSetting(NULL)
 	}
 	m_tSystemDatabaseInfo.uiDiskReservedSize=5400;
 	m_tSystemDatabaseInfo.bIsRecover=false;
+	m_pNewFile=new char[FILLNEWFILESIZE];
+	memset(m_pNewFile,0,FILLNEWFILESIZE);
 }
 
 
@@ -111,6 +114,11 @@ OperationDatabase::~OperationDatabase(void)
 		m_pDisksSetting=NULL;
 	}else{
 		//do nothing
+	}
+	if (NULL!=m_pNewFile)
+	{
+		delete m_pNewFile;
+		m_pNewFile=NULL;
 	}
 	deInitMgrDataBase(( quintptr*)this);
 }
@@ -192,6 +200,14 @@ bool OperationDatabase::createRecordDatabase( QString sDatabasePath )
 			}
 			sCommand.clear();
 			sCommand=QString("create index nStartTime_index on RecordFileStatus (nStartTime)");
+			if (_query.exec(sCommand))
+			{
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
+				abort();
+			}
+			sCommand.clear();
+			sCommand=QString("create index nFileNum_index on RecordFileStatus (nFileNum)");
 			if (_query.exec(sCommand))
 			{
 			}else{
@@ -571,6 +587,9 @@ void OperationDatabase::run()
 						QString sFilePath=tInfo.value("sWriteFilePath").toString();
 						tInfo.insert("nLock",0);
 						priSetRecordFileStatusEx(sFilePath,tInfo);
+						tInfo.clear();
+						tInfo.insert("nInUse",1);
+						priSetRecordFileStatusEx(sFilePath,tInfo);
 					}else{
 						//do nothing
 					}
@@ -655,7 +674,13 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 		case obtainFilePath_diskUsable:{
 			//有剩余空间的可录像的盘符
 			sFilePath=getLatestItemEx(sUsableDiks);
-			bFlag=1;
+			if (sFilePath.isEmpty())
+			{
+				abort();
+			}else{
+				//do nothing
+			}
+			bFlag=0;
 			nStep=obtainFilePath_createFile;
 									   }
 									   break;
@@ -665,108 +690,40 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 			{
 				//每个盘符都已经录满
 				QStringList sDiskListInDatabase=sDiskList.split(":");
-				QList<QString> tFilePathList;
+				QMap<QString,quint64> tFilePathList;
 				foreach(QString sDiskEx,sDiskListInDatabase){
 					sDiskEx=sDiskEx+":";
-					QString sFilePathItem=getOldestItemEx(sDiskEx);
+					quint64 uiStartTime=0;
+					QString sFilePathItem=getOldestItemEx(sDiskEx,uiStartTime);
 					if (!sFilePathItem.isEmpty())
 					{
-						tFilePathList.append(sFilePathItem);
+						tFilePathList.insert(sFilePathItem,uiStartTime);
 					}else{
 						//do nothing
 					}
 				}
-				if (!tFilePathList.isEmpty())
-				{
-					//查找出几个盘符最早的文件
-					//把查找到最早文件的数据库内的相关信息删除
-					//fix me
-					quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
-					quint64 uiCurrentDateTime=uiStartTime;
-					QString sOldestFile;
-					QString sOldestFileTemp;
-					for (int i=0;i<tFilePathList.size();i++)
+				QMap<QString,quint64>::const_iterator tItem=tFilePathList.constBegin();
+				quint64 uiOldestTime=QDateTime::currentDateTime().toTime_t();
+				QString sOldestPath;
+				while(tItem!=tFilePathList.constEnd()){
+					QString sFilePathTemp=tItem.key();
+					quint64 uiTime=tItem.value();
+					if (uiTime<uiOldestTime)
 					{
-						QString sFilePathItem=tFilePathList.at(i);
-						if (QFile::exists(sFilePathItem))
-						{
-							QFile tFile;
-							tFile.setFileName(sFilePathItem);
-							if (tFile.open(QIODevice::ReadWrite))
-							{
-								m_tFileHead.clear();
-								m_tFileHead=tFile.read(sizeof(tagFileHead));
-								/*m_tFileHead=tFile.readAll();*/
-								if (m_tFileHead.size()>=sizeof(tagFileHead))
-								{
-									tagFileHead *pFileHead=(tagFileHead*)m_tFileHead.data();
-									if (NULL!=pFileHead)
-									{
-										if (m_tFileHead.contains("JUAN"))
-										{
-											if (pFileHead->uiStart>uiCurrentDateTime)
-											{
-												priClearInfoInDatabase(sFilePath);
-												QVariantMap tInfo;
-												tInfo.insert("nDamage",1);
-												priSetRecordFileStatusEx(sFilePathItem,tInfo);
-											}else{
-												if (pFileHead->uiStart<uiStartTime)
-												{
-													uiStartTime=pFileHead->uiStart;
-													sOldestFile=sFilePathItem;
-												}else{
-													//do nothing
-													sOldestFileTemp=sFilePathItem;
-												}
-											}
-										}else{
-											//do nothing
-											priClearInfoInDatabase(sFilePathItem);
-											sOldestFileTemp=sFilePathItem;
-										}
-									}else{
-										//do nothing
-										qDebug()<<__FUNCTION__<<__LINE__<<"pFileHead should not been null";
-										abort();
-									}
-									tFile.close();
-								}else{
-									sOldestFile=sFilePathItem;
-									tFile.close();
-									break;
-								}
-							}else{
-								//do nothing
-								QVariantMap tInfo;
-								tInfo.insert("nDamage",1);
-								priSetRecordFileStatusEx(sFilePathItem,tInfo);
-							}
-						}else{
-							//do nothing
-							priClearInfoInDatabase(sFilePathItem);
-							sOldestFileTemp=sFilePathItem;
-						}
-					}
-					if (sOldestFile.isEmpty())
-					{
-						sOldestFile=sOldestFileTemp;
+						sOldestPath=sFilePathTemp;
+						uiOldestTime=uiTime;
 					}else{
 						//do nothing
 					}
-					if (sOldestFile.isEmpty())
-					{
-						qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
-						nStep=obtainFilePath_fail;
-					}else{
-						sFilePath=sOldestFile;
-						priClearInfoInDatabase(sFilePath);
-						bFlag=0;
-						nStep=obtainFilePath_createFile;
-					}
-				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space";
+					++tItem;
+				}
+				if (sOldestPath.isEmpty())
+				{
 					nStep=obtainFilePath_fail;
+					qDebug()<<__FUNCTION__<<__LINE__<<"obtainFilePath_fail as there is no item for cover";
+				}else{
+					nStep=obtainFilePath_createFile;
+					sFilePath=sOldestPath;
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as there is no disk space and bIsRecover is false";
@@ -792,6 +749,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 			//获取录像文件路径成功
 			QVariantMap tInfo;
 			tInfo.insert("nLock",1);
+			bFlag=0;
 			priSetRecordFileStatusEx(sFilePath,tInfo);
 			nStep=obtainFilePath_end;
 									}
@@ -1133,6 +1091,12 @@ bool OperationDatabase::createNewFile( QString sFilePath )
 		}
 		if (tFile.open(QIODevice::ReadWrite))
 		{
+			int nPos=FILLNEWFILESIZE;
+			quint64 uiFileSize=BUFFERSIZE*1024*1024;
+			while(nPos<=uiFileSize){
+				tFile.write(m_pNewFile,FILLNEWFILESIZE);
+				nPos=nPos+FILLNEWFILESIZE;
+			}
 			tFile.close();
 			return true;
 		}else{
@@ -1218,19 +1182,21 @@ QString OperationDatabase::getLatestItemEx( QString sDisk )
 	//获取最新的文件路径
 	//step1:查找数据库中最新的文件路径,没有的话，直接创建
 	//step2:根据数据库最新的文件路径，判断文件是否写满，为满则续写，满的话则新起一个文件
-	QString sFilePath=getLatestItemExx(sDisk);
-	if (sFilePath.isEmpty())
-	{
-		sFilePath=createLatestItemEx(sDisk);
-	}else{
-		if (checkFileIsFull(sFilePath))
-		{
-			sFilePath=createLatestItemEx(sDisk);
-		}else{
-			//do nothing
-		}
-	}
+	QString sFilePath=createLatestItemEx(sDisk);
 	return sFilePath;
+	//QString sFilePath=getLatestItemExx(sDisk);
+	//if (sFilePath.isEmpty())
+	//{
+	//	sFilePath=createLatestItemEx(sDisk);
+	//}else{
+	//	if (checkFileIsFull(sFilePath))
+	//	{
+	//		sFilePath=createLatestItemEx(sDisk);
+	//	}else{
+	//		//do nothing
+	//	}
+	//}
+	//return sFilePath;
 }
 
 bool OperationDatabase::priUpdateRecordDatabase( QList<int> tIdList,QVariantMap tInfo,QString sFilePath )
@@ -1803,7 +1769,7 @@ bool OperationDatabase::PriGetMaxDatabaseId( quint64 &uiMaxRecordId,quint64 &uiM
 	}
 	return false;
 }
-QString OperationDatabase::getOldestItemEx(QString sDisk){
+QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 	QString sRecordDatabasePath=sDisk+"/recEx/record.db";
 	QFile tFile;
 	QString sOldestFilePath;
@@ -1822,12 +1788,13 @@ QString OperationDatabase::getOldestItemEx(QString sDisk){
 				switch(nStep){
 				case 0:{
 					//
-					sCommand=QString("select sFilePath from RecordFileStatus where nStartTime=(select min(nStartTime) from RecordFileStatus where nInUse=1 and nLock=0 and nDamage=0)");
+					sCommand=QString("select sFilePath,nStartTime from RecordFileStatus where nStartTime=(select min(nStartTime) from RecordFileStatus where nInUse=1 and nLock=0 and nDamage=0)");
 					if (_query.exec(sCommand))
 					{
 						if (_query.next())
 						{
 							sFileNameTemp=_query.value(0).toString();
+							uiStartTime=_query.value(1).toUInt();
 							nStep=1;
 						}else{
 							nStep=2;
@@ -1844,7 +1811,16 @@ QString OperationDatabase::getOldestItemEx(QString sDisk){
 					tFileTemp.setFileName(sFileNameTemp);
 					if (tFileTemp.exists())
 					{
-						nStep=2;
+						if (tFileTemp.open(QIODevice::ReadWrite))
+						{
+							nStep=2;
+							tFileTemp.close();
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"open file fail:"<<sFileNameTemp;
+							priClearInfoInDatabase(sFileNameTemp);
+							sCommand=QString("update RecordFileStatus set nInUse=0 where sFilePath='%1'").arg(sFileNameTemp);
+							nStep=0;
+						}
 					}else{
 						nStep=0;
 						//文件不存在,删除数据库相关信息
@@ -1876,127 +1852,127 @@ QString OperationDatabase::getOldestItemEx(QString sDisk){
 	}
 	return sOldestFilePath;
 }
-QString OperationDatabase::getOldestItemExx( QString sDisk )
-{
-	QString sRecordDatabasePath=sDisk+"/recEx/record.db";
-	QFile tFile;
-	QString sOldestFile;
-	tFile.setFileName(sRecordDatabasePath);
-	if (tFile.exists())
-	{
-		QSqlDatabase *pDataBase=initMgrDataBase(sRecordDatabasePath,(quintptr*)this);
-		if (pDataBase!=NULL)
-		{
-			QSqlQuery _query(*pDataBase);
-			QString sCommand;
-			int nStep=0;
-			bool bStop=false;
-			quint64 uiCurrentDateTime=QDateTime::currentDateTime().toTime_t();
-			quint64 uiEndTime=0;
-			QList<QString> tAbandonFilePath;
-			while(bStop==false){
-				switch(nStep){
-				case 0:{
-					//查找最早的记录
-					sCommand.clear();
-					sCommand=QString("select id,sFilePath,nStartTime from record where nStartTime=(select min(nStartTime) from record where nStartTime <%1 and nStartTime>%2)").arg(uiCurrentDateTime).arg(uiEndTime);
-					if (_query.exec(sCommand))
-					{
-						QString sFilePathTemp;
-						bool bFound=false;
-						while(_query.next()&&bFound==false){
-							sFilePathTemp=_query.value(1).toString();
-							if (tAbandonFilePath.contains(sFilePathTemp))
-							{
-								//keep going
-								sFilePathTemp.clear();
-							}else{
-								bFound=true;
-							}
-						}
-						if (!sFilePathTemp.isEmpty())
-						{
-							sCommand.clear();
-							sCommand=QString("select max(nEndTime) from record where sFilePath='%1'").arg(sFilePathTemp);
-							if (_query.exec(sCommand))
-							{
-								if (_query.next())
-								{
-									uiEndTime=_query.value(0).toUInt();
-									sCommand.clear();
-									sCommand=QString("select id,nLock,nDamage,nInUse from RecordFileStatus where sFilePath='%1'").arg(sFilePathTemp);
-									if (_query.exec(sCommand))
-									{
-										if (_query.next())
-										{
-											int nLock=_query.value(1).toInt();
-											int nDamage=_query.value(1).toInt();
-											if (nLock==1||nDamage==1)
-											{
-												nStep=0;
-												tAbandonFilePath.append(sFilePathTemp);
-												sFilePathTemp.clear();
-											}else{
-												QFile sFileFound;
-												sFileFound.setFileName(sFilePathTemp);
-												if (sFileFound.exists())
-												{
-													sOldestFile=sFilePathTemp;
-													nStep=1;
-												}else{
-													nStep=0;
-													tAbandonFilePath.append(sFilePathTemp);
-													priClearInfoInDatabase(sFilePathTemp);
-													sFilePathTemp.clear();
-												}
-											}
-										}else{
-											QFile tFile;
-											tFile.setFileName(sFilePathTemp);
-											if (tFile.exists())
-											{
-												nStep=0;
-											}else{
-												sOldestFile=sFilePathTemp;
-												nStep=1;
-											}
-										}
-									}else{
-										qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
-										abort();
-									}
-								}else{
-									qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand<<_query.lastError();
-									abort();
-								}
-							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
-								abort();
-							}
-						}else{
-							nStep=1;
-						}
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
-						abort();
-					}
-					   }
-					   break;
-				case 1:{
-					//end
-					bStop=true;
-					   }
-					   break;
-				}
-			}
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"getOldestItem fail as pDataBase is null";
-		}
-	}else{
-		//do nothing
-	}
-	return sOldestFile;
-}
+//QString OperationDatabase::getOldestItemExx( QString sDisk )
+//{
+//	QString sRecordDatabasePath=sDisk+"/recEx/record.db";
+//	QFile tFile;
+//	QString sOldestFile;
+//	tFile.setFileName(sRecordDatabasePath);
+//	if (tFile.exists())
+//	{
+//		QSqlDatabase *pDataBase=initMgrDataBase(sRecordDatabasePath,(quintptr*)this);
+//		if (pDataBase!=NULL)
+//		{
+//			QSqlQuery _query(*pDataBase);
+//			QString sCommand;
+//			int nStep=0;
+//			bool bStop=false;
+//			quint64 uiCurrentDateTime=QDateTime::currentDateTime().toTime_t();
+//			quint64 uiEndTime=0;
+//			QList<QString> tAbandonFilePath;
+//			while(bStop==false){
+//				switch(nStep){
+//				case 0:{
+//					//查找最早的记录
+//					sCommand.clear();
+//					sCommand=QString("select id,sFilePath,nStartTime from record where nStartTime=(select min(nStartTime) from record where nStartTime <%1 and nStartTime>%2)").arg(uiCurrentDateTime).arg(uiEndTime);
+//					if (_query.exec(sCommand))
+//					{
+//						QString sFilePathTemp;
+//						bool bFound=false;
+//						while(_query.next()&&bFound==false){
+//							sFilePathTemp=_query.value(1).toString();
+//							if (tAbandonFilePath.contains(sFilePathTemp))
+//							{
+//								//keep going
+//								sFilePathTemp.clear();
+//							}else{
+//								bFound=true;
+//							}
+//						}
+//						if (!sFilePathTemp.isEmpty())
+//						{
+//							sCommand.clear();
+//							sCommand=QString("select max(nEndTime) from record where sFilePath='%1'").arg(sFilePathTemp);
+//							if (_query.exec(sCommand))
+//							{
+//								if (_query.next())
+//								{
+//									uiEndTime=_query.value(0).toUInt();
+//									sCommand.clear();
+//									sCommand=QString("select id,nLock,nDamage,nInUse from RecordFileStatus where sFilePath='%1'").arg(sFilePathTemp);
+//									if (_query.exec(sCommand))
+//									{
+//										if (_query.next())
+//										{
+//											int nLock=_query.value(1).toInt();
+//											int nDamage=_query.value(1).toInt();
+//											if (nLock==1||nDamage==1)
+//											{
+//												nStep=0;
+//												tAbandonFilePath.append(sFilePathTemp);
+//												sFilePathTemp.clear();
+//											}else{
+//												QFile sFileFound;
+//												sFileFound.setFileName(sFilePathTemp);
+//												if (sFileFound.exists())
+//												{
+//													sOldestFile=sFilePathTemp;
+//													nStep=1;
+//												}else{
+//													nStep=0;
+//													tAbandonFilePath.append(sFilePathTemp);
+//													priClearInfoInDatabase(sFilePathTemp);
+//													sFilePathTemp.clear();
+//												}
+//											}
+//										}else{
+//											QFile tFile;
+//											tFile.setFileName(sFilePathTemp);
+//											if (tFile.exists())
+//											{
+//												nStep=0;
+//											}else{
+//												sOldestFile=sFilePathTemp;
+//												nStep=1;
+//											}
+//										}
+//									}else{
+//										qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
+//										abort();
+//									}
+//								}else{
+//									qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCommand<<_query.lastError();
+//									abort();
+//								}
+//							}else{
+//								qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
+//								abort();
+//							}
+//						}else{
+//							nStep=1;
+//						}
+//					}else{
+//						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
+//						abort();
+//					}
+//					   }
+//					   break;
+//				case 1:{
+//					//end
+//					bStop=true;
+//					   }
+//					   break;
+//				}
+//			}
+//		}else{
+//			qDebug()<<__FUNCTION__<<__LINE__<<"getOldestItem fail as pDataBase is null";
+//		}
+//	}else{
+//		//do nothing
+//	}
+//	return sOldestFile;
+//}
 
 QString OperationDatabase::getLatestItemExx( QString sDisk )
 {

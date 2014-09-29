@@ -15,6 +15,7 @@
 //1.单盘大小不能超过：256*256*256*128M
 //2.
 #define MAXFILENUM 256
+#define FILLNEWFILESIZE 1048576
 typedef struct __tagSystemDatabaseInfo{
 	QString sAllRecordDisk;//所有的录像盘符
 	volatile bool bIsRecover;//是否覆盖录像
@@ -85,8 +86,8 @@ private:
 	bool checkFileIsFull(QString sFilePath);
 	QString getLatestItemEx(QString sDisk);//d:
 	QString getLatestItemExx(QString sDisk);//d:
-	QString getOldestItemEx(QString sDisk);//d:
-	QString getOldestItemExx(QString sDisk);//d:
+	QString getOldestItemEx(QString sDisk,quint64 &uiStartTime);//d:
+	//QString getOldestItemExx(QString sDisk);//d:
 	QString getUsableDiskEx(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
 private:
 	IDisksSetting *m_pDisksSetting;
@@ -96,6 +97,7 @@ private:
 	QQueue<tagCodeWithParm> m_tStepCode;
 	bool m_bStop;
 	QByteArray m_tFileHead;
+	char *m_pNewFile;
 	QMutex m_tStepCodeLock;
 	QMutex m_tObtainFilePathLock;
 	QQueue<QVariantMap> m_tObtainFilePathResult;//sWriteFilePath nReturn

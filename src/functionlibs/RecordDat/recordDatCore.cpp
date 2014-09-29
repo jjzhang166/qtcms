@@ -157,6 +157,9 @@ void recordDatCore::run()
 			}else{
 				//nWriteType==ADDWRITE
 				//把原文件的内容读到内存中，进行续写
+				//===============不采用 续写模式===============
+				qDebug()<<__FUNCTION__<<__LINE__<<"abandon add wtirte mode";
+				abort();
 				memset(m_pDataBuffer,0,BUFFERSIZE*1024*1024);
 				QFile tFile;
 				tFile.setFileName(sWriteFilePath);
@@ -197,6 +200,7 @@ void recordDatCore::run()
 						qDebug()<<__FUNCTION__<<__LINE__<<"this file is undefined type,i will over write it";
 					}
 					tFile.close();
+					//===============不采用 续写模式===============
 				}else{
 					//出现文件打开错误，启动重启
 					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as open file fail";
@@ -211,7 +215,6 @@ void recordDatCore::run()
 			if (memcmp(pMagic,pFileHead->ucMagic,4)==0)
 			{
 				//do nothing
-
 			}else{
 				memcpy(pFileHead->ucMagic,pMagic,4);
 				pFileHead->uiChannels[0]=0;
@@ -231,210 +234,63 @@ void recordDatCore::run()
 			m_tFileInfo.tFristIFrameIndex.clear();
 			m_tFileInfo.tHistoryFrameIndex.clear();
 			m_tFileInfo.tHistoryIFrameIndex.clear();
-			unsigned int uiCurrentIndex=sizeof(tagFileHead);
-			bool bStop=false;
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
-			while(bStop==false){
-				if (uiCurrentIndex<pFileHead->uiIndex)
-				{
-					tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-					int nChannel=pFileFrameHead->tFrameHead.uiChannel;
-					//test file first: 
-					if (pFileFrameHead->tFrameHead.uiChannel>=0&&pFileFrameHead->tFrameHead.uiChannel<64)
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiChannel is out of range"<<pFileFrameHead->tFrameHead.uiChannel;
-						abort();
-					}
-					if (pFileFrameHead->tFrameHead.uiRecType==MOTIONRECORD||pFileFrameHead->tFrameHead.uiRecType==TIMERECORD||pFileFrameHead->tFrameHead.uiRecType==MANUALRECORD)
-					{
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiRecType is undefined";
-						abort();
-					}
-					if (pFileFrameHead->tFrameHead.uiSessionId>0)
-					{
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiSessionId is out of range"<<pFileFrameHead->tFrameHead.uiSessionId;
-						abort();
-					}
-					if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig||pFileFrameHead->tFrameHead.uiType==FT_AudioConfig||pFileFrameHead->tFrameHead.uiType==FT_PFrame||pFileFrameHead->tFrameHead.uiType==FT_Audio||pFileFrameHead->tFrameHead.uiType==FT_IFrame)
-					{
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiType is undefined"<<pFileFrameHead->tFrameHead.uiType;
-						abort();
-					}
-					//test file first: over
+			//while(bStop==false){
+			//	if (uiCurrentIndex<pFileHead->uiIndex)
+			//	{
+			//		tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
+			//		int nChannel=pFileFrameHead->tFrameHead.uiChannel;
+			//		//test file first: 
+			//		if (pFileFrameHead->tFrameHead.uiChannel>=0&&pFileFrameHead->tFrameHead.uiChannel<64)
+			//		{
+			//			//keep going
+			//		}else{
+			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiChannel is out of range"<<pFileFrameHead->tFrameHead.uiChannel;
+			//			abort();
+			//		}
+			//		if (pFileFrameHead->tFrameHead.uiRecType==MOTIONRECORD||pFileFrameHead->tFrameHead.uiRecType==TIMERECORD||pFileFrameHead->tFrameHead.uiRecType==MANUALRECORD)
+			//		{
+			//		}else{
+			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiRecType is undefined";
+			//			abort();
+			//		}
+			//		if (pFileFrameHead->tFrameHead.uiSessionId>0)
+			//		{
+			//		}else{
+			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiSessionId is out of range"<<pFileFrameHead->tFrameHead.uiSessionId;
+			//			abort();
+			//		}
+			//		if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig||pFileFrameHead->tFrameHead.uiType==FT_AudioConfig||pFileFrameHead->tFrameHead.uiType==FT_PFrame||pFileFrameHead->tFrameHead.uiType==FT_Audio||pFileFrameHead->tFrameHead.uiType==FT_IFrame)
+			//		{
+			//		}else{
+			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiType is undefined"<<pFileFrameHead->tFrameHead.uiType;
+			//			abort();
+			//		}
+			//		//test file first: over
 
-					if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
-					{
-						//通道的第一个I帧
-						if (!m_tFileInfo.tFristIFrameIndex.contains(nChannel))
-						{
-							m_tFileInfo.tFristIFrameIndex.insert(nChannel,uiCurrentIndex);
-						}else{
-							//do nothing
-						}
-						//通道的最后一个I帧的位置
-						m_tFileInfo.tHistoryIFrameIndex.insert(nChannel,uiCurrentIndex);
-					}else{
-						//do nothing
-					}
-					//通道最后一个帧的位置
-					m_tFileInfo.tHistoryFrameIndex.insert(nChannel,uiCurrentIndex);
+			//		if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
+			//		{
+			//			//通道的第一个I帧
+			//			if (!m_tFileInfo.tFristIFrameIndex.contains(nChannel))
+			//			{
+			//				m_tFileInfo.tFristIFrameIndex.insert(nChannel,uiCurrentIndex);
+			//			}else{
+			//				//do nothing
+			//			}
+			//			//通道的最后一个I帧的位置
+			//			m_tFileInfo.tHistoryIFrameIndex.insert(nChannel,uiCurrentIndex);
+			//		}else{
+			//			//do nothing
+			//		}
+			//		//通道最后一个帧的位置
+			//		m_tFileInfo.tHistoryFrameIndex.insert(nChannel,uiCurrentIndex);
 
-					uiCurrentIndex=uiCurrentIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFileFrameHead->tFrameHead.pBuffer);
-				}else{
-					bStop=true;
-				}
-			}
-			//test file second:
-			//test step 1:I frame
-			QMap<int ,int >::const_iterator tItem=m_tFileInfo.tFristIFrameIndex.constBegin();
-			while(tItem!=m_tFileInfo.tFristIFrameIndex.constEnd()){
-				unsigned int uiChannel=tItem.key();
-				unsigned int uiCurrentIndex=tItem.value();
-				if (uiCurrentIndex>=BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"uiCurrentIndex out of range"<<uiCurrentIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				tagFileFrameHead *pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-				unsigned int uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
-				if (uiNextIndex>=BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"uiNextIndex out of range"<<uiNextIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				if (pFileHead->uiIndex>BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"pFileHead->uiIndex out of range"<<pFileHead->uiIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				tagFileFrameHead *pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
-				while(uiNextIndex!=0&&uiCurrentIndex<pFileHead->uiIndex&&uiNextIndex<pFileHead->uiIndex){
-					if (pNextFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiType!=FT_VideoConfig";
-						abort();
-					}
-					if (pNextFileFrameHead->tFrameHead.uiChannel==uiChannel)
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiChannel!=uiChannel"<<uiChannel<<pNextFileFrameHead->tFrameHead.uiChannel;
-						abort();
-					}
-					uiCurrentIndex=uiNextIndex;
-					pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-					uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
-					pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
-					if (uiNextIndex==0)
-					{
-						if (m_tFileInfo.tHistoryIFrameIndex.contains(uiChannel))
-						{
-							if (uiCurrentIndex==m_tFileInfo.tHistoryIFrameIndex.value(uiChannel))
-							{
-							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<"please checkout ,there must some error while write file";
-								abort();
-							}
-						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"please checkout ,there must some error while write file";
-							abort();
-						}
-					}else{
-						//do nothing
-					}
-				}
-				++tItem;
-			}
-			//test setp 2:per frame
-			QMap<int ,int >::const_iterator tItemPerFrame=m_tFileInfo.tHistoryFrameIndex.constBegin();
-			while(tItemPerFrame!=m_tFileInfo.tHistoryFrameIndex.constEnd()){
-				unsigned int uiChannel=tItemPerFrame.key();
-				unsigned int uiCurrentIndex=tItemPerFrame.value();
-				if (uiCurrentIndex>=BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"uiCurrentIndex out of range"<<uiCurrentIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				tagFileFrameHead *pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-				unsigned int uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextFrame;
-				if (uiNextIndex>=BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"uiNextIndex out of range"<<uiNextIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				if (pFileHead->uiIndex>BUFFERSIZE*1024*1024)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"pFileHead->uiIndex out of range"<<pFileHead->uiIndex;
-					abort();
-				}else{
-					//do nothing
-				}
-				tagFileFrameHead *pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
-				bool bIframe=false;
-				if (m_tFileInfo.tFristIFrameIndex.contains(uiChannel))
-				{
-					bIframe=true;
-				}else{
-					//do nothing
-				}
-				while(uiNextIndex!=0&&uiNextIndex<pFileHead->uiIndex&&uiCurrentIndex<pFileHead->uiIndex){
-					if (pNextFileFrameHead->tFrameHead.uiChannel==uiChannel)
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pNextFileFrameHead->tFrameHead.uiChannel!=uiChannel"<<uiChannel<<pNextFileFrameHead->tFrameHead.uiChannel;
-						abort();
-					}
-					if (bIframe)
-					{
-						uint uiPerIFrameIndex=pNextFileFrameHead->tPerFrameIndex.uiPreIFrame;
-						if (uiPerIFrameIndex!=0)
-						{
-							tagFileFrameHead *pPerIFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiPerIFrameIndex);
-							if (pPerIFrameHead->tFrameHead.uiChannel==uiChannel)
-							{
-								//keep going
-							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pPerIFrameHead->tFrameHead.uiChannel!=uiChannel";
-								abort();
-							}
-							if (pPerIFrameHead->tFrameHead.uiType==FT_VideoConfig)
-							{
-							}else{
-								qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pPerIFrameHead->tFrameHead.uiType!=FT_VideoConfig";
-								abort();
-							}
-						}else{
-							//do nothing
-						}
-					}else{
-						//do nothing
-					}
-					uiCurrentIndex=uiNextIndex;
-					pCurFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-					uiNextIndex=pCurFileFrameHead->tPerFrameIndex.uiNextIFrame;
-					pNextFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiNextIndex);
-				}
-				++tItemPerFrame;
-			}
+			//		uiCurrentIndex=uiCurrentIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFileFrameHead->tFrameHead.pBuffer);
+			//	}else{
+			//		bStop=true;
+			//	}
+			//}
 			m_bIsBlock=false;
 			nRunStep=recordDat_default;
 								  }
