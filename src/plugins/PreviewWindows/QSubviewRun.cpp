@@ -2025,7 +2025,7 @@ void QSubviewRun::sleepEx( int time )
 		m_nSleepSwitch++;
 	}else{
 		QEventLoop eventloop;
-		QTimer::singleShot(20, &eventloop, SLOT(quit()));
+		QTimer::singleShot(100, &eventloop, SLOT(quit()));
 		eventloop.exec();
 		m_nSleepSwitch=0;
 	}

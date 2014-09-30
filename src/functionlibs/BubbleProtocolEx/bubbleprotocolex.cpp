@@ -202,7 +202,7 @@ void BubbleProtocolEx::run()
 			//连接到设备
 			if (NULL!=m_pTcpSocket)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"m_pTcpSocket should be null on here,please check";
+				//qDebug()<<__FUNCTION__<<__LINE__<<"m_pTcpSocket should be null on here,please check";
 				/*delete m_pTcpSocket;*/
 				m_pTcpSocket=NULL;
 			}else{
@@ -725,18 +725,13 @@ void BubbleProtocolEx::run()
 						nRunStep=BUBBLE_RUN_CONTROL;
 						sleepEx(3);
 					}else{
-						//if (m_pTcpSocket->waitForReadyRead(20))
-						//{
-						//	nRunStep=BUBBLE_RUN_RECEIVE;
-						//}else{
-						//	sleepEx(3);
-						//	nRunStep=BUBBLE_RUN_DEFAULT;
-						//}
 						if (m_pTcpSocket->bytesAvailable()>0)
 						{
 							nRunStep=BUBBLE_RUN_RECEIVE;
 						}else{
-							sleepEx(3);
+							QEventLoop tEventLoop;
+							QTimer::singleShot(100,&tEventLoop,SLOT(quit()));
+							tEventLoop.exec();
 							nRunStep=BUBBLE_RUN_DEFAULT;
 						}
 					}
