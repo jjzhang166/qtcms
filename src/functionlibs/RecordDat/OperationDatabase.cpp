@@ -751,6 +751,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 			tInfo.insert("nLock",1);
 			bFlag=0;
 			priSetRecordFileStatusEx(sFilePath,tInfo);
+			priClearInfoInDatabase(sFilePath);
 			nStep=obtainFilePath_end;
 									}
 									break;

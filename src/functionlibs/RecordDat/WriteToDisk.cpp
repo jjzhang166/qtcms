@@ -87,7 +87,7 @@ void WriteToDisk::run()
 				{
 					QFile tFile;
 					tFile.setFileName(m_sFilePath);
-					if (tFile.open(QIODevice::WriteOnly|QIODevice::Truncate))
+					if (tFile.open(QIODevice::WriteOnly|QIODevice::Append))
 					{
 						if (tFile.reset())
 						{
