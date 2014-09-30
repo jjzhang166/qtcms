@@ -168,22 +168,23 @@ void PlayMgr::startPlay()
 void PlayMgr::stop()
 {
 	qDebug()<<"call stop start";
-	m_uiCurrentGMT = 0;
-	m_i32Width = 0;
-	m_i32Height = 0;
-	m_bIsSkiped = false;
 // 	m_bStop = true;
 	m_wcWait.wakeAll();//wake all if thread is sleep
 	if (m_bPause)
 	{
-		m_wcPause.wakeAll();
 		m_bPause = false;
+		m_wcPause.wakeAll();
 	}
 	if (isRunning())
 	{
 		m_bStop = true;
 		wait();
 	}
+
+	m_uiCurrentGMT = 0;
+	m_i32Width = 0;
+	m_i32Height = 0;
+	m_bIsSkiped = false;
 
 	m_skipTime.clear();
 	m_filePeriod.clear();

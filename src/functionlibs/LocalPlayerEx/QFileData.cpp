@@ -143,6 +143,8 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
 					{
+						delete[] pFileBuff1;
+						delete[] pFileBuff2;
 						return;
 					}
 					bufferStatusMap[curBuffer] = true;
@@ -156,6 +158,8 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff1, BUFFER_SIZE))
 					{
+						delete[] pFileBuff1;
+						delete[] pFileBuff2;
 						return;
 					}
 					bufferStatusMap[pFileBuff1] = true;
