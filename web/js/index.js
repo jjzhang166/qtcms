@@ -155,11 +155,11 @@ var oPreView,oDiv,
 			}
 		})
 			
-		bFullScreen = oCommonLibrary.getAutoFullscreen();
+		/*bFullScreen = oCommonLibrary.getAutoFullscreen();
 		
 		if(bFullScreen){
 			viewFullScreen();
-		}
+		}*/
 
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
@@ -180,7 +180,7 @@ var oPreView,oDiv,
 
 		oPreView.AddEventProc('ConnectRefuse','ConnectRefuse(ev)');
 		
-		oPreView.AddEventProc('wndStatus','viewFullScreen()');
+		oPreView.AddEventProc('wndStatus','ViewMax()');
 
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
@@ -199,7 +199,7 @@ var oPreView,oDiv,
 
 		bFullScreen = oCommonLibrary.getAutoFullscreen();
 
-		viewFullScreen();
+		//viewFullScreen();
 
 
 		initOxcDevListStatus();
@@ -616,20 +616,24 @@ var oPreView,oDiv,
 		    openCloseAll(1); //打开列表中的全部设备
 		   }
 	   }
-
+   	function viewFullScreenEx(){
+		$('#viewWarp').css({
+			width:'100%',
+			height:'100%',
+			top:0,
+			left:0,
+			position: 'absolute'
+		});
+		getAudioObj().SetFullScreenFlag();
+	}
+	
 	function viewFullScreen(){
+		
 		if(bFullScreen){
-			$('#viewWarp').css({
-				width:'100%',
-				height:'100%',
-				top:0,
-				left:0,
-				position: 'absolute'
-			});
-			getAudioObj().SetFullScreenFlag();
+			viewFullScreenEx();
 		}else{
 			ViewMax();
 		}
-
-		bFullScreen = !bFullScreen;
+        //bFullScreen = !bFullScreen;	
 	}
+
