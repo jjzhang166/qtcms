@@ -1052,10 +1052,10 @@ bool OperationDatabase::getMaxDatabaseId( quint64 &uiMaxRecordId,quint64 &uiMaxS
 		while(m_tGetMaxDatabaseIdResult.size()==0){
 			nSleepCount++;
 			msleep(10);
-			if (nSleepCount>500)
+			if (nSleepCount>500&&nSleepCount%100==0)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"getMaxDatabaseId fail as time cost 5s";
-				return false;
+				/*return false;*/
 			}
 		}
 		QVariantMap tInfoResult;
@@ -1064,7 +1064,7 @@ bool OperationDatabase::getMaxDatabaseId( quint64 &uiMaxRecordId,quint64 &uiMaxS
 		uiMaxRecordId=tInfoResult.value("uiMaxRecordId").toUInt();
 		return true;
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"getMaxDatabaseId fail as database thread is not runing";
+		qDebug()<<__FUNCTION__<<__LINE__<<"getMaxDatabaseId fail as database thread is not running";
 		return false;
 	}
 }

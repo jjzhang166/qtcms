@@ -45,11 +45,14 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 					}else{
 						//keep going
 					}
+					if (pFrameHead->uiType==PFRAME)
+					{
+						nCount++;
+					}
 					RecBufferNode *pRemoveRecBufferNode=NULL;
 					pRemoveRecBufferNode=m_tDataQueue.dequeue();
 					if (NULL!=pRemoveRecBufferNode)
 					{
-						nCount++;
 						pRemoveRecBufferNode->release();
 						pRemoveRecBufferNode=NULL;
 					}else{

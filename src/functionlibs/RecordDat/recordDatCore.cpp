@@ -89,6 +89,7 @@ void recordDatCore::run()
 			m_nWriteDiskTimeCount=0;
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
+			m_tOperationDatabase.stopOperationDatabase();
 			m_tOperationDatabase.startOperationDatabase();
 			m_tOperationDatabase.reloadSystemDatabase();
 			m_tRecordDatabaseMaxId.clear();
