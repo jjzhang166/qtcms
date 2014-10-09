@@ -10,6 +10,7 @@ int cbConnectRError(QString evName,QVariantMap evMap,void*pUser);
 int cbDecodeRFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordRState(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
+int cbAuthority(QString evName,QVariantMap evMap,void*pUser);
 bool QSubviewRun::m_bIsAudioOpen=false;
 unsigned int QSubviewRun::m_volumePersent=50;
 QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
@@ -45,7 +46,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
 //	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
-	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse";
+	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(4000);
 	m_hMainThread=QThread::currentThreadId();
@@ -1170,6 +1171,7 @@ bool QSubviewRun::registerCallback(int registcode)
 				pRegist->registerEvent(QString("CurrentStatus"),cbConnectRState,this);
 				pRegist->registerEvent(QString("ForRecord"),cbRecorderRData,this);
 				pRegist->registerEvent(QString("ConnectRefuse"),cbConnectRefuse,this);
+				pRegist->registerEvent(QString("Authority"),cbAuthority,this);
 				pRegist->Release();
 				pRegist=NULL;
 				return true;
@@ -2123,6 +2125,18 @@ int QSubviewRun::getRecordStatus()
 	}
 }
 
+int QSubviewRun::cbCAuthority( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evMap.contains("Authority"))
+	{
+		eventCallBack("Authority",evMap);
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient Authority fail";
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"undefined callBack event,please checkout";
+	}
+	return 0;
+}
+
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCConnectState(evName,evMap,pUser);
@@ -2154,4 +2168,9 @@ int cbRecordRState( QString evName,QVariantMap evMap,void*pUser )
 int cbConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCConnectRefuse(evName,evMap,pUser);
+}
+
+int cbAuthority( QString evName,QVariantMap evMap,void*pUser )
+{
+	return ((QSubviewRun*)pUser)->cbCAuthority(evName,evMap,pUser);
 }

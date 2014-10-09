@@ -373,8 +373,29 @@ int IpcDeviceClient::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 		if (true==bOpen)
 		{
 			//默认主码流为0
-			if (1==m_LiveStreamRequire->getLiveStream(nChannel,0))
+			IDeviceConnection *pDeviceConnection=NULL;
+			m_csDeInit.lock();
+			m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&pDeviceConnection);
+			m_csDeInit.unlock();
+			if (NULL!=pDeviceConnection)
 			{
+				pDeviceConnection->setDeviceAuthorityInfomation(m_DeviceInfo.m_sUserName,m_DeviceInfo.m_sPassword);
+				if (0==pDeviceConnection->authority())
+				{
+					if (1==m_LiveStreamRequire->getLiveStream(nChannel,0))
+					{
+						m_LiveStreamRequire->Release();
+						pDeviceConnection->Release();
+						return 1;
+					}else{
+						pDeviceConnection->Release();
+					}
+				}else{
+					m_LiveStreamRequire->Release();
+					pDeviceConnection->Release();
+					return 1;
+				}
+			}else{
 				m_LiveStreamRequire->Release();
 				return 1;
 			}

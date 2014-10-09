@@ -233,6 +233,8 @@ private:
 	volatile bool m_bWaitForConnect;
 	SearchRemoteFile m_tSearchRemoteFile;
     Qt::HANDLE m_nBuiltTreadId;
+	volatile bool m_bAuthorityFlag;
+	volatile bool m_bAuthorityWaitFlag;
 
 // motion detection
 private:

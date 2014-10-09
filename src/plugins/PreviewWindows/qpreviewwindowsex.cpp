@@ -17,6 +17,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(subWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
 
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
@@ -506,5 +507,20 @@ void qpreviewwindowsex::OnBackToMainWnd()
 	DEF_EVENT_PARAM(item);
 	EP_ADD_PARAM(item,"wndStatus","NormalScreen");
 	EventProcCall("wndStatus",item);
+}
+
+void qpreviewwindowsex::subWindowAuthority( QVariantMap evMap,QWidget *wnd )
+{
+	int i;
+	for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		if (&m_sPreviewWnd[i]==wnd)
+		{
+			break;
+		}
+	}
+	evMap.insert("WPageId",i);
+	EventProcCall("Authority",evMap);
+	return ;
 }
 

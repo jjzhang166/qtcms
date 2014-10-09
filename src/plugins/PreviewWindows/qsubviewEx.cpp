@@ -21,6 +21,7 @@ QWidget(parent),
 	m_sSubviewRun.registerEvent(QString("CurrentStatus"),cbStateChangeEx,this);
 	m_sSubviewRun.registerEvent(QString("RecordState"),cbRecordStateEx,this);
 	m_sSubviewRun.registerEvent(QString("ConnectRefuse"),cbConnectRefuseEx,this);
+	m_sSubviewRun.registerEvent(QString("Authority"),cbAuthorityEx,this);
 	//生成渲染的窗口
 	m_pManageWidget=new ManageWidget(this);
 	//右键菜单
@@ -194,6 +195,16 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 		emit sgconnectRefuse(evMapToUi,this);
 	}else{
 		//do noting
+	}
+	if (evMap.value("eventName")=="Authority")
+	{
+		QVariantMap evMapToUi;
+		evMapToUi.insert("Authority",false);
+		evMapToUi.insert("ChannelId",m_tDeviceInfo.m_uiChannelIdInDataBase);
+		qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"stop preview because as the device resource had been full";
+		emit sgAuthority(evMapToUi,this);
+	}else{
+		//do nothing
 	}
 }
 
@@ -756,6 +767,19 @@ int qsubviewEx::getRecordStatus()
 	return m_sSubviewRun.getRecordStatus();
 }
 
+int qsubviewEx::cbCAuthority( QVariantMap evMap )
+{
+	if (evMap.value("Authority").toBool()==false)
+	{
+		evMap.insert("eventName","Authority");
+		emit sgbackToMainThread(evMap);
+	}else{
+
+	}
+
+	return 0;
+}
+
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {
@@ -782,6 +806,18 @@ int cbConnectRefuseEx( QString evName,QVariantMap evMap,void*pUser )
 	if (evName=="ConnectRefuse")
 	{
 		((qsubviewEx*)pUser)->cbCConnectRefuse(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cbConnectRefuseEx fail as the eventName is not collect";
+		return 1;
+	}
+}
+
+int cbAuthorityEx( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="Authority")
+	{
+		((qsubviewEx*)pUser)->cbCAuthority(evMap);
 		return 0;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"cbConnectRefuseEx fail as the eventName is not collect";

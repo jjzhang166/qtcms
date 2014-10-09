@@ -33,6 +33,7 @@ BubbleProtocolEx::BubbleProtocolEx():
 		<<"StateChanged"
 		<<"recFileSearchFail"
 		<<"ConnectRefuse"
+		<<"Authority"
 		<<"MDSignal";
 	connect(this,SIGNAL(sgBackToMainThread(QVariantMap)),this,SLOT(slBackToMainThread(QVariantMap)),Qt::BlockingQueuedConnection);
 	connect(&m_tCheckoutBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckoutBlock()));
@@ -919,11 +920,37 @@ int BubbleProtocolEx::authority()
 		m_csStepCode.lock();
 		m_tStepCode.enqueue(BUBBLE_AUTHORITY);
 		m_csStepCode.unlock();
-		return 0;
+		m_bAuthorityFlag=false;
+		m_bAuthorityWaitFlag=true;
+		int nCount=0;
+		while(m_bAuthorityWaitFlag==true&&nCount<40){
+			QEventLoop tEventLoop;
+			QTimer::singleShot(50,&tEventLoop,SLOT(quit()));
+			tEventLoop.exec();
+			nCount++;
+		}
+		if (m_bAuthorityFlag==true)
+		{
+			QVariantMap tItem;
+			tItem.insert("Authority",true);
+			eventProcCall("Authority",tItem);
+			return 0;
+		}else{
+			QVariantMap tItem;
+			tItem.insert("Authority",false);
+			eventProcCall("Authority",tItem);
+			return 1;
+		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"authority fail as the current connect status is not in connected";
+		QVariantMap tItem;
+		tItem.insert("Authority",false);
+		eventProcCall("Authority",tItem);
 		return 1;
 	}
+	QVariantMap tItem;
+	tItem.insert("Authority",true);
+	eventProcCall("Authority",tItem);
 	return 0;
 }
 
@@ -1297,7 +1324,16 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 				tagBubbleReceiveMessage *pReceiveMessage=(tagBubbleReceiveMessage*)(pBubbleInfo->pLoad);
 				if (pReceiveMessage->cMessage=='\x03')
 				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"UserName and PassWord check-back";
+					tagBubbleAuthorityReceive *pBubbleAuthorityReceive=(tagBubbleAuthorityReceive*)(&pReceiveMessage->cParameters);
+					if (pBubbleAuthorityReceive->cVerified=='\x01')
+					{
+						m_bAuthorityWaitFlag=false;
+						m_bAuthorityFlag=true;
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"authority fail as illegal username or password";
+						m_bAuthorityFlag=false;
+						m_bAuthorityWaitFlag=false;
+					}
 				}else if (pReceiveMessage->cMessage=='\x04')
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<"device channels number";

@@ -15,6 +15,7 @@
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRefuseEx(QString evName,QVariantMap evMap,void*pUser);
+int cbAuthorityEx(QString evName,QVariantMap evMap,void*pUser);
 class qsubviewEx:public QWidget
 {
 	Q_OBJECT
@@ -65,6 +66,7 @@ public:
 	int cbCStateChange(QVariantMap evMap);
 	int cbCRecordState(QVariantMap evMap);
 	int cbCConnectRefuse(QVariantMap evMap);
+	int cbCAuthority(QVariantMap evMap);
 public slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slmouseMenu();
@@ -81,6 +83,7 @@ signals:
 	void sgmouseMenu();
 	void sgconnectStatus(QVariantMap,QWidget *);
 	void sgconnectRefuse(QVariantMap,QWidget *);
+	void sgAuthority(QVariantMap,QWidget *);
 	void sgbackToMainWnd();
 private:
 	void paintEventConnected(QPaintEvent *ev);

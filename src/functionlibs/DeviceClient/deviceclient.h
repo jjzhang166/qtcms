@@ -33,7 +33,7 @@ int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser);
 int cbXLiveStream(QString evName,QVariantMap evMap,void*pUser);
 int cbXSocketError(QString evName,QVariantMap evMap,void*pUser);
 int cbXConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
-
+int cbXAuthority(QString evName,QVariantMap evMap,void*pUser);
 class  DeviceClient:public QThread,
 	public IDeviceClient,
 	public IEventRegister,
@@ -94,6 +94,7 @@ public:
 	int cbLiveStream(QVariantMap &evmap);
 	int cbSocketError(QVariantMap &evmap);
 	int cbConnectRefuse(QVariantMap &evMap);
+	int cbAuthority(QVariantMap &evMap);
 	//IRemoteBackup
 	virtual int startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
 		int nChannel,

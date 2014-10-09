@@ -131,6 +131,7 @@ public:
 	int cbCDecodeFrameEx(QString evName,QVariantMap evMap,void*pUser);
 	int cbCRecordState(QString evName,QVariantMap evMap,void*pUser);
 	int cbCConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
+	int cbCAuthority(QString evName,QVariantMap evMap,void*pUser);
 private:
 	bool liveSteamRequire();
 	void eventCallBack(QString eventName,QVariantMap evMap);

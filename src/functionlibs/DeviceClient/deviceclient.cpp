@@ -22,7 +22,7 @@ DeviceClient::DeviceClient():
 	/*pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);*/
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse"<<"Authority";
 
 	DeviceClientInfoItem devcliInfo;
 
@@ -54,6 +54,10 @@ DeviceClient::DeviceClient():
 	devcliInfo.proc=cbXConnectRefuse;
 	devcliInfo.puser=this;
 	m_EventMapToPro.insert("ConnectRefuse",devcliInfo);
+
+	devcliInfo.proc=cbXAuthority;
+	devcliInfo.puser=this;
+	m_EventMapToPro.insert("Authority",devcliInfo);
 	if (NULL != m_DeviceConnectonBubble)
 	{
 		m_DeviceConnectonBubble->QueryInterface(IID_IRemotePlayback, (void**)&m_pRemotePlayback);
@@ -65,6 +69,7 @@ DeviceClient::DeviceClient():
 	m_remotePlayback.registerEvent("recFileSearchFinished",cbXRecFileSearchFinished,this);
 	m_remotePlayback.registerEvent("SocketError",cbXSocketError,this);
 	m_remotePlayback.registerEvent("recFileSearchFail",cbXRecFileSearchFail,this);
+	m_remotePlayback.registerEvent("Authority",cbXAuthority,this);
 }
 
 DeviceClient::~DeviceClient()
@@ -280,6 +285,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					nStep=1;
 					break;
 				}
+				if (1==m_DeviceConnectonBubble->setDeviceAuthorityInfomation(m_sUserName,m_sPassWord))
+				{
+					nStep=1;
+					break;
+				}
 				int nRet=1;
 
 				nRet=m_DeviceConnectonBubble->connectToDevice();
@@ -304,6 +314,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					break;
 				}
 				if (1==m_DeviceConnectonHole->setDeviceHost(sAddr)||1==m_DeviceConnectonHole->setDevicePorts(m_ports)||1==m_DeviceConnectonHole->setDeviceId(sEseeId)||sEseeId=="0"||sEseeId=="")
+				{
+					nStep=2;
+					break;
+				}
+				if (1==m_DeviceConnectonHole->setDeviceAuthorityInfomation(m_sUserName,m_sPassWord))
 				{
 					nStep=2;
 					break;
@@ -336,6 +351,11 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 					break;
 				}
 				if (1==m_DeviceConnectonTurn->setDeviceHost(sAddr)||1==m_DeviceConnectonTurn->setDevicePorts(m_ports)||1==m_DeviceConnectonTurn->setDeviceId(sEseeId)||sEseeId=="0"||sEseeId=="")
+				{
+					nStep=4;
+					break;
+				}
+				if (1==m_DeviceConnectonTurn->setDeviceAuthorityInfomation(m_sUserName,m_sPassWord))
 				{
 					nStep=4;
 					break;
@@ -444,8 +464,25 @@ int DeviceClient::liveStreamRequire(int nChannel,int nStream,bool bOpen)
 	//需要判定 是否已经请求过码流
 	if (true==bOpen)
 	{
-		if (1==n_IRemotePreview->getLiveStream(nChannel,nStream))
+		IDeviceConnection *pDeviceConnection=NULL;
+		m_DeviceConnecton->QueryInterface(IID_IDeviceConnection,(void**)&pDeviceConnection);
+		if (pDeviceConnection!=NULL)
 		{
+			if (0==pDeviceConnection->authority())
+			{
+				if (1==n_IRemotePreview->getLiveStream(nChannel,nStream))
+				{
+					n_IRemotePreview->Release();
+					pDeviceConnection->Release();
+					return 1;
+				}
+			}else{
+				n_IRemotePreview->Release();
+				pDeviceConnection->Release();
+				return 1;
+			}
+			pDeviceConnection->Release();
+		}else{
 			n_IRemotePreview->Release();
 			return 1;
 		}
@@ -1244,6 +1281,12 @@ void DeviceClient::setDeviceAuth( const QString & sUsername, const QString & sPa
 	m_sPassWord = sPassword;
 }
 
+int DeviceClient::cbAuthority( QVariantMap &evMap )
+{
+	eventProcCall("Authority",evMap);
+	return 0;
+}
+
 int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)
 {
     Q_UNUSED(evName);
@@ -1313,4 +1356,14 @@ int cbXConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 		qDebug()<<__FUNCTION__<<__LINE__<<"call back connectRefuse fail,as the evName is not collect";
 		return 1;
 	}
+}
+
+int cbXAuthority( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("Authority"==evName)
+	{
+		((DeviceClient*)pUser)->cbAuthority(evMap);
+		return 0;
+	}
+	return 1;
 }
