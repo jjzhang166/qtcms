@@ -368,6 +368,7 @@
 	'Close_the_manual_recording_failed':'设备:_V_  下的通道:_V_ 关闭手动录像失败!',
 	'Close_the_manual_recording':'设备:_V_  下的通道:_V_ 关闭手动录像.',
 	'Resource_loaded':'设备:_V_  下的通道:_V_ 在窗口:_V_下打开失败! 错误:连接数满载或者资源满载!',
+	'User_logined':'设备:_V_  下的通道:_V_ 在窗口:_V_下打开失败! 错误:设备的用户名或者密码错误!',
 	'channel_switch_Stream':'窗口:_V_,切换码流',
 	'Failed':'失败!',
 	'Success':'成功!',

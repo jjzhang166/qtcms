@@ -180,6 +180,8 @@ var oPreView,oDiv,
 
 		oPreView.AddEventProc('ConnectRefuse','ConnectRefuse(ev)');
 		
+		oPreView.AddEventProc('Authority','Authority(ev)');
+		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
 
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
@@ -433,7 +435,13 @@ var oPreView,oDiv,
 			chlData = $('#channel_'+data.chlId).data('data');
 		writeActionLog(T('Resource_loaded',oDevData.device_name,chlData.channel_name,ev.WPageId),errorcolor);
 	}
-
+    
+	function Authority(ev){
+		var data = oPreView.GetWindowInfo(ev.WPageId),
+			oDevData =  getChlFullInfo($('#channel_'+ev.ChannelId));  // 获取通道的所有信息包裹所属设备信息
+			chlData = $('#channel_'+data.chlId).data('data');
+		writeActionLog(T('User_logined',oDevData.device_name,chlData.channel_name,(parseInt(ev.WPageId)+1)),errorcolor);
+		}
 	//日志信息操作
 	function writeActionLog(str,color){ 
 		var color = color ? color : '#4DBDEE';
