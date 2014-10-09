@@ -109,20 +109,20 @@ void QFileData::run()
 	qDebug()<<__FUNCTION__<<__LINE__<<"start run";
 
 	char *pFileBuff1 = new char[BUFFER_SIZE];
-	char *pFileBuff2 = new char[BUFFER_SIZE];
+// 	char *pFileBuff2 = new char[BUFFER_SIZE];
 	char *pFileBuff = pFileBuff1;
-	if (!pFileBuff1 || !pFileBuff2)
+	if (!pFileBuff1 /*|| !pFileBuff2*/)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"alloc memory error!";
 		return;
 	}
 
 	memset(pFileBuff1, 0, BUFFER_SIZE);
-	memset(pFileBuff2, 0, BUFFER_SIZE);
+// 	memset(pFileBuff2, 0, BUFFER_SIZE);
 
-	QMap<char*, bool> bufferStatusMap;
-	bufferStatusMap.insert(pFileBuff1, false);
-	bufferStatusMap.insert(pFileBuff2, false);
+// 	QMap<char*, bool> bufferStatusMap;
+// 	bufferStatusMap.insert(pFileBuff1, false);
+// 	bufferStatusMap.insert(pFileBuff2, false);
 
 	while(!m_bStop)
 	{
@@ -133,43 +133,49 @@ void QFileData::run()
 			msleep(100);
 			continue;
 		}
-		//check whether need to read new file
-		while (iter->lastPos > iter->curPos || !iter->curPos)
+// 		//check whether need to read new file
+// 		while (iter->lastPos > iter->curPos || !iter->curPos)
+// 		{
+// 			if (iter->curBuffer)
+// 			{
+// 				char *curBuffer = iter->curBuffer == pFileBuff1 ? pFileBuff2 : pFileBuff1;
+// 				if (!bufferStatusMap.value(curBuffer))
+// 				{
+// 					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
+// 					{
+// 						delete[] pFileBuff1;
+// 						delete[] pFileBuff2;
+// 						return;
+// 					}
+// 					bufferStatusMap[curBuffer] = true;
+// 					bufferStatusMap[iter->curBuffer] = false;
+// 				}
+// 				iter->curBuffer = curBuffer;
+// 			}
+// 			else
+// 			{
+// 				if (!bufferStatusMap.value(pFileBuff1))
+// 				{
+// 					if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff1, BUFFER_SIZE))
+// 					{
+// 						delete[] pFileBuff1;
+// 						delete[] pFileBuff2;
+// 						return;
+// 					}
+// 					bufferStatusMap[pFileBuff1] = true;
+// 				}
+// 			}
+// 			++iter;
+// 			if (iter == m_wndBuffMap.end())
+// 			{
+// 				break;
+// 			}
+// 		}
+
+		if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff, BUFFER_SIZE))
 		{
-			if (iter->curBuffer)
-			{
-				char *curBuffer = iter->curBuffer == pFileBuff1 ? pFileBuff2 : pFileBuff1;
-				if (!bufferStatusMap.value(curBuffer))
-				{
-					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
-					{
-						delete[] pFileBuff1;
-						delete[] pFileBuff2;
-						return;
-					}
-					bufferStatusMap[curBuffer] = true;
-					bufferStatusMap[iter->curBuffer] = false;
-				}
-				iter->curBuffer = curBuffer;
-			}
-			else
-			{
-				if (!bufferStatusMap.value(pFileBuff1))
-				{
-					if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff1, BUFFER_SIZE))
-					{
-						delete[] pFileBuff1;
-						delete[] pFileBuff2;
-						return;
-					}
-					bufferStatusMap[pFileBuff1] = true;
-				}
-			}
-			++iter;
-			if (iter == m_wndBuffMap.end())
-			{
-				break;
-			}
+			delete[] pFileBuff1;
+			return;
 		}
 
 		iter = m_wndBuffMap.begin();
@@ -230,9 +236,10 @@ void QFileData::run()
 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
 			{
 				//start to play when buffer size larger than 20
-				if (iter->pBuffList->size() >= MIN_FRAME_NUM)
+				if (!iter->bIsPlaying && iter->pBuffList->size() >= MIN_FRAME_NUM)
 				{
 					emit sigStartPlay(iter.key());
+					iter->bIsPlaying = true;
 				}
 				//copy data to FrameData
 				switch (pFileFrameHead->tFrameHead.uiType)
@@ -282,7 +289,7 @@ void QFileData::run()
 	qDebug()<<__FUNCTION__<<__LINE__<<"stop run";
 
 	delete[] pFileBuff1;
-	delete[] pFileBuff2;
+// 	delete[] pFileBuff2;
 }
 
 bool QFileData::readFile( QStringList &filePathList, qint32 &startPos, char* buffer, qint32 buffSize )

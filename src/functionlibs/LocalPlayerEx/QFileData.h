@@ -24,14 +24,15 @@ public:
 	void stopThread();
 
 	typedef struct _tagCurBuffInof{
-		_tagCurBuffInof():curBuffer(NULL),pBuffList(NULL),lastPos(0),curPos(0),lastGMT(0),curGMT(0),bIsFirstRead(true){}
+		_tagCurBuffInof():curBuffer(NULL),pBuffList(NULL),lastPos(0),curPos(0)/*,lastGMT(0),curGMT(0)*/,bIsFirstRead(true),bIsPlaying(false){}
 		bool bIsFirstRead;
+		bool bIsPlaying;
 		char *curBuffer;
 		QList<FrameData> *pBuffList;
 		uint lastPos;
 		uint curPos;
-		uint lastGMT;
-		uint curGMT;
+// 		uint lastGMT;
+// 		uint curGMT;
 		union{
 			tagVideoConfigFrame curVideoConfig;
 			tagAudioConfigFrame curAudioConfig;
