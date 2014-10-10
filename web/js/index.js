@@ -201,7 +201,7 @@ var oPreView,oDiv,
 
 		bFullScreen = oCommonLibrary.getAutoFullscreen();
 
-		//viewFullScreen();
+		viewFullScreen();
 
 
 		initOxcDevListStatus();
@@ -642,6 +642,5 @@ var oPreView,oDiv,
 		}else{
 			ViewMax();
 		}
-        //bFullScreen = !bFullScreen;	
 	}
 

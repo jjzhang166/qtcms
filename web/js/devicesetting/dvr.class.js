@@ -8,6 +8,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	this._TYPE = type; 
 	this._VER = 0;  //设备版本号
 	this._Upgrade = '';  // CMS 支持的最低版本IPC
+	this._Errno = 0;
     var _Request=[];  //判断数据加载与提示信息出现顺序是否合理的全局数组
 	auth = "Basic " + base64.encode(this._USR+':'+this._PWD);  //用户信息，base64加密
 	this.getRequestURL = function(){  //生成URL地址
@@ -32,14 +33,18 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			data2UI(data);
 			This._VER = $('#set_content div.dvr_list:visible input[data-UI="swver"]').val();  //软件版本号
 		}); 
-		   
+	}   
 	
 	//获取常规设置信息
 	this.dvrGenSet2UI = function(){
 		emptyDevSetMenu();
 		console.log("-------------------dvrGenSet2UI------------------------------");
 
-		var warp = $('#set_content div.dvr_list:visible');
+		var This = this,
+		    warp = $('#set_content div.dvr_list:visible'),
+		    str="loading",
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
+			finish =this.loadTips;
 		    
 		
         dataType='jsonp';  //数据类型
@@ -52,9 +57,10 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	    xmlstr += '</envload>';
 	    xmlstr += '</juan>';
        
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,'',function(data){ data2UI(data);});  
-
-       }
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){ 
+		   This._Errno = data.juan.envload.errno;
+		   data2UI(data);
+		   },function(str){finish(str,This._Errno);});    
 	  	}
 	//设置常规信息
 	this.dvrGenSetPut = function(){
@@ -83,7 +89,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	xmlstr += ' />';
 	xmlstr += '</envload>';
 	xmlstr += '</juan>';
-	console.log(xmlstr);
+	//console.log(xmlstr);
 	
     dataType='jsonp';  //数据类型
 	jsonp='jsoncallback'; // 回调函数
@@ -103,8 +109,12 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		emptyDevSetMenu();
 		console.log("-------------------dvrnetworkInfo2UI------------------------------");
 
-		var warp = $('#set_content div.dvr_list:visible');
-		
+		var This = this,
+		    warp = $('#set_content div.dvr_list:visible'),
+		    str="loading",
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		    finish = this.loadTips;
+			
 		dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
 		
@@ -115,14 +125,16 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	    xmlstr += '</envload>';
 	    xmlstr += '</juan>';
 		
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,'',function(data){
-			data2UI(data);
-			},function(){
-			//checkbox的控制函数
-			dvr_disable('dhcp',true,false);
-			dvr_disable('ddns',false,true);
-			dvr_disable('pppoe',false,true);	
-				});  
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			This._Errno = data.juan.envload.errno;
+			if(This._Errno==0){
+			       data2UI(data);
+			        //checkbox的控制函数
+					dvr_disable('dhcp',true,false);
+					dvr_disable('ddns',false,true);
+					dvr_disable('pppoe',false,true);
+			}
+			},function(str){finish(str,This._Errno);});  
 		
 		}
 		
@@ -191,15 +203,19 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	this._dvrencodeInfo2UI = function(num){
 		emptyDevSetMenu();
 		console.log("-------------------_dvrencodeInfo2UI------------------------------");
-        var This = this;
+		
+		this.Adjust(this._CHN,$('#Encoding_settings'));
+		
+        var This = this,
+		    warp = $('#set_content div.dvr_list:visible'),
+	        str="loading",
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
+			finish =this.loadTips;
+			
 	
-		this.Adjust(This._CHN,$('#Encoding_settings'));
-		
-		var warp = $('#set_content div.dvr_list:visible');
-		
 		dataType='jsonp';
 		jsonp='jsoncallback';
-		console.log(This._CHN);
+		
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	        xmlstr += '<envload type="0" usr="' + this._USR + '" pwd="' + this._PWD+ '">';
@@ -208,7 +224,9 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	        xmlstr += '</envload>';
 	        xmlstr += '</juan>';
 	   // console.log(xmlstr);
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			This._Errno = data.juan.envload.errno;
+			if(This._Errno == 0){
 			var warpKey='[data-WARP="envload"]';
 			 
 		    warp.find('ul'+warpKey).html('');
@@ -220,14 +238,12 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 				 warp.find('#Encoding_settings div').eq(j).show();
 			     
 				}
-		
-			},function(data){
 			  data2UI(data);
-			  warp.find('#Encoding_settings input[type="checkbox"]').prop('checked',false).eq(data.juan.envload.encode.chn).prop('checked',true);
+			  warp.find('#Encoding_settings input[type="checkbox"]').prop('checked',false).eq(parseInt(num)).prop('checked',true);
+			  warp.find('#Encoding_settings input:checked').prop('disabled',true);
+			}
 			   
-			},function(){ 
-				 warp.find('#Encoding_settings input:checked').prop('disabled',true);
-			}); 
+			},function(str){finish(str,This._Errno);}); 
 		}
 		//设置编码信息
 	    this.dvrencodeInfoPut = function(){
@@ -284,7 +300,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	      xmlstr += '</envload>';
 	      xmlstr += '</juan>';
 		  
-	   console.log(xmlstr);	
+	  // console.log(xmlstr);	
 	  
 		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
 		
@@ -308,7 +324,10 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		   console.log("-------------------_dvrVideoInfo2UI------------------------------"+This._CHN);
 		   this.Adjust(This._CHN,$('#Video_settings'));
 			
-		   var warp = $('#set_content div.dvr_list:visible');
+		    var warp = $('#set_content div.dvr_list:visible'),
+		    str="loading",
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
+			finish = this.loadTips;
 		  
 		   dataType='jsonp';
 		   jsonp='jsoncallback';
@@ -321,53 +340,52 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			   }
 	           xmlstr += '</envload>';
 	           xmlstr += '</juan>';
-			  console.log(xmlstr); 
-		  _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
-			 var warpKey='[data-WARP="envload"]';
-			   warp.find('input[data-UI="chn1"]').val(num+1);	
-		     
-			$('#dvr_record_week_sel').find('li').remove();//清除星期
-			warp.find('ul'+warpKey).html('');
+			 // console.log(xmlstr); 
+		  _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			This._Errno = data.juan.envload.errno;
 			
-			warp.find('#Video_settings div').hide();
-			
-			for(var j=0;j<This._CHN;j++)
-			{   
-			     warp.find('ul'+warpKey).append('<li onclick="DataByChn($(this))" data="'+j+'"><input value="'+(j+1)+'" disabled /></li>');
-				 warp.find('#Video_settings div').eq(j).show();
+			if(This._Errno == 0){
+				var warpKey='[data-WARP="envload"]';
+					warp.find('input[data-UI="chn1"]').val(num+1);	
+				 
+				$('#dvr_record_week_sel').find('li').remove();//清除星期
+				warp.find('ul'+warpKey).html('');
 				
-				}
-			
-			},function(data){
-				data2UI(data);
-				var arr = data.juan.envload.record;
-				for(var i =0;i<4;i++){
-					 var start =This.timeZero(arr[i].begin);
-					 var end =This.timeZero(arr[i].end);
-					 warp.find(".schedle_id").eq(i).find("input:text").eq(0).val(start);
-					 warp.find(".schedle_id").eq(i).find("input:text").eq(0).attr("data",start);
-					 warp.find(".schedle_id").eq(i).find("input:text").eq(1).val(end);
-					 warp.find(".schedle_id").eq(i).find("input:text").eq(1).attr("data",end);
-	
-					 
-					var types = parseInt(arr[i].types);
-					for(var j = 0; j < 3; j++)
-					{
-						if(types == 0)
-						{
-							warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",false);
-						}else{
-						 	
-						   warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",(types & (1 << j)));
+				warp.find('#Video_settings div').hide();
+				
+				for(var j=0;j<This._CHN;j++)
+				{   
+					 warp.find('ul'+warpKey).append('<li onclick="DataByChn($(this))" data="'+j+'"><input value="'+(j+1)+'" disabled /></li>');
+					 warp.find('#Video_settings div').eq(j).show();
+					
+					}
+					data2UI(data);
+					var arr = data.juan.envload.record;
+					for(var i =0;i<4;i++){
+						 var start =This.timeZero(arr[i].begin);
+						 var end =This.timeZero(arr[i].end);
+						 warp.find(".schedle_id").eq(i).find("input:text").eq(0).val(start);
+						 warp.find(".schedle_id").eq(i).find("input:text").eq(0).attr("data",start);
+						 warp.find(".schedle_id").eq(i).find("input:text").eq(1).val(end);
+						 warp.find(".schedle_id").eq(i).find("input:text").eq(1).attr("data",end);
 						 
-						}
-					}			
-			   }
-			    warp.find('#Video_settings input[type="checkbox"]').prop('checked',false).eq(num).prop('checked',true);
-			   
-			},function(){ 
-				 warp.find('#Video_settings input:checked').prop('disabled',true);
-			});  
+						var types = parseInt(arr[i].types);
+						for(var j = 0; j < 3; j++)
+						{
+							if(types == 0)
+							{
+								warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",false);
+							}else{
+								
+							   warp.find(".schedle_id").eq(i).find('td input:checkbox').eq(j).prop("checked",(types & (1 << j)));
+							 
+							}
+						}			
+				   }
+				   warp.find('#Video_settings input[type="checkbox"]').prop('checked',false).eq(num).prop('checked',true);
+				   warp.find('#Video_settings input:checked').prop('disabled',true);	
+			  }
+			},function(str){finish(str,This._Errno);});
 		   } 
 	   //设置录像设置信息
 	   this.dvrVideoInfoPut = function(){
@@ -443,12 +461,16 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		   }
 	   this._dvrScreenInfo2UI = function(num){
 		 emptyDevSetMenu();
-		console.log("---num---"+num);
+		//console.log("---num---"+num);
 		dataType='jsonp';
 		jsonp='jsoncallback';
 		
-		var This =this;
-		var warp = $('#set_content div.dvr_list:visible');
+		var This =this,
+		 str="loading",
+		 warp = $('#set_content div.dvr_list:visible'),
+		 oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		 finish = this.loadTips;
+		
 		
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0" enc="1">';
@@ -458,19 +480,20 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	        xmlstr += '</juan>';
 		  // console.log(xmlstr);
 		
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
-			     
-				  var warpKey ='[data-WARP="envload"]';
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			This._Errno = data.juan.envload.errno;
+			if(This._Errno == 0){
+			  var warpKey ='[data-WARP="envload"]';
 				          
-			           warp.find('ul'+warpKey).html('');
+			      warp.find('ul'+warpKey).html('');
 				   
-					for(var k =0; k<This._CHN;k++){
-						warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+k+');" ><input type="text" value="'+(k+1)+'" disabled /></li>');	
-					}
+			  for(var k =0; k<This._CHN;k++){
+				warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+k+');" ><input type="text" value="'+(k+1)+'" disabled /></li>');	
+					}	
 			
-			},function(data){
-			 data2UI(data);
-			});
+			  data2UI(data);
+			}
+			},function(str){finish(str,This._Errno);});
 		
 		
 		} 
@@ -521,39 +544,43 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
 		
-		var This = this;
-		this.Adjust(This._CHN,$('#PTZ_settings'));
-		var warp = $('#set_content div.dvr_list:visible');
+		this.Adjust(this._CHN,$('#PTZ_settings'));
 		
+		var This =this,
+		 str="loading",
+		 warp = $('#set_content div.dvr_list:visible'),
+		 oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		 finish = this.loadTips;
+		 
+
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	        xmlstr += '<envload type="0" usr="' + this._USR + '" pwd="' + this._PWD + '">';
 	        xmlstr += '<ptz chn="' + num + '" id="" protocal="" baudrate="" databit="" stopbit="" parity=""/>';
 	        xmlstr += '</envload>';
 	        xmlstr += '</juan>';
-		    console.log(xmlstr);
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
+		   // console.log(xmlstr);
+		   
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){	
+			     This._Errno = data.juan.envload.errno;
+				 if(This._Errno ==0){
+					 var warpKey='[data-WARP="envload"]';
 			
-			
-			var warpKey='[data-WARP="envload"]';
-			
-			 warp.find('ul'+warpKey).html('');
-			 warp.find('#PTZ_settings div').hide();
-			 
-			for(var j=0;j<This._CHN;j++)
-			{    
-			     warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+')"><input type="text" value="'+(j+1)+'" disabled /></li>');
-				 
-				 warp.find('#PTZ_settings div').eq(j).show();
-				
-				}	
-			
-			},function(data){	     
-				 data2UI(data);
-			     warp.find('#PTZ_settings input:checkbox').prop('checked',false).eq(data.juan.envload.ptz.chn).prop('checked',true);
-			},function(){ 
-				 warp.find('#PTZ_settings input:checked').prop('disabled',true);
-			});
+						 warp.find('ul'+warpKey).html('');
+						 warp.find('#PTZ_settings div').hide();
+						 
+						for(var j=0;j<This._CHN;j++)
+						{    
+							 warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+')"><input type="text" value="'+(j+1)+'" disabled /></li>');
+							 
+							 warp.find('#PTZ_settings div').eq(j).show();
+							
+						}	
+					  data2UI(data);
+					  warp.find('#PTZ_settings input:checkbox').prop('checked',false).eq(parseInt(num)).prop('checked',true);
+					 warp.find('#PTZ_settings input:checked').prop('disabled',true);
+				}       
+			},function(str){finish(str,This._Errno);});
 		}
 	//设置云台设置信息
 	this.dvrPTZInfoPut = function(){
@@ -576,7 +603,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
           if($(this).prop('checked')==true) {
                object.push($(this).siblings("span").html());
              }
-	     console.log(object);
+	   //  console.log(object);
           });
 	    	_Request=new Array(object.length);
 			
@@ -610,14 +637,17 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		}
 	this._dvrVideoCheckInfo2UI = function(num){
 		emptyDevSetMenu();
-		
+		console.log("-------------------_dvrVideoCheckInfo2UI------------------------------");
 		
 		dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
 		
-		var This = this,chn_num=num;
-		this.Adjust(This._CHN,$('#Video_detection_settings'));
-		var warp = $('#set_content div.dvr_list:visible');
+		this.Adjust(this._CHN,$('#Video_detection_settings'));
+		var This = this,
+		 str="loading",
+		 warp = $('#set_content div.dvr_list:visible'),
+		 oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		 finish = this.loadTips;
 		
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
@@ -625,25 +655,25 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		    xmlstr += '<detection chn="' + num + '" sens="" mdalarmduration="" mdalarm="" mdbuzzer="" vlalarmduration="" vlalarm="" vlbuzzer="" />';
 	        xmlstr += '</envload>';
 	        xmlstr += '</juan>';
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
-			var warpKey='[data-WARP="envload"]';
 			
-			 warp.find('ul'+warpKey).html('');
-			 warp.find('#Video_detection_settings div').hide();
-			for(var j=0;j<This._CHN;j++)
-			{    
-			     warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+');"><input type="text" value="'+(j+1)+'" disabled /></li>');
-				 warp.find('#Video_detection_settings div').eq(j).show();			 
-				}
-			
-			},function(data){
-			     
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			     This._Errno = data.juan.envload.errno;
+				 if( This._Errno ==0 ){
+				  var warpKey='[data-WARP="envload"]';
+				  
+				   warp.find('ul'+warpKey).html('');
+				   warp.find('#Video_detection_settings div').hide();
+				  for(var j=0;j<This._CHN;j++)
+				  {    
+					   warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+');"><input type="text" value="'+(j+1)+'" disabled /></li>');
+					   warp.find('#Video_detection_settings div').eq(j).show();			 
+					  }
 				 data2UI(data);
-			     warp.find('#Video_detection_settings input[type="checkbox"]').prop('checked',false).eq(data.juan.envload.detection.chn).prop('checked',true);
-			},function(){ 
-				 warp.find('#Video_detection_settings input:checked').prop('disabled',true);
-			});
-		
+				  warp.find('#Video_detection_settings input[type="checkbox"]').prop('checked',false).eq(parseInt(num)).prop('checked',true);
+				     warp.find('#Video_detection_settings input:checked').prop('disabled',true);
+				 }
+			     
+			},function(str){finish(str,This._Errno);});
 		}
 	//设置视频检验设置信息
 	this.dvrVideoCkeckPut = function(){
@@ -719,7 +749,10 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		
 		this.Adjust(This._CHN,$('#Alarm_settings'));
 		
-		var warp = $('#set_content div.dvr_list:visible');
+		var warp = $('#set_content div.dvr_list:visible'),
+		 str ="loading";
+		 oHint = showAJAXHint(str).css('top',warp.height() + 46),
+		 finish = this.loadTips;
 		
 		var xmlstr = '';
 	        xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
@@ -728,26 +761,25 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	        xmlstr += '</envload>';
 	        xmlstr += '</juan>';
 		
-		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,function(){
-			var warpKey='[data-WARP="envload"]';
+		_AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			     This._Errno = data.juan.envload.errno;
+				 if(This._Errno ==0){
+					 var warpKey='[data-WARP="envload"]';
 			
-			warp.find('ul'+warpKey).html('');
-			 
-			 warp.find('#Alarm_settings div').hide();
-			for(var j=0;j<4;j++)
-			{
-				 warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+');"><input type="text" value="'+(j+1)+'" disabled /></li>');
-				 warp.find('#Alarm_settings div').eq(j).show();
-				
-				}
-	          		 
-			},function(data){
-			     
-				data2UI(data);
-			    warp.find('#Alarm_settings input[type="checkbox"]').prop('checked',false).eq(data.juan.envload.sensor.chn).prop('checked',true);
-			},function(){ 
-				 warp.find('#Alarm_settings input:checked').prop('disabled',true);
-			});
+						warp.find('ul'+warpKey).html('');
+						 
+						 warp.find('#Alarm_settings div').hide();
+						for(var j=0;j<4;j++){
+							 warp.find('ul'+warpKey).append('<li onclick="getDataByChn('+j+');"><input type="text" value="'+(j+1)+'" disabled /></li>');
+							 warp.find('#Alarm_settings div').eq(j).show();
+						}
+	          		
+				   data2UI(data);
+				   warp.find('#Alarm_settings input[type="checkbox"]').prop('checked',false).eq(parseInt(num)).prop('checked',true);
+				   warp.find('#Alarm_settings input:checked').prop('disabled',true);
+				 }
+			    
+			},function(str){finish(str,This._Errno);});
 		}
 	//设置报警设置信息
 	this.dvrAlarmInfoPut = function(){
@@ -761,7 +793,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		    getSelect = this.getSelect,
 		    getValue = this.getValue,
 			finish = this.checkMultRequests,
-		    oHint = showAJAXHint(str).css('top',warp.height() + 46)
+		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
 			chn_val = parseInt(getValue("chn"));
 			 
 		     
@@ -874,6 +906,17 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 		var a =str.split(':');
 		 return addZero(a[0])+":"+addZero(a[1])+":"+addZero(a[2])
 		}   
-		 
+	//加载设备信息时提示语	
+	this.loadTips = function(str,errno){
+		   if(errno == 4){
+				  showAJAXHint('Unauthorized'); 
+		   }else{
+			   if(str=='loading_success')
+				 showAJAXHint(str).fadeOut(2000);
+			  else
+				 showAJAXHint(str);
+			   }
+			   
+		} 
 	return this;
 	}
