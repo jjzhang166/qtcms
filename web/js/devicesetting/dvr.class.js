@@ -72,24 +72,24 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			getSelect = this.getSelect,
 			getValue = this.getValue;
 	
-	var xmlstr = '';
-	xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
-	xmlstr += '<envload type="1" usr="' +this._USR + '" pwd="' + this._PWD + '">';
-	xmlstr += '<misc';
-	xmlstr += ' datefmt="' + getSelect("datefmt")+ '"';
-	xmlstr += ' keylock="' + getCheckbox("keylock")+ '"';
-	xmlstr += ' keybuzzer="' + getCheckbox("keybuzzer") + '"';
-	xmlstr += ' standard="' + getSelect("standard") + '"';
-	xmlstr += ' dvrid="' +  getValue("dvrid") + '"';
-	xmlstr += ' hddoverwrite="' + getCheckbox("hddoverwrite") + '"';
-	xmlstr += ' alpha="' + getValue("alpha") + '"';
-	xmlstr += ' autoswi="' + getCheckbox("autoswi") + '"';
-	xmlstr += ' autoswiinterval="' + getSelect("autoswiinterval") + '"';
-	xmlstr += ' autoswimode="' +  getSelect(" autoswimode") + '"';
-	xmlstr += ' />';
-	xmlstr += '</envload>';
-	xmlstr += '</juan>';
-	//console.log(xmlstr);
+		var xmlstr = '';
+		xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
+		xmlstr += '<envload type="1" usr="' +this._USR + '" pwd="' + this._PWD + '">';
+		xmlstr += '<misc';
+		xmlstr += ' datefmt="' + getSelect("datefmt")+ '"';
+		xmlstr += ' keylock="' + getCheckbox("keylock")+ '"';
+		xmlstr += ' keybuzzer="' + getCheckbox("keybuzzer") + '"';
+		xmlstr += ' standard="' + getSelect("standard") + '"';
+		xmlstr += ' dvrid="' +  getValue("dvrid") + '"';
+		xmlstr += ' hddoverwrite="' + getCheckbox("hddoverwrite") + '"';
+		xmlstr += ' alpha="' + getValue("alpha") + '"';
+		xmlstr += ' autoswi="' + getCheckbox("autoswi") + '"';
+		xmlstr += ' autoswiinterval="' + getSelect("autoswiinterval") + '"';
+		xmlstr += ' autoswimode="' +  getSelect(" autoswimode") + '"';
+		xmlstr += ' />';
+		xmlstr += '</envload>';
+		xmlstr += '</juan>';
+		//console.log(xmlstr);
 	
     dataType='jsonp';  //数据类型
 	jsonp='jsoncallback'; // 回调函数
@@ -253,34 +253,31 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			     object = [],
 		         str="saveing",
 		         oHint = showAJAXHint(str).css('top',warp.height() + 46),
-				 finish = this.checkMultRequests,
+				
 				 getCheckbox = this.getCheckbox,
 			     getSelect = this.getSelect,
 			     getValue = this.getValue,
-				 chn_val = parseInt(getValue('chn'));
+				 chn_val = parseInt(getValue('chn'))-1;
 			    
 				 
 		     dataType='jsonp';
 		     jsonp='jsoncallback';
-			 async=false;
-	
-	     warp.find('#Encoding_settings input[type="checkbox"]:visible').each(function(){
-          if($(this).prop('checked')==true) {
-               object.push($(this).siblings("span").html());
-             }
-	     console.log(object);
+			  
+	     var ret = 0;
+	     warp.find('#Encoding_settings input[type="checkbox"]:visible').each(function(index){
+			
+			     if($(this).prop('checked')==true){ 
+				 
+					  ret += Math.pow(2, index);
+					// console.log("---ret--"+ret+"--index--"+index);
+				  }
           });
-	    	_Request=new Array(object.length);
-			
-		for(var i in object){	
-		
-		  chk_chn = object[i]-1;
-			
+
 		  var xmlstr = '';
 	      xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 	      xmlstr += '<envload type="1" usr="' + this._USR + '" pwd="' + this._PWD+ '">';
 	      xmlstr += '<encode';
-	      xmlstr += ' chn="' +  chk_chn + '"';
+	      xmlstr += ' chn="' +  chn_val + '"';
 	      xmlstr += ' mode="' + getSelect("mode","encode") + '"';
 	      xmlstr += ' fmt="' + getSelect("fmt","encode") + '"';
 	      xmlstr += ' piclv="' + getSelect("piclv","encode") + '"';
@@ -289,7 +286,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	      xmlstr += ' framerate="' + getSelect("framerate","encode") + '"';
 	      xmlstr += ' />';
 	      xmlstr += '<encodesub';
-	      xmlstr += ' chn="' + chk_chn + '"';
+	      xmlstr += ' chn="' + chn_val + '"';
 	      xmlstr += ' mode="' + getSelect("mode","encodesub") + '"';
 	      xmlstr += ' fmt="' +  getSelect("fmt","encodesub") + '"';
 	      xmlstr += ' piclv="' + getSelect("piclv","encodesub") + '"';
@@ -297,17 +294,40 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 	      xmlstr += ' bitvalue="' + getSelect("bitvalue","encodesub") + '"';
 	      xmlstr += ' framerate="' + getSelect("framerate","encodesub") + '"';
 	      xmlstr += ' />';
+		  if(ret > 0)
+		  {
+			  xmlstr += '<copyg';
+			  xmlstr += ' chn="' + chn_val + '"';
+			  xmlstr += ' type="1"';
+			  xmlstr += ' channels="' + ret + '"';
+			  xmlstr += ' />';
+		  }
+		  if(ret > 0)
+		  {
+			  xmlstr += '<copyg';
+			  xmlstr += ' chn="' + chn_val + '"';
+			  xmlstr += ' type="6"';
+			  xmlstr += ' channels="' + ret + '"';
+			  xmlstr += ' />';
+		  }
 	      xmlstr += '</envload>';
 	      xmlstr += '</juan>';
 		  
-	  // console.log(xmlstr);	
+	     //console.log(xmlstr);	
 	  
-		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
-		
-		}
-		 $('#Encoding_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
-		  $('#Encoding_settings_SelectAll').prop('checked',false);
-		async=true;
+		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			   data2UI(data);
+			  $('#Encoding_settings input:checkbox').prop('checked',false).eq(chn_val).prop('checked',true);
+			  $('#Encoding_settings input:checked').prop('disabled',true);
+		      $('#Encoding_settings_SelectAll').prop('checked',false);
+			 
+			 },function(str){
+				   if(str=='loading_success'){
+					 showAJAXHint("save_success").fadeOut(2000);
+				  }else{
+					  showAJAXHint(str);
+				  }
+		  });
 		}
 
 	   //获取录像设置信息
@@ -395,28 +415,23 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			     object = [],
 		         str="saveing",
 		         oHint = showAJAXHint(str).css('top',warp.height() + 46),
-				 finish = this.checkMultRequests,
 				 getCheckbox = this.getCheckbox,
 			     getSelect = this.getSelect,
 			     getValue = this.getValue,
-				 chn_val = parseInt(getValue('chn1'));
+				 chn_val = parseInt(getValue('chn1'))-1;
 			    
 				 
 		     dataType='jsonp';
 		     jsonp='jsoncallback';
-			 async=false;
-	
-	     warp.find('#Video_settings input[type="checkbox"]:visible').each(function(){
-          if($(this).prop('checked')==true) {
-               object.push($(this).siblings("span").html());
-             }
-	     console.log(object);
-          });
-	    	_Request=new Array(object.length);
+	     var ret = 0;
+	     warp.find('#Video_settings input[type="checkbox"]:visible').each(function(index){
 			
-		for(var i in object){	
-		
-		  chk_chn = object[i]-1;
+			     if($(this).prop('checked')==true){ 
+				 
+					  ret += Math.pow(2, index);
+					// console.log("---ret--"+ret+"--index--"+index);
+				  }
+          });
 			
 			var xmlstr = '';
 			xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
@@ -424,7 +439,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			for(var i = 0; i < 4; i++)
 			{
 				xmlstr += '<record';
-				xmlstr += ' chn="' + chk_chn + '"';
+				xmlstr += ' chn="' + chn_val + '"';
 				xmlstr += ' weekday="' + getSelect("weekday") + '"';
 				xmlstr += ' index="' + i + '"';
 				xmlstr += ' begin="' +warp.find(".schedle_id").eq(i).find("input:visible").eq(0).val() + '"';
@@ -440,20 +455,33 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 				xmlstr += ' types="' + types + '"';
 				xmlstr += ' />';
 			}
-		
+		    if(ret > 0)
+			{
+			   var weekday = getSelect("weekday");
+			  xmlstr += '<copyrec';
+			  xmlstr += ' chn="' + chn_val + '"';
+			  xmlstr += ' weekday="' + weekday + '"';
+			  xmlstr += ' channels="' + ret + '"';
+			  xmlstr += ' weekdays="' + (1 << weekday) + '"';
+			  xmlstr += ' />';
+			}
 			xmlstr += '</envload>';
 			xmlstr += '</juan>';
-			console.log(xmlstr);
+			//console.log(xmlstr);
 			
-			 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
-		
-		}
-		 $('#Video_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
-		 $('#Video_settings_SelectAll').prop('checked',false);
-		async=true;	  
-				  
-				  
-		   }
+			 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+				 data2UI(data);
+				  $('#Video_settings input:checkbox').prop('checked',false).eq(chn_val).prop('checked',true);
+				  $('#Video_settings input:checked').prop('disabled',true);
+		          $('#Video_settings_SelectAll').prop('checked',false);  
+				 },function(str){
+				   if(str=='loading_success'){
+					 showAJAXHint("save_success").fadeOut(2000);
+				  }else{
+					  showAJAXHint(str);
+				  }
+		  });
+	   }
 	  //获取屏幕设置信息
 	   this.dvrScreenInfo2UI = function(){
 		   console.log("-------------------dvrScreenInfo2UI------------------------------");
@@ -589,46 +617,55 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			 object = [],
 			 str="saveing",
 			 oHint = showAJAXHint(str).css('top',warp.height() + 46),
-			 finish = this.checkMultRequests,
 			 getCheckbox = this.getCheckbox,
 			 getSelect = this.getSelect,
 			 getValue = this.getValue,
-			 chn_val = parseInt(getValue('chn'));
+			 chn_val = parseInt(getValue('chn'))-1;
 		
 	    dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
-		async=false;
 		
-		warp.find('#PTZ_settings input[type="checkbox"]:visible').each(function(){
+		var ret = 0;
+		warp.find('#PTZ_settings input[type="checkbox"]:visible').each(function(index){
           if($(this).prop('checked')==true) {
-               object.push($(this).siblings("span").html());
+              ret += Math.pow(2,index);
              }
-	   //  console.log(object);
           });
-	    	_Request=new Array(object.length);
-			
-		for(var i in object){	
-		
-		  chk_chn = object[i]-1;
-		
+
 		var xmlstr = '';
 		xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 		xmlstr += '<envload type="1" usr="' + this._USR + '" pwd="' + this._PWD + '">';
 		xmlstr += '<ptz';
-		xmlstr += ' chn="' + chk_chn + '"';
+		xmlstr += ' chn="' +  chn_val + '"';
 		xmlstr += ' id="' + getValue("id") + '"';
 		xmlstr += ' protocal="' + getSelect("protocal") + '"';
 		xmlstr += ' baudrate="' + getSelect("baudrate") + '"';
 		xmlstr += ' />';
+		if(ret > 0)
+		{
+			xmlstr += '<copyg';
+			xmlstr += ' chn="' + chn_val + '"';
+			xmlstr += ' type="3"';
+			xmlstr += ' channels="' + ret + '"';
+			xmlstr += ' />';
+		}
 		xmlstr += '</envload>';
 		xmlstr += '</juan>';
 		//console.log(xmlstr);
 		
-		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
-		}
-		 $('#PTZ_settings input:checkbox:visible').prop('checked',false).eq(chn_val-1).prop('checked',true);
-		 $('#PTZ_settings_SelectAll').prop('checked',false);
-		async=true;
+		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			 data2UI(data);
+			 $('#PTZ_settings input:checkbox:visible').prop('checked',false).eq(chn_val).prop('checked',true);
+			 $('#PTZ_settings input:checked').prop('disabled',true);
+		     $('#PTZ_settings_SelectAll').prop('checked',false);
+			 },function(str){
+				if(str=='loading_success')
+		           showAJAXHint("save_success").fadeOut(2000);
+		        else
+		          showAJAXHint(str); 
+				 
+				 });
+		
 		}
 	//获取视频检验设置信息
 	this.dvrVideoCkeck2UI = function(){
@@ -682,33 +719,26 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			 object = [],
 			 str="saveing",
 			 oHint = showAJAXHint(str).css('top',warp.height() + 46),
-			 finish = this.checkMultRequests,
 			 getCheckbox = this.getCheckbox,
 			 getSelect = this.getSelect,
 			 getValue = this.getValue,
-			 chn_val = parseInt(getValue('chn'));
+			 chn_val = parseInt(getValue('chn'))-1;
 			 
 		dataType='jsonp';  //数据类型
 		jsonp='jsoncallback'; // 回调函数
-		async=false;
-	  
-	   warp.find('#Video_detection_settings input[type="checkbox"]:visible').each(function(){
-		if($(this).prop('checked')==true) {
-			 object.push($(this).siblings("span").html());
-		   }
-	   console.log(object);
-		});
-		  _Request=new Array(object.length);
-		  
-	  for(var i in object){	
-	  
-		chk_chn = object[i]-1;
 		
+	    var ret = 0;
+		warp.find('#Video_detection_settings input[type="checkbox"]:visible').each(function(index){
+          if($(this).prop('checked')==true) {
+              ret += Math.pow(2,index);
+             }
+          });
+
 		var xmlstr = '';
 			xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 			xmlstr += '<envload type="1"  usr="' + this._USR + '" pwd="' + this._PWD + '">';
 			xmlstr += '<detection';
-			xmlstr += ' chn="' + chk_chn + '"';
+			xmlstr += ' chn="' + chn_val + '"';
 			xmlstr += ' sens="' + getSelect("sens") + '"';
 			xmlstr += ' mdalarmduration="' + getSelect("mdalarmduration") + '"';
 			xmlstr += ' mdalarm="' + getCheckbox("mdalarm") + '"';
@@ -717,17 +747,30 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			xmlstr += ' vlalarm="' + getCheckbox("vlalarm") + '"';
 			xmlstr += ' vlbuzzer="' + getCheckbox("vlbuzzer") + '"';
 			xmlstr += ' />';
+			if(ret > 0)
+			{
+				xmlstr += '<copyg';
+				xmlstr += ' chn="' + chn_val + '"';
+				xmlstr += ' type="2"';
+				xmlstr += ' channels="' + ret + '"';
+				xmlstr += ' />';
+			}
 			xmlstr += '</envload>';
 			xmlstr += '</juan>';
-			console.log(xmlstr);
-		
-		
-		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
-		
-		}
-		 $('#Video_detection_settings input:checkbox').prop('checked',false).eq(chn_val-1).prop('checked',true);
-		 $('#Video_detection_settings_SelectAll').prop('checked',false);
-		async=true;
+			//console.log(xmlstr);
+
+		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			   data2UI(data);
+			   $('#Video_detection_settings input:checkbox').prop('checked',false).eq(chn_val).prop('checked',true);
+			   $('#Video_detection_settings input:checked').prop('disabled',true);
+		       $('#Video_detection_settings_SelectAll').prop('checked',false);
+			 },function(str){
+				if(str=='loading_success')
+		           showAJAXHint("save_success").fadeOut(2000);
+		        else
+		          showAJAXHint(str); 
+				 
+				 });
 		}
 		 
 	//获取报警设置信息
@@ -792,87 +835,57 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			getCheckbox = this.getCheckbox,
 		    getSelect = this.getSelect,
 		    getValue = this.getValue,
-			finish = this.checkMultRequests,
 		    oHint = showAJAXHint(str).css('top',warp.height() + 46),
-			chn_val = parseInt(getValue("chn"));
+			chn_val = parseInt(getValue("chn"))-1;
 			 
 		     
 		dataType='jsonp';  //数据类型
 	    jsonp='jsoncallback'; // 回调函数
 		
-		 warp.find('#Alarm_settings input[type="checkbox"]:visible').each(function(){
+		  var ret = 0;
+		  warp.find('#Alarm_settings input[type="checkbox"]:visible').each(function(index){
           if($(this).prop('checked')==true) {
-               object.push($(this).siblings("span").html());
+              ret += Math.pow(2,index);
              }
-	      console.log(object);
           });
-		  
-	    _Request=new Array(object.length);
-		
-		for(var i in object){	
-		
-		  chk_chn = object[i]-1;
 	
 		  var xmlstr = '';
 		  xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 		  xmlstr += '<envload type="1" usr="' + this._USR + '" pwd="' + this._PWD + '">';
 		  xmlstr += '<sensor';
-		  xmlstr += ' chn="' + chk_chn + '"';
+		  xmlstr += ' chn="' + chn_val + '"';
 		  xmlstr += ' mode="' + getSelect("mode") + '"';
 		  xmlstr += ' alarmduration="' + getSelect("alarmduration") + '"';
 		  xmlstr += ' alarm="' + getCheckbox("alarm") + '"';
 		  xmlstr += ' buzzer="' + getCheckbox("buzzer") + '"';
 		  xmlstr += ' />';
+		  if(ret > 0)
+		  {
+			  xmlstr += '<copyg';
+			  xmlstr += ' chn="' + chn_val + '"';
+			  xmlstr += ' type="4"';
+			  xmlstr += ' channels="' + ret + '"';
+			  xmlstr += ' />';
+		  }
 		  xmlstr += '</envload>';
 		  xmlstr += '</juan>';
-		  //alert(xmlstr);
+		  //console.log(xmlstr);
 	  
-		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,'',finish);
-		
-		}
-		
-		 $('#Alarm_settings input[type="checkbox"]:visible').prop('checked',false).eq(chn_val-1).prop('checked',true);
-		 $('#Alarm_settings_SelectAll').prop('checked',false);
-		 
-		async=true;
-		
+		 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
+			 data2UI(data);
+			 $('#Alarm_settings input[type="checkbox"]:visible').prop('checked',false).eq(chn_val).prop('checked',true);
+		     $('#Alarm_settings input:checked').prop('disabled',true);
+		     $('#Alarm_settings_SelectAll').prop('checked',false);
+			 
+			 },function(str){
+				if(str=='loading_success')
+		           showAJAXHint("save_success").fadeOut(2000);
+		        else
+		          showAJAXHint(str); 
+				 
+				 });
 	}
-		
-	//多次请求，提示信息在所有请求都成功之后才能显示成功
-     this.checkMultRequests = function(str){
-		 
-	   console.log(str);
-	   console.log(_Request.length);
-	   console.log(_Request);
-	   
-		RequesePush(_Request,str);
-		
-		var l = _Request.length -1;
 
-		if(!_Request[l]) return; //当ajax请求时，数组的最后一个数据仍为undefined，则退出函数，继续循环执行请求，直到所以请求都完成
-			
-        var warp = $('#set_content div.dvr_list:visible');
-		warp.find('.synCheckboxClick input:checked:visible').prop('disabled',true);
-		for(var i=0;i<_Request.length;i++){
-			
-			if(_Request[i]=='loading_success' || _Request[i]=='save_success' ){
-				showAJAXHint('save_success').fadeOut(2000);
-				
-			}else{
-				showAJAXHint(_Request[i]);
-				}
-
-		}
-		
-		function RequesePush(arr,str){
-			for(var i=0;i<arr.length;i++){
-				if(!arr[i]){ //空数组的类型为undefined，！undefined即为true
-					arr[i]=str;
-					return ; 
-				}
-			}
-		}		 
-		 }
 	//保存过程中获取各种input中数据	 
 	this.getCheckbox = function (name){
 		var warp = $('#set_content div.dvr_list:visible');
