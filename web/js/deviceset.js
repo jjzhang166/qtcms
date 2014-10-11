@@ -422,7 +422,7 @@ var oSearchOcx,
 	///$(window).resize(set_contentMax)
 
 
-	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div7_7':'49','div8_8':'64'}
+	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div6_6':'36','div7_7':'49'/*,'div8_8':'64'*/}
 		for(i in SplitScreenMode){
 			SplitScreenMode[i]=SplitScreenMode[i]+_T('Screen');
 		}
