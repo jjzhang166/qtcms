@@ -577,6 +577,7 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			uint start = query.value(1).toUInt();
 			uint end = query.value(2).toUInt();
 			QString path = query.value(3).toString();
+			//file isn't in list or one file has two period time
 			if (!fileList.contains(path) || end - lastEnd > 60)
 			{
 // 				fileList<<path;
@@ -594,7 +595,8 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 // 			}
 			lastEnd = end;
 			PeriodTime item = {start, end};
-			filePeriodMap[wndId].append(item);
+// 			filePeriodMap[wndId].append(item);
+			appendPeriodTime(filePeriodMap[wndId], item);
 		}
 		query.finish();
 	}
@@ -608,7 +610,6 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			break;
 		}
 	}
-
 
 	return fileList;
 }
@@ -781,6 +782,32 @@ void LocalPlayerEx::appendFile( QStringList &fileList, QString fileName, QVector
 		}
 		fileList.insert(pos + 1, fileName);
 		vecTime.insert(pos + 1, time);
+	}
+}
+
+void LocalPlayerEx::appendPeriodTime( QVector<PeriodTime> &vecPeriod, const PeriodTime &per )
+{
+	if (vecPeriod.isEmpty())
+	{
+		vecPeriod.append(per);
+		return;
+	}
+	qint32 pos = vecPeriod.size() - 1;
+	if (vecPeriod[pos].start < per.start)
+	{
+		vecPeriod.append(per);
+	}
+	else
+	{
+		while (vecPeriod[pos].start > per.start)
+		{
+			--pos;
+			if (pos < 0)
+			{
+				return;
+			}
+		}
+		vecPeriod.insert(pos + 1, per);
 	}
 }
 

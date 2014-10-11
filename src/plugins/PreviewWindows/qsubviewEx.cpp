@@ -29,6 +29,7 @@ QWidget(parent),
 	m_pSwitchStreamAciton=m_mRightMenu.addAction(tr("Switch Stream"));
 	m_pRecorderAction=m_mRightMenu.addAction(tr("Start Record"));
 	m_pBackMainViewAction = m_mRightMenu.addAction(tr("Back to Main Window"));
+	m_pBackMainViewAction->setEnabled(false);
 	//∂‡”Ô—‘
 	m_pTtanslator=new QTranslator();
 	QApplication::installTranslator(m_pTtanslator);
