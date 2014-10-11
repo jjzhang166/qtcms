@@ -29,6 +29,7 @@ extern const CLSID CLSID_DivMode5_5;
 extern const CLSID CLSID_DivMode3_3;
 extern const CLSID CLSID_DivMode8_8;
 extern const CLSID CLSID_DivMode6_1;
+extern const CLSID CLSID_DivMode6_6;
 extern const IID IID_IDeviceSearch;
 extern const IID IID_IEventRegister;
 extern const CLSID CLSID_TestDvrSearch;

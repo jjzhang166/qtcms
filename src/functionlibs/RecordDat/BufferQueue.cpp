@@ -114,7 +114,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 		pFrameHead->uiExtension=0;//
 		pFrameHead->uiGentime=QDateTime::currentDateTime().toTime_t();
 		pFrameHead->uiLength=nDataLength;
-		pFrameHead->uiPts=tFrameInfo["pts"].toULongLong()/1000;
+		pFrameHead->uiPts=tFrameInfo["pts"].toULongLong()/*/1000*/;
 		pFrameHead->uiRecType=0;//
 		pFrameHead->uiSessionId=0;//
 		pFrameHead->uiType=tFrameInfo["frametype"].toUInt();

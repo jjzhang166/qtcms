@@ -185,6 +185,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalPlayerEx", "..\src\fun
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "checkDatFile", "..\src\functionlibs\checkDatFile\checkDatFile\checkDatFile.vcxproj", "{D595D9BE-5843-4465-89B4-186F95C14B0C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "div6_6", "..\src\functionlibs\div6_6\div6_6.vcxproj", "{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -386,6 +388,10 @@ Global
 		{D595D9BE-5843-4465-89B4-186F95C14B0C}.Debug|Win32.Build.0 = Debug|Win32
 		{D595D9BE-5843-4465-89B4-186F95C14B0C}.Release|Win32.ActiveCfg = Release|Win32
 		{D595D9BE-5843-4465-89B4-186F95C14B0C}.Release|Win32.Build.0 = Release|Win32
+		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Debug|Win32.Build.0 = Debug|Win32
+		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Release|Win32.ActiveCfg = Release|Win32
+		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
