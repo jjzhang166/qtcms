@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <QList>
+
 #define DATFILESIZE 128
 #define WNDNUM 64
 #define FRAMEMAXLENGTH 3

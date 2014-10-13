@@ -86,14 +86,18 @@ checkDatFile::checkDatFile(QWidget *parent):m_pPushButton(NULL),
 	m_pLayout=new QVBoxLayout(this);
 	m_pPushButton=new QPushButton;
 	m_pDateTimeButton=new QPushButton;
+	m_pSqliteThread=new QPushButton;
 	m_pText=new QTextEdit;
 	m_pLayout->addWidget(m_pPushButton);
 	m_pLayout->addWidget(m_pDateTimeButton);
+	m_pLayout->addWidget(m_pSqliteThread);
 	m_pLayout->addWidget(m_pText);
 	connect(m_pPushButton,SIGNAL(pressed()),this,SLOT(slCheckFile()));
 	connect(m_pDateTimeButton,SIGNAL(pressed()),this,SLOT(slDateTime()));
+	connect(m_pSqliteThread,SIGNAL(pressed()),this,SLOT(slSqlThread()));
 	m_pPushButton->setText(tr("checkDatFile"));
 	m_pDateTimeButton->setText(tr("dateTime"));
+	m_pSqliteThread->setText(tr("sqlThread"));
 	m_tRecordType.append(MOTIONRECORD);
 	m_tRecordType.append(MANUALRECORD);
 	m_tRecordType.append(TIMERECORD);
@@ -1202,4 +1206,18 @@ bool checkDatFile::insertDateTime( QString sDatabasePath,QList<tagSearch_recordI
 		abort();
 		return false;
 	}
+}
+
+void checkDatFile::slSqlThread()
+{
+	m_tSqlite1.setTestMode(1);
+	m_tSqlite3.setTestMode(1);
+	m_tSqlite4.setTestMode(1);
+	m_tSqlite5.setTestMode(1);
+	m_tSqlite2.setTestMode(0);
+	m_tSqlite1.startThread();
+	m_tSqlite2.startThread();
+	m_tSqlite3.startThread();
+	m_tSqlite4.startThread();
+	m_tSqlite5.startThread();
 }

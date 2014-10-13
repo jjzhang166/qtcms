@@ -68,6 +68,7 @@ private:
 	bool createRecordDatabase(QString sDatabasePath);
 	void priSetRecordFileStatus(QString sFilePath,QVariantMap tInfo);
 	quint64 countFileNum(QString sFilePath);
+	bool execCommand(QSqlQuery & tQuery,QString sCommand);
 private:
 	int priObtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
 	bool priUpdateRecordDatabase(QList<int> tIdList,QVariantMap tInfo,QString sFilePath);//uiEndTime

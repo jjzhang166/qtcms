@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QDateTime>
 #include <QTextEdit>
+#include <sqliteThread.h>
 #define DIRSIZE 256
 class checkDatFile : public QWidget
 {
@@ -31,6 +32,7 @@ public:
 public slots:
 	void slCheckFile();
 	void slDateTime();
+	void slSqlThread();
 private:
 	QString getRecordDisk();//D,E,F;
 	void checkDiskItem(QString sDiskTtem);
@@ -53,6 +55,7 @@ private:
 	QVBoxLayout *m_pLayout;
 	QPushButton *m_pPushButton;
 	QPushButton *m_pDateTimeButton;
+	QPushButton *m_pSqliteThread;
 	QTextEdit *m_pText;
 	QString m_sDatabasePath;
 	QByteArray m_tFileData;
@@ -61,6 +64,11 @@ private:
 	QList<int> m_tRecordType;
 	QList<tagSearch_recordItem> m_tSearchRecordItem;
 	QList<tagRecordItemInfo> m_tRecordItemInfo;
+	sqliteThread m_tSqlite1;
+	sqliteThread m_tSqlite2;
+	sqliteThread m_tSqlite3;
+	sqliteThread m_tSqlite4;
+	sqliteThread m_tSqlite5;
 };
 
 #endif // CHECKDATFILE_H

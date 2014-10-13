@@ -21,5 +21,6 @@ private:
 	bool removeSearchDataBaseItem(QStringList tRemoveFileItem,QList<tagMgrRecInfo> tRecInfo,QString sDate);
 	QStringList removeFile(QStringList tItemList);
 	QDate minDate(QList<QDate> tDateList);
+	bool execCommand(QSqlQuery & tQuery,QString sCommand);
 };
 

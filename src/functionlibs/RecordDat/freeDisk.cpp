@@ -251,7 +251,7 @@ QStringList freeDisk::findEarliestRecord( QString tDbPath,QDate &tEarlestDate,QM
 		QString sEarlyDate;
 		QSqlQuery _query(*pDataBase);
 		QString sCommand=QString("select distinct date from local_record order by date limit 1");
-		if (_query.exec(sCommand))
+		if (execCommand(_query,sCommand))
 		{
 			if (_query.next())
 			{
@@ -259,7 +259,7 @@ QStringList freeDisk::findEarliestRecord( QString tDbPath,QDate &tEarlestDate,QM
 				tEarlestDate=QDate::fromString(sEarlyDate,"yyyy-MM-dd");
 				sCommand.clear();
 				sCommand=QString("select date, path,id, win_id, end_time ,start_time from local_record where date='%1' order by start_time").arg(sEarlyDate);
-				if (_query.exec(sCommand))
+				if (execCommand(_query,sCommand))
 				{
 					while(_query.next()){
 							//确保将要删除的条目 与当前时间相隔 三个小时
@@ -327,21 +327,21 @@ bool freeDisk::removeRecordDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 			{
 				QSqlQuery _query(*pDataBase);
 				QString sCommand=QString("select date from local_record where path='%1'").arg(sFileName);
-				if (_query.exec(sCommand))
+				if (execCommand(_query,sCommand))
 				{
 					if (_query.next())
 					{
 						QString sDate=_query.value(0).toString();
 						sCommand.clear();
 						sCommand=QString("select max(id) from local_record where date='%1'").arg(sDate);
-						if (_query.exec(sCommand))
+						if (execCommand(_query,sCommand))
 						{
 							if (_query.next())
 							{
 								int nId=_query.value(0).toInt();
 								sCommand.clear();
 								sCommand=QString("delete from local_record where id=%1 or id<%2").arg(nId).arg(nId);
-								if (_query.exec(sCommand))
+								if (execCommand(_query,sCommand))
 								{
 								}else{
 									qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
@@ -375,36 +375,6 @@ bool freeDisk::removeRecordDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 	}
 	return true;
 	//使用上面的代码可以大大节省删除数据库的时间，下面的代码不再使用
-	for (int i=0;i<tRecInfo.size();i++)
-	{
-		QStringList tRemoteList=tRecInfo.value(i).tFileList;
-		foreach(QString sItem,tRemoteList){
-			QSqlDatabase *pDataBase=NULL;
-			int nPos=sItem.indexOf("/REC/");
-			int nEndPos=nPos+5;
-			QString sFind=sItem.left(nEndPos)+"record.db";
-			pDataBase=initFreeDiskDataBase(sFind,(quintptr*)this);
-			if (pDataBase!=NULL)
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one in";
-				QSqlQuery _query(*pDataBase);
-				QString sCommond=QString("delete from local_record where path ='").append(sItem).append("'");
-				sCommond.clear();
-				sCommond=QString("delete from local_record where id<800");
-				if (_query.exec(sCommond))
-				{
-					//do nothing
-				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as exec the cmd fail::"<<sCommond;
-				}
-				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one out";
-				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem one out";
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"removeRecordDataBaseItem fail as pDataBase is null,i will keep going without any handle";
-			}
-		}
-	}
-	return true;
 }
 
 bool freeDisk::removeSearchDataBaseItem( QStringList tRemoveFileItem,QList<tagMgrRecInfo> tRecInfo,QString sDate )
@@ -424,11 +394,11 @@ bool freeDisk::removeSearchDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 			while(iter!=tMgrRecInfo.tMaxEndTimeMap.end()){
 				QString sMaxEndTime=iter.value();
 				sCommond=QString("delete from search_record where (wnd_id=%1 and (date='%2' and end_time<='%3')) or date<'%4'").arg(iter.key()).arg(sDate).arg(iter.value()).arg(sDate);
-				if (_query.exec(sCommond))
+				if (execCommand(_query,sCommond))
 				{
 					sCommond.clear();
 					sCommond=QString("select id,start_time,end_time from search_record where date ='%1' and wnd_id =%2 order by start_time limit 1").arg(sDate).arg(iter.key());
-					if (_query.exec(sCommond))
+					if (execCommand(_query,sCommond))
 					{
 						if (_query.next())
 						{
@@ -439,7 +409,7 @@ bool freeDisk::removeSearchDataBaseItem( QStringList tRemoveFileItem,QList<tagMg
 							{
 								sCommond.clear();
 								sCommond=QString("update search_record set start_time='%1' where id='%2'").arg(sMaxEndTime).arg(iId);
-								if (_query.exec(sCommond))
+								if (execCommand(_query,sCommond))
 								{
 									//do
 								}else{
@@ -500,4 +470,34 @@ QDate freeDisk::minDate( QList<QDate> tDateList )
 		tMinDate=qMin(tDateList.at(i),tMinDate);
 	}
 	return tMinDate;
+}
+
+bool freeDisk::execCommand( QSqlQuery & tQuery,QString sCommand )
+{
+	bool bflags=false;
+	int nCount=0;
+	while(bflags==false){
+		if (nCount>1000)
+		{
+			bflags=true;
+		}
+		if (tQuery.exec(sCommand))
+		{
+			if (nCount!=0)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"try=====as lock======success";
+			}
+			return true;
+		}else{
+			if ("database is locked"==tQuery.lastError().databaseText())
+			{
+				msleep(1);
+				nCount++;
+				qDebug()<<__FUNCTION__<<__LINE__<<"try:"<<nCount<<"as lock";
+			}else{
+				return false;
+			}
+		}
+	}
+	return false;
 }

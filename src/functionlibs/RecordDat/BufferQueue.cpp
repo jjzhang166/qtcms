@@ -70,28 +70,6 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	}else{
 		//keep going
 	}
-	//if (m_tDataQueue.size()>m_nQueueMaxSize)
-	//{
-	//	RecBufferNode *pRecBufferNode=NULL;
-	//	pRecBufferNode=m_tDataQueue.dequeue();
-	//	if (NULL!=pRecBufferNode)
-	//	{
-	//		pRecBufferNode->release();
-	//		pRecBufferNode=NULL;
-	//	}else{
-	//		//do nothing
-	//	}
-	//	m_nLoseFrameCount++;
-	//	if (m_nRecordStatus!=0)
-	//	{
-	//		qDebug()<<__FUNCTION__<<__LINE__<<"lose frame :"<<m_nLoseFrameCount<<tFrameInfo["winid"].toUInt();
-	//	}else{
-	//		//do nothing
-	//	}	
-	//}else{
-	//	//keep going
-	//	m_nLoseFrameCount=0;
-	//}
 	int nDataLength=tFrameInfo["length"].toInt();
 	int nFrameHeadLength=sizeof(tagFrameHead);
 	int nApplyLength=nDataLength+nFrameHeadLength-sizeof(char*);
