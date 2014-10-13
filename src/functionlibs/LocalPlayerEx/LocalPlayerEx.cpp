@@ -238,7 +238,7 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 	QString sEnd = sDate + " " + sEndTime;
 	QDateTime dtStart = QDateTime::fromString(sStart, "yyyy-MM-dd hh:mm:ss");
 	QDateTime dtEnd = QDateTime::fromString(sEnd, "yyyy-MM-dd hh:mm:ss");
-	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId='%1' and nEndTime>='%2' and nStartTime<='%3' and (%4) and nStartTime!=nEndTime order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
+	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId='%1' and nEndTime>'%2' and nStartTime<'%3' and (%4) and nStartTime!=nEndTime order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
@@ -266,6 +266,9 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 			QVariantMap info;
 			info.insert("wndId", nWndId);
 			info.insert("type", recordType);
+
+			start = qMax(dtStart.toTime_t(), start);
+			end = qMin(dtEnd.toTime_t(), end);
 			info.insert("start", QDateTime::fromTime_t(start).toString("yyyy-MM-dd hh:mm:ss"));
 			info.insert("end", QDateTime::fromTime_t(end).toString("yyyy-MM-dd hh:mm:ss"));
 
@@ -408,6 +411,9 @@ int LocalPlayerEx::GroupStop()
 		m_arrPlayInfo[i32Loop].pPlayMgr->stop();
 		m_arrPlayInfo[i32Loop].i32WndId = NO_WINDOW_ID;
 	}
+	//clear read file buffer
+	m_pFileData->clearBuffer();
+
 	m_uiStartSec = 0;
 	m_uiEndSec = 0;
 	m_uiPlayTime = 0;

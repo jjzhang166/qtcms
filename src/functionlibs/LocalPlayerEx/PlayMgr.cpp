@@ -269,13 +269,13 @@ void PlayMgr::run()
 				}
 				m_pAudioPlayer->Play(pFrameData->pBuffer, pFrameData->uiLength);
 
-				delete[] pFrameData->pBuffer;
+// 				delete[] pFrameData->pBuffer;
 				m_quFrameBuffer.removeFirst();
 				continue;
 			}
 			else
 			{
-				delete[] pFrameData->pBuffer;
+// 				delete[] pFrameData->pBuffer;
 				m_quFrameBuffer.removeFirst();
 				continue;
 			}
@@ -292,7 +292,7 @@ void PlayMgr::run()
 			uiLastGMT = pFrameData->uiGentime;
 			m_uiCurrentGMT = pFrameData->uiGentime;
 			m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);//decode
-			delete[] pFrameData->pBuffer;
+// 			delete[] pFrameData->pBuffer;
 			m_quFrameBuffer.removeFirst();
 
 			bFirstFrame = false;
@@ -313,16 +313,18 @@ void PlayMgr::run()
 		}
 		
 		//keep play speed
-		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*10*1000;
+		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*100*1000;
 		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
-		qint64 i64Sec = 0;
-		if (i64WaitSec > 0)
+		qint64 i64Sec = i64WaitSec - i64Spend;
+// 		if (i64WaitSec > 0)
+		if (i64Sec > 0)
 		{
-			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - i64Spend;
+// 			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - i64Spend;
 
-			qDebug()<<"wait sec: "<<i64Sec<<" m_bStop: "<<m_bStop<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+// 			qDebug()<<"wait sec: "<<i64Sec<<" m_bStop: "<<m_bStop<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
 
-			usleep(i64Sec > 0 ? i64Sec : 0);
+// 			usleep(i64Sec > 0 ? i64Sec : 0);
+			usleep(i64Sec);
 		}
 
 		uiLastPts = pFrameData->uiPts;
@@ -331,7 +333,7 @@ void PlayMgr::run()
 		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
 		frameTimer.start();	
 
-		delete[] pFrameData->pBuffer;
+// 		delete[] pFrameData->pBuffer;
 		m_quFrameBuffer.removeFirst();
 	}
 
@@ -339,7 +341,8 @@ void PlayMgr::run()
 	{
 		qDebug()<<"clear buffer";
 
-		clearBuffer();
+// 		clearBuffer();
+		m_quFrameBuffer.clear();
 	}
 	if (bSkip)
 	{
@@ -386,7 +389,7 @@ void PlayMgr::clearBuffer()
 	while(!m_quFrameBuffer.isEmpty())
 	{
 		pFrameData = &(m_quFrameBuffer.first());
-		delete[] pFrameData->pBuffer;
+// 		delete[] pFrameData->pBuffer;
 		m_quFrameBuffer.pop_front();
 	}
 }

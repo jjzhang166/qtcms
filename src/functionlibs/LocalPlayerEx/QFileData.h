@@ -22,6 +22,7 @@ public:
 // 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void startReadFile();
 	void stopThread();
+	void clearBuffer();
 
 	typedef struct _tagCurBuffInof{
 		_tagCurBuffInof():curBuffer(NULL),pBuffList(NULL),lastPos(0),curPos(0)/*,lastGMT(0),curGMT(0)*/,bIsFirstRead(true),bIsPlaying(false){}
@@ -56,6 +57,9 @@ private:
 	qint32 m_i32StartPos;			//start position in file list
 	bool m_bStop;
 	bool m_bPlayDirection;			//true:play false:playback
+
+	char* m_pFileBuff1;
+	char* m_pFileBuff2;
 
 	pcbTimeChange m_pcbTimeChg;
 	void* m_pUser;
