@@ -273,7 +273,7 @@
 								</div>
 								<ul class="option">
 									<li><input value="PAL" type="text" data="0" /></li>
-									<li><input value="NTST" type="text" data="1" /></li>
+									<li><input value="NTSC" type="text" data="1" /></li>
 								</ul></td>
 						</tr>
 						<tr>
@@ -1633,7 +1633,7 @@
 	                    <tr style="display:none;"><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
 	                    <tr style="display:none;"><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
 	                    <tr style="display:none;"><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>-->
-	                    <tr><td><script>T("Computer_time")</script></td><td><input id="PC_time" value="" disabled="disabled"></td><td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("Computer_time")</script></div></td></tr>
+	                    <tr><td><script>T("Computer_time")</script></td><td><input id="PC_time" value="" disabled="disabled"></td><td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
 	                   <!--  <tr style="display:none;"><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr> --> 
 	                    
 	                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="true" /><script>T("Open")</script><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="false" /><script>T("Close")</script></td><td></td></tr>
