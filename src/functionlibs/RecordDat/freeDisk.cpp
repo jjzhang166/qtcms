@@ -491,7 +491,9 @@ bool freeDisk::execCommand( QSqlQuery & tQuery,QString sCommand )
 		}else{
 			if ("database is locked"==tQuery.lastError().databaseText())
 			{
-				msleep(1);
+				QEventLoop eventloop;
+				QTimer::singleShot(15, &eventloop, SLOT(quit()));
+				eventloop.exec();
 				nCount++;
 				qDebug()<<__FUNCTION__<<__LINE__<<"try:"<<nCount<<"as lock";
 			}else{
