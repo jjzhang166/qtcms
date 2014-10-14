@@ -22,7 +22,7 @@ public:
 // 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void startReadFile();
 	void stopThread();
-	void clearBuffer();
+// 	void clearBuffer();
 
 	typedef struct _tagCurBuffInof{
 		_tagCurBuffInof():curBuffer(NULL),pBuffList(NULL),lastPos(0),curPos(0)/*,lastGMT(0),curGMT(0)*/,bIsFirstRead(true),bIsPlaying(false){}

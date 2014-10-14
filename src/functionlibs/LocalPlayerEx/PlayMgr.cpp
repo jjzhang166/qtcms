@@ -65,7 +65,7 @@ PlayMgr::~PlayMgr( void )
 		m_pVedioDecoder = NULL;
 	}
 	//clear buffer
-	clearBuffer();
+// 	clearBuffer();
 }
 
 qint32 PlayMgr::initCbFuction()
@@ -382,17 +382,17 @@ qint32 PlayMgr::prePlay(QVariantMap &item)
 	return 0;
 }
 
-void PlayMgr::clearBuffer()
-{
-	//clear buffer
-	FrameData *pFrameData = NULL;
-	while(!m_quFrameBuffer.isEmpty())
-	{
-		pFrameData = &(m_quFrameBuffer.first());
-// 		delete[] pFrameData->pBuffer;
-		m_quFrameBuffer.pop_front();
-	}
-}
+// void PlayMgr::clearBuffer()
+// {
+// 	//clear buffer
+// 	FrameData *pFrameData = NULL;
+// 	while(!m_quFrameBuffer.isEmpty())
+// 	{
+// 		pFrameData = &(m_quFrameBuffer.first());
+// // 		delete[] pFrameData->pBuffer;
+// 		m_quFrameBuffer.pop_front();
+// 	}
+// }
 
 void PlayMgr::openAudio( bool bEnable )
 {

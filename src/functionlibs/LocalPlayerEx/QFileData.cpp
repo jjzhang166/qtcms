@@ -39,12 +39,22 @@ QFileData::QFileData()
 	m_pFileBuff2(NULL),
 	m_pUser(NULL)
 {
-
+	m_pFileBuff1 = new char[BUFFER_SIZE];
+	m_pFileBuff2 = new char[BUFFER_SIZE];
 }
 
 QFileData::~QFileData()
 {
-
+	if (m_pFileBuff1)
+	{
+		delete[] m_pFileBuff1;
+		m_pFileBuff1 = NULL;
+	}
+	if (m_pFileBuff2)
+	{
+		delete[] m_pFileBuff2;
+		m_pFileBuff2 = NULL;
+	}
 }
 
 void QFileData::setParamer( QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos )
@@ -106,26 +116,26 @@ void QFileData::stopThread()
 	qDebug()<<__FUNCTION__<<__LINE__<<"stop thread end";
 }
 
-void QFileData::clearBuffer()
-{
-	if (m_pFileBuff1)
-	{
-		delete[] m_pFileBuff1;
-		m_pFileBuff1 = NULL;
-	}
-	if (m_pFileBuff2)
-	{
-		delete[] m_pFileBuff2;
-		m_pFileBuff2 = NULL;
-	}
-}
+// void QFileData::clearBuffer()
+// {
+// 	if (m_pFileBuff1)
+// 	{
+// 		delete[] m_pFileBuff1;
+// 		m_pFileBuff1 = NULL;
+// 	}
+// 	if (m_pFileBuff2)
+// 	{
+// 		delete[] m_pFileBuff2;
+// 		m_pFileBuff2 = NULL;
+// 	}
+// }
 
 void QFileData::run()
 {
 	qDebug()<<__FUNCTION__<<__LINE__<<"start run";
 
-	m_pFileBuff1 = new char[BUFFER_SIZE];
-	m_pFileBuff2 = new char[BUFFER_SIZE];
+// 	m_pFileBuff1 = new char[BUFFER_SIZE];
+// 	m_pFileBuff2 = new char[BUFFER_SIZE];
 
 // 	char *m_pFileBuff1 = new char[BUFFER_SIZE];
 // 	char *m_pFileBuff2 = new char[BUFFER_SIZE];

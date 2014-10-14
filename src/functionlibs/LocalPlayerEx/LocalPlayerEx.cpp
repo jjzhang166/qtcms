@@ -412,7 +412,7 @@ int LocalPlayerEx::GroupStop()
 		m_arrPlayInfo[i32Loop].i32WndId = NO_WINDOW_ID;
 	}
 	//clear read file buffer
-	m_pFileData->clearBuffer();
+// 	m_pFileData->clearBuffer();
 
 	m_uiStartSec = 0;
 	m_uiEndSec = 0;
@@ -559,9 +559,11 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 	{
 		return fileList;
 	}
-	QDateTime dateTime = QDateTime::fromTime_t(m_uiStartSec);
-	QDateTime startTime(dateTime.date(), QTime(0, 0, 0));
-	QDateTime endTime(dateTime.date(), QTime(23, 59, 59));
+// 	QDateTime dateTime = QDateTime::fromTime_t(m_uiStartSec);
+// 	QDateTime startTime(dateTime.date(), QTime(0, 0, 0));
+// 	QDateTime endTime(dateTime.date(), QTime(23, 59, 59));
+	QDateTime startTime = QDateTime::fromTime_t(m_uiStartSec);
+	QDateTime endTime = QDateTime::fromTime_t(m_uiEndSec);
 	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime >= %3 and nEndTime <= %4 and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types)).arg(startTime.toTime_t()).arg(endTime.toTime_t());
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
