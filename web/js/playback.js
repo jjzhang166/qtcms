@@ -101,6 +101,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 				groupStop();
 				
+				 $('#fileRec').stop(true,true).hide();
+				 
+				/* $('div.play_time').css('left',$('table.table .no_border').width());*/
+				 
 				bool = index;
 
 				searchSTOP=1;
@@ -255,7 +259,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					var status = oPlaybackLocl.AddFileIntoPlayGroupEx(wind,date,begin.split(' ')[1],maxFileEndTime,type);
 					
 					if(status !=0){
-						console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);
+						/*console.log('当前播放窗口为:'+k+'日期为:'+date+'开始时间为:'+begin+'结束时间为:'+end+'文件类型为:'+type+'播放初始化状态:'+status);*/
 						alert(lang.wind+':'+(parseInt(wind,10)+1)+lang.play_Failed);
 					}
 				}
@@ -427,8 +431,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		if(bool && data.index_0){
 			RecFileInfo2UI(data);
-			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);
+			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);*/
 		}
 
 		/*if(!bool)
@@ -531,7 +535,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		for(var i=0;i<oChlfile.length;i++){
 			if((i+1) < oChlfile.length){
-				if((time2Sec(oChlfile[i+1].start.split(' ')[1]) - time2Sec(oChlfile[i].end.split(' ')[1]) < 60) && (oChlfile[i].types == oChlfile[i+1].types)){  //间隔时间为60秒以内就认为为连续文件.
+				if((time2Sec(oChlfile[i+1].start.split(' ')[1]) - time2Sec(oChlfile[i].end.split(' ')[1]) < 60) && (oChlfile[i].type == oChlfile[i+1].type)){  //间隔时间为60秒以内就认为为连续文件.
 					m++;
 				}else{
 					oChlfile[n].end = oChlfile[m+n].end;
@@ -578,6 +582,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oFileUIwarp = channelvideo.find('tr'),
 
 			oDev = $(oDev);
+
 		/*console.log(oDev);
 		console.log('---------描绘接受到的文件------------------------');
 		console.log(filedata)	
@@ -846,7 +851,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			dragStopMove();
 		}else{
-			var arr=['1/X','2X','1/2X'];
+			var arr=['1X','2X','1/2X'];
 			palybackspeed(arr[objStatus]);
 			getAudioObj().GroupContinue();
 			//console.log('当前控件继续播放的返回值:'+getAudioObj().GroupContinue());
