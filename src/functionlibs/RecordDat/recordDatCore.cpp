@@ -237,61 +237,6 @@ void recordDatCore::run()
 			m_tFileInfo.tHistoryIFrameIndex.clear();
 			m_bIsBlock=true;
 			m_nPosition=__LINE__;
-			//while(bStop==false){
-			//	if (uiCurrentIndex<pFileHead->uiIndex)
-			//	{
-			//		tagFileFrameHead *pFileFrameHead=(tagFileFrameHead*)((char*)pFileHead+uiCurrentIndex);
-			//		int nChannel=pFileFrameHead->tFrameHead.uiChannel;
-			//		//test file first: 
-			//		if (pFileFrameHead->tFrameHead.uiChannel>=0&&pFileFrameHead->tFrameHead.uiChannel<64)
-			//		{
-			//			//keep going
-			//		}else{
-			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiChannel is out of range"<<pFileFrameHead->tFrameHead.uiChannel;
-			//			abort();
-			//		}
-			//		if (pFileFrameHead->tFrameHead.uiRecType==MOTIONRECORD||pFileFrameHead->tFrameHead.uiRecType==TIMERECORD||pFileFrameHead->tFrameHead.uiRecType==MANUALRECORD)
-			//		{
-			//		}else{
-			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiRecType is undefined";
-			//			abort();
-			//		}
-			//		if (pFileFrameHead->tFrameHead.uiSessionId>0)
-			//		{
-			//		}else{
-			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiSessionId is out of range"<<pFileFrameHead->tFrameHead.uiSessionId;
-			//			abort();
-			//		}
-			//		if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig||pFileFrameHead->tFrameHead.uiType==FT_AudioConfig||pFileFrameHead->tFrameHead.uiType==FT_PFrame||pFileFrameHead->tFrameHead.uiType==FT_Audio||pFileFrameHead->tFrameHead.uiType==FT_IFrame)
-			//		{
-			//		}else{
-			//			qDebug()<<__FUNCTION__<<__LINE__<<"illegal file as pFileFrameHead->tFrameHead.uiType is undefined"<<pFileFrameHead->tFrameHead.uiType;
-			//			abort();
-			//		}
-			//		//test file first: over
-
-			//		if (pFileFrameHead->tFrameHead.uiType==FT_VideoConfig)
-			//		{
-			//			//通道的第一个I帧
-			//			if (!m_tFileInfo.tFristIFrameIndex.contains(nChannel))
-			//			{
-			//				m_tFileInfo.tFristIFrameIndex.insert(nChannel,uiCurrentIndex);
-			//			}else{
-			//				//do nothing
-			//			}
-			//			//通道的最后一个I帧的位置
-			//			m_tFileInfo.tHistoryIFrameIndex.insert(nChannel,uiCurrentIndex);
-			//		}else{
-			//			//do nothing
-			//		}
-			//		//通道最后一个帧的位置
-			//		m_tFileInfo.tHistoryFrameIndex.insert(nChannel,uiCurrentIndex);
-
-			//		uiCurrentIndex=uiCurrentIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFileFrameHead->tFrameHead.pBuffer);
-			//	}else{
-			//		bStop=true;
-			//	}
-			//}
 			m_bIsBlock=false;
 			nRunStep=recordDat_default;
 								  }
