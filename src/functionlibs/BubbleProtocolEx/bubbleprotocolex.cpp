@@ -1378,7 +1378,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
 					int nHeight=0;
                     GetWidthHeight(pLiveStream->pData,qToBigEndian((quint32)(pLiveStream->uiLength)),&nWidth,&nHeight);
 					tStreamInfo.insert("channel", pLiveStream->cChannel);
-                    tStreamInfo.insert("pts", (unsigned long long)qToBigEndian((quint32)(pBubbleInfo->uiTicket))/**1000*/);
+                    tStreamInfo.insert("pts", (unsigned long long)qToBigEndian((quint32)(pBubbleInfo->uiTicket))*1000);
                     tStreamInfo.insert("length", qToBigEndian((quint32)(pLiveStream->uiLength)));
                     tStreamInfo.insert("data", (quintptr)(pLiveStream->pData));
 					tStreamInfo.insert("frametype", pLiveStream->cType);

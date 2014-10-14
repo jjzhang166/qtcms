@@ -54,9 +54,9 @@ typedef struct __tagFrameData{
 		uiRecType = pframeHead->uiRecType;
 		uiExtension = pframeHead->uiExtension;
 		uiSessionId = pframeHead->uiSessionId;
-// 		pBuffer = new char[pframeHead->uiLength];
-// 		memcpy(pBuffer, &(pframeHead->pBuffer), pframeHead->uiLength);
-		pBuffer = (char *)&pframeHead->pBuffer;
+		pBuffer = new char[pframeHead->uiLength];
+		memcpy(pBuffer, &(pframeHead->pBuffer), pframeHead->uiLength);
+// 		pBuffer = (char *)&pframeHead->pBuffer;
 	}
 	unsigned int uiType;
 	unsigned int uiLength;

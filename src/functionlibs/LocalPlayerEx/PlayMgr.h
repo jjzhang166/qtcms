@@ -38,7 +38,7 @@ protected:
 	void run();
 private:
 	qint32 initCbFuction();
-// 	void clearBuffer();
+	void clearBuffer();
 	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
 	qint32 adjustTimeLine(uint uiStart);
 

@@ -65,7 +65,7 @@ PlayMgr::~PlayMgr( void )
 		m_pVedioDecoder = NULL;
 	}
 	//clear buffer
-// 	clearBuffer();
+	clearBuffer();
 }
 
 qint32 PlayMgr::initCbFuction()
@@ -269,13 +269,13 @@ void PlayMgr::run()
 				}
 				m_pAudioPlayer->Play(pFrameData->pBuffer, pFrameData->uiLength);
 
-// 				delete[] pFrameData->pBuffer;
+				delete[] pFrameData->pBuffer;
 				m_quFrameBuffer.removeFirst();
 				continue;
 			}
 			else
 			{
-// 				delete[] pFrameData->pBuffer;
+				delete[] pFrameData->pBuffer;
 				m_quFrameBuffer.removeFirst();
 				continue;
 			}
@@ -292,7 +292,7 @@ void PlayMgr::run()
 			uiLastGMT = pFrameData->uiGentime;
 			m_uiCurrentGMT = pFrameData->uiGentime;
 			m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);//decode
-// 			delete[] pFrameData->pBuffer;
+			delete[] pFrameData->pBuffer;
 			m_quFrameBuffer.removeFirst();
 
 			bFirstFrame = false;
@@ -333,7 +333,7 @@ void PlayMgr::run()
 		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
 		frameTimer.start();	
 
-// 		delete[] pFrameData->pBuffer;
+		delete[] pFrameData->pBuffer;
 		m_quFrameBuffer.removeFirst();
 	}
 
@@ -341,8 +341,8 @@ void PlayMgr::run()
 	{
 		qDebug()<<"clear buffer";
 
-// 		clearBuffer();
-		m_quFrameBuffer.clear();
+		clearBuffer();
+// 		m_quFrameBuffer.clear();
 	}
 	if (bSkip)
 	{
@@ -382,17 +382,17 @@ qint32 PlayMgr::prePlay(QVariantMap &item)
 	return 0;
 }
 
-// void PlayMgr::clearBuffer()
-// {
-// 	//clear buffer
-// 	FrameData *pFrameData = NULL;
-// 	while(!m_quFrameBuffer.isEmpty())
-// 	{
-// 		pFrameData = &(m_quFrameBuffer.first());
-// // 		delete[] pFrameData->pBuffer;
-// 		m_quFrameBuffer.pop_front();
-// 	}
-// }
+void PlayMgr::clearBuffer()
+{
+	//clear buffer
+	FrameData *pFrameData = NULL;
+	while(!m_quFrameBuffer.isEmpty())
+	{
+		pFrameData = &(m_quFrameBuffer.first());
+		delete[] pFrameData->pBuffer;
+		m_quFrameBuffer.pop_front();
+	}
+}
 
 void PlayMgr::openAudio( bool bEnable )
 {
