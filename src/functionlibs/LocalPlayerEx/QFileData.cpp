@@ -172,8 +172,8 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
 					{
-						delete[] m_pFileBuff1;
-						delete[] m_pFileBuff2;
+						//delete[] m_pFileBuff1;
+						//delete[] m_pFileBuff2;
 						return;
 					}
 					bufferStatusMap[curBuffer] = true;
@@ -187,8 +187,8 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, m_pFileBuff1, BUFFER_SIZE))
 					{
-						delete[] m_pFileBuff1;
-						delete[] m_pFileBuff2;
+						//delete[] m_pFileBuff1;
+						//delete[] m_pFileBuff2;
 						return;
 					}
 					bufferStatusMap[m_pFileBuff1] = true;

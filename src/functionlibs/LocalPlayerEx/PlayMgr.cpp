@@ -236,7 +236,7 @@ void PlayMgr::run()
 		}
 		else
 		{
-			qDebug()<<"no frame, sleep";
+			//qDebug()<<"no frame, sleep";
 
 			msleep(10);//wait for new frames
 			continue;
