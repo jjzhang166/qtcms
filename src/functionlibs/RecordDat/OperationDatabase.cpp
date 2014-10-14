@@ -128,7 +128,7 @@ bool OperationDatabase::createRecordDatabase( QString sDatabasePath )
 {
 	QFile tFile;
 	tFile.setFileName(sDatabasePath);
-	if (!tFile.exists())
+	if (!tFile.exists()||tFile.size()==0)
 	{
 		QFileInfo tFileInfo(tFile);
 		QString sDirPath=tFileInfo.absolutePath();
@@ -262,7 +262,7 @@ void OperationDatabase::priSetRecordFileStatus( QString sFilePath,QVariantMap tI
 	QString sDisk=sFilePath.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sDisk);
-	if (tDatabaseFile.exists())
+	if (tDatabaseFile.exists()&&tDatabaseFile.size()!=0)
 	{
 		//keep going
 	}else{
@@ -1317,7 +1317,7 @@ bool OperationDatabase::priCreateSearchDatabaseItem( int nChannel,quint64 uiStar
 	QString sDatabasePath=sFileName.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sDatabasePath);
-	if (tDatabaseFile.exists())
+	if (tDatabaseFile.exists()&&tDatabaseFile.size()!=0)
 	{
 		//keep going
 	}else{
@@ -1370,7 +1370,7 @@ bool OperationDatabase::priCreateRecordDatabaseItem( int nChannel,quint64 uiStar
 	QString sDatabasePath=sFileName.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sFileName);
-	if (tDatabaseFile.exists())
+	if (tDatabaseFile.exists()&&tDatabaseFile.size()!=0)
 	{
 		//keep going
 	}else{
@@ -1416,7 +1416,7 @@ void OperationDatabase::priSetRecordFileStatusEx( QString sFilePath,QVariantMap 
 	QString sDisk=sFilePath.left(1)+":/recEx/record.db";
 	QFile tDatabaseFile;
 	tDatabaseFile.setFileName(sDisk);
-	if (tDatabaseFile.exists())
+	if (tDatabaseFile.exists()&&tDatabaseFile.size()!=0)
 	{
 		//keep going
 	}else{
@@ -1946,7 +1946,7 @@ QString OperationDatabase::createLatestItemEx( QString sDisk )
 	QString sRecordDatabasePath=sDisk+"/recEx/record.db";
 	QFile tFile;
 	tFile.setFileName(sRecordDatabasePath);
-	if (tFile.exists())
+	if (tFile.exists()&&tFile.size()!=0)
 	{
 		QSqlDatabase *pDataBase=initMgrDataBase(sRecordDatabasePath,(quintptr*)this);
 		if (NULL!=pDataBase)
