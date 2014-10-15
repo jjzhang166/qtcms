@@ -35,7 +35,8 @@ void deinitRecordDatCore(){
 RecordDat::RecordDat():m_nRef(0),
 	m_nStatus(0),
 	m_nMotionTime(0),
-	m_bInit(false)
+	m_bInit(false),
+	m_nWnd(-1)
 {
 	m_tEventList<<"RecordState"<<"RecordCore";
 	recordDatCore *m_pRecordDatCore;
@@ -169,6 +170,12 @@ bool RecordDat::init(int nWid)
 
 bool RecordDat::deinit()
 {
+	if (m_bInit==false)
+	{
+		return true;
+	}else{
+		//keep going
+	}
 	m_tFuncLock.lock();
 	m_tTimeRecordTimer.stop();
 	m_tMotionRecordTimer.stop();
@@ -181,6 +188,7 @@ bool RecordDat::deinit()
 	setRecordType(MANUALRECORD,false);
 	recordDatCore *pRecordDatCore=NULL;
 	initRecordDatCore(&pRecordDatCore);
+
 	if (pRecordDatCore!=NULL)
 	{
 		pRecordDatCore->removeBufferQueue(m_nWnd);

@@ -37,7 +37,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 					{
 						if (m_nRecordStatus!=0)
 						{
-							qDebug()<<__FUNCTION__<<__LINE__<<"remove I Frame"<<"and total num:"<<nCount;
+							qDebug()<<__FUNCTION__<<__LINE__<<"wind:"<<pFrameHead->uiChannel<<"remove I Frame"<<"and total num:"<<nCount;
 						}else{
 							//do nothing
 						}
@@ -225,5 +225,10 @@ void BufferQueue::enqueueDataUnLock()
 void BufferQueue::setRecordStatus(int nRecordStatus)
 {
 	m_nRecordStatus=nRecordStatus;
+}
+
+int BufferQueue::getSize()
+{
+	return m_nQueueMaxSize;
 }
 

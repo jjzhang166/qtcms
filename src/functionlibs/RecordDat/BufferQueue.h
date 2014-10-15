@@ -27,6 +27,7 @@ public:
 	RecBufferNode *dequeue();
 	RecBufferNode *front();
 	void setRecordStatus(int nStatus);
+	int getSize();
 private:
 	QQueue<RecBufferNode*> m_tDataQueue;
 	QMutex m_tDataLock;

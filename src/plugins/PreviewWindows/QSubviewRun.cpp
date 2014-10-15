@@ -471,6 +471,8 @@ void QSubviewRun::run()
 						break;
 		case DEINITRECORD:{
 			//停止录像
+
+
 			if (NULL!=m_pRecordDat)
 			{
 				if (m_pRecordDat->deinit())
@@ -689,6 +691,7 @@ void QSubviewRun::run()
 				{
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
+
 					m_pRecordDat->deinit();
 					m_pRecordDat->Release();
 					m_pRecordDat=NULL;
@@ -1699,6 +1702,10 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//自动同步时间
 				m_stepCode.enqueue(AUTOSYNTIME);
 				//init录像
+				if (m_nWindId==0)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"-------------m_stepCode.enqueue(INITRECORD)--------------";
+				}
 				m_stepCode.enqueue(INITRECORD);
 				if (m_bIsManualRecord)
 				{
@@ -1718,7 +1725,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//停止声音
 
 				//停止录像
-				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<m_nWindId<<"add STOPRECORD into queue";
 				m_stepCode.enqueue(DEINITRECORD);
 				//抛出事件
 				m_nSecondPosition=__LINE__;

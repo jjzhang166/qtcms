@@ -1762,7 +1762,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 	QFile tFile;
 	QString sOldestFilePath;
 	tFile.setFileName(sRecordDatabasePath);
-	if (tFile.exists())
+	if (tFile.exists()&&tFile.size()!=0)
 	{
 		QSqlDatabase *pDataBase=initMgrDataBase(sRecordDatabasePath,(quintptr*)this);
 		if (NULL!=pDataBase)
@@ -1788,7 +1788,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 							nStep=2;
 						}
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
 						abort();
 					}
 					   }
