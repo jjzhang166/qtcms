@@ -81,7 +81,7 @@ private:
 	QString getLanguageLable();
 private:
 	IWindowDivMode * m_divMode;
-	qsubviewEx m_sPreviewWnd[64];
+	qsubviewEx m_sPreviewWnd[49];
 	QList<QWidget*>m_pPreviewWndList;
 	int m_nCurrentWnd;
 	bool m_bAudioEnabled;
