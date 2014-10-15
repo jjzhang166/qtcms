@@ -359,7 +359,7 @@ int LocalPlayerEx::GroupPlay()
 	QVector<PeriodTime> skipTime;
 	QMap<uint, QVector<PeriodTime> > filePeriodMap;
 	//get file list for playing
-	QStringList fileList = getFileList(i32StartPos, filePeriodMap);
+	QList<QString> fileList = getFileList(i32StartPos, filePeriodMap);
 	if (fileList.isEmpty())
 	{
 		return 1;
@@ -547,11 +547,11 @@ QString LocalPlayerEx::intToStr( QList<qint32> &wndList )
 	return wndStr.left(wndStr.size() - 1);
 }
 
-QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<PeriodTime> >& filePeriodMap )
+QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<PeriodTime> >& filePeriodMap )
 {
 	bool find = false;
 	QString startPath;
-	QStringList fileList;
+	QList<QString> fileList;
 	QVector<uint> vecTime;
 	QList<qint32> wndList;
 	getWndIdList(wndList);
@@ -576,7 +576,16 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			continue;
 		}
 		uint lastEnd = 0;
+		QStringList excludeFilelst;
 		QSqlQuery query(*pdb);
+		//find locked file or damaged file
+		if (query.exec(QString("select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1)")))
+		{
+			while (query.next())
+			{
+				excludeFilelst<<query.value(0).toString();
+			}
+		}
 		query.exec(sqlCommand);
 		
 		while (query.next())
@@ -585,6 +594,12 @@ QStringList LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Perio
 			uint start = query.value(1).toUInt();
 			uint end = query.value(2).toUInt();
 			QString path = query.value(3).toString();
+			//exclude file from file list
+			if (excludeFilelst.contains(path))
+			{
+				continue;
+			}
+
 			//file isn't in list or one file has two period time
 			if (!fileList.contains(path) || end - lastEnd > 60)
 			{
@@ -764,7 +779,7 @@ qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& fil
 
 }
 
-void LocalPlayerEx::appendFile( QStringList &fileList, QString fileName, QVector<uint> &vecTime, uint time )
+void LocalPlayerEx::appendFile( QList<QString> &fileList, QString fileName, QVector<uint> &vecTime, uint time )
 {
 	if (fileList.isEmpty())
 	{
