@@ -13,29 +13,25 @@ var oSearchOcx,
 					
 					var startDateTextBox =$(this);
 					var endDateTextBox = $('.iput2.time_picker_end').eq(i);
-					
+		   
 		            startDateTextBox.timepicker({
 						 
 					    timeFormat: 'HH:mm:ss',
 						controlType:'select',
 					    showTime: false,
-					  /* // showButtonPanel: false,
-					    timeOnlyTitle: _T('Choose_time'),
-						timeText:_T('Time'),
-		                hourText: _T('Hour'),
-		                minuteText: _T('Minute'),
-						secondText: _T('Second'),*/
-					   
 					    onClose: function(dateText, inst) {
 						  
 						  if (endDateTextBox.val() != '') {
 							
 							var testStartDate = startDateTextBox.datetimepicker('getDate');
 							var testEndDate = endDateTextBox.datetimepicker('getDate');
-							if (testStartDate > testEndDate){
+							var dataStart =startDateTextBox.attr('data');
+							console.log(dataStart);
+							if (testStartDate >= testEndDate){
 								 
 								Confirm(_T('Start_end_time_error'));
-							startDateTextBox.datetimepicker('setDate', testEndDate);	
+							//startDateTextBox.datetimepicker('setDate',dataStart);	
+							startDateTextBox.val(dataStart);
 							}
 						  }else {
 							endDateTextBox.val(dateText);
@@ -48,7 +44,7 @@ var oSearchOcx,
 					
 					var startDateTextBox =$('.iput2.time_picker_start').eq(i);
 					var endDateTextBox =$(this);
-					        
+					 
 				    endDateTextBox.timepicker({ 
 				   
 						timeFormat: 'HH:mm:ss',
@@ -58,12 +54,13 @@ var oSearchOcx,
 					 
 						onClose: function(dateText, inst) {
 							if (startDateTextBox.val() != '') {
-								
 								var testStartDate = startDateTextBox.datetimepicker('getDate');
 								var testEndDate = endDateTextBox.datetimepicker('getDate');
-								if (testStartDate > testEndDate){
+								var endData =endDateTextBox.attr('data');       
+								if (testStartDate >= testEndDate){
 									Confirm(_T('Start_end_time_error'));
-									endDateTextBox.datetimepicker('setDate', testStartDate);
+									//endDateTextBox.datetimepicker('setDate', endData);
+									endDateTextBox.val(endData);
 								}
 							}else{
 								startDateTextBox.val(dateText);
@@ -143,11 +140,11 @@ var oSearchOcx,
 			$(this).click(function(){
 				if(index != 3){
 					oSearchOcx.Stop();
+					emptyDevSetMenu();
 				}
 			   AJAX && AJAX.abort();
-			   emptyDevSetMenu();
 			  if(nowDev && nowDev._ID){
-						nowDev =null;
+				  nowDev =null;
 			  }
 			})
 		})
@@ -712,7 +709,7 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
+		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"],.timeInput input').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();

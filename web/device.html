@@ -82,7 +82,7 @@
 	#SerachDevList thead td{height:0;}
 
 	.week input,.week li{width: 63px; clear:both;}
-	 #ui-datepicker-div{background-color:#1E1E1E;}/*改变jtimepicker背景颜色*/
+	 #ui-datepicker-div{background-color:#1E1E1E;font-size:12px;}/*改变jtimepicker背景颜色*/
 
 }
  </style>
@@ -759,13 +759,13 @@
                        </tr>
 						<tr class="schedle_id"><td class="td1 "><span><script>T("Time_d")</script></span> 1</td>
 			                
-			                <td><input id="dvr_record_begin_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
-			                <td><input id="dvr_record_end_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			                <!--<td><input id="dvr_record_begin_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			                <td><input id="dvr_record_end_0" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>-->
                                        <!-- <input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
-                                        <!--<input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
-                                        <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
+                           <td><input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"  data-UI=""/></td>
+                            <td><input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"  data-UI=""/> </td>
                                         
 			                      
 			               <td> <input id="dvr_record_types_0_0" class="chk1" type="checkbox" /></td>             
@@ -774,13 +774,13 @@
 			          
                           </tr>
 						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 2</td>
-			                <td><input id="dvr_record_begin_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
-			                <td><input id="dvr_record_end_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			               <!-- <td><input id="dvr_record_begin_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			                <td><input id="dvr_record_end_1" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>-->
                                         <!--<input type="hidden" value="" class="timeid" />-->
                                         <!--<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
-                                      <!--  <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
-                                        <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
+                          <td><input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/></td>
+                          <td><input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/></td> 
     
                            <td> <input id="dvr_record_types_1_0" class="chk1" type="checkbox" /></td>             
                            <td><input id="dvr_record_types_1_1" class="chk1" type="checkbox" /></td>
@@ -788,25 +788,25 @@
 			                     
                         </tr>
 						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 3</td>
-			                <td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
-			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			                <!--<td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>-->
                                         <!--<input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
-                                       <!-- <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
-                                        <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
+                          <td>  <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/></td>
+                           <td> <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/></td> 
 			               <td> <input id="dvr_record_types_2_0" class="chk1" type="checkbox" /></td>             
                            <td><input id="dvr_record_types_2_1" class="chk1" type="checkbox" /></td>
                            <td><input id="dvr_record_types_2_2" class="chk1" type="checkbox" /></td>
                         </tr>
 						<tr class="schedle_id"><td class="td1"><span><script>T("Time_d")</script></span> 4</td>
-			                <td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
-			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>
+			               <!-- <td><input id="dvr_record_begin_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI="" /></td>
+			                <td><input id="dvr_record_end_2" type="text" class="iput2" onblur="checkTime_Jtp_fmt($(this));" data="" data-UI=""/></td>-->
                                         <!--<input type="hidden" value="" class="timeid" />-->
                                        <!-- <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>-->
-                                        <!--<input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
-                                         <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
+                           <td>  <input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/></td>
+                           <td>  <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));" data-UI=""/> </td>
 			               <td> <input id="dvr_record_types_2_0" class="chk1" type="checkbox" /></td>             
                            <td><input id="dvr_record_types_2_1" class="chk1" type="checkbox" /></td>
                            <td><input id="dvr_record_types_2_2" class="chk1" type="checkbox" /></td>
@@ -1572,7 +1572,7 @@
 				
                 <div class="switch ipc_list">
 					<table>
-						<tr><td><script>T("Device_Time")</script></td><td><input id="curent_time" value="" disabled="disabled"/></td><td></td></tr>
+						<tr><td><script>T("Device_Time")</script></td><td><input id="curent_time" value="" disabled="disabled" data-UI /></td><td></td></tr>
                    		<!-- <tr style="display:none;"><td><script>T("Time_Format")</script></td><td>
                     	<div class="select" style="width:149px;"><span class="date_form" onChange="showtime();"></span><a class="hover"></a></div>
                     										<ul class="option" >
@@ -1594,7 +1594,7 @@
                     				                    </td><td></td></tr> -->
                    		<tr><td><script>T("Time_Zone")</script></td><td>
                     	<div class="select" style="width:153px;">
-                                <input id="time_zone" />
+                                <input id="time_zone" data-UI type="select"/>
                                 <a class="hover"></a>
 						</div>
 						<ul class="option aa">
@@ -1633,7 +1633,7 @@
 	                    <tr style="display:none;"><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
 	                    <tr style="display:none;"><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
 	                    <tr style="display:none;"><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>-->
-	                    <tr><td><script>T("Computer_time")</script></td><td><input id="PC_time" value="" disabled="disabled"></td><td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
+	                    <tr><td><script>T("Computer_time")</script></td><td><input id="PC_time" value="" disabled="disabled" data-UI type="text"></td><td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
 	                   <!--  <tr style="display:none;"><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr> --> 
 	                    
 	                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="true" /><script>T("Open")</script><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="false" /><script>T("Close")</script></td><td></td></tr>
@@ -1674,7 +1674,7 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<!-- <span class="Language"></span> -->
-									<input id="Language" value="" data="" />
+									<input id="Language" value="" data="" data-UI type="select"/>
 									<a class="hover"></a>
 								</div>
 								<ul class="option">
@@ -1693,7 +1693,7 @@
 							<td colspan="2">
 								<div class="select" style="width:133px;">
 									<!-- <span value="" class="SplitScreenMode"></span> -->
-									<input id="SplitScreenMode" value="" data="" />	
+									<input id="SplitScreenMode" value="" data="" data-UI type="select"/>	
 									<a class="hover"></a>
 								</div>
 								<ul class="option" id="viewMod">
@@ -1731,7 +1731,7 @@
 							<td class="td1" style="text-align:right;"><script>T("Week")</script></td>
 							<td class="td2">
 								<div class="select" style="width:64px;">
-									<input id="week" value="Monday" data="0" style="width:43px;" />
+									<input id="week" value="Monday" data="0" style="width:43px;" type="select" data-UI/>
 									<a class="hover"></a>
 								</div>
 								<ul class="option week">
@@ -1791,7 +1791,7 @@
 							<td class="td1"><script>T("Copy_to")</script></td>
 							<td class="td2 copyTo">
 								<div class="select" style="width:133px;">
-										<input value="" data="" />
+										<input value="" data="" type="select" data-UI/>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
@@ -1848,9 +1848,9 @@
 									</table>
 							</td>
 						</tr>
-						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(5,this)" />10-512(MB)</td></tr>
+						<tr><td><script>T("File_size")</script></td><td><input id="FilePackageSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(5,this)" data-UI/>10-512(MB)</td></tr>
 						<tr><td><script>T("Loop_video")</script></td><td><input id="LoopRecording_ID" type="checkbox"  style="margin-left:6px" /></td></tr>
-						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(6,this)" />>4096(M)</td></tr>
+						<tr><td><script>T("Disk_reserved_space")</script></td><td><input id="DiskSpaceReservedSize_ID" type="text"  style="margin-left:6px" onblur="VerifidevMenu(6,this)" data-UI/>>4096(M)</td></tr>
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="SettingStorageParmData();" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>

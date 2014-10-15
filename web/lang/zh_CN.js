@@ -286,7 +286,7 @@
 
 	'Operation_failed':'保存失败!',
     'Time_format_error':'时间的格式不正确，已恢复原值！',
-	'Start_end_time_error':'开始时间大于结束时间，请重新设置时间！',
+	'Start_end_time_error':'开始时间必须小于结束时间，请重新设置时间！',
 	'Choose_time':'选择时间',
 	'Hour':'小时',
 	'Minute':'分钟',
