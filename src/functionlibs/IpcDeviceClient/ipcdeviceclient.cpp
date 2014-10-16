@@ -9,6 +9,14 @@
 int mdsignal_proc(QString sEvent,QVariantMap param,void * pUser)
 {
 	/*qDebug() << "Md" << param["signal"];*/
+	//qDebug()<<__LINE__<<__LINE__<<"Md"<<param;
+	if (sEvent=="MDSignal")
+	{
+		((IpcDeviceClient*)pUser)->cbMotionDetection(param);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"mdsignal_proc callBack event fail as the eventName is not collect";
+		return 1;
+	}
 	return 0;
 }
 
@@ -25,7 +33,7 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_IfSwithStream(0)
 {
 	//设置本组件支持的回调函数事件名称
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse"<<"MDSignal";
 	//设置主次码流的初始连接状态
 	CurStatusInfo m_statusInfo;
 	m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -571,7 +579,11 @@ void IpcDeviceClient::eventProcCall( QString sEvent,QVariantMap param )
 		if (NULL!=eventDes.proc)
 		{
 			eventDes.proc(sEvent,param,eventDes.puser);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<sEvent<<"has not register ye";
 		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"eventProcCall fail as m_EventList do not contain :"<<sEvent;
 	}
 }
 
@@ -1177,6 +1189,12 @@ void IpcDeviceClient::setDeviceAuth( const QString & sUsername, const QString & 
 {
 	m_DeviceInfo.m_sUserName = sUsername;
 	m_DeviceInfo.m_sPassword = sPassword;
+}
+
+int IpcDeviceClient::cbMotionDetection( QVariantMap evMap )
+{
+	eventProcCall("MDSignal",evMap);
+	return 0;
 }
 
 

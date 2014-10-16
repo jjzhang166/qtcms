@@ -11,6 +11,7 @@ int cbDecodeRFrame(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordRState(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 int cbAuthority(QString evName,QVariantMap evMap,void*pUser);
+int cbMotionDetection(QString evName,QVariantMap evMap,void*pUser);
 bool QSubviewRun::m_bIsAudioOpen=false;
 unsigned int QSubviewRun::m_volumePersent=50;
 QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
@@ -41,7 +42,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nSleepSwitch(0),
 	m_nCheckPreCount(0),
 	m_nSecondPosition(0),
-	m_nMotionRecordTime(3)
+	m_nMotionRecordTime(1)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
@@ -93,10 +94,11 @@ void QSubviewRun::run()
 	while(!nstop){
 		if (!m_stepCode.isEmpty())
 		{
+			m_tStepCodeLock.lock();
 			nstep=m_stepCode.dequeue();
+			m_tStepCodeLock.unlock();
 		}else{
 			sleepEx(2);
-			/*msleep(10);*/
 			nstep=DEFAULT;
 			/*m_nPosition=__LINE__;*/
 		}
@@ -763,8 +765,10 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 		m_tDeviceInfo.m_uiChannelIdInDataBase=chlId;
 		m_tDeviceInfo.m_pWnd=pWnd;
 		m_tDeviceInfo.m_pMainWnd=pMainWnd;
+		m_tStepCodeLock.lock();
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
+		m_tStepCodeLock.unlock();
 		QThread::start();
 		return;
 	}
@@ -787,7 +791,9 @@ void QSubviewRun::switchStream()
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(SWITCHSTREAM);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 		qDebug()<<__FUNCTION__<<__LINE__<<"switchStream fail";
@@ -799,7 +805,9 @@ void QSubviewRun::openPTZ( int nCmd,int nSpeed )
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(OPENPTZ);
+		m_tStepCodeLock.unlock();
 		m_ptzCmd=nCmd;
 		m_ptzSpeed=nSpeed;
 	}else{
@@ -893,7 +901,9 @@ void QSubviewRun::closePTZ( int nCmd )
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(CLOSEPTZ);
+		m_tStepCodeLock.unlock();
 		m_ptzCmdEx=nCmd;
 	}else{
 		//do nothing
@@ -1175,6 +1185,7 @@ bool QSubviewRun::registerCallback(int registcode)
 				pRegist->registerEvent(QString("ForRecord"),cbRecorderRData,this);
 				pRegist->registerEvent(QString("ConnectRefuse"),cbConnectRefuse,this);
 				pRegist->registerEvent(QString("Authority"),cbAuthority,this);
+				pRegist->registerEvent(QString("MDSignal"),cbMotionDetection,this);
 				pRegist->Release();
 				pRegist=NULL;
 				return true;
@@ -1662,7 +1673,9 @@ void QSubviewRun::switchStreamEx()
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepCode
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(SWITCHSTREAMEX);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 		qDebug()<<__FUNCTION__<<__LINE__<<"switchStreamEx fail";
@@ -1698,6 +1711,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 			if (m_historyStatus!=m_currentStatus)
 			{
 				//开启声音
+				m_tStepCodeLock.lock();
 				m_stepCode.enqueue(AUDIOENABLE);
 				//自动同步时间
 				m_stepCode.enqueue(AUTOSYNTIME);
@@ -1709,6 +1723,7 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				}else{
 					//do nothing
 				}
+				m_tStepCodeLock.unlock();
 				//抛出事件；
 				eventCallBack("CurrentStatus",evMap);
 			}
@@ -1721,15 +1736,18 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//停止声音
 
 				//停止录像
-				qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<m_nWindId<<"add STOPRECORD into queue";
+				m_tStepCodeLock.lock();
 				m_stepCode.enqueue(DEINITRECORD);
+				m_tStepCodeLock.unlock();
 				//抛出事件
 				m_nSecondPosition=__LINE__;
 				eventCallBack("CurrentStatus",evMap);
 				//自动重连
 				if (m_historyStatus==STATUS_CONNECTED)
 				{
+					m_tStepCodeLock.lock();
 					m_stepCode.enqueue(AUTORECONNECT);
+					m_tStepCodeLock.unlock();
 				}
 			}
 			m_historyStatus=m_currentStatus;
@@ -1871,7 +1889,9 @@ void QSubviewRun::setDatabaseFlush( bool flag )
 {
 	if (QThread::isRunning())
 	{
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(UPDATEDATABASE);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 	}
@@ -1882,7 +1902,9 @@ void QSubviewRun::setVolume( unsigned int uiPersent )
 	m_volumePersent=uiPersent;
 	if (m_bIsAudioOpen==true&&QThread::isRunning())
 	{
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(SETVOLUME);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 	}
@@ -1893,7 +1915,9 @@ void QSubviewRun::audioEnabled( bool bEnable )
 	m_bIsAudioOpen=bEnable;
 	if (QThread::isRunning())
 	{
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(AUDIOENABLE);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 	}
@@ -1931,7 +1955,9 @@ void QSubviewRun::ipcSwitchStream()
 {
 	if (QThread::isRunning())
 	{
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(IPCAUTOSWITCHSTREAM);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 	}
@@ -2096,7 +2122,9 @@ int QSubviewRun::startManualRecord()
 	{
 		if (m_currentStatus==STATUS_CONNECTED)
 		{
+			m_tStepCodeLock.lock();
 			m_stepCode.enqueue(SETMANUALRECORD);
+			m_tStepCodeLock.unlock();
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"startManualRecord fail as m_currentStatus!=STATUS_CONNECTED";
 		}
@@ -2111,7 +2139,9 @@ int QSubviewRun::stopManualRecord()
 	m_bIsManualRecord=false;
 	if (QThread::isRunning())
 	{
+		m_tStepCodeLock.lock();
 		m_stepCode.enqueue(SETMANUALRECORD);
+		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
 	}
@@ -2136,6 +2166,24 @@ int QSubviewRun::cbCAuthority( QString evName,QVariantMap evMap,void*pUser )
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient Authority fail";
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"undefined callBack event,please checkout";
+	}
+	return 0;
+}
+
+int QSubviewRun::cbCMotionDetection( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="MDSignal")
+	{
+		if (evMap.value("signal").toBool()==true)
+		{
+			m_tStepCodeLock.lock();
+			m_stepCode.enqueue(SETMOTIONRECORD);
+			m_tStepCodeLock.unlock();
+		}else{
+			//do nothing
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"undefine evName:"<<evName;
 	}
 	return 0;
 }
@@ -2176,4 +2224,9 @@ int cbConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 int cbAuthority( QString evName,QVariantMap evMap,void*pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCAuthority(evName,evMap,pUser);
+}
+
+int cbMotionDetection( QString evName,QVariantMap evMap,void*pUser )
+{
+	return ((QSubviewRun*)pUser)->cbCMotionDetection(evName,evMap,pUser);
 }

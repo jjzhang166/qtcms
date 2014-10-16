@@ -26,6 +26,7 @@
 #include <IAutoSycTime.h>
 #include <IAudioPlayer.h>
 #include <qtconcurrentrun.h>
+#include <QMutex>
 typedef int (__cdecl *previewRunEventCb)(QString eventName,QVariantMap info,void *pUser);
 typedef struct _tagProcInfo{
 	previewRunEventCb proc;
@@ -132,6 +133,7 @@ public:
 	int cbCRecordState(QString evName,QVariantMap evMap,void*pUser);
 	int cbCConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 	int cbCAuthority(QString evName,QVariantMap evMap,void*pUser);
+	int cbCMotionDetection(QString evName,QVariantMap evMap,void*pUser);
 private:
 	bool liveSteamRequire();
 	void eventCallBack(QString eventName,QVariantMap evMap);
@@ -209,5 +211,6 @@ private:
 	int m_nHisWeekDay;
 	int m_nCheckPreCount;
 	int m_nMotionRecordTime;
+	QMutex m_tStepCodeLock;
 };
   
