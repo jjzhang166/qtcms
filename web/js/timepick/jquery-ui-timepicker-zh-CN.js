@@ -11,7 +11,7 @@
 		microsecText: '微秒',
 		timezoneText: '时区',
 		currentText: '现在时间',
-		closeText: '关闭',
+		closeText: '确定',
 		timeFormat: 'HH:mm',
 		amNames: ['AM', 'A'],
 		pmNames: ['PM', 'P'],

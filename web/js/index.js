@@ -368,6 +368,13 @@ var oPreView,oDiv,
 		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
 			writeActionLog('所以窗口正在使用!!',errorcolor);
 		}*/
+		if(ev.CurrentState == 0){
+			var goal = 0;
+			$('div.dev_list span.channel[state="0"]').each(function(){goal++;});
+			if(goal>35){
+				writeActionLog(_T('window_connected_tips'),errorcolor);
+				}
+		}
 	}
 	//获取当前窗口最经一个可用的窗口。
 	function getWind(i){
