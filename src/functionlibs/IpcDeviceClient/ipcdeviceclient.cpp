@@ -19,7 +19,16 @@ int mdsignal_proc(QString sEvent,QVariantMap param,void * pUser)
 	}
 	return 0;
 }
-
+int cbXAuthority(QString evName,QVariantMap evMap,void*pUser){
+	if (evName=="Authority")
+	{
+		((IpcDeviceClient*)pUser)->cbAuthority(evMap);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cbXAuthority callBack event fail as the eventName is not collect";
+		return 1;
+	}
+	return 0;
+}
 IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_CurStatus(IDeviceClient::STATUS_DISCONNECTED),
 	m_CurStream(0),
@@ -33,7 +42,7 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	m_IfSwithStream(0)
 {
 	//设置本组件支持的回调函数事件名称
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse"<<"MDSignal";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse"<<"MDSignal"<<"Authority";
 	//设置主次码流的初始连接状态
 	CurStatusInfo m_statusInfo;
 	m_statusInfo.m_CurStatus=IDeviceClient::STATUS_DISCONNECTED;
@@ -289,6 +298,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				}
 
 				// 注册移动侦测信号
+				//注册用户验证回调函数
 				IEventRegister * iEg;
 				m_csDeInit.lock();
 				m_DeviceClentMap.value(0).m_DeviceConnecton->QueryInterface(IID_IEventRegister,(void **)&iEg);
@@ -296,6 +306,7 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 				if (NULL != iEg)
 				{
 					iEg->registerEvent("MDSignal",mdsignal_proc,this);
+					iEg->registerEvent("Authority",cbXAuthority,this);
 					iEg->Release();
 					iEg = NULL;
 				}
@@ -1194,6 +1205,12 @@ void IpcDeviceClient::setDeviceAuth( const QString & sUsername, const QString & 
 int IpcDeviceClient::cbMotionDetection( QVariantMap evMap )
 {
 	eventProcCall("MDSignal",evMap);
+	return 0;
+}
+
+int IpcDeviceClient::cbAuthority( QVariantMap evMap )
+{
+	eventProcCall("Authority",evMap);
 	return 0;
 }
 

@@ -89,6 +89,7 @@ public:
 	int cbConnectStatusProc(QVariantMap evMap);
 	int cbConnectRefuse(QVariantMap evMap);
 	int cbMotionDetection(QVariantMap evMap);
+	int cbAuthority(QVariantMap evMap);
 
 	bool TryToConnectProtocol(CLSID clsid);
 	void DeInitProtocl();
