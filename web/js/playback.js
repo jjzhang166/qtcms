@@ -459,8 +459,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('#channelvideo tr').not('[id]').find('input').prop('disabled',true);
 		var n=0;
 		$('#channelvideo tr[id]').each(function(){
-			n<4 && $(this).find('input').prop('checked',true);
-			n++
+			if(n<4){
+				$(this).find('input').prop('checked',true);
+			}
+			n++;
 		})
 		oSelected = $('#channelvideo input:checked').toArray();
 	}
@@ -638,8 +640,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						var color = [];
 		                    color[1] = '#F00';
 							color[2] = '#0000FF';
-							color[4] = '#FFFF00';
-		                    color[8] = '#33CC00';
+							color[4] = '#33CC00';
+		                    color[8] = '#FFFF00';
 		                   
 					target.attr({
 						id:'wind_'+data.wndId,
