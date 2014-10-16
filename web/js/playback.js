@@ -637,8 +637,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
 						var color = [];
 		                    color[1] = '#F00';
+							color[2] = '#0000FF';
+							color[4] = '#FFFF00';
 		                    color[8] = '#33CC00';
-		                    color[2] = '#0000FF';
+		                   
 					target.attr({
 						id:'wind_'+data.wndId,
 						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
