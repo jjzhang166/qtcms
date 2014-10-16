@@ -329,7 +329,7 @@ void PlayMgr::run()
 			m_bIsChangeSpeed = false;
 		}
 		//keep play speed
-		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*100*1000;
+		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*50*1000;
 		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
 		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
 		
@@ -338,7 +338,7 @@ void PlayMgr::run()
 // 		if (i64WaitSec > 0)
 		if (i64Sec > 0)
 		{
-// 			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - i64Spend;
+// 			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - m_i64FrameInterval;
 
 // 			qDebug()<<"wait sec: "<<i64Sec<<" m_bStop: "<<m_bStop<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
 
