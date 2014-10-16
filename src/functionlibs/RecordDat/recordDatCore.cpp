@@ -159,7 +159,7 @@ void recordDatCore::run()
 				//nWriteType==ADDWRITE
 				//把原文件的内容读到内存中，进行续写
 				//===============不采用 续写模式===============
-				qDebug()<<__FUNCTION__<<__LINE__<<"abandon add wtirte mode";
+				qDebug()<<__FUNCTION__<<__LINE__<<"abandon add write mode";
 				abort();
 			}
 			//写文件头到内存中

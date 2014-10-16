@@ -24,6 +24,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	{
 		bool bFlag=false;
 		int nCount=0;
+		int nIframeCount=0;
 		while(bFlag==false){
 			RecBufferNode *pRecBufferNode=NULL;
 			if (m_tDataQueue.size()>0)
@@ -35,28 +36,36 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 				{
 					if (pFrameHead->uiType==IFRAME)
 					{
-						if (m_nRecordStatus!=0)
+						if (m_nRecordStatus!=0&&nCount!=0)
 						{
 							qDebug()<<__FUNCTION__<<__LINE__<<"wind:"<<pFrameHead->uiChannel<<"remove I Frame"<<"and total num:"<<nCount;
 						}else{
 							//do nothing
 						}
-						bFlag=true;
+						nIframeCount=nIframeCount+1;
+						if (nIframeCount==2)
+						{
+							bFlag=true;
+						}else{
+							//do nothing
+						}
 					}else{
 						//keep going
 					}
-					if (pFrameHead->uiType==PFRAME)
+					nCount++;
+					if (bFlag==false)
 					{
-						nCount++;
-					}
-					RecBufferNode *pRemoveRecBufferNode=NULL;
-					pRemoveRecBufferNode=m_tDataQueue.dequeue();
-					if (NULL!=pRemoveRecBufferNode)
-					{
-						pRemoveRecBufferNode->release();
-						pRemoveRecBufferNode=NULL;
+						RecBufferNode *pRemoveRecBufferNode=NULL;
+						pRemoveRecBufferNode=m_tDataQueue.dequeue();
+						if (NULL!=pRemoveRecBufferNode)
+						{
+							pRemoveRecBufferNode->release();
+							pRemoveRecBufferNode=NULL;
+						}else{
+							bFlag=true;
+						}
 					}else{
-						bFlag=true;
+						//do nothing
 					}
 				}else{
 					//do nothing
