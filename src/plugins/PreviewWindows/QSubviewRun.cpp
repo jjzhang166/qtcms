@@ -1702,10 +1702,6 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 				//自动同步时间
 				m_stepCode.enqueue(AUTOSYNTIME);
 				//init录像
-				if (m_nWindId==0)
-				{
-					qDebug()<<__FUNCTION__<<__LINE__<<"-------------m_stepCode.enqueue(INITRECORD)--------------";
-				}
 				m_stepCode.enqueue(INITRECORD);
 				if (m_bIsManualRecord)
 				{

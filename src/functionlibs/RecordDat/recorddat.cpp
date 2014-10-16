@@ -205,7 +205,7 @@ int RecordDat::inputFrame( QVariantMap &tFrameInfo )
 {
 	if (m_bInit)
 	{
-		if (m_nWnd<64&&m_nWnd>=0)
+		if (m_nWnd<WNDMAXSIZE&&m_nWnd>=0)
 		{
 			//keep going
 		}else{

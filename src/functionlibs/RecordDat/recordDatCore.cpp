@@ -272,7 +272,6 @@ void recordDatCore::run()
 				{
 					//01：buffer未满&&写入buffer 
 					nRunStep=recordDat_default;
-					nSleepCount=0;
 				}else if (nWriteToBuffer==2)
 				{
 					//10：buffer已满&&未写入buffer；
@@ -283,7 +282,6 @@ void recordDatCore::run()
 					//11：buffer已满&&写入buffer
 					m_tToDiskType=recordDatToDiskType_bufferFull;
 					nRunStep=recordDat_default;
-					nSleepCount=0;
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteToBuffer is undefined";
 					abort();
@@ -608,6 +606,13 @@ void recordDatCore::run()
 bool recordDatCore::setBufferQueue( int nWnd,BufferQueue &tBufferQueue )
 {
 	m_tBufferQueueMapLock.lock();
+	if (nWnd<0||nWnd>WNDMAXSIZE)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"nWnd out of range:"<<nWnd;
+		abort();
+	}else{
+		//keep going
+	}
 	m_tBufferQueueMap.insert(nWnd,&tBufferQueue);
 	int nRemoveWnd=-1;
 	bool bFlag=false;
@@ -635,6 +640,13 @@ bool recordDatCore::setBufferQueue( int nWnd,BufferQueue &tBufferQueue )
 bool recordDatCore::removeBufferQueue( int nWnd )
 {
 	m_tBufferQueueMapLock.lock();
+	if (nWnd<0||nWnd>=WNDMAXSIZE)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"nWnd out of range:"<<nWnd;
+		abort();
+	}else{
+		//keep going
+	}
 	m_tBufferQueueMap.remove(nWnd);
 	if (!m_tDatabaseInfo.tRemoveChannel.contains(nWnd))
 	{
