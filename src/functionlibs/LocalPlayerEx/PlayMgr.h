@@ -48,6 +48,7 @@ private:
 	QList<FrameData> m_quFrameBuffer;
 	volatile bool m_bStop;
 	bool m_bIsAudioOpen;
+	bool m_bIsChangeSpeed;
 	QWidget *m_pRenderWnd;
 	uint m_uiStartSec;
 	uint m_uiEndSec;
@@ -60,6 +61,8 @@ private:
 	qint32 m_i32SmapleWidth;
 	qint32 m_i32FileStartPos;
 	qint32 m_i32SkipStartPos;
+	qint64 m_i64FrameInterval;
+
 
 	QMutex m_mxWait;
 	QWaitCondition m_wcWait;

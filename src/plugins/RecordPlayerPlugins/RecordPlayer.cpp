@@ -337,7 +337,7 @@ int RecordPlayer::GroupContinue()
 int RecordPlayer::GroupStop()
 {
 	qDebug()<<"RecordPlayer :GroupStop:";
-	if (NULL == m_pLocalPlayer || STATUS_STOP == m_CurStatus)
+	if (NULL == m_pLocalPlayer /*|| STATUS_STOP == m_CurStatus*/)
 	{
 		return 1;
 	}
@@ -721,7 +721,7 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 	qWarning()<<(int)this<<" AddFileIntoPlayGroupEx"<<nWndId<<sDate<<sStartTime<<sEndTime<<nTypes;
 	if (nWndId < 0|| sDate.isEmpty() || sStartTime.isEmpty() || sEndTime.isEmpty() || nTypes < 0 || nTypes > 15)
 	{
-		qDebug()<<(int)this<<" input error!";
+		qDebug()<<__FUNCTION__<<__LINE__<<" input error!";
 		return 1;//input parameter error
 	}
 	QDate date = QDate::fromString(sDate, "yyyy-MM-dd");
@@ -729,10 +729,12 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 	QTime end = QTime::fromString(sEndTime, "hh:mm:ss");
 	if (!date.isValid() || !start.isValid() || !end.isValid() || end <= start)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<" time is valid";
 		return 1;//input parameter error
 	}
 	if (NULL == m_pLocalPlayer)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<" m_pLocalPlayer == NULL";
 		return 1;
 	}
 	
@@ -740,6 +742,7 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 	m_pLocalPlayer->QueryInterface(IID_ILocalPlayerEx, (void**)&pLocalPlayerEx);
 	if (NULL == pLocalPlayerEx)
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<" pLocalPlayerEx == NULL";
 		return 1;
 	}
 

@@ -30,8 +30,10 @@ PlayMgr::PlayMgr( void )
 	m_i32SmapleWidth(0),
 	m_i32FileStartPos(0),
 	m_i32SkipStartPos(0),
+	m_i64FrameInterval(0),
 	m_bStop(false),
 	m_bIsAudioOpen(false),
+	m_bIsChangeSpeed(false),
 	m_pcbTimeChg(NULL),
 	m_pUser(NULL),
 	m_pVedioDecoder(NULL),
@@ -99,6 +101,9 @@ void PlayMgr::setParamter( QWidget* pWnd, uint uiStartSec, uint uiEndSec )
 void PlayMgr::setSpeedRate( qint32 i32Speed )
 {
 	m_i32SpeedRate = i32Speed;
+	qDebug()<<"-------------------------speed_rate: "<<m_i32SpeedRate;
+// 	m_i64FrameInterval = 0;
+	m_bIsChangeSpeed = true;
 }
 
 QList<FrameData>* PlayMgr::getBufferPointer()
@@ -184,7 +189,10 @@ void PlayMgr::stop()
 	m_uiCurrentGMT = 0;
 	m_i32Width = 0;
 	m_i32Height = 0;
+	m_i64FrameInterval = 0;
+	m_i32SpeedRate = 0;
 	m_bIsSkiped = false;
+	m_bIsChangeSpeed = false;
 
 	m_skipTime.clear();
 	m_filePeriod.clear();
@@ -216,7 +224,7 @@ void PlayMgr::run()
 	uint uiLastGMT = 0;
 	uint uiLastPts = 0;
 	uint start = 0;
-	qint64 i64Spend = 0;
+// 	qint64 m_i64FrameInterval = 0;
 	m_uiCurrentGMT = m_uiStartSec;
 	PeriodTime per = m_filePeriod.value(m_i32FileStartPos);
 
@@ -228,15 +236,18 @@ void PlayMgr::run()
 			m_mxPause.lock();
 			m_wcPause.wait(&m_mxPause);
 			m_mxPause.unlock();
+
+			frameTimer.restart();
 		}
 		FrameData *pFrameData = NULL;
 		if (m_quFrameBuffer.size() > 1)//keep one frame in queue
 		{
 			pFrameData = &(m_quFrameBuffer.first());
+// 			qDebug()<<"wndId: "<<pFrameData->uiChannel<<" buff_size: "<<m_quFrameBuffer.size();
 		}
 		else
 		{
-			//qDebug()<<"no frame, sleep";
+			qDebug()<<"no frame, sleep";
 
 			msleep(10);//wait for new frames
 			continue;
@@ -311,11 +322,19 @@ void PlayMgr::run()
 			m_pcbTimeChg(QString("playingTime"), m_uiCurrentGMT, m_pUser);
 			uiLastGMT = m_uiCurrentGMT;
 		}
-		
+		//clear interval time when speed changed
+		if (m_bIsChangeSpeed)
+		{
+			m_i64FrameInterval = 0;
+			m_bIsChangeSpeed = false;
+		}
 		//keep play speed
 		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*100*1000;
 		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
-		qint64 i64Sec = i64WaitSec - i64Spend;
+		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
+		
+		qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+
 // 		if (i64WaitSec > 0)
 		if (i64Sec > 0)
 		{
@@ -328,7 +347,7 @@ void PlayMgr::run()
 		}
 
 		uiLastPts = pFrameData->uiPts;
-		i64Spend = frameTimer.nsecsElapsed()/1000 - i64Before - i64Sec;
+		m_i64FrameInterval = frameTimer.nsecsElapsed()/1000 - i64Before - i64Sec;
 
 		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
 		frameTimer.start();	
