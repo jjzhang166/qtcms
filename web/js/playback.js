@@ -448,23 +448,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}else{
 			showRecProgress(localSearchWindNum*100);
 
-			//console.log(recFile.length+'------------'+recTotal);
+			/*console.log(recFile.length+'------------'+recTotal);*/
 			searchSTOP && RecFileInfo2UI(recFile);
 		}
-
-		searchSTOP && file2UIFinish();
+       recFile.length>=recTotal&&searchSTOP && file2UIFinish();
 	}
 
 	function file2UIFinish(){
-		$('#channelvideo tr').not('[id]').find('input').prop('disabled',true);
+	 
 		var n=0;
 		$('#channelvideo tr[id]').each(function(){
-			if(n<4){
-				$(this).find('input').prop('checked',true);
-			}
+			n<4 && $(this).find('input').prop('checked',true);
 			n++;
 		})
 		oSelected = $('#channelvideo input:checked').toArray();
+		 /*  console.log('-------file2UIFinish()------------'+oSelected);*/
+	  $('#channelvideo tr').not('[id]').find('input').prop('disabled',true);
 	}
 
 	function Deleteduplicate(data){ // 去重复

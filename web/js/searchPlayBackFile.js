@@ -214,14 +214,16 @@
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-		//console.log('------------RecfinishCallback文件总数-----------'+data.total);
-
+	/*	console.log('------------RecfinishCallback文件总数-----------'+data.total);*/
+       
+		 
 		recTotal = data.total || 0;	
 
 		if(recTotal==0)
 			searchSTOP=1;
-		
+
 		showRecProgress();
+		
 	}
 
 	function initrecFileOcx(obj){
