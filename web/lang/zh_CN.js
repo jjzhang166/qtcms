@@ -358,7 +358,7 @@
 	'All_channel_already_open_under_the_current_list':'当前列表下的所有通道已经全部打开.',
 	'The_current_list_of_all_channels_are_closed_under':'正在关闭当前列表下的所有通道.',
 	'The_current_list_of_all_channels_already_closed_under':'当前列表下的所有通道已经全部关闭.',
-	'window_connected_tips':'打开36路以上需更多的系统资源来保证运行的稳定性，请确认您的系统有足够好的性能!',
+	'window_connected_tips':'打开36路以上对系统有更高的要求，请慎重打开以确保更好的用户体验!',
 
 	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_',
 	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败! ',
