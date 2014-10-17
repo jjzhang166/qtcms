@@ -692,17 +692,18 @@ void recordDatCore::eventCallBack( QString sEventName,QVariantMap tInfo )
 bool recordDatCore::setRecordType( int nWnd,int nType,bool bFlags )
 {
 	m_tBufferQueueMapLock.lock();
-	int nHisRecordType=m_tFileInfo.tWndInfo.value(nWnd).uiHistoryRecordType;
+//	int nHisRecordType=m_tFileInfo.tWndInfo.value(nWnd).uiHistoryRecordType;
+	int nCurrentRecordType=m_tFileInfo.tWndInfo.value(nWnd).uiCurrentRecordType;
 	int nTotal=MANUALRECORD+TIMERECORD+MOTIONRECORD;
 	if (nType==MANUALRECORD||nType==MOTIONRECORD||nType==TIMERECORD)
 	{
 		if (bFlags)
 		{
-			nHisRecordType=nType|nHisRecordType;
+			nCurrentRecordType=nType|nCurrentRecordType;
 		}else{
-			nHisRecordType=(nTotal-nType)&nHisRecordType;
+			nCurrentRecordType=(nTotal-nType)&nCurrentRecordType;
 		}
-		m_tFileInfo.tWndInfo[nWnd].uiCurrentRecordType=nHisRecordType;
+		m_tFileInfo.tWndInfo[nWnd].uiCurrentRecordType=nCurrentRecordType;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"setRecordType Not working as nType is undefined";
 	}
@@ -797,7 +798,41 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				}else if (nHistoryType!=0&&nCurrentType!=0&&nHistoryType!=nCurrentType)
 				{
 					//historyType!=currentType!=0,类型转换，接着录像
-					nStep=WriteToBuffer_111;
+					int uiCurType=0;
+					int uiHisType=0;
+					if (nHistoryType&MOTIONRECORD)
+					{
+						uiHisType=MOTIONRECORD;
+					}else if (nHistoryType&MANUALRECORD)
+					{
+						uiHisType=MANUALRECORD;
+					}else if (nHistoryType&TIMERECORD)
+					{
+						uiHisType=TIMERECORD;
+					}else{
+						//do nothing
+					}
+
+					if (nCurrentType&MOTIONRECORD)
+					{
+						uiCurType=MOTIONRECORD;
+					}else if (nCurrentType&MANUALRECORD)
+					{
+						uiCurType=MANUALRECORD;
+					}else if (nCurrentType&TIMERECORD)
+					{
+						uiCurType=TIMERECORD;
+					}else{
+						//do nothing
+					}
+					if (uiCurType==uiHisType)
+					{
+						nStep=WriteToBuffer_011;
+					}else{
+						nStep=WriteToBuffer_111;
+					}
+					m_tFileInfo.tWndInfo[nChannel].uiHistoryRecordType=nCurrentType;
+					nHistoryType=nCurrentType;
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"undefined record type change,terminate the thread";
 					abort();

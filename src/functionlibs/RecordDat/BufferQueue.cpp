@@ -38,7 +38,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 					{
 						if (m_nRecordStatus!=0&&nCount!=0)
 						{
-							qDebug()<<__FUNCTION__<<__LINE__<<"wind:"<<pFrameHead->uiChannel<<"remove I Frame"<<"and total num:"<<nCount;
+							qDebug()<<__FUNCTION__<<__LINE__<<"wind:"<<pFrameHead->uiChannel<<"m_nRecordStatus"<<m_nRecordStatus<<"remove I Frame"<<"and total num:"<<nCount;
 						}else{
 							//do nothing
 						}
