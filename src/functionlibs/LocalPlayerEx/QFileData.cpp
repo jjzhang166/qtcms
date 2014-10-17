@@ -210,9 +210,9 @@ void QFileData::run()
 			}
 			//check channel
 			tagFileHead *fileHead = (tagFileHead *)(iter->curBuffer);
-			if ((checkWndIdExist(fileHead->uiChannels, iter.key())
+			if (/*(checkWndIdExist(fileHead->uiChannels, iter.key())
 				&& iter->pBuffList->size() >= MAX_FRAME_NUM)
-				|| !(checkWndIdExist(fileHead->uiChannels, iter.key())))
+				|| */!(checkWndIdExist(fileHead->uiChannels, iter.key())))
 			{
 				++iter;
 				continue;
@@ -256,7 +256,8 @@ void QFileData::run()
 			}
 			//copy frames
 // 			while (!m_bStop && iter->pBuffList->size() != MAX_FRAME_NUM)
-			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
+// 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
+			while (!m_bStop)
 			{
 				//start to play when buffer size larger than 20
 				if (!iter->bIsPlaying && iter->pBuffList->size() >= MIN_FRAME_NUM)
