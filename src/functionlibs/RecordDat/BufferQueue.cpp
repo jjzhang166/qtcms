@@ -5,6 +5,7 @@ BufferQueue::BufferQueue():m_nQueueMaxSize(0),
 	m_nRecordStatus(0),
 	m_nLoseFrameCount(0)
 {
+	m_uiAvailableSize=CHLBUFFERSIZE*1024*1024;
 }
 
 
@@ -94,6 +95,15 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	}
 	RecBufferNode *pRecBufferNode=new RecBufferNode;;
 	tagFrameHead *pFrameHead=NULL;
+	unsigned int uiAvailableSize=m_uiAvailableSize-nApplyLength;
+	if (uiAvailableSize<=10)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"wind:"<<tFrameInfo["winid"].toUInt()<<"out memory";
+		abort();
+	}else{
+		//do nothing
+	}
+	m_uiAvailableSize=m_uiAvailableSize-nApplyLength;
 	pFrameHead=(tagFrameHead*)m_tAllocation.applySpace(nApplyLength);
 	if (pFrameHead!=NULL)
 	{
@@ -196,6 +206,21 @@ RecBufferNode* BufferQueue::dequeue()
 			}else{
 				//do nothing
 			}
+			//int nDataLength=tFrameInfo["length"].toInt();
+			int nDataLength=pFrameHead->uiLength;
+			int nFrameHeadLength=sizeof(tagFrameHead);
+			int nApplyLength=nDataLength+nFrameHeadLength-sizeof(char*);
+			if (pFrameHead->uiType==IFRAME)
+			{
+				nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
+				m_nQueueMaxSize++;
+			}else if (pFrameHead->uiType==AFRMAE)
+			{
+				nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);
+			}else{
+				//do nothing
+			}
+			m_uiAvailableSize=m_uiAvailableSize+nApplyLength;
 		}else{
 			//
 		}

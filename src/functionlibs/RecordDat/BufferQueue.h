@@ -36,5 +36,6 @@ private:
 	Allocation m_tAllocation;
 	int m_nRecordStatus;
 	int m_nLoseFrameCount;
+	volatile unsigned int m_uiAvailableSize;
 };
 

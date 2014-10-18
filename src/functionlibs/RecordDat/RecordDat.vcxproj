@@ -127,11 +127,13 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClCompile Include="OperationDatabase.cpp" />
     <ClCompile Include="recorddat.cpp" />
     <ClCompile Include="recordDatCore.cpp" />
+    <ClCompile Include="ringBuffer.cpp" />
     <ClCompile Include="WriteToDisk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Allocation.h" />
     <ClInclude Include="BufferNode.h" />
+    <ClInclude Include="ringBuffer.h" />
     <CustomBuild Include="BufferQueue.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing BufferQueue.h...</Message>

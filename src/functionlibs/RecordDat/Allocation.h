@@ -1,4 +1,5 @@
 #pragma once
+#include "ringBuffer.h"
 class Allocation
 {
 public:
@@ -10,5 +11,7 @@ public:
 	void freeSpace(char *pChar);
 private:
 	unsigned int m_uiSize;
+	ringBuffer m_tRingBuffer;
+	tagRingBuffer * m_pBuffer;
 };
 

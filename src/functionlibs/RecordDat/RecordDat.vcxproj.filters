@@ -95,6 +95,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_OperationDatabase.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="ringBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="recorddat_global.h">
@@ -113,6 +116,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="freeDisk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ringBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

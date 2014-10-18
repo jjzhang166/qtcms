@@ -31,7 +31,7 @@ int  RecBufferNode::release()
 		m_tDataLock.lock();
 		if (NULL!=m_pFrameHead)
 		{
-			free(m_pFrameHead);
+			/*free(m_pFrameHead);*/
 			m_pFrameHead=NULL;
 		}else{
 			//do nothing

@@ -3,6 +3,8 @@
 
 #include <vld.h>
 #include <QtCore/qglobal.h>
+#include <assert.h>
+#define  CHLBUFFERSIZE 3
 #define  TIMERECORDINDATABASE 1
 #define  MOTIONRECORDINDATABASE 2
 #define MANUALRECORD 2
@@ -13,6 +15,20 @@
 #define  PFRAME 0x02
 #define  AFRMAE 0x00
 #define  BUFFERSIZE 64//单位：M
+
+
+//#ifndef ASSERT
+//#define ASSERT(X,fmt,arg...)	{\
+//	if (!(X) && fmt)\
+//	{\
+//	printf("\033[40;31;1m[%s %d]:",__FILE__,__LINE__);\
+//	printf(fmt,##arg);\
+//	printf("\033[0m\r\n");\
+//	}\
+//	assert((X));\
+//}
+//#endif
+
 typedef struct __tagFrameHead{
 	unsigned int uiType;
 	unsigned int uiLength;
@@ -76,4 +92,11 @@ typedef enum __tagObtainFilePathStepCode{
 	obtainFilePath_fail,//获取录像文件路径失败
 	obtainFilePath_end//结束
 }tagObtainFilePathStepCode;
+typedef struct _tagRingBuffer{
+	char * Buffer;
+	unsigned int nBufferSize;
+	char * lpCur;
+
+}tagRingBuffer,*lpRingBuffer;
+typedef tagRingBuffer * RBHANDLE;
 #endif // RECORDDAT_GLOBAL_H

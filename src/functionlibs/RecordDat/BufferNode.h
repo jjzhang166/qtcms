@@ -16,5 +16,6 @@ private:
 	QMutex m_tDataLock;
 	int m_nRef;
 	tagFrameHead *m_pFrameHead;
+	
 };
 
