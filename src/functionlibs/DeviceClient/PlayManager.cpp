@@ -164,6 +164,12 @@ void PlayManager::run()
 
 		if (0 == recStream.cFrameType && NULL != m_pAudioPlayer && m_pCurView == this)
 		{
+			//when play in fast or slow, close audio
+			if (SpeedNomal != m_speed)
+			{
+				m_pBufferManager->removeItem(&recStream);
+				continue;
+			}
 			int nSampleWidth = recStream.uiAudioDataWidth;
 			int nSampleRate = recStream.uiAudioSampleRate;
 			if (m_nSampleRate != nSampleRate || m_nSampleWidth != nSampleWidth)

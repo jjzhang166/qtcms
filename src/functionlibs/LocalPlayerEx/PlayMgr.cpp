@@ -260,12 +260,19 @@ void PlayMgr::run()
 			uiLastPts = pFrameData->uiPts;
 			uiLastGMT = pFrameData->uiGentime;
 		}
+		uint status = 0;
 		start = per.start;
-		adjustTimeLine(start);
+		adjustTimeLine(start, status);
+		//if wait seconds when playing, clear timer
+		if (status)
+		{
+			frameTimer.restart();
+		}
 
 		if (FT_Audio == pFrameData->uiType)
 		{
-			if (m_bIsAudioOpen && m_pAudioPlayer)
+			//audio is open && play in normal speed
+			if (m_bIsAudioOpen && m_pAudioPlayer && !m_i32SpeedRate)
 			{
 				if (m_i32SmapleRate != pFrameData->AudioConfig.uiSamplerate 
 					|| m_i32SmapleWidth != pFrameData->AudioConfig.uiSamplebit 
@@ -473,7 +480,7 @@ qint32 PlayMgr::findStartPos( const QVector<PeriodTime> &vecPeriod )
 	return startPos;
 }
 
-qint32 PlayMgr::adjustTimeLine( uint uiStart )
+qint32 PlayMgr::adjustTimeLine( uint uiStart, uint &status )
 {
 	/* comments means:
 	** |_____| skip time
@@ -508,6 +515,7 @@ qint32 PlayMgr::adjustTimeLine( uint uiStart )
 					m_wcWait.wait(&m_mxWait, waitSec*1000);
 					m_mxWait.unlock();
 					m_uiCurrentGMT += waitSec;
+					status = 1;
 				}
 				else// |_____|XXXXX|FFFFF| or |_____|FFFFF|XXXXX|
 				{
@@ -534,6 +542,7 @@ qint32 PlayMgr::adjustTimeLine( uint uiStart )
 				m_wcWait.wait(&m_mxWait, (0 - timeOffset)*1000);
 				m_mxWait.unlock();
 				m_uiCurrentGMT += 0 - timeOffset;
+				status = 1;
 			}
 		}
 	} while (!m_bStop);

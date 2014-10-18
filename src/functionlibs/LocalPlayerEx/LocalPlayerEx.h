@@ -114,8 +114,17 @@ private:
 		qint32 i32WndId;
 	}PlayInfo;
 
+	typedef struct _tagTimePath{
+		uint start;
+		QString path;
+	}TimePath;
+
+
 	PlayInfo m_arrPlayInfo[MAX_PLAY_THREAD];
 	QFileData *m_pFileData;
+private:
+	void appendTimePath(QList<TimePath> &tpList, const uint &start, const QString &path);
+
 };
 
 #endif // LOCALPLAYEREX_H

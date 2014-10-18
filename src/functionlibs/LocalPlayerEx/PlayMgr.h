@@ -40,7 +40,7 @@ private:
 	qint32 initCbFuction();
 	void clearBuffer();
 	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
-	qint32 adjustTimeLine(uint uiStart);
+	qint32 adjustTimeLine(uint uiStart, uint &status);
 
 	//for test
 	void printVector(uint types, const QVector<PeriodTime> &vec);

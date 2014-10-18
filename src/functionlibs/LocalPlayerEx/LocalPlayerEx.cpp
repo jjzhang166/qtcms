@@ -549,8 +549,8 @@ QString LocalPlayerEx::intToStr( QList<qint32> &wndList )
 
 QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<PeriodTime> >& filePeriodMap )
 {
-	bool find = false;
-	QString startPath;
+	QList<TimePath> tpList;
+
 	QList<QString> fileList;
 	QVector<uint> vecTime;
 	QList<qint32> wndList;
@@ -575,7 +575,7 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 			qDebug()<<__FUNCTION__<<__LINE__<<"get database point error!";
 			continue;
 		}
-		uint lastEnd = 0;
+// 		uint lastEnd = 0;
 		QStringList excludeFilelst;
 		QSqlQuery query(*pdb);
 		//find locked file or damaged file
@@ -599,13 +599,14 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 			{
 				continue;
 			}
+			appendTimePath(tpList, start, path);
 
 			//file isn't in list or one file has two period time
-			if (!fileList.contains(path) || end - lastEnd > 60)
-			{
-// 				fileList<<path;
-				appendFile(fileList, path, vecTime, end);
-			}
+// 			if (!fileList.contains(path) || end - lastEnd > 60)
+// 			{
+// // 				fileList<<path;
+// 				appendFile(fileList, path, vecTime, end);
+// 			}
 // 			if(!find && end > m_uiStartSec)
 // 			{
 // 				startPath = path;
@@ -616,7 +617,7 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 // 				startPath = path;
 // 				find = true;
 // 			}
-			lastEnd = end;
+// 			lastEnd = end;
 			PeriodTime item = {start, end};
 // 			filePeriodMap[wndId].append(item);
 			appendPeriodTime(filePeriodMap[wndId], item);
@@ -625,12 +626,21 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 	}
 // 	i32Pos = fileList.indexOf(startPath);
 
+	//find start position
 	for (qint32 i32loop = 0; i32loop < vecTime.size(); ++i32loop)
 	{
 		if (m_uiStartSec < vecTime[i32loop])
 		{
 			i32Pos = i32loop;
 			break;
+		}
+	}
+	//get file list
+	foreach (TimePath tp, tpList)
+	{
+		if (!fileList.contains(tp.path))
+		{
+			fileList.push_back(tp.path);
 		}
 	}
 
@@ -831,6 +841,29 @@ void LocalPlayerEx::appendPeriodTime( QVector<PeriodTime> &vecPeriod, const Peri
 			}
 		}
 		vecPeriod.insert(pos + 1, per);
+	}
+}
+
+void LocalPlayerEx::appendTimePath( QList<TimePath> &tpList, const uint &start, const QString &path )
+{
+	TimePath tp = {start, path};
+	qint32 pos = tpList.size() - 1;
+	if (tpList.isEmpty() || (pos >= 0 && tpList.at(pos).start < start))
+	{
+		tpList.push_back(tp);
+		return;
+	}
+	else
+	{
+		while (tpList.at(pos).start > start)
+		{
+			--pos;
+			if (pos < 0)
+			{
+				return;
+			}
+		}
+		tpList.insert(pos + 1, tp);
 	}
 }
 
