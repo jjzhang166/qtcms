@@ -150,7 +150,7 @@ public:
 	virtual int getDiskSpaceReservedSize();
 
 	// ISetRecordTime
-	virtual int ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable );
+	virtual int ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,int enable );
 
 	virtual QStringList GetRecordTimeBydevId( int chl_id );
 

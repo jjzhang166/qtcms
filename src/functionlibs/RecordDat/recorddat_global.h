@@ -3,6 +3,8 @@
 
 #include <vld.h>
 #include <QtCore/qglobal.h>
+#define  TIMERECORDINDATABASE 1
+#define  MOTIONRECORDINDATABASE 2
 #define MANUALRECORD 2
 #define MOTIONRECORD 4
 #define TIMERECORD 1

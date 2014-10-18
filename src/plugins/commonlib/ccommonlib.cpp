@@ -560,7 +560,7 @@ int Ccommonlib::getDiskSpaceReservedSize()
 	return m_pluginObj.getDiskSpaceReservedSize();
 }
 
-int Ccommonlib::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
+int Ccommonlib::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,int enable )
 {
 	return m_pluginObj.ModifyRecordTime(recordtime_id,starttime,endtime,enable);
 }

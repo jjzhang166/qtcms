@@ -1514,7 +1514,7 @@ int qcommonpluginEx::getDiskSpaceReservedSize()
 	}
 }
 // ISetRecordTime
-int qcommonpluginEx::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
+int qcommonpluginEx::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,int enable )
 {
 	// check time format
 	ISetRecordTime *pSetRecordTime=NULL;

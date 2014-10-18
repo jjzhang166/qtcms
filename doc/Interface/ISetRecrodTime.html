@@ -11,7 +11,7 @@
   weekday:integer（day）<br />
   starttime：char（64）（开始录像时间）<br />
   endtime：char（64）（结束录像时间）<br />
-  enable:integer（是否开启）</p>
+  enable:integer（按位计算，00：没有录像，01：定时录像，10：移动录像，11：定时与移动录像）</p>
 <p>create table recordtime<br />
   (<br />
   id integer primary key autoincrement,<br />
@@ -29,11 +29,11 @@
   //	recordtime_id：指定需修改的录像时间的id号<br />
   //	starttime：开始录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
   //	endtime：结束录像时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
-  //	enable：true为开始，false为关闭此录像时间<br />
+  //	enable：按位计算，00：没有录像，01：定时录像，10：移动录像，11：定时与移动录像<br />
   //返回值：<br />
   //	0：修改成功<br />
   //	1：修改失败<br />
-  int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable）</p>
+  int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,int enable）</p>
 <p> //查询指定通道下的录像时间记录<br />
   //输入参数：<br />
   //	chl_id：通道号<br />
@@ -50,7 +50,7 @@
   //		weekday：（可选值 0（周一），1（周二），2（周三），3（周四），4（周五），5（周六），6（星期天））<br />
   //		starttime：开始时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
   //		endtime：结束时间(时间格式：&quot;yyyy-MM-dd hh:mm:ss&quot;)<br />
-  //		enable：是否使用（1（true），0(false)）<br />
+  //		enable：按位计算，00：没有录像，01：定时录像，10：移动录像，11：定时与移动录像<br />
   QVariantMap GetRecordTimeInfo(int recordtime_id)<br />
   <br />
 </p>

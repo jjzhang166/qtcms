@@ -1586,7 +1586,7 @@ void settingsActivity::OnSettingRecordTimeParm()
 	QVariant enable_ID=QueryValue("enable_ID");
 
 	int nRet=-1;
-	nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID.toString(),endtime_ID.toString(),enable_ID.toBool());
+	nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID.toString(),endtime_ID.toString(),enable_ID.toInt());
 	if (1==nRet)
 	{
 		arg.clear();
@@ -1646,13 +1646,8 @@ void settingsActivity::OnSettingRecordTimeParmDouble()
 		QString starttime_ID=item.toElement().attribute("starttime_ID");
 		QString endtime_ID=item.toElement().attribute("endtime_ID");
 		QString enable_ID=item.toElement().attribute("enable_ID");
-		bool bEnable=false;
-		if ("true"==enable_ID)
-		{
-			bEnable=true;
-		}
 		int nRet=-1;
-		nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID,endtime_ID,bEnable);
+		nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID,endtime_ID,enable_ID.toInt());
 		if (1==nRet)
 		{
 			arg.clear();

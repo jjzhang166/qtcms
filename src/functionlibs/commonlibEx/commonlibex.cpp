@@ -2073,7 +2073,7 @@ int commonlibEx::getDiskSpaceReservedSize()
 	return spacereservedsize;
 }
 
-int commonlibEx::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,bool enable )
+int commonlibEx::ModifyRecordTime( int recordtime_id,QString starttime,QString endtime,int enable )
 {
 	// check time format
 	if ( !CheckTimeFormat(starttime) || !CheckTimeFormat(endtime))
@@ -2123,7 +2123,7 @@ int commonlibEx::ModifyRecordTime( int recordtime_id,QString starttime,QString e
 	// update recordtime set starttime='',endtime='',enable=1 where id=recordtime_id
 	sSql = QString("update recordtime set starttime='") + starttime
 		+ QString("',endtime='") + endtime
-		+ QString("',enable=") + (enable ? QString::number(1) : QString::number(0))
+		+ QString("',enable=") +QString::number(enable)
 		+ QString(" where id=") + QString::number(recordtime_id);
 	if ( !_query.exec(sSql) )
 	{

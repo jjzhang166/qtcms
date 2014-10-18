@@ -14,11 +14,11 @@ interface ISetRecordTime : public IPComBase
 	//	recordtime_id：指定需修改的录像时间的id号
 	//	starttime：开始录像时间
 	//	endtime：结束录像时间
-	//	enable：true为开始，false为关闭此录像时间
+	//	enable：按位计算，00：没有录像，01：定时录像，10：移动录像，11：定时与移动录像
 	//返回值：
 	//	0：修改成功
 	//	1：修改失败
-	virtual int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,bool enable)=0;
+	virtual int ModifyRecordTime(int recordtime_id,QString starttime,QString endtime,int enable)=0;
 
 	//查询指定通道下的录像时间记录
 	//输入参数：
@@ -36,7 +36,7 @@ interface ISetRecordTime : public IPComBase
 	//		weekday：（可选值 0（周一），1（周二），2（周三），3（周四），4（周五），5（周六），6（星期天））
 	//		starttime：开始时间
 	//		endtime：结束时间
-	//		enable：是否使用（0（true），1(false)）
+	//		enable：按位计算，00：没有录像，01：定时录像，10：移动录像，11：定时与移动录像
 	virtual QVariantMap GetRecordTimeInfo(int recordtime_id)=0;
 
 

@@ -355,7 +355,14 @@ void RecordDat::slCheckTimeRecord()
 	m_tRecordDatTimeListLock.lock();
 	for(int i=0;i<m_tRecordDatTimeList.size();i++){
 		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
-		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay)
+		bool bflags=false;
+		if (TIMERECORDINDATABASE&tRecTimeInfo.nEnable)
+		{
+			bflags=true;
+		}else{
+
+		}
+		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay&&bflags==true)
 		{
 			if (tRecTimeInfo.tStartTime<=tCurrentTime&&tRecTimeInfo.tEndTime>tCurrentTime)
 			{
@@ -414,7 +421,7 @@ bool RecordDat::updateRecordSchedule(int nChannelId )
 			tRecTimeInfo.nWeekDay=tTimeInfo.value("weekday").toInt();
 			tRecTimeInfo.tStartTime=QTime::fromString(tTimeInfo.value("starttime").toString().mid(11),"hh:mm:ss");
 			tRecTimeInfo.tEndTime=QTime::fromString(tTimeInfo.value("endtime").toString().mid(11),"hh:mm:ss");
-			if (tRecTimeInfo.nEnable==1)
+			if (tRecTimeInfo.nEnable!=0)
 			{
 				m_tRecordDatTimeList.append(tRecTimeInfo);
 			}else{
@@ -464,7 +471,14 @@ bool RecordDat::checkMotionRecordSchedule()
 	m_tRecordDatTimeListLock.lock();
 	for(int i=0;i<m_tRecordDatTimeList.size();i++){
 		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
-		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay)
+		bool bflags=false;
+		if (MOTIONRECORDINDATABASE&tRecTimeInfo.nEnable)
+		{
+			bflags=true;
+		}else{
+
+		}
+		if (tRecTimeInfo.nWeekDay==nCurrentWeekDay&&bflags==true)
 		{
 			if (tRecTimeInfo.tStartTime<=tCurrentTime&&tRecTimeInfo.tEndTime>tCurrentTime)
 			{
