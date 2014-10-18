@@ -141,6 +141,7 @@ var oSearchOcx,
 				if(index != 3){
 					oSearchOcx.Stop();
 					emptyDevSetMenu();
+					
 				}
 			   AJAX && AJAX.abort();
 			  if(nowDev && nowDev._ID){
@@ -478,7 +479,7 @@ var oSearchOcx,
 		var allChlID = [],allDevID=[];  //所有通道ID
 		obj.parent('li').siblings().each(function(){
 			var chlData = $(this).find('.channel').data('data');
-			$('<li><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
+			$('<li style="width:100px"><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
 			allChlID.push(chlData.channel_id);
 		})
         $('div.dev_list:eq(2) span.channel').not('.sel').each(function(){
@@ -487,9 +488,9 @@ var oSearchOcx,
 			})
 		//拷贝到所有通道选项的value写入;
 		
-		$('<li><input class="all" data="" value="'+_T('select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+		$('<li  style="width:100px"><input class="all" data="" value="'+_T('select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
         //拷贝到所有设备的所有通道上
-		$('<li><input class="all" data="" value="'+_T('Select_all')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
+		$('<li  style="width:100px"><input class="all" data="" value="'+_T('Select_all')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
 		//console.log(allChlID);
 
 		var chlData = obj.data('data');
@@ -731,7 +732,7 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"],.timeInput input').val('').attr('data','')
+		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
@@ -1457,10 +1458,11 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		
 	}
 	function SettingRecordDoubleTimeParm(){ //清空回放时间表单的数据
-		$('#recordtime div.timeInput input').val('');
+		//$('#recordtime div.timeInput input').val('');
+		$('#recordtime .schedle_id .time_picker').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week.option li').removeData();
-		$('#week').val(lang.Monday).attr('data','0');
+		$('#week').val(lang.Mon).attr('data','0');
 		$('#recordtime td.copyTo').find('li').remove()
 								  .end().find('input').val('').data('');
 		//areaList2Ui(2);
