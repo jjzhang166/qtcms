@@ -3,7 +3,7 @@
 #include <QtCore/QDir>
 #include <guid.h>
 #include "IDisksSetting.h"
-#include "vld.h"
+//#include "vld.h"
 
 
 LocalPlayerEx::LocalPlayerEx()

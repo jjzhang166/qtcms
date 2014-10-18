@@ -3,7 +3,7 @@
 #include <QElapsedTimer>
 #include "IEventRegister.h"
 
-#include "vld.h"
+//#include "vld.h"
 #include <QDebug>
 #include <QFile>
 #include <QDateTime>

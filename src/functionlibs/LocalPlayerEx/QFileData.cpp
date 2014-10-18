@@ -1,7 +1,7 @@
 #include "QFileData.h"
 #include <QFile>
 
-#include "vld.h"
+//#include "vld.h"
 
 #include <QDebug>
 

@@ -472,7 +472,7 @@ bool RecordDat::checkMotionRecordSchedule()
 	for(int i=0;i<m_tRecordDatTimeList.size();i++){
 		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
 		bool bflags=false;
-		if (MOTIONRECORDINDATABASE&tRecTimeInfo.nEnable)
+		if (TIMERECORDINDATABASE&tRecTimeInfo.nEnable)
 		{
 			bflags=true;
 		}else{

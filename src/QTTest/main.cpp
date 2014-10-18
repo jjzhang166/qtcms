@@ -10,7 +10,7 @@
 #include <MyEventSender.h>
 #include <QMutex>
 
-#include "vld.h"
+//#include "vld.h"
 
 QMutex g_tMessage;
 QString g_sLocalPath;

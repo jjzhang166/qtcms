@@ -1,7 +1,7 @@
 #ifndef RECORDDAT_GLOBAL_H
 #define RECORDDAT_GLOBAL_H
 
-#include <vld.h>
+//#include <vld.h>
 #include <QtCore/qglobal.h>
 #include <assert.h>
 #define  CHLBUFFERSIZE 3

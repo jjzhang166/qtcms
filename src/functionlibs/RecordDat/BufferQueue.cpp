@@ -57,7 +57,29 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 					if (bFlag==false)
 					{
 						RecBufferNode *pRemoveRecBufferNode=NULL;
+						tagFrameHead *pRemoveFrameHead=NULL;
 						pRemoveRecBufferNode=m_tDataQueue.dequeue();
+						pRemoveRecBufferNode->getDataPointer(&pRemoveFrameHead);
+						if (pRemoveFrameHead->uiType==IFRAME)
+						{
+							m_nQueueMaxSize--;
+						}else{
+							//do nothing
+						}
+						int nDataLength=pRemoveFrameHead->uiLength;
+						int nFrameHeadLength=sizeof(tagFrameHead);
+						int nApplyLength=nDataLength+nFrameHeadLength-sizeof(char*);
+						if (pRemoveFrameHead->uiType==IFRAME)
+						{
+							nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
+							m_nQueueMaxSize++;
+						}else if (pRemoveFrameHead->uiType==AFRMAE)
+						{
+							nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);
+						}else{
+							//do nothing
+						}
+						m_uiAvailableSize=m_uiAvailableSize+nApplyLength;
 						if (NULL!=pRemoveRecBufferNode)
 						{
 							pRemoveRecBufferNode->release();
@@ -75,8 +97,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 			}else{
 				bFlag=true;
 			}
-		}
-		m_nQueueMaxSize--;
+		}	
 	}else{
 		//keep going
 	}
@@ -181,6 +202,8 @@ void BufferQueue::clear()
 			//do nothing
 		}
 	}
+	m_nQueueMaxSize=0;
+	m_uiAvailableSize=1024*1024*CHLBUFFERSIZE;
 	m_tDataLock.unlock();
 }
 

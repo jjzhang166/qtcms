@@ -1,6 +1,6 @@
 #include "qsubviewEx.h"
 #include <QTime>
-#include "vld.h"
+//#include "vld.h"
 
 bool qsubviewEx::ms_bIsFullScreen = false;
 qsubviewEx::qsubviewEx(QWidget *parent):
