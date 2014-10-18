@@ -274,7 +274,7 @@ bool RecordDat::motionRecordStart( int nTime )
 			}
 		}else{
 			//do nothing
-			qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as current time is not in MotionRecordSchedule";
+			//qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as current time is not in MotionRecordSchedule";
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"motionRecordStart fail as m_bInit is fail";
@@ -472,7 +472,7 @@ bool RecordDat::checkMotionRecordSchedule()
 	for(int i=0;i<m_tRecordDatTimeList.size();i++){
 		tagRecordDatTimeInfo tRecTimeInfo=m_tRecordDatTimeList.at(i);
 		bool bflags=false;
-		if (TIMERECORDINDATABASE&tRecTimeInfo.nEnable)
+		if (MOTIONRECORDINDATABASE&tRecTimeInfo.nEnable)
 		{
 			bflags=true;
 		}else{
