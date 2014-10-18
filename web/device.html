@@ -81,7 +81,7 @@
 
 	#SerachDevList thead td{height:0;}
 
-	.week input,.week li{width: 63px; clear:both;}
+	.week input,.week li{width:100px; clear:both;}
 	 #ui-datepicker-div{background-color:#1E1E1E;font-size:12px;}/*改变jtimepicker背景颜色*/
 
 }
@@ -1728,79 +1728,109 @@
 					<table style="float:left" id="recordtime">
 						<thead>
 						<tr>
+                            <td style="width:60px;"></td>
 							<td class="td1" style="text-align:right;"><script>T("Week")</script></td>
-							<td class="td2">
-								<div class="select" style="width:64px;">
-									<input id="week" value="Monday" data="0" style="width:43px;" type="select" data-UI/>
+							<td>
+								<div class="select" style="width:133px;">
+									<input id="week" value="" data="" style="width:100px;" type="select" data-UI/>
 									<a class="hover"></a>
 								</div>
 								<ul class="option week">
-									<li><input data="0" value="Monday"/></li>
-									<li><input data="1" value="Tuesday"/></li>
-									<li><input data="2" value="Wednesday"/></li>
-									<li><input data="3" value="Thursday"/></li>
-									<li><input data="4" value="Friday"/></li>
-									<li><input data="5" value="Saturday"/></li>
-									<li><input data="6" value="Sunday"/></li>
+									<li><input data="0" value="Mon"/></li>
+									<li><input data="1" value="Tue"/></li>
+									<li><input data="2" value="Wed"/></li>
+									<li><input data="3" value="Thu"/></li>
+									<li><input data="4" value="Fri"/></li>
+									<li><input data="5" value="Sat"/></li>
+									<li><input data="6" value="Sun"/></li>
 									<li><input data="0,1,2,3,4,5,6" value="Everyday"/></li>
 								</ul>
 							</td>
+                             <td colspan="2"></td>
 						</tr>
 						</thead>
 						<tbody>
-						<tr>
-							<td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>1</td>
-							<td class="td2 schedle_id">
+                        <tr>
+                           <td ></td>
+						    <td style="width:100px;"><script>T("Start_Time")</script></td>
+                            <td ><script>T("End_Time")</script></td>
+							<td><script>T("Timing")</script></td>
+							<td><script>T("Mobile")</script></td>
+                       </tr>
+						<tr class"schedle_id">
+							<td><!--<input type="checkbox">--><span><script>T("Time_d")</script></span>1</td>
+                            <input type="hidden" value="" class="timeid" />
+							<!--<td class="td2 schedle_id">
 							<input type="hidden" value="" class="timeid" />
 								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                                 <!--<input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" />
-                                <input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> -->
-							</td>
+								<div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div> 
+							</td>-->
+                           <td><input type="text"  data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));" /></td>
+                            <td><input type="text"  data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/> </td>
+                            <td> <input class="chk1" type="checkbox" /></td>             
+                           <td><input class="chk1" type="checkbox" /></td>
+                         
 						</tr>
-						<tr>
-                        <td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>2</td>
-                        <td class="td2 schedle_id">
+						<tr class"schedle_id">
+                       <td ><!--<input type="checkbox">--><span><script>T("Time_d")</script></span>2</td>
+                       <input type="hidden" value="" class="timeid" />
+                         <!--<td class="td2 schedle_id">
+                        
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        </td>-->
+                         <td><input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                         <td><input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                         <td> <input  class="chk1" type="checkbox" /></td>             
+                         <td> <input  class="chk1" type="checkbox" /></td>
+      
+                        </tr>
+						<tr class"schedle_id">
+                        <td ><!--<input type="checkbox">--><span><script>T("Time_d")</script></span>3</td> 
                         <input type="hidden" value="" class="timeid" />
+                         <!--  <td class="td2 schedle_id">
+                       
                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
                         <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                        <!--<input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
-                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>-->
-                        </td>
+                        </td>-->
+                         <td><input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                         <td><input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                         <td> <input  class="chk1" type="checkbox" /></td>             
+                         <td><input  class="chk1" type="checkbox" /></td>
+                         
+                        </tr>
+						<tr class"schedle_id">
+                       <td ><!--<input type="checkbox">--><span><script>T("Time_d")</script></span>4</td>
+                        <input type="hidden" value="" class="timeid" />
+                        <!-- <td class="td2 schedle_id">
+                       
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
+                        </td>-->
+                         <td><input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                        <td><input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/></td>
+                         <td> <input class="chk1" type="checkbox" /></td>             
+                         <td><input  class="chk1" type="checkbox" /></td>
+                        
                         </tr>
 						<tr>
-                        <td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>3</td>
-                        <td class="td2 schedle_id">
-                        <input type="hidden" value="" class="timeid" />
-                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                        <!--<input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
-                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>-->
-                        </td>
-                        </tr>
-						<tr><td class="td1"><input type="checkbox"><span><script>T("Time")</script></span>4</td>
-                        <td class="td2 schedle_id">
-                        <input type="hidden" value="" class="timeid" />
-                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                        <div class="timeInput" style="background: url(images/playback/select_bg.png) repeat-x;"></div>
-                       <!-- <input type="text" data="" class="iput2 time_picker time_picker_start" onblur="checkTime_Jtp_fmt($(this));"/>
-                        <input type="text" data="" class="iput2 time_picker time_picker_end" onblur="checkTime_Jtp_fmt($(this));"/>-->
-                        </td>
-                        </tr>
-						<tr>
-							<td class="td1"><script>T("Copy_to")</script></td>
-							<td class="td2 copyTo">
-								<div class="select" style="width:133px;">
-										<input value="" data="" type="select" data-UI/>
+                          
+							<!--<td class="td1"><script>T("Copy_to")</script></td>-->
+                            <td style="text-align:right;"><script>T("Copy_to")</script></td>
+							<td class="copyTo">
+								<div class="select" style="width:100px;">
+										<input value="" data="" type="select" data-UI style="width:64px"/>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
 									<!--<li><input class="all" value="Select"/></li>-->
 								</ul>
 							</td>
+                           
+                            <td colspan="3"></td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
-						<tr><td colspan="2" class="td3 tdBtn">
+						<tr><td colspan="5" class="tdBtn">
 						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>T("Save")</script></div>
 						</td></tr>
 						</tbody>

@@ -157,7 +157,7 @@
 
 		//var name = oDevList.eq(key).data('data').name;
 
-		//console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
+		console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));
 		//console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
 		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
 		//console.log('调用是否成功(0-yes,1-no)： '+oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type));

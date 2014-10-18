@@ -456,7 +456,7 @@ var oSearchOcx,
 		//areaList2Ui();
 	}
 	//record setting  回放设置;
-	var weeks = [_T('Monday'),_T('Tuesday'),_T('Wednesday'),_T('Thursday'),_T('Friday'),_T('Saturday'),_T('Sunday')];
+	var weeks = [_T('Mon'),_T('Tue'),_T('Wed'),_T('Thu'),_T('Fri'),_T('Sat'),_T('Sun')];
 	function FillRecordTimeData(){
 		/*SettingRecordDoubleTimeParm();
 		FillChannleRecordTime($('div.dev_list:eq(2) span.channel:first'));*/
@@ -495,14 +495,15 @@ var oSearchOcx,
 		var chlData = obj.data('data');
 
 		var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
+		/*console.log("---获取该通道的时间段的ID列表---"+sTimeID);*/
 		for(var i in sTimeID){
 			var sTimeIDdata = oCommonLibrary.GetRecordTimeInfo(sTimeID[i]); //获取该时间段的详细信息
-			//console.log("--获取到的星期--get"+sTimeIDdata.weekday);
+			//console.log("通道"+sTimeIDdata.chl_id+"//时间段id:"+sTimeIDdata.schedle_id+"//星期："+sTimeIDdata.weekday+"//开始时间 结束时间："+sTimeIDdata.starttime+' '+sTimeIDdata.endtime+"//类型："+sTimeIDdata.enable);
 			//时间段数据和对应的星期关联
 			for(var j in weeks){
 				if(j == sTimeIDdata.weekday){
 				   $('#RecordTime ul.week.option li:eq('+j+')').data('data_'+sTimeID[i],sTimeIDdata);
-				  // console.log( $('#RecordTime ul.week.option li:eq('+j+')').data('data_'+sTimeID[i]));
+				 /* console.log( $('#RecordTime ul.week.option li:eq('+j+')').data('data_'+sTimeID[i]));*/
 				}
 			}
 		}
@@ -516,8 +517,8 @@ var oSearchOcx,
 		
 	}
 	function initChannlrecTime(obj){ //初始化计划录像的XML信息
-         //console.log(obj.data());
-		var oTimes=$('#recordtime tbody tr:lt(4)');
+       // console.log(obj.data());
+		var oTimes=$('#recordtime tbody tr:gt(0):lt(5)');
 		var str = '<recordtime num="4">';
 
 		for(i in obj.data()){
@@ -525,16 +526,27 @@ var oSearchOcx,
 			var timeid = i.split('_')[1];
 			var start = data.starttime.split(' ')[1];
 			var end = data.endtime.split(' ')[1]
-			var enable = Boolean(data.enable);
-
+			var enable = data.enable;
 			var n = data.schedle_id;
-			oTimes.eq(n).find('input:checkbox').prop('checked',enable);
+			
 			oTimes.eq(n).find('input.timeid').val(timeid);
-			oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
-			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});
-			/*oTimes.eq(n).find('input.time_picker:eq(0)').val(start).end().find('input.time_picker:eq(0)').attr("data",start);
-			oTimes.eq(n).find('input.time_picker:eq(1)').val(end).end().find('input.time_picker:eq(1)').attr("data",end);*/
-			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
+			/*oTimes.eq(n).find('div.timeInput:eq(0)').timeInput({'initTime':start});
+			oTimes.eq(n).find('div.timeInput:eq(1)').timeInput({'initTime':end});*/
+			oTimes.eq(n).find('input.time_picker:eq(0)').val(start).end().find('input.time_picker:eq(0)').attr("data",start);
+			oTimes.eq(n).find('input.time_picker:eq(1)').val(end).end().find('input.time_picker:eq(1)').attr("data",end);
+			for(var j = 0; j < 2; j++)
+			{
+				if(enable == 0)
+				{
+					oTimes.eq(n).find('input:checkbox').eq(j).prop("checked",false);
+				}else{
+					
+				  oTimes.eq(n).find('input:checkbox').eq(j).prop("checked",Boolean((enable & (1 << j))));
+				  //oTimes.eq(n).css('border','1px red solid');
+				// console.log((n)+' '+(enable & (1 << j)));
+				}
+			}			
+			str+='<num'+n+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />';
 		}
 		str +='</recordtime>';
 	    // console.log(str);
@@ -562,17 +574,27 @@ var oSearchOcx,
 				}
 			}
 		}
-        console.log(nowWeekTimeID+"----nowWeekTimeID-------");
+       // console.log(nowWeekTimeID+"----nowWeekTimeID-------");
 		var str = '<recordtime num="'+nowWeekTimeID.length+'">';
 		for( i in nowWeekTimeID){
-			var warp = $('#RecordTime td.schedle_id:eq('+nowWeekTimeID[i][1]+')');
+			//var warp = $('#RecordTime tr.schedle_id:eq('+nowWeekTimeID[i][1]+')');
+			var warp = $('#recordtime tbody tr:gt(0):lt(5)').eq(nowWeekTimeID[i][1]);
 			var timeid = nowWeekTimeID[i][0];
-			var start = warp.find('div.timeInput:eq(0)').gettime();
-			var end = warp.find('div.timeInput:eq(1)').gettime();
-			/*var start = warp.find('.iput2.time_picker:eq(0)').val();
-			var end = warp.find('.iput2.time_picker:eq(1)').val();*/
-			var enable = warp.prev('td.td1').find('input:checkbox').is(':checked');	
-			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
+			/*var start = warp.find('div.timeInput:eq(0)').gettime();
+			var end = warp.find('div.timeInput:eq(1)').gettime();*/
+			var start = warp.find('td .iput2.time_picker:eq(0)').val();
+			var end = warp.find('td .iput2.time_picker:eq(1)').val();
+			var enable  = 0;
+	        warp.find('td input:checkbox').each(function(index){
+			
+			     if($(this).prop('checked')==true){ 
+				 
+					  enable += Math.pow(2, index);
+					//console.log("---enable--"+enable+"--index--"+index);
+				  }
+            });
+			
+			str+='<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable+'" />';
 			//var str1 = '<num'+nowWeekTimeID[i][0]+' recordtime_ID="'+timeid+'" starttime_ID="1970-01-01 '+start+'" endtime_ID="1970-01-01 '+end+'" enable_ID="'+enable.toString()+'" />';
 			//console.log(str1);
 		}

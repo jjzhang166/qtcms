@@ -430,6 +430,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			recFile.push($.parseJSON(data[i]));	
 		}
 		if(bool && data.index_0){
+			console.log('当前窗口:'+(parseInt((localSearchWindNum))+1));
 			RecFileInfo2UI(data);
 			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
 			console.log(data);*/
@@ -583,10 +584,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oFileUIwarp = channelvideo.find('tr'),
 
 			oDev = $(oDev);
-
+		console.log('接收到的文件进行合并前的文件----------------------------');
+         console.log(filedata);
 		/*console.log(oDev);
 		console.log('---------描绘接受到的文件------------------------');
-		console.log(filedata)	
+		
 		console.time('---------合并接受到的文件------------------------');*/
 			var File = Deleteduplicate(filedata);
 		/*console.timeEnd('---------合并接受到的文件------------------------');
@@ -600,8 +602,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			nowTime = renewtime().split('  ')[1];
 
-		/*console.log('接收到的文件进行合并后的文件----------------------------');
-		console.log(File);*/
+		console.log('接收到的文件进行合并后的文件----------------------------');
+		console.log(File);
 
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
