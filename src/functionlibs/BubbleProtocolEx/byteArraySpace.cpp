@@ -23,15 +23,29 @@ char * byteArraySpace::getEndLocation(int &nResidueSize)
 {
 	if (m_pDataHead!=m_pMemoryHead)
 	{
-		memcpy(m_pMemoryHead,m_pDataHead,m_nDataLength);
-		int nLen=m_nTotalSize-m_nDataLength;
-		memset(m_pMemoryHead+m_nDataLength,0,nLen);
-		m_pDataHead=m_pMemoryHead;
+		if (m_nDataLength==0)
+		{
+			m_pDataHead=m_pMemoryHead;
+			m_nNOCopy++;
+		}else if (m_nTotalSize-(m_pDataHead-m_pMemoryHead)>FRAMEMAXSIZE)
+		{
+			//do nothing
+			m_nDonothing++;
+		}else{
+			memcpy(m_pMemoryHead,m_pDataHead,m_nDataLength);
+			m_pDataHead=m_pMemoryHead;
+			m_nCopy++;
+		}
 	}else{
 		//do nothing
 	}
-	nResidueSize=m_nTotalSize-m_nDataLength;
-	return (char*)(m_pMemoryHead+m_nDataLength);
+	m_nCount++;
+	if (m_nCount%25==0)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"m_nCopy:"<<m_nCopy<<"m_nNOCopy:"<<m_nNOCopy<<"m_nDonothing:"<<m_nDonothing;
+	}
+	nResidueSize=m_nTotalSize-m_nDataLength-(m_pDataHead-m_pMemoryHead)-1;
+	return (char*)(m_pDataHead+m_nDataLength);
 }
 
 void byteArraySpace::setSize( int nSize )
@@ -47,11 +61,13 @@ void byteArraySpace::setSize( int nSize )
 		//do nothing
 		qDebug()<<__FUNCTION__<<__LINE__<<"size had been set,there is no need to call this function";
 	}
+	m_nCopy=m_nNOCopy=m_nCount=m_nDonothing=0;
 	return;
 }
 
 bool byteArraySpace::contains( const char * str )
 {
+	memset(m_pDataHead+m_nDataLength,0,1);
 	if (NULL==strstr(m_pDataHead,str))
 	{
 		return false;
@@ -67,6 +83,7 @@ int byteArraySpace::size()
 
 bool byteArraySpace::startsWith(  char * str )
 {
+	memset(m_pDataHead+m_nDataLength,0,1);
 	if (!str || !*str)
 		return true;
 	int len = qstrlen(str);
@@ -107,6 +124,7 @@ bool byteArraySpace::clear()
 	memset(m_pMemoryHead,0,sizeof(char)*m_nTotalSize);
 	m_pDataHead=m_pMemoryHead;
 	m_nDataLength=0;
+	m_nCopy=m_nNOCopy=m_nCount=m_nDonothing=0;
 	return true;
 }
 

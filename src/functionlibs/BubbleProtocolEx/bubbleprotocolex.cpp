@@ -53,7 +53,7 @@ BubbleProtocolEx::BubbleProtocolEx():
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
     m_nBuiltTreadId=QThread::currentThreadId();
 	//
-	m_tBuffer.setSize(1024*1024);
+	m_tBuffer.setSize(1.5*1024*1024);
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()

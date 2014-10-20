@@ -3,6 +3,7 @@
 #include <string.h>
 #include <QByteArray>
 #include <QDebug>
+#define FRAMEMAXSIZE 786432
 class byteArraySpace
 {
 public:
@@ -27,5 +28,9 @@ private:
 	int m_nDataLength;
 	char *m_pMemoryHead;
 	char *m_pDataHead;
+	int m_nCopy;
+	int m_nNOCopy;
+	int m_nDonothing;
+	int m_nCount;
 };
 
