@@ -553,7 +553,7 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 	QList<TimePath> tpList;
 
 	QList<QString> fileList;
-	QVector<uint> vecTime;
+// 	QVector<uint> vecTime;
 	QList<qint32> wndList;
 	getWndIdList(wndList);
 	if (wndList.isEmpty())
@@ -623,17 +623,16 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 		}
 		query.finish();
 	}
-// 	i32Pos = fileList.indexOf(startPath);
 
 	//find start position
-	for (qint32 i32loop = 0; i32loop < vecTime.size(); ++i32loop)
-	{
-		if (m_uiStartSec < vecTime[i32loop])
-		{
-			i32Pos = i32loop;
-			break;
-		}
-	}
+// 	for (qint32 i32loop = 0; i32loop < vecTime.size(); ++i32loop)
+// 	{
+// 		if (m_uiStartSec < vecTime[i32loop])
+// 		{
+// 			i32Pos = i32loop;
+// 			break;
+// 		}
+// 	}
 	//get file list
 	foreach (TimePath tp, tpList)
 	{
@@ -788,50 +787,23 @@ qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& fil
 
 }
 
-void LocalPlayerEx::appendFile( QList<QString> &fileList, QString fileName, QVector<uint> &vecTime, uint time )
-{
-	if (fileList.isEmpty())
-	{
-		fileList<<fileName;
-		vecTime.append(time);
-		return;
-	}
-	qint32 pos = fileList.size() - 1;
-	if (vecTime[pos] < time)
-	{
-		fileList<<fileName;
-		vecTime.append(time);
-	}
-	else
-	{
-		while (vecTime[pos] > time)
-		{
-			--pos;
-			if (pos < 0)
-			{
-				return;
-			}
-		}
-		fileList.insert(pos + 1, fileName);
-		vecTime.insert(pos + 1, time);
-	}
-}
-
-// void LocalPlayerEx::appendPeriodTime( QVector<PeriodTime> &vecPeriod, const PeriodTime &per )
+// void LocalPlayerEx::appendFile( QList<QString> &fileList, QString fileName, QVector<uint> &vecTime, uint time )
 // {
-// 	if (vecPeriod.isEmpty())
+// 	if (fileList.isEmpty())
 // 	{
-// 		vecPeriod.append(per);
+// 		fileList<<fileName;
+// 		vecTime.append(time);
 // 		return;
 // 	}
-// 	qint32 pos = vecPeriod.size() - 1;
-// 	if (vecPeriod[pos].start < per.start)
+// 	qint32 pos = fileList.size() - 1;
+// 	if (vecTime[pos] < time)
 // 	{
-// 		vecPeriod.append(per);
+// 		fileList<<fileName;
+// 		vecTime.append(time);
 // 	}
 // 	else
 // 	{
-// 		while (vecPeriod[pos].start > per.start)
+// 		while (vecTime[pos] > time)
 // 		{
 // 			--pos;
 // 			if (pos < 0)
@@ -839,9 +811,36 @@ void LocalPlayerEx::appendFile( QList<QString> &fileList, QString fileName, QVec
 // 				return;
 // 			}
 // 		}
-// 		vecPeriod.insert(pos + 1, per);
+// 		fileList.insert(pos + 1, fileName);
+// 		vecTime.insert(pos + 1, time);
 // 	}
 // }
+
+void LocalPlayerEx::appendPeriodTime( QVector<PeriodTime> &vecPeriod, const PeriodTime &per )
+{
+	if (vecPeriod.isEmpty())
+	{
+		vecPeriod.append(per);
+		return;
+	}
+	qint32 pos = vecPeriod.size() - 1;
+	if (vecPeriod[pos].start < per.start)
+	{
+		vecPeriod.append(per);
+	}
+	else
+	{
+		while (vecPeriod[pos].start > per.start)
+		{
+			--pos;
+			if (pos < 0)
+			{
+				return;
+			}
+		}
+		vecPeriod.insert(pos + 1, per);
+	}
+}
 
 void LocalPlayerEx::appendTimePath( QList<TimePath> &tpList, const uint &start, const QString &path, qint32 &insertPos )
 {
