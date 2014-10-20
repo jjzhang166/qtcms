@@ -21,6 +21,11 @@ recordDatCore::recordDatCore(void):m_bStop(true),
 		tWndInfo.uiPreIFrame=0;
 		m_tFileInfo.tWndInfo.insert(i,tWndInfo);
 	}
+	quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
+	for (int i=0;i<WNDMAXSIZE;i++)
+	{
+		m_tInsertSearchDatabaseTime.append(uiCurrentTime);
+	}
 	m_pDataBuffer1=(char*)malloc(BUFFERSIZE*1024*1024);
 	m_pDataBuffer2=(char*)malloc(BUFFERSIZE*1024*1024);
 	if (m_pDataBuffer2==NULL||m_pDataBuffer1==NULL)
@@ -203,6 +208,7 @@ void recordDatCore::run()
 			bool bFlag=false;
 			bool bFlagNext=false;
 			m_bIsBlock=true;
+			quint64 uiSearchDataCurrentTime=QDateTime::currentDateTime().toTime_t();
 			m_nPosition=__LINE__;
 			while(tItem!=m_tBufferQueueMap.end()){
 				BufferQueue *pBuffer=tItem.value();
@@ -210,6 +216,24 @@ void recordDatCore::run()
 				int uiCurrentRecordType=m_tFileInfo.tWndInfo.value(nKey).uiCurrentRecordType;
 				int uiHistoryRecordType=m_tFileInfo.tWndInfo.value(nKey).uiHistoryRecordType;
 				pBuffer->enqueueDataLock();
+				//通道相隔3分钟没有数据流过来，则把搜索表的条目 作为单独一条 处理
+				if (uiSearchDataCurrentTime-m_tInsertSearchDatabaseTime.value(nKey)>60*3)
+				{
+					if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nKey))
+					{
+						quint64 uiEndTime=QDateTime::currentDateTime().toTime_t();
+						QVariantMap tInfo;
+						tInfo.insert("nEndTime",uiEndTime);
+						QList<int > tIdList;
+						tIdList.append(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nKey));
+						m_tOperationDatabase.updateSearchDatabase(tIdList,tInfo,sWriteFilePath);
+						m_tDatabaseInfo.tChannelInSearchDatabaseId.remove(nKey);
+					}else{
+						//do nothing
+					}
+				}else{
+					//do nothing
+				}
 				if (!(uiHistoryRecordType==0&&uiCurrentRecordType==0))
 				{
 					//keep going
@@ -1458,6 +1482,13 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 						nStep=WriteToBuffer_end;
 						bStopWrite=true;
 					}
+				}
+				if (nFlags&1)
+				{
+					quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
+					m_tInsertSearchDatabaseTime.replace(nChannel,uiCurrentTime);
+				}else{
+					//do nothing
 				}
 				nStep=WriteToBuffer_end;
 									 }

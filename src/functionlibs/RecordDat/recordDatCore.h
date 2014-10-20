@@ -149,5 +149,6 @@ private:
 	WriteToDisk m_tWriteToDisk;
 	volatile bool m_bReloadSystemDatabase;
 	QMultiMap<QString,tagRecordDatabaseMaxID> m_tRecordDatabaseMaxId;
+	QList<quint64> m_tInsertSearchDatabaseTime;
 };
 
