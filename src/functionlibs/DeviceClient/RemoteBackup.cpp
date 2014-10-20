@@ -167,7 +167,8 @@ bool RemoteBackup::connectToDevice(const QString &sAddr,unsigned int uiPort,cons
 	int amount=3;
 	while(amount>0){
 		//尝试bubble协议连接
-		if (m_backuping&&tryConnectProtocol(CLSID_BubbleProtocol,sAddr,uiPort,sEseeId))
+// 		if (m_backuping&&tryConnectProtocol(CLSID_BubbleProtocol,sAddr,uiPort,sEseeId))
+		if (m_backuping&&tryConnectProtocol(CLSID_Bubble,sAddr,uiPort,sEseeId))
 			return true;
 		//尝试穿透协议连接
 		if (m_backuping&&tryConnectProtocol(CLSID_Hole,sAddr,uiPort,sEseeId))

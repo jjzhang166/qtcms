@@ -734,7 +734,7 @@ bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 	{
 		if (it->wnd == wndID)
 		{
-			int temp = ~m_nChannels;
+			uint temp = ~m_nChannels;
 			temp |= 1<<(it.key() - 1);
 			m_nChannels = ~temp;
 			m_groupMap.remove(it.key());

@@ -1106,7 +1106,7 @@ int BubbleProtocolEx::getPlaybackStreamByTime( int nChannel,int nTypes,const QDa
 	//fix me
 	if (m_tCurrentConnectStatus==BUBBLE_CONNECTED)
 	{
-		if (!(nChannel<0||nTypes<0||startTime>endTime))
+		if (!(/*nChannel<0||*/nTypes<0||startTime>endTime))
 		{
 			m_tDeviceInfo.nRemotePlayChannel=nChannel;
 			m_tDeviceInfo.nRemotePlayTypes=nTypes;
@@ -1703,7 +1703,7 @@ bool BubbleProtocolEx::cmdGetPlayBackStreamByTime()
 {
 	if (NULL!=m_pTcpSocket)
 	{
-		if (!(m_tDeviceInfo.nRemotePlayChannel<0||m_tDeviceInfo.nRemotePlayTypes<0||m_tDeviceInfo.tRemotePlayStartTime>m_tDeviceInfo.tRemotePlayEndTime))
+		if (!(/*m_tDeviceInfo.nRemotePlayChannel<0||*/m_tDeviceInfo.nRemotePlayTypes<0||m_tDeviceInfo.tRemotePlayStartTime>m_tDeviceInfo.tRemotePlayEndTime))
 		{
 			QDateTime tTime1=QDateTime::currentDateTime();
 			QDateTime tTime2=QDateTime::currentDateTimeUtc();

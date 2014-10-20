@@ -148,7 +148,7 @@ private:
 	IDeviceClient::ConnectStatus m_CurStatus;
 	IRemotePlayback *m_pRemotePlayback;
 	QMap<int, WndPlay> m_groupMap;
-	int m_nChannels;
+	uint m_nChannels;
 	int m_nSpeedRate;
 	int m_nStartTimeSeconds;
 	QString m_sUserName;
