@@ -6,6 +6,7 @@ BufferQueue::BufferQueue():m_nQueueMaxSize(0),
 	m_nLoseFrameCount(0)
 {
 	m_uiAvailableSize=CHLBUFFERSIZE*1024*1024;
+	m_tDataQueue.prealloc(NODELISTSIZE);
 }
 
 
@@ -30,7 +31,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 			RecBufferNode *pRecBufferNode=NULL;
 			if (m_tDataQueue.size()>0)
 			{
-				pRecBufferNode=m_tDataQueue.front();
+				pRecBufferNode=(RecBufferNode*)m_tDataQueue.front();
 				tagFrameHead *pFrameHead=NULL;
 				pRecBufferNode->getDataPointer(&pFrameHead);
 				if (NULL!=pFrameHead)
@@ -58,7 +59,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 					{
 						RecBufferNode *pRemoveRecBufferNode=NULL;
 						tagFrameHead *pRemoveFrameHead=NULL;
-						pRemoveRecBufferNode=m_tDataQueue.dequeue();
+						pRemoveRecBufferNode=(RecBufferNode*)m_tDataQueue.dequeue();
 						pRemoveRecBufferNode->getDataPointer(&pRemoveFrameHead);
 						if (pRemoveFrameHead->uiType==IFRAME)
 						{
@@ -193,7 +194,7 @@ void BufferQueue::clear()
 	m_tDataLock.lock();
 	while(!m_tDataQueue.isEmpty()){
 		RecBufferNode *pRecBufferNode=NULL;
-		pRecBufferNode=m_tDataQueue.dequeue();
+		pRecBufferNode=(RecBufferNode*)m_tDataQueue.dequeue();
 		if (NULL!=pRecBufferNode)
 		{
 			pRecBufferNode->release();
@@ -213,7 +214,7 @@ RecBufferNode* BufferQueue::dequeue()
 	m_tDataLock.lock();
 	if (m_tDataQueue.size()>0)
 	{
-		pRecBufferNode=m_tDataQueue.dequeue();
+		pRecBufferNode=(RecBufferNode*)m_tDataQueue.dequeue();
 		tagFrameHead *pFrameHead=NULL;
 		pRecBufferNode->getDataPointer(&pFrameHead);
 		if (NULL!=pFrameHead)
@@ -260,7 +261,7 @@ RecBufferNode * BufferQueue::front()
 	m_tDataLock.lock();
 	if (m_tDataQueue.size()>0)
 	{
-		pRecBufferNode=m_tDataQueue.front();
+		pRecBufferNode=(RecBufferNode*)m_tDataQueue.front();
 		pRecBufferNode->addRef();
 	}else{
 

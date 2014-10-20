@@ -92,6 +92,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClCompile Include="Allocation.cpp" />
     <ClCompile Include="BufferNode.cpp" />
     <ClCompile Include="BufferQueue.cpp" />
+    <ClCompile Include="cpointlist.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="freeDisk.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_BufferQueue.cpp">
@@ -133,6 +134,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   <ItemGroup>
     <ClInclude Include="Allocation.h" />
     <ClInclude Include="BufferNode.h" />
+    <ClInclude Include="cpointlist.h" />
     <ClInclude Include="ringBuffer.h" />
     <CustomBuild Include="BufferQueue.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

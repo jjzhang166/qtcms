@@ -9,6 +9,7 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QThread>
+#include "cpointlist.h"
 #define MAXFRAMERATE 30 //最大帧率
 #define FRAMERATERESTARTTIME  79200000//计时器 重启时间
 class BufferQueue:public QThread
@@ -29,7 +30,8 @@ public:
 	void setRecordStatus(int nStatus);
 	int getSize();
 private:
-	QQueue<RecBufferNode*> m_tDataQueue;
+	/*QQueue<RecBufferNode*> m_tDataQueue;*/
+	CPointList m_tDataQueue;
 	QMutex m_tDataLock;
 	QMutex m_tEnqueueDataLock;
 	int m_nQueueMaxSize;
