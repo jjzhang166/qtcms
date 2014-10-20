@@ -68,6 +68,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_mdworkobject.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="byteArraySpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bubbleprotocolex_global.h">
@@ -80,6 +83,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SearchRemoteFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="byteArraySpace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -48,7 +48,7 @@ int MDWorkObject::startMd()
 {
 	m_bQuitMd = false;
 
-	start();
+	/*start();*/
 	return 0;
 }
 
@@ -279,7 +279,12 @@ void MDWorkObject::run()
 					if (0 == nRet)
 					{
 						nThreadStatus = MTS_WORK;
+					}else{
+						msleep(10);
 					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"MTS_INIT fail as s is null";
+					abort();
 				}
 			}
 			break;
@@ -296,8 +301,12 @@ void MDWorkObject::run()
 					}
 					else
 					{
+						msleep(10);
 						nThreadStatus = MTS_INIT;
 					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"MTS_INIT fail as s is null";
+					abort();
 				}
 			}
 			break;

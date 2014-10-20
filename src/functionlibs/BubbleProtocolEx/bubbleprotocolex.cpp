@@ -52,7 +52,8 @@ BubbleProtocolEx::BubbleProtocolEx():
 	m_tSearchRemoteFile.registerEvent("recFileSearchFail",cbXBubbleRecFileSearchFail,this);
 	m_tSearchRemoteFile.registerEvent("recFileSearchFinished",cbXBubbleRecFileSearchFinished,this);
     m_nBuiltTreadId=QThread::currentThreadId();
-
+	//
+	m_tBuffer.setSize(1024*1024);
 }
 
 BubbleProtocolEx::~BubbleProtocolEx()
@@ -247,7 +248,14 @@ void BubbleProtocolEx::run()
 			//接受解析码流
 			int nReceiveStep=BUBBLE_RECEIVE_HTTP;
 			bool bReceiveStop=false;
-			m_tBuffer+=m_pTcpSocket->readAll();
+			/*m_tBuffer+=m_pTcpSocket->readAll();*/
+			int nResidueSize=0;
+			char *pData=m_tBuffer.getEndLocation(nResidueSize);
+			int nAddDataLenth=m_pTcpSocket->read(pData,nResidueSize);
+			if (nAddDataLenth>0)
+			{
+				m_tBuffer.addDataLenth(nAddDataLenth);
+			}
 			m_nPosition=__LINE__;
 			while(bReceiveStop==false){
 				switch(nReceiveStep){
@@ -1315,7 +1323,7 @@ bool BubbleProtocolEx::analyzePreviewInfo()
     unsigned int uiBubbleLength=qToBigEndian((quint32)(pBubbleInfo->uiLength))+sizeof(pBubbleInfo->cHead)+sizeof(pBubbleInfo->uiLength);
 	if (uiBubbleLength<=uiBufferSize)
 	{
-		if (m_tBuffer.startsWith('\xaa'))
+		if (m_tBuffer.startsWith("\xaa"))
 		{
 			if (pBubbleInfo->cCmd=='\x00')
 			{
@@ -1444,7 +1452,7 @@ bool BubbleProtocolEx::analyzeRemoteInfo()
     unsigned int uiBubbleLength=qToBigEndian((quint32)(pBufferInfo->uiLength))+sizeof(pBufferInfo->cHead)+sizeof(pBufferInfo->uiLength);
 	if (uiBubbleLength<=uiBufferSize)
 	{
-		if (m_tBuffer.startsWith('\xab'))
+		if (m_tBuffer.startsWith("\xab"))
 		{
 			if (pBufferInfo->cCmd=='\x01')
 			{

@@ -24,6 +24,7 @@
 #include <QDomDocument>
 #include <mdworkobject.h>
 #include "SearchRemoteFile.h"
+#include "byteArraySpace.h"
 #include "IProtocolPTZ.h"
 #define MAXSIZEONETIME 2097152
 typedef int (__cdecl *bubbleProtocolEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
@@ -225,7 +226,8 @@ private:
 	bool m_bBlock;
 	QTimer m_tCheckoutBlockTimer;
 	QTcpSocket *m_pTcpSocket;
-	QByteArray m_tBuffer;
+	//QByteArray m_tBuffer;
+	byteArraySpace m_tBuffer;
 	QList<char> m_tPreviewCode;
 	QList<char> m_tRemoteCode;
 	bool m_bIsSupportHttp;

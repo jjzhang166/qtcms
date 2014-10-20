@@ -137,6 +137,7 @@ void recordDatCore::run()
 				}else{
 					//do nothing
 				}
+				//»»ÅÌÂ¼Ïñ£¬¸üÐÂËÑË÷±í
 				if (sHisRecordDiks!=sDisk)
 				{
 					if (m_tDatabaseInfo.tChannelInSearchDatabaseId.size()>0)
