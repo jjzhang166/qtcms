@@ -600,7 +600,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			    p = (max-min)/(3600*24),
             
-			//tdH = $('table.table .no_border').height(),
+			tdH = $('table.table .no_border').height(),
 			 
 			nowTime = renewtime().split('  ')[1];
 
@@ -614,7 +614,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
 			console.log(File[i]);*/
-			var str = '';
+			//var str = '';
 			/*console.log('-------------------------初始化的添加对象!----------------------');
 			console.log(target);*/
 			for(k in File[i]){
@@ -655,9 +655,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
 					}).find('label').html(wind).attr('wind',data.wndId);
 					
-					str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 					
-					//canvasDraw(localSearchWindNum,color[types],width,left,tdH);
+					canvasDraw(localSearchWindNum,color[types],width,left,tdH);
 					
 				}else{
 					var chl = parseInt(data.channelnum -1),
@@ -672,10 +672,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 							title:'设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name
 						}).find('label').html(ChannelData.channel_name).end();
 						
-				    str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+				    //str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+					canvasDraw(chl,color[types],width,left,tdH);
 				}
 			}
-			$(str).appendTo(target);
+			//$(str).appendTo(target);
 		}
 		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
 		console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
@@ -730,6 +731,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if(i>4)
 				chk='';*/
 			str+= '<tr><td class="no_border"><input id="chk_'+i+'" type="checkbox" /><label for="chk_'+i+'">'+str2+' '+i+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
+		     
 		}
 
 		$(str).appendTo(oVideoList);
@@ -737,8 +739,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(initWind>5 ){
 			$('table.table').eq(0).width($('table.table').eq(0).width()-17);
 		}
-
+      
 		setTables();
+		
+		for(var j=0;j<initWind;j++){
+		  var target = $('#channelvideo tr').eq(j);
+	     $('<div class="canvas" style="position:absolute;top:0px;width:'+target.width()+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+target.width()+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
+		  }
 	}
 
 	function addRecFileTable(id,name,index){
@@ -787,11 +794,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		minFileStartTime='23:59:59';
 
 		$('#channelvideo').find('div.video').remove()
-		                  // .end().find('div.canvas').remove()
+		                  .end().find('div.canvas').remove()
 						  .end().find('tr').removeAttr('id title')
 						  		.find('input').removeProp('disabled').removeProp('checked');
 
-		!bool && PBrecFileTableInit();						  		
+		/*!bool &&*/ PBrecFileTableInit();						  		
 
 		ocxsearchVideo();
 
