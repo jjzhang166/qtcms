@@ -40,9 +40,10 @@ char * byteArraySpace::getEndLocation(int &nResidueSize)
 		//do nothing
 	}
 	m_nCount++;
-	if (m_nCount%25==0)
+	if (m_nCount%25==0&&m_nCopy>20)
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"m_nCopy:"<<m_nCopy<<"m_nNOCopy:"<<m_nNOCopy<<"m_nDonothing:"<<m_nDonothing;
+		m_nCopy=m_nCount=m_nDonothing=m_nNOCopy=0;
 	}
 	nResidueSize=m_nTotalSize-m_nDataLength-(m_pDataHead-m_pMemoryHead)-1;
 	return (char*)(m_pDataHead+m_nDataLength);
