@@ -192,13 +192,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			speed = $('#togglePlay').attr('speed');
 		if(hasFile){
 			if(to){
-				/*if(speed){
-					GroupSpeedNormal();
-				}else{*/
+				if(speed){
+					playAction('GroupSpeedNormal');
+					palybackspeed('1X');
+					$('#togglePlay').removeAttr('speed');
+				}else{
 				    dragStartMove();
 					playAction('GroupContinue');
 					
-				//}
+				}
 			}else{
 				dragStopMove();
 				playAction('GroupPause')
@@ -378,6 +380,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	var nowSpeed = 1;
 
 	function playSpeed(str){
+		$('#togglePlay').attr('speed','1').css('background-position','0px 0px').removeAttr('toggle');
 		var show='';
 		var max = 2;//bool ? 8 : 2 ;
 		if(str){
@@ -574,7 +577,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 
 	function RecFileInfo2UI(filedata){
-		//console.time('--接收到的文件回调描绘时间段---'+filedata.length);
+		console.time('--接收到的文件回调描绘时间段---'+filedata.length);
 		var oList = $('div.dev_list'),
 
 			channelvideo = $('#channelvideo'),
@@ -680,7 +683,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
 		console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
-		//console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
+		console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
 	}
 	
 	function canvasDraw(num,color,width,left,y){
