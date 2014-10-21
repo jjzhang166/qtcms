@@ -238,7 +238,7 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 	QString sEnd = sDate + " " + sEndTime;
 	QDateTime dtStart = QDateTime::fromString(sStart, "yyyy-MM-dd hh:mm:ss");
 	QDateTime dtEnd = QDateTime::fromString(sEnd, "yyyy-MM-dd hh:mm:ss");
-	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId='%1' and nEndTime>'%2' and nStartTime<'%3' and (%4) and nStartTime!=nEndTime order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
+	QString sqlCmd = QString("select nRecordType, nStartTime, nEndTime from search_record where nWndId=%1 and nEndTime>'%2' and nStartTime<'%3' and (%4) and nStartTime!=nEndTime order by nStartTime").arg(nWndId).arg(dtStart.toTime_t()).arg(dtEnd.toTime_t()).arg(getTypeList(nTypes));
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
@@ -255,7 +255,8 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 			continue;
 		}
 		QSqlQuery query(*pdb);
-		query.exec(sqlCmd);
+// 		query.exec(sqlCmd);
+		exceCommand(query, sqlCmd);
 
 		while (query.next())
 		{
@@ -578,14 +579,16 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 		QStringList excludeFilelst;
 		QSqlQuery query(*pdb);
 		//find locked file or damaged file
-		if (query.exec(QString("select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1)")))
+		QString cmd = QString("select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1)");
+		if (exceCommand(query, cmd))
 		{
 			while (query.next())
 			{
 				excludeFilelst<<query.value(0).toString();
 			}
 		}
-		query.exec(sqlCommand);
+// 		query.exec(sqlCommand);
+		exceCommand(query, sqlCommand);
 		
 		while (query.next())
 		{
@@ -865,6 +868,40 @@ void LocalPlayerEx::appendTimePath( QList<TimePath> &tpList, const uint &start, 
 		}
 		tpList.insert(pos + 1, tp);
 		insertPos = pos + 1;
+	}
+}
+
+bool LocalPlayerEx::exceCommand( QSqlQuery &queue, const QString &cmd )
+{
+	int nCount=0;
+	while(true){
+		if (nCount > 5)
+		{
+			return false;
+		}
+		if (queue.exec(cmd))
+		{
+			if (nCount)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"try=====as lock======success";
+			}
+			return true;
+		}
+		else
+		{
+			if ("database is locked"==queue.lastError().databaseText())
+			{
+				QEventLoop tEventLoop;
+				QTimer::singleShot(1,&tEventLoop,SLOT(quit()));
+				tEventLoop.exec();
+				nCount++;
+				qDebug()<<__FUNCTION__<<__LINE__<<"try:"<<nCount<<"as lock";
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 }
 

@@ -89,6 +89,7 @@ private:
 	qint32 countSkipTime(const QMap<uint, QVector<PeriodTime> >& filePeriodMap, QVector<PeriodTime> &skipTime);
 // 	void appendFile(QList<QString> &fileList, QString fileName, QVector<uint> &vecTime, uint time);
 	void appendPeriodTime(QVector<PeriodTime> &vecPeriod, const PeriodTime &per);
+	bool exceCommand(QSqlQuery &queue, const QString &cmd);
 private:
 	qint32 m_nRef;
 	qint32 m_i32GroupNum;
