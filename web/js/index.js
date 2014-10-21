@@ -118,7 +118,7 @@ var oPreView,oDiv,
 		$('#PTZ_control .ptz_speed span').each(function(index){
 			$(this).click(function(){
 				$('#PTZ_control .ptz_speed span').removeClass('act').slice(0,index+1).addClass('act');
-				writeActionLog(_T('PTZ_speed')+(index+1));
+				//writeActionLog(_T('PTZ_speed')+(index+1));
 			})
 		})
 
@@ -260,22 +260,25 @@ var oPreView,oDiv,
 			     })
 
 			  str = lang.All_channelsare_open_under_the_current_list;
-			}else{
+			}/*else{
 				str = lang.All_channel_already_open_under_the_current_list;
-				}
+				}*/
 		}else{
             
-			if(checkAllchannelClose()){
+			/*if(checkAllchannelClose()){
 				str = lang.The_current_list_of_all_channels_already_closed_under;
 			}else{
 					 oPreView.CloseAll();
 
-			/*$('div.dev_list:visible span.channel[wind]').each(function(){
-				CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
-			})*/
+			//$('div.dev_list:visible span.channel[wind]').each(function(){
+			//	CloseWind($(this).attr('wind'),getChlFullInfo($(this)).dev_id);
+			//})
 			    str = lang.The_current_list_of_all_channels_are_closed_under;
-					}
-			 
+			}*/
+			if(!checkAllchannelClose()){ 
+			   oPreView.CloseAll();
+			   str = lang.The_current_list_of_all_channels_are_closed_under;
+			}
 			
 		}
 		writeActionLog(str);

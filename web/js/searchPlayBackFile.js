@@ -59,11 +59,17 @@
 		return b;
 	}
   	function berorSerchShowHint() {
-  		$('#fileRec').stop(true,true).show().find('span').width(0)
+		if(getAudioObj().id=='playbackLocl'){
+			$('#fileRec').stop(true,true).show().find('p').hide()
+			           .end().find('h5').show().html('....')
+					   .end().find('h4').html(lang.Retrieving);
+						   
+		}else{
+			$('#fileRec').stop(true,true).show().find('p').show()
+			         .end().find('h5').show()
+			         .end().find('span').width(0)
 					 .end().find('h5').html('0/0')
 					 .end().find('h4').html(lang.Retrieving);
-		if(getAudioObj().id=='playbackLocl'){
-			$('#fileRec').stop(true,true).hide();
 		}
   	}
 	var typeHint = [];
@@ -181,7 +187,7 @@
 			con = lang.Retrieval_completed;
 		}
 
-		$('#fileRec').stop(true,true).find('span').width(p-2)
+		$('#fileRec').stop(true,true).find('span').show().width(p-2)
 		             .end().find('h5').html(str)
 		             .end().find('h4').html(con);
 		return str; 

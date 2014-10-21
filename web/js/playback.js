@@ -584,27 +584,33 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oFileUIwarp = channelvideo.find('tr'),
 
 			oDev = $(oDev);
-		console.log('接收到的文件进行合并前的文件----------------------------');
+		 console.log('接收到的文件进行合并前的文件----------------------------');
          console.log(filedata);
 		/*console.log(oDev);
 		console.log('---------描绘接受到的文件------------------------');
 		
 		console.time('---------合并接受到的文件------------------------');*/
 			var File = Deleteduplicate(filedata);
-		/*console.timeEnd('---------合并接受到的文件------------------------');
+		/*console.timeEnd('---------合并接受到的文件------------------------');*/
 		console.time('--接收到合并的文件回调描绘时间段---'+File.length);
-*/
+
 			var min = $('table.table .no_border').width(),
 
-			max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
+			    max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
 
-			p = (max-min)/(3600*24),
-
+			    p = (max-min)/(3600*24),
+            
+			//tdH = $('table.table .no_border').height(),
+			 
 			nowTime = renewtime().split('  ')[1];
 
 		console.log('接收到的文件进行合并后的文件----------------------------');
 		console.log(File);
-
+		
+		/* var str ='';
+          str+='<div class="canvas" style="position:absolute;top:1px;width:'+max+'px;height:'+tdH+';"><canvas id="mycanvas'+localSearchWindNum+'" width="'+max+'" height="'+tdH+'"></canvas></div>';
+		  $(str).appendTo(oFileUIwarp.eq(localSearchWindNum));*/
+		 
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
 			console.log(File[i]);*/
@@ -651,6 +657,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					
 					str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 					
+					//canvasDraw(localSearchWindNum,color[types],width,left,tdH);
+					
 				}else{
 					var chl = parseInt(data.channelnum -1),
 						ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
@@ -670,9 +678,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			$(str).appendTo(target);
 		}
 		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
-		/*console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);*/
+		console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
 		//console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
 	}
+	
+	function canvasDraw(num,color,width,left,y){
+		//alert(color);
+		var id = "mycanvas"+num;
+		var canvas = document.getElementById(id);
+		var context = canvas.getContext("2d");
+		context.fillStyle = color ;
+		context.fillRect(left,0,width,y);
+		}
 
 	function SortByfileTime(a,b){  //文件路径时间升序排列
 		var reg = /.*?(\d{6})\.avi/g;
@@ -770,6 +787,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		minFileStartTime='23:59:59';
 
 		$('#channelvideo').find('div.video').remove()
+		                  // .end().find('div.canvas').remove()
 						  .end().find('tr').removeAttr('id title')
 						  		.find('input').removeProp('disabled').removeProp('checked');
 
@@ -780,10 +798,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}
 
 	function SearchRecordOverCallback(data){
-		//console.log(data);
+		console.log(data);
+		//console.log(data.searchResult);
+		var con = lang.Retrieving;
 		if(data.searchResult){
 			searchSTOP = 1;
+			if(data.searchResult=='SUCCESS')
+			{
+				con = lang.Retrieval_completed;
+			}else{
+				con = lang.not_complete;
+				}
 		}
+		
+		$('#fileRec').stop(true,true).find('p').hide()
+		             .end().find('h5').hide()
+		             .end().find('h4').html(con);
 	}
 
 	function ThrowExceptionCallback(data){
