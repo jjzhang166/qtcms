@@ -1680,7 +1680,7 @@ bool OperationDatabase::PriIsRecordDataExistItem()
 			}
 			//step1:1.1.13版本之后的数据是否有条目
 			sDatabasePath.clear();
-			sDatabasePath=sDiskEx+"recEx/record.db";
+			sDatabasePath=sDiskEx+"/recEx/record.db";
 			tDatabaseFile.setFileName(sDatabasePath);
 			if (tDatabaseFile.exists())
 			{
