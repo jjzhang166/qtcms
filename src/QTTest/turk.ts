@@ -54,5 +54,9 @@
         <source>Stop Record</source>
         <translation >kaydı durdurma</translation>
     </message>
+   <message>
+      <source>Suit For Window</source>
+      <translation>pencere için takım elbise</translation>
+    </message>
 </context>
 </TS>

@@ -74,6 +74,7 @@ public slots:
 	void slclosePreview();
 	void slMenRecorder();
 	void slbackToManiWnd();
+	void slSuitForWindow(bool bTrigger);
 signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgmouseDoubleClick(QWidget *,QMouseEvent*);
@@ -111,6 +112,7 @@ private:
 	QAction *m_pSwitchStreamAciton;
 	QAction *m_pRecorderAction;
 	QAction *m_pBackMainViewAction;
+	QAction * m_pStreachVideo;
 	tagDeviceInfo m_tDeviceInfo;
 	QTranslator *m_pTtanslator;
 	int m_nConnectingCount;

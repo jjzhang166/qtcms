@@ -2188,6 +2188,14 @@ int QSubviewRun::cbCMotionDetection( QString evName,QVariantMap evMap,void*pUser
 	return 0;
 }
 
+void QSubviewRun::enableStretch( bool bStretch )
+{
+	if (NULL != m_pIVideoRender)
+	{
+		m_pIVideoRender->enableStretch(bStretch);
+	}
+}
+
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
 {
 	return ((QSubviewRun*)pUser)->cbCConnectState(evName,evMap,pUser);

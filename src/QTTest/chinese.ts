@@ -58,5 +58,9 @@
       <source>Back to Main Window</source>
       <translation>返回主界面</translation>
     </message>
+    <message>
+      <source>Suit For Window</source>
+      <translation>视频适应窗口比例</translation>
+    </message>
 </context>
 </TS>

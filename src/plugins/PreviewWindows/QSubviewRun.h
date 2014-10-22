@@ -96,6 +96,7 @@ public:
 	//Ô¤ÀÀÊÓÆµ
 	void openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd);
 	void stopPreview();
+	void enableStretch(bool bStretch);
 	//ÇĞ»»ÂëÁ÷
 	void switchStream();
 	void switchStreamEx();

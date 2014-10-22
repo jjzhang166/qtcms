@@ -288,7 +288,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 	m_csPlayWnd.Lock();
 	if (m_hPlayWnd != NULL)
 	{
-		if(m_bStretch)
+		if(!m_bStretch)
 		{
 			RECT rcDsp;
 			::GetClientRect( m_hPlayWnd,&rcDsp);

@@ -188,14 +188,14 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   <ItemGroup>
     <CustomBuild Include="chinese.ts">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\%(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).qm</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).qm</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
     </CustomBuild>
     <CustomBuild Include="english.ts">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\%(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).qm</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).qm</Outputs>
@@ -209,7 +209,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename).qm</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\$(Filename).qm"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\%(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).qm</Outputs>
     </CustomBuild>
   </ItemGroup>

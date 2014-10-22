@@ -29,6 +29,8 @@ QWidget(parent),
 	m_pSwitchStreamAciton=m_mRightMenu.addAction(tr("Switch Stream"));
 	m_pRecorderAction=m_mRightMenu.addAction(tr("Start Record"));
 	m_pBackMainViewAction = m_mRightMenu.addAction(tr("Back to Main Window"));
+	m_pStreachVideo = m_mRightMenu.addAction(tr("Suit For Window"));
+	m_pStreachVideo->setCheckable(true);
 	m_pBackMainViewAction->setEnabled(false);
 	//¶àÓïÑÔ
 	m_pTtanslator=new QTranslator();
@@ -41,6 +43,7 @@ QWidget(parent),
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
 	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
+	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 }
@@ -515,6 +518,7 @@ int qsubviewEx::openPreview( int chlId )
 
 int qsubviewEx::closePreview()
 {
+	m_pStreachVideo->setChecked(false);
 	m_sSubviewRun.stopPreview();
 	return 0;
 }
@@ -540,9 +544,11 @@ void qsubviewEx::slmouseMenu()
 	{
 		m_pClosePreviewAction->setDisabled(true);
 		m_pSwitchStreamAciton->setDisabled(true);
+		m_pStreachVideo->setDisabled(true);
 	}else{
 		m_pSwitchStreamAciton->setEnabled(true);
 		m_pClosePreviewAction->setEnabled(true);
+		m_pStreachVideo->setEnabled(true);
 	}
 	if (m_tDeviceInfo.m_sVendor=="IPC")
 	{
@@ -652,6 +658,7 @@ void qsubviewEx::changeEvent( QEvent *ev )
 
 void qsubviewEx::slclosePreview()
 {
+	m_pStreachVideo->setChecked(false);
 	m_sSubviewRun.stopPreview();
 }
 
@@ -720,6 +727,10 @@ void qsubviewEx::translateLanguage()
 	{
 		m_pBackMainViewAction->setText(tr("Back to Main Window"));
 	}
+	if (NULL != m_pStreachVideo)
+	{
+		m_pStreachVideo->setText(tr("Suit For Window"));
+	}
 }
 
 void qsubviewEx::setDataBaseFlush()
@@ -779,6 +790,12 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 	}
 
 	return 0;
+}
+
+void qsubviewEx::slSuitForWindow( bool bTrigger )
+{
+	m_sSubviewRun.enableStretch(bTrigger);
+	m_pStreachVideo->setChecked(bTrigger);
 }
 
 
