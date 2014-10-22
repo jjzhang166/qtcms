@@ -12,6 +12,5 @@ public:
 private:
 	unsigned int m_uiSize;
 	ringBuffer m_tRingBuffer;
-	tagRingBuffer * m_pBuffer;
 };
 

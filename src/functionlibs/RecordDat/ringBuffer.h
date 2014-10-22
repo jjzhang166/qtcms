@@ -6,8 +6,12 @@ public:
 	ringBuffer(void);
 	~ringBuffer(void);
 public:
-	RBHANDLE createRingBuffer(unsigned int nBufferSize);
-	void releaseRindBuffer(RBHANDLE hBuf);
-	char *getBuffer(RBHANDLE hBuf,unsigned int nSize);
+	void createRingBuffer(unsigned int nBufferSize);
+	char *getBuffer(unsigned int nSize);
+
+private:
+	char * m_Buffer;
+	unsigned int m_nBufferSize;
+	char * m_lpCur;
 };
 

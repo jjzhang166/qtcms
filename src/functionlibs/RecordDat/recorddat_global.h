@@ -93,11 +93,5 @@ typedef enum __tagObtainFilePathStepCode{
 	obtainFilePath_fail,//获取录像文件路径失败
 	obtainFilePath_end//结束
 }tagObtainFilePathStepCode;
-typedef struct _tagRingBuffer{
-	char * Buffer;
-	unsigned int nBufferSize;
-	char * lpCur;
 
-}tagRingBuffer,*lpRingBuffer;
-typedef tagRingBuffer * RBHANDLE;
 #endif // RECORDDAT_GLOBAL_H

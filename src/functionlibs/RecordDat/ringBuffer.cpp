@@ -8,52 +8,39 @@ ringBuffer::ringBuffer(void)
 
 ringBuffer::~ringBuffer(void)
 {
+	if (NULL != m_Buffer)
+	{
+		free(m_Buffer);
+	}
 }
 
-RBHANDLE ringBuffer::createRingBuffer( unsigned int nBufferSize )
+void ringBuffer::createRingBuffer( unsigned int nBufferSize )
 {
-	tagRingBuffer * newBuffer;
-	newBuffer = (tagRingBuffer *)malloc(sizeof(tagRingBuffer));
-	if (NULL == newBuffer)
+	m_Buffer = (char *)malloc(nBufferSize);
+	if (NULL == m_Buffer)
 	{
-		return NULL;
+		abort();
 	}
 
-	newBuffer->Buffer = (char *)malloc(nBufferSize);
-	if (NULL == newBuffer->Buffer)
-	{
-		free(newBuffer);
-		return NULL;
-	}
-
-	newBuffer->nBufferSize = nBufferSize;
-	newBuffer->lpCur = newBuffer->Buffer;
-	return newBuffer;
+	m_nBufferSize = nBufferSize;
+	m_lpCur = m_Buffer;
 }
 
-void ringBuffer::releaseRindBuffer( RBHANDLE hBuf )
-{
-	free(hBuf->Buffer);
-	hBuf->Buffer = NULL;
-
-	free(hBuf);
-}
-
-char * ringBuffer::getBuffer( RBHANDLE hBuf,unsigned int nSize )
+char * ringBuffer::getBuffer( unsigned int nSize )
 {
 	//ASSERT(hBuf,"");
 	//ASSERT(hBuf->nBufferSize > nSize,"nSize(%d)",nSize);
 
 	char *lpRet = NULL;
-	if (hBuf->lpCur + nSize < hBuf->Buffer + hBuf->nBufferSize)
+	if (m_lpCur + nSize < m_Buffer + m_nBufferSize)
 	{
-		lpRet = hBuf->lpCur;
-		hBuf->lpCur += nSize;
+		lpRet = m_lpCur;
+		m_lpCur += nSize;
 	}
 	else
 	{
-		lpRet = hBuf->Buffer;
-		hBuf->lpCur = hBuf->Buffer;
+		lpRet = m_Buffer;
+		m_lpCur = m_Buffer + nSize;
 	}
 
 	return lpRet;
