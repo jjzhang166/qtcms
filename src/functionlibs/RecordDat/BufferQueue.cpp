@@ -73,7 +73,6 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 						if (pRemoveFrameHead->uiType==IFRAME)
 						{
 							nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
-							m_nQueueMaxSize++;
 						}else if (pRemoveFrameHead->uiType==AFRMAE)
 						{
 							nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);
@@ -237,7 +236,6 @@ RecBufferNode* BufferQueue::dequeue()
 			if (pFrameHead->uiType==IFRAME)
 			{
 				nApplyLength=nApplyLength+sizeof(tagVideoConfigFrame);
-				m_nQueueMaxSize++;
 			}else if (pFrameHead->uiType==AFRMAE)
 			{
 				nApplyLength=nApplyLength+sizeof(tagAudioConfigFrame);

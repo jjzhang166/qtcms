@@ -24,15 +24,15 @@ void Allocation::setSize(unsigned int uiSize)
 
 void * Allocation::applySpace( unsigned int uiSize )
 {
-	return (void*)m_tRingBuffer.getBuffer(m_pBuffer,uiSize);
-	//return malloc(uiSize);
+	//return (void*)m_tRingBuffer.getBuffer(m_pBuffer,uiSize);
+	return malloc(uiSize);
 }
 
 void Allocation::freeSpace( char *pChar )
 {
-	//if (pChar!=NULL)
-	//{
-	//	free(pChar);
-	//}
+	if (pChar!=NULL)
+	{
+		free(pChar);
+	}
 	return;
 }
