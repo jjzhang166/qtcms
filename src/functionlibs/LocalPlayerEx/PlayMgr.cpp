@@ -357,7 +357,7 @@ void PlayMgr::run()
 			//if fast play, release cpu
 			if (m_i32SpeedRate < 0)
 			{
-				usleep(0);
+				usleep(1000);
 			}
 		}
 

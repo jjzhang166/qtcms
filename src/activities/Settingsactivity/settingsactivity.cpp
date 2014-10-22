@@ -1382,7 +1382,7 @@ void settingsActivity::OnSettingStorageParm()
 	}
 
 	nRet=-1;
-	nRet=IDisk->setFilePackageSize(filesize_ID.toInt());
+	nRet=IDisk->setFilePackageSize(/*filesize_ID.toInt()*/64);
 	if (IDisksSetting::OK!=nRet)
 	{
 		arg.clear();
