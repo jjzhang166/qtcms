@@ -7,6 +7,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	localSearchWindNum=0,//要搜索的本地回放文件的设备
+	searchAgain = 0,//正在搜索时是否再次点击搜索按钮
     initleft;
 	$(function(){
 
@@ -443,7 +444,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			console.log(data);*/
 		
 		localSearchWindNum++;
+		if(searchAgain){
+			$('#channelvideo').find('div.canvas').remove()
+					  .end().find('tr').removeAttr('id title')
+							.find('input').removeProp('disabled').removeProp('checked');
+			localSearchWindNum=0;
+			PBrecFileTableInit();
+			searchAgain = 0;	
+		}
 		if(bool){
+		
 			if(localSearchWindNum < 49){
 				searchLocalFile(localSearchWindNum);
 			}else{
@@ -646,6 +656,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 				if(bool){ // 本地回放
 					var target = oFileUIwarp.eq(localSearchWindNum);
+					
+					console.log(localSearchWindNum+' '+data.wndId+' '+data);
 					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
 						var color = [];
 		                    color[1] = '#F00';
@@ -654,9 +666,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		                    color[8] = '#FFFF00';
 		                   
 					target.attr({
-						id:'wind_'+data.wndId,
+						id:'wind_'+localSearchWindNum,
 						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
-					}).find('label').html(wind).attr('wind',data.wndId);
+					}).find('label').html(wind).attr('wind',parseInt(data.wndId)+1);
 					
 					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 					
@@ -711,7 +723,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		initWind+=1;
 		initWind = initWind < 5 ? 5 : initWind;
 
-		$('#channelvideo div.video').remove();
+		$('#channelvideo div.canvas').remove();
 		//var odev = $('div.dev_list li.sel span.channel')
 		var oVideoList = $("#channelvideo").html('');
 		/*if(odev.length != 0){
@@ -745,13 +757,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
       
 		setTables();
 		
-		for(var j=0;j<initWind;j++){
+		addCanvas(initWind);
+		
+	}
+  function addCanvas(initWind){
+	  
+	  for(var j=0;j<initWind;j++){
 		  var target = $('#channelvideo tr').eq(j),
 		      min =target.find('td.no_border').width();
 	     $('<div class="canvas" style="position:absolute;top:0px;left:'+min+'px;width:'+(target.width()-min)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-min)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
 		  }
-	}
-
+	  }
 	function addRecFileTable(id,name,index){
 		var chk='checked="checked"';
 		/*if(index>4)
@@ -781,12 +797,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playBackSerchFile(){
 		console.log('当前搜索状态:'+searchSTOP);
+		
 		if(searchSTOP){
 			searchSTOP = 0;
+			searchAgain = 0;
 		}else{
 			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+	
+			searchAgain = 1;
+	
 			return;
-			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 		}
 
 		groupStop();
@@ -803,7 +823,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						  .end().find('tr').removeAttr('id title')
 						  		.find('input').removeProp('disabled').removeProp('checked');
 
-		/*!bool &&*/ PBrecFileTableInit();						  		
+		PBrecFileTableInit();						  		
 
 		ocxsearchVideo();
 

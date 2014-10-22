@@ -113,9 +113,11 @@
 		nowDevID = bool ? '':devData.dev_id;
 
 		setDevData2ocx();
-
+        
+		
 		if(bool){  // 本地
-			localSearchWindNum=0;
+			 
+		  localSearchWindNum=0;
 
 			searchLocalFile(localSearchWindNum,date,type);
 
