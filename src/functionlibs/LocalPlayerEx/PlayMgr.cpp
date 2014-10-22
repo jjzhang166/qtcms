@@ -352,6 +352,14 @@ void PlayMgr::run()
 // 			usleep(i64Sec > 0 ? i64Sec : 0);
 			usleep(i64Sec);
 		}
+		else
+		{
+			//if fast play, release cpu
+			if (m_i32SpeedRate < 0)
+			{
+				usleep(0);
+			}
+		}
 
 		uiLastPts = pFrameData->uiPts;
 		m_i64FrameInterval = frameTimer.nsecsElapsed()/1000 - i64Before - i64Sec;
