@@ -50,6 +50,7 @@ private:
 	bool checkWndIdExist(uint *pChlArr, uint wndId);
 // 	void checkBuffer(QMap<uint, CurBuffInfo>::iterator &iter);
 	qint32 getMinBufferSize();
+	qint32 getMaxBufferSize();
 private:
 	QStringList m_lstFileList;
 	uint m_uiStartSec;				//start seconds for playing

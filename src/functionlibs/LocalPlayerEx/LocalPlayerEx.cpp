@@ -838,6 +838,7 @@ void LocalPlayerEx::appendPeriodTime( QVector<PeriodTime> &vecPeriod, const Peri
 			--pos;
 			if (pos < 0)
 			{
+				vecPeriod.insert(pos + 1, per);
 				return;
 			}
 		}

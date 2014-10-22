@@ -8,7 +8,7 @@
 #define  MAX_PLAY_THREAD 4
 #define  BUFFER_SIZE 64*1024*1024
 #define  WNDMAX_SIZE 64
-#define  MAX_FRAME_NUM 100
+#define  MAX_FRAME_NUM 1000
 #define  MIN_FRAME_NUM 20
 #define  MAX_SECONDS 24*60*60
 

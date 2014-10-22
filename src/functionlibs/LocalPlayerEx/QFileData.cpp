@@ -157,7 +157,8 @@ void QFileData::run()
 	{
 		QMap<uint, CurBuffInfo>::iterator iter = m_wndBuffMap.begin(); 
 		//Prevent excessive buffering
-		if (getMinBufferSize() > MIN_FRAME_NUM)
+// 		if (getMinBufferSize() > MIN_FRAME_NUM)
+		if (getMaxBufferSize() > MAX_FRAME_NUM)
 		{
 			msleep(100);
 			continue;
@@ -373,4 +374,18 @@ qint32 QFileData::getMinBufferSize()
 		++it;
 	}
 	return minSize;
+}
+
+qint32 QFileData::getMaxBufferSize()
+{
+	qint32 maxSize = 0;
+	QMap<uint, CurBuffInfo>::iterator it = m_wndBuffMap.begin();
+	maxSize = it->pBuffList->size();
+	++it;
+	while (it != m_wndBuffMap.end())
+	{
+		maxSize = qMax(maxSize, it->pBuffList->size());
+		++it;
+	}
+	return maxSize;
 }
