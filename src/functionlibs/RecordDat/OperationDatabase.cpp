@@ -1535,18 +1535,20 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 			QString sCommand;
 			//删除 search_record表中记录
 			sCommand=QString("select nWndId,id from record where sFilePath='%1'").arg(sFilePath);
-			QList<quint64 > tRecordIdList;
+			/*QList<quint64 > tRecordIdList;*/
+			bool bNeedToDelete=false;
 			qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 			if (execCommand(_query,sCommand))
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
-				QList<int > tWndIdList;
-				while(_query.next()){
-					tWndIdList.append(_query.value(0).toInt());
-					tRecordIdList.append(_query.value(1).toUInt());
-				}
-				if (!tWndIdList.isEmpty())
+				//QList<int > tWndIdList;
+				//while(_query.next()){
+				//	tWndIdList.append(_query.value(0).toInt());
+				//	tRecordIdList.append(_query.value(1).toUInt());
+				//}
+				if (/*!tWndIdList.isEmpty()*/_query.next())
 				{
+					bNeedToDelete=true;
 					sCommand.clear();
 					sCommand=QString("select nEndTime from record where sFilePath ='%1'").arg(sFilePath);
 					qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
@@ -1568,17 +1570,18 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 						if (execCommand(_query,sCommand))
 						{
 							qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
-							QString sWndIdList;
-							for (int i=0;i<tWndIdList.size();i++)
-							{
-								if (i==0)
-								{
-									sWndIdList=QString::number(tWndIdList.value(i));
-								}else{
-									sWndIdList=sWndIdList+","+QString::number(tWndIdList.value(i));
-								}
-							}
-							sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 and nWndId in ").arg(uiEndTime).arg(uiEndTime)+"("+sWndIdList+")";
+							//QString sWndIdList;
+							//for (int i=0;i<tWndIdList.size();i++)
+							//{
+							//	if (i==0)
+							//	{
+							//		sWndIdList=QString::number(tWndIdList.value(i));
+							//	}else{
+							//		sWndIdList=sWndIdList+","+QString::number(tWndIdList.value(i));
+							//	}
+							//}
+							//sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 and nWndId in ").arg(uiEndTime).arg(uiEndTime)+"("+sWndIdList+")";
+							sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 ").arg(uiEndTime).arg(uiEndTime);
 							qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 							if (execCommand(_query,sCommand))
 							{
@@ -1604,7 +1607,7 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 				abort();
 			}
 			//删除 record 表中记录
-			if (tRecordIdList.size()>0)
+			if (bNeedToDelete)
 			{
 				sCommand.clear();
 				sCommand=QString("delete from record where sFilePath='%1'").arg(sFilePath);
@@ -1786,7 +1789,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 				switch(nStep){
 				case 0:{
 					//
-					sCommand=QString("select sFilePath,nStartTime from RecordFileStatus where nStartTime=(select min(nStartTime) from RecordFileStatus where nInUse=1 and nLock=0 and nDamage=0)");
+					sCommand=QString("select sFilePath,nStartTime from RecordFileStatus where nStartTime=(select min(nStartTime) from RecordFileStatus where nInUse=1 and nLock=0 and nDamage=0) and nInUse=1 and nLock=0 and nDamage=0");
 					if (execCommand(_query,sCommand))
 					{
 						if (_query.next())
