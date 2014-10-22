@@ -660,7 +660,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					
 					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 					
-					canvasDraw(localSearchWindNum,color[types],width,left,tdH);
+					canvasDraw(localSearchWindNum,color[types],width,left-min,tdH);
 					
 				}else{
 					var chl = parseInt(data.channelnum -1),
@@ -676,7 +676,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						}).find('label').html(ChannelData.channel_name).end();
 						
 				    //str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
-					canvasDraw(chl,color[types],width,left,tdH);
+					canvasDraw(chl,color[types],width,left-min,tdH);
 				}
 			}
 			//$(str).appendTo(target);
@@ -746,8 +746,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		setTables();
 		
 		for(var j=0;j<initWind;j++){
-		  var target = $('#channelvideo tr').eq(j);
-	     $('<div class="canvas" style="position:absolute;top:0px;width:'+target.width()+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+target.width()+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
+		  var target = $('#channelvideo tr').eq(j),
+		      min =target.find('td.no_border').width();
+	     $('<div class="canvas" style="position:absolute;top:0px;left:'+min+'px;width:'+(target.width()-min)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-min)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
 		  }
 	}
 
