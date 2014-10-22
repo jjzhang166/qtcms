@@ -444,7 +444,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		localSearchWindNum++;
 		if(bool){
-			if(localSearchWindNum < 64){
+			if(localSearchWindNum < 49){
 				searchLocalFile(localSearchWindNum);
 			}else{
 				searchSTOP=1;
@@ -706,7 +706,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function PBrecFileTableInit(){
 		$('table.table').width('100%');
 		var currOdevData = $('div.dev_list').find('li.sel span.device').data('data') || $('div.dev_list').find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
-		var initWind = bool ? 64 : currOdevData.channel_count;
+		var initWind = bool ? 49 : currOdevData.channel_count;
 		console.log('+++++++++++++要初始化的文件列表数量+++++++++++++++++++:'+initWind);
 		initWind+=1;
 		initWind = initWind < 5 ? 5 : initWind;
@@ -780,12 +780,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		},200);
 	}*/
 	function playBackSerchFile(){
-		//console.log('当前搜索状态:'+searchSTOP);
+		console.log('当前搜索状态:'+searchSTOP);
 		if(searchSTOP){
 			searchSTOP = 0;
 		}else{
-			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 			return;
+			console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
 		}
 
 		groupStop();
