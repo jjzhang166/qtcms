@@ -767,14 +767,14 @@ void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
 
 	EventProcCall("GetRecordFileEx", evMap);
 
-	if (m_wndCount < 64 && m_schEvMap.isEmpty())
+	if (m_wndCount < MAX_WINDOWS_NUM && m_schEvMap.isEmpty())
 	{
 		QVariantMap item;
 		item.insert("searchResult", "INCOMPLETE");
 		EventProcCall("SearchRecordOver", item);
 	}
 
-	if (m_wndCount >= 64 && m_schEvMap.isEmpty())
+	if (m_wndCount >= MAX_WINDOWS_NUM && m_schEvMap.isEmpty())
 	{
 		QVariantMap item;
 		item.insert("searchResult", "SUCCESS");

@@ -14,6 +14,7 @@
 #include <IDeviceManager.h>
 #include "searchprocess.h"
 
+#define MAX_WINDOWS_NUM 49
 
 int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser);
 int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser);
