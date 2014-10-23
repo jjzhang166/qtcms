@@ -31,6 +31,9 @@ public:
 	PlayMgr *getPlayMgrPointer(QWidget *pwnd);
 	void openAudio(bool bEnable);
 
+	void enableVideoStretch(bool bEnable);
+	bool getVideoStretchStatus();
+
 	static void pause(bool bIsPause);
 	static qint32 setVolume(uint uiPersent);
 	static void audioSwitch(bool bOpen);

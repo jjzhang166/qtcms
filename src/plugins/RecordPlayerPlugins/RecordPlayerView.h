@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "ILocalPlayer.h"
 #include <QVariantMap>
+#include <QtGui/QMenu>
+#include <QtCore/QTranslator>
 class RecordPlayerView :
 	public QWidget
 {
@@ -24,12 +26,21 @@ public:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
+
+public slots:
+	void slSuitForWindow(bool checked);
+
+protected:
+	virtual void changeEvent( QEvent * );
+
 private:
 	static bool m_bGlobalAudioStatus;
 
 	ILocalPlayer* m_pLocalPlayer;
 	QPixmap _ScreenShotImage;
 	bool _bIsFocus;
+	QAction * m_pWindowsStretchAction;
+	QMenu m_WindowMenu;
 };
 
 

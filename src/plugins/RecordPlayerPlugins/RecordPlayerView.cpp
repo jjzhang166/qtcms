@@ -3,6 +3,9 @@
 #include <QtGui/QPainter>
 #include <QSettings>
 #include <QMouseEvent>
+#include "guid.h"
+#include "IVideoDisplayOption.h"
+#include <QApplication>
 
 
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
@@ -15,7 +18,10 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
+	m_pWindowsStretchAction = m_WindowMenu.addAction(tr("Suit For Window"));
+	m_pWindowsStretchAction->setCheckable(true);
 
+	connect(m_pWindowsStretchAction,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
 }
 
 
@@ -101,6 +107,14 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	{
 		m_pLocalPlayer->GroupSetVolume(0xAECBCA, this);
 	}
+	if (Qt::RightButton == ev->button())
+	{
+		if (NULL != m_pWindowsStretchAction)
+		{
+			m_pWindowsStretchAction->setText(tr("Suit For Window"));
+		}
+		m_WindowMenu.exec(QCursor::pos());
+	}
 }
 
 void RecordPlayerView::setLocalPlayer(ILocalPlayer* pPlayer)
@@ -156,5 +170,28 @@ void RecordPlayerView::SetFocus( bool flags )
 	if (_bIsFocus==true||history==true)
 	{
 		update();
+	}
+}
+
+void RecordPlayerView::slSuitForWindow( bool checked )
+{
+	if (NULL != m_pLocalPlayer)
+	{
+		IVideoDisplayOption * pi;
+		m_pLocalPlayer->QueryInterface(IID_IVideoDisplayOption,(void **)&pi);
+		if (NULL != pi)
+		{
+			pi->enableWindowStretch(this,checked);
+			pi->Release();
+		}
+	}
+	m_pWindowsStretchAction->setChecked(checked);
+}
+
+void RecordPlayerView::changeEvent( QEvent * )
+{
+	if (NULL != m_pWindowsStretchAction)
+	{
+		m_pWindowsStretchAction->setText(tr("Suit For Window"));
 	}
 }

@@ -9,6 +9,7 @@
 #include "ILocalPlayer.h"
 #include "ILocalPlayerEx.h"
 #include "ILocalRecordSearchEx.h"
+#include "IVideoDisplayOption.h"
 #include "QFileData.h"
 #include "PlayMgr.h"
 
@@ -20,7 +21,8 @@ class LocalPlayerEx : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearchEx,
 	public ILocalPlayerEx,
-	public ILocalPlayer
+	public ILocalPlayer,
+	public IVideoDisplayOption
 {
 	Q_OBJECT
 public:
@@ -67,6 +69,11 @@ public:
 	virtual QStringList eventList();
 	virtual int queryEvent(QString eventName,QStringList &eventParams);
 	virtual int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
+
+	// IVideoDisplayOption
+	virtual void enableWindowStretch(QWidget * window,bool bEnable);
+	virtual bool getWindowStretchStatus(QWidget * window);
+
 	typedef int (__cdecl *PreviewEventCB)(QString name, QVariantMap info, void* pUser);
 	typedef struct _tagProcInfoItem
 	{

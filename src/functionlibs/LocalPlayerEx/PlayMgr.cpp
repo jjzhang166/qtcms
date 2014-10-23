@@ -557,6 +557,23 @@ qint32 PlayMgr::adjustTimeLine( uint uiStart, uint &status )
 	return 0;
 }
 
+void PlayMgr::enableVideoStretch( bool bEnable )
+{
+	if (m_pVedioRender)
+	{
+		m_pVedioRender->enableStretch(bEnable);
+	}
+}
+
+bool PlayMgr::getVideoStretchStatus()
+{
+	if (m_pVedioRender)
+	{
+		return m_pVedioRender->isStretchEnable();
+	}
+	return false;
+}
+
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("DecodedFrame" == evName)

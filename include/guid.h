@@ -109,4 +109,5 @@ extern const CLSID CLSID_winStorageUtinity;
 extern const IID IID_IRemoteMotionDetection;
 extern const IID IID_IDeviceAuth;
 extern const GUID CLSID_LocalPlayerEx;
+extern const IID IID_IVideoDisplayOption;
 #endif

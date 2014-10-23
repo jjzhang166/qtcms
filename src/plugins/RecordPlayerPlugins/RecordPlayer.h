@@ -12,6 +12,7 @@
 #include "RecordPlayerView.h"
 #include <IAreaManager.h>
 #include <IDeviceManager.h>
+#include <QtCore/QTranslator>
 #include "searchprocess.h"
 
 #define MAX_WINDOWS_NUM 49
@@ -95,6 +96,7 @@ private:
 	QDateTime getDateFromPath(QString &filePath);
 	int sortFileList(QStringList &fileList);
 	bool DevIsExit(QString devicename);
+	void loadlanguage();
 private:
 	ILocalRecordSearch *m_pLocalRecordSearch;
 	ILocalPlayer *m_pLocalPlayer;
@@ -115,6 +117,7 @@ private:
 	QString fileKey;
 	QMap<int, SearchProcess*> m_schEvMap;
 	int m_wndCount;
+	QTranslator m_translator;
 };
 
 

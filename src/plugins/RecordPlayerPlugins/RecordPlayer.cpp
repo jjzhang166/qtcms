@@ -7,6 +7,10 @@
 #include "IEventRegister.h"
 #include "ILocalRecordSearchEx.h"
 #include "ILocalPlayerEx.h"
+#include <QApplication>
+#include "ILocalSetting.h"
+#include <QDomDocument>
+#include <QDebug>
 
 RecordPlayer::RecordPlayer():
 QWebPluginFWBase(this),
@@ -57,6 +61,9 @@ m_CurStatus(STATUS_STOP)
 
 	//×¢²áÊÂ¼þ
 	cbInit();
+
+	// Language
+	QApplication::installTranslator(&m_translator);
 }
 
 RecordPlayer::~RecordPlayer()
@@ -548,6 +555,9 @@ void RecordPlayer::showEvent( QShowEvent * )
 // 			GroupStop();
 		}
 	}
+
+	// ¼ÓÔØÓïÑÔ
+	loadlanguage();
 }
 
 void RecordPlayer::hideEvent( QHideEvent * )
@@ -788,4 +798,47 @@ void RecordPlayer::throwException( QVariantMap &evMap )
 	RecordPlayerView *pWnd = (RecordPlayerView*)evMap.take("pWnd").toUInt();
 	evMap.insert("wndId", pWnd - m_subRecPlayerView);
 	EventProcCall(QString("ThrowException"), evMap);
+}
+
+void RecordPlayer::loadlanguage()
+{
+	// Get language description from system
+	QString sLang;
+	ILocalSetting * pi;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pi);
+	if (NULL != pi)
+	{
+		sLang = pi->getLanguage();
+		pi->Release();
+	}
+	else
+	{
+		sLang = QString("en_GB");
+	}
+
+	// Get language file pathname
+	QString sLanguageConfigPath(QCoreApplication::applicationDirPath() + QString("/LocalSetting"));
+	QString sLanguageConfigFile(sLanguageConfigPath + QString("/language.xml"));
+	QDomDocument confFile;
+	QFile *file = new QFile(sLanguageConfigFile);
+	file->open(QIODevice::ReadOnly);
+	confFile.setContent(file);
+	QDomNode clsidNode = confFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	QString sFileName="en_GB";
+	int i;
+	for (i = 0; i < itemList.count(); i++)
+	{
+		QDomNode item = itemList.at(i);
+		QString slanguage = item.toElement().attribute("name");
+		if(slanguage == sLang){
+			sFileName =item.toElement().attribute("file");
+			break;
+		}
+	}
+	file->close();
+	delete file;
+
+	// load language file
+	m_translator.load(sFileName,sLanguageConfigPath);
 }

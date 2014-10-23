@@ -126,6 +126,10 @@ long __stdcall LocalPlayerEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IVideoDisplayOption == iid)
+	{
+		*ppv = static_cast<IVideoDisplayOption *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -902,6 +906,33 @@ bool LocalPlayerEx::exceCommand( QSqlQuery &queue, const QString &cmd )
 			{
 				return false;
 			}
+		}
+	}
+}
+
+void LocalPlayerEx::enableWindowStretch( QWidget * window,bool bEnable )
+{
+	int i;
+	for (i = 0; i < MAX_PLAY_THREAD; i ++)
+	{
+		PlayMgr * pAct = m_arrPlayInfo[i].pPlayMgr->getPlayMgrPointer(window);
+		if (pAct)
+		{
+			pAct->enableVideoStretch(bEnable);
+			break;
+		}
+	}
+}
+
+bool LocalPlayerEx::getWindowStretchStatus( QWidget * window )
+{
+	int i;
+	for (i = 0; i < MAX_PLAY_THREAD; i ++)
+	{
+		PlayMgr * pAct = m_arrPlayInfo[i].pPlayMgr->getPlayMgrPointer(window);
+		if (pAct)
+		{
+			return pAct->getVideoStretchStatus();
 		}
 	}
 }
