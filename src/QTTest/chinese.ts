@@ -63,4 +63,11 @@
       <translation>视频适应窗口比例</translation>
     </message>
 </context>
+  <context>
+    <name>RecordPlayerView</name>
+    <message>
+      <source>Suit For Window</source>
+      <translation>视频适应窗口比例</translation>
+    </message>
+  </context>
 </TS>

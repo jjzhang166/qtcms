@@ -6,7 +6,7 @@
 #include "guid.h"
 #include "IVideoDisplayOption.h"
 #include <QApplication>
-
+#include <QDomDocument>
 
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
 
@@ -20,6 +20,7 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	m_pWindowsStretchAction = m_WindowMenu.addAction(tr("Suit For Window"));
 	m_pWindowsStretchAction->setCheckable(true);
+
 
 	connect(m_pWindowsStretchAction,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
 }

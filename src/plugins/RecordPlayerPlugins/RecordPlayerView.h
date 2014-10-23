@@ -6,6 +6,7 @@
 #include <QVariantMap>
 #include <QtGui/QMenu>
 #include <QtCore/QTranslator>
+#include <ILocalSetting.h>
 class RecordPlayerView :
 	public QWidget
 {
@@ -33,6 +34,7 @@ public slots:
 protected:
 	virtual void changeEvent( QEvent * );
 
+	
 private:
 	static bool m_bGlobalAudioStatus;
 
