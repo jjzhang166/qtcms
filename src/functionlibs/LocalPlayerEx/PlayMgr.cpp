@@ -247,7 +247,7 @@ void PlayMgr::run()
 		}
 		else
 		{
-			qDebug()<<"no frame, sleep";
+			//qDebug()<<"no frame, sleep";
 
 			msleep(10);//wait for new frames
 			continue;
@@ -340,7 +340,7 @@ void PlayMgr::run()
 		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
 		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
 		
-		qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+		//qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
 
 // 		if (i64WaitSec > 0)
 		if (i64Sec > 0)
