@@ -143,10 +143,12 @@ var oSearchOcx,
 					emptyDevSetMenu();
 					
 				}
+				
 			   AJAX && AJAX.abort();
 			  if(nowDev && nowDev._ID){
 				  nowDev =null;
 			  }
+			  
 			})
 		})
 		
@@ -732,7 +734,7 @@ var oSearchOcx,
 
 		//$('#set_content div.switch input[class]').val('').prop('checked',false);
 
-		$('#set_content div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
+		$('#set_content .right_content:eq(1) div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
