@@ -668,7 +668,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					target.attr({
 						id:'wind_'+localSearchWindNum,
 						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
-					}).find('label').html(wind).attr('wind',parseInt(data.wndId)+1);
+					}).find('label').html(wind).attr('wind',parseInt(data.wndId));
 					
 					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
 					
