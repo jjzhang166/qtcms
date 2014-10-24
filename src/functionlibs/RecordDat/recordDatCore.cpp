@@ -111,7 +111,7 @@ void recordDatCore::run()
 			m_nPosition=__LINE__;
  			nWriteType=obtainFilePath(sWriteFilePath);
 			m_bIsBlock=false;
-			m_tFileInfo.sFilePath=sWriteFilePath;
+			
 			qDebug()<<__FUNCTION__<<__LINE__<<"file path:"<<sWriteFilePath;
 			if (nWriteType!=OVERWRITE&&nWriteType!=ADDWRITE)
 			{
@@ -150,6 +150,7 @@ void recordDatCore::run()
 				}else{
 					//do nothing
 				}
+				m_tFileInfo.sFilePath=sWriteFilePath;
 				sHisRecordDiks=sDisk;
 				nRunStep=recordDat_initMemory;
 			}
