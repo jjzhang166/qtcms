@@ -86,6 +86,7 @@ var tr_TR={
 	'Slow':'Yavaş',
 	'Fast':'Hızlı',
 	'wind':'Kanal',
+	'wind_':'Kanal',
 	'ThrowException':'Win_V_:file(_V_),_V_',//Not yet translated
 	'Available':'Available!',//Not yet translated
 	'Abnormal_damaged':'Abnormal or damaged!',//Not yet translated
@@ -93,6 +94,7 @@ var tr_TR={
 
 	'Device_name':'Cihaz Adı',
 	'Channel':'Kanal',
+	'Channel_':'Kanal',
 	'Star_Time':'Başlangıç Saati',
 	'End_Time':'Bitiş Saati',
 	'Progress':'İlerle',
@@ -395,6 +397,7 @@ var tr_TR={
 	'twice_the_password_is_not_the_same':'İkinci şifre eşleşmiyor!',
 	'IP_setup_failed':'IP ayarı başarısız!',
 	'Please_select_a_device':'Lütfen bir cihaz seçiniz!',
+	'All_Local_Video_File':'Tüm yerli video dosyaları',
 	
 	'Sun':'Pzr',
 	'Mon':'Pzt',

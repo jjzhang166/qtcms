@@ -86,6 +86,7 @@
 	'Slow':'慢放',
 	'Fast':'快进',
 	'wind':'窗口',
+	'wind_':'窗口',
 	'ThrowException':'窗口_V_:下的文件(_V_),_V_',
 	'Available':'可用!',
 	'Abnormal_damaged':'异常或者损坏!',
@@ -93,6 +94,7 @@
 
 	'Device_name':'设备名',
 	'Channel':'通道',
+	'Channel_':'通道',
 	'Star_Time':'开始时间',
 	'End_Time':'结束时间',
 	'Progress':'进度',
@@ -395,6 +397,7 @@
 	'twice_the_password_is_not_the_same':'2次密码不一样!',
 	'IP_setup_failed':'IP设置失败!',
 	'Please_select_a_device':'请选择一台设备!',
+	'All_Local_Video_File':'所有本地录像文件',
 	
 	'Sun':'日',
 	'Mon':'一',

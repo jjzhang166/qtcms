@@ -666,7 +666,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					var target = oFileUIwarp.eq(localSearchWindNum);
 					
 					console.log(localSearchWindNum+' '+data.wndId+' '+data);
-					var wind = lang['wind']+' '+(parseInt(data.wndId)+1);
+					var wind = lang['wind_']+(parseInt(data.wndId)+1);
 						var color = [];
 		                    color[1] = '#F00';
 							color[2] = '#0000FF';
@@ -675,7 +675,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		                   
 					target.attr({
 						id:'wind_'+localSearchWindNum,
-						title:_T('wind')+': '+(parseInt(data.wndId)+1)+'下的 '+$("div.calendar span.nowDate").html()+'日的所有本地录像文件'
+						title:_T('Date')+':'+$("div.calendar span.nowDate").html()+' '+_T('wind')+': '+(parseInt(data.wndId)+1)+' '+_T('All_Local_Video_File')
 					}).find('label').html(wind).attr('wind',parseInt(data.wndId));
 					
 					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
@@ -692,7 +692,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 						color[8] = '#0000FF';
 					var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
 							id:'Rel_channel_'+ChannelData.channel_id,
-							title:'设备:'+oDev.data('data').name+' 下的通道:'+ChannelData.channel_name
+							title:_T('Device')+':'+oDev.data('data').name+' '+ _T('Channel')+':'+ChannelData.channel_name
 						}).find('label').html(ChannelData.channel_name).end();
 						
 				    //str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
@@ -748,12 +748,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oSelected = $.makeArray($("#channelvideo input:checkbox:checked"));*/
 		var str = '';
-		var str2 = bool ? lang['wind']:lang['Channel'];
+		var str2 = bool ? lang['wind_']:lang['Channel_'];
 		for(var i=1;i<initWind;i++){
 			/*var chk='checked="checked"';
 			if(i>4)
 				chk='';*/
-			str+= '<tr><td class="no_border"><input id="chk_'+i+'" type="checkbox" /><label for="chk_'+i+'">'+str2+' '+i+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
+			str+= '<tr><td class="no_border"><input id="chk_'+i+'" type="checkbox" /><label for="chk_'+i+'">'+str2+i+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></td><td></tr>';
 		     
 		}
 

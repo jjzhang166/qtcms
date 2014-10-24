@@ -86,6 +86,7 @@
 	'Slow':'Медленнее',
 	'Fast':'Быстрее',
 	'wind':'Окно',
+	'wind_':'Окно',
 	'ThrowException':'Win_V_:file(_V_),_V_',//Not yet translated
 	'Available':'Available!',//Not yet translated
 	'Abnormal_damaged':'Abnormal or damaged!',//Not yet translated
@@ -93,6 +94,7 @@
 
 	'Device_name':'Имя устройства',
 	'Channel':'Канал',
+	'Channel_':'Канал',
 	'Star_Time':'Время пуска',
 	'End_Time':'Время остановки',
 	'Progress':'Шкала загрузки',
@@ -391,18 +393,19 @@
 	'Failed_to_retrieve_video':'Device _V_:searching _V_ records failed',//Not yet translated
 	'window_Screenshot_success':'Window _V_:screenshot success.Saved in the path',//Not yet translated
 	'File_download_failed':'File _V_ download failed!', // Not yet translated
-'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'Пожалуйста, введите алфавитно-цифровую комбинацию с длиной больше, чем 6!',
+    'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'Пожалуйста, введите алфавитно-цифровую комбинацию с длиной больше, чем 6!',
 	'twice_the_password_is_not_the_same':'Второй пароль не совпадает!',
 	'IP_setup_failed':'IP не удалось установить!',
 	'Please_select_a_device':'Пожалуйста, выберите устройство!!',
-
-'Sun':'Воскресенье.',
-'Mon':'Понедельник.',
-'Tue':'Вторник.',
-'Wed':'Среда.',
-'Thu':'Четверг.',
-'Fri':'Пятница.',
-'Sat':'Суббота.',
+    'All_Local_Video_File':'Все местные видеофайлы',
+	  
+	'Sun':'Воскресенье.',
+	'Mon':'Понедельник.',
+	'Tue':'Вторник.',
+	'Wed':'Среда.',
+	'Thu':'Четверг.',
+	'Fri':'Пятница.',
+	'Sat':'Суббота.',
 
 	//語言索引
 

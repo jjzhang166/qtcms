@@ -86,6 +86,7 @@
 'Slow':'Slow',
 'Fast':'Fast',
 'wind':'Window',
+'wind_':'wind_',
 'ThrowException':'Win_V_:file(_V_),_V_',
 'Available':'Available!',
 'Abnormal_damaged':'Abnormal or damaged!',
@@ -93,6 +94,7 @@
 
 'Device_name':'Device name',
 'Channel':'Channel',
+'Channel_':'Chn_',
 'Star_Time':'Start Time',
 'End_Time':'End Time',
 'Progress':'Progress',
@@ -395,6 +397,7 @@
 'twice_the_password_is_not_the_same':'The confirm password is not the same as new password',
 'IP_setup_failed':'Setup IP failed',
 'Please_select_a_device':'Please select a device',
+'All_Local_Video_File':'All local video files',
 	
 'Sun':'Sun.',
 'Mon':'Mon.',
