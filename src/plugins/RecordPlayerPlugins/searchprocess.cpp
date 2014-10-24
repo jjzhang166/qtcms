@@ -30,7 +30,7 @@ void SearchProcess::setPara( int wndId, QString date, QString start, QString end
 	m_types = types;
 }
 
-void SearchProcess::setContext( ILocalRecordSearch *pLocalSch )
+void SearchProcess::setContext( ILocalRecordSearchEx *pLocalSch )
 {
 	if (!pLocalSch)
 	{

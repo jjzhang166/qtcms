@@ -38,7 +38,7 @@ m_CurStatus(STATUS_STOP)
 	//ÉêÇëILocalPlayer½Ó¿Ú
 	if (NULL != m_pLocalRecordSearch)
 	{
-		m_pLocalRecordSearch->QueryInterface(IID_ILocalPlayer, (void**)&m_pLocalPlayer);
+		m_pLocalRecordSearch->QueryInterface(IID_ILocalPlayerEx, (void**)&m_pLocalPlayer);
 	}
 
 
@@ -147,50 +147,50 @@ int RecordPlayer::GetCurrentWnd()
 	return m_currentWindID;
 }
 
-int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
-{
-	qDebug()<<"RecordPlayer :searchDateByDeviceName:"<<sdevname;
-	m_devicename=sdevname;
-	if (sdevname.isEmpty())
-	{
-		return 1;
-	}
-
-	if (NULL == m_pLocalRecordSearch)
-	{
-		return 1;
-	}
-
-	int nRet = m_pLocalRecordSearch->searchDateByDeviceName(sdevname);
-	if (ILocalRecordSearch::OK != nRet)
-	{
-		return 1;
-	}
-
-	return 0;
-}
-int RecordPlayer::searchVideoFile(const QString& sdevname,
-	const QString& sdate,
-	const QString& sbegintime,
-	const QString& sendtime,
-	const QString& schannellist)
-{
-	qDebug()<<"RecordPlayer :searchVideoFile:"<<sdevname<<sbegintime<<sendtime<<schannellist;
-	fileMap.clear();
-	fileKey="0";
-	if (NULL == m_pLocalRecordSearch)
-	{
-		return 1;
-	}
-
-	int nRet = m_pLocalRecordSearch->searchVideoFile(sdevname, sdate, sbegintime, sendtime, schannellist);
-	if (ILocalRecordSearch::OK != nRet)
-	{
-		return 1;
-	}
-	EventProcCall("GetRecordFile",fileMap);
-	return 0;
-}
+// int RecordPlayer::searchDateByDeviceName(const QString& sdevname)
+// {
+// 	qDebug()<<"RecordPlayer :searchDateByDeviceName:"<<sdevname;
+// 	m_devicename=sdevname;
+// 	if (sdevname.isEmpty())
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	if (NULL == m_pLocalRecordSearch)
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	int nRet = m_pLocalRecordSearch->searchDateByDeviceName(sdevname);
+// 	if (ILocalRecordSearch::OK != nRet)
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	return 0;
+// }
+// int RecordPlayer::searchVideoFile(const QString& sdevname,
+// 	const QString& sdate,
+// 	const QString& sbegintime,
+// 	const QString& sendtime,
+// 	const QString& schannellist)
+// {
+// 	qDebug()<<"RecordPlayer :searchVideoFile:"<<sdevname<<sbegintime<<sendtime<<schannellist;
+// 	fileMap.clear();
+// 	fileKey="0";
+// 	if (NULL == m_pLocalRecordSearch)
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	int nRet = m_pLocalRecordSearch->searchVideoFile(sdevname, sdate, sbegintime, sendtime, schannellist);
+// 	if (ILocalRecordSearch::OK != nRet)
+// 	{
+// 		return 1;
+// 	}
+// 	EventProcCall("GetRecordFile",fileMap);
+// 	return 0;
+// }
 
 QDateTime RecordPlayer::getDateFromPath(QString &filePath)
 {
@@ -249,30 +249,30 @@ int RecordPlayer::sortFileList(QStringList &fileList)
 	return 0;
 }
 
-int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
-{
-	if (NULL == m_pLocalPlayer || filelist.isEmpty() || nWndID <0 || nWndID >= ARRAY_SIZE(m_subRecPlayerView))
-	{
-		return 1;
-	}
-
-	QStringList lstFileList = filelist.split(",", QString::SkipEmptyParts);
-	if (-1 == sortFileList(lstFileList))
-	{
-		return 1;
-	}
-
-	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
-	QDateTime end = QDateTime::fromString(endTime, "yyyy-MM-dd hh:mm:ss");
-
-	int nRet = m_pLocalPlayer->AddFileIntoPlayGroup(lstFileList, &m_subRecPlayerView[nWndID], start, end);
-	if (1 == nRet)
-	{
-		return 1;
-	}
-
-	return 0;
-}
+// int RecordPlayer::AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime)
+// {
+// 	if (NULL == m_pLocalPlayer || filelist.isEmpty() || nWndID <0 || nWndID >= ARRAY_SIZE(m_subRecPlayerView))
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	QStringList lstFileList = filelist.split(",", QString::SkipEmptyParts);
+// 	if (-1 == sortFileList(lstFileList))
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
+// 	QDateTime end = QDateTime::fromString(endTime, "yyyy-MM-dd hh:mm:ss");
+// 
+// 	int nRet = m_pLocalPlayer->AddFileIntoPlayGroup(lstFileList, &m_subRecPlayerView[nWndID], start, end);
+// 	if (1 == nRet)
+// 	{
+// 		return 1;
+// 	}
+// 
+// 	return 0;
+// }
 
 int RecordPlayer::SetSynGroupNum(int num)
 {
@@ -631,37 +631,37 @@ int RecordPlayer::GetCurrentState()
 	return m_CurStatus;
 }
 
-int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const int& nTypes )
-{
-	//input parameter error
-	if (sDevName.isEmpty() || sDate.isEmpty() || nTypes <= 0 || nTypes > 15)
-	{
-		return 1;
-	}
-	if (NULL == m_pLocalRecordSearch)
-	{
-		return 1;
-	}
-	fileMap.clear();
-	fileKey="0";
-
-	//get query interface
-	ILocalRecordSearchEx *pRecordSearchEx = NULL;
-	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecordSearchEx);
-	if (NULL == pRecordSearchEx)
-	{
-		return 1;
-	}
-	int ret = pRecordSearchEx->searchVideoFileEx(sDevName, sDate, nTypes);
-	if (ILocalRecordSearchEx::OK != ret)
-	{
-		return 1;//call function error
-	}
-	pRecordSearchEx->Release();
-
-	EventProcCall("GetRecordFile",fileMap);
-	return 0;
-}
+// int RecordPlayer::searchVideoFileEx( const QString &sDevName, const QString& sDate, const int& nTypes )
+// {
+// 	//input parameter error
+// 	if (sDevName.isEmpty() || sDate.isEmpty() || nTypes <= 0 || nTypes > 15)
+// 	{
+// 		return 1;
+// 	}
+// 	if (NULL == m_pLocalRecordSearch)
+// 	{
+// 		return 1;
+// 	}
+// 	fileMap.clear();
+// 	fileKey="0";
+// 
+// 	//get query interface
+// 	ILocalRecordSearchEx *pRecordSearchEx = NULL;
+// 	m_pLocalRecordSearch->QueryInterface(IID_ILocalRecordSearchEx, (void**)&pRecordSearchEx);
+// 	if (NULL == pRecordSearchEx)
+// 	{
+// 		return 1;
+// 	}
+// 	int ret = pRecordSearchEx->searchVideoFileEx(sDevName, sDate, nTypes);
+// 	if (ILocalRecordSearchEx::OK != ret)
+// 	{
+// 		return 1;//call function error
+// 	}
+// 	pRecordSearchEx->Release();
+// 
+// 	EventProcCall("GetRecordFile",fileMap);
+// 	return 0;
+// }
 
 int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate, const QString & sStartTime, const QString & sEndTime, const int & nTypes )
 {

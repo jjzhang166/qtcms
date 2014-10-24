@@ -6,8 +6,8 @@
 #include "qwfw.h"
 #include <QDebug>
 #include "IDeviceRemotePlayback.h"
-#include "ILocalRecordSearch.h"
-#include "ILocalPlayer.h"
+#include "ILocalRecordSearchEx.h"
+#include "ILocalPlayerEx.h"
 #include "IWindowDivMode.h"
 #include "RecordPlayerView.h"
 #include <IAreaManager.h>
@@ -51,16 +51,16 @@ public:
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 	//ILocalRecordSearch
-	int searchDateByDeviceName(const QString& sdevname);
-	int searchVideoFile(const QString& sdevname,
-		const QString& sdate,
-		const QString& sbegintime,
-		const QString& sendtime,
-		const QString& schannellist);
-	//ILocalRecordSearchEx
-	int searchVideoFileEx(const QString &sDevName,
-		const QString& sDate,
-		const int& nTypes);
+// 	int searchDateByDeviceName(const QString& sdevname);
+// 	int searchVideoFile(const QString& sdevname,
+// 		const QString& sdate,
+// 		const QString& sbegintime,
+// 		const QString& sendtime,
+// 		const QString& schannellist);
+// 	//ILocalRecordSearchEx
+// 	int searchVideoFileEx(const QString &sDevName,
+// 		const QString& sDate,
+// 		const int& nTypes);
 	int searchVideoFileEx2(const int & nWndId,
 		const QString & sDate,
 		const QString & sStartTime,
@@ -68,7 +68,7 @@ public slots:
 		const int & nTypes);
 
 	//ILocalPlayer
-	int AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime);
+// 	int AddFileIntoPlayGroup(const QString &filelist,const int &nWndID,const QString &startTime,const QString &endTime);
 	int SetSynGroupNum(int num);
 	int GroupPlay();
 	int GroupPause();
@@ -98,8 +98,8 @@ private:
 	bool DevIsExit(QString devicename);
 	void loadlanguage();
 private:
-	ILocalRecordSearch *m_pLocalRecordSearch;
-	ILocalPlayer *m_pLocalPlayer;
+	ILocalRecordSearchEx *m_pLocalRecordSearch;
+	ILocalPlayerEx *m_pLocalPlayer;
 	IWindowDivMode *m_pWindowDivMode;
 	QList<QWidget *> m_lstRecordPlayerWndList;
 

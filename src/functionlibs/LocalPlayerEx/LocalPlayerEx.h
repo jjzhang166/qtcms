@@ -6,7 +6,6 @@
 #include <QtSql>
 #include <QVariantMap>
 #include "IEventRegister.h"
-#include "ILocalPlayer.h"
 #include "ILocalPlayerEx.h"
 #include "ILocalRecordSearchEx.h"
 #include "IVideoDisplayOption.h"
@@ -21,7 +20,6 @@ class LocalPlayerEx : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearchEx,
 	public ILocalPlayerEx,
-	public ILocalPlayer,
 	public IVideoDisplayOption
 {
 	Q_OBJECT
@@ -33,17 +31,19 @@ public:
 	virtual unsigned long __stdcall Release();
 
 	//ILocalRecordSearchEx
-	virtual int searchVideoFileEx(const QString &sDevName,
-		const QString& sDate,
-		const int& nTypes);
 	virtual int searchVideoFileEx(const int & nWndId,
 		const QString & sDate,
 		const QString & sStartTime,
 		const QString & sEndTime,
 		const int & nTypes);
 
-	//ILocalPlayer
-	virtual int AddFileIntoPlayGroup(QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end);
+	//ILocalPlayerEx
+	virtual int AddFileIntoPlayGroupEx(const int & nWndId,
+		const QWidget * pWnd,
+		const QDate& date,
+		const QTime & startTime,
+		const QTime & endTime,
+		const int & nTypes);
 	virtual int SetSynGroupNum(int num);
 	virtual int GroupPlay();
 	virtual int GroupPause();
@@ -56,13 +56,6 @@ public:
 	virtual bool GroupEnableAudio(bool bEnable);
 	virtual int GroupSetVolume(unsigned int uiPersent, QWidget* pWnd);
 
-	//ILocalPlayerEx
-	virtual int AddFileIntoPlayGroupEx(const int & nWndId,
-		const QWidget * pWnd,
-		const QDate& date,
-		const QTime & startTime,
-		const QTime & endTime,
-		const int & nTypes);
 // 	virtual int GroupPlayBack();
 
 	//IEventRegister

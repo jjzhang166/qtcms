@@ -2,7 +2,7 @@
 #define _RECORDPLAYERVIEW_HEAD_FILE_H_
 
 #include <QWidget>
-#include "ILocalPlayer.h"
+#include "ILocalPlayerEx.h"
 #include <QVariantMap>
 #include <QtGui/QMenu>
 #include <QtCore/QTranslator>
@@ -20,7 +20,7 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
 
-	void setLocalPlayer(ILocalPlayer* pPlayer);
+	void setLocalPlayer(ILocalPlayerEx* pPlayer);
 	int AudioEnabled(bool bEnabled);
 	QVariantMap ScreenShot();
 	void SetFocus(bool flags);
@@ -38,7 +38,7 @@ protected:
 private:
 	static bool m_bGlobalAudioStatus;
 
-	ILocalPlayer* m_pLocalPlayer;
+	ILocalPlayerEx* m_pLocalPlayer;
 	QPixmap _ScreenShotImage;
 	bool _bIsFocus;
 	QAction * m_pWindowsStretchAction;

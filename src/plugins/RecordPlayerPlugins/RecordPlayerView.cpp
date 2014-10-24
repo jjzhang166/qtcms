@@ -118,7 +118,7 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	}
 }
 
-void RecordPlayerView::setLocalPlayer(ILocalPlayer* pPlayer)
+void RecordPlayerView::setLocalPlayer(ILocalPlayerEx* pPlayer)
 {
 	if (NULL != pPlayer)
 	{

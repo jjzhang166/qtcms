@@ -3,7 +3,7 @@
 
 #include <QThread>
 #include <QVariantMap>
-#include "ILocalRecordSearch.h"
+#include "ILocalRecordSearchEx.h"
 
 class SearchProcess : public QThread
 {
@@ -13,7 +13,7 @@ public:
 	SearchProcess();
 	~SearchProcess();
 	void setPara(int wndId, QString date, QString start, QString end, int types);
-	void setContext(ILocalRecordSearch *pLocalSch);
+	void setContext(ILocalRecordSearchEx *pLocalSch);
 	void transRecordFilesEx( QVariantMap &evMap );
 
 signals:
@@ -29,7 +29,7 @@ private:
 	QString m_end;
 	QVariantMap m_fileMap;
 
-	ILocalRecordSearch *m_pLocalRecordSearch;
+	ILocalRecordSearchEx *m_pLocalRecordSearch;
 };
 
 #endif // SEARCHPROCESS_H

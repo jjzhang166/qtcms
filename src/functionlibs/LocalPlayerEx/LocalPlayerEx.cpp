@@ -110,10 +110,6 @@ long __stdcall LocalPlayerEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<ILocalRecordSearchEx *>(this);
 	}
-	else if (IID_ILocalPlayer == iid)
-	{
-		*ppv = static_cast<ILocalPlayer *>(this);
-	}
 	else if (IID_ILocalPlayerEx == iid)
 	{
 		*ppv = static_cast<ILocalPlayerEx *>(this);
@@ -212,12 +208,6 @@ void LocalPlayerEx::eventProcCall( QString sEvent,QVariantMap param )
 	}
 }
 
-int LocalPlayerEx::searchVideoFileEx( const QString &sDevName, const QString& sDate, const int& nTypes )
-{
-	//this interface is outdated
-	return 0;
-}
-
 QString LocalPlayerEx::getTypeList( int nTypes )
 {
 	QStringList typeList;
@@ -284,11 +274,6 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 	return ILocalRecordSearchEx::OK;
 }
 
-int LocalPlayerEx::AddFileIntoPlayGroup( QStringList const filelist,QWidget *wnd,const QDateTime &start,const QDateTime &end )
-{
-	//this interface is outdated
-	return 0;
-}
 
 int LocalPlayerEx::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * pWnd, const QDate& date, const QTime & startTime, const QTime & endTime, const int & nTypes )
 {
