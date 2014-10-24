@@ -49,34 +49,41 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			/*有时候可以选中超过5个以上. 未找出原因. 以上是修正方案：*/
 		})
 
-		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
+		channelvideo. mousedown(function(event){//整个搜索的文件列表事件
 			var min = $('table.table .no_border').width(),
 				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
 			//if(event.pageX > max) return;
-			try{
+			/*try{
 				groupStop();
-				/*dragStopMove();
+				dragStopMove();
 				oPlaybackLocl.GroupStop();
 				oPlayBack.GroupStop();
 				nowSpeed = 1;
-				palybackspeed(nowSpeed+'X');*/
+				palybackspeed(nowSpeed+'X');
 				//$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
 			}catch(e){
 				//alert('try:'+e);
-			};
+			};*/
 			var left = event.pageX
 
 	    	if(left < min || left > max){
 	    		return;
 	    	}
 			//event.stopPropagation();
+			
+		    groupStop();
+			
 			var moveObj = $('div.play_time').css('left',left-1.5);
 
 			showNowPlayBackTime($('#now_time'),left-min,max-min);
 
 			set_drag(min,max,moveObj);
+			
+			
+			setTimeout(function(){playVideo()},500);
+			
 		})
-
+       
 		channelvideo.on('mouseover','tr',function(){
 			var channel_id = $(this).attr('id') ? $(this).attr('id').split('_')[2] : '';
 			if(channel_id){
@@ -86,14 +93,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		})
 
 		$('div.play_time').on({ //文件搜索的下的事件滑动条事件
-			dblclick:function(){
+			/*dblclick:function(){
 				playVideo();
-			},
+			},*/
 			mousedown:function(){
 				groupStop();
 				var min = $('table.table .no_border').width();
 				var max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
 				set_drag(min,max,$(this));
+					
 			}
 		});
 
@@ -227,7 +235,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			if(begin>=maxFileEndTime)return;
 
-			groupStop();
+			//groupStop();
 
 			var obj = $('#togglePlay');
 			obj.attr({
@@ -310,7 +318,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 				left = initleft+p*nowPlayd;
 			
-			//console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//时间轴的位置：'+left+'//当前已播放时间:'+nowPlayd+'//当前页面上的时间：'+$('#now_time').html()+'秒//maxFileEndTime:'+minFileStartTime+' '+maxFileEndTime+'//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
+			console.log(bool+'//oxcoPlay:'+$(oPlay).attr('id')+'//初始左边距:'+initleft+'像素//时间轴的位置：'+left+'//当前已播放时间:'+nowPlayd+'//当前页面上的时间：'+$('#now_time').html()+'秒//maxFileEndTime:'+minFileStartTime+' '+maxFileEndTime+'//当前走过:'+p*nowPlayd+'像素//当前刷新速度:'+SynTimeUnits+'毫秒//速度'+nowSpeed+'停止播放距离//'+max);
 
 			/*if(Math.ceil(left) >= Math.floor(FileEndTime))
 				dragStopMove();*/
@@ -587,7 +595,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 
 	function RecFileInfo2UI(filedata){
-		console.time('--接收到的文件回调描绘时间段---'+filedata.length);
+		//console.time('--接收到的文件回调描绘时间段---'+filedata.length);
 		var oList = $('div.dev_list'),
 
 			channelvideo = $('#channelvideo'),
@@ -597,15 +605,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			oFileUIwarp = channelvideo.find('tr'),
 
 			oDev = $(oDev);
-		 console.log('接收到的文件进行合并前的文件----------------------------');
-         console.log(filedata);
+		 //console.log('接收到的文件进行合并前的文件----------------------------');
+        // console.log(filedata);
 		/*console.log(oDev);
 		console.log('---------描绘接受到的文件------------------------');
 		
 		console.time('---------合并接受到的文件------------------------');*/
 			var File = Deleteduplicate(filedata);
 		/*console.timeEnd('---------合并接受到的文件------------------------');*/
-		console.time('--接收到合并的文件回调描绘时间段---'+File.length);
+		//console.time('--接收到合并的文件回调描绘时间段---'+File.length);
 
 			var min = $('table.table .no_border').width(),
 
@@ -617,8 +625,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			 
 			nowTime = renewtime().split('  ')[1];
 
-		console.log('接收到的文件进行合并后的文件----------------------------');
-		console.log(File);
+		//console.log('接收到的文件进行合并后的文件----------------------------');
+		//console.log(File);
 		
 		/* var str ='';
           str+='<div class="canvas" style="position:absolute;top:1px;width:'+max+'px;height:'+tdH+';"><canvas id="mycanvas'+localSearchWindNum+'" width="'+max+'" height="'+tdH+'"></canvas></div>';
@@ -694,8 +702,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			//$(str).appendTo(target);
 		}
 		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
-		console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
-		console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
+		//console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
+		//console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
 	}
 	
 	function canvasDraw(num,color,width,left,y){
