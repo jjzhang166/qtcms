@@ -139,6 +139,8 @@ copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Co
     <PostBuildEvent>
       <Command>copy  "$(LocalDebuggerWorkingDirectory)chinese.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
 copy  "$(LocalDebuggerWorkingDirectory)english.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
+copy  "$(LocalDebuggerWorkingDirectory)turk.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
+copy  "$(LocalDebuggerWorkingDirectory)Russian.qm" "$(SolutionDir)..\output\$(Configuration)\LocalSetting"
 copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\pdb"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -212,6 +214,9 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\lrelease.exe" "%(FullPath)" -qm "$(SolutionDir)..\output\$(Configuration)\LocalSetting\%(Filename).qm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename).qm</Outputs>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Russian.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

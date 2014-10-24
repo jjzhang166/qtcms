@@ -13,6 +13,7 @@
 	'add_group':'Добав. группу',
 	'add_area':'Добав. области',
 	'add_device':'Добав. устройства',
+	'add_failed':'Add failed',//Not yet translated
 	'modify':'Изменить',
 	'delete':'Пустой',
 	'Close':'Закрыть',
@@ -30,6 +31,9 @@
 	'Far_focus':'Дальше',
 	'Iris_Off':'Диафрагма выкл',
 	'Iris_On':'Диафрагма вкл',
+	'auto_PTZ':'Auto PTZ',//Not yet translated
+	'stop_PTZ':'Stop PTZ',//Not yet translated
+	'PTZ_speed':'the speed of PTZ：',//Not yet translated
 	'Light':'Light',
 	'Wipers':'Wipers',
 	'Split_screen_setting':'Настройки разделенного экрана',
@@ -72,6 +76,8 @@
 	'Retrieving':'Извлечь:',
 	'Parameter_error':'Retrieval completed',
 	'Connection_Failed':'Connect failed',
+	'no_Channle_Preview':'No preview in any channel!',//Not yet translated
+	'window_no_Preview':'No video access to window!',//Not yet translated
 	'play_Failed':'Playback failed',
 	'not_complete':'Searching did not complete',
 	'Retrieval_completed':'Поиск завершен:',
@@ -80,6 +86,10 @@
 	'Slow':'Медленнее',
 	'Fast':'Быстрее',
 	'wind':'Окно',
+	'ThrowException':'Win_V_:file(_V_),_V_',//Not yet translated
+	'Available':'Available!',//Not yet translated
+	'Abnormal_damaged':'Abnormal or damaged!',//Not yet translated
+	'device_channel':'dev:_V_chl:_V_',//Not yet translated
 
 	'Device_name':'Имя устройства',
 	'Channel':'Канал',
@@ -91,6 +101,8 @@
 	'Current_search_date':'Current search date',
 	'Inspection':'Inspection',
 	'Select':'Проверка всего',
+	'select':'above all',//Not yet translated
+	'Select_all':'Select all',//Not yet translated
 	'Modified_device':'Изменение усройства',
 	'Device_Connection':'Путь доступа к устройству',
 	'IP_addresses_link':'IP-адрес для доступа',
@@ -206,12 +218,16 @@
 	'Week':'Неделя',
 	'Copy':'Copy',
 	'Copy_to':'Копировать в',
+	'time_range':'Start time must be smaller than the end of time',//Not yet translated
 	'Name':'Имя',
 	'Protocol':'Протокол',
 	'Baud_rate':'Скор. передачи в бодах',
 	'Data_rate':'Биты данных',
 	'Stop_bits':'Стоповый бит',
 	'Parity':'Проверка четности',
+	'Parity_NONE':'None',//Not yet translated
+	'Parity_ODD':'Odd',//Not yet translated
+	'Parity_EVEN':'Even',//Not yet translated
 	'Sensitivity':'Чувствительность',
 	'Motion_detection':'Детектор движения',
 	'Duration':'Время действия',
@@ -239,13 +255,15 @@
 	'Bit_rate_control_type':'Тип сжатия',
 	'BPS':'Скорость',
 	'FPS':'Кол-во кадров',
-	'Unit':'(БЛОК: Предзапись)',
+	'Unit_bps':'(Unit:kbps)',//Not yet translated
+	'Unit_fps':'(Unit:fps)',//Not yet translated
 	'Local':'Локал. насстройки доступа',
 	'Remote':'Удал. настройки  доступа',
 	'Easy_as_the_network_state':'Статус ESEE',
 	'Network_Mask':'Сетевая маска',
 	'Server':'Сервер',
 	'Save':'Save',
+	'SaveToAllDev':'Save to all devices',//Not yet translated
 	'Device_Time':'Время устройства',
 	'Time_Format':'Time format',
 	'Time_separator':'Separator of time',
@@ -256,6 +274,7 @@
 	'Time':'Время',
 	'Local_time_synchronization':'Local time synchronization',
 	'Computer_time':'Время ПК',
+	'synchronize':'Synchronize',//Not yet translated
 	'Internet_time_synchronization':'Internet time synchronization',
 	'Internet_server_ynchronization_status':'Internet server synchronization status',
 	'nternet_server':'Интернет сервер',
@@ -266,9 +285,13 @@
 	//本地设置
 
 	'Operation_failed':'Ошибка сохранения!',
-	'time_range':'Input correct time!',
+	'Time_format_error':'Incorret time format.',//Not yet translated
+	'Start_end_time_error':'Start time must earlier than the end time!',//Not yet translated
+	'Choose_time':'Choose time',//Not yet translated
+	'Hour':'Hour',//Not yet translated
+	'Minute':'Minute',//Not yet translated
+	'Second':'Second',//Not yet translated
 
-	
 	'Video_settings':'Настройки записи',
 	'Storage_Settings':'Настройки хранения',
 	'Language':'Язык',
@@ -315,54 +338,71 @@
 	'Click_the_button_below_to_restore_the_factory_settings':'Нажмите на кнопку ниже для восстановления заводских настроек. ПРИМЕЧАНИЕ: Они возобновятся автоматически!',
 	'Have_access_to_the_connection':'Already connected!',
 	'Restart':'Перезагрузка',
+	'Restarting':'Restarting',//Not yet translated
+'Restart_success':'Restarted success.Stand by,it will connect in minute.',//Not yet translated
+'factory_reseting':'Restoring factory settings.',//Not yet translated
+'factory_reset_success':'Restored factory settings.Please re-add the device in the device manage page.',//Not yet translated
 	'Select_the_upgrade_file':'Пожалуйста, нажмите следующую кнопку, выберите файл обновления, а затем выполните обновление!!',
 	'Connecting':'Подключение.',
-	'Disconnected':'Disconnected.',
-	'Being_disconnected':'Disconnecting.',
-	'Connected':'Connected.',
-	'Off':'Closed.',
-	'Shutting_down':'Closing.',
+	'Disconnected':'Disconnected.',//Not yet translated
+	'Being_disconnected':'Disconnecting.',//Not yet translated
+	'Connected':'Connected.',//Not yet translated
+	'Connecting':'Подключение',
+	'Off':'Closed.',//Not yet translated
+	'Shutting_down':'Закрыть устройство.',
 	'open_device':'Starting to open in the window _V_,all channels of device _V_.', // to be modified
 	'window_closed':'Channel _V_ closed.', // to be modified
 
 	'Shutting_down_device':'Закрыть устройство:',
 	'All_channelsare_open_under_the_current_list':'Все каналы из списка открыты.',
+	'All_channel_already_open_under_the_current_list':'devices had been opend in the device list.',//Not yet translated
 	'The_current_list_of_all_channels_are_closed_under':'Все каналы из списка закрыты.',
+'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',//Not yet translated
+'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',//Not yet translated
 
-	'device_in_window_action':'Device _V_: Channel _V_ in window _V_', // to be modified
-	'Open_failed_Error_The_current_window':'Device _V_:Channel _V_ open in window _V_ failed!The window is still in using ,try again later.', // to be modified
+'device_in_window_action':'Device _V_:channle _V_ in window _V_',//Not yet translated
+'Open_failed_Error_The_current_window':'Device _V_:channel _V_ open failed in window _V_!',//Not yet translated
 
 	'channel_Manual_recording_data_binding_failed':'Устройство: канал _V_ устройства _V_: Ручная запись видеоданных Ошибка привязки!',
 	'channel_Manual_recording_fail':'Устройство: канал _V_ устройства _V_: Ручная запись: видео не найдено!',
-	'channel_has_been_in_the_planning_Video_state':'Device _V_:Channel _V_ already in the time recording state!', // to be modified
+'channel_has_been_in_the_planning_Video_state':'channel _V_ now is recording',//Not yet translated
 	'Start_manual_recording':'Устройство: канал _V_ устройства _V_: Старт ручная запись.',
 	'Close_the_manual_recording_failed':'Устройство: канал _V_ устройства _V_: Стоп! Ручная запись не найдена.',
 	'Close_the_manual_recording':'Устройство: канал (_V_) устройства (_V_): Стоп ручная запись.',
-	'Resource_loaded':'Device _V_:Channel _V_ open in the window _V_ failed!Error:Device dose not have enough resources.', // to be modified
+	'Resource_loaded':'Device _V_:Open channel _V_ in window _V_ failed!Error infomation:refused by device,not enough resource on device!',//Not yet translated
+	'User_logined':'dev:_V_  chl:_V_ win:_V_open fail! error:User name or password is incorrect!',//Not yet translated
 	'channel_switch_Stream':'ОКНО: _V_, переключить поток',
-	'Failed':'Faield!', // to be modified
-	'Success':'Success!', // to be modified
+	'Failed':'Faield!', // Not yet translated
+	'Success':'Success!', // Not yet translated
 	'PTZ_operation_failed':'Ошибка работы PTZ!',
 	'Voice_switch_fails':'Аудио выкл. Ошибка операции!',
-	'Open_sound':'Open Audio', // to be modified
-	'Turn_off_the_sound':'Close Audio', // to be modified
-	'Super_Admin':'Super Administrator', // to be modified
-	'Admin':'Administrator', // to be modified
+	'Open_sound':'Open Audio', // Not yet translated
+	'Turn_off_the_sound':'Close Audio', // Not yet translated
+	'Super_Admin':'Super Administrator', //Not yet translated
+	'Admin':'Administrator', //Not yet translated
 	'User':'KULLANICI ADI',
-	'Tourists':'Tourists', // to be modified
+	'Tourists':'Tourists', //Not yet translated
 
 	'Failed_to_set_the_number_of_synchronization_group':'Не удалось установить номер группы синхронизации!',
 	'Failed_to_set_the_IP_address_or_port_is_not_legal':'Ошибка IP-адреса или порта!',
 	'Failed_to_set_vendor_is_empty':'Не удалось установить производителя!',
 
-	'No_local_video':'Device _V_:No recording on the pc.!', // to be modified
-	'Failed_to_retrieve_video':'Device _V_:Searching _V_ record failed.', // to be modified
-	'window_Screenshot_success':'The window _V_ screenshot saves as ', // to be modified
-	'File_download_failed':'File _V_ download failed!', // to be modified
-	'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'Пожалуйста, введите алфавитно-цифровую комбинацию с длиной больше, чем 6!',
+	'No_local_video':'Device _V_:no local records',//Not yet translated
+	'Failed_to_retrieve_video':'Device _V_:searching _V_ records failed',//Not yet translated
+	'window_Screenshot_success':'Window _V_:screenshot success.Saved in the path',//Not yet translated
+	'File_download_failed':'File _V_ download failed!', // Not yet translated
+'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'Пожалуйста, введите алфавитно-цифровую комбинацию с длиной больше, чем 6!',
 	'twice_the_password_is_not_the_same':'Второй пароль не совпадает!',
 	'IP_setup_failed':'IP не удалось установить!',
 	'Please_select_a_device':'Пожалуйста, выберите устройство!!',
+
+'Sun':'Воскресенье.',
+'Mon':'Понедельник.',
+'Tue':'Вторник.',
+'Wed':'Среда.',
+'Thu':'Четверг.',
+'Fri':'Пятница.',
+'Sat':'Суббота.',
 
 	//語言索引
 
@@ -377,25 +417,38 @@
 	'saveing':'Сохранение данных!',
 	'loading_success':'Загружено успешно!',
 	'save_success':'Изменено успешно!',
-	'loading_fail':'Loading failed!',
-	'low_ver':'The version of the device is to low.Please upgrade the device to guarantee it can be accessed normally.!', // to be modified
+	'loading_fail':'Loading failed!',//Not yet translated
+	'save_fail':'Saving failed.Please check the network settings of the device,and then try again',//Not yet translated
+	'low_ver':'The S/W version of the device is too low.Upgrade the device at frist!',//Not yet translated
 	'timeout':'Превышено время подключения к устройству, ​​проверьте сеть, повторите попытку позже!',
 	'error':'Не удалось выполнить запрос, попробуйте позже!',
 	'abort':'Запрос был отменен, повторите попытку позже!',
-	'Unauthorized':'Error username or password!', // to be modified
+	'Unauthorized':'Login failed!Modify the username and password of the device on the right list,and then try again.',//Not yet translated
 	'channelName_NOT_chinese':'Название канала не поддерживает китайский',
 
 	//添加设备 修改设备验证
 	'correct':'Пожалуйста, введите правильно',
 	'IP_format':'Формат IP! (например: 192.168.1.100)',
+	'IP_domainName':'IP and domainName',//Not yet translated
 	'Gateway_format':'Формат шлюза! (например: 192.168.1.1)',
 	'Mask_format':'Формат маски подсети! (например: 255.255.255.0)',
 	'DNS':'Адрес DNS-сервера!',
 	'rate_range':'Диапазон потока!',
 	'frame_rate_range':'Диапазон частоты кадров!!',
 	'check_to_put':'Пожалуйста, заполните правильные параметры или данные.',
-	'rotation_time':'Auto switch interval(30 seconds~86400 seconds)!', // to be modified
-	'File_size_range':'File size(128M~512MB)!', // to be modified
-	'Disk_space_reserved':'The free disk space must larger than 4096MB!' // to be modifed
-
+	'rotation_time':'time!(1~60S)!',//Not yet translated
+	'File_size_range':'file size!(10M~512MB)!',//Not yet translated
+	'Disk_space_reserved':'free space of disk!(>4096MB!)',//Not yet translated
+	//初始化设置
+	'rebooting':'Restarting',//Not yet translated
+	'reboot_success':'The camera restart success.',//Not yet translated
+	'reboot_fail':'The camera restart  failed, you can try it later.',//Not yet translated
+	
+		//设备管理
+	'search_btn':'Searching',//Not yet translated
+	'quit_btn':'Отмена',
+	'Not_Found':'No device found!',//Not yet translated
+	'Not_Null_Enter_Keywords':'Input can not be empty!',//Not yet translated
+	
+	//
 }

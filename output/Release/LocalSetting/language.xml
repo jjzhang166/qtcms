@@ -4,5 +4,6 @@
 		<item name="en_GB" file="english"/>
 		<item name="zh_CN" file="chinese"/>
 		<item name="tr_TR" file="turk" />
+		<item name="ru_RU" file="Russian" />
 	</CLSID>
 </root>

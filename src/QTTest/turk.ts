@@ -58,5 +58,16 @@
       <source>Suit For Window</source>
       <translation>pencere için takım elbise</translation>
     </message>
+  <message>
+    <source>Back to Main Window</source>
+    <translation>Ana Pencere</translation>
+  </message>
 </context>
+  <context>
+    <name>RecordPlayerView</name>
+    <message>
+      <source>Suit For Window</source>
+      <translation>pencere için takım elbise</translation>
+    </message>
+  </context>
 </TS>

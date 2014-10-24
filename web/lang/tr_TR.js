@@ -9,7 +9,7 @@ var tr_TR={
 	'Grouping':'Grup',
 	'PTZ':'PTZ',
 	'Automatic':'Otomatik',
-	'PTZ_control_speed':'PTZ hızı', // to be modified
+	'PTZ_control_speed':'PTZ hızı', 
 	'add_group':'Grup Ekle',
 	'add_area':'Alan Ekle',
 	'add_device':'Cihaz Ekle',
@@ -17,9 +17,9 @@ var tr_TR={
 	'modify':'Düzenle',
 	'delete':'Sil',
 	'Close':'Kapalı',
-	'max':'Büyült', // to be modified
+	'max':'Büyült', 
 	'min':'Küçült',
-	'lock':'Kilitle', // to be modified
+	'lock':'Kilitle', 
 	'log':'Log',
 	'up':'Yukarı',
 	'down':'Aşağı',
@@ -31,27 +31,30 @@ var tr_TR={
 	'Far_focus':'Uzak Odak',
 	'Iris_Off':'Iris Kapat',
 	'Iris_On':'Iris Aç',
-	'Light':'Sağ', // to be modified
-	'Wipers':'Wipers', // to be  modified
+	'auto_PTZ':'Auto PTZ',//Not yet translated
+	'stop_PTZ':'Stop PTZ',//Not yet translated
+	'PTZ_speed':'the speed of PTZ：',//Not yet translated
+	'Light':'Sağ', 
+	'Wipers':'Wipers', 
 	'Split_screen_setting':'Bölünmüş Ekran Ayarları',
 	'prev_page':'Önceki Sayfa',
 	'next_page':'Sonraki Sayfa',
 	'All_Open':'Tümünü Aç',
 	'All_close':'Tümünü Kapat',
-	'Pause_Video':'Duraklat', // to be modified
+	'Pause_Video':'Duraklat', 
 	'video':'Kaydet',
 	'Screenshot':'Anlık Resim Al',
 	'Polling':'Tarama',
 	'Full_screen':'Tam Ekran',
 	'sound':'Ses',
-	'Empty_log':'logları temizle', // to be modified
+	'Empty_log':'logları temizle', 
 
 	'Download_Progress':'Yazılım Yükle',
-	'Login_account':'Kullanıcı Hesabı', // to be modified
+	'Login_account':'Kullanıcı Hesabı', 
 	'Remote_File':'Uzak Dosya',
 	'Local_File':'Yerel Dosya',
 	'File_Type':'Dosya Türü:',
-	'All':'Tümü', // to be modified
+	'All':'Tümü', 
 	'Timing':'Programlı',
 	'Mobile':'Hareket',
 	'Sensor':'Sensör',
@@ -59,7 +62,7 @@ var tr_TR={
 	'Warning':'Uyarı',
 	'Prev_year':'Önceki Yıl',
 	'Prev_Month':'Önceki Ay',
-	'Search_Date':'Tarih Ara', // to be modified
+	'Search_Date':'Tarih Ara', 
 	'Next_Month':'Sonraki Ay',
 	'Next_year':'Sonraki Yıl',
 	'Sun':'Pzr',
@@ -71,17 +74,22 @@ var tr_TR={
 	'Satu':'Cmt',
 	'Start_Search':'Araştır',
 	'Retrieving':'Kurtarıyor:',
-	'Parameter_error':'Parametre Hatalı', // to be modified
-	'Connection_Failed':'Bağlantı Başarısız', // to be modified
+	'Parameter_error':'Parametre Hatalı', 
+	'Connection_Failed':'Bağlantı Başarısız', 
 	'no_Channle_Preview':'Tüm kanallara Önizleme yok!',
-	'play_Failed':'Oynatma Başarısız', // to be modified
-	'not_complete':'Arama Tamamlanmadı', // to be modified
+	'window_no_Preview':'No video access to window!',//Not yet translated
+	'play_Failed':'Oynatma Başarısız', 
+	'not_complete':'Arama Tamamlanmadı', 
 	'Retrieval_completed':'Kurtarma tamamlandı:',
 	'Play_Pause':'Duraklat',
 	'Stop':'Durdur',
 	'Slow':'Yavaş',
 	'Fast':'Hızlı',
 	'wind':'Kanal',
+	'ThrowException':'Win_V_:file(_V_),_V_',//Not yet translated
+	'Available':'Available!',//Not yet translated
+	'Abnormal_damaged':'Abnormal or damaged!',//Not yet translated
+	'device_channel':'dev:_V_chl:_V_',//Not yet translated
 
 	'Device_name':'Cihaz Adı',
 	'Channel':'Kanal',
@@ -90,9 +98,11 @@ var tr_TR={
 	'Progress':'İlerle',
 	'Stop_backup':'Yedeklemeyi Durdur',
 	'Start_Backup':'Yedeklemeyi Başlat',
-	'Current_search_date':'Tarih Ara', // to be modified
-	'Inspection':'Kontrol', // to be modified
+	'Current_search_date':'Tarih Ara', 
+	'Inspection':'Kontrol', 
 	'Select':'Seç',
+	'select':'above all',//Not yet translated
+	'Select_all':'Select all',//Not yet translated
 	'Modified_device':'Cihaz Düzenle',
 	'Device_Connection':'Cihaz Bağlantısı',
 	'IP_addresses_link':'IP Adresi ile',
@@ -102,35 +112,35 @@ var tr_TR={
 	'Device_Address':'Cihaz Adresi',
 	'Device_port':'Cihaz Portu',
 	'Username':'Kullanıcı Adı',
-	'Competence':'Yetki', // to be modified
-	'Operating':'İşletim', // to be modified
-	'update_list':'Listeyi Güncelle', // to be modified
-	'adduser':'Kullanıcı Ekle', // to be modified
-	'changepwd':'Şifre Düzenle', // to be modified
+	'Competence':'Yetki', 
+	'Operating':'İşletim', 
+	'update_list':'Listeyi Güncelle', 
+	'adduser':'Kullanıcı Ekle',
+	'changepwd':'Şifre Düzenle', 
 	'Password':'Şifre',
 	'Channels':'Kanallar',
 	'Current_Area':'Mevcut Alan',
 	'Device_Type':'Cihaz Türü',
 	'Zone_name':'Allan Adı',
 	'Main_area':'Ana Alan',
-	'Confirm':'Onayla', // to be modified
+	'Confirm':'Onayla', 
 	'OK':'Tamam',
 	'Group_name':'Grup Adı',
-	'Primary_group':'Birinci Grup', // to be modified
-	'Change_Channel':'Kanal Değiştir', // to be modified
-	'Add_User':'Kullanıcı Ekle', // to be modified
-	'Confirm_Password':'Şifre Onayla', // to be modified
-	'User_privilege_level':'Kullanıcı Seviyesi', // to be modified
-	'Tourists':'Yabancı', // to be modified
+	'Primary_group':'Birinci Grup', 
+	'Change_Channel':'Kanal Değiştir', 
+	'Add_User':'Kullanıcı Ekle', 
+	'Confirm_Password':'Şifre Onayla', 
+	'User_privilege_level':'Kullanıcı Seviyesi', 
+	'Tourists':'Yabancı', 
 	'User':'Kullanıcı',
-	'Administrator':'Admin', // to be modified
-	'Modify_user':'Kullanıcı Düzenle', // to be modified
-	'Old_Password':'Eski Şifre', // to be modified
-	'New_Password':'Yeni Şifre', // to be modified
+	'Administrator':'Admin', 
+	'Modify_user':'Kullanıcı Düzenle', 
+	'Old_Password':'Eski Şifre', 
+	'New_Password':'Yeni Şifre',
 	'Device_Manager':'Cihaz Yönet',
 	'Device_Settings':'Cihaz Ayarları',
 	'Common_settings':'&nbsp;&nbspAyarlar&nbsp;&nbsp',
-	'User_Manage':'Kullanıcı Yönetimi', // to be modified
+	'User_Manage':'Kullanıcı Yönetimi', 
 	'Version':'Versiyon',
 	'Device':'Cihaz',
 	'Add_':'Ekle→',
@@ -155,9 +165,9 @@ var tr_TR={
 	'Software_Version':'Yazılım Versiyonu',
 	'Generation_time':'Güncelleme Saati',
 	'Total_number_of_channels':'Toplam Kanal',
-	'Channel_sound':'Kanal Sesi', // to be modified
-	'Alarm_input':'Alarm Girişi', // to be modified
-	'Alarm_output':'Alarm Çıkışı', // to be modified
+	'Channel_sound':'Kanal Sesi', 
+	'Alarm_input':'Alarm Girişi', 
+	'Alarm_output':'Alarm Çıkışı', 
 	'Date_Format':'Tarih Biçimi',
 	'Keypad_Lock':'Tuşları Kilitle',
 	'Keypad_sound':'Tuş Takım Sesi',
@@ -201,13 +211,14 @@ var tr_TR={
 	'Stream_control':'Akış Kontrolü',
 	'VBR':'VBR',
 	'CBR':'CBR',
-	'Moderate_rate':'Optimum Oran', // to be modified
+	'Moderate_rate':'Optimum Oran', 
 	'Stream_frame_rate':'Frame Oranı',
 	'Stream_rate':'Akış Oranı',
 	'Copy_to_other_channels':'Diğer Kanallara Kopyala',
 	'Week':'Hafta',
-	'Copy':'Kopyala', // to be modified
+	'Copy':'Kopyala', 
 	'Copy_to':'Kopyala',
+	'time_range':'Start time must be smaller than the end of time',//Not yet translated
 	'Name':'İsim',
 	'Protocol':'Protokol',
 	'Baud_rate':'İletişim Hızı',
@@ -232,15 +243,15 @@ var tr_TR={
 	'Alarm_duration':'Alarm Süresi',
 	'Email_alerts':'Email Alarmları',
 	'Device_info':'&nbsp;&nbsp;&nbsp;Cihaz Bilgisi&nbsp;&nbsp;&nbsp;',
-	'User_Settings':'Kullanıcı Ayarları', // to be modified
+	'User_Settings':'Kullanıcı Ayarları', 
 	'Time_Set':'Saat Ayarı',
 	'Initial_setup':'Başlatma Ayarı',
 	'Alarm_number':'Alarm Sayısı',
 	'SD_number':'SD Kart',
-	'Stream':'Akış', // to be modified
+	'Stream':'Akış', 
 	'Channel_name':'Kanal Adı:',
 	'Resolution':'Çözünürlük',
-	'Custom_resolution':'özel Çözünürlük', // to be modified
+	'Custom_resolution':'özel Çözünürlük', 
 	'Bit_rate_control_type':'Bit Oranı Kontrolü',
 	'BPS':'Bps',
 	'FPS':'Fps',
@@ -251,19 +262,21 @@ var tr_TR={
 	'Easy_as_the_network_state':'ESee Durumu',
 	'Network_Mask':'Ağ Maskesi',
 	'Server':'Sunucu',
-	'Save':'Kaydet', // to be modified
+	'Save':'Kaydet', 
 	'Device_Time':'Cihaz Saati',
-	'Time_Format':'Saat Biçimi', // to be modified
-	'Time_separator':'Zaman Ayırıcı', // to be modified
+	'Time_Format':'Saat Biçimi',
+	'Time_separator':'Zaman Ayırıcı', 
 	'Time_Zone':'Saat Dilimi',
-	'Daylight_Saving_Time':'Yaz Saati Uygulaması', // to be modified
-	'Manual_settings':'Manuel Ayarlar', // to be modified
-	'Date':'Tarih', // to be modified
+	'Daylight_Saving_Time':'Yaz Saati Uygulaması', 
+	'Manual_settings':'Manuel Ayarlar', 
+	'Date':'Tarih',
 	'Time':'Saat',
-	'Local_time_synchronization':'Yerel Saat Senk.', // to be modified
+	'Local_time_synchronization':'Yerel Saat Senk.', 
 	'Computer_time':'Pc Saati',
-	'Internet_time_synchronization':'Internet Saat Senk.', // to be modified
+	'Internet_time_synchronization':'Internet Saat Senk.', 
+	'synchronize':'Synchronize',//Not yet translated
 	'Internet_server_ynchronization_status':'Sunucunun Internet Senk. Durumu',
+	'Internet_server_ynchronization_status':'NTP status',//Not yet translated
 	'nternet_server':'İnternet Sunucu',
 	'Open':'Açık',
 	'Restore':'Yapılandır',
@@ -278,13 +291,12 @@ var tr_TR={
 	'Hour':'Saat',
 	'Minute':'Dakika',
 	'Second':'İkinci',
-	'Have_to_restart':'Dili uygulamak için uygulamayı yeniden başlatın.',
 	
 	'Video_settings':'&nbsp;&nbsp;&nbspKayıt Ayarları&nbsp',
 	'Storage_Settings':'&nbsp;&nbsp;&nbsp;&nbsp;&nbspDepolama Ayarları&nbsp;&nbsp;&nbsp',
 	'Language':'Dil',
 	'Automatic_polling_time':'Otomatik Tarama Zamanı',
-	'Screenshot_save_location':'Anlıkresim Kaydetme Alanı', // to be modified
+	'Screenshot_save_location':'Anlıkresim Kaydetme Alanı', 
 	'Default_screen_split_mode':'Bölünmüş Ekran Modu',
 	'Screen':'Bölünmüş Ekran',
 	'Auto_Login':'Otomatik Giriş',
@@ -306,7 +318,7 @@ var tr_TR={
 	'Disk_reserved_space':'Disk Alanı',
 	'Insufficient_Disk_Space':'Yetersiz Disk Alanı',
 	'No.':'Numara',
-	'Delete_users':'Kullanıcıları Sil', // to be modified
+	'Delete_users':'Kullanıcıları Sil', 
 	'The_current_version':'Versiyon:',
 	'Release_Date':'Güncelleme Tarihi:',
 	'Device':'Cihaz',
@@ -320,11 +332,11 @@ var tr_TR={
 	'Start_Time':'Baş. Saati',
 	'End_Time':'Bitiş Saati',
 	'Time_d':'Zaman Periyodu',
-	'Priority':'İlk', // to be modified
-	'Spare':'İkinci', // to be modified
+	'Priority':'İlk', 
+	'Spare':'İkinci', 
 	'restart_the_IP_cameras':'Kameraları Yeniden Başlat',
 	'Click_the_button_below_to_restore_the_factory_settings':'Farbrika ayarlarına yüklemek için butona tıklayınız',
-	'Have_access_to_the_connection':'Zaten Bağlı!', // to be modified
+	'Have_access_to_the_connection':'Zaten Bağlı!', 
 	'Restart':'Yeniden Başlat',
 	'Restarting':'Yeniden başlatılıyor',
 	'Restart_success':'Yeniden başlatılması başarı.Bekleme, bu dakikada bağlayacak.',
@@ -332,20 +344,23 @@ var tr_TR={
 	'factory_reset_success':'Restore Fabrikanın settings.Please cihazda cihaz sayfayı yönetmek yeniden ekleyin.',
 	'Select_the_upgrade_file':'Butona tıklayarak güncelleme dosyasını seçiniz ve güncelleme işlemini başlatınız.!',
 	'Connecting':'Bağlanıyor',
-	'Disconnected':'Bağlanmadı.', // to be modified
-	'Being_disconnected':'Bağlanmıyor.', // to be modified
-	'Connected':'Bağlı', // to be modified
+	'Disconnected':'Bağlanmadı.', 
+	'Being_disconnected':'Bağlanmıyor.', 
+	'Connected':'Bağlı', 
 	'Connecting':'Bağlanıyor.',
-	'Off':'Kapalı', // to be modified
-	'Shutting_down':'Kapatıyor', // to be modified
-	'open_device':'Starting to open in the window _V_,all channels of device _V_.', // to be modified
-	'window_closed':'Kanal _V_ kapalı.', // to be modified
+	'Off':'Kapalı', 
+	'Shutting_down':'Kapatıyor', 
+	'open_device':'Starting to open in the window _V_,all channels of device _V_.', 
+	'window_closed':'Kanal _V_ kapalı.', 
 
 	'Shutting_down_device':'Cihazı Kapatıyor:',
 	'All_channelsare_open_under_the_current_list':'LİSTEDEKİ TÜM KANALLARI AÇIYOR.',
+	'All_channel_already_open_under_the_current_list':'devices had been opend in the device list.',//Not yet translated
 	'The_current_list_of_all_channels_are_closed_under':'Listedeki Tüm Kanallar Kapalı.',
+	'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',//Not yet translated
+	'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',//Not yet translated
 
-	'device_in_window_action':'Cihaz _V_: Kanal _V_ penceresi _V_', // to be modified
+	'device_in_window_action':'Cihaz _V_: Kanal _V_ penceresi _V_', 
 	'Open_failed_Error_The_current_window':'Cihaz:(_V_) Cihazdaki (_V_) Kanal:_V_ Penceresini Açma Başarısız!',
 
 	'channel_Manual_recording_data_binding_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL : MANUEL VİDEO VERİSİ BAĞLAMA BAŞARISIZ!',
@@ -354,27 +369,28 @@ var tr_TR={
 	'Start_manual_recording':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYIT BAŞLAT.',
 	'Close_the_manual_recording_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDURMA BAŞARISIZ!',
 	'Close_the_manual_recording':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDUR!',
-	'Resource_loaded':'Device _V_:Channel _V_ open in the window _V_ failed!Error:Device dose not have enough resources.', // to be modified
+	'Resource_loaded':'Device _V_:Channel _V_ open in the window _V_ failed!Error:Device dose not have enough resources.', //Not yet translated
+		'User_logined':'dev:_V_  chl:_V_ win:_V_open fail! error:User name or password is incorrect!',//Not yet translated
 	'channel_switch_Stream':'PENCERE:_V_,AKIŞ GEÇ',
-	'Failed':'Faield!', // to be modified
-	'Success':'Success!', // to be modified
+	'Failed':'Faield!', //Not yet translated
+	'Success':'Success!', //Not yet translated
 	'PTZ_operation_failed':'PTZ İŞLEMİ BAŞARISIZ!',
 	'Voice_switch_fails':'SES KAPATMA İŞLEMİ BAŞARISIZ!',
-	'Open_sound':'Open Audio', // to be modified
-	'Turn_off_the_sound':'Close Audio', // to be modified
-	'Super_Admin':'Super Administrator', // to be modified
-	'Admin':'Administrator', // to be modified
+	'Open_sound':'Open Audio', //Not yet translated
+	'Turn_off_the_sound':'Close Audio', //Not yet translated
+	'Super_Admin':'Super Administrator', //Not yet translated
+	'Admin':'Administrator', //Not yet translated
 	'User':'KULLANICI ADI',
-	'Tourists':'Tourists', // to be modified
+	'Tourists':'Tourists', //Not yet translated
 
 	'Failed_to_set_the_number_of_synchronization_group':'Senkronizasyon grrup numarasını oluşturma başarısız!!',
 	'Failed_to_set_the_IP_address_or_port_is_not_legal':'IP adres veya port numarasını oluşturma başarısız!',
 	'Failed_to_set_vendor_is_empty':'Boş alan oluşturulamaz!',
 
-	'No_local_video':'Device _V_PC de kayıt yok.!', // to be modified
-	'Failed_to_retrieve_video':'Cihaz _V_:Kayıtlı _V_ arama başarısız.', // to be modified
-	'window_Screenshot_success':' _V_ anlık resmini kaydet ', // to be modified
-	'File_download_failed':'Dosya _V_ indirme başarısız!', // to be modified
+	'No_local_video':'Device _V_PC de kayıt yok.!', 
+	'Failed_to_retrieve_video':'Cihaz _V_:Kayıtlı _V_ arama başarısız.',
+	'window_Screenshot_success':' _V_ anlık resmini kaydet ', 
+	'File_download_failed':'Dosya _V_ indirme başarısız!', 
 	'Please_use_a_combination_of_alphanumeric_characters_and_underscores_length_greater_than_6':'Lütfen 6 dan uzun alfanümerik kombinasyonların altını çiziniz!',
 	'twice_the_password_is_not_the_same':'İkinci şifre eşleşmiyor!',
 	'IP_setup_failed':'IP ayarı başarısız!',
@@ -402,25 +418,27 @@ var tr_TR={
 	'loading_success':'Yükleme Başarılı!',
 	'save_success':'Kaydetme Başarılı!',
 	'loading_fail':'Yükleme başarısız, lütfen cihaz parametrelerini veya ağı kontrol ediniz tekrar deneyiniz. ',
-	'low_ver':'Cihazın versiyonu çok düşük.Lütfen cihazı güncelleyiniz.!', // to be modified
+	'save_fail':'Saving failed.Please check the network settings of the device,and then try again',//Not yet translated
+	'low_ver':'Cihazın versiyonu çok düşük.Lütfen cihazı güncelleyiniz.!', 
 	'timeout':'Bağlantı zaman aşımı, ağ durumunuzu kontrol ediniz ve tekrar deneyiniz!',
 	'error':'İstek başarısız, lütfen daha sonra tekrar deneyiniz!',
 	'abort':'İstek iptal edildi, lütfen daha sonra tekrar deneyiniz!',
-	'Unauthorized':'Şifre veya kullanıcı adı hatalı!', // to be modified
+	'Unauthorized':'Şifre veya kullanıcı adı hatalı!', 
 	'channelName_NOT_chinese':'Çince karakter desteklenmez.',
 
 	//添加设备 修改设备验证
 	'correct':'Lütfen doğru giriniz',
 	'IP_format':'IP biçimi! (örn:192.168.1.100)',
+	'IP_domainName':'IP and domainName',//Not yet translated
 	'Gateway_format':'Ağ geçidi biçimi! (örn:192.168.1.1)',
 	'Mask_format':'Alt ağ maskesi biçimi (örn:255.255.255.0)',
 	'DNS':'DNS sunucu adresi!',
 	'rate_range':'Akış Aralığı!',
 	'frame_rate_range':'Frame oran aralığı!',
-	'check_to_put':'Tarihin yüklenmesini bekleyiniz veya doğru parametreleri giriniz.', // to be modified
-	'rotation_time':'Oto geçiş aralığı(30sn~86400sn)!', // to be modified
-	'File_size_range':'Dosya boyutu(128M~512MB)!', // to be modified
-	'Disk_space_reserved':'Boş disk alanı 4096MB dan fazla olmalıdır!', // to be modifed
+	'check_to_put':'Tarihin yüklenmesini bekleyiniz veya doğru parametreleri giriniz.', 
+	'rotation_time':'Oto geçiş aralığı(30sn~86400sn)!', 
+	'File_size_range':'Dosya boyutu(128M~512MB)!', 
+	'Disk_space_reserved':'Boş disk alanı 4096MB dan fazla olmalıdır!', 
 	//初始化设置
 	'rebooting':'Yeniden başlatılıyor',
 	'reboot_success':'Kamera yeniden başarı.',

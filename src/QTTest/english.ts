@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>QSubView</name>
+    <name>qsubviewEx</name>
     <message>
         <source>Close Preview</source>
         <translation>Close Preview</translation>
@@ -13,11 +13,15 @@
     </message>
     <message>
         <source>Switch to SubStream</source>
-        <translation>Switch to SubStream</translation>
+        <translation>Switch To SubStream</translation>
     </message>
     <message>
         <source>Switch to MainStream</source>
-        <translation>Switch to MainStream</translation>
+        <translation>Switch To MainStream</translation>
     </message>
+  <message>
+    <source>Back to Main Window</source>
+    <translation>Back To Main Window</translation>
+  </message>
 </context>
 </TS>
