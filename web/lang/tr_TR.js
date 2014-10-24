@@ -390,9 +390,10 @@ var tr_TR={
 
 	//語言索引
 
-	'zh_CN':'Çince',
-	'en_GB':'İngilizce',
-	'tr_TR':'Türkçe',
+	'zh_CN':'中文',
+	'en_GB':'English',
+	'tr_TR':'türk',
+	'ru_RU':'русский',
 
 	//设备设置
 

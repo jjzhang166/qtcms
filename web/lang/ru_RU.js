@@ -1,4 +1,4 @@
-﻿var zh_CN={
+﻿var ru_RU={
 	'Stream_Switch':'Stream Switch',
 	'DVR_client':'Видеонаблюдение КЛИЕНТ',
 	'Preview':'Предварительный просмотр',
@@ -368,6 +368,7 @@
 
 	'zh_CN':'中文',
 	'en_GB':'English',
+	'tr_TR':'türk',
 	'ru_RU':'русский',
 
 	//设备设置
