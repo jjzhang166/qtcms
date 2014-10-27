@@ -121,6 +121,15 @@ OperationDatabase::~OperationDatabase(void)
 		m_pNewFile=NULL;
 	}
 	deInitMgrDataBase(( quintptr*)this);
+	QMap<QString,sqlite3 * >::const_iterator iter=m_tNativeApiList.constBegin();
+	while(iter!=m_tNativeApiList.constEnd()){
+		sqlite3 *db=iter.value();
+		if (db!=NULL)
+		{
+			sqlite3_close( db );
+		}
+	}
+	m_tNativeApiList.clear();
 }
 
 
@@ -755,9 +764,9 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 			tInfo.insert("nLock",1);
 			bFlag=0;
 			priSetRecordFileStatusEx(sFilePath,tInfo);
-			qDebug()<<__FUNCTION__<<__LINE__<<"priClearInfoInDatabase in";
+			qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<"priClearInfoInDatabase in";
 			priClearInfoInDatabase(sFilePath);
-			qDebug()<<__FUNCTION__<<__LINE__<<"priClearInfoInDatabase out";
+			qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<"priClearInfoInDatabase out";
 			nStep=obtainFilePath_end;
 									}
 									break;
@@ -1519,6 +1528,8 @@ void OperationDatabase::priReloadSystemDatabase()
 
 void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 {
+	clearInfoIndatabaseWithNativeAPIs(sFilePath);
+	return;
 	//删除 record 表中记录
 	//删除 search_record表中记录
 	//更新 RecordFileStatus
@@ -2077,6 +2088,143 @@ bool OperationDatabase::execCommand( QSqlQuery & tQuery,QString sCommand )
 		}
 	}
 	return false;
+}
+
+void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
+{
+	int result;
+	char * errmsg = NULL;
+	char **dbResult; //是 char ** 类型，两个*号
+	int nRow, nColumn;
+	int index;
+	QString sFileDisk=sFilePath.left(1);
+	if (m_tNativeApiList.contains(sFileDisk))
+	{
+		//do nothing
+	}else{
+		sqlite3 * db = NULL;
+		QString sDiskPath=sFileDisk+"://recEx//record.db";
+		QByteArray tByte=sDiskPath.toLatin1();
+		char *pPath=tByte.data();
+		result = sqlite3_open( pPath, &db );
+		if( result != SQLITE_OK )
+		{
+			//数据库打开失败
+			qDebug()<<__FUNCTION__<<__LINE__<<"open database fail:"<<sDiskPath;
+			abort();
+		}
+		m_tNativeApiList.insert(sFileDisk,db);
+	}
+	sqlite3 * db=m_tNativeApiList.value(sFileDisk);
+	if (db!=NULL)
+	{
+		//
+		QString sCommand=QString("select id,nWndId,nEndTime from record where sFilePath='%1'").arg(sFilePath);
+		QByteArray tByte=sCommand.toLatin1();
+		char *pCmd=tByte.data();
+		result = sqlite3_get_table( db, pCmd, &dbResult, &nRow, &nColumn, &errmsg );
+		QList<QMap<QString,QString>> tList;
+		if (SQLITE_OK == result)
+		{
+			//查询成功
+			index = nColumn; //前面说过 dbResult 前面第一行数据是字段名称，从 nColumn 索引开始才是真正的数据
+			for( int i = 0; i < nRow ; i++ )
+			{
+				QMap<QString,QString> tItem;
+				for( int j = 0 ; j < nColumn; j++ )
+				{
+					char * nValue=dbResult[index];
+					char *pName=dbResult[j];
+					QString sValue(nValue);
+					QString sName(pName);
+					tItem.insert(sName,sValue);
+					++index; // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
+				}
+				tList.append(tItem);
+			}
+			if (tList.size()!=0)
+			{
+				quint64 uiEndTime=0;
+				QList<quint64> tRecordIdList;
+				QList<int> tWndIdList;
+				for (int i=0;i<tList.size();i++)
+				{
+					QMap<QString,QString>tItem=tList.value(i);
+					tRecordIdList.append(tItem.value("id").toUInt());
+					tWndIdList.append(tItem.value("nWndId").toUInt());
+					if (uiEndTime<tItem.value("nEndTime").toUInt())
+					{
+						uiEndTime=tItem.value("nEndTime").toUInt();
+					}
+				}
+				//search_record
+				sCommand=QString("delete from search_record where nEndTime<=%1").arg(uiEndTime);
+				QByteArray tByte=sCommand.toLatin1();
+				char *pCmd=tByte.data();
+				result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+				if (result==SQLITE_OK)
+				{
+					QString sWndIdList;
+					for (int i=0;i<tWndIdList.size();i++)
+					{
+						if (i==0)
+						{
+							sWndIdList=QString::number(tWndIdList.value(i));
+						}else{
+							sWndIdList=sWndIdList+","+QString::number(tWndIdList.value(i));
+						}
+					}
+					sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 and nWndId in ").arg(uiEndTime).arg(uiEndTime)+"("+sWndIdList+")";
+					QByteArray tByte=sCommand.toLatin1();
+					char *pCmd=tByte.data();
+					result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+					if (result==SQLITE_OK)
+					{
+
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<errmsg;
+						abort();
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<errmsg;
+					abort();
+				}
+				//record
+				result = sqlite3_exec( db, "begin transaction", 0, 0, &errmsg ); //开始一个事务
+				if(result != SQLITE_OK )
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+				}
+				for (int i=0;i<tRecordIdList.size();i++)
+				{
+					sCommand=QString("delete from record where id=%1").arg(tRecordIdList.value(i));
+					QByteArray ba;
+					ba=sCommand.toLatin1();
+					char *ch=NULL;
+					ch=ba.data();
+					result = sqlite3_exec( db, ch, 0, 0,&errmsg );
+					if(result != SQLITE_OK )
+					{
+						qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+					}
+				}
+				result = sqlite3_exec( db, "commit transaction", 0, 0, &errmsg ); //提交事务
+				if(result != SQLITE_OK )
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+				}
+			}else{
+				//do nothing
+			}
+			sqlite3_free_table( dbResult );
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<errmsg;
+			abort();
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"db==null";
+		abort();
+	}
 }
 
 

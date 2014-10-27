@@ -11,6 +11,7 @@
 #include <QThread>
 #include <QQueue>
 #include <QMutex>
+#include "sqlite3.h"
 //使用安全条件
 //1.单盘大小不能超过：256*256*256*128M
 //2.
@@ -80,7 +81,7 @@ private:
 	void priClearInfoInDatabase(QString sFilePath);
 	bool PriIsRecordDataExistItem();
 	bool PriGetMaxDatabaseId(quint64 &uiMaxRecordId,quint64 &uiMaxSearchId,QString sFilePath);
-
+	void clearInfoIndatabaseWithNativeAPIs(QString sFilePath);
 	//
 	bool createNewFile(QString sFilePath);
 	QString createLatestItemEx(QString sDisk);//用于磁盘还有空间，递增模式
@@ -104,5 +105,6 @@ private:
 	QQueue<QVariantMap> m_tObtainFilePathResult;//sWriteFilePath nReturn
 	QQueue<bool> m_tIsRecordDataExistItemResult;//nReturn
 	QQueue<QVariantMap> m_tGetMaxDatabaseIdResult;//uiMaxRecordId uiMaxSearchId
+	QMap<QString,sqlite3 * >m_tNativeApiList;
 };
 

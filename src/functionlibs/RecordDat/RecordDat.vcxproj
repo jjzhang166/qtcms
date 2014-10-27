@@ -79,7 +79,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtSql4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtSql4.lib;sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>recordDat.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
@@ -136,6 +136,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClInclude Include="BufferNode.h" />
     <ClInclude Include="cpointlist.h" />
     <ClInclude Include="ringBuffer.h" />
+    <ClInclude Include="sqlite3.h" />
     <CustomBuild Include="BufferQueue.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing BufferQueue.h...</Message>
