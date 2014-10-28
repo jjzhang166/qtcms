@@ -79,6 +79,9 @@
     <ClInclude Include="LocalPlayerEx_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sqlite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalPlayerEx.def">

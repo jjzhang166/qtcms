@@ -90,7 +90,27 @@ QSqlDatabase * LocalPlayerEx::initDataBase( QString sDatabaseName )
 		return m_dbMap.value(sDatabaseName);
 	}
 }
-
+sqlite3* LocalPlayerEx::initDataBase(char *dbPath)
+{
+	if (!m_sqlMap.contains(QString(dbPath)))
+	{
+		sqlite3 *pdb = NULL;
+		int ret = sqlite3_open(dbPath, &pdb);
+		if (ret != SQLITE_OK)
+		{
+			return NULL;
+		}
+		else
+		{
+			m_sqlMap.insert(QString(dbPath), pdb);
+			return pdb;
+		}
+	}
+	else
+	{
+		return m_sqlMap.value(QString(dbPath));
+	}
+}
 void LocalPlayerEx::deInitDataBase()
 {
 	QMap<QString, QSqlDatabase*>::iterator iter = m_dbMap.begin();
@@ -102,6 +122,13 @@ void LocalPlayerEx::deInitDataBase()
 		++iter;
 	}
 	m_dbMap.clear();
+
+	QMap<QString, sqlite3*>::iterator it = m_sqlMap.begin();
+	while (it != m_sqlMap.end())
+	{
+		sqlite3_close(*it++);
+	}
+	m_sqlMap.clear();
 }
 
 long __stdcall LocalPlayerEx::QueryInterface( const IID & iid,void **ppv )
@@ -242,34 +269,89 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 			qDebug()<<__FUNCTION__<<__LINE__<<"file "<<sDbName<<" didn't exist";
 			continue;
 		}
-		QSqlDatabase *pdb = initDataBase(sDbName);
-		if (!pdb)
+// 		QSqlDatabase *pdb = initDataBase(sDbName);
+// 		if (!pdb)
+// 		{
+// 			qDebug()<<__FUNCTION__<<__LINE__<<"get database point error!";
+// 			continue;
+// 		}
+// 		QSqlQuery query(*pdb);
+// // 		query.exec(sqlCmd);
+// 		exceCommand(query, sqlCmd);
+// 
+// 		while (query.next())
+// 		{
+// 			int recordType = query.value(0).toInt();
+// 			uint start = query.value(1).toUInt();
+// 			uint end = query.value(2).toUInt();
+// 
+// 			QVariantMap info;
+// 			info.insert("wndId", nWndId);
+// 			info.insert("type", recordType);
+// 
+// 			start = qMax(dtStart.toTime_t(), start);
+// 			end = qMin(dtEnd.toTime_t(), end);
+// 			info.insert("start", QDateTime::fromTime_t(start).toString("yyyy-MM-dd hh:mm:ss"));
+// 			info.insert("end", QDateTime::fromTime_t(end).toString("yyyy-MM-dd hh:mm:ss"));
+// 
+// 			eventProcCall(QString("GetRecordFileEx"), info);
+// 		}
+// 		query.finish();
+
+		sqlite3 *db = NULL;
+		db = initDataBase(sDbName.toLatin1().data());
+		if (!db)
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"get database point error!";
+			qDebug()<<__FUNCTION__<<__LINE__<<nWndId<<" open db error";
 			continue;
 		}
-		QSqlQuery query(*pdb);
-// 		query.exec(sqlCmd);
-		exceCommand(query, sqlCmd);
-
-		while (query.next())
+		char **ppDbRet = NULL;
+		char *pErrMsg = NULL;
+		int nRow = 0;
+		int nColumn = 0;
+		int index = 0;
+		int count = 0;
+		int ret = -1;
+		while ((ret = sqlite3_get_table(db, sqlCmd.toLatin1().data(), &ppDbRet, &nRow, &nColumn, &pErrMsg)) != SQLITE_OK && count < 50)
 		{
-			int recordType = query.value(0).toInt();
-			uint start = query.value(1).toUInt();
-			uint end = query.value(2).toUInt();
-
-			QVariantMap info;
-			info.insert("wndId", nWndId);
-			info.insert("type", recordType);
-
-			start = qMax(dtStart.toTime_t(), start);
-			end = qMin(dtEnd.toTime_t(), end);
-			info.insert("start", QDateTime::fromTime_t(start).toString("yyyy-MM-dd hh:mm:ss"));
-			info.insert("end", QDateTime::fromTime_t(end).toString("yyyy-MM-dd hh:mm:ss"));
-
-			eventProcCall(QString("GetRecordFileEx"), info);
+			//wait 3 milliseconds
+			QEventLoop tEventLoop;
+			QTimer::singleShot(3,&tEventLoop,SLOT(quit()));
+			tEventLoop.exec();
+			++count;
 		}
-		query.finish();
+		qDebug()<<__FUNCTION__<<__LINE__<<nWndId<<"repeat times: "<<count;
+
+		if (ret == SQLITE_OK)
+		{
+			uint uiStart = dtStart.toTime_t();
+			uint uiEnd = dtEnd.toTime_t();
+			QVariantMap info;
+			index = nColumn;
+			for (int i = 0; i < nRow; ++i)
+			{
+				int recordType = atoi(ppDbRet[index++]);
+				uint start = atoi(ppDbRet[index++]);
+				uint end = atoi(ppDbRet[index++]);
+				
+				info.clear();
+	 			info.insert("wndId", nWndId);
+	 			info.insert("type", recordType);
+	 
+	 			start = qMax(uiStart, start);
+	 			end = qMin(uiEnd, end);
+	 			info.insert("start", QDateTime::fromTime_t(start).toString("yyyy-MM-dd hh:mm:ss"));
+	 			info.insert("end", QDateTime::fromTime_t(end).toString("yyyy-MM-dd hh:mm:ss"));
+
+	 			eventProcCall(QString("GetRecordFileEx"), info);
+			}
+		}
+		else
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec ret = "<<ret<<" msg: "<<pErrMsg;
+		}
+		sqlite3_free_table(ppDbRet);
+// 		sqlite3_close(db);
 	}
 	return ILocalRecordSearchEx::OK;
 }

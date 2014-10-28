@@ -12,6 +12,9 @@
 #include "QFileData.h"
 #include "PlayMgr.h"
 
+extern "C"{
+#include "sqlite3.h"
+};
 
 void cbTimeChange(QString evName, uint playTime, void* pUser);
 // void cbThrowException(QString evName, QVariantMap item, void* pUser);
@@ -79,6 +82,7 @@ public slots:
 	void onStartPlayMgr(uint wndId);
 private:
 	QSqlDatabase * initDataBase(QString sDatabaseName);
+	sqlite3* initDataBase(char *dbPath);
 	void deInitDataBase();
 	QString getTypeList(int nTypes);
 	void eventProcCall(QString sEvent,QVariantMap param);
@@ -102,6 +106,7 @@ private:
 	QStringList m_eventList;
 	QMultiMap<QString, ProcInfoItem> m_eventMap;
 
+	QMultiMap<QString, sqlite3*> m_sqlMap;
 	QMultiMap<QString, QSqlDatabase*> m_dbMap;
 	QString m_disklst;
 	PlayMgr *m_pCurAudioWnd;
