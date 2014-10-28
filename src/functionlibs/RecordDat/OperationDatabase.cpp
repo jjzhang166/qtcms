@@ -121,15 +121,6 @@ OperationDatabase::~OperationDatabase(void)
 		m_pNewFile=NULL;
 	}
 	deInitMgrDataBase(( quintptr*)this);
-	QMap<QString,sqlite3 * >::const_iterator iter=m_tNativeApiList.constBegin();
-	while(iter!=m_tNativeApiList.constEnd()){
-		sqlite3 *db=iter.value();
-		if (db!=NULL)
-		{
-			sqlite3_close( db );
-		}
-	}
-	m_tNativeApiList.clear();
 }
 
 
@@ -612,6 +603,16 @@ void OperationDatabase::run()
 									   break;
 		}
 	}
+	QMap<QString,sqlite3 * >::const_iterator iter=m_tNativeApiList.constBegin();
+	while(iter!=m_tNativeApiList.constEnd()){
+		sqlite3 *db=iter.value();
+		if (db!=NULL)
+		{
+			sqlite3_close( db );
+		}
+		++iter;
+	}
+	m_tNativeApiList.clear();
 }
 
 int OperationDatabase::obtainFilePath( QString &sWriteFilePath )
