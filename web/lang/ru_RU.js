@@ -362,7 +362,7 @@
 'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',//Not yet translated
 'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',//Not yet translated
 
-'device_in_window_action':'Device _V_:channle _V_ in window _V_',//Not yet translated
+'device_in_window_action':'Device _V_:channle _V_ in window _V_ ',//Not yet translated
 'Open_failed_Error_The_current_window':'Device _V_:channel _V_ open failed in window _V_!',//Not yet translated
 
 	'channel_Manual_recording_data_binding_failed':'Устройство: канал _V_ устройства _V_: Ручная запись видеоданных Ошибка привязки!',
@@ -372,7 +372,7 @@
 	'Close_the_manual_recording_failed':'Устройство: канал _V_ устройства _V_: Стоп! Ручная запись не найдена.',
 	'Close_the_manual_recording':'Устройство: канал (_V_) устройства (_V_): Стоп ручная запись.',
 	'Resource_loaded':'Device _V_:Open channel _V_ in window _V_ failed!Error infomation:refused by device,not enough resource on device!',//Not yet translated
-	'User_logined':'dev:_V_  chl:_V_ win:_V_open fail! error:User name or password is incorrect!',//Not yet translated
+	'User_logined':'dev:_V_  chl:_V_ win:_V_ open fail! error:User name or password is incorrect!',//Not yet translated
 	'channel_switch_Stream':'ОКНО: _V_, переключить поток',
 	'Failed':'Faield!', // Not yet translated
 	'Success':'Success!', // Not yet translated

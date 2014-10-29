@@ -362,7 +362,7 @@ var tr_TR={
 	'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',//Not yet translated
 	'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',//Not yet translated
 
-	'device_in_window_action':'Cihaz _V_: Kanal _V_ penceresi _V_', 
+	'device_in_window_action':'Cihaz _V_: Kanal _V_ penceresi _V_ ', 
 	'Open_failed_Error_The_current_window':'Cihaz:(_V_) Cihazdaki (_V_) Kanal:_V_ Penceresini Açma Başarısız!',
 
 	'channel_Manual_recording_data_binding_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL : MANUEL VİDEO VERİSİ BAĞLAMA BAŞARISIZ!',
@@ -372,7 +372,7 @@ var tr_TR={
 	'Close_the_manual_recording_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDURMA BAŞARISIZ!',
 	'Close_the_manual_recording':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDUR!',
 	'Resource_loaded':'Device _V_:Channel _V_ open in the window _V_ failed!Error:Device dose not have enough resources.', //Not yet translated
-		'User_logined':'dev:_V_  chl:_V_ win:_V_open fail! error:User name or password is incorrect!',//Not yet translated
+		'User_logined':'dev:_V_  chl:_V_ win:_V_ open fail! error:User name or password is incorrect!',//Not yet translated
 	'channel_switch_Stream':'PENCERE:_V_,AKIŞ GEÇ',
 	'Failed':'Faield!', //Not yet translated
 	'Success':'Success!', //Not yet translated

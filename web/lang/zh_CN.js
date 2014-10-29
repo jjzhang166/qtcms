@@ -362,7 +362,7 @@
 	'The_current_list_of_all_channels_already_closed_under':'当前列表下的所有通道已经全部关闭.',
 	'window_connected_tips':'36路以上需要更多的系统资源，请确认您的系统尚有足够的性能。',
 
-	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_',
+	'device_in_window_action':'设备:_V_下的通道:_V_在窗口:_V_ ',
 	'Open_failed_Error_The_current_window':'设备:_V_下的通道:_V_ 在窗口_V_,打开失败! ',
 
 	'channel_Manual_recording_data_binding_failed':'设备:_V_  下的通道:_V_ 的手动录像失败!',

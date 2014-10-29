@@ -362,7 +362,7 @@
 'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',
 'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',
 
-'device_in_window_action':'Device _V_:channle _V_ in window _V_',
+'device_in_window_action':'Device _V_:channle _V_ in window _V_ ',
 'Open_failed_Error_The_current_window':'Device _V_:channel _V_ open failed in window _V_!',
 
 'channel_Manual_recording_data_binding_failed':'Device _V_:start manual recording of channel _V_ failed',
@@ -372,7 +372,7 @@
 'Close_the_manual_recording_failed':'Device _V_:stop manual recording of channel _V_ failed',
 'Close_the_manual_recording':'Device _V_:stop manual recording of channel _V_',
 'Resource_loaded':'Device _V_:Open channel _V_ in window _V_ failed!Error infomation:refused by device,not enough resource on device!',
-	'User_logined':'dev:_V_  chl:_V_ win:_V_open fail! error:User name or password is incorrect!',
+	'User_logined':'dev:_V_  chl:_V_ win:_V_ open fail! error:User name or password is incorrect!',
 'channel_switch_Stream':'Switch stream in the window _V_',
 'Failed':'Failed!',
 'Success':'Success!',
