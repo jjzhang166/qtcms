@@ -2152,7 +2152,8 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 				sCommand=QString("delete from search_record where nEndTime<=%1").arg(uiEndTime);
 				QByteArray tByte=sCommand.toLatin1();
 				char *pCmd=tByte.data();
-				result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+				//result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+				result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
 				if (result==SQLITE_OK)
 				{
 					QString sWndIdList;
@@ -2168,7 +2169,8 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 and nWndId in ").arg(uiEndTime).arg(uiEndTime)+"("+sWndIdList+")";
 					QByteArray tByte=sCommand.toLatin1();
 					char *pCmd=tByte.data();
-					result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+					//result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
+					result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
 					if (result==SQLITE_OK)
 					{
 
@@ -2193,7 +2195,8 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					ba=sCommand.toLatin1();
 					char *ch=NULL;
 					ch=ba.data();
-					result = sqlite3_exec( db, ch, 0, 0,&errmsg );
+					//result = sqlite3_exec( db, ch, 0, 0,&errmsg );
+					result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
 					if(result != SQLITE_OK )
 					{
 						qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
@@ -2215,6 +2218,21 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"db==null";
 		abort();
+	}
+}
+
+SQLITE_API int OperationDatabase::sqlite3_exec_reTry( sqlite3* db, /* An open database */ const char *pCmd , /* SQL to be evaluated */ int (*callback)(void*,int,char**,char**), /* Callback function */ void *, /* 1st argument to callback */ char **errmsg /* Error msg written here */ )
+{
+	int nResurt=0;
+	while(1){
+		nResurt = sqlite3_exec( db, pCmd, 0, 0,errmsg );
+		if (nResurt==SQLITE_OK)
+		{
+			return nResurt;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec fail and retry"<<errmsg;
+			msleep(10);
+		}
 	}
 }
 
