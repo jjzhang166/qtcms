@@ -1,6 +1,7 @@
 	var bool = 0, //本地远程回放控制  0为远程 1为本地
 		recTotal = 0,  //文件检索总数。
 		nowDevID=null, //当前选中设备ID
+		searchDate,//进行搜索的日期
 		searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
 	//搜索远程录像
 	function setDevData2ocx(){
@@ -91,6 +92,7 @@
 
 		getAudioObj().GroupStop();
 
+     
 		var type = $('#type input[data]').attr('data'),
 		
 			date = $("div.calendar span.nowDate").html(),
@@ -98,7 +100,8 @@
 			oList = $('div.dev_list'),
 
 			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
-         
+            
+			searchDate =  date ;
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
 		if(!devData){
@@ -153,10 +156,13 @@
 			searchSTOP=1;
 			return;
 		}*/
+		
+		 
 		var type = type || $('#type input[data]').attr('data');
 		
-		var date = date || $("div.calendar span.nowDate").html();
-
+		var date = date ||  $("div.calendar span.nowDate").html();
+		
+        searchDate =  date ;
 		//var oDevList = $('div.dev_list span.device');
 		/*if(key >  (oDevList.length-1))
 			return;

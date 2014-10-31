@@ -226,7 +226,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		if(maxFileEndTime < minFileStartTime)return;
 
-		var date = $("div.calendar span.nowDate").html(),
+		var date =  searchDate , //$("div.calendar span.nowDate").html(),
 			begin =$('#now_time').attr('begin') ,//returnTime(($('div.play_time').offset().left-81)/($('#channelvideo').width()-100)*24*3600), //getDragSart($('#channelvideo').width(),$('div.play_time').offset().left+2,$("div.calendar span.nowDate").html())
 			end = date+' '+maxFileEndTime,
 			type = parseInt($('#type input[data]').attr('data'));
