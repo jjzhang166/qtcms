@@ -179,7 +179,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			height:oView.height()+135
 		});
 
-		$('div.dev_list').height(oLeft.height()-222);
+		$('div.dev_list').height(oLeft.height()-242);
 
 		oBottom.css({
 			width:oView.width(),

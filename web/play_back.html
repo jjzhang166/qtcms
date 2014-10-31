@@ -100,6 +100,7 @@
 		<!-- <div class="dev_list">
 			<ul class="filetree" id="group_0"></ul>	
 		</div> -->
+        <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb"><!--使用伊朗太阳历-->استفاده تقويم شمسي ايراني</label></div></div>
 		<div id="find_type">
 			<div id="nowSearchType">
 				<input type="radio" name="type" id="t_1" checked="checked" />
@@ -169,6 +170,14 @@
 						<td><script>T("Fir")</script></td>
 						<td style="color:red;"><script>T("Satu")</script></td>
 					</tr>
+                     <tr><td style="color:red;">Sha</td>
+						<td style="color:red;">Yek</td>
+						<td>Dos</td>
+						<td>Ses</td>
+						<td>Cha</td>
+						<td>Pan</td>
+						<td>Jom</td>
+                    </tr>
 				</thead>
 				<tbody>
 					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
@@ -235,8 +244,10 @@
 	<!--</div>-->
 	</div>
 	<div id="foot"></div>
-	<script type="text/javascript" src="js/calendar.js"></script>	
-
+	<!--<script type="text/javascript" src="js/calendar.js"></script>	-->
+    <script type="text/javascript" src="js/calendarGJ.js"></script>	
+    <script type="text/javascript" src="js/gregorian-jalaali.js"></script>
+    
 	<script type="text/javascript" src="treeview/jquery.treeview.js"></script>
 	<script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 
@@ -263,6 +274,35 @@
 			playVideo(event);
 		}
 	})*/
+	 $(document).ready(function(e) {
+		 var bool = document.getElementById('commonLibrary').getLanguage() =='فارسی';//'zh_CN'; 
+		  // var bool = true;
+          	bool ? $('#useJal').show(): $('#useJal').hide() ;
+			
+			$('.calendar').Calendar({Jalaali:false});
+			
+			 styletb(6);
+			 
+		    $('#checkb').click(function(){
+			  $('.calendar').find('tbody td').removeClass('nowDay');	
+			  if($(this).prop('checked')){
+				  $('.calendar').Calendar({Jalaali:true});
+				  styletb(1);
+			   }else{
+				   $('.calendar').Calendar({Jalaali:false});
+				   styletb(6);	
+			   }
+			  
+			  })
+			 
+		    
+    });
+	function styletb(num){
+		$('.calendar').find('tbody tr td').removeClass('red').end()
+			              .find('tbody tr').each(function(){
+							       $(this).find('td').eq(num).addClass('red');
+							   });
+		} 
 	</script>
 </body>
 </html>

@@ -93,6 +93,7 @@
 			<ul class="filetree">			
 			</ul>
 		</div>
+         <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb"><!--使用伊朗太阳历-->استفاده تقويم شمسي ايراني</label></div></div>
 		<div style="height:24px;">
 			<table>
 				<tr>
@@ -127,7 +128,16 @@
 						<td><script>T("Wend")</script></td>
 						<td><script>T("Thur")</script></td>
 						<td><script>T("Fir")</script></td>
-						<td style="color:red;"><script>T("Satu")</script></td></tr>
+						<td style="color:red;"><script>T("Satu")</script></td>
+                        </tr>
+                        <tr><td style="color:red;">Sha</td>
+						<td style="color:red;">Yek</td>
+						<td>Dos</td>
+						<td>Ses</td>
+						<td>Cha</td>
+						<td>Pan</td>
+						<td>Jom</td>
+                    </tr>
 					</thead>
 					<tbody>
 						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
@@ -180,8 +190,10 @@
 		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5></h5><p><span></span></p></div>
 	</div>
 	<div id="foot"></div>
-	<script type="text/javascript" src="js/calendar.js"></script>
-
+    
+	<script type="text/javascript" src="js/calendarGJ.js"></script>
+    <script type="text/javascript" src="js/gregorian-jalaali.js"></script>
+     
 <script type="text/javascript" src="treeview/jquery.treeview.js"></script>
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 
@@ -237,15 +249,47 @@ var oPlayBack={},  // 远程回访控件对象
 		})
 
 		initOxcDevListStatus();
-
+         
+		 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
+		
+		//日历表的样式修改
+		var bool = document.getElementById('commonLibrary').getLanguage() =='فارسی';//'zh_CN'; 
+		  // var bool = true;
+          	bool ? $('#useJal').show(): $('#useJal').hide() ;
+			
+			$('.calendar').Calendar({Jalaali:false});
+			
+			 styletb(6);
+			 
+		    $('#checkb').click(function(){
+			  $('.calendar').find('tbody td').removeClass('nowDay');	
+			  if($(this).prop('checked')){
+				  $('.calendar').Calendar({Jalaali:true});
+				  styletb(1);
+			   }else{
+				   $('.calendar').Calendar({Jalaali:false});
+				   styletb(6);	
+			   }
+			  
+			  })
+			 
 
 	})///
 
 	$(window).resize(contentMax);
-
+	
+   //日历表的样式修改
+   function styletb(num){
+		$('.calendar').find('tbody tr td').removeClass('red').end()
+			              .find('tbody tr').each(function(){
+							       $(this).find('td').eq(num).addClass('red');
+							   });
+		} 
+   
+   
 	function RecFileInfoCallback(data){
 		//console.time('---------------搜索到文件回调---------------');
 		
@@ -418,7 +462,7 @@ var oPlayBack={},  // 远程回访控件对象
 			top:main.height() + 110
 		})
 		$('#top').width(main.width()+238);
-		$('div.dev_list').height(main.height()-163);
+		$('div.dev_list').height(main.height()-183);
 		$('#file_bottom').css({
 			width:main.width(),
 			top:main.height()+78

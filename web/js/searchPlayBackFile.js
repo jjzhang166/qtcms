@@ -92,7 +92,12 @@
 
 		getAudioObj().GroupStop();
 
+<<<<<<< HEAD
      
+=======
+        var jaChecked = $("#checkb").prop('checked');
+		console.log(jaChecked+"===jaChecked===");
+>>>>>>> add jalaali calendar
 		var type = $('#type input[data]').attr('data'),
 		
 			date = $("div.calendar span.nowDate").html(),
@@ -100,7 +105,11 @@
 			oList = $('div.dev_list'),
 
 			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
+<<<<<<< HEAD
             
+=======
+            date = jaChecked ? jalaali_to_solar(date) : date;
+>>>>>>> add jalaali calendar
 			searchDate =  date ;
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
@@ -156,11 +165,19 @@
 			searchSTOP=1;
 			return;
 		}*/
+<<<<<<< HEAD
 		
 		 
 		var type = type || $('#type input[data]').attr('data');
 		
 		var date = date ||  $("div.calendar span.nowDate").html();
+=======
+		var jaChecked = $("#checkb").prop('checked');
+		 
+		var type = type || $('#type input[data]').attr('data');
+		
+		var date = date || (jaChecked ? jalaali_to_solar($("div.calendar span.nowDate").html()) : $("div.calendar span.nowDate").html());
+>>>>>>> add jalaali calendar
 		
         searchDate =  date ;
 		//var oDevList = $('div.dev_list span.device');
