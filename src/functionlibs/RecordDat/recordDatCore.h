@@ -150,5 +150,6 @@ private:
 	volatile bool m_bReloadSystemDatabase;
 	QMultiMap<QString,tagRecordDatabaseMaxID> m_tRecordDatabaseMaxId;
 	QList<quint64> m_tInsertSearchDatabaseTime;
+	QMap<quint64,tagRecordItem> m_tRecordItem;
 };
 

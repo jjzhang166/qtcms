@@ -2196,7 +2196,7 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					char *ch=NULL;
 					ch=ba.data();
 					//result = sqlite3_exec( db, ch, 0, 0,&errmsg );
-					result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
+					result = sqlite3_exec_reTry( db, ch, 0, 0,&errmsg );
 					if(result != SQLITE_OK )
 					{
 						qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;

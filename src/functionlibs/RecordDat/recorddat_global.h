@@ -3,6 +3,8 @@
 
 //#include <vld.h>
 #include <QtCore/qglobal.h>
+#include <QMap>
+#include <QString>
 #include <assert.h>
 #define  CHLBUFFERSIZE 3
 #define  TIMERECORDINDATABASE 1
@@ -93,5 +95,15 @@ typedef enum __tagObtainFilePathStepCode{
 	obtainFilePath_fail,//获取录像文件路径失败
 	obtainFilePath_end//结束
 }tagObtainFilePathStepCode;
+typedef struct __tagRecordItem{
+	quint64 uiSessionId;
+	quint64 uiChannel;
+	quint64 uiStartTime;
+	quint64 uiEndTime;
+	int nRecordType;
+}tagRecordItem;
+typedef struct __tagHeadRecordItem{
+	int nTotalSize;
+}tagHeadRecordItem;
 
 #endif // RECORDDAT_GLOBAL_H

@@ -113,6 +113,7 @@ void recordDatCore::run()
 			m_bIsBlock=false;
 			
 			qDebug()<<__FUNCTION__<<__LINE__<<"file path:"<<sWriteFilePath;
+			m_tRecordItem.clear();
 			if (nWriteType!=OVERWRITE&&nWriteType!=ADDWRITE)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"terminate record as nWriteType mode is unable";
@@ -1256,20 +1257,21 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 						pRecBufferNodeTemp=pBufferQueue->front();
 						tagFrameHead *pFrameHead=NULL;
 						pRecBufferNodeTemp->getDataPointer(&pFrameHead);
+						int nRecordItemToalSize=sizeof(tagRecordItem)*(m_tRecordItem.size()+1)+sizeof("JUAN")+sizeof(int);
 						if (NULL!=pFrameHead)
 						{
 							//step1:判断buffer的长度是否还够
 							if (pFrameHead->uiType==IFRAME)
 							{
 								//补上配置帧
-								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFrameHead->pBuffer);
+								uiFrameSize=nRecordItemToalSize+sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagVideoConfigFrame)-sizeof(pFrameHead->pBuffer);
 							}else if (pFrameHead->uiType==PFRAME)
 							{
-								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer);
+								uiFrameSize=nRecordItemToalSize+sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer);
 							}else if (pFrameHead->uiType==AFRMAE)
 							{
 								//补上配置帧
-								uiFrameSize=sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagAudioConfigFrame)-sizeof(pFrameHead->pBuffer);
+								uiFrameSize=nRecordItemToalSize+sizeof(tagFileFrameHead)+pFrameHead->uiLength-sizeof(pFrameHead->pBuffer)+sizeof(tagFileFrameHead)+sizeof(tagAudioConfigFrame)-sizeof(pFrameHead->pBuffer);
 							}else{
 								qDebug()<<__FUNCTION__<<__LINE__<<"there is a undefined frame type,i will terminate the thread";
 								abort();
@@ -1431,6 +1433,20 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								if (nRecordItemId!=0)
 								{
 									pFrameHeadBuffer->uiSessionId=nRecordItemId;
+									if (m_tRecordItem.contains(nRecordItemId))
+									{
+										//更新结束时间
+										m_tRecordItem[nRecordItemId].uiEndTime=pFrameHeadBuffer->uiGentime;
+									}else{
+										//创建新的item
+										tagRecordItem tRecordItem;
+										tRecordItem.uiSessionId=nRecordItemId;
+										tRecordItem.nRecordType=nRecType;
+										tRecordItem.uiChannel=nChannel;
+										tRecordItem.uiStartTime=pFrameHeadBuffer->uiGentime;
+										tRecordItem.uiEndTime=pFrameHeadBuffer->uiGentime;
+										m_tRecordItem.insert(nRecordItemId,tRecordItem);
+									}
 								}else{
 									qDebug()<<__FUNCTION__<<__LINE__<<"terminate the thread as nRecordItemId==0";
 									abort();
@@ -1465,6 +1481,29 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 								pFileHead->uiIndex=pFileHead->uiIndex+sizeof(tagFileFrameHead)+pFileFrameHead->tFrameHead.uiLength-sizeof(pFrameHead->pBuffer);
 								nFlags=nFlags|1;
 
+								//填充 通道信息
+								int n1=sizeof(tagRecordItem)*m_tRecordItem.size();
+								int n2=sizeof("JUAN");
+								int n3=sizeof(int);
+
+								int nRecordItemSize=sizeof(tagRecordItem)*m_tRecordItem.size()+sizeof("JUAN")+sizeof(int);
+								int n4=sizeof(tagHeadRecordItem);
+								char *pJuan="JUAN";
+								memcpy((char*)m_pDataBuffer+pFileHead->uiIndex,pJuan,4);
+								tagHeadRecordItem *pHeadRecordItem=(tagHeadRecordItem *)((char*)m_pDataBuffer+pFileHead->uiIndex+4);
+								pHeadRecordItem->nTotalSize=nRecordItemSize;
+								QMap<quint64,tagRecordItem>::const_iterator it=m_tRecordItem.constBegin();
+								quint64 uiPos=pFileHead->uiIndex+sizeof(tagHeadRecordItem)+4;
+								while(it!=m_tRecordItem.constEnd()){
+									tagRecordItem *pRecordItem=(tagRecordItem*)((char*)m_pDataBuffer+uiPos);
+									pRecordItem->nRecordType=it.value().nRecordType;
+									pRecordItem->uiChannel=it.value().uiChannel;
+									pRecordItem->uiEndTime=it.value().uiEndTime;
+									pRecordItem->uiStartTime=it.value().uiStartTime;
+									pRecordItem->uiSessionId=it.value().uiSessionId;
+									uiPos=uiPos+sizeof(tagRecordItem);
+									++it;
+								}
 								//删除节点数据
 								RecBufferNode *pRecBufferNodeToken=pBufferQueue->dequeue();
 								pRecBufferNodeToken->release();
