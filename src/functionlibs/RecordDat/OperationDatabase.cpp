@@ -704,9 +704,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 				foreach(QString sDiskEx,sDiskListInDatabase){
 					sDiskEx=sDiskEx+":";
 					quint64 uiStartTime=0;
-					qDebug()<<__FUNCTION__<<__LINE__<<"getOldestItemEx in"<<sDiskEx;
 					QString sFilePathItem=getOldestItemEx(sDiskEx,uiStartTime);
-					qDebug()<<__FUNCTION__<<__LINE__<<"getOldestItemEx out"<<sDiskEx;
 					if (!sFilePathItem.isEmpty())
 					{
 						tFilePathList.insert(sFilePathItem,uiStartTime);
@@ -1548,10 +1546,8 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 			//É¾³ý search_record±íÖÐ¼ÇÂ¼
 			sCommand=QString("select nWndId,id from record where sFilePath='%1'").arg(sFilePath);
 			QList<quint64 > tRecordIdList;
-			qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 			if (execCommand(_query,sCommand))
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
 				QList<int > tWndIdList;
 				while(_query.next()){
 					tWndIdList.append(_query.value(0).toInt());
@@ -1561,10 +1557,8 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 				{
 					sCommand.clear();
 					sCommand=QString("select nEndTime from record where sFilePath ='%1'").arg(sFilePath);
-					qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 					if (execCommand(_query,sCommand))
 					{
-						qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
 						quint64 uiEndTime=0;
 						while(_query.next()){
 							quint64 uiCurrentEndTime=_query.value(0).toUInt();
@@ -1576,10 +1570,8 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 							}
 						}
 						sCommand=QString("delete from search_record where nEndTime<=%1").arg(uiEndTime);
-						qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 						if (execCommand(_query,sCommand))
 						{
-							qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
 							QString sWndIdList;
 							for (int i=0;i<tWndIdList.size();i++)
 							{
@@ -1620,7 +1612,6 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 			{
 				sCommand.clear();
 				sCommand=QString("delete from record where sFilePath='%1'").arg(sFilePath);
-				qDebug()<<__FUNCTION__<<__LINE__<<"in:"<<sCommand;
 				if (execCommand(_query,sCommand))
 				{
 					//keep going
@@ -1628,7 +1619,6 @@ void OperationDatabase::priClearInfoInDatabase( QString sFilePath )
 					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand<<_query.lastError();
 					abort();
 				}
-				qDebug()<<__FUNCTION__<<__LINE__<<"out:"<<sCommand;
 			}else{
 				//do nothing
 			}
