@@ -1523,7 +1523,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
                       
                 $('#SerachedDevList tr').each(function(){
 						
-				    if($(this).children('td:gt(0):lt(3)').text().indexOf(searchText)!=-1){ 
+				    if($(this).children('td:eq(1)').text().indexOf(searchText)!=-1 || $(this).children('td:eq(2)').text().indexOf(searchText)!=-1){ 
 						   //将匹配的结果置顶
 					    $(this).find('td input:checkbox').prop("checked",true).parent('td').parent('tr').prependTo('#SerachedDevList');
 
