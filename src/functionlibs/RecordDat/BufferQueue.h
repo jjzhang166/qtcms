@@ -30,6 +30,8 @@ public:
 	void setRecordStatus(int nStatus);
 	int getSize();
 private:
+	bool testFrame(QVariantMap tItem);
+private:
 	/*QQueue<RecBufferNode*> m_tDataQueue;*/
 	CPointList m_tDataQueue;
 	QMutex m_tDataLock;
