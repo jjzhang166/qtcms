@@ -36,6 +36,7 @@
 	#fileRec h4{float: left; border: none;}
 	#list .sel li{background-color: #ABCDEF;}
 	.no_border{width: 80px;}
+	.red{color:red;}
 
 </style>
 </head>
@@ -100,7 +101,7 @@
 		<!-- <div class="dev_list">
 			<ul class="filetree" id="group_0"></ul>	
 		</div> -->
-        <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb"><!--使用伊朗太阳历-->استفاده تقويم شمسي ايراني</label></div></div>
+      <!--  <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb">使用伊朗太阳历استفاده تقويم شمسي ايراني</label></div></div>-->
 		<div id="find_type">
 			<div id="nowSearchType">
 				<input type="radio" name="type" id="t_1" checked="checked" />
@@ -180,12 +181,12 @@
                     </tr>
 				</thead>
 				<tbody>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+					<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 				</tbody>
 			</table>
 		</div>
@@ -274,35 +275,7 @@
 			playVideo(event);
 		}
 	})*/
-	 $(document).ready(function(e) {
-		 var bool = document.getElementById('commonLibrary').getLanguage() =='فارسی';//'zh_CN'; 
-		  // var bool = true;
-          	bool ? $('#useJal').show(): $('#useJal').hide() ;
-			
-			$('.calendar').Calendar({Jalaali:false});
-			
-			 styletb(6);
-			 
-		    $('#checkb').click(function(){
-			  $('.calendar').find('tbody td').removeClass('nowDay');	
-			  if($(this).prop('checked')){
-				  $('.calendar').Calendar({Jalaali:true});
-				  styletb(1);
-			   }else{
-				   $('.calendar').Calendar({Jalaali:false});
-				   styletb(6);	
-			   }
-			  
-			  })
-			 
-		    
-    });
-	function styletb(num){
-		$('.calendar').find('tbody tr td').removeClass('red').end()
-			              .find('tbody tr').each(function(){
-							       $(this).find('td').eq(num).addClass('red');
-							   });
-		} 
+	
 	</script>
 </body>
 </html>

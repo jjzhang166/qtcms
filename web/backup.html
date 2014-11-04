@@ -44,7 +44,8 @@
 
 	#list .sel li{background-color: #ABCDEF}
 	#page span{ cursor: pointer; margin: 8px 2px; text-decoration: underline; line-height: 16px; width: 16px; height: 16px; display: block; float: left;}
-	#page span.sel{ color: #F05133};
+	#page span.sel{ color: #F05133}
+	.red{color:red;}
 </style>
 </head>
 
@@ -93,7 +94,7 @@
 			<ul class="filetree">			
 			</ul>
 		</div>
-         <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb"><!--使用伊朗太阳历-->استفاده تقويم شمسي ايراني</label></div></div>
+       <!--  <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb">使用伊朗太阳历استفاده تقويم شمسي ايراني</label></div></div>-->
 		<div style="height:24px;">
 			<table>
 				<tr>
@@ -137,15 +138,15 @@
 						<td>Cha</td>
 						<td>Pan</td>
 						<td>Jom</td>
-                    </tr>
+                        </tr>
 					</thead>
 					<tbody>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
-						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td style="color:red;"></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+						<tr><td style="color:red;"></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 					</tbody>
 				</table>
 			</div>
@@ -216,7 +217,7 @@ var oPlayBack={},  // 远程回访控件对象
 				return;
 			}
 		})
-
+       
 		$('tbody.synCheckboxClick').each(function(){
 			$(this).SynchekboxClick();
 		})
@@ -255,40 +256,14 @@ var oPlayBack={},  // 远程回访控件对象
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
 		
-		//日历表的样式修改
-		var bool = document.getElementById('commonLibrary').getLanguage() =='فارسی';//'zh_CN'; 
-		  // var bool = true;
-          	bool ? $('#useJal').show(): $('#useJal').hide() ;
-			
-			$('.calendar').Calendar({Jalaali:false});
-			
-			 styletb(6);
-			 
-		    $('#checkb').click(function(){
-			  $('.calendar').find('tbody td').removeClass('nowDay');	
-			  if($(this).prop('checked')){
-				  $('.calendar').Calendar({Jalaali:true});
-				  styletb(1);
-			   }else{
-				   $('.calendar').Calendar({Jalaali:false});
-				   styletb(6);	
-			   }
-			  
-			  })
+		
 			 
 
+		
 	})///
 
 	$(window).resize(contentMax);
 	
-   //日历表的样式修改
-   function styletb(num){
-		$('.calendar').find('tbody tr td').removeClass('red').end()
-			              .find('tbody tr').each(function(){
-							       $(this).find('td').eq(num).addClass('red');
-							   });
-		} 
-   
    
 	function RecFileInfoCallback(data){
 		//console.time('---------------搜索到文件回调---------------');
@@ -462,7 +437,7 @@ var oPlayBack={},  // 远程回访控件对象
 			top:main.height() + 110
 		})
 		$('#top').width(main.width()+238);
-		$('div.dev_list').height(main.height()-183);
+		$('div.dev_list').height(main.height()-163);
 		$('#file_bottom').css({
 			width:main.width(),
 			top:main.height()+78

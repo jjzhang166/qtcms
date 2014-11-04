@@ -179,7 +179,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			height:oView.height()+135
 		});
 
-		$('div.dev_list').height(oLeft.height()-242);
+		$('div.dev_list').height(oLeft.height()-222);
 
 		oBottom.css({
 			width:oView.width(),
@@ -461,7 +461,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			searchAgain = 0;	
 		}
 		if(bool){
-		
+		   
 			if(localSearchWindNum < 49){
 				searchLocalFile(localSearchWindNum);
 			}else{

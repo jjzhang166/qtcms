@@ -95,7 +95,8 @@
 
      
 
-        var jaChecked = $("#checkb").prop('checked');
+      //  var jaChecked = $("#checkb").prop('checked');
+		 var jaChecked = true;
 		console.log(jaChecked+"===jaChecked===");
 
 		var type = $('#type input[data]').attr('data'),
@@ -166,13 +167,8 @@
 			return;
 		}*/
 
-		
-		 
-		var type = type || $('#type input[data]').attr('data');
-		
-		var date = date ||  $("div.calendar span.nowDate").html();
-
-		var jaChecked = $("#checkb").prop('checked');
+		//var jaChecked = $("#checkb").prop('checked');
+		var jaChecked = true;
 		 
 		var type = type || $('#type input[data]').attr('data');
 		

@@ -293,3 +293,23 @@
 			});
 		}
 })(jQuery);
+$(document).ready(function() {
+    //日历表的样式修改
+		//var bool = document.getElementById('commonLibrary').getLanguage() =='فارسی';//'zh_CN'; 
+		   var bool = true;
+          //	bool ? $('#useJal').show(): $('#useJal').hide() ;
+			
+			$('.calendar').Calendar({Jalaali:bool});
+			
+				 bool ? styletb(1) : styletb(6);
+});
+
+//日历表的样式修改
+   function styletb(num){
+		$('.calendar').find('tbody tr td').removeClass('red').end()
+			              .find('tbody tr').each(function(){
+							       $(this).find('td').eq(num).addClass('red');
+							   });
+		} 
+   
+   
