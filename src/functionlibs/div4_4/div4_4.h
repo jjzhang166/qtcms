@@ -44,22 +44,16 @@ public:
 private:
 	int m_nRef;
 	QMutex m_csRef;
+
 	QList<QWidget *> m_subWindows; 
-	int m_nSubWindowCount;
-	QWidget * m_parentOfSubWindows;
-	int m_nCurrentPage;
-	
-	int m_PageSubCount;
-	int m_row;
-	int m_column;
-	bool m_singeldisplay;
-	QSize m_parentSize;
+	int m_nSubWindowCount;          //总的子窗口数目
+	QWidget * m_parentOfSubWindows; //当前大窗口的指针
+	int m_nCurrentPage;             //当前页页码值
+	int m_nTotalWindowsCount;       //页面总数
 
-	int getSubVindowIndex(QWidget * pSubWindow);
-	void setSingelDiaplay(QWidget * pSubWindow);
-	void setTotalDisplay(QWidget * pSubWindow);
-
-	void reSizeSubWindows();
+	int m_nColumn;                  //一列的子窗口数
+	int m_nRow;                     //一行的子窗口数
+	bool m_bIsMax;                  //是否已被双击放大
 };
 
 #endif // div4_4_H

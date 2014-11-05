@@ -4,15 +4,14 @@
 #include <QPropertyAnimation>
 
 div4_4::div4_4() :
-m_nRef(0),
-m_nSubWindowCount(0),
-m_parentOfSubWindows(NULL),
-m_nCurrentPage(0),
-
-m_PageSubCount(16),
-m_row(4),
-m_column(4),
-m_singeldisplay(false)
+	m_nRef(0),
+	m_nSubWindowCount(0),
+	m_parentOfSubWindows(NULL),
+	m_nCurrentPage(0),
+	m_nTotalWindowsCount(0),
+	m_nColumn(4),
+	m_nRow(4),
+	m_bIsMax(false)
 {
 
 }
@@ -22,186 +21,160 @@ div4_4::~div4_4()
 
 }
 
-void div4_4::setSubWindows(QList<QWidget *> windows,int count )
+void div4_4::setSubWindows( QList<QWidget *> windows,int count )
 {
 	m_subWindows = windows;
 	m_nSubWindowCount = count;
+	if (count %(m_nRow * m_nColumn) != 0)
+		m_nTotalWindowsCount = count/(m_nRow * m_nColumn) + 1;
+	else
+		m_nTotalWindowsCount = count/(m_nRow * m_nColumn) ;
 }
 
 void div4_4::setParentWindow( QWidget * parent )
 {
-	m_parentSize = parent->size();
 	m_parentOfSubWindows = parent;
 }
 
 void div4_4::flush()
 {
-	reSizeSubWindows();
-	int i;
-	for (i = 0; i < m_nSubWindowCount; i ++)
+	int nWidth     = 0;
+	int nHeight    = 0;
+	int nX          = 0;
+	int nY          = 0;
+	int nPositionX = 0;
+	int nPositionY = 0;
+	if(!m_bIsMax)  //当没有子窗口被放大时
 	{
-		if (i >= m_nCurrentPage*m_PageSubCount && i< (m_nCurrentPage+1)*m_PageSubCount)
+		nWidth  = (m_parentOfSubWindows->width()) / m_nRow;
+		nHeight = (m_parentOfSubWindows->height()) / m_nColumn;
+		int i ; //屏幕最上角的子窗口下标
+		if (m_nSubWindowCount % (m_nRow * m_nColumn) == 0)
 		{
-			m_subWindows.at(i)->show();
-		}
+			i = m_nRow * m_nColumn * m_nCurrentPage;
+		} 
 		else
 		{
-			m_subWindows.at(i)->hide();
+			if (m_nCurrentPage  ==  m_nSubWindowCount / (m_nRow * m_nColumn))// 为最后一页时
+			{
+				i = m_nSubWindowCount - m_nRow * m_nColumn;  // 仍填充一页
+			}
+			else
+				i = m_nRow * m_nColumn * m_nCurrentPage;
 		}
-	}
+
+
+		for(int j = 0;j < m_nSubWindowCount;j++)       // m_nSubWindowCount:总的子窗口数目
+		{
+			if (j >= i && j < i + m_nRow * m_nColumn)
+			{
+				nPositionX = nX * nWidth;
+				nPositionY = nY * nHeight;
+				++nX;
+				if (nX == m_nRow)
+				{
+					nX %= m_nRow;
+					++nY;
+					nY = ((nY >= m_nColumn) ? nY%m_nColumn : nY);
+				}
+				m_subWindows.at(j)->setGeometry(nPositionX,nPositionY,nWidth,nHeight);			
+				m_subWindows.at(j)->show();
+			}
+			else
+				m_subWindows.at(j)->hide();
+		}  // End of  for(int j = 0;j < m_nSubWindowCount;j++) 
+	}      // End of  if(!m_bIsMax)
+	else   //当有子窗口被放大时
+	{
+		m_subWindows.at(m_nCurrentPage)->setGeometry(0     ,
+			0     ,
+			m_parentOfSubWindows->width()  ,
+			m_parentOfSubWindows->height()
+			);
+		m_subWindows.at(m_nCurrentPage)->show();
+		for (int i = 0; i < m_nSubWindowCount ; i++)
+		{
+			if (i != m_nCurrentPage)
+			{
+				m_subWindows.at(i)->hide();
+			} 
+			else
+				continue;
+		}
+	} // End of else 
 }
 
 void div4_4::parentWindowResize( QResizeEvent *ev )
 {
-	m_parentSize = ev->size();
-	/*int subWidth = .width()/m_column;
-	int subHeight = ev->size().height()/m_row;
-	for (int i = 0; i < m_nSubWindowCount; i ++)
+	if (m_nTotalWindowsCount == m_nSubWindowCount)
 	{
 
-		int ii = i%m_PageSubCount;
-		m_subWindows[i].move(subWidth*(ii%m_column),subHeight*(ii/m_row));
-		m_subWindows[i].resize(subWidth-1,subHeight-1);
-	}*/
-
-	if (m_singeldisplay)
-	{
-		setSingelDiaplay(NULL);
-	}
-	else
-	{
-		setTotalDisplay(NULL);
-	}
-}
-
-void div4_4::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
-{
-    Q_UNUSED(ev);
-	//qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
-
-	if (!m_singeldisplay)
-	{
-		m_nCurrentPage = getSubVindowIndex(subWindow);
-		setSingelDiaplay(subWindow);
-	}
-	else
-	{
-		
-		setTotalDisplay(subWindow);
-	}
-	
-	return;
-}
-
-int div4_4::getSubVindowIndex(QWidget * pSubWindow)
-{
-	int index ;
-	for (index= 0;index<m_nSubWindowCount;index++)
-		if(m_subWindows.at(index) == pSubWindow)
-			return index;
-
-	return -1;
-}
-//void div4_4::adjustSubWindow(int index)
-//{
-//	int subWidth = m_parentOfSubWindows->size().width()/m_column;
-//	int subHeight = m_parentOfSubWindows->size().height()/m_row;
-//	int ii = index%m_PageSubCount;
-//
-//	m_subWindows[index].move(subWidth*(ii%m_column),subHeight*(ii/m_row));
-//	m_subWindows[index].resize(subWidth-1,subHeight-1);
-//}
-//void div4_4::adjustSubWindow(QWidget * pSubWindows)
-//{
-//	int index = getSubVindowIndex(pSubWindows);
-//	if(index!=-1)
-//		adjustSubWindow(index);
-//}
-void div4_4::setSingelDiaplay(QWidget * pSubWindows)
-{
-
-	m_PageSubCount = 1;
-	//m_currSubWindows = pSubWindows;
-	m_singeldisplay = true;
-// 	m_nCurrentPage = getSubVindowIndex(pSubWindows);
-
-	//QState state1 ;
-	//state1.assignProperty(pSubWindows,"geometry",QRect(0,0,m_parentSize.width(),m_parentSize.height()));
-	//QPropertyAnimation *ani=new QPropertyAnimation(pSubWindows,"geometry");
-	//ani->setStartValue(pSubWindows->geometry());
-	//ani->setEndValue(QRect(0,0,m_parentSize.width(),m_parentSize.height()));
-	//ani->setDuration(300);
-	//ani->setEasingCurve(QEasingCurve::OutSine);
-	//ani->start(QAbstractAnimation::DeleteWhenStopped);
-	
-	flush();
-}
-void div4_4::setTotalDisplay(QWidget * pSubWindow)
-{
-	//adjustSubWindow(m_currSubWindows);
-	m_PageSubCount = PAGE_SUBCOUNT;
-	//m_currSubWindows = NULL;
-	m_singeldisplay = false;
-	m_nCurrentPage = m_nCurrentPage/m_PageSubCount;
-// 	if(pSubWindow)
-// 	{
-// 		int index = getSubVindowIndex(pSubWindow);
-// 		if (index!=-1)
-// 		{
-//			int subWidth = m_parentSize.width()/m_column;
-//			int subHeight = m_parentSize.height()/m_row;
-//			int indexfirst = m_PageSubCount*m_nCurrentPage;
-
-//			int ii = index-indexfirst;
-
-			//QPropertyAnimation *ani=new QPropertyAnimation(pSubWindow,"geometry");
-			//ani->setStartValue(pSubWindow->geometry());
-			//ani->setEndValue(QRect(subWidth*(ii%m_column),subHeight*(ii/m_row),subWidth-1,subHeight-1));
-			//ani->setDuration(300);
-			//ani->setEasingCurve(QEasingCurve::OutSine);
-			//ani->start(QAbstractAnimation::DeleteWhenStopped);
-// 		}
-		
-//	}
-	
-
-	flush();
-}
-void div4_4::reSizeSubWindows()
-{
-	int subWidth ;
-	int subHeight ;
-	if (m_singeldisplay)
-	{
-		subWidth=m_parentSize.width();
-		subHeight = m_parentSize.height();
-		m_subWindows.at(m_nCurrentPage)->move(0,0);
-		m_subWindows.at(m_nCurrentPage)->resize(subWidth-1,subHeight-1);
-	}
-	else
-	{
-		int subWidth = m_parentSize.width()/m_column;
-		int subHeight = m_parentSize.height()/m_row;
-		int indexfirst = m_PageSubCount*m_nCurrentPage;
-		for (int i = indexfirst; i < indexfirst+m_PageSubCount; i ++)
+		for (int i = 0; i < m_nSubWindowCount ; i++)
 		{
-
-			int ii = i-indexfirst;
-			m_subWindows.at(i)->move(subWidth*(ii%m_column),subHeight*(ii/m_row));
-			m_subWindows.at(i)->resize(subWidth-1,subHeight-1);
+			if (i != m_nCurrentPage)
+			{
+				m_subWindows.at(m_nCurrentPage)->hide();
+			} 
+			else
+				continue;
 		}
+
+		m_subWindows.at(m_nCurrentPage)->resize(ev->size());
+		m_subWindows.at(m_nCurrentPage)->show();
 	}
-	
+	else
+	{
+		int nPositionX = 0 ;
+		int nPositionY = 0 ;
+		int nX = 0;      // 一行的第x个子窗口
+		int nY = 0;      // 第y列
+		int nWidth     = ev->size().width()/ m_nRow;
+		int nHeight    = ev->size().height()/ m_nColumn;
+
+		int i ; //屏幕最上角的子窗口下标
+		if (m_nSubWindowCount % (m_nRow * m_nColumn) == 0)
+		{
+			i = m_nRow * m_nColumn * m_nCurrentPage;
+		} 
+		else
+		{
+			if (m_nCurrentPage  ==  m_nSubWindowCount / (m_nRow * m_nColumn))// 为最后一页时
+			{
+				i = m_nSubWindowCount - m_nRow * m_nColumn;  // 仍填充满一页
+			}
+			else
+				i = m_nRow * m_nColumn * m_nCurrentPage;
+		}
+
+		for(int j = 0;j < m_nSubWindowCount;j++)
+		{
+			if (j >= i && j < i + m_nRow * m_nColumn )
+			{
+				nPositionX = nX * nWidth;
+				nPositionY = nY * nHeight;
+				++nX;
+				if (nX == m_nRow)
+				{
+					nX %= m_nRow;
+					++nY;
+					nY = ((nY >= m_nColumn) ? nY%m_nColumn : nY);
+				}
+				m_subWindows.at(j)->setGeometry(nPositionX,nPositionY,nWidth,nHeight);			
+				m_subWindows.at(j)->show();
+			}
+			else
+				m_subWindows.at(j)->hide();
+		}  // End of  for(int j = 0;j < m_nSubWindowCount;j++)
+	}
 }
 
 void div4_4::nextPage()
 {
 	m_nCurrentPage ++;
-	if (m_nCurrentPage >= getPages())
+	if (m_nCurrentPage >= m_nTotalWindowsCount)
 	{
 		m_nCurrentPage = 0;
 	}
-
 	flush();
 }
 
@@ -210,7 +183,7 @@ void div4_4::prePage()
 	m_nCurrentPage --;
 	if (m_nCurrentPage < 0)
 	{
-		m_nCurrentPage = getPages() - 1;
+		m_nCurrentPage = m_nTotalWindowsCount - 1;
 	}
 
 	flush();
@@ -223,12 +196,60 @@ int div4_4::getCurrentPage()
 
 int div4_4::getPages()
 {
-	return m_nSubWindowCount/m_PageSubCount;
+	return m_nTotalWindowsCount;
 }
 
 QString div4_4::getModeName()
 {
 	return QString("div4_4");
+}
+
+void div4_4::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
+{
+	Q_UNUSED(ev);
+	int j ;
+	for ( j = 0; j < m_nSubWindowCount;j++)
+	{
+		if (m_subWindows.at(j) == subWindow)
+		{
+			qDebug("%d window is double Clicked.",j);
+			break;
+		}
+	}
+
+	//qDebug("hi ha %s",subWindow->windowTitle().toAscii().data());
+
+	if( subWindow->frameGeometry().width() == m_parentOfSubWindows->width() 
+		||subWindow->frameGeometry().height() == m_parentOfSubWindows->height()
+		)
+	{
+		m_bIsMax = false;
+		m_nCurrentPage = j/(m_nRow * m_nColumn);
+
+		if (m_nSubWindowCount %(m_nRow * m_nColumn) != 0)
+			m_nTotalWindowsCount = m_nSubWindowCount/(m_nRow * m_nColumn) + 1;
+		else
+			m_nTotalWindowsCount = m_nSubWindowCount/(m_nRow * m_nColumn) ;
+
+		flush();
+	}
+	else
+	{
+		for(int i = 0; i < m_nSubWindowCount; i++)
+		{
+			m_subWindows.at(i)->hide();
+		}
+		m_bIsMax             = true;
+		m_nCurrentPage       = j;
+		m_nTotalWindowsCount = m_nSubWindowCount;
+		subWindow->setGeometry( 0,
+			0,
+			m_parentOfSubWindows->width(),
+			m_parentOfSubWindows->height()
+			);
+		subWindow->show();
+	}
+	return;
 }
 
 long __stdcall div4_4::QueryInterface( const IID & iid,void **ppv )

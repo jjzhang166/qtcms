@@ -42,12 +42,12 @@ public:
 	virtual unsigned long __stdcall Release();
 
 	virtual void subWindowDblClick( QWidget *subWindow,QMouseEvent * ev );
-
 private:
 	int m_nRef;
 	QMutex m_csRef;
-	QList<QWidget *> m_subWindows;         //子窗口指针
-	int m_nSubWindowCount;          //子窗口总数目(64)
+
+	QList<QWidget *> m_subWindows; 
+	int m_nSubWindowCount;          //总的子窗口数目
 	QWidget * m_parentOfSubWindows; //当前大窗口的指针
 	int m_nCurrentPage;             //当前页页码值
 	int m_nTotalWindowsCount;       //页面总数
