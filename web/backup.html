@@ -94,7 +94,6 @@
 			<ul class="filetree">			
 			</ul>
 		</div>
-       <!--  <div style="height:20px;margin:2px 0;font-size:14px;"><div id="useJal"><input type="checkbox" id="checkb"/><label for="checkb">使用伊朗太阳历استفاده تقويم شمسي ايراني</label></div></div>-->
 		<div style="height:24px;">
 			<table>
 				<tr>
@@ -320,14 +319,18 @@ var oPlayBack={},  // 远程回访控件对象
 		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
 			str ='',
 			oParent = $('#search_resultFile');
-
+        var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
+		    isJalaali = document.getElementById('commonLibrary').getIsPersian(),
+			isChecked = bo&&isJalaali;
+			
 		for(var i=0;i<nowPageFile.length;i++){ 
 			var b = 1;
 			var data = nowPageFile[i];
 			var uid = sDevName+'_'+data.channelnum+'_'+data.types+'_'+data.start+'_'+data.end;
 			var type =typeHint[data.types];
 			var typeColor = color[data.types];
-
+            var start = isChecked ? solar_to_jalaali(data.start.split(' ')[0])+ ' ' + data.start.split(' ')[1] : data.start ;
+		    var end = isChecked ? solar_to_jalaali(data.end.split(' ')[0])+ ' ' + data.end.split(' ')[1] : data.end ;
 			for(var k=0;k<usedUid.length;k++){
 				if(usedUid[k] == uid){
 					b=0;
@@ -335,7 +338,7 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 			
 			if(b){
-				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+data.start+'</td><td>'+data.end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
+				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+start+'</td><td>'+end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
 			}
 		}
 		var obj = $(str).appendTo(oParent);

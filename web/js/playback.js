@@ -444,12 +444,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(bool && data.index_0){
 			console.log('当前窗口:'+(parseInt((localSearchWindNum))+1));
 			RecFileInfo2UI(data);
-			/*console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
-			console.log(data);*/
+			console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
+			console.log(data);
 		}
 
-		/*if(!bool)
-			console.log(data);*/
+		if(!bool)
+			console.log(data);
 		
 		localSearchWindNum++;
 		if(searchAgain){

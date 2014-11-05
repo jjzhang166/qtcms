@@ -91,13 +91,12 @@
 		berorSerchShowHint();
 
 		getAudioObj().GroupStop();
-
-
-     
-
-      //  var jaChecked = $("#checkb").prop('checked');
-		 var jaChecked = true;
-		console.log(jaChecked+"===jaChecked===");
+         
+		 var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
+		  
+            isJalaali = document.getElementById('commonLibrary').getIsPersian(),
+			
+		    jaChecked = bo && isJalaali;
 
 		var type = $('#type input[data]').attr('data'),
 		
@@ -107,11 +106,10 @@
 
 			devData = bool ?  oList.find('span.device:eq('+localSearchWindNum+')').data('data') : (oList.find('li.sel span.device').data('data') || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device').data('data'));
 
-            
-
             date = jaChecked ? jalaali_to_solar(date) : date;
 
 			searchDate =  date ;
+			
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
 		if(!devData){
@@ -131,8 +129,8 @@
 		if(bool){  // 本地
 			 
 		  localSearchWindNum=0;
-
-			searchLocalFile(localSearchWindNum,date,type);
+         
+		  searchLocalFile(localSearchWindNum,date,type);
 
 			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
@@ -167,8 +165,11 @@
 			return;
 		}*/
 
-		//var jaChecked = $("#checkb").prop('checked');
-		var jaChecked = true;
+		var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
+		  
+            isJalaali = document.getElementById('commonLibrary').getIsPersian(),
+			
+		    jaChecked = bo && isJalaali;
 		 
 		var type = type || $('#type input[data]').attr('data');
 		
@@ -184,8 +185,8 @@
 
 		//var name = oDevList.eq(key).data('data').name;
 
-		/*console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type))*/;
-		//console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
+		/*console.log('搜索当前设备:'+name+'参数日期为:'+date+'参数文件类型为:'+type+'----------搜索状态为:'+oPlaybackLocl.searchVideoFileEx(name,date,type));*/
+		console.log('当前本地搜索窗口号:'+wind+'//日期:'+date+'//开始时间00:00:00//23:59:59//搜索文件类型:'+type);
 		oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type);
 		//console.log('调用是否成功(0-yes,1-no)： '+oPlaybackLocl.searchVideoFileEx2(wind,date,'00:00:00','23:59:59',type));
 	}

@@ -427,6 +427,8 @@ var oSearchOcx,
 			SplitScreenMode[i]=SplitScreenMode[i]+_T('Screen');
 		}
 	function FillCommonParmData(){ 
+	    
+	    document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
@@ -439,7 +441,7 @@ var oSearchOcx,
 				$('#'+item[i]).dataIntoVal(str);
 			}
 		}
-
+       $('#BootPersian_ID').dataIntoSelected(document.getElementById('commonLibrary').getIsPersian());
 		$('#SplitScreenMode').val(SplitScreenMode[$('#SplitScreenMode').val()]);
 		$('#CommonParm input:checkbox').each(function(){
 			$(this).toCheck();
