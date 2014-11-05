@@ -187,6 +187,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "checkDatFile", "..\src\func
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "div6_6", "..\src\functionlibs\div6_6\div6_6.vcxproj", "{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onvifDevice", "..\src\functionlibs\onvifDevice\onvifDevice.vcxproj", "{8118EBA6-B614-4278-AF64-237CAF4789C8}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -392,6 +394,10 @@ Global
 		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Debug|Win32.Build.0 = Debug|Win32
 		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Release|Win32.ActiveCfg = Release|Win32
 		{6B3D44D5-D0F3-4CA6-9289-617477FAEF36}.Release|Win32.Build.0 = Release|Win32
+		{8118EBA6-B614-4278-AF64-237CAF4789C8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8118EBA6-B614-4278-AF64-237CAF4789C8}.Debug|Win32.Build.0 = Debug|Win32
+		{8118EBA6-B614-4278-AF64-237CAF4789C8}.Release|Win32.ActiveCfg = Release|Win32
+		{8118EBA6-B614-4278-AF64-237CAF4789C8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

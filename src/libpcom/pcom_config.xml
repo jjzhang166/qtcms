@@ -30,6 +30,7 @@
 		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="DVR" /> 
 		<item clsid="DB30E347-C9B8-4371-9F87-CCB627C03DA6" name="device.juan_dvr" file="deviceclient.dll" vendor="NVR" /> 
 		<item clsid="C46890FD-8603-4BBB-975C-FE0410F3AF45" name="device.juan_ipc" file="IpcDeviceClient.dll" vendor="IPC" /> 
+		<item clsid="AB99D851-4ECD-45A3-9238-3667F284123D" name="device.juan_onvif" file="onvifDevice.dll" vendor="ONVIF" /> 
 		<item clsid="990CBAE4-74F3-4F46-A5BC-06788DC1F8B4" name="protocols.Hole" file="Hole.dll" type="hole"/>
 		<item clsid="1716FE17-C4BF-4E45-A7B9-A696D46695A2" name="protocols.Turn" file="Turn.dll" type="turn"/>
 		<item clsid="3E5FD83E-81DF-40F4-94CF-BA0AC3266505" name="protocols.Bubble" file="BubbleProtocolEx.dll" type="Bubble"/>

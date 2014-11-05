@@ -1002,6 +1002,7 @@ bool LocalPlayerEx::getWindowStretchStatus( QWidget * window )
 			return pAct->getVideoStretchStatus();
 		}
 	}
+	return true;
 }
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)
