@@ -172,6 +172,8 @@ public:
 		bool getAutoFullscreen();
 		int setBootFromStart(bool bootstart);
 		bool getBootFromStart();
+		bool setIsPersian(bool bFlags);
+		bool getIsPersian();
 private:
 		IDeviceManager *m_pDeviceManager;
 };

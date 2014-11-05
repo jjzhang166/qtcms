@@ -39,6 +39,9 @@ interface ILocalSetting : public IPComBase
 
 	virtual bool getBootFromStart() = 0;
 
+	virtual bool setIsPersian(bool bFlags)=0;
+
+	virtual bool getIsPersian()=0;
 	enum _emError{
 		OK = 0,          //成功
 		E_PARAMETER_ERROR, //输入参数不正确
@@ -60,6 +63,7 @@ interface ILocalSetting : public IPComBase
 		"misc_aconnent"		   "false"
 		"misc_afullscreen"	   "true"
 		"misc_bootstart"	   "false"
+		"misc_Persian"	       "false"
 	（初始value如上）
 	
 	事件：无

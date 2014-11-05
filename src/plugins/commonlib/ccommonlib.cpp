@@ -654,5 +654,14 @@ bool Ccommonlib::getBootFromStart()
 	return m_pluginObj.getBootFromStart();
 }
 
+bool Ccommonlib::setIsPersian( bool bFlags )
+{
+	return m_pluginObj.setIsPersian(bFlags);
+}
+
+bool Ccommonlib::getIsPersian()
+{
+	return m_pluginObj.getIsPersian();
+}
 
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

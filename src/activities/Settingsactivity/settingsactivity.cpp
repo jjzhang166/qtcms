@@ -1451,6 +1451,7 @@ void settingsActivity::OnSettingCommonParm()
 	QVariant aconnent_ID=QueryValue("AutoConnect_ID");
 	QVariant afullscreen_ID=QueryValue("AutoFullscreen_ID");
 	QVariant bootstart_ID=QueryValue("BootFromStart_ID");
+	QVariant bootPersian_ID=QueryValue("BootPersian_ID");
 
 	int nRet=-1;
 	nRet=Ilocal->setLanguage(sLanguage_ID.toString());
@@ -1550,6 +1551,19 @@ void settingsActivity::OnSettingCommonParm()
 		arg.clear();
 		Content.clear();
 		Content.append("setAutoFullscreen Fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingCommonParmFail",arg);
+		Ilocal->Release();
+		return;
+	}
+
+	nRet=-1;
+	nRet=Ilocal->setIsPersian(bootPersian_ID.toBool());
+	if (ILocalSetting::OK!=nRet)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("setPersian Fail");
 		EP_ADD_PARAM(arg,"fail",Content);
 		EventProcCall("SettingCommonParmFail",arg);
 		Ilocal->Release();

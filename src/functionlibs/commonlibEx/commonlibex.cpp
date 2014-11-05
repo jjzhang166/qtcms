@@ -2682,3 +2682,56 @@ bool commonlibEx::checkDeviceNameIsExist( QString sDevcie )
 	}
 	return false;
 }
+
+bool commonlibEx::setIsPersian( bool bFlags )
+{
+	QString strBootFromStart = "false";
+	if (bFlags)
+	{
+		strBootFromStart = "true";
+	}
+
+	QSqlQuery _query(*m_db);
+
+	QString coomandConut = QString("select count(*) from general_setting where name='misc_Persian'");
+	_query.exec(coomandConut);
+
+	QString result;
+	if(_query.next())
+	{
+		result = _query.value(0).toString();
+	}
+
+	QString command = QString("update general_setting set value='%1' where name='misc_Persian'").arg(strBootFromStart);
+	if (0 == result.toInt())
+	{
+		command = QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_Persian").arg(strBootFromStart);
+	}
+	if (_query.exec(command))
+	{
+		return IDisksSetting::OK;
+	}
+	else
+	{
+		return IDisksSetting::E_SYSTEM_FAILED;
+	}
+}
+
+bool commonlibEx::getIsPersian()
+{
+	bool bIsPersian = false;
+	QSqlQuery _query(*m_db);
+	QString command = QString("select value from general_setting where name='misc_Persian'");
+	_query.exec(command);
+
+	if (_query.next())
+	{
+		QString strIsPersian = _query.value(0).toString();
+		if ("true" == strIsPersian)
+		{
+			bIsPersian = true;
+		}
+	}
+
+	return bIsPersian;
+}

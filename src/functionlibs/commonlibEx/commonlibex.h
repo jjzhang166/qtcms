@@ -158,6 +158,8 @@ public:
 	bool getAutoFullscreen();
 	int setBootFromStart(bool bootstart);
 	bool getBootFromStart();
+	bool setIsPersian(bool bFlags);
+	bool getIsPersian();
 private:
 	bool CheckTimeFormat(QString sTime);
 	bool checkDeviceNameIsExist(QString sDevcie);

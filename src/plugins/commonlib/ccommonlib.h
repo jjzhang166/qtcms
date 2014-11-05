@@ -173,7 +173,8 @@ public:
 	virtual bool getAutoFullscreen();
 	virtual int setBootFromStart(bool bootstart);
 	virtual bool getBootFromStart();
-
+	virtual bool setIsPersian(bool bFlags);
+	virtual bool getIsPersian();
 private:
 	int m_nRef;
 	QMutex m_csRef;

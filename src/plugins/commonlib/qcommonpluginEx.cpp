@@ -1822,3 +1822,34 @@ bool qcommonpluginEx::getBootFromStart()
 	}
 }
 
+bool qcommonpluginEx::setIsPersian( bool bFlags )
+{
+	ILocalSetting *pLocalSetting=NULL;
+	m_pDeviceManager->QueryInterface(IID_ILocalSetting,(void**)&pLocalSetting);
+	if (NULL!=pLocalSetting)
+	{
+		bool nret=pLocalSetting->setIsPersian(bFlags);
+		pLocalSetting->Release();
+		pLocalSetting=NULL;
+		return nret;
+	}else{
+		return false;
+	}
+}
+
+bool qcommonpluginEx::getIsPersian()
+{
+	ILocalSetting *pLocalSetting=NULL;
+	m_pDeviceManager->QueryInterface(IID_ILocalSetting,(void**)&pLocalSetting);
+	if (NULL!=pLocalSetting)
+	{
+		bool nret=pLocalSetting->getIsPersian();
+		pLocalSetting->Release();
+		pLocalSetting=NULL;
+		return nret;
+	}else{
+		return false;
+	}
+}
+
+
