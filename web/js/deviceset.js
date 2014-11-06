@@ -81,7 +81,7 @@ var oSearchOcx,
 					});
 				});
 				
-		
+		$('#searchtxt').one('keypress',function(event){if(event.keyCode == 13) searchbtn();});
 		$('div.menu .close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
 
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
