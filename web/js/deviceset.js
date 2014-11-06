@@ -337,7 +337,10 @@ var oSearchOcx,
 				}
 			});
 		});
+		$('#Video_settings_SelectEveryday').click(function(){
 		
+				$('#weekday_choose input:enabled').prop('checked',$(this).prop('checked'));
+			});
 		//用户table下 tr委托部分事件
 		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组

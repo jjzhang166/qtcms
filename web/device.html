@@ -747,7 +747,7 @@
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="3" value="Wend"/></li>
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="4" value="Thur"/></li>
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="5" value="Fri"/></li>
-									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="6" value="Satu"/></li>    
+									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="6" value="Satu"/></li>
 								</ul>
                                </div>
 							</td>
@@ -819,16 +819,17 @@
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to")</script></h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
-						<!--<tr><td colspan="4">
-			                            <input id="dvr_record_weekday_1" class="chk" type="checkbox"/><script>T("Monday")</script>
-			                            <input id="dvr_record_weekday_2" class="chk" type="checkbox" /><script>T("Tuesday")</script>
-			                            <input id="dvr_record_weekday_3" class="chk" type="checkbox" /><script>T("Wednesday")</script>
-			                            <input id="dvr_record_weekday_4" class="chk" type="checkbox" /><script>T("Thursday")</script>
-			                            <input id="dvr_record_weekday_5" class="chk" type="checkbox" /><script>T("Friday")</script>
-			                            <input id="dvr_record_weekday_6" class="chk" type="checkbox" /><script>T("Saturday")</script>
-			                            <input id="dvr_record_weekday_0" class="chk" type="checkbox" /><script>T("Sunday")</script>
+						<tr><td colspan="3" id="weekday_choose">
+                                        <input type="checkbox" /><script>T("Sun")</script>
+			                            <input type="checkbox"/><script>T("Mon")</script>
+			                            <input type="checkbox" /><script>T("Tue")</script>
+			                            <input type="checkbox" /><script>T("Wed")</script>
+			                            <input type="checkbox" /><script>T("Thu")</script>
+			                            <input type="checkbox" /><script>T("Fri")</script>
+			                            <input type="checkbox" /><script>T("Sat")</script>
 			                            </td>
-			                        </tr>-->
+			                    
+                        <td><input id="Video_settings_SelectEveryday" class="chk" type="checkbox" /><script>T("Everyday")</script></td></tr>
 			            <tbody id="Video_settings" class="synCheckboxClick">
 							<tr>
 								<td colspan="4" class="td4 dvr_record_chn_sel">
@@ -879,7 +880,8 @@
 								</td>
 							</tr>
 						</tbody>
-			                 <tr><td colspan="3"><input id="Video_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label><script>T("Select")</script></label><!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> --></tr>
+			                 <tr><td colspan="4"><input id="Video_settings_SelectAll" style="margin:0 4px;" type="checkbox" /><label><script>T("Select")</script></label></td>
+                             <!-- <td class="tdBtn"><div class="hover chk_all_btn"><script>T("Select")</script></div></td> -->
 							<tr><td colspan="4" class="tdBtn" style="background:#282828;">
 								<div class="hover" click="dvr_save('dvr_record_chn_sel');" onclick="submitThisMenu('dvrVideoInfo');"><script>T("Save")</script></div>
 							</td></tr>
