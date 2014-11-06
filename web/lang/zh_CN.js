@@ -293,6 +293,8 @@
 	'Hour':'小时',
 	'Minute':'分钟',
 	'Second':'秒',
+	'current_time':'现在时间',
+	'confirm':'确定',
 	
 	'Video_settings':'录像设置',
 	'Storage_Settings':'存储设置',

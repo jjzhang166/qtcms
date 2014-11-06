@@ -293,7 +293,9 @@
 	'Hour':'Hour',//Not yet translated
 	'Minute':'Minute',//Not yet translated
 	'Second':'Second',//Not yet translated
-
+    'current_time':'настоящее время',
+    'confirm':'подтвердить',
+	
 	'Video_settings':'Настройки записи',
 	'Storage_Settings':'Настройки хранения',
 	'Language':'Язык',

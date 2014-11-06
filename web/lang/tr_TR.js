@@ -293,6 +293,8 @@ var tr_TR={
 	'Hour':'Saat',
 	'Minute':'Dakika',
 	'Second':'İkinci',
+	'current_time':'şimdi',
+    'confirm':'onaylamak',
 	
 	'Video_settings':'&nbsp;&nbsp;&nbspKayıt Ayarları&nbsp',
 	'Storage_Settings':'&nbsp;&nbsp;&nbsp;&nbsp;&nbspDepolama Ayarları&nbsp;&nbsp;&nbsp',

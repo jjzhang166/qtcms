@@ -293,6 +293,8 @@
 'Hour':'Hour',
 'Minute':'Minute',
 'Second':'Second',
+'current_time':'Now',
+'confirm':'Done',
 
 'Video_settings':'Record settings',
 'Storage_Settings':'Storage settings',

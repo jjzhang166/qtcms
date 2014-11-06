@@ -19,6 +19,12 @@ var oSearchOcx,
 					    timeFormat: 'HH:mm:ss',
 						controlType:'select',
 					    showTime: false,
+						timeOnlyTitle: _T('Choose_time'),
+						hourText: _T('Hour'),
+						minuteText: _T('Minute'),
+						secondText: _T('Second'),
+						currentText: _T('current_time'),
+						closeText: _T('confirm'),
 					    onClose: function(dateText, inst) {
 						  
 						  if (endDateTextBox.val() != '') {
@@ -51,7 +57,13 @@ var oSearchOcx,
 	                    controlType:'select',
 				        showTime: false,
 					    //showButtonPanel: false,
-					 
+					    timeOnlyTitle: _T('Choose_time'),
+						hourText: _T('Hour'),
+						minuteText: _T('Minute'),
+						secondText: _T('Second'),
+						currentText: _T('current_time'),
+						closeText: _T('confirm'),
+						
 						onClose: function(dateText, inst) {
 							if (startDateTextBox.val() != '') {
 								var testStartDate = startDateTextBox.datetimepicker('getDate');
