@@ -108,10 +108,12 @@
     <ClCompile Include="mdworkobject.cpp" />
     <ClCompile Include="RemoteMotionDetection.cpp" />
     <ClCompile Include="SearchRemoteFile.cpp" />
+    <ClCompile Include="stringfunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="byteArraySpace.h" />
     <ClInclude Include="h264wh.h" />
+    <ClInclude Include="stringfunction.h" />
     <CustomBuild Include="mdworkobject.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing mdworkobject.h...</Message>
