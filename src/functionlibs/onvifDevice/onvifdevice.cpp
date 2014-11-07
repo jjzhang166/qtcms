@@ -1,15 +1,24 @@
 #include "onvifdevice.h"
 #include <guid.h>
-int cbXConnectStatusChange(QString sEvName,QVariantMap tInfo,void *pUser);
-int cbXLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
-int cbXAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXMainConnectStatusChange(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXMainLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXMainAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXSubConnectStatusChange(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXSubLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXSubAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
 onvifDevice::onvifDevice():m_nRef(0),
-	m_pOnvifProctol(NULL),
 	m_tConnectStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
 	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream";
 	m_hMainThread=QThread::currentThreadId();
 	connect(this,SIGNAL(sgbackToMainThread(QString,QVariantMap)),this,SLOT(slbackToMainThread(QString,QVariantMap)));
+	for (int i=0;i<2;i++)
+	{
+		tagOnvifProtocolInfo tProtocolInfo;
+		tProtocolInfo.pOnvifProctol=NULL;
+		tProtocolInfo.tConnectStatus=IDeviceClient::STATUS_DISCONNECTED;
+		m_tOnvifProtocolInfo.insert(i,tProtocolInfo);
+	}
 }
 
 onvifDevice::~onvifDevice()
@@ -128,94 +137,45 @@ int onvifDevice::setDeviceId( const QString & sEsee )
 
 int onvifDevice::connectToDevice()
 {
-	if (m_tConnectStatus!=IDeviceClient::STATUS_DISCONNECTED)
+	if (IDeviceClient::STATUS_DISCONNECTED==m_tConnectStatus)
 	{
-		if (NULL!=m_pOnvifProctol)
-		{
-			m_tpOnvifProtocolLock.lock();
-			m_pOnvifProctol->Release();
-			m_pOnvifProctol=NULL;
-			m_tpOnvifProtocolLock.unlock();
-		}else{
-			//do nothing
-		}
-		//生成 协议组件 先用 bubble 组件 来 代替
-		//pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);
-		pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_pOnvifProctol);
-		if (NULL!=m_pOnvifProctol)
-		{
-			IEventRegister *pRegister=NULL;
-			m_tpOnvifProtocolLock.lock();
-			m_pOnvifProctol->QueryInterface(IID_IEventRegister,(void**)&pRegister);
-			m_tpOnvifProtocolLock.unlock();
-			if (NULL==pRegister)
+		QMap<int,tagOnvifProtocolInfo>::const_iterator it=m_tOnvifProtocolInfo.constBegin();
+		while(it!=m_tOnvifProtocolInfo.constEnd()){
+			if (NULL!=it.value().pOnvifProctol)
 			{
-				m_tpOnvifProtocolLock.lock();
-				m_pOnvifProctol->Release();
-				m_pOnvifProctol=NULL;
-				m_tpOnvifProtocolLock.unlock();
-				return 1;
-			}else{
-				pRegister->registerEvent("Authority",cbXAuthority,this);
-				pRegister->registerEvent("LiveStream",cbXLiveStream,this);
-				pRegister->registerEvent("StateChangeed",cbXConnectStatusChange,this);
-				pRegister->Release();
-				pRegister=NULL;
-			}
-			QVariantMap tStatusInfo;
-			tStatusInfo.insert("CurrentStatus",IDeviceClient::STATUS_CONNECTING);
-			backToMainThread("CurrentStatus",tStatusInfo);
-			IDeviceConnection *pProctolConnect=NULL;
-			m_tpOnvifProtocolLock.lock();
-			m_pOnvifProctol->QueryInterface(IID_IDeviceConnection,(void**)&pProctolConnect);
-			m_tpOnvifProtocolLock.unlock();
-			if (NULL!=pProctolConnect)
-			{
-				QVariantMap tPorts;
-				tPorts.insert("media",m_tDeviceParamInfo.nPorts);
-				if (1==pProctolConnect->setDeviceHost(m_tDeviceParamInfo.sAddress)||1==pProctolConnect->setDevicePorts(tPorts)||1==pProctolConnect->setDeviceId(m_tDeviceParamInfo.sEsee)||1==pProctolConnect->setDeviceAuthorityInfomation(m_tDeviceParamInfo.sUserName,m_tDeviceParamInfo.sPassword))
+				IDeviceConnection *pDeviceConnection=NULL;
+				it.value().pOnvifProctol->QueryInterface(IID_IDeviceConnection,(void**)&pDeviceConnection);
+				if (NULL!=pDeviceConnection)
 				{
-					if (1==pProctolConnect->connectToDevice())
-					{
-						//tStatusInfo.clear();
-						//tStatusInfo.insert("CurrentStatus",IDeviceClient::STATUS_CONNECTED);
-						//backToMainThread("CurrentStatus",tStatusInfo);
-						pProctolConnect->Release();
-						pProctolConnect=NULL;
-						return 0;
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"onvif connect to device fail";
-					}
+					pDeviceConnection->disconnect();
+					pDeviceConnection->Release();
+					pDeviceConnection=NULL;
 				}else{
-					qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail as set protocol param fail";
+					qDebug()<<__FUNCTION__<<__LINE__<<"onvifProtocol should  support interface IID_IDeviceConnection";
+					abort();
 				}
+				it.value().pOnvifProctol->Release();
+				m_tOnvifProtocolInfo[0].pOnvifProctol=NULL;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail as QueryInterface IID_IDeviceConnection interface fail";
+				//do nothing
 			}
-			if (NULL!=pProctolConnect)
+			QVariantMap tCurrentConnectStatus;
+			tCurrentConnectStatus.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+			QString sStreamNum;
+			if (it.key()==0)
 			{
-				pProctolConnect->Release();
-				pProctolConnect=NULL;
+				sStreamNum=QString("Main");
+			}else{
+				sStreamNum=QString("Sub");
 			}
-			tStatusInfo.clear();
-			tStatusInfo.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-			backToMainThread("CurrentStatus",tStatusInfo);
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail as pcomCreateInstance m_pOnvifProctol fail";
+			tCurrentConnectStatus.insert("streamNum",sStreamNum);
+			backToMainThread("CurrentStatus",tCurrentConnectStatus);
+			++it;
 		}
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"current status ::"<<m_tConnectStatus<<"please make sure current status is disconnect";
+		qDebug()<<__FUNCTION__<<__LINE__<<"current status is not disconnect,if you want to reconnect,please call closeAll() frist";
+		return 1;
 	}
-	if (NULL!=m_pOnvifProctol)
-	{
-		m_tpOnvifProtocolLock.lock();
-		m_pOnvifProctol->Release();
-		m_pOnvifProctol=NULL;
-		m_tpOnvifProtocolLock.unlock();
-	}else{
-		//do nothing
-	}
-	return 1;
 }
 
 int onvifDevice::checkUser( const QString & sUsername,const QString &sPassword )
@@ -233,67 +193,11 @@ int onvifDevice::setChannelName( const QString & sChannelName )
 
 int onvifDevice::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 {
-	if (m_tConnectStatus!=IDeviceClient::STATUS_CONNECTED)
-	{
-		if (NULL!=m_pOnvifProctol)
-		{
-			IRemotePreview *pRemotePreview=NULL;
-			m_tpOnvifProtocolLock.lock();
-			m_pOnvifProctol->QueryInterface(IID_IRemotePreview,(void**)&pRemotePreview);
-			m_tpOnvifProtocolLock.unlock();
-			if (NULL!=pRemotePreview)
-			{
-				int nFlags=1;
-				if (bOpen)
-				{
-					nFlags=pRemotePreview->getLiveStream(nChannel,nStream);
-				}else{
-					nFlags=pRemotePreview->pauseStream(true);
-				}
-				pRemotePreview->Release();
-				pRemotePreview=NULL;
-				return nFlags;
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"liveStreamRequire fail as onvif protocol do not support IID_IRemotePreview interface";
-				return 1;
-			}
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"liveStreamRequire fail as m_pOnvifProctol is null";
-			return 1;
-		}
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"liveStreamRequire fail as current connect status is not in connected";
-		return 1;
-	}
+	return 0;
 }
 
 int onvifDevice::closeAll()
 {
-	if (NULL!=m_pOnvifProctol)
-	{
-		IDeviceConnection *pProcotolConnect=NULL;
-		m_tpOnvifProtocolLock.lock();
-		m_pOnvifProctol->QueryInterface(IID_IDeviceConnection,(void**)&pProcotolConnect);
-		m_tpOnvifProtocolLock.unlock();
-		if (NULL!=pProcotolConnect)
-		{
-			pProcotolConnect->disconnect();
-			pProcotolConnect->Release();
-			pProcotolConnect=NULL;
-		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"onvif protocol do not support IID_IDeviceConnection interface";
-			abort();
-		}
-		m_tpOnvifProtocolLock.lock();
-		m_pOnvifProctol->Release();
-		m_pOnvifProctol=NULL;
-		m_tpOnvifProtocolLock.unlock();
-	}else{
-		//do nothing
-	}
-	QVariantMap tStatusInfo;
-	tStatusInfo.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
-	backToMainThread("CurrentStatus",tStatusInfo);
 	return 0;
 }
 
@@ -339,29 +243,43 @@ void onvifDevice::slbackToMainThread( QString sEvName,QVariantMap evMap )
 {
 	if (sEvName=="CurrentStatus")
 	{
-		IDeviceClient::ConnectStatus tCurrentStatus=(IDeviceClient::ConnectStatus)evMap.value(sEvName).toInt();
-		if (tCurrentStatus!=m_tConnectStatus)
-		{
-			m_tConnectStatus=tCurrentStatus;
-			eventProcCall(sEvName,evMap);
-		}else{
-			//do nothing
-		}
+
 	}else{
 		//do nothing
 	}
 }
 
-int cbXConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )
+int cbXMainConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )
 {
+	tInfo.insert("streamNum","Main");
 	return ((onvifDevice*)pUser)->cbConnectStatusChange(tInfo);
 }
 
-int cbXLiveStream( QString sEvName,QVariantMap tInfo,void *pUser )
+int cbXMainLiveStream( QString sEvName,QVariantMap tInfo,void *pUser )
 {
+	tInfo.insert("streamNum","Main");
 	return ((onvifDevice*)pUser)->cbLiveStream(tInfo);
 }
-int cbXAuthority(QString sEvName,QVariantMap tInfo,void *pUser)
+int cbXMainAuthority(QString sEvName,QVariantMap tInfo,void *pUser)
 {
+	tInfo.insert("streamNum","Main");
+	return ((onvifDevice*)pUser)->cbAuthority(tInfo);
+}
+
+int cbXSubConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	tInfo.insert("streamNum","Sub");
+	return ((onvifDevice*)pUser)->cbConnectStatusChange(tInfo);
+}
+
+int cbXSubLiveStream( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	tInfo.insert("streamNum","Sub");
+	return ((onvifDevice*)pUser)->cbLiveStream(tInfo);
+}
+
+int cbXSubAuthority( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	tInfo.insert("streamNum","Sub");
 	return ((onvifDevice*)pUser)->cbAuthority(tInfo);
 }

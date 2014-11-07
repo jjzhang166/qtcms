@@ -23,6 +23,10 @@ typedef struct __tagDeviceParamInfo{
 	QString sPassword;
 	QString sChannelName;
 }tagDeviceParamInfo;
+typedef struct __tagOnvifProtocolInfo{
+	IDeviceConnection *pOnvifProctol;
+	IDeviceClient::ConnectStatus tConnectStatus;
+}tagOnvifProtocolInfo;
 class  onvifDevice:public QObject,
 	public IEventRegister,
 	public IDeviceClient
@@ -73,7 +77,7 @@ private:
 	tagDeviceParamInfo m_tDeviceParamInfo;
 	IDeviceClient::ConnectStatus m_tConnectStatus;
 	Qt::HANDLE m_hMainThread;
-	IDeviceConnection *m_pOnvifProctol;
+	QMap<int,tagOnvifProtocolInfo> m_tOnvifProtocolInfo;
 };
 
 #endif // ONVIFDEVICE_H
