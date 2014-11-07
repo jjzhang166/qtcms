@@ -124,9 +124,6 @@ private:
 	volatile bool bHadCallCloseAll;
 
 	bool m_bIsSycTime;
-	//QTcpSocket *m_tcpSocket;
-	//QByteArray m_timeZone;
-	//QByteArray m_softwareVersion;
 	int m_steps;
 
 	IProtocolPTZ *m_pProtocolPTZ;

@@ -251,7 +251,7 @@ void QSubviewRun::run()
 					pChannelManger=NULL;
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
-					if ("IPC"==m_tDeviceInfo.m_sVendor)
+					if ("IPC"==m_tDeviceInfo.m_sVendor||"ONVIF"==m_tDeviceInfo.m_sVendor)
 					{
 						ISwitchStream *pSwitchStream=NULL;
 						m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
