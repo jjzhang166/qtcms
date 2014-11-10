@@ -155,7 +155,9 @@ int MDWorkObject::mdWorkProc(QTcpSocket * s)
 
 //				if (s->waitForReadyRead(50))
 				{
-					msleep(50);
+					QEventLoop eventloop;
+					QTimer::singleShot(50, &eventloop, SLOT(quit()));
+					eventloop.exec();
 					qint64 nRead = s->read(sRecvBuffer,sizeof(sRecvBuffer) - 1); // Ô¤Áô½áÊø·ûÎ»ÖÃ¶ÁÈ¡
 					if (-1 == nRead)
 					{
