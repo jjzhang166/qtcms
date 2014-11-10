@@ -84,7 +84,6 @@ void recordDatCore::run()
 	QString sHisRecordDiks;
 	int nWriteType=2;//0:覆盖写；1：续写文件；2：没有文件可写
 	QString sWriteFilePath;
-	
 	while(bRunStop==false){
 		switch(nRunStep){
 		case recordDat_init:{

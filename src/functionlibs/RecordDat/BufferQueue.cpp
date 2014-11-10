@@ -51,6 +51,12 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 				pRecBufferNode=(RecBufferNode*)m_tDataQueue.front();
 				tagFrameHead *pFrameHead=NULL;
 				pRecBufferNode->getDataPointer(&pFrameHead);
+				if (pFrameHead->uiType==IFRAME||pFrameHead->uiType==AFRMAE||pFrameHead->uiType==PFRAME)
+				{
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"undefined type,it must out of memory range,it will abort the system,please preallocation more memory";
+					abort();
+				}
 				if (NULL!=pFrameHead)
 				{
 					if (pFrameHead->uiType==IFRAME)
@@ -210,6 +216,7 @@ void BufferQueue::clear()
 		}
 	}
 	m_nQueueMaxSize=0;
+	m_uiAvailableSize=CHLBUFFERSIZE*1024*1024;
 	m_tDataLock.unlock();
 }
 

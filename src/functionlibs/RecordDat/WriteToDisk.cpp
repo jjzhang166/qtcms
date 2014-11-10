@@ -57,6 +57,7 @@ void WriteToDisk::run()
 		switch(nStep){
 		case 0:{
 			//check
+			qDebug()<<__FUNCTION__<<__LINE__<<"start write to disk:"<<m_sFilePath;
 			m_bBlock=true;
 			m_nPosition=__LINE__;
 			if (m_bWrite)
@@ -137,6 +138,7 @@ void WriteToDisk::run()
 			   break;
 		case 2:{
 			//end
+			qDebug()<<__FUNCTION__<<__LINE__<<"finish write to disk"<<m_sFilePath;
 			bStop=true;
 			   }
 			   break;
@@ -171,16 +173,22 @@ void WriteToDisk::slCheckBlock()
 
 void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiBufferSize)
 {
-	if (!QThread::isRunning())
-	{
-		QThread::start();
-	}else{
-		//do nothing
-	}
 	int nCount=0;
+	while(QThread::isRunning()){
+		msleep(10);
+		if (nCount>50&&nCount%100==0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"please checkout here";
+		}else{
+			//do nothing
+		}
+		nCount++;
+	}
+	nCount=0;
+	QThread::isRunning();
 	while(!QThread::isRunning()){
 		sleepEx(10);
-		if (nCount>500&&nCount%100==0)
+		if (nCount>50&&nCount%100==0)
 		{
 			QThread::start();
 			qDebug()<<__FUNCTION__<<__LINE__<<"please checkout here";
