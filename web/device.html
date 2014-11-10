@@ -138,10 +138,10 @@
 				<table class="tb1 tb2" style="position: absolute; top:0;">
 					<thead class="thead">
 						<tr>
-							<td style="width:140px;"><script>T("Device")</script></td>
+							<td sort='Vendor' style="width:140px;"><script>T("Device")</script></td>
 							<td>ID</td>
-							<td>IP</td>
-							<td style="width:60px;"><script>T("Channels")</script></td>
+							<td sort="IP" >IP</td>
+							<td sort="Chl" style="width:60px;"><script>T("Channels")</script></td>
 						</tr>
 					</thead>
 				</table>
@@ -1951,7 +1951,7 @@
 			<li onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
 			<li onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
 			<li><script>T("modify")</script></li>
-			<li onclick="searchFlushReal();"><script>T("delete")</script></li>
+			<li><script>T("delete")</script></li>
 		</ul>
 	</div>
 	<div id="device" class="menu">

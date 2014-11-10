@@ -89,7 +89,7 @@ var oSearchOcx,
 			
 			});
 		$('div.menu .close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
-
+        $('#RemoveDevice_ok').click(function(){setTimeout(searchFlushReal(),100);});
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
 				$('#device input:radio').removeAttr('id');
@@ -345,7 +345,7 @@ var oSearchOcx,
 		})
 
 		//录像设置验证正确的时间段.
-		$('#recordtime tbody tr:lt(4)').each(function(){
+		/*$('#recordtime tbody tr:lt(4)').each(function(){
 			$(this).on('focusout','input:text',function(){
 				var oWarp = $(this).parent('div.timeInput').siblings('div.timeInput').addBack();
 				if(oWarp.eq(0).gettime()>oWarp.eq(1).gettime()){
@@ -354,7 +354,7 @@ var oSearchOcx,
 					//$(this).val($(this).attr('default'));
 				}
 			});
-		});
+		});*/
 		$('#Video_settings_SelectEveryday').click(function(){
 		
 				$('#weekday_choose input:enabled').prop('checked',$(this).prop('checked'));
@@ -421,6 +421,29 @@ var oSearchOcx,
 		$('#searchtxt').focus(function(){
 			$(this).val('');
 		})
+		
+		//文件排序
+		$('#SerachDevList').prev('table').find('thead td[sort]').mousedown(function(){
+			$(this).css('background-position','0 -20px');
+			}).mouseup(function(){
+				$(this).css('background-position','0 0');
+				var type = $(this).attr('sort');
+				if(type && devFile){
+					$('#SerachDevList tbody').html('');
+					var sortType ='';
+					var node =$(this);
+					if($(this).attr('sortType')){
+						sortType ='Des';
+						node.removeAttr('sortType');
+					}else{
+						sortType = 'Asc';
+						node.attr('sortType',1);
+					}
+					SortSearchFile_2UI(type+sortType);
+				}
+			}).mouseout(function(){
+					$(this).css('background-position','0 0');
+			});
 
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
@@ -1073,6 +1096,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	//搜索设备控件方法.
 	function searchFlushReal(){
 		$('#SerachDevList tbody tr').remove();
+		devFile =[];
 		oSearchOcx.Flush();
 	}
 	
@@ -1085,6 +1109,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		},5000)*/
 	}
 	//设备搜索回调函数
+	var devFile =[];
 	function callback(data){
 		var bUsed = 1;
 		/*$('#SerachDevList tbody tr').each(function(){ 
@@ -1102,6 +1127,8 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		if(searchDevAvailable(key)){
 			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
 			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
+			devFile.push(data);
+			//console.log('devFile:'+data.SearchIP_ID);
 			//initDevIntoAreaXml($('#SerachDevList tbody input:checkbox'),$('#adddevicedouble_ID'));
 		}
 
@@ -1532,7 +1559,8 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 			oSearchOcx.Stop();
 		}
 	}
-		//设备管理中的IP/ID模糊搜索
+	
+    //设备管理中的IP/ID模糊搜索
 	function searchbtn(){
  
             var searchText=$("#searchtxt").val(),//获取搜索框的关键词
@@ -1586,3 +1614,69 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	if (a[1]>23 || a[3]>59 || a[4]>59) return false;
 	return true;
     }	
+//ip和通道的排序
+var nowDevFile=[];
+function SortSearchFile_2UI(sortfn){
+	
+	/*for(var i in devFile){
+	  console.log(devFile[i].SearchChannelCount_ID);
+	}*/
+	var fn = window[sortfn];
+	nowDevFile = devFile.sort(fn);
+	/*console.log('---after sort ---- ');
+	for(var i in devFile){
+	  console.log(devFile[i].SearchChannelCount_ID);
+	}
+	*/
+
+    for(var i=0;i<nowDevFile.length;i++){
+		
+	  
+	   var data = nowDevFile[i];
+	   
+	   var key = data.SearchSeeId_ID ?  data.SearchSeeId_ID : data.SearchIP_ID;
+		
+
+		if(searchDevAvailable(key)){
+			var id = data.SearchSeeId_ID > 1 ? data.SearchSeeId_ID : data.SearchIP_ID.replace('.','-');
+			$('<tr id="esee_'+id+'" class="'+data.SearchVendor_ID+'"><td><input type="checkbox" />'+data.SearchVendor_ID+'</td><td>'+data.SearchSeeId_ID+'</td><td>'+data.SearchIP_ID+'</td><td>'+data.SearchChannelCount_ID+'</td></tr>').appendTo($('#SerachDevList tbody')).data('data',data);
+		}
+	}	
+   
+       var warp = $('#SerachDevList');
+
+		if($('#SerachedDevList').height() > warp.height() && !warp.attr('b')){
+			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
+			warp.attr('b',0);
+		}
+	
+}
+function VendorAsc(a,b){
+	
+	return (a.SearchVendor_ID).localeCompare(b.SearchVendor_ID);
+	
+}
+function VendorDes(a,b){
+    return (b.SearchVendor_ID).localeCompare(a.SearchVendor_ID);
+}
+function ChlAsc(a,b){
+	return a.SearchChannelCount_ID - b.SearchChannelCount_ID;
+}
+
+function ChlDes(a,b){
+	return b.SearchChannelCount_ID - a.SearchChannelCount_ID;
+}
+function transformIp(ip){
+	var ipValue = ip.split('.');
+	return parseInt(ipValue[0],10)*256*256*256+parseInt(ipValue[1],10)*256*256+parseInt(ipValue[2],10)*256+parseInt(ipValue[3],10);
+	}
+function IPAsc(a,b){
+	
+	return transformIp(a.SearchIP_ID) - transformIp(b.SearchIP_ID);
+	
+}
+function IPDes(a,b){
+	
+	return transformIp(b.SearchIP_ID) - transformIp(a.SearchIP_ID);
+	
+}
