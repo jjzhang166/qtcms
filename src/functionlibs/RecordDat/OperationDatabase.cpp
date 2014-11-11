@@ -2072,7 +2072,7 @@ bool OperationDatabase::execCommand( QSqlQuery & tQuery,QString sCommand )
 			{
 				msleep(1);
 				nCount++;
-				qDebug()<<__FUNCTION__<<__LINE__<<"try:"<<nCount<<"as lock";
+				qDebug()<<__FUNCTION__<<__LINE__<<"try:"<<nCount<<"as lock"<<sCommand;
 			}else{
 				return false;
 			}
@@ -2114,6 +2114,17 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 		QByteArray tByte=sCommand.toLatin1();
 		char *pCmd=tByte.data();
 		result = sqlite3_get_table( db, pCmd, &dbResult, &nRow, &nColumn, &errmsg );
+		int ncount=0;
+		while (SQLITE_OK!=result&&ncount<300)
+		{
+			result = sqlite3_get_table( db, pCmd, &dbResult, &nRow, &nColumn, &errmsg );
+			msleep(10);
+			ncount++;
+			if (ncount%100==0)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec"<<pCmd<<errmsg;
+			}
+		}
 		QList<QMap<QString,QString>> tList;
 		if (SQLITE_OK == result)
 		{
@@ -2152,7 +2163,6 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 				sCommand=QString("delete from search_record where nEndTime<=%1").arg(uiEndTime);
 				QByteArray tByte=sCommand.toLatin1();
 				char *pCmd=tByte.data();
-				//result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
 				result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
 				if (result==SQLITE_OK)
 				{
@@ -2169,7 +2179,6 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					sCommand=QString("update search_record set nStartTime=%1 where nStartTime<%2 and nWndId in ").arg(uiEndTime).arg(uiEndTime)+"("+sWndIdList+")";
 					QByteArray tByte=sCommand.toLatin1();
 					char *pCmd=tByte.data();
-					//result = sqlite3_exec( db, pCmd, 0, 0,&errmsg );
 					result = sqlite3_exec_reTry( db, pCmd, 0, 0,&errmsg );
 					if (result==SQLITE_OK)
 					{
@@ -2183,10 +2192,16 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					abort();
 				}
 				//record
-				result = sqlite3_exec( db, "begin transaction", 0, 0, &errmsg ); //开始一个事务
+				sCommand=QString("begin transaction");
+				tByte.clear();
+				tByte=sCommand.toLatin1();
+				char *pCmd_begin=tByte.data();
+				result = sqlite3_exec_reTry( db, pCmd_begin, 0, 0,&errmsg );
+				//result = sqlite3_exec( db, "begin transaction", 0, 0, &errmsg ); //开始一个事务
 				if(result != SQLITE_OK )
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+					abort();
 				}
 				for (int i=0;i<tRecordIdList.size();i++)
 				{
@@ -2195,17 +2210,23 @@ void OperationDatabase::clearInfoIndatabaseWithNativeAPIs( QString sFilePath )
 					ba=sCommand.toLatin1();
 					char *ch=NULL;
 					ch=ba.data();
-					//result = sqlite3_exec( db, ch, 0, 0,&errmsg );
 					result = sqlite3_exec_reTry( db, ch, 0, 0,&errmsg );
 					if(result != SQLITE_OK )
 					{
 						qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+						abort();
 					}
 				}
-				result = sqlite3_exec( db, "commit transaction", 0, 0, &errmsg ); //提交事务
+				sCommand=QString("commit transaction");
+				tByte.clear();
+				tByte=sCommand.toLatin1();
+				char *pCmd_commit=tByte.data();
+				result = sqlite3_exec_reTry( db, pCmd_commit, 0, 0,&errmsg );
+				//result = sqlite3_exec( db, "commit transaction", 0, 0, &errmsg ); //提交事务
 				if(result != SQLITE_OK )
 				{
 					qDebug()<<__FUNCTION__<<__LINE__<<"exec fail:"<<sCommand<<result<<errmsg;
+					abort();
 				}
 			}else{
 				//do nothing
@@ -2230,7 +2251,7 @@ SQLITE_API int OperationDatabase::sqlite3_exec_reTry( sqlite3* db, /* An open da
 		{
 			return nResurt;
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"exec fail and retry"<<errmsg;
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec fail and retry"<<errmsg<<pCmd;
 			msleep(10);
 		}
 	}

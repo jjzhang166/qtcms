@@ -703,6 +703,9 @@ int RecordPlayer::searchVideoFileEx2( const int & nWndId, const QString & sDate,
 		pSchProc->setPara(nWndId, sDate, sStartTime, sEndTime, nTypes);
 		pSchProc->start();
 		m_wndCount++;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"wnd lose:"<<nWndId;
+		abort();
 	}
 
 
@@ -774,7 +777,6 @@ void RecordPlayer::sndToUI( int wnd, QVariantMap evMap )
 	SearchProcess *pSch = m_schEvMap.value(wnd);
 	pSch->deleteLater();
 	m_schEvMap.remove(wnd);
-
 	EventProcCall("GetRecordFileEx", evMap);
 
 	if (m_wndCount < MAX_WINDOWS_NUM && m_schEvMap.isEmpty())
