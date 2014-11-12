@@ -111,4 +111,5 @@ extern const IID IID_IDeviceAuth;
 extern const GUID CLSID_LocalPlayerEx;
 extern const IID IID_IVideoDisplayOption;
 extern const CLSID CLSID_onvifDevice;
+extern const GUID CLSID_OnvifProtocol;
 #endif

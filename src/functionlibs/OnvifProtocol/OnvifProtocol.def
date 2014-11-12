@@ -1,0 +1,3 @@
+LIBRARY "OnvifProtocol.dll"
+EXPORTS
+	CreateInstance @1
