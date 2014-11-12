@@ -6,7 +6,7 @@
 #include <QMap>
 #include <QString>
 #include <assert.h>
-#define  CHLBUFFERSIZE 3.5
+#define  CHLBUFFERSIZE 6
 #define  TIMERECORDINDATABASE 1
 #define  MOTIONRECORDINDATABASE 2
 #define  NODELISTSIZE 600
