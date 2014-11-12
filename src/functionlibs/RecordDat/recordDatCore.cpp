@@ -1143,24 +1143,6 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 					//do nothing
 				}
 				//step1:处理搜索数据库
-				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
-				{
-					//更新搜索条目的录像类型
-					quint64 uiEndTime=QDateTime::currentDateTime().toTime_t();
-					QVariantMap tInfo;
-					tInfo.insert("nEndTime",uiEndTime);
-					QList<int > tIdList;
-					tIdList.append(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel));
-					if (m_tOperationDatabase.updateSearchDatabase(tIdList,tInfo,sFilePath))
-					{
-						//keep going
-					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDatabase fail,please checkout";
-					}
-				}else{
-					//do nothing
-				}
-				//创建搜索条目
 				quint64 uiStartTime=QDateTime::currentDateTime().toTime_t();
 
 				RecBufferNode *pRecBufferNodeTemp=NULL;
@@ -1185,6 +1167,25 @@ int recordDatCore::writeToBuffer( int nChannel,QString sFilePath )
 				}else{
 					//do nothing
 				}
+
+				//更新之前的搜索条目的录像类型
+				if (m_tDatabaseInfo.tChannelInSearchDatabaseId.contains(nChannel))
+				{
+					quint64 uiEndTime=uiStartTime;
+					QVariantMap tInfo;
+					tInfo.insert("nEndTime",uiEndTime);
+					QList<int > tIdList;
+					tIdList.append(m_tDatabaseInfo.tChannelInSearchDatabaseId.value(nChannel));
+					if (m_tOperationDatabase.updateSearchDatabase(tIdList,tInfo,sFilePath))
+					{
+						//keep going
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"updateSearchDatabase fail,please checkout";
+					}
+				}else{
+					//do nothing
+				}
+				//创建搜索条目
 
 				quint64 uiEndTime=uiStartTime;
 				QString sSearchDatabaseDisk;
