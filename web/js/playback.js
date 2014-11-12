@@ -7,8 +7,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	localSearchWindNum=0,//要搜索的本地回放文件的设备
+	LocalFlag = true,//本地文件搜索是否有文件的标记，1表示没有 ，0表示有
 	searchAgain = 0,//正在搜索时是否再次点击搜索按钮
-    initleft;
+    initleft;//时间轴的初始位置
+	
 	$(function(){
 
 		oBottom = $('#operating');
@@ -80,7 +82,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			set_drag(min,max,moveObj);
 			
 			
-			setTimeout(function(){playVideo()},500);
+			setTimeout(function(){playVideo()},40);
 			
 		})
        
@@ -438,19 +440,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 
 	function RecFileInfoCallback(data){
+		var wnum = localSearchWindNum ;
 		for(i in data){
 			recFile.push($.parseJSON(data[i]));	
 		}
 		if(bool && data.index_0){
 			//console.log('当前窗口:'+(parseInt((localSearchWindNum))+1));
-			RecFileInfo2UI(data);
+			  LocalFlag = false;
+			  RecFileInfo2UI(data);
+			  showLocalRecProgress(wnum++);
 			//console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
 			//console.log(data);
 		}
 
 		/*if(!bool)
 			console.log(data);*/
-		var wnum = localSearchWindNum ;
+		
 		localSearchWindNum++;
 		if(searchAgain){
 			$('#channelvideo').find('div.canvas').remove()
@@ -462,7 +467,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		if(bool){
 			
-		       showLocalRecProgress(wnum);
+		     
 			if(localSearchWindNum < 49){
 				
 				searchLocalFile(localSearchWindNum);
@@ -479,7 +484,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
        recFile.length>=recTotal&&searchSTOP && file2UIFinish();
 	}
     function showLocalRecProgress(now){
-		now = now || 0;
 
 		if(now != 0 && now>=49){
 			
@@ -490,7 +494,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			str = (now/49*100).toString().slice(0,5);
 			str = str == 'NaN'?'':str+'%';
 
-		if(49 == now){
+		if(49 == now ){
 			con = lang.Retrieval_completed;
 		}
 
@@ -864,7 +868,26 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function SearchRecordOverCallback(data){
 		//console.log(data);
 		//console.log(data.searchResult);
-		 showLocalRecProgress(49);
+		if(LocalFlag){
+			$('#fileRec').stop(true,true).find('span').show().width(0)
+		             .end().find('h5').html('')
+		             .end().find('h4').html(lang.Retrieval_completed);
+		    
+		}else{
+		  if(data.searchResult=='SUCCESS')
+		     showLocalRecProgress(49);
+		  else if(data.searchResult=='INCOMPLETE'){
+			$('#fileRec h4').html('<h4 style="color:red;">'+lang.not_complete+'</h4>')
+		      .end().find('h5').html('')
+			  .end().show();
+		    setTimeout(function(){
+			  $('#fileRec').stop(true,true).fadeOut(1500);
+		    },1000);
+		  }
+		  
+		}
+
+		LocalFlag=true;
 	}
 
 	function ThrowExceptionCallback(data){

@@ -63,7 +63,7 @@
 		
 			$('#fileRec').stop(true,true).show().find('p').show()
 			         .end().find('span').width(0)
-					 .end().find('h5').html('0/0')
+					 .end().find('h5').html('0%')
 					 .end().find('h4').html(lang.Retrieving)
   	}
 	var typeHint = [];
