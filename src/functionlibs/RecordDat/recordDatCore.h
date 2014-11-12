@@ -88,6 +88,7 @@ typedef enum __tagRecordDatTurnType{
 	recordDatTurnType_noTurn,//historyType==currentType!=0,类型没有转变，接着录像
 	recordDatTurnType_turnType//historyType!=currentType!=0,类型转换，接着录像
 }tagRecordDatTurnType;
+
 class recordDatCore:public QThread
 {
 	Q_OBJECT
@@ -109,10 +110,6 @@ private slots:
 private:
 	void eventCallBack(QString sEventName,QVariantMap tInfo);
 	int obtainFilePath(QString &sWriteFilePath);//0:覆盖写；1：续写文件；2：没有文件可写
-	//QString getUsableDisk(QString &sDiskLisk);//返回值：有剩余空间可用的盘符；传进参数：录像盘符列表
-	//QString getLatestItem(QString sDisk);//参数格式：D：
-	/*bool checkFileIsFull(QString sFilePath);*/
-	/*bool createNewFile(QString sFilePath);*/
 	bool getIsRecover();
 	void sleepEx(quint64 uiTime);
 	bool updateSearchDatabase();

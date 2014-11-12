@@ -320,8 +320,10 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 			tEventLoop.exec();
 			++count;
 		}
-		qDebug()<<__FUNCTION__<<__LINE__<<nWndId<<"repeat times: "<<count;
-
+		if (count>0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<nWndId<<"repeat times: "<<count;
+		}
 		if (ret == SQLITE_OK)
 		{
 			uint uiStart = dtStart.toTime_t();

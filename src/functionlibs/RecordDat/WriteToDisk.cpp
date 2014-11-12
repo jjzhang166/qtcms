@@ -185,7 +185,7 @@ void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiB
 		nCount++;
 	}
 	nCount=0;
-	QThread::isRunning();
+	QThread::start();
 	while(!QThread::isRunning()){
 		sleepEx(10);
 		if (nCount>50&&nCount%100==0)

@@ -409,9 +409,9 @@ void OperationDatabase::run()
 									break;
 		case OperationDatabase_obtainFilePath:{
 			QString sFilePath;
-			qDebug()<<__FUNCTION__<<__LINE__<<"priObtainFilePath in";
+			qDebug()<<__FUNCTION__<<__LINE__<<"in:OperationDatabase_obtainFilePath";
 			int nReturn=priObtainFilePath(sFilePath);
-			qDebug()<<__FUNCTION__<<__LINE__<<"priObtainFilePath out";
+			qDebug()<<__FUNCTION__<<__LINE__<<"out:OperationDatabase_obtainFilePath";
 			m_tObtainFilePathLock.lock();
 			if (m_tObtainFilePathResult.isEmpty())
 			{
@@ -541,7 +541,9 @@ void OperationDatabase::run()
 													break;
 		case OperationDatabase_clearInfoInDatabase:{
 			QString sFilePath=tCurrentInfo.value("sFilePath").toString();
+			qDebug()<<__FUNCTION__<<__LINE__<<"OperationDatabase_clearInfoInDatabase in";
 			priClearInfoInDatabase(sFilePath);
+			qDebug()<<__FUNCTION__<<__LINE__<<"OperationDatabase_clearInfoInDatabase out";
 			nStepCode=OperationDatabase_default;
 												   }
 												   break;
@@ -622,7 +624,11 @@ int OperationDatabase::obtainFilePath( QString &sWriteFilePath )
 	if (QThread::isRunning())
 	{
 		int nSleepCount=0;
-		while(m_tObtainFilePathResult.isEmpty()){
+		if (m_tStepCode.size()>0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"m_tStepCode size:"<<m_tStepCode.size();
+		}
+		while(m_tObtainFilePathResult.isEmpty()){		
 			msleep(10);
 			nSleepCount++;
 			if (nSleepCount>300)
@@ -743,7 +749,6 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 									 break;
 		case obtainFilePath_createFile:{
 			//如果文件不存在，则创建文件
-			qDebug()<<__FUNCTION__<<__LINE__<<"obtainFilePath_createFile in";
 			if (createNewFile(sFilePath))
 			{
 				nStep=obtainFilePath_success;
@@ -754,7 +759,6 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 				priSetRecordFileStatusEx(sFilePath,tInfo);
 				nStep=obtainFilePath_fail;
 			}
-			qDebug()<<__FUNCTION__<<__LINE__<<"obtainFilePath_createFile out";
 									   }
 									   break;
 		case obtainFilePath_success:{
@@ -763,9 +767,7 @@ int OperationDatabase::priObtainFilePath( QString &sWriteFilePath)
 			tInfo.insert("nLock",1);
 			bFlag=0;
 			priSetRecordFileStatusEx(sFilePath,tInfo);
-			qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<"priClearInfoInDatabase in";
 			priClearInfoInDatabase(sFilePath);
-			qDebug()<<__FUNCTION__<<__LINE__<<sFilePath<<"priClearInfoInDatabase out";
 			nStep=obtainFilePath_end;
 									}
 									break;
@@ -2064,7 +2066,7 @@ bool OperationDatabase::execCommand( QSqlQuery & tQuery,QString sCommand )
 		{
 			if (nCount!=0)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"try=====as lock======success";
+				qDebug()<<__FUNCTION__<<__LINE__<<"try=====as lock======success"<<sCommand;
 			}
 			return true;
 		}else{
@@ -2256,6 +2258,3 @@ SQLITE_API int OperationDatabase::sqlite3_exec_reTry( sqlite3* db, /* An open da
 		}
 	}
 }
-
-
-

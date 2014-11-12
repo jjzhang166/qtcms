@@ -42,7 +42,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nSleepSwitch(0),
 	m_nCheckPreCount(0),
 	m_nSecondPosition(0),
-	m_nMotionRecordTime(1)
+	m_nMotionRecordTime(10)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);

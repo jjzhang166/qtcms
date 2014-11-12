@@ -126,7 +126,7 @@ bool freeDisk::freeDiskEx( QString sAllDisk ,quint64 uiDiskReservedSize)
 							break;
 						}else{
 							//keep going 
-							qDebug()<<__FUNCTION__<<__LINE__<<sDiskEx<<"do not have enough space for recorder,find next disk";
+							//qDebug()<<__FUNCTION__<<__LINE__<<sDiskEx<<"do not have enough space for recorder,find next disk";
 						}
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<sDiskEx<<"can not been gotten message,it may be a system disk";
