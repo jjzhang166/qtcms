@@ -111,6 +111,7 @@ private:
 	WorkerThread *m_pWorkThread;
 	DeviceInfo m_tDeviceInfo;
 	int m_workResult;
+	volatile bool m_bSearchStoping;
 };
 
 #endif // ONVIFPROTOCOL_H

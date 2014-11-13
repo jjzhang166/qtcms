@@ -11,10 +11,10 @@ OnvifProtocol::OnvifProtocol():
     m_nRef(0),
 	m_workResult(-1),
 	m_pDeviceSeach(NULL),
-	m_pWorkThread(NULL)
+	m_pWorkThread(NULL),
+	m_bSearchStoping(false)
 {
 	m_sEventList << "LiveStream"<<"SocketError"<<"StateChanged"<<"ConnectRefuse"<<"SearchDeviceSuccess";
-
 // 	typedef QMultiMap<QString,tagOnvifProInfo> EventInfo;
 	qRegisterMetaType<QMultiMap<QString,tagOnvifProInfo> >("QMultiMap<QString,tagOnvifProInfo>");
 
@@ -174,6 +174,12 @@ void OnvifProtocol::analyzeDeviceInfo( unsigned char *ip,unsigned short port, ch
 
 int OnvifProtocol::Start()
 {
+	if (m_pDeviceSeach!=NULL)
+	{
+		return 0;
+	}else{
+		//keep going
+	}
 	m_pDeviceSeach = new DeviceSearch;
 	m_pDeviceSeach->setHook((fOnvifSearchFoundHook)cbSearchHook, this);
 	int ret = m_pDeviceSeach->Start();
@@ -193,14 +199,21 @@ int OnvifProtocol::Flush()
 
 int OnvifProtocol::Stop()
 {
+	if (m_bSearchStoping==true)
+	{
+		return 0;
+	}
+	m_bSearchStoping=true;
 	if (m_pDeviceSeach)
 	{
 		m_pDeviceSeach->Stop();
 		delete m_pDeviceSeach;
 		m_pDeviceSeach = NULL;
+		m_bSearchStoping=false;
 		return 0;
 	}
 	else
+		m_bSearchStoping=false;
 		return 1;
 }
 

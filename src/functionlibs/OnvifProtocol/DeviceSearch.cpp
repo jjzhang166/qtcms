@@ -1,6 +1,8 @@
 #include "DeviceSearch.h"
 #include <QTime>
-
+#include <QEventLoop>
+#include <QTimer>
+#include <QDebug>
 void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware);
 
 DeviceSearch::DeviceSearch()
@@ -14,11 +16,12 @@ DeviceSearch::DeviceSearch()
 
 DeviceSearch::~DeviceSearch()
 {
-
+	qDebug()<<__FUNCTION__<<__LINE__<<"delete:out"<<this<<this->thread()->currentThread()->currentThreadId();;
 }
 
 int DeviceSearch::Start()
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"start:"<<this<<this->thread()->currentThread()->currentThreadId();;
 	if (!isRunning())
 	{
 		start();
@@ -32,7 +35,9 @@ int DeviceSearch::Stop()
 	m_bStop = true;
 	while (isRunning())
 	{
-		msleep(10);
+		QEventLoop eventloop;
+		QTimer::singleShot(10, &eventloop, SLOT(quit()));
+		eventloop.exec();
 	}
 	return 0;
 }
@@ -56,7 +61,7 @@ int DeviceSearch::setInterval( int nInterval )
 
 void DeviceSearch::run()
 {
-	ONVIF_CLIENT_init(1, 1, 1, true, 2);
+	ONVIF_CLIENT_init(1, 1, 1, false, 2);
 	ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL, m_customCtx);
 
 	QTime timer;

@@ -45,7 +45,9 @@ void customMessageHandler(QtMsgType type, const char *msg){
 		txt = QString("Critical: %1").arg(msg);  
 		break;  
 	case QtFatalMsg:  
-		txt = QString("Fatal: %1").arg(msg);  
+		txt = QString("Fatal: %1").arg(msg); 
+		QTextStream stds(stdout);
+		stds << txt << endl;
 		g_tMessage.unlock();
 		abort();  
 	
