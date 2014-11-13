@@ -57,7 +57,7 @@ int DeviceSearch::setInterval( int nInterval )
 void DeviceSearch::run()
 {
 	ONVIF_CLIENT_init(1, 1, 1, true, 2);
-	ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL);
+	ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL, m_customCtx);
 
 	QTime timer;
 	timer.start();
@@ -66,7 +66,7 @@ void DeviceSearch::run()
 		if (timer.elapsed() > m_i32Interval*1000 || m_bFlush)
 		{
 			timer.start();
-			ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL);
+			ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL, m_customCtx);
 			m_bFlush = false;
 		}
 		msleep(1);
@@ -75,7 +75,8 @@ void DeviceSearch::run()
 	ONVIF_CLIENT_deinit();
 }
 
-void DeviceSearch::setHook( fOnvifSearchFoundHook hook )
+void DeviceSearch::setHook( fOnvifSearchFoundHook hook, void *customCtx )
 {
 	m_hook = hook;
+	m_customCtx = customCtx;
 }

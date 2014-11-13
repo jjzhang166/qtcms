@@ -16,7 +16,7 @@ public:
 	int Stop();
 	int Flush();
 	int setInterval(int nInterval);
-	void setHook(fOnvifSearchFoundHook hook);
+	void setHook(fOnvifSearchFoundHook hook, void *customCtx);
 protected:
 	void run();
 private:
@@ -24,6 +24,7 @@ private:
 	bool m_bFlush;
 	qint32 m_i32Interval;
 	fOnvifSearchFoundHook m_hook;
+	void *m_customCtx;
 };
 
 #endif // DEVICESEARCH_H

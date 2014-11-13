@@ -13,15 +13,14 @@ OnvifProtocol::OnvifProtocol():
 	m_pDeviceSeach(NULL),
 	m_pWorkThread(NULL)
 {
-	m_sEventList << "LiveStream"
-		<<"SocketError"
-		<<"StateChanged"
-		<<"ConnectRefuse"
-		<<"SearchDeviceSuccess";
+	m_sEventList << "LiveStream"<<"SocketError"<<"StateChanged"<<"ConnectRefuse"<<"SearchDeviceSuccess";
+
+// 	typedef QMultiMap<QString,tagOnvifProInfo> EventInfo;
+	qRegisterMetaType<QMultiMap<QString,tagOnvifProInfo> >("QMultiMap<QString,tagOnvifProInfo>");
 
 	m_pWorkThread = new WorkerThread();
 	m_pWorkThread->moveToThread(&m_workThread);
-	connect(this, SIGNAL(sigConnectToDevice()), m_pWorkThread, SLOT(connectToDevice()));
+	connect(this, SIGNAL(sigConnectToDevice()), m_pWorkThread, SLOT(ConnectToDevice()));
 	connect(this, SIGNAL(sigAuthority()), m_pWorkThread, SLOT(Authority()));
 	connect(this, SIGNAL(sigDisconnect()), m_pWorkThread, SLOT(Disconnect()));
 	connect(this, SIGNAL(sigGetLiveStream(int, int)), m_pWorkThread, SLOT(GetLiveStream(int, int)));
@@ -40,6 +39,12 @@ OnvifProtocol::~OnvifProtocol()
 {
 	m_workThread.quit();
 	m_workThread.wait();
+
+	if (m_pWorkThread)
+	{
+		delete m_pWorkThread;
+		m_pWorkThread = NULL;
+	}
 }
 
 long __stdcall OnvifProtocol::QueryInterface( const IID & iid,void **ppv )
@@ -170,7 +175,7 @@ void OnvifProtocol::analyzeDeviceInfo( unsigned char *ip,unsigned short port, ch
 int OnvifProtocol::Start()
 {
 	m_pDeviceSeach = new DeviceSearch;
-	m_pDeviceSeach->setHook((fOnvifSearchFoundHook)cbSearchHook);
+	m_pDeviceSeach->setHook((fOnvifSearchFoundHook)cbSearchHook, this);
 	int ret = m_pDeviceSeach->Start();
 	return ret;
 }
@@ -403,7 +408,7 @@ int OnvifProtocol::PTZStop( const int &nChl, const int &nCmd )
 	return 0;
 }
 
-void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware )
+void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
 {
-	((OnvifProtocol*)bind_host)->analyzeDeviceInfo(ip, port, name, location, firmware);
+	((OnvifProtocol*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
 }

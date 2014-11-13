@@ -99,9 +99,12 @@ extern void ONVIF_CLIENT_deinit();
 		-1 , search failed
 		>= 0, the number of devices searched
 */
-typedef void (*fOnvifSearchFoundHook)(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware);
+typedef void (*fOnvifSearchFoundHook)(const char *bind_host, unsigned char *ip,unsigned short port,
+	char *name, char *location, char *firmware,
+	void *customCtx);
 extern int ONVIF_search(int device_type, bool add_hello_dev, int recv_timeout_s, 
-	fOnvifSearchFoundHook hook,  const char *bind_host);
+	fOnvifSearchFoundHook hook,  const char *bind_host, 
+	void *customCtx);
 
 /*
 * onvif event daemon start
@@ -127,9 +130,9 @@ Note: you should check whether dev_type/xaddr/scopes  is null or not before usei
 */
 #define WSDD_EVENT_HELLO	(0)
 #define WSDD_EVENT_BYE		(1)
-typedef void (*fON_WSDD_EVENT)(char *dev_type, char *xaddr, char *scopes, int wsdd_event_type);
-extern void ONVIF_search_daemon_start(fON_WSDD_EVENT hook);
-extern void ONVIF_search_daemon_set_hook(fON_WSDD_EVENT hook);
+typedef void (*fON_WSDD_EVENT)(char *dev_type, char *xaddr, char *scopes, int wsdd_event_type, void *customCtx);
+extern void ONVIF_search_daemon_start(fON_WSDD_EVENT hook, void *customCtx);
+extern void ONVIF_search_daemon_set_hook(fON_WSDD_EVENT hook, void *customCtx);
 extern void ONVIF_search_daemon_stop();
 
 

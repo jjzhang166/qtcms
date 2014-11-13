@@ -16,7 +16,7 @@
 
 #pragma comment(lib, "libonvifc.lib")
 
-void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware);
+void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void* customCtx);
 
 class  OnvifProtocol:public QObject,
 	public IEventRegister,
