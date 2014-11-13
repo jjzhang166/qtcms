@@ -150,7 +150,7 @@ int onvifDevice::connectToDevice()
 		int nStreamNum=0;
 		while(nStreamNum<2){
 			m_tpOnvifProtocolLock.lock();
-			pcomCreateInstance(CLSID_Bubble,NULL,IID_IDeviceConnection,(void**)&m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol);
+			pcomCreateInstance(CLSID_OnvifProtocol,NULL,IID_IDeviceConnection,(void**)&m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol);
 			if (NULL==m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol)
 			{
 				m_tpOnvifProtocolLock.unlock();

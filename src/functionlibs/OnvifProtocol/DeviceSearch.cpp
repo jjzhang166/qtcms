@@ -2,6 +2,7 @@
 #include <QTime>
 #include <QEventLoop>
 #include <QTimer>
+#include <QCoreApplication>
 #include <QDebug>
 
 DeviceSearch::DeviceSearch()
@@ -15,14 +16,14 @@ DeviceSearch::DeviceSearch()
 
 DeviceSearch::~DeviceSearch()
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<"delete:out"<<this<<this->thread()->currentThread()->currentThreadId();;
+	qDebug()<<__FUNCTION__<<__LINE__<<"stop out:"<<this<<this->thread()->currentThread()->currentThreadId();;
 }
 
 int DeviceSearch::Start()
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<"start:"<<this<<this->thread()->currentThread()->currentThreadId();;
 	if (!isRunning())
 	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"start:"<<this<<this->thread()->currentThread()->currentThreadId();;
 		start();
 	}
 	m_bStop = false;
@@ -34,10 +35,12 @@ int DeviceSearch::Stop()
 	m_bStop = true;
 	while (isRunning())
 	{
-		QEventLoop eventloop;
-		QTimer::singleShot(10, &eventloop, SLOT(quit()));
-		eventloop.exec();
+		QTime dieTime=QTime::currentTime().addMSecs(5);
+		while(QTime::currentTime()<dieTime){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+		}
 	}
+	qDebug()<<__FUNCTION__<<__LINE__<<"stop out:"<<this<<this->thread()->currentThread()->currentThreadId();;
 	return 0;
 }
 
