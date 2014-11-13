@@ -7,6 +7,7 @@
 #pragma  pack(1)
 typedef int (__cdecl *EventHook)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagOnvifProInfo{
+	__tagOnvifProInfo():proc(NULL),pUser(NULL){}
 	EventHook proc;
 	void *pUser;
 }tagOnvifProInfo;

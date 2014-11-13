@@ -153,24 +153,24 @@ void OnvifProtocol::eventProcCall( QString sEvent,QVariantMap tInfo )
 	}
 }
 
-void OnvifProtocol::analyzeDeviceInfo( unsigned char *ip,unsigned short port, char *name, char *location, char *firmware )
-{
-	QString ipStr;
-	ipStr = ipStr.sprintf("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-	QVariantMap deviceInfo;
-	deviceInfo.insert("SearchDeviceName_ID"    ,QVariant(QString(name)));
-	deviceInfo.insert("SearchDeviceId_ID"      ,QVariant(""));
-	deviceInfo.insert("SearchDeviceModelId_ID" ,QVariant(QString(firmware)));
-	deviceInfo.insert("SearchSeeId_ID"         ,QVariant(""));
-	deviceInfo.insert("SearchChannelCount_ID"  ,QVariant(""));
-	deviceInfo.insert("SearchIP_ID"            ,QVariant(ipStr));
-	deviceInfo.insert("SearchMask_ID"          ,QVariant(""));
-	deviceInfo.insert("SearchMac_ID"           ,QVariant(""));
-	deviceInfo.insert("SearchGateway_ID"       ,QVariant(""));     
-	deviceInfo.insert("SearchHttpport_ID"      ,QVariant(port));
-	deviceInfo.insert("SearchMediaPort_ID"     ,QVariant(""));
-	eventProcCall(QString("SearchDeviceSuccess"),deviceInfo);
-}
+// void OnvifProtocol::analyzeDeviceInfo( unsigned char *ip,unsigned short port, char *name, char *location, char *firmware )
+// {
+// 	QString ipStr;
+// 	ipStr = ipStr.sprintf("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+// 	QVariantMap deviceInfo;
+// 	deviceInfo.insert("SearchDeviceName_ID"    ,QVariant(QString(name)));
+// 	deviceInfo.insert("SearchDeviceId_ID"      ,QVariant(""));
+// 	deviceInfo.insert("SearchDeviceModelId_ID" ,QVariant(QString(firmware)));
+// 	deviceInfo.insert("SearchSeeId_ID"         ,QVariant(""));
+// 	deviceInfo.insert("SearchChannelCount_ID"  ,QVariant(""));
+// 	deviceInfo.insert("SearchIP_ID"            ,QVariant(ipStr));
+// 	deviceInfo.insert("SearchMask_ID"          ,QVariant(""));
+// 	deviceInfo.insert("SearchMac_ID"           ,QVariant(""));
+// 	deviceInfo.insert("SearchGateway_ID"       ,QVariant(""));     
+// 	deviceInfo.insert("SearchHttpport_ID"      ,QVariant(port));
+// 	deviceInfo.insert("SearchMediaPort_ID"     ,QVariant(""));
+// 	eventProcCall(QString("SearchDeviceSuccess"),deviceInfo);
+// }
 
 int OnvifProtocol::Start()
 {
@@ -181,7 +181,7 @@ int OnvifProtocol::Start()
 		//keep going
 	}
 	m_pDeviceSeach = new DeviceSearch;
-	m_pDeviceSeach->setHook((fOnvifSearchFoundHook)cbSearchHook, this);
+	m_pDeviceSeach->setHook(QString("SearchDeviceSuccess"), m_tEventMap.value("SearchDeviceSuccess"));
 	int ret = m_pDeviceSeach->Start();
 	return ret;
 }
@@ -421,7 +421,7 @@ int OnvifProtocol::PTZStop( const int &nChl, const int &nCmd )
 	return 0;
 }
 
-void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
-{
-	((OnvifProtocol*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
-}
+// void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
+// {
+// 	((OnvifProtocol*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
+// }

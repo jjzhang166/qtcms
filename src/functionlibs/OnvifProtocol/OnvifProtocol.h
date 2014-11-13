@@ -16,7 +16,7 @@
 
 #pragma comment(lib, "libonvifc.lib")
 
-void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void* customCtx);
+// void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void* customCtx);
 
 class  OnvifProtocol:public QObject,
 	public IEventRegister,
@@ -81,7 +81,7 @@ public:
 	virtual int PTZAuto(const int &nChl, bool bOpend);
 	virtual int PTZStop(const int &nChl, const int &nCmd);
 
-	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware );
+// 	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware );
 public slots:
 	void handleReady(int result);
 signals:

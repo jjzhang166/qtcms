@@ -3,7 +3,6 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QDebug>
-void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware);
 
 DeviceSearch::DeviceSearch()
 	: QThread(),
@@ -62,7 +61,7 @@ int DeviceSearch::setInterval( int nInterval )
 void DeviceSearch::run()
 {
 	ONVIF_CLIENT_init(1, 1, 1, false, 2);
-	ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL, m_customCtx);
+	ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, NULL, this);
 
 	QTime timer;
 	timer.start();
@@ -71,7 +70,7 @@ void DeviceSearch::run()
 		if (timer.elapsed() > m_i32Interval*1000 || m_bFlush)
 		{
 			timer.start();
-			ONVIF_search(ONVIF_DEV_ALL, false, 2, m_hook, NULL, m_customCtx);
+			ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, NULL, this);
 			m_bFlush = false;
 		}
 		msleep(1);
@@ -80,8 +79,36 @@ void DeviceSearch::run()
 	ONVIF_CLIENT_deinit();
 }
 
-void DeviceSearch::setHook( fOnvifSearchFoundHook hook, void *customCtx )
+void DeviceSearch::setHook( QString sEvent, tagOnvifProInfo proInfo )
 {
-	m_hook = hook;
-	m_customCtx = customCtx;
+	m_sEvent = sEvent;
+	m_proInfo = proInfo;
+}
+
+void DeviceSearch::analyzeDeviceInfo( unsigned char *ip,unsigned short port, char *name, char *location, char *firmware )
+{
+	QString ipStr;
+	ipStr = ipStr.sprintf("%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+	QVariantMap deviceInfo;
+	deviceInfo.insert("SearchDeviceName_ID"    ,QVariant(QString(name)));
+	deviceInfo.insert("SearchDeviceId_ID"      ,QVariant(""));
+	deviceInfo.insert("SearchDeviceModelId_ID" ,QVariant(QString(firmware)));
+	deviceInfo.insert("SearchSeeId_ID"         ,QVariant(""));
+	deviceInfo.insert("SearchChannelCount_ID"  ,QVariant(""));
+	deviceInfo.insert("SearchIP_ID"            ,QVariant(ipStr));
+	deviceInfo.insert("SearchMask_ID"          ,QVariant(""));
+	deviceInfo.insert("SearchMac_ID"           ,QVariant(""));
+	deviceInfo.insert("SearchGateway_ID"       ,QVariant(""));     
+	deviceInfo.insert("SearchHttpport_ID"      ,QVariant(port));
+	deviceInfo.insert("SearchMediaPort_ID"     ,QVariant(""));
+
+	if (m_proInfo.proc && m_proInfo.pUser)
+	{
+		m_proInfo.proc(m_sEvent, deviceInfo, m_proInfo.pUser);
+	}
+}
+
+void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
+{
+	((DeviceSearch*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
 }
