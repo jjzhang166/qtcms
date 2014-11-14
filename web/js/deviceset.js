@@ -1102,7 +1102,8 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	
 	function searchFlush(){
 		oSearchOcx.Stop();
-		$('#SerachDevList tbody tr').remove();	 
+		$('#SerachDevList tbody tr').remove();	
+		devFile =[]; 
 		oSearchOcx.Start();
 		/*setTimeout(function(){
 			oSearchOcx.Stop();
@@ -1615,13 +1616,14 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	return true;
     }	
 //ip和通道的排序
-var nowDevFile=[];
+
 function SortSearchFile_2UI(sortfn){
 	
 	/*for(var i in devFile){
 	  console.log(devFile[i].SearchChannelCount_ID);
 	}*/
 	var fn = window[sortfn];
+	var nowDevFile=[];
 	nowDevFile = devFile.sort(fn);
 	/*console.log('---after sort ---- ');
 	for(var i in devFile){
@@ -1653,11 +1655,11 @@ function SortSearchFile_2UI(sortfn){
 }
 function VendorAsc(a,b){
 	
-	return (a.SearchVendor_ID).localeCompare(b.SearchVendor_ID);
+	return a.SearchVendor_ID.localeCompare(b.SearchVendor_ID);
 	
 }
 function VendorDes(a,b){
-    return (b.SearchVendor_ID).localeCompare(a.SearchVendor_ID);
+    return b.SearchVendor_ID.localeCompare(a.SearchVendor_ID);
 }
 function ChlAsc(a,b){
 	return a.SearchChannelCount_ID - b.SearchChannelCount_ID;
