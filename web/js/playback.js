@@ -440,6 +440,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 
 	function RecFileInfoCallback(data){
+		console.log(data);
 		var wnum = localSearchWindNum ;
 		for(i in data){
 			recFile.push($.parseJSON(data[i]));	
@@ -447,7 +448,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(bool && data.index_0){
 			//console.log('当前窗口:'+(parseInt((localSearchWindNum))+1));
 			  LocalFlag = false;
-			  RecFileInfo2UI(data);
+			  RecLocalFile2UI(data);
 			  showLocalRecProgress(wnum++);
 			//console.log('当前窗口:'+(localSearchWindNum)+'的本地路线个文件为----------------');
 			//console.log(data);
@@ -479,7 +480,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			showRecProgress(localSearchWindNum*100);
 
 			/*console.log(recFile.length+'------------'+recTotal);*/
-			searchSTOP && RecFileInfo2UI(recFile);
+			searchSTOP && RecRemoteFile2UI(data);
+			
 		}
        recFile.length>=recTotal&&searchSTOP && file2UIFinish();
 	}
@@ -520,22 +522,31 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		var maxChl = 0,
 			devFile = [],
 			file = [];
+			//console.log("合并时的文件长度："+data.length+' '+typeof(data));
 		if(bool){
 			var chlfile = [];
+			//console.time("for I 遍历时间：");
 			for(i in data){
 				var chlData = typeof(data[i]) == 'object' ? data[i] : $.parseJSON(data[i]);
 				chlfile.push(chlData);
 			}
-			chlfile.sort(TimeAsc);
+			//console.timeEnd("for I 遍历时间：");
+			//console.time("文件排序时间：");
+			//chlfile.sort(TimeAsc);
+			//chlfile = quickSort(chlfile);
+			//console.timeEnd("文件排序时间：");
 			/*console.log('---------同一通道下的文件-------------');
 			console.log(chlfile);
 
 			console.log('---------合并完成接收到的文件-------------');
 			console.log(mergerOrderFile(chlfile));*/
-			file.push(mergerOrderFile(chlfile));
-			//file.push(chlfile);
+			//console.time("文件合并时间");
+			//file.push(mergerOrderFile(chlfile));
+			//console.timeEnd("文件合并时间");
+			
 			/*console.log('---------合并后的文件-------------');
 			console.log(file);*/
+			file.push(chlfile);
 		}else{
 			//console.time('遍历最大通道');
 			for(i in data){
@@ -544,32 +555,35 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				var nowchl = parseInt(chlData.channelnum);
 				maxChl = maxChl > nowchl ? maxChl : nowchl;
 			}
-			/*console.log('-----最大通道:'+maxChl+'------');
 			//console.log(devFile);
+			/*console.log('-----最大通道:'+maxChl+'------');
+			
 			console.timeEnd('遍历最大通道');*/
+			//console.time('按通道分类文件');
 			for(i=1;i<=maxChl;i++){  //按通道分类文件
 				var chlfile = [];    //对应通道空数组
-				//console.time('按通道分类文件');
 				for(var k=0;k<devFile.length;k++){ //便利所有文件
 					var nowfile = devFile[k]
 					if(i == nowfile.channelnum){
 						chlfile.push(nowfile);
 					}
-				}
-				/*console.timeEnd('按通道分类文件');
-				console.log(chlfile);
-				console.time('时间生序排列');*/
-				chlfile.sort(TimeAsc);
-				/*console.timeEnd('时间生序排列');
-				console.time('合并重复文件');*/
-				file.push(mergerOrderFile(chlfile));
-				/*console.timeEnd('合并重复文件');
-				console.log(file);*/
+			}
+				//console.timeEnd('按通道分类文件');
+				//console.log(chlfile);
+				//console.time('时间生序排列');
+				//chlfile.sort(TimeAsc);
+				//console.timeEnd('时间生序排列');
+				//console.time('合并重复文件');
+				//file.push(mergerOrderFile(chlfile));
+				//console.timeEnd('合并重复文件');
+				/*console.log(file);*/
+				file.push(chlfile);
 			}
 		}
 		//console.log(file);
 		/*console.log('---------合并后返回的文件-------------');
 		console.log(file);*/
+		
 		return file;
 	}
 
@@ -603,7 +617,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		console.log(oChlfile);*/
 		return chlData;
 	}	
-	
+	//快速排序
+	function quickSort(arr) {
+	　　if (arr.length <= 1) { return arr; }
+	　　var pivotIndex = Math.floor(arr.length / 2);
+	　　var pivot = arr.splice(pivotIndex, 1)[0];
+	　　var left = [];
+	　　var right = [];
+	　　for (var i = 0; i < arr.length; i++){
+	　　　　if (time2Sec(arr[i].start.split(' ')[1]) <time2Sec(pivot.start.split(' ')[1])) {
+	　　　　　　left.push(arr[i]);
+	　　　　} else {
+	　　　　　　right.push(arr[i]);
+	　　　　}
+	　　}
+	　　return quickSort(left).concat(pivot, quickSort(right));
+  };
 	/*function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
 		for(var k=0;k<data.length;k++){
 			var oChannels = $('div.dev_list span.device:eq('+localSearchWindNum+')').next('ul').find('span.channel');
@@ -621,26 +650,20 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 		return data;
 	}*/
-
-	function RecFileInfo2UI(filedata){
-		//console.time('--接收到的文件回调描绘时间段---'+filedata.length);
-		var oList = $('div.dev_list'),
-
-			channelvideo = $('#channelvideo'),
-
-			oDev = bool ?  oList.find('span.device:eq('+localSearchWindNum+')')[0] : (oList.find('li.sel span.device')[0] || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device')[0]),
-
-			oFileUIwarp = channelvideo.find('tr'),
-
-			oDev = $(oDev);
-		 //console.log('接收到的文件进行合并前的文件----------------------------');
+    function RecLocalFile2UI(filedata){
+		//console.time('--接收到的本地文件回调描绘时间段---'+filedata.length);
+		var channelvideo = $('#channelvideo'),
+		    oFileUIwarp = channelvideo.find('tr');
+			
+		//console.log('接收到的文件进行合并前的文件----------------------------');
         // console.log(filedata);
-		/*console.log(oDev);
-		console.log('---------描绘接受到的文件------------------------');
+		/*console.log('---------描绘接受到的文件------------------------');*/
 		
-		console.time('---------合并接受到的文件------------------------');*/
-			var File = Deleteduplicate(filedata);
-		/*console.timeEnd('---------合并接受到的文件------------------------');*/
+		//console.time('---------合并接受到的文件------------------------');
+		var File = Deleteduplicate(filedata);
+		
+		 //console.log(File);
+		//console.timeEnd('---------合并接受到的文件------------------------');
 		//console.time('--接收到合并的文件回调描绘时间段---'+File.length);
 
 			var min = $('table.table .no_border').width(),
@@ -652,18 +675,31 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			tdH = $('table.table .no_border').height(),
 			 
 			nowTime = renewtime().split('  ')[1];
+			
+        var color = [];
+			color[1] = '#F00';
+			color[2] = '#0000FF';
+			color[4] = '#33CC00';
+			color[8] = '#FFFF00';
+		var target = oFileUIwarp.eq(localSearchWindNum);
+		var winNum = localSearchWindNum;
+		var wind = lang['wind_']+(parseInt(winNum)+1);       
+			target.attr({
+				id:'wind_'+localSearchWindNum,
+				title:_T('Date')+':'+$("div.calendar span.nowDate").html()+' '+_T('wind')+': '+(parseInt(winNum)+1)+' '+_T('All_Local_Video_File')
+			}).find('label').html(wind).attr('wind',parseInt(winNum));
+		
+		var id = "mycanvas"+winNum;
+		var canvas = document.getElementById(id);
+		var context = canvas.getContext("2d");
+		//console.log("窗口"+id);
 
 		//console.log('接收到的文件进行合并后的文件----------------------------');
 		//console.log(File);
-		
-		/* var str ='';
-          str+='<div class="canvas" style="position:absolute;top:1px;width:'+max+'px;height:'+tdH+';"><canvas id="mycanvas'+localSearchWindNum+'" width="'+max+'" height="'+tdH+'"></canvas></div>';
-		  $(str).appendTo(oFileUIwarp.eq(localSearchWindNum));*/
-		 
+		//console.time('--循环描绘文件时间段---');
 		for( var i=0;i<File.length;i++){
 			/*console.log('--------当前填充的通道文件----------');
 			console.log(File[i]);*/
-			//var str = '';
 			/*console.log('-------------------------初始化的添加对象!----------------------');
 			console.log(target);*/
 			for(k in File[i]){
@@ -679,70 +715,112 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 
-			  		//本地回放录像文件的结束时间不能大于当前描绘的时间.
-					/*if( bool && end > nowTime){
-						end = nowTime
-					}*/
-
-					//console.log(maxFileEndTime);
-				var width = (time2Sec(end)-start)*p-1;
+				var width = (time2Sec(end)-start)*p;
 					width = width < 1 ? 1 : width;
-				var left = start*p+min+1;
+				var left = start*p+min;
 				var types = data.types || data.type;
 
-				if(bool){ // 本地回放
-					var target = oFileUIwarp.eq(localSearchWindNum);
+				//console.log(localSearchWindNum+' '+data.wndId+' '+data);
 					
-					console.log(localSearchWindNum+' '+data.wndId+' '+data);
-					var wind = lang['wind_']+(parseInt(data.wndId)+1);
-						var color = [];
-		                    color[1] = '#F00';
-							color[2] = '#0000FF';
-							color[4] = '#33CC00';
-		                    color[8] = '#FFFF00';
-		                   
-					target.attr({
-						id:'wind_'+localSearchWindNum,
-						title:_T('Date')+':'+$("div.calendar span.nowDate").html()+' '+_T('wind')+': '+(parseInt(data.wndId)+1)+' '+_T('All_Local_Video_File')
-					}).find('label').html(wind).attr('wind',parseInt(data.wndId));
+               context.fillStyle =color[types];
+			 //console.log("color"+color[types]);
+		      //context.rect(left-min,0,width,tdH);
+			    context.fillRect(left-min-1,0,width+1,tdH);
 					
-					//str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
+             }
+			 
+		}
+		//console.timeEnd('--循环描绘文件时间段---');
+		//context.fill();
+		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
+		//console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
+		//console.timeEnd('--接收到的本地文件回调描绘时间段---'+filedata.length);
+		}
+	function RecRemoteFile2UI(filedata){
+		//console.time('--接收到的远程文件回调描绘时间段---');
+		var oList = $('div.dev_list'),
+
+			channelvideo = $('#channelvideo'),
+
+			oDev = bool ?  oList.find('span.device:eq('+localSearchWindNum+')')[0] : (oList.find('li.sel span.device')[0] || oList.find('span.channel.sel').parent('li').parent('ul').prev('span.device')[0]),
+
+			oFileUIwarp = channelvideo.find('tr'),
+
+			oDev = $(oDev);
+
+        //console.log(filedata);
+		//console.log(oDev);
+		
+				//console.time('---------接受到的文件------------------------');
+		        var File = Deleteduplicate(filedata);
+		
+		        //console.log(File);
+		       // console.timeEnd('---------接受到的文件------------------------');
+               // console.log('文件长度：'+File.length);
+			var min = $('table.table .no_border').width(),
+
+			    max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width(),
+
+			    p = (max-min)/(3600*24),
+            
+			tdH = $('table.table .no_border').height(),
+			 
+			nowTime = renewtime().split('  ')[1];
+			
+          var color = [];
+			  color[1] = '#F00';
+			  color[2] = '#33CC00';
+			  color[4] = '#FFFF00';
+			  color[8] = '#0000FF';
+		//console.time('--循环描绘文件时间段---');
+		
+		for( var i=0;i<File.length;i++){
+			
+			
+			var chl = parseInt(i),
+				ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
 					
-					canvasDraw(localSearchWindNum,color[types],width,left-min,tdH);
-					
-				}else{
-					var chl = parseInt(data.channelnum -1),
-						ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
-					var color = [];
-						color[1] = '#F00';
-						color[2] = '#33CC00';
-						color[4] = '#FFFF00';
-						color[8] = '#0000FF';
-					var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
+           var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
 							id:'Rel_channel_'+ChannelData.channel_id,
 							title:_T('Device')+':'+oDev.data('data').name+' '+ _T('Channel')+':'+ChannelData.channel_name
 						}).find('label').html(ChannelData.channel_name).end();
-						
-				    //str+='<div class="video" style="background:'+color[types]+';left:'+left+'px; width:'+width+'px;"></div>';
-					canvasDraw(chl,color[types],width,left-min,tdH);
-				}
-			}
-			//$(str).appendTo(target);
-		}
-		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
-		//console.timeEnd('--接收到合并的文件回调描绘时间段---'+File.length);
-		//console.timeEnd('--接收到的文件回调描绘时间段---'+filedata.length);
-	}
-	
-	function canvasDraw(num,color,width,left,y){
-		//alert(color);
-		var id = "mycanvas"+num;
-		var canvas = document.getElementById(id);
-		var context = canvas.getContext("2d");
-		context.fillStyle = color ;
-		context.fillRect(left,0,width,y);
-		}
+			var id = "mycanvas"+chl;
+		    var canvas = document.getElementById(id);
+		    var context = canvas.getContext("2d");
+			//console.log('通道'+id);			
+			
+			
+			
 
+			for(k in File[i]){
+				var data = File[i][k];
+				//console.log(data);
+				var start = data.start.split(' ')[1];
+
+					minFileStartTime = start < minFileStartTime ? start : minFileStartTime;
+
+					start = time2Sec(start);
+
+				var end = data.end.split(' ')[1];
+
+					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
+
+				var width = (time2Sec(end)-start)*p;
+					width = width < 1 ? 1 : width;
+				var left = start*p+min;
+				var types = data.types || data.type;
+                   
+				   context.fillStyle = color[types];
+		           context.fillRect(left-min-1,0,width+1,tdH);
+				 // console.log("x值："+(left-min-1)+"//y值:"+0+"//宽度："+width+1'//高度：'+tdH);
+			}
+
+		}
+		//console.timeEnd('--循环描绘文件时间段---');
+		//console.log('minFileStartTime:'+minFileStartTime+'-----------------maxFileEndTime:'+maxFileEndTime);
+       //  console.timeEnd('--接收到的远程文件回调描绘时间段---');
+		}
+	
 	function SortByfileTime(a,b){  //文件路径时间升序排列
 		var reg = /.*?(\d{6})\.avi/g;
 		var a = parseInt(a.replace(reg,'$1'));

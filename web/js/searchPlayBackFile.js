@@ -231,12 +231,12 @@
 			$('#fileRec').stop(true,true).fadeOut(1500);
 		},1000);
 		//console.log(recFile)
-		recFile.length !=0 && RecFileInfo2UI(recFile);
+		recFile.length !=0 && RecRemoteFile2UI(recFile);
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
-	/*	console.log('------------RecfinishCallback文件总数-----------'+data.total);*/
-       
+		/*console.log('------------RecfinishCallback文件总数-----------'+data.total);*/
+       //alert('------------RecfinishCallback文件总数-----------'+data.total);
 		 
 		recTotal = data.total || 0;	
 
