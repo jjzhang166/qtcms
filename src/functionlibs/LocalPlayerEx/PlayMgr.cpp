@@ -342,6 +342,11 @@ void PlayMgr::run()
 		
 		//qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
 
+		//if frame interval is greater than 1 second, then set it 40 milliseconds
+		if (i64Sec > 1000*1000)
+		{
+			i64Sec = 40*1000;
+		}
 // 		if (i64WaitSec > 0)
 		if (i64Sec > 0)
 		{

@@ -637,7 +637,7 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 // 	QDateTime dateTime = QDateTime::fromTime_t(m_uiStartSec);
 // 	QDateTime startTime(dateTime.date(), QTime(0, 0, 0));
 // 	QDateTime endTime(dateTime.date(), QTime(23, 59, 59));
-	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime >= %3 and nEndTime <= %4 and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types)).arg(m_uiStartSec).arg(m_uiEndSec);
+	QString sqlCommand = QString("select nWndId, nStartTime, nEndTime, sFilePath from record where nWndId in(%1) and (%2) and nStartTime < %3 and nEndTime > %4 and nStartTime!=nEndTime order by nStartTime").arg(intToStr(wndList)).arg(getTypeList(m_i32Types)).arg(m_uiEndSec).arg(m_uiStartSec);
 	QStringList diskList = m_disklst.split(":", QString::SkipEmptyParts);
 	foreach(QString disk, diskList)
 	{
