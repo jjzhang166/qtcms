@@ -1655,11 +1655,15 @@ function SortSearchFile_2UI(sortfn){
 }
 function VendorAsc(a,b){
 	
-	return a.SearchVendor_ID.localeCompare(b.SearchVendor_ID);
+	if(a.SearchVendor_ID>b.SearchVendor_ID) return 1;
+	if(a.SearchVendor_ID<b.SearchVendor_ID) return -1;
+	return 0;
 	
 }
 function VendorDes(a,b){
-    return b.SearchVendor_ID.localeCompare(a.SearchVendor_ID);
+   if(b.SearchVendor_ID>a.SearchVendor_ID) return 1;
+	if(b.SearchVendor_ID<a.SearchVendor_ID) return -1;
+	return 0;
 }
 function ChlAsc(a,b){
 	return a.SearchChannelCount_ID - b.SearchChannelCount_ID;
