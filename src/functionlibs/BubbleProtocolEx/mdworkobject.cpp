@@ -345,6 +345,7 @@ void MDWorkObject::run()
 			{
 				// 释放socket然后退出
 				delete s;
+				s = NULL;
 				return;
 			}
 			break;
