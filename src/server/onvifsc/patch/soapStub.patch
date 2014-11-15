@@ -1,0 +1,4 @@
+15c15
+< #define SOAP_WSA_2005
+---
+> //#define SOAP_WSA_2005

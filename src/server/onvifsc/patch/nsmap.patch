@@ -1,0 +1,3 @@
+33a34,35
+> 	{"tns1", "http://www.onvif.org/ver10/topics", NULL, NULL},
+> 	{"ter", "http://www.onvif.org/ver10/error", NULL, NULL},

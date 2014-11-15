@@ -1,0 +1,25 @@
+*** code/soapC.c	2014-06-30 20:37:54.479344011 +0800
+--- ../onvif/soapC.c	2014-07-03 18:05:59.400047749 +0800
+*************** SOAP_FMAC3 int SOAP_FMAC4 soap_getheader
+*** 32,47 ****
+--- 32,51 ----
+  	return soap->header == NULL;
+  }
+  
+  SOAP_FMAC3 int SOAP_FMAC4 soap_putheader(struct soap *soap)
+  {
++ 	// disable sent soap header , because this would cause set-enc failed in HIKVISION new version
++ 	// by kaga
++ 	/* 
+  	if (soap->header)
+  	{	soap->part = SOAP_IN_HEADER;
+  		if (soap_out_SOAP_ENV__Header(soap, "SOAP-ENV:Header", 0, soap->header, NULL))
+  			return soap->error;
+  		soap->part = SOAP_END_HEADER;
+  	}
++ 	*/
+  	return SOAP_OK;
+  }
+  
+  SOAP_FMAC3 void SOAP_FMAC4 soap_serializeheader(struct soap *soap)
+  {

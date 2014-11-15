@@ -1,0 +1,9 @@
+2094a2095,2102
+> //////  added by kaga
+> 	int myBAuth;
+> 	char *wsse__username;	/* mustUnderstand */
+> 	char *wsse__password;	/* mustUnderstand */
+> 	char *ns1__customerId;	/* mustUnderstand */
+> 	char *wsse__nonce;
+> 	char *wsse__created;
+> ///////	

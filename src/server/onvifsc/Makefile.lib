@@ -1,0 +1,68 @@
+
+
+#cmd define
+RM := rm -rf
+ECHO := @echo
+LINK := ln -s
+CP := cp -av
+MKDIR := @mkdir -p
+MV := mv -v
+MAKE := make
+PRINTF := @printf "\033[32;1m\t%s\033[0m\n"
+
+#toolchain define
+PRJ_CROSS ?=
+CC    := $(PRJ_CROSS)gcc
+CXX   := $(PRJ_CROSS)g++
+AR    := $(PRJ_CROSS)ar
+STRIP := $(PRJ_CROSS)strip
+
+#dir define
+SELF_DIR := $(subst $(PWD)/,,$(CURDIR))
+BUILD ?=debug
+TMP_DIR := $(PWD)/tmp/$(BUILD)/$(SELF_DIR)
+LIB_DIR := $(PWD)/lib/$(BUILD)
+
+#src/obj/dep define
+SRC_TMP := $(wildcard *.c) $(wildcard src/*.c)
+SRC := $(foreach n,$(SRC_TMP), $(CURDIR)/$(n))
+
+OBJ_TMP := $(patsubst %.c,%.o,$(SRC_TMP))
+OBJ := $(foreach n,$(OBJ_TMP), $(TMP_DIR)/$(n))
+
+DEP_TMP := $(patsubst %.c,%.d,$(SRC_TMP))
+DEP := $(foreach n,$(DEP_TMP), $(TMP_DIR)/$(n))
+
+#incs/defs define
+INCS := -I$(CURDIR) \
+		-I$(CURDIR)/../\
+		-I$(CURDIR)/../include/\
+		-I$(PWD)/include/
+
+DEFS ?=
+
+#cflags define
+CFLAGS ?= -Wall -O0 -g3 
+
+#special target define
+all: $(LIB_DIR)/lib$(notdir $(CURDIR)).a
+
+$(LIB_DIR)/lib$(notdir $(CURDIR)).a: $(OBJ)
+	$(MKDIR) $(LIB_DIR)
+	$(PRINTF) "[LIB]AR  $@";$(AR) rcs $@ $(OBJ)
+
+#common target define
+ifneq ($(MAKECMDGOALS), clean)
+-include $(DEP)
+endif
+
+$(TMP_DIR)/%.d: %.c
+	$(MKDIR) $(TMP_DIR)
+	$(PRINTF) "[LIB]DEP $@";$(CC) -MM -MF"$@" -MT"$(@:.d=.o)" $(INCS) $(DEFS) $<
+
+$(TMP_DIR)/%.o: %.c
+	$(MKDIR) $(TMP_DIR)
+	$(PRINTF) "[LIB]CC  $@";$(CC) -c $(CFLAGS) $(INCS) $(DEFS) -o "$@" $<
+
+
+

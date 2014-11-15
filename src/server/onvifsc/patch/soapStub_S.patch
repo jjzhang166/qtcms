@@ -1,0 +1,6 @@
+15c15,17
+< #define SOAP_WSA_2005
+---
+> //#define SOAP_WSA_2005
+> //#define SOAP_CLIENT
+> #define SOAP_SERVER

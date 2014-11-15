@@ -1,0 +1,16 @@
+LIBRARY "libonvifc.dll"
+EXPORTS
+	ONVIF_CLIENT_init @1
+	ONVIF_CLIENT_deinit @2
+	ONVIF_search @3
+	ONVIF_event_daemon_start @4
+	ONVIF_event_daemon_start2 @5
+	ONVIF_search_daemon_start @6
+	ONVIF_search_daemon_set_hook @7
+	ONVIF_search_daemon_stop @8
+
+	ONVIF_check_uri @9
+	ONVIF_SERVER_daemon @10
+
+	NVP_ONVIF_new @11
+	NVP_ONVIF_delete @12
