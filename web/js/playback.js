@@ -440,7 +440,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 
 	function RecFileInfoCallback(data){
-		console.log(data);
+		//console.log(data);
 		var wnum = localSearchWindNum ;
 		for(i in data){
 			recFile.push($.parseJSON(data[i]));	
@@ -480,7 +480,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			showRecProgress(localSearchWindNum*100);
 
 			/*console.log(recFile.length+'------------'+recTotal);*/
-			searchSTOP && RecRemoteFile2UI(data);
+			RecRemoteFile2UI(data);
 			
 		}
        recFile.length>=recTotal&&searchSTOP && file2UIFinish();
@@ -754,7 +754,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				//console.time('---------接受到的文件------------------------');
 		        var File = Deleteduplicate(filedata);
 		
-		        //console.log(File);
+		       // console.log(File);
 		       // console.timeEnd('---------接受到的文件------------------------');
                // console.log('文件长度：'+File.length);
 			var min = $('table.table .no_border').width(),
@@ -788,10 +788,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		    var canvas = document.getElementById(id);
 		    var context = canvas.getContext("2d");
 			//console.log('通道'+id);			
-			
-			
-			
-
+		
 			for(k in File[i]){
 				var data = File[i][k];
 				//console.log(data);
