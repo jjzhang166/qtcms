@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\rtsp">
+      <UniqueIdentifier>{dad23a4c-3bc6-4b11-9ce7-4922f66fbe57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\generic">
+      <UniqueIdentifier>{de1c45da-08e3-471c-8626-c334b13d133b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\rtspdemo.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\rtspdemo.ico">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rtspdemo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="rtspdemoDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\sdplib.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\minirtsp.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtcplib.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtpbuf.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtplib.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtplink.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtspdef.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtsplib.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\rtsp\rtspsession.h">
+      <Filter>源文件\rtsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\_base64.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\_md5.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\authentication.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\gnu_win.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\portmanage.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\sock.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\generic\vlog.h">
+      <Filter>源文件\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="hi_h264api.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gfun.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="H264Decode.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="hi_config.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Decoder.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rtspdemo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="rtspdemoDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\minirtsp.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtcplib.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtpbuf.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtplib.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtplink.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtsplib.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\rtspsession.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\rtsp\sdplib.c">
+      <Filter>源文件\rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\_base64.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\_md5.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\authentication.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\portmanage.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\sock.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\generic\vlog.c">
+      <Filter>源文件\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="gfun.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="h264decode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Decoder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rtspdemo.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

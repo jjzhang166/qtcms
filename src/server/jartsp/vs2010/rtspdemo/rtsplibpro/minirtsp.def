@@ -1,0 +1,11 @@
+LIBRARY "rtsplibpro.dll"
+EXPORTS
+	MINIRTSP_client_new 		@1
+	MINIRTSP_delete				@2
+	MINIRTSP_connect			@3
+	MINIRTSP_play				@4
+	MINIRTSP_pause				@5
+	MINIRTSP_disconnect			@6
+	MINIRTSP_lookup_data		@7
+	MINIRTSP_set_data_hook		@8
+	MINIRTSP_set_event_hook		@9
