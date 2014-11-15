@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #define  CHECK_NVP_CONTEXT(context)							  	  \
-	if (context)                    							  \
+	if (!context)                    							  \
 	{															  \
 		qDebug()<<__FUNCTION__<<__LINE__<<"rtsp_context is null"; \
 		emit sigResultReady(1);									  \
@@ -12,7 +12,7 @@
 	
 
 #define  CHECK_RTSP_CONTEXT(context)							  \
-	if (context)                    							  \
+	if (!context)                    							  \
 	{															  \
 		qDebug()<<__FUNCTION__<<__LINE__<<"rtsp_context is null"; \
 		emit sigResultReady(1);									  \
@@ -35,31 +35,71 @@
 
 WorkerThread::WorkerThread()
 	: QObject(),
-	m_enStatus(CONNECT_STATUS_DISCONNECTED)
+	m_enStatus(CONNECT_STATUS_DISCONNECTED),
+	m_rtspContext(NULL),
+	m_nvpContext(NULL),
+	m_nvpVerify(NULL)
 {
 
 }
 
 WorkerThread::~WorkerThread()
 {
-
+	if (m_nvpContext)
+	{
+		NVP_ONVIF_delete(m_nvpContext);
+		m_nvpContext = NULL;
+	}
+	if (m_rtspContext)
+	{
+		MINIRTSP_delete(m_rtspContext);
+		m_rtspContext = NULL;
+	}
 }
 
 int WorkerThread::ConnectToDevice()
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"start =======";
+
+	m_nvpContext = NVP_ONVIF_new();
+	if (!m_nvpContext)
+	{
+		emit sigResultReady(1);
+		m_enStatus = CONNECT_STATUS_DISCONNECTED;
+		qDebug()<<__FUNCTION__<<__LINE__<<"create nvp context error";
+		return 1;
+	}
+	m_nvpArguments.thiz = (void *)m_nvpContext;
+	strncpy(m_nvpArguments.ip, m_tDeviceInfo.sIpAddr.toLatin1().data(), m_tDeviceInfo.sIpAddr.size() + 1);
+	m_nvpArguments.port = m_tDeviceInfo.vPorts["media"].toInt();
+	strncpy(m_nvpArguments.username, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sUsername.size() + 1);
+	strncpy(m_nvpArguments.password, m_tDeviceInfo.sPassword.toLatin1().data(), m_tDeviceInfo.sPassword.size() + 1);
+	m_nvpArguments.chn = 0;
+	m_nvpStreamUrl.main_index = 0;
+	m_nvpStreamUrl.sub_index = 1;
+
+	//get rtsp url both main and sub stream
+	m_nvpContext->GetRtspUri(&m_nvpArguments, &m_nvpStreamUrl);
+	//create rtsp context, default for sub stream
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 	if (!m_rtspContext)
 	{
 		emit sigResultReady(1);
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
+		NVP_ONVIF_delete(m_nvpContext);
+		qDebug()<<__FUNCTION__<<__LINE__<<"create rtsp context fault";
 
 		return 1;
 	}
+	//register event callback function
+	MINIRTSP_set_event_hook(m_rtspContext, eventHook, this);
 
 	int ret = MINIRTSP_connect(m_rtspContext);
 	if (ret)
 	{
 		emit sigResultReady(1);
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
+		qDebug()<<__FUNCTION__<<__LINE__<<"connect error";
 
 		return 1;
 	}
@@ -67,6 +107,7 @@ int WorkerThread::ConnectToDevice()
 	{
 		emit sigResultReady(0);
 		m_enStatus = CONNECT_STATUS_CONNECTED;
+		qDebug()<<__FUNCTION__<<__LINE__<<"connect success!!!";
 
 		return 0;
 	}
@@ -74,40 +115,19 @@ int WorkerThread::ConnectToDevice()
 
 int WorkerThread::Authority()
 {
-	m_enStatus = CONNECT_STATUS_CONNECTTING;
-	//create nvp context
-	m_nvpContext = NVP_ONVIF_new();
-	if (!m_nvpContext)
-	{
-		emit sigResultReady(1);
-		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		return 1;
-	}
-	m_nvpArguments.thiz = (void *)m_nvpContext;
-	strncpy(m_nvpArguments.ip, m_tDeviceInfo.sIpAddr.toLatin1().data(), m_tDeviceInfo.sIpAddr.size());
-	m_nvpArguments.port = m_tDeviceInfo.vPorts["media"].toInt();
-	strncpy(m_nvpArguments.username, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sUsername.size());
-	strncpy(m_nvpArguments.password, m_tDeviceInfo.sPassword.toLatin1().data(), m_tDeviceInfo.sPassword.size());
-	m_nvpArguments.chn = 0;
-	m_nvpStreamUrl.main_index = 0;
-	m_nvpStreamUrl.sub_index = 1;
-	
-	//get rtsp url both main and sub stream
-	m_nvpContext->GetRtspUri(&m_nvpArguments, &m_nvpStreamUrl);
 	//create rtsp context, default for sub stream
-	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
-	if (m_rtspContext)
+	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+	if (m_nvpVerify)
 	{
-		//register event callback function
-		MINIRTSP_set_event_hook(m_rtspContext, eventHook, this);
+		//this rtsp context is just for verify username and password
+		MINIRTSP_delete(m_nvpVerify);
+		m_nvpVerify = NULL;
 		emit sigResultReady(0);
 		return 0;
 	}
 	else
 	{
 		emit sigResultReady(1);
-		NVP_ONVIF_delete(m_nvpContext);
-		m_enStatus = CONNECT_STATUS_DISCONNECTED;
 		return 1;
 	}
 }
@@ -132,6 +152,9 @@ int WorkerThread::Disconnect()
 		return 1;
 	}
 	MINIRTSP_delete(m_rtspContext);
+	m_rtspContext = NULL;
+	NVP_ONVIF_delete(m_nvpContext);
+	m_nvpContext = NULL;
 
 	emit sigResultReady(0);
 	m_enStatus = CONNECT_STATUS_DISCONNECTED;
@@ -194,11 +217,11 @@ int WorkerThread::StopStream()
 	CHECK_RESULT(ret);
 }
 
-int WorkerThread::GetStreamCount( int &count )
+int WorkerThread::GetStreamCount( int *count )
 {
 	CHECK_NVP_CONTEXT(m_nvpContext);
 	int ret = m_nvpContext->GetVideoEncoderConfigs(&m_nvpArguments, &m_nvpStreamInfo);
-	count = m_nvpStreamInfo.nr;
+	*count = m_nvpStreamInfo.nr;
 	CHECK_RESULT(ret);
 }
 

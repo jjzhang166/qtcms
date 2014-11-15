@@ -91,7 +91,7 @@ signals:
 	void sigGetLiveStream(int chl, int stream);
 	void sigPauseStream();
 	void sigStopStream();
-	void sigGetStreamCount(int &count);
+	void sigGetStreamCount(int *count);
 	void sigGetStreamInfo(int nStreamId, QVariantMap &info);
 	void sigPtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen);
 	void sigAddEvent(const QMultiMap<QString,tagOnvifProInfo> &eventMap);

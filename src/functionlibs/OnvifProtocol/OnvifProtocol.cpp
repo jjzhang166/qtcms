@@ -26,7 +26,7 @@ OnvifProtocol::OnvifProtocol():
 	connect(this, SIGNAL(sigGetLiveStream(int, int)), m_pWorkThread, SLOT(GetLiveStream(int, int)));
 	connect(this, SIGNAL(sigPauseStream()), m_pWorkThread, SLOT(PauseStream()));
 	connect(this, SIGNAL(sigStopStream()), m_pWorkThread, SLOT(StopStream()));
-	connect(this, SIGNAL(sigGetStreamCount(int&)), m_pWorkThread, SLOT(GetStreamCount(int&)));
+	connect(this, SIGNAL(sigGetStreamCount(int*)), m_pWorkThread, SLOT(GetStreamCount(int*)));
 	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&)));
 	connect(this, SIGNAL(sigAddEvent(const QMultiMap<QString,tagOnvifProInfo>&)), m_pWorkThread, SLOT(setEventMap(const QMultiMap<QString,tagOnvifProInfo>&)));
 	connect(this, SIGNAL(sigPtzCtrl(NVP_PTZ_CMD, int, int, bool)), m_pWorkThread, SLOT(PtzCtrl(NVP_PTZ_CMD, int, int, bool)));
@@ -261,6 +261,7 @@ int OnvifProtocol::setDeviceAuthorityInfomation( QString sUserName,QString sPass
 
 int OnvifProtocol::connectToDevice()
 {
+	m_pWorkThread->setDeviceInfo(m_tDeviceInfo);
 	emit sigConnectToDevice();
 	sleepEx(2);
 	return m_workResult ? 1 : 0;
@@ -268,7 +269,6 @@ int OnvifProtocol::connectToDevice()
 
 int OnvifProtocol::authority()
 {
-	m_pWorkThread->setDeviceInfo(m_tDeviceInfo);
 	emit sigAuthority();
 	sleepEx(2);
 	return m_workResult ? 1 : 0;
@@ -337,7 +337,7 @@ int OnvifProtocol::pauseStream( bool bPause )
 int OnvifProtocol::getStreamCount()
 {
 	int count = 0;
-	emit sigGetStreamCount(count);
+	emit sigGetStreamCount(&count);
 	sleepEx(2);
 	return count;
 }

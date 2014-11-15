@@ -29,7 +29,7 @@ public slots:
 	int GetLiveStream(int chl, int streamId);
 	int PauseStream();
 	int StopStream();
-	int GetStreamCount(int &count);
+	int GetStreamCount(int *count);
 	int GetStreamInfo(int nStreamId, QVariantMap& info);
 	void setEventMap(const QMultiMap<QString,tagOnvifProInfo> &tEventMap);
 	void PtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen);
@@ -40,6 +40,7 @@ private:
 	ConnectStatus m_enStatus;
 	DeviceInfo m_tDeviceInfo;
 	lpMINIRTSP m_rtspContext;
+	lpMINIRTSP m_nvpVerify;
 	lpNVP_INTERFACE m_nvpContext;
 	stNVP_ARGS m_nvpArguments;
 	stNVP_RTSP_STREAM m_nvpStreamUrl;
