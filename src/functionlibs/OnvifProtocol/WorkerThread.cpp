@@ -215,6 +215,7 @@ int WorkerThread::GetStreamInfo( int nStreamId, QVariantMap& info )
 	info.insert("width", m_nvpStreamInfo.entry[nStreamId].width);
 	info.insert("height", m_nvpStreamInfo.entry[nStreamId].height);
 	info.insert("fps", m_nvpStreamInfo.entry[nStreamId].enc_fps);
+	return 0;
 }
 
 void WorkerThread::recFrameData( void* pdata, uint32_t size, uint32_t timestamp, char* datatype )

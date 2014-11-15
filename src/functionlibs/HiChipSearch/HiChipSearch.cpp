@@ -155,8 +155,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchDeviceName_ID", context);
 	getItem(buff,"Device-ID=",context);
 	itemmap.insert("SearchDeviceId_ID", context);
-// 	itemmap.insert("SearchDeviceId_ID", context);
-//	itemmap.insert("SearchSeeId_ID", context);
+	itemmap.insert("SearchSendToUI_ID", context);
 	getItem(buff,"MASK=",context);
 	itemmap.insert("SearchMask_ID", context);
 
@@ -164,9 +163,9 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchDeviceModelId_ID", context);
 
 	getItem(buff,"Esee-ID=",context);
-// 	itemmap.insert("SearchSeeId_ID", context);
+
 	itemmap.insert("SearchSeeId_ID", context);
-//	itemmap.insert("SearchDeviceId_ID", context);
+
 	getItem(buff,"Channel-Cnt=",context);
 	itemmap.insert("SearchChannelCount_ID", context);
 
@@ -188,7 +187,7 @@ void HiChipSearch::parseSearchAck(QByteArray buff, QVariantMap& itemmap)
 	itemmap.insert("SearchMediaPort_ID", context);
 	itemmap.insert("SearchVendor_ID", "IPC");
 	
-
+	
 }
 
 

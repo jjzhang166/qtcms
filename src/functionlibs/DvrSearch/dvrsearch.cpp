@@ -259,6 +259,7 @@ void DvrSearch::Recv(QList<QUdpSocket *> socketlist)
 			m_mEventCBParam.insert("SearchGateway_ID"       ,QVariant(""));     
 			m_mEventCBParam.insert("SearchHttpport_ID"      ,QVariant(strListInfo.at(3)));
 			m_mEventCBParam.insert("SearchMediaPort_ID"     ,QVariant(strListInfo.at(2)));
+			m_mEventCBParam.insert("SearchSendToUI_ID"     ,QVariant(strListInfo.at(0)));
 			eventProcCall(QString("SearchDeviceSuccess"),m_mEventCBParam);
 
 		} // end of while

@@ -2713,7 +2713,7 @@ bool commonlibEx::setIsPersian( bool bFlags )
 	}
 	else
 	{
-		return IDisksSetting::E_SYSTEM_FAILED;
+		return false;
 	}
 }
 

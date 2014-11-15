@@ -97,14 +97,16 @@ void DeviceSearch::analyzeDeviceInfo( unsigned char *ip,unsigned short port, cha
 	deviceInfo.insert("SearchDeviceId_ID"      ,QVariant(""));
 	deviceInfo.insert("SearchDeviceModelId_ID" ,QVariant(QString(firmware)));
 	deviceInfo.insert("SearchSeeId_ID"         ,QVariant(""));
-	deviceInfo.insert("SearchChannelCount_ID"  ,QVariant(""));
+	deviceInfo.insert("SearchChannelCount_ID"  ,QVariant("1"));
 	deviceInfo.insert("SearchIP_ID"            ,QVariant(ipStr));
 	deviceInfo.insert("SearchMask_ID"          ,QVariant(""));
 	deviceInfo.insert("SearchMac_ID"           ,QVariant(""));
 	deviceInfo.insert("SearchGateway_ID"       ,QVariant(""));     
 	deviceInfo.insert("SearchHttpport_ID"      ,QVariant(port));
-	deviceInfo.insert("SearchMediaPort_ID"     ,QVariant(""));
-
+	deviceInfo.insert("SearchMediaPort_ID"     ,QVariant(port));
+	deviceInfo.insert("SearchVendor_ID"        ,QVariant("ONVIF"));
+	QString SearchSendToUI_ID=ipStr+"ONVIF";
+	deviceInfo.insert("SearchSendToUI_ID"       ,QVariant(SearchSendToUI_ID));
 	if (m_proInfo.proc && m_proInfo.pUser)
 	{
 		m_proInfo.proc(m_sEvent, deviceInfo, m_proInfo.pUser);

@@ -134,9 +134,10 @@ void DeviceSearchWindows::addItemMap(QVariantMap item)
 {
 	m_DeviceItemMutex.lock();
 	QVariantMap tItem=item;
-	if (!m_DeviceItem.contains(tItem.value("SearchIP_ID").toString()))
+	if (!m_DeviceItem.contains(tItem.value("SearchSendToUI_ID").toString()))
 	{
-		m_DeviceItem.insert(tItem.value("SearchIP_ID").toString(),tItem);
+		m_DeviceItem.insert(tItem.value("SearchSendToUI_ID").toString(),tItem);
+		tItem.remove("SearchSendToUI_ID");
 		emit addItemToUI(tItem);
 	}
 	m_DeviceItemMutex.unlock();
