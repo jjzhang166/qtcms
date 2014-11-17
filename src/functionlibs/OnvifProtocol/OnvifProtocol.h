@@ -82,18 +82,16 @@ public:
 	virtual int PTZStop(const int &nChl, const int &nCmd);
 
 // 	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware );
-public slots:
-	void handleReady(int result);
 signals:
-	void sigConnectToDevice();
-	void sigAuthority();
-	void sigDisconnect();
-	void sigGetLiveStream(int chl, int stream);
-	void sigPauseStream();
-	void sigStopStream();
+	void sigConnectToDevice(int *result);
+	void sigAuthority(int *result);
+	void sigDisconnect(int *result);
+	void sigGetLiveStream(int chl, int stream, int *result);
+	void sigPauseStream(int *result);
+	void sigStopStream(int *result);
 	void sigGetStreamCount(int *count);
-	void sigGetStreamInfo(int nStreamId, QVariantMap &info);
-	void sigPtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen);
+	void sigGetStreamInfo(int nStreamId, QVariantMap &info, int *result);
+	void sigPtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *result);
 	void sigAddEvent(const QMultiMap<QString,tagOnvifProInfo> &eventMap);
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
@@ -110,7 +108,6 @@ private:
 	DeviceSearch *m_pDeviceSeach;
 	WorkerThread *m_pWorkThread;
 	DeviceInfo m_tDeviceInfo;
-	int m_workResult;
 	volatile bool m_bSearchStoping;
 };
 

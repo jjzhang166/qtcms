@@ -9,29 +9,27 @@
 
 OnvifProtocol::OnvifProtocol():
     m_nRef(0),
-	m_workResult(-1),
 	m_pDeviceSeach(NULL),
 	m_pWorkThread(NULL),
 	m_bSearchStoping(false)
 {
-	m_sEventList << "LiveStream"<<"SocketError"<<"StateChanged"<<"ConnectRefuse"<<"SearchDeviceSuccess";
+	m_sEventList << "LiveStream"<<"SocketError"<<"StateChanged"<<"ConnectRefuse"<<"SearchDeviceSuccess"<<"Authority"<<"CurrentStatus";
 // 	typedef QMultiMap<QString,tagOnvifProInfo> EventInfo;
 	qRegisterMetaType<QMultiMap<QString,tagOnvifProInfo> >("QMultiMap<QString,tagOnvifProInfo>");
 
 	m_pWorkThread = new WorkerThread();
 	m_pWorkThread->moveToThread(&m_workThread);
-	connect(this, SIGNAL(sigConnectToDevice()), m_pWorkThread, SLOT(ConnectToDevice()));
-	connect(this, SIGNAL(sigAuthority()), m_pWorkThread, SLOT(Authority()));
-	connect(this, SIGNAL(sigDisconnect()), m_pWorkThread, SLOT(Disconnect()));
-	connect(this, SIGNAL(sigGetLiveStream(int, int)), m_pWorkThread, SLOT(GetLiveStream(int, int)));
-	connect(this, SIGNAL(sigPauseStream()), m_pWorkThread, SLOT(PauseStream()));
-	connect(this, SIGNAL(sigStopStream()), m_pWorkThread, SLOT(StopStream()));
-	connect(this, SIGNAL(sigGetStreamCount(int*)), m_pWorkThread, SLOT(GetStreamCount(int*)));
-	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&)));
-	connect(this, SIGNAL(sigAddEvent(const QMultiMap<QString,tagOnvifProInfo>&)), m_pWorkThread, SLOT(setEventMap(const QMultiMap<QString,tagOnvifProInfo>&)));
-	connect(this, SIGNAL(sigPtzCtrl(NVP_PTZ_CMD, int, int, bool)), m_pWorkThread, SLOT(PtzCtrl(NVP_PTZ_CMD, int, int, bool)));
+	connect(this, SIGNAL(sigConnectToDevice(int*)), m_pWorkThread, SLOT(ConnectToDevice(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigAuthority(int*)), m_pWorkThread, SLOT(Authority(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigDisconnect(int*)), m_pWorkThread, SLOT(Disconnect(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigGetLiveStream(int, int, int*)), m_pWorkThread, SLOT(GetLiveStream(int, int, int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigPauseStream(int*)), m_pWorkThread, SLOT(PauseStream(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigStopStream(int*)), m_pWorkThread, SLOT(StopStream(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigGetStreamCount(int*)), m_pWorkThread, SLOT(GetStreamCount(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&, int*)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&, int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigAddEvent(const QMultiMap<QString,tagOnvifProInfo>&)), m_pWorkThread, SLOT(setEventMap(const QMultiMap<QString,tagOnvifProInfo>&)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigPtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), m_pWorkThread, SLOT(PtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), Qt::BlockingQueuedConnection);
 
-	connect(m_pWorkThread, SIGNAL(sigResultReady(int)), this, SLOT(handleReady(int)));
 	m_workThread.start();
 }
 
@@ -261,24 +259,24 @@ int OnvifProtocol::setDeviceAuthorityInfomation( QString sUserName,QString sPass
 
 int OnvifProtocol::connectToDevice()
 {
+	int ret = -1;
 	m_pWorkThread->setDeviceInfo(m_tDeviceInfo);
-	emit sigConnectToDevice();
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	emit sigConnectToDevice(&ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::authority()
 {
-	emit sigAuthority();
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigAuthority(&ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::disconnect()
 {
-	emit sigDisconnect();
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigDisconnect(&ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::getCurrentStatus()
@@ -308,117 +306,123 @@ void OnvifProtocol::sleepEx( uint millisecond )
 	evLoop.exec();
 }
 
-void OnvifProtocol::handleReady( int result )
-{
-	m_workResult = result;
-}
-
 int OnvifProtocol::getLiveStream( int nChannel,int nStream )
 {
-	emit sigGetLiveStream(nChannel, nStream);
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigGetLiveStream(nChannel, nStream, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::stopStream()
 {
-	emit sigStopStream();
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigStopStream(&ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::pauseStream( bool bPause )
 {
-	emit sigPauseStream();
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigPauseStream(&ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::getStreamCount()
 {
 	int count = 0;
 	emit sigGetStreamCount(&count);
-	sleepEx(2);
 	return count;
 }
 
 int OnvifProtocol::getStreamInfo( int nStreamId,QVariantMap &tStreamInfo )
 {
-	emit sigGetStreamInfo(nStreamId, tStreamInfo);
-	sleepEx(2);
-	return m_workResult ? 1 : 0;
+	int ret = -1;
+	emit sigGetStreamInfo(nStreamId, tStreamInfo, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZUp( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_UP, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_UP, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZDown( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_DOWN, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_DOWN, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZLeft( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_LEFT, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_LEFT, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZRight( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_RIGHT, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_RIGHT, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZIrisOpen( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_IRIS_OPEN, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_IRIS_OPEN, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZIrisClose( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_IRIS_CLOSE, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_IRIS_CLOSE, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZFocusFar( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_FOCUS_FAR, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_FOCUS_FAR, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZFocusNear( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_FOCUS_NEAR, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_FOCUS_NEAR, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZZoomIn( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_ZOOM_IN, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_ZOOM_IN, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZZoomOut( const int &nChl, const int &nSpeed )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_ZOOM_OUT, nChl, nSpeed, true);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_ZOOM_OUT, nChl, nSpeed, true, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZAuto( const int &nChl, bool bOpend )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_AUTOPAN, nChl, 0, bOpend);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_AUTOPAN, nChl, 0, bOpend, &ret);
+	return ret ? 1 : 0;
 }
 
 int OnvifProtocol::PTZStop( const int &nChl, const int &nCmd )
 {
-	emit sigPtzCtrl(NVP_PTZ_CMD_STOP, nChl, 0, false);
-	return 0;
+	int ret = -1;
+	emit sigPtzCtrl(NVP_PTZ_CMD_STOP, nChl, 0, false, &ret);
+	return ret ? 1 : 0;
 }
 
 // void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )

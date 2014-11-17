@@ -23,18 +23,16 @@ public:
 	void setDeviceInfo(const DeviceInfo& devInfo);
 	void recFrameData(void* pdata, uint32_t size, uint32_t timestamp, char* datatype);
 public slots:
-	int ConnectToDevice();
-	int Authority();
-	int Disconnect();
-	int GetLiveStream(int chl, int streamId);
-	int PauseStream();
-	int StopStream();
+	int ConnectToDevice(int *ret);
+	int Authority(int *ret);
+	int Disconnect(int *ret);
+	int GetLiveStream(int chl, int streamId, int *ret);
+	int PauseStream(int *ret);
+	int StopStream(int *ret);
 	int GetStreamCount(int *count);
-	int GetStreamInfo(int nStreamId, QVariantMap& info);
+	int GetStreamInfo(int nStreamId, QVariantMap& info, int *ret);
 	void setEventMap(const QMultiMap<QString,tagOnvifProInfo> &tEventMap);
-	void PtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen);
-signals:
-	void sigResultReady(int result);
+	int PtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *ret);
 private:
 	QMultiMap<QString,tagOnvifProInfo> m_tEventMap;
 	ConnectStatus m_enStatus;
