@@ -27,7 +27,7 @@ public slots:
 	int Authority(int *ret);
 	int Disconnect(int *ret);
 	int GetLiveStream(int chl, int streamId, int *ret);
-	int PauseStream(int *ret);
+	int PauseStream(bool pause, int *ret);
 	int StopStream(int *ret);
 	int GetStreamCount(int *count);
 	int GetStreamInfo(int nStreamId, QVariantMap& info, int *ret);

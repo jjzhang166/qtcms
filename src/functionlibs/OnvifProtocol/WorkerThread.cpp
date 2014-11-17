@@ -71,14 +71,20 @@ WorkerThread::~WorkerThread()
 
 int WorkerThread::ConnectToDevice(int *result)
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<"start =======";
+	qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"start =======";
 
+	if (CONNECT_STATUS_CONNECTED == m_enStatus)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connection has existed";
+		*result = 0;
+		return 0;
+	}
 	m_nvpContext = NVP_ONVIF_new();
 	if (!m_nvpContext)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<"create nvp context error";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"create nvp context error";
 		return 1;
 	}
 	m_nvpArguments.thiz = (void *)m_nvpContext;
@@ -96,17 +102,17 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<"get rtsp url fault";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"get rtsp url fault";
 		return 1;
 	}
 	//create rtsp context, default for sub stream
-	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
 	if (!m_rtspContext)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
 		NVP_ONVIF_delete(m_nvpContext);
-		qDebug()<<__FUNCTION__<<__LINE__<<"create rtsp context fault";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"create rtsp context fault";
 
 		return 1;
 	}
@@ -118,15 +124,17 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<"connect error";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connect error";
 
 		return 1;
 	}
 	else
 	{
+		MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this);
+
 		*result = 0;
 		m_enStatus = CONNECT_STATUS_CONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<"connect success!!!";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connect success!!!";
 
 		return 0;
 	}
@@ -135,7 +143,7 @@ int WorkerThread::ConnectToDevice(int *result)
 int WorkerThread::Authority(int *ret)
 {
 	//create rtsp context, default for sub stream
-	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
 	if (m_nvpVerify)
 	{
 		//this rtsp context is just for verify username and password
@@ -198,38 +206,71 @@ void WorkerThread::setEventMap(const QMultiMap<QString,tagOnvifProInfo> &tEventM
 
 int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 {
+	int ret = -1;
 	CHECK_RTSP_CONTEXT(m_rtspContext, result);
 	if (MAIN_STREAM == streamId)
 	{
 		//release old context and switch to main stream
+		ret = MINIRTSP_disconnect(m_rtspContext);
+		if (!ret)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream fault when disconnect";
+			*result = 1;
+			return 1;
+		}
 		MINIRTSP_delete(m_rtspContext);
-		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
 		if (m_rtspContext)
 		{
 			//register event callback function
 			MINIRTSP_set_event_hook(m_rtspContext, eventHook, this);
+			ret = MINIRTSP_connect(m_rtspContext);
+			if (!ret)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream success";
+				MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this);
+				*result = 0;
+				m_enStatus = CONNECT_STATUS_CONNECTED;
+				return 0;
+			}
+			else
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream fault when reconnect";
+				m_rtspContext = NULL;
+				*result = 1;
+				m_enStatus = CONNECT_STATUS_DISCONNECTED;
+				return 1;
+			}
 		}
 		else
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<"rtsp context has release, please reconnect and try again";
+			m_enStatus = CONNECT_STATUS_DISCONNECTED;
 			*result = 1;
 			return 1;
 		}
 	}
 
-	MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this);
-	int ret = MINIRTSP_play(m_rtspContext);
-	CHECK_RESULT(ret, result);
+	*result = 0;
+	return 0;
 }
 
-int WorkerThread::PauseStream(int *result)
+int WorkerThread::PauseStream( bool pause, int *result )
 {
 	CHECK_RTSP_CONTEXT(m_rtspContext, result);
-	int ret = MINIRTSP_pause(m_rtspContext);
+	int ret = -1;
+	if (pause)
+	{
+		ret = MINIRTSP_pause(m_rtspContext);
+	}
+	else
+	{
+		ret = MINIRTSP_play(m_rtspContext);
+	}
 	CHECK_RESULT(ret, result);
 }
 
-int WorkerThread::StopStream(int *result)
+int WorkerThread::StopStream( int *result )
 {
 	CHECK_RTSP_CONTEXT(m_rtspContext, result);
 	int ret = MINIRTSP_disconnect(m_rtspContext);

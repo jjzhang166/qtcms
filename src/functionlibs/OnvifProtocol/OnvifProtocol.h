@@ -87,7 +87,7 @@ signals:
 	void sigAuthority(int *result);
 	void sigDisconnect(int *result);
 	void sigGetLiveStream(int chl, int stream, int *result);
-	void sigPauseStream(int *result);
+	void sigPauseStream(bool bPause, int *result);
 	void sigStopStream(int *result);
 	void sigGetStreamCount(int *count);
 	void sigGetStreamInfo(int nStreamId, QVariantMap &info, int *result);
@@ -96,6 +96,7 @@ signals:
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
 	void sleepEx(uint millisecond);
+	void StatusChanged(ConnectStatus emStatus);
 
 private:
 	int m_nRef;
@@ -109,6 +110,7 @@ private:
 	WorkerThread *m_pWorkThread;
 	DeviceInfo m_tDeviceInfo;
 	volatile bool m_bSearchStoping;
+	ConnectStatus m_emStatus;
 };
 
 #endif // ONVIFPROTOCOL_H

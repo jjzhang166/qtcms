@@ -11,11 +11,13 @@ OnvifProtocol::OnvifProtocol():
     m_nRef(0),
 	m_pDeviceSeach(NULL),
 	m_pWorkThread(NULL),
-	m_bSearchStoping(false)
+	m_bSearchStoping(false),
+	m_emStatus(CONNECT_STATUS_DISCONNECTED)
 {
-	m_sEventList << "LiveStream"<<"SocketError"<<"StateChanged"<<"ConnectRefuse"<<"SearchDeviceSuccess"<<"Authority"<<"CurrentStatus";
+	m_sEventList << "LiveStream"<<"SocketError"<<"StateChangeed"<<"ConnectRefuse"<<"SearchDeviceSuccess"<<"Authority"<<"CurrentStatus";
 // 	typedef QMultiMap<QString,tagOnvifProInfo> EventInfo;
 	qRegisterMetaType<QMultiMap<QString,tagOnvifProInfo> >("QMultiMap<QString,tagOnvifProInfo>");
+	qRegisterMetaType<ConnectStatus>("ConnectStatus");
 
 	m_pWorkThread = new WorkerThread();
 	m_pWorkThread->moveToThread(&m_workThread);
@@ -23,7 +25,7 @@ OnvifProtocol::OnvifProtocol():
 	connect(this, SIGNAL(sigAuthority(int*)), m_pWorkThread, SLOT(Authority(int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigDisconnect(int*)), m_pWorkThread, SLOT(Disconnect(int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigGetLiveStream(int, int, int*)), m_pWorkThread, SLOT(GetLiveStream(int, int, int*)), Qt::BlockingQueuedConnection);
-	connect(this, SIGNAL(sigPauseStream(int*)), m_pWorkThread, SLOT(PauseStream(int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigPauseStream(bool, int*)), m_pWorkThread, SLOT(PauseStream(bool, int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigStopStream(int*)), m_pWorkThread, SLOT(StopStream(int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigGetStreamCount(int*)), m_pWorkThread, SLOT(GetStreamCount(int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&, int*)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&, int*)), Qt::BlockingQueuedConnection);
@@ -262,6 +264,7 @@ int OnvifProtocol::connectToDevice()
 	int ret = -1;
 	m_pWorkThread->setDeviceInfo(m_tDeviceInfo);
 	emit sigConnectToDevice(&ret);
+	StatusChanged(m_pWorkThread->getCurrentStatus());
 	return ret ? 1 : 0;
 }
 
@@ -323,7 +326,7 @@ int OnvifProtocol::stopStream()
 int OnvifProtocol::pauseStream( bool bPause )
 {
 	int ret = -1;
-	emit sigPauseStream(&ret);
+	emit sigPauseStream(bPause, &ret);
 	return ret ? 1 : 0;
 }
 
@@ -423,6 +426,22 @@ int OnvifProtocol::PTZStop( const int &nChl, const int &nCmd )
 	int ret = -1;
 	emit sigPtzCtrl(NVP_PTZ_CMD_STOP, nChl, 0, false, &ret);
 	return ret ? 1 : 0;
+}
+
+void OnvifProtocol::StatusChanged( ConnectStatus emStatus )
+{
+	if (m_emStatus != emStatus)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"status changed from "<<m_emStatus<<" to "<<emStatus;
+		QVariantMap item;
+		item.insert("status", emStatus);
+		eventProcCall("StateChangeed",item);
+		m_emStatus = emStatus;
+	}
+	else
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"status didn't changed";
+	}
 }
 
 // void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )

@@ -232,7 +232,7 @@ int onvifDevice::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 				//用户验证
 				IDeviceConnection *pDeviceConnection=NULL;
 				m_tpOnvifProtocolLock.lock();
-				m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol->QueryInterface(IID_IRemotePreview,(void**)&pDeviceConnection);
+				m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol->QueryInterface(IID_IDeviceConnection,(void**)&pDeviceConnection);
 				m_tpOnvifProtocolLock.unlock();
 				if (NULL!=pDeviceConnection)
 				{
