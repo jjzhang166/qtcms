@@ -11,7 +11,7 @@ extern "C"{
 #pragma comment(lib, "rtsplibpro.lib")
 
 void eventHook(int eventType, int lParam, void *rParam, void *customCtx);
-void dataHook(void *pdata, uint32_t dataSize, uint32_t timestamp, char *dataType, void *customCtx);
+void dataHook(void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx);
 class WorkerThread : public QObject
 {
 	Q_OBJECT
@@ -21,7 +21,7 @@ public:
 	~WorkerThread();
 	ConnectStatus getCurrentStatus();
 	void setDeviceInfo(const DeviceInfo& devInfo);
-	void recFrameData(void* pdata, uint32_t size, uint32_t timestamp, char* datatype);
+	void recFrameData(void* pdata, unsigned int size, unsigned int timestamp, int datatype);
 public slots:
 	int ConnectToDevice(int *ret);
 	int Authority(int *ret);

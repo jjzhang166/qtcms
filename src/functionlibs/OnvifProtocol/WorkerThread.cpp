@@ -116,8 +116,9 @@ int WorkerThread::ConnectToDevice(int *result)
 
 		return 1;
 	}
-	//register event callback function
-	MINIRTSP_set_event_hook(m_rtspContext, eventHook, this);
+	//register event and data callback function
+	MINIRTSP_set_event_hook(m_rtspContext, eventHook, this, 0);
+	MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this, 0);
 
 	ret = MINIRTSP_connect(m_rtspContext);
 	if (ret)
@@ -130,8 +131,6 @@ int WorkerThread::ConnectToDevice(int *result)
 	}
 	else
 	{
-		MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this);
-
 		*result = 0;
 		m_enStatus = CONNECT_STATUS_CONNECTED;
 		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connect success!!!";
@@ -223,12 +222,12 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 		if (m_rtspContext)
 		{
 			//register event callback function
-			MINIRTSP_set_event_hook(m_rtspContext, eventHook, this);
+			MINIRTSP_set_event_hook(m_rtspContext, eventHook, this, 0);
+			MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this, 0);
 			ret = MINIRTSP_connect(m_rtspContext);
 			if (!ret)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream success";
-				MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this);
 				*result = 0;
 				m_enStatus = CONNECT_STATUS_CONNECTED;
 				return 0;
@@ -303,41 +302,40 @@ int WorkerThread::GetStreamInfo( int nStreamId, QVariantMap& info, int *ret )
 	return 0;
 }
 
-void WorkerThread::recFrameData( void* pdata, uint32_t size, uint32_t timestamp, char* datatype )
+void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int timestamp, int datatype )
 {
 	QVariantMap tStreamInfo;
 	stMINIRTSP_DATA_PROPERTY frameInfo;
-	MINIRTSP_lookup_data(m_rtspContext, datatype, &frameInfo);
+	int ret = MINIRTSP_lookup_data(m_rtspContext, datatype, &frameInfo);
 
-	tStreamInfo.insert("channel", frameInfo.channel);
-	tStreamInfo.insert("pts", timestamp);
-	tStreamInfo.insert("length", size);
-	tStreamInfo.insert("data", (quintptr)pdata);
-
-	if (!strcmp("h264", frameInfo.dataType))
-	{
-		//vedio
-		tStreamInfo.insert("frametype", TYPE_VEDIO);
-		tStreamInfo.insert("width", frameInfo.h264.width);
-		tStreamInfo.insert("height", frameInfo.h264.height);
-		tStreamInfo.insert("vcodec", "H264");
-	}
-	else
-	{
-		//audio
-		tStreamInfo.insert("frametype", TYPE_AUDIO);
-		tStreamInfo.insert("samplerate", frameInfo.g711.sampleRate);
-		tStreamInfo.insert("samplewidth", frameInfo.g711.sampleSize);
-		tStreamInfo.insert("audiochannel", frameInfo.g711.channel);
-		tStreamInfo.insert("acodec", "g711");
-	}
-	tagOnvifProInfo tProInfo=m_tEventMap.value("LiveStream");
-	if (tProInfo.proc)
-	{
-		tProInfo.proc(QString("LiveStream"),tStreamInfo,tProInfo.pUser);
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"LiveStream is not register";
-	}
+ 	tStreamInfo.insert("pts", timestamp);
+ 	tStreamInfo.insert("length", size);
+ 	tStreamInfo.insert("data", (quintptr)pdata);
+ 
+ 	if (MD_TYPE_H264 == datatype)
+ 	{
+ 		//vedio
+ 		tStreamInfo.insert("frametype", TYPE_VEDIO);
+ 		tStreamInfo.insert("width", frameInfo.h264.width);
+ 		tStreamInfo.insert("height", frameInfo.h264.height);
+ 		tStreamInfo.insert("vcodec", "H264");
+ 	}
+ 	else
+ 	{
+ 		//audio
+ 		tStreamInfo.insert("frametype", TYPE_AUDIO);
+ 		tStreamInfo.insert("samplerate", frameInfo.g711.sampleRate);
+ 		tStreamInfo.insert("samplewidth", frameInfo.g711.sampleSize);
+ 		tStreamInfo.insert("audiochannel", frameInfo.g711.channel);
+ 		tStreamInfo.insert("acodec", "g711");
+ 	}
+ 	tagOnvifProInfo tProInfo=m_tEventMap.value("LiveStream");
+ 	if (tProInfo.proc)
+ 	{
+ 		tProInfo.proc(QString("LiveStream"),tStreamInfo,tProInfo.pUser);
+ 	}else{
+ 		qDebug()<<__FUNCTION__<<__LINE__<<"LiveStream is not register";
+ 	}
 }
 
 int WorkerThread::PtzCtrl( NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *result )
@@ -365,7 +363,7 @@ void eventHook( int eventType, int lParam, void *rParam, void *customCtx )
 
 }
 
-void dataHook( void *pdata, uint32_t dataSize, uint32_t timestamp, char *dataType, void *customCtx )
+void dataHook( void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx )
 {
 	((WorkerThread*)customCtx)->recFrameData(pdata, dataSize, timestamp, dataType);
 }
