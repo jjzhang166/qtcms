@@ -450,7 +450,7 @@ void onvifDevice::clearProtocol()
 {
 	m_tpOnvifProtocolLock.lock();
 	QMap<int ,tagOnvifProtocolInfo>::Iterator it=m_tOnvifProtocolInfo.constBegin();
-	while(it!=m_tOnvifProtocolInfo.constBegin()){
+	while(it!=m_tOnvifProtocolInfo.constEnd()){
 		if (NULL!=it->pOnvifProctol)
 		{
 			IDeviceConnection *pDeviceConnection=NULL;
