@@ -1781,7 +1781,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 		QSqlDatabase *pDataBase=initMgrDataBase(sRecordDatabasePath,(quintptr*)this);
 		if (NULL!=pDataBase)
 		{
-			QSqlQuery _query(*pDataBase);
+			
 			QString sCommand;
 			int nStep=0;
 			bool bStop=false;
@@ -1790,6 +1790,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 				switch(nStep){
 				case 0:{
 					//
+					QSqlQuery _query(*pDataBase);
 					sCommand=QString("select sFilePath,nStartTime from RecordFileStatus where nStartTime=(select min(nStartTime) from RecordFileStatus where nInUse=1 and nLock=0 and nDamage=0) and nInUse=1 and nLock=0 and nDamage=0");
 					if (execCommand(_query,sCommand))
 					{
@@ -1827,6 +1828,7 @@ QString OperationDatabase::getOldestItemEx(QString sDisk,quint64 &uiStartTime){
 						nStep=0;
 						//文件不存在,删除数据库相关信息
 						priClearInfoInDatabase(sFileNameTemp);
+						QSqlQuery _query(*pDataBase);
 						sCommand=QString("update RecordFileStatus set nInUse=0 where sFilePath='%1'").arg(sFileNameTemp);
 						if (execCommand(_query,sCommand))
 						{
