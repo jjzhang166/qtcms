@@ -582,20 +582,20 @@ static char *_get_stream_name(int dataType)
 void MINIRTSP_dump_data_property(lpMINIRTSP_DATA_PROPERTY dataProperties)
 {
 	if (dataProperties) {
-		printf("MdediaName: %s type:%d chn/port:%d\n", dataProperties->mediaName,
-			dataProperties->mediaType, dataProperties->chn_port);
+		//printf("MdediaName: %s type:%d chn/port:%d\n", dataProperties->mediaName,
+		//	dataProperties->mediaType, dataProperties->chn_port);
 		if (strcmp(dataProperties->mediaName, "H264") == 0) {
-			printf("\tfps:%d WxH :%dx%d\n", dataProperties->h264.fps, dataProperties->h264.width,
-				dataProperties->h264.height);
-			printf("\t sps_size: %d\n", dataProperties->h264.spsSize);
+		//	printf("\tfps:%d WxH :%dx%d\n", dataProperties->h264.fps, dataProperties->h264.width,
+		//		dataProperties->h264.height);
+		//	printf("\t sps_size: %d\n", dataProperties->h264.spsSize);
 			VLOG_Hex(VLOG_CRIT, dataProperties->h264.u_sps,dataProperties->h264.spsSize);
-			printf("\t pps_size: %d\n", dataProperties->h264.ppsSize);
+		//	printf("\t pps_size: %d\n", dataProperties->h264.ppsSize);
 			VLOG_Hex(VLOG_CRIT, dataProperties->h264.u_pps,dataProperties->h264.ppsSize);
 		}
 		else if (strcmp(dataProperties->mediaName, "ALAW") == 0 ||
 			(strcmp(dataProperties->mediaName, "ULAW") == 0)) {
-			printf("\t sample rate:%d sample size: %d channel:%d\n", dataProperties->g711.sampleRate,
-				dataProperties->g711.sampleSize, dataProperties->g711.channel);
+		//	printf("\t sample rate:%d sample size: %d channel:%d\n", dataProperties->g711.sampleRate,
+		//		dataProperties->g711.sampleSize, dataProperties->g711.channel);
 		}
 	}
 }

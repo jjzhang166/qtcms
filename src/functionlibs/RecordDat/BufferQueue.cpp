@@ -31,6 +31,7 @@ bool BufferQueue::enqueue( QVariantMap tFrameInfo )
 	//A:tagFrameHead+tagAudioConfigFrame
 
 	// test frame isCorrect;
+
 	if (testFrame(tFrameInfo))
 	{
 		//keep going

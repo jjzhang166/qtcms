@@ -1,4 +1,5 @@
 #include "WorkerThread.h"
+#include "h264wh.h"
 
 #include <QDebug>
 
@@ -307,17 +308,35 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
 	QVariantMap tStreamInfo;
 	stMINIRTSP_DATA_PROPERTY frameInfo;
 	int ret = MINIRTSP_lookup_data(m_rtspContext, datatype, &frameInfo);
-
  	tStreamInfo.insert("pts", timestamp);
  	tStreamInfo.insert("length", size);
  	tStreamInfo.insert("data", (quintptr)pdata);
- 
  	if (MD_TYPE_H264 == datatype)
  	{
  		//vedio
- 		tStreamInfo.insert("frametype", TYPE_VEDIO);
- 		tStreamInfo.insert("width", frameInfo.h264.width);
- 		tStreamInfo.insert("height", frameInfo.h264.height);
+		if (frameInfo.h264.ppsSize!=0||frameInfo.h264.spsSize!=0)
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"frame info in pps or sps,please implement";
+			abort();
+		}else{
+			if (isIFrame((char*)pdata,size))
+			{
+				tStreamInfo.insert("frametype", TYPE_VEDIO);
+			}else{
+				tStreamInfo.insert("frametype", TYPE_PFRAME);
+			}
+			int nWidth=0;
+			int nHeight=0;
+			if (GetWidthHeight((char*)pdata,size,&nWidth,&nHeight)==0)
+			{
+				tStreamInfo.insert("width", nWidth);
+				tStreamInfo.insert("height", nHeight);
+			}else{
+				tStreamInfo.insert("width", frameInfo.h264.width);
+				tStreamInfo.insert("height", frameInfo.h264.height);
+			}
+		}
+ 	//	tStreamInfo.insert("frametype", TYPE_VEDIO);
  		tStreamInfo.insert("vcodec", "H264");
  	}
  	else

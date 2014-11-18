@@ -32,7 +32,8 @@ typedef enum __tagStreamType{
 }StreamType;
 typedef enum __tagFrameType{
 	TYPE_AUDIO,
-	TYPE_VEDIO
+	TYPE_VEDIO,
+	TYPE_PFRAME
 }FrameType;
 typedef enum __tagBubblePtzAction{
 	Ptz_Up,

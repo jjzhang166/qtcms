@@ -68,12 +68,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_WorkerThread.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="h264wh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OnvifProtocol_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="h264wh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

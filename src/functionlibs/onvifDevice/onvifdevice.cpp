@@ -11,7 +11,7 @@ onvifDevice::onvifDevice():m_nRef(0),
 	m_nCurrentStream(0),
 	m_tConnectStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
-	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream";
+	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream"<<"ForRecord";
 	m_hMainThread=QThread::currentThreadId();
 	connect(this,SIGNAL(sgbackToMainThread(QString,QVariantMap)),this,SLOT(slbackToMainThread(QString,QVariantMap)));
 	for (int i=0;i<2;i++)

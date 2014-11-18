@@ -110,6 +110,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_WorkerThread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="h264wh.cpp" />
     <ClCompile Include="OnvifProtocol.cpp" />
     <ClCompile Include="WorkerThread.cpp" />
   </ItemGroup>
@@ -135,6 +136,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DBUBBLEPROTOCOLEX_LIB -D_WINDLL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(SolutionDir)..\include" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtXml" "-IC:\Program Files (x86)\Visual Leak Detector\include"</Command>
     </CustomBuild>
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="h264wh.h" />
     <ClInclude Include="OnvifProtocol_global.h" />
     <CustomBuild Include="OnvifProtocol.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
