@@ -5,8 +5,9 @@
 
 #include <QDebug>
 
-
-
+int cbOnvifLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbOnvifConnectStatus(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbOnvifCAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
 OnvifProtocol::OnvifProtocol():
     m_nRef(0),
 	m_pDeviceSeach(NULL),
@@ -31,7 +32,9 @@ OnvifProtocol::OnvifProtocol():
 	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&, int*)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&, int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigAddEvent(const QMultiMap<QString,tagOnvifProInfo>&)), m_pWorkThread, SLOT(setEventMap(const QMultiMap<QString,tagOnvifProInfo>&)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigPtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), m_pWorkThread, SLOT(PtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), Qt::BlockingQueuedConnection);
-
+	m_pWorkThread->registerEvent("LiveStream",cbOnvifLiveStream,this);
+	m_pWorkThread->registerEvent("Authority",cbOnvifCAuthority,this);
+	m_pWorkThread->registerEvent("CurrentStatus",cbOnvifConnectStatus,this);
 	m_workThread.start();
 }
 
@@ -132,7 +135,7 @@ int OnvifProtocol::registerEvent( QString eventName,int (__cdecl *proc)(QString,
 		tProInfo.proc=proc;
 		tProInfo.pUser=pUser;
 		m_tEventMap.insert(eventName,tProInfo);
-		emit sigAddEvent(m_tEventMap);
+	//	emit sigAddEvent(m_tEventMap);
 		return IEventRegister::OK;
 	}
 }
@@ -430,9 +433,14 @@ int OnvifProtocol::PTZStop( const int &nChl, const int &nCmd )
 
 void OnvifProtocol::StatusChanged( ConnectStatus emStatus )
 {
+	m_tStatusLock.lock();
 	if (m_emStatus != emStatus)
 	{
+<<<<<<< HEAD
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.sIpAddr<<"status changed from "<<m_emStatus<<" to "<<emStatus;
+=======
+		qDebug()<<__FUNCTION__<<__LINE__<<"status changed from "<<m_emStatus<<" to "<<emStatus<<this;
+>>>>>>> add connect status and reconnect
 		QVariantMap item;
 		item.insert("status", emStatus);
 		eventProcCall("StateChangeed",item);
@@ -442,9 +450,48 @@ void OnvifProtocol::StatusChanged( ConnectStatus emStatus )
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.sIpAddr<<"status didn't changed. curStatus: "<<m_emStatus;
 	}
+	m_tStatusLock.unlock();
+}
+
+int OnvifProtocol::cbCConnectStatus( QVariantMap evMap )
+{
+	ConnectStatus tCurrentStatus=(ConnectStatus)evMap.value("CurrentStatus").toInt();
+	if (tCurrentStatus!=m_emStatus)
+	{
+		StatusChanged(tCurrentStatus);
+	}else{
+		//do nothing
+	}
+	return 0;
+}
+
+int OnvifProtocol::cbCLiveStream( QVariantMap evMap )
+{
+	eventProcCall("LiveStream", evMap);
+	return 0;
+}
+
+int OnvifProtocol::cbCAuthority( QVariantMap evMap )
+{
+	return 0;
 }
 
 // void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
 // {
 // 	((OnvifProtocol*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
 // }
+
+int cbOnvifLiveStream( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	return ((OnvifProtocol*)pUser)->cbCLiveStream(tInfo);
+}
+
+int cbOnvifConnectStatus( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	return ((OnvifProtocol*)pUser)->cbCConnectStatus(tInfo);
+}
+
+int cbOnvifCAuthority( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	return ((OnvifProtocol*)pUser)->cbCAuthority(tInfo);
+}

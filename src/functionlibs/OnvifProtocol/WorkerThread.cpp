@@ -51,9 +51,10 @@ WorkerThread::WorkerThread()
 	m_enStatus(CONNECT_STATUS_DISCONNECTED),
 	m_rtspContext(NULL),
 	m_nvpContext(NULL),
-	m_nvpVerify(NULL)
+	m_nvpVerify(NULL),
+	m_bIgnoreEvent(false)
 {
-
+	m_sEventList<<"LiveStream"<<"Authority"<<"CurrentStatus";
 }
 
 WorkerThread::~WorkerThread()
@@ -107,7 +108,11 @@ int WorkerThread::ConnectToDevice(int *result)
 		return 1;
 	}
 	//create rtsp context, default for sub stream
+<<<<<<< HEAD
 	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+=======
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, false);
+>>>>>>> add connect status and reconnect
 	if (!m_rtspContext)
 	{
 		*result = 1;
@@ -211,22 +216,29 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 	if (MAIN_STREAM == streamId)
 	{
 		//release old context and switch to main stream
+		m_bIgnoreEvent=true;
 		ret = MINIRTSP_disconnect(m_rtspContext);
-		if (!ret)
+		if (0!=ret)
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream fault when disconnect";
 			*result = 1;
+			m_bIgnoreEvent=false;
 			return 1;
 		}
 		MINIRTSP_delete(m_rtspContext);
+<<<<<<< HEAD
 		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
+=======
+		m_bIgnoreEvent=false;
+		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
+>>>>>>> add connect status and reconnect
 		if (m_rtspContext)
 		{
 			//register event callback function
 			MINIRTSP_set_event_hook(m_rtspContext, eventHook, this, 0);
 			MINIRTSP_set_data_hook(m_rtspContext, (fMINIRTSP_DATA_HOOK)dataHook, this, 0);
 			ret = MINIRTSP_connect(m_rtspContext);
-			if (!ret)
+			if (0==ret)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream success";
 				*result = 0;
@@ -317,7 +329,26 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
  		//vedio
 		if (isIFrame((char*)pdata,size))
 		{
+<<<<<<< HEAD
 			tStreamInfo.insert("frametype", TYPE_VEDIO);
+=======
+			if (isIFrame((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize))
+			{
+				tStreamInfo.insert("frametype", TYPE_VEDIO);
+			}else{
+				tStreamInfo.insert("frametype", TYPE_PFRAME);
+			}
+			int nWidth=0;
+			int nHeight=0;
+			if (GetWidthHeight((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize,&nWidth,&nHeight)==0)
+			{
+				tStreamInfo.insert("width", nWidth);
+				tStreamInfo.insert("height", nHeight);
+			}else{
+				tStreamInfo.insert("width", frameInfo.h264.width);
+				tStreamInfo.insert("height", frameInfo.h264.height);
+			}
+>>>>>>> add connect status and reconnect
 		}else{
 			tStreamInfo.insert("frametype", TYPE_PFRAME);
 		}
@@ -371,9 +402,61 @@ int WorkerThread::PtzCtrl( NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int 
 	CHECK_RESULT(ret, result);
 }
 
+void WorkerThread::recEventHook( int eventType,void *rParam )
+{
+	if (m_bIgnoreEvent==true)
+	{
+		return;
+	}else{
+		//keep going
+	}
+	if (eventType==MINIRTSP_EVENT_CONNECTED||eventType==MINIRTSP_EVENT_DISCONNECTED)
+	{
+		ConnectStatus tCurrentStatus;
+		if (eventType==MINIRTSP_EVENT_CONNECTED)
+		{
+			tCurrentStatus=CONNECT_STATUS_CONNECTED;
+		}else{
+			tCurrentStatus=CONNECT_STATUS_DISCONNECTED;
+		}
+		if (tCurrentStatus!=m_enStatus)
+		{
+			m_enStatus=tCurrentStatus;
+			QVariantMap tStreamInfo;
+			tStreamInfo.insert("CurrentStatus",tCurrentStatus);
+			tagOnvifProInfo tProInfo=m_tEventMap.value("CurrentStatus");
+			if (tProInfo.proc)
+			{
+				tProInfo.proc(QString("CurrentStatus"),tStreamInfo,tProInfo.pUser);
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"LiveStream is not register";
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
+}
+
+void WorkerThread::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
+{
+	if (!m_sEventList.contains(eventName))
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<eventName<<"is undefined";
+		return ;
+	}else{
+		tagOnvifProInfo tProInfo;
+		tProInfo.proc=proc;
+		tProInfo.pUser=pUser;
+		m_tEventMap.insert(eventName,tProInfo);
+		return ;
+	}
+}
+
 void eventHook( int eventType, int lParam, void *rParam, void *customCtx )
 {
-
+	((WorkerThread*)customCtx)->recEventHook(eventType,rParam);
 }
 
 void dataHook( void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx )

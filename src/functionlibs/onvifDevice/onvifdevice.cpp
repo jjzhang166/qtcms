@@ -257,13 +257,14 @@ int onvifDevice::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 				m_tpOnvifProtocolLock.unlock();
 				if (NULL!=pRemovePreview)
 				{
-					if (1!=pRemovePreview->getLiveStream(nChannel,nStream))
+					if (1!=pRemovePreview->getLiveStream(nChannel,nStreamNum))
 					{
 						pRemovePreview->Release();
 						pRemovePreview=NULL;
 					}else{
 						pRemovePreview->Release();
 						pRemovePreview=NULL;
+						qDebug()<<__FUNCTION__<<__LINE__<<"getLiveStream fail"<<nChannel<<nStreamNum;
 						return 1;
 					}
 				}else{
@@ -308,7 +309,10 @@ int onvifDevice::cbConnectStatusChange( QVariantMap &tInfo )
 
 int onvifDevice::cbLiveStream( QVariantMap &tInfo )
 {
+<<<<<<< HEAD
 // 	eventProcCall("LiveStream",tInfo);
+=======
+>>>>>>> add connect status and reconnect
 	m_tLiveStreamLock.lock();
 	if ("Main"==tInfo.value("streamNum"))
 	{
@@ -363,7 +367,8 @@ void onvifDevice::backToMainThread( QString sEvName,QVariantMap tInfo )
 	{
 		slbackToMainThread(sEvName,tInfo);
 	}else{
-		emit sgbackToMainThread(sEvName,tInfo);
+		/*emit sgbackToMainThread(sEvName,tInfo);*/
+		slbackToMainThread(sEvName,tInfo);
 	}
 }
 
@@ -379,17 +384,17 @@ void onvifDevice::slbackToMainThread( QString sEvName,QVariantMap evMap )
 			nStreamNum=1;
 		}
 		evMap.remove("streamNum");
-		IDeviceConnection::_enConnectionStatus tCurrentStatus=(IDeviceConnection::_enConnectionStatus)evMap.value("status").toInt();
-		if (IDeviceConnection::CS_Connected==tCurrentStatus)
+		IDeviceClient::ConnectStatus tCurrentStatus=(IDeviceClient::ConnectStatus)evMap.value("status").toInt();
+		if (IDeviceClient::STATUS_CONNECTED==tCurrentStatus)
 		{
 			m_tOnvifProtocolInfo[nStreamNum].tConnectStatus=IDeviceClient::STATUS_CONNECTED;
-		}else if (IDeviceConnection::CS_Disconnected==tCurrentStatus)
+		}else if (IDeviceClient::STATUS_DISCONNECTED==tCurrentStatus)
 		{
 			m_tOnvifProtocolInfo[nStreamNum].tConnectStatus=IDeviceClient::STATUS_DISCONNECTED;
-		}else if (IDeviceConnection::CS_Disconnecting==tCurrentStatus)
+		}else if (IDeviceClient::STATUS_DISCONNECTING==tCurrentStatus)
 		{
 			m_tOnvifProtocolInfo[nStreamNum].tConnectStatus=IDeviceClient::STATUS_DISCONNECTING;
-		}else if (IDeviceConnection::CS_Connectting==tCurrentStatus)
+		}else if (IDeviceClient::STATUS_CONNECTING==tCurrentStatus)
 		{
 			m_tOnvifProtocolInfo[nStreamNum].tConnectStatus=IDeviceClient::STATUS_CONNECTING;
 		}else{
@@ -470,7 +475,7 @@ void onvifDevice::clearProtocol()
 			//do nothing
 		}
 		QVariantMap tCurrentConnectStatus;
-		tCurrentConnectStatus.insert("CurrentStatus",IDeviceClient::STATUS_DISCONNECTED);
+		tCurrentConnectStatus.insert("status",IDeviceClient::STATUS_DISCONNECTED);
 		QString sStreamNum;
 		if (it.key()==0)
 		{

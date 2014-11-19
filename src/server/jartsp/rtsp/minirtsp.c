@@ -137,6 +137,7 @@ static lpMINIRTSP minirtsp_new()
 
 static void *rtsp_client_proc(void *param)
 {
+	int bRunning=true;
 	int error_occur = TRUE;
 	int ret;
 	int connect_status;
@@ -149,10 +150,10 @@ static void *rtsp_client_proc(void *param)
 	char url[256];
 	int TIMEOUTCNT = 1000;
 	unsigned int timestamp;
-
+	
 	lpMINIRTSP thiz=(lpMINIRTSP)param;
 	r=(Rtsp_t *)thiz->rtsp;
-
+	
 #if defined(_WIN32) || defined(_WIN64)
 #else
     struct sigaction sa; 
@@ -163,10 +164,32 @@ static void *rtsp_client_proc(void *param)
 	
 	pthread_detach(pthread_self());	
 #endif	
-
+	
 	VLOG(VLOG_CRIT,"rtsp client proc start %d_%d....",thiz->chn, thiz->streamId);
+	if (thiz->eventHook)
+		thiz->eventHook(MINIRTSP_EVENT_CONNECTED,0, NULL, thiz->eventCustomCtx);
 
-	while((r->toggle == RTSPC_RUNNING) && (thiz->trigger)){		
+	while((r->toggle == RTSPC_RUNNING) && (thiz->trigger)){	
+		if (thiz->autoReconnect==false&&bRunning==true)
+		{
+			bRunning=false;
+			if(RTSP_request_play(r)==RTSP_RET_FAIL) {
+				continue;
+			}
+			time(&r->m_sync);
+			if(r->b_interleavedMode){
+				SOCK_set_buf_size(r->sock, 0, 400*1024);
+			}else{
+				if(r->rtp_video){
+					SOCK_set_buf_size(r->rtp_video->sock,0 , 400*1024);
+				}
+			}
+			error_occur = FALSE;
+		}else if (bRunning==false&&error_occur==true)
+		{
+			r->toggle=false;
+			continue;
+		}
 		if((thiz->autoReconnect)&& (error_occur == TRUE)){
 			// sent event
 			if (thiz->eventHook && (r->state == RTSP_STATE_PLAYING))
@@ -365,7 +388,8 @@ static void *rtsp_client_proc(void *param)
 
 	thiz->trigger = FALSE;
 	VLOG(VLOG_CRIT,"(%d:%d) rtsp client proc exit", thiz->chn, thiz->streamId);
-
+	if (thiz->eventHook)
+		thiz->eventHook(MINIRTSP_EVENT_DISCONNECTED,0, NULL, thiz->eventCustomCtx);
 	thiz->eventHook(MINIRTSP_EVENT_DESTROYED,
 		0, NULL, thiz->eventCustomCtx);
 	

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "OnvifProtocol_global.h"
+#include <QStringList>
 extern "C"{
 #include "nvp_define.h"
 #include "minirtsp.h"
@@ -21,7 +22,9 @@ public:
 	~WorkerThread();
 	ConnectStatus getCurrentStatus();
 	void setDeviceInfo(const DeviceInfo& devInfo);
+	void recEventHook(int eventType,void *rParam);
 	void recFrameData(void* pdata, unsigned int size, unsigned int timestamp, int datatype);
+	void registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 public slots:
 	int ConnectToDevice(int *ret);
 	int Authority(int *ret);
@@ -43,6 +46,8 @@ private:
 	stNVP_ARGS m_nvpArguments;
 	stNVP_RTSP_STREAM m_nvpStreamUrl;
 	stNVP_VENC_CONFIGS m_nvpStreamInfo;
+	volatile bool m_bIgnoreEvent;
+	QStringList m_sEventList;
 };
 
 #endif // WORKERTHREAD_H

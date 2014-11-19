@@ -82,6 +82,11 @@ public:
 	virtual int PTZStop(const int &nChl, const int &nCmd);
 
 // 	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware );
+public:
+	//»Øµ÷º¯Êý
+	int cbCConnectStatus(QVariantMap evMap);
+	int cbCLiveStream(QVariantMap evMap);
+	int cbCAuthority(QVariantMap evMap);
 signals:
 	void sigConnectToDevice(int *result);
 	void sigAuthority(int *result);
@@ -111,6 +116,7 @@ private:
 	DeviceInfo m_tDeviceInfo;
 	volatile bool m_bSearchStoping;
 	ConnectStatus m_emStatus;
+	QMutex m_tStatusLock;
 };
 
 #endif // ONVIFPROTOCOL_H

@@ -1579,7 +1579,7 @@ bool QSubviewRun::connectToDevice()
 				pdeviceClient=NULL;
 				return true;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail"<<QThread::currentThreadId();
 				if (m_currentStatus==STATUS_CONNECTING)
 				{
 					//

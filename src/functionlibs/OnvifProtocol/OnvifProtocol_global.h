@@ -20,9 +20,9 @@ typedef struct __tagDeviceInfo{
 }DeviceInfo;
 
 typedef enum __tagConnectStatus{
-	CONNECT_STATUS_DISCONNECTED,
-	CONNECT_STATUS_CONNECTTING,
 	CONNECT_STATUS_CONNECTED,
+	CONNECT_STATUS_CONNECTTING,
+	CONNECT_STATUS_DISCONNECTED,
 	CONNECT_STATUS_DISCONNECTING
 }ConnectStatus;
 typedef enum __tagStreamType{
