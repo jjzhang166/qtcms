@@ -7,6 +7,8 @@
 #include <ISwitchStream.h>
 #include <IRemotePreview.h>
 #include <IDeviceConnection.h>
+#include <IPTZControl.h>
+#include <IProtocolPTZ.h>
 #include <QDebug>
 #include <QMutex>
 #include <QThread>
@@ -33,6 +35,7 @@ typedef struct __tagOnvifProtocolInfo{
 class  onvifDevice:public QObject,
 	public IEventRegister,
 	public ISwitchStream,
+	public IPTZControl,
 	public IDeviceClient
 {
 	Q_OBJECT
@@ -63,6 +66,21 @@ public:
 
 	//ISwitchStream
 	virtual int SwitchStream(int nStreamNum);
+
+	//IPTZControl
+	virtual int ControlPTZUp(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZDown(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZLeft(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZRight(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisOpen(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZIrisClose(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusFar(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZFocusNear(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomIn(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZZoomOut(const int &nChl, const int &nSpeed);
+	virtual int ControlPTZAuto(const int &nChl, bool bOpend);
+	virtual int ControlPTZStop(const int &nChl, const int &nCmd);
+
 public:
 	//callback
 	int cbConnectStatusChange(QVariantMap &tInfo);
@@ -73,6 +91,7 @@ private:
 	void backToMainThread(QString sEvName,QVariantMap tInfo);
 	void clearProtocol();
 	void registerEventCb(int nStreamNum,IEventRegister *pRegister);
+	IProtocolPTZ *getPTZInterface(int streamId);
 private slots:
 	void slbackToMainThread(QString sEvName,QVariantMap evMap);
 signals:

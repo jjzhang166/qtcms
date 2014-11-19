@@ -44,6 +44,10 @@ long __stdcall onvifDevice::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv=static_cast<ISwitchStream*>(this);
 	}
+	else if (IID_IPTZControl == iid)
+	{
+		*ppv = static_cast<IPTZControl*>(this);
+	}
 	else
 	{
 		qDebug ()<<__FUNCTION__<<__LINE__<<"it do not support ::that interface";
@@ -504,6 +508,165 @@ int onvifDevice::SwitchStream( int nStreamNum )
 {
 	m_nSwithStream=nStreamNum;
 	return 0;
+}
+
+IProtocolPTZ * onvifDevice::getPTZInterface( int streamId )
+{
+	IProtocolPTZ *pPtzInterface = NULL;
+	IDeviceConnection *pCon = m_tOnvifProtocolInfo[streamId].pOnvifProctol;
+	if (pCon)
+	{
+		pCon->QueryInterface(IID_IProtocolPTZ, (void**)&pPtzInterface);
+		if (pPtzInterface)
+		{
+			return pPtzInterface;
+		}
+	}
+	return NULL;
+}
+
+int onvifDevice::ControlPTZUp( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZUp(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZDown( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZDown(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZLeft( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZLeft(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZRight( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZRight(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZIrisOpen( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZIrisOpen(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZIrisClose( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZIrisClose(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZFocusFar( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZFocusFar(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZFocusNear( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZFocusNear(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZZoomIn( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZZoomIn(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZZoomOut( const int &nChl, const int &nSpeed )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZZoomOut(nChl, nSpeed);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZAuto( const int &nChl, bool bOpend )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZAuto(nChl, bOpend);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
+}
+
+int onvifDevice::ControlPTZStop( const int &nChl, const int &nCmd )
+{
+	IProtocolPTZ *pPtz = getPTZInterface(0);	//get main stream connection
+	if (pPtz)
+	{
+		int ret = pPtz->PTZStop(nChl, nCmd);
+		pPtz->Release();
+		return ret;
+	}
+	return 1;
 }
 
 int cbXMainConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )
