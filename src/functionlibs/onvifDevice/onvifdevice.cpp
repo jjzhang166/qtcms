@@ -308,7 +308,7 @@ int onvifDevice::cbConnectStatusChange( QVariantMap &tInfo )
 
 int onvifDevice::cbLiveStream( QVariantMap &tInfo )
 {
-	eventProcCall("LiveStream",tInfo);
+// 	eventProcCall("LiveStream",tInfo);
 	m_tLiveStreamLock.lock();
 	if ("Main"==tInfo.value("streamNum"))
 	{

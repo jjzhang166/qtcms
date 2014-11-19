@@ -103,17 +103,17 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"get rtsp url fault";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"get rtsp url fault";
 		return 1;
 	}
 	//create rtsp context, default for sub stream
-	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, false);
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 	if (!m_rtspContext)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
 		NVP_ONVIF_delete(m_nvpContext);
-		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"create rtsp context fault";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"create rtsp context fault";
 
 		return 1;
 	}
@@ -126,7 +126,7 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connect error";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"connect error";
 
 		return 1;
 	}
@@ -134,7 +134,7 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 0;
 		m_enStatus = CONNECT_STATUS_CONNECTED;
-		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<"connect success!!!";
+		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"connect success!!!";
 
 		return 0;
 	}
@@ -143,7 +143,7 @@ int WorkerThread::ConnectToDevice(int *result)
 int WorkerThread::Authority(int *ret)
 {
 	//create rtsp context, default for sub stream
-	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
+	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 	if (m_nvpVerify)
 	{
 		//this rtsp context is just for verify username and password
@@ -219,7 +219,7 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 			return 1;
 		}
 		MINIRTSP_delete(m_rtspContext);
-		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
+		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 		if (m_rtspContext)
 		{
 			//register event callback function
@@ -308,52 +308,29 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
 	QVariantMap tStreamInfo;
 	stMINIRTSP_DATA_PROPERTY frameInfo;
 	int ret = MINIRTSP_lookup_data(m_rtspContext, datatype, &frameInfo);
- 	tStreamInfo.insert("pts", timestamp);
+
+ 	tStreamInfo.insert("pts", (quint64)timestamp*1000);
  	tStreamInfo.insert("length", size);
  	tStreamInfo.insert("data", (quintptr)pdata);
  	if (MD_TYPE_H264 == datatype)
  	{
  		//vedio
-		if (frameInfo.h264.spsSize!=0)
+		if (isIFrame((char*)pdata,size))
 		{
-			qDebug()<<__FUNCTION__<<__LINE__<<"frame info in pps or sps,please implement";
-			abort();
-			if (isIFrame((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize))
-			{
-				tStreamInfo.insert("frametype", TYPE_VEDIO);
-			}else{
-				tStreamInfo.insert("frametype", TYPE_PFRAME);
-			}
-			int nWidth=0;
-			int nHeight=0;
-			if (GetWidthHeight((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize,&nWidth,&nHeight)==0)
-			{
-				tStreamInfo.insert("width", nWidth);
-				tStreamInfo.insert("height", nHeight);
-			}else{
-				tStreamInfo.insert("width", frameInfo.h264.width);
-				tStreamInfo.insert("height", frameInfo.h264.height);
-			}
+			tStreamInfo.insert("frametype", TYPE_VEDIO);
 		}else{
-			if (isIFrame((char*)pdata,size))
-			{
-				tStreamInfo.insert("frametype", TYPE_VEDIO);
-			}else{
-				tStreamInfo.insert("frametype", TYPE_PFRAME);
-			}
-			int nWidth=0;
-			int nHeight=0;
-
-			if (GetWidthHeight((char*)pdata,size,&nWidth,&nHeight)==0)
-			{
-				tStreamInfo.insert("width", nWidth);
-				tStreamInfo.insert("height", nHeight);
-			}else{
-				tStreamInfo.insert("width", frameInfo.h264.width);
-				tStreamInfo.insert("height", frameInfo.h264.height);
-			}
+			tStreamInfo.insert("frametype", TYPE_PFRAME);
 		}
- 	//	tStreamInfo.insert("frametype", TYPE_VEDIO);
+		int nWidth=0;
+		int nHeight=0;
+		if (GetWidthHeight((char*)pdata, size, &nWidth, &nHeight)==0)
+		{
+			tStreamInfo.insert("width", nWidth);
+			tStreamInfo.insert("height", nHeight);
+		}else{
+			tStreamInfo.insert("width", frameInfo.h264.width);
+			tStreamInfo.insert("height", frameInfo.h264.height);
+		}
  		tStreamInfo.insert("vcodec", "H264");
  	}
  	else
@@ -365,7 +342,7 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
  		tStreamInfo.insert("audiochannel", frameInfo.g711.channel);
  		tStreamInfo.insert("acodec", "g711");
  	}
- 	tagOnvifProInfo tProInfo=m_tEventMap.value("LiveStream");
+ 	tagOnvifProInfo tProInfo = m_tEventMap.value("LiveStream");
  	if (tProInfo.proc)
  	{
  		tProInfo.proc(QString("LiveStream"),tStreamInfo,tProInfo.pUser);

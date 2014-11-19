@@ -432,7 +432,7 @@ void OnvifProtocol::StatusChanged( ConnectStatus emStatus )
 {
 	if (m_emStatus != emStatus)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"status changed from "<<m_emStatus<<" to "<<emStatus;
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.sIpAddr<<"status changed from "<<m_emStatus<<" to "<<emStatus;
 		QVariantMap item;
 		item.insert("status", emStatus);
 		eventProcCall("StateChangeed",item);
@@ -440,7 +440,7 @@ void OnvifProtocol::StatusChanged( ConnectStatus emStatus )
 	}
 	else
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"status didn't changed";
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.sIpAddr<<"status didn't changed. curStatus: "<<m_emStatus;
 	}
 }
 
