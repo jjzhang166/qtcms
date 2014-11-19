@@ -107,7 +107,7 @@ int WorkerThread::ConnectToDevice(int *result)
 		return 1;
 	}
 	//create rtsp context, default for sub stream
-	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, true);
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, false);
 	if (!m_rtspContext)
 	{
 		*result = 1;
@@ -314,10 +314,26 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
  	if (MD_TYPE_H264 == datatype)
  	{
  		//vedio
-		if (frameInfo.h264.ppsSize!=0||frameInfo.h264.spsSize!=0)
+		if (frameInfo.h264.spsSize!=0)
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<"frame info in pps or sps,please implement";
 			abort();
+			if (isIFrame((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize))
+			{
+				tStreamInfo.insert("frametype", TYPE_VEDIO);
+			}else{
+				tStreamInfo.insert("frametype", TYPE_PFRAME);
+			}
+			int nWidth=0;
+			int nHeight=0;
+			if (GetWidthHeight((char*)frameInfo.h264.u_sps,frameInfo.h264.spsSize,&nWidth,&nHeight)==0)
+			{
+				tStreamInfo.insert("width", nWidth);
+				tStreamInfo.insert("height", nHeight);
+			}else{
+				tStreamInfo.insert("width", frameInfo.h264.width);
+				tStreamInfo.insert("height", frameInfo.h264.height);
+			}
 		}else{
 			if (isIFrame((char*)pdata,size))
 			{
@@ -327,6 +343,7 @@ void WorkerThread::recFrameData( void* pdata, unsigned int size, unsigned int ti
 			}
 			int nWidth=0;
 			int nHeight=0;
+
 			if (GetWidthHeight((char*)pdata,size,&nWidth,&nHeight)==0)
 			{
 				tStreamInfo.insert("width", nWidth);
