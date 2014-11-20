@@ -1,6 +1,7 @@
 #include "qsubviewEx.h"
 #include <QTime>
 //#include "vld.h"
+#include "IWindowSettings.h"
 
 bool qsubviewEx::ms_bIsFullScreen = false;
 qsubviewEx::qsubviewEx(QWidget *parent):
@@ -15,7 +16,8 @@ QWidget(parent),
 	m_pRecorderAction(NULL),
 	m_pBackMainViewAction(NULL),
 	m_pTtanslator(NULL),
-	m_nConnectingCount(0)
+	m_nConnectingCount(0),
+	m_nWindowIndex(0)
 {
 	//注册回调函数
 	m_sSubviewRun.registerEvent(QString("CurrentStatus"),cbStateChangeEx,this);
@@ -43,7 +45,7 @@ QWidget(parent),
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
 	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
-	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
+	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretch(bool)));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 }
@@ -518,7 +520,6 @@ int qsubviewEx::openPreview( int chlId )
 
 int qsubviewEx::closePreview()
 {
-	m_pStreachVideo->setChecked(false);
 	m_sSubviewRun.stopPreview();
 	return 0;
 }
@@ -540,6 +541,7 @@ void qsubviewEx::slmouseMenu()
 		m_pSwitchStreamAciton->setText(tr("Switch to MainStream"));
 	}
 	m_pClosePreviewAction->setText(tr("Close Preview"));
+	m_pStreachVideo->setChecked(m_bStretch);
 	if (m_tCurConnectStatus==STATUS_DISCONNECTED)
 	{
 		m_pClosePreviewAction->setDisabled(true);
@@ -752,6 +754,7 @@ void qsubviewEx::slMenRecorder()
 void qsubviewEx::setCurWindId( int nWindId )
 {
 	m_sSubviewRun.setWindId(nWindId);
+	m_nWindowIndex = nWindId;
 }
 
 int qsubviewEx::cbCConnectRefuse( QVariantMap evMap )
@@ -792,10 +795,35 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 	return 0;
 }
 
-void qsubviewEx::slSuitForWindow( bool bTrigger )
+void qsubviewEx::enableStretch( bool bEnable )
 {
-	m_sSubviewRun.enableStretch(bTrigger);
-	m_pStreachVideo->setChecked(bTrigger);
+	m_bStretch = bEnable;
+	m_sSubviewRun.enableStretch(bEnable);
+	m_pStreachVideo->setChecked(bEnable);
+
+	// 将当前的拉伸状态保存到配置里
+	IWindowSettings * pi;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IWindowSettings,(void **)&pi);
+	if (NULL != pi)
+	{
+		pi->setEnableStretch(m_nWindowIndex,bEnable);
+		pi->Release();
+	}
+}
+
+void qsubviewEx::initAfterConstructor()
+{
+	IWindowSettings * pi;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IWindowSettings,(void **)&pi);
+	if (NULL != pi)
+	{
+		// 根据当前设置，初始化视频拉伸属性
+		bool bStretch = pi->getEnableStretch(m_nWindowIndex);
+		m_sSubviewRun.enableStretch(bStretch);
+		m_bStretch = bStretch;
+
+		pi->Release();
+	}
 }
 
 

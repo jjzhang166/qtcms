@@ -76,6 +76,8 @@ public slots:
 	void subWindowConnectStatus(QVariantMap,QWidget *);
 	void subWindowConnectRefuse(QVariantMap,QWidget *);
 	void subWindowAuthority(QVariantMap,QWidget *);
+	// ÕºœÒ¿≠…Ï
+	void AllWindowStretch(bool bEnable);
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();

@@ -72,6 +72,14 @@ name char(64),
 value text
 );
 
+create table window_settings
+(
+id integer primary key autoincrement,
+wnd_id integer,
+stretch integer,
+chl_id integer
+);
+
 create trigger area_delete
 before delete on area
 for each row
@@ -147,5 +155,86 @@ insert into general_setting (name,value) values('misc_smode','div4_4');
 insert into general_setting (name,value) values('misc_alogin','true');
 insert into general_setting (name,value) values('misc_synctime','true');
 insert into general_setting (name,value) values('misc_aconnent','false');
-insert into general_setting (name,value) values('misc_afullscreen','true');
+insert into general_setting (name,value) values('misc_afullscreen','false');
 insert into general_setting (name,value) values('misc_bootstart','false');
+
+insert into window_settings (wnd_id,stretch,chl_id) values(0,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(1,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(2,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(3,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(4,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(5,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(6,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(7,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(8,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(9,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(10,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(11,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(12,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(13,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(14,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(15,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(16,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(17,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(18,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(19,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(20,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(21,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(22,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(23,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(24,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(25,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(26,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(27,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(28,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(29,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(30,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(31,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(32,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(33,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(34,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(35,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(36,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(37,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(38,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(39,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(40,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(41,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(42,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(43,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(44,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(45,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(46,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(47,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(48,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(49,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(50,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(51,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(52,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(53,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(54,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(55,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(56,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(57,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(58,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(59,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(60,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(61,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(62,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(63,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(64,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(65,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(66,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(67,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(68,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(69,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(70,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(71,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(72,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(73,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(74,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(75,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(76,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(77,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(78,1,-1);
+insert into window_settings (wnd_id,stretch,chl_id) values(79,1,-1);

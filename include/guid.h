@@ -112,4 +112,5 @@ extern const GUID CLSID_LocalPlayerEx;
 extern const IID IID_IVideoDisplayOption;
 extern const CLSID CLSID_onvifDevice;
 extern const GUID CLSID_OnvifProtocol;
+extern const IID IID_IWindowSettings;
 #endif

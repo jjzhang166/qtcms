@@ -39,6 +39,10 @@ public:
 	int setDevChannelInfo(int chlId);//unnecessary
 	QVariantMap getWindowInfo();
 
+	// 初始化部分,必须在调用完其他的参数设置接口后调用initAfterConstructor
+	void setCurWindId(int nWindId);
+	void initAfterConstructor();
+
 	//手动录像
 	int startRecord();
 	int stopRecord();
@@ -59,8 +63,6 @@ public:
 	//设置当前焦点窗口
 	void setCurrentFocus(bool flags);
 	void setDataBaseFlush();
-	//设置当前窗口ID
-	void setCurWindId(int nWindId);
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);
@@ -74,7 +76,8 @@ public slots:
 	void slclosePreview();
 	void slMenRecorder();
 	void slbackToManiWnd();
-	void slSuitForWindow(bool bTrigger);
+	// 拉伸窗口
+	void enableStretch(bool bEnable);
 signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgmouseDoubleClick(QWidget *,QMouseEvent*);
@@ -118,5 +121,7 @@ private:
 	int m_nConnectingCount;
 	QTimer m_tConnectingTimer;
 	static bool ms_bIsFullScreen;
+	int m_nWindowIndex;
+	bool m_bStretch; // 在对象内暂存状态，与配置中的状态一致，避免在调用菜单和其他操作的时候需要频繁读取配置
 };
 

@@ -60,7 +60,12 @@ long __stdcall commonlibEx::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_IPcomBase==iid)
 	{
 		*ppv = static_cast<IPcomBase *>(this);
-	}else{
+	}
+	else if (IID_IWindowSettings == iid)
+	{
+		*ppv = static_cast<IWindowSettings *>(this);
+	}
+	else{
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
@@ -2734,4 +2739,45 @@ bool commonlibEx::getIsPersian()
 	}
 
 	return bIsPersian;
+}
+
+void commonlibEx::setEnableStretch( int uiWnd,bool bEnable )
+{
+	QSqlQuery _query(*m_db);
+	int nStretch = bEnable ? 1 : 0;
+	QString sql = QString("update window_settings set stretch='%1' where wnd_id='%2'").arg(nStretch).arg(uiWnd);
+	_query.exec(sql);
+	_query.finish();
+}
+
+bool commonlibEx::getEnableStretch( int uiWnd )
+{
+	QSqlQuery _query(*m_db);
+	QString sql = QString("select stretch from window_settings where wnd_id='%1'").arg(uiWnd);
+	_query.exec(sql);
+	int nStretch;
+	if (_query.next())
+	{
+		nStretch = _query.value(0).toInt();
+	}
+	return nStretch == 1 ? true : false;
+}
+
+void commonlibEx::setAllWindowStretch( bool bEnable )
+{
+	QSqlQuery _query(*m_db);
+	int nStretch = bEnable ? 1 : 0;
+	QString sql = QString("update window_settings set stretch='%1'").arg(nStretch);
+	_query.exec(sql);
+	_query.finish();
+}
+
+void commonlibEx::setChannelInWnd( int uiWnd,int nChl )
+{
+	throw std::exception("The method or operation is not implemented.");
+}
+
+int commonlibEx::getChannelInWnd( int nWnd )
+{
+	throw std::exception("The method or operation is not implemented.");
 }

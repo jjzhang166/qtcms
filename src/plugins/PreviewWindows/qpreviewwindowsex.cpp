@@ -13,6 +13,9 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
 	{
 		m_sPreviewWnd[i].setParent(this);
+		m_sPreviewWnd[i].setCurWindId(i);
+		m_sPreviewWnd[i].initAfterConstructor();
+
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(subWindowMousePress(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(subWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
@@ -249,7 +252,6 @@ int qpreviewwindowsex::OpenCameraInWnd( unsigned int uiWndIndex ,const QString s
 		qDebug()<<__FUNCTION__<<__LINE__<<"input uiWndIndex value is error ";
 		return 1;
 	}else{
-		m_sPreviewWnd[uiWndIndex].setCurWindId(uiWndIndex);
 		m_sPreviewWnd[uiWndIndex].openPreview(uiChannelId);
 		return 0;
 	}
@@ -522,5 +524,14 @@ void qpreviewwindowsex::subWindowAuthority( QVariantMap evMap,QWidget *wnd )
 	evMap.insert("WPageId",i);
 	EventProcCall("Authority",evMap);
 	return ;
+}
+
+void qpreviewwindowsex::AllWindowStretch( bool bEnable )
+{
+	int i;
+	for (i = 0 ;i < ARRAY_SIZE(m_sPreviewWnd); i++)
+	{
+		m_sPreviewWnd[i].enableStretch(bEnable);
+	}
 }
 

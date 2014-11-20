@@ -11,6 +11,7 @@
 #include <IDisksSetting.h>
 #include <ISetRecordTime.h>
 #include <ILocalSetting.h>
+#include <IWindowSettings.h>
 #include <QMutex>
 #include "DisksInfo.h"
 class  commonlibEx:public IUserManager
@@ -21,6 +22,7 @@ class  commonlibEx:public IUserManager
 	,public IDisksSetting
 	,public ISetRecordTime
 	,public ILocalSetting
+	,public IWindowSettings
 {
 public:
 	commonlibEx();
@@ -140,6 +142,13 @@ public:
 	virtual QStringList GetRecordTimeBydevId( int chl_id );
 	virtual QVariantMap GetRecordTimeInfo( int recordtime_id );
 
+	// IWindowSettings
+	virtual void setEnableStretch( int uiWnd,bool bEnable );
+	virtual bool getEnableStretch( int uiWnd );
+	virtual void setAllWindowStretch( bool bEnable );
+	virtual void setChannelInWnd( int uiWnd,int nChl );
+	virtual int getChannelInWnd( int nWnd );
+
 
 	//ILocalSetting
 	int setLanguage(const QString & sLanguage);
@@ -163,6 +172,9 @@ public:
 private:
 	bool CheckTimeFormat(QString sTime);
 	bool checkDeviceNameIsExist(QString sDevcie);
+
+
+
 private:
 	QSqlDatabase * m_db;
 	static QMutex Group_lock;

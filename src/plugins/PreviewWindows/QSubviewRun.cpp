@@ -42,7 +42,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_nSleepSwitch(0),
 	m_nCheckPreCount(0),
 	m_nSecondPosition(0),
-	m_nMotionRecordTime(10)
+	m_nMotionRecordTime(10),
+	m_bStretch(true)
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
@@ -137,6 +138,10 @@ void QSubviewRun::run()
 							m_pIVideoRender=NULL;
 						}
 						pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_pIVideoRender);
+						if (NULL != m_pIVideoRender)
+						{
+							m_pIVideoRender->enableStretch(m_bStretch);
+						}
 						if (NULL!=m_pRecordDat)
 						{
 							m_pRecordDat->Release();
@@ -2194,6 +2199,7 @@ void QSubviewRun::enableStretch( bool bStretch )
 	{
 		m_pIVideoRender->enableStretch(bStretch);
 	}
+	m_bStretch = bStretch;
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

@@ -213,5 +213,6 @@ private:
 	int m_nCheckPreCount;
 	int m_nMotionRecordTime;
 	QMutex m_tStepCodeLock;
+	bool m_bStretch; // 视频拉伸状态的暂存，创建渲染组件的时候，同时设置拉伸状态
 };
   
