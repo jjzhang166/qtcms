@@ -1369,9 +1369,9 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 				m_tRenderInfo.sPixeFormat=evMap.value("pixelFormat").toString();
 				m_tRenderInfo.nFlags=evMap.value("flags").toInt();
 
-				m_tRenderInfo.pData=new char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2];
-				memset(m_tRenderInfo.pData, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
-				memcpy(m_tRenderInfo.pData,(char*)evMap.value("data").toUInt(),m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
+				//m_tRenderInfo.pData=new char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2];
+				//memset(m_tRenderInfo.pData, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
+				//memcpy(m_tRenderInfo.pData,(char*)evMap.value("data").toUInt(),m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
 
 				m_tRenderInfo.pUdata=new char[m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2];
 				memset(m_tRenderInfo.pUdata, 0, m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
