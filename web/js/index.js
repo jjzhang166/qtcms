@@ -653,4 +653,15 @@ var oPreView,oDiv,
 			ViewMax();
 		}
 	}
-
+  //画面是否按原始比例
+  function allWindowStretch(obj){
+	  var bl = obj.attr('toggle');
+	  if(bl){
+		obj.attr('title',_T('video_origin_screen')); 
+		getAudioObj().AllWindowStretch(false); 
+	   }else{
+		 obj.attr('title',_T('video_Full_screen'));
+		 getAudioObj().AllWindowStretch(true);
+	   }
+	  
+   }

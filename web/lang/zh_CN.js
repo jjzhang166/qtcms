@@ -46,6 +46,8 @@
 	'Screenshot':'截屏',
 	'Polling':'轮循',
 	'Full_screen':'全屏',
+	'video_Full_screen':'画面填满窗口',
+	'video_origin_screen':'画面原始比例',
 	'sound':'声音',
 	'Empty_log':'清空日志',
 
@@ -65,13 +67,7 @@
 	'Search_Date':'搜索日期',
 	'Next_Month':'下一月',
 	'Next_year':'下一年',
-	'Sun':'日',
-	'Mon':'一',
-	'Tues':'二',
-	'Wend':'三',
-	'Thur':'四',
-	'Fir':'五',
-	'Satu':'六',
+	
 	'Start_Search':'开始搜索',
 	'Retrieving':'正在检索',
 	'Parameter_error':'参数错误',

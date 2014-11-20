@@ -46,6 +46,8 @@
 	'Screenshot':'Скриншот',
 	'Polling':'Polling',
 	'Full_screen':'Полный экран ',
+	'video_Full_screen':'Видео заполнить окно',
+    'video_origin_screen':'Оригинальный размер видео',
 	'sound':'Аудио',
 	'Empty_log':'Empty log',
 
@@ -65,13 +67,7 @@
 	'Search_Date':'Search Date',
 	'Next_Month':'Месяц вперед',
 	'Next_year':'Год вперед',
-	'Sun':'Воскресенье',
-	'Mon':'Понедельник',
-	'Tues':'Вторник',
-	'Wend':'Среда',
-	'Thur':'Четверг',
-	'Fir':'Пятница',
-	'Satu':'Суббота',
+	
 	'Start_Search':'Поиск',
 	'Retrieving':'Извлечь:',
 	'Parameter_error':'Retrieval completed',

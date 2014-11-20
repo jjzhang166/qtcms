@@ -1515,7 +1515,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 		$('#recordtime .schedle_id .time_picker').val('');
 		$('#recordtime input:checkbox').prop('checked',false);
 		$('ul.week.option li').removeData();
-		$('#week').val(lang.Mon).attr('data','0');
+		$('#week').val(lang.Monday).attr('data','0');
 		$('#recordtime td.copyTo').find('li').remove()
 								  .end().find('input').val('').data('');
 		//areaList2Ui(2);
