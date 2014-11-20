@@ -3,6 +3,9 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QCoreApplication>
+#include <QStringList>
+#include <QHostAddress>
+#include <QNetworkInterface>
 #include <QDebug>
 
 DeviceSearch::DeviceSearch()
@@ -63,8 +66,23 @@ int DeviceSearch::setInterval( int nInterval )
 
 void DeviceSearch::run()
 {
+	//get all ip address
+	QStringList ipList;
+	QList<QHostAddress> addrList = QNetworkInterface::allAddresses();
+	foreach(QHostAddress ip, addrList)
+	{
+		if (QAbstractSocket::IPv4Protocol == ip.protocol())
+		{
+			ipList.append(ip.toString());
+		}
+	}
+
+	//send search msg by bind each ip
 	ONVIF_CLIENT_init(1, 1, 1, false, 2);
-	ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, NULL, this);
+	for (int index = 0; index < ipList.size(); ++index)
+	{
+		ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
+	}
 
 	QTime timer;
 	timer.start();
@@ -73,7 +91,10 @@ void DeviceSearch::run()
 		if (timer.elapsed() > m_i32Interval*1000 || m_bFlush)
 		{
 			timer.start();
-			ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, NULL, this);
+			for (int index = 0; index < ipList.size(); ++index)
+			{
+				ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
+			}
 			m_bFlush = false;
 		}
 		msleep(1);
