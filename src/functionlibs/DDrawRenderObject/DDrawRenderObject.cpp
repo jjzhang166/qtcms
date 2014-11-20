@@ -120,7 +120,7 @@ void DeinitDDrawGlobal()
 
 CDDrawRenderObject::CDDrawRenderObject():
 m_bEnable(true)
-,m_bStretch(false)
+,m_bStretch(true)
 ,m_nWidth(0)
 ,m_nHeight(0)
 ,m_pOffscreenSurface(NULL)
