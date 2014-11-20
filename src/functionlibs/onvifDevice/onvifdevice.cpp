@@ -330,12 +330,14 @@ int onvifDevice::cbLiveStream( QVariantMap &tInfo )
 			{
 				m_nCurrentStream=m_nSwithStream;
 			}
-			if ("Sub"==tInfo.value("streamNum")&&1==m_nSwithStream)
+			else if ("Sub"==tInfo.value("streamNum")&&1==m_nSwithStream)
 			{
 				m_nCurrentStream=m_nSwithStream;
 			}
 		}
-	}else{
+	}
+	if (m_nCurrentStream==m_nSwithStream)
+	{
 		if (0==m_nCurrentStream)
 		{
 			if ("Main"==tInfo.value("streamNum"))
