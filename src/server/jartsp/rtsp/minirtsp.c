@@ -605,6 +605,7 @@ static char *_get_stream_name(int dataType)
 
 void MINIRTSP_dump_data_property(lpMINIRTSP_DATA_PROPERTY dataProperties)
 {
+	return;
 	if (dataProperties) {
 		//printf("MdediaName: %s type:%d chn/port:%d\n", dataProperties->mediaName,
 		//	dataProperties->mediaType, dataProperties->chn_port);

@@ -231,11 +231,11 @@ int onvifDevice::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 		//申请码流
 		int nStreamNum=0;
 		while(nStreamNum<2){
+			m_tpOnvifProtocolLock.lock();
 			if (NULL!=m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol)
 			{
 				//用户验证
 				IDeviceConnection *pDeviceConnection=NULL;
-				m_tpOnvifProtocolLock.lock();
 				m_tOnvifProtocolInfo[nStreamNum].pOnvifProctol->QueryInterface(IID_IDeviceConnection,(void**)&pDeviceConnection);
 				m_tpOnvifProtocolLock.unlock();
 				if (NULL!=pDeviceConnection)
@@ -276,6 +276,7 @@ int onvifDevice::liveStreamRequire( int nChannel,int nStream,bool bOpen )
 					return 1;
 				}
 			}else{
+				m_tpOnvifProtocolLock.unlock();
 				qDebug()<<__FUNCTION__<<__LINE__<<"liveStreamRequire fail as pOnvifProctol is null";
 				return 1;
 			}
