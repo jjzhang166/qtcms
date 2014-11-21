@@ -281,6 +281,7 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
+	QString sBackground;
 
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
@@ -289,9 +290,10 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	image = IniFile.value("background/background-image", QVariant("")).toString();
 	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
+	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+	sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 	QRect rcClient = contentsRect();
 	this->geometry().center();
@@ -338,7 +340,7 @@ void qsubviewEx::paintEventDisconnected( QPaintEvent *ev )
 	p.setFont(font);
 	pen.setColor(FontColor);
 	p.setPen(pen);
-	p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	p.drawText(rcClient, Qt::AlignCenter, sBackground);
 }
 
 void qsubviewEx::paintEventConnecting( QPaintEvent *ev )
@@ -351,17 +353,19 @@ void qsubviewEx::paintEventConnecting( QPaintEvent *ev )
 	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
+	QString sBackground;
 
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
+	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
+	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+	sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 	QRect rcClient = contentsRect();
 	this->geometry().center();
@@ -440,7 +444,7 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	QColor FontColor(32,151,219);
 	int FontSize;
 	QString FontFamily;
-
+	QString sBackground;
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
 	QSettings IniFile(path, QSettings::IniFormat, 0);
@@ -448,9 +452,10 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	image = IniFile.value("background/background-image", QVariant("")).toString();
 	/*LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());*/
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	/*FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());*/
+	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", QVariant("")).toString();
+	sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 	QRect rcClient = contentsRect();
 	this->geometry().center();
@@ -497,7 +502,7 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	p.setFont(font);
 	pen.setColor(FontColor);
 	p.setPen(pen);
-	p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	p.drawText(rcClient, Qt::AlignCenter, sBackground);
 }
 
 void qsubviewEx::mousePressEvent( QMouseEvent * ev)
