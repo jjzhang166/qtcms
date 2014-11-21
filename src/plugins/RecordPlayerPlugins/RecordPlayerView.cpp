@@ -45,13 +45,15 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
 	QSettings IniFile(path, QSettings::IniFormat, 0);
+	QString sBackground;
 
 	image = IniFile.value("background/background-image", NULL).toString();
 //	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-	//FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
+	FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 	FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 	FontFamily = IniFile.value("font/font-family", NULL).toString();
+	sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 	QRect rcClient = contentsRect();
 
@@ -92,7 +94,7 @@ void RecordPlayerView::paintEvent( QPaintEvent * e)
 
 	p.setPen(pen);
 
-	p.drawText(rcClient, Qt::AlignCenter, "No Video");
+	p.drawText(rcClient, Qt::AlignCenter, sBackground);
 }
 
 void RecordPlayerView::mouseDoubleClickEvent( QMouseEvent * ev)

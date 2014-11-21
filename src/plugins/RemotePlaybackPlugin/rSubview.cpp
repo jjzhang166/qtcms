@@ -155,6 +155,7 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 		QColor LineCurColor;
 		int FontSize;
 		QString FontFamily;
+		QString sBackground;
 
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
@@ -163,9 +164,10 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 		image = IniFile.value("background/background-image", NULL).toString();
 	/*	LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
+		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
+		sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 		QRect rcClient = contentsRect();
 
@@ -206,7 +208,7 @@ void RSubView::paintEventNoVideo( QPaintEvent * )
 
 		p.setPen(pen);
 
-		p.drawText(rcClient, Qt::AlignCenter, "No Video");
+		p.drawText(rcClient, Qt::AlignCenter, sBackground);
 	}
 }
 
@@ -222,6 +224,7 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		QColor FontColor(32,151,219);
 		int FontSize;
 		QString FontFamily;
+		QString sBackground;
 
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
@@ -230,9 +233,10 @@ void RSubView::paintEventConnecting( QPaintEvent * )
 		image = IniFile.value("background/background-image", NULL).toString();
 		/*LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
+		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
+		sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 		QRect rcClient = contentsRect();
 
@@ -299,10 +303,10 @@ void RSubView::paintEventCache( QPaintEvent * )
 		/*QColor LineColor;*/
 		QColor LineColor(45,49,54);
 		QColor LineCurColor;
-		/*QColor FontColor;*/
 		QColor FontColor(32,151,219);
 		int FontSize;
 		QString FontFamily;
+		QString sBackground;
 
 		QString sAppPath = QCoreApplication::applicationDirPath();
 		QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
@@ -311,9 +315,10 @@ void RSubView::paintEventCache( QPaintEvent * )
 		image = IniFile.value("background/background-image", NULL).toString();
 		/*LineColor.setNamedColor(IniFile.value("background/background-color", NULL).toString());*/
 		LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
-		/*FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());*/
+		FontColor.setNamedColor(IniFile.value("font/font-color", NULL).toString());
 		FontSize = IniFile.value("font/font-size", NULL).toString().toInt();
 		FontFamily = IniFile.value("font/font-family", NULL).toString();
+		sBackground=IniFile.value("text/background", QVariant("")).toString();
 
 		QRect rcClient = contentsRect();
 		this->geometry().center();
