@@ -102,6 +102,16 @@ sqlite3* LocalPlayerEx::initDataBase(char *dbPath)
 		}
 		else
 		{
+			//check if database has a table
+			char **ppDbRet = NULL;
+			int nRow = 0, nColumn = 0;
+			sqlite3_get_table(pdb, "select count(*) from sqlite_master where type='table';", &ppDbRet, &nRow, &nColumn, NULL);
+			if (!strcmp(ppDbRet[nColumn], "0"))
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"no table: search_record in"<<dbPath;
+				sqlite3_close(pdb);
+				return NULL;
+			}
 			m_sqlMap.insert(QString(dbPath), pdb);
 			return pdb;
 		}
@@ -305,13 +315,9 @@ int LocalPlayerEx::searchVideoFileEx( const int & nWndId, const QString & sDate,
 			qDebug()<<__FUNCTION__<<__LINE__<<nWndId<<" open db error";
 			continue;
 		}
-		char **ppDbRet = NULL;
-		char *pErrMsg = NULL;
-		int nRow = 0;
-		int nColumn = 0;
-		int index = 0;
-		int count = 0;
-		int ret = -1;
+
+		char **ppDbRet = NULL, *pErrMsg = NULL;
+		int nRow = 0, nColumn = 0, index = 0, count = 0, ret = -1;
 		while ((ret = sqlite3_get_table(db, sqlCmd.toLatin1().data(), &ppDbRet, &nRow, &nColumn, &pErrMsg)) != SQLITE_OK && count < 50)
 		{
 			//wait 3 milliseconds
@@ -642,62 +648,101 @@ QList<QString> LocalPlayerEx::getFileList( qint32 &i32Pos, QMap<uint, QVector<Pe
 	foreach(QString disk, diskList)
 	{
 		QString sDbName = disk + ":/recEx/record.db";
-		QSqlDatabase *pdb = initDataBase(sDbName);
+		if (!QFile::exists(sDbName))
+		{
+			qDebug()<<__FUNCTION__<<__LINE__<<sDbName<<" didn't exists!";
+			continue;
+		}
+		sqlite3 *pdb = initDataBase(sDbName.toLatin1().data());
 		if (!pdb)
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<"get database point error!";
 			continue;
 		}
-// 		uint lastEnd = 0;
+		char **ppDbRet = NULL, *pErrMsg = NULL;
+		int nRow = 0, nColumn = 0, index = 0;
 		QStringList excludeFilelst;
-		QSqlQuery query(*pdb);
 		//find locked file or damaged file
-		QString cmd = QString("select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1)");
-		if (exceCommand(query, cmd))
+		int ret = execCommand(pdb, "select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1);", &ppDbRet, &nRow, &nColumn, &pErrMsg);
+		if (SQLITE_OK == ret)
 		{
-			while (query.next())
-			{
-				excludeFilelst<<query.value(0).toString();
-			}
+			index = nColumn;
+			for (int i = 0; i < nRow; ++i)
+				excludeFilelst<<QString(ppDbRet[index++]);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"search RecordFileStatus failed. error: "<<pErrMsg;
 		}
+		ret = execCommand(pdb, sqlCommand.toLatin1().data(), &ppDbRet, &nRow, &nColumn, &pErrMsg);
+		if (SQLITE_OK == ret)
+		{
+			index = nColumn;
+			for (int i = 0; i < nRow; ++i)
+			{
+				uint wndId = atoi(ppDbRet[index++]);
+				uint start = atoi(ppDbRet[index++]);
+				uint end = atoi(ppDbRet[index++]);
+				QString path = QString(ppDbRet[index++]);
+				//exclude file from file list
+				if (excludeFilelst.contains(path))
+				{
+					continue;
+				}
+				appendTimePath(tpList, start, path, insertPos);
+				PeriodTime item = {start, end};
+				appendPeriodTime(filePeriodMap[wndId], item);
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"search record failed. error: "<<pErrMsg;
+		}
+		sqlite3_free_table(ppDbRet);
+// 		QSqlQuery query(*pdb);
+// 		//find locked file or damaged file
+// 		QString cmd = QString("select sFilePath from RecordFileStatus where (nLock=1 or nDamage=1)");
+// 		if (exceCommand(query, cmd))
+// 		{
+// 			while (query.next())
+// 			{
+// 				excludeFilelst<<query.value(0).toString();
+// 			}
+// 		}
 // 		query.exec(sqlCommand);
-		exceCommand(query, sqlCommand);
-		
-		while (query.next())
-		{
-			uint wndId = query.value(0).toUInt();
-			uint start = query.value(1).toUInt();
-			uint end = query.value(2).toUInt();
-			QString path = query.value(3).toString();
-			//exclude file from file list
-			if (excludeFilelst.contains(path))
-			{
-				continue;
-			}
-			appendTimePath(tpList, start, path, insertPos);
-
-			//file isn't in list or one file has two period time
-// 			if (!fileList.contains(path) || end - lastEnd > 60)
+// 		exceCommand(query, sqlCommand);
+// 		
+// 		while (query.next())
+// 		{
+// 			uint wndId = query.value(0).toUInt();
+// 			uint start = query.value(1).toUInt();
+// 			uint end = query.value(2).toUInt();
+// 			QString path = query.value(3).toString();
+// 			//exclude file from file list
+// 			if (excludeFilelst.contains(path))
 // 			{
-// // 				fileList<<path;
-// 				appendFile(fileList, path, vecTime, end);
+// 				continue;
 // 			}
-// 			if(!find && end > m_uiStartSec)
-// 			{
-// 				startPath = path;
-// 				find = true;
-// 			}
-// 			if (!find && ((lastEnd < m_uiStartSec && m_uiStartSec < start) || (start <= m_uiStartSec && m_uiStartSec < end)))
-// 			{
-// 				startPath = path;
-// 				find = true;
-// 			}
-// 			lastEnd = end;
-			PeriodTime item = {start, end};
-// 			filePeriodMap[wndId].append(item);
-			appendPeriodTime(filePeriodMap[wndId], item);
-		}
-		query.finish();
+// 			appendTimePath(tpList, start, path, insertPos);
+// 
+// 			//file isn't in list or one file has two period time
+// // 			if (!fileList.contains(path) || end - lastEnd > 60)
+// // 			{
+// // // 				fileList<<path;
+// // 				appendFile(fileList, path, vecTime, end);
+// // 			}
+// // 			if(!find && end > m_uiStartSec)
+// // 			{
+// // 				startPath = path;
+// // 				find = true;
+// // 			}
+// // 			if (!find && ((lastEnd < m_uiStartSec && m_uiStartSec < start) || (start <= m_uiStartSec && m_uiStartSec < end)))
+// // 			{
+// // 				startPath = path;
+// // 				find = true;
+// // 			}
+// // 			lastEnd = end;
+// 			PeriodTime item = {start, end};
+// // 			filePeriodMap[wndId].append(item);
+// 			appendPeriodTime(filePeriodMap[wndId], item);
+// 		}
+// 		query.finish();
 	}
 
 	//find start position
@@ -1005,6 +1050,21 @@ bool LocalPlayerEx::getWindowStretchStatus( QWidget * window )
 		}
 	}
 	return true;
+}
+
+int LocalPlayerEx::execCommand( sqlite3 *pdb, const char* cmd, char*** pppRet, int* row, int* col, char** pMsg )
+{
+	int ret = -1;
+	int count = 0;
+	while ((ret = sqlite3_get_table(pdb, cmd, pppRet, row, col, pMsg)) != SQLITE_OK && count < 50)
+	{
+		//wait 3 milliseconds
+		QEventLoop evLoop;
+		QTimer::singleShot(3, &evLoop, SLOT(quit()));
+		evLoop.exec();
+		++count;
+	}
+	return ret;
 }
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)

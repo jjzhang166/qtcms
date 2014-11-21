@@ -94,6 +94,7 @@ private:
 // 	void appendFile(QList<QString> &fileList, QString fileName, QVector<uint> &vecTime, uint time);
 	void appendPeriodTime(QVector<PeriodTime> &vecPeriod, const PeriodTime &per);
 	bool exceCommand(QSqlQuery &queue, const QString &cmd);
+	int execCommand(sqlite3 *pdb, const char* cmd, char*** pppRet, int* row, int* col, char** pMsg);
 private:
 	qint32 m_nRef;
 	qint32 m_i32GroupNum;
