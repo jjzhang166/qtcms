@@ -533,5 +533,6 @@ void qpreviewwindowsex::AllWindowStretch( bool bEnable )
 	{
 		m_sPreviewWnd[i].enableStretch(bEnable);
 	}
+	update();
 }
 
