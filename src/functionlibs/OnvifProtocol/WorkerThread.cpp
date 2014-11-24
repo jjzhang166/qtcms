@@ -143,6 +143,8 @@ int WorkerThread::ConnectToDevice(int *result)
 
 int WorkerThread::Authority(int *ret)
 {
+	*ret = 0;
+	return 0;
 	//create rtsp context, default for sub stream
 	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 	if (m_nvpVerify)
@@ -209,6 +211,7 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 {
 	int ret = -1;
 	CHECK_RTSP_CONTEXT(m_rtspContext, result);
+
 	if (MAIN_STREAM == streamId)
 	{
 		//release old context and switch to main stream
@@ -232,23 +235,35 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 			ret = MINIRTSP_connect(m_rtspContext);
 			if (0==ret)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream success";
-				*result = 0;
-				m_enStatus = CONNECT_STATUS_CONNECTED;
-				return 0;
+				if (MINIRTSP_play(m_rtspContext)==0)
+				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream success";
+					*result = 0;
+					m_enStatus = CONNECT_STATUS_CONNECTED;
+					return 0;
+				}else{
+
+				}
 			}
-			else
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream fault when reconnect";
-				m_rtspContext = NULL;
-				*result = 1;
-				m_enStatus = CONNECT_STATUS_DISCONNECTED;
-				return 1;
-			}
+			qDebug()<<__FUNCTION__<<__LINE__<<"trans to main stream fault when reconnect";
+			m_rtspContext = NULL;
+			*result = 1;
+			m_enStatus = CONNECT_STATUS_DISCONNECTED;
+			return 1;
 		}
 		else
 		{
 			qDebug()<<__FUNCTION__<<__LINE__<<"rtsp context has release, please reconnect and try again";
+			m_enStatus = CONNECT_STATUS_DISCONNECTED;
+			*result = 1;
+			return 1;
+		}
+	}else{
+		if (MINIRTSP_play(m_rtspContext)==0)
+		{
+			//do nothing
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"get live fail";
 			m_enStatus = CONNECT_STATUS_DISCONNECTED;
 			*result = 1;
 			return 1;

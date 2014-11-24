@@ -100,19 +100,19 @@ SOCK_t SOCK_new(int af,int type,int protocal)
 	ret=WSAStartup(MAKEWORD(1,1),&wsaData);
 	if(ret!=0){
 		printf("WSAStartup failed!\n");
-		exit(1);
+		return -1;
 	}
 	sock=socket(af,type,protocal);
 	if(sock == INVALID_SOCKET){
 		printf("create socket failed!\n");
 		WSACleanup( );
-		exit(1);
+		return -1;
 	}
 #else
 	sock = socket(af,type,protocal);
 	if(sock < 0){
 		printf("create socket failed!\n");
-		//exit(1);
+		return -1;
 	}
 #endif	
 	
@@ -133,7 +133,7 @@ SOCK_t SOCK_tcp_listen(int listen_port)
     ret=setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
 	if(ret < 0){
         printf("SOCK-ERROR: set port reuse failed");
-		exit(1);
+		return -1;
 	}
 
     memset(&addr,0,sizeof(addr));
@@ -143,12 +143,12 @@ SOCK_t SOCK_tcp_listen(int listen_port)
     ret= bind(sock,(SOCKADDR_t *)&addr,sizeof(SOCKADDR_t));
     if (ret<0) {
         printf("SOCK-ERROR: bind failed @ SOCK_ERR=%d",SOCK_ERR);
-        exit(1);
+        return -1;
     }
     ret = listen(sock,32);
     if (ret<0) {
         printf("SOCK-ERROR: listen failed @ SOCK_ERR=%d",SOCK_ERR);
-        exit(1);
+        return -1;
     } else {
         printf("SOCK-INFO: listen start success @%d(sock:%d)\n",listen_port, sock);
     }
@@ -249,13 +249,11 @@ SOCK_t SOCK_tcp_connect(char *ip,int port,int rwtimeout)
     struct timeval timeo = { rwtimeout/1000, (rwtimeout%1000)*1000 };
 #endif
 	
-    	sock=SOCK_new(AF_INET, SOCK_STREAM, 0);
+    sock=SOCK_new(AF_INET, SOCK_STREAM, 0);
+	if (sock < 0) 
+		return -1;
 
-#if defined(_WIN32) || defined(_WIN64)
-	ioctlsocket(sock, FIONBIO, (unsigned long*)&ul);
-#else
-	ioctl(sock,FIONBIO,&ul);//设置为非阻塞模式
-#endif
+	SOCK_IOCTL(sock,FIONBIO,&ul);//设置为非阻塞模式
 	
 	memset(&addr, 0, sizeof(SOCKADDR_IN_t));
 	addr.sin_family = AF_INET;
@@ -286,11 +284,7 @@ SOCK_t SOCK_tcp_connect(char *ip,int port,int rwtimeout)
 	}
 
 	ul=0;
-#if defined(_WIN32) || defined(_WIN64)
-	ioctlsocket(sock, FIONBIO, (unsigned long*)&ul);
-#else
-	ioctl(sock, FIONBIO, &ul);//设置为阻塞模式
-#endif
+	SOCK_IOCTL(sock, FIONBIO, &ul);//设置为阻塞模式
 
 	if(!ret)
 	{
@@ -574,6 +568,9 @@ SOCK_t SOCK_multicast_udp_init(char *group, int port,int rwtimeout/* unit: milli
 #else
     struct timeval timeo = { rwtimeout/1000, (rwtimeout%1000)*1000 };
 #endif
+
+	if (sock <= 0)
+		return -1;
 
 	// set addr reuse
         ret=setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));

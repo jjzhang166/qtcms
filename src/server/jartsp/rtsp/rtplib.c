@@ -1191,8 +1191,11 @@ int RTP_handle_packet_nortpbuf(Rtp_t *rtp,void *payload,int payload_size)
 	rtp->packet.trunk_readed = 0;
 
 	// statistics	
-	rtp->packet_cnt ++;
+	rtp->packet_cnt++;
 	rtp->octet_cnt += payload_size;
+	if(rtp->interleaved == TRUE){
+		rtp->octet_cnt += 4;
+	}
 	// receive rtp header first
 	RTP_RECV((char *)&rtpHeader, sizeof(RtpHeader_t), 0);
 	remind -= sizeof(RtpHeader_t);

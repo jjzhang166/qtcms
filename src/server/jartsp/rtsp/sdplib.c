@@ -702,7 +702,7 @@ int SDP_get_h264_info(SessionDesc_t *sdp,int *payloadtype,char *ip,int *port,
 	if (sps_size) *sps_size = 0;
 	if (pps_size) *pps_size = 0;
 	if (framerate) *framerate = 0;
-	if (width) *width = 0;
+	if (width) *width == 0;
 	if (height) *height = 0;
 	
 	for(i=0;i<sdp->media_num;i++){

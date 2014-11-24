@@ -137,8 +137,7 @@ static lpMINIRTSP minirtsp_new()
 
 static void *rtsp_client_proc(void *param)
 {
-	int bRunning=true;
-	int error_occur = TRUE;
+	int error_occur = FALSE;
 	int ret;
 	int connect_status;
 	SOCKLEN_t connect_len;
@@ -150,10 +149,11 @@ static void *rtsp_client_proc(void *param)
 	char url[256];
 	int TIMEOUTCNT = 1000;
 	unsigned int timestamp;
-	
+	time_t curtime;
+
 	lpMINIRTSP thiz=(lpMINIRTSP)param;
 	r=(Rtsp_t *)thiz->rtsp;
-	
+
 #if defined(_WIN32) || defined(_WIN64)
 #else
     struct sigaction sa; 
@@ -164,32 +164,15 @@ static void *rtsp_client_proc(void *param)
 	
 	pthread_detach(pthread_self());	
 #endif	
-	
+	if (thiz->eventHook) {
+		thiz->eventHook(MINIRTSP_EVENT_CONNECTED, 0, NULL, thiz->eventCustomCtx);
+	}
 	VLOG(VLOG_CRIT,"rtsp client proc start %d_%d....",thiz->chn, thiz->streamId);
-	if (thiz->eventHook)
-		thiz->eventHook(MINIRTSP_EVENT_CONNECTED,0, NULL, thiz->eventCustomCtx);
 
-	while((r->toggle == RTSPC_RUNNING) && (thiz->trigger)){	
-		if (thiz->autoReconnect==false&&bRunning==true)
-		{
-			bRunning=false;
-			if(RTSP_request_play(r)==RTSP_RET_FAIL) {
-				continue;
-			}
-			time(&r->m_sync);
-			if(r->b_interleavedMode){
-				SOCK_set_buf_size(r->sock, 0, 400*1024);
-			}else{
-				if(r->rtp_video){
-					SOCK_set_buf_size(r->rtp_video->sock,0 , 400*1024);
-				}
-			}
-			error_occur = FALSE;
-		}else if (bRunning==false&&error_occur==true)
-		{
-			r->toggle=false;
-			continue;
-		}
+	if(!(r->state == RTSP_STATE_READY||r->state==RTSP_STATE_PLAYING)){
+		error_occur = TRUE;
+	}
+	while((r->toggle == RTSPC_RUNNING) && (thiz->trigger)){		
 		if((thiz->autoReconnect)&& (error_occur == TRUE)){
 			// sent event
 			if (thiz->eventHook && (r->state == RTSP_STATE_PLAYING))
@@ -225,8 +208,10 @@ static void *rtsp_client_proc(void *param)
 			if (thiz->eventHook && (r->state == RTSP_STATE_PLAYING))
 				thiz->eventHook(MINIRTSP_EVENT_CONNECTED,
 					0, NULL, thiz->eventCustomCtx);
+		}else if ((thiz->autoReconnect== FALSE) && (error_occur == TRUE)){
+			break;
 		}
-		
+
 		if(r->state != RTSP_STATE_PLAYING){
 			continue;
 		}
@@ -364,13 +349,21 @@ static void *rtsp_client_proc(void *param)
 		}
 
 		// keep liveness of rtsp session
-#if 0		
 		time(&curtime);
-		if((curtime - r->m_sync) > 60){
-			RTSP_keep_liveness(r);
+		if((curtime - r->m_sync) > 28){
+			if(RTSP_keep_liveness(r) < 0)
+			{
+				//usleep(5000);
+				MSLEEP(5);
+				if(RTSP_keep_liveness(r) < 0)
+				{
+					error_occur = true;
+					VLOG(VLOG_ERROR,"Channel(%d,%d) keep liveness fail!", thiz->chn, thiz->streamId);
+				}
+			}
 			time(&r->m_sync);
 		}
-#endif
+
 
 #ifdef RTCP_RECEIVER
 		if(r->rtcp_audio){
@@ -388,8 +381,9 @@ static void *rtsp_client_proc(void *param)
 
 	thiz->trigger = FALSE;
 	VLOG(VLOG_CRIT,"(%d:%d) rtsp client proc exit", thiz->chn, thiz->streamId);
-	if (thiz->eventHook)
-		thiz->eventHook(MINIRTSP_EVENT_DISCONNECTED,0, NULL, thiz->eventCustomCtx);
+	if (thiz->eventHook) {
+		thiz->eventHook(MINIRTSP_EVENT_DISCONNECTED, 0, NULL, thiz->eventCustomCtx);
+	}
 	thiz->eventHook(MINIRTSP_EVENT_DESTROYED,
 		0, NULL, thiz->eventCustomCtx);
 	
@@ -539,10 +533,11 @@ int
 MINIRTSP_connect(lpMINIRTSP thiz)
 {
 	if (thiz && thiz->rtsp) {
-		if( RTSP_connect_server2(thiz->rtsp, thiz->streamUrl,thiz->userName, thiz->userPwd,
-			thiz->transport, 0) < 0)
+		int ret = RTSP_connect_server2(thiz->rtsp, thiz->streamUrl,thiz->userName, thiz->userPwd,
+			thiz->transport, 0);
+		if ((ret < 0) && (thiz->autoReconnect == false))
 			return -1;
-		if (thiz->eventHook) {
+		if ((ret == 0) && thiz->eventHook) {
 			thiz->eventHook(MINIRTSP_EVENT_CONNECTED, 0, NULL, thiz->eventCustomCtx);
 		}
 		return rtsp_client_proc_start(thiz);
@@ -607,20 +602,20 @@ void MINIRTSP_dump_data_property(lpMINIRTSP_DATA_PROPERTY dataProperties)
 {
 	return;
 	if (dataProperties) {
-		//printf("MdediaName: %s type:%d chn/port:%d\n", dataProperties->mediaName,
-		//	dataProperties->mediaType, dataProperties->chn_port);
+		printf("MdediaName: %s type:%d chn/port:%d\n", dataProperties->mediaName,
+			dataProperties->mediaType, dataProperties->chn_port);
 		if (strcmp(dataProperties->mediaName, "H264") == 0) {
-		//	printf("\tfps:%d WxH :%dx%d\n", dataProperties->h264.fps, dataProperties->h264.width,
-		//		dataProperties->h264.height);
-		//	printf("\t sps_size: %d\n", dataProperties->h264.spsSize);
+			printf("\tfps:%d WxH :%dx%d\n", dataProperties->h264.fps, dataProperties->h264.width,
+				dataProperties->h264.height);
+			printf("\t sps_size: %d\n", dataProperties->h264.spsSize);
 			VLOG_Hex(VLOG_CRIT, dataProperties->h264.u_sps,dataProperties->h264.spsSize);
-		//	printf("\t pps_size: %d\n", dataProperties->h264.ppsSize);
+			printf("\t pps_size: %d\n", dataProperties->h264.ppsSize);
 			VLOG_Hex(VLOG_CRIT, dataProperties->h264.u_pps,dataProperties->h264.ppsSize);
 		}
 		else if (strcmp(dataProperties->mediaName, "ALAW") == 0 ||
 			(strcmp(dataProperties->mediaName, "ULAW") == 0)) {
-		//	printf("\t sample rate:%d sample size: %d channel:%d\n", dataProperties->g711.sampleRate,
-		//		dataProperties->g711.sampleSize, dataProperties->g711.channel);
+			printf("\t sample rate:%d sample size: %d channel:%d\n", dataProperties->g711.sampleRate,
+				dataProperties->g711.sampleSize, dataProperties->g711.channel);
 		}
 	}
 }
@@ -688,7 +683,7 @@ MINIRTSP_lookup_data(lpMINIRTSP thiz, int dataType,
 	}
 
 	if (gotIt == TRUE) {
-		MINIRTSP_dump_data_property(dataProperties);
+		//MINIRTSP_dump_data_property(dataProperties);
 		return 0;
 	}else {
 		printf("MINIRTSP_lookup_data(%s) failed!\n", mediaName); 

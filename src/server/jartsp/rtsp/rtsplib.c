@@ -1549,7 +1549,7 @@ Rtsp_t* RTSP_CLIENT_init(const char *url,char *user,char *pwd,enRTP_TRANSPORT tr
 	r=(Rtsp_t *)calloc(1, sizeof(Rtsp_t));
 	if(r == NULL){
 		VLOG(VLOG_ERROR,"maloc for rtsp failed");
-		exit(0);
+		return -1;
 	}
 	r->toggle = RTSPC_RUNNING;
 	r->data_available = 0;
@@ -1599,7 +1599,7 @@ static Rtsp_t* RTSP_CLIENT_init2(Rtsp_t *rtsp,int fd,char *user,char *pwd,enRTP_
 		r=(Rtsp_t *)malloc(sizeof(Rtsp_t));
 		if(r == NULL){
 			VLOG(VLOG_ERROR,"maloc for rtsp failed");
-			exit(0);
+			return -1;
 		}
 	}else{
 		r = rtsp;
@@ -1999,7 +1999,12 @@ int RTSP_read_message(Rtsp_t *r)
 					return RTSP_RET_FAIL;
 				}
 			}
-		}else{//rtsp message
+		}
+		else if ((unsigned char)r->payload[0] >= 0x81){// zhongwei NVR specific heartbreak
+			packet_size = 20;
+			expected = packet_size -readed;
+		}
+		else{//rtsp message
 			if(http_get_number(r->payload, "Content-length:", &content_len)==
 				RTSP_RET_FAIL){//without content
 				if(strstr(ptr, "\r\n\r\n") != NULL){//end of http response header
@@ -2099,7 +2104,12 @@ int RTSP_parse_message(Rtsp_t *r,fRtpParsePacket fRTP,fRtcpParsePacket fRTCP)
 			VLOG(VLOG_ERROR,"unknown packet format,check it.\n%s",r->payload);
 		}
 		return ret;
+	}	
+	else if (((unsigned char)r->payload[0]) >= 0x80) { // zhongwei NVR specific heartbreak packet
+		VLOG(VLOG_WARNING,"unknown packet format,check it.");
+		return 0;
 	}
+	
 	// not interleaved packet
 	for(i=0;i<RTSP_METHOD_CNT;i++){
 		if(memcmp(r->payload,rtspMethods[i],strlen(rtspMethods[i])) == 0){

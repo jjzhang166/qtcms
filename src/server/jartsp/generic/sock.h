@@ -33,6 +33,7 @@ extern "C" {
 			closesocket(s);\
 			WSACleanup();\
 		}while(0)
+	#define SOCK_IOCTL		ioctlsocket
 	#define SOCK_ERR		WSAGetLastError()
 	#define SOCK_EAGAIN		WSAEWOULDBLOCK
 	#define SOCK_ETIMEOUT	WSAETIMEDOUT
@@ -62,6 +63,7 @@ extern "C" {
 	typedef const void SOCKOPTARG_t;
 
 	#define SOCK_close(s)	close(s)
+	#define SOCK_IOCTL		ioctl
 	#define SOCK_ERR		errno
 
 	#define SOCK_EAGAIN		EAGAIN

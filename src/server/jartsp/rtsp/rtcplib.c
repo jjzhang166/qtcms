@@ -179,39 +179,43 @@ static int rtcp_compute_roundtrip_time(Rtcp_t *rtcp,unsigned int last_sr_ts,
 	MillisecondTimer_t t_tmp;
 	MilliSecond_t t_lasttime;
 	unsigned int dms=0;
+	unsigned int last_sr_ms;
+	unsigned int now_sec, now_us;
 	dms = ((delay >> 16) & 0xffff)*1000 + (delay & 0xffff)*1000/0xffff;
+	last_sr_ms = ((last_sr_ts >> 16) & 0xffff)*1000 + (last_sr_ts & 0xffff)*1000/0xffff;
 	if(MilliTimerIsClear(rtcp->rtt_timer) == false){
-		MilliTimerStop(rtcp->rtt_timer,t_tmp,t_lasttime);
-		rtt = t_lasttime - dms;
+		//MilliTimerStop(rtcp->rtt_timer,t_tmp,t_lasttime);
+		//rtt = t_lasttime - dms;
+		MilliTimerStart(t_tmp);
+		MilliTimerGet(t_tmp, now_sec, now_us);
+		rtt = (now_sec & 0xffff) * 1000 + now_us/1000 - last_sr_ms - dms;
 	}else{
 		rtt = 0;
 	}
-	//VLOG(VLOG_CRIT,"%s RTT is: %d ms (lasttime:%u delay:%d(%u ms))", rtcp->peername,rtt,t_lasttime,delay,dms);
+	VLOG(VLOG_CRIT,"%s RTT is: %d ms (lasttime:%u(%x,%x) delay:%d(%u ms))", rtcp->peername,rtt,t_lasttime,last_sr_ts, now_sec & 0xffff,delay,dms);
 	return rtt;
 }
 
 static int rtcp_compute_jitter(Rtcp_t *rtcp,uint32_t sr_ts)
 {
-	int dev=0; // unit:ms
+	double dev=0; // unit:ms
 	MillisecondTimer_t t_tmp;
 	MilliSecond_t t_lasttime;
 	uint32_t old_time;
+	double old_time1, old_time2;
 	if(MilliTimerIsClear(rtcp->jitter_timer) == false){
 		MilliTimerStop(rtcp->jitter_timer,t_tmp,t_lasttime);
-		//dev = (((sr_ts >> 16) & 0xffff) - ((rtcp->last_sr_ts >> 16) & 0xffff))*1000+
-		//	(((sr_ts & 0xffff) - (rtcp->last_sr_ts & 0xffff))<<16)*1000/0xFFFFFFFF;
-		old_time = (((sr_ts >> 16) & 0xffff) - ((rtcp->last_sr_ts >> 16) & 0xffff))*1000+
-			(((short)(sr_ts & 0xffff) - (short)(rtcp->last_sr_ts & 0xffff)) & 0xffff)*1000/0xFFFF;
-		dev = t_lasttime - old_time;
+		old_time1 = (double)((sr_ts >> 16) & 0xffff)  + (double)(sr_ts & 0xffff)/0xffff;
+		old_time2 = (double)((rtcp->last_sr_ts >> 16) & 0xffff)  + (double)(rtcp->last_sr_ts & 0xffff)/0xffff;
+		dev = (double)t_lasttime - (old_time1 - old_time2) * 1000;
 		if(dev < 0) dev = -dev;
-		rtcp->jitter += ((double)dev-rtcp->jitter)*1.0/16.0;
+		rtcp->jitter += (int)((dev-(double)rtcp->jitter)*1.0/16.0);
 	}else{
 		rtcp->jitter = 0;
 	}
 	// restart timer
 	MilliTimerStart(rtcp->jitter_timer);
-	//VLOG(VLOG_CRIT,"%s jitter is: %d (dev:%d old:%d lastt:%d) ts(%#10x->%#10x)",rtcp->peername,
-	//	rtcp->jitter,dev,t_lasttime,old_time,rtcp->last_sr_ts,sr_ts);
+//	VLOG(VLOG_CRIT,"%s jitter is: %d (dev:%f old:%d lastt:%d) ts(%#10x->%#10x)",rtcp->peername,	rtcp->jitter,dev,t_lasttime,old_time1 -old_time2,rtcp->last_sr_ts,sr_ts);
 	return 0;
 }
 
@@ -224,9 +228,9 @@ static void rtcp_compute_lost(Rtcp_t *rtcp,unsigned int srPs,unsigned int srOcte
 		rtcp->rtp->fraction_lost = 0;
 	else
 		rtcp->rtp->fraction_lost = lost_ps*0xFF/srPs;
-	//VLOG(VLOG_CRIT,"%s comulative lost:%d(%u, %u) fraction lost:%d octet_lost:%u", rtcp->peername,
-	//	rtcp->rtp->packet_cnt, srPs,
-	//	rtcp->rtp->comulative_lost,rtcp->rtp->fraction_lost,srOctect-rtcp->rtp->octet_cnt);
+	//VLOG(VLOG_CRIT,"%s comulative lost:%d(%u, %u, seq:%u) fraction lost:%d octet_lost:%u(%u,%u)", rtcp->peername,
+	//	rtcp->rtp->comulative_lost,rtcp->rtp->packet_cnt, srPs, rtcp->rtp->seq,
+	//	rtcp->rtp->fraction_lost,srOctect-rtcp->rtp->octet_cnt, srOctect, rtcp->rtp->octet_cnt);
 }
 
 static void rtcp_packet_interleaved_header(char *buffer,int chn,int size)
@@ -458,7 +462,7 @@ static int rtcp_handle_sr(Rtcp_t *rtcp,char *buf)
 	t_usec = decode_int32be(ptr);
 	ptr+=4;
 	// caculate last_sr_ts
-	sr_ts = ((t_sec & 0xffff) << 16) | ((t_usec >> 16) & 0xffff);
+	sr_ts = ((t_sec & 0xffff) << 16) | (((t_usec * 0xffff)/1000000) & 0xffff);
 	rtcp_compute_jitter(rtcp,sr_ts);
 	rtcp->last_sr_ts = sr_ts;
 	// start timer
@@ -512,6 +516,7 @@ static int rtcp_handle_rr(Rtcp_t *rtcp,char *buf)
 		ptr += 2;
 		// jitter,last SR timestamp, delay since last SR timestamp
 		rtcp->jitter = decode_int32be(ptr);
+		VLOG(VLOG_CRIT, "%s jitter is %u ms", rtcp->peername, rtcp->jitter);
 		ptr += 4;	
 		rtcp->last_sr_ts = decode_int32be(ptr);
 		ptr += 4;
