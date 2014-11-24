@@ -14,6 +14,12 @@
 	'add_area':'Добав. области',
 	'add_device':'Добав. устройства',
 	'add_failed':'Add failed',//Not yet translated
+	'modify_area':'Изменить области',
+	'modify_group':'Изменить группу',
+	'modify_device':'Изменить устройства',
+	'modify_channel':'Изменить канал',
+	'delete_area':'Пустой области',
+	'delete_device':'Пустой устройства',
 	'modify':'Изменить',
 	'delete':'Пустой',
 	'Close':'Закрыть',

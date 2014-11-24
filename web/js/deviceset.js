@@ -943,7 +943,7 @@ function showContextMenu(y,x,obj){
 }
 
 //遮罩层和弹出框方法.
-var trance = {'area':_T('Area'),'device':_T('Device'),'channel':_T('channel'),'group':_T('Grouping'),'Add':_T('Add'),'Remove':_T('delete'),'Modify':_T('modify'),'GroupChannelName':_T('Channel_under_the_device_name')};
+var trance = {'area':'area','device':'device','channel':'channel','group':'group','Add':'add','Remove':'delete','Modify':'modify','GroupChannelName':'Channel_under_the_device_name'};
 function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	var pObjClass = objclass == 'group' ? 'group':'area';
 	var pObj = $('span.sel');
@@ -964,7 +964,7 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	}else{
 		var obox = $('#'+objclass);
 	}
-	obox.find('p span').html(trance[action]+trance[objclass]);
+	obox.find('p span').html(_T(trance[action]+'_'+trance[objclass]));
 	initActionBox(action,pObj,obox,objclass);
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
@@ -1333,7 +1333,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 			   }
 
 				if(/^\d+$/.test(str)){
-					if(!/^[1-9]\d{8,}$/.test(str)){
+					if(!/^[1-9][0-9]{7,}$/.test(str)){
 						//console.log('数字');
 						hint=_T('correct')+_T('Esee_ID');
 						b=false;
