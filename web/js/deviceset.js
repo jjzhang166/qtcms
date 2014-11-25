@@ -1,7 +1,7 @@
 var oSearchOcx,
 	searchedDev=[];//已经搜索到的设备;
 	$(function(){
-
+         document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		oSearchOcx = document.getElementById('devSearch');
 		var oTreeWarp = $('div.dev_list').slice(2);
 
@@ -471,8 +471,7 @@ var oSearchOcx,
 			SplitScreenMode[i]=SplitScreenMode[i]+_T('Screen');
 		}
 	function FillCommonParmData(){ 
-	    
-	    document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
+
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
 		for(i in item){
 			var str = oCommonLibrary['get'+item[i]]();
