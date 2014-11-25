@@ -821,7 +821,7 @@ var oSearchOcx,
 
 			$('#left_list').css('left',main.width()+118);
 
-			searchFlush();
+			//searchFlush();
 
 		}else if(key == 1){
 			/*var devLeft=0;
@@ -1101,6 +1101,7 @@ var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	}
 	
 	function searchFlush(){
+		
 		oSearchOcx.Stop();
 		$('#SerachDevList tbody tr').remove();	
 		devFile =[]; 
