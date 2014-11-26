@@ -213,6 +213,7 @@ static void *rtsp_client_proc(void *param)
 		}
 
 		if(r->state != RTSP_STATE_PLAYING){
+			MSLEEP(500);
 			continue;
 		}
 		timeout.tv_sec=0;
