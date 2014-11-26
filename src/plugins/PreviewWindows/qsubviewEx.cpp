@@ -360,7 +360,7 @@ void qsubviewEx::paintEventConnecting( QPaintEvent *ev )
 	QSettings IniFile(path, QSettings::IniFormat, 0);
 
 	image = IniFile.value("background/background-image", QVariant("")).toString();
-	LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
+	//LineColor.setNamedColor(IniFile.value("background/background-color", QVariant("")).toString());
 	LineCurColor.setNamedColor(IniFile.value("background/background-color-current", QVariant("")).toString());
 	FontColor.setNamedColor(IniFile.value("font/font-color", QVariant("")).toString());
 	FontSize = IniFile.value("font/font-size", QVariant("")).toString().toInt();

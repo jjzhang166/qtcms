@@ -143,8 +143,6 @@ int WorkerThread::ConnectToDevice(int *result)
 
 int WorkerThread::Authority(int *ret)
 {
-	*ret = 0;
-	return 0;
 	//create rtsp context, default for sub stream
 	m_nvpVerify = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, true);
 	if (m_nvpVerify)

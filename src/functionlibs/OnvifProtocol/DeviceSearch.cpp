@@ -81,7 +81,7 @@ void DeviceSearch::run()
 	ONVIF_CLIENT_init(1, 1, 1, false, 2);
 	for (int index = 0; index < ipList.size(); ++index)
 	{
-		ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
+		ONVIF_search(ONVIF_DEV_NVT, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
 	}
 
 	QTime timer;
@@ -93,7 +93,7 @@ void DeviceSearch::run()
 			timer.start();
 			for (int index = 0; index < ipList.size(); ++index)
 			{
-				ONVIF_search(ONVIF_DEV_ALL, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
+				ONVIF_search(ONVIF_DEV_NVT, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
 			}
 			m_bFlush = false;
 		}

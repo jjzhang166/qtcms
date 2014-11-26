@@ -185,6 +185,12 @@ void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiB
 		nCount++;
 	}
 	nCount=0;
+	m_tBufferLock.lock();
+	m_pBuffer=pBuffer;
+	m_bWrite=true;
+	m_uiBufferSize=uiBufferSize;
+	m_sFilePath=sFilePath;
+	m_tBufferLock.unlock();
 	QThread::start();
 	while(!QThread::isRunning()){
 		sleepEx(10);
@@ -197,12 +203,6 @@ void WriteToDisk::startWriteToDisk( char* pBuffer,QString sFilePath ,quint64 uiB
 		}
 		nCount++;
 	}
-	m_tBufferLock.lock();
-	m_pBuffer=pBuffer;
-	m_bWrite=true;
-	m_uiBufferSize=uiBufferSize;
-	m_sFilePath=sFilePath;
-	m_tBufferLock.unlock();
 }
 
 bool WriteToDisk::ensureFileExist()
