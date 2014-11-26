@@ -187,6 +187,8 @@ int onvifDevice::connectToDevice()
 			if (pDeviceConnection->setDeviceAuthorityInfomation(m_tDeviceParamInfo.sUserName,m_tDeviceParamInfo.sPassword)==1||pDeviceConnection->setDeviceHost(m_tDeviceParamInfo.sAddress)==1||pDeviceConnection->setDeviceId(m_tDeviceParamInfo.sEsee)==1||pDeviceConnection->setDevicePorts(tPorts)==1)
 			{
 				m_tpOnvifProtocolLock.unlock();
+				pDeviceConnection->Release();
+				pDeviceConnection=NULL;
 				clearProtocol();
 				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail as set param to device fail";
 				return 1;
@@ -196,12 +198,16 @@ int onvifDevice::connectToDevice()
 			}
 			if (pDeviceConnection->connectToDevice()==1)
 			{
+				pDeviceConnection->Release();
+				pDeviceConnection=NULL;
 				clearProtocol();
 				qDebug()<<__FUNCTION__<<__LINE__<<"connect to device fail";
 				return 1;
 			}else{
 				//keep going
 			}
+			pDeviceConnection->Release();
+			pDeviceConnection=NULL;
 			nStreamNum++;
 		}
 		return 0;
