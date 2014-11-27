@@ -2,6 +2,7 @@
 #include <QEventLoop>
 #include "IRecorderEx.h"
 //#include "vld.h"
+#include "IWindowSettings.h"
 #include <IDeviceAuth.h>
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
 int cbPreviewRData(QString evName,QVariantMap evMap,void *pUser);
@@ -210,6 +211,7 @@ void QSubviewRun::run()
 				case 3:{
 					//申请码流
 					ipcAutoSwitchStream();
+					enableStretch();
 					m_bIsBlock=true;
 					m_nPosition=__LINE__;
 					if (liveSteamRequire())
@@ -644,6 +646,11 @@ void QSubviewRun::run()
 			}
 						 }
 						 break;
+		case VEDIOSTRETCH:{
+			//保存视频拉伸设置到数据库
+			enableStretch();
+						  }
+						  break;
 		case DEFAULT:{
 			//缺省，无动作
 					 }
@@ -2200,6 +2207,24 @@ void QSubviewRun::enableStretch( bool bStretch )
 		m_pIVideoRender->enableStretch(bStretch);
 	}
 	m_bStretch = bStretch;
+	if (QThread::isRunning())
+	{
+		//set nstepcode
+		m_tStepCodeLock.lock();
+		m_stepCode.enqueue(VEDIOSTRETCH);
+		m_tStepCodeLock.unlock();
+	}
+}
+
+void QSubviewRun::enableStretch()
+{
+	IWindowSettings * pi;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IWindowSettings,(void **)&pi);
+	if (NULL != pi)
+	{
+		pi->setEnableStretch(m_nWindId,m_bStretch);
+		pi->Release();
+	}
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

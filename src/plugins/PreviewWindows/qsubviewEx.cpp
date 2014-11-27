@@ -806,14 +806,6 @@ void qsubviewEx::enableStretch( bool bEnable )
 	m_sSubviewRun.enableStretch(bEnable);
 	m_pStreachVideo->setChecked(bEnable);
 
-	// 将当前的拉伸状态保存到配置里
-	IWindowSettings * pi;
-	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IWindowSettings,(void **)&pi);
-	if (NULL != pi)
-	{
-		pi->setEnableStretch(m_nWindowIndex,bEnable);
-		pi->Release();
-	}
 }
 
 void qsubviewEx::initAfterConstructor()

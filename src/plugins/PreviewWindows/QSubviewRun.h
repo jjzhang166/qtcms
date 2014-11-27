@@ -48,6 +48,7 @@ typedef enum __tagStepCode{
 	AUTOSYNTIME,//自动同步时间
 	AUDIOENABLE,//声音开关
 	SETVOLUME,//设置声音
+	VEDIOSTRETCH,//视频拉伸
 	DEFAULT,//缺省 无动作
 	END,//结束
 }tagStepCode;
@@ -120,7 +121,6 @@ public:
 	void setVolume(unsigned int uiPersent);
 	void audioEnabled(bool bEnable);
 	
-
 	QVariantMap screenShot();
 	tagDeviceInfo deviceInfo();
 public:
@@ -148,7 +148,7 @@ private:
 	void backToMainThread(QVariantMap evMap);
 	void sleepEx(int time);
 	void renderSaveFrame();
-	
+	void enableStretch();
 public slots:
 	void slstopPreviewrun();
 private slots:
