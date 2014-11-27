@@ -38,7 +38,7 @@ int DeviceSearch::Stop()
 	m_bStop = true;
 	while (isRunning())
 	{
-		QTime dieTime=QTime::currentTime().addMSecs(5);
+		QTime dieTime=QTime::currentTime().addMSecs(1);
 		while(QTime::currentTime()<dieTime){
 			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
 		}

@@ -81,6 +81,11 @@ int WorkerThread::ConnectToDevice(int *result)
 		*result = 0;
 		return 0;
 	}
+	if (m_nvpContext)
+	{
+		NVP_ONVIF_delete(m_nvpContext);
+		m_nvpContext = NULL;
+	}
 	m_nvpContext = NVP_ONVIF_new();
 	if (!m_nvpContext)
 	{
@@ -114,6 +119,7 @@ int WorkerThread::ConnectToDevice(int *result)
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
 		NVP_ONVIF_delete(m_nvpContext);
+		m_nvpContext = NULL;
 		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"create rtsp context fault";
 
 		return 1;
