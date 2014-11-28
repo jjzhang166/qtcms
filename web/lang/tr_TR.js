@@ -12,7 +12,7 @@ var tr_TR={
 	'PTZ_control_speed':'PTZ hızı', 
 	'add_group':'Grup Ekle',
 	'add_area':'Alan Ekle',
-	'add_device':'Cihaz Ekle',
+	'add_device':'Cihaz Ekleme',
 	'add_failed':'Ekleme başarısız oldu.', 
 	'modify_area':'bölgeyi Düzenle',
 	'modify_group':'Grup Düzenle',
@@ -37,9 +37,9 @@ var tr_TR={
 	'Far_focus':'Uzak Odak',
 	'Iris_Off':'Iris Kapat',
 	'Iris_On':'Iris Aç',
-	'auto_PTZ':'Auto PTZ',//Not yet translated
-	'stop_PTZ':'Stop PTZ',//Not yet translated
-	'PTZ_speed':'the speed of PTZ：',//Not yet translated
+	'auto_PTZ':'Oto. PTZ',//Not yet translated
+	'stop_PTZ':'PTZ Durdur',//Not yet translated
+	'PTZ_speed':'PTZ Hızı：',//Not yet translated
 	'Light':'Sağ', 
 	'Wipers':'Wipers', 
 	'Split_screen_setting':'Bölünmüş Ekran Ayarları',
@@ -79,7 +79,7 @@ var tr_TR={
 	'Parameter_error':'Parametre Hatalı', 
 	'Connection_Failed':'Bağlantı Başarısız', 
 	'no_Channle_Preview':'Tüm kanallara Önizleme yok!',
-	'window_no_Preview':'No video access to window!',//Not yet translated
+	'window_no_Preview':'Erişim yetkiniz yok!',//Not yet translated
 	'play_Failed':'Oynatma Başarısız', 
 	'not_complete':'Arama Tamamlanmadı', 
 	'Retrieval_completed':'Kurtarma tamamlandı:',
@@ -89,10 +89,10 @@ var tr_TR={
 	'Fast':'Hızlı',
 	'wind':'Kanal',
 	'wind_':'Kanal',
-	'ThrowException':'Win_V_:file(_V_),_V_',//Not yet translated
-	'Available':'Available!',//Not yet translated
-	'Abnormal_damaged':'Abnormal or damaged!',//Not yet translated
-	'device_channel':'dev:_V_chl:_V_',//Not yet translated
+	'ThrowException':'Pencere _V_:Dosya (_V_),_V_',//Not yet translated
+	'Available':'Uygun!',//Not yet translated
+	'Abnormal_damaged':'Anormal veya hasarlı!',//Not yet translated
+	'device_channel':'Cihaz:_V_Kanal:_V_',//Not yet translated
 
 	'Device_name':'Cihaz Adı',
 	'Channel':'Kanal',
@@ -104,9 +104,9 @@ var tr_TR={
 	'Start_Backup':'Yedeklemeyi Başlat',
 	'Current_search_date':'Tarih Ara', 
 	'Inspection':'Kontrol', 
-	'Select':'Tümü',
-	'select':'above all',//Not yet translated
-	'Select_all':'Select all',//Not yet translated
+	'Select':'Seç',
+	'select':'Yukarıdakilerin Tümü',//Not yet translated
+	'Select_all':'Tümünü Seç',//Not yet translated
 	'Modified_device':'Cihaz Düzenle',
 	'Device_Connection':'Cihaz Bağlantısı',
 	'IP_addresses_link':'IP Adresi ile',
@@ -222,7 +222,7 @@ var tr_TR={
 	'Week':'Hafta',
 	'Copy':'Kopyala', 
 	'Copy_to':'Kopyala',
-	'time_range':'Start time must be smaller than the end of time',//Not yet translated
+	'time_range':'Başlangıç zamanı bitiş zamanından önce olmalıdır.',//Not yet translated
 	'Name':'İsim',
 	'Protocol':'Protokol',
 	'Baud_rate':'İletişim Hızı',
@@ -278,9 +278,9 @@ var tr_TR={
 	'Local_time_synchronization':'Yerel Saat Senk.', 
 	'Computer_time':'Pc Saati',
 	'Internet_time_synchronization':'Internet Saat Senk.', 
-	'synchronize':'Synchronize',//Not yet translated
+	'synchronize':'Eşzamanla',//Not yet translated
 	'Internet_server_ynchronization_status':'Sunucunun Internet Senk. Durumu',
-	'Internet_server_ynchronization_status':'NTP status',//Not yet translated
+	'Internet_server_ynchronization_status':'NTP Durumu',//Not yet translated
 	'nternet_server':'İnternet Sunucu',
 	'Open':'Açık',
 	'Restore':'Yapılandır',
@@ -310,13 +310,13 @@ var tr_TR={
 	'Automatically_connected_devices':'Cihazlara Otomatik Bağlan',
 	'Automatic_full_screen':'Otomatik Tam Ekran',
 	'Boot':'Ön Yükleme',
-	'Monday':'Monday',
-	'Tuesday':'Tuesday',
-	'Wednesday':'Tuesday',
-	'Thursday':'Thursday',
-	'Friday':'Friday',
-	'Saturday':'Saturday',
-	'Sunday':'Sunday',
+	'Monday':'Pazartesi',
+	'Tuesday':'Salı',
+	'Wednesday':'Çarşamba',
+	'Thursday':'Perşembe',
+	'Friday':'Cuma',
+	'Saturday':'Cumartesi',
+	'Sunday':'Pazar',
 	'Everyday':'Tümü',
 	'Disk':'Disk',
 	'File_size':'Dosya Boyutu',
@@ -359,35 +359,35 @@ var tr_TR={
 	'open_device':'Starting to open in the window _V_,all channels of device _V_.', 
 	'window_closed':'Kanal _V_ kapalı.', 
 
-	'Shutting_down_device':'Cihazı Kapatıyor:',
-	'All_channelsare_open_under_the_current_list':'LİSTEDEKİ TÜM KANALLARI AÇIYOR.',
-	'All_channel_already_open_under_the_current_list':'devices had been opend in the device list.',//Not yet translated
-	'The_current_list_of_all_channels_are_closed_under':'Listedeki Tüm Kanallar Kapalı.',
-	'The_current_list_of_all_channels_already_closed_under':'devices had been closed in the device list.',//Not yet translated
-	'window_connected_tips':'higher performance is needed to support More than 36  connections.Ensure that there are sufficient resources with your system',//Not yet translated
+	'Shutting_down_device':'Cihazı kapatılıyor:',
+	'All_channelsare_open_under_the_current_list':'Cihaz listesindeki tüm kanallar açık.',
+	'All_channel_already_open_under_the_current_list':'Cihaz listesindeki tüm kanallar zaten açık.',//Not yet translated
+	'The_current_list_of_all_channels_are_closed_under':'Cihaz listesindeki tüm Kanallar Kapalı.',
+	'The_current_list_of_all_channels_already_closed_under':'Cihaz listesindeki tüm kanallar zaten kapalı.',//Not yet translated
+	'window_connected_tips':'36 bağlantıdan fazlasını sağlamak için daha yüksek performans gerekiyor. Gerekli kaynak durumunu kontrol ediniz.',//Not yet translated
 
 	'device_in_window_action':'Cihaz _V_: Kanal _V_ penceresi _V_ ', 
 	'Open_failed_Error_The_current_window':'Cihaz:(_V_) Cihazdaki (_V_) Kanal:_V_ Penceresini Açma Başarısız!',
 
 	'channel_Manual_recording_data_binding_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL : MANUEL VİDEO VERİSİ BAĞLAMA BAŞARISIZ!',
 	'channel_Manual_recording_fail':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL : MANUEL VİDEO BAŞARISIZ!',
-	'channel_has_been_in_the_planning_Video_state':'Device _V_:Channel _V_ already in the time recording state!', // to be modified
+	'channel_has_been_in_the_planning_Video_state':'Cihaz _V_:Kanal _V_ zaten kayıtta!', // to be modified
 	'Start_manual_recording':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYIT BAŞLAT.',
 	'Close_the_manual_recording_failed':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDURMA BAŞARISIZ!',
 	'Close_the_manual_recording':'CİHAZ:(_V_) CİHAZDAKİ (_V_) KANAL :MANUEL KAYDI DURDUR!',
-	'Resource_loaded':'Device _V_:Channel _V_ open in the window _V_ failed!Error:Device dose not have enough resources.', //Not yet translated
-		'User_logined':'dev:_V_  chl:_V_ win:_V_ open fail! error:User name or password is incorrect!',//Not yet translated
+	'Resource_loaded':'Cihaz _V_:Kanal _V_ Pencere: _V_ bir sorunla karşılaştı!Hata:Aygıt yeterli kaynağa sahip değil.', //Not yet translated
+		'User_logined':'Cihaz:_V_  Kanal:_V_ Pencere:_V_ bir sorunla karşılaştı!Hata:Kullanıcı adı veya parola hatalı.',//Not yet translated
 	'channel_switch_Stream':'PENCERE:_V_,AKIŞ GEÇ',
-	'Failed':'Faield!', //Not yet translated
-	'Success':'Success!', //Not yet translated
+	'Failed':'Başarısız!', //Not yet translated
+	'Success':'Başarılı!', //Not yet translated
 	'PTZ_operation_failed':'PTZ İŞLEMİ BAŞARISIZ!',
 	'Voice_switch_fails':'SES KAPATMA İŞLEMİ BAŞARISIZ!',
-	'Open_sound':'Open Audio', //Not yet translated
-	'Turn_off_the_sound':'Close Audio', //Not yet translated
-	'Super_Admin':'Super Administrator', //Not yet translated
-	'Admin':'Administrator', //Not yet translated
-	'User':'KULLANICI ADI',
-	'Tourists':'Tourists', //Not yet translated
+	'Open_sound':'Sesi Aç', //Not yet translated
+	'Turn_off_the_sound':'Sesi Kapar', //Not yet translated
+	'Super_Admin':'Süper Yönetici', //Not yet translated
+	'Admin':'Yönetici', //Not yet translated
+	'User':'Kullanıcı',
+	'Tourists':'Ziyaretçi', //Not yet translated
 
 	'Failed_to_set_the_number_of_synchronization_group':'Senkronizasyon grrup numarasını oluşturma başarısız!!',
 	'Failed_to_set_the_IP_address_or_port_is_not_legal':'IP adres veya port numarasını oluşturma başarısız!',
@@ -426,7 +426,7 @@ var tr_TR={
 	'loading_success':'Yükleme Başarılı!',
 	'save_success':'Kaydetme Başarılı!',
 	'loading_fail':'Yükleme başarısız, lütfen cihaz parametrelerini veya ağı kontrol ediniz tekrar deneyiniz. ',
-	'save_fail':'Saving failed.Please check the network settings of the device,and then try again',//Not yet translated
+	'save_fail':'Kayıt başarısız. Lütfen cihazın ağ ayarlarını kontrol edip tekrar deneyiniz.',//Not yet translated
 	'low_ver':'Cihazın versiyonu çok düşük.Lütfen cihazı güncelleyiniz.!', 
 	'timeout':'Bağlantı zaman aşımı, ağ durumunuzu kontrol ediniz ve tekrar deneyiniz!',
 	'error':'İstek başarısız, lütfen daha sonra tekrar deneyiniz!',
@@ -437,7 +437,7 @@ var tr_TR={
 	//添加设备 修改设备验证
 	'correct':'Lütfen doğru giriniz',
 	'IP_format':'IP biçimi! (örn:192.168.1.100)',
-	'IP_domainName':'IP and domainName',//Not yet translated
+	'IP_domainName':'IP ve Domain Adı',//Not yet translated
 	'Gateway_format':'Ağ geçidi biçimi! (örn:192.168.1.1)',
 	'Mask_format':'Alt ağ maskesi biçimi (örn:255.255.255.0)',
 	'DNS':'DNS sunucu adresi!',
