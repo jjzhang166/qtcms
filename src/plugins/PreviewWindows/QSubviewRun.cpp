@@ -1349,6 +1349,10 @@ static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *
 	} 
 }
 int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
+	if (m_currentStatus!=STATUS_CONNECTED)
+	{
+		return 0;
+	}
 	int nRenderStep=0;
 	bool bRenderStop=false;
 	while(bRenderStop==false){
