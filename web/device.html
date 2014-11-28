@@ -65,8 +65,8 @@
 	table h5{ display: inline;}
 	#set_content .action{ width:100px;margin:0 40px; height:450px;}
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
-	.menu0{ background:#282828; position:absolute; display:none; width:70px;}
-	.menu0 li:hover{ background:#C25451; cursor: default;}
+	.menu0{ background:#282828; position:absolute; display:none; min-width:70px;}
+	.menu0 li:hover{ background:#C25451; cursor: default; }
 
 	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
 	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
@@ -748,6 +748,7 @@
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="4" value="Thursday"/></li>
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="5" value="Friday"/></li>
 									<li style="width:133px;" onclick="DataByChn(null,$(this))"><input data="6" value="Saturday"/></li>
+                                    <li style="width:133px;"><input data="127" value="Everyday"/></li>
 								</ul>
                                </div>
 							</td>
@@ -819,17 +820,7 @@
 						<tr class="title"><td colspan="4"><h5><script>T("Copy_to")</script></h5></td></tr>
 						<tr><td colspan="4">
 						<table class="tb1">
-						<tr><td colspan="3" id="weekday_choose">
-                                        <input type="checkbox" /><script>T("Sunday")</script>
-			                            <input type="checkbox"/><script>T("Monday")</script>
-			                            <input type="checkbox" /><script>T("Tuesday")</script>
-			                            <input type="checkbox" /><script>T("Wednesday")</script>
-			                            <input type="checkbox" /><script>T("Thursday")</script>
-			                            <input type="checkbox" /><script>T("Friday")</script>
-			                            <input type="checkbox" /><script>T("Saturday")</script>
-			                            </td>
-			                    
-                        <td><input id="Video_settings_SelectEveryday" class="chk" type="checkbox" /><script>T("Everyday")</script></td></tr>
+						
 			            <tbody id="Video_settings" class="synCheckboxClick">
 							<tr>
 								<td colspan="4" class="td4 dvr_record_chn_sel">
@@ -1825,10 +1816,10 @@
 						<tr>
                           
 							<!--<td class="td1"><script>T("Copy_to")</script></td>-->
-                            <td style="text-align:right;"><script>T("Copy_to")</script></td>
-							<td class="copyTo">
-								<div class="select" style="width:100px;">
-										<input value="" data=""  type="select" style="width:66px"/>
+                            <td style=" text-align:right;"><script>T("Copy_to")</script></td>
+							<td class="copyTo" colspan="2">
+								<div class="select" style="width:200px;">
+										<input value="" data=""  type="select" style="width:166px"/>
 										<a class="hover"></a>
 								</div>
 								<ul class="option">
@@ -1836,11 +1827,11 @@
 								</ul>
 							</td>
                            
-                            <td colspan="3"></td>
+                            <td colspan="2"></td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
 						</tr>
 						<tr><td colspan="5" class="tdBtn">
-						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok" ><script>T("Save")</script></div>
+						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok"><script>T("Save")</script></div>
 						</td></tr>
 						</tbody>
 					</table>

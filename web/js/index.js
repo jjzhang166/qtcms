@@ -367,7 +367,9 @@ var oPreView,oDiv,
 			str=''
 		}
 		//console.log('after-----.channel----------state:'+obj.attr('state')+'-----------wind:'+obj.attr('wind'));
-		writeActionLog(str);		
+		
+		writeActionLog(str);
+
 		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
 			writeActionLog('所以窗口正在使用!!',errorcolor);
 		}*/
@@ -453,11 +455,31 @@ var oPreView,oDiv,
 		writeActionLog(T('User_logined',oDevData.device_name,chlData.channel_name,(parseInt(ev.WPageId)+1)),errorcolor);
 		}
 	//日志信息操作
+	var countT=0;
 	function writeActionLog(str,color){ 
-		var color = color ? color : '#4DBDEE';
-		if(str){
+		//var color = color ? color : '#4DBDEE';
+		/*if(str){
 			$('<p>[ '+getNowTime()+' ] :  <span style="color:'+color+'">'+str+'</span></p>').prependTo('#actionLog');
-		}
+		}*/
+		if(countT>=100){
+		     countT=0;
+		  	$('#actionLog p:gt(20)').remove();
+			
+		 }
+
+		var color = color || '#4DBDEE'; 
+		
+		var parentNd = document.getElementById('actionLog');
+		
+		var childNd = document.createElement('p');
+		childNd.innerHTML = ' [ '+getNowTime()+' ] :  <span style="color:'+color+'">'+str+'</span>';
+		//childNd.innerHTML = '<span style="color:'+color+'">'+str+'</span>';
+		 var node = parentNd.firstChild;
+		// parentNd.insertBefore(childNd,node);
+		
+		 str && ((node && parentNd.insertBefore(childNd,node)) || parentNd.appendChild(childNd)); 
+		 
+		 countT++;
 	}
 
 	function showEmptyAction(){ 
@@ -466,6 +488,7 @@ var oPreView,oDiv,
 
 	function emptyLog(){
 		$('#actionLog p').remove();	
+		
 		$('#actionLog a.emptyAct').hide();
 	}
 

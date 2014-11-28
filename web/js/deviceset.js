@@ -444,7 +444,10 @@ var oSearchOcx,
 			}).mouseout(function(){
 					$(this).css('background-position','0 0');
 			});
-
+			
+		//本地设置中的录像设置
+       // $('#otherCopy').click(function(){ $('#SettingRecordDoubleTimeParm_ok').click();});
+		
 		/*$('#RecordTime div.timeInput').on('blur','input:text',initRecrodxml);
 		$('#RecordTime').on('click','input:checkbox',initRecrodxml);*/
 		/*控件触发事件调用的元素事件绑定.*/
@@ -523,10 +526,15 @@ var oSearchOcx,
 		obj.addClass('sel');
 		//填充完拷贝至其他通道的下拉菜单
 		$('td.copyTo li:gt(0)').remove();
+		
+		var devData = obj.parent('li').parent('ul').siblings('span.device').data('data');
+		
 		var allChlID = [],allDevID=[];  //所有通道ID
+		$('<li style="width:200px"><input style="width:200px" data="" value="NULL" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
 		obj.parent('li').siblings().each(function(){
 			var chlData = $(this).find('.channel').data('data');
-			$('<li style="width:100px"><input data="'+chlData.channel_id+'" value="'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
+			 
+			$('<li style="width:200px"><input style="width:200px" data="'+chlData.channel_id+'" value="'+devData.device_name+'_'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
 			allChlID.push(chlData.channel_id);
 		})
         $('div.dev_list:eq(2) span.channel').not('.sel').each(function(){
@@ -535,9 +543,9 @@ var oSearchOcx,
 			})
 		//拷贝到所有通道选项的value写入;
 		
-		$('<li  style="width:100px"><input class="all" data="" value="'+_T('select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
+		//$('<li  style="width:100px"><input class="all" data="" value="'+_T('select')+'" disabled="disabled" /></li>').find('input').attr('data',allChlID.join(',')).end().appendTo($('td.copyTo ul'));
         //拷贝到所有设备的所有通道上
-		$('<li  style="width:100px"><input class="all" data="" value="'+_T('Select_all')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
+		$('<li  style="width:200px"><input style="width:200px" class="all" data="" value="'+_T('Select')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
 		//console.log(allChlID);
 
 		var chlData = obj.data('data');
@@ -607,7 +615,7 @@ var oSearchOcx,
 			nowWeek = $('#week').attr('data').split(','), //要保存的星期
 			nowWeekTimeID = [];
 		    //console.log(nowWeek+"---nowWeek----");
-		var copy = copyID[0] != '' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的ID
+		var copy = copyID[0]!='' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的
 
 		// 返回符合当天星期的时间ID
 		for(i in copy){ 

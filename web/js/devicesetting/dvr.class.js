@@ -404,9 +404,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 						}			
 				   }
 				   $('#Video_settings input[type="checkbox"]').prop('checked',false).eq(num).prop('checked',true);
-				   $('#Video_settings input:checked').prop('disabled',true);	
-				   $('#weekday_choose input:checkbox').prop('checked',false).eq(week).prop('checked',true);
-				   $('#weekday_choose input:checked').prop('disabled',true);	
+				   $('#Video_settings input:checked').prop('disabled',true);
 				   
 			  }
 			},function(str){finish(str,This._Errno);});
@@ -436,23 +434,16 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 					// console.log("---ret--"+ret+"--index--"+index);
 				  }
           });
-		 var weekdays = 0;
-		 $('#weekday_choose input:checkbox').each(function(index){
-		        if($(this).prop('checked')==true){ 
-				 
-					  weekdays += Math.pow(2, index);
-					
-				  }
-		 }
-		 );
+		    
 			var xmlstr = '';
 			xmlstr += '<juan ver="0" squ="fastweb" dir="0">';
 			 xmlstr += '<envload type="1" usr="' + this._USR + '" pwd="' + this._PWD+ '">';
+			 var weekday = getSelect("weekday")==127 ? 0: getSelect("weekday");
 			for(var i = 0; i < 4; i++)
 			{
 				xmlstr += '<record';
 				xmlstr += ' chn="' + chn_val + '"';
-				xmlstr += ' weekday="' + getSelect("weekday") + '"';
+				xmlstr += ' weekday="' + weekday + '"';
 				xmlstr += ' index="' + i + '"';
 				xmlstr += ' begin="' +warp.find(".schedle_id").eq(i).find("input:visible").eq(0).val() + '"';
 				xmlstr += ' end="' +  warp.find(".schedle_id").eq(i).find("input:visible").eq(1).val() + '"';
@@ -469,28 +460,24 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			}
 		    if(ret > 0)
 			{  
-			   var weekday = getSelect("weekday");
-			 
-			  
+	
 			  xmlstr += '<copyrec';
 			  xmlstr += ' chn="' + chn_val + '"';
 			  xmlstr += ' weekday="' + weekday + '"';
 			  xmlstr += ' channels="' + ret + '"';
-			  xmlstr += ' weekdays="' + weekdays + '"';
+			  xmlstr += ' weekdays="' + getSelect("weekday") + '"';
 			  xmlstr += ' />';
 			}
 			xmlstr += '</envload>';
 			xmlstr += '</juan>';
 			
-			console.log(xmlstr);
+			//console.log(xmlstr);
 			
 			 _AJAXget(this.getRequestURL()+'/cgi-bin/gw.cgi?f=j','xml='+xmlstr,false,function(data){
 				 data2UI(data);
 				  $('#Video_settings input:checkbox').prop('checked',false).eq(chn_val).prop('checked',true);
 				  $('#Video_settings input:checked').prop('disabled',true);
 		          $('#Video_settings_SelectAll').prop('checked',false);
-				   $('#weekday_choose input:checkbox').prop('checked',false).eq(getSelect("weekday")).prop('checked',true);
-				  $('#weekday_choose  input:checked').prop('disabled',true);
 		          $('#Video_settings_SelectEveryday').prop('checked',false);  
 				 },function(str){
 				   if(str=='loading_success'){

@@ -446,7 +446,7 @@ function DataByChn(obj1,obj2){
 	
 	var	num  = obj1?obj1.attr("data"):$("#dvr_record_chn_sel0").val()-1;
 	var	week = obj2?obj2.find("input").attr("data"):$("#recweek").attr("data");
- 
+     if(week ==127) week=0;
 	nowDev['_dvrVideoInfo2UI'](num,week);
 	    
 	}
