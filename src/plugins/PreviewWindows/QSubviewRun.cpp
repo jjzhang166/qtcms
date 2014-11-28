@@ -2,6 +2,7 @@
 #include <QEventLoop>
 #include "IRecorderEx.h"
 //#include "vld.h"
+#include <QList>
 #include "IWindowSettings.h"
 #include <IDeviceAuth.h>
 int cbConnectRState(QString evName,QVariantMap evMap,void *pUser);
@@ -15,6 +16,8 @@ int cbAuthority(QString evName,QVariantMap evMap,void*pUser);
 int cbMotionDetection(QString evName,QVariantMap evMap,void*pUser);
 bool QSubviewRun::m_bIsAudioOpen=false;
 unsigned int QSubviewRun::m_volumePersent=50;
+QList<int > g_tOpenChannelList;
+QMutex g_tOpenChannelListLock;
 QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	m_currentStatus(STATUS_DISCONNECTED),
 	m_historyStatus(STATUS_DISCONNECTED),
@@ -756,6 +759,14 @@ void QSubviewRun::run()
 				m_nPosition=__LINE__;
 				backToMainThread(curStatusInfo);//emit sgbackToMainThread(curStatusInfo);
 				m_bIsBlock=false;
+				g_tOpenChannelListLock.lock();
+				if (g_tOpenChannelList.contains(m_tDeviceInfo.m_uiChannelIdInDataBase))
+				{
+					g_tOpenChannelList.removeOne(m_tDeviceInfo.m_uiChannelIdInDataBase);
+				}else{
+					//do nothing
+				}
+				g_tOpenChannelListLock.unlock();
 				 }
 				 break;
 		}
@@ -770,6 +781,13 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 		qDebug()<<__FUNCTION__<<__LINE__<<"this preview thread still running,please call stopPreview() function if you want reopen";
 		return;
 	}else{
+		g_tOpenChannelListLock.lock();
+		if (g_tOpenChannelList.contains(chlId))
+		{
+			g_tOpenChannelListLock.unlock();
+			return;
+		}
+		g_tOpenChannelListLock.unlock();
 		int nCurrentStatus=STATUS_CONNECTING;
 		QVariantMap curStatusInfo;
 		curStatusInfo.insert("CurrentStatus",nCurrentStatus);
@@ -781,6 +799,9 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 		m_stepCode.clear();
 		m_stepCode.enqueue(OPENPREVIEW);
 		m_tStepCodeLock.unlock();
+		g_tOpenChannelListLock.lock();
+		g_tOpenChannelList.append(chlId);
+		g_tOpenChannelListLock.unlock();
 		QThread::start();
 		return;
 	}
@@ -788,6 +809,14 @@ void QSubviewRun::openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd)
 
 void QSubviewRun::stopPreview()
 {
+	g_tOpenChannelListLock.lock();
+	if (g_tOpenChannelList.contains(m_tDeviceInfo.m_uiChannelIdInDataBase))
+	{
+		g_tOpenChannelList.removeOne(m_tDeviceInfo.m_uiChannelIdInDataBase);
+	}else{
+		//do nothing
+	}
+	g_tOpenChannelListLock.unlock();
 	if (QThread::isRunning()&&m_stop!=true)
 	{
 		//set nstepcode
