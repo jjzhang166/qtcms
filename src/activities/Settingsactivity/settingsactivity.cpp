@@ -110,6 +110,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	
 	QWFW_MSGMAP("SettingRecordTimeParm_ok","click","OnSettingRecordTimeParm()");
 	QWFW_MSGMAP("SettingRecordDoubleTimeParm_ok","click","OnSettingRecordTimeParmDouble()");
+	QWFW_MSGMAP("SettingRecordCopyTimeParm_ok","click","OnSettingRecordTimeParmCopy()");
 	QWFW_MSGMAP_END;
 }
 
@@ -1860,6 +1861,68 @@ void settingsActivity::OnRemoveDeviceALL()
 	EP_ADD_PARAM(bcitem,"total",total);
 	EP_ADD_PARAM(bcitem,"succeedId",devId);
 	EventProcCall("RemoveDeviceFeedBackSuccess",bcitem);
+	return;
+}
+
+void settingsActivity::OnSettingRecordTimeParmCopy()
+{
+
+	ISetRecordTime *ISetRecord=NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void**)&ISetRecord);
+	DEF_EVENT_PARAM(arg);
+	QString Content;
+	if (NULL==ISetRecord)
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("system fail");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordCopyTimeParmFail",arg);
+		return;
+	}
+
+	QVariant RecordtimeFile=QueryValue("recordtimeCopy_ID");
+	QDomDocument ConfFile;
+	ConfFile.setContent(RecordtimeFile.toString());
+	QDomNode RecordtimeFileNode=ConfFile.elementsByTagName("recordtime").at(0);
+	QDomNodeList itemList=RecordtimeFileNode.childNodes();
+	if (0==itemList.count())
+	{
+		arg.clear();
+		Content.clear();
+		Content.append("parm is null");
+		EP_ADD_PARAM(arg,"fail",Content);
+		EventProcCall("SettingRecordCopyTimeParmFail",arg);
+		ISetRecord->Release();
+		return;
+	}
+	for (int n=0;n<itemList.count();n++)
+	{
+		QDomNode item;
+		item=itemList.at(n);
+		QString recordtime_ID=item.toElement().attribute("recordtime_ID");
+		QString starttime_ID=item.toElement().attribute("starttime_ID");
+		QString endtime_ID=item.toElement().attribute("endtime_ID");
+		QString enable_ID=item.toElement().attribute("enable_ID");
+		int nRet=-1;
+		nRet= ISetRecord->ModifyRecordTime(recordtime_ID.toInt(),starttime_ID,endtime_ID,enable_ID.toInt());
+		if (1==nRet)
+		{
+			arg.clear();
+			Content.clear();
+			Content.append("ModifyRecordTime Fail");
+			EP_ADD_PARAM(arg,"fail",Content);
+			EventProcCall("SettingRecordCopyTimeParmFail",arg);
+			ISetRecord->Release();
+			return;
+		}
+	}
+	arg.clear();
+	Content.clear();
+	Content.append("ModifyRecordTime success");
+	EP_ADD_PARAM(arg,"success",Content);
+	EventProcCall("SettingRecordCopyTimeParmSuccess",arg);
+	ISetRecord->Release();
 	return;
 }
 

@@ -48,6 +48,7 @@
   @通用设置管理<br />
   SettingCommonParm_ok|<br />
   @录像时间设置<br />
+  SettingRecordCopyTimeParm_ok|</p>
   SettingRecordTimeParm_ok|</p>
 <p>SettingRecordDoubleTimeParm_ok|<br />
   //setting activity 模块抛出给页面的事件<br />
@@ -117,7 +118,9 @@
   SettingRecordTimeParmSuccess(success)<br />
   SettingRecordTimeParmFail(fail)</p>
 <p>SettingRecordDoubleTimeParmSuccess(success)<br />
-SettingRecordDoubleTimeParmFail(fail)<br />
+SettingRecordDoubleTimeParmFail(fail)</p>
+<p>SettingRecordCopyTimeParmSuccess(success)<br />
+SettingRecordCopyTimeParmFail(fail)<br />
   //页面传入参数，其中ID号相同的表示为同一个ID<br />
   @user module<br />
   user_id_ID|<br />
@@ -189,7 +192,7 @@ SettingRecordDoubleTimeParmFail(fail)<br />
   LoopRecording_ID|(设置是否循环录像，可选值：true|false)<br />
   DiskSpaceReservedSize_ID(设置录像磁盘预留空间大小,spacereservedsize (单位m))<br />
 @录像时间设置</p>
-<p>recordtimedouble_ID(XML)|</p>
+<p>recordtimedouble_ID|recordtimeCopy_ID(XML)|</p>
 
 <p>&lt;recordtime num=&quot;2&quot;&gt;<br />
   &lt;num1 recordtime_ID=&quot;1&quot; starttime_ID=&quot;&quot; endtime_ID=&quot;&quot; enable_ID=&quot;true&quot; &gt;<br />

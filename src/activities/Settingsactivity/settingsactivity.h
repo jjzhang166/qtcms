@@ -88,6 +88,7 @@ public slots:
 	/*¬ºœÒ ±º‰…Ë÷√*/
 	void OnSettingRecordTimeParm();
 	void OnSettingRecordTimeParmDouble();
+	void OnSettingRecordTimeParmCopy();
 private:
 	QWidget * m_MainView;
 	int m_nRef;
