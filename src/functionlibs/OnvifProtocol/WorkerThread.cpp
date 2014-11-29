@@ -113,7 +113,7 @@ int WorkerThread::ConnectToDevice(int *result)
 		return 1;
 	}
 	//create rtsp context, default for sub stream
-	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, false);
+	m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.sub_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, false);
 	if (!m_rtspContext)
 	{
 		*result = 1;
@@ -230,7 +230,7 @@ int WorkerThread::GetLiveStream( int chl, int streamId, int *result )
 		}
 		MINIRTSP_delete(m_rtspContext);
 		m_bIgnoreEvent=false;
-		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), false, false);
+		m_rtspContext = MINIRTSP_client_new(m_nvpStreamUrl.main_uri, MINIRTSP_TRANSPORT_OVER_RTSP, m_tDeviceInfo.sUsername.toLatin1().data(), m_tDeviceInfo.sPassword.toLatin1().data(), true, false);
 		if (m_rtspContext)
 		{
 			//register event callback function

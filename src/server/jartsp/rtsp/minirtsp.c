@@ -591,9 +591,9 @@ static char *_get_stream_name(int dataType)
 		case MD_TYPE_AAC:
 			return "AAC";
 		case MD_TYPE_ALAW:
-			return "ALAW";
+			return "PCMA";
 		case MD_TYPE_ULAW:
-			return "ULAW";
+			return "PCMU";
 		default:
 			return NULL;			
 	}
@@ -641,6 +641,18 @@ MINIRTSP_lookup_data(lpMINIRTSP thiz, int dataType,
 	strncpy(dataProperties->mediaName, mediaName, sizeof(dataProperties->mediaName));
 
 	for(i=0;i<r->sdp->media_num;i++){
+		if (((MD_TYPE_ALAW == dataType) || (MD_TYPE_ALAW == dataType))
+			&& (dataType == r->sdp->media[i].media_n.format)){
+				dataProperties->g711.sampleRate = 8000;
+				dataProperties->g711.sampleSize = 16;
+				dataProperties->g711.channel = 1;		
+			//ret = SDP_get_g711_info(r->sdp, &dataProperties->mediaType,
+			//	dataProperties->szip, &dataProperties->chn_port);
+			if(0 == 0){
+				gotIt = TRUE;
+			}
+			break;
+		}
 		if(SDP_get_media_attr(r->sdp,r->sdp->media[i].media_n.type,
 				SDP_ATTR_RTP_MAP,(void *)&attr) == RTSP_RET_OK){
 			if(strncmp(attr.rtpmap.codec_type,mediaName,strlen(mediaName)) == 0) {
@@ -654,13 +666,16 @@ MINIRTSP_lookup_data(lpMINIRTSP thiz, int dataType,
 					return -1;
 				}
 				*/
-				if((strncmp(mediaName,"ALAW",strlen("ALAW")) == 0) ||
-					(strncmp(mediaName,"ULAW",strlen("ULAW")) == 0)) {
+				if((strncmp(mediaName,"PCMU",strlen("PCMU")) == 0) ||
+					(strncmp(mediaName,"PCMA",strlen("PCMA")) == 0)) {
 					dataProperties->g711.sampleRate = 8000;
 					dataProperties->g711.sampleSize = 16;
 					dataProperties->g711.channel = 1;
 					ret = SDP_get_g711_info(r->sdp, &dataProperties->mediaType,
 						dataProperties->szip, &dataProperties->chn_port);
+					if(ret!=0){
+						printf("MINIRTSP_lookup_data(%s) failed!,num:%d\n", mediaName,r->sdp->media_num); 
+					}
 				}
 				else if(strncmp(mediaName,"H264",strlen("H264")) == 0) {
 					ret = SDP_get_h264_info(r->sdp, &dataProperties->mediaType,
@@ -687,7 +702,7 @@ MINIRTSP_lookup_data(lpMINIRTSP thiz, int dataType,
 		//MINIRTSP_dump_data_property(dataProperties);
 		return 0;
 	}else {
-		printf("MINIRTSP_lookup_data(%s) failed!\n", mediaName); 
+		printf("MINIRTSP_lookup_data(%s) failed!,num:%d\n", mediaName,r->sdp->media_num); 
 		return -1;
 	}
 }

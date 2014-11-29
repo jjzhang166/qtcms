@@ -773,8 +773,8 @@ int SDP_get_g711_info(SessionDesc_t *sdp,int *payloadtype,char *ip,int *port)
 		m = (MediaDesc_t *)&sdp->media[i];
 		for(j=0;j<m->attr_num;j++){
 			if(strcmp(m->attri[j].name,"rtpmap")==0){
-				if((strcmp(m->attri[j].rtpmap.codec_type,"ULAW") == 0)
-					|| (strcmp(m->attri[j].rtpmap.codec_type,"ALAW") == 0)){
+				if((strcmp(m->attri[j].rtpmap.codec_type,"PCMA") == 0)
+					|| (strcmp(m->attri[j].rtpmap.codec_type,"PCMU") == 0)){
 					gotIt = 1;
 					goto _EXIT_HANDLE;					
 				}
