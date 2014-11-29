@@ -36,9 +36,13 @@
     <ClInclude Include="..\..\..\rtsp\rtsplib.h" />
     <ClInclude Include="..\..\..\rtsp\rtspsession.h" />
     <ClInclude Include="..\..\..\rtsp\sdplib.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="minirtsp.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rtsplibpro.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1651A0DF-4A7D-4F41-B6F5-C0C63228C8D5}</ProjectGuid>

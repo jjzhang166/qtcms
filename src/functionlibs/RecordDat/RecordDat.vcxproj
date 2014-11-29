@@ -135,6 +135,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClInclude Include="Allocation.h" />
     <ClInclude Include="BufferNode.h" />
     <ClInclude Include="cpointlist.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ringBuffer.h" />
     <ClInclude Include="sqlite3.h" />
     <CustomBuild Include="BufferQueue.h">
@@ -194,6 +195,9 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   </ItemGroup>
   <ItemGroup>
     <None Include="recordDat.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RecordDat.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

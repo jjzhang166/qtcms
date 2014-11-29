@@ -115,6 +115,7 @@
     <ClCompile Include="WorkerThread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <CustomBuild Include="WorkerThread.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing WorkerThread.h...</Message>
@@ -151,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="OnvifProtocol.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OnvifProtocol.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

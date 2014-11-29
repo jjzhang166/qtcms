@@ -82,6 +82,9 @@
     <ClInclude Include="h264wh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="OnvifProtocol.def">
@@ -98,5 +101,8 @@
     <CustomBuild Include="WorkerThread.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OnvifProtocol.rc" />
   </ItemGroup>
 </Project>

@@ -95,9 +95,13 @@
     <ClInclude Include="div6_6.h" />
     <ClInclude Include="div6_6_global.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="div6_6.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="div6_6.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

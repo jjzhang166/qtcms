@@ -130,6 +130,9 @@
     <ClInclude Include="sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="recordDat.def">
@@ -152,5 +155,8 @@
     <CustomBuild Include="OperationDatabase.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RecordDat.rc" />
   </ItemGroup>
 </Project>

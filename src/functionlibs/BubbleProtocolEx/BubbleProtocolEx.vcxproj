@@ -113,6 +113,7 @@
   <ItemGroup>
     <ClInclude Include="byteArraySpace.h" />
     <ClInclude Include="h264wh.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stringfunction.h" />
     <CustomBuild Include="mdworkobject.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -140,6 +141,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BubbleProtocolEx.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BubbleProtocolEx.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -94,12 +94,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="winfunctions.h" />
     <ClInclude Include="winstorageutinity.h" />
     <ClInclude Include="winstorageutinity_global.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="winStorageUtinity.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="winStorageUtinity.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
