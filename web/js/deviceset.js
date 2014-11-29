@@ -529,15 +529,10 @@ var oSearchOcx,
 		
 		var devData = obj.parent('li').parent('ul').siblings('span.device').data('data');
 		
-		var allChlID = [],allDevID=[];  //所有通道ID
-		$('<li style="width:200px"><input style="width:200px" data="" value="NULL" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
-		obj.parent('li').siblings().each(function(){
-			var chlData = $(this).find('.channel').data('data');
-			 
-			$('<li style="width:200px"><input style="width:200px" data="'+chlData.channel_id+'" value="'+devData.device_name+'_'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
-			allChlID.push(chlData.channel_id);
-		})
-        $('div.dev_list:eq(2) span.channel').not('.sel').each(function(){
+		//var allChlID = [];
+		var allDevID=[];  //所有通道ID
+		
+		 $('div.dev_list:eq(2) span.channel').each(function(){
 			var devData = $(this).data('data');
 			allDevID.push(devData.channel_id);
 			})
@@ -547,7 +542,14 @@ var oSearchOcx,
         //拷贝到所有设备的所有通道上
 		$('<li  style="width:200px"><input style="width:200px" class="all" data="" value="'+_T('Select')+'" disabled="disabled" /></li>').find('input').attr('data',allDevID.join(',')).end().appendTo($('td.copyTo ul'));
 		//console.log(allChlID);
-
+		
+		obj.parent('li').parent('ul').children('li').each(function(){
+			var chlData = $(this).find('.channel').data('data');
+			 
+			$('<li style="width:200px"><input style="width:200px" data="'+chlData.channel_id+'" value="'+devData.device_name+'_'+chlData.channel_name+'" disabled="disabled" /></li>').appendTo($('td.copyTo ul'));
+			//allChlID.push(chlData.channel_id);
+		})
+ 
 		var chlData = obj.data('data');
 
 		var sTimeID = oCommonLibrary.GetRecordTimeBydevId(chlData.channel_id); //获取该通道的时间段的ID列表
@@ -607,15 +609,18 @@ var oSearchOcx,
 		str +='</recordtime>';
 	    // console.log(str);
 		$('#recordtimedouble_ID').val(str);
+		
+		var objDe = $('td.copyTo ul li:first input');
+		$('.copyTo .select input').val(objDe.val()).attr('data',objDe.attr('data'));
 	}
 	//添加前获取要修改的时间ID的类容XML;
-	function getRecrodxml(){
+	function getRecrodxml(to){
 		var copyTo = [$('#RecordTime span.channel.sel').data('data').channel_id], // 初始的通道ID
 			copyID = $('#RecordTime td.copyTo input:first').attr('data').split(','), // 要拷贝到的通道ID
 			nowWeek = $('#week').attr('data').split(','), //要保存的星期
 			nowWeekTimeID = [];
 		    //console.log(nowWeek+"---nowWeek----");
-		var copy = copyID[0]!='' ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的
+		var copy = to==1 ? copyTo.concat(copyID) : copyTo;  // 要修改的通道的
 
 		// 返回符合当天星期的时间ID
 		for(i in copy){ 
@@ -656,7 +661,7 @@ var oSearchOcx,
 		}
 		str +='</recordtime>';
 		//console.log(str);
-		$('#recordtimedouble_ID').val(str);
+		to==1?$('#recordtimeCopy_ID').val(str):$('#recordtimedouble_ID').val(str);
 		
 	}
 

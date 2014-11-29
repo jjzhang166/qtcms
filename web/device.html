@@ -1814,9 +1814,8 @@
                         
                         </tr>
 						<tr>
-                          
-							<!--<td class="td1"><script>T("Copy_to")</script></td>-->
-                            <td style=" text-align:right;"><script>T("Copy_to")</script></td>
+                           <!-- <td style=" text-align:right;"><script>T("Copy_to")</script></td>-->
+                           <td class="tdBtn"><div class="hover"  onclick="getRecrodxml(1)" id="SettingRecordCopyTimeParm_ok"><script>T("Copy_to")</script></div></td>
 							<td class="copyTo" colspan="2">
 								<div class="select" style="width:200px;">
 										<input value="" data=""  type="select" style="width:166px"/>
@@ -1827,12 +1826,13 @@
 								</ul>
 							</td>
                            
-                            <td colspan="2"></td>
+                            <td colspan="3" class="tdBtn"><div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok"><script>T("Save")</script></div></td>
 							<input type="hidden" value="" id="recordtimedouble_ID" />
+                            <input type="hidden" value="" id="recordtimeCopy_ID" />
 						</tr>
-						<tr><td colspan="5" class="tdBtn">
+						<!--<tr><td colspan="5" class="tdBtn">
 						<div class="hover"  onclick="getRecrodxml()" id="SettingRecordDoubleTimeParm_ok"><script>T("Save")</script></div>
-						</td></tr>
+						</td></tr>-->
 						</tbody>
 					</table>
 				</div>
