@@ -336,7 +336,16 @@ void PlayMgr::run()
 			m_bIsChangeSpeed = false;
 		}
 		//keep play speed
-		qint64 i64WaitSec = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000 - frameTimer.nsecsElapsed()/1000 + m_i32SpeedRate*50*1000;
+		qint64 ptsDiff = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000;
+		if (m_i32SpeedRate < 0)
+		{
+			ptsDiff /= qAbs(m_i32SpeedRate)*4;
+		}
+		else if (m_i32SpeedRate > 0)
+		{
+			ptsDiff *= qAbs(m_i32SpeedRate);
+		}
+		qint64 i64WaitSec = ptsDiff - frameTimer.nsecsElapsed()/1000;
 		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
 		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
 		

@@ -30,6 +30,7 @@ LocalPlayerEx::LocalPlayerEx()
 
 	//create thread for read file
 	m_pFileData = new QFileData();
+	connect(m_pFileData, SIGNAL(sigStopPlay()), this, SLOT(onStopPlayMgr()));
 
 	//create thread for playing
 	for (qint32 i32Loop = 0; i32Loop < MAX_PLAY_THREAD; ++i32Loop)
@@ -795,6 +796,11 @@ void LocalPlayerEx::onStartPlayMgr( uint wndId )
 		}
 		++pplayInfo;
 	}
+}
+
+void LocalPlayerEx::onStopPlayMgr()
+{
+	GroupStop();
 }
 
 qint32 LocalPlayerEx::countSkipTime( const QMap<uint, QVector<PeriodTime> >& filePeriodMap, QVector<PeriodTime> &totalSkipTime )

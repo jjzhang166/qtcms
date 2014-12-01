@@ -80,6 +80,7 @@ public:
 	void setPlayTime(uint &playtime);
 public slots:
 	void onStartPlayMgr(uint wndId);
+	void onStopPlayMgr();
 private:
 	QSqlDatabase * initDataBase(QString sDatabaseName);
 	sqlite3* initDataBase(char *dbPath);

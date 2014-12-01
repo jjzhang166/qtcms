@@ -173,6 +173,7 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
 					{
+						emit sigStopPlay();
 						//delete[] m_pFileBuff1;
 						//delete[] m_pFileBuff2;
 						return;
@@ -188,6 +189,7 @@ void QFileData::run()
 				{
 					if (!readFile(m_lstFileList, m_i32StartPos, m_pFileBuff1, BUFFER_SIZE))
 					{
+						emit sigStopPlay();
 						//delete[] m_pFileBuff1;
 						//delete[] m_pFileBuff2;
 						return;

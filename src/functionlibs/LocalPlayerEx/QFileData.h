@@ -43,6 +43,7 @@ signals:
 	void sigThrowException(QVariantMap &msg);
 // 	void sigSkipTime(uint seconds);
 	void sigStartPlay(uint wndId);
+	void sigStopPlay();
 protected:
 	void run();
 private:
