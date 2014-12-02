@@ -9,6 +9,7 @@
 #include <QDateTime>
 
 #define qDebug() qDebug()<<(int)this<<__FUNCTION__<<__LINE__
+#define STANDARD_FRAME_INTERVAL 40*1000
 
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser);
 
@@ -17,6 +18,9 @@ bool PlayMgr::m_bPause = false;
 QMutex PlayMgr::m_mxPause;
 QWaitCondition PlayMgr::m_wcPause;
 IAudioPlayer* PlayMgr::m_pAudioPlayer = NULL;
+
+static bool gs_timerSwitch = false;
+static QElapsedTimer gs_globalTimer;
 
 PlayMgr::PlayMgr( void )
 	:m_uiStartSec(0),
@@ -205,6 +209,10 @@ void PlayMgr::stop()
 	{
 		m_pVedioRender->deinit();
 	}
+	if (gs_timerSwitch)
+	{
+		gs_timerSwitch = false;
+	}
 	qDebug()<<"call stop end";
 // 	wait();
 }
@@ -215,9 +223,13 @@ void PlayMgr::run()
 // 	qDebug()<<"fileStartPos: "<<m_i32FileStartPos;
 // 	qDebug()<<"skipStartPos: "<<m_i32SkipStartPos;
 // 	printVector(0, m_filePeriod);
+	if (!gs_timerSwitch)
+	{
+		gs_globalTimer.start();
+		gs_timerSwitch = true;
+	}
 
-
-	QElapsedTimer frameTimer;
+// 	QElapsedTimer frameTimer;
 
 	bool bFirstFrame = true;
 	bool bSkip = false;
@@ -237,7 +249,8 @@ void PlayMgr::run()
 			m_wcPause.wait(&m_mxPause);
 			m_mxPause.unlock();
 
-			frameTimer.restart();
+// 			frameTimer.restart();
+			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
 		}
 		FrameData *pFrameData = NULL;
 		if (m_quFrameBuffer.size() > 1)//keep one frame in queue
@@ -266,7 +279,8 @@ void PlayMgr::run()
 		//if wait seconds when playing, clear timer
 		if (status)
 		{
-			frameTimer.restart();
+// 			frameTimer.restart();
+			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
 		}
 
 		if (FT_Audio == pFrameData->uiType)
@@ -314,7 +328,8 @@ void PlayMgr::run()
 			m_quFrameBuffer.removeFirst();
 
 			bFirstFrame = false;
-			frameTimer.start();
+// 			frameTimer.start();
+			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
 			continue;
 		}
 		m_uiCurrentGMT = pFrameData->uiGentime;
@@ -345,8 +360,9 @@ void PlayMgr::run()
 		{
 			ptsDiff *= qAbs(m_i32SpeedRate);
 		}
-		qint64 i64WaitSec = ptsDiff - frameTimer.nsecsElapsed()/1000;
-		qint64 i64Before = frameTimer.nsecsElapsed()/1000;
+		qint64 i64spend = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount;
+		qint64 i64WaitSec = ptsDiff - i64spend;
+		qint64 i64Before = i64spend;
 		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
 		
 		//qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
@@ -354,7 +370,7 @@ void PlayMgr::run()
 		//if frame interval is greater than 1 second, then set it 40 milliseconds
 		if (i64Sec > 1000*1000)
 		{
-			i64Sec = 40*1000;
+			i64Sec = STANDARD_FRAME_INTERVAL;
 		}
 // 		if (i64WaitSec > 0)
 		if (i64Sec > 0)
@@ -376,10 +392,11 @@ void PlayMgr::run()
 		}
 
 		uiLastPts = pFrameData->uiPts;
-		m_i64FrameInterval = frameTimer.nsecsElapsed()/1000 - i64Before - i64Sec;
+		m_i64FrameInterval = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount - i64Before - i64Sec;
 
-		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
-		frameTimer.start();	
+ 		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
+// 		frameTimer.start();	
+		timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
 
 		delete[] pFrameData->pBuffer;
 		m_quFrameBuffer.removeFirst();
