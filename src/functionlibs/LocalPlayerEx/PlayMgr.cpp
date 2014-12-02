@@ -230,7 +230,7 @@ void PlayMgr::run()
 	}
 
 // 	QElapsedTimer frameTimer;
-
+	qint64 timeStartCount = 0;
 	bool bFirstFrame = true;
 	bool bSkip = false;
 	uint uiLastGMT = 0;
