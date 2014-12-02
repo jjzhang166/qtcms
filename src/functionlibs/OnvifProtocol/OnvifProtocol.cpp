@@ -469,6 +469,9 @@ int OnvifProtocol::cbCLiveStream( QVariantMap evMap )
 
 int OnvifProtocol::cbCAuthority( QVariantMap evMap )
 {
+	QVariantMap tItem;
+	tItem.insert("Authority",false);
+	eventProcCall("Authority", tItem);
 	return 0;
 }
 

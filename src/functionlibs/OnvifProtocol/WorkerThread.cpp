@@ -87,6 +87,7 @@ int WorkerThread::ConnectToDevice(int *result)
 		m_nvpContext = NULL;
 	}
 	m_nvpContext = NVP_ONVIF_new();
+	
 	if (!m_nvpContext)
 	{
 		*result = 1;
@@ -102,7 +103,7 @@ int WorkerThread::ConnectToDevice(int *result)
 	m_nvpArguments.chn = 0;
 	m_nvpStreamUrl.main_index = 0;
 	m_nvpStreamUrl.sub_index = 1;
-
+	m_nvpContext->SetNVPEventHook(&m_nvpArguments,NVP_AUTH_FAILED,authorityEventHook,this);
 	//get rtsp url both main and sub stream
 	int ret = m_nvpContext->GetRtspUri(&m_nvpArguments, &m_nvpStreamUrl);
 	if (ret)
@@ -446,6 +447,18 @@ void WorkerThread::registerEvent( QString eventName,int (__cdecl *proc)(QString,
 	}
 }
 
+void WorkerThread::recAuthorityEventHook( int eventType,void *rParam )
+{
+	QVariantMap tAuthorityInfo;
+	tagOnvifProInfo tProInfo=m_tEventMap.value("Authority");
+	if (tProInfo.proc)
+	{
+		tProInfo.proc(QString("Authority"),tAuthorityInfo,tProInfo.pUser);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"LiveStream is not register";
+	}
+}
+
 void eventHook( int eventType, int lParam, void *rParam, void *customCtx )
 {
 	((WorkerThread*)customCtx)->recEventHook(eventType,rParam);
@@ -454,4 +467,9 @@ void eventHook( int eventType, int lParam, void *rParam, void *customCtx )
 void dataHook( void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx )
 {
 	((WorkerThread*)customCtx)->recFrameData(pdata, dataSize, timestamp, dataType);
+}
+
+void authorityEventHook( int nEvent, unsigned int lparam, unsigned int rparam, void *custom /* top-level-param */ )
+{
+	((WorkerThread*)custom)->recAuthorityEventHook(nEvent,custom);
 }

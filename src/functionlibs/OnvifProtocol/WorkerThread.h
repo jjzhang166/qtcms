@@ -10,7 +10,7 @@ extern "C"{
 };
 
 #pragma comment(lib, "rtsplibpro.lib")
-
+void authorityEventHook(int nEvent, unsigned int lparam, unsigned int rparam, void *custom /* top-level-param */);
 void eventHook(int eventType, int lParam, void *rParam, void *customCtx);
 void dataHook(void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx);
 class WorkerThread : public QObject
@@ -23,6 +23,7 @@ public:
 	ConnectStatus getCurrentStatus();
 	void setDeviceInfo(const DeviceInfo& devInfo);
 	void recEventHook(int eventType,void *rParam);
+	void recAuthorityEventHook(int eventType,void *rParam);
 	void recFrameData(void* pdata, unsigned int size, unsigned int timestamp, int datatype);
 	void registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 public slots:
