@@ -128,6 +128,11 @@ void DeviceSearch::analyzeDeviceInfo( unsigned char *ip,unsigned short port, cha
 	deviceInfo.insert("SearchVendor_ID"        ,QVariant("ONVIF"));
 	QString SearchSendToUI_ID=ipStr+"ONVIF";
 	deviceInfo.insert("SearchSendToUI_ID"       ,QVariant(SearchSendToUI_ID));
+	if (deviceInfo.value("SearchDeviceName_ID").toString()=="IPC"&&deviceInfo.value("SearchDeviceModelId_ID").toString()=="IPC-model")
+	{
+		return;
+	}
+	//qDebug()<<__FUNCTION__<<__LINE__<<deviceInfo.value("SearchDeviceName_ID").toString()<<deviceInfo.value("SearchDeviceModelId_ID").toString()<<deviceInfo.value("SearchIP_ID").toString();
 	if (m_proInfo.proc && m_proInfo.pUser)
 	{
 		m_proInfo.proc(m_sEvent, deviceInfo, m_proInfo.pUser);

@@ -20,7 +20,7 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
 	m_pWindowsStretchAction = m_WindowMenu.addAction(tr("Suit For Window"));
 	m_pWindowsStretchAction->setCheckable(true);
-
+	m_pWindowsStretchAction->setChecked(false);
 
 	connect(m_pWindowsStretchAction,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
 }
@@ -184,7 +184,7 @@ void RecordPlayerView::slSuitForWindow( bool checked )
 		m_pLocalPlayer->QueryInterface(IID_IVideoDisplayOption,(void **)&pi);
 		if (NULL != pi)
 		{
-			pi->enableWindowStretch(this,checked);
+			pi->enableWindowStretch(this,!checked);
 			pi->Release();
 		}
 	}
