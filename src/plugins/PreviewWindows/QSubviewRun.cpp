@@ -2208,7 +2208,6 @@ int QSubviewRun::cbCAuthority( QString evName,QVariantMap evMap,void*pUser )
 	if (evMap.contains("Authority"))
 	{
 		eventCallBack("Authority",evMap);
-		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient Authority fail";
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"undefined callBack event,please checkout";
 	}

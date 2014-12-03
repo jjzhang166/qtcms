@@ -204,6 +204,7 @@ bool BufferQueue::isEmpty()
 
 void BufferQueue::clear()
 {
+	m_tEnqueueDataLock.lock();
 	m_tDataLock.lock();
 	while(!m_tDataQueue.isEmpty()){
 		RecBufferNode *pRecBufferNode=NULL;
@@ -219,6 +220,7 @@ void BufferQueue::clear()
 	m_nQueueMaxSize=0;
 	m_uiAvailableSize=CHLBUFFERSIZE*1024*1024;
 	m_tDataLock.unlock();
+	m_tEnqueueDataLock.unlock();
 }
 
 RecBufferNode* BufferQueue::dequeue()

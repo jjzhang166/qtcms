@@ -931,10 +931,11 @@ int BubbleProtocolEx::authority()
 		m_bAuthorityFlag=false;
 		m_bAuthorityWaitFlag=true;
 		int nCount=0;
-		while(m_bAuthorityWaitFlag==true&&nCount<40){
-			QEventLoop tEventLoop;
-			QTimer::singleShot(50,&tEventLoop,SLOT(quit()));
-			tEventLoop.exec();
+		while(m_bAuthorityWaitFlag==true&&nCount<50){
+			//QEventLoop tEventLoop;
+			//QTimer::singleShot(40,&tEventLoop,SLOT(quit()));
+			//tEventLoop.exec();
+			msleep(10);
 			nCount++;
 		}
 		if (m_bAuthorityFlag==true)

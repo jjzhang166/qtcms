@@ -557,7 +557,7 @@ void qsubviewEx::slmouseMenu()
 		m_pClosePreviewAction->setEnabled(true);
 		m_pStreachVideo->setEnabled(true);
 	}
-	if (m_tDeviceInfo.m_sVendor=="IPC")
+	if (m_tDeviceInfo.m_sVendor=="IPC"||m_tDeviceInfo.m_sVendor=="ONVIF")
 	{
 		m_pSwitchStreamAciton->setDisabled(true);
 	}else{
@@ -792,6 +792,7 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 	if (evMap.value("Authority").toBool()==false)
 	{
 		evMap.insert("eventName","Authority");
+		qDebug()<<__FUNCTION__<<__LINE__<<m_tDeviceInfo.m_sAddress<<"Connect to device fail as the devcieClient Authority fail";
 		emit sgbackToMainThread(evMap);
 	}else{
 
