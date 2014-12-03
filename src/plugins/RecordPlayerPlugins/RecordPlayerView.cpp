@@ -110,14 +110,14 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	{
 		m_pLocalPlayer->GroupSetVolume(0xAECBCA, this);
 	}
-	if (Qt::RightButton == ev->button())
-	{
-		if (NULL != m_pWindowsStretchAction)
-		{
-			m_pWindowsStretchAction->setText(tr("Suit For Window"));
-		}
-		m_WindowMenu.exec(QCursor::pos());
-	}
+	//if (Qt::RightButton == ev->button())
+	//{
+	//	if (NULL != m_pWindowsStretchAction)
+	//	{
+	//		m_pWindowsStretchAction->setText(tr("Suit For Window"));
+	//	}
+	//	m_WindowMenu.exec(QCursor::pos());
+	//}
 }
 
 void RecordPlayerView::setLocalPlayer(ILocalPlayerEx* pPlayer)
