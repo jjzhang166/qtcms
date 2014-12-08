@@ -110,6 +110,9 @@ const CLSID CLSID_DivMode6_1 =
 // {F8FC995D-C1EE-4F93-B697-A72D2E07D1E6}
 const IID IID_IDeviceSearch = 
 { 0xf8fc995d, 0xc1ee, 0x4f93, { 0xb6, 0x97, 0xa7, 0x2d, 0x2e, 0x7, 0xd1, 0xe6 } };
+// {275C5750-45E2-4F5C-A5C7-D532F891C073}
+const IID IID_IAutoSearchDevice = 
+{ 0x275c5750, 0x45e2, 0x4f5c, { 0xa5, 0xc7, 0xd5, 0x32, 0xf8, 0x91, 0xc0, 0x73 } };
 
 // {E59303FB-0AEA-4FDC-8FFA-C39870470290}
 const IID IID_IEventRegister = 

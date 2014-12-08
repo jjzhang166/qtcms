@@ -2,10 +2,12 @@
 #define AUTOSEARCHDEVICE_H
 
 #include "autosearchdevice_global.h"
+#include "IAutoSearchDevice.h"
 #include "guid.h"
 #include <qwfw.h>
 #include <autoSearchDeviceWindow.h>
 #include <QTimer>
+
 class  autoSearchDevice:public QWidget,
 	public QWebPluginFWBase
 {
@@ -20,6 +22,7 @@ public slots:
 		void autoSearchDeviceTimeout();
 private:
 	autoSearchDeviceWindow m_tAutoSearchDeviceWindow;
+	IAutoSearchDevice *m_pDeviceSearch;
 };
 
 #endif // AUTOSEARCHDEVICE_H

@@ -7,10 +7,12 @@
 #include "IDeviceSearch.h"
 #include "IWebPluginBase.h"
 #include "DeviceSearchWindows.h"
+#include "IAutoSearchDevice.h"
 
 class DeviceSearchPlugin : public QObject,
 	public IWebPluginBase,
-	public IDeviceSearch
+	public IDeviceSearch,
+	public IAutoSearchDevice
 {
 	Q_OBJECT 
 public:
@@ -21,6 +23,7 @@ public:
 	int Stop();
 	int Flush();
 	int setInterval(int nInterval);
+	
 	IEventRegister * QueryEventRegister();
 	
 	virtual QList<QWebPluginFactory::Plugin> plugins() const ;
@@ -30,10 +33,13 @@ public:
 	virtual unsigned long __stdcall AddRef();
 	virtual unsigned long __stdcall Release();
 
+	//autoSearch
+	int autoSearchStart();
+	int autoSearchStop();
 private:
 	int m_nRef;
 	QMutex m_csRef;
-
+	DeviceSearchWindows m_tDeviceSearchWindows;
 	//DvrTabWindows m_Tabwindow;
 };
 

@@ -10,7 +10,7 @@ m_nRef(0)
 
 DeviceSearchPlugin::~DeviceSearchPlugin()
 {
-	
+	m_tDeviceSearchWindows.stopAutoSearchDevice();
 }
 
 int DeviceSearchPlugin::Start()
@@ -75,6 +75,14 @@ long __stdcall DeviceSearchPlugin::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IDeviceSearch == iid)
+	{
+		*ppv = static_cast<IDeviceSearch *>(this);
+	}
+	else if (IID_IAutoSearchDevice==iid)
+	{
+		*ppv = static_cast<IAutoSearchDevice *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -105,4 +113,16 @@ unsigned long __stdcall DeviceSearchPlugin::Release()
 		delete this;
 	}
 	return nRet;
+}
+
+int DeviceSearchPlugin::autoSearchStart()
+{
+	m_tDeviceSearchWindows.startAutoSearchDevice();
+	return 0;
+}
+
+int DeviceSearchPlugin::autoSearchStop()
+{
+	m_tDeviceSearchWindows.stopAutoSearchDevice();
+	return 0;
 }
