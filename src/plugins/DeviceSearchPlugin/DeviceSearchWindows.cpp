@@ -174,12 +174,12 @@ QVariant DeviceSearchWindows::__QueryValue( QString sElementId )
 
 void DeviceSearchWindows::startAutoSearchDevice()
 {
-
+	m_tAutoSearchDevice.startSearch();
 }
 
 void DeviceSearchWindows::stopAutoSearchDevice()
 {
-
+	m_tAutoSearchDevice.stopSearch();
 }
 
 

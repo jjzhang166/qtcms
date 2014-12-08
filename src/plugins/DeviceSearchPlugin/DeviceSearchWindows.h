@@ -15,7 +15,7 @@
 #include "DeviceSearchWindows_global.h"
 #include <QMutex>
 #include "SetNetwork.h"
-//#include "IEventRegister.h"
+#include "autoSearchDevice.h"
 
 class DeviceSearchWindows : public QTableWidget,
 	public QWebPluginFWBase
@@ -57,6 +57,7 @@ private:
 	QVariantMap m_DeviceItem;
 	QMutex m_DeviceItemMutex;
 	SetNetwork m_setnetwork;
+	autoSearchDevice m_tAutoSearchDevice;
 signals:
 	void addItemToUI(QVariantMap item);
 };
