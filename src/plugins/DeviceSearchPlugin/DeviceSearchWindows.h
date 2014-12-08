@@ -46,7 +46,8 @@ public slots:
 	void addItemMap(QVariantMap item);
 	void sendToHtml(QVariantMap item);
 	void sendInfoToUI(QVariantMap item);
-
+	void startAutoSearchDevice();
+	void stopAutoSearchDevice();
 private:
 	QList<IDeviceSearch *> m_deviceList;
 	IDeviceNetModify *m_pDeviceNetModify;

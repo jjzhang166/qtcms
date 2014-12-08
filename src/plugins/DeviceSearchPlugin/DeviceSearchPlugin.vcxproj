@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\guid.cpp" />
+    <ClCompile Include="autoSearchDevice.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DeviceSearchPlugin.cpp" />
     <ClCompile Include="DeviceSearchWindows.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="SetNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="autoSearchDevice.h" />
     <ClInclude Include="DeviceSearchWindows_global.h" />
     <ClInclude Include="dllmain.h" />
     <ClInclude Include="qarplib.h" />

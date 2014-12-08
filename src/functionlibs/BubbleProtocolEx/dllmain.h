@@ -7,7 +7,7 @@ extern "C"{
 
 	IPcomBase * CreateInstance();
 
-#ifdef __cplusplu	
+#ifdef __cplusplus	
 };
 #endif
 

@@ -172,6 +172,16 @@ QVariant DeviceSearchWindows::__QueryValue( QString sElementId )
 	return elementTemp.evaluateJavaScript("document.getElementById('" + sElementId + "').value");
 }
 
+void DeviceSearchWindows::startAutoSearchDevice()
+{
+
+}
+
+void DeviceSearchWindows::stopAutoSearchDevice()
+{
+
+}
+
 
 int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {

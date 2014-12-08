@@ -113,4 +113,5 @@ extern const IID IID_IVideoDisplayOption;
 extern const CLSID CLSID_onvifDevice;
 extern const GUID CLSID_OnvifProtocol;
 extern const IID IID_IWindowSettings;
+extern const CLSID CLSID_AutoSearchDevicePlugin;
 #endif
