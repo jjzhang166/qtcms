@@ -52,7 +52,7 @@ void autoSearchDevice::run()
 												break;
 		case AutoSearchDeviceStep_TestAndSet:{
 			m_tQueueLock.lock();
-			tCurrentDeviceItem=m_tWaitForTestDeviceItem.dequeue();
+			m_tCurrentDeviceItem=m_tWaitForTestDeviceItem.dequeue();
 			checkAndSetConfig();
 			m_tQueueLock.unlock();
 			tRunStep=AutoSearchDeviceStep_Default;
@@ -86,6 +86,7 @@ void autoSearchDevice::run()
 			m_tDeviceList.clear();
 			m_tDeviceItem.clear();
 			m_tWaitForTestDeviceItem.clear();
+			m_tHadBeenUseIp.clear();
 			bRunStop=true;
 									  }
 									  break;
@@ -188,6 +189,7 @@ bool autoSearchDevice::getNetworkConfig()
 	QString sGateway=QHostAddress(tIp.toIPv4Address()&tMask.toIPv4Address()).toString();
 	sGateway.replace(".0",".1");
 	m_tInterfaceInfo.sGateway=sGateway;
+	m_tInterfaceInfo.uiLastTestIp=QHostAddress(m_tInterfaceInfo.sGateway).toIPv4Address()+1;
 	qDebug()<<__FUNCTION__<<__LINE__<<m_tInterfaceInfo.sGateway;
 	return true;
 }
@@ -218,7 +220,7 @@ void autoSearchDevice::checkAndSetConfig()
 			//测试是否有Ip冲突
 			if (isIpConflict())
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict";
 				nStep=1;
 			}else{
 				nStep=4;
@@ -231,7 +233,7 @@ void autoSearchDevice::checkAndSetConfig()
 			{
 				nStep=2;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict and it is not juan ipc";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict and it is not juan ipc";
 				nStep=5;
 			}
 			   }
@@ -242,7 +244,7 @@ void autoSearchDevice::checkAndSetConfig()
 			{
 				nStep=3;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<tCurrentDeviceItem.value("SearchIP_ID").toString()<<"getUseableIp fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"getUseableIp fail";
 				nStep=5;
 			}
 			   }
@@ -253,7 +255,7 @@ void autoSearchDevice::checkAndSetConfig()
 			{
 				nStep=4;
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<tCurrentDeviceItem.value("SearchIP_ID").toString()<<"setIpConfig fail";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"setIpConfig fail";
 				nStep=5;
 			}
 			   }
@@ -261,7 +263,7 @@ void autoSearchDevice::checkAndSetConfig()
 		case 4:{
 			//可以抛出信息
 			nStep=5;
-			qDebug()<<__FUNCTION__<<__LINE__<<tCurrentDeviceItem.value("SearchIP_ID").toString();
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString();
 			   }
 			   break;
 		case 5:{
@@ -275,19 +277,65 @@ void autoSearchDevice::checkAndSetConfig()
 
 bool autoSearchDevice::isIpConflict()
 {
-	QString sIp=tCurrentDeviceItem.value("SearchIP_ID").toString();
-	QString sIp2="192.168.29.3";
-	if (qsendarp(QHostAddress(sIp).toIPv4Address()))
+	//return flase:表示没有ip冲突，true:表示有ip冲突
+	QString sIp=m_tCurrentDeviceItem.value("SearchIP_ID").toString();
+	QString sTestIp="192.168.88.84";
+	QHostAddress mtestip(sTestIp);
+	QString tonet=mtestip.toString();
+	QStringList tonetlsit=tonet.split(".");
+	tonet.clear();
+	for (int i=tonetlsit.size()-1;i>=0;i--)
 	{
-		return true;
-	}else{
-		return false;
+		if (i!=tonetlsit.size()-1)
+		{
+			tonet.append(".");
+		}else{
+			//do nothing
+		}
+		tonet.append(tonetlsit.at(i));
 	}
+	char *pMac=new char[6];
+	char *pLastMac=new char[6];
+	bool bFlags=false;
+	QString sMac;
+	for (int n=0;n<5;n++)
+	{
+		memset(pMac,0,6);
+		if (qsendarpEx(QHostAddress(tonet).toIPv4Address(),*pMac))
+		{
+			//ping 不通，设备 有问题？
+			//按照此设备 以断线，没有ip 冲突做处理
+			bFlags=false;
+			break;
+		}else{
+			// 可以ping 通
+			if (n==0)
+			{
+				memcpy(pLastMac,pMac,6);
+			}else{
+				//keep going
+			}
+			if (strcmp(pLastMac,pMac)!=0)
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<pLastMac<<pMac;
+				bFlags=true;
+				break;
+			}else{
+				//keep going
+			}
+		}
+	}
+	delete pMac;
+	pMac=NULL;
+	delete pLastMac;
+	pLastMac=NULL;
+	m_tHadBeenUseIp.append(sIp);
+	return bFlags;
 }
 
 bool autoSearchDevice::isJuanIpc()
 {
-	if (tCurrentDeviceItem.value("SearchVendor_ID").toString()=="IPC")
+	if (m_tCurrentDeviceItem.value("SearchVendor_ID").toString()=="IPC")
 	{
 		return true;
 	}else{
@@ -297,12 +345,85 @@ bool autoSearchDevice::isJuanIpc()
 
 bool autoSearchDevice::getUseableIp()
 {
-	return false;
+	bool bStop=false;
+	int nStep=0;
+	m_tInterfaceInfo.uiLastTestIp=m_tInterfaceInfo.uiLastTestIp+1;
+	unsigned int uiGateway=QHostAddress(m_tInterfaceInfo.sGateway).toIPv4Address();
+	bool bFlags=false;
+	if (m_tInterfaceInfo.uiLastTestIp-uiGateway>252)
+	{
+		return false;
+	}
+	while(bStop==false){
+		switch(nStep){
+		case 0:{
+			//检测是否已在使用过的队列中
+			QString sCurrentIp=QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString();
+			if (m_tHadBeenUseIp.contains(sCurrentIp))
+			{
+				nStep=2;
+			}else{
+				nStep=1;
+			}
+			   }
+			   break;
+		case 1:{
+			//检测是否在局域网中有
+			QHostAddress mtestip(m_tInterfaceInfo.uiLastTestIp);
+			QString tonet=mtestip.toString();
+			QStringList tonetlsit=tonet.split(".");
+			tonet.clear();
+			for (int i=tonetlsit.size()-1;i>=0;i--)
+			{
+				if (i!=tonetlsit.size()-1)
+				{
+					tonet.append(".");
+				}else{
+					//do nothing
+				}
+				tonet.append(tonetlsit.at(i));
+			}
+			if (qsendarp(QHostAddress(tonet).toIPv4Address()))
+			{
+				nStep=3;
+				m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			}else{
+				nStep=2;
+				m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			}
+			   }
+			   break;
+		case 2:{
+			//+1
+			m_tInterfaceInfo.uiLastTestIp=m_tInterfaceInfo.uiLastTestIp+1;
+			if (m_tInterfaceInfo.uiLastTestIp-uiGateway>242)
+			{
+				nStep=4;
+			}else{
+				nStep=0;
+			}
+			   }
+			   break;
+		case 3:{
+			//获取到
+			nStep=4;
+			bFlags=true;
+			   }
+			   break;
+		case 4:{
+			//结束
+			bStop=true;
+			   }
+		}
+	}
+	return bFlags;
 }
 
 bool autoSearchDevice::setIpConfig()
 {
-	return false;
+	QString sIp=QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString();
+	m_pDeviceNetModify->SetNetworkInfo(m_tCurrentDeviceItem.value("SearchDeviceName_ID").toString(),sIp,m_tInterfaceInfo.sMask,m_tInterfaceInfo.sGateway,m_tCurrentDeviceItem.value("SearchMac_ID").toString(),m_tCurrentDeviceItem.value("SearchHttpport_ID").toString(),"admin","");
+	return true;
 }
 
 int __cdecl autoDeviceSearchProc( QString sEventName,QVariantMap dvrItem,void * pUser )

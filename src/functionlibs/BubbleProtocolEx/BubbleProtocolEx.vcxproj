@@ -143,9 +143,6 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   <ItemGroup>
     <None Include="BubbleProtocolEx.def" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BubbleProtocolEx.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

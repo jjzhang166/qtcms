@@ -10,6 +10,7 @@ public:
 	~Qarp();
 public:
 	bool qsendarp(unsigned long dstip);
+	bool qsendarp(unsigned long dstip,char &pMAC);
 private:
 
 };

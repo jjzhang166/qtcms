@@ -16,6 +16,7 @@ typedef struct __tagInterfaceInfo{
 	QString sIp;
 	QString sMask;
 	QString sGateway;
+	unsigned int uiLastTestIp;
 }tagInterfaceInfo;
 
 class autoSearchDevice:public QThread
@@ -47,6 +48,7 @@ private:
 	QMutex m_tDeviceItemMutex;
 	QMutex m_tQueueLock;
 	tagInterfaceInfo m_tInterfaceInfo;
-	QVariantMap tCurrentDeviceItem;
+	QVariantMap m_tCurrentDeviceItem;
+	QList<QString> m_tHadBeenUseIp;
 };
 
