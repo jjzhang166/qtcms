@@ -79,7 +79,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtGui4.lib;QtWebKit4.lib;$(QTDIR)\lib\QtXml4.lib</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;$(SolutionDir)..\libs\libpcom.lib;QtGui4.lib;QtWebKit4.lib;$(QTDIR)\lib\QtXml4.lib;QtXml4.lib;QtNetwork4.lib</AdditionalDependencies>
       <ModuleDefinitionFile>autoSearchDevice.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>

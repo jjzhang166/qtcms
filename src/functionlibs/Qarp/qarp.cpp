@@ -40,7 +40,7 @@ bool Qarp::qsendarp(unsigned long dstip)
 			return true;
 		}
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"this ip can be use";
+		qDebug()<<__FUNCTION__<<__LINE__<<"this ip can be use"<<dewretval;
 		return true;
 	}
 }

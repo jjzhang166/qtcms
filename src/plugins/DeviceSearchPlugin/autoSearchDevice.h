@@ -3,6 +3,7 @@
 #include "IDeviceSearch.h"
 #include "IDeviceNetModify.h"
 #include <QQueue>
+#include <QString>
 #include <QMutex>
 typedef enum __tagAutoSearchDeviceStep{
 	AutoSearchDeviceStep_Start,
@@ -11,6 +12,12 @@ typedef enum __tagAutoSearchDeviceStep{
 	AutoSearchDeviceStep_Default,
 	AutoSearchDeviceStep_End,
 }tagAutoSearchDeviceStep;
+typedef struct __tagInterfaceInfo{
+	QString sIp;
+	QString sMask;
+	QString sGateway;
+}tagInterfaceInfo;
+
 class autoSearchDevice:public QThread
 {
 	Q_OBJECT
@@ -25,7 +32,12 @@ protected:
 	void run();
 private:
 	void startVendorSearch();
-	bool getNetworkConfig();
+	bool getNetworkConfig();//»ñÈ¡Íø¹Ø£¬ÑÚÂë£¬ip,mac
+	void checkAndSetConfig();
+	bool isIpConflict();
+	bool isJuanIpc();
+	bool getUseableIp();
+	bool setIpConfig();
 private:
 	bool m_bStop;
 	QList<IDeviceSearch *> m_tDeviceList;
@@ -34,5 +46,7 @@ private:
 	QVariantMap m_tDeviceItem;
 	QMutex m_tDeviceItemMutex;
 	QMutex m_tQueueLock;
+	tagInterfaceInfo m_tInterfaceInfo;
+	QVariantMap tCurrentDeviceItem;
 };
 
