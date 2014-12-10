@@ -55,9 +55,7 @@ bool Qarp::qsendarp( unsigned long dstip,char &pMAC )
 	BYTE *bphysaddr;
 	memset(&macaddr,0xff,sizeof(macaddr));
 	dstip=htonl(dstip);
-	qDebug()<<__FUNCTION__<<__LINE__<<"in";
 	dewretval=SendARP(destip,srcip, (ULONG*)&macaddr,&physaddrlen);
-	qDebug()<<__FUNCTION__<<__LINE__<<"out";
 	if (dewretval==NO_ERROR)
 	{
 		bphysaddr=(BYTE*)&macaddr;

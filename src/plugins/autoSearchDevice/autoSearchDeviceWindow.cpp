@@ -18,6 +18,7 @@ m_tActivity(NULL)
 	settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows,true);
 	settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows,true);
 
+	
 	// Enable Local content access remote url
 	settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,true);
 	// Disable context menu

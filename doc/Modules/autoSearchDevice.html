@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创<br />
+  编辑日期：2014.12.10<br />
+  插件简介：<br />
+  //插件名称：autoSearchDevice插件<br />
+//插件功能：自动搜索设备，并修改有ip冲突的设备配置,</p>
+<p>//使用场合：启动cms时，检测到设备列表无设备时，即调用startAutoSearchDevice(int nTime,int nWidth,int nHeight)接口，进行工作</p>
+<p>//特殊说明：弹出页面的文件名必须为：searchWindow.html</p>
+<p>接口说明：<br />
+  //简介：开始搜索设备<br />
+//参数：</p>
+<p>nTime:自动搜索的时间；nWidth，nHeight：自动搜索弹出窗口的大小，此数值为实际屏幕与预设窗口的比例<br />
+</p>
+<p> void startAutoSearchDevice(int nTime,int nWidth,int nHeight);</p>
+<p>接口说明：<br />
+//简介：取消搜索设备<br />
+//参数：<br />
+  void cancelSearch();</p>
+<p><br />
+</p>
+<p>插件抛出的事件：<br />
+@1<br />
+事件名称：reFreshDeviceList<br />
+事件参数:&quot;reFreash&quot;:<br />
+//reFreash可选值:<br />
+  //      “true”:更新设备列表<br />
+  //      “false”:设备列表没有信息需要更新</p>
+
+</body>
+</html>

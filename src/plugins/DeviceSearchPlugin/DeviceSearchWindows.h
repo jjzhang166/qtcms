@@ -48,6 +48,8 @@ public slots:
 	void sendInfoToUI(QVariantMap item);
 	void startAutoSearchDevice();
 	void stopAutoSearchDevice();
+public:
+	int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 private:
 	QList<IDeviceSearch *> m_deviceList;
 	IDeviceNetModify *m_pDeviceNetModify;

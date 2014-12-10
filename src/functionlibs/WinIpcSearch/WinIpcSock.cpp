@@ -41,7 +41,7 @@ typedef struct HiChipSetupItem
 {
 	CHAR name[32];
 	CHAR ip[32];
-	CHAR netmask[2];
+	CHAR netmask[32];
 	CHAR gateway[32];
 	CHAR port[16];
 	CHAR mac[32];
@@ -498,6 +498,10 @@ int IPCamSetup(QVariantMap item){
 		if(strlen(IPCamSetupInfo.mac) > 0)
 		{
 			sprintf(content + strlen(content), " -hwaddr %s", IPCamSetupInfo.mac);
+		}
+		if (strlen(IPCamSetupInfo.netmask)>0)
+		{
+			sprintf(content + strlen(content), " -netmask %s", IPCamSetupInfo.netmask);
 		}
 		if(strlen(IPCamSetupInfo.gateway) > 0)
 		{

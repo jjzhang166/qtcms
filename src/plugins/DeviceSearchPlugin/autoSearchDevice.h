@@ -5,6 +5,11 @@
 #include <QQueue>
 #include <QString>
 #include <QMutex>
+typedef int (__cdecl *autoSearchDeviceEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
+typedef struct __tagautoSearchDeviceProInfo{
+	autoSearchDeviceEventCb proc;
+	void *pUser;
+}tagautoSearchDeviceProInfo;
 typedef enum __tagAutoSearchDeviceStep{
 	AutoSearchDeviceStep_Start,
 	AutoSearchDeviceStep_NetworkConfig,
@@ -29,6 +34,8 @@ public:
 	void startSearch();
 	void stopSearch();
 	void cbSearchDevice(QVariantMap item);
+
+	int registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 protected:
 	void run();
 private:
@@ -39,6 +46,7 @@ private:
 	bool isJuanIpc();
 	bool getUseableIp();
 	bool setIpConfig();
+	void eventProcCall(QString sEvent,QVariantMap tInfo);
 private:
 	bool m_bStop;
 	QList<IDeviceSearch *> m_tDeviceList;
@@ -50,5 +58,7 @@ private:
 	tagInterfaceInfo m_tInterfaceInfo;
 	QVariantMap m_tCurrentDeviceItem;
 	QList<QString> m_tHadBeenUseIp;
+	QStringList m_sEventList;
+	QMultiMap<QString,tagautoSearchDeviceProInfo> m_tEventMap;
 };
 

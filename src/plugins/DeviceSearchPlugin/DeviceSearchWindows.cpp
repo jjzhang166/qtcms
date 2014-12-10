@@ -182,6 +182,14 @@ void DeviceSearchWindows::stopAutoSearchDevice()
 	m_tAutoSearchDevice.stopSearch();
 }
 
+int DeviceSearchWindows::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
+{
+	m_tAutoSearchDevice.registerEvent(eventName,proc,pUser);
+	return 0;
+}
+
+
+
 
 int __cdecl DeviceSearchProc(QString sEventName,QVariantMap dvrItem,void * pUser)
 {

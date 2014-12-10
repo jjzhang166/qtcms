@@ -12,6 +12,7 @@ int __cdecl autoDeviceSetNetInfoProc(QString sEventName, QVariantMap ipcItem, vo
 autoSearchDevice::autoSearchDevice(void):m_bStop(false),
 	m_pDeviceNetModify(NULL)
 {
+	m_sEventList<<"autoSearchDevice";
 }
 
 
@@ -28,6 +29,9 @@ void autoSearchDevice::startSearch()
 void autoSearchDevice::stopSearch()
 {
 	m_bStop=true;
+	while(QThread::isRunning()){
+		msleep(10);
+	}
 }
 
 void autoSearchDevice::run()
@@ -263,6 +267,7 @@ void autoSearchDevice::checkAndSetConfig()
 		case 4:{
 			//可以抛出信息
 			nStep=5;
+			eventProcCall("autoSearchDevice",m_tCurrentDeviceItem);
 			qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString();
 			   }
 			   break;
@@ -279,8 +284,7 @@ bool autoSearchDevice::isIpConflict()
 {
 	//return flase:表示没有ip冲突，true:表示有ip冲突
 	QString sIp=m_tCurrentDeviceItem.value("SearchIP_ID").toString();
-	QString sTestIp="192.168.88.84";
-	QHostAddress mtestip(sTestIp);
+	QHostAddress mtestip(sIp);
 	QString tonet=mtestip.toString();
 	QStringList tonetlsit=tonet.split(".");
 	tonet.clear();
@@ -315,7 +319,7 @@ bool autoSearchDevice::isIpConflict()
 			}else{
 				//keep going
 			}
-			if (strcmp(pLastMac,pMac)!=0)
+			if (memcmp(pLastMac,pMac,6)!=0)
 			{
 				qDebug()<<__FUNCTION__<<__LINE__<<pLastMac<<pMac;
 				bFlags=true;
@@ -422,8 +426,40 @@ bool autoSearchDevice::getUseableIp()
 bool autoSearchDevice::setIpConfig()
 {
 	QString sIp=QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString();
-	m_pDeviceNetModify->SetNetworkInfo(m_tCurrentDeviceItem.value("SearchDeviceName_ID").toString(),sIp,m_tInterfaceInfo.sMask,m_tInterfaceInfo.sGateway,m_tCurrentDeviceItem.value("SearchMac_ID").toString(),m_tCurrentDeviceItem.value("SearchHttpport_ID").toString(),"admin","");
+	m_tCurrentDeviceItem["SearchIP_ID"]=sIp;
+	m_pDeviceNetModify->SetNetworkInfo(m_tCurrentDeviceItem.value("SearchDeviceId_ID").toString(),sIp,m_tInterfaceInfo.sMask,m_tInterfaceInfo.sGateway,m_tCurrentDeviceItem.value("SearchMac_ID").toString(),m_tCurrentDeviceItem.value("SearchHttpport_ID").toString(),"admin","");
 	return true;
+}
+
+int autoSearchDevice::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
+{
+	if (!m_sEventList.contains(eventName))
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<eventName<<"is undefined";
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}else{
+		tagautoSearchDeviceProInfo tProInfo;
+		tProInfo.proc=proc;
+		tProInfo.pUser=pUser;
+		m_tEventMap.insert(eventName,tProInfo);
+		return IEventRegister::OK;
+	}
+}
+
+void autoSearchDevice::eventProcCall( QString sEvent,QVariantMap tInfo )
+{
+	if (m_sEventList.contains(sEvent))
+	{
+		tagautoSearchDeviceProInfo tProInfo=m_tEventMap.value(sEvent);
+		if (NULL!=tProInfo.proc)
+		{
+			tProInfo.proc(sEvent,tInfo,tProInfo.pUser);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<sEvent<<"is not register";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<sEvent<<"is  undefined";
+	}
 }
 
 int __cdecl autoDeviceSearchProc( QString sEventName,QVariantMap dvrItem,void * pUser )

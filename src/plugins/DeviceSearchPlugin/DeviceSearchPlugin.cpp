@@ -1,11 +1,11 @@
 #include "DeviceSearchPlugin.h"
 #include <guid.h>
 
-
+int cbXautoSearchDevice(QString evName,QVariantMap evMap,void*pUser);
 DeviceSearchPlugin::DeviceSearchPlugin() :
 m_nRef(0)
 {
-
+	m_sEventList<<"autoSearchDevice";
 }
 
 DeviceSearchPlugin::~DeviceSearchPlugin()
@@ -15,7 +15,6 @@ DeviceSearchPlugin::~DeviceSearchPlugin()
 
 int DeviceSearchPlugin::Start()
 {
-	//m_Tabwindow.Start();
 	return 0;
 }
 
@@ -83,6 +82,10 @@ long __stdcall DeviceSearchPlugin::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IAutoSearchDevice *>(this);
 	}
+	else if (IID_IEventRegister==iid)
+	{
+		*ppv = static_cast<IEventRegister *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -117,6 +120,7 @@ unsigned long __stdcall DeviceSearchPlugin::Release()
 
 int DeviceSearchPlugin::autoSearchStart()
 {
+	m_tDeviceSearchWindows.registerEvent("autoSearchDevice",cbXautoSearchDevice,this);
 	m_tDeviceSearchWindows.startAutoSearchDevice();
 	return 0;
 }
@@ -125,4 +129,70 @@ int DeviceSearchPlugin::autoSearchStop()
 {
 	m_tDeviceSearchWindows.stopAutoSearchDevice();
 	return 0;
+}
+
+QStringList DeviceSearchPlugin::eventList()
+{
+	return m_sEventList;
+}
+
+int DeviceSearchPlugin::queryEvent( QString eventName,QStringList& eventParams )
+{
+	Q_UNUSED(eventParams);
+	if (!m_sEventList.contains(eventName))
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<eventName<<"is undefined";
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}else{
+		//fix eventParams
+		return IEventRegister::OK;
+	}
+}
+
+int DeviceSearchPlugin::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser )
+{
+	if (!m_sEventList.contains(eventName))
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<eventName<<"is undefined";
+		return IEventRegister::E_EVENT_NOT_SUPPORT;
+	}else{
+		tagDeviceSearchProInfo tProInfo;
+		tProInfo.proc=proc;
+		tProInfo.pUser=pUser;
+		m_tEventMap.insert(eventName,tProInfo);
+		return IEventRegister::OK;
+	}
+}
+
+void DeviceSearchPlugin::eventProcCall( QString sEvent,QVariantMap tInfo )
+{
+	if (m_sEventList.contains(sEvent))
+	{
+		tagDeviceSearchProInfo tProInfo=m_tEventMap.value(sEvent);
+		if (NULL!=tProInfo.proc)
+		{
+			tProInfo.proc(sEvent,tInfo,tProInfo.pUser);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<sEvent<<"is not register";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<sEvent<<"is  undefined";
+	}
+}
+
+void DeviceSearchPlugin::autoSearchDeviceCb(QVariantMap evMap)
+{
+	eventProcCall("autoSearchDevice",evMap);
+}
+
+int cbXautoSearchDevice( QString evName,QVariantMap evMap,void*pUser )
+{
+	if ("autoSearchDevice"==evName)
+	{
+		((DeviceSearchPlugin*)pUser)->autoSearchDeviceCb(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"evName is not match the func,evName:"<<evName;
+		return 1;
+	}
 }
