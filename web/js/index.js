@@ -183,7 +183,9 @@ var oPreView,oDiv,
 		oPreView.AddEventProc('Authority','Authority(ev)');
 		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
-
+		
+        $('#atuoSearchDevice')[0].AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
+		
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
@@ -206,12 +208,21 @@ var oPreView,oDiv,
 
 		initOxcDevListStatus();
 		
+		var booll =$("#search_device .dev_list ul:gt(0) span").hasClass("device");
+
+		!booll && $('#atuoSearchDevice')[0].startAutoSearchDevice(10,2.5,5);
+
 		//设备是否自动连接功能
 		DevAutoConnected();
 
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
-	
+	function CurrentStateChange(ev){
+	     if(ev.reFreash){ 
+		   initOxcDevListStatus();
+		   openCloseAll(1);
+		 }
+	}
 	$(window).resize(viewFullScreen);
 	
 	function ViewMax(){
