@@ -80,7 +80,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			getData = this.getData;
 	
 		console.log('---------------put----------------------');
-		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","resolution":"'+getVlue('resolution')+'","freeResolution":"false","resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
+		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","h264Profile":"main","resolution":"'+getVlue('resolution')+'","freeResolution":"false","resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
 
 		/*var str = getPutDataJSON().replace('可变码率','VBR');
 			str = str.replace('固定码率','CBR');*/
@@ -117,7 +117,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			showAJAXHint('loading').css('top',warp.height() + 46);
 
 		
-		//async=false;
+		async=false;
 
 		_AJAXget(this.getRequestURL()+'/netsdk/System/deviceInfo/macAddress','',before,function(data){
 			warp.find('input[data-UI="mac"]').val(data);
@@ -136,7 +136,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			warp.find('input[data-UI="value"]').val(data.value);
 		},finish);
 
-		//async=true;
+		async=true;
 	}
 
 	this.ipcnetworkInfoPut = function(){ //设置网络信息
@@ -219,7 +219,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			finish = this.checkMultRequests;
 
 		$('#PC_time').val(renewtime());
-
+        async=false;
 		console.log('-------------------timeZone--------------------------');
 		_AJAXget(this.getRequestURL()+'/Netsdk/system/time/timeZone','',false,function(data){
 			$('#time_zone').val(data).attr('data',data);
@@ -258,6 +258,8 @@ var IPC = function(usr,pwd,ip,port,id,type){
 
 			return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 		}
+		 async=true;
+	}
 		this.ipczoneInfoPut = function(){ //设置时区
 			var warp = $('#set_content div.ipc_list:visible');
 
@@ -277,7 +279,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		    
 			async=true;
 		}
-	}
+	
 
 	this.initialSetup2UI = function(){
 		$('#ajaxHint').html('').stop(true,true).hide();

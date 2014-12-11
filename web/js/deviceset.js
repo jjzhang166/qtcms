@@ -227,6 +227,8 @@ var oSearchOcx,
 							console.log('------------new IPC()--------------');
 							
 							$('#set_content ul.ipc_list0 li').click(function(){
+								$('#ajaxHint').html('').stop(true,true).hide();//当点击set_content right 的<li>标签时，要隐藏上个标签正在进行的ajaxhint 提示
+								AJAX && AJAX.abort();//并停止正在进行的ajax请求
 								if($(this).attr('action')){
 									AJAX && AJAX.abort();
 									nowDev[$(this).attr('action')+'2UI']();
