@@ -393,7 +393,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function playSpeed(str){
 		$('#togglePlay').attr('speed','1').css('background-position','0px 0px').removeAttr('toggle');
 		var show='';
-		var max = 2;//bool ? 8 : 2 ;
+		var max = bool ? 8 : 2 ;
 		if(str){
 			nowSpeed = nowSpeed*2;
 			nowSpeed = nowSpeed > max ? max : nowSpeed;
