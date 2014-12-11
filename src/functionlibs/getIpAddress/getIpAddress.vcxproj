@@ -58,7 +58,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;%(AdditionalDependencies);$(SolutionDir)..\libs\libpcom.lib</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;QtCored4.lib;%(AdditionalDependencies);$(SolutionDir)..\libs\libpcom.lib;WS2_32.LIB</AdditionalDependencies>
       <ModuleDefinitionFile>getIpAddress.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>

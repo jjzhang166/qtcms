@@ -1,5 +1,6 @@
 #include "getIpWinSock.h"
 #include <WinSock2.h>
+#include <QDebug>
 getIpWinSock::getIpWinSock(void)
 {
 }
