@@ -1035,8 +1035,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			dragStopMove();
 		}else{
-			var arr=['1X','2X','1/2X'];
-			palybackspeed(arr[objStatus]);
+			//var arr=['1X','2X','1/2X'];
+			//palybackspeed(arr[objStatus]);
 			getAudioObj().GroupContinue();
 			//console.log('当前控件继续播放的返回值:'+getAudioObj().GroupContinue());
 			dragStartMove();
