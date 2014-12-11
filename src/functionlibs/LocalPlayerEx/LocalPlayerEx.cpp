@@ -459,6 +459,7 @@ int LocalPlayerEx::GroupPlay()
 	}
 	//set parameter into thread for reading 
 	m_pFileData->setParamer(fileList, m_uiStartSec, m_uiEndSec, i32StartPos);
+	m_pFileData->setSpeed(0);
 	//start read file thread
 	m_pFileData->startReadFile();
 
@@ -508,6 +509,7 @@ int LocalPlayerEx::GroupSpeedFast( int speed )
 	{
 		return 1;
 	}
+	m_pFileData->setSpeed(0 - speed);
 	//set play speed
 	for (qint32 i32Loop = 0; i32Loop < MAX_PLAY_THREAD; ++i32Loop)
 	{

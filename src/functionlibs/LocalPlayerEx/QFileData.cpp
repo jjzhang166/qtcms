@@ -17,9 +17,6 @@
 
 #define FILE_POSITION(filePos) m_bPlayDirection?filePos++:filePos--
 
-#define CHECK_FILE_POSITION(filePos)\
-	qint32 filePos
-
 
 #define COPY_FRAME_DATA(pFileFrameHead, iter, size)\
 	FrameData frameData(&pFileFrameHead->tFrameHead);\
@@ -149,168 +146,247 @@ void QFileData::run()
 	memset(m_pFileBuff1, 0, BUFFER_SIZE);
 	memset(m_pFileBuff2, 0, BUFFER_SIZE);
 
-	QMap<char*, bool> bufferStatusMap;
-	bufferStatusMap.insert(m_pFileBuff1, false);
-	bufferStatusMap.insert(m_pFileBuff2, false);
+// 	QMap<char*, bool> bufferStatusMap;
+// 	bufferStatusMap.insert(m_pFileBuff1, false);
+// 	bufferStatusMap.insert(m_pFileBuff2, false);
 
 	while(!m_bStop)
 	{
-		QMap<uint, CurBuffInfo>::iterator iter = m_wndBuffMap.begin(); 
+// 		QMap<uint, CurBuffInfo>::iterator iter = m_wndBuffMap.begin(); 
 		//Prevent excessive buffering
 // 		if (getMinBufferSize() > MIN_FRAME_NUM)
-		if (getMaxBufferSize() > MAX_FRAME_NUM)
+// 		if (getMaxBufferSize() > MAX_FRAME_NUM)
+// 		{
+// 			msleep(100);
+// 			continue;
+// 		}
+
+
+// 		//check whether need to read new file
+// 		while (iter->lastPos > iter->curPos || !iter->curPos)
+// 		{
+// 			if (iter->curBuffer)
+// 			{
+// 				char *curBuffer = iter->curBuffer == pFileBuff1 ? pFileBuff2 : pFileBuff1;
+// 				if (!bufferStatusMap.value(curBuffer))
+// 				{
+// 					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
+// 					{
+// 						delete[] pFileBuff1;
+// 						delete[] pFileBuff2;
+// 						return;
+// 					}
+// 					bufferStatusMap[curBuffer] = true;
+// 					bufferStatusMap[iter->curBuffer] = false;
+// 				}
+// 				iter->curBuffer = curBuffer;
+// 			}
+// 			else
+// 			{
+// 				if (!bufferStatusMap.value(pFileBuff1))
+// 				{
+// 					if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff1, BUFFER_SIZE))
+// 					{
+// 						delete[] pFileBuff1;
+// 						delete[] pFileBuff2;
+// 						return;
+// 					}
+// 					bufferStatusMap[pFileBuff1] = true;
+// 				}
+// 			}
+// 			++iter;
+// 			if (iter == m_wndBuffMap.end())
+// 			{
+// 				break;
+// 			}
+// 		}
+
+
+		if (!readFile(m_lstFileList, m_i32StartPos, pFileBuff, BUFFER_SIZE))
 		{
-			msleep(100);
-			continue;
+// 			delete[] m_pFileBuff1;
+			emit sigStopPlay();
+			return;
 		}
-		//check whether need to read new file
-		while (iter->lastPos > iter->curPos || !iter->curPos)
+
+		tagFileHead *pFileHead = (tagFileHead *)m_pFileBuff1;
+		tagFileFrameHead *pFrameHead = (tagFileFrameHead*)(m_pFileBuff1 + sizeof(tagFileHead));
+		QMap<uint, CurBuffInfo>::iterator iter;
+
+		while (!m_bStop && (char*)pFrameHead < m_pFileBuff1 + pFileHead->uiIndex)
 		{
-			if (iter->curBuffer)
-			{
-				char *curBuffer = iter->curBuffer == m_pFileBuff1 ? m_pFileBuff2 : m_pFileBuff1;
-				if (!bufferStatusMap.value(curBuffer))
-				{
-					if (!readFile(m_lstFileList, m_i32StartPos, curBuffer, BUFFER_SIZE))
-					{
-						emit sigStopPlay();
-						//delete[] m_pFileBuff1;
-						//delete[] m_pFileBuff2;
-						return;
-					}
-					bufferStatusMap[curBuffer] = true;
-					bufferStatusMap[iter->curBuffer] = false;
-				}
-				iter->curBuffer = curBuffer;
-			}
-			else
-			{
-				if (!bufferStatusMap.value(m_pFileBuff1))
-				{
-					if (!readFile(m_lstFileList, m_i32StartPos, m_pFileBuff1, BUFFER_SIZE))
-					{
-						emit sigStopPlay();
-						//delete[] m_pFileBuff1;
-						//delete[] m_pFileBuff2;
-						return;
-					}
-					bufferStatusMap[m_pFileBuff1] = true;
-				}
-			}
-			++iter;
+			iter = m_wndBuffMap.find(pFrameHead->tFrameHead.uiChannel);
+			//current channel isn't in group
 			if (iter == m_wndBuffMap.end())
 			{
+				pFrameHead = (tagFileFrameHead *)((char*)pFrameHead + sizeof(tagFileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
+				continue;
+			}
+			//start to play when buffer size larger than 20
+			if (!iter->bIsPlaying && iter->pBuffList->size() >= MIN_FRAME_NUM)
+			{
+				emit sigStartPlay(iter.key());
+				iter->bIsPlaying = true;
+			}
+			//current buffer size is out of 1000
+			if (iter->pBuffList->size() > MAX_FRAME_NUM)
+			{
+				getMaxBufferSize();
+				msleep(100);
+				continue;
+			}
+			//copy data to FrameData
+			switch (pFrameHead->tFrameHead.uiType)
+			{
+			case FT_Audio:
+				{
+					if (!m_i32Speed){
+						COPY_FRAME_DATA(pFrameHead, iter, sizeof(tagAudioConfigFrame));
+					}
+				}
+				break;
+			case FT_IFrame:
+			case FT_PFrame:
+			case FT_BFrame:
+				{
+// 					if (-8 == m_i32Speed && FT_IFrame != pFrameHead->tFrameHead.uiType){
+// 						break;
+// 					}
+					COPY_FRAME_DATA(pFrameHead, iter, sizeof(tagVideoConfigFrame));
+				}
+				break;
+			case FT_AudioConfig:
+				{
+					if (!m_i32Speed){
+						memcpy(&iter->curAudioConfig, &(pFrameHead->tFrameHead.pBuffer), sizeof(tagAudioConfigFrame));
+					}
+				}
+				break;
+			case FT_VideoConfig:
+				{
+					memcpy(&iter->curVideoConfig, &(pFrameHead->tFrameHead.pBuffer), sizeof(tagVideoConfigFrame));
+				}
+				break;
+			default:
 				break;
 			}
+			pFrameHead = (tagFileFrameHead *)((char*)pFrameHead + sizeof(tagFileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
 		}
 
 		iter = m_wndBuffMap.begin();
-		while(!m_bStop && iter != m_wndBuffMap.end())
+		while (iter != m_wndBuffMap.end())
 		{
-			if (!iter->curBuffer)
-			{
-				iter->curBuffer = m_pFileBuff1;
-			}
-			//check channel
-			tagFileHead *fileHead = (tagFileHead *)(iter->curBuffer);
-			if (/*(checkWndIdExist(fileHead->uiChannels, iter.key())
-				&& iter->pBuffList->size() >= MAX_FRAME_NUM)
-				|| */!(checkWndIdExist(fileHead->uiChannels, iter.key())))
-			{
-				++iter;
-				continue;
-			}
-			if (!iter->curPos)
-			{
-				iter->curPos = fileHead->tIFrameIndex.uiFirstIFrame[iter.key()];
-			}
-			//find first frame for current channel in file
-			tagFileFrameHead *pFileFrameHead = NULL;
-			if (!iter->curPos)
-			{
-				//no I frame in this file
-				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + sizeof(tagFileHead));
-				while (pFileFrameHead->tFrameHead.uiChannel != iter.key())
-				{
-					pFileFrameHead = (tagFileFrameHead *)((char*)pFileFrameHead + sizeof(tagFileFrameHead) - sizeof(pFileFrameHead->tFrameHead.pBuffer) + pFileFrameHead->tFrameHead.uiLength);
-				}
-			} 
-			else
-			{
-				//find first I frame
-				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-				while (pFileFrameHead->tPerFrameIndex.uiPreFrame > 0)
-				{
-					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + pFileFrameHead->tPerFrameIndex.uiPreFrame);
-					iter->curPos = pFileFrameHead->tPerFrameIndex.uiPreFrame;
-				}
-			}
-
-			//find right position
-			if (iter->bIsFirstRead)
-			{
-				while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
-				{
-					iter->lastPos = iter->curPos;
-					iter->curPos = CURRENT_POSITION(pFileFrameHead);
-					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-				}
-				iter->bIsFirstRead = false;
-			}
-			//copy frames
-// 			while (!m_bStop && iter->pBuffList->size() != MAX_FRAME_NUM)
-// 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
-			while (!m_bStop)
-			{
-				//start to play when buffer size larger than 20
-				if (!iter->bIsPlaying && iter->pBuffList->size() >= MIN_FRAME_NUM)
-				{
-					emit sigStartPlay(iter.key());
-					iter->bIsPlaying = true;
-				}
-				//copy data to FrameData
-				switch (pFileFrameHead->tFrameHead.uiType)
-				{
-				case FT_Audio:
-					{
-						COPY_FRAME_DATA(pFileFrameHead, iter, sizeof(tagAudioConfigFrame));
-					}
-					break;
-				case FT_IFrame:
-				case FT_PFrame:
-				case FT_BFrame:
-					{
-						COPY_FRAME_DATA(pFileFrameHead, iter, sizeof(tagVideoConfigFrame));
-					}
-					break;
-				case FT_AudioConfig:
-					{
-						memcpy(&iter->curAudioConfig, &(pFileFrameHead->tFrameHead.pBuffer), sizeof(tagAudioConfigFrame));
-					}
-					break;
-				case FT_VideoConfig:
-					{
-						memcpy(&iter->curVideoConfig, &(pFileFrameHead->tFrameHead.pBuffer), sizeof(tagVideoConfigFrame));
-					}
-					break;
-				default:
-					break;
-				}
-				iter->lastPos = iter->curPos;
-				iter->curPos = CURRENT_POSITION(pFileFrameHead);
-				//across two files
-				if (iter->lastPos > iter->curPos || !iter->curPos)
-				{
-					break;
-				}
-				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
-			}
-
-			qDebug()<<__FUNCTION__<<__LINE__<<"wndId: "<<iter.key()<<" buff size: "<<iter->pBuffList->size();
-
+			qDebug()<<__FUNCTION__<<"wnd: "<<iter.key()<<" buffsize: "<<iter->pBuffList->size();
 			++iter;
-
 		}
+
+// 		iter = m_wndBuffMap.begin();
+// 		while(!m_bStop && iter != m_wndBuffMap.end())
+// 		{
+// 			if (!iter->curBuffer)
+// 			{
+// 				iter->curBuffer = m_pFileBuff1;
+// 			}
+// 			//check channel
+// 			tagFileHead *fileHead = (tagFileHead *)(iter->curBuffer);
+// 			if (/*(checkWndIdExist(fileHead->uiChannels, iter.key())
+// 				&& iter->pBuffList->size() >= MAX_FRAME_NUM)
+// 				|| */!(checkWndIdExist(fileHead->uiChannels, iter.key())))
+// 			{
+// 				++iter;
+// 				continue;
+// 			}
+// 			if (!iter->curPos)
+// 			{
+// 				iter->curPos = fileHead->tIFrameIndex.uiFirstIFrame[iter.key()];
+// 			}
+// 			//find first frame for current channel in file
+// 			tagFileFrameHead *pFileFrameHead = NULL;
+// 			if (!iter->curPos)
+// 			{
+// 				//no I frame in this file
+// 				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + sizeof(tagFileHead));
+// 				while (pFileFrameHead->tFrameHead.uiChannel != iter.key())
+// 				{
+// 					pFileFrameHead = (tagFileFrameHead *)((char*)pFileFrameHead + sizeof(tagFileFrameHead) - sizeof(pFileFrameHead->tFrameHead.pBuffer) + pFileFrameHead->tFrameHead.uiLength);
+// 				}
+// 			} 
+// 			else
+// 			{
+// 				//find first I frame
+// 				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+// 				while (pFileFrameHead->tPerFrameIndex.uiPreFrame > 0)
+// 				{
+// 					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + pFileFrameHead->tPerFrameIndex.uiPreFrame);
+// 					iter->curPos = pFileFrameHead->tPerFrameIndex.uiPreFrame;
+// 				}
+// 			}
+// 
+// 			//find right position
+// 			if (iter->bIsFirstRead)
+// 			{
+// 				while (!m_bStop && pFileFrameHead->tFrameHead.uiGentime < m_uiStartSec)
+// 				{
+// 					iter->lastPos = iter->curPos;
+// 					iter->curPos = CURRENT_POSITION(pFileFrameHead);
+// 					pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+// 				}
+// 				iter->bIsFirstRead = false;
+// 			}
+// 			//copy frames
+// // 			while (!m_bStop && iter->pBuffList->size() != MAX_FRAME_NUM)
+// // 			while (!m_bStop && (char*)pFileFrameHead < iter->curBuffer + fileHead->uiIndex)
+// 			while (!m_bStop)
+// 			{
+// 				//start to play when buffer size larger than 20
+// 				if (!iter->bIsPlaying && iter->pBuffList->size() >= MIN_FRAME_NUM)
+// 				{
+// 					emit sigStartPlay(iter.key());
+// 					iter->bIsPlaying = true;
+// 				}
+// 				//copy data to FrameData
+// 				switch (pFileFrameHead->tFrameHead.uiType)
+// 				{
+// 				case FT_Audio:
+// 					{
+// 						COPY_FRAME_DATA(pFileFrameHead, iter, sizeof(tagAudioConfigFrame));
+// 					}
+// 					break;
+// 				case FT_IFrame:
+// 				case FT_PFrame:
+// 				case FT_BFrame:
+// 					{
+// 						COPY_FRAME_DATA(pFileFrameHead, iter, sizeof(tagVideoConfigFrame));
+// 					}
+// 					break;
+// 				case FT_AudioConfig:
+// 					{
+// 						memcpy(&iter->curAudioConfig, &(pFileFrameHead->tFrameHead.pBuffer), sizeof(tagAudioConfigFrame));
+// 					}
+// 					break;
+// 				case FT_VideoConfig:
+// 					{
+// 						memcpy(&iter->curVideoConfig, &(pFileFrameHead->tFrameHead.pBuffer), sizeof(tagVideoConfigFrame));
+// 					}
+// 					break;
+// 				default:
+// 					break;
+// 				}
+// 				iter->lastPos = iter->curPos;
+// 				iter->curPos = CURRENT_POSITION(pFileFrameHead);
+// 				//across two files
+// 				if (iter->lastPos > iter->curPos || !iter->curPos)
+// 				{
+// 					break;
+// 				}
+// 				pFileFrameHead = (tagFileFrameHead *)(iter->curBuffer + iter->curPos);
+// 			}
+// 
+// 			qDebug()<<__FUNCTION__<<__LINE__<<"wndId: "<<iter.key()<<" buff size: "<<iter->pBuffList->size();
+// 
+// 			++iter;
+// 
+// 		}
 	}
 
 	qDebug()<<__FUNCTION__<<__LINE__<<"stop run";
@@ -383,11 +459,18 @@ qint32 QFileData::getMaxBufferSize()
 	qint32 maxSize = 0;
 	QMap<uint, CurBuffInfo>::iterator it = m_wndBuffMap.begin();
 	maxSize = it->pBuffList->size();
+	qDebug()<<__FUNCTION__<<"wndId: "<<it.key()<<" buffer size: "<<it->pBuffList->size();
 	++it;
 	while (it != m_wndBuffMap.end())
 	{
+		qDebug()<<__FUNCTION__<<"wndId: "<<it.key()<<" buffer size: "<<it->pBuffList->size();
 		maxSize = qMax(maxSize, it->pBuffList->size());
 		++it;
 	}
 	return maxSize;
+}
+
+void QFileData::setSpeed( qint32 speed )
+{
+	m_i32Speed = speed;
 }

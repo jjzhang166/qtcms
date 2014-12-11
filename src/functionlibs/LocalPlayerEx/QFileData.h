@@ -19,6 +19,7 @@ public:
 	void setParamer(QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos);
 	void setWndIdList(QList<qint32> &wndList);
 	void setBuffer(qint32 wndId, QList<FrameData> *pquFrameBuffer);
+	void setSpeed(qint32 speed);
 // 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void startReadFile();
 	void stopThread();
@@ -59,6 +60,7 @@ private:
 	qint32 m_i32StartPos;			//start position in file list
 	bool m_bStop;
 	bool m_bPlayDirection;			//true:play false:playback
+	qint32 m_i32Speed;
 
 	char* m_pFileBuff1;
 	char* m_pFileBuff2;

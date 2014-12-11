@@ -250,7 +250,7 @@ void PlayMgr::run()
 			m_mxPause.unlock();
 
 // 			frameTimer.restart();
-			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
+			timeStartCount = gs_globalTimer.elapsed();
 		}
 		FrameData *pFrameData = NULL;
 		if (m_quFrameBuffer.size() > 1)//keep one frame in queue
@@ -264,6 +264,26 @@ void PlayMgr::run()
 
 			msleep(10);//wait for new frames
 			continue;
+		}
+		//clear audio frames when fast or slow play
+		if (!m_i32SpeedRate){
+			if (FT_Audio == pFrameData->uiType){
+				delete[] pFrameData->pBuffer;
+				pFrameData->pBuffer = NULL;
+				m_quFrameBuffer.removeFirst();
+				continue;
+			}
+		}
+		qDebug()<<"GMT: "<<pFrameData->uiGentime<<" type: "<<pFrameData->uiType<<" length: "<<pFrameData->uiLength<<" pts: "<<pFrameData->uiPts<<" buff size:"<<m_quFrameBuffer.size();
+
+		if (m_i32SpeedRate < 0){
+			//speed rate = *8, only decode I frame
+			if (-8 == m_i32SpeedRate && FT_IFrame != pFrameData->uiType){
+				delete[] pFrameData->pBuffer;
+				pFrameData->pBuffer = NULL;
+				m_quFrameBuffer.removeFirst();
+				continue;
+			}
 		}
 
 		//wait when no frames in this period time
@@ -280,7 +300,7 @@ void PlayMgr::run()
 		if (status)
 		{
 // 			frameTimer.restart();
-			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
+			timeStartCount = gs_globalTimer.elapsed();
 		}
 
 		if (FT_Audio == pFrameData->uiType)
@@ -329,7 +349,7 @@ void PlayMgr::run()
 
 			bFirstFrame = false;
 // 			frameTimer.start();
-			timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
+			timeStartCount = gs_globalTimer.elapsed();
 			continue;
 		}
 		m_uiCurrentGMT = pFrameData->uiGentime;
@@ -351,52 +371,70 @@ void PlayMgr::run()
 			m_bIsChangeSpeed = false;
 		}
 		//keep play speed
-		qint64 ptsDiff = ((qint64)pFrameData->uiPts - (qint64)uiLastPts)*1000;
-		if (m_i32SpeedRate < 0)
-		{
-			ptsDiff /= qAbs(m_i32SpeedRate)*4;
+		qint64 ptsDiff = (qint64)pFrameData->uiPts - (qint64)uiLastPts;
+		qint64 i64before = gs_globalTimer.elapsed();
+		i64before -= m_i64FrameInterval;
+
+		qint64 curTick = gs_globalTimer.elapsed();
+		if (m_i32SpeedRate < 0){
+			ptsDiff /= qAbs(m_i32SpeedRate);
 		}
-		else if (m_i32SpeedRate > 0)
-		{
-			ptsDiff *= qAbs(m_i32SpeedRate);
+		if (m_i32SpeedRate > 0){
+			ptsDiff *= m_i32SpeedRate;
 		}
-		qint64 i64spend = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount;
-		qint64 i64WaitSec = ptsDiff - i64spend;
-		qint64 i64Before = i64spend;
-		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
+		ptsDiff -= gs_globalTimer.elapsed() - timeStartCount;
+
+		if (ptsDiff > 1000){
+			ptsDiff = 40;
+		}
+
+  		qDebug()<<"wait sec: "<<ptsDiff<<" i64before: "<<i64before<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+
 		
-		//qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
-
-		//if frame interval is greater than 1 second, then set it 40 milliseconds
-		if (i64Sec > 1000*1000)
+		while (curTick - i64before < ptsDiff)
 		{
-			i64Sec = STANDARD_FRAME_INTERVAL;
+			msleep(1);
+			curTick = gs_globalTimer.elapsed();
 		}
-// 		if (i64WaitSec > 0)
-		if (i64Sec > 0)
-		{
-// 			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - m_i64FrameInterval;
+		m_i64FrameInterval = curTick - i64before - ptsDiff;
 
-// 			qDebug()<<"wait sec: "<<i64Sec<<" m_bStop: "<<m_bStop<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
-
-// 			usleep(i64Sec > 0 ? i64Sec : 0);
-			usleep(i64Sec);
-		}
-		else
-		{
-			//if fast play, release cpu
-			if (m_i32SpeedRate < 0)
-			{
-				usleep(1000);
-			}
-		}
+// 		qint64 i64spend = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount;
+// 		qint64 i64WaitSec = ptsDiff - i64spend;
+// 		qint64 i64Before = i64spend;
+// 		qint64 i64Sec = i64WaitSec - m_i64FrameInterval;
+// 		
+// 		//qDebug()<<"wait sec: "<<i64Sec<<" i64WaitSec: "<<i64WaitSec<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+// 
+// 		//if frame interval is greater than 1 second, then set it 40 milliseconds
+// 		if (i64Sec > 1000*1000)
+// 		{
+// 			i64Sec = STANDARD_FRAME_INTERVAL;
+// 		}
+// // 		if (i64WaitSec > 0)
+// 		if (i64Sec > 0)
+// 		{
+// // 			i64Sec = i64WaitSec - frameTimer.nsecsElapsed()/1000 + i64Before - m_i64FrameInterval;
+// 
+// // 			qDebug()<<"wait sec: "<<i64Sec<<" m_bStop: "<<m_bStop<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+// 
+// // 			usleep(i64Sec > 0 ? i64Sec : 0);
+// 			usleep(i64Sec);
+// 		}
+// 		else
+// 		{
+// 			//if fast play, release cpu
+// 			if (m_i32SpeedRate < 0)
+// 			{
+// 				usleep(1000);
+// 			}
+// 		}
 
 		uiLastPts = pFrameData->uiPts;
-		m_i64FrameInterval = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount - i64Before - i64Sec;
+// 		m_i64FrameInterval = gs_globalTimer.nsecsElapsed()/1000 - timeStartCount - i64Before - i64Sec;
+		timeStartCount = gs_globalTimer.elapsed();
 
  		m_pVedioDecoder->decode(pFrameData->pBuffer, pFrameData->uiLength);
 // 		frameTimer.start();	
-		timeStartCount = gs_globalTimer.nsecsElapsed()/1000;
 
 		delete[] pFrameData->pBuffer;
 		m_quFrameBuffer.removeFirst();
