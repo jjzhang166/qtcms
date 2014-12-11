@@ -80,7 +80,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			getData = this.getData;
 	
 		console.log('---------------put----------------------');
-		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","h264Profile":"main","resolution":"'+getVlue('resolution')+'","freeResolution":"false","resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
+		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","resolution":"'+getVlue('resolution')+'","bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
 
 		/*var str = getPutDataJSON().replace('可变码率','VBR');
 			str = str.replace('固定码率','CBR');*/
