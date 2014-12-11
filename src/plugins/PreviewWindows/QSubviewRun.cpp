@@ -2221,7 +2221,10 @@ int QSubviewRun::cbCMotionDetection( QString evName,QVariantMap evMap,void*pUser
 		if (evMap.value("signal").toBool()==true)
 		{
 			m_tStepCodeLock.lock();
-			m_stepCode.enqueue(SETMOTIONRECORD);
+			if (!m_stepCode.contains(SETMOTIONRECORD))
+			{
+				m_stepCode.enqueue(SETMOTIONRECORD);
+			}
 			m_tStepCodeLock.unlock();
 		}else{
 			//do nothing
