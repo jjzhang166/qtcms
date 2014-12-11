@@ -23,7 +23,7 @@
 #include "IPTZControl.h"
 #include "IProtocolPTZ.h"
 #include "remotePlayBack.h"
-
+#include <IGetIpAddress.h>
 
 int cbXStateChange(QString evName,QVariantMap evMap,void*pUser);
 int cbXFoundFile(QString evName,QVariantMap evMap,void*pUser);
@@ -123,6 +123,8 @@ public:
 private slots:
 	void action(QString options, BufferManager*);
 	void bufferStatus(int persent, BufferManager* pBuff);
+private:
+	void getIpAddress();
 private:
 	int m_nRef;
 	QMutex m_csRef;

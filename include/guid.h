@@ -113,6 +113,8 @@ extern const GUID CLSID_LocalPlayerEx;
 extern const IID IID_IVideoDisplayOption;
 extern const CLSID CLSID_onvifDevice;
 extern const GUID CLSID_OnvifProtocol;
+extern const GUID CLSID_GetIpAddressProtocol;
 extern const IID IID_IWindowSettings;
+extern const IID IID_IGetIpAddress;
 extern const CLSID CLSID_AutoSearchDevicePlugin;
 #endif

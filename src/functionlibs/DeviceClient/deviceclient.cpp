@@ -13,6 +13,7 @@ DeviceClient::DeviceClient():
     m_pRemotePlayback(NULL),
 	m_nChannels(0),
 	m_nSpeedRate(0),
+	m_uiPort(0),
     m_nStartTimeSeconds(0),
     m_bGroupStop(false),
 	m_channelWithAudio(-1),
@@ -247,7 +248,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	// 检测状态
 	// 已连接则返回错误
     m_bCloseingFlags=false;
-	m_ports.insert("media",uiPort);
+	
 	//注册回调函数
     if (false==m_bIsInitFlags)
 	{
@@ -262,6 +263,8 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	eventProcCall("CurrentStatus",CurStatusParm);
+	getIpAddress();
+	m_ports.insert("media",uiPort);
 	//尝试连接
 	int nStep=0;
 	while(nStep!=5){
@@ -1285,6 +1288,39 @@ int DeviceClient::cbAuthority( QVariantMap &evMap )
 {
 	eventProcCall("Authority",evMap);
 	return 0;
+}
+
+void DeviceClient::getIpAddress()
+{
+	if (m_sAddr.size()==0||m_uiPort==0)
+	{
+		if (m_sEseeId.size()!=0)
+		{
+			IGetIpAddress *pGetIpAddress=NULL;
+			pcomCreateInstance(CLSID_GetIpAddressProtocol,NULL,IID_IGetIpAddress,(void**)&pGetIpAddress);
+			if (NULL!=pGetIpAddress)
+			{
+				QString sIp;
+				QString sPort;
+				QString sHttp;
+				if (pGetIpAddress->getIpAddressEx(m_sEseeId,sIp,sPort,sHttp))
+				{
+					m_sAddr=sIp;
+					m_uiPort=sPort.toInt();
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"fail to get address from id ";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"CLSID_GetIpAddressProtocol should support IGetIpAddress interface";
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
 }
 
 int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)

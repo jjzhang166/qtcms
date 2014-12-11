@@ -1,7 +1,7 @@
 #include "autoSearchDevicePlugin.h"
 #include <guid.h>
 
-autoSearchDevicePlugin::autoSearchDevicePlugin(void)
+autoSearchDevicePlugin::autoSearchDevicePlugin(void):m_nRef(0)
 {
 }
 
