@@ -58,6 +58,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 		var warp = $('#set_content div.ipc_list:visible');
 			warp.find('input[data-ui="constantBitRate"],[data-ui="frameRate"]').removeAttr('max min');
 		_AJAXget(this.getRequestURL() + '/netsdk/video/encode/channel/'+num+'/properties','','',function(data){
+	
 				data2UI(data);
 				warp.find('input[data-UI="constantBitRate"]').attr({
 					max:data.constantBitRateProperty.max,
@@ -79,7 +80,7 @@ var IPC = function(usr,pwd,ip,port,id,type){
 			getData = this.getData;
 	
 		console.log('---------------put----------------------');
-		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","resolution":"'+getVlue('resolution')+'","freeResolution":'+getVlue('freeResolution')+',"resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
+		var encodePutJSON = '{"channelName": "'+ getVlue('channelName') +'","resolution":"'+getVlue('resolution')+'","freeResolution":"false","resolutionWidth":'+ getVlue('resolutionWidth') +',"resolutionHeight":'+ getVlue('resolutionHeight') +',"bitRateControlType":"'+ getData('bitRateControlType')+'","constantBitRate":'+  getVlue('constantBitRate') +',"frameRate":'+  getVlue('frameRate') +'}';
 
 		/*var str = getPutDataJSON().replace('可变码率','VBR');
 			str = str.replace('固定码率','CBR');*/
