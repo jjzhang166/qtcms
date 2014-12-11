@@ -332,7 +332,7 @@ void MDWorkObject::run()
 					}
 					else
 					{
-						msleep(10);
+						msleep(1000);
 						nThreadStatus = MTS_INIT;
 					}
 				}else{
