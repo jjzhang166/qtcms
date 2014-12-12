@@ -218,10 +218,43 @@ var oPreView,oDiv,
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
 	function CurrentStateChange(ev){
-	     if(ev.reFreash){ 
-		   initOxcDevListStatus();
-		   openCloseAll(1);
+		
+	      if(ev.reFreash =='false')
+		       return;
+		  
+			 initOxcDevListStatus();
+			 var devNum=0;
+			 var view =['div1_1','div2_2','div6_1','div8_1','div3_3','div4_4','div5_5','div6_6','div7_7'];
+			 $("#search_device .dev_list span.channel").each(function(){
+					  devNum++;
+			 });
+			   var Li = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
+			       bp = Li.css('background-position').split(' ');
+				 Li.css('background-position','0px '+bp[1]);
+			   setViewMod(view[maxDiv(devNum)]);
+			
+			 var indexLi = $('li.setViewNum[onclick*='+view[maxDiv(devNum)]+']'),
+				 backPosition = indexLi.css('background-position').split(' ');
+			  indexLi.css('background-position','-30px '+backPosition[1]);
+		
+			 $('#setModel').css('background-position',indexLi.css('background-position'));
+		      setViewNumNow(); 
+			  
+			var t= setTimeout(openCloseAll(1),1000);
+			 
+			 clearTimeout(t);
+		
+	}
+	function maxDiv(num){
+		 var viewDiv = [1,4,6,8,9,16,25,36,49];
+		 var temp=0;
+		 for(var i=0;i<viewDiv.length;i++){
+			  if(num<=viewDiv[i]){
+			     temp = i;
+			   }   
 		 }
+		 if(temp==0) temp=8;
+		return  parseInt(temp,10); 
 	}
 	$(window).resize(viewFullScreen);
 	
