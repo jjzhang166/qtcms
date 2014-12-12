@@ -269,7 +269,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			     if($(this).prop('checked')==true){ 
 				 
 					  ret += Math.pow(2, index);
-					// console.log("---ret--"+ret+"--index--"+index);
+					 //console.log("---ret--"+ret+"--index--"+index);
 				  }
           });
 
@@ -431,7 +431,7 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			     if($(this).prop('checked')==true){ 
 				 
 					  ret += Math.pow(2, index);
-					// console.log("---ret--"+ret+"--index--"+index);
+					 //console.log("---ret--"+ret+"--index--"+index);
 				  }
           });
 		    
@@ -460,12 +460,12 @@ var DVR = function(usr,pwd,ip,port,id,type,chn){
 			}
 		    if(ret > 0)
 			{  
-	
+	           var weekdays =getSelect("weekday")==127 ? 127:Math.pow(2,parseInt(getSelect("weekday"),10));
 			  xmlstr += '<copyrec';
 			  xmlstr += ' chn="' + chn_val + '"';
 			  xmlstr += ' weekday="' + weekday + '"';
 			  xmlstr += ' channels="' + ret + '"';
-			  xmlstr += ' weekdays="' + getSelect("weekday") + '"';
+			  xmlstr += ' weekdays="' + weekdays + '"';
 			  xmlstr += ' />';
 			}
 			xmlstr += '</envload>';
