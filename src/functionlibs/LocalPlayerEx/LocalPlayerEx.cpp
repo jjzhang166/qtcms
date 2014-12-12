@@ -496,9 +496,9 @@ int LocalPlayerEx::GroupStop()
 	//clear read file buffer
 // 	m_pFileData->clearBuffer();
 
-	m_uiStartSec = 0;
+// 	m_uiStartSec = 0;
 	m_uiEndSec = 0;
-	m_uiPlayTime = 0;
+// 	m_uiPlayTime = 0;
 	return 0;
 }
 
