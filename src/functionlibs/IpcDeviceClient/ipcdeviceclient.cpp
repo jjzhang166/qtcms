@@ -5,6 +5,7 @@
 #include <QHostAddress>
 #include <QUrl>
 #include <IRemoteMotionDetection.h>
+#include <IGetIpAddress.h>
 
 int mdsignal_proc(QString sEvent,QVariantMap param,void * pUser)
 {
@@ -39,7 +40,8 @@ IpcDeviceClient::IpcDeviceClient(void):m_nRef(0),
 	//m_tcpSocket(NULL),
 	m_pProtocolPTZ(NULL),
 	m_steps(0),
-	m_IfSwithStream(0)
+	m_IfSwithStream(0),
+	m_uiPort(0)
 {
 	//设置本组件支持的回调函数事件名称
 	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"SyncTimeMsg"<<"ConnectRefuse"<<"MDSignal"<<"Authority";
@@ -210,19 +212,6 @@ int IpcDeviceClient::registerEvent( QString eventName,int (__cdecl *proc)(QStrin
 
 int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,const QString &sEseeId )
 {
-	m_DeviceInfo.m_sAddr.clear();
-	m_DeviceInfo.m_sAddr=sAddr;
-	m_DeviceInfo.m_ports.clear();
-	m_DeviceInfo.m_ports.insert("media",uiPort);
-	m_DeviceInfo.m_ports.insert("http",uiPort);
-	m_DeviceInfo.m_sEseeId.clear();
-	m_DeviceInfo.m_sEseeId=sEseeId;
-
-	//if (m_bIsSycTime)
-	//{
-	//	connect(this, SIGNAL(sigSyncTime()), this, SLOT(SyncTime()));
-	//	emit sigSyncTime();//同步时间
-	//}
 	//断开上一次的连接
 	if (m_CurStatus==IDeviceClient::STATUS_CONNECTED||m_CurStatus==IDeviceClient::STATUS_DISCONNECTING||m_CurStatus==IDeviceClient::STATUS_CONNECTING)
 	{
@@ -235,6 +224,14 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	QVariantMap CurStatusParm;
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	eventProcCall("CurrentStatus",CurStatusParm);
+	getIpAddress();
+	m_DeviceInfo.m_sAddr.clear();
+	m_DeviceInfo.m_sAddr=sAddr;
+	m_DeviceInfo.m_ports.clear();
+	m_DeviceInfo.m_ports.insert("media",uiPort);
+	m_DeviceInfo.m_ports.insert("http",uiPort);
+	m_DeviceInfo.m_sEseeId.clear();
+	m_DeviceInfo.m_sEseeId=sEseeId;
 	while(nStep!=5){
 		switch(nStep){
 			//尝试bubble
@@ -1032,6 +1029,39 @@ int IpcDeviceClient::cbAuthority( QVariantMap evMap )
 {
 	eventProcCall("Authority",evMap);
 	return 0;
+}
+
+void IpcDeviceClient::getIpAddress()
+{
+	if (m_sAddr.size()==0||m_uiPort==0)
+	{
+		if (m_sEseeId.size()!=0)
+		{
+			IGetIpAddress *pGetIpAddress=NULL;
+			pcomCreateInstance(CLSID_GetIpAddressProtocol,NULL,IID_IGetIpAddress,(void**)&pGetIpAddress);
+			if (NULL!=pGetIpAddress)
+			{
+				QString sIp;
+				QString sPort;
+				QString sHttp;
+				if (pGetIpAddress->getIpAddressEx(m_sEseeId,sIp,sPort,sHttp))
+				{
+					m_sAddr=sIp;
+					m_uiPort=sPort.toInt();
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"fail to get address from id ";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"CLSID_GetIpAddressProtocol should support IGetIpAddress interface";
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
 }
 
 

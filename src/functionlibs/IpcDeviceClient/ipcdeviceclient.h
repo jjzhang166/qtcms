@@ -97,7 +97,7 @@ public:
 	int RegisterProc(IEventRegister *m_RegisterProc,int m_Stream);
 private:
 	int connectToDevice(const QString &sAddr,unsigned int uiPort,const QString &sEseeId);
-
+	void getIpAddress();
 private:
 	int m_nRef;
 	QMutex m_csRef;
