@@ -229,11 +229,16 @@ void QFileData::run()
 				iter->bIsPlaying = true;
 			}
 			//current buffer size is out of 1000
-			if (iter->pBuffList->size() > MAX_FRAME_NUM)
+			if (iter->pBuffList->size() >= MAX_FRAME_NUM)
 			{
+// 				getMaxBufferSize();
+				while (getMinBufferSize() > 200)
+				{
+					msleep(100);
+				}
 				getMaxBufferSize();
-				msleep(100);
-				continue;
+// 				msleep(100);
+// 				continue;
 			}
 			//copy data to FrameData
 			switch (pFrameHead->tFrameHead.uiType)
