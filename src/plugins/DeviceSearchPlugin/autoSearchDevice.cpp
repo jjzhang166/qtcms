@@ -375,24 +375,46 @@ bool autoSearchDevice::getUseableIp()
 			//检测是否在局域网中有
 			QHostAddress mtestip(m_tInterfaceInfo.uiLastTestIp);
 			QString tonet=mtestip.toString();
-			QStringList tonetlsit=tonet.split(".");
-			tonet.clear();
-			for (int i=tonetlsit.size()-1;i>=0;i--)
-			{
-				if (i!=tonetlsit.size()-1)
+			//QStringList tonetlsit=tonet.split(".");
+			//tonet.clear();
+			//for (int i=tonetlsit.size()-1;i>=0;i--)
+			//{
+			//	if (i!=tonetlsit.size()-1)
+			//	{
+			//		tonet.append(".");
+			//	}else{
+			//		//do nothing
+			//	}
+			//	tonet.append(tonetlsit.at(i));
+			//}
+			//if (qsendarp(QHostAddress(tonet).toIPv4Address()))
+			//{
+			//	nStep=3;
+			//	m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			//}else{
+			//	nStep=2;
+			//	m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			//}
+			int nCheckIpThread=-1;
+			while(nCheckIpThread==-1){
+				for (int i=0;i<10;i++)
 				{
-					tonet.append(".");
-				}else{
-					//do nothing
+					if (m_tCheckoutIpOnlive[i].checkIsRuning()==false)
+					{
+						nCheckIpThread=i;
+						break;
+					}
 				}
-				tonet.append(tonetlsit.at(i));
+				msleep(10);
 			}
-			if (qsendarp(QHostAddress(tonet).toIPv4Address()))
+			if (m_tCheckoutIpOnlive[nCheckIpThread].ipIsOnlive(500,tonet))
 			{
-				nStep=3;
+				//ip在线
+				nStep=2;
 				m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
 			}else{
-				nStep=2;
+				//ip不在线
+				nStep=3;
 				m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
 			}
 			   }
@@ -427,6 +449,7 @@ bool autoSearchDevice::setIpConfig()
 {
 	QString sIp=QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString();
 	m_tCurrentDeviceItem["SearchIP_ID"]=sIp;
+	qDebug()<<__FUNCTION__<<__LINE__<<"set new ip:"<<sIp;
 	m_pDeviceNetModify->SetNetworkInfo(m_tCurrentDeviceItem.value("SearchDeviceId_ID").toString(),sIp,m_tInterfaceInfo.sMask,m_tInterfaceInfo.sGateway,m_tCurrentDeviceItem.value("SearchMac_ID").toString(),m_tCurrentDeviceItem.value("SearchHttpport_ID").toString(),"admin","");
 	return true;
 }

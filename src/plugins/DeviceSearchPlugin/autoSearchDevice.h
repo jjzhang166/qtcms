@@ -5,6 +5,7 @@
 #include <QQueue>
 #include <QString>
 #include <QMutex>
+#include <checkoutIpOnlive.h>
 typedef int (__cdecl *autoSearchDeviceEventCb)(QString sEventName,QVariantMap tInfo,void *pUser);
 typedef struct __tagautoSearchDeviceProInfo{
 	autoSearchDeviceEventCb proc;
@@ -60,5 +61,6 @@ private:
 	QList<QString> m_tHadBeenUseIp;
 	QStringList m_sEventList;
 	QMultiMap<QString,tagautoSearchDeviceProInfo> m_tEventMap;
+	checkoutIpOnlive m_tCheckoutIpOnlive[10];
 };
 
