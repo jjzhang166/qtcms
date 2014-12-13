@@ -226,10 +226,10 @@ int IpcDeviceClient::connectToDevice( const QString &sAddr,unsigned int uiPort,c
 	eventProcCall("CurrentStatus",CurStatusParm);
 	getIpAddress();
 	m_DeviceInfo.m_sAddr.clear();
-	m_DeviceInfo.m_sAddr=sAddr;
+	m_DeviceInfo.m_sAddr=m_sAddr;
 	m_DeviceInfo.m_ports.clear();
-	m_DeviceInfo.m_ports.insert("media",uiPort);
-	m_DeviceInfo.m_ports.insert("http",uiPort);
+	m_DeviceInfo.m_ports.insert("media",m_uiPort);
+	m_DeviceInfo.m_ports.insert("http",m_uiPort);
 	m_DeviceInfo.m_sEseeId.clear();
 	m_DeviceInfo.m_sEseeId=sEseeId;
 	while(nStep!=5){

@@ -264,7 +264,7 @@ int DeviceClient::connectToDevice(const QString &sAddr,unsigned int uiPort,const
 	CurStatusParm.insert("CurrentStatus",m_CurStatus);
 	eventProcCall("CurrentStatus",CurStatusParm);
 	getIpAddress();
-	m_ports.insert("media",uiPort);
+	m_ports.insert("media",m_uiPort);
 	//≥¢ ‘¡¨Ω”
 	int nStep=0;
 	while(nStep!=5){

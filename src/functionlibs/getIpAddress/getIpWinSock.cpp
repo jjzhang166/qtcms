@@ -207,6 +207,12 @@ bool getIpWinSock::getIpAddressInWan( const QString sId,QString &sIp,QString &sP
 								}
 							}else{
 								qDebug()<<__FUNCTION__<<__LINE__<<buffer;
+								
+								getWanProtocolValue(buffer,"ip",sIp);
+								getWanProtocolValue(buffer,"myserver",sPort);
+								sHttp=sPort;
+								bFlags=true;
+								break;
 							}
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"getIpAddressInWan as sendto fail";
@@ -219,7 +225,14 @@ bool getIpWinSock::getIpAddressInWan( const QString sId,QString &sIp,QString &sP
 							break;
 						}
 					} while (1);
-
+					if (bFlags)
+					{
+						closesocket(nSocket);
+						WSACleanup();
+						return true;
+					}else{
+						//do nothing
+					}
 				}else{
 					qDebug()<<__FUNCTION__<<__LINE__<<"getIpAddressInWan as Domain2IP fail";
 				}
@@ -246,12 +259,26 @@ void getIpWinSock::getProtocolValue( char *pBuffer,QString sKeyWord,QString &sBa
 	if (pos > -1) {
 		sBack=rxlen.cap(0).remove(sKeyWord);
 	}
-	{
-
-	}
 }
 
 void getIpWinSock::getWanProtocolValue( char *pBuffer,QString sKeyWord,QString &sBack )
 {
-	QRegExp rxLen("ip[.0-9]");
+	QString nn=QString(QLatin1String(pBuffer));
+	if (sKeyWord=="ip")
+	{
+		QRegExp rxLen("ip[^#]*(?=#)");
+		int pos=rxLen.indexIn(nn);
+		if (pos>-1)
+		{
+			sBack=rxLen.cap(0).remove(sKeyWord);
+		}
+	}else{
+		QString sRex=sKeyWord+"\\d*(?=(\\D))";
+		QRegExp rxLex(sRex);
+		int pos=rxLex.indexIn(nn);
+		if (pos>-1)
+		{
+			sBack=rxLex.cap(0).remove(sKeyWord);
+		}
+	}
 }
