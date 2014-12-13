@@ -251,6 +251,7 @@ var oPreView,oDiv,
 		 for(var i=0;i<viewDiv.length;i++){
 			  if(num<=viewDiv[i]){
 			     temp = i;
+				 break;
 			   }   
 		 }
 		 if(temp==0) temp=8;

@@ -716,7 +716,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 
 				var width = (time2Sec(end)-start)*p;
-					width = width < 1 ? 1 : width;
+					//width = width < 1 ? 1 : width;
 				var left = start*p+min;
 				var types = data.types || data.type;
 
@@ -725,7 +725,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
                context.fillStyle =color[types];
 			 //console.log("color"+color[types]);
 		      //context.rect(left-min,0,width,tdH);
-			    context.fillRect(left-min-1,0,width+1,tdH);
+			    context.fillRect(left-min,0,width,tdH);
 					
              }
 			 
@@ -748,7 +748,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			oDev = $(oDev);
 
-        //console.log(filedata);
+       //console.log(filedata);
 		//console.log(oDev);
 		
 				//console.time('---------接受到的文件------------------------');
@@ -803,7 +803,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 
 				var width = (time2Sec(end)-start)*p;
-					width = width < 1 ? 1 : width;
+					//width = width < 1 ? 1 : width;
 				var left = start*p+min;
 				var types = data.types || data.type;
                    
