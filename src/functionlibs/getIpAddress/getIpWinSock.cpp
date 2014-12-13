@@ -209,7 +209,7 @@ bool getIpWinSock::getIpAddressInWan( const QString sId,QString &sIp,QString &sP
 								qDebug()<<__FUNCTION__<<__LINE__<<buffer;
 								
 								getWanProtocolValue(buffer,"ip",sIp);
-								getWanProtocolValue(buffer,"myserver",sPort);
+								getWanProtocolValue(buffer,"upnp",sPort);
 								sHttp=sPort;
 								bFlags=true;
 								break;
