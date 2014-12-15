@@ -77,7 +77,6 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 			int nConnectMethod=0;
 			QString sVendor=tItem.value("SearchVendor_ID").toString();
 			pIdevice->AddDevice(nArea_id,sDeviceName,sAddress,nPort,nHttp,sEseeid,sUserName,sPassword,nChlCount,nConnectMethod,sVendor);
-			qDebug()<<__FUNCTION__<<__LINE__<<"add to databse:"<<sAddress;
 		}
 		pIdevice->Release();
 		pIdevice=NULL;

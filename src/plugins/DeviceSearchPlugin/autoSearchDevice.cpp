@@ -39,7 +39,6 @@ void autoSearchDevice::run()
 {
 	bool bRunStop=false;
 	tagAutoSearchDeviceStep tRunStep=AutoSearchDeviceStep_Start;
-	int nFlushCount=0;
 	while(bRunStop==false){
 		switch(tRunStep){
 		case AutoSearchDeviceStep_Start:{
@@ -70,18 +69,9 @@ void autoSearchDevice::run()
 				if (m_tWaitForTestDeviceItem.isEmpty())
 				{
 					msleep(10);
-					nFlushCount++;
 				}else{
 					tRunStep=AutoSearchDeviceStep_TestAndSet;
 				}
-				//if (nFlushCount>30)
-				//{
-				//	for (QList<IDeviceSearch*>::iterator iter=m_tDeviceList.begin();iter != m_tDeviceList.end(); iter++)
-				//	{
-				//		(*iter)->Flush();
-				//	}
-				//	nFlushCount=0;
-				//}
 			}else{
 				tRunStep=AutoSearchDeviceStep_End;
 			}
@@ -215,9 +205,8 @@ void autoSearchDevice::cbSearchDevice( QVariantMap item )
 	QVariantMap tItem=item;
 	if (!m_tDeviceItem.contains(tItem.value("SearchSendToUI_ID").toString()))
 	{
-		
 		m_tDeviceItem.insert(tItem.value("SearchSendToUI_ID").toString(),tItem);
-		tItem.remove("SearchSendToUI_ID");
+		//tItem.remove("SearchSendToUI_ID");
 		m_tQueueLock.lock();
 		m_tWaitForTestDeviceItem.enqueue(tItem);
 		m_tQueueLock.unlock();
@@ -236,7 +225,7 @@ void autoSearchDevice::checkAndSetConfig()
 			//测试是否有Ip冲突
 			if (isIpConflict())
 			{
-				//qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict";
+				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"IpConflict";
 				nStep=1;
 			}else{
 				nStep=4;
@@ -269,9 +258,9 @@ void autoSearchDevice::checkAndSetConfig()
 			//设置ip
 			if (setIpConfig())
 			{
-				nStep=4;
-				//QString sKey=m_tCurrentDeviceItem.value("SearchSendToUI_ID").toString();
-				//m_tDeviceItem.remove(sKey);
+				nStep=5;
+				QString sKey=m_tCurrentDeviceItem.value("SearchSendToUI_ID").toString();
+				m_tDeviceItem.remove(sKey);
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"setIpConfig fail";
 				nStep=5;
@@ -283,7 +272,7 @@ void autoSearchDevice::checkAndSetConfig()
 			nStep=5;
 			eventProcCall("autoSearchDevice",m_tCurrentDeviceItem);
 			m_tCurrentDeviceItem.remove("SearchSendToUI_ID");
-			qDebug()<<__FUNCTION__<<__LINE__<<"throw out"<<m_tCurrentDeviceItem.value("SearchIP_ID").toString();
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString();
 			   }
 			   break;
 		case 5:{
@@ -390,9 +379,29 @@ bool autoSearchDevice::getUseableIp()
 			//检测是否在局域网中有
 			QHostAddress mtestip(m_tInterfaceInfo.uiLastTestIp);
 			QString tonet=mtestip.toString();
+			//QStringList tonetlsit=tonet.split(".");
+			//tonet.clear();
+			//for (int i=tonetlsit.size()-1;i>=0;i--)
+			//{
+			//	if (i!=tonetlsit.size()-1)
+			//	{
+			//		tonet.append(".");
+			//	}else{
+			//		//do nothing
+			//	}
+			//	tonet.append(tonetlsit.at(i));
+			//}
+			//if (qsendarp(QHostAddress(tonet).toIPv4Address()))
+			//{
+			//	nStep=3;
+			//	m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			//}else{
+			//	nStep=2;
+			//	m_tHadBeenUseIp.append(QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString());
+			//}
 			int nCheckIpThread=-1;
 			while(nCheckIpThread==-1){
-				for (int i=0;i<40;i++)
+				for (int i=0;i<10;i++)
 				{
 					if (m_tCheckoutIpOnlive[i].checkIsRuning()==false)
 					{
@@ -402,7 +411,7 @@ bool autoSearchDevice::getUseableIp()
 				}
 				msleep(10);
 			}
-			if (m_tCheckoutIpOnlive[nCheckIpThread].ipIsOnlive(50,tonet))
+			if (m_tCheckoutIpOnlive[nCheckIpThread].ipIsOnlive(500,tonet))
 			{
 				//ip在线
 				nStep=2;
@@ -444,9 +453,8 @@ bool autoSearchDevice::setIpConfig()
 {
 	QString sIp=QHostAddress(m_tInterfaceInfo.uiLastTestIp).toString();
 	m_tCurrentDeviceItem["SearchIP_ID"]=sIp;
-	qDebug()<<__FUNCTION__<<__LINE__<<"set new ip in:"<<sIp;
+	qDebug()<<__FUNCTION__<<__LINE__<<"set new ip:"<<sIp;
 	m_pDeviceNetModify->SetNetworkInfo(m_tCurrentDeviceItem.value("SearchDeviceId_ID").toString(),sIp,m_tInterfaceInfo.sMask,m_tInterfaceInfo.sGateway,m_tCurrentDeviceItem.value("SearchMac_ID").toString(),m_tCurrentDeviceItem.value("SearchHttpport_ID").toString(),"admin","");
-	qDebug()<<__FUNCTION__<<__LINE__<<"set new ip out:"<<sIp;
 	return true;
 }
 

@@ -7,7 +7,7 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QDebug>
-volatile bool g_bSearchRuning=false;
+
 DeviceSearch::DeviceSearch()
 	: QThread(),
 	m_bStop(true),
@@ -76,14 +76,7 @@ void DeviceSearch::run()
 			ipList.append(ip.toString());
 		}
 	}
-	while(g_bSearchRuning==true){
-		if (m_bStop)
-		{
-			return;
-		}
-		msleep(10);
-	}
-	g_bSearchRuning=true;
+
 	//send search msg by bind each ip
 	ONVIF_CLIENT_init(1, 1, 1, false, 2);
 	for (int index = 0; index < ipList.size(); ++index)
@@ -108,7 +101,6 @@ void DeviceSearch::run()
 	}
 
 	ONVIF_CLIENT_deinit();
-	g_bSearchRuning=false;
 }
 
 void DeviceSearch::setHook( QString sEvent, tagOnvifProInfo proInfo )
