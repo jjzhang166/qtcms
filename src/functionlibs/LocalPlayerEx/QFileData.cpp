@@ -234,7 +234,7 @@ void QFileData::run()
 				do 
 				{
 					msleep(100);
-				} while (getMinBufferSize() > 200);
+				} while (!m_bStop && getMinBufferSize() > 200);
 				getMaxBufferSize();
 // 				msleep(100);
 // 				continue;

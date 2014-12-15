@@ -392,7 +392,7 @@ int LocalPlayerEx::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * p
 	//set start and end seconds
 	uint uiStart = QDateTime(date, startTime).toTime_t();
 	uint uiEnd = QDateTime(date, endTime).toTime_t();
-	if (m_uiStartSec != uiStart && m_uiEndSec != uiEnd)
+	if (m_uiStartSec != uiStart || m_uiEndSec != uiEnd)
 	{
 		m_uiStartSec = uiStart;
 		m_uiEndSec = uiEnd;
