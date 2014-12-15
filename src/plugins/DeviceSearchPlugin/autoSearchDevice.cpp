@@ -30,6 +30,7 @@ void autoSearchDevice::stopSearch()
 {
 	m_bStop=true;
 	while(QThread::isRunning()){
+		QCoreApplication::processEvents(QEventLoop::AllEvents,10);
 		msleep(10);
 	}
 }
@@ -205,7 +206,7 @@ void autoSearchDevice::cbSearchDevice( QVariantMap item )
 	if (!m_tDeviceItem.contains(tItem.value("SearchSendToUI_ID").toString()))
 	{
 		m_tDeviceItem.insert(tItem.value("SearchSendToUI_ID").toString(),tItem);
-		tItem.remove("SearchSendToUI_ID");
+		//tItem.remove("SearchSendToUI_ID");
 		m_tQueueLock.lock();
 		m_tWaitForTestDeviceItem.enqueue(tItem);
 		m_tQueueLock.unlock();
@@ -257,7 +258,9 @@ void autoSearchDevice::checkAndSetConfig()
 			//设置ip
 			if (setIpConfig())
 			{
-				nStep=4;
+				nStep=5;
+				QString sKey=m_tCurrentDeviceItem.value("SearchSendToUI_ID").toString();
+				m_tDeviceItem.remove(sKey);
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString()<<"setIpConfig fail";
 				nStep=5;
@@ -268,6 +271,7 @@ void autoSearchDevice::checkAndSetConfig()
 			//可以抛出信息
 			nStep=5;
 			eventProcCall("autoSearchDevice",m_tCurrentDeviceItem);
+			m_tCurrentDeviceItem.remove("SearchSendToUI_ID");
 			qDebug()<<__FUNCTION__<<__LINE__<<m_tCurrentDeviceItem.value("SearchIP_ID").toString();
 			   }
 			   break;

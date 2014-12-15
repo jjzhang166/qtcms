@@ -76,6 +76,10 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 			int nChlCount=tItem.value("SearchChannelCount_ID").toInt();
 			int nConnectMethod=0;
 			QString sVendor=tItem.value("SearchVendor_ID").toString();
+			if ("192.168.1.168"==tItem.value("SearchIP_ID").toString())
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<sDeviceName;
+			}
 			pIdevice->AddDevice(nArea_id,sDeviceName,sAddress,nPort,nHttp,sEseeid,sUserName,sPassword,nChlCount,nConnectMethod,sVendor);
 		}
 		pIdevice->Release();
