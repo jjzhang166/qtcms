@@ -176,6 +176,13 @@ int qpreviewwindowsex::setDivMode( QString divModeName )
 					m_divMode->flush();
 					m_nCurrentWnd=0;
 				}
+				ILocalSetting * pi;
+				pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_ILocalSetting,(void **)&pi);
+				if (NULL != pi)
+				{
+					pi->setSplitScreenMode(divModeName);
+					pi->Release();
+				}
 			}
 		}
 	}

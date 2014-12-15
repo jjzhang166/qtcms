@@ -29,7 +29,7 @@ void autoSearchDevice::startAutoSearchDevice( int nTime,int nWidth,int nHeight )
 	m_tAutoSearchDeviceWindow.setWindowFlags(Qt::WindowStaysOnTopHint);
 	//m_tAutoSearchDeviceWindow.setWindowFlags(Qt::FramelessWindowHint);
 	m_tAutoSearchDeviceWindow.setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
-	m_tAutoSearchDeviceWindow.resize(QApplication::desktop()->width()/nWidth,QApplication::desktop()->height()/nHeight);
+	m_tAutoSearchDeviceWindow.resize(nWidth,nHeight);
 	m_tAutoSearchDeviceWindow.show();
 	m_pDeviceSearch->autoSearchStart();
 	QTimer::singleShot(nTime*1000, this, SLOT(autoSearchDeviceTimeout()));
@@ -51,7 +51,7 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 	{
 		return;
 	}
-	m_tAutoSearchDeviceWindow.hide();
+	//m_tAutoSearchDeviceWindow.hide();
 	m_pDeviceSearch->autoSearchStop();
 	IDeviceManager *pIdevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&pIdevice);
@@ -76,10 +76,6 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 			int nChlCount=tItem.value("SearchChannelCount_ID").toInt();
 			int nConnectMethod=0;
 			QString sVendor=tItem.value("SearchVendor_ID").toString();
-			if ("192.168.1.168"==tItem.value("SearchIP_ID").toString())
-			{
-				qDebug()<<__FUNCTION__<<__LINE__<<sDeviceName;
-			}
 			pIdevice->AddDevice(nArea_id,sDeviceName,sAddress,nPort,nHttp,sEseeid,sUserName,sPassword,nChlCount,nConnectMethod,sVendor);
 		}
 		pIdevice->Release();
@@ -89,6 +85,7 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 		qDebug()<<__FUNCTION__<<__LINE__<<"CLSID_CommonLibPlugin do not support IDeviceManager interface";
 		abort();
 	}
+	m_tAutoSearchDeviceWindow.hide();
 	QVariantMap tItem;
 	tItem.insert("reFreash",true);
 	EventProcCall("reFreshDeviceList",tItem);
