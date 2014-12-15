@@ -42,5 +42,6 @@ private:
 	QQueue<QVariantMap> m_SetupStatusParm;
 	QStringList m_sEventList;
 	QMutex m_SetupStatusParmMutex;
+
 };
 

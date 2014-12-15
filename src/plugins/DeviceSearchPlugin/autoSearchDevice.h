@@ -61,6 +61,6 @@ private:
 	QList<QString> m_tHadBeenUseIp;
 	QStringList m_sEventList;
 	QMultiMap<QString,tagautoSearchDeviceProInfo> m_tEventMap;
-	checkoutIpOnlive m_tCheckoutIpOnlive[10];
+	checkoutIpOnlive m_tCheckoutIpOnlive[40];
 };
 
