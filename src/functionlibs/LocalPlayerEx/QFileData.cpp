@@ -231,11 +231,10 @@ void QFileData::run()
 			//current buffer size is out of 1000
 			if (iter->pBuffList->size() >= MAX_FRAME_NUM)
 			{
-// 				getMaxBufferSize();
-				while (getMinBufferSize() > 200)
+				do 
 				{
 					msleep(100);
-				}
+				} while (getMinBufferSize() > 200);
 				getMaxBufferSize();
 // 				msleep(100);
 // 				continue;

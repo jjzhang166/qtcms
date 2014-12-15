@@ -264,6 +264,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		//console.log(bool+'//开始时间:'+begin+'//结束时间'+end+'//类型'+type);
         
 		if(bool){ //本地回访
+			oPlaybackLocl.GroupStop();
 			$("#channelvideo").find('input:checked').each(function(){
 
 				var wind = $(this).next('label').attr('wind');
