@@ -10,7 +10,7 @@
 #include <string>
 #include <QStringList>
 #include <QString>
-
+volatile bool g_bSearchRuning=false;
 using namespace std;  
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -55,10 +55,10 @@ typedef struct HiChipSetupStatusItem
 	CHAR status[100];
 	CHAR flag[10];
 }HiChipSetupStatusItem_t;
+
 SOCKET m_Sock[32];
 SOCKET m_SockMulti[32];
 int m_IpCount=0;
-
 
 int GetAllAdapterIp(QStringList &list);
 int IPCamSetup(QVariantMap IPCamSetupInfo);
@@ -67,6 +67,7 @@ WinIpcSock::WinIpcSock(void):m_nTimeInterval(10),
 	m_bIsStop(true),
 	m_bIsFlush(true)
 {
+
 	m_sEventList<<"SearchDeviceSuccess"<<"SettingStatus";
 }
 
@@ -279,6 +280,14 @@ int GetAck(HiChipSearchItem_t *ret_item,HiChipSetupStatusItem_t *status_item){
 }
 void WinIpcSock::run()
 {
+	while(g_bSearchRuning==true){
+		msleep(10);
+		if (m_bIsStop==true)
+		{
+			return;
+		}
+	}
+	g_bSearchRuning=true;
 	int ret=0;
 	// start up wsa
 	WSADATA wsd;
@@ -301,6 +310,9 @@ void WinIpcSock::run()
 		qDebug()<<ipList.at(i).toLocal8Bit().constData();
 		local_addr.sin_addr.s_addr = inet_addr(ipList.at(i).toLocal8Bit().constData());
 		ret = bind(m_Sock[i], (struct sockaddr *)&local_addr, sizeof(local_addr));
+		
+		int nRecBufSize=32*1024;
+		setsockopt(m_Sock[i],SOL_SOCKET,SO_RCVBUF,(const char*)&nRecBufSize,sizeof(int));
 
 		int optval = 0;
 		ret = setsockopt(m_Sock[i], IPPROTO_IP, IP_MULTICAST_LOOP, (char *)&optval, sizeof(optval));
@@ -384,6 +396,7 @@ void WinIpcSock::run()
 	m_SetupStatusParmMutex.lock();
 	m_SetupStatusParm.clear();
 	m_SetupStatusParmMutex.unlock();
+	g_bSearchRuning=false;
 }
 
 int WinIpcSock::registerEvent( QString eventName,WINIPCSearchCB eventCB,void *pUser )
