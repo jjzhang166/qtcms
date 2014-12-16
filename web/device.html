@@ -1687,16 +1687,16 @@
 						<!--<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" />1-60(s)</td></tr>-->      
 						<input type="hidden" value="30" id="AutoPollingTime_ID"  />
                         <!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
-						<tr>
+					<!--	<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
 							<td colspan="2">
 								<div class="select" style="width:133px;">
-									<!-- <span value="" class="SplitScreenMode"></span> -->
+									<span value="" class="SplitScreenMode"></span> 
 									<input id="SplitScreenMode" value="" data="" type="select"/>	
 									<a class="hover"></a>
 								</div>
 								<ul class="option" id="viewMod">
-									<input id="SplitScreenMode_ID" value="" type="hidden" />	
+									
 									<li><input data="div1_1" value="1 Screen" /></li>
 									<li><input data="div2_2" value="4 Screen" /></li>
 									<li><input data="div6_1" value="6 Screen" /></li>
@@ -1706,10 +1706,12 @@
 									<li><input data="div5_5" value="25 Screen" /></li>
                                     <li><input data="div6_6" value="36 Screen" /></li>
 									<li><input data="div7_7" value="49 Screen" /></li>
-									<!--<li><input data="div8_8" value="64 Screen" /></li>-->
+									<li><input data="div8_8" value="64 Screen" /></li>
 								</ul>
 							</td>
-						</tr>
+						</tr>-->
+                        <input id="SplitScreenMode" value="" data="" type="hidden" />
+                        <input id="SplitScreenMode_ID" value="" type="hidden" />	
 						<!--<tr><td colspan="3"><input type="checkbox" id="AutoLogin_ID"><script>T("Auto_Login")</script></td></tr>-->
 						<tr><td colspan="3"><input type="checkbox" id="AutoSyncTime_ID"><script>T("Automatically_synchronize_time")</script></td></tr>
 						<tr><td colspan="3"><input type="checkbox" id="AutoConnect_ID"><script>T("Automatically_connected_devices")</script></td></tr>

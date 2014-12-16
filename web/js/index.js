@@ -4,6 +4,7 @@ var oPreView,oDiv,
 	errorcolor = 'red';
  var viewDiv = [1,4,6,8,9,16,25,36,49];
  var view =['div1_1','div2_2','div6_1','div8_1','div3_3','div4_4','div5_5','div6_6','div7_7'];
+ var recordStatus = 0;//录像状态
 	$(function(){
 		
 		oPreView= $('#previewWindows')[0];
@@ -391,6 +392,8 @@ var oPreView,oDiv,
 		oPreView.SetDevChannelInfo(wind,data.channel_id);
 
 		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
+		
+		
 	}
 
 	function WindCallback(ev){ 
@@ -412,16 +415,42 @@ var oPreView,oDiv,
 			obj.removeAttr('state wind').removeClass('channel_1');
 			checkDevAllOpen(obj.data('data').dev_id);
 			//checkAllchannelOpen()
+			writeActionLog(str);
 		}else if(ev.CurrentState == 0){	
 			checkDevAllOpen(obj.data('data').dev_id);
 			obj.addClass('channel_1');
 			//checkAllchannelOpen()
+			writeActionLog(str);
+			
+		  if(recordStatus){
+			var data = chlData;
+			var wind = parseInt(ev.WPageId);
+			var transKey,backStatus;
+				if(oPreView.SetDevInfo(data.device_name,data.channel_number,wind)){
+					transKey = 'channel_Manual_recording_data_binding_failed'
+				}else{
+					backStatus = oPreView.StartRecord(wind);
+					//console.log('backStatus'+backStatus);
+					if(backStatus){
+						transKey = 'channel_Manual_recording_fail';
+						if(backStatus == 2){
+							transKey = 'channel_has_been_in_the_planning_Video_state';
+						}
+					}else{ 
+						transKey = 'Start_manual_recording';
+						c = '';
+					}
+				}
+				writeActionLog(T(transKey,data.name,data.channel_name),c);
+           }
+			
 		}else{
-			str=''
+			str='';
+			writeActionLog(str);
 		}
 		//console.log('after-----.channel----------state:'+obj.attr('state')+'-----------wind:'+obj.attr('wind'));
 		
-		writeActionLog(str);
+		
 
 		/*if(checkOcxAllUsed() && ev.CurrentState == 0){
 			writeActionLog('所以窗口正在使用!!',errorcolor);
@@ -598,6 +627,7 @@ var oPreView,oDiv,
 				return;
 			}
 			if(obj.attr('toggle')){
+				recordStatus = 1;
 				$('div.dev_list span.channel[wind]').each(function(){
 
 					data =getChlFullInfo($(this));
@@ -621,6 +651,7 @@ var oPreView,oDiv,
 					writeActionLog(T(transKey,data.name,data.channel_name),c);
 				})
 			}else{
+				recordStatus = 0;
 				$('div.dev_list span.channel[wind]').each(function(){
 					data = getChlFullInfo($(this)),
 					backStatus = oPreView.StopRecord($(this).attr('wind'));
@@ -647,6 +678,7 @@ var oPreView,oDiv,
 				obj.removeAttr('toggle').css('background-position','-120px -72px');
 			}
 		})*/
+		
 	}
 
 	function SwithStream(){  // 切换码流

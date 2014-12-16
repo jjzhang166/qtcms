@@ -490,7 +490,8 @@ var oSearchOcx,
 			}
 		}
        $('#BootPersian_ID').dataIntoSelected(document.getElementById('commonLibrary').getIsPersian());
-		$('#SplitScreenMode').val(SplitScreenMode[$('#SplitScreenMode').val()]);
+		//$('#SplitScreenMode').val(SplitScreenMode[$('#SplitScreenMode').val()]);
+		$('#SplitScreenMode').val(oCommonLibrary.getSplitScreenMode());
 		$('#CommonParm input:checkbox').each(function(){
 			$(this).toCheck();
 		})
