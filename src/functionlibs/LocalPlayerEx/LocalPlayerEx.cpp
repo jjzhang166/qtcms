@@ -462,6 +462,7 @@ int LocalPlayerEx::GroupPlay()
 	m_pFileData->setSpeed(0);
 	//start read file thread
 	m_pFileData->startReadFile();
+	m_uiPlayTime = m_uiStartSec;
 
 	return 0;
 }

@@ -217,7 +217,7 @@ void QFileData::run()
 		{
 			iter = m_wndBuffMap.find(pFrameHead->tFrameHead.uiChannel);
 			//current channel isn't in group
-			if (iter == m_wndBuffMap.end())
+			if (iter == m_wndBuffMap.end() || pFrameHead->tFrameHead.uiGentime < m_uiStartSec)
 			{
 				pFrameHead = (tagFileFrameHead *)((char*)pFrameHead + sizeof(tagFileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
 				continue;
