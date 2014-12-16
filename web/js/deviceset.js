@@ -446,6 +446,18 @@ var oSearchOcx,
 			}).mouseout(function(){
 					$(this).css('background-position','0 0');
 			});
+		//选择或者修改设备的类型
+		$('#vendor_chl_num li').each(function(index){
+			$(this).click(function(){
+				if(index==0||index==1){
+					$('#channel_count_ID').val(4);
+				}else{
+					$('#channel_count_ID').val(1);
+				}
+				
+		    });
+            
+        });
 			
 		//本地设置中的录像设置
        // $('#otherCopy').click(function(){ $('#SettingRecordDoubleTimeParm_ok').click();});
