@@ -1,4 +1,5 @@
 #include "remotePlayBack.h"
+#include <IGetIpAddress.h>
 
 int cbConnectStatusRChange(QString sEventName,QVariantMap evMap,void *pUser);
 int cbRecFileRFound(QString sEventName,QVariantMap evMap,void *pUser);
@@ -22,6 +23,7 @@ remotePlayBack::remotePlayBack(void):
 	m_tPlaybackProtocol(BUBBLE),
     m_tRecConnectStatus(REC_STATUS_DISCONNECTED)
 {
+	m_tRecDeviceInfo.uiPorts=0;
 	m_sEventNameList<<"foundFile"<<"StateChangeed"<<"recFileSearchFinished"<<"SocketError"<<"recFileSearchFail"<<"bufferStatus";
 	connect(&m_tCheckBlockTimer,SIGNAL(timeout()),this,SLOT(slCheckBlock()));
 	connect(this,SIGNAL(sgBackToMainThread(QString,QVariantMap)),this,SLOT(slBackToMainThread(QString,QVariantMap)));
@@ -347,6 +349,7 @@ void remotePlayBack::run()
 				switch(nSearchStep){
 				case 0:{
 					//step 0: ³õÊ¼»¯
+					getIpAddress();
 					nSearchStep=1;
 					   }
 					   break;
@@ -1271,6 +1274,39 @@ void remotePlayBack::remoteRePeatWnd( QWidget *wWin )
 		}else{
 			//do noting
 		}
+	}
+}
+
+void remotePlayBack::getIpAddress()
+{
+	if (m_tRecDeviceInfo.sAddr.size()==0||m_tRecDeviceInfo.uiPorts==0)
+	{
+		if (m_tRecDeviceInfo.sEsee.size()!=0)
+		{
+			IGetIpAddress *pGetIpAddress=NULL;
+			pcomCreateInstance(CLSID_GetIpAddressProtocol,NULL,IID_IGetIpAddress,(void**)&pGetIpAddress);
+			if (NULL!=pGetIpAddress)
+			{
+				QString sIp;
+				QString sPort;
+				QString sHttp;
+				if (pGetIpAddress->getIpAddressEx(m_tRecDeviceInfo.sEsee,sIp,sPort,sHttp))
+				{
+					m_tRecDeviceInfo.sAddr=sIp;
+					m_tRecDeviceInfo.uiPorts=sPort.toInt();
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"fail to get address from id ";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"CLSID_GetIpAddressProtocol should support IGetIpAddress interface";
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
 	}
 }
 

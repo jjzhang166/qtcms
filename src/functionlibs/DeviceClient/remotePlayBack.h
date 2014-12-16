@@ -159,6 +159,7 @@ private:
 	void eventCallBack(QString sEventName,QVariantMap evMap);
 	void sleepEx(int time);
 	void remoteRePeatWnd(QWidget *wWin);
+	void getIpAddress();
 private slots:
 	void slCheckBlock();
 	void slBackToMainThread(QString sEventName,QVariantMap evMap);
