@@ -458,5 +458,8 @@ var tr_TR={
 	'Not_Found':'Aygıt bulunamadı!',
 	'Not_Null_Enter_Keywords':'Giriş boş olamaz!',
 
-	//
+	//预览弹出窗口
+	'Adding cameras':'kameralar ekleme',
+	'Adding devices, please be patient':'Cihazları ekleme, lütfen sabırlı olun',
+	'waiting_tips':'Otomatik cihaz arar ve sabrınız için _V_ saniye bekleyin lütfen, eklemek'
 }

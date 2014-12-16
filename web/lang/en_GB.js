@@ -457,6 +457,9 @@
 	'Not_Found':'No device found!',
 	'Not_Null_Enter_Keywords':'Input can not be empty!',
 	
-	//
+	//预览弹出窗口
+	'Adding cameras':'Adding cameras',
+	'Adding devices, please be patient':'Adding devices, please be patient.',
+	'waiting_tips':'Are automatically searches the device and add, please wait _V_ seconds for your patience.'
 
 }

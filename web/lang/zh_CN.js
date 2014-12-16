@@ -456,7 +456,10 @@
 	'quit_btn':'取消',
 	'Not_Found':'搜索出的设备列表中,没有该设备!',
 	'Not_Null_Enter_Keywords':'搜索内容不能为空，请输入关键字!',
+	//预览弹出窗口
+	'Adding cameras':'添加摄像机',
+	'Adding devices, please be patient':'正在添加设备，请您耐心等候.',
+	'waiting_tips':'正在自动搜索设备并添加，请您耐心等候_V_秒.'
 	
-	//
 
 }

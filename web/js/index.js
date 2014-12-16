@@ -2,6 +2,8 @@ var oPreView,oDiv,
 	winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnected,lang.Being_disconnected],
 	currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down],
 	errorcolor = 'red';
+ var viewDiv = [1,4,6,8,9,16,25,36,49];
+ var view =['div1_1','div2_2','div6_1','div8_1','div3_3','div4_4','div5_5','div6_6','div7_7'];
 	$(function(){
 		
 		oPreView= $('#previewWindows')[0];
@@ -70,7 +72,11 @@ var oPreView,oDiv,
 		})
 
 		//显示分屏的文字
-		$('div.operat li.setViewNum').click(setViewNumNow)
+		$('div.operat li.setViewNum').click(function(){
+			$(this).siblings().removeClass('aaa');
+			$(this).addClass('aaa');
+			setViewNumNow();
+		})
 
 		//日志区域右键从菜单
 		$('#actionLog').mouseup(function(event){
@@ -166,7 +172,7 @@ var oPreView,oDiv,
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
 			backPosition = indexLi.css('background-position').split(' ');
 			indexLi.css('background-position','-30px '+backPosition[1]);
-
+            indexLi.addClass('aaa');
 		$('#setModel').css('background-position',indexLi.css('background-position'));
 
 		setViewNumNow();
@@ -210,7 +216,7 @@ var oPreView,oDiv,
 		
 		var booll =$("#search_device .dev_list ul:gt(0) span").hasClass("device");
 
-		!booll && $('#atuoSearchDevice')[0].startAutoSearchDevice(10,2.5,5);
+		!booll && $('#atuoSearchDevice')[0].startAutoSearchDevice(10,500,150);
 
 		//设备是否自动连接功能
 		DevAutoConnected();
@@ -222,31 +228,13 @@ var oPreView,oDiv,
 	      if(ev.reFreash =='false')
 		       return;
 		  
-			 initOxcDevListStatus();
-			 var devNum=0;
-			 var view =['div1_1','div2_2','div6_1','div8_1','div3_3','div4_4','div5_5','div6_6','div7_7'];
-			 $("#search_device .dev_list span.channel").each(function(){
-					  devNum++;
-			 });
-			   var Li = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
-			       bp = Li.css('background-position').split(' ');
-				 Li.css('background-position','0px '+bp[1]);
-			   setViewMod(view[maxDiv(devNum)]);
-			
-			 var indexLi = $('li.setViewNum[onclick*='+view[maxDiv(devNum)]+']'),
-				 backPosition = indexLi.css('background-position').split(' ');
-			  indexLi.css('background-position','-30px '+backPosition[1]);
-		
-			 $('#setModel').css('background-position',indexLi.css('background-position'));
-		      setViewNumNow(); 
+			initOxcDevListStatus();
 			  
-			var t= setTimeout(openCloseAll(1),1000);
-			 
-			 clearTimeout(t);
+			openCloseAll(1);
 		
 	}
 	function maxDiv(num){
-		 var viewDiv = [1,4,6,8,9,16,25,36,49];
+		
 		 var temp=0;
 		 for(var i=0;i<viewDiv.length;i++){
 			  if(num<=viewDiv[i]){
@@ -295,8 +283,27 @@ var oPreView,oDiv,
 		var str = '';
 		if(bool){
 			if(!checkAlldevAllOpen()){
+				
+			 var devNum=0;
+			
+			 $("#search_device .dev_list span.channel").each(function(){
+					  devNum++;
+			 });
+				 var Li = $('div.operat li.aaa'),
+			       bp = Li.css('background-position').split(' ');
+				 Li.css('background-position','0px '+bp[1]);
+			  
+			  setViewMod(view[maxDiv(devNum)]);
+			 var indexLi = $('li.setViewNum[onclick*='+view[maxDiv(devNum)]+']'),
+				 backPosition = indexLi.css('background-position').split(' ');
+			  indexLi.css('background-position','-30px '+backPosition[1]);
+		
+			 $('#setModel').css('background-position',indexLi.css('background-position'));
+		      setViewNumNow(); 
+			 // $('div.operat li.setViewNum:eq('+maxDiv(devNum)+')').click(setViewNumNow);
+			 // alert(maxDiv(devNum));
 			     var wind = 0;
-
+               
 			  $('div.dev_list:visible span.channel').not('[wind]').each(function(){
 				   wind = getWind(wind);
 				   if(wind  == -1)return;
@@ -378,6 +385,7 @@ var oPreView,oDiv,
 		//console.log('最终确定窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
 
 		if(wind  == -1) {return;}
+	    
 		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
 
 		oPreView.SetDevChannelInfo(wind,data.channel_id);
