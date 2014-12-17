@@ -236,14 +236,14 @@ var oPreView,oDiv,
 	}
 	function maxDiv(num){
 		
-		 var temp=0;
+		 var temp=-1;
 		 for(var i=0;i<viewDiv.length;i++){
 			  if(num<=viewDiv[i]){
 			     temp = i;
 				 break;
-			   }   
+			  }   
 		 }
-		 if(temp==0) temp=8;
+		 if(temp==-1) temp=8;
 		return  parseInt(temp,10); 
 	}
 	$(window).resize(viewFullScreen);
