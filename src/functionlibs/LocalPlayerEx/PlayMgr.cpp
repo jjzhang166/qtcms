@@ -266,7 +266,7 @@ void PlayMgr::run()
 			continue;
 		}
 		//clear audio frames when fast or slow play
-		if (!m_i32SpeedRate){
+		if (m_i32SpeedRate){
 			if (FT_Audio == pFrameData->uiType){
 				delete[] pFrameData->pBuffer;
 				pFrameData->pBuffer = NULL;
@@ -274,7 +274,7 @@ void PlayMgr::run()
 				continue;
 			}
 		}
-		qDebug()<<"GMT: "<<pFrameData->uiGentime<<" type: "<<pFrameData->uiType<<" length: "<<pFrameData->uiLength<<" pts: "<<pFrameData->uiPts<<" buff size:"<<m_quFrameBuffer.size();
+//		qDebug()<<"GMT: "<<pFrameData->uiGentime<<" type: "<<pFrameData->uiType<<" length: "<<pFrameData->uiLength<<" pts: "<<pFrameData->uiPts<<" buff size:"<<m_quFrameBuffer.size();
 
 		if (m_i32SpeedRate < 0){
 			//speed rate = *8, only decode I frame
@@ -388,7 +388,7 @@ void PlayMgr::run()
 			ptsDiff = 40;
 		}
 
-  		qDebug()<<"wait sec: "<<ptsDiff<<" i64before: "<<i64before<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
+//   		qDebug()<<"wait sec: "<<ptsDiff<<" i64before: "<<i64before<<" m_i64FrameInterval: "<<m_i64FrameInterval<<" cur_pts: "<<pFrameData->uiPts<<" lst_pts: "<<uiLastPts<<" diff: "<<pFrameData->uiPts - uiLastPts;
 
 		
 		while (curTick - i64before < ptsDiff)
