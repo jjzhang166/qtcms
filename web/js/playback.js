@@ -145,6 +145,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		ViewMax();
 
 		initOxcDevListStatus();
+		PBrecFileTableInit();
 	})///
 	/*$(window).resize(function(){  //窗口自适应大小
 		return;

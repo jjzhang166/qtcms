@@ -1,4 +1,4 @@
-	var bool = 0, //本地远程回放控制  0为远程 1为本地
+	var bool = 1, //本地远程回放控制  0为远程 1为本地
 		recTotal = 0,  //文件检索总数。
 		nowDevID=null, //当前选中设备ID
 		searchDate,//进行搜索的日期
