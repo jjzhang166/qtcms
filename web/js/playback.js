@@ -116,7 +116,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				 
 				/* $('div.play_time').css('left',$('table.table .no_border').width());*/
 				 
-				bool = index;
+				bool = index ? 0:1;
 
 				searchSTOP=1;
 

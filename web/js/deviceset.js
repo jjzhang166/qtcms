@@ -810,6 +810,7 @@ var oSearchOcx,
 		$('#set_content .right_content:eq(1) div.switch').find('input[data-UI]:text,input[data-UI]:password,input[data-UI][type="select"]').val('').attr('data','')
 									  		  .end().find(':checkbox,:radio').prop('checked',false);
 		$('#ajaxHint').html('').stop(true,true).hide();
+		$('#set_content .right_content:eq(1) div.switch').find('input').css('border',0);
 		//$('#ajaxHint').stop(true,true).css('top',targetMenu.height() + 46).html(_T('loading')).show();
 	}
 	
