@@ -16,7 +16,7 @@ function sound(obj){
 	var type = obj.prop('soundOn'),
 	oView =getAudioObj(),
 	str='';
-	/*debugData('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));*/
+	//console.log('当前对象ID为:'+$(oView).attr('id')+'当前声音切换状态为'+type+'对象切换状态为'+oView.AudioEnabled(type));
 	if(oView.AudioEnabled(type)){
 		str=lang.Voice_switch_fails;
 	}else{
@@ -36,7 +36,8 @@ function sound(obj){
 
 	SyncSoundSli(type);
 	
-	writeActionLog(str);
+	if(oView.id=='previewWindows')
+	   writeActionLog(str);
 }
 function SyncSoundSli(type){
 	var oNext = $('#sound');
