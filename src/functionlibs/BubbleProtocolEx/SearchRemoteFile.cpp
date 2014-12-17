@@ -25,6 +25,7 @@ int SearchRemoteFile::startSearchRecFile( int nChannel,int nTypes,const QDateTim
 		int nSearchStep=0;
 		int nWaitTime=0;
 		int nFlag=-1;
+		qDebug()<<__FUNCTION__<<__LINE__<<"start search";
 		while (bSearchStop==false)
 		{
 			switch (nSearchStep)

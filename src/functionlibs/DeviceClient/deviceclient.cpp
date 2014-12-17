@@ -751,42 +751,41 @@ bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 
 int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
 {
-	m_remotePlayback.startSearchRecFile(nChannel,nTypes,startTime,endTime);
-	return 0;
-	if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-		return 2;
-	}
-    if (false==m_bIsInitFlags)
-	{
-		cbInit();
-	}
-	int ret = 1;
-	if (NULL == m_pRemotePlayback)
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-		return 1;
-	}
+	return m_remotePlayback.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	//if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
+	//{
+	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+	//	return 2;
+	//}
+ //   if (false==m_bIsInitFlags)
+	//{
+	//	cbInit();
+	//}
+	//int ret = 1;
+	//if (NULL == m_pRemotePlayback)
+	//{
+	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+	//	return 1;
+	//}
 
-	IDeviceConnection *pDeviceConnection = NULL;
-	m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
-	if (NULL == pDeviceConnection)
-	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-		return 1;
-	}
+	//IDeviceConnection *pDeviceConnection = NULL;
+	//m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
+	//if (NULL == pDeviceConnection)
+	//{
+	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+	//	return 1;
+	//}
 
-	pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
-	pDeviceConnection->setDeviceHost(m_sAddr);
-	pDeviceConnection->setDeviceId(m_sEseeId);
-	QVariantMap ports;
-	ports.insert("media",m_uiPort);
-	pDeviceConnection->setDevicePorts(ports);
-	pDeviceConnection->Release();
-	ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
+	//pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
+	//pDeviceConnection->setDeviceHost(m_sAddr);
+	//pDeviceConnection->setDeviceId(m_sEseeId);
+	//QVariantMap ports;
+	//ports.insert("media",m_uiPort);
+	//pDeviceConnection->setDevicePorts(ports);
+	//pDeviceConnection->Release();
+	//ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
 
-	return ret;
+	//return ret;
 }
 //nChannel start from 0 to 31
 int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)

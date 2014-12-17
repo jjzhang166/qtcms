@@ -149,7 +149,7 @@ bool rPlayBackRun::__startSearchRecFile()
 {
 	IDeviceGroupRemotePlayback * m_GroupPlaySearch=NULL;
 	__BuildDev((void**)&m_GroupPlaySearch);
-	int nret=1;
+	int nret=-1;
 	bool flag=false;
 	if (NULL!=m_GroupPlaySearch)
 	{
@@ -184,22 +184,39 @@ bool rPlayBackRun::__startSearchRecFile()
 						if (0==nret)
 						{
 							flag=true;
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 						}
 						m_DeviceSearchRecord->Release();
 						m_DeviceSearchRecord=NULL;
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 					}
 					m_nIDeviceClient->Release();
 					m_nIDeviceClient=NULL;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 			}
 			m_GroupPlaySearch->Release();
 			m_GroupPlaySearch=NULL;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"search fail";
 	}
 	if (flag==false)
 	{
 		QVariantMap parm;
-		parm.insert("parm",QString("%1").arg(1));
+		if (nret==1)
+		{
+			parm.insert("parm",QString("%1").arg(2));
+		}else{
+			parm.insert("parm",QString("%1").arg(1));
+		}
 		__eventProcCall(QString("recFileSearchFail"),parm);
 		return flag;
 	}
@@ -265,6 +282,7 @@ int rPlayBackRun::__InsertFunction( QVariantMap evMap )
 		QVariantMap item=m_FunctionMap.at(i);
 		if (item==evMap&&m_ForbinFreOpera==false)
 		{
+			qDebug()<<__FUNCTION__<<__LINE__<<"what happen please check";
 			return 0;
 		}
 	}

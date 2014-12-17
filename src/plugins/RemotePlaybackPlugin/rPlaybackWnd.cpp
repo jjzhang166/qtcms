@@ -180,6 +180,7 @@ void   RPlaybackWnd::setUserVerifyInfo(const QString & sUsername,const QString &
 int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & startTime,const QString & endTime)
 {
 	m_rplaybackrun.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+	return 0;
 	int nRet=1;
 	if (false==bIsInitFlags)
 	{

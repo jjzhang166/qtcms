@@ -34,6 +34,7 @@ remotePlayBack::remotePlayBack(void):
 remotePlayBack::~remotePlayBack(void)
 {
 	int nCountTime=0;
+	qDebug()<<__FUNCTION__<<__LINE__<<"remotePlayBack release";
 	m_bStop=true;
 	while(QThread::isRunning()){
 		sleepEx(10);
@@ -99,6 +100,7 @@ int remotePlayBack::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			qDebug()<<__FUNCTION__<<__LINE__<<"startSearchRecFile fail as the input params error";
 			return 2;
 		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start search thread";
 			m_tRecDeviceInfo.nSearchChannel=nChannel;
 			m_tRecDeviceInfo.nSearchTypes=nTypes;
 			m_tRecDeviceInfo.tSearchStartTime=startTime;
@@ -108,6 +110,16 @@ int remotePlayBack::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 			m_stepCode.enqueue(SEARCHRECFILE);
 			m_tStepCodeLock.unlock();
 			QThread::start();
+			msleep(200);
+			int nCount=0;
+			while(QThread::isRunning()&&nCount<300){
+				msleep(10);
+				nCount++;
+			}
+			if (nCount==300)
+			{
+				return 1;
+			}
 			return 0;
 		}
 	}else{
@@ -342,6 +354,7 @@ void remotePlayBack::run()
 			while(bSearchStop==false){
 				if (m_bStop)
 				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"stop search as m_bStop is true";
 					nSearchStep=4;
 				}else{
 					//keep going
@@ -402,9 +415,11 @@ void remotePlayBack::run()
 					}
 					if (nret!=0)
 					{
+						qDebug()<<__FUNCTION__<<__LINE__<<"search remote file fail as BUBBLE fail";
 						nSearchStep=2;
 						m_tPlaybackProtocol=BUBBLE;
 					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"search remote file finish";
 						nSearchStep=4;
 					}
 					if (NULL!=m_pRemotePlayback)
@@ -431,6 +446,7 @@ void remotePlayBack::run()
 					   break;
 				case 4:{
 					//step 4:½áÊø
+					qDebug()<<__FUNCTION__<<__LINE__<<"stop search";
 					bSearchStop=true;
 					m_bStop=true;
 					   }
@@ -782,12 +798,14 @@ void remotePlayBack::run()
 				nStep=DEFAULT;
 			}else{
 				nStep=DEFAULT;
+				qDebug()<<__FUNCTION__<<__LINE__<<"set m_bStop to true";
 				m_bStop=true;
 			}
 					   }
 					   break;
 		case GROUPSTOP:{
 			//Í£Ö¹
+			qDebug()<<__FUNCTION__<<__LINE__<<"set m_bStop to true as GROUPSTOP";
 			m_bStop=true;
 			nStep=RECEND;
 			m_nPosition=__LINE__;
@@ -1220,6 +1238,7 @@ void remotePlayBack::slBackToMainThread( QString sEventName,QVariantMap evMap )
 			case REC_STATUS_DISCONNECTED:{
 				if (m_tRecConnectStatus!=m_tRecHisConnectStatus)
 				{
+					qDebug()<<__FUNCTION__<<__LINE__<<"set m_bStop to true as REC_STATUS_DISCONNECTED";
 					m_bStop=true;
 				}else{
 					//do noting
