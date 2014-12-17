@@ -995,7 +995,16 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 	initActionBox(action,pObj,obox,objclass);
 }
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
-	var data = pObj.data('data');
+	
+	if(action=='Add' && objclass =='device'){
+		var str1 ='{"address":"","port":"80","http":"80","eseeid":"","username":"admin","password":"","device_name":"","channel_count":"4","parea_name":"'+ pObj.data('data').area_name+'","pid":"'+ pObj.data('data').area_id+'","vendor":"DVR"}';
+	     var file =eval('('+str1+')');
+		 //console.log(file);
+	}else{
+		var file = pObj.data('data');
+	}
+	var data = file;
+	//var data =pObj.data('data');
 	/*console.log('填充数据');
 	console.log('----------------');
 	console.log(data);*/
@@ -1034,8 +1043,8 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		$('#'+objclass+'_name_ID').val('');
 		$('#area #'+objclass+'_id_ID').remove();
 		$('#group #'+objclass+'_id_ID').remove();
-		$('#pid_ID').val(data['area_id']);
-		obox.find('input.parent'+pObjType).val(data['area_name']);
+		//$('#pid_ID').val(data['area_id']);
+		//obox.find('input.parent'+pObjType).val(data['area_name']);
 	}
 	objShowCenter(obox);
 }
