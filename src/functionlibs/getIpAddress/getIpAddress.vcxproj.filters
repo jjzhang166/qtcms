@@ -37,6 +37,15 @@
     <ClCompile Include="getIpWinSock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="soapC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soapjuangwBindingProxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdsoap2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="getipaddress.h">
@@ -52,6 +61,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="getIpWinSock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="juangwBinding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soapH.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soapjuangwBindingProxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soapStub.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdsoap2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

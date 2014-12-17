@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QRegExp>
 #include <QStringList>
+#include "juangwBinding.h"
+#include "soapjuangwBindingProxy.h"
 DWORD Domain2IP( char *pDomain ){
 	if (!pDomain)
 	{
@@ -146,6 +148,12 @@ bool getIpWinSock::getIpAddressInLan( const QString sId,QString &sIp,QString &sP
 
 bool getIpWinSock::getIpAddressInWan( const QString sId,QString &sIp,QString &sPort,QString &sHttp )
 {
+	QString sServer;
+	if (getDeviceOnServer(sId,sServer)!=true)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"getIpAddressInWan fail as getDeviceOnServer fail";
+		return false;
+	}
 	QByteArray tName=sId.toLatin1();
 	char *name=tName.data();
 	QByteArray tPassword=QString("12").toLatin1();
@@ -178,7 +186,10 @@ bool getIpWinSock::getIpAddressInWan( const QString sId,QString &sIp,QString &sP
 				memset(&tRem,0,sizeof(tRem));
 				tRem.sin_family=AF_INET;
 				tRem.sin_port=htons(g_nNatPort);
-				tRem.sin_addr.s_addr=Domain2IP(NATSERVER);
+				//tRem.sin_addr.s_addr=Domain2IP(NATSERVER);
+				QByteArray tServerByte=sServer.toLatin1();
+				char *cServerIp=tServerByte.data();
+				tRem.sin_addr.s_addr= inet_addr(cServerIp);
 				int nTimeout=1000;
 				setsockopt(nSocket,SOL_SOCKET,SO_RCVTIMEO,(char*)&nTimeout,sizeof(nTimeout));
 				if (tRem.sin_addr.s_addr!=0)
@@ -281,4 +292,24 @@ void getIpWinSock::getWanProtocolValue( char *pBuffer,QString sKeyWord,QString &
 			sBack=rxLex.cap(0).remove(sKeyWord);
 		}
 	}
+}
+
+bool getIpWinSock::getDeviceOnServer( QString sId,QString &sServer )
+{
+	std::string Id=std::string((const char *)sId.toLocal8Bit());;
+	ns1__deviceOnServerResponse tParam;
+	//deviceOnServer(Id,tParam);
+	juangwBindingProxy tSoap;
+	int nRet=tSoap.deviceOnServer(Id,tParam);
+	sServer= QString(QString::fromLocal8Bit(tParam.return_.c_str()));
+	if (nRet!=0)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"get wan server fail as not network ";
+		return false;
+	}else if (sServer=="0.0.0.0")
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"get wan server fail as sServer is 0.0.0.0";
+		return false;
+	}
+	return true;
 }

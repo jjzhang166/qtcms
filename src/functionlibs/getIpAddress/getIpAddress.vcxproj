@@ -93,6 +93,9 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="getipaddress.cpp" />
     <ClCompile Include="getIpWinSock.cpp" />
+    <ClCompile Include="soapC.cpp" />
+    <ClCompile Include="soapjuangwBindingProxy.cpp" />
+    <ClCompile Include="stdsoap2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\IGetIpAddress.h" />
@@ -100,6 +103,11 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClInclude Include="getipaddress.h" />
     <ClInclude Include="getipaddress_global.h" />
     <ClInclude Include="getIpWinSock.h" />
+    <ClInclude Include="juangwBinding.h" />
+    <ClInclude Include="soapH.h" />
+    <ClInclude Include="soapjuangwBindingProxy.h" />
+    <ClInclude Include="soapStub.h" />
+    <ClInclude Include="stdsoap2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="getIpAddress.def" />

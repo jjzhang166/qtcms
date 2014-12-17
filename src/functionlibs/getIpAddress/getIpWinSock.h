@@ -15,5 +15,6 @@ public:
 private:
 	void getProtocolValue(char *pBuffer,QString sKeyWord,QString &sBack);
 	void getWanProtocolValue(char *pBuffer,QString sKeyWord,QString &sBack);
+	bool getDeviceOnServer(QString sId,QString &sServer);
 };
 

@@ -1,5 +1,7 @@
 #include "getipaddress.h"
 #include <QDebug>
+
+
 getIpAddress::getIpAddress():m_nRef(0)
 {
 
