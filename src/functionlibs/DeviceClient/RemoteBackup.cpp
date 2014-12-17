@@ -5,6 +5,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomNode>
+#include <IGetIpAddress.h>
 //#include <QtCore/QElapsedTimer>
 
 #define AVENC_IDR		0x01
@@ -283,6 +284,7 @@ void RemoteBackup::run()
 			bool bIsconnect=false;
 			m_bCheckBlock=true;
 			m_nPosition=__LINE__;
+			getIpAddress();
 			bIsconnect=connectToDevice(m_tBackUpInfo.sAddr,m_tBackUpInfo.uiPort,m_tBackUpInfo.sEeeId);
 			m_bCheckBlock=false;
 			if (bIsconnect)
@@ -901,6 +903,39 @@ void RemoteBackup::deinitFileSystem()
 	{
 		m_iStorage->Release();
 		m_iStorage = NULL;
+	}
+}
+
+void RemoteBackup::getIpAddress()
+{
+	if (m_tBackUpInfo.sAddr.size()==0||m_tBackUpInfo.uiPort==0)
+	{
+		if (m_tBackUpInfo.sEeeId.size()!=0)
+		{
+			IGetIpAddress *pGetIpAddress=NULL;
+			pcomCreateInstance(CLSID_GetIpAddressProtocol,NULL,IID_IGetIpAddress,(void**)&pGetIpAddress);
+			if (NULL!=pGetIpAddress)
+			{
+				QString sIp;
+				QString sPort;
+				QString sHttp;
+				if (pGetIpAddress->getIpAddressEx(m_tBackUpInfo.sEeeId,sIp,sPort,sHttp))
+				{
+					m_tBackUpInfo.sAddr=sIp;
+					m_tBackUpInfo.uiPort=sPort.toInt();
+				}else{
+					//do nothing
+					qDebug()<<__FUNCTION__<<__LINE__<<"fail to get address from id ";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"CLSID_GetIpAddressProtocol should support IGetIpAddress interface";
+				abort();
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
 	}
 }
 

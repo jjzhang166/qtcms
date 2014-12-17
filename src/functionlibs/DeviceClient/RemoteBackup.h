@@ -85,6 +85,7 @@ private slots:
 private:
 	void initFileSystem();
 	void deinitFileSystem();
+	void getIpAddress();
 private:
 	typedef int (__cdecl *BackProc)(QString,QVariantMap,void *);
 	typedef struct _evItem{
