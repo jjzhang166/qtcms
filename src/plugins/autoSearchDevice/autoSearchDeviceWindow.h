@@ -12,10 +12,18 @@ public:
 public slots:
 	void cancel();
 	void OnLoad(bool bOk);
+protected:
+	virtual void mouseMoveEvent ( QMouseEvent * event ) ;
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
 signals:
 	void sgCancel();
 private:
 	IActivities * m_tActivity;
 	QString m_sApplicationPath;
+	QPoint m_tWindowPos;
+	QPoint m_tMousePos;
+	QPoint m_tDPos;
+	bool m_bMove;
 };
 

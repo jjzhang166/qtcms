@@ -4,7 +4,8 @@
 #include <QtXml/QtXml>
 autoSearchDeviceWindow::autoSearchDeviceWindow(QWidget *parent) :
 QWebView(parent),
-m_tActivity(NULL)
+m_tActivity(NULL),
+m_bMove(false)
 {
 	// Window styles
 	setWindowFlags(Qt::FramelessWindowHint);
@@ -113,4 +114,25 @@ void autoSearchDeviceWindow::OnLoad( bool bOk )
 void autoSearchDeviceWindow::cancel()
 {
 	emit sgCancel();
+}
+
+void autoSearchDeviceWindow::mouseMoveEvent( QMouseEvent * event )
+{
+	if (m_bMove)
+	{
+		this->move(event->globalPos()-this->m_tDPos);
+	}
+}
+
+void autoSearchDeviceWindow::mousePressEvent( QMouseEvent *event )
+{
+	m_bMove=true;
+	this->m_tWindowPos = this->pos();
+	this->m_tMousePos = event->globalPos(); 
+	this->m_tDPos=m_tMousePos-m_tWindowPos;
+}
+
+void autoSearchDeviceWindow::mouseReleaseEvent( QMouseEvent *event )
+{
+	m_bMove=false;
 }
