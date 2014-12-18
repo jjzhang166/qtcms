@@ -30,6 +30,7 @@ void autoSearchDevice::startAutoSearchDevice( int nTime,int nWidth,int nHeight )
 	//m_tAutoSearchDeviceWindow.setWindowFlags(Qt::FramelessWindowHint);
 	m_tAutoSearchDeviceWindow.setWindowFlags(Qt::Widget | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
 	m_tAutoSearchDeviceWindow.resize(nWidth,nHeight);
+	m_tAutoSearchDeviceWindow.setWindowModality(Qt::ApplicationModal);
 	m_tAutoSearchDeviceWindow.show();
 	m_pDeviceSearch->autoSearchStart();
 	QTimer::singleShot(nTime*1000, this, SLOT(autoSearchDeviceTimeout()));
