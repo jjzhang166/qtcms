@@ -71,12 +71,13 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("app_minsize","click","OnMinClick()");
 	QWFW_MSGMAP("app_close_window","click","OnCloseClick()");
 
-	//QWFW_MSGMAP("add_ok","click","OnAddUserOk()");
-	//QWFW_MSGMAP("modify_ok","click","OnModifyUserOk()");
-	//QWFW_MSGMAP("delete_ok","click","OnDeleteUserOk()");
 	QWFW_MSGMAP("AddUser_ok","click","OnAddUserOk()");
 	QWFW_MSGMAP("ModifyUser_ok","click","OnModifyUserOk()");
 	QWFW_MSGMAP("DeleteUser_ok","click","OnDeleteUserOk()");
+
+	QWFW_MSGMAP("AddUserEx_ok","click","OnAddUserExOk()");
+	QWFW_MSGMAP("ModifyUserEx_ok","click","OnModifyUserExOk()");
+	QWFW_MSGMAP("DeleteUserEx_ok","click","OnDeleteUserExOk()");
 
 	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
 	QWFW_MSGMAP("AddDeviceDouble_ok","click","OnAddDeviceDouble()");
@@ -1924,6 +1925,132 @@ void settingsActivity::OnSettingRecordTimeParmCopy()
 	EventProcCall("SettingRecordCopyTimeParmSuccess",arg);
 	ISetRecord->Release();
 	return;
+}
+
+void settingsActivity::OnAddUserExOk()
+{
+	IUserManagerEx *pUserMangerEx=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
+	QString sRet;
+	int nRet=-1;
+	DEF_EVENT_PARAM(arg);
+	if (NULL!=pUserMangerEx)
+	{
+		QVariant tAddUserFile=QueryValue("addUserEx_ID");
+		QDomDocument tConfFile;
+		tConfFile.setContent(tAddUserFile.toString());
+		QDomNode tMainNode=tConfFile.elementsByTagName("main").at(0);
+		QString sMainLimit=tMainNode.toElement().attribute("limitCode");
+		QString sUserName=tMainNode.toElement().attribute("sUserName");
+		QString sPassword=tMainNode.toElement().attribute("sPassword");
+		QDomNodeList tItemList=tMainNode.childNodes();
+		QVariantMap tVariantMap;
+		for (int n=0;n<tItemList.count();n++)
+		{
+			QDomNode tItem;
+			tItem=tItemList.at(n);
+			QString sMainSubCode=tItem.toElement().attribute("mainCode");
+			QString sSubCode=tItem.toElement().attribute("subCode");
+			tVariantMap.insertMulti(sMainSubCode,sSubCode);
+		}
+		nRet =pUserMangerEx->addUser(sUserName,sPassword,sMainLimit.toUInt(),tVariantMap);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as pUserMangerEx is null";
+		abort();
+	}
+	if (NULL!=pUserMangerEx)
+	{
+		pUserMangerEx->Release();
+		pUserMangerEx=NULL;
+	}
+	if (0==nRet)
+	{
+		sRet.append("addUserEx succeed");
+		EP_ADD_PARAM(arg,"succeed",sRet);
+	}else{
+		sRet.append("addUserEx fail");
+		EP_ADD_PARAM(arg,"fail",sRet);
+	}
+}
+
+void settingsActivity::OnModifyUserExOk()
+{
+	IUserManagerEx *pUserMangerEx=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
+	QString sRet;
+	DEF_EVENT_PARAM(arg);
+	if (NULL!=pUserMangerEx)
+	{
+		QVariant tModifyUserFile=QueryValue("modifyUserEx_ID");
+		QDomDocument tConfFile;
+		tConfFile.setContent(tModifyUserFile.toString());
+		QDomNode tModifyUserNode=tConfFile.elementsByTagName("modify").at(0);
+		QDomNodeList tModifyUserNodeList=tModifyUserNode.childNodes();
+		for(int n=0;n<tModifyUserNodeList.count();n++){
+			QDomNode tModifyOneUserNode=tModifyUserNodeList.at(n);
+			QString sOldUserName=tModifyOneUserNode.toElement().attribute("sOlduserName");
+			QString sNewUserName=tModifyOneUserNode.toElement().attribute("sNewUserName");
+			QString sNewPassword=tModifyOneUserNode.toElement().attribute("sNewPassword");
+			QString sNewLimit=tModifyOneUserNode.toElement().attribute("uiNewLimit");
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as pUserMangerEx is null";
+		abort();
+	}
+}
+
+void settingsActivity::OnDeleteUserExOk()
+{
+	IUserManagerEx *pUserMangerEx=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
+	QString sRet;
+	DEF_EVENT_PARAM(arg);
+	if (NULL!=pUserMangerEx)
+	{
+		QVariant tdeleteUserFile=QueryValue("deleteUserEx_ID");
+		QDomDocument tConfFile;
+		tConfFile.setContent(tdeleteUserFile.toString());
+		QDomNode tDeleteFileNode=tConfFile.elementsByTagName("del").at(0);
+		QDomNodeList tItemList=tDeleteFileNode.childNodes();
+		if (tItemList.size()!=0)
+		{
+			for (int n=0;n<tItemList.count();n++)
+			{
+				QDomNode tItem;
+				tItem=tItemList.at(n);
+				QString sDelteName=tItem.toElement().attribute("username");
+				int nRet=-1;
+				nRet=pUserMangerEx->deleteUser(sDelteName);
+				if (0!=nRet)
+				{
+					sRet.clear();
+					sRet.append("DeleteUserEx fail");
+					EP_ADD_PARAM(arg,"fail",sRet);
+				}else{
+					//keep going
+				}
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"DeleteUserEx fail as the item is empty";
+			sRet.append("DeleteUserEx fail");
+			EP_ADD_PARAM(arg,"fail",sRet);
+		}
+	}else{
+		sRet.append("DeleteUserEx fail");
+		EP_ADD_PARAM(arg,"fail",sRet);
+	}
+	if (NULL!=pUserMangerEx)
+	{
+		pUserMangerEx->Release();
+		pUserMangerEx=NULL;
+	}
+	if (sRet.isEmpty())
+	{
+		sRet.append("DeleteUserEx succeed");
+		EP_ADD_PARAM(arg,"succeed",sRet);
+	}else{
+		//do nothing
+	}
 }
 
 

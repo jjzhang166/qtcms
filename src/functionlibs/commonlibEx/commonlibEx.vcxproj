@@ -92,6 +92,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
     <ClCompile Include="dllmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\IUserManagerEx.h" />
     <ClInclude Include="commonlibex.h" />
     <ClInclude Include="commonlibex_global.h" />
     <ClInclude Include="DisksInfo.h" />

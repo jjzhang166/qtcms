@@ -65,6 +65,10 @@ long __stdcall commonlibEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IWindowSettings *>(this);
 	}
+	else if (IID_IUserMangerEx==iid)
+	{
+		*ppv = static_cast<IUserManagerEx *>(this);
+	}
 	else{
 		*ppv = NULL;
 		return E_NOINTERFACE;
@@ -2780,4 +2784,45 @@ void commonlibEx::setChannelInWnd( int uiWnd,int nChl )
 int commonlibEx::getChannelInWnd( int nWnd )
 {
 	throw std::exception("The method or operation is not implemented.");
+}
+
+int commonlibEx::addUser( const QString &sUserName,const QString &sPassword,quint64 uiLimit,QVariantMap tSubCode )
+{
+	return 0;
+}
+
+
+int commonlibEx::deleteUser( const QString &sUserName )
+{
+	return 0;
+}
+
+int commonlibEx::checkUserLimit( quint64 uiMainCode,quint64 uiSubCode )
+{
+	return 0;
+}
+
+int commonlibEx::login( const QString &sUserName,const QString &sPassword ,int nCode )
+{
+	return 0;
+}
+
+int commonlibEx::setLoginOutInterval( int nTime )
+{
+	return 0;
+}
+
+int commonlibEx::getUserList( QStringList &sUserList )
+{
+	return 0;
+}
+
+int commonlibEx::getUserLimit( quint64 &uiLimit,QVariantMap &tSubCode )
+{
+	return 0;
+}
+
+int commonlibEx::modifyUserInfo( const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit, QVariantMap tSubCode )
+{
+	return 0;
 }

@@ -33,14 +33,19 @@ m_bMove(false)
 
 	// Connect Signals
 	connect(this,SIGNAL(loadFinished(bool)),this,SLOT(OnLoad(bool)));
-
+	connect(this,SIGNAL(urlChanged(const QUrl &)),this,SLOT(OnurlChanged(const QUrl &)));
 	// Read Main ini file
-	QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
-	QString sTheme = MainIniFile.value(QString("Configure/autoSearchDevice")).toString();
-	QString sThemeDir = MainIniFile.value(sTheme + "/Dir").toString();
-	QString sUiDir = m_sApplicationPath + sThemeDir;
-	qDebug("%s",sUiDir.toAscii().data());
-	load("file:///" + sUiDir);
+	//QSettings MainIniFile(m_sApplicationPath + "/MainSet.ini",QSettings::IniFormat);
+	//QString sTheme = MainIniFile.value(QString("Configure/autoSearchDevice")).toString();
+	//QString sThemeDir = MainIniFile.value(sTheme + "/Dir").toString();
+	//QString sUiDir = m_sApplicationPath + sThemeDir;
+	//load("file:///" + sUiDir);
+	setWindowFlags(Qt::WindowStaysOnTopHint);
+	setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
+
+	setWindowModality(Qt::ApplicationModal);
+	setWindowOpacity(1);
+	setAttribute(Qt::WA_TranslucentBackground);
 }
 
 
@@ -116,23 +121,45 @@ void autoSearchDeviceWindow::cancel()
 	emit sgCancel();
 }
 
-void autoSearchDeviceWindow::mouseMoveEvent( QMouseEvent * event )
+
+void autoSearchDeviceWindow::loadHtmlUrl( QString sUrl )
 {
-	if (m_bMove)
+	load("file:///" + sUrl);
+	QEventLoop tEventLoop;
+	connect(this,SIGNAL(loadFinished(bool)),&tEventLoop,SLOT(quit()));
+	tEventLoop.exec();
+}
+
+void autoSearchDeviceWindow::OnurlChanged( const QUrl & url )
+{
+	Q_UNUSED(url);
+	if (NULL != m_tActivity)
 	{
-		this->move(event->globalPos()-this->m_tDPos);
+		m_tActivity->Release();
+		m_tActivity = NULL;
 	}
 }
 
-void autoSearchDeviceWindow::mousePressEvent( QMouseEvent *event )
-{
-	m_bMove=true;
-	this->m_tWindowPos = this->pos();
-	this->m_tMousePos = event->globalPos(); 
-	this->m_tDPos=m_tMousePos-m_tWindowPos;
-}
-
-void autoSearchDeviceWindow::mouseReleaseEvent( QMouseEvent *event )
-{
-	m_bMove=false;
-}
+//void autoSearchDeviceWindow::mouseMoveEvent( QMouseEvent * event )
+//{
+//	if (m_bMove)
+//	{
+//		this->move(event->globalPos()-this->m_tDPos);
+//	}
+//	event->ignore();
+//}
+//
+//void autoSearchDeviceWindow::mousePressEvent( QMouseEvent *event )
+//{
+//	m_bMove=true;
+//	this->m_tWindowPos = this->pos();
+//	this->m_tMousePos = event->globalPos(); 
+//	this->m_tDPos=m_tMousePos-m_tWindowPos;
+//	event->ignore();
+//}
+//
+//void autoSearchDeviceWindow::mouseReleaseEvent( QMouseEvent *event )
+//{
+//	m_bMove=false;
+//	event->ignore();
+//}

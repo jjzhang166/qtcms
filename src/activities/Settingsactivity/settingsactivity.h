@@ -13,6 +13,7 @@
 #include <IDisksSetting.h>
 #include <ISetRecordTime.h>
 #include <ILocalSetting.h>
+#include <IUserManagerEx.h>
 #include <QMutex>
 #include <QObject>
 #include <QRect>
@@ -49,7 +50,11 @@ public slots:
 	void OnAddUserOk();
 	void OnModifyUserOk();
 	void OnDeleteUserOk();
-	
+	/*userEx module*/
+	void OnAddUserExOk();
+	void OnModifyUserExOk();
+	void OnDeleteUserExOk();
+
 	/*device module*/
 	void OnAddDevice();
 	void OnAddDeviceDouble();
