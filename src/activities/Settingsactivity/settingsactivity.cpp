@@ -1943,6 +1943,7 @@ void settingsActivity::OnAddUserExOk()
 		QString sMainLimit=tMainNode.toElement().attribute("limitCode");
 		QString sUserName=tMainNode.toElement().attribute("sUserName");
 		QString sPassword=tMainNode.toElement().attribute("sPassword");
+		QString sLogOutInterval=tMainNode.toElement().attribute("sLogOutInterval");
 		QDomNodeList tItemList=tMainNode.childNodes();
 		QVariantMap tVariantMap;
 		for (int n=0;n<tItemList.count();n++)
@@ -1953,7 +1954,7 @@ void settingsActivity::OnAddUserExOk()
 			QString sSubCode=tItem.toElement().attribute("subCode");
 			tVariantMap.insertMulti(sMainSubCode,sSubCode);
 		}
-		nRet =pUserMangerEx->addUser(sUserName,sPassword,sMainLimit.toUInt(),tVariantMap);
+		nRet =pUserMangerEx->addUser(sUserName,sPassword,sMainLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as pUserMangerEx is null";
 		abort();
@@ -1979,6 +1980,7 @@ void settingsActivity::OnModifyUserExOk()
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
 	DEF_EVENT_PARAM(arg);
+	int nRet=-1;
 	if (NULL!=pUserMangerEx)
 	{
 		QVariant tModifyUserFile=QueryValue("modifyUserEx_ID");
@@ -1992,10 +1994,35 @@ void settingsActivity::OnModifyUserExOk()
 			QString sNewUserName=tModifyOneUserNode.toElement().attribute("sNewUserName");
 			QString sNewPassword=tModifyOneUserNode.toElement().attribute("sNewPassword");
 			QString sNewLimit=tModifyOneUserNode.toElement().attribute("uiNewLimit");
+			QString sLogOutInterval=tModifyOneUserNode.toElement().attribute("sLogOutInterval");
+			QDomNodeList tModifyOneUserNodeList=tModifyOneUserNode.childNodes();
+			QVariantMap tVariantMap;
+			for (int i=0;i<tModifyOneUserNodeList.count();i++)
+			{
+				QDomNode tSubLimtNode=tModifyOneUserNodeList.at(i);
+				QString tMainCode=tSubLimtNode.toElement().attribute("mainCode");
+				QString tSubLimit=tSubLimtNode.toElement().attribute("subLimit");
+				tVariantMap.insertMulti(tMainCode,tSubLimit);
+			}
+			nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
+			if (nRet==0)
+			{
+				sRet.clear();
+				sRet.append(sNewUserName);
+				EP_ADD_PARAM(arg,"succeed",sRet);
+			}else{
+				sRet.clear();
+				sRet.append(sNewUserName);
+				EP_ADD_PARAM(arg,"fail",sRet);
+			}
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as pUserMangerEx is null";
 		abort();
+	}
+	if(NULL!=pUserMangerEx){
+		pUserMangerEx->Release();
+		pUserMangerEx=NULL;
 	}
 }
 

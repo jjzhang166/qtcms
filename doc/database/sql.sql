@@ -1,3 +1,18 @@
+create table user(
+id integer primary key autoincrement,
+userName text,
+password text,
+nLimit integer,
+userState integer,
+logTime integer,
+logOutInterval integer
+);
+create table user_sub_limit(
+id integer primary key autoincrement,
+userName text,
+mainSingleCode integer,
+subCode integer
+);
 create table user_infomation(
 id integer primary key autoincrement,
 username text,
@@ -157,6 +172,8 @@ insert into general_setting (name,value) values('misc_synctime','true');
 insert into general_setting (name,value) values('misc_aconnent','false');
 insert into general_setting (name,value) values('misc_afullscreen','false');
 insert into general_setting (name,value) values('misc_bootstart','false');
+
+insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','','1111111111','1','0','10');
 
 insert into window_settings (wnd_id,stretch,chl_id) values(0,1,-1);
 insert into window_settings (wnd_id,stretch,chl_id) values(1,1,-1);
