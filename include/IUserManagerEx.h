@@ -12,7 +12,8 @@ interface IUserManagerEx : public IPComBase
 	virtual int login(const QString &sUserName,const QString &sPassword ,int nCode)=0;//nCode:0 表示用户请求登录，nCode:1 表示用户请求注销;
 	virtual int setLoginOutInterval(int nTime)=0;//0:设置成功；1：设置失败（参数错误）；nTime 单位为S，最大值限定为1一个小时（3600）
 	virtual int getUserList(QStringList &sUserList)=0;//0:获取成功 ；1：获取失败
-	virtual int getUserLimit(quint64 &uiLimit,QVariantMap &tSubCode)=0;//0:获取成功；1：获取失败
+	virtual int getUserLimit(QString sUserName,quint64 &uiLimit,QVariantMap &tSubCode)=0;//0:获取成功；1：获取失败
+	virtual int getUserDatabaseId(QString sUserName,int &nId)=0;//0:获取成功；1：获取失败
 	virtual int modifyUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit, quint64 uiLogOutInterval, QVariantMap tSubCode)=0;//0:设置成功，1：设置失败
 };
 

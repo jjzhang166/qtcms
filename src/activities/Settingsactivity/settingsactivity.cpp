@@ -1966,10 +1966,10 @@ void settingsActivity::OnAddUserExOk()
 	}
 	if (0==nRet)
 	{
-		sRet.append("addUserEx succeed");
-		EP_ADD_PARAM(arg,"succeed",sRet);
+		sRet.append("AddUserSuccess");
+		EP_ADD_PARAM(arg,"success",sRet);
 	}else{
-		sRet.append("addUserEx fail");
+		sRet.append("AddUserFail");
 		EP_ADD_PARAM(arg,"fail",sRet);
 	}
 }
@@ -2008,11 +2008,11 @@ void settingsActivity::OnModifyUserExOk()
 			if (nRet==0)
 			{
 				sRet.clear();
-				sRet.append(sNewUserName);
-				EP_ADD_PARAM(arg,"succeed",sRet);
+				sRet.append("ModifyUserSuccess");
+				EP_ADD_PARAM(arg,"success",sRet);
 			}else{
 				sRet.clear();
-				sRet.append(sNewUserName);
+				sRet.append("ModifyUserFail");
 				EP_ADD_PARAM(arg,"fail",sRet);
 			}
 		}
@@ -2051,7 +2051,7 @@ void settingsActivity::OnDeleteUserExOk()
 				if (0!=nRet)
 				{
 					sRet.clear();
-					sRet.append("DeleteUserEx fail");
+					sRet.append("DeleteUserFail");
 					EP_ADD_PARAM(arg,"fail",sRet);
 				}else{
 					//keep going
@@ -2059,11 +2059,11 @@ void settingsActivity::OnDeleteUserExOk()
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"DeleteUserEx fail as the item is empty";
-			sRet.append("DeleteUserEx fail");
+			sRet.append("DeleteUserFail");
 			EP_ADD_PARAM(arg,"fail",sRet);
 		}
 	}else{
-		sRet.append("DeleteUserEx fail");
+		sRet.append("DeleteUserFail");
 		EP_ADD_PARAM(arg,"fail",sRet);
 	}
 	if (NULL!=pUserMangerEx)
@@ -2073,8 +2073,8 @@ void settingsActivity::OnDeleteUserExOk()
 	}
 	if (sRet.isEmpty())
 	{
-		sRet.append("DeleteUserEx succeed");
-		EP_ADD_PARAM(arg,"succeed",sRet);
+		sRet.append("DeleteUserSuccess");
+		EP_ADD_PARAM(arg,"success",sRet);
 	}else{
 		//do nothing
 	}

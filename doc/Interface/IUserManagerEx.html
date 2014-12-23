@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>创建人：冯明创</p>
+<p>创建日期：2014/12/23
+</p>
+<p>包含文件：</p>
+<p><span class="code">#include &lt;IUserManagerEx.h&gt;</span></p>
+<p>函数定义：</p>
+<p> virtual int addUser(const QString &amp;sUserName,const QString &amp;sPassword,quint64 uiLimit,quint64 uiLogOutInterval,QVariantMap tSubCode)=0;</p>
+<p>//0:添加用户成功；1：添加用户失败<br />
+  virtual int deleteUser(const QString &amp;sUserName)=0;</p>
+<p>//0:删除用户成功;1:删除失败<br />
+  virtual int checkUserLimit(quint64 uiMainCode,quint64 uiSubCode)=0;</p>
+<p>//0：用户具有权限；1：用户未登录；2：用户登录但是没有权限<br />
+  virtual int login(const QString &amp;sUserName,const QString &amp;sPassword ,int nCode)=0;</p>
+<p>//nCode:0 表示用户请求登录，nCode:1 表示用户请求注销;<br />
+  virtual int setLoginOutInterval(int nTime)=0;</p>
+<p>//0:设置成功；1：设置失败（参数错误）；nTime 单位为S，最大值限定为1一个小时（3600）<br />
+  virtual int getUserList(QStringList &amp;sUserList)=0;</p>
+<p>//0:获取成功 ；1：获取失败<br />
+  virtual int getUserLimit(QString sUserName,quint64 &amp;uiLimit,QVariantMap &amp;tSubCode)=0;</p>
+<p>//0:获取成功；1：获取失败<br />
+  virtual int getUserDatabaseId(QString sUserName,int &amp;nId)=0;</p>
+<p>//0:获取成功；1：获取失败</p>
+<p>virtual int modifyUserInfo(const QString &amp;sOldUserName,const QString &amp;sNewUserName,const QString &amp;sNewPassword,quint64 uiLimit, quint64 uiLogOutInterval, QVariantMap tSubCode)=0;</p>
+<p>/0:设置成功，1：设置失败</p>
+</body>
+</html>

@@ -11,7 +11,7 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 {
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancel()),this,SLOT(cancelSearch()));
 	pcomCreateInstance(CLSID_DeviceSearchPlugin,NULL,IID_IAutoSearchDevice,(void**)&m_pDeviceSearch);
-	pcomCreateInstance(CLSID_DeviceSearchPlugin,NULL,IID_IUserMangerEx,(void**)&m_pUserMangerEx);
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&m_pUserMangerEx);
 	IEventRegister *pRegister=NULL;
 	m_pDeviceSearch->QueryInterface(IID_IEventRegister,(void**)&pRegister);
 	pRegister->registerEvent("autoSearchDevice",cbAutoSearchDevice,this);
@@ -21,11 +21,17 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 
 autoSearchDevice::~autoSearchDevice()
 {
-	m_pDeviceSearch->autoSearchStop();
-	m_pDeviceSearch->Release();
-	m_pDeviceSearch=NULL;
-	m_pUserMangerEx->Release();
-	m_pUserMangerEx=NULL;
+	if (NULL!=m_pDeviceSearch)
+	{
+		m_pDeviceSearch->autoSearchStop();
+		m_pDeviceSearch->Release();
+		m_pDeviceSearch=NULL;
+	}
+	if (NULL!=m_pUserMangerEx)
+	{
+		m_pUserMangerEx->Release();
+		m_pUserMangerEx=NULL;
+	}
 }
 
 void autoSearchDevice::startAutoSearchDevice( int nTime,int nWidth,int nHeight )
@@ -166,19 +172,32 @@ QStringList autoSearchDevice::getUserList()
 	return tUserNameList;
 }
 
-QVariantMap autoSearchDevice::getUserLimit()
+QVariantMap autoSearchDevice::getUserLimit(QString sUserName)
 {
 	quint64 uiLimit=0;
 	QVariantMap tVariantMap;
 	if (NULL!=m_pUserMangerEx)
 	{
-		m_pUserMangerEx->getUserLimit(uiLimit,tVariantMap);
+		m_pUserMangerEx->getUserLimit(sUserName,uiLimit,tVariantMap);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as m_pUserMangerEx is null";
 		abort();
 	}
 	tVariantMap.insert("mainLimit",uiLimit);
 	return tVariantMap;
+}
+
+int autoSearchDevice::getUserInDatabaseId( QString sUserName )
+{
+	int nRet=-1;
+	if (NULL!=m_pUserMangerEx)
+	{
+		m_pUserMangerEx->getUserDatabaseId(sUserName,nRet);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as m_pUserMangerEx is null";
+		abort();
+	}
+	return nRet;
 }
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )

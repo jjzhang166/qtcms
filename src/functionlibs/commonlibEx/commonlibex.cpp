@@ -3052,13 +3052,13 @@ int commonlibEx::getUserList( QStringList &sUserList )
 	return 0;
 }
 
-int commonlibEx::getUserLimit( quint64 &uiLimit,QVariantMap &tSubCode )
+int commonlibEx::getUserLimit(QString sUserName, quint64 &uiLimit,QVariantMap &tSubCode )
 {
 	QSqlQuery _query(*m_db);
-	QString sUser=checkCurrentLoginUser();
-	if (sUser.isEmpty())
+	QString sUser=sUserName;
+	if (!checkUserIsExist(sUserName))
 	{
-		return 0;
+		return 1;
 	}
 	QString sCmd=QString("select nLimit from user where userName='%1'").arg(sUser);
 	m_tUserLock.lock();
@@ -3217,4 +3217,53 @@ QString commonlibEx::checkCurrentLoginUser()
 	_query.finish();
 	m_tUserLock.unlock();
 	return sUser;
+}
+
+bool commonlibEx::checkUserIsExist(QString sUserName)
+{
+	QSqlQuery _query(*m_db);
+	QString sCmd=QString("select *from user where userName='%1'").arg(sUserName);
+	m_tUserLock.lock();
+	if (_query.exec(sCmd))
+	{
+		if (_query.next())
+		{
+			_query.finish();
+			m_tUserLock.unlock();
+			return true;
+		}else{
+			_query.finish();
+			return false;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail";
+		abort();
+	}
+	m_tUserLock.unlock();
+	return false;
+}
+
+int commonlibEx::getUserDatabaseId( QString sUserName,int &nId )
+{
+	QSqlQuery _query(*m_db);
+	QString sCmd=QString("select id from user where userName='%1'").arg(sUserName);
+	m_tUserLock.lock();
+	if (_query.exec(sCmd))
+	{
+		if (_query.next())
+		{
+			nId=_query.value(0).toInt();
+			_query.finish();
+			m_tUserLock.unlock();
+			return 0;
+		}else{
+			_query.finish();
+			m_tUserLock.unlock();
+			return 1;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+		abort();
+	}
+	return 1;
 }

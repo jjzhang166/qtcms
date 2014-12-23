@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>创建人：冯明创</p>
+<p>创建日期：2014/12/23
+</p>
+<p>文档简介：</p>
+<p>1.用户权限管理 数据库的设计</p>
+<p>2.权限码与函数的对应关系</p>
+<p>=============================</p>
+<p>create table user(<br />
+  id integer primary key autoincrement,<br />
+  userName text,<br />
+  password text,<br />
+  nLimit integer,<br />
+  userState integer,<br />
+  logTime integer,<br />
+  logOutInterval integer<br />
+  );//limit 为64为整形，userState 表示 登录与未登录状态<br />
+  create table user_sub_limit(<br />
+  id integer primary key autoincrement,<br />
+  userName text,<br />
+  mainSingleCode integer,<br />
+  subCode integer<br />
+);</p>
+<p>//数据库操作的接口 请参照IUserMangerEx.html文档</p>
+<p>//UI操作 用户权限，请参照 <a href="UserLogin插件.html">用户权限插件接口</a>文档和<a href="../Activities/setting activity.html">setting activity文</a>档</p>
+<p>=================================</p>
+<p>用户权限：<br />
+  1.预览（1）<br />
+  2.云台（10）<br />
+  3.本地回放（100）<br />
+  4.远程回放（1000）<br />
+  5.备份（10000）<br />
+  6.设备管理（100000）<br />
+  7.设备远程设置（1000000）<br />
+  8.本地设置（10000000）<br />
+  9.用户设置（100000000）<br />
+10.退出系统（1000000000）</p>
+<p>用户权限 用64位数据表示，每种权限按位算<br />
+  括号内的值 为对应权限的 权限码<br />
+例如 用户 admin 的用户权限为：111111111 表示拥有 上述的九种 权限</p>
+<p>子权限：为操作的对象，例如 主权限为预览，子权限的值为设备通道（通道在数据库中的id号）</p>
+<p>再如：主权限为用户管理，子权限的值为用户名在数据库中的id</p>
+<p>注意：子权限值为0时，表示具有所有的对象的操作权限，对于全局函数即不指定具体对象的，子权限统一使用0；子权限在不同的主权限下 数字代表含义会不一样</p>
+<p>//建议：ui调用下列接口时，并非所有接口都需要进行权限认证（建议只在用户主动操作调用的函数才进行认证）</p>
+<p>============预览（1）===============================</p>
+<p>请求用户权限认证 主权限码(uiCode)：1,子权限码（uiSubCode）：通道id</p>
+<p>UI层 进行验证</p>
+<p>获取预览相关信息：</p>
+<p> virtual void nextPage();<br />
+virtual void prePage();<br />
+virtual int getCurrentPage();<br />
+virtual int getPages();<br />
+virtual int setDivMode( QString divModeName );<br />
+virtual QString getCureentDivMode();<br />
+virtual int GetCurrentWnd();<br />
+int GetWindowConnectionStatus(unsigned int uiWndIndex);<br />
+QVariantMap GetWindowInfo(unsigned int uiWndIndex);</p>
+<p>打开与关闭预览：</p>
+<p> int OpenCameraInWnd(unsigned int uiWndIndex<br />
+,const QString sAddress,unsigned int uiPort,const QString &amp; sEseeId<br />
+,unsigned int uiChannelId,unsigned int uiStreamId<br />
+,const QString &amp; sUsername,const QString &amp; sPassword<br />
+,const QString &amp; sCameraname<br />
+,const QString &amp; sVendor);<br />
+<br />
+int CloseWndCamera(unsigned int uiWndIndex);<br />
+int CloseAll();</p>
+<p>码流切换：</p>
+<p>int SwithStream(unsigned int uiWndIndex,int chlId);</p>
+<p> 设置窗口的设备信息 ：</p>
+<p><br />
+  int SetDevChannelInfo(unsigned int uiWndIndex,int ChannelId);//may be unnecessary<br />
+  录像：</p>
+<p><br />
+  int StartRecord(int nWndID);<br />
+  int StopRecord(int nWndID);<br />
+  int SetDevInfo(const QString&amp;devname,int nChannelNum,int nWndID);//may be unnecessary<br />
+  音频：</p>
+<p><br />
+  int SetVolume(unsigned int uiPersent);<br />
+  int AudioEnabled(bool bEnabled);<br />
+  截屏：</p>
+<p><br />
+  QVariantMap ScreenShot();<br />
+  全屏：</p>
+<p><br />
+  void SetFullScreenFlag();<br />
+  void OnBackToMainWnd();</p>
+<p> 图像拉伸：<br />
+void AllWindowStretch(bool bEnable);</p>
+<p>=============云台（10）==============================</p>
+<p>请求用户权限认证 主权限码(uiCode)：10,子权限码（uiSubCode）：通道id </p>
+<p>UI层 进行验证</p>
+<p>int OpenPTZ(int nCmd, int nSpeed);<br />
+  int ClosePTZ(int nCmd);</p>
+<p>=============本地回放（100）=========================</p>
+<p>UI层 进行验证</p>
+<p>请求用户权限认证 主权限码(uiCode)：100,子权限码（uiSubCode）：窗口号（1-49）</p>
+<p>本地搜索：</p>
+<p> int searchVideoFileEx2(const int &amp; nWndId,<br />
+const QString &amp; sDate,<br />
+const QString &amp; sStartTime,<br />
+const QString &amp; sEndTime,<br />
+const int &amp; nTypes);</p>
+<p>本地播放控制：</p>
+<p> int SetSynGroupNum(int num);<br />
+int GroupPlay();<br />
+int GroupPause();<br />
+int GroupContinue();<br />
+int GroupStop();<br />
+int GroupSpeedFast(int speed);<br />
+int GroupSpeedSlow(int speed);<br />
+int GroupSpeedNormal();<br />
+QString GetNowPlayedTime();</p>
+<p>本地声音控制：</p>
+<p> int SetVolume(const unsigned int &amp;uiPersent);<br />
+int AudioEnabled(bool bEnabled);</p>
+<p>本地图像截屏：</p>
+<p>QVariantMap ScreenShot();</p>
+<p>=============远程回放（1000）========================</p>
+<p>&nbsp;</p>
+<p>请求用户权限认证 主权限码(uiCode)：1000,子权限码（uiSubCode）：设备通道id</p>
+<p>UI层 进行验证</p>
+<p>远程搜索：</p>
+<p>int startSearchRecFile(int nChannel,int nTypes,const QString &amp; startTime,const QString &amp; endTime);</p>
+<p>远程播放控制：</p>
+<p> int   GroupPlay(int nTypes,const QString &amp; start,const QString &amp; end);<br />
+int   GroupPause();<br />
+int   GroupContinue();<br />
+int   GroupStop();<br />
+int   GroupSpeedFast() ;<br />
+int   GroupSpeedSlow();<br />
+int   GroupSpeedNormal();</p>
+<p>远程声音控制：</p>
+<p>int  AudioEnabled(bool bEnable);<br />
+int   SetVolume(const unsigned int &amp;uiPersent);</p>
+<p>=============远程备份（10000）======================</p>
+<p>请求用户权限认证 主权限码(uiCode)：10000,子权限码（uiSubCode）：设备通道id</p>
+<p>UI层 进行验证</p>
+<p>远程搜索：</p>
+<p>int startSearchRecFile(int nChannel,int nTypes,const QString &amp; startTime,const QString &amp; endTime);</p>
+<p>远程备份开始与结束： </p>
+<p>virtual int startBackup(const QString &amp;sAddr,unsigned int uiPort,const QString &amp;sEseeId,<br />
+  int nChannel,<br />
+  int nTypes,<br />
+  const QString &amp; startTime,<br />
+  const QString &amp; endTime,<br />
+  const QString &amp; sbkpath);<br />
+  virtual int stopBackup();</p>
+<p>=============设备管理（100000）=====================</p>
+<p>请求用户权限认证 主权限码(uiCode)：100000,子权限码（uiSubCode）：0，表示所有的对象</p>
+<p>后台 进行验证</p>
+<p>设备管理：</p>
+<p>void OnAddDevice();<br />
+void OnAddDeviceDouble();<br />
+void OnAddDeviceALL();<br />
+void OnAddDeviceALLThread();<br />
+void OnRemoveDevice();<br />
+void OnModifyDevice();<br />
+void OnModifyDeviceEx();<br />
+void OnRemoveDeviceALL();<br />
+</p>
+<p>区域管理：</p>
+<p> void OnAddArea();<br />
+void OnRemoveArea();<br />
+void OnModifyArea();</p>
+<p>通道管理：</p>
+<p> void OnAddChannel();<br />
+void OnRemoveChannel();<br />
+void OnModifyChannel();</p>
+<p>=============远程设备设置（1000000）=================</p>
+<p>请求用户权限认证 主权限码(uiCode)：1000000,子权限码（uiSubCode）：设备通道id</p>
+<p>UI层 进行验证</p>
+<p>//具体接口为UI自身定义和设计</p>
+<p>=============本地设置（10000000）====================</p>
+<p>请求用户权限认证 主权限码(uiCode)：10000000,子权限码（uiSubCode）：0，表示所有的对象</p>
+<p>后台 进行验证 </p>
+<p>录像存储设置管理：</p>
+<p><br />
+  void OnSettingStorageParm();<br />
+  通用设置管理：</p>
+<p><br />
+  void OnSettingCommonParm();<br />
+  录像时间设置：</p>
+<p><br />
+  void OnSettingRecordTimeParm();<br />
+  void OnSettingRecordTimeParmDouble();<br />
+  void OnSettingRecordTimeParmCopy();</p>
+<p>=============用户设置（100000000）===================</p>
+<p>请求用户权限认证 主权限码(uiCode)：100000000,子权限码（uiSubCode）：即将被操作的用户id号</p>
+<p>后台 进行验证 </p>
+<p>void OnAddUserExOk();<br />
+  void OnModifyUserExOk();<br />
+  void OnDeleteUserExOk();</p>
+<p>=============退出系统（1000000000）==================</p>
+<p>请求用户权限认证 主权限码(uiCode)：100000000,子权限码（uiSubCode）：0</p>
+<p>后台 进行验证 </p>
+<p>void OnMinClick();<br />
+  void OnCloseClick();</p>
+</body>
+</html>

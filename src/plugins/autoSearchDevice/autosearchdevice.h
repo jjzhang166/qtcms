@@ -33,7 +33,8 @@ public slots:
 		void cancelLoginUI();//退出用户登录界面
 		int login(QString sUserName,QString sPassword,int nCode);//0:操作成功 1：操作失败；nCode:0(用户登录)，1（用户注销）
 		QStringList getUserList();
-		QVariantMap getUserLimit();
+		QVariantMap getUserLimit(QString sUserName);
+		int getUserInDatabaseId(QString sUserName);//返回值为 ID，获取失败返回 -1；
 private:
 	autoSearchDeviceWindow m_tAutoSearchDeviceWindow;
 	IAutoSearchDevice *m_pDeviceSearch;

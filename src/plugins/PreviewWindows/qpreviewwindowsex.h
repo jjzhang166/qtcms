@@ -48,7 +48,7 @@ public slots:
 		,const QString & sUsername,const QString & sPassword
 		,const QString & sCameraname
 		,const QString & sVendor);
-	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
+	
 	int CloseWndCamera(unsigned int uiWndIndex);
 	int CloseAll();
 	//ÇÐ»»ÂëÁ÷
@@ -81,6 +81,7 @@ public slots:
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();
+	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
 private:
 	IWindowDivMode * m_divMode;
 	qsubviewEx m_sPreviewWnd[49];

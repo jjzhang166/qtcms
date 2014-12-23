@@ -181,33 +181,6 @@ int   RPlaybackWnd::startSearchRecFile(int nChannel,int nTypes,const QString & s
 {
 	m_rplaybackrun.startSearchRecFile(nChannel,nTypes,startTime,endTime);
 	return 0;
-	int nRet=1;
-	if (false==bIsInitFlags)
-	{
-		if (1==cbInit())
-		{
-			goto finishSearch;
-		}
-	}
-	if (NULL==m_GroupPlayback)
-	{
-		goto finishSearch;
-	}
-	nRet=m_RemotePlaybackObject.SetParm(m_DevCliSetInfo.m_sUsername,m_DevCliSetInfo.m_sPassword,m_DevCliSetInfo.m_uiPort,m_DevCliSetInfo.m_sAddress,m_DevCliSetInfo.m_sEseeId);
-	if (1==nRet)
-	{
-		goto finishSearch;
-	}
-	_curConnectType=TYPE_SEARCH;
-	/*nRet=m_RemotePlaybackObject.startSearchRecFile(nChannel,nTypes,startTime,endTime);*/
-	return nRet;
-finishSearch:
-	{
-	QVariantMap item;
-	item.insert("total",0);
-	RecFileSearchFinished(item);
-	}
-	return nRet;
 }
 
 

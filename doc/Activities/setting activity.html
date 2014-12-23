@@ -17,9 +17,9 @@
   app_minsize|<br />
   app_close_window|<br />
   @用户管理<br />
-  AddUser_ok|<br />
-  ModifyUser_ok|<br />
-  DeleteUser_ok|<br />
+  AddUserEx_ok|<br/>
+  ModifyUserEx_ok|<br/>
+  DeleteUserEx_ok|<br/>
   @设备管理<br />
   AddDevice_ok|<br />
   AddDeviceDouble_ok|<br />
@@ -212,6 +212,43 @@ SettingRecordCopyTimeParmFail(fail)<br />
   AutoFullscreen_ID|(设置是否自动全屏,可选值：true|false)<br />
 BootFromStart_ID|(设置是否开机启动,可选值：true|false)</p>
 BootPersian_ID|(设置是否使用波斯日历,可选值：true|false)<br />
-<p></p>
+<p>@用户权限管理</p>
+<p>addUserEx_ID|modifyUserEx_ID|deleteUserEx_ID</p>
+<p>1.添加用户：</p>
+<p>说明：sUserName（添加的用户名），sPassword（用户密码），limitCode（主权限的编码值），subLimitNum（子权限的个数），sLogOutInterval（自动注销时间隔间）</p>
+<p>&lt;sub mainCode='0000000001' subCode='0'/&gt;表示编码值‘0000000001'（预览）对所有通道都具有权限（subCode=’0‘表示所有的通道），如果改成</p>
+<p>&lt;sub mainCode='0000000001' subCode='1'/&gt;<br />
+&lt;sub mainCode='0000000001' subCode='2'/&gt;表示 改用户仅仅对 通道id号为 1,2 的通道具有预览的权限</p>
+<p>权限编码请参考<a href="../Modules/userManagerExDatabase.html">userMangerExDatabase.html</a></p>
+<p>格式：</p>
+<p>&lt;main sUserName='abc' sPassword='123' limitCode='1111111111'，subLimitNum='10',sLogOutInterval='20'&gt;<br />
+  &lt;sub mainCode='0000000001' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0000000010' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0000000100' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0000001000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0000010000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0000100000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0001000000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0010000000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='0100000000' subCode='0'/&gt;<br />
+  &lt;sub mainCode='1000000000' subCode='0'/&gt;<br />
+&lt;/main limitCode&gt;</p>
+<p>2.修改用户</p>
+<p>说明：sOlduserName（需要修改的用户名）sNewUserName（新用户名），sNewPassword（新密码），uiNewLimit（新的主权限），sLogOutInterval（自动注销的时间间隔），subLimitSize（子权限的个数）</p>
+<p>格式：</p>
+<p>&lt;modify&gt;<br />
+  &lt;mainInfo sOlduserName='abc'  sNewUserName='efg' sNewPassword='1234' uiNewLimit='11' sLogOutInterval='20' subLimitSize='3'&gt;<br />
+  &lt;sub mainCode='1' subLimit='11'/&gt;<br />
+  &lt;sub mainCode='1' subLimit='12'/&gt;<br />
+  &lt;sub mainCode='10' subLimit='4'/&gt;<br />
+  &lt;sub mainCode='10' subLimit='5'/&gt;<br />
+  &lt;/mainInfo&gt;<br />
+&lt;/modify&gt;</p>
+<p>3.删除用户</p>
+<p>格式：</p>
+<p>&lt;del size='2'&gt;<br />
+  &lt;username='abc'/&gt;<br />
+  &lt;username='efg'/&gt;<br />
+&lt;/del&gt;</p>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>创建人：冯明创</p>
+<p>创建日期：2014/12/23</p>
+<p>插件简介：提供用户权限验证接口，以及获取用户相关信息的接口</p>
+<p>//特殊说明：弹出页面的文件名必须为：login.html（如果需要修改，可以从配置文件：MainSet.ini中进行配置）</p>
+<p>========接口简介：调出用户登录界面 =======================</p>
+<p>void showUserLoginUi(int nWidth,int nHeight);</p>
+<p>========接口简介：验证当前用户是否具有 申请的权限===========</p>
+<p>返回值：0:认证通过 1：用户没有登录 2：用户权限不足<br />
+  int checkUserLimit(quint64 uiCode,quint64 uiSubCode); //uiCode 值与函数表对于关系 请查看 userManagerExDatabase.html文档</p>
+<p>========接口简介：退出用户登录界面========================<br />
+  void cancelLoginUI();</p>
+<p>========接口简介：用户申请登录或注销操作===================</p>
+<p>返回值：1：操作失败；</p>
+<p>参数说明：nCode:0(用户登录)，1（用户注销）<br />
+  int login(QString sUserName,QString sPassword,int nCode);</p>
+<p>========接口简介：获取用户名列表==========================</p>
+<p>返回值：用户列表<br />
+QStringList getUserList();</p>
+<p>========接口简介：获取指定用户的权限======================</p>
+<p>返回值：包含了 主权限和子权限<br />
+QVariantMap getUserLimit(QString sUserName);</p>
+<p>=======接口简介：获取指定用户在数据库中的ID值==============</p>
+<p>返回值为 ID，获取失败返回 -1；<br />
+  int getUserInDatabaseId(QString sUserName);</p>
+</body>
+</html>
