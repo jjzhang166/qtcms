@@ -17,6 +17,7 @@
 #include <QVariantMap>
 #include <QShowEvent>
 #include <QHideEvent>
+#include <QTimer>
 class qpreviewwindowsex:public QWidget,
 	public QWebPluginFWBase
 {
@@ -78,6 +79,10 @@ public slots:
 	void subWindowAuthority(QVariantMap,QWidget *);
 	// Í¼ÏñÀ­Éì
 	void AllWindowStretch(bool bEnable);
+	//×Ô¶¯ÂÖÑ²
+	void StartAutoPolling();
+	void StopAutoPolling();
+	void slPolling();
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();
@@ -89,5 +94,6 @@ private:
 	int m_nCurrentWnd;
 	bool m_bAudioEnabled;
 	QString m_sLastLanguageLabel;
+	QTimer *m_pAutoPollingTimer;
 };
 

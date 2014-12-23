@@ -6,6 +6,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 	:QWidget(parent),
 	QWebPluginFWBase(this),
 	m_divMode(NULL),
+	m_pAutoPollingTimer(NULL),
 	m_nCurrentWnd(0),
 	m_bAudioEnabled(false)
 {
@@ -541,5 +542,43 @@ void qpreviewwindowsex::AllWindowStretch( bool bEnable )
 		m_sPreviewWnd[i].enableStretch(bEnable);
 	}
 	update();
+}
+
+void qpreviewwindowsex::StartAutoPolling()
+{
+	//if timer exist, destroys it
+	if (m_pAutoPollingTimer){
+		StopAutoPolling();
+	}
+	//create new timer
+	m_pAutoPollingTimer = new QTimer;
+	connect(m_pAutoPollingTimer, SIGNAL(timeout()), this, SLOT(slPolling()));
+	//get interval time
+	int inteval = 10;
+	ILocalSetting *pLocalSetting = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalSetting);
+	if (pLocalSetting){
+		inteval = pLocalSetting->getAutoPollingTime();
+		pLocalSetting->Release();
+	}
+
+	m_pAutoPollingTimer->start(inteval*1000);
+}
+
+void qpreviewwindowsex::StopAutoPolling()
+{
+	if (m_pAutoPollingTimer->isActive()){
+		m_pAutoPollingTimer->stop();
+	}
+	delete m_pAutoPollingTimer;
+	m_pAutoPollingTimer = NULL;
+}
+
+void qpreviewwindowsex::slPolling()
+{
+	if (!m_divMode){
+		qDebug()<<__FUNCTION__<<__LINE__<<"m_divMode is null";
+	}
+	m_divMode->nextPage();
 }
 
