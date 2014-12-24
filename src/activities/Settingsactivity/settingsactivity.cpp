@@ -2038,8 +2038,10 @@ void settingsActivity::OnDeleteUserExOk()
 		QDomDocument tConfFile;
 		tConfFile.setContent(tdeleteUserFile.toString());
 		QDomNode tDeleteFileNode=tConfFile.elementsByTagName("del").at(0);
+		QString sSize=tDeleteFileNode.toElement().attribute("size");
 		QDomNodeList tItemList=tDeleteFileNode.childNodes();
-		if (tItemList.size()!=0)
+		int nCount=tItemList.count();
+		if (tItemList.count()!=0)
 		{
 			for (int n=0;n<tItemList.count();n++)
 			{

@@ -2884,47 +2884,55 @@ int commonlibEx::checkUserLimit( quint64 uiMainCode,quint64 uiSubCode )
 	m_tUserLock.lock();
 	if (_query.exec(sCmd))
 	{
-		QString sDatabaseLimit=_query.value(0).toString();
-		QString sLimit=QString::number(uiMainCode);
-		QString sRef=sDatabaseLimit.mid(sDatabaseLimit.size()-sLimit.size(),1);
-		if (sRef=="1")
+		if (_query.next())
 		{
-			//判断子权限
-			sCmd=QString("select *from user_sub_limit where userName='%1' and mainSingleCode=%2 and subCode=0").arg(sUser).arg(uiMainCode);
-			if (_query.exec(sCmd))
+			QString sDatabaseLimit=_query.value(0).toString();
+			QString sLimit=QString::number(uiMainCode);
+			QString sRef=sDatabaseLimit.mid(sDatabaseLimit.size()-sLimit.size(),1);
+			if (sRef=="1")
 			{
-				if (_query.next())
+				//判断子权限
+				sCmd=QString("select *from user_sub_limit where userName='%1' and mainSingleCode=%2 and subCode=0").arg(sUser).arg(uiMainCode);
+				if (_query.exec(sCmd))
 				{
-					_query.finish();
-					m_tUserLock.unlock();
-					return 0;
-				}else{
-					sCmd=QString("select *from user_sub_limit where userName='%1' and mainSingleCode=%2 and subCode=%3").arg(sUser).arg(uiMainCode).arg(uiSubCode);
-					if (_query.exec(sCmd))
+					if (_query.next())
 					{
-						if (_query.next())
-						{
-							_query.finish();
-							m_tUserLock.unlock();
-							return 0;
-						}else{
-							_query.finish();
-							m_tUserLock.unlock();
-							return 2;
-						}
+						_query.finish();
+						m_tUserLock.unlock();
+						return 0;
 					}else{
-						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
-						abort();
+						sCmd=QString("select *from user_sub_limit where userName='%1' and mainSingleCode=%2 and subCode=%3").arg(sUser).arg(uiMainCode).arg(uiSubCode);
+						if (_query.exec(sCmd))
+						{
+							if (_query.next())
+							{
+								_query.finish();
+								m_tUserLock.unlock();
+								return 0;
+							}else{
+								_query.finish();
+								m_tUserLock.unlock();
+								return 2;
+							}
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
+							abort();
+						}
 					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
+					abort();
 				}
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
-				abort();
+				_query.finish();
+				m_tUserLock.unlock();
+				return 2;
 			}
 		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"there is not user login";
 			_query.finish();
 			m_tUserLock.unlock();
-			return 2;
+			return 1;
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
@@ -2954,7 +2962,7 @@ int commonlibEx::login( const QString &sUserName,const QString &sPassword ,int n
 					sCmd=QString("update user set userState=0");
 					if (_query.exec(sCmd))
 					{
-						sCmd=QString("update user set userState=0 and logTime=%1 where userName='%2'").arg(QDateTime::currentDateTime().toTime_t()/1000).arg(sUserName);
+						sCmd=QString("update user set userState=0 ,logTime=%1 where userName='%2'").arg(QDateTime::currentDateTime().toTime_t()).arg(sUserName);
 						if (_query.exec(sCmd))
 						{
 							_query.finish();
@@ -2971,7 +2979,7 @@ int commonlibEx::login( const QString &sUserName,const QString &sPassword ,int n
 				}else if (nCode==1)
 				{
 					//用户注销
-					sCmd=QString("update user set userState=0");
+					sCmd=QString("update user set userState=1");
 					if (_query.exec(sCmd))
 					{
 						_query.finish();
@@ -3064,18 +3072,23 @@ int commonlibEx::getUserLimit(QString sUserName, quint64 &uiLimit,QVariantMap &t
 	m_tUserLock.lock();
 	if (_query.exec(sCmd))
 	{
-		uiLimit=_query.value(0).toUInt();
-		sCmd=QString("select mainSingleCode,subCode from user_sub_limit where userName='%1'").arg(sUser);
-		if (_query.exec(sCmd))
+		if (_query.next())
 		{
-			while(_query.next()){
-				QString sMainSingleCode=_query.value(0).toString();
-				QString sSubCode=_query.value(1).toString();
-				tSubCode.insertMulti(sMainSingleCode,sSubCode);
+			uiLimit=_query.value(0).toUInt();
+			sCmd=QString("select mainSingleCode,subCode from user_sub_limit where userName='%1'").arg(sUser);
+			if (_query.exec(sCmd))
+			{
+				while(_query.next()){
+					QString sMainSingleCode=_query.value(0).toString();
+					QString sSubCode=_query.value(1).toString();
+					tSubCode.insertMulti(sMainSingleCode,sSubCode);
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+				abort();
 			}
 		}else{
-			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
-			abort();
+
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
@@ -3165,7 +3178,7 @@ int commonlibEx::modifyUserInfo( const QString &sOldUserName,const QString &sNew
 	}
 	{
 		//修改子权限
-		sCmd=QString("delete *from user_sub_limit where userName='%1'").arg(sUserName);
+		sCmd=QString("delete from user_sub_limit where userName='%1'").arg(sOldUserName);
 		if (_query.exec(sCmd))
 		{
 			QVariantMap::const_iterator it=tSubCode.constBegin();
@@ -3196,7 +3209,7 @@ QString commonlibEx::checkCurrentLoginUser()
 {
 	QString sUser;
 	QSqlQuery _query(*m_db);
-	quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t()/1000;
+	quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
 	quint64 uiLastTime;
 	QString sCmd=QString("select userName ,logTime from user where userState=0 and logTime+logOutInterval>=%1").arg(uiCurrentTime);
 	m_tUserLock.lock();
@@ -3208,6 +3221,16 @@ QString commonlibEx::checkCurrentLoginUser()
 			{
 				uiLogTime=_query.value(1).toUInt();
 				sUser=_query.value(0).toString();
+			}
+		}
+		if (!sUser.isEmpty())
+		{
+			sCmd=QString("update user set logTime=%1 where userName='%2'").arg(uiCurrentTime).arg(sUser);
+			if (_query.exec(sCmd))
+			{
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+				abort();
 			}
 		}
 	}else{

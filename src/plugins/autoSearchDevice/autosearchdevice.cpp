@@ -10,6 +10,7 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	m_pUserMangerEx(NULL)
 {
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancel()),this,SLOT(cancelSearch()));
+	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancelLoginUI()),this,SLOT(cancelLoginUI()));
 	pcomCreateInstance(CLSID_DeviceSearchPlugin,NULL,IID_IAutoSearchDevice,(void**)&m_pDeviceSearch);
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&m_pUserMangerEx);
 	IEventRegister *pRegister=NULL;
@@ -143,6 +144,10 @@ int autoSearchDevice::checkUserLimit( quint64 uiCode,quint64 uiSubCode )
 
 void autoSearchDevice::cancelLoginUI()
 {
+	if (m_tAutoSearchDeviceWindow.isHidden())
+	{
+		return;
+	}
 	m_tAutoSearchDeviceWindow.hide();
 	return ;
 }

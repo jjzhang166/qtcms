@@ -12,6 +12,7 @@ public:
 	void loadHtmlUrl(QString sUrl);
 public slots:
 	void cancel();
+	void cancelLoginUI();
 	void OnLoad(bool bOk);
 	void OnurlChanged(const QUrl & url);
 protected:
@@ -20,6 +21,7 @@ protected:
 	//virtual void mouseReleaseEvent(QMouseEvent *event);
 signals:
 	void sgCancel();
+	void sgCancelLoginUI();
 private:
 	IActivities * m_tActivity;
 	QString m_sApplicationPath;
