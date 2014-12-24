@@ -77,6 +77,7 @@ public slots:
 	void subWindowConnectStatus(QVariantMap,QWidget *);
 	void subWindowConnectRefuse(QVariantMap,QWidget *);
 	void subWindowAuthority(QVariantMap,QWidget *);
+	void subWindowVerify(QVariantMap vmap);
 	// Í¼ÏñÀ­Éì
 	void AllWindowStretch(bool bEnable);
 	//×Ô¶¯ÂÖÑ²

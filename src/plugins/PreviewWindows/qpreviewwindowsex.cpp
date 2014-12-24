@@ -23,6 +23,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
+		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap vmap)));
 
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
@@ -602,5 +603,10 @@ void qpreviewwindowsex::slPolling()
 		}
 		m_divMode->nextPage();
 	} while (curPage != m_divMode->getCurrentPage());
+}
+
+void qpreviewwindowsex::subWindowVerify( QVariantMap vmap )
+{
+	EventProcCall(QString("Validation"), vmap);
 }
 

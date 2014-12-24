@@ -519,6 +519,7 @@ void qsubviewEx::mousePressEvent( QMouseEvent * ev)
 
 int qsubviewEx::openPreview( int chlId )
 {
+	m_chlId = chlId;
 	m_sSubviewRun.openPreview(m_tDeviceInfo.m_uiChannelIdInDataBase,m_pManageWidget->GetWidgetForVideo(),this->parentWidget());
 	return 0;
 }
@@ -607,6 +608,9 @@ int qsubviewEx::switchStream()
 
 void qsubviewEx::slswitchStreamEx()
 {
+	if (verify(1, m_chlId)){
+		return;
+	}
 	m_sSubviewRun.switchStreamEx();
 }
 
@@ -665,6 +669,10 @@ void qsubviewEx::changeEvent( QEvent *ev )
 
 void qsubviewEx::slclosePreview()
 {
+	if (verify(1, m_chlId)){
+		return;
+	}
+
 	m_pStreachVideo->setChecked(false);
 	m_sSubviewRun.stopPreview();
 }
@@ -747,6 +755,10 @@ void qsubviewEx::setDataBaseFlush()
 
 void qsubviewEx::slMenRecorder()
 {
+	if (verify(1, m_chlId)){
+		return;
+	}
+
 	if (2&m_sSubviewRun.getRecordStatus())
 	{
 		stopRecord();
@@ -771,6 +783,10 @@ int qsubviewEx::cbCConnectRefuse( QVariantMap evMap )
 
 void qsubviewEx::slbackToManiWnd()
 {
+ 	if (verify(1, 0)){
+ 		return;
+ 	}
+
 	ms_bIsFullScreen = false;
 	emit sgbackToMainWnd();
 }
@@ -803,6 +819,10 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 
 void qsubviewEx::enableStretch( bool bEnable )
 {
+	if (verify(1, m_chlId)){
+		return;
+	}
+
 	m_bStretch = bEnable;
 	m_sSubviewRun.enableStretch(bEnable);
 	m_pStreachVideo->setChecked(bEnable);
@@ -822,6 +842,25 @@ void qsubviewEx::initAfterConstructor()
 
 		pi->Release();
 	}
+}
+
+int qsubviewEx::verify( qint64 mainCode, qint64 subCode )
+{
+	int ret = 0;
+	IUserManagerEx *pUserMgrEx = NULL;
+	pcomCreateInstance(CLSID_CommonlibEx, NULL, IID_IUserMangerEx, (void**)&pUserMgrEx);
+	if (pUserMgrEx){
+		ret = pUserMgrEx->checkUserLimit(mainCode, subCode);
+		if (ret){
+			QVariantMap vmap;
+			vmap.insert("MainPermissionCode", qint64(mainCode));
+			vmap.insert("SubPermissionCode", qint64(subCode));
+			vmap.insert("ErrorCode", ret);
+			emit sgVerify(vmap);
+		}
+		pUserMgrEx->Release();
+	}
+	return ret;
 }
 
 

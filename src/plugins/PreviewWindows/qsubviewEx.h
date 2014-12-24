@@ -12,6 +12,8 @@
 #include <QPen>
 #include <QPainter>
 #include <QTimer>
+#include "IUserManagerEx.h"
+
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRefuseEx(QString evName,QVariantMap evMap,void*pUser);
@@ -89,6 +91,7 @@ signals:
 	void sgconnectRefuse(QVariantMap,QWidget *);
 	void sgAuthority(QVariantMap,QWidget *);
 	void sgbackToMainWnd();
+	void sgVerify(QVariantMap vmap);
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
@@ -97,6 +100,7 @@ private:
 	tagDeviceInfo getDeviceInfo();
 	QString getLanguageInfo(QString tags);
 	void translateLanguage();
+	int verify(qint64 mainCode, qint64 subCode);
 private:
 	typedef enum __tagConnectStatus{
 		STATUS_CONNECTED,
@@ -123,5 +127,6 @@ private:
 	static bool ms_bIsFullScreen;
 	int m_nWindowIndex;
 	bool m_bStretch; // 在对象内暂存状态，与配置中的状态一致，避免在调用菜单和其他操作的时候需要频繁读取配置
+	int m_chlId;
 };
 

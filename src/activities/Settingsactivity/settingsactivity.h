@@ -5,6 +5,7 @@
 #include <IActivities.h>
 #include <qwfw.h>
 #include <IUserManager.h>
+#include <IUserManagerEx.h>
 #include <IDeviceManager.h>
 #include <QDomDocument>
 #include <IAreaManager.h>
@@ -94,6 +95,8 @@ public slots:
 	void OnSettingRecordTimeParm();
 	void OnSettingRecordTimeParmDouble();
 	void OnSettingRecordTimeParmCopy();
+private:
+	int verify(qint64 mainCode, qint64 subCode);
 private:
 	QWidget * m_MainView;
 	int m_nRef;

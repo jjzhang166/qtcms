@@ -61,19 +61,19 @@ void settingsActivity::Active( QWebFrame * frame)
 	m_MainView = (frame->page())->view();
 	m_MainView->setMouseTracking(true);
 	QWFW_MSGMAP_BEGIN(frame);
-	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
-	QWFW_MSGMAP("app_move","mousedown","OnMouseDown()");
-	QWFW_MSGMAP("app_move","mouseup","OnMouseUp()");
-	QWFW_MSGMAP("app_move","mousemove","OnMouseMove()");
+// 	QWFW_MSGMAP("app_top","dblclick","OnTopActDbClick()");
+// 	QWFW_MSGMAP("app_move","mousedown","OnMouseDown()");
+// 	QWFW_MSGMAP("app_move","mouseup","OnMouseUp()");
+// 	QWFW_MSGMAP("app_move","mousemove","OnMouseMove()");
 
 
-	QWFW_MSGMAP("app_maxsize","click","OnMaxClick()");
+// 	QWFW_MSGMAP("app_maxsize","click","OnMaxClick()");
 	QWFW_MSGMAP("app_minsize","click","OnMinClick()");
 	QWFW_MSGMAP("app_close_window","click","OnCloseClick()");
 
-	QWFW_MSGMAP("AddUser_ok","click","OnAddUserOk()");
-	QWFW_MSGMAP("ModifyUser_ok","click","OnModifyUserOk()");
-	QWFW_MSGMAP("DeleteUser_ok","click","OnDeleteUserOk()");
+// 	QWFW_MSGMAP("AddUser_ok","click","OnAddUserOk()");
+// 	QWFW_MSGMAP("ModifyUser_ok","click","OnModifyUserOk()");
+// 	QWFW_MSGMAP("DeleteUser_ok","click","OnDeleteUserOk()");
 
 	QWFW_MSGMAP("AddUserEx_ok","click","OnAddUserExOk()");
 	QWFW_MSGMAP("ModifyUserEx_ok","click","OnModifyUserExOk()");
@@ -96,8 +96,8 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("RemoveArea_ok","click","OnRemoveArea()");
 	QWFW_MSGMAP("ModifyArea_ok","click","OnModifyArea()");
 
-	QWFW_MSGMAP("AddChannel_ok","click","OnAddChannel()");
-	QWFW_MSGMAP("RemoveChannel_ok","click","OnRemoveChannel()");
+// 	QWFW_MSGMAP("AddChannel_ok","click","OnAddChannel()");
+// 	QWFW_MSGMAP("RemoveChannel_ok","click","OnRemoveChannel()");
 	QWFW_MSGMAP("ModifyChannel_ok","click","OnModifyChannel()");
 
 	QWFW_MSGMAP("AddChannelInGroupDouble_ok","click","OnAddChannelInGroupDouble()");
@@ -150,6 +150,9 @@ void settingsActivity::OnTopActDbClick()
 
 void settingsActivity::OnMinClick()
 {
+	if (verify(100000000, 0)){
+		return;
+	}
 	m_MainView->showMinimized();
 }
 
@@ -175,6 +178,9 @@ void settingsActivity::OnMaxClick()
 
 void settingsActivity::OnCloseClick()
 {
+	if (verify(100000000, 0)){
+		return;
+	}
 	m_MainView->close();
 	qDebug()<<__FUNCTION__<<__LINE__<<"CLOSE CMS FROM QUIT BUTTON";
 }
@@ -341,6 +347,9 @@ void settingsActivity::OnDeleteUserOk()
 /*device module*/
 void settingsActivity::OnAddDeviceDouble()
 {
+	if (verify(100000, 0)){
+		return;
+	}
 	int nRet_id;
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
@@ -461,6 +470,9 @@ void settingsActivity::OnAddDeviceDouble()
 
 void settingsActivity::OnAddDevice()
 {	
+	if (verify(100000, 0)){
+		return;
+	}
 	int nRet_id;
 	IDeviceManager *Idevice=NULL;
 	IAreaManager *Iarea=NULL;
@@ -582,6 +594,10 @@ end1:
 }
 void settingsActivity::OnRemoveDevice()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IDeviceManager *Idevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
 	//
@@ -629,6 +645,10 @@ void settingsActivity::OnRemoveDevice()
 }
 void settingsActivity::OnModifyDeviceEx()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IDeviceManager *Idevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
 	DEF_EVENT_PARAM(bcitem);
@@ -673,6 +693,10 @@ void settingsActivity::OnModifyDeviceEx()
 }
 void settingsActivity::OnModifyDevice()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IDeviceManager *Idevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&Idevice);
 	//==================
@@ -796,6 +820,10 @@ void settingsActivity::OnModifyDevice()
 /*Group Module*/
 void settingsActivity::OnAddGroup()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	int nRet_id;
 	IGroupManager *Igroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
@@ -844,6 +872,10 @@ void settingsActivity::OnAddGroup()
 
 void settingsActivity::OnModifyGroup()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IGroupManager *Igroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
 	DEF_EVENT_PARAM(arg);
@@ -893,6 +925,10 @@ void settingsActivity::OnModifyGroup()
 
 void settingsActivity::OnRemoveGroup()
 {	
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IGroupManager *Igroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&Igroup);
 	DEF_EVENT_PARAM(arg);
@@ -940,6 +976,10 @@ void settingsActivity::OnRemoveGroup()
 /*Area Module*/
 void settingsActivity::OnAddArea()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	int nRet_id;
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void**)&Iarea);
@@ -979,6 +1019,10 @@ void settingsActivity::OnAddArea()
 
 void settingsActivity::OnRemoveArea()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IAreaManager *Iarea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void **)&Iarea);
 	DEF_EVENT_PARAM(arg);
@@ -1015,6 +1059,10 @@ void settingsActivity::OnRemoveArea()
 
 void settingsActivity::OnModifyArea()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IAreaManager *IArea=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IAreaManager,(void **)&IArea);
 	DEF_EVENT_PARAM(arg);
@@ -1061,6 +1109,10 @@ void settingsActivity::OnAddChannel()
 
 void settingsActivity::OnModifyChannel()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IChannelManager *IChannel=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IChannelManager,(void **)&IChannel);
 	DEF_EVENT_PARAM(arg);
@@ -1110,6 +1162,10 @@ void settingsActivity::OnRemoveChannel()
 }
 void settingsActivity::OnAddChannelInGroupDouble()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	int nRet_id=-1;
     Q_UNUSED(nRet_id);
 	IGroupManager *IGroup=NULL;
@@ -1212,6 +1268,10 @@ void settingsActivity::OnAddChannelInGroupDouble()
 }
 void settingsActivity::OnAddChannelInGroup()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	int nRet_id=-1;
 	IGroupManager *IGroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void**)&IGroup);
@@ -1256,6 +1316,10 @@ void settingsActivity::OnAddChannelInGroup()
 
 void settingsActivity::OnRemoveChannelFromGroup()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IGroupManager * IGroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void **)&IGroup);
 	DEF_EVENT_PARAM(arg);
@@ -1312,6 +1376,10 @@ void settingsActivity::OnRemoveChannelFromGroup()
 
 void settingsActivity::OnModifyGroupChannelName()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	IGroupManager *IGroup=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IGroupManager,(void **)&IGroup);
 	DEF_EVENT_PARAM(arg);
@@ -1352,6 +1420,9 @@ void settingsActivity::OnModifyGroupChannelName()
 
 void settingsActivity::OnSettingStorageParm()
 {
+	if (verify(10000000, 0)){
+		return;
+	}
 	IDisksSetting *IDisk=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDiskSetting,(void**)&IDisk);
 	DEF_EVENT_PARAM(arg);
@@ -1432,6 +1503,10 @@ void settingsActivity::OnSettingStorageParm()
 
 void settingsActivity::OnSettingCommonParm()
 {
+	if (verify(10000000, 0)){
+		return;
+	}
+
 	ILocalSetting *Ilocal=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void**)&Ilocal);
 	DEF_EVENT_PARAM(arg);
@@ -1583,6 +1658,10 @@ void settingsActivity::OnSettingCommonParm()
 
 void settingsActivity::OnSettingRecordTimeParm()
 {
+	if (verify(10000000, 0)){
+		return;
+	}
+
 	ISetRecordTime *ISetRecord=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void**)&ISetRecord);
 	DEF_EVENT_PARAM(arg);
@@ -1625,6 +1704,10 @@ void settingsActivity::OnSettingRecordTimeParm()
 
 void settingsActivity::OnSettingRecordTimeParmDouble()
 {
+	if (verify(10000000, 0)){
+		return;
+	}
+
 	ISetRecordTime *ISetRecord=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void**)&ISetRecord);
 	DEF_EVENT_PARAM(arg);
@@ -1804,6 +1887,10 @@ void settingsActivity::OnAddDeviceALL()
 
 void settingsActivity::OnAddDeviceALLThread()
 {
+	if (verify(100000, 0)){
+		return;
+	}
+
 	//if (m_bIsAdding!=true)
 	//{
 	//	IDeviceManager *Idevice=NULL;
@@ -1817,6 +1904,9 @@ void settingsActivity::OnAddDeviceALLThread()
 }
 void settingsActivity::OnRemoveDeviceALLThread()
 {
+	if (verify(100000, 0)){
+		return;
+	}
 	OnRemoveDeviceALL();
 	/*QFuture<void>ret=QtConcurrent::run(this,&settingsActivity::OnRemoveDeviceALL);*/
 }
@@ -1929,6 +2019,10 @@ void settingsActivity::OnSettingRecordTimeParmCopy()
 
 void settingsActivity::OnAddUserExOk()
 {
+	QVariant sCurUser = QueryValue("user_id_ID");
+	if (verify(100000000, sCurUser.toLongLong())){
+		return;
+	}
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -1976,6 +2070,11 @@ void settingsActivity::OnAddUserExOk()
 
 void settingsActivity::OnModifyUserExOk()
 {
+	QVariant sCurUser = QueryValue("user_id_ID");
+	if (verify(100000000, sCurUser.toLongLong())){
+		return;
+	}
+
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -2028,6 +2127,11 @@ void settingsActivity::OnModifyUserExOk()
 
 void settingsActivity::OnDeleteUserExOk()
 {
+	QVariant sCurUser = QueryValue("user_id_ID");
+	if (verify(100000000, sCurUser.toLongLong())){
+		return;
+	}
+
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -2080,6 +2184,25 @@ void settingsActivity::OnDeleteUserExOk()
 	}else{
 		//do nothing
 	}
+}
+
+int settingsActivity::verify( qint64 mainCode, qint64 subCode )
+{
+	int ret = 0;
+	IUserManagerEx *pUserMgrEx = NULL;
+	pcomCreateInstance(CLSID_CommonlibEx, NULL, IID_IUserMangerEx, (void**)&pUserMgrEx);
+	if (pUserMgrEx){
+		ret = pUserMgrEx->checkUserLimit(mainCode, subCode);
+		if (ret){
+			QVariantMap vmap;
+			vmap.insert("MainPermissionCode", qint64(mainCode));
+			vmap.insert("SubPermissionCode", qint64(subCode));
+			vmap.insert("ErrorCode", ret);
+			EventProcCall(QString("Validation"), vmap);;
+		}
+		pUserMgrEx->Release();
+	}
+	return ret;
 }
 
 
