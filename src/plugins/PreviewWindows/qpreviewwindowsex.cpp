@@ -579,6 +579,28 @@ void qpreviewwindowsex::slPolling()
 	if (!m_divMode){
 		qDebug()<<__FUNCTION__<<__LINE__<<"m_divMode is null";
 	}
+	int curPage = m_divMode->getCurrentPage();
 	m_divMode->nextPage();
+	//check whether the current page has picture 
+	int devNum = 1;
+	QString devName = m_divMode->getModeName();
+	QRegExp rx("div(\\d+)_(\\d+)");
+	if (-1 != rx.indexIn(devName)){
+		devNum = rx.cap(1).toInt() * rx.cap(2).toInt();
+	}
+	do 
+	{
+		int page = m_divMode->getCurrentPage();
+		int startWndIndex = (page + 1)*devNum > MAX_WINDOWS_NUM ? MAX_WINDOWS_NUM - devNum : page*devNum;
+		for (int index = 0; index < devNum; ++index)
+		{
+			int curStatus = m_sPreviewWnd[startWndIndex + index].getCurrentConnectStatus();
+			if (curStatus < 2){
+				EventProcCall("DivModeChange",QVariantMap());
+				return;
+			}
+		}
+		m_divMode->nextPage();
+	} while (curPage != m_divMode->getCurrentPage());
 }
 

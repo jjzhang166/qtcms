@@ -89,7 +89,7 @@ private:
 	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
 private:
 	IWindowDivMode * m_divMode;
-	qsubviewEx m_sPreviewWnd[49];
+	qsubviewEx m_sPreviewWnd[MAX_WINDOWS_NUM];
 	QList<QWidget*>m_pPreviewWndList;
 	int m_nCurrentWnd;
 	bool m_bAudioEnabled;

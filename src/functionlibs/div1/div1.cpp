@@ -94,7 +94,7 @@ int div1::getPages()
 
 QString div1::getModeName()
 {
-	return QString("div1");
+	return QString("div1_1");
 }
 
 long __stdcall div1::QueryInterface( const IID & iid,void **ppv )

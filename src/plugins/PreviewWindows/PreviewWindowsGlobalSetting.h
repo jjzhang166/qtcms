@@ -6,6 +6,8 @@
 
 extern QMutex g_PreviewWindowsMutex;
 
+#define MAX_WINDOWS_NUM (49)
+
 typedef struct _tagDevCliSetInfo{
 	QString m_sAddress;
 	unsigned int m_uiPort;
