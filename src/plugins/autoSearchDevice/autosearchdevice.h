@@ -34,6 +34,7 @@ public slots:
 		int login(QString sUserName,QString sPassword,int nCode);//0:操作成功 1：操作失败；nCode:0(用户登录)，1（用户注销）
 		QStringList getUserList();
 		QVariantMap getUserLimit(QString sUserName);
+		QString getCurrentUser();
 		int getUserInDatabaseId(QString sUserName);//返回值为 ID，获取失败返回 -1；
 private:
 	autoSearchDeviceWindow m_tAutoSearchDeviceWindow;

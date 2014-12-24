@@ -3290,3 +3290,8 @@ int commonlibEx::getUserDatabaseId( QString sUserName,int &nId )
 	}
 	return 1;
 }
+
+QString commonlibEx::getCurrentUser()
+{
+	return checkCurrentLoginUser();
+}

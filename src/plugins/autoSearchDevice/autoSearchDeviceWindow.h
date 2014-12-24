@@ -10,6 +10,7 @@ public:
 	~autoSearchDeviceWindow();
 public:
 	void loadHtmlUrl(QString sUrl);
+
 public slots:
 	void cancel();
 	void cancelLoginUI();

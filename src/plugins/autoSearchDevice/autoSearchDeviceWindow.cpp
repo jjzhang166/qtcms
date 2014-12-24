@@ -145,6 +145,8 @@ void autoSearchDeviceWindow::cancelLoginUI()
 	emit sgCancelLoginUI();
 }
 
+
+
 //void autoSearchDeviceWindow::mouseMoveEvent( QMouseEvent * event )
 //{
 //	if (m_bMove)

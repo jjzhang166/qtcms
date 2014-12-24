@@ -205,6 +205,16 @@ int autoSearchDevice::getUserInDatabaseId( QString sUserName )
 	return nRet;
 }
 
+QString autoSearchDevice::getCurrentUser()
+{
+	QString sRet;
+	if (NULL!=m_pUserMangerEx)
+	{
+		sRet=m_pUserMangerEx->getCurrentUser();
+	}
+	return sRet;
+}
+
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("autoSearchDevice"==evName)
