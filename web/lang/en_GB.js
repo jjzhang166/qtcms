@@ -384,6 +384,8 @@
 'Voice_switch_fails':'Open audio failed',
 'Open_sound':'Open audio',
 'Turn_off_the_sound':'Close audio',
+'Automatically_start_polling':'Automatically start polling',
+'Stop_automatic_polling':'Stop automatic polling',
 'Super_Admin':'Super administrator',
 'Admin':'Administrator',
 'User':'User',

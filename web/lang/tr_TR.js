@@ -384,6 +384,8 @@ var tr_TR={
 	'Voice_switch_fails':'SES KAPATMA İŞLEMİ BAŞARISIZ!',
 	'Open_sound':'Sesi Aç', //Not yet translated
 	'Turn_off_the_sound':'Sesi Kapar', //Not yet translated
+	'Automatically_start_polling':'Otomatik yoklama başlar',
+	'Stop_automatic_polling':'Otomatik yoklama durdur',
 	'Super_Admin':'Süper Yönetici', //Not yet translated
 	'Admin':'Yönetici', //Not yet translated
 	'User':'Kullanıcı',

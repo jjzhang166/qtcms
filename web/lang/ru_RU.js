@@ -385,6 +385,8 @@
 	'Voice_switch_fails':'Аудио выкл. Ошибка операции!',
 	'Open_sound':'Audio открыт', 
 	'Turn_off_the_sound':'Audio закрыт', 
+	'Automatically_start_polling':'Автоматический запуск опрос',
+	'Stop_automatic_polling':'Остановка автоматического опроса',
 	'Super_Admin':'Супер администратор', 
 	'Admin':'Администратор', 
 	'User':'KULLANICI ADI',

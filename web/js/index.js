@@ -773,3 +773,16 @@ var oPreView,oDiv,
 	   }
 	  
    }
+  //自动轮巡
+  function AutoPolling(obj){
+	 var bl = obj.attr('toggle'); 
+	 var timer;
+     if(bl){
+	   getAudioObj().StartAutoPolling();
+	   writeActionLog(_T('Automatically_start_polling'));
+	 }else{
+	   getAudioObj().StopAutoPolling();	
+	   writeActionLog(_T('Stop_automatic_polling'));
+	 }
+	 
+  }

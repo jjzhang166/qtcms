@@ -384,6 +384,8 @@
 	'Voice_switch_fails':'打开音频失败!',
 	'Open_sound':'打开音频.',
 	'Turn_off_the_sound':'关闭音频.',
+	'Automatically_start_polling':'开始自动轮巡',
+	'Stop_automatic_polling':'停止自动轮巡',
 	'Super_Admin':'超级管理员',
 	'Admin':'管理员',
 	'User':'用户',
