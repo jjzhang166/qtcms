@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登录框</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/autosuggest/autosuggest.js"></script>
+<script type="text/javascript" src="js/autosuggest/cookie.js"></script>
+<link type="text/css" href="js/autosuggest/autosuggest.css"  rel="stylesheet"/>
+<style type="text/css">
+body, div, span, ul {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	background:url(images/loginbox/login.png) no-repeat 0 0 scroll transparent;
+	width: 100%;
+	height: 100%;
+}
+ul, li {
+	list-style: none;
+}
+ul {
+	width: 270px;
+	margin: 0 auto;
+}
+li {
+	float: left;
+}
+p {
+	width: 230px;
+	margin: 20px auto;
+}
+p .txt {
+	height: 30px;
+	width: 200px;
+	margin-left: 30px;
+	padding: 0;
+	border: 0px;
+}
+.tdBtn {
+	width: 70px;
+	background: url(images/loginbox/botton.png) no-repeat;
+	height: 22px;
+	color: #ccc;
+	text-align: center;
+	line-height: 22px;
+	font-size: 12px;
+	background-position: 0 0;
+	border: 0;
+	margin: 0 10px;
+	cursor: pointer;
+}
+</style>
+<script type="text/javascript">
+var LoginByUserName=[];
+var dvr_ID=null;
+$(document).ready(function(){
+	$('li.tdBtn').hover(function(){
+	    $(this).css('background-position','-70px 0');	
+	}).mousedown(function(){
+		$(this).css('background-position','-140px 0');	
+	}).mouseup(function(){
+		$(this).css('background-position','-70px 0');	
+	 }).mouseout(function(){
+		 
+		 $(this).css('background-position','0 0');	
+     });
+    cookiesIntoData();
+});
+
+function  userLogin(){
+   	var userid = $('#username').val();
+	var pwd = $('#pwd').val();
+	var hint = $('#tips');
+	//var ckbool = $('#remember').prop('checked');
+	if(userid==''){
+		hint.html("用户名不能为空").css('color','blue');
+		var timer = setTimeout(function(){
+			hint.html("");
+			clearTimeout(timer);
+		},2000);
+		
+     }else{
+		 //ckbool && Cookies.set("userid",userid)&& Cookies.set("pwd",pwd);
+		loginDataIntoCookies(userid,pwd);
+		hint.html("");
+	  $('#username').val('');
+	  $('#pwd').val('');
+	 } 
+} 
+
+//将已经写入cookie数据删除.
+function delData(key){ 
+//delete
+console.log("--delData--"+LoginByUserName+' '+key);
+for(var i = 0; i < LoginByUserName.length; i++)
+{
+	if(LoginByUserName[i][0] == key)
+	{
+		LoginByUserName.splice(i, 1);
+		break;
+	}
+}
+}
+//将登录信息写入cookie中
+function loginDataIntoCookies(){
+	if($('#remember').prop('checked')){
+		//写入cookie前数据保存入栈.
+		if(LoginByUserName.length  == 0){
+				LoginByUserName.push([arguments[0],arguments[1]]);
+			}else{
+				var modified = false;
+				for(var i=0; i < LoginByUserName.length; i++){
+					if(LoginByUserName[i][0] == arguments[0]){
+						LoginByUserName[i][1]== arguments[1];
+						modified = true;
+						break;
+					}
+				}
+				if(modified == false) //add
+				{
+					LoginByUserName.push([arguments[0],arguments[1]]);
+				}	
+			}
+		
+	}else{
+		delData(arguments[0]);
+	}
+	console.log("loginDataIntoCookies "+LoginByUserName);
+	Cookies.set("loginData", LoginByUserName.join());
+	
+}
+//cookie数据读取写入到栈
+function cookiesIntoData(){
+	var str = Cookies.get("loginData");
+	console.log(str);
+	var data = LoginByUserName;
+	if(str != null)
+	{
+		var strs = str.split(",");
+		for(var i = 0; i < strs.length/2; i++)
+		{
+			if(strs[0] != "")
+			{
+				data.push([strs[i*2 + 0], [strs[i*2 + 1]]]);
+			}
+		}
+	}
+	console.log("cookiesIntoData--"+data);
+	dvr_ID = new autosuggest(
+	"username", 
+	data, 
+	null, 
+	function(index, control) 
+	{ 
+		$('#username').val(control.keywords[index]); 
+		$('#pwd').val(control.values[index][0])
+	});	
+}
+function show_suggest(){
+	$('#username').select();
+	dvr_ID.timer = setTimeout(function(){dvr_ID.preSuggest(-1);},25);
+}
+</script>
+</head>
+
+<body>
+<p style="background:url(images/loginbox/user.jpg) 0 0 scroll no-repeat transparent; border:2px solid #999;margin-top:90px">
+  <input class="txt" type="text" id="username" onFocus="show_suggest()" onDblClick="show_suggest()"/>
+</p>
+<p style="background:url(images/loginbox/pwd.jpg) 0 0 scroll no-repeat transparent ;border:2px solid #999;">
+  <input class="txt" type="password" id="pwd"/>
+</p>
+<p style="color:#FFF">
+  <input type="checkbox"  checked="checked" id="remember"/>
+  记住密码</p>
+<div style="width:270px; margin:0 auto; overflow:hidden;">
+<ul>
+  <li class="tdBtn" onclick="userLogin();" >确定</li>
+  <li class="tdBtn">锁定</li>
+  <li class="tdBtn">取消</li>
+</ul>
+</div>
+<div style="width:270px; margin:10px auto;"><span id="tips" ></span></div>
+</body>
+</html>
