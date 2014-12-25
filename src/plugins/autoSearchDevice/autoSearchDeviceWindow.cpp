@@ -44,8 +44,21 @@ m_bMove(false)
 	setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
 
 	setWindowModality(Qt::ApplicationModal);
-	setWindowOpacity(1);
-	setAttribute(Qt::WA_TranslucentBackground);
+	//setWindowOpacity(1);
+	//setAttribute(Qt::WA_TranslucentBackground);
+
+	QPalette pal = palette();
+	pal.setColor( QPalette::Background, QColor( 0x00,0xff,0x00,0x00 ) );
+
+	QWidget::setPalette( pal );
+	QWidget::setAttribute( Qt::WA_TranslucentBackground, true );
+	QWidget::setAttribute(Qt::WA_AcceptDrops,true);
+	QWidget::setAttribute(Qt::WA_MouseTracking ,true);
+	QWidget::setWindowOpacity( 0.8);
+
+	installEventFilter(this);
+	page()->installEventFilter(this);
+	page()->mainFrame()->installEventFilter(this);
 }
 
 
@@ -145,28 +158,27 @@ void autoSearchDeviceWindow::cancelLoginUI()
 	emit sgCancelLoginUI();
 }
 
-
-
-//void autoSearchDeviceWindow::mouseMoveEvent( QMouseEvent * event )
-//{
-//	if (m_bMove)
-//	{
-//		this->move(event->globalPos()-this->m_tDPos);
-//	}
-//	event->ignore();
-//}
-//
-//void autoSearchDeviceWindow::mousePressEvent( QMouseEvent *event )
-//{
-//	m_bMove=true;
-//	this->m_tWindowPos = this->pos();
-//	this->m_tMousePos = event->globalPos(); 
-//	this->m_tDPos=m_tMousePos-m_tWindowPos;
-//	event->ignore();
-//}
-//
-//void autoSearchDeviceWindow::mouseReleaseEvent( QMouseEvent *event )
-//{
-//	m_bMove=false;
-//	event->ignore();
-//}
+bool autoSearchDeviceWindow::eventFilter( QObject *obj, QEvent *ev )
+{
+	if (ev->type()==QMouseEvent::MouseMove)
+	{
+		if (m_bMove)
+		{
+			QMouseEvent * event=(QMouseEvent *)ev;
+			this->move(event->globalPos()-this->m_tDPos);
+		}
+	}
+	if (ev->type()==QMouseEvent::MouseButtonPress)
+	{
+		QMouseEvent * event=(QMouseEvent *)ev;
+		m_bMove=true;
+		this->m_tWindowPos = this->pos();
+		this->m_tMousePos = event->globalPos(); 
+		this->m_tDPos=m_tMousePos-m_tWindowPos;
+	}
+	if (ev->type()==QMouseEvent::MouseButtonRelease)
+	{
+		m_bMove=false;
+	}
+	return false;  
+}

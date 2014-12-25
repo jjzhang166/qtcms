@@ -17,9 +17,7 @@ public slots:
 	void OnLoad(bool bOk);
 	void OnurlChanged(const QUrl & url);
 protected:
-	//virtual void mouseMoveEvent ( QMouseEvent * event ) ;
-	//virtual void mousePressEvent(QMouseEvent *event);
-	//virtual void mouseReleaseEvent(QMouseEvent *event);
+	 bool eventFilter(QObject *obj, QEvent *ev);
 signals:
 	void sgCancel();
 	void sgCancelLoginUI();
