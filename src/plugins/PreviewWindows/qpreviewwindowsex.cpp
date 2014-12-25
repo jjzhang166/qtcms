@@ -23,7 +23,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
-		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap vmap)));
+		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap)));
 
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}

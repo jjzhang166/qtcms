@@ -173,7 +173,17 @@ insert into general_setting (name,value) values('misc_aconnent','false');
 insert into general_setting (name,value) values('misc_afullscreen','false');
 insert into general_setting (name,value) values('misc_bootstart','false');
 
-insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','','1111111111','1','0','10');
+insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','202cb962ac59075b964b07152d234b70','1111111111','1','0','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1000000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10000000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100000000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1000000000','0');
 
 insert into window_settings (wnd_id,stretch,chl_id) values(0,1,-1);
 insert into window_settings (wnd_id,stretch,chl_id) values(1,1,-1);

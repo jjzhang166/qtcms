@@ -3211,7 +3211,7 @@ QString commonlibEx::checkCurrentLoginUser()
 	QSqlQuery _query(*m_db);
 	quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
 	quint64 uiLastTime;
-	QString sCmd=QString("select userName ,logTime from user where userState=0 and logTime+logOutInterval>=%1").arg(uiCurrentTime);
+	QString sCmd=QString("select userName ,logTime from user where (userState=0 and logTime+logOutInterval>=%1) or (userState=0 and logOutInterval=0)").arg(uiCurrentTime);
 	m_tUserLock.lock();
 	if (_query.exec(sCmd))
 	{
@@ -3256,6 +3256,7 @@ bool commonlibEx::checkUserIsExist(QString sUserName)
 			return true;
 		}else{
 			_query.finish();
+			m_tUserLock.unlock();
 			return false;
 		}
 	}else{
