@@ -3086,7 +3086,12 @@ int commonlibEx::getUserLimit(QString sUserName, quint64 &uiLimit,QVariantMap &t
 				while(_query.next()){
 					QString sMainSingleCode=_query.value(0).toString();
 					QString sSubCode=_query.value(1).toString();
-					tSubCode.insertMulti(sMainSingleCode,sSubCode);
+					if (tSubCode.contains(sMainSingleCode))
+					{
+						QString sLast=tSubCode.value(sMainSingleCode).toString();
+						sSubCode=sSubCode+","+sLast;
+					}
+					tSubCode.insert(sMainSingleCode,sSubCode);
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
