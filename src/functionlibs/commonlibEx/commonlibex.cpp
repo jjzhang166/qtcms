@@ -2792,6 +2792,11 @@ int commonlibEx::addUser( const QString &sUserName,const QString &sPassword,quin
 	//验证用户是否存在
 	//添加到用户主权限表
 	//添加到子权限表
+	if (sUserName.isEmpty()||sPassword.isEmpty())
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"add user fail as sUserName or sPassword is empty";
+		return 1;
+	}
 	QSqlQuery _query(*m_db);
 	QString sCmd=QString("select *from user where userName='%1'").arg(sUserName);
 	m_tUserLock.lock();

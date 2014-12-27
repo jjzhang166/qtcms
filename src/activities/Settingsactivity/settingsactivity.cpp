@@ -2019,8 +2019,7 @@ void settingsActivity::OnSettingRecordTimeParmCopy()
 
 void settingsActivity::OnAddUserExOk()
 {
-	QVariant sCurUser = QueryValue("user_id_ID");
-	if (verify(100000000, sCurUser.toLongLong())){
+	if (verify(100000000, 0)){
 		return;
 	}
 	IUserManagerEx *pUserMangerEx=NULL;
@@ -2062,19 +2061,16 @@ void settingsActivity::OnAddUserExOk()
 	{
 		sRet.append("AddUserSuccess");
 		EP_ADD_PARAM(arg,"success",sRet);
+		EventProcCall("AddUserSuccess",arg);
 	}else{
 		sRet.append("AddUserFail");
 		EP_ADD_PARAM(arg,"fail",sRet);
+		EventProcCall("AddUserSuccess",arg);
 	}
 }
 
 void settingsActivity::OnModifyUserExOk()
 {
-	QVariant sCurUser = QueryValue("user_id_ID");
-	if (verify(100000000, sCurUser.toLongLong())){
-		return;
-	}
-
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -2103,16 +2099,37 @@ void settingsActivity::OnModifyUserExOk()
 				QString tSubLimit=tSubLimtNode.toElement().attribute("subLimit");
 				tVariantMap.insertMulti(tMainCode,tSubLimit);
 			}
-			nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
-			if (nRet==0)
+			int nUserId=-1;
+			pUserMangerEx->getUserDatabaseId(sOldUserName,nUserId);
+			if (nUserId!=-1)
 			{
-				sRet.clear();
-				sRet.append("ModifyUserSuccess");
-				EP_ADD_PARAM(arg,"success",sRet);
+				if (verify(100000000, nUserId)){
+					if(NULL!=pUserMangerEx){
+						pUserMangerEx->Release();
+						pUserMangerEx=NULL;
+					}
+					sRet.clear();
+					sRet.append("ModifyUserFail");
+					EP_ADD_PARAM(arg,"fail",sRet);
+					EventProcCall("ModifyUserFail",arg);
+					return;
+				}
+				nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
+				if (nRet==0)
+				{
+					sRet.clear();
+					sRet.append("ModifyUserSuccess");
+					EP_ADD_PARAM(arg,"success",sRet);
+					EventProcCall("ModifyUserSuccess",arg);
+				}else{
+					sRet.clear();
+					sRet.append("ModifyUserFail");
+					EP_ADD_PARAM(arg,"fail",sRet);
+					EventProcCall("ModifyUserFail",arg);
+				}
 			}else{
-				sRet.clear();
-				sRet.append("ModifyUserFail");
-				EP_ADD_PARAM(arg,"fail",sRet);
+				//keep going
+				qDebug()<<__FUNCTION__<<__LINE__<<"there is no such user";
 			}
 		}
 	}else{
@@ -2127,11 +2144,6 @@ void settingsActivity::OnModifyUserExOk()
 
 void settingsActivity::OnDeleteUserExOk()
 {
-	QVariant sCurUser = QueryValue("user_id_ID");
-	if (verify(100000000, sCurUser.toLongLong())){
-		return;
-	}
-
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -2153,24 +2165,47 @@ void settingsActivity::OnDeleteUserExOk()
 				tItem=tItemList.at(n);
 				QString sDelteName=tItem.toElement().attribute("username");
 				int nRet=-1;
-				nRet=pUserMangerEx->deleteUser(sDelteName);
-				if (0!=nRet)
+				int nUserID=-1;
+				pUserMangerEx->getUserDatabaseId(sDelteName,nUserID);
+				if (nUserID!=-1)
 				{
-					sRet.clear();
-					sRet.append("DeleteUserFail");
-					EP_ADD_PARAM(arg,"fail",sRet);
+					if (verify(100000000, nUserID)){
+						if (NULL!=pUserMangerEx)
+						{
+							pUserMangerEx->Release();
+							pUserMangerEx=NULL;
+						}
+						sRet.append("DeleteUserFail");
+						EP_ADD_PARAM(arg,"fail",sRet);
+						EventProcCall("DeleteUserFail",arg);
+						return;
+					}else{
+						nRet=pUserMangerEx->deleteUser(sDelteName);
+						if (0!=nRet)
+						{
+							sRet.clear();
+							sRet.append("DeleteUserFail");
+							EP_ADD_PARAM(arg,"fail",sRet);
+							EventProcCall("DeleteUserFail",arg);
+						}else{
+							//keep going
+						}
+					}
 				}else{
 					//keep going
+					qDebug()<<__FUNCTION__<<__LINE__<<"there is no that userName";
 				}
 			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"DeleteUserEx fail as the item is empty";
 			sRet.append("DeleteUserFail");
 			EP_ADD_PARAM(arg,"fail",sRet);
+			EventProcCall("DeleteUserFail",arg);
 		}
 	}else{
 		sRet.append("DeleteUserFail");
 		EP_ADD_PARAM(arg,"fail",sRet);
+		EventProcCall("DeleteUserFail",arg);
 	}
 	if (NULL!=pUserMangerEx)
 	{
@@ -2181,6 +2216,7 @@ void settingsActivity::OnDeleteUserExOk()
 	{
 		sRet.append("DeleteUserSuccess");
 		EP_ADD_PARAM(arg,"success",sRet);
+		EventProcCall("DeleteUserSuccess",arg);
 	}else{
 		//do nothing
 	}
