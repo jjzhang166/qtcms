@@ -2065,7 +2065,7 @@ void settingsActivity::OnAddUserExOk()
 	}else{
 		sRet.append("AddUserFail");
 		EP_ADD_PARAM(arg,"fail",sRet);
-		EventProcCall("AddUserSuccess",arg);
+		EventProcCall("AddUserFail",arg);
 	}
 }
 
@@ -2130,6 +2130,10 @@ void settingsActivity::OnModifyUserExOk()
 			}else{
 				//keep going
 				qDebug()<<__FUNCTION__<<__LINE__<<"there is no such user";
+				sRet.clear();
+				sRet.append("ModifyUserFail");
+				EP_ADD_PARAM(arg,"fail",sRet);
+				EventProcCall("ModifyUserFail",arg);
 			}
 		}
 	}else{
