@@ -462,6 +462,15 @@
 	//预览弹出窗口
 	'Adding cameras':'Adding cameras',
 	'Adding devices, please be patient':'Adding devices, please be patient.',
-	'waiting_tips':'Are automatically searches the device and add, please wait _V_ seconds for your patience.'
+	'waiting_tips':'Are automatically searches the device and add, please wait _V_ seconds for your patience.',
+	
+	//用户设置
+	'User_rights':'User rights',
+	'Local_Playback':'Local Playback',
+	'Remote_Playback':'Remote Playback',
+	'Device_Remote_Setup':'Device Remote Setup',
+	'Local_Settings':'Local Settings',
+	'User_Settings':'User Settings',
+	'Exit_system':'Exit system',
 
 }

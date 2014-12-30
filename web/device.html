@@ -54,7 +54,7 @@
 	table .inpt2{margin-left:90px; width:100px; height:22px; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; line-height: 22px; text-align: center;}
 	table .select,table .option{ margin-left:4px; text-indent: 0;}
 	.title{color: #FF6400;}
-	.tb1 td,.tb2,td{width:auto;}
+	.tb1 td,.tb2,td,.tb3{width:auto;}
 	.tb1 {display: block; background: #282828; float: left;}
 	.tb1 tr{background: #323232;}
 	.tb2 tbody td{border:1px solid #EDF1F7;}
@@ -68,10 +68,16 @@
 	.menu0{ background:#282828; position:absolute; display:none; min-width:70px;}
 	.menu0 li:hover{ background:#C25451; cursor: default; }
 
-	.userManagement{ display: block; color: #000; width: 800px;height: 600px; overflow: auto; background: #EDF1F7;}
-	.userManagement li{ text-indent: 20px; background:url(treeview/images/area_01.png) no-repeat; height: 18px;}
-	.user div{ float: left;}
-	.UserMan tbody tr:hover,.selected{ background: #ccc; color:#000;}
+	 
+	 #UserList thead td{height:0;}
+	 #userList .sel{background: #4A911C}
+	 #userList td{ border:1px solid #CCC;}
+	 .userRight{ width:200px; overflow:hidden;}
+	 .userRight li{ min-width:150px; height:20px; float:left;}
+	 .userRight li.sel{background: #4A911C;color:#fff;}
+	 .subRight { background:#323232; width:540px; height:250px; padding:10px; }
+	 .subRight ul{overflow-y:auto;overflow-x:hidden; width:520px; height:200px;}
+	 .subRight li{width:250px; height:20px; float:left;}
 	.right_content,.confirm{ display: none;}
 	.right_content{height: 100%;width:100%;}
 	
@@ -83,6 +89,7 @@
 	#ajaxHint{ display: none; text-align: center; position: absolute; left: 14px; border-radius: 4px; background: #B64442; color: #ccc; padding:2px; }
 
 	#SerachDevList thead td{height:0;}
+	
 
 	.week input,.week li{width:133px; clear:both;}
 	 #ui-datepicker-div{background-color:#1E1E1E;font-size:12px;}/*改变jtimepicker背景颜色*/
@@ -92,6 +99,7 @@
 </head>
 <body style="background:#282828;">
 <object type="application/cms-common-library" id="commonLibrary" style="width:0; height:0; position: absolute;"></object>
+<object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:0; height:0;" ></object>
 <script type="text/javascript">
 	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
@@ -129,12 +137,12 @@
 				<li class="setViewNum hover" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
 				<li class="setViewNum hover" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
 				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Local_Settings")</script></li>
-				<!-- <li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> -->
+				 <li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> 
 				<li class="setViewNum hover" style="background-position:0 -200px;"><script>T("Version")</script></li>
 			</ul>
 		</div>
 		<div class="right">
-			<div style="-display:block;" class="right_content">
+			<div style="display:block;" class="right_content">
 				<table class="tb1 tb2" style="position: absolute; top:0;">
 					<thead class="thead">
 						<tr>
@@ -1887,45 +1895,126 @@
 					</table>
 				</div>
 			</div>
-	<!-- <div style="position: relative;" class="right_content">
-	<table id="UserMan">
-		<tr>
-			<td style="width:300px;">
-				<table class="tb2 UserMan" style="position: absolute; top:0; left:0; margin:6px;">
-					<thead>
-						<tr><td style="width:30px;"><script>T("No.")</script></td><td style="width:110px;"><script>T("No.")</script></td><td style="width:144px;"><script>T("No.")</script></td></tr>
-					</thead>
-					<tbody>
-						<tr><td style="height:0; padding:0; border:0;" colspan="3"><input type="hidden" value="" id="username_list_ID"/></td></tr>
-					</tbody>
-				</table>
-			</td>
-			<td>
-				<div class="userManagement">
-					<ul>
-						<li>NetMonitor</li>
-						<li>PTZcontrol</li>
-						<li>videoePlayBack</li>
-						<li>LocalRecord</li>
-						<li>LogSearch</li>
-						<li>VOIP</li>
-						<li>RemoteParam</li>
-					</ul>
-				</div>
-			</td>
-			</tr>
-		<tr>
-			<td></td>
-			<td>
-				<ul class="tdBtn user">
-					<li><div class="hover" onclick="ShowUserOperateMenu('menu2')"><script>T("Add_User")</script></div></li>
-					<li><div class="hover" onclick="ShowUserOperateMenu('menu3')"><script>T("Modify_user")</script></div></li>
-					<li><div class="hover" id="DeleteUser_ok"><script>T("Delete_users")</script></div></li>
-				</ul>
-			</td>
-		</tr>
-	</table>
-	</div> -->
+	 <div style="position: relative;" class="right_content">
+      <div style="position: absolute; top:0px; left:10px;">
+      <table class="tb2 tb1">
+       <thead class="thead">
+          <tr><td style="width:150px;">ID</td><td style="width:150px;"><script>T("Username")</script></td></tr>
+       </thead>
+       <tbody>
+          <tr><td style="height:0; padding:0; border:0;" colspan="2"><input type="hidden" value="" id="username_list_ID"/></td></tr>
+       </tbody>
+      </table>
+      <table id="UserList" class="tb1" cellpadding="0" style="position: absolute; top:18px; height:145px;overflow-y:auto; overflow-x:hidden;">
+       <thead>
+          <tr style="height:0; padding:0; border:0;"><td style="width:150px;"><input type="hidden" value="" id="username_list_ID"/></td><td style="width:150px;"></td></tr>
+       </thead>
+       <tbody id="userList" class="synCheckboxClick">
+       </tbody>
+      </table>
+      </div>
+      <div style="position:absolute;top:30px; left:320px;">
+      <table  class="tb1">
+      <thead>
+        <tr style=" background:#282828; text-align:center;"><td colspan="3"><script>T("Username")</script>:<input type="text" id="userR" /></td></tr>
+        <tr style=" background:#282828; text-align:center;"><td colspan="3">&nbsp;&nbsp;&nbsp;<script>T("Password")</script>:<input type="password" id="pwdR"/></td></tr>
+        <tr style=" background:#282828;"><td colspan="3" class="tdBtn">
+        <div class="hover" onclick="getAddUserXml();" id="AddUserEx_ok"><script>T("Add_User")</script></div>
+        <div class="hover" onclick="getModUserXml();" id="ModifyUserEx_ok"><script>T("Modify_user")</script></div>
+        <div class="hover" onclick="getDelUserXml();" id="DeleteUserEx_ok"><script>T("Delete_users")</script></div>
+        <input type="hidden" id="addUserEx_ID" />
+        <input type="hidden" id="modifyUserEx_ID" />
+        <input type="hidden" id="deleteUserEx_ID" />
+        </td></tr>
+      </thead>
+      </table>
+      </div>
+      <div style="position:absolute;top:200px;left:10px;" id="userRight">
+       <div id="mainRight" style="float:left;overflow:hidden;" >
+       <p class="title"><script>T("User_rights")</script></p>
+       <p style="padding-left:10px;"><input type="checkbox" class="selAll" /><script>T("Select")</script></p>
+       <ul class="userRight" style="width:200px;height:300px; cursor:pointer;">
+       <li class='sel'><input type="checkbox" /><script>T("Preview")</script></li><li><input type="checkbox" /><script>T("PTZ_settings")</script></li><li><input type="checkbox" /><script>T("Local_Playback")</script></li>
+       <li><input type="checkbox" /><script>T("Remote_Playback")</script></li><li><input type="checkbox" /><script>T("Backup")</script></li><li><input type="checkbox" /><script>T("Device_Manager")</script></li>
+       <li><input type="checkbox" /><script>T("Device_Remote_Setup")</script></li><li><input type="checkbox" /><script>T("Local_Settings")</script></li><li><input type="checkbox" /><script>T("User_Settings")</script></li>
+       <li><input type="checkbox" /><script>T("Exit_system")</script></li>
+       </ul>
+       </div>
+        <div class="subRight" style="float:left;">
+        <p class="title"><script>T("Preview")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+        <div class="subRight" style="float:left;display:none">
+        <p class="title"><script>T("PTZ_settings")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+       <div class="subRight" style="float:left;display:none;">
+       <p class="title"><script>T("Local_Playback")</script></p>
+       <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+       <ul class="windows">
+       <li data="1"><input type="checkbox" /><script>T("wind")</script>1</li><li data="2"><input type="checkbox" /><script>T("wind")</script>2</li><li data="3"><input type="checkbox" /><script>T("wind")</script>3</li>
+       <li data="4"><input type="checkbox" /><script>T("wind")</script>4</li><li data="5"><input type="checkbox" /><script>T("wind")</script>5</li><li data="6"><input type="checkbox" /><script>T("wind")</script>6</li>
+       <li data="7"><input type="checkbox" /><script>T("wind")</script>7</li><li data="8"><input type="checkbox" /><script>T("wind")</script>8</li><li data="9"><input type="checkbox" /><script>T("wind")</script>9</li>
+       <li data="10"><input type="checkbox" /><script>T("wind")</script>10</li><li data="11"><input type="checkbox" /><script>T("wind")</script>11</li><li data="12"><input type="checkbox" /><script>T("wind")</script>12</li>
+       <li data="13"><input type="checkbox" /><script>T("wind")</script>13</li><li data="14"><input type="checkbox" /><script>T("wind")</script>14</li><li data="15"><input type="checkbox" /><script>T("wind")</script>15</li>
+       <li data="16"><input type="checkbox" /><script>T("wind")</script>16</li><li data="17"><input type="checkbox" /><script>T("wind")</script>17</li><li data="18"><input type="checkbox" /><script>T("wind")</script>18</li>
+       <li data="19"><input type="checkbox" /><script>T("wind")</script>19</li><li data="20"><input type="checkbox" /><script>T("wind")</script>20</li><li data="21"><input type="checkbox" /><script>T("wind")</script>21</li>
+       <li data="22"><input type="checkbox" /><script>T("wind")</script>22</li><li data="23"><input type="checkbox" /><script>T("wind")</script>23</li><li data="24"><input type="checkbox" /><script>T("wind")</script>24</li>
+       <li data="25"><input type="checkbox" /><script>T("wind")</script>25</li><li data="26"><input type="checkbox" /><script>T("wind")</script>26</li><li data="27"><input type="checkbox" /><script>T("wind")</script>27</li>
+       <li data="28"><input type="checkbox" /><script>T("wind")</script>28</li><li data="30"><input type="checkbox" /><script>T("wind")</script>30</li><li data="31"><input type="checkbox" /><script>T("wind")</script>31</li>
+       <li data="32"><input type="checkbox" /><script>T("wind")</script>32</li><li data="33"><input type="checkbox" /><script>T("wind")</script>33</li><li data="34"><input type="checkbox" /><script>T("wind")</script>34</li>
+       <li data="35"><input type="checkbox" /><script>T("wind")</script>35</li><li data="36"><input type="checkbox" /><script>T("wind")</script>36</li><li data="37"><input type="checkbox" /><script>T("wind")</script>37</li>
+       <li data="38"><input type="checkbox" /><script>T("wind")</script>38</li><li data="39"><input type="checkbox" /><script>T("wind")</script>39</li><li data="40"><input type="checkbox" /><script>T("wind")</script>40</li>
+       <li data="41"><input type="checkbox" /><script>T("wind")</script>41</li><li data="42"><input type="checkbox" /><script>T("wind")</script>42</li><li data="43"><input type="checkbox" /><script>T("wind")</script>43</li>
+       <li data="44"><input type="checkbox" /><script>T("wind")</script>44</li><li data="45"><input type="checkbox" /><script>T("wind")</script>45</li><li data="46"><input type="checkbox" /><script>T("wind")</script>46</li>
+       <li data="47"><input type="checkbox" /><script>T("wind")</script>47</li><li data="48"><input type="checkbox" /><script>T("wind")</script>48</li><li data="49"><input type="checkbox" /><script>T("wind")</script>49</li>
+       </ul>
+       </div>
+       <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Remote_Playback")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+       <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Backup")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+       <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Device_Manager")</script></p>
+         <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+        <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Device_Remote_Setup")</script></p>
+         <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+        <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Local_Settings")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+        <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("User_Settings")</script></p>
+        <p style="padding-left:4px;"><input type="checkbox" class="selAll" disabled/><script>T("Select")</script></p>
+        <ul>
+        </ul>
+       </div>
+        <div class="subRight" style="float:left;display:none;">
+        <p class="title"><script>T("Exit_system")</script></p>
+       </div>
+      </div>
+	</div> 
 	<div style="position: relative;" class="right_content">
 			<div class="switch" style="display:block;top:0;">
 				<table>

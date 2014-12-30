@@ -463,5 +463,14 @@ var tr_TR={
 	//预览弹出窗口
 	'Adding cameras':'kameralar ekleme',
 	'Adding devices, please be patient':'Cihazları ekleme, lütfen sabırlı olun',
-	'waiting_tips':'Otomatik cihaz arar ve sabrınız için _V_ saniye bekleyin lütfen, eklemek'
+	'waiting_tips':'Otomatik cihaz arar ve sabrınız için _V_ saniye bekleyin lütfen, eklemek',
+	
+	//用户设置
+	'User_rights':'kullanıcı hakları',
+	'Local_Playback':'yerel Oynatma',
+	'Remote_Playback':'Uzaktan Oynatma',
+	'Device_Remote_Setup':'Cihaz Uzaktan Kurulum',
+	'Local_Settings':'Local Settings',//Not yet translated
+	'User_Settings':'kullanıcı Ayarları',
+	'Exit_system':'çıkış sistemi',
 }

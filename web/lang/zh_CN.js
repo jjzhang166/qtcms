@@ -461,7 +461,15 @@
 	//预览弹出窗口
 	'Adding cameras':'添加摄像机',
 	'Adding devices, please be patient':'正在添加设备，请您耐心等候.',
-	'waiting_tips':'正在自动搜索设备并添加，请您耐心等候_V_秒.'
+	'waiting_tips':'正在自动搜索设备并添加，请您耐心等候_V_秒.',
+	//用户设置
+	'User_rights':'用户权限',
+	'Local_Playback':'本地回放',
+	'Remote_Playback':'远程回放',
+	'Device_Remote_Setup':'设备远程设置',
+	'Local_Settings':'本地设置',
+	'User_Settings':'用户设置',
+	'Exit_system':'退出系统',
 	
 
 }

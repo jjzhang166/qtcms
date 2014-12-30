@@ -1,8 +1,9 @@
-var oSearchOcx,
+var oSearchOcx,autoSeachOcx,
 	searchedDev=[];//已经搜索到的设备;
 	$(function(){
          document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
-		oSearchOcx = document.getElementById('devSearch');
+		 oSearchOcx = document.getElementById('devSearch');
+		 autoSeachOcx = document.getElementById('atuoSearchDevice');
 		var oTreeWarp = $('div.dev_list').slice(2);
 
 		oTreeWarp.hide();
@@ -267,9 +268,50 @@ var oSearchOcx,
 				}else if(key == 2){  //单击“本地设置”
 				  
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
-				}/*else if(key == 3){ 
+				}else if(key == 3){ 
 					userList2Ui();
-				}*/
+				    userRight2Ui();
+					$('#mainRight li').each(function(index){
+						 $(this).click(function(){
+						    $('#mainRight li').removeClass('sel');
+							$(this).addClass('sel');
+						    $('.subRight').hide();
+							$('.subRight').eq(index).show();
+							if($(this).find('input').prop('checked')){
+						      $('.subRight:visible input').prop('disabled',false);	
+						    }else{
+						     $('.subRight:visible input').prop('disabled',true);
+						   }
+						   var b = true;
+				         $('#mainRight li :checkbox').each(function(){
+					             if(!$(this).prop('checked')){
+						         b = false;
+					       }
+				         })
+
+				         $(this).parent('ul').prev('p').find('.selAll').prop('checked',b); 
+						 });
+					});
+				   $('.subRight li :checkbox').click(function(index){
+						   
+							    var b = true;
+				                $('.subRight:visible li :checkbox').each(function(){
+					                if(!$(this).prop('checked')){
+						               b = false;
+					             }
+				               })
+				              $(this).parent('li').parent('ul').prev('p').find('.selAll').prop('checked',b); 
+						 
+                      });
+				  $('.selAll').click(function(){
+					 if($(this).prop('checked')){ 
+						$(this).parent('p').next('ul').find('li input').prop('checked',true);
+					 }else{
+						$(this).parent('p').next('ul').find('li input').prop('checked',false);
+					 }
+				  });
+				
+				}
 			})
 
 			// 设置相关
@@ -362,16 +404,50 @@ var oSearchOcx,
 				$('#weekday_choose input:enabled').prop('checked',$(this).prop('checked'));
 			});
 		//用户table下 tr委托部分事件
-		$('table.UserMan').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
+		$('#userList').on('click','tr',function(event){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
-			var oSelected =[];
-			var userName = $(this).find('td').eq(1).html();
-			$(this).toggleClass('selected');  // tr toggle样式
-			$('table.UserMan tr.selected').each(function(){ 
-				oSelected.push($(this).data('data')['username'])
-			})
-			$('#username_list_ID').val(oSelected.join(','));
-		})
+			$('.subRight input,#mainRight input').each(function(){$(this).prop('checked',false)});
+			var objbtn = $(this).find('input');
+			objbtn.prop('checked',!objbtn.prop('checked'));
+			var data = $(this).data('data');
+			//console.log(data);
+			$('#userList').find('tr').removeClass('sel');
+			$(this).addClass('sel');
+			$('#userR').val(data.username);
+			var types = parseInt(data.userlv,2);
+			var subRname = data.subname;
+			var subRdata = data.subdata;
+			//console.log('subRname  subRdata');
+			//console.log(subRname);
+			//console.log(subRdata);
+			for(var j = 0; j < 10; j++){
+				if(types == 0){
+				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
+				  break;
+				}else{			
+				  $('#mainRight ul input:checkbox').eq(j).prop("checked",(types & (1 << j)));
+				     if((types & (1 << j))){
+						var num = 1<<j;	
+						for(var i in subRname){
+						    if(parseInt(subRname[i],2) == num){
+							    var subdata = subRdata[i].split(',');
+								if(subdata.length==1&&subdata[0]=='0'){
+									$('.subRight:eq('+j+') input').prop('checked',true);
+									
+								}else{
+									for(var k =0;k<subdata.length;k++){
+										
+										$('.subRight:eq('+j+') li[data="'+subdata[k]+'"] input').prop('checked',true);
+									}
+									
+								}
+							}
+							 	
+						}
+					}
+				}
+			}		
+		});
 			
 		/*$('ul.filetree').each(function(){ 
 			var warp = $(this)
@@ -467,7 +543,7 @@ var oSearchOcx,
 		/*控件触发事件调用的元素事件绑定.*/
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDeviceFeedBack',/*'ModifyDevice','RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack'];  //事件名称集合
+		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDeviceFeedBack',/*'ModifyDevice','RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack',];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
@@ -863,18 +939,206 @@ var oSearchOcx,
 	}
 	//用户设置方法 User Manage
 	function userList2Ui(){
-		$('#UserMan table.UserMan tbody input:hidden').val('');
-		$('#UserMan table.UserMan tbody tr').not(':first').remove();
-		var userList = oCommonLibrary.GetUserList();
+		$('#userR').val('');
+		$('#pwdR').val('');
+		$('#userList tr').remove();
+		 
+		$('#mainRight input,.subRight input').each(function(){$(this).prop('checked',false)});
+		var userList = autoSeachOcx.getUserList();
+		
 		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
-			for(i in userList){
-				var userlv = oCommonLibrary.GetUserLevel(userList[i]);
-				var userCom = userLev[userlv]
-				
-				var data = {'username':userList[i],'userlv':userlv,'userCom':userCom}
-				$('<tr><td>'+i+'</td><td>'+userList[i]+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
+		  //var fragment = document.createDocumentFragment();
+			for(var i in userList){
+				var userlv = autoSeachOcx.getUserLimit(userList[i]);
+				var userid = autoSeachOcx.getUserInDatabaseId(userList[i]);
+				var dataArry =[] , subname=[];
+				//console.log(userlv);
+				for(var j in userlv){
+					if(j!='mainLimit'){
+					   subname.push(j);
+					   dataArry.push(userlv[j]);
+					}
+				}
+				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit,'subname':subname,'subdata':dataArry};
+			
+				 userid!=-1 && $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>').appendTo('#userList').data('data',data);
+				/*if(userid!=-1){
+					var newItem = $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>');
+					newItem.data('data',data);
+					fragment.appendChild(newItem);
+				}*/
 			}
-		}		
+			//$('#userList')[0].appendChild(fragment);
+		}
+		
+		  var warp = $('#UserList');
+
+        if($('#userList').height() >= warp.height() && !warp.attr('b')){
+            theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
+            warp.attr('b',0);
+        }		
+	}
+	//用户权限填充到ui
+	function userRight2Ui(){
+		$('.subRight ul:not(".windows") li').remove();
+	     	for(var i=0;i<10;i++){
+			   if(i==8){
+					  var userList = autoSeachOcx.getUserList();
+  
+					if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
+						var fragment = document.createDocumentFragment();
+						for(var j =0;j<userList.length;j++){
+							var userid = autoSeachOcx.getUserInDatabaseId(userList[j]);
+						   // userid!=-1 && $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>').appendTo($('.subRight:eq(8) ul'));
+						   if(userid!=-1){
+							   var newItem = $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>')[0];
+							   fragment.appendChild(newItem);
+							}
+						}
+						$('.subRight:eq(8) ul')[0].appendChild(fragment);
+					 }
+				}else if(i!=2 && i!=9){
+					insertChlIntoUI(i);
+				}
+			  }	
+	}
+	
+	//设备通道填充到子权限表中
+	function insertChlIntoUI(index){
+		var areaList= oCommonLibrary.GetAreaList();
+		//console.log(areaList);
+		getDevInfo(0,index); //取根节点
+		for(var i=0;i<areaList.length;i++){
+		   getDevInfo(areaList[i],index);
+		}
+	    
+		
+	}
+	function getDevInfo(areaid,index){
+		var devList = oCommonLibrary.GetDeviceList(areaid);
+		   //console.log(devList);
+		for (var i in devList){
+			var id=devList[i];
+			var devData = oCommonLibrary.GetDeviceInfo(id);
+			devData['area_id'] = areaid;
+			devData['dev_id'] = id;
+			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
+			devData['device_name'] = devData['name'];
+			devData['eseeid'] = devData['eseeid'];
+			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
+			//console.log(devData);
+			getChlInfo(id,devData.device_name,index);
+		}
+	}
+	function getChlInfo(devid,devname,index){
+	     var chlList = oCommonLibrary.GetChannelList(devid);
+		 //console.log(chlList);	
+		 var fragment = document.createDocumentFragment();
+		for(var i in chlList){ 
+			var id = chlList[i];
+			var chldata = oCommonLibrary.GetChannelInfo(id);
+			var data = {};
+			data['channel_id'] = id;
+			data['dev_id'] = devid;
+			data['channel_number'] = chldata['number']
+			data['stream_id'] = chldata['stream'];
+			data['channel_name'] = chldata['name'];
+			data['dev_name']=devname;
+			//console.log(data);	
+			//$('<li data='+data.channel_id+'><input type="checkbox" disabled/>'+devname+'_'+data.channel_name+'</li>').appendTo($('.subRight:eq('+index+') ul'));
+		    var newItem = $('<li data='+data.channel_id+'><input type="checkbox" disabled/>'+devname+'_'+data.channel_name+'</li>')[0];
+			fragment.appendChild(newItem);
+			
+		}	
+	   $('.subRight:eq('+index+') ul')[0].appendChild(fragment);   
+	}
+	//添加用户前获取xml
+	function getAddUserXml(){
+		var name = $('#userR').val();
+		var pwd = $('#pwdR').val();
+		var limit=0;
+		var c=0;
+		var str1='';
+		for(var i=0;i<10;i++){
+		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
+			  var temp = c;
+			   if($('.subRight:eq('+i+') p:eq(1) :checkbox').prop('checked')){
+				      c++;
+			          str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
+				}else{
+			      $('.subRight:eq('+i+') li :checkbox').each(function(index){
+				   if($(this).prop('checked')){
+					  var  sublimit = $(this).parent('li').attr('data');
+					  if(sublimit){
+					   c++;
+			           str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='"+sublimit+"'/>";
+					   
+					  }
+				   }
+				  
+			      });
+				}
+			  if(temp<c) limit=limit+(1<<i);
+		   }	
+		}
+		//console.log("limit:"+limit);
+		var str="<main sUserName='"+name+"' sPassword='"+pwd+"' limitCode='"+limit.toString(2)+"' subLimitNum='"+c+"' sLogOutInterval='20'>";
+			str+=str1;
+			str+="</main>";
+		$('#addUserEx_ID').val(str);
+		//console.log("getAddUserXml:"+str);
+	}
+	//修改用户前获取xml
+	function getModUserXml(){
+		var oldname=$('#userList tr.sel').data('data').username;
+		var newname=$('#userR').val();
+		var pwd=$('#pwdR').val()
+		var limit=0,c=0,str1='';
+		for(var i=0;i<10;i++){
+		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
+			   var temp=c;
+			  if($('.subRight:eq('+i+') p:eq(1) :checkbox').prop('checked')){
+				      c++;
+			          str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='0'/>";
+				}else{
+			      $('.subRight:eq('+i+') li :checkbox').each(function(index){
+				       if($(this).prop('checked')){
+					    var  sublimit = $(this).parent('li').attr('data');
+					    if(sublimit){
+					     c++;
+			            str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='"+sublimit+"'/>";
+					
+					    }
+				    }
+				  
+			       });
+			   }
+			  if(temp<c) limit=limit+(1<<i);
+		   }	
+		}
+		var str=" <modify>";
+	        str+="<mainInfo sOlduserName='"+oldname+"' sNewUserName='"+newname+"' sNewPassword='"+pwd+"' uiNewLimit='"+limit.toString(2)+"' sLogOutInterval='20' subLimitSize='"+c+"'>";
+            str+=str1;
+	        str+="</mainInfo>";
+	        str+="</modify>";
+           $('#modifyUserEx_ID').val(str);
+		   //console.log("getModUserXml:"+str);
+	
+	}
+	//删除用户前获取xml
+	function getDelUserXml(){
+		var name = [],str1='';
+		$('#userList input:checked').each(function(){
+			var userdata = $(this).parent('td').parent('tr').data('data');
+			 name.push(userdata.username);
+			 str1+="<sub username='"+userdata.username+"'/>";
+			});
+		var str=" <del size='"+name.length+"'>";
+	        str+=str1;
+	     	str+="</del>";
+      $('#deleteUserEx_ID').val(str);
+		//console.log("getDelUserXml:"+str);
+		
 	}
 	
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
@@ -1084,38 +1348,19 @@ function autoSetIPcallBack(data){
 }
 
 //// oCommonLibrary, 操作做数据库回调方法.
-var userLev = [_T('Super_Admin'),_T('Admin'),_T('User'),_T('Tourists')];
 	
-	function AddUserSuccess(ev){
-		var userCom= $('#menu2 select input').val();
-		var name =userCom.attr('data')
-			userCom = userCom.match(/<\/?\w+>/g) ? userCom.match(/[\u4e00-\u9fa5]+/g)[0] : userCom;
-		for(i in userLev){
-			if(userLev[i] == userCom){
-				var userlv = i;
-			}
-		}
-		var No = $('#UserMan table.UserMan tbody tr').length - 1;
-		var data = {'username':name,'userlv':userlv,'userCom':userCom}
-		$('<tr><td>'+No+'</td><td>'+name+'</td><td>'+userCom+'</td></tr>').appendTo('#UserMan table.UserMan').data('data',data);
-		closeMenu();	
+	function AddUserSuccess(data){
+         userList2Ui();
+		userRight2Ui();
 	}
-	function DeleteUserSuccess(){
-		$('#username_list_ID').val('');
-		$('#UserMan tr.selected').remove();
+	function DeleteUserSuccess(data){
+		userList2Ui();
+		userRight2Ui();
 	}
 
-	function ModifyUserSuccess(ev){
-		var userCom= $('#menu3 select input');
-		for(i in userLev){
-			if(userLev[i] == userCom.val()){
-				var userlv = i
-			}
-		}
-		var name = userCom.attr('data')
-		var data = {'username':name,'userlv':userlv,'userCom':userCom}
-		$('#UserMan tr.selected:first').data('data',data).find('td:last').html(userCom);
-		closeMenu();
+	function ModifyUserSuccess(data){
+		userList2Ui();
+		userRight2Ui();
 	}
 
 	function Fail(data){

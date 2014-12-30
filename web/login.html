@@ -10,7 +10,7 @@ body, div, span, ul {
 	padding: 0px;
 }
 body {
-	background:url(images/loginbox/login1.jpg) no-repeat 0 0 scroll transparent;
+	background:url(images/loginbox/login.jpg) no-repeat 0 0 scroll transparent;
 	width: 100%;
 	height: 100%;
 }
@@ -60,7 +60,6 @@ p .txt {
 }
 </style>
 <script type="text/javascript">
-var dvr_ID=null;
 $(document).ready(function(){
 	$('li.tdBtn').hover(function(){
 	    $(this).css('background-position','-70px 0');	
@@ -73,11 +72,19 @@ $(document).ready(function(){
 		 $(this).css('background-position','0 0');	
      });
 });
-
+function cancel()
+{
+	autoSearchDeviceModule.cancelLoginUI();
+}
 </script>
 </head>
 
 <body>
+<object type="application/cms-common-library" id="commonLibrary" style="position:absolute;width:0;height:0"></object>
+<object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:0; height:0;" ></object>
+<script type="text/javascript">
+	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
+</script>
 <div id="head"><span style="z-index:1;">监控系统登录</span></div>
 <p style="background:url(images/loginbox/user.jpg) 0 0 scroll no-repeat transparent; border:2px solid #999;margin-top:38px">
   <input class="txt" type="text" id="username"/>
@@ -92,7 +99,7 @@ $(document).ready(function(){
 <ul>
   <li class="tdBtn">确定</li>
   <li class="tdBtn">锁定</li>
-  <li class="tdBtn">取消</li>
+  <li class="tdBtn" onclick="cancel()">取消</li>
 </ul>
 </div>
 <div style="width:270px; margin:10px auto;"><span id="tips" ></span></div>

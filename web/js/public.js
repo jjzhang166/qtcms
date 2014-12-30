@@ -269,7 +269,7 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			warp.on('click',':checkbox',function(event){
 				var b = true;
 				warp.find(':checkbox:enabled').each(function(){
-					if(!$(this).is('checked')){
+					if(!$(this).prop('checked')){
 						b = false;
 					}
 				})

@@ -222,8 +222,8 @@ var oPreView,oDiv,
 		//设备是否自动连接功能
 		DevAutoConnected();
 		
-		// var obj = document.getElementById('atuoSearchDevice');
-        // obj.showUserLoginUi(356,300);
+		//var obj = document.getElementById('atuoSearchDevice');
+       //obj.showUserLoginUi(356,300);
             
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///

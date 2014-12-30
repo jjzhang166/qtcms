@@ -463,5 +463,14 @@
 	//预览弹出窗口
 	'Adding cameras':'Добавление камеры',
 	'Adding devices, please be patient':'Добавление устройств, пожалуйста, будьте терпеливы.',
-	'waiting_tips':'Есть автоматический поиск и добавьте, пожалуйста, подождите _V_ секунд для вашего терпения.'
+	'waiting_tips':'Есть автоматический поиск и добавьте, пожалуйста, подождите _V_ секунд для вашего терпения.',
+	
+	//用户设置
+	'User_rights':'права пользователей',
+	'Local_Playback':'Local Playback',//Not yet translated
+	'Remote_Playback':'Удаленное воспроизведение',
+	'Device_Remote_Setup':'Устройство удаленной настройки',
+	'Local_Settings':'Local Settings',//Not yet translated
+	'User_Settings':'Настройки пользователя',
+	'Exit_system':'Выход системы',
 }
