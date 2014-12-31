@@ -129,7 +129,8 @@ function showNowPlayBackTime(oNow,oleft,X2){
 			option.on('click','li',function(){
 				//if($(this).attr('class') != 'hover'){
 					var str = $(this).find('input').val();
-					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
+					//str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g)[0] : str;
+					str = str.match(/<\/?\w+>/g) ? str.match(/[\u4e00-\u9fa5]+/g) : str;
 					$('ul.option').hide();
 					var data = $(this).find('input').attr('data');
 					This.find('input[data]').val(str).attr('data',data);
@@ -357,10 +358,11 @@ $(function(){
 		}
 	}
 
-	$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+	/*$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		var action = $(this).attr('class').split(' ')[0];
 		addMouseStyle($(this),action);
-	})
+		
+	})*/
 })///
 function triggerOnclick(id,sEv){ 
 	try{

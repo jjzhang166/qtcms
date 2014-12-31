@@ -19,6 +19,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		oPlaybackLocl = $('#playbackLocl')[0];
 		
+		autoSearchDev = $('#atuoSearchDevice')[0];
+		
 		var channelvideo = $('#channelvideo');
 
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
@@ -52,6 +54,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		})
 
 		channelvideo. mousedown(function(event){//整个搜索的文件列表事件
+		   var itema = checkUserRight();
+		   if(itema==0){
 			var min = $('table.table .no_border').width(),
 				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
 			//if(event.pageX > max) return;
@@ -83,7 +87,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			
 			
 			setTimeout(function(){playVideo()},40);
-			
+		  }else if(itema == 1){
+			autoSearchDev.showUserLoginUi(336,300);
+		  }else{
+			   alert("权限不足");	
+		  }
 		})
        
 		channelvideo.on('mouseover','tr',function(){
@@ -135,7 +143,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('#top div.top_nav li').not('.active').click(function(){
 			dragStopMove();
 		})
-
+        
+		$('.hover').each(function(index){  // 按钮元素添加鼠标事件对应样式
+		   var action = $(this).attr('class').split(' ')[0];
+		   addMouseStyle($(this),action,index);
+	     })
+		 
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
 		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
@@ -165,7 +178,78 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			noResize();
 		}
 	})*/
-
+	function addMouseStyleLimit(obj,action,index){  //按钮UI响应
+		var width = obj.width();
+		var left,top;
+		obj.hover(function(){
+			left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
+			top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
+			if(left != -width){
+				obj.css('background-position',left-width+'px'+' '+top+'px');
+			}
+		},function(){
+			obj.css('background-position',left+'px'+' '+top+'px');
+		}).mousedown(function(){
+			if(index<=7){
+			   if(left == -width){
+				obj.css('background-position',left-width+'px'+' '+top+'px');
+			   }else{
+				obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
+				}
+			   obj.attr('limit',1);
+			}else if(index>7){
+				var itema = checkUserRight(1<<0,0);
+				if(itema==0){
+					if(left == -width){
+					   obj.css('background-position',left-width+'px'+' '+top+'px');
+					}else{
+					obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
+					 }
+					 obj.attr('limit',1);
+				}else{
+					obj.attr('limit',0);
+				}
+				
+			}
+		}).mouseup(function(ev){
+		 if(obj.attr('limit')){
+			if(action == 'toggle'){
+				var H = obj.height();
+				var a = obj.attr('toggle');
+				if(a){
+					obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
+					obj.removeAttr('toggle');
+				}else{
+					obj.attr('toggle',1);
+					obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+				}	
+				top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
+			}else if(action == 'hover'){
+				obj.css('background-position',left-width+'px'+' '+top+'px');	
+			}else{
+				if(action == "switch"){
+					var oSwitch = $('a.switch');
+				}else{
+					var ev = ev || window.event;
+					var oSwitch = $('div .setViewNum');	
+					oSwitch.each(function(index){
+					var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
+					$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
+					/*var oView = $('#playback_view');
+					if(oView.length != 0){
+						autoImages(oSwitch.index(ev.target)+1,oView);
+					}*/
+				})
+					//alert(oSwitch.index(ev.target);
+				}		
+				obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+				obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+				left=-width;
+			}	
+		 }
+		})
+	}
+	
 	function ViewMax(){
 		var W = $(window).width(),
 			H = $(window).height();
@@ -985,9 +1069,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({
 				dblclick:function(){ //设备双击开始搜索
-					/*if(bool)return;
-					PBrecFileTableInit();*/
-					playBackSerchFile();
+					if(bool)return;
+					/*PBrecFileTableInit();*/
+					var itema = checkUserRight();
+					if(itema==0){
+					  playBackSerchFile();
+					}else if(itema==1){
+				    autoSearchDev.showUserLoginUi(336,300);
+		            }else{
+		              alert("权限不足");	
+		            }
 					/*//保存当前选中的设备
 					nowDevID = $(this).find('span.device').data('data').dev_id;*/
 				},
@@ -1050,4 +1141,27 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			p=W/24;
 		$('table.table td').not('.no_border').css('width',p)
 		$('table.table .no_border').width($('table.table').width()-p*24);
-	}
+	} 
+	 //验证用户是否有权限
+	 function checkUserRight(){
+		  var uicode=bool?1<<2:1<<3,
+		     uisubcode=0;
+		  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+		  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+		   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+			return itema;
+	 }
+	  function checkUserRightBtn(fn,num){
+		  var uicode = bool? 1<<2:1<<3;
+		  var uisubcode = 0;
+		   console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+		  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+		   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+			if(itema==0){
+				window[fn](num);
+			}else if(itema==1){
+				autoSearchDev.showUserLoginUi(336,300);
+			}else{
+			   alert("权限不足");	
+			}
+	 }

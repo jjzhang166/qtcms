@@ -105,6 +105,10 @@ var oSearchOcx,autoSeachOcx,
 			})
 		})
 		
+		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		  var action = $(this).attr('class').split(' ')[0];
+		  addMouseStyle($(this),action);
+	    })
 		/*$('ul.filetree span.areaName').click(function(){
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
@@ -552,7 +556,7 @@ var oSearchOcx,autoSeachOcx,
 		//搜索设备;
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
-		
+		oSearchOcx.AddEventProc('Validation','Validationcallback(data)');
 		initOxcDevListStatus()
 	})///
 
@@ -1140,7 +1144,7 @@ var oSearchOcx,autoSeachOcx,
 		//console.log("getDelUserXml:"+str);
 		
 	}
-	
+	//
 	function ShowUserOperateMenu(obj){  //显示弹出层 调整定位。
 		var node = $('#'+obj+'');
 		node.find('input:text,:password').val('');
@@ -1348,6 +1352,11 @@ function autoSetIPcallBack(data){
 }
 
 //// oCommonLibrary, 操作做数据库回调方法.
+	function Validationcallback(data){ //id按钮权限验证
+		console.log(data);
+		console.log('yes');
+	}
+	
 	
 	function AddUserSuccess(data){
          userList2Ui();

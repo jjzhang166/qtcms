@@ -46,6 +46,7 @@
 </head>
 <body style="position: relative;heigth:100%;width:100%;">
 <object type="application/cms-common-library" id="commonLibrary" style="position:absolute;width:0;height:0"></object>
+<object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:0; height:0;" ></object>
 <script type="text/javascript">
 	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
@@ -128,12 +129,12 @@
 					<span></span>
 				</div>
 				<ul class="para_Control">
-					<li class="hover" style="background-position: 0 -128px;" title="Zoom_+" onclick="PTZcontrol(8)"></li>
-					<li class="hover" style="background-position: 0 -150px;" title="Zoom_-" onclick="PTZcontrol(7)"></li>
-					<li class="hover" style="background-position: -128px 0;" title="Near_focus" onclick="PTZcontrol(6)"></li>
-					<li class="hover" style="background-position: -128px -22px;" title="Far_focus" onclick="PTZcontrol(5)"></li>
-					<li class="hover" style="background-position: -128px -44px;" title="Iris_Off" onclick="PTZcontrol(10)"></li>
-					<li class="hover" style="background-position: -128px -66px;" title="Iris_On" onclick="PTZcontrol(9);"></li>
+					<li class="hover" style="background-position: 0 -128px;" title="Zoom_+" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','8');"></li>
+					<li class="hover" style="background-position: 0 -150px;" title="Zoom_-" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','7');"></li>
+					<li class="hover" style="background-position: -128px 0;" title="Near_focus" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','6');"></li>
+					<li class="hover" style="background-position: -128px -22px;" title="Far_focus" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','5');"></li>
+					<li class="hover" style="background-position: -128px -44px;" title="Iris_Off" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','10');"></li>
+					<li class="hover" style="background-position: -128px -66px;" title="Iris_On" onclick="checkUserRightBtn(1<<1,0,'PTZcontrol','9');"></li>
 				</ul>
 				
 				<!-- <div class="others">
@@ -165,32 +166,32 @@
 				<li style="background:0;">
 					<div class="select" style="background: url(images/preview/operating_icon.png) no-repeat; height:36px; border:0; cursor:pointer" id="setModel" title="Split_screen_setting"></div>
 					<ul class="option" style="top:0; width:390px; background:url('images/cutting_bg.png') repeat-x scroll 0 -26px">
-						<li class="setViewNum hover" style="background-position: 0 -72px;" onclick="setViewMod('div1_1')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -108px;" onclick="setViewMod('div2_2')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -144px;" onclick="setViewMod('div6_1')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -180px;" onclick="setViewMod('div8_1')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -216px;" onclick="setViewMod('div3_3')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -252px;" onclick="setViewMod('div4_4')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -288px;" onclick="setViewMod('div5_5')"></li>
-						<li class="setViewNum hover" style="background-position: 0 -324px;" onclick="setViewMod('div6_6')"></li>
-                        <li class="setViewNum hover" style="background-position: 0 -360px;" onclick="setViewMod('div7_7')"></li>
+						<li class="setViewNum hover" style="background-position: 0 -72px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div1_1');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -108px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div2_2');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -144px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div6_1');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -180px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div8_1');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -216px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div3_3');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -252px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div4_4');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -288px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div5_5');"></li>
+						<li class="setViewNum hover" style="background-position: 0 -324px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div6_6');"></li>
+                        <li class="setViewNum hover" style="background-position: 0 -360px;" onclick="checkUserRightBtn(1<<0,0,'setViewMod','div7_7');"></li>
                        <!-- <li class="setViewNum hover" style="background-position: 0 -396px;" onclick="setViewMod('div8_8')"></li>-->
 						<!-- <li class="setViewNum hover" style="background-position: 0 -324px;"></li>
 							<li class="setViewNum hover" style="background-position: 0 -360px;"></li> -->
 					</ul>
 				</li>
 				<li style="width:40px;text-align:center; background:0; line-height:36px; color:#FFF; cursor:default" id="nowWinMod"></li>
-				<li class="hover" onclick="preNextPage(1)" style="background-position: -120px -288px;" title="prev_page"></li>
-				<li class="hover" onclick="preNextPage(0)" style="background-position: -120px -324px" title="next_page"></li>
+				<li class="hover" onclick="checkUserRightBtn(1<<0,0,'preNextPage',1);" style="background-position: -120px -288px;" title="prev_page"></li>
+				<li class="hover" onclick="checkUserRightBtn(1<<0,0,'preNextPage',0);" style="background-position: -120px -324px" title="next_page"></li>
 				<!-- <li class="hover" style="background-position: 0 0;" onclick="openCloseAll(1);" id="openAllchannel" title="All_Open"></li>
 				<li class="hover" style="background-position: 0 -36px;" onclick="openCloseAll();" id="openAllchannel" title="All_close"></li> -->
 				<!-- <li class="hover" style="background-position: -120px -108px;" onclick="StopRecord();" title="Pause_Video"></li> -->
-				<li class="toggle hover" style="background-position: -120px -72px;" onmouseup="Record($(this));" title="video"></li>
+				<li class="toggle hover" style="background-position: -120px -72px;" onclick="checkUserRightBtn(1<<0,0,'Record',$(this));" title="video"></li>
 				<!-- <li class="hover" style="background-position: -120px -144px;" title="Screenshot" onclick="ScreenShot();"></li> -->
-				<li class="toggle hover" style="background-position: -120px -180px;" title="Polling" onclick="AutoPolling($(this))"></li>
-				<li class="toggle hover" style="background-position: -120px -360px;" onclick="allWindowStretch($(this))" title="video_Full_screen"></li>
-                <li class="hover" style="background-position: -120px -252px;" onclick="viewFullScreenEx()" title="Full_screen"></li>
-				<li class="toggle hover" onmouseup="sound($(this));" title="sound" style="background-position: -120px 0;"></li>
+				<li class="toggle hover" style="background-position: -120px -180px;" title="Polling" onclick="checkUserRightBtn(1<<0,0,'AutoPolling',$(this));"></li>
+				<li class="toggle hover" style="background-position: -120px -360px;" onclick="checkUserRightBtn(1<<0,0,'allWindowStretch',$(this));" title="video_Full_screen"></li>
+                <li class="hover" style="background-position: -120px -252px;" onclick="checkUserRightBtn(1<<0,0,'viewFullScreenEx');" title="Full_screen"></li>
+				<li class="toggle hover" onclick="checkUserRightBtn(1<<0,0,'sound',$(this));" title="sound" style="background-position: -120px 0;"></li>
 				<li id="sound" class="hover" style="background:0; width:100px; margin:0 4px; position: relative;">
 					<div class="now_sound forbidden"></div>
 					<p style="width:100px; background:#969696;"></p>
@@ -203,10 +204,10 @@
 		</div>
 	</div>
 <div id="foot"></div>
-<div class="menu emptyAct" onclick="emptyLog();"><script>T("Empty_log")</script></div>
+<div class="menu emptyAct" onclick="checkUserRightBtn(1<<0,0,'emptyLog');"><script>T("Empty_log")</script></div>
 <div class="menu menu0">
 	<ul>
-		<li onclick="SwithStream()"><script>T("Stream_Switch")</script></li>
+		<li onclick="checkUserRightBtn(1<<0,0,'SwithStream');"><script>T("Stream_Switch")</script></li>
 		<!-- <li onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
 		<li onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
 		<li onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>

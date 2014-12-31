@@ -1,4 +1,4 @@
-var oPreView,oDiv,
+var oPreView,oDiv,autoSearchDev,
 	winState=[lang.Have_access_to_the_connection,lang.Connecting,lang.Disconnected,lang.Being_disconnected],
 	currentWinStateChange = [lang.Connected,lang.Connecting,lang.Off,lang.Shutting_down],
 	errorcolor = 'red';
@@ -13,6 +13,7 @@ var oPreView,oDiv,
 
 		var oAs = $('ul.dev_list_btn a');
 	    
+		autoSearchDev = $('#atuoSearchDevice')[0];
 		//$(window).off();
 
 	    $('div.dev_list:eq(1)').hide();
@@ -31,7 +32,7 @@ var oPreView,oDiv,
 			/*debugData($(this).data('data'));*/
 			var chlData = getChlFullInfo($(this));
 			if($(this).attr('state')){
-				CloseWind($(this).attr('wind'),chlData.dev_id);
+				     CloseWind($(this).attr('wind'),chlData.channel_id);
 			}else{
 				openWind(oPreView.GetCurrentWnd(),chlData);
 			}
@@ -45,7 +46,7 @@ var oPreView,oDiv,
 			if(oDevice.attr('bAllopen')){
 				oDevice.next('ul').find('span.channel').each(function(){
 					chlData = getChlFullInfo($(this));	 
-					CloseWind($(this).attr('wind'),chlData.dev_id);
+					CloseWind($(this).attr('wind'),chlData.channel_id);
 				})
 			}else{
 				oDevice.next('ul').find('span.channel').each(function(){
@@ -71,6 +72,11 @@ var oPreView,oDiv,
 			}
 			writeActionLog(str);
 		})
+		
+		$('.hover').each(function(index){  // 按钮元素添加鼠标事件对应样式
+		      var action = $(this).attr('class').split(' ')[0];
+		      addMouseStyleLimit($(this),action,index);
+	    })
 
 		//显示分屏的文字
 		$('div.operat li.setViewNum').click(function(){
@@ -132,12 +138,20 @@ var oPreView,oDiv,
 		// 云台方向控制;
 		$('#Dire_Control div:lt(4)').on({
 			mousedown:function(){
-				//writeActionLog('开始PTZ');
-				PTZcontrol($(this).attr('PTZ',1).index());
+				var itema = checkUserRight(1<<1,0);
+				if(itema==0){
+				   PTZcontrol($(this).attr('PTZ',1).index());
+				}else if(itema==1){
+					autoSearchDev.showUserLoginUi(336,300);
+				}else{
+					alert('权限不足');
+				}
 			},
 			mouseup:function(){
 				//writeActionLog(_T('stop_PTZ'));
-				oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
+				if($(this).attr('PTZ')){
+				  oPreView.ClosePTZ($(this).removeAttr('PTZ').index());
+				}
 			},
 			mouseleave:function(){
 				if($(this).attr('PTZ')){
@@ -158,7 +172,15 @@ var oPreView,oDiv,
 					//$(this).attr('PTZ',1);
 					PTZcontrol($(this).attr('PTZ',1).index());		
 				}*/
-				PTZcontrol($(this).index());
+				var itema = checkUserRight(1<<1,0);
+				if(itema==0){
+				  PTZcontrol($(this).index());
+				}else if(itema==1){
+					autoSearchDev.showUserLoginUi(336,300);
+				}else{
+					alert('权限不足');
+				}
+				
 			}
 		})
 			
@@ -222,11 +244,82 @@ var oPreView,oDiv,
 		//设备是否自动连接功能
 		DevAutoConnected();
 		
-		//var obj = document.getElementById('atuoSearchDevice');
-       //obj.showUserLoginUi(356,300);
             
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
+	
+	function addMouseStyleLimit(obj,action,index){  //按钮UI响应
+		var width = obj.width();
+		var left,top;
+		obj.hover(function(){
+			left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
+			top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
+			if(left != -width){
+				obj.css('background-position',left-width+'px'+' '+top+'px');
+			}
+		},function(){
+			obj.css('background-position',left+'px'+' '+top+'px');
+		}).mousedown(function(){
+			if(index<=14){
+			   if(left == -width){
+				obj.css('background-position',left-width+'px'+' '+top+'px');
+			   }else{
+				obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
+				}
+			   obj.attr('limit',1);
+			}else if(index>14){
+				var itema = checkUserRight(1<<0,0);
+				if(itema==0){
+					if(left == -width){
+					   obj.css('background-position',left-width+'px'+' '+top+'px');
+					}else{
+					obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
+					 }
+					 obj.attr('limit',1);
+				}else{
+					obj.attr('limit',0);
+				}
+				
+			}
+		}).mouseup(function(ev){
+		 if(obj.attr('limit')){
+			if(action == 'toggle'){
+				var H = obj.height();
+				var a = obj.attr('toggle');
+				if(a){
+					obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
+					obj.removeAttr('toggle');
+				}else{
+					obj.attr('toggle',1);
+					obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+				}	
+				top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
+			}else if(action == 'hover'){
+				obj.css('background-position',left-width+'px'+' '+top+'px');	
+			}else{
+				if(action == "switch"){
+					var oSwitch = $('a.switch');
+				}else{
+					var ev = ev || window.event;
+					var oSwitch = $('div .setViewNum');	
+					oSwitch.each(function(index){
+					var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
+					$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
+					/*var oView = $('#playback_view');
+					if(oView.length != 0){
+						autoImages(oSwitch.index(ev.target)+1,oView);
+					}*/
+				})
+					//alert(oSwitch.index(ev.target);
+				}		
+				obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+				obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+				left=-width;
+			}	
+		 }
+		})
+	}
+	
 	function CurrentStateChange(ev){
 		
 	      if(ev.reFreash =='false')
@@ -279,8 +372,15 @@ var oPreView,oDiv,
 		$('#foot').css('top',oView.height()+212);
 	}
 
-	function CloseWind(wind,dev_id){ 
-		oPreView.CloseWndCamera(wind);
+	function CloseWind(wind,channel_id){ 
+	    var itema = checkUserRight(1<<0,channel_id);
+		if(itema==0){
+		   oPreView.CloseWndCamera(wind);
+		}else if(itema==1){
+	       autoSearchDev.showUserLoginUi(336,300);
+		}else{
+			slert('权限不足');
+		}
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
@@ -376,6 +476,9 @@ var oPreView,oDiv,
 	}
 
 	function openWind(wind,data){
+		
+		var itema = checkUserRight(1<<0,data.channel_id);
+	if(itema==0){
 		var windState = oPreView.GetWindowInfo(wind).usable;
 		//console.log('当前窗口:'+wind+'的状态'+windState);
 		if(!windState){ //该窗口不可用.
@@ -395,7 +498,11 @@ var oPreView,oDiv,
 		oPreView.SetDevChannelInfo(wind,data.channel_id);
 
 		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
-		
+	}else if(itema==1){
+		 autoSearchDev.showUserLoginUi(336,300);
+	}else{
+		alert('权限不足');
+	}
 		
 	}
 
@@ -778,6 +885,7 @@ var oPreView,oDiv,
    }
   //自动轮巡
   function AutoPolling(obj){
+
 	 var bl = obj.attr('toggle'); 
 	 var timer;
      if(bl){
@@ -789,3 +897,22 @@ var oPreView,oDiv,
 	 }
 	 
   }
+  //验证用户是否有权限
+  function checkUserRight(uicode,uisubcode){
+	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		return itema;
+ }
+  function checkUserRightBtn(uicode,uisubcode,fn,num){
+	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		if(itema==0){
+			window[fn](num);
+		}else if(itema==1){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else{
+		   alert("权限不足");	
+		}
+ }
