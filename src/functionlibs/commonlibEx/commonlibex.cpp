@@ -3306,3 +3306,67 @@ QString commonlibEx::getCurrentUser()
 {
 	return checkCurrentLoginUser();
 }
+
+void commonlibEx::setIsKeepCurrentUserPassWord(bool bFlags)
+{
+	QString sFlags;
+	if (bFlags==true)
+	{
+		sFlags="true";
+	}else{
+		sFlags="false";
+	}
+	QSqlQuery _query(*m_db);
+	QString sCmd=QString("select count(*) from general_setting where name='misc_keepCurrentUserPassWord'");
+	if (_query.exec(sCmd))
+	{
+		if (_query.next())
+		{
+			sCmd=QString("update general_setting set value='%1' where name='misc_keepCurrentUserPassWord'").arg(sFlags);
+			if (_query.exec(sCmd))
+			{
+				return ;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+				abort();
+			}
+		}else{
+			sCmd= QString("insert into general_setting(name, value) values('%1','%2')").arg("misc_keepCurrentUserPassWord").arg(sFlags);
+			if (_query.exec(sCmd))
+			{
+				return;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+				abort();
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+		abort();
+	}
+}
+
+bool commonlibEx::getIsKeepCurrentUserPassWord()
+{
+	QSqlQuery _query(*m_db);
+	QString sCommand = QString("select value from general_setting where name='misc_keepCurrentUserPassWord'");
+	if (_query.exec(sCommand))
+	{
+		if (_query.next())
+		{
+			QString sIsKeep = _query.value(0).toString();
+			if (sIsKeep=="false")
+			{
+				return false;
+			}else{
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+		abort();
+	}
+	return false;
+}

@@ -10,6 +10,7 @@
 #include <autoSearchDeviceWindow.h>
 #include <QTimer>
 #include <QList>
+#include <QTimer>
 
 class  autoSearchDevice:public QWidget,
 	public QWebPluginFWBase
@@ -36,11 +37,17 @@ public slots:
 		QVariantMap getUserLimit(QString sUserName);
 		QString getCurrentUser();
 		int getUserInDatabaseId(QString sUserName);//返回值为 ID，获取失败返回 -1；
+		void setIsKeepCurrentUserPassWord(bool bFlags);
+		bool getIsKeepCurrentUserPassWord();
+private slots:
+	void slCheckUserStatusChange();
 private:
 	autoSearchDeviceWindow m_tAutoSearchDeviceWindow;
 	IAutoSearchDevice *m_pDeviceSearch;
 	IUserManagerEx *m_pUserMangerEx;
 	QList<QVariantMap> m_tDeviceList;
+	QTimer m_tCheckUserStatsTimer;
+	QString m_sHisUserName;
 };
 
 #endif // AUTOSEARCHDEVICE_H

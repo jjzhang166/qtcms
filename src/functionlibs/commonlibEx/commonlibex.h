@@ -60,6 +60,8 @@ public:
 	virtual int modifyUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit,quint64 uiLogOutInterval, QVariantMap tSubCode);//0:设置成功，1：设置失败
 	virtual int getUserDatabaseId(QString sUserName,int &nId);
 	virtual QString getCurrentUser();
+	virtual void setIsKeepCurrentUserPassWord(bool bFlags);
+	virtual bool getIsKeepCurrentUserPassWord();
 	//IGroupManager
 	virtual int AddGroup(QString sName) ;
 	virtual int RemoveGroup(int group_id) ;

@@ -11,6 +11,7 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 {
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancel()),this,SLOT(cancelSearch()));
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancelLoginUI()),this,SLOT(cancelLoginUI()));
+	connect(&m_tCheckUserStatsTimer,SIGNAL(timeout()),this,SLOT(slCheckUserStatusChange()));
 	pcomCreateInstance(CLSID_DeviceSearchPlugin,NULL,IID_IAutoSearchDevice,(void**)&m_pDeviceSearch);
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&m_pUserMangerEx);
 	IEventRegister *pRegister=NULL;
@@ -18,6 +19,7 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	pRegister->registerEvent("autoSearchDevice",cbAutoSearchDevice,this);
 	pRegister->Release();
 	pRegister=NULL;
+	m_tCheckUserStatsTimer.start(500);
 }
 
 autoSearchDevice::~autoSearchDevice()
@@ -213,6 +215,67 @@ QString autoSearchDevice::getCurrentUser()
 		sRet=m_pUserMangerEx->getCurrentUser();
 	}
 	return sRet;
+}
+
+void autoSearchDevice::slCheckUserStatusChange()
+{
+	QString sCurrentUserName=getCurrentUser();
+	if (sCurrentUserName.isEmpty()&&m_sHisUserName.isEmpty())
+	{
+		//do nothing
+	}
+	if (sCurrentUserName.isEmpty()&&(!m_sHisUserName.isEmpty()))
+	{
+		//m_sHisUserName 用户退出
+		QVariantMap tItem;
+		tItem.insert("userName",m_sHisUserName);
+		tItem.insert("status",1);
+		EventProcCall("useStateChange",tItem);
+		m_sHisUserName=sCurrentUserName;
+	}
+	if ((!sCurrentUserName.isEmpty())&&m_sHisUserName.isEmpty())
+	{
+		//sCurrentUserName用户登录
+		QVariantMap tItem;
+		tItem.insert("userName",sCurrentUserName);
+		tItem.insert("status",0);
+		EventProcCall("useStateChange",tItem);
+		m_sHisUserName=sCurrentUserName;
+	}
+	if (sCurrentUserName.isEmpty()==false&&m_sHisUserName.isEmpty()==false&&m_sHisUserName!=sCurrentUserName)
+	{
+		//用户切换
+		QVariantMap tItem;
+		tItem.insert("userName",m_sHisUserName);
+		tItem.insert("status",1);
+		EventProcCall("useStateChange",tItem);
+		tItem.clear();
+		tItem.insert("userName",sCurrentUserName);
+		tItem.insert("status",0);
+		EventProcCall("useStateChange",tItem);
+		m_sHisUserName=sCurrentUserName;
+	}
+}
+
+void autoSearchDevice::setIsKeepCurrentUserPassWord(bool bFlags)
+{
+	if (m_pUserMangerEx!=NULL)
+	{
+		m_pUserMangerEx->setIsKeepCurrentUserPassWord(bFlags);
+	}else{
+		//do nothing
+	}
+}
+
+bool autoSearchDevice::getIsKeepCurrentUserPassWord()
+{
+	if (m_pUserMangerEx!=NULL)
+	{
+		return m_pUserMangerEx->getIsKeepCurrentUserPassWord();
+	}else{
+		//do nothing
+	}
+	return false;
 }
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )

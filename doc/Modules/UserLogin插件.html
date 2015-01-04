@@ -33,5 +33,12 @@ QVariantMap getUserLimit(QString sUserName);</p>
 <p>=======接口简介：获取当前登录的用户名==============</p>
 <p><br />
 QString getCurrentUser();</p>
+<p>======接口简介：设置是否记住当前用户密码======</p>
+<p>void setIsKeepCurrentUserPassWord(bool bFlags);</p>
+<p>bool getIsKeepCurrentUserPassWord();</p>
+<p>抛出事件</p>
+<p>@1</p>
+<p>事件名称：useStateChange</p>
+<p>事件参数：userName，status（0：用户登录，1：用户退出）</p>
 </body>
 </html>

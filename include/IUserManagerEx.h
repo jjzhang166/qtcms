@@ -16,6 +16,8 @@ interface IUserManagerEx : public IPComBase
 	virtual int getUserDatabaseId(QString sUserName,int &nId)=0;//0:获取成功；1：获取失败
 	virtual int modifyUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit, quint64 uiLogOutInterval, QVariantMap tSubCode)=0;//0:设置成功，1：设置失败
 	virtual QString getCurrentUser()=0;
+	virtual void setIsKeepCurrentUserPassWord(bool bFlags)=0;
+	virtual bool getIsKeepCurrentUserPassWord()=0;
 };
 
 #endif
