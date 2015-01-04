@@ -270,39 +270,17 @@ var oSearchOcx,autoSearchDev,
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}else if(key == 3){ 
 					userList2Ui();
-				    userRight2Ui();
-					$('#mainRight li').each(function(index){
-						 $(this).click(function(){
-						    $('#mainRight li').removeClass('sel');
-							$(this).addClass('sel');
-						    $('.subRight').hide();
-							$('.subRight').eq(index).show();
-							if($(this).find('input').prop('checked')){
-						      $('.subRight:visible input').prop('disabled',false);	
-						    }else{
-						     $('.subRight:visible input').prop('disabled',true);
-						   }
-						   var b = true;
-				         $('#mainRight li :checkbox').each(function(){
-					             if(!$(this).prop('checked')){
-						         b = false;
-					       }
-				         })
+					
+			  $('#mainRight li :checkbox').click(function(){
+				   var b = true;
+				   $('#mainRight li :checkbox').each(function(){
+						if(!$(this).prop('checked')){
+							 b = false; 
+						} 
+				   })
+				    $('#mainRight p').find('.selAll').prop('checked',b); 
+			  });
 
-				         $(this).parent('ul').prev('p').find('.selAll').prop('checked',b); 
-						 });
-					});
-				   $('.subRight li :checkbox').click(function(index){
-						   
-							    var b = true;
-				                $('.subRight:visible li :checkbox').each(function(){
-					                if(!$(this).prop('checked')){
-						               b = false;
-					             }
-				               })
-				              $(this).parent('li').parent('ul').prev('p').find('.selAll').prop('checked',b); 
-						 
-                      });
 				  $('.selAll').click(function(){
 					 if($(this).prop('checked')){ 
 						$(this).parent('p').next('ul').find('li input').prop('checked',true);
@@ -406,7 +384,7 @@ var oSearchOcx,autoSearchDev,
 		//用户table下 tr委托部分事件
 		$('#userList').on('click','tr',function(event){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
-			$('.subRight input,#mainRight input').each(function(){$(this).prop('checked',false)});
+			$('#mainRight input').each(function(){$(this).prop('checked',false)});
 			var objbtn = $(this).find('input');
 			objbtn.prop('checked',!objbtn.prop('checked'));
 			var data = $(this).data('data');
@@ -415,37 +393,17 @@ var oSearchOcx,autoSearchDev,
 			$(this).addClass('sel');
 			$('#userR').val(data.username);
 			var types = parseInt(data.userlv,2);
-			var subRname = data.subname;
-			var subRdata = data.subdata;
-			//console.log('subRname  subRdata');
-			//console.log(subRname);
-			//console.log(subRdata);
+          
 			for(var j = 0; j < 10; j++){
 				if(types == 0){
 				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
 				  break;
 				}else{			
-				  $('#mainRight ul input:checkbox').eq(j).prop("checked",(types & (1 << j)));
-				     if((types & (1 << j))){
-						var num = 1<<j;	
-						for(var i in subRname){
-						    if(parseInt(subRname[i],2) == num){
-							    var subdata = subRdata[i].split(',');
-								if(subdata.length==1&&subdata[0]=='0'){
-									$('.subRight:eq('+j+') input').prop('checked',true);
-									
-								}else{
-									for(var k =0;k<subdata.length;k++){
-										
-										$('.subRight:eq('+j+') li[data="'+subdata[k]+'"] input').prop('checked',true);
-									}
-									
-								}
-							}
-							 	
-						}
-					}
+				  $('#mainRight ul input:checkbox').eq(j).prop("checked",(types & (1 << j)));  
 				}
+			}
+			if(types==1023){
+			   $('#mainRight .selAll').prop('checked',true);
 			}		
 		});
 			
@@ -943,7 +901,7 @@ var oSearchOcx,autoSearchDev,
 		$('#pwdR').val('');
 		$('#userList tr').remove();
 		 
-		$('#mainRight input,.subRight input').each(function(){$(this).prop('checked',false)});
+		$('#mainRight input').each(function(){$(this).prop('checked',false)});
 		var userList = autoSearchDev.getUserList();
 		
 		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
@@ -951,15 +909,8 @@ var oSearchOcx,autoSearchDev,
 			for(var i in userList){
 				var userlv = autoSearchDev.getUserLimit(userList[i]);
 				var userid = autoSearchDev.getUserInDatabaseId(userList[i]);
-				var dataArry =[] , subname=[];
-				//console.log(userlv);
-				for(var j in userlv){
-					if(j!='mainLimit'){
-					   subname.push(j);
-					   dataArry.push(userlv[j]);
-					}
-				}
-				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit,'subname':subname,'subdata':dataArry};
+	
+				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit};
 			
 				 userid!=-1 && $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>').appendTo('#userList').data('data',data);
 				/*if(userid!=-1){
@@ -978,80 +929,8 @@ var oSearchOcx,autoSearchDev,
             warp.attr('b',0);
         }		
 	}
-	//用户权限填充到ui
-	function userRight2Ui(){
-		$('.subRight ul:not(".windows") li').remove();
-	     	for(var i=0;i<10;i++){
-			   if(i==8){
-					  var userList = autoSearchDev.getUserList();
-  
-					if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
-						var fragment = document.createDocumentFragment();
-						for(var j =0;j<userList.length;j++){
-							var userid = autoSearchDev.getUserInDatabaseId(userList[j]);
-						   // userid!=-1 && $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>').appendTo($('.subRight:eq(8) ul'));
-						   if(userid!=-1){
-							   var newItem = $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>')[0];
-							   fragment.appendChild(newItem);
-							}
-						}
-						$('.subRight:eq(8) ul')[0].appendChild(fragment);
-					 }
-				}else if(i!=2 && i!=9){
-					insertChlIntoUI(i);
-				}
-			  }	
-	}
 	
-	//设备通道填充到子权限表中
-	function insertChlIntoUI(index){
-		var areaList= oCommonLibrary.GetAreaList();
-		//console.log(areaList);
-		getDevInfo(0,index); //取根节点
-		for(var i=0;i<areaList.length;i++){
-		   getDevInfo(areaList[i],index);
-		}
-	    
-		
-	}
-	function getDevInfo(areaid,index){
-		var devList = oCommonLibrary.GetDeviceList(areaid);
-		   //console.log(devList);
-		for (var i in devList){
-			var id=devList[i];
-			var devData = oCommonLibrary.GetDeviceInfo(id);
-			devData['area_id'] = areaid;
-			devData['dev_id'] = id;
-			devData['channel_count'] = oCommonLibrary.GetChannelCount(id);
-			devData['device_name'] = devData['name'];
-			devData['eseeid'] = devData['eseeid'];
-			devData['parea_name'] = oCommonLibrary.GetAreaName(areaid) || lang.Area;
-			//console.log(devData);
-			getChlInfo(id,devData.device_name,index);
-		}
-	}
-	function getChlInfo(devid,devname,index){
-	     var chlList = oCommonLibrary.GetChannelList(devid);
-		 //console.log(chlList);	
-		 var fragment = document.createDocumentFragment();
-		for(var i in chlList){ 
-			var id = chlList[i];
-			var chldata = oCommonLibrary.GetChannelInfo(id);
-			var data = {};
-			data['channel_id'] = id;
-			data['dev_id'] = devid;
-			data['channel_number'] = chldata['number']
-			data['stream_id'] = chldata['stream'];
-			data['channel_name'] = chldata['name'];
-			data['dev_name']=devname;
-			//console.log(data);	
-			//$('<li data='+data.channel_id+'><input type="checkbox" disabled/>'+devname+'_'+data.channel_name+'</li>').appendTo($('.subRight:eq('+index+') ul'));
-		    var newItem = $('<li data='+data.channel_id+'><input type="checkbox" disabled/>'+devname+'_'+data.channel_name+'</li>')[0];
-			fragment.appendChild(newItem);
-			
-		}	
-	   $('.subRight:eq('+index+') ul')[0].appendChild(fragment);   
-	}
+	
 	//添加用户前获取xml
 	function getAddUserXml(){
 		var name = $('#userR').val();
@@ -1061,24 +940,9 @@ var oSearchOcx,autoSearchDev,
 		var str1='';
 		for(var i=0;i<10;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
-			  var temp = c;
-			   if($('.subRight:eq('+i+') p:eq(1) :checkbox').prop('checked')){
-				      c++;
-			          str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
-				}else{
-			      $('.subRight:eq('+i+') li :checkbox').each(function(index){
-				   if($(this).prop('checked')){
-					  var  sublimit = $(this).parent('li').attr('data');
-					  if(sublimit){
-					   c++;
-			           str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='"+sublimit+"'/>";
-					   
-					  }
-				   }
-				  
-			      });
-				}
-			  if(temp<c) limit=limit+(1<<i);
+				 c++;
+			    str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
+				limit+=1<<i;
 		   }	
 		}
 		//console.log("limit:"+limit);
@@ -1096,24 +960,9 @@ var oSearchOcx,autoSearchDev,
 		var limit=0,c=0,str1='';
 		for(var i=0;i<10;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
-			   var temp=c;
-			  if($('.subRight:eq('+i+') p:eq(1) :checkbox').prop('checked')){
-				      c++;
-			          str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='0'/>";
-				}else{
-			      $('.subRight:eq('+i+') li :checkbox').each(function(index){
-				       if($(this).prop('checked')){
-					    var  sublimit = $(this).parent('li').attr('data');
-					    if(sublimit){
-					     c++;
-			            str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='"+sublimit+"'/>";
-					
-					    }
-				    }
-				  
-			       });
-			   }
-			  if(temp<c) limit=limit+(1<<i);
+				 c++;
+			     str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='0'/>";
+			     limit+=1<<i;
 		   }	
 		}
 		var str=" <modify>";
@@ -1360,16 +1209,13 @@ function autoSetIPcallBack(data){
 	
 	function AddUserSuccess(data){
          userList2Ui();
-		userRight2Ui();
 	}
 	function DeleteUserSuccess(data){
 		userList2Ui();
-		userRight2Ui();
 	}
 
 	function ModifyUserSuccess(data){
 		userList2Ui();
-		userRight2Ui();
 	}
 
 	function Fail(data){
