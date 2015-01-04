@@ -30,54 +30,65 @@ var oPreView,oDiv,autoSearchDev,
  		//打开通道
 		oDiv.on('dblclick','span.channel',function(){ 
 			/*debugData($(this).data('data'));*/
-			var chlData = getChlFullInfo($(this));
-			if($(this).attr('state')){
-				     CloseWind($(this).attr('wind'),chlData.channel_id);
-			}else{
-				openWind(oPreView.GetCurrentWnd(),chlData);
-			}
+			var itema =  checkUserRight(1<<0,0);
+			if(itema==0){
+				var chlData = getChlFullInfo($(this));
+				if($(this).attr('state')){
+				   CloseWind($(this).attr('wind'),chlData.channel_id);
+				}else{
+					openWind(oPreView.GetCurrentWnd(),chlData);
+				}
+			}else if(itema==1){
+			   autoSearchDev.showUserLoginUi(336,300);
+		    }else{
+		       writeActionLog("权限不足",errorcolor);
+		    }
+			
 		})
 
-		//打开设备下的说所有通道
+		//打开设备下的所有通道
 		oDiv.on('dblclick','span.device',function(){ 
-			var oDevice = $(this)
-			var chlData;
-			var wind = oPreView.GetCurrentWnd();
-			if(oDevice.attr('bAllopen')){
-				oDevice.next('ul').find('span.channel').each(function(){
-					chlData = getChlFullInfo($(this));	 
-					CloseWind($(this).attr('wind'),chlData.channel_id);
-				})
-			}else{
-				oDevice.next('ul').find('span.channel').each(function(){
-					chlData = getChlFullInfo($(this));	 
-					if(!$(this).attr('wind')){
-						oDevice.attr('bAllopen','1');
-						/*var windState = oPreView.GetWindowConnectionStatus(wind);
-						var win = wind;*/
-						//if(windState != 2){
-							win = getWind(wind);
-							if(win  == -1) {return;}
-						//}
-						openWind(win,chlData);
-					}	
-				})
-			}
+		    var itema = checkUserRight(1<<0,0);
+			if(itema==0){
+				var oDevice = $(this);
+				var chlData;
+				var wind = oPreView.GetCurrentWnd();
+				if(oDevice.attr('bAllopen')){
+					oDevice.next('ul').find('span.channel').each(function(){
+						chlData = getChlFullInfo($(this));	 
+						CloseWind($(this).attr('wind'),chlData.channel_id);
+					})
+				}else{
+					oDevice.next('ul').find('span.channel').each(function(){
+						chlData = getChlFullInfo($(this));	 
+						if(!$(this).attr('wind')){
+							oDevice.attr('bAllopen','1');
+							/*var windState = oPreView.GetWindowConnectionStatus(wind);
+							var win = wind;*/
+							//if(windState != 2){
+								win = getWind(wind);
+								if(win  == -1) {return;}
+							//}
+							openWind(win,chlData);
+						}	
+					})
+				}
+				
+				var str = '';
+				if(oDevice.attr('bAllopen')){ 
+					str = T('open_device',(parseInt(wind)+1),chlData.name);
+				}else{ 
+					str = lang.Shutting_down_device+chlData.name;
+				}
+				writeActionLog(str);
+			}else if(itema==1){
+			   autoSearchDev.showUserLoginUi(336,300);
+		    }else{
+		       writeActionLog("权限不足",errorcolor);
+		    }
 			
-			var str = '';
-			if(oDevice.attr('bAllopen')){ 
-				str = T('open_device',(parseInt(wind)+1),chlData.name);
-			}else{ 
-				str = lang.Shutting_down_device+chlData.name;
-			}
-			writeActionLog(str);
 		})
 		
-		$('.hover').each(function(index){  // 按钮元素添加鼠标事件对应样式
-		      var action = $(this).attr('class').split(' ')[0];
-		      addMouseStyleLimit($(this),action,index);
-	    })
-
 		//显示分屏的文字
 		$('div.operat li.setViewNum').click(function(){
 			$(this).siblings().removeClass('aaa');
@@ -138,13 +149,16 @@ var oPreView,oDiv,autoSearchDev,
 		// 云台方向控制;
 		$('#Dire_Control div:lt(4)').on({
 			mousedown:function(){
+				//var currentWindow = oPreView.GetCurrentWnd();
+				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
+				//console.log(windowInfo);
 				var itema = checkUserRight(1<<1,0);
 				if(itema==0){
 				   PTZcontrol($(this).attr('PTZ',1).index());
 				}else if(itema==1){
 					autoSearchDev.showUserLoginUi(336,300);
 				}else{
-					alert('权限不足');
+					writeActionLog("权限不足",errorcolor);
 				}
 			},
 			mouseup:function(){
@@ -172,24 +186,29 @@ var oPreView,oDiv,autoSearchDev,
 					//$(this).attr('PTZ',1);
 					PTZcontrol($(this).attr('PTZ',1).index());		
 				}*/
+				//var currentWindow = oPreView.GetCurrentWnd();
+				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
+				//console.log(windowInfo);
 				var itema = checkUserRight(1<<1,0);
 				if(itema==0){
 				  PTZcontrol($(this).index());
 				}else if(itema==1){
 					autoSearchDev.showUserLoginUi(336,300);
 				}else{
-					alert('权限不足');
+					writeActionLog("权限不足",errorcolor);
 				}
 				
 			}
 		})
 			
-		/*bFullScreen = oCommonLibrary.getAutoFullscreen();
-		
-		if(bFullScreen){
-			viewFullScreen();
-		}*/
-
+		$('.para_Control li').each(function(index) {
+            $(this).click(function(){
+				var index = $(this).attr('data');
+				//var currentWindow = oPreView.GetCurrentWnd();
+				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
+			    checkUserRightBtn(1<<1,0,'PTZcontrol',index)
+			});
+        });
 		setViewMod(oCommonLibrary.getSplitScreenMode());
 		//同步设置分屏UI
 		var indexLi = $('li.setViewNum[onclick*='+oCommonLibrary.getSplitScreenMode()+']'),
@@ -247,79 +266,7 @@ var oPreView,oDiv,autoSearchDev,
             
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
-	
-	function addMouseStyleLimit(obj,action,index){  //按钮UI响应
-		var width = obj.width();
-		var left,top;
-		obj.hover(function(){
-			left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
-			top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
-			if(left != -width){
-				obj.css('background-position',left-width+'px'+' '+top+'px');
-			}
-		},function(){
-			obj.css('background-position',left+'px'+' '+top+'px');
-		}).mousedown(function(){
-			if(index<=14){
-			   if(left == -width){
-				obj.css('background-position',left-width+'px'+' '+top+'px');
-			   }else{
-				obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
-				}
-			   obj.attr('limit',1);
-			}else if(index>14){
-				var itema = checkUserRight(1<<0,0);
-				if(itema==0){
-					if(left == -width){
-					   obj.css('background-position',left-width+'px'+' '+top+'px');
-					}else{
-					obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
-					 }
-					 obj.attr('limit',1);
-				}else{
-					obj.attr('limit',0);
-				}
-				
-			}
-		}).mouseup(function(ev){
-		 if(obj.attr('limit')){
-			if(action == 'toggle'){
-				var H = obj.height();
-				var a = obj.attr('toggle');
-				if(a){
-					obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
-					obj.removeAttr('toggle');
-				}else{
-					obj.attr('toggle',1);
-					obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
-				}	
-				top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
-			}else if(action == 'hover'){
-				obj.css('background-position',left-width+'px'+' '+top+'px');	
-			}else{
-				if(action == "switch"){
-					var oSwitch = $('a.switch');
-				}else{
-					var ev = ev || window.event;
-					var oSwitch = $('div .setViewNum');	
-					oSwitch.each(function(index){
-					var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
-					$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
-					/*var oView = $('#playback_view');
-					if(oView.length != 0){
-						autoImages(oSwitch.index(ev.target)+1,oView);
-					}*/
-				})
-					//alert(oSwitch.index(ev.target);
-				}		
-				obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
-				obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
-				left=-width;
-			}	
-		 }
-		})
-	}
-	
+
 	function CurrentStateChange(ev){
 		
 	      if(ev.reFreash =='false')
@@ -373,14 +320,7 @@ var oPreView,oDiv,autoSearchDev,
 	}
 
 	function CloseWind(wind,channel_id){ 
-	    var itema = checkUserRight(1<<0,channel_id);
-		if(itema==0){
-		   oPreView.CloseWndCamera(wind);
-		}else if(itema==1){
-	       autoSearchDev.showUserLoginUi(336,300);
-		}else{
-			slert('权限不足');
-		}
+       oPreView.CloseWndCamera(wind);
 	}
 
 	function openCloseAll(bool){  //打开关闭所有窗口
@@ -476,34 +416,27 @@ var oPreView,oDiv,autoSearchDev,
 	}
 
 	function openWind(wind,data){
+	
+			var windState = oPreView.GetWindowInfo(wind).usable;
+				//console.log('当前窗口:'+wind+'的状态'+windState);
+				if(!windState){ //该窗口不可用.
+					var sWind = parseInt(wind)+1;
+					var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)/*+'  '+winState[windState]*/;
+					writeActionLog(str,errorcolor);
+					wind = getWind(wind)
+					//console.log('调整后的窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
+				}		
 		
-		var itema = checkUserRight(1<<0,data.channel_id);
-	if(itema==0){
-		var windState = oPreView.GetWindowInfo(wind).usable;
-		//console.log('当前窗口:'+wind+'的状态'+windState);
-		if(!windState){ //该窗口不可用.
-			var sWind = parseInt(wind)+1;
-			var str = T('Open_failed_Error_The_current_window',data.name,data.channel_name,sWind)/*+'  '+winState[windState]*/;
-			writeActionLog(str,errorcolor);
-			wind = getWind(wind)
-			//console.log('调整后的窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
-		}		
-
-		//console.log('最终确定窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
-
-		if(wind  == -1) {return;}
-	    
-		$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
-
-		oPreView.SetDevChannelInfo(wind,data.channel_id);
-
-		oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
-	}else if(itema==1){
-		 autoSearchDev.showUserLoginUi(336,300);
-	}else{
-		alert('权限不足');
-	}
+				//console.log('最终确定窗口:'+wind+'的状态'+oPreView.GetWindowConnectionStatus(wind));
 		
+				if(wind  == -1) {return;}
+				
+				$('#channel_'+data.channel_id+',#g_channel_'+data.channel_id).attr('wind',wind);
+		
+				oPreView.SetDevChannelInfo(wind,data.channel_id);
+		
+				oPreView.OpenCameraInWnd(wind,data.address,data.port,data.eseeid,data.channel_number,data.stream_id,data.username,data.password,data.channel_name,data.vendor);
+	
 	}
 
 	function WindCallback(ev){ 
@@ -913,6 +846,6 @@ var oPreView,oDiv,autoSearchDev,
 		}else if(itema==1){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else{
-		   alert("权限不足");	
+		  writeActionLog("权限不足",errorcolor);
 		}
  }

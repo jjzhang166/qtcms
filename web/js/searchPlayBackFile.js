@@ -207,7 +207,15 @@
 		             .end().find('h4').html(con);
 		return str; 
 	}
-
+     function showLimitTips(){
+		 $('#limitTips p').html('权限不足').css('color','red');
+		 $('#limitTips').show();
+		 var timer = setTimeout(function(){
+			  $('#limitTips').fadeOut(1500);
+			  clearTimeout(timer);
+			 },1500);
+		 
+	 }
 	function recFileSearchFailCallback(data){
 		/*console.log('recFileSearchFailCallback');
 		console.log(data);

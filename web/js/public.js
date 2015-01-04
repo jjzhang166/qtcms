@@ -358,11 +358,11 @@ $(function(){
 		}
 	}
 
-	/*$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+	$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		var action = $(this).attr('class').split(' ')[0];
 		addMouseStyle($(this),action);
 		
-	})*/
+	})
 })///
 function triggerOnclick(id,sEv){ 
 	try{

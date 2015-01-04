@@ -76,6 +76,42 @@ function cancel()
 {
 	autoSearchDeviceModule.cancelLoginUI();
 }
+function Login()
+{
+	var login=document.getElementById('atuoSearchDevice');
+	var username = $('#username').val();
+	var pwd =$('#pwd').val();
+	if(username==''){
+		$('#tips').html("用户名不能为空").css('color','red');
+	}else{
+	  var nret=login.login(username,pwd,'0');
+	   if(nret==1){
+		   $('#tips').html("用户名或者密码错误！").css('color','red');
+       }else{
+	     cancel();
+	   }
+	}
+	var timer = setTimeout(function(){
+         $('#tips').html("");
+			clearTimeout(timer);
+		},2000);
+}
+function Loginout()
+{
+	var login=document.getElementById('atuoSearchDevice');
+	var username = $('#username').val();
+	var pwd =$('#pwd').val();
+	if(username==''){
+		$('#tips').html("用户名不能为空").css('color','red');
+	}else{
+	  var nret=login.login(username,pwd,'1');
+	 if(nret==1) $('#tips').html("用户名或者密码错误！").css('color','red');
+	}
+	var timer = setTimeout(function(){
+         $('#tips').html("");
+			clearTimeout(timer);
+		},2000);
+}
 </script>
 </head>
 
@@ -97,8 +133,8 @@ function cancel()
   记住密码</p>
 <div style="width:270px; margin:0 auto; overflow:hidden;">
 <ul>
-  <li class="tdBtn">确定</li>
-  <li class="tdBtn">锁定</li>
+  <li class="tdBtn" onclick="Login();">确定</li>
+  <li class="tdBtn" onclick="Loginout();">锁定</li>
   <li class="tdBtn" onclick="cancel()">取消</li>
 </ul>
 </div>

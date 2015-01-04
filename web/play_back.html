@@ -28,13 +28,14 @@
 	#nowSearchType{background:#323232; width:224px; height:22px; padding:2px;}
 
 	/* 下载进度 */
-	#fileRec{float: right; line-height: 36px; width:auto; margin-right:4px; display: none;}
+	#fileRec,#limitTips{float: right; line-height: 36px; width:auto; margin-right:4px; display: none;}
 	#fileRec *{border: 1px solid #ccc; float: right; height: 12px;}
 	#fileRec p{ margin: 12px 0; width: 100px;}
 	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
 	#fileRec h5{ border: none; line-height: 38px;}
 	#fileRec h4{float: left; border: none;}
 	#list .sel li{background-color: #ABCDEF;}
+	#limitTips p{width: 100px;};
 	.no_border{width: 80px;}
 	.red{color:red;}
 
@@ -66,7 +67,7 @@
 					<li id="app_close_window"><a class="hover" title="Close" style="background-position: -336px -104px;"></a></li>
 					<!-- <li id="app_maxsize"><a class="hover" title="max" style="background-position: -336px -78px;"></a></li> -->
 					<li id="app_minsize"><a class="hover" title="min" style="background-position: -336px -52px;"></a></li>
-					<!-- <li id="app_userlock"><a class="toggle hover" title="lock"></a></li> -->
+					 <li id="app_userlock"><a class="toggle hover" title="lock"></a></li> 
 				</ul>
 			</div>
 		</div>
@@ -79,10 +80,10 @@
 				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li> 
 				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li>-->
 			</ul>
-			<!-- <div>
+			 <div>
 				<a></a>				
-				<p style="color:#000;"><span><script>T("Login_account")</script></span>eddy</p>
-			</div> -->
+				<p style="color:#000;"><span><script>T("Login_account")</script></span><span>eddy</span></p>
+			</div> 
 			</div>
 		</div>
 	</div>
@@ -197,6 +198,7 @@
 	<div id="operating">
 		<div class="operat">
 			<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5>0/0</h5><p><span></span></p></div>
+            <div id="limitTips"><p></p></div>
 			<ul>
 				<li class="toggle hover" style="background-position: 0 0;" id="togglePlay" onclick="checkUserRightBtn('togglePlay');" title="Play_Pause"></li>
 				<li class="hover" style="background-position: -120px -72px;" onclick="checkUserRightBtn('groupStop');" title="Stop"></li>

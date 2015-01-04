@@ -1,9 +1,9 @@
-var oSearchOcx,autoSeachOcx,
+var oSearchOcx,autoSearchDev,
 	searchedDev=[];//已经搜索到的设备;
 	$(function(){
          document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		 oSearchOcx = document.getElementById('devSearch');
-		 autoSeachOcx = document.getElementById('atuoSearchDevice');
+		 autoSearchDev = document.getElementById('atuoSearchDevice');
 		var oTreeWarp = $('div.dev_list').slice(2);
 
 		oTreeWarp.hide();
@@ -105,10 +105,6 @@ var oSearchOcx,autoSeachOcx,
 			})
 		})
 		
-		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-		  var action = $(this).attr('class').split(' ')[0];
-		  addMouseStyle($(this),action);
-	    })
 		/*$('ul.filetree span.areaName').click(function(){
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
@@ -552,11 +548,11 @@ var oSearchOcx,autoSeachOcx,
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
 		}
-
+        AddActivityEvent('Validation','Validationcallback(data)');
 		//搜索设备;
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
-		oSearchOcx.AddEventProc('Validation','Validationcallback(data)');
+		
 		initOxcDevListStatus()
 	})///
 
@@ -948,13 +944,13 @@ var oSearchOcx,autoSeachOcx,
 		$('#userList tr').remove();
 		 
 		$('#mainRight input,.subRight input').each(function(){$(this).prop('checked',false)});
-		var userList = autoSeachOcx.getUserList();
+		var userList = autoSearchDev.getUserList();
 		
 		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
 		  //var fragment = document.createDocumentFragment();
 			for(var i in userList){
-				var userlv = autoSeachOcx.getUserLimit(userList[i]);
-				var userid = autoSeachOcx.getUserInDatabaseId(userList[i]);
+				var userlv = autoSearchDev.getUserLimit(userList[i]);
+				var userid = autoSearchDev.getUserInDatabaseId(userList[i]);
 				var dataArry =[] , subname=[];
 				//console.log(userlv);
 				for(var j in userlv){
@@ -987,12 +983,12 @@ var oSearchOcx,autoSeachOcx,
 		$('.subRight ul:not(".windows") li').remove();
 	     	for(var i=0;i<10;i++){
 			   if(i==8){
-					  var userList = autoSeachOcx.getUserList();
+					  var userList = autoSearchDev.getUserList();
   
 					if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
 						var fragment = document.createDocumentFragment();
 						for(var j =0;j<userList.length;j++){
-							var userid = autoSeachOcx.getUserInDatabaseId(userList[j]);
+							var userid = autoSearchDev.getUserInDatabaseId(userList[j]);
 						   // userid!=-1 && $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>').appendTo($('.subRight:eq(8) ul'));
 						   if(userid!=-1){
 							   var newItem = $('<li data="'+userid+'"><input type="checkbox" />'+userList[j]+'</li>')[0];
@@ -1353,8 +1349,12 @@ function autoSetIPcallBack(data){
 
 //// oCommonLibrary, 操作做数据库回调方法.
 	function Validationcallback(data){ //id按钮权限验证
-		console.log(data);
-		console.log('yes');
+	  //console.log(data);
+		if(data.ErrorCode=="1"){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else if(data.ErrorCode=="2"){
+			alert("权限不足");
+		}
 	}
 	
 	
