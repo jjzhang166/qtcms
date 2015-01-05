@@ -14,6 +14,7 @@ var oPreView,oDiv,autoSearchDev,
 		var oAs = $('ul.dev_list_btn a');
 	    
 		autoSearchDev = $('#atuoSearchDevice')[0];
+		autoSearchDev.startGetUserLoginStateChangeTime();
 		//$(window).off();
          getUsername();
 	    $('div.dev_list:eq(1)').hide();

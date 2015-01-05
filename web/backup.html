@@ -262,6 +262,7 @@ var oPlayBack={},  // 远程回访控件对象
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
 	    
 		autoSearchDev.AddEventProc('useStateChange','useStateChange(ev)');
+		autoSearchDev.startGetUserLoginStateChangeTime();
 	})///
 
 	$(window).resize(contentMax);

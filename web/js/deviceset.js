@@ -4,7 +4,7 @@ var oSearchOcx,autoSearchDev,
          document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		 oSearchOcx = document.getElementById('devSearch');
 		 autoSearchDev = document.getElementById('atuoSearchDevice');
-		 
+
 		 var username = autoSearchDev.getCurrentUser();
 		  username && $('.top_nav div p span:eq(1)').html(username);
 		  
@@ -516,7 +516,9 @@ var oSearchOcx,autoSearchDev,
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
 		
 		autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
-		initOxcDevListStatus()
+		autoSearchDev.startGetUserLoginStateChangeTime();
+		
+		initOxcDevListStatus();
 	})///
 
 	///$(window).resize(set_contentMax);

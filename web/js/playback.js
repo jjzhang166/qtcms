@@ -21,6 +21,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		autoSearchDev = $('#atuoSearchDevice')[0];
 		
+		autoSearchDev.startGetUserLoginStateChangeTime();
+		
 		var channelvideo = $('#channelvideo');
         
 		 var username = autoSearchDev.getCurrentUser();
