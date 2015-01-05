@@ -470,6 +470,7 @@
 	'Local_Settings':'本地设置',
 	'User_Settings':'用户设置',
 	'Exit_system':'退出系统',
-	
+	'not_Login':'未登录',
+	'locking':'锁定',
 
 }

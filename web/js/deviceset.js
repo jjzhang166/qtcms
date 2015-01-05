@@ -4,6 +4,10 @@ var oSearchOcx,autoSearchDev,
          document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		 oSearchOcx = document.getElementById('devSearch');
 		 autoSearchDev = document.getElementById('atuoSearchDevice');
+		 
+		 var username = autoSearchDev.getCurrentUser();
+		  username && $('.top_nav div p span:eq(1)').html(username);
+		  
 		var oTreeWarp = $('div.dev_list').slice(2);
 
 		oTreeWarp.hide();
@@ -511,11 +515,21 @@ var oSearchOcx,autoSearchDev,
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
 		
+		autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		initOxcDevListStatus()
 	})///
 
-	///$(window).resize(set_contentMax)
-
+	///$(window).resize(set_contentMax);
+	
+     //用户登录状态回调函数
+    function useStateChange(ev){
+		console.log(ev);
+		if(ev.status==0){
+		 $('.top_nav p span:eq(1)').html(ev.userName);	
+		}else{
+		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		}
+	}
 
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div6_6':'36','div7_7':'49'/*,'div8_8':'64'*/}
 		for(i in SplitScreenMode){
@@ -1202,7 +1216,11 @@ function autoSetIPcallBack(data){
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			alert("权限不足");
+			Confirm("权限不足");
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
 		}
 	}
 	
@@ -1824,3 +1842,7 @@ function IPDes(a,b){
 	return transformIp(b.SearchIP_ID) - transformIp(a.SearchIP_ID);
 	
 }
+//锁定按钮
+ function lock(){
+	autoSearchDev.showUserLoginUi(336,300); 
+ }

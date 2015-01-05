@@ -296,7 +296,20 @@ function checkAJAX(){
 function submitThisMenu(str){
 	$('#ajaxHint').html('').stop(true,true).hide();
 	AJAX && AJAX.abort();
-	nowDev[str+'Put']();
+	var itema= autoSearchDev.checkUserLimit(1<<7,0);
+		if(itema==0){
+			nowDev[str+'Put']();
+		}else if(itema==1){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else{
+		 //showAJAXHint("权限不足");
+		    Confirm("权限不足");
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
+		}
+	
 }
 
 /*function getPutDataJSON(){

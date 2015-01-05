@@ -56,7 +56,7 @@
 </script>
 <object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
 <object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
-<object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:0; height:0;" ></object>
+<object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:100%; height:0;" ></object>
 	<div id="top">
 		<div class="top_act">
 			<h4><script>T("DVR_client")</script></h4>
@@ -66,7 +66,7 @@
 					<li id="app_close_window"><a class="hover" title="Close" style="background-position: -336px -104px;"></a></li>
 					<!-- <li id="app_maxsize"><a class="hover" title="max" style="background-position: -336px -78px;"></a></li> -->
 					<li id="app_minsize"><a class="hover" title="min" style="background-position: -336px -52px;"></a></li>
-					 <li id="app_userlock"><a class="toggle hover" title="lock"></a></li> 
+					<li id="app_userlock"><a class="hover" title="lock" style="background-position: -336px -26px;" onclick="lock();"></a></li> 
 				</ul>
 			</div>
 		</div>
@@ -82,8 +82,8 @@
 			 <div>
 				<a></a>				
 				<p style="color:#000;"><span><script>T("Login_account")</script></span><span>eddy</span></p>
-			</div> 
 			</div>
+          </div> 
 		</div>
 	</div>
 	<div id="search_device">
@@ -213,7 +213,10 @@ var oPlayBack={},  // 远程回访控件对象
 		oPlayBack = $('#playback')[0];
 		oBackup = $('#backup')[0];
 		autoSearchDev = $('#atuoSearchDevice')[0];
-
+         
+		 var username = autoSearchDev.getCurrentUser();
+		  username && $('.top_nav div span:eq(1)').html(username);
+		 
 		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
 			if(oBackup.getProgress() != 0){
 				return;
@@ -224,11 +227,6 @@ var oPlayBack={},  // 远程回访控件对象
 			$(this).SynchekboxClick();
 		})
 		
-        $('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-		var action = $(this).attr('class').split(' ')[0];
-		addMouseStyle($(this),action);
-		
-	    })
 		//文件排序
 		$('#search_result thead:eq(0) td:gt(1)').mousedown(function(){ 
 			$(this).css('background-position','0 -20px');
@@ -262,11 +260,8 @@ var oPlayBack={},  // 远程回访控件对象
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
-		
-		
-			 
-
-		
+	    
+		autoSearchDev.AddEventProc('useStateChange','useStateChange(ev)');
 	})///
 
 	$(window).resize(contentMax);
@@ -692,15 +687,15 @@ var oPlayBack={},  // 远程回访控件对象
 	} 
 	//验证用户是否有权限
   function checkUserRight(uicode,uisubcode){
-	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+	// console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		return itema;
  }
   function checkUserRightBtn(uicode,uisubcode,fn,num){
-	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	 // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+	  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
@@ -708,6 +703,18 @@ var oPlayBack={},  // 远程回访控件对象
 		}else{
 		   showLimitTips();
 		}
+ }
+ //用户登录状态回调函数
+    function useStateChange(ev){
+	//	console.log(ev);
+		if(ev.status==0){
+		 $('.top_nav p span:eq(1)').html(ev.userName);	
+		}else{
+		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		}
+	}
+	 function lock(){
+	autoSearchDev.showUserLoginUi(336,300); 
  }
 </script>
 <script type="text/javascript" src="js/searchPlayBackFile.js"></script>

@@ -15,7 +15,11 @@ var oPreView,oDiv,autoSearchDev,
 	    
 		autoSearchDev = $('#atuoSearchDevice')[0];
 		//$(window).off();
-
+        
+		var username = autoSearchDev.getCurrentUser();
+		  username && $('.top_nav div p span:eq(1)').html(username);
+       
+		
 	    $('div.dev_list:eq(1)').hide();
 				
 		oAs.each(function(index){
@@ -232,8 +236,9 @@ var oPreView,oDiv,autoSearchDev,
 		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
 		
-        $('#atuoSearchDevice')[0].AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
-		
+         autoSearchDev.AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
+		 autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
+		 
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
@@ -565,7 +570,16 @@ var oPreView,oDiv,autoSearchDev,
 		}
 		setViewNumNow();
 	}
-
+	//用户登录状态回调函数
+    function useStateChange(ev){
+		console.log(ev);
+		if(ev.status==0){
+		 $('.top_nav p span:eq(1)').html(ev.userName);	
+		}else{
+			var str = _T('not_Login');
+		   $('.top_nav p span:eq(1)').html(str);	
+		}
+	}
 	function ConnectRefuse(ev){
 		var data = oPreView.GetWindowInfo(ev.WPageId),
 			oDevData =  getChlFullInfo($('#channel_'+ev.ChannelId));
@@ -832,15 +846,15 @@ var oPreView,oDiv,autoSearchDev,
   }
   //验证用户是否有权限
   function checkUserRight(uicode,uisubcode){
-	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+	   //console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		return itema;
  }
   function checkUserRightBtn(uicode,uisubcode,fn,num){
-	  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+	  //console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
@@ -848,4 +862,7 @@ var oPreView,oDiv,autoSearchDev,
 		}else{
 		  writeActionLog("权限不足",errorcolor);
 		}
+ }
+ function lock(){
+	autoSearchDev.showUserLoginUi(336,300); 
  }

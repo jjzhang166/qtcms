@@ -4,6 +4,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>登录框</title>
 <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/cookies.js"></script>
+<!-- 语言文件 -->
+<script type="text/javascript" src="lang/zh_CN.js"></script>
+<script type="text/javascript" src="lang/en_GB.js"></script>
+<script type="text/javascript" src="lang/tr_TR.js"></script>
+<script type="text/javascript" src="lang/ru_RU.js"></script>
+<!-- 语言文件 end -->
+<script type="text/javascript" src="js/public.js"></script>
 <style type="text/css">
 body, div, span, ul {
 	margin: 0px;
@@ -60,6 +68,7 @@ p .txt {
 }
 </style>
 <script type="text/javascript">
+var LoginByUserName=[];
 $(document).ready(function(){
 	$('li.tdBtn').hover(function(){
 	    $(this).css('background-position','-70px 0');	
@@ -71,10 +80,13 @@ $(document).ready(function(){
 		 
 		 $(this).css('background-position','0 0');	
      });
+	 cookiesIntoData(); 
+
 });
 function cancel()
 {
 	autoSearchDeviceModule.cancelLoginUI();
+	
 }
 function Login()
 {
@@ -88,7 +100,9 @@ function Login()
 	   if(nret==1){
 		   $('#tips').html("用户名或者密码错误！").css('color','red');
        }else{
+		 loginDataIntoCookies(username,pwd);
 	     cancel();
+		 
 	   }
 	}
 	var timer = setTimeout(function(){
@@ -105,13 +119,45 @@ function Loginout()
 		$('#tips').html("用户名不能为空").css('color','red');
 	}else{
 	  var nret=login.login(username,pwd,'1');
-	 if(nret==1) $('#tips').html("用户名或者密码错误！").css('color','red');
+	 if(nret==1){
+		 $('#tips').html("用户名或者密码错误！").css('color','red');
+	 }else{
+		 cancel();
+	  }
 	}
 	var timer = setTimeout(function(){
          $('#tips').html("");
 			clearTimeout(timer);
 		},2000);
 }
+//将登录信息写入cookie中
+function loginDataIntoCookies(){
+	if($('#remember').prop('checked')){
+		//写入cookie前数据保存入栈.
+		if(LoginByUserName.length  == 0){
+		     LoginByUserName.push([arguments[0],arguments[1]]);
+		}else{
+			LoginByUserName=[];
+			LoginByUserName.push([arguments[0],arguments[1]]);	
+		}
+	}
+	console.log("loginDataIntoCookies "+LoginByUserName);
+	Cookies.set("loginData", LoginByUserName.join());
+	
+}
+//cookie数据读取写入到栈
+function cookiesIntoData(){
+	var str = Cookies.get("loginData");
+	console.log(str);
+	var data = LoginByUserName;
+	if(str != null)
+	{
+		var strs = str.split(",");
+		$('#username').val(strs[0]);
+		$('#pwd').val(strs[1]);
+	}
+}
+
 </script>
 </head>
 
@@ -121,7 +167,7 @@ function Loginout()
 <script type="text/javascript">
 	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
-<div id="head"><span style="z-index:1;">监控系统登录</span></div>
+<div id="head"><span style="z-index:1;"><script>T("DVR_client")</script></span></div>
 <p style="background:url(images/loginbox/user.jpg) 0 0 scroll no-repeat transparent; border:2px solid #999;margin-top:38px">
   <input class="txt" type="text" id="username"/>
 </p>
@@ -133,9 +179,9 @@ function Loginout()
   记住密码</p>
 <div style="width:270px; margin:0 auto; overflow:hidden;">
 <ul>
-  <li class="tdBtn" onclick="Login();">确定</li>
-  <li class="tdBtn" onclick="Loginout();">锁定</li>
-  <li class="tdBtn" onclick="cancel()">取消</li>
+  <li class="tdBtn" onclick="Login();"><script>T('OK')</script></li>
+  <li class="tdBtn" onclick="Loginout();"><script>T('locking')</script></li>
+  <li class="tdBtn" onclick="cancel()"><script>T('Cancel')</script></li>
 </ul>
 </div>
 <div style="width:270px; margin:10px auto;"><span id="tips" ></span></div>

@@ -22,7 +22,10 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		autoSearchDev = $('#atuoSearchDevice')[0];
 		
 		var channelvideo = $('#channelvideo');
-
+        
+		 var username = autoSearchDev.getCurrentUser();
+		  username && $('.top_nav div span:eq(1)').html(username);
+	   
 		channelvideo.on('click','input:checkbox',function(event){   //录像文件列表选择通道不能超过4个
 			event.stopPropagation();
 			//console.log('~~~~~~~~~~~~~~~~~~~~');
@@ -147,7 +150,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
 		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
-
+		
+        autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
+		
 		bFullScreen = 0;
 
 		ViewMax();
@@ -204,7 +209,16 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			top:oView.height()+212
 		})
 	}
-
+   //用户登录状态回调函数
+    function useStateChange(ev){
+	//	console.log(ev);
+		if(ev.status==0){
+		 $('.top_nav p span:eq(1)').html(ev.userName);	
+		}else{
+		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		}
+	}
+	
 	function togglePlay(){ 
 		var obj = $('#togglePlay');
 		var to = $('#togglePlay').attr('toggle'),
@@ -1070,17 +1084,17 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	 function checkUserRight(){
 		  var uicode=bool?1<<2:1<<3,
 		     uisubcode=0;
-		  console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+		 // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 		  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-		   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 			return itema;
 	 }
 	  function checkUserRightBtn(fn,num){
 		  var uicode = bool? 1<<2:1<<3;
 		  var uisubcode = 0;
-		   console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+		  // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 		  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-		   console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 			if(itema==0){
 				window[fn](num);
 			}else if(itema==1){
@@ -1089,4 +1103,6 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			   showLimitTips();	
 			}
 	 }
-	 
+	  function lock(){
+	     autoSearchDev.showUserLoginUi(336,300); 
+       }
