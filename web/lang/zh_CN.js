@@ -473,5 +473,7 @@
 	'not_Login':'未登录',
 	'locking':'锁定',
 	'Remember_password':'记住密码',
-
+	'no_limit':'您没有权限操作！',
+	'username_cannot_be_empty':'用户名不能为空',
+     'User name or password is incorrect':'用户名或者密码错误！',
 }

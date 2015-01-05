@@ -473,4 +473,10 @@ var tr_TR={
 	'Local_Settings':'Local Settings',//Not yet translated
 	'User_Settings':'kullanıcı Ayarları',
 	'Exit_system':'çıkış sistemi',
+	'not_Login':'hiçbir giriş',
+	'locking':'Kilitleme',
+	'Remember_password':'şifreyi hatırla',
+	'no_limit':'Sen işletme izni yok!',
+	'username_cannot_be_empty':'Kullanıcı adı boş olamaz.',
+    'User name or password is incorrect':'Kullanıcı adı veya şifre yanlış!',
 }

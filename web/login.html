@@ -101,11 +101,11 @@ function Login()
 	var username = $('#username').val();
 	var pwd =$('#pwd').val();
 	if(username==''){
-		$('#tips').html("用户名不能为空");
+		$('#tips').html(_T("username_cannot_be_empty"));
 	}else{
 	  var nret=login.login(username,pwd,'0');
 	   if(nret==1){
-		   $('#tips').html("用户名或者密码错误！");
+		   $('#tips').html(_T('User name or password is incorrect'));
        }else{
 		
 		login.setIsKeepCurrentUserPassWord($('#remember').prop('checked'));
@@ -124,11 +124,11 @@ function Loginout()
 	var username = $('#username').val();
 	var pwd =$('#pwd').val();
 	if(username==''){
-		$('#tips').html("用户名不能为空");
+		$('#tips').html(_T("username_cannot_be_empty"));
 	}else{
 	  var nret=login.login(username,pwd,'1');
 	 if(nret==1){
-		 $('#tips').html("用户名或者密码错误！");
+		 $('#tips').html(_T('User name or password is incorrect'));
 	 }else{
 		 cancel();
 	  }

@@ -302,8 +302,8 @@ function submitThisMenu(str){
 		}else if(itema==1){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else{
-		 //showAJAXHint("权限不足");
-		    Confirm("权限不足");
+		 //showAJAXHint(_T('no_limit'));
+		    Confirm(_T('no_limit'));
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);

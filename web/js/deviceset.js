@@ -1218,7 +1218,7 @@ function autoSetIPcallBack(data){
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			Confirm("权限不足");
+			Confirm(_T('no_limit'));
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);

@@ -42,7 +42,7 @@ var oPreView,oDiv,autoSearchDev,
 			}else if(itema==1){
 			   autoSearchDev.showUserLoginUi(336,300);
 		    }else{
-		       writeActionLog("权限不足",errorcolor);
+		        writeActionLog(_T("no_limit"),errorcolor);
 		    }
 			
 		})
@@ -85,7 +85,7 @@ var oPreView,oDiv,autoSearchDev,
 			}else if(itema==1){
 			   autoSearchDev.showUserLoginUi(336,300);
 		    }else{
-		       writeActionLog("权限不足",errorcolor);
+		       writeActionLog(_T("no_limit"),errorcolor);
 		    }
 			
 		})
@@ -159,7 +159,7 @@ var oPreView,oDiv,autoSearchDev,
 				}else if(itema==1){
 					autoSearchDev.showUserLoginUi(336,300);
 				}else{
-					writeActionLog("权限不足",errorcolor);
+					 writeActionLog(_T("no_limit"),errorcolor);
 				}
 			},
 			mouseup:function(){
@@ -196,7 +196,7 @@ var oPreView,oDiv,autoSearchDev,
 				}else if(itema==1){
 					autoSearchDev.showUserLoginUi(336,300);
 				}else{
-					writeActionLog("权限不足",errorcolor);
+					 writeActionLog(_T("no_limit"),errorcolor);
 				}
 				
 			}
@@ -569,7 +569,7 @@ var oPreView,oDiv,autoSearchDev,
 	}
 	//用户登录状态回调函数
     function useStateChange(ev){
-		console.log(ev);
+		//console.log(ev);
 		if(ev.status==0){
 		 $('.top_nav p span:eq(1)').html(ev.userName);	
 		}else{
@@ -857,7 +857,7 @@ var oPreView,oDiv,autoSearchDev,
 		}else if(itema==1){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else{
-		  writeActionLog("权限不足",errorcolor);
+		  writeActionLog(_T("no_limit"),errorcolor);
 		}
  }
  function lock(){

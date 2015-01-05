@@ -473,4 +473,10 @@
 	'Local_Settings':'Local Settings',//Not yet translated
 	'User_Settings':'Настройки пользователя',
 	'Exit_system':'Выход системы',
+	'not_Login':'въезд запрещен',
+	'locking':'Блокировка',
+	'Remember_password':'Запомнить пароль',
+	'no_limit':'Вы не имеете разрешения к делу!',
+	'username_cannot_be_empty':'Имя пользователя не может быть пустым.',
+    'User name or password is incorrect':'Имя пользователя или неверный пароль!',
 }

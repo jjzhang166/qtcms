@@ -208,7 +208,7 @@
 		return str; 
 	}
      function showLimitTips(){
-		 $('#limitTips p').html('权限不足').css('color','red');
+		 $('#limitTips p').html(_T('no_limit')).css('color','red');
 		 $('#limitTips').show();
 		 var timer = setTimeout(function(){
 			  $('#limitTips').fadeOut(1500);
