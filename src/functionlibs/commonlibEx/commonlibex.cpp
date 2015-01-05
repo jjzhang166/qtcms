@@ -3315,6 +3315,9 @@ void commonlibEx::setIsKeepCurrentUserPassWord(bool bFlags)
 		sFlags="true";
 	}else{
 		sFlags="false";
+		QString sUserName;
+		QString sPassword;
+		setCurrentUserInfo(sUserName,sPassword);
 	}
 	QSqlQuery _query(*m_db);
 	QString sCmd=QString("select count(*) from general_setting where name='misc_keepCurrentUserPassWord'");
@@ -3344,9 +3347,10 @@ void commonlibEx::setIsKeepCurrentUserPassWord(bool bFlags)
 		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
 		abort();
 	}
+
 }
 
-bool commonlibEx::getIsKeepCurrentUserPassWord()
+bool commonlibEx::getIsKeepCurrentUserPassWord(QString &sUserName,QString &sUserPassword)
 {
 	QSqlQuery _query(*m_db);
 	QString sCommand = QString("select value from general_setting where name='misc_keepCurrentUserPassWord'");
@@ -3359,6 +3363,27 @@ bool commonlibEx::getIsKeepCurrentUserPassWord()
 			{
 				return false;
 			}else{
+				sCommand = QString("select value from general_setting where name='misc_CurrentUserName'");
+				if (_query.exec(sCommand))
+				{
+					if (_query.next())
+					{
+						sUserName = _query.value(0).toString();
+						sCommand = QString("select value from general_setting where name='misc_CurrentUserPassWord'");
+						if (_query.exec(sCommand))
+						{
+							sUserPassword = _query.value(0).toString();
+						}else{
+							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+							abort();
+						}
+					}else{
+						//do nothing
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+					abort();
+				}
 				return true;
 			}
 		}else{
@@ -3366,6 +3391,27 @@ bool commonlibEx::getIsKeepCurrentUserPassWord()
 		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
+		abort();
+	}
+	return false;
+}
+
+bool commonlibEx::setCurrentUserInfo( QString sUserName,QString sUserPassword )
+{
+	QSqlQuery _query(*m_db);
+	QString sCmd=QString("update general_setting set value='%1' where name='misc_CurrentUserName'").arg(sUserName);
+	if (_query.exec(sCmd))
+	{
+		QString sCmd=QString("update general_setting set value='%1' where name='misc_CurrentUserPassWord'").arg(sUserPassword);
+		if (_query.exec(sCmd))
+		{
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+			abort();
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
 		abort();
 	}
 	return false;

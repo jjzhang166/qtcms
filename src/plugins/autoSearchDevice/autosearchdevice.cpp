@@ -3,11 +3,12 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <IEventRegister.h>
-
+QString g_sHisUserName;
 int cbAutoSearchDevice(QString evName,QVariantMap evMap,void*pUser);
 autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	m_pDeviceSearch(NULL),
-	m_pUserMangerEx(NULL)
+	m_pUserMangerEx(NULL),
+	m_bIsReviceUserStatsChange(false)
 {
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancel()),this,SLOT(cancelSearch()));
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancelLoginUI()),this,SLOT(cancelLoginUI()));
@@ -117,6 +118,7 @@ void autoSearchDevice::autoSearchDeviceCb( QVariantMap tItem )
 
 void autoSearchDevice::showUserLoginUi(int nWidth,int nHeight)
 {
+	m_bIsReviceUserStatsChange=true;
 	m_tAutoSearchDeviceWindow.resize(nWidth,nHeight);
 	//load url
 	QString temp = QCoreApplication::applicationDirPath();
@@ -146,6 +148,7 @@ int autoSearchDevice::checkUserLimit( quint64 uiCode,quint64 uiSubCode )
 
 void autoSearchDevice::cancelLoginUI()
 {
+	qDebug()<<__FUNCTION__<<__LINE__<<"call cancelLoginUI";
 	if (m_tAutoSearchDeviceWindow.isHidden())
 	{
 		return;
@@ -158,7 +161,20 @@ int autoSearchDevice::login( QString sUserName,QString sPassword,int nCode )
 {
 	if (NULL!=m_pUserMangerEx)
 	{
-		return m_pUserMangerEx->login(sUserName,sPassword,nCode);
+		int nRet=m_pUserMangerEx->login(sUserName,sPassword,nCode);
+		qDebug()<<__FUNCTION__<<__LINE__<<"login value:"<<nRet;
+		if (nCode==0)
+		{
+			QString sUser;
+			QString sPass;
+			if (m_pUserMangerEx->getIsKeepCurrentUserPassWord(sUser,sPass))
+			{
+				m_pUserMangerEx->setCurrentUserInfo(sUserName,sPassword);
+			}
+		}else{
+			//do nothing
+		}
+		return nRet;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as m_pUserMangerEx is null";
 		abort();
@@ -219,41 +235,45 @@ QString autoSearchDevice::getCurrentUser()
 
 void autoSearchDevice::slCheckUserStatusChange()
 {
+	if (m_bIsReviceUserStatsChange==false)
+	{
+		return;
+	}
 	QString sCurrentUserName=getCurrentUser();
-	if (sCurrentUserName.isEmpty()&&m_sHisUserName.isEmpty())
+	if (sCurrentUserName.isEmpty()&&g_sHisUserName.isEmpty())
 	{
 		//do nothing
 	}
-	if (sCurrentUserName.isEmpty()&&(!m_sHisUserName.isEmpty()))
+	if (sCurrentUserName.isEmpty()&&(!g_sHisUserName.isEmpty()))
 	{
 		//m_sHisUserName 用户退出
 		QVariantMap tItem;
-		tItem.insert("userName",m_sHisUserName);
+		tItem.insert("userName",g_sHisUserName);
 		tItem.insert("status",1);
 		EventProcCall("useStateChange",tItem);
-		m_sHisUserName=sCurrentUserName;
+		g_sHisUserName=sCurrentUserName;
 	}
-	if ((!sCurrentUserName.isEmpty())&&m_sHisUserName.isEmpty())
+	if ((!sCurrentUserName.isEmpty())&&g_sHisUserName.isEmpty())
 	{
 		//sCurrentUserName用户登录
 		QVariantMap tItem;
 		tItem.insert("userName",sCurrentUserName);
 		tItem.insert("status",0);
 		EventProcCall("useStateChange",tItem);
-		m_sHisUserName=sCurrentUserName;
+		g_sHisUserName=sCurrentUserName;
 	}
-	if (sCurrentUserName.isEmpty()==false&&m_sHisUserName.isEmpty()==false&&m_sHisUserName!=sCurrentUserName)
+	if (sCurrentUserName.isEmpty()==false&&g_sHisUserName.isEmpty()==false&&g_sHisUserName!=sCurrentUserName)
 	{
 		//用户切换
 		QVariantMap tItem;
-		tItem.insert("userName",m_sHisUserName);
+		tItem.insert("userName",g_sHisUserName);
 		tItem.insert("status",1);
 		EventProcCall("useStateChange",tItem);
 		tItem.clear();
 		tItem.insert("userName",sCurrentUserName);
 		tItem.insert("status",0);
 		EventProcCall("useStateChange",tItem);
-		m_sHisUserName=sCurrentUserName;
+		g_sHisUserName=sCurrentUserName;
 	}
 }
 
@@ -267,15 +287,22 @@ void autoSearchDevice::setIsKeepCurrentUserPassWord(bool bFlags)
 	}
 }
 
-bool autoSearchDevice::getIsKeepCurrentUserPassWord()
+QVariantMap autoSearchDevice::getIsKeepCurrentUserPassWord()
 {
+	QVariantMap tItem;
 	if (m_pUserMangerEx!=NULL)
 	{
-		return m_pUserMangerEx->getIsKeepCurrentUserPassWord();
+		QString sUserName;
+		QString sPassWord;
+		bool bIsKeep=false;
+		bIsKeep=m_pUserMangerEx->getIsKeepCurrentUserPassWord(sUserName,sPassWord);
+		tItem.insert("bIsKeep",bIsKeep);
+		tItem.insert("sUserName",sUserName);
+		tItem.insert("sPassWord",sPassWord);
 	}else{
 		//do nothing
 	}
-	return false;
+	return tItem;
 }
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )
