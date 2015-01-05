@@ -3,12 +3,10 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <IEventRegister.h>
-QString g_sHisUserName;
 int cbAutoSearchDevice(QString evName,QVariantMap evMap,void*pUser);
 autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	m_pDeviceSearch(NULL),
-	m_pUserMangerEx(NULL),
-	m_bIsReviceUserStatsChange(false)
+	m_pUserMangerEx(NULL)
 {
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancel()),this,SLOT(cancelSearch()));
 	connect(&m_tAutoSearchDeviceWindow,SIGNAL(sgCancelLoginUI()),this,SLOT(cancelLoginUI()));
@@ -20,7 +18,7 @@ autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	pRegister->registerEvent("autoSearchDevice",cbAutoSearchDevice,this);
 	pRegister->Release();
 	pRegister=NULL;
-	m_tCheckUserStatsTimer.start(500);
+	
 }
 
 autoSearchDevice::~autoSearchDevice()
@@ -36,6 +34,7 @@ autoSearchDevice::~autoSearchDevice()
 		m_pUserMangerEx->Release();
 		m_pUserMangerEx=NULL;
 	}
+	m_tCheckUserStatsTimer.stop();
 }
 
 void autoSearchDevice::startAutoSearchDevice( int nTime,int nWidth,int nHeight )
@@ -118,7 +117,6 @@ void autoSearchDevice::autoSearchDeviceCb( QVariantMap tItem )
 
 void autoSearchDevice::showUserLoginUi(int nWidth,int nHeight)
 {
-	m_bIsReviceUserStatsChange=true;
 	m_tAutoSearchDeviceWindow.resize(nWidth,nHeight);
 	//load url
 	QString temp = QCoreApplication::applicationDirPath();
@@ -235,10 +233,6 @@ QString autoSearchDevice::getCurrentUser()
 
 void autoSearchDevice::slCheckUserStatusChange()
 {
-	if (m_bIsReviceUserStatsChange==false)
-	{
-		return;
-	}
 	QString sCurrentUserName=getCurrentUser();
 	if (sCurrentUserName.isEmpty()&&g_sHisUserName.isEmpty())
 	{
@@ -303,6 +297,11 @@ QVariantMap autoSearchDevice::getIsKeepCurrentUserPassWord()
 		//do nothing
 	}
 	return tItem;
+}
+
+void autoSearchDevice::startGetUserLoginStateChangeTime()
+{
+	m_tCheckUserStatsTimer.start(500);
 }
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )

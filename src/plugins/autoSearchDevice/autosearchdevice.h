@@ -39,6 +39,7 @@ public slots:
 		int getUserInDatabaseId(QString sUserName);//返回值为 ID，获取失败返回 -1；
 		void setIsKeepCurrentUserPassWord(bool bFlags);
 		QVariantMap getIsKeepCurrentUserPassWord();
+		void startGetUserLoginStateChangeTime();
 private slots:
 	void slCheckUserStatusChange();
 private:
@@ -47,7 +48,7 @@ private:
 	IUserManagerEx *m_pUserMangerEx;
 	QList<QVariantMap> m_tDeviceList;
 	QTimer m_tCheckUserStatsTimer;
-	bool m_bIsReviceUserStatsChange;
+	QString g_sHisUserName;
 };
 
 #endif // AUTOSEARCHDEVICE_H
