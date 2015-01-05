@@ -3372,7 +3372,10 @@ bool commonlibEx::getIsKeepCurrentUserPassWord(QString &sUserName,QString &sUser
 						sCommand = QString("select value from general_setting where name='misc_CurrentUserPassWord'");
 						if (_query.exec(sCommand))
 						{
-							sUserPassword = _query.value(0).toString();
+							if (_query.next())
+							{
+								sUserPassword = _query.value(0).toString();
+							}	
 						}else{
 							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCommand;
 							abort();
