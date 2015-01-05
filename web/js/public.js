@@ -7,12 +7,14 @@
 	4.如UI上有相同的逻辑操作, 请慎重在文件添加.
 
 */
-function addMouseStyle(obj,action){  //按钮UI响应
+function addMouseStyle(obj,action,maincode){  //按钮UI响应
 	var width = obj.width();
-	var left,top;
+	var left,top,initLeft,initTop;
 	obj.hover(function(){
 		left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
 		top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
+		initLeft=left;
+		initTop=top;
 		if(left != -width){
 			obj.css('background-position',left-width+'px'+' '+top+'px');
 		}
@@ -27,15 +29,20 @@ function addMouseStyle(obj,action){  //按钮UI响应
 		}
 	}).mouseup(function(ev){
 		if(action == 'toggle'){
-			var H = obj.height();
-			var a = obj.attr('toggle');
-			if(a){
-				obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
-				obj.removeAttr('toggle');
+			var itema = document.getElementById('atuoSearchDevice').checkUserLimit(maincode.toString(2),0);
+			if(itema ==0){
+				  var H = obj.height();
+				  var a = obj.attr('toggle');
+				  if(a){
+					  obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
+					  obj.removeAttr('toggle');
+				  }else{
+					  obj.attr('toggle',1);
+					  obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+				  }	
 			}else{
-				obj.attr('toggle',1);
-				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
-			}	
+				 obj.css('background-position',initLeft+'px'+' '+initTop+'px');
+			}
 			top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
 		}else if(action == 'hover'){
 			obj.css('background-position',left-width+'px'+' '+top+'px');	
@@ -358,11 +365,11 @@ $(function(){
 		}
 	}
 
-	$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+	/*$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		var action = $(this).attr('class').split(' ')[0];
 		addMouseStyle($(this),action);
 		
-	})
+	})*/
 })///
 function triggerOnclick(id,sEv){ 
 	try{

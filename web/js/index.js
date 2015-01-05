@@ -18,6 +18,18 @@ var oPreView,oDiv,autoSearchDev,
 		//$(window).off();
          getUsername();
 	    $('div.dev_list:eq(1)').hide();
+		
+		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		   var action = $(this).attr('class').split(' ')[0];
+		   addMouseStyle($(this),action,1<<0);
+	       })
+		/* //下拉菜单模拟	
+	    $('.select1').mousedown(function(){
+			var itema= checkUserRight(1<<0,0);
+		    itema==0 && $(this).toSelect();
+			itema==1&& autoSearchDev.showUserLoginUi(336,300);
+			itema==2&& writeActionLog(_T("no_limit"),errorcolor);
+	    });*/
 				
 		oAs.each(function(index){
 			$(this).click(function(){
@@ -236,6 +248,8 @@ var oPreView,oDiv,autoSearchDev,
          autoSearchDev.AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
 		 autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		 
+		  AddActivityEvent('Validation','Validationcallback(data)');
+		 
 		var url =['index.html','play_back.html','backup.html','device.html','log.html']
 		/*for(i in url){
 			if(i != 0){ 
@@ -268,7 +282,20 @@ var oPreView,oDiv,autoSearchDev,
             
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
-
+     function Validationcallback(data){ //id按钮权限验证
+	  //console.log(data);
+		if(data.ErrorCode=="1"){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else if(data.ErrorCode=="2"){
+			Confirm(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
+		}
+	}
+	
+	 
 	function CurrentStateChange(ev){
 		
 	      if(ev.reFreash =='false')

@@ -13,6 +13,11 @@ var oSearchOcx,autoSearchDev,
 		oTreeWarp.hide();
 
 		$('#iframe').hide();
+		
+			$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		   var action = $(this).attr('class').split(' ')[0];
+		    addMouseStyle($(this),action,1<<5);
+	       })
 				
 		$('.iput2.time_picker_start').each(function(i){
 					

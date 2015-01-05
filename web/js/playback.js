@@ -154,6 +154,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
 		
         autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
+		 AddActivityEvent('Validation','Validationcallback(data)');
 		
 		bFullScreen = 0;
 
@@ -161,6 +162,12 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		initOxcDevListStatus();
 		PBrecFileTableInit();
+		
+		 $('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		   var action = $(this).attr('class').split(' ')[0];
+		    addMouseStyle($(this),action,bool?1<<2:1<<3);
+	       })
+		 
 	})///
 	/*$(window).resize(function(){  //窗口自适应大小
 		return;
@@ -210,6 +217,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('#foot').css({
 			top:oView.height()+212
 		})
+	}
+	function Validationcallback(data){ //id按钮权限验证
+	  //console.log(data);
+		if(data.ErrorCode=="1"){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else if(data.ErrorCode=="2"){
+			Confirm(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
+		}
 	}
    //用户登录状态回调函数
     function useStateChange(ev){
