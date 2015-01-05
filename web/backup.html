@@ -81,7 +81,7 @@
 			</ul>
 			 <div>
 				<a></a>				
-				<p style="color:#000;"><span><script>T("Login_account")</script></span><span>eddy</span></p>
+				<p style="color:#000;"><span><script>T("Login_account")</script></span><span><script>T("not_Login")</script></span></p>
 			</div>
           </div> 
 		</div>
@@ -710,7 +710,7 @@ var oPlayBack={},  // 远程回访控件对象
 		if(ev.status==0){
 		 $('.top_nav p span:eq(1)').html(ev.userName);	
 		}else{
-		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
 	}
 	 function lock(){

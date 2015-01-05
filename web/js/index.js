@@ -15,11 +15,7 @@ var oPreView,oDiv,autoSearchDev,
 	    
 		autoSearchDev = $('#atuoSearchDevice')[0];
 		//$(window).off();
-        
-		var username = autoSearchDev.getCurrentUser();
-		  username && $('.top_nav div p span:eq(1)').html(username);
-       
-		
+         getUsername();
 	    $('div.dev_list:eq(1)').hide();
 				
 		oAs.each(function(index){
@@ -865,4 +861,10 @@ var oPreView,oDiv,autoSearchDev,
  }
  function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 
+ }
+ function getUsername(){
+	 
+	 var username = autoSearchDev.getCurrentUser();
+	username && $('.top_nav div p span:eq(1)').html(username);
+	 
  }

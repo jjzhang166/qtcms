@@ -215,7 +215,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(ev.status==0){
 		 $('.top_nav p span:eq(1)').html(ev.userName);	
 		}else{
-		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
 	}
 	

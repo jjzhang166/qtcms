@@ -523,11 +523,11 @@ var oSearchOcx,autoSearchDev,
 	
      //用户登录状态回调函数
     function useStateChange(ev){
-		console.log(ev);
+		//console.log(ev);
 		if(ev.status==0){
 		 $('.top_nav p span:eq(1)').html(ev.userName);	
 		}else{
-		  $('.top_nav p span:eq(1)').html(T("not_Login"));
+		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
 	}
 

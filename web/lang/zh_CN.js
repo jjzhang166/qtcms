@@ -472,5 +472,6 @@
 	'Exit_system':'退出系统',
 	'not_Login':'未登录',
 	'locking':'锁定',
+	'Remember_password':'记住密码',
 
 }
