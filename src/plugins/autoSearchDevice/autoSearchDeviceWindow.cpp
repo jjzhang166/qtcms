@@ -54,7 +54,7 @@ m_bMove(false)
 	QWidget::setAttribute( Qt::WA_TranslucentBackground, true );
 	QWidget::setAttribute(Qt::WA_AcceptDrops,true);
 	QWidget::setAttribute(Qt::WA_MouseTracking ,true);
-	QWidget::setWindowOpacity( 0.8);
+	QWidget::setWindowOpacity(1);
 
 	installEventFilter(this);
 	page()->installEventFilter(this);
@@ -171,10 +171,14 @@ bool autoSearchDeviceWindow::eventFilter( QObject *obj, QEvent *ev )
 	if (ev->type()==QMouseEvent::MouseButtonPress)
 	{
 		QMouseEvent * event=(QMouseEvent *)ev;
-		m_bMove=true;
 		this->m_tWindowPos = this->pos();
 		this->m_tMousePos = event->globalPos(); 
 		this->m_tDPos=m_tMousePos-m_tWindowPos;
+		if (this->m_tDPos.y()<45)
+		{
+			m_bMove=true;
+		}
+		qDebug()<<__FUNCTION__<<__LINE__<<this->m_tWindowPos<<this->m_tDPos<<this->m_tMousePos<<this->size();
 	}
 	if (ev->type()==QMouseEvent::MouseButtonRelease)
 	{
