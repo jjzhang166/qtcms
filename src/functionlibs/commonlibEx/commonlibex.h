@@ -64,6 +64,7 @@ public:
 	virtual bool getIsKeepCurrentUserPassWord(QString &sUserName,QString &sUserPassword);
 	virtual bool setCurrentUserInfo(QString sUserName,QString sUserPassword);
 	virtual int getLoginOutInterval(QString sUserName);
+	virtual int modifyCurrentUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sOldPassword,const QString &sNewPassword,int iLogOutInterval);
 	//IGroupManager
 	virtual int AddGroup(QString sName) ;
 	virtual int RemoveGroup(int group_id) ;

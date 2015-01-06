@@ -3108,7 +3108,84 @@ int commonlibEx::getUserLimit(QString sUserName, quint64 &uiLimit,QVariantMap &t
 	m_tUserLock.unlock();
 	return 0;
 }
+int commonlibEx::modifyCurrentUserInfo( const QString &sOldUserName,const QString &sNewUserName,const QString &sOldPassword,const QString &sNewPassword,int iLogOutInterval )
+{
+	if (sOldUserName.isEmpty())
+	{
+		return 0;
+	}
+	QSqlQuery _query(*m_db);
+	//检测用户名是否存在
+	m_tUserLock.lock();
+	QString sCmd;
+	{
+		//检测用户名是否存在
+		sCmd=QString("select password from user where userName='%1'").arg(sOldUserName);
+		if (_query.exec(sCmd))
+		{
+			if (_query.next())
+			{
+				QString sDatabasePassword=_query.value(0).toString();
+				if (sDatabasePassword==QCryptographicHash::hash(sOldPassword.toLatin1(),QCryptographicHash::Md5).toHex().data()){
+					//keep going
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"the user name is not exist";
+					_query.finish();
+					m_tUserLock.unlock();
+					return 1;
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"the user name is not exist";
+				_query.finish();
+				m_tUserLock.unlock();
+				return 1;
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail :"<<sCmd;
+			abort();
+		}
+	}
 
+	QString sUserName=sOldUserName;
+	if (!sNewUserName.isEmpty())
+	{
+		//修改用户名
+		sCmd=QString("update user set userName='%1' where userName='%2'").arg(sNewUserName).arg(sUserName);
+		if (_query.exec(sCmd))
+		{
+			//keep going
+			sUserName=sNewUserName;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+			abort();
+		}
+	}
+	if (!sNewPassword.isEmpty())
+	{
+		//修改密码
+		sCmd=QString("update user set password='%1' where userName='%2'").arg(QString(QCryptographicHash::hash(sNewPassword.toLatin1(),QCryptographicHash::Md5).toHex())).arg(sUserName);
+		if (_query.exec(sCmd))
+		{
+			//keep going
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+			abort();
+		}
+	}
+	if (iLogOutInterval<3600&&iLogOutInterval>=0)
+	{
+		//修改 时间间隔
+		sCmd=QString("update user set logOutInterval='%1' where userName='%2'").arg(iLogOutInterval).arg(sUserName);
+		if (_query.exec(sCmd))
+		{
+			//keep going 
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+			abort();
+		}
+	}
+	return 0;
+}
 int commonlibEx::modifyUserInfo( const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit,quint64 uiLogOutInterval, QVariantMap tSubCode )
 {
 	if (sOldUserName.isEmpty())
@@ -3461,3 +3538,5 @@ int commonlibEx::getLoginOutInterval( QString sUserName )
 	}
 	return nRet;
 }
+
+

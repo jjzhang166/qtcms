@@ -55,7 +55,7 @@ public slots:
 	void OnAddUserExOk();
 	void OnModifyUserExOk();
 	void OnDeleteUserExOk();
-
+	void OnModifyCurrentUserExOk();
 	/*device module*/
 	void OnAddDevice();
 	void OnAddDeviceDouble();

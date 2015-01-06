@@ -20,6 +20,7 @@ interface IUserManagerEx : public IPComBase
 	virtual void setIsKeepCurrentUserPassWord(bool bFlags)=0;
 	virtual bool getIsKeepCurrentUserPassWord(QString &sUserName,QString &sUserPassword)=0;
 	virtual bool setCurrentUserInfo(QString sUserName,QString sUserPassword)=0;
+	virtual int modifyCurrentUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sOldPassword,const QString &sNewPassword,int iLogOutInterval)=0;
 };
 
 #endif

@@ -19,6 +19,7 @@
   @用户管理<br />
   AddUserEx_ok|<br/>
   ModifyUserEx_ok|<br/>
+  ModifyCurrentUserEx_ok|<br/>
   DeleteUserEx_ok|<br/>
   @设备管理<br />
   AddDevice_ok|<br />
@@ -56,7 +57,9 @@
   AddUserSuccess(success)<br />
   AddUserFail(fail)<br />
   ModifyUserSuccess(success)<br />
-  ModifyUserFail(fail)<br />
+ModifyUserFail(fail)</p>
+<p>ModifyCurrentLoginUserFail(fail)<br />
+  ModifyCurrentLoginUserSuccess(success)<br />
   DeleteUserSuccess(success,username)<br />
 DeleteUserFail(fail,username)</p>
 <p>@用户权限认证事件</p>
@@ -215,7 +218,7 @@ SettingRecordCopyTimeParmFail(fail)<br />
 BootFromStart_ID|(设置是否开机启动,可选值：true|false)</p>
 BootPersian_ID|(设置是否使用波斯日历,可选值：true|false)<br />
 <p>@用户权限管理</p>
-<p>addUserEx_ID|modifyUserEx_ID|deleteUserEx_ID</p>
+<p>addUserEx_ID|modifyUserEx_ID|deleteUserEx_ID|modifyCurrentUserEx_ID</p>
 <p>1.添加用户：</p>
 <p>说明：sUserName（添加的用户名），sPassword（用户密码），limitCode（主权限的编码值），subLimitNum（子权限的个数），sLogOutInterval（自动注销时间隔间）</p>
 <p>&lt;sub mainCode='0000000001' subCode='0'/&gt;表示编码值‘0000000001'（预览）对所有通道都具有权限（subCode=’0‘表示所有的通道），如果改成</p>
@@ -252,5 +255,9 @@ BootPersian_ID|(设置是否使用波斯日历,可选值：true|false)<br />
   &lt;sub username='abc'/&gt;<br />
   &lt;sub username='efg'/&gt;<br />
 &lt;/del&gt;</p>
+<p>4.修改当前登录用户信息</p>
+<p>说明：修改当前登录用户信息，必填信息为登录用户的原始密码，其他项可以为空时，默认保留原来的值</p>
+<p>&lt;modifyCurrentUserInfo sNewUserName='bcd' sOldPassword='123' sNewPassword='1234' sLogOutInterval='20'&gt;</p>
+<p>&lt;/modifyCurrentUserInfo&gt;</p>
 </body>
 </html>

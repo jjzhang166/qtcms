@@ -78,6 +78,7 @@ void settingsActivity::Active( QWebFrame * frame)
 	QWFW_MSGMAP("AddUserEx_ok","click","OnAddUserExOk()");
 	QWFW_MSGMAP("ModifyUserEx_ok","click","OnModifyUserExOk()");
 	QWFW_MSGMAP("DeleteUserEx_ok","click","OnDeleteUserExOk()");
+	QWFW_MSGMAP("ModifyCurrentUserEx_ok","click","OnModifyCurrentUserExOk()");
 
 	QWFW_MSGMAP("AddDevice_ok","click","OnAddDevice()");
 	QWFW_MSGMAP("AddDeviceDouble_ok","click","OnAddDeviceDouble()");
@@ -2145,7 +2146,50 @@ void settingsActivity::OnModifyUserExOk()
 		pUserMangerEx=NULL;
 	}
 }
-
+void settingsActivity::OnModifyCurrentUserExOk()
+{
+	IUserManagerEx *pUserMangerEx=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
+	QString sRet;
+	DEF_EVENT_PARAM(arg);
+	if (NULL!=pUserMangerEx)
+	{
+		QVariant tModiyCurrentUserInfoFile=QueryValue("modifyCurrentUserEx_ID");
+		QDomDocument tConfFile;
+		tConfFile.setContent(tModiyCurrentUserInfoFile.toString());
+		QDomNode tModifyNode=tConfFile.elementsByTagName("modifyCurrentUserInfo").at(0);
+		QString sOldPassword=tModifyNode.toElement().attribute("sOldPassword");
+		QString sNewPassword=tModifyNode.toElement().attribute("sNewPassword");
+		QString sLogOutInterval=tModifyNode.toElement().attribute("sLogOutInterval");
+		QString sNewUserName=tModifyNode.toElement().attribute("sNewUserName");
+		QString sOldeUserName=pUserMangerEx->getCurrentUser();
+		if (!sOldeUserName.isEmpty())
+		{
+			int nRet=1;
+			nRet=pUserMangerEx->modifyCurrentUserInfo(sOldeUserName,sNewUserName,sOldPassword,sNewPassword,sLogOutInterval.toInt());
+			if (nRet==1)
+			{
+				//设置失败
+				sRet.append("ModifyCurrentLoginUserFail");
+				EP_ADD_PARAM(arg,"fail",sRet);
+				EventProcCall("ModifyCurrentLoginUserFail",arg);
+			}else{
+				//设置成功
+				sRet.append("ModifyCurrentLoginUserSuccess");
+				EP_ADD_PARAM(arg,"success",sRet);
+				EventProcCall("ModifyCurrentLoginUserSuccess",arg);
+			}
+		}else{
+			//没有用户登录,设置失败
+			sRet.append("ModifyCurrentLoginUserFail");
+			EP_ADD_PARAM(arg,"fail",sRet);
+			EventProcCall("ModifyCurrentLoginUserFail",arg);
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"system call abort as pUserMangerEx is null";
+		abort();
+	}
+}
 void settingsActivity::OnDeleteUserExOk()
 {
 	IUserManagerEx *pUserMangerEx=NULL;
@@ -2244,6 +2288,8 @@ int settingsActivity::verify( qint64 mainCode, qint64 subCode )
 	}
 	return ret;
 }
+
+
 
 
 
