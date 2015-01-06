@@ -304,6 +304,16 @@ void autoSearchDevice::startGetUserLoginStateChangeTime()
 	m_tCheckUserStatsTimer.start(500);
 }
 
+int autoSearchDevice::getLoginOutInterval( QString sUserName )
+{
+	int  nRet=0;
+	if (NULL!=m_pUserMangerEx)
+	{
+		nRet=m_pUserMangerEx->getLoginOutInterval(sUserName);
+	}
+	return nRet;
+}
+
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )
 {
 	if ("autoSearchDevice"==evName)

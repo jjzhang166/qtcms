@@ -63,6 +63,7 @@ public:
 	virtual void setIsKeepCurrentUserPassWord(bool bFlags);
 	virtual bool getIsKeepCurrentUserPassWord(QString &sUserName,QString &sUserPassword);
 	virtual bool setCurrentUserInfo(QString sUserName,QString sUserPassword);
+	virtual int getLoginOutInterval(QString sUserName);
 	//IGroupManager
 	virtual int AddGroup(QString sName) ;
 	virtual int RemoveGroup(int group_id) ;

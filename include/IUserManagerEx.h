@@ -14,6 +14,7 @@ interface IUserManagerEx : public IPComBase
 	virtual int getUserList(QStringList &sUserList)=0;//0:获取成功 ；1：获取失败
 	virtual int getUserLimit(QString sUserName,quint64 &uiLimit,QVariantMap &tSubCode)=0;//0:获取成功；1：获取失败
 	virtual int getUserDatabaseId(QString sUserName,int &nId)=0;//0:获取成功；1：获取失败
+	virtual int getLoginOutInterval(QString sUserName)=0;//返回值为时间间隔
 	virtual int modifyUserInfo(const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit, quint64 uiLogOutInterval, QVariantMap tSubCode)=0;//0:设置成功，1：设置失败
 	virtual QString getCurrentUser()=0;
 	virtual void setIsKeepCurrentUserPassWord(bool bFlags)=0;

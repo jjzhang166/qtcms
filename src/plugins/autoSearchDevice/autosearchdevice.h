@@ -40,6 +40,7 @@ public slots:
 		void setIsKeepCurrentUserPassWord(bool bFlags);
 		QVariantMap getIsKeepCurrentUserPassWord();
 		void startGetUserLoginStateChangeTime();
+		int getLoginOutInterval(QString sUserName);
 private slots:
 	void slCheckUserStatusChange();
 private:
