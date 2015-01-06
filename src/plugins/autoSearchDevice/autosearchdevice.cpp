@@ -52,6 +52,7 @@ void autoSearchDevice::startAutoSearchDevice( int nTime,int nWidth,int nHeight )
 	m_tAutoSearchDeviceWindow.setAttribute(Qt::WA_TransparentForMouseEvents);
 	m_pDeviceSearch->autoSearchStart();
 	QTimer::singleShot(nTime*1000, this, SLOT(autoSearchDeviceTimeout()));
+	m_bCancelAutoSearchDevice=true;
 	return ;
 }
 
@@ -59,6 +60,7 @@ void autoSearchDevice::cancelSearch()
 {
 	m_tAutoSearchDeviceWindow.hide();
 	m_pDeviceSearch->autoSearchStop();
+	m_bCancelAutoSearchDevice=false;
 	QVariantMap tItem;
 	tItem.insert("reFreash",false);
 	EventProcCall("reFreshDeviceList",tItem);
@@ -72,6 +74,10 @@ void autoSearchDevice::autoSearchDeviceTimeout()
 	}
 	//m_tAutoSearchDeviceWindow.hide();
 	m_pDeviceSearch->autoSearchStop();
+	if (m_bCancelAutoSearchDevice==false)
+	{
+		return;
+	}
 	IDeviceManager *pIdevice=NULL;
 	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_IDeviceManager,(void**)&pIdevice);
 	if (NULL!=pIdevice)

@@ -2109,10 +2109,6 @@ void settingsActivity::OnModifyUserExOk()
 						pUserMangerEx->Release();
 						pUserMangerEx=NULL;
 					}
-					sRet.clear();
-					sRet.append("ModifyUserFail");
-					EP_ADD_PARAM(arg,"fail",sRet);
-					EventProcCall("ModifyUserFail",arg);
 					return;
 				}
 				nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
@@ -2215,6 +2211,7 @@ void settingsActivity::OnDeleteUserExOk()
 				int nRet=-1;
 				int nUserID=-1;
 				pUserMangerEx->getUserDatabaseId(sDelteName,nUserID);
+				QString sCurrentUserName=pUserMangerEx->getCurrentUser();
 				if (nUserID!=-1)
 				{
 					if (verify(100000000, nUserID)){
@@ -2223,20 +2220,22 @@ void settingsActivity::OnDeleteUserExOk()
 							pUserMangerEx->Release();
 							pUserMangerEx=NULL;
 						}
-						sRet.append("DeleteUserFail");
-						EP_ADD_PARAM(arg,"fail",sRet);
-						EventProcCall("DeleteUserFail",arg);
 						return;
 					}else{
-						nRet=pUserMangerEx->deleteUser(sDelteName);
-						if (0!=nRet)
+						if (sCurrentUserName!=sDelteName)
 						{
-							sRet.clear();
-							sRet.append("DeleteUserFail");
-							EP_ADD_PARAM(arg,"fail",sRet);
-							EventProcCall("DeleteUserFail",arg);
+							nRet=pUserMangerEx->deleteUser(sDelteName);
+							if (0!=nRet)
+							{
+								sRet.clear();
+								sRet.append("DeleteUserFail");
+								EP_ADD_PARAM(arg,"fail",sRet);
+								EventProcCall("DeleteUserFail",arg);
+							}else{
+								//keep going
+							}
 						}else{
-							//keep going
+							//do nothing
 						}
 					}
 				}else{

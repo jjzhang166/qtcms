@@ -50,6 +50,7 @@ private:
 	QList<QVariantMap> m_tDeviceList;
 	QTimer m_tCheckUserStatsTimer;
 	QString g_sHisUserName;
+	bool m_bCancelAutoSearchDevice;
 };
 
 #endif // AUTOSEARCHDEVICE_H
