@@ -178,6 +178,10 @@ void OnModifyChannel();</p>
 <p>=============远程设备设置（1000000）=================</p>
 <p>请求用户权限认证 主权限码(uiCode)：1000000,子权限码（uiSubCode）：设备通道id</p>
 <p>UI层 进行验证</p>
+<p>下面两个接口属于设备搜索插件</p>
+<p>int AutoSetNetworkInfo();</p>
+<p> int SetNetworkInfo(const QString &amp;sDeviceID,const QString &amp;sAddress,const QString &amp;sMask,const QString &amp;sGateway,const QString &amp;sMac,const QString &amp;sPort,<br />
+const QString &amp;sUsername,const QString &amp;sPassword);</p>
 <p>//具体接口为UI自身定义和设计</p>
 <p>=============本地设置（10000000）====================</p>
 <p>请求用户权限认证 主权限码(uiCode)：10000000,子权限码（uiSubCode）：0，表示所有的对象</p>
