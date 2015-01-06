@@ -151,7 +151,7 @@ void settingsActivity::OnTopActDbClick()
 
 void settingsActivity::OnMinClick()
 {
-	if (verify(100000000, 0)){
+	if (verify(1000000000, 0)){
 		return;
 	}
 	m_MainView->showMinimized();
@@ -179,7 +179,7 @@ void settingsActivity::OnMaxClick()
 
 void settingsActivity::OnCloseClick()
 {
-	if (verify(100000000, 0)){
+	if (verify(1000000000, 0)){
 		return;
 	}
 	m_MainView->close();
