@@ -288,7 +288,7 @@ var tr_TR={
 
 	//本地设置
 
-	'Operation_failed':'Kaydetme Başarısız!',
+	'Operation_failed':'operasyon başarısız oldu!',
 	'Time_format_error':'Yanl zaman biçimi.',
 	'Start_end_time_error':'Bitiş süresinden daha must erken başlangıç ​​zamanı!',
 	'Choose_time':'Zaman seçin',

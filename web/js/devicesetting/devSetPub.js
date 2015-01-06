@@ -296,7 +296,8 @@ function checkAJAX(){
 function submitThisMenu(str){
 	$('#ajaxHint').html('').stop(true,true).hide();
 	AJAX && AJAX.abort();
-	var itema= autoSearchDev.checkUserLimit(1<<7,0);
+	var maincode= 1<<7;
+	var itema= autoSearchDev.checkUserLimit(maincode.toString(2),0);
 		if(itema==0){
 			nowDev[str+'Put']();
 		}else if(itema==1){

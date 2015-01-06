@@ -288,7 +288,7 @@
 
 //本地设置
 
-'Operation_failed':'Saving failed!',
+'Operation_failed':'Operation failed!',
 'Time_format_error':'Incorret time format.',
 'Start_end_time_error':'Start time must earlier than the end time!',
 'Choose_time':'Choose time',

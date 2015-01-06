@@ -306,7 +306,7 @@ var oSearchOcx,autoSearchDev,
 				   if(nowDev && nowDev._ID){
 						nowDev =null;
 						}
-					var itema = checkUserRight(1<<8,0);
+					/*var itema = checkUserRight(1<<8,0);
 					if(itema==1){
 						autoSearchDev.showUserLoginUi(336,300);
 					}else if(itema==2){
@@ -317,7 +317,7 @@ var oSearchOcx,autoSearchDev,
 						  closeMenu();
 						  clearTimeout(timer);
 					  },2000);
-					}
+					}*/
 				
 					userList2Ui();
 					
