@@ -479,4 +479,5 @@ var tr_TR={
 	'no_limit':'Sen işletme izni yok!',
 	'username_cannot_be_empty':'Kullanıcı adı boş olamaz.',
     'User name or password is incorrect':'Kullanıcı adı veya şifre yanlış!',
+	'tip':'hemen',
 }

@@ -250,7 +250,7 @@ var oPreView,oDiv,autoSearchDev,
 		 
 		  AddActivityEvent('Validation','Validationcallback(data)');
 		 
-		var url =['index.html','play_back.html','backup.html','device.html','log.html']
+		var url =['index.html','play_back.html','backup.html','device.html','','log.html']
 		/*for(i in url){
 			if(i != 0){ 
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[i]);
@@ -258,7 +258,7 @@ var oPreView,oDiv,autoSearchDev,
 		}*/
 		$('div.top_nav li').each(function(index){
 			$(this).click(function(){ 
-				if(index == 0){
+				if(index == 0||index==4){
 					return;
 				}
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[index]);

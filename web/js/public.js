@@ -315,9 +315,13 @@ $(function(){
 		return;
 	}*/
 	// 导航页面跳转
-	var url =['index.html','play_back.html','backup.html','device.html','log.html'];
+	var url =['index.html','play_back.html','backup.html','device.html','','log.html'];
 	$('div.top_nav li').each(function(index){
 		$(this).on('click',function(){
+			if(index==4){
+				lock(); 
+				return;
+			}
 			var src = location.href.replace(/.*?(\w+\.html)/g,'$1'),
 				srcAct = '';
 				dstAct = 'new';
@@ -444,6 +448,12 @@ function Confirm(str,b,fn){
 	}
 	obj.find('h4').append('<p>'+str+'</p>');
 	objShowCenter($('#confirm'));
+}
+function confirm_tip(str){
+	var obj = $('#confirm_tips');
+	obj.find('span').html(_T('tip'));
+	obj.find('h4').html('<p>'+str+'</p>');
+	objShowCenter($('#confirm_tips'));
 }
 function objShowCenter(obj){ //调整弹出框定位 居中
 	$('#iframe').hide().show();

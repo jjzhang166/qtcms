@@ -205,9 +205,20 @@ var oSearchOcx,autoSearchDev,
 					if(nowDev && nowDev._ID){
 						nowDev =null;
 						}
-					
+					var itema = checkUserRight(1<<6,0);
+					if(itema==1){
+						autoSearchDev.showUserLoginUi(336,300);
+					}else if(itema==2){
+								  
+					 closeMenu();
+					 confirm_tip(_T('no_limit'));
+					  var timer =setTimeout(function(){
+						  closeMenu();
+						  clearTimeout(timer);
+					  },2000);
+					}
 					//reInitNowDev();  //重新加载设备信息
-
+                    
 					$('ul.filetree').not('[id]').eq(key).on('click','span.device',function(){
 
 						$('#ajaxHint').html('').stop(true,true).hide();
@@ -275,9 +286,39 @@ var oSearchOcx,autoSearchDev,
 			 	   });
 
 				}else if(key == 2){  //单击“本地设置”
-				  
+				    if(nowDev && nowDev._ID){
+						nowDev =null;
+						}
+					var itema = checkUserRight(1<<7,0);
+					if(itema==1){
+						autoSearchDev.showUserLoginUi(336,300);
+					}else if(itema==2){
+								  
+					 closeMenu();
+					 confirm_tip(_T('no_limit'));
+					  var timer =setTimeout(function(){
+						  closeMenu();
+						  clearTimeout(timer);
+					  },2000);
+					}
 					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 				}else if(key == 3){ 
+				   if(nowDev && nowDev._ID){
+						nowDev =null;
+						}
+					var itema = checkUserRight(1<<8,0);
+					if(itema==1){
+						autoSearchDev.showUserLoginUi(336,300);
+					}else if(itema==2){
+								  
+					 closeMenu();
+					 confirm_tip(_T('no_limit'));
+					  var timer =setTimeout(function(){
+						  closeMenu();
+						  clearTimeout(timer);
+					  },2000);
+					}
+				
 					userList2Ui();
 					
 			  $('#mainRight li :checkbox').click(function(){
@@ -933,7 +974,7 @@ var oSearchOcx,autoSearchDev,
 	
 				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit};
 			
-				 userid!=-1 && $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>').appendTo('#userList').data('data',data);
+				 userid!=-1 && $('<tr><td><input type="checkbox" />'+userList[i]+'</td><td></td></tr>').appendTo('#userList').data('data',data);
 				/*if(userid!=-1){
 					var newItem = $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>');
 					newItem.data('data',data);
@@ -1223,11 +1264,12 @@ function autoSetIPcallBack(data){
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			Confirm(_T('no_limit'));
+			closeMenu();
+			confirm_tip(_T('no_limit'));
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);
-			},1000);
+			},2000);
 		}
 	}
 	
@@ -1852,4 +1894,10 @@ function IPDes(a,b){
 //锁定按钮
  function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 
+ }
+ function checkUserRight(uicode,uisubcode){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	   //console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		return itema;
  }

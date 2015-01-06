@@ -79,16 +79,18 @@ $(document).ready(function(){
 		 
 		 $(this).css('background-position','0 0');	
      });
-	 
+	 $('#remember').click(function(){
+		 var login=document.getElementById('atuoSearchDevice');
+	     login.setIsKeepCurrentUserPassWord($('#remember').prop('checked'));	 
+	 	 
+	 });
 	 var login=document.getElementById('atuoSearchDevice');
 	 var data = login.getIsKeepCurrentUserPassWord();
 	if(data){
 		$('#username').val(data.sUserName);
 		$('#pwd').val(data.sPassWord);
-		$('#remember').prop('checked',Boolean(bIsKeep));
-	}
-	 
-   
+		$('#remember').prop('checked',Boolean(data.bIsKeep));
+	} 
 });
 function cancel()
 {
@@ -107,8 +109,6 @@ function Login()
 	   if(nret==1){
 		   $('#tips').html(_T('User name or password is incorrect'));
        }else{
-		
-		login.setIsKeepCurrentUserPassWord($('#remember').prop('checked'));
 	     cancel();
 		 
 	   }
@@ -156,7 +156,7 @@ function Loginout()
   <input class="txt" type="password" id="pwd"/>
 </p>
 <p style="color:#000">
-  <input type="checkbox"  checked="checked" id="remember"/>
+  <input type="checkbox"  id="remember"/>
  <script>T("Remember_password")</script></p>
 <div style="width:270px; margin:0 auto; overflow:hidden;">
 <ul>

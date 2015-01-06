@@ -478,5 +478,6 @@
 	'no_limit':'You do not have permission to operate!',
 	'username_cannot_be_empty':'Username can not be empty.',
     'User name or password is incorrect':'User name or password is incorrect!',
+	'tip':'Tip',
 
 }

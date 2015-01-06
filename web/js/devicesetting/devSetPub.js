@@ -303,11 +303,12 @@ function submitThisMenu(str){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else{
 		 //showAJAXHint(_T('no_limit'));
-		    Confirm(_T('no_limit'));
+		    closeMenu();
+		   confirm_tip(_T('no_limit'));
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);
-			},1000);
+			},2000);
 		}
 	
 }

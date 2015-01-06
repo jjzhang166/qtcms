@@ -113,7 +113,7 @@
 					<li id="app_close_window"><a class="hover" title="Close" style="background-position: -336px -104px;"></a></li>
 					<!-- <li id="app_maxsize"><a class="hover" title="max" style="background-position: -336px -78px;"></a></li> -->
 					<li id="app_minsize"><a class="hover" title="min" style="background-position: -336px -52px;"></a></li>
-					<li id="app_userlock"><a class="hover" title="lock" style="background-position: -336px -26px;" onclick="lock();"></a></li> 
+					<!--<li id="app_userlock"><a class="hover" title="lock" style="background-position: -336px -26px;" onclick="lock();"></a></li>--> 
 				</ul>
 			</div>
 		</div>
@@ -123,11 +123,12 @@
 				<li><a style="background-position: -36px 0;"></a><script>T("Playback")</script></li>
 				<li><a style="background-position: -62px 0;"></a><script>T("Backup")</script></li>
 				<li class="active"><a style="background-position: -88px 0; width:36px;"></a><script>T("Set_up")</script></li>
+                <li><a style="background-position: -150px 0;"></a><script>T("User")</script></li>
 				<!-- <li><a class="hover" style="background-position: 0 -208px;">System</a></li>
 				<li><a style="background-position: -124px 0;"></a><script>T("log")</script></li> -->
 			</ul>
 			 <div>
-				<a></a>
+				<!--<a></a>-->
 				<p style="color:#000;"><span><script>T("Login_account")</script></span><span><script>T("not_Login")</script></span></p>
 			</div> 
 		</div>
@@ -1693,8 +1694,8 @@
 								</ul>
 							</td>
 						</tr>
-						<!--<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" />1-60(s)</td></tr>-->      
-						<input type="hidden" value="30" id="AutoPollingTime_ID"  />
+						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" />1-60(s)</td></tr>      
+						<!--<input type="hidden" value="30" id="AutoPollingTime_ID"  />-->
                         <!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
 					<!--	<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
@@ -1897,16 +1898,16 @@
 				</div>
 			</div>
 	 <div style="position: relative;" class="right_content">
-      <div style="position: absolute; top:0px; left:10px;">
+      <div style="position: absolute; top:0px; left:10px; background:#323232;">
       <table class="tb2 tb1">
        <thead class="thead">
-          <tr><td style="width:150px;">ID</td><td style="width:150px;"><script>T("Username")</script></td></tr>
+          <tr><td style="width:150px;"><script>T("Username")</script></td><td style="width:150px;"></td></tr>
        </thead>
        <tbody>
           <tr><td style="height:0; padding:0; border:0;" colspan="2"><input type="hidden" value="" id="username_list_ID"/></td></tr>
        </tbody>
       </table>
-      <table id="UserList" class="tb1" cellpadding="0" style="position: absolute; top:18px; height:145px;overflow-y:auto; overflow-x:hidden;">
+      <table id="UserList" class="tb1" cellpadding="0" style="position: absolute; top:18px; height:145px;overflow-y:auto; overflow-x:hidden; background:#323232;">
        <thead>
           <tr style="height:0; padding:0; border:0;"><td style="width:150px;"><input type="hidden" value="" id="username_list_ID"/></td><td style="width:150px;"></td></tr>
        </thead>
@@ -1931,16 +1932,21 @@
       </table>
       </div>
       <div style="position:absolute;top:200px;left:10px;" id="userRight">
-       <div id="mainRight" style="float:left;overflow:hidden;" >
+       <div id="mainRight">
        <p class="title"><script>T("User_rights")</script></p>
        <p style="padding-left:10px;"><input type="checkbox" class="selAll" /><script>T("Select")</script></p>
-       <ul class="userRight" style="width:700px; height:150px;cursor:pointer; background:#323232;">
+       <ul class="userRight" style="padding:10px;cursor:pointer; background:#323232;width:600px;">
        <li><input type="checkbox" /><script>T("Preview")</script></li><li><input type="checkbox" /><script>T("PTZ_settings")</script></li><li><input type="checkbox" /><script>T("Local_Playback")</script></li>
        <li><input type="checkbox" /><script>T("Remote_Playback")</script></li><li><input type="checkbox" /><script>T("Backup")</script></li><li><input type="checkbox" /><script>T("Device_Manager")</script></li>
        <li><input type="checkbox" /><script>T("Device_Remote_Setup")</script></li><li><input type="checkbox" /><script>T("Local_Settings")</script></li><li><input type="checkbox" /><script>T("User_Settings")</script></li>
        <li><input type="checkbox" /><script>T("Exit_system")</script></li>
        </ul>
        </div>
+       <div style="margin:6px 6px 6px 0;">
+       <p>
+       <label for="exitTime" style="margin-right:5px;" class="title"><script>T("Automatic logout interval")</script></label>
+       <input type="text" id="exitTime" style="height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;" />(s)
+       </p></div>
 	</div> 
     </div>
 	<div style="position: relative;" class="right_content">
@@ -2084,6 +2090,12 @@
 			</table>
 		</div>
 	</div>
+      <div id="confirm_tips" class="menu">
+      <p><span></span></p>
+      <div style="padding:10px;">
+          <h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
+      </div>
+  </div>
 </div>	
 <iframe id="iframe" scrolling="no" frameborder="0" src="bck.htm"></iframe>
 <script type="text/javascript" src="treeview/jquery.treeview.js"></script>
