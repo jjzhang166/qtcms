@@ -107,12 +107,21 @@ sqlite3* LocalPlayerEx::initDataBase(char *dbPath)
 			char **ppDbRet = NULL;
 			int nRow = 0, nColumn = 0;
 			sqlite3_get_table(pdb, "select count(*) from sqlite_master where type='table';", &ppDbRet, &nRow, &nColumn, NULL);
-			if (!strcmp(ppDbRet[nColumn], "0"))
+			if (!ppDbRet)
 			{
-				qDebug()<<__FUNCTION__<<__LINE__<<"no table: search_record in"<<dbPath;
+				qDebug()<<__FUNCTION__<<__LINE__<<"check table error in "<<dbPath;
 				sqlite3_close(pdb);
 				return NULL;
 			}
+			if (!strcmp(ppDbRet[nColumn], "0"))
+			{
+				qDebug()<<__FUNCTION__<<__LINE__<<"no table: search_record in"<<dbPath;
+				sqlite3_free_table(ppDbRet);
+				sqlite3_close(pdb);
+				return NULL;
+			}
+
+			sqlite3_free_table(ppDbRet);
 			m_sqlMap.insert(QString(dbPath), pdb);
 			return pdb;
 		}
