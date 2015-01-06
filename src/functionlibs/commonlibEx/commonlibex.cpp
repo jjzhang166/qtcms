@@ -2964,19 +2964,12 @@ int commonlibEx::login( const QString &sUserName,const QString &sPassword ,int n
 				if (nCode==0)
 				{
 					//ÓÃ»§µÇÂ¼
-					sCmd=QString("update user set userState=0");
+					sCmd=QString("update user set userState=0 ,logTime=%1 where userName='%2'").arg(QDateTime::currentDateTime().toTime_t()).arg(sUserName);
 					if (_query.exec(sCmd))
 					{
-						sCmd=QString("update user set userState=0 ,logTime=%1 where userName='%2'").arg(QDateTime::currentDateTime().toTime_t()).arg(sUserName);
-						if (_query.exec(sCmd))
-						{
-							_query.finish();
-							m_tUserLock.unlock();
-							return 0;
-						}else{
-							qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
-							abort();
-						}
+						_query.finish();
+						m_tUserLock.unlock();
+						return 0;
 					}else{
 						qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
 						abort();
@@ -3304,7 +3297,29 @@ int commonlibEx::getUserDatabaseId( QString sUserName,int &nId )
 
 QString commonlibEx::getCurrentUser()
 {
-	return checkCurrentLoginUser();
+	QString sUser;
+	QSqlQuery _query(*m_db);
+	quint64 uiCurrentTime=QDateTime::currentDateTime().toTime_t();
+	quint64 uiLastTime;
+	QString sCmd=QString("select userName ,logTime from user where (userState=0 and logTime+logOutInterval>=%1) or (userState=0 and logOutInterval=0)").arg(uiCurrentTime);
+	m_tUserLock.lock();
+	if (_query.exec(sCmd))
+	{
+		quint64 uiLogTime=0;
+		while(_query.next()){
+			if (_query.value(1).toUInt()>=uiLogTime)
+			{
+				uiLogTime=_query.value(1).toUInt();
+				sUser=_query.value(0).toString();
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+		abort();
+	}
+	_query.finish();
+	m_tUserLock.unlock();
+	return sUser;
 }
 
 void commonlibEx::setIsKeepCurrentUserPassWord(bool bFlags)
