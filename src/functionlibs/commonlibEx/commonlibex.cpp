@@ -3184,6 +3184,8 @@ int commonlibEx::modifyCurrentUserInfo( const QString &sOldUserName,const QStrin
 			abort();
 		}
 	}
+	_query.finish();
+	m_tUserLock.unlock();
 	return 0;
 }
 int commonlibEx::modifyUserInfo( const QString &sOldUserName,const QString &sNewUserName,const QString &sNewPassword,quint64 uiLimit,quint64 uiLogOutInterval, QVariantMap tSubCode )

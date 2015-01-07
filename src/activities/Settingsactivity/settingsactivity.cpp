@@ -2072,6 +2072,9 @@ void settingsActivity::OnAddUserExOk()
 
 void settingsActivity::OnModifyUserExOk()
 {
+	if (verify(100000000, 0)){
+		return;
+	}
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
@@ -2188,6 +2191,9 @@ void settingsActivity::OnModifyCurrentUserExOk()
 }
 void settingsActivity::OnDeleteUserExOk()
 {
+	if (verify(100000000, 0)){
+		return;
+	}
 	IUserManagerEx *pUserMangerEx=NULL;
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void**)&pUserMangerEx);
 	QString sRet;
