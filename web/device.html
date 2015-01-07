@@ -1921,7 +1921,7 @@
        <div style="margin:20px 6px 12px 0;"><p>
        <input type="checkbox" class="cinterval" id="cinterval"/>
        <label for="exitTime" style="margin-right:5px;" class="title"><script>T("Automatic logout interval")</script></label>
-       <input type="text" id="exitTime" class="input_user" disabled="disabled"/>>20(s)
+       <input type="text" id="exitTime" class="input_user" disabled="disabled" onblur="checklogoutinterval($(this));"/>>20(s)
        </p></div>
        <div class="tdBtn"><div class="hover" onclick="getModcUserXml();" id="ModifyCurrentUserEx_ok"><script>T("Modify_user")</script></div></div>
          <input type="hidden" id="modifyCurrentUserEx_ID" />
@@ -1974,7 +1974,7 @@
        <div style="margin:6px 6px 6px 0;"><p>
        <input type="checkbox" class="cinterval" id="otherinterval"/>
        <label for="exitTime" style="margin-right:5px;" class="title"><script>T("Automatic logout interval")</script></label>
-       <input type="text" id="exitinterval" style="height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;"  disabled="disabled"/>>20(s)
+       <input type="text" id="exitinterval" style="height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;"  disabled="disabled" onblur="checklogoutinterval($(this));"/>>20(s)
        </p></div>
 	   </div> 
 	 </div>

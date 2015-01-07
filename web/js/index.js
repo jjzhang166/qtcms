@@ -288,7 +288,7 @@ var oPreView,oDiv,autoSearchDev,
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			Confirm(_T('no_limit'));
+			writeActionLog(_T('no_limit'),errorcolor);
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);
@@ -897,3 +897,4 @@ var oPreView,oDiv,autoSearchDev,
 	username && $('.top_nav div p span:eq(1)').html(username);
 	 
  }
+ 

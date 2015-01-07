@@ -965,7 +965,10 @@ var oSearchOcx,autoSearchDev,
 			   $('#mainRight .selAll').prop('checked',true);
 			}	
 			$('#exitinterval').val(data.exittime);		
-	
+	        if(data.exitime>0){ 
+			  $('#otherinterval').prop('checked',true);
+			  $('#exitinterval').prop('diabled',false);
+			 }
 	}
 	 //用户登录状态回调函数
     function useStateChange(ev){
@@ -1009,6 +1012,11 @@ var oSearchOcx,autoSearchDev,
 				}
 			}
 			obj.find('input:checkbox').prop('disabled',true);
+			if(exittime>0){
+				$('#cinterval').prop('checked',true);
+				$('#exitTime').prop('disabled',false);
+				
+			}
 		}else{
 			//$('#userHint').html("无用户登录").show().css('top',$('.switch:visible').height() + 26).fadeOut(2000);
 			autoSearchDev.showUserLoginUi(336,300); 
@@ -1989,7 +1997,9 @@ function IPDes(a,b){
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
-			autoSearchDev.showUserLoginUi(336,300);
+
+           autoSearchDev.showUserLoginUi(336,300);
+
 		}else{
 		   closeMenu();
 		   confirm_tip(_T('no_limit'));
@@ -2005,4 +2015,16 @@ function IPDes(a,b){
 			},2000);
 			
 		}
+ }
+ function checklogoutinterval(obj){
+	 var value = parseInt(obj.val(),10);
+	 if(/^\d+$/.test(value)){
+	   if(value>0 && value<20){
+		  obj.val('20'); 
+	   }
+	 }else{
+		Confirm(_T('error_logoutinterval')); 
+		obj.val('');
+	 }
+	 
  }

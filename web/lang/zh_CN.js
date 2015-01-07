@@ -480,5 +480,6 @@
     'User name or password is incorrect':'用户名或者密码错误！',
 	'tip':'提示',
 	'Automatic logout interval':'自动注销时间间隔',
+	'error_logoutinterval':'请输入正确的自动注销时间间隔',
 	
 }
