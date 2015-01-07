@@ -114,7 +114,29 @@ var oSearchOcx,autoSearchDev,
 			})
 		})
 		
-		/*$('ul.filetree span.areaName').click(function(){
+				
+			  $('#mainRight li :checkbox').click(function(){
+				   var b = true;
+				   $('#mainRight li :checkbox').each(function(){
+						if(!$(this).prop('checked')){
+							 b = false; 
+						} 
+				   })
+				    $('#mainRight p').find('.selAll').prop('checked',b); 
+			  });
+
+				  $('.selAll').click(function(){
+					 if($(this).prop('checked')){ 
+						$(this).parent('p').next('ul').find('li input').prop('checked',true);
+					 }else{
+						$(this).parent('p').next('ul').find('li input').prop('checked',false);
+					 }
+				  });
+				  
+				  $('.cinterval').click(function(){
+							$(this).next().next('input').prop('disabled',!$(this).prop('checked'));
+					 });
+				/*$('ul.filetree span.areaName').click(function(){
 			$('ul.filetree span.areaName').css('background','0');
 			$(this).css('background','#ccc');
 		})*/
@@ -306,38 +328,14 @@ var oSearchOcx,autoSearchDev,
 				   if(nowDev && nowDev._ID){
 						nowDev =null;
 						}
-					/*var itema = checkUserRight(1<<8,0);
-					if(itema==1){
-						autoSearchDev.showUserLoginUi(336,300);
-					}else if(itema==2){
-								  
-					 closeMenu();
-					 confirm_tip(_T('no_limit'));
-					  var timer =setTimeout(function(){
-						  closeMenu();
-						  clearTimeout(timer);
-					  },2000);
-					}*/
-				
-					userList2Ui();
+						$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+						$('.right_content:visible div.switch').hide();
+						$('.right_content:visible div.switch').eq(0).show();
+						cUserinfo2Ui();
 					
-			  $('#mainRight li :checkbox').click(function(){
-				   var b = true;
-				   $('#mainRight li :checkbox').each(function(){
-						if(!$(this).prop('checked')){
-							 b = false; 
-						} 
-				   })
-				    $('#mainRight p').find('.selAll').prop('checked',b); 
-			  });
-
-				  $('.selAll').click(function(){
-					 if($(this).prop('checked')){ 
-						$(this).parent('p').next('ul').find('li input').prop('checked',true);
-					 }else{
-						$(this).parent('p').next('ul').find('li input').prop('checked',false);
-					 }
-				  });
+				
+					/*userList2Ui();*/
+			
 				
 				}
 			})
@@ -432,29 +430,9 @@ var oSearchOcx,autoSearchDev,
 				$('#weekday_choose input:enabled').prop('checked',$(this).prop('checked'));
 			});
 		//用户table下 tr委托部分事件
-		$('#userList').on('click','tr',function(event){  //添加用户 tr选中状态添加  数据整合到 hidden的input
+		$('#userList').on('click','tr',function(){  //添加用户 tr选中状态添加  数据整合到 hidden的input
 			//整理选中的用户ID数组
-			$('#mainRight input').each(function(){$(this).prop('checked',false)});
-			var objbtn = $(this).find('input');
-			objbtn.prop('checked',!objbtn.prop('checked'));
-			var data = $(this).data('data');
-			//console.log(data);
-			$('#userList').find('tr').removeClass('sel');
-			$(this).addClass('sel');
-			$('#userR').val(data.username);
-			var types = parseInt(data.userlv,2);
-          
-			for(var j = 0; j < 10; j++){
-				if(types == 0){
-				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
-				  break;
-				}else{			
-				  $('#mainRight ul input:checkbox').eq(j).prop("checked",(types & (1 << j)));  
-				}
-			}
-			if(types==1023){
-			   $('#mainRight .selAll').prop('checked',true);
-			}		
+			tableuserinit($(this));
 		});
 			
 		/*$('ul.filetree').each(function(){ 
@@ -551,12 +529,18 @@ var oSearchOcx,autoSearchDev,
 		/*控件触发事件调用的元素事件绑定.*/
 
 		//设备操作相关的事件绑定
-		var oActiveEvents = ['AddUser','ModifyUser','DeleteUser','AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDeviceFeedBack',/*'ModifyDevice','RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack',];  //事件名称集合
+		var oActiveEvents = ['AddArea','ModifyArea','RemoveArea','AddGroup','RemoveGroup','ModifyGroup','ModifyChannel'/*,'AddDevice'*/,'ModifyDeviceFeedBack',/*'ModifyDevice','RemoveDevice','AddDeviceDouble',*/'AddChannelDoubleInGroup','SettingStorageParm','SettingCommonParm','SettingRecordDoubleTimeParm','RemoveChannelFromGroup','ModifyGroupChannelName'/*,'AddDeviceAll','RemoveDeviceAll'*/,'AddDeviceFeedBack','RemoveDeviceFeedBack',];  //事件名称集合
 		for (i in oActiveEvents){
 			AddActivityEvent(oActiveEvents[i]+'Success',oActiveEvents[i]+'Success(data)');
 			AddActivityEvent(oActiveEvents[i]+'Fail','Fail(data)');
 		}
         AddActivityEvent('Validation','Validationcallback(data)');
+		var userEvents = ['AddUser','ModifyUser','DeleteUser','ModifyCurrentLoginUser']
+		for (i in userEvents){
+			AddActivityEvent(userEvents[i]+'Success',userEvents[i]+'Success(data)');
+			AddActivityEvent(userEvents[i]+'Fail','userfail(data)');
+		}
+		
 		//搜索设备;
 		oSearchOcx.AddEventProc('SearchDeviceSuccess','callback(data);');
 		oSearchOcx.AddEventProc('SettingStatus','autoSetIPcallBack(data);');
@@ -568,16 +552,6 @@ var oSearchOcx,autoSearchDev,
 	})///
 
 	///$(window).resize(set_contentMax);
-	
-     //用户登录状态回调函数
-    function useStateChange(ev){
-		//console.log(ev);
-		if(ev.status==0){
-		 $('.top_nav p span:eq(1)').html(ev.userName);	
-		}else{
-		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
-		}
-	}
 
 	var SplitScreenMode={'div1_1':'1','div2_2':'4','div6_1':'6','div8_1':'8','div3_3':'9','div4_4':'16','div5_5':'25','div6_6':'36','div7_7':'49'/*,'div8_8':'64'*/}
 		for(i in SplitScreenMode){
@@ -957,24 +931,119 @@ var oSearchOcx,autoSearchDev,
 		
 		$('#foot').css('top',$('#set_content div.right').height()+78);
 	}
+	//用户管理模块
+	
+	//清除用户信息
+	function emptyUserinfo(){
+		$('.userRight:visible input:checkbox').prop('disabled',false);
+		$('.switch:visible input').not(':checkbox').val('');
+		$('.switch:visible :checkbox').prop('checked',false);
+		$('#cinterval').next().next().prop('disabled',true);
+		$('#otherinterval').next().next().prop('disabled',true);
+	}
+	//用户管理信息填充
+	function tableuserinit(objec){
+			emptyUserinfo();
+             var obj=$('#userList');
+			objec.find('input').prop('checked',!objec.find('input').prop('checked'));
+			var data =objec.data('data');
+			console.log(data);
+			obj.find('tr').removeClass('sel');
+			objec.addClass('sel');
+			$('#userR').val(data.username);
+			var types = parseInt(data.userlv,2);
+          
+			for(var j = 0; j < 10; j++){
+				if(types == 0){
+				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
+				  break;
+				}else{			
+				  $('#mainRight ul input:checkbox').eq(j).prop("checked",(types & (1 << j)));  
+				}
+			}
+			if(types==1023){
+			   $('#mainRight .selAll').prop('checked',true);
+			}	
+			$('#exitinterval').val(data.exittime);		
+	
+	}
+	 //用户登录状态回调函数
+    function useStateChange(ev){
+		//console.log(ev);
+		if(ev.status==0){
+		 $('.top_nav p span:eq(1)').html(ev.userName);	
+		}else{
+		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
+		}
+		var index = $('.right_content:visible').index();
+		if(index==3){
+			$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+						$('.right_content:visible div.switch').hide();
+						$('.right_content:visible div.switch').eq(0).show();
+			cUserinfo2Ui();
+		}
+	}
+
+	//当前已登录用户信息填充
+	function cUserinfo2Ui(){
+		emptyUserinfo();
+		var obj=$('.userRight1');
+		
+		var cusername = autoSearchDev.getCurrentUser();
+		var cuserlimit = autoSearchDev.getUserLimit(cusername);
+		var exittime = autoSearchDev.getLoginOutInterval(cusername);
+		if(cusername){
+			//console.log("name:"+cusername);
+			//console.log("limit:");
+			//console.log(cuserlimit);
+			//console.log("exittime:"+exittime);
+			$('#cuser').val(cusername);
+			$('#exitTime').val(exittime);
+			var types = parseInt(cuserlimit.mainLimit,2);
+			for(var j = 0; j < 10; j++){
+				if(types == 0){
+				 obj.find('input:checkbox').eq(j).prop("checked",false);
+				  break;
+				}else{			
+				  obj.find('input:checkbox').eq(j).prop("checked",(types & (1 << j)));  
+				}
+			}
+			obj.find('input:checkbox').prop('disabled',true);
+		}else{
+			//$('#userHint').html("无用户登录").show().css('top',$('.switch:visible').height() + 26).fadeOut(2000);
+			autoSearchDev.showUserLoginUi(336,300); 
+		}
+	}
+	//修改已登录用户的信息xml
+	function getModcUserXml(){
+		var name = $('#cuser').val();
+		var oldpwd =$('#coldpwd').val();
+		var newpwd = $('#cnewpwd').val();
+		var logout = $('#cinterval').prop('checked')? $('#exitTime').val() : 0;
+		var str="<modifyCurrentUserInfo sNewUserName='"+name+"' sOldPassword='"+oldpwd+"' sNewPassword='"+newpwd+"' sLogOutInterval='"+logout+"'></modifyCurrentUserInfo>";
+		console.log(str);
+		$('#modifyCurrentUserEx_ID').val(str);
+	}
 	//用户设置方法 User Manage
 	function userList2Ui(){
-		$('#userR').val('');
-		$('#pwdR').val('');
+		//$('#userR').val('');
+		//$('#pwdR').val('');
+		emptyUserinfo();
+		
 		$('#userList tr').remove();
 		 
-		$('#mainRight input').each(function(){$(this).prop('checked',false)});
+		//$('#mainRight input').each(function(){$(this).prop('checked',false)});
 		var userList = autoSearchDev.getUserList();
-		
+		var cuser = autoSearchDev.getCurrentUser();
 		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
 		  //var fragment = document.createDocumentFragment();
 			for(var i in userList){
 				var userlv = autoSearchDev.getUserLimit(userList[i]);
 				var userid = autoSearchDev.getUserInDatabaseId(userList[i]);
-	
-				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit};
+	            var logoutinterval = autoSearchDev.getLoginOutInterval(userList[i]);
+				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit,'exittime':logoutinterval};
 			
-				 userid!=-1 && $('<tr><td><input type="checkbox" />'+userList[i]+'</td><td></td></tr>').appendTo('#userList').data('data',data);
+				 userList[i]!=cuser && $('<tr><td><input type="checkbox" />'+userList[i]+'</td><td></td></tr>').appendTo('#userList').data('data',data);
 				/*if(userid!=-1){
 					var newItem = $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>');
 					newItem.data('data',data);
@@ -982,6 +1051,7 @@ var oSearchOcx,autoSearchDev,
 				}*/
 			}
 			//$('#userList')[0].appendChild(fragment);
+			
 		}
 		
 		  var warp = $('#UserList');
@@ -989,7 +1059,8 @@ var oSearchOcx,autoSearchDev,
         if($('#userList').height() >= warp.height() && !warp.attr('b')){
             theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
             warp.attr('b',0);
-        }		
+        }
+		tableuserinit($('#userList tr:first'));		
 	}
 	
 	
@@ -997,6 +1068,7 @@ var oSearchOcx,autoSearchDev,
 	function getAddUserXml(){
 		var name = $('#userR').val();
 		var pwd = $('#pwdR').val();
+		var logoutinterval = $('#otherinterval').prop('checked')? $('#exitinterval').val() : 0;
 		var limit=0;
 		var c=0;
 		var str1='';
@@ -1008,7 +1080,7 @@ var oSearchOcx,autoSearchDev,
 		   }	
 		}
 		//console.log("limit:"+limit);
-		var str="<main sUserName='"+name+"' sPassword='"+pwd+"' limitCode='"+limit.toString(2)+"' subLimitNum='"+c+"' sLogOutInterval='20'>";
+		var str="<main sUserName='"+name+"' sPassword='"+pwd+"' limitCode='"+limit.toString(2)+"' subLimitNum='"+c+"' sLogOutInterval='"+logoutinterval+"'>";
 			str+=str1;
 			str+="</main>";
 		$('#addUserEx_ID').val(str);
@@ -1018,7 +1090,8 @@ var oSearchOcx,autoSearchDev,
 	function getModUserXml(){
 		var oldname=$('#userList tr.sel').data('data').username;
 		var newname=$('#userR').val();
-		var pwd=$('#pwdR').val()
+		var pwd=$('#pwdR').val();
+		var logoutinterval = $('#otherinterval').prop('checked')? $('#exitinterval').val() : 0;
 		var limit=0,c=0,str1='';
 		for(var i=0;i<10;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
@@ -1028,12 +1101,12 @@ var oSearchOcx,autoSearchDev,
 		   }	
 		}
 		var str=" <modify>";
-	        str+="<mainInfo sOlduserName='"+oldname+"' sNewUserName='"+newname+"' sNewPassword='"+pwd+"' uiNewLimit='"+limit.toString(2)+"' sLogOutInterval='20' subLimitSize='"+c+"'>";
+	        str+="<mainInfo sOlduserName='"+oldname+"' sNewUserName='"+newname+"' sNewPassword='"+pwd+"' uiNewLimit='"+limit.toString(2)+"' sLogOutInterval='"+logoutinterval+"' subLimitSize='"+c+"'>";
             str+=str1;
 	        str+="</mainInfo>";
 	        str+="</modify>";
            $('#modifyUserEx_ID').val(str);
-		   //console.log("getModUserXml:"+str);
+		  console.log("getModUserXml:"+str);
 	
 	}
 	//删除用户前获取xml
@@ -1049,6 +1122,12 @@ var oSearchOcx,autoSearchDev,
 	     	str+="</del>";
       $('#deleteUserEx_ID').val(str);
 		//console.log("getDelUserXml:"+str);
+		
+	}
+	//修改当前用户
+	function ModifyCurrentLoginUserSuccess(data){
+		
+		cUserinfo2Ui();
 		
 	}
 	//
@@ -1284,7 +1363,9 @@ function autoSetIPcallBack(data){
 	function ModifyUserSuccess(data){
 		userList2Ui();
 	}
-
+    function userfail(data){
+		Confirm(_T('Operation_failed'));
+	}
 	function Fail(data){
 		//console.log(data);
 		/*var str='';
@@ -1294,7 +1375,7 @@ function autoSetIPcallBack(data){
 			str +=data.name+': ';
 		}
 		str += data.fail*/
-		Confirm(_T('Operation_failed'));
+		Confirm(_T('save_failed'));
 	}
 
 	//搜索设备控件方法.
@@ -1900,4 +1981,28 @@ function IPDes(a,b){
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
 	   //console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		return itema;
+ }
+   function checkUserRightBtn(uicode,uisubcode,fn,num){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	 // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		if(itema==0){
+			window[fn](num);
+		}else if(itema==1){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else{
+		   closeMenu();
+		   confirm_tip(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				if(fn=='userList2Ui'){
+				$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+				$('.right_content:visible div.switch').hide();
+				$('.right_content:visible div.switch').eq(0).show();
+				cUserinfo2Ui();
+				}
+				clearTimeout(timer);
+			},2000);
+			
+		}
  }

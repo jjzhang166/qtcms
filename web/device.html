@@ -72,6 +72,7 @@
 	 #UserList thead td{height:0;}
 	 #userList .sel{background: #4A911C}
 	 #userList td{ border:1px solid #CCC;}
+     .input_user{ height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;}
 	 .userRight{ width:200px; overflow:hidden;}
 	 .userRight li{ min-width:150px; height:20px; float:left;}
 	 .userRight li.sel{background: #4A911C;color:#fff;}
@@ -211,10 +212,10 @@
 						</tr>
 						<tr>
 							<td><script>T("Port")</script></td>
-							<td colspan="3"><input type="text" style="width:60px; float:left; margin-left:4px;" id="SearchHttpport_ID" /><div class="hover inpt2" onclick="setIP()"><script>T("Set_up")</script></div></td>
+							<td colspan="3"><input type="text" style="width:60px; float:left; margin-left:4px;" id="SearchHttpport_ID" /><div class="hover inpt2" onclick="checkUserRightBtn(1<<6,0,'setIP')"><script>T("Set_up")</script></div></td>
 						</tr>
 						<tr>
-							<td colspan="4"><div class="hover inpt2" style="margin-left:0;"  onclick="autoSetIP();"><script>T("Batch_assign_IP")</script></div></td>
+							<td colspan="4"><div class="hover inpt2" style="margin-left:0;"  onclick="checkUserRightBtn(1<<6,0,'autoSetIP');"><script>T("Batch_assign_IP")</script></div></td>
 						</tr>
 					</tbody>
 				</table>
@@ -1898,28 +1899,56 @@
 				</div>
 			</div>
 	 <div style="position: relative;" class="right_content">
-      <div style="position: absolute; top:0px; left:10px; background:#323232;">
-      <table class="tb2 tb1">
-       <thead class="thead">
-          <tr><td style="width:150px;"><script>T("Username")</script></td><td style="width:150px;"></td></tr>
-       </thead>
-       <tbody>
-          <tr><td style="height:0; padding:0; border:0;" colspan="2"><input type="hidden" value="" id="username_list_ID"/></td></tr>
-       </tbody>
-      </table>
-      <table id="UserList" class="tb1" cellpadding="0" style="position: absolute; top:18px; height:145px;overflow-y:auto; overflow-x:hidden; background:#323232;">
-       <thead>
-          <tr style="height:0; padding:0; border:0;"><td style="width:150px;"><input type="hidden" value="" id="username_list_ID"/></td><td style="width:150px;"></td></tr>
-       </thead>
-       <tbody id="userList" class="synCheckboxClick">
-       </tbody>
-      </table>
+      <ul class="ope_list nav1">
+		<li onclick="cUserinfo2Ui();" class="ope_listAct"><script>T("User Information")</script></li>
+	    <li onclick="checkUserRightBtn(1<<8,0,'userList2Ui');"><script>T("User_Manage")</script></li>
+	 </ul>
+     <div class="switch" style="display:block;top:20px;" id="CuserRight">
+       <table>
+       <tr><td><script>T("Username")</script></td><td><input type="text" id="cuser" class="input_user"/></td></tr>
+       <tr><td><script>T("Old_Password")</script></td><td><input type="password" id="coldpwd" class="input_user"/></td></tr>
+        <tr><td><script>T("New_Password")</script></td><td><input type="password" id="cnewpwd" class="input_user"/></td></tr>
+       </table>
+       <div style="margin:12px 0 0 0;">
+       <p class="title"><script>T("User_rights")</script></p>
+       <ul class="userRight userRight1" style="padding:10px;cursor:pointer; background:#323232;width:300px;">
+       <li><input type="checkbox" /><script>T("Preview")</script></li><li><input type="checkbox" /><script>T("PTZ_settings")</script></li><li><input type="checkbox" /><script>T("Local_Playback")</script></li>
+       <li><input type="checkbox" /><script>T("Remote_Playback")</script></li><li><input type="checkbox" /><script>T("Backup")</script></li><li><input type="checkbox" /><script>T("Device_Manager")</script></li>
+       <li><input type="checkbox" /><script>T("Device_Remote_Setup")</script></li><li><input type="checkbox" /><script>T("Local_Settings")</script></li><li><input type="checkbox" /><script>T("User_Settings")</script></li>
+       <li><input type="checkbox" /><script>T("Exit_system")</script></li>
+       </ul>
+       </div>
+       <div style="margin:20px 6px 12px 0;"><p>
+       <input type="checkbox" class="cinterval" id="cinterval"/>
+       <label for="exitTime" style="margin-right:5px;" class="title"><script>T("Automatic logout interval")</script></label>
+       <input type="text" id="exitTime" class="input_user" disabled="disabled"/>>20(s)
+       </p></div>
+       <div class="tdBtn"><div class="hover" onclick="getModcUserXml();" id="ModifyCurrentUserEx_ok"><script>T("Modify_user")</script></div></div>
+         <input type="hidden" id="modifyCurrentUserEx_ID" />
+     </div>
+     <div class="switch" style="display:none;top:25px;" id="userRight">
+        <div style="background:#323232;">
+          <table class="tb2 tb1">
+           <thead class="thead">
+              <tr><td style="width:150px;"><script>T("Username")</script></td><td style="width:150px;"></td></tr>
+           </thead>
+           <tbody>
+              <tr><td style="height:0; padding:0; border:0;" colspan="2"><input type="hidden" value="" id="username_list_ID"/></td></tr>
+           </tbody>
+          </table>
+          <table id="UserList" class="tb1" cellpadding="0" style="position: absolute; top:18px; height:145px;overflow-y:auto; overflow-x:hidden; background:#323232;">
+           <thead>
+              <tr style="height:0; padding:0; border:0;"><td style="width:150px;"><input type="hidden" value="" id="username_list_ID"/></td><td style="width:150px;"></td></tr>
+           </thead>
+           <tbody id="userList" class="synCheckboxClick">
+           </tbody>
+          </table>
       </div>
-      <div style="position:absolute;top:30px; left:320px;">
+      <div style="position:absolute;top:78px; left:320px; width:320px;">
       <table  class="tb1">
       <thead>
-        <tr style=" background:#282828; text-align:center;"><td colspan="3"><script>T("Username")</script>:<input type="text" id="userR" /></td></tr>
-        <tr style=" background:#282828; text-align:center;"><td colspan="3">&nbsp;&nbsp;&nbsp;<script>T("Password")</script>:<input type="password" id="pwdR"/></td></tr>
+        <tr style=" background:#282828;text-align:left;"><td><script>T("Username")</script></td><td colspan="2"><input type="text" id="userR" /></td></tr>
+        <tr style=" background:#282828;text-align:left;"><td><script>T("Password")</script></td><td colspan="2"><input type="password" id="pwdR"/></td></tr>
         <tr style=" background:#282828;"><td colspan="3" class="tdBtn">
         <div class="hover" onclick="getAddUserXml();" id="AddUserEx_ok"><script>T("Add_User")</script></div>
         <div class="hover" onclick="getModUserXml();" id="ModifyUserEx_ok"><script>T("Modify_user")</script></div>
@@ -1942,13 +1971,15 @@
        <li><input type="checkbox" /><script>T("Exit_system")</script></li>
        </ul>
        </div>
-       <div style="margin:6px 6px 6px 0;">
-       <p>
+       <div style="margin:6px 6px 6px 0;"><p>
+       <input type="checkbox" class="cinterval" id="otherinterval"/>
        <label for="exitTime" style="margin-right:5px;" class="title"><script>T("Automatic logout interval")</script></label>
-       <input type="text" id="exitTime" style="height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;" />(s)
+       <input type="text" id="exitinterval" style="height: 18px;width:153px;border: 0;background: url(images/top_icon.png) no-repeat -440px 0;"  disabled="disabled"/>>20(s)
        </p></div>
-	</div> 
-    </div>
+	   </div> 
+	 </div>
+     <div id="userHint" style="display:none; position:absolute; background:#B64442; border-radius:4px; color:#ccc; padding:2px;"></div>
+	</div>
 	<div style="position: relative;" class="right_content">
 			<div class="switch" style="display:block;top:0;">
 				<table>

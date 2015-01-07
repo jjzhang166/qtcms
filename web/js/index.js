@@ -244,6 +244,7 @@ var oPreView,oDiv,autoSearchDev,
 		oPreView.AddEventProc('Authority','Authority(ev)');
 		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
+		oPreView.AddEventProc('Validation','Validationcallback(data)');
 		
          autoSearchDev.AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
 		 autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');

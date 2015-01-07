@@ -289,6 +289,7 @@
 	//本地设置
 
 	'Operation_failed':'Операция не вступили в силу!',
+	'save_failed':'Не удалось сохранить!',
 	'Time_format_error':'Некорректный формат времени.',
 	'Start_end_time_error':'Время начала должно быть раньше врмени конца!',
 	'Choose_time':'Выбрать время',
@@ -454,7 +455,7 @@
 	'reboot_success':'Камера перезапущена успешно.',
 	'reboot_fail':'Ошибка запуска камеры, попробуйте позже.',
 	
-		//设备管理
+	//设备管理
 	'search_btn':'Поиск',
 	'quit_btn':'Отмена',
 	'Not_Found':'Устройство не найдено!',
@@ -466,6 +467,7 @@
 	'waiting_tips':'Есть автоматический поиск и добавьте, пожалуйста, подождите _V_ секунд для вашего терпения.',
 	
 	//用户设置
+	'User Information':'kullanıcı Bilgileri',
 	'User_rights':'права пользователей',
 	'Local_Playback':'Local Playback',//Not yet translated
 	'Remote_Playback':'Удаленное воспроизведение',
@@ -480,4 +482,5 @@
 	'username_cannot_be_empty':'Имя пользователя не может быть пустым.',
     'User name or password is incorrect':'Имя пользователя или неверный пароль!',
 	'tip':'подсказка',
+	'Automatic logout interval':'Автоматическая интервал выход',
 }

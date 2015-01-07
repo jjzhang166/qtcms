@@ -289,6 +289,7 @@
 	//本地设置
 
 	'Operation_failed':'操作失败!',
+	'save_failed':'保存失败',
     'Time_format_error':'时间的格式不正确，已恢复原值！',
 	'Start_end_time_error':'开始时间必须小于结束时间，请重新设置时间！',
 	'Choose_time':'选择时间',
@@ -463,6 +464,7 @@
 	'Adding devices, please be patient':'正在添加设备，请您耐心等候.',
 	'waiting_tips':'正在自动搜索设备并添加，请您耐心等候_V_秒.',
 	//用户设置
+	'User Information':'用户信息',
 	'User_rights':'用户权限',
 	'Local_Playback':'本地回放',
 	'Remote_Playback':'远程回放',
@@ -478,4 +480,5 @@
     'User name or password is incorrect':'用户名或者密码错误！',
 	'tip':'提示',
 	'Automatic logout interval':'自动注销时间间隔',
+	
 }

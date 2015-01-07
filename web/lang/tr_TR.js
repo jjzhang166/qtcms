@@ -289,6 +289,7 @@ var tr_TR={
 	//本地设置
 
 	'Operation_failed':'operasyon başarısız oldu!',
+	'save_failed':'kaydedilemedi!',
 	'Time_format_error':'Yanl zaman biçimi.',
 	'Start_end_time_error':'Bitiş süresinden daha must erken başlangıç ​​zamanı!',
 	'Choose_time':'Zaman seçin',
@@ -466,6 +467,7 @@ var tr_TR={
 	'waiting_tips':'Otomatik cihaz arar ve sabrınız için _V_ saniye bekleyin lütfen, eklemek',
 	
 	//用户设置
+	'User Information':'информация о пользователе',
 	'User_rights':'kullanıcı hakları',
 	'Local_Playback':'yerel Oynatma',
 	'Remote_Playback':'Uzaktan Oynatma',
@@ -480,4 +482,5 @@ var tr_TR={
 	'username_cannot_be_empty':'Kullanıcı adı boş olamaz.',
     'User name or password is incorrect':'Kullanıcı adı veya şifre yanlış!',
 	'tip':'hemen',
+	'Automatic logout interval':'Otomatik çıkış aralığı',
 }

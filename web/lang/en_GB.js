@@ -289,6 +289,7 @@
 //本地设置
 
 'Operation_failed':'Operation failed!',
+'save_failed':'Failed to save!',
 'Time_format_error':'Incorret time format.',
 'Start_end_time_error':'Start time must earlier than the end time!',
 'Choose_time':'Choose time',
@@ -465,6 +466,7 @@
 	'waiting_tips':'Are automatically searches the device and add, please wait _V_ seconds for your patience.',
 	
 	//用户设置
+	'User Information':'User Information',
 	'User_rights':'User rights',
 	'Local_Playback':'Local Playback',
 	'Remote_Playback':'Remote Playback',
@@ -479,5 +481,5 @@
 	'username_cannot_be_empty':'Username can not be empty.',
     'User name or password is incorrect':'User name or password is incorrect!',
 	'tip':'Tip',
-
+	'Automatic logout interval':'Automatic logout interval',
 }
