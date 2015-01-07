@@ -555,15 +555,9 @@ void qpreviewwindowsex::StartAutoPolling()
 	m_pAutoPollingTimer = new QTimer;
 	connect(m_pAutoPollingTimer, SIGNAL(timeout()), this, SLOT(slPolling()));
 	//get interval time
-	int inteval = 10;
-	ILocalSetting *pLocalSetting = NULL;
-	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalSetting);
-	if (pLocalSetting){
-		inteval = pLocalSetting->getAutoPollingTime();
-		pLocalSetting->Release();
-	}
+	int interval = getPollInterval();
 
-	m_pAutoPollingTimer->start(inteval*1000);
+	m_pAutoPollingTimer->start(interval*1000);
 }
 
 void qpreviewwindowsex::StopAutoPolling()
@@ -580,6 +574,12 @@ void qpreviewwindowsex::slPolling()
 	if (!m_divMode){
 		qDebug()<<__FUNCTION__<<__LINE__<<"m_divMode is null";
 	}
+
+	int interval = getPollInterval();
+	if (m_pAutoPollingTimer->interval() != interval*1000){
+		m_pAutoPollingTimer->setInterval(interval*1000);
+	}
+
 	int curPage = m_divMode->getCurrentPage();
 	m_divMode->nextPage();
 	//check whether the current page has picture 
@@ -608,5 +608,17 @@ void qpreviewwindowsex::slPolling()
 void qpreviewwindowsex::subWindowVerify( QVariantMap vmap )
 {
 	EventProcCall(QString("Validation"), vmap);
+}
+
+int qpreviewwindowsex::getPollInterval()
+{
+	int inteval = 10;
+	ILocalSetting *pLocalSetting = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pLocalSetting);
+	if (pLocalSetting){
+		inteval = pLocalSetting->getAutoPollingTime();
+		pLocalSetting->Release();
+	}
+	return inteval;
 }
 

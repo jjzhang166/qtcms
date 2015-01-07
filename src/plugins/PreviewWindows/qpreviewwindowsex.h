@@ -88,6 +88,7 @@ private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();
 	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
+	int getPollInterval();
 private:
 	IWindowDivMode * m_divMode;
 	qsubviewEx m_sPreviewWnd[MAX_WINDOWS_NUM];
