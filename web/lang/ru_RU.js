@@ -467,7 +467,7 @@
 	'waiting_tips':'Есть автоматический поиск и добавьте, пожалуйста, подождите _V_ секунд для вашего терпения.',
 	
 	//用户设置
-	'User Information':'kullanıcı Bilgileri',
+	'Current users':'Текущие пользователи',
 	'User_rights':'права пользователей',
 	'Local_Playback':'Local Playback',//Not yet translated
 	'Remote_Playback':'Удаленное воспроизведение',
@@ -483,4 +483,6 @@
     'User name or password is incorrect':'Имя пользователя или неверный пароль!',
 	'tip':'подсказка',
 	'Automatic logout interval':'Автоматическая интервал выход',
+	'error_logoutinterval':'Пожалуйста, введите правильный интервала автоматического выхода из системы',
+	'error_userpwd':'Пожалуйста, введите правильный формат пароль',
 }

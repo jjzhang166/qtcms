@@ -947,7 +947,7 @@ var oSearchOcx,autoSearchDev,
              var obj=$('#userList');
 			objec.find('input').prop('checked',!objec.find('input').prop('checked'));
 			var data =objec.data('data');
-			console.log(data);
+			//console.log(data);
 			obj.find('tr').removeClass('sel');
 			objec.addClass('sel');
 			$('#userR').val(data.username);
@@ -965,9 +965,9 @@ var oSearchOcx,autoSearchDev,
 			   $('#mainRight .selAll').prop('checked',true);
 			}	
 			$('#exitinterval').val(data.exittime);		
-	        if(data.exitime>0){ 
+	        if(parseInt(data.exittime,10)>0){ 
 			  $('#otherinterval').prop('checked',true);
-			  $('#exitinterval').prop('diabled',false);
+			  $('#exitinterval').prop('disabled',false);
 			 }
 	}
 	 //用户登录状态回调函数
@@ -1993,13 +1993,21 @@ function IPDes(a,b){
    function checkUserRightBtn(uicode,uisubcode,fn,num){
 	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	 // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+	//console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
-
-           autoSearchDev.showUserLoginUi(336,300);
-
+              autoSearchDev.showUserLoginUi(336,300);            
+             
+		       /* if(fn=='userList2Ui'){
+				       $('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+						$('.right_content:visible div.switch').hide();
+						$('.right_content:visible div.switch').eq(0).show();
+			           cUserinfo2Ui();
+				}else{
+					autoSearchDev.showUserLoginUi(336,300);
+					}
+*/
 		}else{
 		   closeMenu();
 		   confirm_tip(_T('no_limit'));
@@ -2007,9 +2015,9 @@ function IPDes(a,b){
 				closeMenu();
 				if(fn=='userList2Ui'){
 				$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
-				$('.right_content:visible div.switch').hide();
-				$('.right_content:visible div.switch').eq(0).show();
-				cUserinfo2Ui();
+						$('.right_content:visible div.switch').hide();
+						$('.right_content:visible div.switch').eq(0).show();
+			     cUserinfo2Ui();
 				}
 				clearTimeout(timer);
 			},2000);
@@ -2028,3 +2036,11 @@ function IPDes(a,b){
 	 }
 	 
  }
+ function checkuserpwd(obj){
+    var value = obj.val();
+	if(/[\u4e00-\u9fa5]/.test(value)){
+	   	Confirm(_T('error_userpwd')); 
+		obj.val('');
+	}
+	 
+}

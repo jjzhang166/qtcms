@@ -41,7 +41,6 @@
 	#fileRec span{ background: #ccc; float: left; width: 50px; height: 10px;}
 	#fileRec h5{ border: none; line-height: 32px;}
 	#fileRec h4{float: left; border: none;}
-    #limitTips p{width:150px;}
 	#list .sel li{background-color: #ABCDEF}
 	#page span{ cursor: pointer; margin: 8px 2px; text-decoration: underline; line-height: 16px; width: 16px; height: 16px; display: block; float: left;}
 	#page span.sel{ color: #F05133}
@@ -279,7 +278,7 @@ var oPlayBack={},  // 远程回访控件对象
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			Confirm(_T('no_limit'));
+			showLimitTips();
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);

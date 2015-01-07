@@ -464,7 +464,7 @@
 	'Adding devices, please be patient':'正在添加设备，请您耐心等候.',
 	'waiting_tips':'正在自动搜索设备并添加，请您耐心等候_V_秒.',
 	//用户设置
-	'User Information':'用户信息',
+	'Current users':'当前用户',
 	'User_rights':'用户权限',
 	'Local_Playback':'本地回放',
 	'Remote_Playback':'远程回放',
@@ -481,5 +481,6 @@
 	'tip':'提示',
 	'Automatic logout interval':'自动注销时间间隔',
 	'error_logoutinterval':'请输入正确的自动注销时间间隔',
+	'error_userpwd':'请输入正确格式的密码',
 	
 }

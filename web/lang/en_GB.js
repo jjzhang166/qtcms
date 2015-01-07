@@ -466,7 +466,7 @@
 	'waiting_tips':'Are automatically searches the device and add, please wait _V_ seconds for your patience.',
 	
 	//用户设置
-	'User Information':'User Information',
+	'Current users':'Current users',
 	'User_rights':'User rights',
 	'Local_Playback':'Local Playback',
 	'Remote_Playback':'Remote Playback',
@@ -477,9 +477,11 @@
 	'not_Login':'No login',
 	'locking':'Locking',
 	'Remember_password':'Remember password',
-	'no_limit':'You do not have permission to operate!',
+	'no_limit':'Insufficient User Permissions',
 	'username_cannot_be_empty':'Username can not be empty.',
     'User name or password is incorrect':'User name or password is incorrect!',
 	'tip':'Tip',
 	'Automatic logout interval':'Automatic logout interval',
+	'error_logoutinterval':'Please enter the correct automatic logout interval',
+	'error_userpwd':'Please enter the correct password format',
 }

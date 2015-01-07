@@ -467,7 +467,7 @@ var tr_TR={
 	'waiting_tips':'Otomatik cihaz arar ve sabrınız için _V_ saniye bekleyin lütfen, eklemek',
 	
 	//用户设置
-	'User Information':'информация о пользователе',
+	'Current users':'Mevcut kullanıcılar',
 	'User_rights':'kullanıcı hakları',
 	'Local_Playback':'yerel Oynatma',
 	'Remote_Playback':'Uzaktan Oynatma',
@@ -483,4 +483,6 @@ var tr_TR={
     'User name or password is incorrect':'Kullanıcı adı veya şifre yanlış!',
 	'tip':'hemen',
 	'Automatic logout interval':'Otomatik çıkış aralığı',
+	'error_logoutinterval':'Doğru otomatik çıkış aralığını giriniz',
+	'error_userpwd':'Doğru şifre biçimini giriniz',
 }

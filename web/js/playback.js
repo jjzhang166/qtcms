@@ -223,7 +223,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		if(data.ErrorCode=="1"){
 			autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
-			Confirm(_T('no_limit'));
+			showLimitTips();
 			var timer =setTimeout(function(){
 				closeMenu();
 				clearTimeout(timer);

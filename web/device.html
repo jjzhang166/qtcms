@@ -1900,14 +1900,14 @@
 			</div>
 	 <div style="position: relative;" class="right_content">
       <ul class="ope_list nav1">
-		<li onclick="cUserinfo2Ui();" class="ope_listAct"><script>T("User Information")</script></li>
+		<li onclick="cUserinfo2Ui();" class="ope_listAct"><script>T("Current users")</script></li>
 	    <li onclick="checkUserRightBtn(1<<8,0,'userList2Ui');"><script>T("User_Manage")</script></li>
 	 </ul>
      <div class="switch" style="display:block;top:20px;" id="CuserRight">
        <table>
        <tr><td><script>T("Username")</script></td><td><input type="text" id="cuser" class="input_user"/></td></tr>
-       <tr><td><script>T("Old_Password")</script></td><td><input type="password" id="coldpwd" class="input_user"/></td></tr>
-        <tr><td><script>T("New_Password")</script></td><td><input type="password" id="cnewpwd" class="input_user"/></td></tr>
+       <tr><td><script>T("Old_Password")</script></td><td><input type="password" id="coldpwd" class="input_user" onblur="checkuserpwd($(this));"/></td></tr>
+        <tr><td><script>T("New_Password")</script></td><td><input type="password" id="cnewpwd" class="input_user" onblur="checkuserpwd($(this));"/></td></tr>
        </table>
        <div style="margin:12px 0 0 0;">
        <p class="title"><script>T("User_rights")</script></p>
@@ -1948,7 +1948,7 @@
       <table  class="tb1">
       <thead>
         <tr style=" background:#282828;text-align:left;"><td><script>T("Username")</script></td><td colspan="2"><input type="text" id="userR" /></td></tr>
-        <tr style=" background:#282828;text-align:left;"><td><script>T("Password")</script></td><td colspan="2"><input type="password" id="pwdR"/></td></tr>
+        <tr style=" background:#282828;text-align:left;"><td><script>T("Password")</script></td><td colspan="2"><input type="password" id="pwdR" onblur="checkuserpwd($(this));"/></td></tr>
         <tr style=" background:#282828;"><td colspan="3" class="tdBtn">
         <div class="hover" onclick="getAddUserXml();" id="AddUserEx_ok"><script>T("Add_User")</script></div>
         <div class="hover" onclick="getModUserXml();" id="ModifyUserEx_ok"><script>T("Modify_user")</script></div>
