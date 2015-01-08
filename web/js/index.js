@@ -15,6 +15,7 @@ var oPreView,oDiv,autoSearchDev,
 	    
 		autoSearchDev = $('#atuoSearchDevice')[0];
 		autoSearchDev.startGetUserLoginStateChangeTime();
+		autoSearchDev.loginEx();
 		//$(window).off();
          getUsername();
 	    $('div.dev_list:eq(1)').hide();

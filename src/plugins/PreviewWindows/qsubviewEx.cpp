@@ -783,9 +783,9 @@ int qsubviewEx::cbCConnectRefuse( QVariantMap evMap )
 
 void qsubviewEx::slbackToManiWnd()
 {
- 	if (verify(1, 0)){
- 		return;
- 	}
+ 	//if (verify(1, 0)){
+ 	//	return;
+ 	//}
 
 	ms_bIsFullScreen = false;
 	emit sgbackToMainWnd();

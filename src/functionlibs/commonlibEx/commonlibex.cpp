@@ -3541,4 +3541,17 @@ int commonlibEx::getLoginOutInterval( QString sUserName )
 	return nRet;
 }
 
+int commonlibEx::loginEx()
+{
+	QSqlQuery _query(*m_db);
+	QString sCmd=QString("update user set userState=1");
+	if (_query.exec(sCmd))
+	{
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+		abort();
+	}
+	return 0;
+}
+
 

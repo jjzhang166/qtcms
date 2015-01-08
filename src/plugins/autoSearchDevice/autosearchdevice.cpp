@@ -160,7 +160,16 @@ void autoSearchDevice::cancelLoginUI()
 	m_tAutoSearchDeviceWindow.hide();
 	return ;
 }
-
+int autoSearchDevice::loginEx()
+{
+	if (NULL!=m_pUserMangerEx)
+	{
+		m_pUserMangerEx->loginEx();
+	}else{
+		//do nothing
+	}
+	return 0;
+}
 int autoSearchDevice::login( QString sUserName,QString sPassword,int nCode )
 {
 	if (NULL!=m_pUserMangerEx)
@@ -319,6 +328,8 @@ int autoSearchDevice::getLoginOutInterval( QString sUserName )
 	}
 	return nRet;
 }
+
+
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )
 {

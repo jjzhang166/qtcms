@@ -33,6 +33,7 @@ public slots:
 		int checkUserLimit(quint64 uiCode,quint64 uiSubCode);//0:认证通过 1：用户没有登录 2：用户权限不足
 		void cancelLoginUI();//退出用户登录界面
 		int login(QString sUserName,QString sPassword,int nCode);//0:操作成功 1：操作失败；nCode:0(用户登录)，1（用户注销）
+		int loginEx();
 		QStringList getUserList();
 		QVariantMap getUserLimit(QString sUserName);
 		QString getCurrentUser();
