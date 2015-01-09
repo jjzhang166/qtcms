@@ -589,20 +589,57 @@ void qpreviewwindowsex::slPolling()
 	if (-1 != rx.indexIn(devName)){
 		devNum = rx.cap(1).toInt() * rx.cap(2).toInt();
 	}
-	do 
-	{
-		int page = m_divMode->getCurrentPage();
-		int startWndIndex = (page + 1)*devNum > MAX_WINDOWS_NUM ? MAX_WINDOWS_NUM - devNum : page*devNum;
-		for (int index = 0; index < devNum; ++index)
-		{
-			int curStatus = m_sPreviewWnd[startWndIndex + index].getCurrentConnectStatus();
-			if (curStatus < 2){
-				EventProcCall("DivModeChange",QVariantMap());
-				return;
+	//find first window which has picture from next page
+	int index = 0, findIndex = 0, startWndIndex = 0, pageNum = 0;
+	int page = m_divMode->getCurrentPage();
+	int curWndIndex = (page + 1)*devNum > MAX_WINDOWS_NUM ? MAX_WINDOWS_NUM - devNum : page*devNum;
+	if (curWndIndex >= MAX_WINDOWS_NUM -devNum){
+		startWndIndex = 0;
+	}else{
+		page++;
+		startWndIndex = (page + 1)*devNum > MAX_WINDOWS_NUM ? MAX_WINDOWS_NUM - devNum : page*devNum;
+	}
+	index = startWndIndex;
+	findIndex = index%MAX_WINDOWS_NUM;
+	while (curWndIndex != findIndex){
+		int curStatus = m_sPreviewWnd[findIndex].getCurrentConnectStatus();
+		if (curStatus < 2){
+			break;
+		}
+		findIndex = ++index%MAX_WINDOWS_NUM;
+	}
+	//if find 
+	if (findIndex != curWndIndex){
+		//count skip pages
+		//								boundary12			boundary23
+		// |-----------------1----------------|--------2--------|---3---|
+		int diff = findIndex - curWndIndex;
+		int boundary12 = MAX_WINDOWS_NUM - devNum;
+		int boundary23 = (MAX_WINDOWS_NUM/devNum)*devNum;
+		pageNum = qAbs(diff)/devNum;
+		if (curWndIndex < boundary12 && findIndex < boundary12){
+			//|------find----1----cur------|
+			if (curWndIndex > findIndex){
+				pageNum = MAX_WINDOWS_NUM/devNum + 1 - pageNum;
 			}
 		}
-		m_divMode->nextPage();
-	} while (curPage != m_divMode->getCurrentPage());
+		//|--------cur----1-------------------|---find---2-------|
+		if (curWndIndex < boundary12 && (findIndex >= boundary12 && findIndex < boundary23) && boundary23 - boundary12 != devNum){
+			++pageNum;
+		}
+		//|--------find----1------------------|----cur---2-------|
+		if ((curWndIndex >= boundary12 && curWndIndex < boundary23) && findIndex < boundary12 && boundary23 - boundary12 != devNum){
+			pageNum = MAX_WINDOWS_NUM/devNum - pageNum;
+		}
+		if (boundary23 - boundary12 == devNum && curWndIndex > findIndex){
+			pageNum = MAX_WINDOWS_NUM - pageNum;
+		}
+		//start skip
+		for (int i = 0; i < pageNum; ++i){
+				m_divMode->nextPage();
+		}
+		EventProcCall("DivModeChange",QVariantMap());
+	}
 }
 
 void qpreviewwindowsex::subWindowVerify( QVariantMap vmap )
