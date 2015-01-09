@@ -1151,7 +1151,7 @@ int commonlibEx::RemoveDevice( int dev_id )
 	QString command = QString("delete from dev where id='%1'").arg(dev_id);
 
 	_query.exec(command);
-	QString command_chl=QString("delete from chl where id='%1'").arg(dev_id);
+	QString command_chl=QString("delete from chl where dev_id='%1'").arg(dev_id);
 	_query.exec(command_chl);
 	Device_lock.unlock();
 	return IDeviceManager::OK;
