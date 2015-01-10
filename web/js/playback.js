@@ -251,6 +251,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 					playAction('GroupSpeedNormal');
 					palybackspeed('1X');
 					$('#togglePlay').removeAttr('speed');
+					nowSpeed=1;
 				}else{
 				    dragStartMove();
 					playAction('GroupContinue');
