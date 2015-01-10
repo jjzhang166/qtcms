@@ -16,7 +16,7 @@ class QFileData : public QThread
 public:
 	QFileData();
 	~QFileData();
-	void setParamer(QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos);
+	void setParamer(QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos,qint32 i32Types);
 	void setWndIdList(QList<qint32> &wndList);
 	void setBuffer(qint32 wndId, QList<FrameData> *pquFrameBuffer);
 	void setSpeed(qint32 speed);
@@ -58,6 +58,7 @@ private:
 	uint m_uiStartSec;				//start seconds for playing
 	uint m_uiEndSec;				//end seconds for playing
 	qint32 m_i32StartPos;			//start position in file list
+	qint32 m_i32Types;				//playing types
 	bool m_bStop;
 	bool m_bPlayDirection;			//true:play false:playback
 	qint32 m_i32Speed;

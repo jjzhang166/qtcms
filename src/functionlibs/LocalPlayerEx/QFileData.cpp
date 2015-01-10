@@ -29,6 +29,7 @@ QFileData::QFileData()
 	m_uiStartSec(0),
 	m_uiEndSec(0),
 	m_i32StartPos(0),
+	m_i32Types(0x0f),
 	m_bStop(false),
 	m_bPlayDirection(true),
 // 	m_pcbTimeChg(NULL),
@@ -54,7 +55,7 @@ QFileData::~QFileData()
 	}
 }
 
-void QFileData::setParamer( QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos )
+void QFileData::setParamer( QStringList lstFileList, uint uiStartSec, uint uiEndSec, qint32 i32StartPos, qint32 i32Types )
 {
 	if (!lstFileList.isEmpty())
 	{
@@ -62,6 +63,7 @@ void QFileData::setParamer( QStringList lstFileList, uint uiStartSec, uint uiEnd
 		m_uiStartSec = uiStartSec;
 		m_uiEndSec = uiEndSec;
 		m_i32StartPos = i32StartPos;
+		m_i32Types = i32Types;
 	}
 }
 
@@ -216,8 +218,8 @@ void QFileData::run()
 		while (!m_bStop && (char*)pFrameHead < m_pFileBuff1 + pFileHead->uiIndex)
 		{
 			iter = m_wndBuffMap.find(pFrameHead->tFrameHead.uiChannel);
-			//current channel isn't in group
-			if (iter == m_wndBuffMap.end() || pFrameHead->tFrameHead.uiGentime < m_uiStartSec)
+			//current channel isn't in group or types are not needed
+			if (iter == m_wndBuffMap.end() || pFrameHead->tFrameHead.uiGentime < m_uiStartSec || !(pFrameHead->tFrameHead.uiRecType & m_i32Types) )
 			{
 				pFrameHead = (tagFileFrameHead *)((char*)pFrameHead + sizeof(tagFileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
 				continue;
