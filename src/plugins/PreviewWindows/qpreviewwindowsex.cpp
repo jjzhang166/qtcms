@@ -579,10 +579,7 @@ void qpreviewwindowsex::slPolling()
 	if (m_pAutoPollingTimer->interval() != interval*1000){
 		m_pAutoPollingTimer->setInterval(interval*1000);
 	}
-
-	int curPage = m_divMode->getCurrentPage();
-	m_divMode->nextPage();
-	//check whether the current page has picture 
+	//get divide number
 	int devNum = 1;
 	QString devName = m_divMode->getModeName();
 	QRegExp rx("div(\\d+)_(\\d+)");

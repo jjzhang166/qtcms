@@ -6,7 +6,7 @@ m_nRef(0),
 m_nSubWindowCount(0),
 m_parentOfSubWindows(NULL),
 m_nCurrentPage(0),
-
+m_keyPage(0),
 m_PageSubCount(PAGE_SUBCOUNT),
 m_row(4),
 m_column(4),
@@ -37,17 +37,49 @@ void div8_1::flush()
 {
 	reSizeSubWindows();
 	int i;
-	for (i = 0; i < m_nSubWindowCount; i ++)
+// 	for (i = 0; i < m_nSubWindowCount; i ++)
+// 	{
+// 		if (i >= m_nCurrentPage*m_PageSubCount && i< (m_nCurrentPage+1)*m_PageSubCount)
+// 		{
+// 			m_subWindows.at(i)->show();
+// 		}
+// 		else
+// 		{
+// 			m_subWindows.at(i)->hide();
+// 		}
+// 	}
+	int indexfirst = -1; 
+	int lastPage = m_nSubWindowCount%m_PageSubCount ? m_nSubWindowCount/m_PageSubCount : m_nSubWindowCount/m_PageSubCount - 1;
+	if (!m_singeldisplay && m_nCurrentPage == lastPage)
 	{
-		if (i >= m_nCurrentPage*m_PageSubCount && i< (m_nCurrentPage+1)*m_PageSubCount)
+		indexfirst = m_nSubWindowCount - m_PageSubCount;
+		for (i = 0; i < m_nSubWindowCount; ++i)
 		{
-			m_subWindows.at(i)->show();
-		}
-		else
-		{
-			m_subWindows.at(i)->hide();
+			if (i >= indexfirst)
+			{
+				m_subWindows.at(i)->show();
+			}
+			else
+			{
+				m_subWindows.at(i)->hide();
+			}
 		}
 	}
+	else
+	{
+		for (i = 0; i < m_nSubWindowCount || i< (m_nCurrentPage+1)*m_PageSubCount; i ++)
+		{
+			if (i >= m_nCurrentPage*m_PageSubCount && i< (m_nCurrentPage+1)*m_PageSubCount) 
+			{
+				m_subWindows.at(i%m_nSubWindowCount)->show();
+			}
+			else
+			{
+				m_subWindows.at(i%m_nSubWindowCount)->hide();
+			}
+		}
+	}
+
 }
 
 void div8_1::parentWindowResize( QResizeEvent *ev )
@@ -69,6 +101,7 @@ void div8_1::parentWindowResize( QResizeEvent *ev )
 	}
 	else
 	{
+		m_bResized = true;
 		setTotalDisplay();
 	}
 }
@@ -80,6 +113,11 @@ void div8_1::subWindowDblClick( QWidget *subWindow,QMouseEvent * ev )
 
 	if (!m_singeldisplay)
 	{
+		int lastPage = m_nSubWindowCount%m_PageSubCount ? m_nSubWindowCount/m_PageSubCount : m_nSubWindowCount/m_PageSubCount - 1;
+		if (lastPage == m_nCurrentPage)
+		{
+			m_keyPage = 1;
+		}
 		m_nCurrentPage = getSubVindowIndex(subWindow);
 		setSingelDiaplay(subWindow);
 	}
@@ -131,7 +169,19 @@ void div8_1::setTotalDisplay()
 	m_PageSubCount = PAGE_SUBCOUNT;
 	//m_currSubWindows = NULL;
 	m_singeldisplay = false;
-	m_nCurrentPage = m_nCurrentPage/m_PageSubCount;
+// 	m_nCurrentPage = m_nCurrentPage/m_PageSubCount;
+	if (!m_bResized){
+		int boundary1 = m_nSubWindowCount -m_PageSubCount;
+		int boundary2 = (m_nSubWindowCount/m_PageSubCount)*m_PageSubCount;
+		if (m_keyPage && (m_nCurrentPage >= boundary1 && m_nCurrentPage < boundary2)){
+			m_nCurrentPage = m_nCurrentPage/m_PageSubCount + 1;
+			m_keyPage = 0;
+		}else{
+			m_nCurrentPage = m_nCurrentPage/m_PageSubCount;
+		}	
+	}else{
+		m_bResized = false;
+	}
 
 	flush();
 }
@@ -152,13 +202,20 @@ void div8_1::reSizeSubWindows()
 		subWidth=m_parentSize.width();
 		subHeight = m_parentSize.height();
 		m_subWindows.at(m_nCurrentPage)->move(0,0);
-		m_subWindows.at(m_nCurrentPage)->resize(subWidth-1,subHeight-1);
+// 		m_subWindows.at(m_nCurrentPage)->resize(subWidth-1,subHeight-1);
+		m_subWindows.at(m_nCurrentPage)->resize(subWidth, subHeight);
 	}
 	else
 	{
 		int subWidth = m_parentSize.width()/m_column;
 		int subHeight = m_parentSize.height()/m_row;
 		int indexfirst = m_PageSubCount*m_nCurrentPage;
+		int lastPage = m_nSubWindowCount%m_PageSubCount ? m_nSubWindowCount/m_PageSubCount : m_nSubWindowCount/m_PageSubCount - 1;
+		if (!m_singeldisplay && m_nCurrentPage == lastPage)
+		{
+			indexfirst = m_nSubWindowCount - m_PageSubCount;
+		}
+
 		for (int i = indexfirst,j=0; i < indexfirst+m_PageSubCount; i ++)
 		{
 
@@ -166,13 +223,15 @@ void div8_1::reSizeSubWindows()
 			if(ii == 0)
 			{
 				m_subWindows.at(i)->move(pox_x*subWidth,pox_y*subHeight);
-				m_subWindows.at(i)->resize(subWidth*(m_column-1)-1,subHeight*(m_row-1)-1);
+// 				m_subWindows.at(i)->resize(subWidth*(m_column-1)-1,subHeight*(m_row-1)-1);
+				m_subWindows.at(i)->resize(subWidth*(m_column-1), subHeight*(m_row-1));
 			}
 			else
 			{
 				while(flagmap[j])j++;
 				m_subWindows.at(i)->move(subWidth*(j%m_column),subHeight*(j/m_row));
-				m_subWindows.at(i)->resize(subWidth-1,subHeight-1);
+// 				m_subWindows.at(i)->resize(subWidth-1,subHeight-1);
+				m_subWindows.at(i)->resize(subWidth, subHeight);
 				j++;
 			}
 			
@@ -210,7 +269,10 @@ int div8_1::getCurrentPage()
 
 int div8_1::getPages()
 {
-	return m_nSubWindowCount/m_PageSubCount;
+// 	return m_nSubWindowCount/m_PageSubCount;
+	int pages = m_nSubWindowCount/m_PageSubCount;
+	pages += (m_nSubWindowCount%m_PageSubCount)==0?0:1;
+	return pages;
 }
 
 QString div8_1::getModeName()
