@@ -172,11 +172,11 @@ insert into general_setting (name,value) values('misc_synctime','true');
 insert into general_setting (name,value) values('misc_aconnent','false');
 insert into general_setting (name,value) values('misc_afullscreen','false');
 insert into general_setting (name,value) values('misc_bootstart','false');
-insert into general_setting (name,value) values('misc_keepCurrentUserPassWord','false');
-insert into general_setting (name,value) values('misc_CurrentUserName','');
+insert into general_setting (name,value) values('misc_keepCurrentUserPassWord','ture');
+insert into general_setting (name,value) values('misc_CurrentUserName','admin');
 insert into general_setting (name,value) values('misc_CurrentUserPassWord','');
 
-insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','202cb962ac59075b964b07152d234b70','1111111111','1','0','0');
+insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','d41d8cd98f00b204e9800998ecf8427e','1111111111','0','0','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100','0');
