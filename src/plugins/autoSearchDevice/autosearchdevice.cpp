@@ -4,6 +4,7 @@
 #include <QDesktopWidget>
 #include <IEventRegister.h>
 int cbAutoSearchDevice(QString evName,QVariantMap evMap,void*pUser);
+int g_nLoginRet=2;
 autoSearchDevice::autoSearchDevice():QWebPluginFWBase(this),
 	m_pDeviceSearch(NULL),
 	m_pUserMangerEx(NULL)
@@ -121,8 +122,12 @@ void autoSearchDevice::autoSearchDeviceCb( QVariantMap tItem )
 	m_tDeviceList.append(tItem);
 }
 
-void autoSearchDevice::showUserLoginUi(int nWidth,int nHeight)
+int autoSearchDevice::showUserLoginUi(int nWidth,int nHeight)
 {
+	if (m_tAutoSearchDeviceWindow.isHidden()==false)
+	{
+		return g_nLoginRet;
+	}
 	m_tAutoSearchDeviceWindow.resize(nWidth,nHeight);
 	//load url
 	QString temp = QCoreApplication::applicationDirPath();
@@ -134,7 +139,15 @@ void autoSearchDevice::showUserLoginUi(int nWidth,int nHeight)
 
 	m_tAutoSearchDeviceWindow.show();
 	m_tAutoSearchDeviceWindow.setAttribute(Qt::WA_TransparentForMouseEvents);
-	return;
+	m_bCallHide=false;
+	g_nLoginRet=2;
+	while(m_bCallHide==false){
+		QTime dieTime=QTime::currentTime().addMSecs(1);
+		while(QTime::currentTime()<dieTime){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+		}
+	}
+	return g_nLoginRet;
 }
 
 int autoSearchDevice::checkUserLimit( quint64 uiCode,quint64 uiSubCode )
@@ -153,6 +166,7 @@ int autoSearchDevice::checkUserLimit( quint64 uiCode,quint64 uiSubCode )
 void autoSearchDevice::cancelLoginUI()
 {
 	qDebug()<<__FUNCTION__<<__LINE__<<"call cancelLoginUI";
+	m_bCallHide=true;
 	if (m_tAutoSearchDeviceWindow.isHidden())
 	{
 		return;
@@ -175,7 +189,15 @@ int autoSearchDevice::login( QString sUserName,QString sPassword,int nCode )
 	if (NULL!=m_pUserMangerEx)
 	{
 		int nRet=m_pUserMangerEx->login(sUserName,sPassword,nCode);
-		qDebug()<<__FUNCTION__<<__LINE__<<"login value:"<<nRet;
+		if (nRet==0&&nCode==0)
+		{
+			g_nLoginRet=0;
+		}else if (nRet==0&&nCode==1)
+		{
+			g_nLoginRet=1;
+		}else{
+			g_nLoginRet=2;
+		}
 		if (nCode==0)
 		{
 			QString sUser;
@@ -328,7 +350,6 @@ int autoSearchDevice::getLoginOutInterval( QString sUserName )
 	}
 	return nRet;
 }
-
 
 
 int cbAutoSearchDevice( QString evName,QVariantMap evMap,void*pUser )

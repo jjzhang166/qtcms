@@ -29,7 +29,7 @@ public slots:
 		void autoSearchDeviceTimeout();
 
 		//用户登录接口
-		void showUserLoginUi(int nWidth,int nHeight);
+		int showUserLoginUi(int nWidth,int nHeight);//0：用户登录，1：用户注销，2：关闭页面（没有进行用户登录操作）
 		int checkUserLimit(quint64 uiCode,quint64 uiSubCode);//0:认证通过 1：用户没有登录 2：用户权限不足
 		void cancelLoginUI();//退出用户登录界面
 		int login(QString sUserName,QString sPassword,int nCode);//0:操作成功 1：操作失败；nCode:0(用户登录)，1（用户注销）
@@ -52,6 +52,8 @@ private:
 	QTimer m_tCheckUserStatsTimer;
 	QString g_sHisUserName;
 	bool m_bCancelAutoSearchDevice;
+	bool m_bCallHide;
+	int m_nLoginRet;
 };
 
 #endif // AUTOSEARCHDEVICE_H

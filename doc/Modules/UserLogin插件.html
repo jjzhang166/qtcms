@@ -11,7 +11,7 @@
 <p>插件简介：提供用户权限验证接口，以及获取用户相关信息的接口</p>
 <p>//特殊说明：弹出页面的文件名必须为：login.html（如果需要修改，可以从配置文件：MainSet.ini中进行配置）</p>
 <p>========接口简介：调出用户登录界面 =======================</p>
-<p>void showUserLoginUi(int nWidth,int nHeight);</p>
+<p>int showUserLoginUi(int nWidth,int nHeight);//0：用户登录，1：用户注销，2：关闭页面（没有进行用户登录操作）</p>
 <p>========接口简介：验证当前用户是否具有 申请的权限===========</p>
 <p>返回值：0:认证通过 1：用户没有登录 2：用户权限不足<br />
   int checkUserLimit(quint64 uiCode,quint64 uiSubCode); //uiCode 值与函数表对于关系 请查看 userManagerExDatabase.html文档</p>
