@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>包含文件</p>
+<p>#include &lt;IVideoRenderDigitalZoom.h&gt;</p>
+<p>函数定义：</p>
+<p>//添加额外渲染的窗口 </p>
+<p>virtual bool addExtendWnd(void *pWnd,const QString sName)=0;</p>
+<p>//设置画矩形的坐标，nX,nY 为屏幕的绝对坐标<br />
+  virtual void setRenderRect(int nX,int nY,int nWidth,int nHeight)=0;</p>
+<p>//移出指定名字的额外渲染窗口<br />
+  virtual void removeExtendWnd(const QString sName)=0;</p>
+<p>//设置画矩形的线宽和颜色<br />
+  virtual void setRenderRectPen(int nLineWidth,int nR,int nG,int nB)=0;</p>
+</body>
+</html>

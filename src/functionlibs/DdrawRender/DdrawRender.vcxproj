@@ -96,6 +96,7 @@ copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\guid.h" />
+    <ClInclude Include="..\..\..\include\IVideoRenderDigitalZoom.h" />
     <ClInclude Include="ddrawrender.h" />
     <ClInclude Include="ddrawrender_global.h" />
     <ClInclude Include="dllmain.h" />

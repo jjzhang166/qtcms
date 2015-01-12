@@ -49,6 +49,7 @@ extern const IID IID_IDeviceConnection;
 extern const IID IID_IRemotePreview;
 extern const CLSID CLSID_RemotePreview;
 extern const IID IID_IVideoDecoder;
+extern const IID IID_IVideoRenderDigitalZoom;
 extern const IID IID_IVideoRender;
 extern const CLSID CLSID_H264Playerplugin;
 extern const CLSID CLSID_h264Decoder;

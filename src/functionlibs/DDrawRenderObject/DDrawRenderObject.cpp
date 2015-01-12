@@ -376,3 +376,23 @@ int CDDrawRenderObject::enable( bool bEnable )
 	return 0;
 }
 
+bool CDDrawRenderObject::addExtendWnd( void *pWnd,const char* sName )
+{
+	return true;
+}
+
+void CDDrawRenderObject::setRenderRect( int nX,int nY,int nWidth,int nHeight )
+{
+	return;
+}
+
+void CDDrawRenderObject::removeExtendWnd( const char* sName )
+{
+	return;
+}
+
+void CDDrawRenderObject::setRenderRectPen( int nLineWidth,int nR,int nG,int nB )
+{
+	return;
+}
+

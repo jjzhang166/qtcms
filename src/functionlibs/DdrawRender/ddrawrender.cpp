@@ -116,3 +116,29 @@ unsigned long __stdcall DdrawRender::Release()
 	}
 	return nRet;
 }
+
+bool DdrawRender::addExtendWnd( void *pWnd,const QString sName )
+{
+	char *cName;
+	QByteArray ba=sName.toLatin1();
+	cName=ba.data();
+	return m_renderObj->addExtendWnd(pWnd,cName);
+}
+
+void DdrawRender::setRenderRect( int nX,int nY,int nWidth,int nHeight )
+{
+	return m_renderObj->setRenderRect(nX,nY,nWidth,nHeight);
+}
+
+void DdrawRender::removeExtendWnd( const QString sName )
+{
+	char *cName;
+	QByteArray ba=sName.toLatin1();
+	cName=ba.data();
+	return m_renderObj->removeExtendWnd(cName);
+}
+
+void DdrawRender::setRenderRectPen( int nLineWidth,int nR,int nG,int nB )
+{
+	return m_renderObj->setRenderRectPen(nLineWidth,nR,nG,nB);
+}
