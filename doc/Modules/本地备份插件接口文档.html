@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>创建人：冯明创<br />
+  创建日期：2015/01/12<br />
+  插件简介：提供本地文件下载接口<br />
+  =====接口简介：停止本地文件下载任务====<br />
+  void stopLocalFileBackUp();<br />
+  =====接口简介：开始本地文件下载任务====<br />
+  void startLocalFileBackUp(int nTypes,const QString sChannel,const QString &amp;startTime,const QString &amp;endTime);<br />
+  参数说明：<br />
+  nTypes//录像类型，100：移动录像，010手动录像，001定时录像（数值是按位计算，例如 备份所有类型，则 参数值为111）；<br />
+  sChannel//录像的窗口号，参数输入格式：例如 备份 第一个窗口、第三个窗口、第七个窗口，则输入参数值为：1000101；<br />
+  startTime//开始备份的时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
+  endTime//结束备份的时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)</p>
+<p>================<br />
+  抛出事件<br />
+  @1<br />
+  事件名称：localFileBackUpState//备份状态<br />
+  事件参数：“types”（1：备份任务开始，2：备份任务停止）<br />
+  @2 <br />
+  事件名称：localFileBackUpProgress//备份进度<br />
+  事件参数：&quot;nChannel&quot;、&quot;Progress&quot;//窗口号和备份进度（1-100，间隔为1）</p>
+</body>
+</html>
