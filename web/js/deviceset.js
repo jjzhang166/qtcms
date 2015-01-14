@@ -1997,17 +1997,40 @@ function IPDes(a,b){
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
-              autoSearchDev.showUserLoginUi(336,300);            
-             
-		       /* if(fn=='userList2Ui'){
-				       $('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
-						$('.right_content:visible div.switch').hide();
-						$('.right_content:visible div.switch').eq(0).show();
-			           cUserinfo2Ui();
-				}else{
-					autoSearchDev.showUserLoginUi(336,300);
-					}
-*/
+		}else{
+		   closeMenu();
+		   confirm_tip(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},2000);
+			
+		}
+ }
+   function checkUserRightdiv(uicode,uisubcode,fn,num){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	//console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		if(itema==0){
+			window[fn](num);
+		}else if(itema==1){
+			
+             var show = autoSearchDev.showUserLoginUi(336,300);
+			  if(show==0){
+				  var timer = setTimeout(function(){
+					   checkUserRightdiv(uicode,uisubcode,fn,num);
+					   clearTimeout(timer);
+					  },300);
+			  }else{
+				  var timer1 = setTimeout(function(){
+				    if(fn=='userList2Ui'){
+					        $('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+							  $('.right_content:visible div.switch').hide();
+							  $('.right_content:visible div.switch').eq(0).show();
+					  }  
+					   clearTimeout(timer1);
+					  },300);
+			  }
 		}else{
 		   closeMenu();
 		   confirm_tip(_T('no_limit'));
@@ -2020,7 +2043,7 @@ function IPDes(a,b){
 			     cUserinfo2Ui();
 				}
 				clearTimeout(timer);
-			},2000);
+			},300);
 			
 		}
  }

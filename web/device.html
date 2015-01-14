@@ -130,7 +130,10 @@
 			</ul>
 			 <div>
 				<!--<a></a>-->
-				<p style="color:#000;"><span><script>T("Login_account")</script></span><span><script>T("not_Login")</script></span></p>
+				<p style="color:#000;">
+                <span><script>T("Login_account")</script></span>
+                <span><script>T("not_Login")</script></span>
+               </p>
 			</div> 
 		</div>
       </div>
@@ -276,7 +279,10 @@
 								</ul>
 							</td>
 						</tr>
-						<tr><td><input id="dvr_common_keypad" type="checkbox" data-UI="keylock"/><script>T("Keypad_Lock")</script></td><td><input id="dvr_common_key_sound" type="checkbox"  data-UI="keybuzzer"/><script>T("Keypad_sound")</script></td></tr>
+						<tr>
+                         <td><input id="dvr_common_keypad" type="checkbox" data-UI="keylock"/><script>T("Keypad_Lock")</script></td>
+                         <td><input id="dvr_common_key_sound" type="checkbox"  data-UI="keybuzzer"/><script>T("Keypad_sound")</script></td>
+                        </tr>
 						<tr>
 							<td><script>T("Video_Format")</script></td>
 							<td>
@@ -445,7 +451,10 @@
 							<td></td>
 							<td></td>
 						</tr>
-						<tr class="title"><td colspan="2"><h5><script>T("Main_stream")</script></h5></td><td style="padding-left:40px;" colspan="2"><h5><script>T("Sub_stream")</script></h5></td></tr>
+						<tr class="title">
+                         <td colspan="2"><h5><script>T("Main_stream")</script></h5></td>
+                         <td style="padding-left:40px;" colspan="2"><h5><script>T("Sub_stream")</script></h5></td>
+                        </tr>
 						<tr>
 							<td colspan="2" data-WARP="encode">
 								<table class="tb1">
@@ -1226,7 +1235,10 @@
 				</div>	
 				<div class="switch dvr_list" data="Alarm">
 					<table class="tb1" data-WARP="sensor">
-						<tr><td><input id="dvr_alarm_Alarm" type="checkbox" data-UI="alarm" /><script>T("Alert")</script></td><td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"  data-UI="buzzer" /><script>T("Buzzer")</script></td></tr>
+						<tr>
+                         <td><input id="dvr_alarm_Alarm" type="checkbox" data-UI="alarm" /><script>T("Alert")</script></td>
+                         <td colspan="2"><input id="dvr_alarm_Buzzer" type="checkbox"  data-UI="buzzer" /><script>T("Buzzer")</script></td>
+                        </tr>
 						<tr>
 							<td><script>T("Channel")</script></td>
 							<td>
@@ -1440,15 +1452,25 @@
 								</ul>
 							</td><td></td>
 						</tr>
-                        <tr><td><script>T("BPS")</script></td><td><input data-UI="constantBitRate" style="width:133px;" type="text" onblur="chkInput(0,this,'rate_range')" /></td><td><script>T("Unit_bps")</script></td></tr>
-                        <tr><td><script>T("FPS")</script></td><td><input data-UI="frameRate" style="width:133px;" type="text" onblur="chkInput(0,this,'frame_rate_range')"/></td><td><script>T("Unit_fps")</script></td></tr>
+                        <tr>
+                            <td><script>T("BPS")</script></td>
+                            <td><input data-UI="constantBitRate" style="width:133px;" type="text" onblur="chkInput(0,this,'rate_range')" /></td>
+                            <td><script>T("Unit_bps")</script></td>
+                        </tr>
+                        <tr>
+                            <td><script>T("FPS")</script></td>
+                            <td><input data-UI="frameRate" style="width:133px;" type="text" onblur="chkInput(0,this,'frame_rate_range')"/></td>
+                            <td><script>T("Unit_fps")</script></td>
+                        </tr>
                         <tr><td colspan="3" class="td3 tdBtn"><div class="hover" click="encode_save_content();" onclick="submitThisMenu('ipcencodeInfo');"><script>T("Save")</script></div></td></tr>
                     </table>
 			    </div>
 			   	<div class="switch ipc_list">
 			        <table data-WARP="network">
 			            <tr><td colspan="4"><script>T("MAC_address")</script><input disabled style="margin-left:14px;" data-UI="mac" type="text" /></td></tr>
-						<tr class="title"><td colspan="2"><h5><script>T("Local")</script></h5></td><td style="padding-left:30px;" colspan="2"><h5><script>T("Remote")</script></h5></td></tr>
+						<tr class="title">
+                        <td colspan="2"><h5><script>T("Local")</script></h5></td>
+                        <td style="padding-left:30px;" colspan="2"><h5><script>T("Remote")</script></h5></td></tr>
 						<tr>
 							<td colspan="2">
 								<table class="tb1">
@@ -1640,10 +1662,18 @@
 	                    <tr style="display:none;"><td><script>T("Date")</script></td><td><input class="m_date" value="" onChange="is_valid_date()" /></td><td></td></tr>
 	                    <tr style="display:none;"><td><script>T("Time")</script></td><td><div class="time_3"><input class="in"  maxlength="2"  value=""/>:<input  class="in"  maxlength="2" value=""/>:<input  class="in" maxlength="2" value=""/></div></td><td class="tdBtn"><div id="set_time" class="hover" onClick="manual_set_time()"><script>T("OK")</script></div></td></tr>
 	                    <tr style="display:none;"><td><script>T("Local_time_synchronization")</script></td><td></td><td></td></tr>-->
-	                    <tr><td><script>T("Computer_time")</script></td><td><input id="PC_time" value="" disabled="disabled" data-UI type="text"></td><td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
+	                    <tr>
+                        <td><script>T("Computer_time")</script></td>
+                        <td><input id="PC_time" value="" disabled="disabled" data-UI type="text"></td>
+                        <td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
 	                   <!--  <tr style="display:none;"><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr> --> 
 	                    
-	                    <tr><td><script>T("Internet_server_ynchronization_status")</script></td><td><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="true" /><script>T("Open")</script><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="false" /><script>T("Close")</script></td><td></td></tr>
+	                    <tr>
+                          <td><script>T("Internet_server_ynchronization_status")</script></td>
+                          <td><input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="true" /><script>T("Open")</script>
+                          <input data-UI="ntpEnabled" name="ntp" type="radio" onClick="ntp_change();" value="false" /><script>T("Close")</script></td>
+                          <td></td>
+                        </tr>
 	                    
 	                    <tr><td><script>T("nternet_server")</script></td><td>
 	                    	<input data-UI="ntpServerDomain" value="" />
@@ -1655,8 +1685,10 @@
 			    <div class="switch ipc_list">
 			    <input id="RemoveDeviceEx_ok" type="hidden"/>
 					<table>
-						<tr><td><script>T("restart_the_IP_cameras")</script></td><td  class="tdBtn"><div class="hover" onclick="submitThisMenu('reboot');"><script>T("Restart")</script></div></td></tr>
-			                        <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td><td class="tdBtn"><div class="hover" onclick="submitThisMenu('default_setting');"><script>T("Restore")</script></div></td></tr>
+						<tr><td><script>T("restart_the_IP_cameras")</script></td>
+                          <td class="tdBtn"><div class="hover" onclick="submitThisMenu('reboot');"><script>T("Restart")</script></div></td></tr>
+			            <tr><td><script>T("Click_the_button_below_to_restore_the_factory_settings")</script></td>
+                        <td class="tdBtn"><div class="hover" onclick="submitThisMenu('default_setting');"><script>T("Restore")</script></div></td></tr>
 			                       <!--<tr><td><script>T("Select_the_upgrade_file")</script></td>
 			                        <td>
 			                        <div id="swfupload-control"></div>
@@ -1901,7 +1933,7 @@
 	 <div style="position: relative;" class="right_content">
       <ul class="ope_list nav1">
 		<li onclick="cUserinfo2Ui();" class="ope_listAct"><script>T("Current users")</script></li>
-	    <li onclick="checkUserRightBtn(1<<8,0,'userList2Ui');"><script>T("User_Manage")</script></li>
+	    <li onclick="checkUserRightdiv(1<<8,0,'userList2Ui');"><script>T("User_Manage")</script></li>
 	 </ul>
      <div class="switch" style="display:block;top:20px;" id="CuserRight">
        <table>

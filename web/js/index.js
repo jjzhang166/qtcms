@@ -24,14 +24,12 @@ var oPreView,oDiv,autoSearchDev,
 		   var action = $(this).attr('class').split(' ')[0];
 		   addMouseStyle($(this),action,1<<0);
 	       })
-		/* //下拉菜单模拟	
+		 //下拉菜单模拟
+		/*// $('.select1').toSelect();  	
 	    $('.select1').mousedown(function(){
-			var itema= checkUserRight(1<<0,0);
-		    itema==0 && $(this).toSelect();
-			itema==1&& autoSearchDev.showUserLoginUi(336,300);
-			itema==2&& writeActionLog(_T("no_limit"),errorcolor);
-	    });*/
-				
+			checkUserRightdiv(1<<0,0,'selectfn',$(this));
+	    });
+			*/	
 		oAs.each(function(index){
 			$(this).click(function(){
 				$(window).off();
@@ -42,64 +40,15 @@ var oPreView,oDiv,autoSearchDev,
 			})
 		})
  		//打开通道
-		oDiv.on('dblclick','span.channel',function(){ 
-			/*debugData($(this).data('data'));*/
-			var itema =  checkUserRight(1<<0,0);
-			if(itema==0){
-				var chlData = getChlFullInfo($(this));
-				if($(this).attr('state')){
-				   CloseWind($(this).attr('wind'),chlData.channel_id);
-				}else{
-					openWind(oPreView.GetCurrentWnd(),chlData);
-				}
-			}else if(itema==1){
-			   autoSearchDev.showUserLoginUi(336,300);
-		    }else{
-		        writeActionLog(_T("no_limit"),errorcolor);
-		    }
+		oDiv.on('dblclick','span.channel',function(){
 			
-		})
+			checkUserRightdiv(1<<0,0,"openclosechl",$(this));
+			
+		});
 
 		//打开设备下的所有通道
 		oDiv.on('dblclick','span.device',function(){ 
-		    var itema = checkUserRight(1<<0,0);
-			if(itema==0){
-				var oDevice = $(this);
-				var chlData;
-				var wind = oPreView.GetCurrentWnd();
-				if(oDevice.attr('bAllopen')){
-					oDevice.next('ul').find('span.channel').each(function(){
-						chlData = getChlFullInfo($(this));	 
-						CloseWind($(this).attr('wind'),chlData.channel_id);
-					})
-				}else{
-					oDevice.next('ul').find('span.channel').each(function(){
-						chlData = getChlFullInfo($(this));	 
-						if(!$(this).attr('wind')){
-							oDevice.attr('bAllopen','1');
-							/*var windState = oPreView.GetWindowConnectionStatus(wind);
-							var win = wind;*/
-							//if(windState != 2){
-								win = getWind(wind);
-								if(win  == -1) {return;}
-							//}
-							openWind(win,chlData);
-						}	
-					})
-				}
-				
-				var str = '';
-				if(oDevice.attr('bAllopen')){ 
-					str = T('open_device',(parseInt(wind)+1),chlData.name);
-				}else{ 
-					str = lang.Shutting_down_device+chlData.name;
-				}
-				writeActionLog(str);
-			}else if(itema==1){
-			   autoSearchDev.showUserLoginUi(336,300);
-		    }else{
-		       writeActionLog(_T("no_limit"),errorcolor);
-		    }
+		    checkUserRightdiv(1<<0,0,"openclosedev",$(this));
 			
 		})
 		
@@ -166,14 +115,7 @@ var oPreView,oDiv,autoSearchDev,
 				//var currentWindow = oPreView.GetCurrentWnd();
 				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
 				//console.log(windowInfo);
-				var itema = checkUserRight(1<<1,0);
-				if(itema==0){
-				   PTZcontrol($(this).attr('PTZ',1).index());
-				}else if(itema==1){
-					autoSearchDev.showUserLoginUi(336,300);
-				}else{
-					 writeActionLog(_T("no_limit"),errorcolor);
-				}
+				checkUserRightBtn(1<<1,0,"PTZcontrol",$(this).attr('PTZ',1).index());
 			},
 			mouseup:function(){
 				//writeActionLog(_T('stop_PTZ'));
@@ -203,14 +145,7 @@ var oPreView,oDiv,autoSearchDev,
 				//var currentWindow = oPreView.GetCurrentWnd();
 				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
 				//console.log(windowInfo);
-				var itema = checkUserRight(1<<1,0);
-				if(itema==0){
-				  PTZcontrol($(this).index());
-				}else if(itema==1){
-					autoSearchDev.showUserLoginUi(336,300);
-				}else{
-					 writeActionLog(_T("no_limit"),errorcolor);
-				}
+				checkUserRightBtn(1<<1,0,"PTZcontrol",$(this).index());
 				
 			}
 		})
@@ -220,7 +155,7 @@ var oPreView,oDiv,autoSearchDev,
 				var index = $(this).attr('data');
 				//var currentWindow = oPreView.GetCurrentWnd();
 				//var windowInfo = oPreView.GetWindowInfo(currentWindow);
-			    checkUserRightBtn(1<<1,0,'PTZcontrol',index)
+				checkUserRightBtn(1<<1,0,"PTZcontrol",index);
 			});
         });
 		setViewMod(oCommonLibrary.getSplitScreenMode());
@@ -447,7 +382,6 @@ var oPreView,oDiv,autoSearchDev,
 	}
 
 	function openWind(wind,data){
-	
 			var windState = oPreView.GetWindowInfo(wind).usable;
 				//console.log('当前窗口:'+wind+'的状态'+windState);
 				if(!windState){ //该窗口不可用.
@@ -619,6 +553,7 @@ var oPreView,oDiv,autoSearchDev,
 			chlData = $('#channel_'+data.chlId).data('data');
 		writeActionLog(T('User_logined',oDevData.device_name,chlData.channel_name,(parseInt(ev.WPageId)+1)),errorcolor);
 		}
+		
 	//日志信息操作
 	var countT=0;
 	function writeActionLog(str,color){ 
@@ -686,8 +621,9 @@ var oPreView,oDiv,autoSearchDev,
 		}
 		return b;
 	}
-
-	function Record(obj){ //录像
+	
+     //录像
+	function Record(obj){ 
 		var transKey = '',
 		backStatus= 0,
 		data = {},
@@ -763,8 +699,9 @@ var oPreView,oDiv,autoSearchDev,
 		})*/
 		
 	}
-
-	function SwithStream(){  // 切换码流
+	
+     // 切换码流
+	function SwithStream(){  
 		var oChlData = $('#search_device span.channel.sel').data('data');
 		if($('#dev_'+oChlData.dev_id).data('data').vendor == 'IPC'){
 			return;
@@ -797,7 +734,9 @@ var oPreView,oDiv,autoSearchDev,
 	 }
 
 	}
-	function initOxcDevListStatus(){  //  初始化控件,设备列表,以及之间的状态
+	
+	//  初始化控件,设备列表,以及之间的状态
+	function initOxcDevListStatus(){  
 		//区域列表;
 		areaList2Ui();
 		//分组列表;
@@ -816,15 +755,60 @@ var oPreView,oDiv,autoSearchDev,
 			}
 		}
 	}
-    
-	  function DevAutoConnected(){ //判断在页面加载完之后是否自动连接列表中所有设备
-	    var booll =$("#search_device .dev_list ul:gt(0) span").hasClass("device");
+	//单击通道时打开、关闭通道
+    function openclosechl(obj){
+		var chlData = getChlFullInfo(obj);
 		
-		if(booll && oCommonLibrary.getAutoConnect()) //如果设备列表不为空，且自动连接设备为true
-		{	   
-		    openCloseAll(1); //打开列表中的全部设备
-		   }
-	   }
+			if(obj.attr('state')){
+			   CloseWind(parseInt(obj.attr('wind'),10),parseInte(chlData.channel_id,10));
+			}else{
+				openWind(parseInt(oPreView.GetCurrentWnd(),10),chlData);
+			}
+		
+	}
+	//单击设备时打开、关闭设备下的所有通道
+	function openclosedev(obj){
+		
+			    var oDevice = obj;
+				var chlData;
+				var wind = oPreView.GetCurrentWnd();
+				if(oDevice.attr('bAllopen')){
+					oDevice.next('ul').find('span.channel').each(function(){
+						chlData = getChlFullInfo($(this));	 
+						CloseWind($(this).attr('wind'),chlData.channel_id);
+					})
+				}else{
+					oDevice.next('ul').find('span.channel').each(function(){
+						chlData = getChlFullInfo($(this));	 
+						if(!$(this).attr('wind')){
+							oDevice.attr('bAllopen','1');
+								win = getWind(wind);
+								if(win  == -1) {return;}
+							openWind(win,chlData);
+						}	
+					})
+				}
+				
+				var str = '';
+				if(oDevice.attr('bAllopen')){ 
+					str = T('open_device',(parseInt(wind)+1),chlData.name);
+				}else{ 
+					str = lang.Shutting_down_device+chlData.name;
+				}
+				writeActionLog(str);
+		
+	}
+	
+	//判断在页面加载完之后是否自动连接列表中所有设备
+	function DevAutoConnected(){ 
+	  var booll =$("#search_device .dev_list ul:gt(0) span").hasClass("device");
+	  
+	  if(booll && oCommonLibrary.getAutoConnect()) //如果设备列表不为空，且自动连接设备为true
+	  {	   
+		  openCloseAll(1); //打开列表中的全部设备
+		 }
+	 }
+	 //全屏
    	function viewFullScreenEx(){
 		$('#viewWarp').css({
 			width:'100%',
@@ -870,6 +854,10 @@ var oPreView,oDiv,autoSearchDev,
 	 }
 	 
   }
+  function selectfn(obj){
+	obj.toSelect(); 
+	obj.click(); 
+  }
   //验证用户是否有权限
   function checkUserRight(uicode,uisubcode){
 	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
@@ -884,10 +872,24 @@ var oPreView,oDiv,autoSearchDev,
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
-			autoSearchDev.showUserLoginUi(336,300);
 		}else{
 		  writeActionLog(_T("no_limit"),errorcolor);
 		}
+ }
+ function checkUserRightdiv(uicode,uisubcode,fn,num){
+	 
+	 var itema =  checkUserRight(uicode,uisubcode);
+			if(itema==0){
+				window[fn](num);
+			}else if(itema==1){
+			  var show = autoSearchDev.showUserLoginUi(336,300);
+			  if(show==0){
+				   checkUserRightdiv(uicode,uisubcode,fn,num);
+			  } 
+		    }else{
+		        writeActionLog(_T("no_limit"),errorcolor);
+		    }
+	 
  }
  function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 

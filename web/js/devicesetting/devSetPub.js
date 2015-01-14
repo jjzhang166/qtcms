@@ -250,7 +250,8 @@ function PCTime2dev(){
 	var xmlstr = '';
 	xmlstr += '<juan ver="1.0" seq="0">';
 	xmlstr += '<setup type="write" user="admin" password="">';
-	xmlstr += '<time value="' + nowTime.getTime()/1000 + '" />';
+	xmlstr += '<time value="' + nowTime.getTime()/1000 + '" >';
+	xmlstr += '</time>';
 	xmlstr += '</setup>';
 	xmlstr += '</juan>';
 
@@ -296,12 +297,13 @@ function checkAJAX(){
 function submitThisMenu(str){
 	$('#ajaxHint').html('').stop(true,true).hide();
 	AJAX && AJAX.abort();
+	
 	var maincode= 1<<6;
 	var itema= autoSearchDev.checkUserLimit(maincode.toString(2),0);
 		if(itema==0){
 			nowDev[str+'Put']();
 		}else if(itema==1){
-			autoSearchDev.showUserLoginUi(336,300);
+			//autoSearchDev.showUserLoginUi(336,300);
 		}else{
 		 //showAJAXHint(_T('no_limit'));
 		    closeMenu();

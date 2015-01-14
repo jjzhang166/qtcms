@@ -59,44 +59,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		})
 
 		channelvideo.mousedown(function(event){//整个搜索的文件列表事件
-		   var itema = checkUserRight();
-		   if(itema==0){
-			var min = $('table.table .no_border').width(),
-				max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
-			//if(event.pageX > max) return;
-			/*try{
-				groupStop();
-				dragStopMove();
-				oPlaybackLocl.GroupStop();
-				oPlayBack.GroupStop();
-				nowSpeed = 1;
-				palybackspeed(nowSpeed+'X');
-				//$('#togglePlay').removeAttr('toggle').removeAttr('hasFile').css('background-position','0px 0px');
-			}catch(e){
-				//alert('try:'+e);
-			};*/
-			var left = event.pageX
-
-	    	if(left < min || left > max){
-	    		return;
-	    	}
-			//event.stopPropagation();
-			
-		    groupStop();
-			
-			var moveObj = $('div.play_time').css('left',left-1.5);
-
-			showNowPlayBackTime($('#now_time'),left-min,max-min);
-
-			set_drag(min,max,moveObj);
-			
-			
-			setTimeout(function(){playVideo()},40);
-		  }else if(itema == 1){
-			autoSearchDev.showUserLoginUi(336,300);
-		  }else{
-			  showLimitTips();
-		  }
+		
+		  checkUserRightdiv("chnVideo",event);
+		  
 		})
        
 		channelvideo.on('mouseover','tr',function(){
@@ -663,22 +628,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		console.log(oChlfile);*/
 		return chlData;
 	}	
-	//快速排序
-	function quickSort(arr) {
-	　　if (arr.length <= 1) { return arr; }
-	　　var pivotIndex = Math.floor(arr.length / 2);
-	　　var pivot = arr.splice(pivotIndex, 1)[0];
-	　　var left = [];
-	　　var right = [];
-	　　for (var i = 0; i < arr.length; i++){
-	　　　　if (time2Sec(arr[i].start.split(' ')[1]) <time2Sec(pivot.start.split(' ')[1])) {
-	　　　　　　left.push(arr[i]);
-	　　　　} else {
-	　　　　　　right.push(arr[i]);
-	　　　　}
-	　　}
-	　　return quickSort(left).concat(pivot, quickSort(right));
-  };
+
 	/*function loclFileDataIntoChannel(data){   //那搜索到的原始文件路径填充到对应设备的通道 span.channel上
 		for(var k=0;k<data.length;k++){
 			var oChannels = $('div.dev_list span.device:eq('+localSearchWindNum+')').next('ul').find('span.channel');
@@ -1031,14 +981,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				dblclick:function(){ //设备双击开始搜索
 					if(bool)return;
 					/*PBrecFileTableInit();*/
-					var itema = checkUserRight();
-					if(itema==0){
-					  playBackSerchFile();
-					}else if(itema==1){
-				    autoSearchDev.showUserLoginUi(336,300);
-		            }else{
-		              showLimitTips();
-		            }
+					checkUserRightdiv("playBackSerchFile");
 					/*//保存当前选中的设备
 					nowDevID = $(this).find('span.device').data('data').dev_id;*/
 				},
@@ -1102,6 +1045,31 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('table.table td').not('.no_border').css('width',p)
 		$('table.table .no_border').width($('table.table').width()-p*24);
 	} 
+	//channelvideo单击
+	function chnVideo(event){
+		 var channelvideo = $('#channelvideo');
+	      var min = $('table.table .no_border').width(),
+			  max = channelvideo.find('tr').length > 4 ? channelvideo.width()-17:channelvideo.width();
+			
+			var left = event.pageX
+
+	    	if(left < min || left > max){
+	    		return;
+	    	}
+			//event.stopPropagation();
+			
+		    groupStop();
+			
+			var moveObj = $('div.play_time').css('left',left-1.5);
+
+			showNowPlayBackTime($('#now_time'),left-min,max-min);
+
+			set_drag(min,max,moveObj);
+			
+			
+			setTimeout(function(){playVideo()},40);	
+		
+	}
 	 //验证用户是否有权限
 	 function checkUserRight(){
 		  var uicode=bool?1<<2:1<<3,
@@ -1120,11 +1088,31 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			if(itema==0){
 				window[fn](num);
 			}else if(itema==1){
-				autoSearchDev.showUserLoginUi(336,300);
+				//autoSearchDev.showUserLoginUi(336,300);
 			}else{
 			   showLimitTips();	
 			}
 	 }
+	 
+	  function checkUserRightdiv(fn,num){
+	 
+		 var itema =  checkUserRight();
+				if(itema==0){
+					window[fn](num);
+				}else if(itema==1){
+				  var show = autoSearchDev.showUserLoginUi(336,300);
+				  if(show==0){
+					 var timer = setTimeout(function(){
+					   checkUserRightdiv(fn,num);
+					   clearTimeout(timer);
+					  },30);
+				  } 
+				}else{
+					 showLimitTips();	
+				}
+		 
+     }
+	 
 	  function lock(){
 	     autoSearchDev.showUserLoginUi(336,300); 
        }

@@ -28,24 +28,48 @@ function addMouseStyle(obj,action,maincode){  //按钮UI响应
 			obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
 		}
 	}).mouseup(function(ev){
+		
 		if(action == 'toggle'){
+			var H = obj.height();
+		    var a = obj.attr('toggle');
 			var itema = document.getElementById('atuoSearchDevice').checkUserLimit(maincode.toString(2),0);
-			if(itema ==0){
-				  var H = obj.height();
-				  var a = obj.attr('toggle');
+			if(itema==0){
+				  
 				  if(a){
-					  obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
-					  obj.removeAttr('toggle');
+					  obj.css('background-position',left+'px'+' '+(top+H)+'px');
 				  }else{
-					  obj.attr('toggle',1);
-					  obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+					  obj.css('background-position',left+'px'+' '+(top-H)+'px');
 				  }	
+			}else if(itema==1){
+				var show = autoSearchDev.showUserLoginUi(336,300);
+				if(show==0){
+				  if(a){
+					  obj.css('background-position',left+'px'+' '+(top+H)+'px');
+				  }else{
+					  obj.css('background-position',left+'px'+' '+(top-H)+'px');
+				  }	
+				}else{
+					
+					obj.css('background-position',initLeft+'px'+' '+initTop+'px');
+					
+				}
+			
 			}else{
 				 obj.css('background-position',initLeft+'px'+' '+initTop+'px');
+				 
 			}
+		   if(a){
+			   obj.removeAttr('toggle'); 
+		   }else{
+			   obj.attr('toggle',1);
+		   }
 			top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
 		}else if(action == 'hover'){
-			obj.css('background-position',left-width+'px'+' '+top+'px');	
+			var itema = document.getElementById('atuoSearchDevice').checkUserLimit(maincode.toString(2),0);
+			if(itema==1){
+				 autoSearchDev.showUserLoginUi(336,300);
+			}
+			obj.css('background-position',left+'px'+' '+top+'px');
 		}else{
 			if(action == "switch"){
 				var oSwitch = $('a.switch');
@@ -55,16 +79,40 @@ function addMouseStyle(obj,action,maincode){  //按钮UI响应
 				oSwitch.each(function(index){
 				var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
 				$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
-				/*var oView = $('#playback_view');
-				if(oView.length != 0){
-					autoImages(oSwitch.index(ev.target)+1,oView);
-				}*/
 			})
-				//alert(oSwitch.index(ev.target);
-			}		
-			obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
-			obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
-			left=-width;
+			}
+			
+			var itema = document.getElementById('atuoSearchDevice').checkUserLimit(maincode.toString(2),0);
+			if(itema==0){
+				 obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000'); 
+			    obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+			    left=-width;
+				
+			}else if(itema==1){
+				 var show = autoSearchDev.showUserLoginUi(336,300);
+				 if(show==0){
+					obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000'); 
+			        obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+			        left=-width;
+					 
+				 }else{
+				    var pos = obj.parent('ul.option').prev('div.select').css('background-position').split('px');
+					 obj.parent('ul.option').find('li').each(function(){
+						 if(parseInt($(this).css('background-position').split('px')[1],10)==parseInt(pos[1],10)){
+							 $(this).css('background-position',pos[0]+'px '+pos[1]+'px');
+						 }
+					});
+				 }
+				 
+		  }else{
+			 var pos = obj.parent('ul.option').prev('div.select').css('background-position').split('px');
+					 obj.parent('ul.option').find('li').each(function(){
+						 if(parseInt($(this).css('background-position').split('px')[1],10)==parseInt(pos[1],10)){
+							 $(this).css('background-position',pos[0]+'px '+pos[1]+'px');
+						 }
+					});
+		  }
+			
 		}		
 	})
 }

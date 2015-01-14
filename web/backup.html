@@ -642,14 +642,7 @@ var oPlayBack={},  // 远程回访控件对象
 		$('div.dev_list span.device').each(function(){
 			$(this).parent('li').on({
 				dblclick:function(){
-					var itema = checkUserRight(1<<4,0);
-					if(itema==0){
-					 backupSearchFile();
-					}else if(itema==1){
-					 autoSearchDev.showUserLoginUi(336,300);
-					 }else{
-					  showLimitTips();
-					}
+					checkUserRightdiv(1<<4,0,"backupSearchFile");
 			     },
 				click:function(){
 					$('div.dev_list li').removeClass('sel');
@@ -718,10 +711,25 @@ var oPlayBack={},  // 远程回访控件对象
 		if(itema==0){
 			window[fn](num);
 		}else if(itema==1){
-			autoSearchDev.showUserLoginUi(336,300);
+			//autoSearchDev.showUserLoginUi(336,300);
 		}else{
 		   showLimitTips();
 		}
+ }
+ function checkUserRightdiv(uicode,uisubcode,fn,num){
+	 
+	 var itema = checkUserRight(uicode,uisubcode);
+			if(itema==0){
+				window[fn](num);
+			}else if(itema==1){
+			  var show = autoSearchDev.showUserLoginUi(336,300);
+			  if(show==0){
+				   checkUserRightdiv(uicode,uisubcode,fn,num);
+			  } 
+		    }else{
+		        showLimitTips();
+		    }
+	 
  }
  //用户登录状态回调函数
     function useStateChange(ev){
@@ -732,6 +740,7 @@ var oPlayBack={},  // 远程回访控件对象
 		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
 	}
+	
 	 function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 
  }

@@ -100,8 +100,8 @@
 			<ul class="filetree" id="group_0"></ul>	
 		</div> -->
 		<div id="close_open_all" style="background:#E4EBF4;width:auto; height:26px; margin:0 atuo;">
-			<a class="hover" onclick="checkUserRightBtn(1<<0,0,'openCloseAll',1)"><script>T("All_Open")</script></a>
-			<a class="hover" onclick="checkUserRightBtn(1<<0,0,'openCloseAll')"><script>T("All_close")</script></a>
+			<a class="hover" onclick="checkUserRightdiv(1<<0,0,'openCloseAll',1)"><script>T("All_Open")</script></a>
+			<a class="hover" onclick="checkUserRightdiv(1<<0,0,'openCloseAll')"><script>T("All_close")</script></a>
 		</div>
 		<div id="PTZ_control"> 
 			<ul class="ope_list" style="width:100%;">
@@ -185,7 +185,7 @@
 					</ul>
 				</li>
 				<li style="width:40px;text-align:center; background:0; line-height:36px; color:#FFF; cursor:default" id="nowWinMod"></li>
-				<li class="hover" onclick="checkUserRightBtn(1<<0,0,'preNextPage',1);" style="background-position: -120px -288px;" title="prev_page"></li>
+				<li class="hover" onclick="checkUserRightBtn(1<<0,0,'preNextPage',1,$(this));" style="background-position: -120px -288px;" title="prev_page"></li>
 				<li class="hover" onclick="checkUserRightBtn(1<<0,0,'preNextPage',0);" style="background-position: -120px -324px" title="next_page"></li>
 				<!-- <li class="hover" style="background-position: 0 0;" onclick="openCloseAll(1);" id="openAllchannel" title="All_Open"></li>
 				<li class="hover" style="background-position: 0 -36px;" onclick="openCloseAll();" id="openAllchannel" title="All_close"></li> -->
@@ -208,10 +208,10 @@
 		</div>
 	</div>
 <div id="foot"></div>
-<div class="menu emptyAct" onclick="checkUserRightBtn(1<<0,0,'emptyLog');"><script>T("Empty_log")</script></div>
+<div class="menu emptyAct" onclick="checkUserRightdiv(1<<0,0,'emptyLog');"><script>T("Empty_log")</script></div>
 <div class="menu menu0">
 	<ul>
-		<li onclick="checkUserRightBtn(1<<0,0,'SwithStream');"><script>T("Stream_Switch")</script></li>
+		<li onclick="checkUserRightdiv(1<<0,0,'SwithStream');"><script>T("Stream_Switch")</script></li>
 		<!-- <li onclick="showObjActBox('Add','group');"><script>T("add_group")</script></li>
 		<li onclick="showObjActBox('Add','area');"><script>T("add_area")</script></li>
 		<li onclick="showObjActBox('Add','device');"><script>T("add_device")</script></li>
