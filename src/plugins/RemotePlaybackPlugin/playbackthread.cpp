@@ -83,8 +83,6 @@ int PlayBackThread::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 
 int PlayBackThread::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 {
-	qDebug()<<"wnd: "<<uiWndId<<" chl: "<<uiChannelId;
-
 	if (getStreamInfo(uiChannelId)){
 		qDebug()<<"fill data error";
 		return 1;
@@ -115,12 +113,9 @@ int PlayBackThread::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 		QObject::connect(wndPlay.bufferManager, SIGNAL(bufferStatus(int)), m_wndList[uiWndId], SLOT(setProgress(int)));
 
 		m_playMap.insert(nChannel, wndPlay);
-
-		qDebug()<<"chl: "<<nChannel<<" buff: "<<(int)wndPlay.bufferManager<<" play: "<<(int)wndPlay.playManager<<" wnd: "<<(int)wnd;
 	}
 	else
 	{
-		qDebug()<<"change wnd";
 		m_playMap[nChannel].wnd = wnd;
 	}
 	return 0;
@@ -128,12 +123,6 @@ int PlayBackThread::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 
 int PlayBackThread::GroupPlay( int nTypes,const QDateTime & start,const QDateTime & end )
 {
-	PlayIter it = m_playMap.begin();
-	while (it != m_playMap.end()){
-		qDebug()<<"chl: "<<it.key()<<" playmgr: "<<(int)it->playManager<<" buffmgr: "<<(int)it->bufferManager<<" wnd: "<<(int)it->wnd;
-		++it;
-	}
-
 	m_playTypes = nTypes;
 	m_playStart = start;
 	m_playEnd = end;
@@ -146,8 +135,6 @@ int PlayBackThread::GroupPlay( int nTypes,const QDateTime & start,const QDateTim
 
 int PlayBackThread::GroupPause()
 {
-	qDebug()<<"pause";
-
 	m_curOperate = EM_PAUSE;
 	PlayIter iter = m_playMap.begin();
 	while (iter != m_playMap.end())
@@ -160,8 +147,6 @@ int PlayBackThread::GroupPause()
 
 int PlayBackThread::GroupContinue()
 {
-	qDebug()<<"continue";
-
 	m_curOperate = EM_CONTINUE;
 	PlayIter iter = m_playMap.begin();
 	while (iter != m_playMap.end())
@@ -174,8 +159,6 @@ int PlayBackThread::GroupContinue()
 
 int PlayBackThread::GroupStop()
 {
-	qDebug()<<"stop";
-
  	m_curOperate = EM_STOP;
 
 	PlayIter iter = m_playMap.begin();
@@ -368,8 +351,6 @@ void PlayBackThread::run()
 			break;
 		case EM_PAUSE:
 			{
-				qDebug()<<"==========pause";
-
 				int ret = m_playback->pausePlaybackStream(true);
 				if (ret){
 					VLOG("play back pause fault!", EM_DEFAULT);
@@ -379,8 +360,6 @@ void PlayBackThread::run()
 			break;
 		case EM_CONTINUE:
 			{
-				qDebug()<<"==========pause";
-
 				int ret = m_playback->pausePlaybackStream(false);
 				if (ret){
 					VLOG("play back continue fault!", EM_DEFAULT);
@@ -390,8 +369,6 @@ void PlayBackThread::run()
 			break;
 		case EM_STOP:
 			{
-				qDebug()<<"==========stop";
-
 				//check interface 
 				if (!m_playback){
 					VLOG("play back interface is NULL", EM_DEFAULT);
@@ -472,21 +449,6 @@ void PlayBackThread::FoundFile( QVariantMap evMap )
 		m_fileTotal -= 100;
 		m_fileMap.clear();
 	}
-
-
-// 	if (m_fileTotal < 100){
-// 		if (m_fileKey == m_fileTotal - 1)
-// 			emit FoundFileToUiS(m_fileMap);
-// 	}else{
-// 		if (m_fileKey%99 == 0 && m_fileKey !=0){
-// 			qDebug()<<"filekey"<<m_fileKey<<"fileTotal"<<m_fileTotal;
-// 			m_fileTotal -= 100;
-// 			m_fileKey = 0;
-// 			emit FoundFileToUiS(m_fileMap);
-// 			m_fileMap.clear();
-// 		}
-// 	}
-// 	m_fileKey++;
 }
 
 void PlayBackThread::RecFileSearchFinished( QVariantMap evMap )
