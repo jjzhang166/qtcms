@@ -23,6 +23,7 @@
 #include "IPTZControl.h"
 #include "IProtocolPTZ.h"
 #include "remotePlayBack.h"
+#include "IDevicePlayback.h"
 #include <IGetIpAddress.h>
 
 int cbXStateChange(QString evName,QVariantMap evMap,void*pUser);
@@ -39,6 +40,7 @@ class  DeviceClient:public QThread,
 	public IEventRegister,
 	public IDeviceSearchRecord,
 	public IDeviceGroupRemotePlayback,
+	public IDeviceRemotePlayback,
 	public IPTZControl,
 	public IRemoteBackup,
 	public IDeviceAuth
@@ -86,6 +88,11 @@ public:
 	virtual int GroupSpeedFast();
 	virtual int GroupSpeedSlow();
 	virtual int GroupSpeedNormal();
+
+	//IDeviceRemotePlayback
+	virtual int getPlaybackStreamByTime(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime);
+	virtual int pausePlaybackStream(bool bPause);
+	virtual int stopPlaybackStream();
 
 	int recordFrame(QVariantMap &evMap);
 	int cbFoundFile(QVariantMap &evmap);

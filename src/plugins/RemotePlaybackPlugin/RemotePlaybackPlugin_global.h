@@ -25,7 +25,7 @@ typedef struct _tagTimeInfo
 	uint uiChannel;
 	QList<Session> lstTypeTime;
 }TimeInfo;
-QList<RecordInfo> g_RecList;
+// QList<RecordInfo> g_RecList;
 
 //void analyze(QList<RecordInfo>& lstInfo, QList<TimeInfo>&lstTimeInfo);
 
@@ -34,7 +34,8 @@ int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser);
 int cbRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser);
 int cbSocketError(QString evName,QVariantMap evMap,void*pUser);
 int cbStateChange(QString evName,QVariantMap evMap,void*pUser);
-int cbCacheState(QString evName,QVariantMap evMap,void*pUser);
+// int cbCacheState(QString evName,QVariantMap evMap,void*pUser);
+int cbRecordStream(QString evName, QVariantMap evMap, void* pUser);
 
 //int  childThreadSearch(uint uiRecNum, QString& start,QString& end, QList<QVariantMap> &selectedList);
 

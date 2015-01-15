@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QMutex>
 #include <QtNetwork/QHostAddress>
-#include "RemotePlaybackObject.h"
+// #include "RemotePlaybackObject.h"
 #include "qwfw.h"
 #include "IWindowDivMode.h"
 #include "IDeviceRemotePlayback.h"
@@ -12,21 +12,21 @@
 #include "rSubview.h"
 #include <IChannelManager.h>
 #include <IDeviceManager.h>
-#include "rPlayBackRun.h"
+#include "playbackthread.h"
 #include <QTimer>
 #include <QTime>
-typedef struct _tagDevCliSetInfo{
-	QString m_sAddress;
-	unsigned int m_uiPort;
-	QString m_sEseeId;
-	unsigned int m_uiChannelId;
-	int m_uiChannelIdInDataBase;
-	unsigned int m_uiStreamId;
-	QString m_sUsername;
-	QString m_sPassword;
-	QString m_sCameraname;
-	QString m_sVendor;
-}DevCliSetInfo;
+// typedef struct _tagDevCliSetInfo{
+// 	QString m_sAddress;
+// 	unsigned int m_uiPort;
+// 	QString m_sEseeId;
+// 	unsigned int m_uiChannelId;
+// 	int m_uiChannelIdInDataBase;
+// 	unsigned int m_uiStreamId;
+// 	QString m_sUsername;
+// 	QString m_sPassword;
+// 	QString m_sCameraname;
+// 	QString m_sVendor;
+// }DevCliSetInfo;
 typedef enum __enRemotePlayBackStatus{
 	STATUS_NORMAL_PLAY,
 	STATUS_FAST_PLAY,
@@ -128,7 +128,7 @@ private:
 //     IDeviceClient *  m_DeviceClient;
 	QList<QWidget *> m_PlaybackWndList;
     QList<QVariantMap>m_SelectedRecList;
-	RemotePlaybackObject m_RemotePlaybackObject;
+// 	RemotePlaybackObject m_RemotePlaybackObject;
 
     QHostAddress  m_HostAddress;
 	QString		  m_sHostAddress;
@@ -147,14 +147,14 @@ private:
 	bool bIsHide;
    
 	QMutex _mutexWidList;
-	DevCliSetInfo m_DevCliSetInfo;
+// 	DevCliSetInfo m_DevCliSetInfo;
 	int m_chlID;
 	RemotePlayBackStatus m_CurStatus;
 	RemotePlayBackStatus m_lastStatus;
-	rPlayBackRun m_rplaybackrun;
+	PlayBackThread m_rplaybackrun;
 	private:
 	int  cbInit();
-	int GetDeviceInfo(int chlId);
+// 	int GetDeviceInfo(int chlId);
 	bool ChlIsExit(int chlId);
 	int fileTotal;
 	QString fileKey;

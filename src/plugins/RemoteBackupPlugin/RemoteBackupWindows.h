@@ -6,7 +6,7 @@
 #include <QtCore/QTime>
 #include <QFileDialog>
 #include "qwfw.h"
-#include "IRemoteBackup.h"
+#include "RemoteBackup.h"
 //#include "IEventRegister.h"
 
 class RemoteBackupWindows : public QWidget,
@@ -17,7 +17,7 @@ public:
 	RemoteBackupWindows(QWidget *parent = 0);
 	~RemoteBackupWindows(void);
 
-	void procCallBack(QVariantMap item);
+// 	void procCallBack(QVariantMap item);
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 
@@ -32,13 +32,14 @@ public slots:
 	float getProgress();
 
 	void ChooseDir();
-	void sendToHtml(QVariantMap item);
+// 	void sendToHtml(QVariantMap item);
+	void sendToUi(QString evName, QVariantMap item);
 private:
-	bool LoadDeviceClient(QString vender);
-	IRemoteBackup* m_pRemoteBackup;
+// 	bool LoadDeviceClient(QString vender);
+	RemoteBackup m_remoteBackupObj;
 	QString m_dir;
 signals:
-	void sendStatus(QVariantMap item);
+// 	void sendStatus(QVariantMap item);
 };
 
 #endif //REMOTEBACKUPWINDOWS_H

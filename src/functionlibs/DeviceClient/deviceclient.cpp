@@ -23,7 +23,7 @@ DeviceClient::DeviceClient():
 	/*pcomCreateInstance(CLSID_BubbleProtocol,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonBubble);*/
 	pcomCreateInstance(CLSID_Hole,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonHole);
 	pcomCreateInstance(CLSID_Turn,NULL,IID_IDeviceConnection,(void**)&m_DeviceConnectonTurn);
-	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse"<<"Authority";
+	m_EventList<<"LiveStream"<<"SocketError"<<"StateChangeed"<<"CurrentStatus"<<"foundFile"<<"recFileSearchFinished"<<"ForRecord"<<"bufferStatus"<<"recFileSearchFail"<<"ConnectRefuse"<<"Authority"<<"RecordStream";
 
 	DeviceClientInfoItem devcliInfo;
 
@@ -135,6 +135,10 @@ long __stdcall DeviceClient::QueryInterface(const IID & iid,void **ppv)
 	else if (IID_IDeviceGroupRemotePlayback==iid)
 	{
 		*ppv=static_cast<IDeviceGroupRemotePlayback*>(this);
+	}
+	else if (IID_IDeviceRemotePlayback == iid)
+	{
+		*ppv = static_cast<IDeviceRemotePlayback*>(this);
 	}
 	else if (IID_IRemoteBackup==iid)
 	{
@@ -751,41 +755,41 @@ bool DeviceClient::removeRepeatWnd(QWidget *wndID)
 
 int DeviceClient::startSearchRecFile(int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime)
 {
-	return m_remotePlayback.startSearchRecFile(nChannel,nTypes,startTime,endTime);
-	//if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
-	//{
-	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-	//	return 2;
-	//}
- //   if (false==m_bIsInitFlags)
-	//{
-	//	cbInit();
-	//}
-	//int ret = 1;
-	//if (NULL == m_pRemotePlayback)
-	//{
-	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-	//	return 1;
-	//}
+// 	return m_remotePlayback.startSearchRecFile(nChannel,nTypes,startTime,endTime);
+// 	if ( nTypes < 0 || nTypes > 15 || startTime >= endTime)
+// 	{
+// 		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+// 		return 2;
+// 	}
+	if (false==m_bIsInitFlags)
+	{
+		cbInit();
+	}
+	int ret = 1;
+	if (NULL == m_pRemotePlayback)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+		return 1;
+	}
 
-	//IDeviceConnection *pDeviceConnection = NULL;
-	//m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
-	//if (NULL == pDeviceConnection)
-	//{
-	//	qDebug()<<__FUNCTION__<<__LINE__<<"fail";
-	//	return 1;
-	//}
+	IDeviceConnection *pDeviceConnection = NULL;
+	m_pRemotePlayback->QueryInterface(IID_IDeviceConnection, (void**)&pDeviceConnection);
+	if (NULL == pDeviceConnection)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"fail";
+		return 1;
+	}
 
-	//pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
-	//pDeviceConnection->setDeviceHost(m_sAddr);
-	//pDeviceConnection->setDeviceId(m_sEseeId);
-	//QVariantMap ports;
-	//ports.insert("media",m_uiPort);
-	//pDeviceConnection->setDevicePorts(ports);
-	//pDeviceConnection->Release();
-	//ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
+	pDeviceConnection->setDeviceAuthorityInfomation(m_sUserName, m_sPassWord);
+	pDeviceConnection->setDeviceHost(m_sAddr);
+	pDeviceConnection->setDeviceId(m_sEseeId);
+	QVariantMap ports;
+	ports.insert("media",m_uiPort);
+	pDeviceConnection->setDevicePorts(ports);
+	pDeviceConnection->Release();
+	ret = m_pRemotePlayback->startSearchRecFile(nChannel,nTypes, startTime, endTime);
 
-	//return ret;
+	return ret;
 }
 //nChannel start from 0 to 31
 int DeviceClient::AddChannelIntoPlayGroup(int nChannel,QWidget * wnd)
@@ -1081,17 +1085,19 @@ int DeviceClient::recordFrame(QVariantMap &evMap)
 		return 1;
 	}
 
-	int nRet = 0;
-	int channel = evMap.value("channel").toInt();
-	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channel);
-	BufferManager *pBuffer = iter->bufferManager;
-	if (NULL == pBuffer)
-	{
-		return 1;
-	}
-	nRet = pBuffer->recordStream(evMap);
+	eventProcCall("RecordStream", evMap);
 
-	return nRet;
+// 	int nRet = 0;
+// 	int channel = evMap.value("channel").toInt();
+// 	QMap<int, WndPlay>::iterator iter = m_groupMap.find(channel);
+// 	BufferManager *pBuffer = iter->bufferManager;
+// 	if (NULL == pBuffer)
+// 	{
+// 		return 1;
+// 	}
+// 	nRet = pBuffer->recordStream(evMap);
+
+	return 0;
 }
 
 int DeviceClient::startBackup(const QString &sAddr,unsigned int uiPort,const QString &sEseeId,
@@ -1320,6 +1326,31 @@ void DeviceClient::getIpAddress()
 	}else{
 		//do nothing
 	}
+}
+
+int DeviceClient::getPlaybackStreamByTime( int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime )
+{
+	if (!m_pRemotePlayback || STATUS_CONNECTED != m_CurStatus){
+		return 1;
+	}
+
+	return m_pRemotePlayback->getPlaybackStreamByTime(nChannel, nTypes, startTime, endTime);
+}
+
+int DeviceClient::pausePlaybackStream( bool bPause )
+{
+	if (!m_pRemotePlayback || STATUS_CONNECTED != m_CurStatus){
+		return 1;
+	}
+	return m_pRemotePlayback->pausePlaybackStream(bPause);
+}
+
+int DeviceClient::stopPlaybackStream()
+{
+	if (!m_pRemotePlayback || STATUS_CONNECTED != m_CurStatus){
+		return 1;	
+	}
+	return m_pRemotePlayback->stopPlaybackStream();
 }
 
 int cbXRecordStream(QString evName,QVariantMap evMap,void*pUser)

@@ -119,4 +119,5 @@ extern const GUID CLSID_GetIpAddressProtocol;
 extern const IID IID_IWindowSettings;
 extern const IID IID_IGetIpAddress;
 extern const CLSID CLSID_AutoSearchDevicePlugin;
+extern const IID IID_IDeviceRemotePlayback;
 #endif
