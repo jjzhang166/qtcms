@@ -37,7 +37,7 @@ public:
 	virtual unsigned long __stdcall Release();
 
 
-	virtual bool addExtendWnd(void *pWnd,const QString sName);//添加额外渲染的窗口
+	virtual bool addExtendWnd(QWidget * wnd,const QString sName);//添加额外渲染的窗口
 	virtual void setRenderRect(int nX,int nY,int nWidth,int nHeight);//设置画矩形的坐标，nX,nY 为屏幕的绝对坐标
 	virtual void removeExtendWnd(const QString sName);//移出指定名字的额外渲染窗口
 	virtual void setRenderRectPen(int nLineWidth,int nR,int nG,int nB);//设置画矩形的线宽和颜色

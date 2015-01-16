@@ -117,12 +117,12 @@ unsigned long __stdcall DdrawRender::Release()
 	return nRet;
 }
 
-bool DdrawRender::addExtendWnd( void *pWnd,const QString sName )
+bool DdrawRender::addExtendWnd( QWidget * wnd,const QString sName )
 {
 	char *cName;
 	QByteArray ba=sName.toLatin1();
 	cName=ba.data();
-	return m_renderObj->addExtendWnd(pWnd,cName);
+	return m_renderObj->addExtendWnd(wnd->winId(),cName);
 }
 
 void DdrawRender::setRenderRect( int nX,int nY,int nWidth,int nHeight )

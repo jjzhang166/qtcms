@@ -123,8 +123,14 @@ m_bEnable(true)
 ,m_bStretch(true)
 ,m_nWidth(0)
 ,m_nHeight(0)
+,m_nRectX(0)
+,m_nRectY(0)
+,m_nRectHeight(0)
+,m_nRectWidth(0)
 ,m_pOffscreenSurface(NULL)
+,m_pOffOsdScreenSurface(NULL)
 ,m_hPlayWnd(NULL)
+,m_hExtendWnd(NULL)
 {
 	InitDDrawGlobal();
 }
@@ -162,7 +168,26 @@ int CDDrawRenderObject::init( int nWidth,int nHeight )
 	m_nHeight = nHeight;
 	m_csOffScreenSurface.Unlock();
 
-
+	//创建OSD表面
+	ZeroMemory(&ddsd,sizeof(ddsd));
+	ddsd.dwSize=sizeof(ddsd);
+	ddsd.ddsCaps.dwCaps=DDSCAPS_OFFSCREENPLAIN;
+	ddsd.dwFlags=DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH;
+	ddsd.dwWidth=nWidth;
+	ddsd.dwHeight=nHeight;
+	m_csOffOsdScreenSurface.Lock();
+	hr=g_pDirectDraw7->CreateSurface(&ddsd,&m_pOffOsdScreenSurface,NULL);
+	if (hr!=DD_OK)
+	{
+		m_pOffOsdScreenSurface=NULL;
+		m_csOffOsdScreenSurface.Unlock();
+		m_csOffScreenSurface.Lock();
+		m_pOffscreenSurface->Release();
+		m_pOffscreenSurface = NULL;
+		m_csOffScreenSurface.Unlock();
+		return -1;
+	}
+	m_csOffOsdScreenSurface.Unlock();
 	return 0;
 }
 
@@ -172,16 +197,22 @@ int CDDrawRenderObject::deinit()
 	if (NULL == m_pOffscreenSurface)
 	{
 		m_csOffScreenSurface.Unlock();
-		return 0;
+	}else{
+		m_pOffscreenSurface->Release();
+		m_pOffscreenSurface = NULL;
+		m_nWidth = 0;
+		m_nHeight = 0;
+		m_csOffScreenSurface.Unlock();
 	}
-
-	m_pOffscreenSurface->Release();
-	m_pOffscreenSurface = NULL;
-	m_nWidth = 0;
-	m_nHeight = 0;
-	m_csOffScreenSurface.Unlock();
-
-
+	m_csOffOsdScreenSurface.Lock();
+	if (NULL==m_pOffOsdScreenSurface)
+	{
+		m_csOffOsdScreenSurface.Unlock();
+	}else{
+		m_pOffOsdScreenSurface->Release();
+		m_pOffOsdScreenSurface=NULL;
+		m_csOffOsdScreenSurface.Unlock();
+	}
 	return 0;
 }
 
@@ -208,7 +239,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 		m_csOffScreenSurface.Unlock();
 		return 0;
 	}
-
+	m_csOffScreenSurface.Unlock();
 	if (nWidth != m_nWidth || nHeight != m_nHeight 
 		&& (0 != nWidth && 0 != nHeight))
 	{
@@ -223,7 +254,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 			return -1;
 		}
 	}
-
+	m_csOffScreenSurface.Lock();
 	const unsigned char *pY = (unsigned char *)pYData;
 	const unsigned char *pU = (unsigned char *)pUData;
 	const unsigned char *pV = (unsigned char *)pVData;
@@ -285,80 +316,171 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 
 	hr = m_pOffscreenSurface->Unlock(NULL);
 
-	m_csPlayWnd.Lock();
-	if (m_hPlayWnd != NULL)
+	m_csExtendWnd.Lock();
+	if (NULL!=m_hExtendWnd)
 	{
-		if(!m_bStretch)
+		// 存在电子放大的屏幕
+		m_csPlayWnd.Lock();
+		if (NULL!=m_hPlayWnd)
 		{
+			//在原来的屏幕中放大图像，不考虑 原始比例显示 
+
+			//step 1:在原来的窗口中放大视频
 			RECT rcDsp;
-			::GetClientRect( m_hPlayWnd,&rcDsp);
+			::GetClientRect(m_hPlayWnd,&rcDsp);
 			POINT ptTL;
 			POINT ptRB;
-
-			int h = rcDsp.bottom - rcDsp.top;
-			int w = rcDsp.right - rcDsp.left;
-			int nDispWidth,nDispHeight;
-
-			if (w * m_nHeight > h * m_nWidth)  //满高 宽度变化
-			{	
-				nDispHeight = h;
-				nDispWidth = h * nWidth / nHeight;
-				ptTL.x = rcDsp.left + (w - nDispWidth) / 2;
-				ptTL.y = rcDsp.top + 1;
-				ptRB.x = rcDsp.right - (w - nDispWidth ) / 2;
-				ptRB.y = rcDsp.bottom - 1;
-			}
-
-			if (w * m_nHeight <= h * m_nWidth)  //满宽  高度变化 
-			{
-				nDispWidth = w;
-				nDispHeight = nDispWidth * nHeight / nWidth;
-				ptTL.x = rcDsp.left + 1;
-				ptTL.y = rcDsp.top + (h - nDispHeight) / 2;
-				ptRB.x = rcDsp.right - 1;
-				ptRB.y = rcDsp.bottom - (h - nDispHeight) / 2;
-			}
-
-			::ClientToScreen( m_hPlayWnd,&ptTL);
-			::ClientToScreen( m_hPlayWnd,&ptRB);
+			ptTL.x=rcDsp.left+1;
+			ptTL.y=rcDsp.top+1;
+			ptRB.x=rcDsp.right-1;
+			ptRB.y=rcDsp.bottom-1;
+			::ClientToScreen(m_hPlayWnd,&ptTL);
+			::ClientToScreen(m_hPlayWnd,&ptRB);
 			SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
 
+			//设置放大区域
 			RECT rcSrc;
-			SetRect(&rcSrc,0,0,width,height);
+			setZoomRect(rcSrc,width,height);
 			g_csClipper.Lock();
 			g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 			if (::IsWindowVisible(m_hPlayWnd))
 			{
 				g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+			}else{
+				//do nothing
 			}
 			g_csClipper.Unlock();
-		}else
-		{
-			RECT rcDsp;
-			::GetClientRect( m_hPlayWnd,&rcDsp);
-			POINT ptTL;
-			POINT ptRB;
-			ptTL.x = rcDsp.left + 1;
-			ptTL.y = rcDsp.top + 1;
-			ptRB.x = rcDsp.right - 1;
-			ptRB.y = rcDsp.bottom - 1;
-			::ClientToScreen( m_hPlayWnd,&ptTL);
-			::ClientToScreen( m_hPlayWnd,&ptRB);
-			SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
 
-			RECT rcSrc;
-			SetRect(&rcSrc,0,0,width,height);
-			g_csClipper.Lock();
-			g_pClipper->SetHWnd(NULL,m_hPlayWnd);
-			if (::IsWindowVisible(m_hPlayWnd))
+			//step 2:在额外的窗口中 渲染 原图像+矩形
 			{
-				g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+				RECT rcDsp;
+				::GetClientRect(m_hExtendWnd,&rcDsp);
+				POINT ptTL;
+				POINT ptRB;
+				ptTL.x=rcDsp.left+1;
+				ptTL.y=rcDsp.top+1;
+				ptRB.x=rcDsp.right-1;
+				ptRB.y=rcDsp.bottom-1;
+				::ClientToScreen(m_hExtendWnd,&ptTL);
+				::ClientToScreen(m_hExtendWnd,&ptRB);
+				SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
+
+				RECT rcSrc;
+				SetRect(&rcSrc,0,0,width,height);
+				g_csClipper.Lock();
+				g_pClipper->SetHWnd(NULL,m_hExtendWnd);
+
+				if (::IsWindowVisible(m_hExtendWnd))
+				{
+					m_csOffOsdScreenSurface.Lock();
+					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
+					if (DD_OK!=hr)
+					{
+						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+					}else{
+						HDC tHdc=NULL;
+						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
+						if (DD_OK==hr&&NULL!=tHdc)
+						{
+							POINT tScreenStart;
+							POINT tScreenEnd;
+							tScreenStart.x=m_nRectX;
+							tScreenStart.y=m_nRectY;
+							tScreenEnd.x=m_nRectX+m_nRectWidth;
+							tScreenEnd.y=m_nRectY+m_nRectHeight;
+							::ScreenToClient(m_hExtendWnd,&tScreenEnd);
+							::ScreenToClient(m_hExtendWnd,&tScreenStart);
+							DrawARectangle(tHdc,tScreenStart.x,tScreenStart.y,tScreenEnd.x,tScreenEnd.y);
+							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
+							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+						}else{
+							//do nothing
+						}
+					}
+				}else{
+					//do nothing
+				}
+				g_csClipper.Unlock();
 			}
-			g_csClipper.Unlock();
+		}else{
+			//do nothing
 		}
-	}
-	m_csPlayWnd.Unlock();
+		m_csPlayWnd.Unlock();
+	}else{
+		//不存在电子放大
+		m_csPlayWnd.Lock();
+		if (NULL!=m_hPlayWnd)
+		{
+			if (!m_bStretch)
+			{
+				RECT rcDsp;
+				::GetClientRect(m_hPlayWnd,&rcDsp);
+				POINT ptTL;
+				POINT ptRB;
+				int h=rcDsp.bottom-rcDsp.top;
+				int w=rcDsp.right-rcDsp.left;
+				int nDispWidth,nDispHeight;
+				if (w*m_nHeight>h*m_nWidth)//满高 宽度变化
+				{
+					nDispHeight=h;
+					nDispWidth=h*nWidth/nHeight;
+					ptTL.x=rcDsp.left+(w-nDispWidth)/2;
+					ptTL.y=rcDsp.top+1;
+					ptRB.x=rcDsp.right-(w-nDispWidth)/2;
+					ptRB.y=rcDsp.bottom-1;
+				}else{
+					nDispWidth = w;
+					nDispHeight = nDispWidth * nHeight / nWidth;
+					ptTL.x = rcDsp.left + 1;
+					ptTL.y = rcDsp.top + (h - nDispHeight) / 2;
+					ptRB.x = rcDsp.right - 1;
+					ptRB.y = rcDsp.bottom - (h - nDispHeight) / 2;
+				}
+				::ClientToScreen(m_hPlayWnd,&ptTL);
+				::ClientToScreen(m_hPlayWnd,&ptRB);
+				SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
 
+				RECT rcSrc;
+				SetRect(&rcSrc,0,0,width,height);
+				g_csClipper.Lock();
+				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
+				if (::IsWindowVisible(m_hPlayWnd))
+				{
+					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+				}else{
+					//do nothing
+				}
+				g_csClipper.Unlock();
+			}else{
+				RECT rcDsp;
+				::GetClientRect(m_hPlayWnd,&rcDsp);
+				POINT ptTL;
+				POINT ptRB;
+				ptTL.x=rcDsp.left+1;
+				ptTL.y=rcDsp.top+1;
+				ptRB.x=rcDsp.right-1;
+				ptRB.y=rcDsp.bottom-1;
+				::ClientToScreen(m_hPlayWnd,&ptTL);
+				::ClientToScreen(m_hPlayWnd,&ptRB);
+				SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
+				RECT rcSrc;
+				SetRect(&rcSrc,0,0,width,height);
+				g_csClipper.Lock();
+				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
+				if (::IsWindowVisible(m_hPlayWnd))
+				{
+					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+				}else{
+					//do nothing
+				}
+				g_csClipper.Unlock();
+			}
+		}else{
+			//do nothing
+		}
+		m_csPlayWnd.Unlock();
+	}
+	m_csExtendWnd.Unlock();
 	m_csOffScreenSurface.Unlock();
 	
 	return 0;
@@ -376,23 +498,88 @@ int CDDrawRenderObject::enable( bool bEnable )
 	return 0;
 }
 
-bool CDDrawRenderObject::addExtendWnd( void *pWnd,const char* sName )
+bool CDDrawRenderObject::addExtendWnd( HWND wnd,const char* sName )
 {
+	m_csExtendWnd.Lock();
+	m_hExtendWnd=wnd;
+	m_csExtendWnd.Unlock();
 	return true;
 }
 
 void CDDrawRenderObject::setRenderRect( int nX,int nY,int nWidth,int nHeight )
 {
+	m_nRectX=nX;
+	m_nRectY=nY;
+	m_nRectWidth=nWidth;
+	m_nRectHeight=nHeight;
 	return;
 }
 
 void CDDrawRenderObject::removeExtendWnd( const char* sName )
 {
+	m_csExtendWnd.Lock();
+	m_hExtendWnd=NULL;
+	m_csExtendWnd.Unlock();
 	return;
 }
 
 void CDDrawRenderObject::setRenderRectPen( int nLineWidth,int nR,int nG,int nB )
 {
 	return;
+}
+
+void CDDrawRenderObject::DrawARectangle( HDC hdc ,int nX,int nY,int nWidth,int nHeight)
+{
+	HPEN hpen, hpenOld;
+
+	// Create a green pen.
+	hpen = CreatePen(PS_SOLID, 10, RGB(0, 255, 0));
+	// Create a red brush.
+
+
+	// Select the new pen and brush, and then draw.
+	hpenOld =(HPEN) SelectObject(hdc, hpen);
+
+	POINT tOldPoint;
+
+	MoveToEx(hdc,nX,nY,&tOldPoint);
+	LineTo(hdc,nWidth,nY);
+	LineTo(hdc,nWidth,nHeight);
+	LineTo(hdc,nX,nHeight);
+	LineTo(hdc,nX,nY);
+	// Do not forget to clean up.
+	SelectObject(hdc, hpenOld);
+	DeleteObject(hpen);
+
+
+}
+
+void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
+{
+	if (0==m_nRectWidth||0==m_nRectHeight)
+	{
+		SetRect(&tRect,0,0,nWidth,nHeight);
+	}else{
+		RECT tExtendWndRect;
+		::GetClientRect(m_hExtendWnd,&tExtendWndRect);
+
+		POINT tScreenStart;
+		POINT tScreenEnd;
+		tScreenStart.x=m_nRectX;
+		tScreenStart.y=m_nRectY;
+		tScreenEnd.x=m_nRectX+m_nRectWidth;
+		tScreenEnd.y=m_nRectY+m_nRectHeight;
+		::ScreenToClient(m_hExtendWnd,&tScreenEnd);
+		::ScreenToClient(m_hExtendWnd,&tScreenStart);
+		if (tExtendWndRect.right==0||tExtendWndRect.bottom==0)
+		{
+			SetRect(&tRect,0,0,nWidth,nHeight);
+		}else{
+			tRect.left=nWidth*tScreenStart.x/tExtendWndRect.right;
+			tRect.top=nHeight*tScreenStart.y/tExtendWndRect.bottom;
+			tRect.right=nWidth*tScreenEnd.x/tExtendWndRect.right;
+			tRect.bottom=nHeight*tScreenEnd.y/tExtendWndRect.bottom;
+		}
+	}
 }
 

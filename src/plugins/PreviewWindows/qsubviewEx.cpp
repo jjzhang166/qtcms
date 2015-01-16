@@ -45,9 +45,11 @@ QWidget(parent),
 	connect(m_pSwitchStreamAciton,SIGNAL(triggered(bool)),this,SLOT(slswitchStreamEx()));
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
 	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
-	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretch(bool)));
+	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretchEx(bool)));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
+
+	//m_tDigitalZoomView.show();
 }
 
 
@@ -819,9 +821,9 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 
 void qsubviewEx::enableStretch( bool bEnable )
 {
-	if (verify(1, m_chlId)){
-		return;
-	}
+	//if (verify(1, m_chlId)){
+	//	return;
+	//}
 
 	m_bStretch = bEnable;
 	m_sSubviewRun.enableStretch(bEnable);
@@ -861,6 +863,17 @@ int qsubviewEx::verify( qint64 mainCode, qint64 subCode )
 		pUserMgrEx->Release();
 	}
 	return ret;
+}
+
+void qsubviewEx::enableStretchEx( bool bEnable )
+{
+	if (verify(1, m_chlId)){
+		return;
+	}
+
+	m_bStretch = bEnable;
+	m_sSubviewRun.enableStretch(bEnable);
+	m_pStreachVideo->setChecked(bEnable);
 }
 
 
