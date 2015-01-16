@@ -64,7 +64,7 @@ public slots:
 	void connecttingUpdateSlot();
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
-	
+	void setProgress(int progress);
 	
 private:
 	static bool m_bGlobalAudioStatus;

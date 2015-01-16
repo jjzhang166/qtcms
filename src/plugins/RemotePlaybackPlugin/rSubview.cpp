@@ -429,5 +429,11 @@ void RSubView::SetFoucs( bool flags )
 	}
 }
 
+void RSubView::setProgress( int progress )
+{
+	_curCache = progress;
+	update();
+	_cacheLableShow();
+}
 
 
