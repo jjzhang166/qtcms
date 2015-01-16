@@ -1053,7 +1053,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	    	if(left < min || left > max){
 	    		return;
 	    	}
-			//event.stopPropagation();
+			event.stopPropagation();
 			
 		    groupStop();
 			

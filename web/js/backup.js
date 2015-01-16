@@ -1,6 +1,7 @@
 var oPlayBack={},  // 远程回访控件对象
     oPlaybacKLocl={},
-	oBackup={},    // 备份控件对象
+	oBackup={},
+	oBackupLocal={},    // 备份控件对象
 	now = 0,	   // 当前下载的第几个文件
 	recFile=[],    // 搜索文件
 	usedUid = [],
@@ -61,8 +62,7 @@ var oPlayBack={},  // 远程回访控件对象
 				
 				$('#fileRec').stop(true,true).hide();
 				 
-				/* $('div.play_time').css('left',$('table.table .no_border').width());*/
-				 
+			
 				bool = index ? 0:1;
 
 				searchSTOP=1;
@@ -82,20 +82,29 @@ var oPlayBack={},  // 远程回访控件对象
 				   var localobj =$('#windowFile tr');
 					   localobj.find('div.canvas').remove();
 					   localobj.find(':checkbox').prop('checked',false);
-					   localobj.find(':checkbox').prop('disabled',false);
+					   localobj.find(':checkbox').prop('disabled',false);  
 				}
 
 				initOxcDevListStatus();
 				PBrecFileInit();
-				contentMax();
 
 				
 			})
 		})
+		
+		$('#timebar1,#timebar2').on({ //时间棒滑动事件
+			mousedown:function(){
+				var windowfile = $('#windowFile');
+				var min = $('table.table_backup .no_border').width();
+				var max = windowfile.width()-17;
+				 timebar_drag(min,max,$(this));	
+			}
+		});
+		
+		
 		contentMax();
 		initOxcDevListStatus();
 		PBrecFileInit();
-		contentMax();
 	 
 		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
@@ -108,10 +117,30 @@ var oPlayBack={},  // 远程回访控件对象
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
 		    addMouseStyle($(this),action,1<<4);
-	       })
+	    })
 	})///
 
 	$(window).resize(contentMax);
+	
+	function timebar_drag(X1,X2,oDrag){  // 备份页面的拖拽条
+		  var oNow=$('#now_time');	
+		  var left;
+		  
+		  $(document).mousemove(function(event){
+			  left = event.pageX;
+			  left = left < X1 ? X1 : left;
+			  left = left > X2 ? X2 : left;
+		  
+			  showNowPlayBackTime(oNow,left-X1,X2-X1);
+			  
+			  oDrag.attr('title',returnTime(((left-X1)/(X2-X1))*24*3600));
+				  
+			  oDrag.css('left',left-1.5);
+			  
+		  }).mouseup(function(){
+			  $(this).off();
+		  })
+    }
 	
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
@@ -184,21 +213,11 @@ var oPlayBack={},  // 远程回访控件对象
      
 	 function RecLocalFile2UI(file){
 		 
-		 //console.time('--接收到的本地文件回调描绘时间段---'+filedata.length);
+		 //console.log(file);
 		var windowFile = $('#windowFile'),
 		    oFileUIwarp = windowFile.find('tr');
-			
-		//console.log('接收到的文件进行合并前的文件----------------------------');
-        console.log(file);
-		/*console.log('---------描绘接受到的文件------------------------');*/
-		
-		//console.time('---------合并接受到的文件------------------------');
-		
-		 //console.log(File);
-		//console.timeEnd('---------合并接受到的文件------------------------');
-		//console.time('--接收到合并的文件回调描绘时间段---'+File.length);
 
-			var min = $('table.table_backup .no_border').width(),
+	    var min = $('table.table_backup .no_border').width(),
 
 			    max = windowFile.find('tr').length > 4 ? windowFile.width()-17:windowFile.width(),
 
@@ -226,16 +245,11 @@ var oPlayBack={},  // 远程回访控件对象
 		var context = canvas.getContext("2d");
 		//console.log("窗口"+id);
 
-		//console.log('接收到的文件进行合并后的文件----------------------------');
-		//console.log(File);
-		//console.time('--循环描绘文件时间段---');
+		
 		for( var i=0;i<file.length;i++){
-			/*console.log('--------当前填充的通道文件----------');
-			console.log(File[i]);*/
-			/*console.log('-------------------------初始化的添加对象!----------------------');
-			console.log(target);*/
+			
 				var data = file[i];
-				console.log(data);
+				//console.log(data);
 				var start = data.start.split(' ')[1];
 
 					minFileStartTime = start < minFileStartTime ? start : minFileStartTime;
@@ -247,7 +261,7 @@ var oPlayBack={},  // 远程回访控件对象
 					maxFileEndTime = end > maxFileEndTime ? end : maxFileEndTime;
 
 				var width = (time2Sec(end)-start)*p;
-					//width = width < 1 ? 1 : width;
+			
 				var left = start*p+min;
 				var types = data.types || data.type;
 
@@ -257,8 +271,6 @@ var oPlayBack={},  // 远程回访控件对象
 			 //console.log("color"+color[types]);
 		      //context.rect(left-min,0,width,tdH);
 			    context.fillRect(left-min,0,width,tdH);
-
-			 
 		}
 	 }
 	 
@@ -418,27 +430,15 @@ var oPlayBack={},  // 远程回访控件对象
 		var W = $(window).width();
 			W = W <=1000 ? 1000 : W;
 			H = H <=600 ? 600 : H;
-		/*var main = $('#search_result').css({
-			height: H - 138,
-			width: W - 238
-		});*/
+
 		var main = $('.search_result').css({
 			height: H - 138,
 			width: W - 238
 		});
-       var local = $('#windowFile').css({
-     		height:main.height()-24,
-		})
-		  $('#windowFile').prev('table').find('tr').width(local.width()-17);
-		theadtbody($('#table_backup thead td'),$('#windowFile thead:first td'));
-		
-		$('#file_warp').height(main.height() -18).find('thead td:gt(3)').not(':last').width(($('#file_warp').width()-700)/2);
-        theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
-		
 
 		$('#search_device').css({
 			left:main.width()+2,
-			height:H-78-26
+			height:H-116
 			
 		})
 		$('#foot').css({
@@ -665,8 +665,28 @@ var oPlayBack={},  // 远程回访控件对象
 	      $('.search_result').eq(index).show();	 
 		  if(index==0){
 			  
+			   var local = $('#windowFile').css({
+     		     height:$('.search_result').height()-24,
+		     })
+		      $('#windowFile').prev('table').find('tr').width(local.width()-17);
+			  
+		    theadtbody($('#table_backup thead td'),$('#windowFile thead:first td'));
+			  
 			setTables();
+			
 			addcanvas();
+
+			$('#timebar1').css('left',$('#windowFile .no_border').width());
+	
+			$('#timebar2').css('left',$('#windowFile tr').width());
+		  }else{
+			
+		
+		    $('#file_warp').height($('.search_result').height() -18).find('thead td:gt(3)').not(':last').width(($('#file_warp').width()-700)/2);
+			
+            theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
+		 
+			  
 		  }
 	 }
 	 function setTables(){   // 回放页表格最大化相应调整
@@ -684,7 +704,18 @@ var oPlayBack={},  // 远程回访控件对象
 	  }
 		
 	}
-	
+	function addtables(){
+		var fragment = document.createDocumentFragment();
+		var str = lang['wind_'];
+		for(var i=0; i<49; i++){
+			
+			var newitem = $('<tr><td class="no_border"><input id="win_'+i+'" type="checkbox" /><label for="win_'+i+'">'+str+i+'</label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+			fragment.appendChild(newitem);
+	    }
+		
+		 $("#windowFile")[0].appendChild(fragment);
+		
+    }
 	function file2UIFinish(){
 	 
 	  $('#windowFile tr[id]').find('input').prop('disabled',false);
