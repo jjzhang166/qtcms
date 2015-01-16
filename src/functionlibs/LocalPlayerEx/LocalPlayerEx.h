@@ -9,6 +9,7 @@
 #include "ILocalPlayerEx.h"
 #include "ILocalRecordSearchEx.h"
 #include "IVideoDisplayOption.h"
+#include "ICommunicate.h"
 #include "QFileData.h"
 #include "PlayMgr.h"
 
@@ -23,7 +24,8 @@ class LocalPlayerEx : public QObject,
 	public IEventRegister,
 	public ILocalRecordSearchEx,
 	public ILocalPlayerEx,
-	public IVideoDisplayOption
+	public IVideoDisplayOption,
+	public ICommunicate
 {
 	Q_OBJECT
 public:
@@ -69,6 +71,9 @@ public:
 	// IVideoDisplayOption
 	virtual void enableWindowStretch(QWidget * window,bool bEnable);
 	virtual bool getWindowStretchStatus(QWidget * window);
+
+	//ICommunicate
+	virtual int setInfromation(const QString &msgName, const QVariantMap &info);
 
 	typedef int (__cdecl *PreviewEventCB)(QString name, QVariantMap info, void* pUser);
 	typedef struct _tagProcInfoItem
@@ -130,6 +135,11 @@ private:
 
 	PlayInfo m_arrPlayInfo[MAX_PLAY_THREAD];
 	QFileData *m_pFileData;
+
+	//about digital zoom
+	QMap<QWidget*, PlayMgr*> m_wndMap;
+	QList<QWidget*> m_wndList;
+	QWidget *m_susWnd;
 private:
 	void appendTimePath(QList<TimePath> &tpList, const uint &start, const QString &path, qint32 &insertPos);
 

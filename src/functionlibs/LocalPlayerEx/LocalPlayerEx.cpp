@@ -173,6 +173,10 @@ long __stdcall LocalPlayerEx::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IVideoDisplayOption *>(this);
 	}
+	else if (IID_ICommunicate == iid)
+	{
+		*ppv = static_cast<ICommunicate *>(this);
+	}
 	else
 	{
 		*ppv = NULL;
@@ -419,6 +423,7 @@ int LocalPlayerEx::AddFileIntoPlayGroupEx( const int & nWndId, const QWidget * p
 			m_arrPlayInfo[i32Loop].pPlayMgr->setParamter(const_cast<QWidget*>(pWnd), m_uiStartSec, m_uiEndSec);
 			m_arrPlayInfo[i32Loop].pPlayMgr->setCbTimeChange(cbTimeChange, this);
 			m_pFileData->setBuffer(nWndId, m_arrPlayInfo[i32Loop].pPlayMgr->getBufferPointer());
+			m_wndMap.insert(const_cast<QWidget*>(pWnd), m_arrPlayInfo[i32Loop].pPlayMgr);
 			break;
 		}
 	}
@@ -1085,6 +1090,44 @@ int LocalPlayerEx::execCommand( sqlite3 *pdb, const char* cmd, char*** pppRet, i
 		++count;
 	}
 	return ret;
+}
+
+int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &info )
+{
+	QVariant wnd = info.value("CurWnd");
+ 	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
+	PlayMgr *playMgr = m_wndMap[pWnd], *lastPlayMgr = NULL;
+	if ("VedioZoom" == msgName){
+		m_susWnd = (QWidget *)info.value("SusWnd").toUInt();
+		if (m_wndList.contains(pWnd)){
+			if (pWnd == m_wndList.last()){
+				return 0;
+			}
+			lastWnd = m_wndList.last();
+			m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
+			playMgr->addWnd(m_susWnd, wnd.toString());
+
+			m_wndList.removeOne(pWnd);
+			m_wndList.append(pWnd);
+		}else{
+			if (!m_wndList.isEmpty()){
+				lastWnd = m_wndList.last();
+				m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
+			}
+			m_wndList.append(pWnd);
+			playMgr->addWnd(m_susWnd, wnd.toString());
+		}
+	}else if ("ZoomRect" == msgName){
+		playMgr->setZoomRect(info["ZoRect"].toRect());
+	}else if ("CloseWnd" == msgName){
+		playMgr->removeWnd(wnd.toString());
+		m_wndList.removeLast();
+		if (!m_wndList.isEmpty()){
+			lastWnd = m_wndList.last();
+			m_wndMap[lastWnd]->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
+		}
+	}
+	return 0;
 }
 
 void cbTimeChange(QString evName, uint playTime, void* pUser)

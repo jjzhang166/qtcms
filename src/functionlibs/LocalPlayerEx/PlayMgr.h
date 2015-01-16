@@ -34,6 +34,10 @@ public:
 	void enableVideoStretch(bool bEnable);
 	bool getVideoStretchStatus();
 
+	void addWnd(QWidget* pWnd, QString sName);
+	void removeWnd(QString sName);
+	void setZoomRect(QRect rect);
+
 	static void pause(bool bIsPause);
 	static qint32 setVolume(uint uiPersent);
 	static void audioSwitch(bool bOpen);
@@ -44,6 +48,7 @@ private:
 	void clearBuffer();
 	qint32 findStartPos(const QVector<PeriodTime> &vecPeriod);
 	qint32 adjustTimeLine(uint uiStart, uint &status);
+	void getZoomInterface(void** ppv);
 
 	//for test
 	void printVector(uint types, const QVector<PeriodTime> &vec);

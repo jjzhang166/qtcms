@@ -2,6 +2,7 @@
 #include <guid.h>
 #include <QElapsedTimer>
 #include "IEventRegister.h"
+#include "IVideoRenderDigitalZoom.h"
 
 //#include "vld.h"
 #include <QDebug>
@@ -641,6 +642,43 @@ bool PlayMgr::getVideoStretchStatus()
 		return m_pVedioRender->isStretchEnable();
 	}
 	return false;
+}
+
+void PlayMgr::getZoomInterface( void** ppv )
+{
+	if (m_pVedioRender){
+		m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, ppv);
+	}
+}
+
+void PlayMgr::addWnd( QWidget* pWnd, QString sName )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	getZoomInterface((void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->addExtendWnd((void*)pWnd, sName);
+		pZoomInterface->Release();
+	}
+}
+
+void PlayMgr::removeWnd( QString sName )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	getZoomInterface((void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->removeExtendWnd(sName);
+		pZoomInterface->Release();
+	}
+}
+
+void PlayMgr::setZoomRect( QRect rect )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	getZoomInterface((void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->setRenderRect(rect.x(), rect.y(), rect.width(), rect.height());
+		pZoomInterface->Release();
+	}
 }
 
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)

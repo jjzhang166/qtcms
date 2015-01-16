@@ -5,10 +5,12 @@
 #include <QMouseEvent>
 #include "guid.h"
 #include "IVideoDisplayOption.h"
+#include "ICommunicate.h"
 #include <QApplication>
 #include <QDomDocument>
 
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
+SuspensionWnd* RecordPlayerView::ms_susWnd = NULL;
 
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
@@ -104,6 +106,8 @@ void RecordPlayerView::mouseDoubleClickEvent( QMouseEvent * ev)
 
 void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 {
+	m_pressPoint = ev->pos();
+
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
 	if (m_bGlobalAudioStatus && NULL != m_pLocalPlayer && ev->button() == Qt::LeftButton)
@@ -197,4 +201,49 @@ void RecordPlayerView::changeEvent( QEvent * )
 	{
 		m_pWindowsStretchAction->setText(tr("Suit For Window"));
 	}
+}
+
+void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
+{
+	QRect rect = this->rect();
+	QPoint releasePoint = ev->pos();
+	//if release point in current window
+	if (m_pressPoint != releasePoint && rect.contains(m_pressPoint) && rect.contains(releasePoint)){
+		//if no suspension window, create it
+		if (!ms_susWnd){
+			ms_susWnd = new SuspensionWnd(this);
+			ms_susWnd->setWindowFlags(Qt::Tool | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+			ms_susWnd->setCbFunc(cbReciveMsg, this);
+			ms_susWnd->show();
+		}
+		//notify play module current window need to zoom
+		if (m_pLocalPlayer){
+			ICommunicate *pCom = NULL;
+			m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+			if (pCom){
+				QVariantMap msg;
+				msg.insert("SusWnd", (quintptr)ms_susWnd);
+				msg.insert("CurWnd", (quintptr)this);
+				ms_susWnd->addWnd(this);
+				pCom->setInfromation(QString("VedioZoom"), msg);
+				pCom->Release();
+			}
+		}
+	}
+}
+
+void RecordPlayerView::recMsg( QVariantMap msg )
+{
+	QString evName = msg["EvName"].toString();
+	ICommunicate *pCom = NULL;
+	m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+	if (pCom){
+		msg.remove("EvName");
+		pCom->setInfromation(evName, msg);
+	}
+}
+
+void cbReciveMsg( QVariantMap evMap, void* pUser )
+{
+	((RecordPlayerView*)pUser)->recMsg(evMap);
 }

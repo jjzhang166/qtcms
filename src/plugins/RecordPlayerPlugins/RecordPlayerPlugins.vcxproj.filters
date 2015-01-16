@@ -77,6 +77,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_searchprocess.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="suspensionwnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_suspensionwnd.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_suspensionwnd.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
@@ -100,6 +109,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="searchprocess.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="suspensionwnd.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
