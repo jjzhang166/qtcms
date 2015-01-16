@@ -120,10 +120,10 @@
         
 		
 		if(bool){  // 本地
-			 
 		  localSearchWindNum=0;
          
 		  searchLocalFile(localSearchWindNum,date,type);
+		  console.log(localSearchWindNum+' '+date+' '+type);
 
 			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
@@ -298,4 +298,8 @@
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');  //搜索远程回放回调
 		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)'); //搜索远程回放失败回调
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');  //搜索远程回放完成回调
+		
+		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
+		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
+		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
 	})

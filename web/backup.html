@@ -19,7 +19,7 @@
 <script type="text/javascript" src="js/public.js"></script>
 
 <style type="text/css">
-	#search_result{background: #1E1E1E; position: absolute; top: 78px;}
+	.search_result{background: #1E1E1E; position: absolute; top: 78px;}
 	#file_bottom{ line-height: 22px; height: 30px; background: url(./images/backup/backup_table_bg.png) repeat-x 0 -16px; font-size: 14px; position: absolute;}
 	#file_bottom a{display: block; height: 22px; width: 100px; background: url(./images/backup/botton.png); float: left; margin:6px; background-position: 0 0; text-align: center; color: #B5B5B6;}
 	#search_result table { border-collapse:collapse; color: #BEBEBE;width: 100%;display: block; text-align: center;}
@@ -45,6 +45,14 @@
 	#page span{ cursor: pointer; margin: 8px 2px; text-decoration: underline; line-height: 16px; width: 16px; height: 16px; display: block; float: left;}
 	#page span.sel{ color: #F05133}
 	.red{color:red;}
+	
+	.search_result .table_backup{display: block; width: 100%; border-collapse: collapse; position: relative;overflow:auto;  overflow-x:hidden; }
+	.table_backup tr{display: block;color: #C8C8C8;text-align: center;}
+	.table_backup tr td{border: 1px solid #373737;height: 22px;font-size: 14px;line-height: 14px;}
+	.table_backup .no_border{border: 0;text-align: left;text-indent: 4px;cursor:default;}
+	.table_backup thead td{ cursor:default}
+	#windowFile tr{ position:relative;}
+	 
 </style>
 </head>
 
@@ -54,6 +62,7 @@
 	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
 <object type="application/cms-remote-playback" id="playback" style="width:100%;height:0px;"></object>
+<object type="application/cms-record-player" id="playbackLocl" style="width:100%;height:0;"></object>
 <object type="application/cms-remote-backup" id="backup" style="width:100%;height:0px;"></object>
 <object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:100%; height:0;" ></object>
 	<div id="top">
@@ -81,7 +90,8 @@
 			</ul>
 			 <div>
 				<!--<a></a>		-->		
-				<p style="color:#000;"><span><script>T("Login_account")</script></span><span><script>T("not_Login")</script></span></p>
+				<p style="color:#000;"><span><script>T("Login_account")</script></span>
+                <span><script>T("not_Login")</script></span></p>
 			</div>
           </div> 
 		</div>
@@ -95,18 +105,27 @@
 			<ul class="filetree">			
 			</ul>
 		</div>
-		<div style="height:24px;">
+		<div style="height:50px; margin:5px 0;">
+            <div id="nowSearchType" style="margin:5px 0;">
+				<input type="radio" name="type" id="t_1" checked="checked"/>
+				<label for="t_1"><script>T("Local_File")</script></label>
+				<input type="radio" name="type" id="t_2" />
+				<label for="t_2"><script>T("Remote_File")</script></label>
+			</div>
 			<table>
 				<tr>
 					<td style="text-align:right; cursor:default; font-size:14px;"><script>T("File_Type")</script></td>
 					<td>
 						<div id="type" class="select" style="width:133px;"><input data="15" value="All" /><a class="hover"></a></div>
-						<ul class="option">
-							<li><input data="15" value="All" /></li>
+						<ul class="option">    
+                            <li><input data="15" value="All" /></li>
 							<li><input data="1" value="Timing" /><span class="typeColor" style="background:#F00"></span></li>
 							<li><input data="2" value="Mobile" /><span class="typeColor" style="background:#33CC00"></span></li>
 							<li><input data="4" value="Sensor" /><span class="typeColor" style="background:#FFFF00"></span></li>
-							<li><input data="8" value="Manual" /><span class="typeColor" style="background:#0000FF"></span></li>	
+							<li><input data="8" value="Manual" /><span class="typeColor" style="background:#0000FF"></span></li>
+                            <li><input data="2" value="Manual" /><span class="typeColor" style="background:#0000FF"></span></li>
+                           <!-- <li><input data="4" value="Sensor" /><span class="typeColor" style="background:#FFFF00"></span></li>-->
+							<li><input data="8" value="Mobile" /><span class="typeColor" style="background:#33CC00"></span></li>		
 						</ul>
 					</td>
 				</tr>
@@ -153,7 +172,122 @@
 			<div class="hover seek" onclick="checkUserRightBtn(1<<4,0,'backupSearchFile');" title="Start_Search"><script>T("Start_Search")</script></div>
 		</div>
 	</div>
-	<div id="search_result">
+	<div id="search_local_result" class="search_result" style="display:block;">
+		<table class="table_backup" style="height:24px; overflow:auto; width:100%;" cellpadding="0" cellspacing="0">
+           <thead>
+            <tr>
+              <td class="no_border" id="now_time" style="text-algin:center">00:00:00</td>
+              <td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td>
+              <td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
+              <td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td>
+              <td>21</td><td>22</td><td>23</td>
+            </tr>
+            </thead>
+		</table>
+        <table id="windowFile" cellpadding="0" cellspacing="0" class="table_backup synCheckboxClick" style="width:100%;overflow-y:auto; overflow-x:hidden;" >
+         
+			<tr><td class="no_border"><input id="chk_1" type="checkbox" /><label for="chk_1"><span><script>T("wind")</script>1</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+			<tr><td class="no_border"><input id="chk_2" type="checkbox" /><label for="chk_2"><span><script>T("wind")</script>2</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_3" type="checkbox" /><label for="chk_3"><span><script>T("wind")</script>3</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_4" type="checkbox" /><label for="chk_4"><span><script>T("wind")</script>4</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_5" type="checkbox" /><label for="chk_5"><span><script>T("wind")</script>5</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_6" type="checkbox" /><label for="chk_6"><span><script>T("wind")</script>6</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_7" type="checkbox" /><label for="chk_7"><span><script>T("wind")</script>7</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_8" type="checkbox" /><label for="chk_8"><span><script>T("wind")</script>8</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_9" type="checkbox" /><label for="chk_9"><span><script>T("wind")</script>9</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_10" type="checkbox" /><label for="chk_10"><span><script>T("wind")</script>10</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_11" type="checkbox" /><label for="chk_11"><span><script>T("wind")</script>11</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_12" type="checkbox" /><label for="chk_12"><span><script>T("wind")</script>12</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_13" type="checkbox" /><label for="chk_13"><span><script>T("wind")</script>13</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_14" type="checkbox" /><label for="chk_14"><span><script>T("wind")</script>14</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_15" type="checkbox" /><label for="chk_15"><span><script>T("wind")</script>15</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_16" type="checkbox" /><label for="chk_16"><span><script>T("wind")</script>16</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_17" type="checkbox" /><label for="chk_17"><span><script>T("wind")</script>17</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_18" type="checkbox" /><label for="chk_18"><span><script>T("wind")</script>18</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_19" type="checkbox" /><label for="chk_19"><span><script>T("wind")</script>19</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_20" type="checkbox" /><label for="chk_20"><span><script>T("wind")</script>20</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_21" type="checkbox" /><label for="chk_21"><span><script>T("wind")</script>21</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_22" type="checkbox" /><label for="chk_22"><span><script>T("wind")</script>22</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_23" type="checkbox" /><label for="chk_23"><span><script>T("wind")</script>23</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_24" type="checkbox" /><label for="chk_24"><span><script>T("wind")</script>24</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_25" type="checkbox" /><label for="chk_25"><span><script>T("wind")</script>25</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_26" type="checkbox" /><label for="chk_26"><span><script>T("wind")</script>26</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_27" type="checkbox" /><label for="chk_27"><span><script>T("wind")</script>27</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_28" type="checkbox" /><label for="chk_28"><span><script>T("wind")</script>28</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_29" type="checkbox" /><label for="chk_29"><span><script>T("wind")</script>29</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_30" type="checkbox" /><label for="chk_30"><span><script>T("wind")</script>30</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_31" type="checkbox" /><label for="chk_31"><span><script>T("wind")</script>31</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_32" type="checkbox" /><label for="chk_32"><span><script>T("wind")</script>32</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_33" type="checkbox" /><label for="chk_33"><span><script>T("wind")</script>33</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_34" type="checkbox" /><label for="chk_34"><span><script>T("wind")</script>34</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_35" type="checkbox" /><label for="chk_35"><span><script>T("wind")</script>35</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_36" type="checkbox" /><label for="chk_36"><span><script>T("wind")</script>36</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_37" type="checkbox" /><label for="chk_37"><span><script>T("wind")</script>37</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_38" type="checkbox" /><label for="chk_38"><span><script>T("wind")</script>38</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_39" type="checkbox" /><label for="chk_39"><span><script>T("wind")</script>39</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_40" type="checkbox" /><label for="chk_40"><span><script>T("wind")</script>40</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_41" type="checkbox" /><label for="chk_41"><span><script>T("wind")</script>41</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_42" type="checkbox" /><label for="chk_42"><span><script>T("wind")</script>42</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_43" type="checkbox" /><label for="chk_43"><span><script>T("wind")</script>43</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_44" type="checkbox" /><label for="chk_44"><span><script>T("wind")</script>44</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_45" type="checkbox" /><label for="chk_45"><span><script>T("wind")</script>45</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_46" type="checkbox" /><label for="chk_46"><span><script>T("wind")</script>46</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_47" type="checkbox" /><label for="chk_47"><span><script>T("wind")</script>47</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<tr><td class="no_border"><input id="chk_48" type="checkbox" /><label for="chk_48"><span><script>T("wind")</script>48</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+            <tr><td class="no_border"><input id="chk_49" type="checkbox" /><label for="chk_49"><span><script>T("wind")</script>49</span></label></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			</tr>
+
+		</table>	
+	</div>
+    <div id="search_result" class="search_result" style="display:none;">
 			<table class="thead">
 				<thead style="border:0; font-size: 14px;">
 					<tr>
@@ -200,551 +334,7 @@
 <script type="text/javascript" src="treeview/jquery.treeview.edit.js"></script>
 
 <script type="text/javascript" src="js/ocxfunction.js"></script>
-<script type="text/javascript">
-var oPlayBack={},  // 远程回访控件对象
-	oBackup={},    // 备份控件对象
-	now = 0,	   // 当前下载的第几个文件
-	recFile=[],    // 搜索文件
-	usedUid = [],
-	nowPage=-1,
-	perPageNum=100;
-
-	$(function(){
-		oPlayBack = $('#playback')[0];
-		oBackup = $('#backup')[0];
-		autoSearchDev = $('#atuoSearchDevice')[0];
-         
-		 var username = autoSearchDev.getCurrentUser();
-		  username && $('.top_nav div span:eq(1)').html(username);
-		 
-		$('tbody.synCheckboxClick').on('click','input:checkbox',function(){
-			if(oBackup.getProgress() != 0){
-				return;
-			}
-		})
-       
-		$('tbody.synCheckboxClick').each(function(){
-			$(this).SynchekboxClick();
-		})
-		
-		//文件排序
-		$('#search_result thead:eq(0) td:gt(1)').mousedown(function(){ 
-			$(this).css('background-position','0 -20px');
-		}).mouseup(function(){ 
-			$(this).css('background-position','0 0');
-			var type = $(this).attr('sort');
-			if(type && recFile){ // 文件排序重画UI
-				$('#search_resultFile').html('');
-				var sorType='',
-					node = $(this);
-
-				if(type == 'Time'){
-					node = $(this).parent('tr').find('td[sort="Time"]');
-				}
-				if($(this).attr('sorType')){
-					sorType = 'Des';
-					node.removeAttr('sorType');
-				}else{
-					sorType = 'Asc';
-					node.attr('sorType',1);
-				}
-				reSort_2UI(type+sorType);			
-			}
-		}).mouseout(function(){
-			$(this).css('background-position','0 0');
-		})
-
-		initOxcDevListStatus();
-         
-		 
-		oBackup.AddEventProc('RecordDirPath','getDirCallback(data)');  //远程备份获取备份路径
-		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
-		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
-	    
-		autoSearchDev.AddEventProc('useStateChange','useStateChange(ev)');
-		autoSearchDev.startGetUserLoginStateChangeTime();
-		AddActivityEvent('Validation','Validationcallback(data)');
-		
-		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
-		   var action = $(this).attr('class').split(' ')[0];
-		    addMouseStyle($(this),action,1<<4);
-	       })
-	})///
-
-	$(window).resize(contentMax);
-	
-	function Validationcallback(data){ //id按钮权限验证
-	  //console.log(data);
-		if(data.ErrorCode=="1"){
-			autoSearchDev.showUserLoginUi(336,300);
-		}else if(data.ErrorCode=="2"){
-			showLimitTips();
-			var timer =setTimeout(function(){
-				closeMenu();
-				clearTimeout(timer);
-			},1000);
-		}
-	}
-   
-	function RecFileInfoCallback(data){
-		//console.time('---------------搜索到文件回调---------------');
-		
-		for ( i in data){
-			recFile.push($.parseJSON(data[i]));
-		}
-
-		//console.log(recTotal+'//'+recFile.length);
-
-		//if(recTotal==recFile.length)
-		var l = $('#page span').length;
-		$('<span onclick="selectPage('+l+',this)">'+(l+1)+'</span>').appendTo($('#page'));
-
-		if(nowPage == -1){
-			//console.log('-----------第一页--------')
-			$('#page span:first').addClass('sel');
-			nowPage=0;
-			selectPage(nowPage);
-		}
-		
-		showRecProgress((l+1)*100);
-
-		//console.timeEnd('---------------搜索到文件回调---------------');
-
-	}
-
-	function reSort_2UI(sortfn){
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})
-		}
-		var fn = window[sortfn],
-			start = nowPage*perPageNum;
-			nowPageFile = recFile.slice(start,(start+perPageNum+1)).sort(fn);
-		//console.log('----------文件重绘第:'+nowPage+'页-'+start+'到'+(start+perPageNum+1)+'------');
-		//console.log(nowPageFile);
-		RecFile2UI(nowPageFile);
-	}
-
-	function RecFile2UI(nowPageFile){
-		/*console.log(nowPageFile);
-		console.log(splitBY1Hour(nowPageFile));*/
-		nowPageFile = splitBY1Hour(nowPageFile);
-		//console.time('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
-
-			
-		var sDevName = $('div.dev_list li.sel span.device').data('data').device_name,
-			str ='',
-			oParent = $('#search_resultFile');
-        var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
-		    isJalaali = document.getElementById('commonLibrary').getIsPersian(),
-			isChecked = bo&&isJalaali;
-			
-		for(var i=0;i<nowPageFile.length;i++){ 
-			var b = 1;
-			var data = nowPageFile[i];
-			var uid = sDevName+'_'+data.channelnum+'_'+data.types+'_'+data.start+'_'+data.end;
-			var type =typeHint[data.types];
-			var typeColor = color[data.types];
-            var start = isChecked ? solar_to_jalaali(data.start.split(' ')[0])+ ' ' + data.start.split(' ')[1] : data.start ;
-		    var end = isChecked ? solar_to_jalaali(data.end.split(' ')[0])+ ' ' + data.end.split(' ')[1] : data.end ;
-			for(var k=0;k<usedUid.length;k++){
-				if(usedUid[k] == uid){
-					b=0;
-				}
-			}
-			
-			if(b){
-				str+='<tr uid="'+uid+'"><td><input type="checkbox" /></td><td>'+sDevName+'</td><td>'+data.channelnum+'</td><td><span class="type"><span class="hint">'+type+'</span><span class="color" style="background:'+typeColor+'"></span></span></td><td>'+start+'</td><td>'+end+'</td><td class="progess"><div><span></span></div><a></a></td></tr>';
-			}
-		}
-		var obj = $(str).appendTo(oParent);
-
-		var warp = $('#file_warp');
-
-		if($('#search_resultFile').height() > warp.height() && !warp.attr('b')){
-			theadtbody(warp.find('thead td'),warp.prev('table').find('td'));
-			warp.attr('b',0);
-		}
-		/*console.time('++++++文件列表完成后数据绑定+++++++++');	
-		for(var i=0;i<recFile.length;i++){ 
-			var data = recFile[i];
-			var uid = sDevName+'_'+data.channelnum+'_'+data.start+'_'+data.end;
-			//console.log(uid);
-			//obj.is('[uid="'+uid+'"]').find(':checkbox').data('data',data);
-			obj.each(function(){
-				if($(this).attr('uid') == uid){
-					$(this).find(':checkbox').data('data',data);
-				}
-			})
-		}
-		console.timeEnd('++++++文件列表完成后数据绑定+++++++++');	*/
-
-		//console.timeEnd('+++++++开始绘制搜索到的文件UI+++++++++'+nowPageFile.length);
-	}
-
-	function splitBY1Hour(arr){
-		var a=[];
-		for(var i=0,j=arr.length;i<j;i++){
-			
-			//console.log(arr[i]);
-			if(time2Sec(arr[i].end.split(' ')[1]) - time2Sec(arr[i].start.split(' ')[1]) > 3600){
-				/*console.log('当前文件时间大于一小时');
-				console.log(arr[i]);*/
-				a = a.concat(SPLIT(arr[i]));
-			}else{
-				a.push(arr[i]);
-			}
-		}
-
-		return a;
-
-		function SPLIT(obj){
-			var date = obj.start.split(' ')[0] || obj.end.split(' ')[0],
-				start = obj.start.split(' ')[1],
-				end = obj.end.split(' ')[1],
-				aa=[],
-				st = start;
-
-			for(var j=0;j<24;j++){
-
-				var o = {},
-
-					newed = returnTime(parseInt((time2Sec(st)/3600),10)*3600+3599);
-
-					newed = newed > end ? end : newed;
-
-				//console.log(newed);
-
-				if(newed >= end){
-					//console.log(st+'//'+newed+'-----------------'+(newed >= end));
-					//console.log(aa);
-					return aa;
-				}
-
-				o.channelnum = obj.channelnum;
-				o.filename = obj.filename;
-				o.index = obj.index;
-				o.start = date +' '+st;
-				o.types = obj.types;
-				o.end = date +' '+ newed;
-				st = returnTime(parseInt(time2Sec(newed))+1);
-
-				aa.push(o);
-			}
-		}
-
-	}
-
-	function contentMax(){
-		var H = $(window).height();
-		var W = $(window).width();
-			W = W <=1000 ? 1000 : W;
-			H = H <=600 ? 600 : H;
-		var main = $('#search_result').css({
-			height: H - 138,
-			width: W - 238
-		});
-
-		$('#file_warp').height(main.height() -18).find('thead td:gt(3)').not(':last').width(($('#file_warp').width()-700)/2);
-
-		theadtbody($('#file_warp thead td'),$('#search_result thead:first td'));
-
-		$('#search_device').css({
-			left:main.width()+2
-		})
-		$('#foot').css({
-			top:main.height() + 110
-		})
-		$('#top').width(main.width()+238);
-		$('div.dev_list').height(main.height()-163);
-		$('#file_bottom').css({
-			width:main.width(),
-			top:main.height()+78
-		});
-	}
-
-	function getDir(){
-		if($('#search_resultFile input:checked').length == 0){
-			return;
-		}
-		oBackup.ChooseDir();
-	};
-
-	var path = '',
-		now = 0,
-		timer = null;
-	
-	function getDirCallback(data){ 
-		now = 0;
-		path = data.path;
-		if(path == '')
-			return;
-
-		var oList = $('#search_result tr').find('td.progess span').stop(true,true).css('width',0).end().has(':checked');
-		if(!oList.length || oList.length == 0){
-			return;
-		}
-
-		startDownload();
-	}
-
-	function startDownload(){
-		/*if(now >= oList.length){
-			show('所有选择的文件下载完成!');
-			now=0;
-			return false;
-		}*/
-		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
-		var oDevData = $('div.dev_list li.sel span.device').data('data');
-		var fileData = oList.eq(now).attr('uid').split('_');
-		/*console.log(fileData);
-		console.log('--------选中设备--------')*/
-		/*console.log($('div.dev_list li.sel span.device'));
-		console.log(oDevData);
-		console.log('--------选中通道--------')
-		console.log(oList.eq(now));
-		console.log(fileData);*/
-		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
-			alert(T('File_download_failed',(parseInt(now,10)+1)));
-			now++;
-			startDownload();
-		}
-		/*oList = oList.filter(function(index){
-			if(index == 0){ 
-				var fileData = $(this).data('data');
-				
-			}
-			return index != 0;
-		})*/
-	}
-	function progressCallback(data){
-		//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+data.parm+'---------自动抛出进度---------');
-		var oWarp = $('#search_result tr').has('input:checked').eq(now);
-			oWarp.find('a').one('click',function(){
-				backupstop();
-				//show('当前第'+now+'个任务已被终止!');
-				return;
-			})
-		var width = (data.parm/100)*oWarp.find('div').width();
-			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
-	}
-	
-	/*function syndownload(){   //同步下载文件状态.
-		return;
-		var i=0;
-		var oWarp = $('#search_result tr').has('input:checked').eq(now);
-			oWarp.find('a').one('click',function(){
-				backupstop();
-				//show('当前第'+now+'个任务已被终止!');
-				return;
-			})
-		timer = setInterval(function(){
-			i++;
-			var p = oBackup.getProgress();
-			var width = p*oWarp.find('div').width();
-			oWarp.find('.progess span').stop(true,true).animate({width:width},1000);
-			//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+p+'---------手动获取进度---------::所耗时间为'+i+'秒!');
-			if(p == 1){
-				//clearInterval(timer);
-				$('#search_result tr').has('input:checked').eq(now).prop('checked',false).find('span').width(oWarp.find('div').width());
-			}
-		},1000);
-		//show('正在下载当前选中文件的第'+now+'个!');
-	}*/
-
-	function BackupStatusChangeCallback(data){
-		var oList = $('#search_result input:checked'),
-			oWarp = oList.eq(now).parent('td').parent('tr'),
-			types = data.types;
-		console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'----------------------');
-		/*if(types == 'startBackup'){
-			syndownload();
-		}else{*/
-
-			if(types == 'backupFinished'){ 
-				console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
-				oWarp.find('.progess span').css('width','100%');
-				     //.end().find('input').prop('checked',false);
-			}
-
-			if(types=='insufficient-disk'){
-				backupstop();
-				oList.prop('checked',false);
-				alert(lang.Insufficient_Disk_Space);
-				return;
-			}
-
-			if( types == 'fail'){
-				console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
-				oWarp.find('.progess').find('span').css('background-color','#ccc')
-									  .end().find('div').css('border-style','dashed');	
-			}
-			if( types == 'stopBackup'){
-				console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
-				//clearInterval(timer);
-				now++;
-				if(now == oList.length){
-					backupstop();
-					return;
-				}
-				oWarp.find('a').off();
-				startDownload();
-			}
-		/*}*/
-	}
-
-	function backupstop(){
-		console.log('所有选择的文件下载完成!!!');
-		oBackup.stopBackup();
-		now=0;
-		$('#search_result input:checked').prop('checked',false);
-		//clearInterval(timer);
-	}
-
-	function backupSearchFile(){
-		//console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-		bool = 0;
-		if(searchSTOP){
-			searchSTOP = 0;
-		}else{
-			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
-			return;
-		}
-		$('#file_warp').removeAttr('b');
-		usedUid = [];
-		recFile=[];
-		nowPage=-1;
-		$('#page').html('');
-		console.log('++++++++开始搜索+++++++++++');
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			/*obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})*/
-		}
-		ocxsearchVideo();
-	}
-
-	function initOxcDevListStatus(){
-		areaList2Ui(1);
-
-		$('div.dev_list span.device').each(function(){
-			$(this).parent('li').on({
-				dblclick:function(){
-					checkUserRightdiv(1<<4,0,"backupSearchFile");
-			     },
-				click:function(){
-					$('div.dev_list li').removeClass('sel');
-					$(this).addClass('sel');
-				}
-			})
-		})
-
-
-		contentMax();
-
-		initrecFileOcx($('#search_resultFile tr').filter(function(){return $(this).find(':checkbox').not('checked')}));
-	}
-
-	function selectAll(){
-		var oCheckbox = $('#search_resultFile :checkbox');
-
-		var b = true;
-		oCheckbox.each(function(){
-			if(!$(this).is(':checked')){
-				b = true;
-			}else{
-				b = false;
-			}
-
-		})
-		oCheckbox.prop('checked',b);
-	}
-
-	function selectPage(num,oSel){
-		$(oSel).addClass('sel').siblings('span').removeClass('sel');
-		var obj =$('#search_resultFile tr');
-		if(obj.length != 0){
-			obj.filter(function(){
-				return !$(this).find(':checkbox').is(':checked');
-			}).remove();//远程备份中正在下载的文件不被删除.
-
-			obj.has(':checked').each(function(){
-				usedUid.push($(this).attr('uid'));
-			})
-		}
-		usedUid = unique(usedUid);
-		/*console.log('----------------重新选择的页数:'+num+'--------------------------');
-		console.log(usedUid);*/
-		nowPage=num;
-		reSort_2UI('ChlAsc');
-	}
-	function unique(arr){ 
-		var str = []; 
-		for(var i = 0,len = arr.length;i < len;i++){ 
-			!RegExp(arr[i],'g').test(str.join(",")) && (str.push(arr[i])); 
-		} 
-		return str; 
-	} 
-	//验证用户是否有权限
-  function checkUserRight(uicode,uisubcode){
-	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
-	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	// console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
-		return itema;
- }
-  function checkUserRightBtn(uicode,uisubcode,fn,num){
-	 // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
-	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
-	  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
-		if(itema==0){
-			window[fn](num);
-		}else if(itema==1){
-			//autoSearchDev.showUserLoginUi(336,300);
-		}else{
-		   showLimitTips();
-		}
- }
- function checkUserRightdiv(uicode,uisubcode,fn,num){
-	 
-	 var itema = checkUserRight(uicode,uisubcode);
-			if(itema==0){
-				window[fn](num);
-			}else if(itema==1){
-			  var show = autoSearchDev.showUserLoginUi(336,300);
-			  if(show==0){
-				   checkUserRightdiv(uicode,uisubcode,fn,num);
-			  } 
-		    }else{
-		        showLimitTips();
-		    }
-	 
- }
- //用户登录状态回调函数
-    function useStateChange(ev){
-	//	console.log(ev);
-		if(ev.status==0){
-		 $('.top_nav p span:eq(1)').html(ev.userName);	
-		}else{
-		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
-		}
-	}
-	
-	 function lock(){
-	autoSearchDev.showUserLoginUi(336,300); 
- }
-</script>
+<script type="text/javascript" src="js/backup.js"></script>
 <script type="text/javascript" src="js/searchPlayBackFile.js"></script>
 </body>
 </html>

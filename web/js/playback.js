@@ -113,10 +113,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		$('#top div.top_nav li').not('.active').click(function(){
 			dragStopMove();
 		})
-		 
-		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
-		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
-		oPlaybackLocl.AddEventProc('ThrowException','ThrowExceptionCallback(data)');
+
 		
         autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		 AddActivityEvent('Validation','Validationcallback(data)');
