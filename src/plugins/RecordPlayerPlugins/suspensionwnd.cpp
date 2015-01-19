@@ -18,10 +18,11 @@ void SuspensionWnd::mousePressEvent( QMouseEvent *ev )
 
 void SuspensionWnd::mouseReleaseEvent( QMouseEvent *ev )
 {
-	if (m_cbFunc && m_puser){
+	QPoint releasePoint = ev->pos();
+	if (m_pressPoint != releasePoint && m_cbFunc && m_puser){
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
-		msg.insert("ZoRect", QRect(m_pressPoint, ev->pos()));
+		msg.insert("ZoRect", QRect(m_pressPoint, releasePoint));
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
 		m_cbFunc(msg, m_puser);
 	}
@@ -37,7 +38,7 @@ void SuspensionWnd::addWnd( QWidget* pWnd )
 	}
 }
 
-void SuspensionWnd::enterEvent(QEvent *ev)
+void SuspensionWnd::closeEvent(QCloseEvent *ev)
 {
 	if (QEvent::Close == ev->type()){
 		QWidget* pwnd = m_wndList.takeLast();
@@ -45,11 +46,10 @@ void SuspensionWnd::enterEvent(QEvent *ev)
 			QVariantMap msg;
 			msg.insert("EvName", QString("CloseWnd"));
 			msg.insert("CurWnd", (quintptr)pwnd);
+			msg.insert("ListSize", m_wndList.size());
 			m_cbFunc(msg, m_puser);
 		}
-		if (m_wndList.isEmpty()){
-			this->close();
-		}
+		ev->ignore();
 	}
 }
 

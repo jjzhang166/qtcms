@@ -11,12 +11,13 @@
 
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
 SuspensionWnd* RecordPlayerView::ms_susWnd = NULL;
-
+int RecordPlayerView::ms_playStatus = 4;//stop local play
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
 	: QWidget(parent),
 	m_pLocalPlayer(NULL),
-	_bIsFocus(false)
+	_bIsFocus(false),
+	m_bPlaying(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -208,11 +209,12 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 	QRect rect = this->rect();
 	QPoint releasePoint = ev->pos();
 	//if release point in current window
-	if (m_pressPoint != releasePoint && rect.contains(m_pressPoint) && rect.contains(releasePoint)){
+	if (m_pressPoint != releasePoint && rect.contains(m_pressPoint) && rect.contains(releasePoint) && ms_playStatus < 4 && m_bPlaying){
 		//if no suspension window, create it
 		if (!ms_susWnd){
 			ms_susWnd = new SuspensionWnd(this);
 			ms_susWnd->setWindowFlags(Qt::Tool | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+			ms_susWnd->setWindowTitle(QString("Digital Zoom"));
 			ms_susWnd->setCbFunc(cbReciveMsg, this);
 			ms_susWnd->show();
 		}
@@ -241,6 +243,24 @@ void RecordPlayerView::recMsg( QVariantMap msg )
 		msg.remove("EvName");
 		pCom->setInfromation(evName, msg);
 	}
+	if ("CloseWnd" == evName){
+		if (!msg["ListSize"].toInt()){
+			ms_susWnd->close();
+			delete ms_susWnd;
+			ms_susWnd = NULL;
+		}
+	}
+}
+
+void RecordPlayerView::setPlayStatus( int status )
+{
+	ms_playStatus = status;
+}
+
+void RecordPlayerView::setPlayingFlag( bool bPlaying )
+{
+	qDebug()<<(int)this<<"origin flag:"<<m_bPlaying<<" set flag:"<<bPlaying;
+	m_bPlaying = bPlaying;
 }
 
 void cbReciveMsg( QVariantMap evMap, void* pUser )

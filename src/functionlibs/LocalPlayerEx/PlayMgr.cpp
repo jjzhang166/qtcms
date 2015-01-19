@@ -657,6 +657,7 @@ void PlayMgr::addWnd( QWidget* pWnd, QString sName )
 	getZoomInterface((void**)&pZoomInterface);
 	if (pZoomInterface){
 		pZoomInterface->addExtendWnd(pWnd, sName);
+		pZoomInterface->setRenderRectPen(5, 255, 255, 0);
 		pZoomInterface->Release();
 	}
 }
@@ -676,7 +677,7 @@ void PlayMgr::setZoomRect( QRect rect )
 	IVideoRenderDigitalZoom *pZoomInterface = NULL;
 	getZoomInterface((void**)&pZoomInterface);
 	if (pZoomInterface){
-		pZoomInterface->setRenderRect(rect.x(), rect.y(), rect.width(), rect.height());
+		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom());
 		pZoomInterface->Release();
 	}
 }

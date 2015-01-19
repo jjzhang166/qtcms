@@ -31,6 +31,9 @@ public:
 	QVariantMap ScreenShot();
 	void SetFocus(bool flags);
 	void recMsg(QVariantMap msg);
+	void setPlayingFlag(bool bPlaying);
+
+	static void setPlayStatus(int status);
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -45,6 +48,7 @@ protected:
 private:
 	static bool m_bGlobalAudioStatus;
 	static SuspensionWnd *ms_susWnd;
+	static int ms_playStatus;
 
 	ILocalPlayerEx* m_pLocalPlayer;
 	QPixmap _ScreenShotImage;
@@ -53,6 +57,7 @@ private:
 	QMenu m_WindowMenu;
 	
 	QPoint m_pressPoint;
+	bool m_bPlaying;
 };
 
 

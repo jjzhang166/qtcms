@@ -306,6 +306,7 @@ int RecordPlayer::GroupPlay()
 // 	AudioEnabled(m_bIsOpenAudio);
 // 	SetVolume(m_uiPersent);
 	m_CurStatus=STATUS_NORMAL_PLAY;
+	RecordPlayerView::setPlayStatus(m_CurStatus);
 	return 0;
 }
 int RecordPlayer::GroupPause()
@@ -355,11 +356,13 @@ int RecordPlayer::GroupStop()
 		return 1;
 	}
 	m_CurStatus=STATUS_STOP;
+	RecordPlayerView::setPlayStatus(m_CurStatus);
 
 	//clear up residual picture when stop
 	for (int i = 0; i < ARRAY_SIZE(m_subRecPlayerView); i++)
 	{
 		m_subRecPlayerView[i].update();
+		m_subRecPlayerView[i].setPlayingFlag(false);
 	}
 	m_wndNum = 0;
 
@@ -759,6 +762,7 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 		return 1;
 	}
 
+	m_subRecPlayerView[m_wndNum%ARRAY_SIZE(m_subRecPlayerView)].setPlayingFlag(true);
 // 	qDebug()<<(int)this<<" AddFileIntoPlayGroupEx m_wndNum:"<<m_wndNum;
 	int nRet = pLocalPlayerEx->AddFileIntoPlayGroupEx(nWndId, &m_subRecPlayerView[m_wndNum%ARRAY_SIZE(m_subRecPlayerView)], date, start, end, nTypes);
 	pLocalPlayerEx->Release();

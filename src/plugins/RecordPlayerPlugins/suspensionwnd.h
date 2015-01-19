@@ -23,7 +23,7 @@ private:
 	virtual void mousePressEvent(QMouseEvent *);
 // 	virtual mouseMoveEvent(QMouseEvent *);
 	virtual void mouseReleaseEvent(QMouseEvent *);
-	virtual void enterEvent(QEvent *ev);
+	virtual void closeEvent(QCloseEvent *ev);
 private:
 	QPoint m_pressPoint;
 	QList<QWidget*> m_wndList;

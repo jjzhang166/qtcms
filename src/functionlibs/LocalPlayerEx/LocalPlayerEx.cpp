@@ -1096,7 +1096,13 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 {
 	QVariant wnd = info.value("CurWnd");
  	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
-	PlayMgr *playMgr = m_wndMap[pWnd], *lastPlayMgr = NULL;
+	PlayMgr *playMgr = NULL, *lastPlayMgr = NULL;
+	QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
+	if (iter == m_wndMap.end()){
+		return 1;
+	}
+	playMgr = *iter;
+
 	if ("VedioZoom" == msgName){
 		m_susWnd = (QWidget *)info.value("SusWnd").toUInt();
 		if (m_wndList.contains(pWnd)){
