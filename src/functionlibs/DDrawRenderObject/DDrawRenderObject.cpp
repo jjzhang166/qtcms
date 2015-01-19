@@ -436,7 +436,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
 
 				RECT rcSrc;
-				SetRect(&rcSrc,0,0,width,height);
+				//SetRect(&rcSrc,0,0,width,height);
+				setZoomRect(rcSrc,width,height);
 				g_csClipper.Lock();
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
@@ -459,7 +460,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				::ClientToScreen(m_hPlayWnd,&ptRB);
 				SetRect(&rcDsp,ptTL.x,ptTL.y,ptRB.x,ptRB.y);
 				RECT rcSrc;
-				SetRect(&rcSrc,0,0,width,height);
+				//SetRect(&rcSrc,0,0,width,height);
+				setZoomRect(rcSrc,width,height);
 				g_csClipper.Lock();
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
@@ -528,7 +530,9 @@ void CDDrawRenderObject::DrawARectangle( HDC hdc)
 	HPEN hpen, hpenOld;
 
 	// Create a green pen.
-	hpen = CreatePen(PS_SOLID, 2, RGB(0, 255, 0));
+	int nPenWidth=m_nRectSurfaceWidth/400;
+
+	hpen = CreatePen(PS_SOLID, nPenWidth, RGB(0, 255, 0));
 	// Create a red brush.
 	int nStartX;
 	int nStartY;
@@ -585,7 +589,14 @@ void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
 		SetRect(&tRect,0,0,nWidth,nHeight);
 	}else{
 		RECT tExtendWndRect;
-		::GetClientRect(m_hExtendWnd,&tExtendWndRect);
+		if (m_hExtendWnd==NULL)
+		{
+			tExtendWndRect=m_nLastExtendWndRect;
+		}else{
+			::GetClientRect(m_hExtendWnd,&tExtendWndRect);
+			m_nLastExtendWndRect=tExtendWndRect;
+		}
+		
 		int nStartX;
 		int nStartY;
 		int nEndX;

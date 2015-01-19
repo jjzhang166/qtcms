@@ -24,7 +24,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap)));
-
+		connect(&m_sPreviewWnd[i],SIGNAL(sgShutDownDigtalZoom()),this,SLOT(shutDownDigtalZoom()));
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -246,6 +246,41 @@ void qpreviewwindowsex::subWindowMousePress( QWidget* wnd,QMouseEvent * ev)
 		}else{
 			m_sPreviewWnd[i].setCurrentFocus(false);
 		}
+	}
+	bool bIsSuitForDigitalZoom=false;
+	int nCurrentWndIndex;
+	for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		if (&m_sPreviewWnd[i]==wnd)
+		{
+			m_sPreviewWnd[i].setCurrentFocus(true);
+			if (m_sPreviewWnd[i].isSuitForDigitalZoom())
+			{
+				bIsSuitForDigitalZoom=true;
+			}else{
+				//
+			}
+			nCurrentWndIndex=i;
+			break;;
+		}else{
+			//do nothing
+		}
+	}
+	if (bIsSuitForDigitalZoom)
+	{
+		m_sPreviewWnd[nCurrentWndIndex].showDigitalView();
+		for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+		{
+			if (&m_sPreviewWnd[i]==wnd)
+			{
+				//do nothing
+			}else{
+				//do nothing
+				m_sPreviewWnd[i].closeDigitalView();
+			}
+		}
+	}else{
+		//do nothing
 	}
 }
 
@@ -654,5 +689,25 @@ int qpreviewwindowsex::getPollInterval()
 		pLocalSetting->Release();
 	}
 	return inteval;
+}
+
+void qpreviewwindowsex::shutDownDigtalZoom()
+{
+	bool bIsDeInitDigtalView=true;
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		if (m_sPreviewWnd[i].getDigtalViewIsClose()==false)
+		{
+			bIsDeInitDigtalView=false;
+			break;;
+		}
+	}
+	if (!bIsDeInitDigtalView)
+	{
+		for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+		{
+			m_sPreviewWnd[i].deInitDigtalView();
+		}
+	}
 }
 

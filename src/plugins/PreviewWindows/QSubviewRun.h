@@ -126,6 +126,12 @@ public:
 	
 	QVariantMap screenShot();
 	tagDeviceInfo deviceInfo();
+
+	bool getDigtalViewIsClose();
+	void deInitDigitalView();
+	bool isSuitForDigitalZoom();
+	void showDigitalView();
+	void closeDigitalView();
 public:
 	//call back
 	int cbCConnectState(QString evName,QVariantMap evMap,void *pUser);
@@ -153,9 +159,9 @@ private:
 	void enableStretch();
 public slots:
 	void slstopPreviewrun();
-	bool addExtendWnd();
-	void removeExtendWnd();
-	void setRenderRect(QPoint tStartPoint,QPoint tEndPoint);
+	bool slAddExtendWnd();
+	void slRemoveExtendWnd();
+	void SLSetRenderRect(QPoint tStartPoint,QPoint tEndPoint);
 private slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slsetRenderWnd();
@@ -164,6 +170,7 @@ private slots:
 signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgsetRenderWnd();
+	void sgShutDownDigtalZoom();
 protected:
 	void run();
 private:

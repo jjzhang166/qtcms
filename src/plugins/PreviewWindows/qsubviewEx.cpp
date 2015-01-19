@@ -46,6 +46,7 @@ QWidget(parent),
 	connect(m_pRecorderAction,SIGNAL(triggered(bool)),this,SLOT(slMenRecorder()));
 	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
 	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretchEx(bool)));
+	connect(&m_sSubviewRun,SIGNAL(sgShutDownDigtalZoom()),this,SIGNAL(sgShutDownDigtalZoom()));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 }
@@ -872,6 +873,31 @@ void qsubviewEx::enableStretchEx( bool bEnable )
 	m_bStretch = bEnable;
 	m_sSubviewRun.enableStretch(bEnable);
 	m_pStreachVideo->setChecked(bEnable);
+}
+
+bool qsubviewEx::getDigtalViewIsClose()
+{
+	return m_sSubviewRun.getDigtalViewIsClose();
+}
+
+void qsubviewEx::deInitDigtalView()
+{
+	return m_sSubviewRun.deInitDigitalView();
+}
+
+bool qsubviewEx::isSuitForDigitalZoom()
+{
+	return m_sSubviewRun.isSuitForDigitalZoom();
+}
+
+void qsubviewEx::showDigitalView()
+{
+	return m_sSubviewRun.showDigitalView();
+}
+
+void qsubviewEx::closeDigitalView()
+{
+	return m_sSubviewRun.closeDigitalView();
 }
 
 

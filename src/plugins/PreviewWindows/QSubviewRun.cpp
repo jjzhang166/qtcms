@@ -51,8 +51,9 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
-	connect(&m_tDigitalZoomView,SIGNAL(sgDrawRect(QPoint ,QPoint )),this,SLOT(setRenderRect(QPoint ,QPoint )));
-	connect(&m_tDigitalZoomView,SIGNAL(sgHideEvnet()),this,SLOT(removeExtendWnd()));
+	connect(&m_tDigitalZoomView,SIGNAL(sgDrawRect(QPoint ,QPoint )),this,SLOT(SLSetRenderRect(QPoint ,QPoint )));
+	connect(&m_tDigitalZoomView,SIGNAL(sgHideEvnet()),this,SLOT(slRemoveExtendWnd()));
+	connect(&m_tDigitalZoomView,SIGNAL(sgShowEvent()),this,SLOT(slAddExtendWnd()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(4000);
@@ -847,7 +848,7 @@ void QSubviewRun::switchStream()
 
 void QSubviewRun::openPTZ( int nCmd,int nSpeed )
 {
-	addExtendWnd();
+	m_tDigitalZoomView.show();
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
@@ -2228,7 +2229,7 @@ void QSubviewRun::enableStretch()
 	}
 }
 
-bool QSubviewRun::addExtendWnd()
+bool QSubviewRun::slAddExtendWnd()
 {
 	if (QThread::isRunning())
 	{
@@ -2259,7 +2260,7 @@ bool QSubviewRun::addExtendWnd()
 	return true;
 }
 
-void QSubviewRun::removeExtendWnd()
+void QSubviewRun::slRemoveExtendWnd()
 {
 	m_tDigitalZoomView.hide();
 	m_tVideoRenderLock.lock();
@@ -2280,11 +2281,11 @@ void QSubviewRun::removeExtendWnd()
 		//do nothing
 	}
 	m_tVideoRenderLock.unlock();
+	emit sgShutDownDigtalZoom();
 }
 
-void QSubviewRun::setRenderRect(QPoint tStartPoint,QPoint tEndPoint)
+void QSubviewRun::SLSetRenderRect(QPoint tStartPoint,QPoint tEndPoint)
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<tStartPoint<<tEndPoint;
 	m_tVideoRenderLock.lock();
 	if (NULL!=m_pIVideoRender)
 	{
@@ -2300,6 +2301,73 @@ void QSubviewRun::setRenderRect(QPoint tStartPoint,QPoint tEndPoint)
 		//do nothing
 	}
 	m_tVideoRenderLock.unlock();
+}
+
+bool QSubviewRun::getDigtalViewIsClose()
+{
+	return m_tDigitalZoomView.getCurrentViewIsClose();
+}
+
+void QSubviewRun::deInitDigitalView()
+{
+	m_tVideoRenderLock.lock();
+	if (NULL!=m_pIVideoRender)
+	{
+		IVideoRenderDigitalZoom *pVideoRender=NULL;
+		m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+		if (NULL!=pVideoRender)
+		{
+			QString sName;
+			pVideoRender->removeExtendWnd(sName);
+			pVideoRender->setRenderRect(0,0,0,0);
+			pVideoRender->Release();
+			pVideoRender=NULL;
+		}
+	}else{
+		//do nothing
+	}
+	m_tVideoRenderLock.unlock();
+}
+
+bool QSubviewRun::isSuitForDigitalZoom()
+{
+	if (QThread::isRunning())
+	{
+		m_tDigitalZoomView.show();
+		m_tVideoRenderLock.lock();
+		if (NULL!=m_pIVideoRender)
+		{
+			IVideoRenderDigitalZoom *pVideoRender=NULL;
+			m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+			if (NULL!=pVideoRender)
+			{
+				pVideoRender->Release();
+				pVideoRender=NULL;
+				m_tVideoRenderLock.unlock();
+				return true;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as pVideoRender is null";
+			}
+		}else{
+			//do nothing
+			qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as m_pIVideoRender is null";
+		}
+		m_tVideoRenderLock.unlock();
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as the thread is not running";
+		//do nothing
+	}
+	return false;
+}
+
+void QSubviewRun::showDigitalView()
+{
+	slAddExtendWnd();
+}
+
+void QSubviewRun::closeDigitalView()
+{
+	slRemoveExtendWnd();
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

@@ -59,6 +59,7 @@ private:
 	int m_nRectEndY;
 	int m_nRectSurfaceWidth;
 	int m_nRectSurfaceHeight;
+	RECT m_nLastExtendWndRect;
 };
 
 #endif

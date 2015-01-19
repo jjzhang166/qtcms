@@ -84,6 +84,8 @@ public slots:
 	void StartAutoPolling();
 	void StopAutoPolling();
 	void slPolling();
+	//电子放大
+	void shutDownDigtalZoom();
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();

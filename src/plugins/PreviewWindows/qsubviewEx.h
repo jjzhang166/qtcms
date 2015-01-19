@@ -65,6 +65,12 @@ public:
 	//设置当前焦点窗口
 	void setCurrentFocus(bool flags);
 	void setDataBaseFlush();
+
+	bool getDigtalViewIsClose();
+	void deInitDigtalView();
+	bool isSuitForDigitalZoom();
+	void showDigitalView();
+	void closeDigitalView();
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);
@@ -93,6 +99,7 @@ signals:
 	void sgAuthority(QVariantMap,QWidget *);
 	void sgbackToMainWnd();
 	void sgVerify(QVariantMap vmap);
+	void sgShutDownDigtalZoom();
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
