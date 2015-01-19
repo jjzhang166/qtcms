@@ -13,7 +13,6 @@
 #include <QPainter>
 #include <QTimer>
 #include "IUserManagerEx.h"
-#include "DigitalZoomView.h"
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser);
@@ -130,6 +129,6 @@ private:
 	int m_nWindowIndex;
 	bool m_bStretch; // 在对象内暂存状态，与配置中的状态一致，避免在调用菜单和其他操作的时候需要频繁读取配置
 	int m_chlId;
-	DigitalZoomView m_tDigitalZoomView;
+	
 };
 

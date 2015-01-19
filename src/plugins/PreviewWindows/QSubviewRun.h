@@ -27,6 +27,9 @@
 #include <IAudioPlayer.h>
 #include <qtconcurrentrun.h>
 #include <QMutex>
+#include <DigitalZoomView.h>
+#include <QPoint>
+#include <IVideoRenderDigitalZoom.h>
 typedef int (__cdecl *previewRunEventCb)(QString eventName,QVariantMap info,void *pUser);
 typedef struct _tagProcInfo{
 	previewRunEventCb proc;
@@ -130,7 +133,6 @@ public:
 	int cbCRecorderData( QString evName,QVariantMap evMap,void*pUser );
 	int cbCConnectError(QString evName,QVariantMap evMap,void*pUser );
 	int cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser);
-	int cbCDecodeFrameEx(QString evName,QVariantMap evMap,void*pUser);
 	int cbCRecordState(QString evName,QVariantMap evMap,void*pUser);
 	int cbCConnectRefuse(QString evName,QVariantMap evMap,void*pUser);
 	int cbCAuthority(QString evName,QVariantMap evMap,void*pUser);
@@ -151,6 +153,9 @@ private:
 	void enableStretch();
 public slots:
 	void slstopPreviewrun();
+	bool addExtendWnd();
+	void removeExtendWnd();
+	void setRenderRect(QPoint tStartPoint,QPoint tEndPoint);
 private slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slsetRenderWnd();
@@ -214,5 +219,7 @@ private:
 	int m_nMotionRecordTime;
 	QMutex m_tStepCodeLock;
 	bool m_bStretch; // 视频拉伸状态的暂存，创建渲染组件的时候，同时设置拉伸状态
+	DigitalZoomView m_tDigitalZoomView;
+	QMutex m_tVideoRenderLock;
 };
   

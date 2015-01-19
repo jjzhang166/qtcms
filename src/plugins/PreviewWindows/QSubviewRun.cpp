@@ -51,7 +51,8 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 {
 	connect(this,SIGNAL(sgbackToMainThread(QVariantMap)),this,SLOT(slbackToMainThread(QVariantMap)));
 	connect(this,SIGNAL(sgsetRenderWnd()),this,SLOT(slsetRenderWnd()),Qt::BlockingQueuedConnection);
-//	connect(&m_planRecordTimer,SIGNAL(timeout()),this,SLOT(slplanRecord()));
+	connect(&m_tDigitalZoomView,SIGNAL(sgDrawRect(QPoint ,QPoint )),this,SLOT(setRenderRect(QPoint ,QPoint )));
+	connect(&m_tDigitalZoomView,SIGNAL(sgHideEvnet()),this,SLOT(removeExtendWnd()));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(4000);
@@ -136,6 +137,7 @@ void QSubviewRun::run()
 							m_pIVideoDecoder=NULL;
 						}
 						pcomCreateInstance(CLSID_HiH264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pIVideoDecoder);
+						m_tVideoRenderLock.lock();
 						if (NULL!=m_pIVideoRender)
 						{
 							m_pIVideoRender->Release();
@@ -146,6 +148,7 @@ void QSubviewRun::run()
 						{
 							m_pIVideoRender->enableStretch(m_bStretch);
 						}
+						m_tVideoRenderLock.unlock();
 						if (NULL!=m_pRecordDat)
 						{
 							m_pRecordDat->Release();
@@ -695,7 +698,7 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pIVideoDecoder=NULL;
 				}
-
+				m_tVideoRenderLock.lock();
 				if (NULL!=m_pIVideoRender)
 				{
 					m_bIsBlock=true;
@@ -704,6 +707,7 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pIVideoRender=NULL;
 				}
+				m_tVideoRenderLock.unlock();
 				if (NULL!=m_pRecordDat)
 				{
 					m_bIsBlock=true;
@@ -843,6 +847,7 @@ void QSubviewRun::switchStream()
 
 void QSubviewRun::openPTZ( int nCmd,int nSpeed )
 {
+	addExtendWnd();
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
@@ -1355,6 +1360,7 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 	}
 	int nRenderStep=0;
 	bool bRenderStop=false;
+	m_tVideoRenderLock.lock();
 	while(bRenderStop==false){
 		switch(nRenderStep){
 		case 0:{
@@ -1409,9 +1415,6 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 				m_tRenderInfo.sPixeFormat=evMap.value("pixelFormat").toString();
 				m_tRenderInfo.nFlags=evMap.value("flags").toInt();
 
-				//m_tRenderInfo.pData=new char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2];
-				//memset(m_tRenderInfo.pData, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
-				//memcpy(m_tRenderInfo.pData,(char*)evMap.value("data").toUInt(),m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3/2);
 
 				m_tRenderInfo.pUdata=new char[m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2];
 				memset(m_tRenderInfo.pUdata, 0, m_tRenderInfo.nHeight*m_tRenderInfo.nUVStride/2);
@@ -1532,49 +1535,10 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			   break;
 		}
 	}
+	m_tVideoRenderLock.unlock();
 	return 0;
 }
-int QSubviewRun::cbCDecodeFrameEx( QString evName,QVariantMap evMap,void*pUser )
-{
-	if (NULL!=m_pIVideoRender)
-	{
-		char* pData=(char*)evMap.value("data").toUInt();	
-		char* pYdata=(char*)evMap.value("Ydata").toUInt();
-		char* pUdata=(char*)evMap.value("Udata").toUInt();
-		char* pVdata=(char*)evMap.value("Vdata").toUInt();
-		int iWidth=evMap.value("width").toInt();
-		int iHeight=evMap.value("height").toInt();
-		int iYStride=evMap.value("YStride").toInt();
-		int iUVStride=evMap.value("UVStride").toInt();
-		int iLineStride=evMap.value("lineStride").toInt();
-		QString iPixeFormat=evMap.value("pixelFormat").toString();
-		int iFlags=evMap.value("flags").toInt();
 
-		if (m_bScreenShot)
-		{
-			m_bScreenShot=false;
-			unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
-			memset(rgbBuff, 0, iWidth*iHeight*3);
-			YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
-			QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
-			img.save(m_sScreenShotPath, "JPG");
-			delete [] rgbBuff;
-		}
-		if (m_nInitHeight!=iHeight||m_nInitWidth!=iWidth)
-		{
-			m_nSecondPosition=__LINE__;
-			m_pIVideoRender->deinit();
-			m_pIVideoRender->init(iWidth,iHeight);
-			m_nInitWidth=iWidth;
-			m_nInitHeight=iHeight;
-		}
-		m_nSecondPosition=__LINE__;
-		m_pIVideoRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
-	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"m_pIVideoRender is null";
-	}
-	return 0;
-}
 
 int QSubviewRun::cbCRecordState( QString evName,QVariantMap evMap,void*pUser )
 {
@@ -2134,6 +2098,7 @@ int QSubviewRun::cbCConnectRefuse( QString evName,QVariantMap evMap,void*pUser )
 
 void QSubviewRun::renderSaveFrame()
 {
+	m_tVideoRenderLock.lock();
 	if (NULL!=m_pIVideoRender)
 	{
 		if (m_nInitHeight!=m_tRenderInfo.nHeight||m_nInitWidth!=m_tRenderInfo.nWidth)
@@ -2158,6 +2123,7 @@ void QSubviewRun::renderSaveFrame()
 	}else{
 		//do nothing
 	}
+	m_tVideoRenderLock.unlock();
 }
 
 int QSubviewRun::startManualRecord()
@@ -2260,6 +2226,80 @@ void QSubviewRun::enableStretch()
 		pi->setEnableStretch(m_nWindId,m_bStretch);
 		pi->Release();
 	}
+}
+
+bool QSubviewRun::addExtendWnd()
+{
+	if (QThread::isRunning())
+	{
+		m_tDigitalZoomView.show();
+		m_tVideoRenderLock.lock();
+		if (NULL!=m_pIVideoRender)
+		{
+			IVideoRenderDigitalZoom *pVideoRender=NULL;
+			m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+			if (NULL!=pVideoRender)
+			{
+				QString sName;
+				pVideoRender->addExtendWnd(&m_tDigitalZoomView,sName);
+				pVideoRender->Release();
+				pVideoRender=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as pVideoRender is null";
+			}
+		}else{
+			//do nothing
+			qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as m_pIVideoRender is null";
+		}
+		m_tVideoRenderLock.unlock();
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"addExtendWnd fail as the thread is not running";
+		//do nothing
+	}
+	return true;
+}
+
+void QSubviewRun::removeExtendWnd()
+{
+	m_tDigitalZoomView.hide();
+	m_tVideoRenderLock.lock();
+	if (NULL!=m_pIVideoRender)
+	{
+		IVideoRenderDigitalZoom *pVideoRender=NULL;
+		m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+		if (NULL!=pVideoRender)
+		{
+			QString sName;
+			pVideoRender->removeExtendWnd(sName);
+			pVideoRender->Release();
+			pVideoRender=NULL;
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
+	m_tVideoRenderLock.unlock();
+}
+
+void QSubviewRun::setRenderRect(QPoint tStartPoint,QPoint tEndPoint)
+{
+	qDebug()<<__FUNCTION__<<__LINE__<<tStartPoint<<tEndPoint;
+	m_tVideoRenderLock.lock();
+	if (NULL!=m_pIVideoRender)
+	{
+		IVideoRenderDigitalZoom *pVideoRender=NULL;
+		m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+		if (NULL!=pVideoRender)
+		{
+			pVideoRender->setRenderRect(tStartPoint.x(),tStartPoint.y(),tEndPoint.x(),tEndPoint.y());
+			pVideoRender->Release();
+			pVideoRender=NULL;
+		}
+	}else{
+		//do nothing
+	}
+	m_tVideoRenderLock.unlock();
 }
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

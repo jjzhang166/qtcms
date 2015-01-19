@@ -85,6 +85,10 @@ long __stdcall DdrawRender::QueryInterface( const IID & iid,void **ppv )
 	{
 		*ppv = static_cast<IPcomBase *>(this);
 	}
+	else if (IID_IVideoRenderDigitalZoom==iid)
+	{
+		*ppv = static_cast<IVideoRenderDigitalZoom*>(this);
+	}
 	else
 	{
 		*ppv = NULL;

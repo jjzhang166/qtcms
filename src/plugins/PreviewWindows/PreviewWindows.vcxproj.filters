@@ -103,6 +103,12 @@
     <ClCompile Include="DigitalZoomView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DigitalZoomView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DigitalZoomView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="previewwindows_global.h">
@@ -132,9 +138,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DigitalZoomView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="previewwindows.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qpreviewwindowsex.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DigitalZoomView.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

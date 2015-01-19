@@ -48,8 +48,6 @@ QWidget(parent),
 	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretchEx(bool)));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
-
-	//m_tDigitalZoomView.show();
 }
 
 

@@ -656,7 +656,7 @@ void PlayMgr::addWnd( QWidget* pWnd, QString sName )
 	IVideoRenderDigitalZoom *pZoomInterface = NULL;
 	getZoomInterface((void**)&pZoomInterface);
 	if (pZoomInterface){
-		pZoomInterface->addExtendWnd((void*)pWnd, sName);
+		pZoomInterface->addExtendWnd(pWnd, sName);
 		pZoomInterface->Release();
 	}
 }
