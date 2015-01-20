@@ -127,6 +127,10 @@ m_bEnable(true)
 ,m_nRectStartY(0)
 ,m_nRectEndX(0)
 ,m_nRectEndY(0)
+,m_nOriginalRectStartY(0)
+,m_nOriginalRectStartX(0)
+,m_nOriginalRectEndX(0)
+,m_nOriginalRectEndY(0)
 ,m_pOffscreenSurface(NULL)
 ,m_pOffOsdScreenSurface(NULL)
 ,m_hPlayWnd(NULL)
@@ -384,7 +388,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
 						if (DD_OK==hr&&NULL!=tHdc)
 						{
-							DrawARectangle(tHdc);
+							DrawARectangle(tHdc,m_nRectStartX,m_nRectStartY,m_nRectEndX,m_nRectEndY,m_hExtendWnd);
 							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
 							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
 						}else{
@@ -443,6 +447,25 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
 					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+					//////////////////////////////////////////////////////////////////////////
+					m_csOffOsdScreenSurface.Lock();
+					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
+					if (DD_OK!=hr)
+					{
+						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+					}else{
+						HDC tHdc=NULL;
+						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
+						if (DD_OK==hr&&NULL!=tHdc)
+						{
+							DrawARectangle(tHdc,m_nOriginalRectStartX,m_nOriginalRectStartY,m_nOriginalRectEndX,m_nOriginalRectEndY,m_hPlayWnd);
+							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
+							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+						}else{
+							//do nothing
+						}
+					}
+					m_csOffOsdScreenSurface.Unlock();
 				}else{
 					//do nothing
 				}
@@ -467,6 +490,25 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
 					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+					//////////////////////////////////////////////////////////////////////////
+					m_csOffOsdScreenSurface.Lock();
+					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
+					if (DD_OK!=hr)
+					{
+						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+					}else{
+						HDC tHdc=NULL;
+						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
+						if (DD_OK==hr&&NULL!=tHdc)
+						{
+							DrawARectangle(tHdc,m_nOriginalRectStartX,m_nOriginalRectStartY,m_nOriginalRectEndX,m_nOriginalRectEndY,m_hPlayWnd);
+							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
+							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+						}else{
+							//do nothing
+						}
+					}
+					m_csOffOsdScreenSurface.Unlock();
 				}else{
 					//do nothing
 				}
@@ -511,6 +553,13 @@ void CDDrawRenderObject::setRenderRect( int nStartX,int nStartY,int nEndX,int nE
 	m_nRectEndY=nEndY;
 	return;
 }
+void CDDrawRenderObject::drawRectToOriginalWnd( int nStartX,int nStartY,int nEndX,int nEndY )
+{
+	 m_nOriginalRectStartX=nStartX;
+	 m_nOriginalRectStartY=nStartY;
+	 m_nOriginalRectEndX=nEndX;
+	 m_nOriginalRectEndY=nEndY;
+}
 
 void CDDrawRenderObject::removeExtendWnd( const char* sName )
 {
@@ -525,36 +574,37 @@ void CDDrawRenderObject::setRenderRectPen( int nLineWidth,int nR,int nG,int nB )
 	return;
 }
 
-void CDDrawRenderObject::DrawARectangle( HDC hdc)
+void CDDrawRenderObject::DrawARectangle( HDC hdc,int nRectStartX,int nRectStartY,int nRectEndX,int nRectEndY,HWND WND)
 {
+	if (nRectEndY==nRectStartY||nRectEndX==nRectStartX)
+	{
+		return;
+	}
 	HPEN hpen, hpenOld;
 
 	// Create a green pen.
 	int nPenWidth=m_nRectSurfaceWidth/400;
-
 	hpen = CreatePen(PS_SOLID, nPenWidth, RGB(0, 255, 0));
 	// Create a red brush.
 	int nStartX;
 	int nStartY;
 	int nEndX;
 	int nEndY;
-	if (m_nRectStartX<m_nRectEndX)
+	if (nRectStartX<nRectEndX)
 	{
-		nStartX=m_nRectStartX;
-		nEndX=m_nRectEndX;
+		nStartX=nRectStartX;
+		nEndX=nRectEndX;
 	}else{
-		nStartX=m_nRectEndX;
-		nEndX=m_nRectStartX;
+		nStartX=nRectEndX;
+		nEndX=nRectStartX;
 	}
-	if(m_nRectStartY<m_nRectEndY){
-		nStartY=m_nRectStartY;
-		nEndY=m_nRectEndY;
+	if(nRectStartY<nRectEndY){
+		nStartY=nRectStartY;
+		nEndY=nRectEndY;
 	}else{
-		nStartY=m_nRectEndY;
-		nEndY=m_nRectStartY;
+		nStartY=nRectEndY;
+		nEndY=nRectStartY;
 	}
-
-
 	// Select the new pen and brush, and then draw.
 	hpenOld =(HPEN) SelectObject(hdc, hpen);
 
@@ -564,7 +614,7 @@ void CDDrawRenderObject::DrawARectangle( HDC hdc)
 		//do nothing
 	}else{
 		RECT tExtendWndRect;
-		::GetClientRect(m_hExtendWnd,&tExtendWndRect);
+		::GetClientRect(WND,&tExtendWndRect);
 		nStartX=nStartX*m_nRectSurfaceWidth/tExtendWndRect.right;
 		nEndX=nEndX*m_nRectSurfaceWidth/tExtendWndRect.right;
 		nStartY=nStartY*m_nRectSurfaceHeight/tExtendWndRect.bottom;
@@ -578,8 +628,6 @@ void CDDrawRenderObject::DrawARectangle( HDC hdc)
 	// Do not forget to clean up.
 	SelectObject(hdc, hpenOld);
 	DeleteObject(hpen);
-
-
 }
 
 void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
@@ -627,4 +675,7 @@ void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
 		}
 	}
 }
+
+
+
 

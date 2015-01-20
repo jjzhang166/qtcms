@@ -8,7 +8,8 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 	m_divMode(NULL),
 	m_pAutoPollingTimer(NULL),
 	m_nCurrentWnd(0),
-	m_bAudioEnabled(false)
+	m_bAudioEnabled(false),
+	m_bIsEnableDigitalZoom(false)
 {
 	//绑定信号
 	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
@@ -18,13 +19,15 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		m_sPreviewWnd[i].initAfterConstructor();
 
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmousePressEvent(QWidget *,QMouseEvent *)),this,SLOT(subWindowMousePress(QWidget *,QMouseEvent *)));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseReleaseEvent(QWidget *,QMouseEvent *)),this,SLOT(subWindowMouseRelease(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgmouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(subWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
+		connect(&m_sPreviewWnd[i], SIGNAL(sgShutDownDigtalZoom()), this, SLOT(shutDownDigtalZoom()));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap)));
-		connect(&m_sPreviewWnd[i],SIGNAL(sgShutDownDigtalZoom()),this,SLOT(shutDownDigtalZoom()));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgEnableDigtalZoom()),this,SLOT(enableDigtalZoom()));
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -223,6 +226,48 @@ void qpreviewwindowsex::subWindowDblClick( QWidget*wind,QMouseEvent *ev )
 		return;
 	}
 }
+void qpreviewwindowsex::subWindowMouseRelease( QWidget* wnd,QMouseEvent * )
+{
+	if (m_bIsEnableDigitalZoom)
+	{
+		bool bIsSuitForDigitalZoom=false;
+		int nCurrentWndIndex;
+		int i=0;
+		for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+		{
+			if (&m_sPreviewWnd[i]==wnd)
+			{
+				if (m_sPreviewWnd[i].isSuitForDigitalZoom())
+				{
+					bIsSuitForDigitalZoom=true;
+				}else{
+					//
+				}
+				nCurrentWndIndex=i;
+				break;;
+			}else{
+				//do nothing
+			}
+		}
+		if (bIsSuitForDigitalZoom)
+		{
+			m_sPreviewWnd[nCurrentWndIndex].showDigitalView();
+			for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+			{
+				if (&m_sPreviewWnd[i]==wnd)
+				{
+					//do nothing
+				}else{
+					m_sPreviewWnd[i].closeDigitalView();
+				}
+			}
+		}else{
+			//do nothing
+		}
+	}else{
+		//do nothing
+	}
+}
 
 void qpreviewwindowsex::subWindowMousePress( QWidget* wnd,QMouseEvent * ev)
 {
@@ -246,41 +291,6 @@ void qpreviewwindowsex::subWindowMousePress( QWidget* wnd,QMouseEvent * ev)
 		}else{
 			m_sPreviewWnd[i].setCurrentFocus(false);
 		}
-	}
-	bool bIsSuitForDigitalZoom=false;
-	int nCurrentWndIndex;
-	for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
-	{
-		if (&m_sPreviewWnd[i]==wnd)
-		{
-			m_sPreviewWnd[i].setCurrentFocus(true);
-			if (m_sPreviewWnd[i].isSuitForDigitalZoom())
-			{
-				bIsSuitForDigitalZoom=true;
-			}else{
-				//
-			}
-			nCurrentWndIndex=i;
-			break;;
-		}else{
-			//do nothing
-		}
-	}
-	if (bIsSuitForDigitalZoom)
-	{
-		m_sPreviewWnd[nCurrentWndIndex].showDigitalView();
-		for (i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
-		{
-			if (&m_sPreviewWnd[i]==wnd)
-			{
-				//do nothing
-			}else{
-				//do nothing
-				m_sPreviewWnd[i].closeDigitalView();
-			}
-		}
-	}else{
-		//do nothing
 	}
 }
 
@@ -699,15 +709,27 @@ void qpreviewwindowsex::shutDownDigtalZoom()
 		if (m_sPreviewWnd[i].getDigtalViewIsClose()==false)
 		{
 			bIsDeInitDigtalView=false;
-			break;;
+			break;
 		}
 	}
-	if (!bIsDeInitDigtalView)
+	if (bIsDeInitDigtalView)
 	{
 		for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
 		{
+			m_bIsEnableDigitalZoom=false;
 			m_sPreviewWnd[i].deInitDigtalView();
 		}
 	}
 }
+
+void qpreviewwindowsex::enableDigtalZoom()
+{
+	m_bIsEnableDigitalZoom=true;
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].disableOriginalWndDrawRect();
+	}
+}
+
+
 

@@ -11,6 +11,8 @@ QWidget(parent),
 	m_pManageWidget(NULL),
 	m_bIsFocus(false),
 	m_bIsRecording(false),
+	m_bIsDrawRect(false),
+	m_bIsEnableDigitalZoom(false),
 	m_pClosePreviewAction(NULL),
 	m_pSwitchStreamAciton(NULL),
 	m_pRecorderAction(NULL),
@@ -505,17 +507,61 @@ void qsubviewEx::paintEventDisconnecting( QPaintEvent *ev )
 	p.setPen(pen);
 	p.drawText(rcClient, Qt::AlignCenter, sBackground);
 }
+void qsubviewEx::mouseReleaseEvent( QMouseEvent * event)
+{
+	if (m_bIsDrawRect)
+	{
+		QPoint tStartPoint;
+		QPoint tEndPoint;
+		tStartPoint=m_tRectStartPoint;
+		m_tRectCurrentPoint.setX(event->pos().x());
+		m_tRectCurrentPoint.setY(event->pos().y());
+		tEndPoint=m_tRectCurrentPoint;
+		int nWidth=abs(tEndPoint.x()-tStartPoint.x());
+		int nHeight=abs(tEndPoint.y()-tStartPoint.y());
 
-void qsubviewEx::mousePressEvent( QMouseEvent * ev)
+		tStartPoint=tEndPoint;
+		m_sSubviewRun.drawRectToOriginalWnd(tStartPoint,tEndPoint);
+		if (nHeight*nHeight/1000)
+		{
+			emit sgEnableDigtalZoom();
+		}
+	}
+	m_bIsDrawRect=false;
+
+	emit sgmouseReleaseEvent(this,event);
+}
+void qsubviewEx::mouseMoveEvent( QMouseEvent * event)
+{
+	if (m_bIsDrawRect)
+	{
+		QPoint tStartPoint;
+		QPoint tEndPoint;
+		m_tRectCurrentPoint.setX(event->pos().x());
+		m_tRectCurrentPoint.setY(event->pos().y());
+		tStartPoint=m_tRectStartPoint;
+		tEndPoint=m_tRectCurrentPoint;
+		//»­¾ØÐÎ
+		m_sSubviewRun.drawRectToOriginalWnd(tStartPoint,tEndPoint);
+	}
+}
+
+void qsubviewEx::mousePressEvent( QMouseEvent * event)
 {
 	setFocus(Qt::MouseFocusReason);
-	if (ev->button()==Qt::RightButton)
+	if (event->button()==Qt::RightButton)
 	{
 		emit sgmouseMenu();
 	}
-	emit sgmousePressEvent(this,ev);
+	emit sgmousePressEvent(this,event);
 	m_sSubviewRun.setFoucs(true);
 	m_bIsFocus=true;
+	if (m_bIsEnableDigitalZoom==false)
+	{
+		m_bIsDrawRect=true;
+		m_tRectStartPoint.setX(event->pos().x());
+		m_tRectStartPoint.setY(event->pos().y());
+	}
 }
 
 int qsubviewEx::openPreview( int chlId )
@@ -820,14 +866,9 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 
 void qsubviewEx::enableStretch( bool bEnable )
 {
-	//if (verify(1, m_chlId)){
-	//	return;
-	//}
-
 	m_bStretch = bEnable;
 	m_sSubviewRun.enableStretch(bEnable);
 	m_pStreachVideo->setChecked(bEnable);
-
 }
 
 void qsubviewEx::initAfterConstructor()
@@ -882,6 +923,8 @@ bool qsubviewEx::getDigtalViewIsClose()
 
 void qsubviewEx::deInitDigtalView()
 {
+	m_bIsEnableDigitalZoom=false;
+	m_sSubviewRun.setDigitalZoomStreamRestore();
 	return m_sSubviewRun.deInitDigitalView();
 }
 
@@ -892,6 +935,7 @@ bool qsubviewEx::isSuitForDigitalZoom()
 
 void qsubviewEx::showDigitalView()
 {
+	m_sSubviewRun.setDigitalZoomToMainStream();
 	return m_sSubviewRun.showDigitalView();
 }
 
@@ -900,6 +944,10 @@ void qsubviewEx::closeDigitalView()
 	return m_sSubviewRun.closeDigitalView();
 }
 
+void qsubviewEx::disableOriginalWndDrawRect()
+{
+	m_bIsEnableDigitalZoom=true;
+}
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {

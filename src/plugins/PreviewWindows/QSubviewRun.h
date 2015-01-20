@@ -43,6 +43,8 @@ typedef enum __tagStepCode{
 	CLOSEPTZ,//关闭云台操作
 	AUTORECONNECT,//自动重连
 	IPCAUTOSWITCHSTREAM,//ipc 自动切换码流
+	DIGITALZOOMTOMAINSTREAM,//电子放大时，切换到主码流
+	DIGITALZOOMSTREAMRESTORE,//关闭电子放大时，还原原来的码流
 	INITRECORD,//初始化录像
 	UPDATEDATABASE,//更新数据库
 	DEINITRECORD,//关闭录像
@@ -132,6 +134,9 @@ public:
 	bool isSuitForDigitalZoom();
 	void showDigitalView();
 	void closeDigitalView();
+	void setDigitalZoomToMainStream();
+	void setDigitalZoomStreamRestore();
+	void drawRectToOriginalWnd(QPoint tStartPoint,QPoint tEndPoint);
 public:
 	//call back
 	int cbCConnectState(QString evName,QVariantMap evMap,void *pUser);
@@ -157,6 +162,8 @@ private:
 	void sleepEx(int time);
 	void renderSaveFrame();
 	void enableStretch();
+	void digitalZoomToMainStream();
+	void digitalZoomStreamRestore();
 public slots:
 	void slstopPreviewrun();
 	bool slAddExtendWnd();
@@ -202,6 +209,7 @@ private:
 	bool m_bIsPreRender;
 	bool m_bIsSysTime;
 	static unsigned int m_volumePersent;
+	
 	static bool m_bIsAudioOpen;
 	bool m_bIsFocus;
 	int m_sampleRate;

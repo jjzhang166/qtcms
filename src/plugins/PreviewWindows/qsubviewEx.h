@@ -30,7 +30,9 @@ public:
 	virtual void mouseDoubleClickEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
 	virtual void mousePressEvent(QMouseEvent *);
+	virtual void mouseReleaseEvent(QMouseEvent *);
 	virtual void changeEvent(QEvent *);
+	virtual void mouseMoveEvent(QMouseEvent *);
 
 	int openPreview(int chlId);
 	int closePreview();
@@ -71,6 +73,7 @@ public:
 	bool isSuitForDigitalZoom();
 	void showDigitalView();
 	void closeDigitalView();
+	void disableOriginalWndDrawRect();
 public:
 	//回调函数
 	int cbCStateChange(QVariantMap evMap);
@@ -91,6 +94,7 @@ signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgmouseDoubleClick(QWidget *,QMouseEvent*);
 	void sgmousePressEvent(QWidget*,QMouseEvent*);
+	void sgmouseReleaseEvent(QWidget*,QMouseEvent*);
 	void sgmouseLeftClick(QWidget*,QMouseEvent *);
 	void sgrecordState(bool);
 	void sgmouseMenu();
@@ -100,6 +104,7 @@ signals:
 	void sgbackToMainWnd();
 	void sgVerify(QVariantMap vmap);
 	void sgShutDownDigtalZoom();
+	void sgEnableDigtalZoom();
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
@@ -136,6 +141,9 @@ private:
 	int m_nWindowIndex;
 	bool m_bStretch; // 在对象内暂存状态，与配置中的状态一致，避免在调用菜单和其他操作的时候需要频繁读取配置
 	int m_chlId;
-	
+	bool m_bIsDrawRect;
+	bool m_bIsEnableDigitalZoom;
+	QPoint m_tRectStartPoint;
+	QPoint m_tRectCurrentPoint;
 };
 

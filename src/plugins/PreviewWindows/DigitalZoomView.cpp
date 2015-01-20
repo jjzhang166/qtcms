@@ -1,12 +1,21 @@
 #include "DigitalZoomView.h"
 #include <QDebug>
 
-DigitalZoomView::DigitalZoomView(QWidget *parent):QWidget(parent)
+QRect DigitalZoomView::m_tDigitalViewPosition(400,400,500,300);
+QRect DigitalZoomView::m_tDoubleClickOldPosition(400,400,500,300);
+DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	,m_bIsDrawRect(false)
 	,m_bIsDropRect(false)
 	,m_bViewIsClose(true)
 {
 	setWindowFlags(Qt::WindowStaysOnTopHint);
+	setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
+	QDesktopWidget* desktopWidget = QApplication::desktop();
+	m_tDoubleClickMinPosition = desktopWidget->availableGeometry();
+	m_nMinWidth=m_tDoubleClickMinPosition.width()/10;
+	m_nMinHeight=m_tDoubleClickMinPosition.height()/40;
+	m_tDoubleClickMinPosition.setX(m_tDoubleClickMinPosition.width()-m_tDoubleClickMinPosition.width()/10);
+	m_tDoubleClickMinPosition.setY(m_tDoubleClickMinPosition.height()-m_tDoubleClickMinPosition.height()/40);
 }
 
 
@@ -16,7 +25,6 @@ DigitalZoomView::~DigitalZoomView(void)
 
 void DigitalZoomView::mousePressEvent( QMouseEvent * event )
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<"mousePressEvent";
 	m_bIsDrawRect=true;
 	bool bXInRect=false;
 	bool bYInRect=false;
@@ -57,7 +65,6 @@ void DigitalZoomView::mousePressEvent( QMouseEvent * event )
 
 void DigitalZoomView::mouseReleaseEvent( QMouseEvent * event )
 {
-	qDebug()<<__FUNCTION__<<__LINE__<<"mouseReleaseEvent";
 	m_bIsDrawRect=false;
 
 	QPoint tStartPoint;
@@ -80,7 +87,6 @@ void DigitalZoomView::mouseMoveEvent( QMouseEvent * event )
 {
 	if (m_bIsDrawRect)
 	{
-		qDebug()<<__FUNCTION__<<__LINE__<<"mouseMoveEvent";
 		QPoint tStartPoint;
 		QPoint tEndPoint;
 		if (m_bIsDropRect)
@@ -127,4 +133,43 @@ void DigitalZoomView::mouseDoubleClickEvent( QMouseEvent *event )
 bool DigitalZoomView::getCurrentViewIsClose()
 {
 	return m_bViewIsClose;
+}
+
+QRect DigitalZoomView::getPosition()
+{
+	return m_tDigitalViewPosition;
+}
+
+void DigitalZoomView::resizeEvent( QResizeEvent *event )
+{
+	if (m_bViewIsClose==false)
+	{
+		m_tDigitalViewPosition=this->geometry();
+	}
+}
+
+void DigitalZoomView::moveEvent( QMoveEvent * event)
+{
+	if (m_bViewIsClose==false)
+	{
+		m_tDigitalViewPosition=this->geometry();
+	}
+}
+bool DigitalZoomView::event( QEvent * eventt)
+{
+	if (eventt->type() == QEvent::NonClientAreaMouseButtonDblClick){
+		QRect tCurrentPosition=geometry();
+		int nCurX=tCurrentPosition.width();
+		int nCurY=tCurrentPosition.height();
+		if (nCurX<m_nMinWidth+10&&nCurY<m_nMinHeight+10)
+		{
+			setGeometry(m_tDoubleClickOldPosition);
+		}else{
+			m_tDoubleClickOldPosition=geometry();
+			setGeometry(m_tDoubleClickMinPosition);
+		}
+	}else{
+		//do nothing
+	}	
+	return QWidget::event(eventt);
 }

@@ -133,7 +133,10 @@ void DdrawRender::setRenderRect( int nX,int nY,int nWidth,int nHeight )
 {
 	return m_renderObj->setRenderRect(nX,nY,nWidth,nHeight);
 }
-
+void DdrawRender::drawRectToOriginalWnd( int nX,int nY,int nWidth,int nHeight )
+{
+	return m_renderObj->drawRectToOriginalWnd(nX,nY,nWidth,nHeight);
+}
 void DdrawRender::removeExtendWnd( const QString sName )
 {
 	char *cName;
@@ -146,3 +149,5 @@ void DdrawRender::setRenderRectPen( int nLineWidth,int nR,int nG,int nB )
 {
 	return m_renderObj->setRenderRectPen(nLineWidth,nR,nG,nB);
 }
+
+

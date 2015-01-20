@@ -33,10 +33,11 @@ public:
 
 	virtual bool addExtendWnd(HWND wnd,const char* sName);//添加额外渲染的窗口
 	virtual void setRenderRect(int nStartX,int nStartY,int nEndX,int nEndY);//设置画矩形的坐标 
+	virtual void drawRectToOriginalWnd( int nX,int nY,int nEndX,int nEndY );
 	virtual void removeExtendWnd(const char* sName);//移出指定名字的额外渲染窗口
 	virtual void setRenderRectPen(int nLineWidth,int nR,int nG,int nB);//设置画矩形的线宽和颜色
 private:
-	void DrawARectangle(HDC hdc) ;
+	void DrawARectangle(HDC hdc,int nRectStartX,int nRectStartY,int nRectEndX,int nRectEndY,HWND WND) ;
 	void setZoomRect(RECT &tRect,int nWidth,int nHeight);
 private:
 	bool                 m_bEnable;
@@ -60,6 +61,11 @@ private:
 	int m_nRectSurfaceWidth;
 	int m_nRectSurfaceHeight;
 	RECT m_nLastExtendWndRect;
+
+	int m_nOriginalRectStartX;
+	int m_nOriginalRectStartY;
+	int m_nOriginalRectEndX;
+	int m_nOriginalRectEndY;
 };
 
 #endif

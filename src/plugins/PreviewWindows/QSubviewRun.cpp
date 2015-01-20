@@ -345,6 +345,14 @@ void QSubviewRun::run()
 			}
 							}
 							break;
+		case DIGITALZOOMTOMAINSTREAM:{
+			digitalZoomToMainStream();
+									 }
+									 break;
+		case DIGITALZOOMSTREAMRESTORE:{
+			digitalZoomStreamRestore();
+									  }
+									  break;
 		case IPCAUTOSWITCHSTREAM:{
 				//ipc 自动切换码流
 			ipcAutoSwitchStream();
@@ -848,7 +856,6 @@ void QSubviewRun::switchStream()
 
 void QSubviewRun::openPTZ( int nCmd,int nSpeed )
 {
-	m_tDigitalZoomView.show();
 	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
 	{
 		//set nstepcode
@@ -2233,6 +2240,7 @@ bool QSubviewRun::slAddExtendWnd()
 {
 	if (QThread::isRunning())
 	{
+		m_tDigitalZoomView.setGeometry(m_tDigitalZoomView.getPosition());
 		m_tDigitalZoomView.show();
 		m_tVideoRenderLock.lock();
 		if (NULL!=m_pIVideoRender)
@@ -2262,7 +2270,7 @@ bool QSubviewRun::slAddExtendWnd()
 
 void QSubviewRun::slRemoveExtendWnd()
 {
-	m_tDigitalZoomView.hide();
+	m_tDigitalZoomView.close();
 	m_tVideoRenderLock.lock();
 	if (NULL!=m_pIVideoRender)
 	{
@@ -2283,7 +2291,24 @@ void QSubviewRun::slRemoveExtendWnd()
 	m_tVideoRenderLock.unlock();
 	emit sgShutDownDigtalZoom();
 }
-
+void QSubviewRun::drawRectToOriginalWnd( QPoint tStartPoint,QPoint tEndPoint )
+{
+	m_tVideoRenderLock.lock();
+	if (NULL!=m_pIVideoRender)
+	{
+		IVideoRenderDigitalZoom *pVideoRender=NULL;
+		m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
+		if (NULL!=pVideoRender)
+		{
+			pVideoRender->drawRectToOriginalWnd(tStartPoint.x(),tStartPoint.y(),tEndPoint.x(),tEndPoint.y());
+			pVideoRender->Release();
+			pVideoRender=NULL;
+		}
+	}else{
+		//do nothing
+	}
+	m_tVideoRenderLock.unlock();
+}
 void QSubviewRun::SLSetRenderRect(QPoint tStartPoint,QPoint tEndPoint)
 {
 	m_tVideoRenderLock.lock();
@@ -2333,7 +2358,6 @@ bool QSubviewRun::isSuitForDigitalZoom()
 {
 	if (QThread::isRunning())
 	{
-		m_tDigitalZoomView.show();
 		m_tVideoRenderLock.lock();
 		if (NULL!=m_pIVideoRender)
 		{
@@ -2369,6 +2393,118 @@ void QSubviewRun::closeDigitalView()
 {
 	slRemoveExtendWnd();
 }
+
+void QSubviewRun::setDigitalZoomToMainStream()
+{
+	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
+	{
+		//set nstepcode
+		m_tStepCodeLock.lock();
+		m_stepCode.enqueue(DIGITALZOOMTOMAINSTREAM);
+		m_tStepCodeLock.unlock();
+	}else{
+		//do nothing
+		qDebug()<<__FUNCTION__<<__LINE__<<"DIGITALZOOMTOMAINSTREAM fail";
+	}
+}
+
+void QSubviewRun::setDigitalZoomStreamRestore()
+{
+	if (QThread::isRunning()&&m_currentStatus==STATUS_CONNECTED)
+	{
+		//set nstepcode
+		m_tStepCodeLock.lock();
+		m_stepCode.enqueue(DIGITALZOOMSTREAMRESTORE);
+		m_tStepCodeLock.unlock();
+	}else{
+		//do nothing
+		qDebug()<<__FUNCTION__<<__LINE__<<"DIGITALZOOMSTREAMRESTORE fail";
+	}
+}
+
+void QSubviewRun::digitalZoomToMainStream()
+{
+	if (m_currentStatus==STATUS_CONNECTED&&NULL!=m_pdeviceClient)
+	{
+		if ("IPC"==m_tDeviceInfo.m_sVendor||m_tDeviceInfo.m_sVendor=="ONVIF")
+		{
+			//IPC 和ONVIF协议的码流切换
+			ISwitchStream *pSwitchStream=NULL;
+			m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
+			if (NULL!=pSwitchStream)
+			{
+				pSwitchStream->SwitchStream(0);
+				pSwitchStream->Release();
+				pSwitchStream=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail as apply ISwitchStream fail";
+			}
+		}else{
+			IDeviceClient *pdeviceClient=NULL;
+			m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
+			if (NULL !=pdeviceClient)
+			{
+				m_nSecondPosition=__LINE__;
+				if (pdeviceClient->liveStreamRequire(m_tDeviceInfo.m_uiChannelId,0,true)==0)
+				{
+					pdeviceClient->Release();
+					pdeviceClient=NULL;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail: "<<1;
+					pdeviceClient->Release();
+					pdeviceClient=NULL;
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail as device client do not support IDeviceClient interface";
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
+	}
+}
+
+void QSubviewRun::digitalZoomStreamRestore()
+{
+	if (m_currentStatus==STATUS_CONNECTED&&NULL!=m_pdeviceClient)
+	{
+		if ("IPC"==m_tDeviceInfo.m_sVendor||m_tDeviceInfo.m_sVendor=="ONVIF")
+		{
+			//IPC 和ONVIF协议的码流切换
+			ISwitchStream *pSwitchStream=NULL;
+			m_pdeviceClient->QueryInterface(IID_ISwitchStream,(void**)&pSwitchStream);
+			if (NULL!=pSwitchStream)
+			{
+				pSwitchStream->SwitchStream(m_tDeviceInfo.m_uiStreamId);
+				pSwitchStream->Release();
+				pSwitchStream=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail as apply ISwitchStream fail";
+			}
+		}else{
+			IDeviceClient *pdeviceClient=NULL;
+			m_pdeviceClient->QueryInterface(IID_IDeviceClient,(void**)&pdeviceClient);
+			if (NULL !=pdeviceClient)
+			{
+				m_nSecondPosition=__LINE__;
+				if (pdeviceClient->liveStreamRequire(m_tDeviceInfo.m_uiChannelId,m_tDeviceInfo.m_uiStreamId,true)==0)
+				{
+					pdeviceClient->Release();
+					pdeviceClient=NULL;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail: "<<1;
+					pdeviceClient->Release();
+					pdeviceClient=NULL;
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail as device client do not support IDeviceClient interface";
+			}
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
+	}
+}
+
+
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )
 {

@@ -74,6 +74,7 @@ public slots:
 	//子窗口信号函数
 	void subWindowDblClick(QWidget*,QMouseEvent *);
 	void subWindowMousePress(QWidget*,QMouseEvent *);
+	void subWindowMouseRelease(QWidget*,QMouseEvent *);
 	void subWindowConnectStatus(QVariantMap,QWidget *);
 	void subWindowConnectRefuse(QVariantMap,QWidget *);
 	void subWindowAuthority(QVariantMap,QWidget *);
@@ -86,6 +87,7 @@ public slots:
 	void slPolling();
 	//电子放大
 	void shutDownDigtalZoom();
+	void enableDigtalZoom();
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();
@@ -99,5 +101,6 @@ private:
 	bool m_bAudioEnabled;
 	QString m_sLastLanguageLabel;
 	QTimer *m_pAutoPollingTimer;
+	bool m_bIsEnableDigitalZoom;
 };
 
