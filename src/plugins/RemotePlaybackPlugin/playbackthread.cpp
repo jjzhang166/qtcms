@@ -21,7 +21,8 @@ PlayBackThread::PlayBackThread()
 	m_nChannels(0),
 	m_channelWithAudio(-1),
 	m_nSpeedRate(0),
-	m_playback(NULL)
+	m_playback(NULL),
+	m_susWnd(NULL)
 {
 
 }
@@ -558,9 +559,62 @@ void PlayBackThread::action( QString act, BufferManager* pbuff )
 	}
 }
 
-void PlayBackThread::bufferStatus( QString progress, BufferManager* pbuff )
+bool PlayBackThread::getPlayInterface( QWidget* pwnd, void** playInterface )
 {
 	PlayIter it = m_playMap.begin();
+	while (it != m_playMap.end()){
+		if (it->wnd == pwnd){
+			*playInterface = it->playManager;
+			return true;
+		}
+		++it;
+	}
+	return false;
+}
+
+int PlayBackThread::setInfromation( QString evName, QVariantMap info )
+{
+	QVariant wnd = info.value("CurWnd");
+	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
+	PlayManager  *playMgr = NULL, *lastPlayMgr = NULL;
+	if (!getPlayInterface(pWnd, (void**)&playMgr)){
+		return 1;
+	}
+
+	if ("VedioZoom" == evName){
+		m_susWnd = (QWidget *)info.value("SusWnd").toUInt();
+		if (m_zoomWndList.contains(pWnd)){
+			if (pWnd == m_wndList.last()){
+				return 0;
+			}
+			lastWnd = m_zoomWndList.last();
+			getPlayInterface(lastWnd, (void**)&lastPlayMgr);
+			lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
+			playMgr->addWnd(m_susWnd, wnd.toString());
+
+			m_zoomWndList.removeOne(pWnd);
+			m_zoomWndList.append(pWnd);
+		}else{
+			if (!m_zoomWndList.isEmpty()){
+				lastWnd = m_zoomWndList.last();
+				getPlayInterface(lastWnd, (void**)&lastPlayMgr);
+				lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
+			}
+			m_zoomWndList.append(pWnd);
+			playMgr->addWnd(m_susWnd, wnd.toString());
+		}
+	}else if ("ZoomRect" == evName){
+		playMgr->setZoomRect(info["ZoRect"].toRect());
+	}else if ("CloseWnd" == evName){
+		playMgr->removeWnd(wnd.toString());
+		m_zoomWndList.removeLast();
+		if (!m_zoomWndList.isEmpty()){
+			lastWnd = m_zoomWndList.last();
+			getPlayInterface(lastWnd, (void**)&lastPlayMgr);
+			lastPlayMgr->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
+		}
+	}
+	return 0;
 }
 
 int cbFoundFile(QString evName,QVariantMap evMap,void *pUser)

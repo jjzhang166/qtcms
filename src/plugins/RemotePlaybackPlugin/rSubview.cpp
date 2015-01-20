@@ -7,6 +7,7 @@
 #include <QTime>
 
 bool RSubView::m_bGlobalAudioStatus = false;
+SuspensionWnd* RSubView::ms_susWnd = NULL;
 
 RSubView::RSubView(QWidget *parent)
 	: QWidget(parent),
@@ -73,6 +74,7 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 			_cacheLable->hide();
 		}
 	}
+	m_pressPoint = ev->pos();
 }
 
 void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
@@ -436,4 +438,54 @@ void RSubView::setProgress( int progress )
 	_cacheLableShow();
 }
 
+void RSubView::mouseReleaseEvent( QMouseEvent *ev )
+{
+	QRect rect = this->rect();
+	QPoint releasePoint = ev->pos();
+	//if release point in current window
+	if (m_pressPoint != releasePoint && rect.contains(m_pressPoint) && rect.contains(releasePoint) && CONNECT_STATUS_CONNECTED == _curState){
+		//if no suspension window, create it
+		if (!ms_susWnd){
+			ms_susWnd = new SuspensionWnd(this);
+			ms_susWnd->setWindowFlags(Qt::Tool | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
+			ms_susWnd->setWindowTitle(QString("Digital Zoom"));
+			ms_susWnd->setCbFunc(cbReciveMsg, this);
+			ms_susWnd->show();
+		}
+		//notify play module current window need to zoom
+		if (m_pcbfn && m_pUser){
+			QVariantMap msg;
+			msg.insert("SusWnd", (quintptr)ms_susWnd);
+			msg.insert("CurWnd", (quintptr)this);
+			ms_susWnd->addWnd(this);
+			m_pcbfn(QString("VedioZoom"), msg, m_pUser);
+		}
+	}
+}
 
+void RSubView::setCbpfn( pfnCb cbPro, void* pUser )
+{
+	m_pcbfn = cbPro;
+	m_pUser = pUser;
+}
+
+void RSubView::recMsg( QVariantMap msg )
+{
+	QString evName = msg["EvName"].toString();
+	msg.remove("EvName");
+	if (m_pcbfn && m_pUser){
+		m_pcbfn(evName, msg, m_pUser);
+	}
+	if ("CloseWnd" == evName){
+		if (!msg["ListSize"].toInt()){
+			ms_susWnd->close();
+			delete ms_susWnd;
+			ms_susWnd = NULL;
+		}
+	}
+}
+
+void cbReciveMsg( QVariantMap evMap, void* pUser )
+{
+	((RSubView*)pUser)->recMsg(evMap);
+}

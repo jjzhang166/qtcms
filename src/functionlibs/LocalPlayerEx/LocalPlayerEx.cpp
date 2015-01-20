@@ -1096,7 +1096,7 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 {
 	QVariant wnd = info.value("CurWnd");
  	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
-	PlayMgr *playMgr = NULL, *lastPlayMgr = NULL;
+	PlayMgr *playMgr = NULL;
 	QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
 	if (iter == m_wndMap.end()){
 		return 1;

@@ -14,9 +14,12 @@
 #include <IDeviceRemotePlayback.h>
 #include <QTimer>
 #include <QPixmap>
-
+#include <suspensionwnd.h>
 #include <QLabel>
 
+typedef void (*pfnCb)(QString, QVariantMap, void*); 
+
+void cbReciveMsg(QVariantMap evMap, void* pUser);
 
 class RSubView :public QWidget
 {
@@ -29,6 +32,7 @@ public:
 	virtual void paintEvent( QPaintEvent * );
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
+	virtual void mouseReleaseEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
 	QVariantMap ScreenShot();
 
@@ -45,6 +49,8 @@ public:
 	void CacheState(QVariantMap evMap);
 	void saveCacheImage();
 	void SetFoucs(bool flags);
+	void setCbpfn(pfnCb cbPro, void* pUser);
+	void recMsg(QVariantMap msg);
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -68,6 +74,7 @@ public slots:
 	
 private:
 	static bool m_bGlobalAudioStatus;
+	static SuspensionWnd *ms_susWnd;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
 
@@ -77,6 +84,10 @@ private:
 	QLabel *_cacheLable;
 	QPixmap _ScreenShotImage;
 	bool _bIsFocus;
+
+	QPoint m_pressPoint;
+	pfnCb m_pcbfn;
+	void* m_pUser;
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );

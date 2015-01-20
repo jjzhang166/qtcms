@@ -2,6 +2,7 @@
 #include <guid.h>
 #include "IEventRegister.h"
 #include <QElapsedTimer>
+#include "IVideoRenderDigitalZoom.h"
 
 #include <QDebug>
 
@@ -331,5 +332,36 @@ void PlayManager::setCurAudioWnd(PlayManager* curWnd)
 	if (NULL != curWnd)
 	{
 		m_pCurView = curWnd;
+	}
+}
+
+void PlayManager::addWnd( QWidget* pWnd, QString sName )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, (void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->addExtendWnd(pWnd, sName);
+		pZoomInterface->setRenderRectPen(5, 255, 255, 0);
+		pZoomInterface->Release();
+	}
+}
+
+void PlayManager::removeWnd( QString sName )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, (void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->removeExtendWnd(sName);
+		pZoomInterface->Release();
+	}
+}
+
+void PlayManager::setZoomRect( QRect rect )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, (void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom());
+		pZoomInterface->Release();
 	}
 }

@@ -35,6 +35,7 @@ bIsHide(false)
 	for (int i = 0; i < ARRAY_SIZE(m_PlaybackWnd); ++i)
 	{
 		m_PlaybackWnd[i].setParent(this);
+		m_PlaybackWnd[i].setCbpfn(cbDigitalZoom, &m_rplaybackrun);
 		connect(&m_PlaybackWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PlaybackWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
 
@@ -59,6 +60,7 @@ bIsHide(false)
 	connect(&m_rplaybackrun,SIGNAL(FoundFileToUiS(QVariantMap)),this,SLOT(FoundFileToUislot(QVariantMap)));
  	connect(&m_rplaybackrun,SIGNAL(RecFileSearchFinishedToUiS(QVariantMap)),this,SLOT(RecFileSearchFinishedToUislot(QVariantMap)));
 	connect(&m_rplaybackrun,SIGNAL(FileSearchFailToUiS(QVariantMap)),this,SLOT(FileSearchFailUislot(QVariantMap)));
+	connect(&m_rplaybackrun,SIGNAL(StateChangeToUiS(QVariantMap)), this, SLOT(StateChangeToUislot(QVariantMap)));
 //  	connect(this,SIGNAL(SocketErrorToUiS(QVariantMap)),this,SLOT(SocketErrorToUislot(QVariantMap)));
 //  	connect(&m_rplaybackrun,SIGNAL(CacheStateToUiS(QVariantMap)),this,SLOT(CacheStateToUislot(QVariantMap)));
 }
@@ -605,20 +607,25 @@ void RPlaybackWnd::SocketErrorToUislot( QVariantMap evMap )
 
 void RPlaybackWnd::StateChangeToUislot( QVariantMap evMap )
 {
-	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
-	if (_curConnectType==TYPE_STREAM)
+	int status = evMap.value("CurrentStatus").toInt();
+	for (int index = 0; index < ARRAY_SIZE(m_PlaybackWnd); ++index)
 	{
-		QList<int>::Iterator it;
-		for(it=_widList.begin();it!=_widList.end();it++){
-			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
-		}
+		m_PlaybackWnd[index].SetCurConnectState((RSubView::__enConnectStatus)status);
 	}
-	if (_curConnectState==STATUS_DISCONNECTED)
-	{
-		_mutexWidList.lock();
-		_widList.clear();
-		_mutexWidList.unlock();
-	}
+// 	_curConnectState=(__enConnectStatus)evMap.value("CurrentStatus").toInt();
+// 	if (_curConnectType==TYPE_STREAM)
+// 	{
+// 		QList<int>::Iterator it;
+// 		for(it=_widList.begin();it!=_widList.end();it++){
+// 			m_PlaybackWnd[*it].SetCurConnectState((RSubView::__enConnectStatus)_curConnectState);
+// 		}
+// 	}
+// 	if (_curConnectState==STATUS_DISCONNECTED)
+// 	{
+// 		_mutexWidList.lock();
+// 		_widList.clear();
+// 		_mutexWidList.unlock();
+// 	}
 }
 
 void RPlaybackWnd::CacheStateToUislot( QVariantMap evMap )
@@ -693,3 +700,8 @@ void RPlaybackWnd::RecFileSearchFail( QVariantMap evMap )
 		 return 1;
  }
  */
+
+void cbDigitalZoom( QString evName, QVariantMap item, void* pUser )
+{
+	((PlayBackThread*)pUser)->setInfromation(evName, item);
+}

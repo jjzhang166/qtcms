@@ -15,6 +15,9 @@
 #include "playbackthread.h"
 #include <QTimer>
 #include <QTime>
+
+void cbDigitalZoom(QString evName, QVariantMap item, void* pUser);
+
 // typedef struct _tagDevCliSetInfo{
 // 	QString m_sAddress;
 // 	unsigned int m_uiPort;

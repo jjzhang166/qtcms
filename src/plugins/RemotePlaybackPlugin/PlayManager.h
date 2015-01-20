@@ -27,6 +27,10 @@ public:
 	int setVolume(unsigned int &uiPersent);
 	void setCurAudioWnd(PlayManager* curWnd);
 
+	void addWnd(QWidget* pWnd, QString sName);
+	void removeWnd(QString sName);
+	void setZoomRect(QRect rect);
+
 	enum SpeedType{
 		SpeedNomal,
 		SpeedFast,

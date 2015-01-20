@@ -87,6 +87,7 @@ public:
 	void setPlaybackWnd(RSubView* wnd);
 	int recordFrame(QVariantMap &evMap);
 
+	int setInfromation(QString evName, QVariantMap info);
 public:
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);
@@ -102,9 +103,9 @@ protected:
 	void run();
 private slots:
 	void action(QString act, BufferManager* pbuff);
-	void bufferStatus(QString progress, BufferManager* pbuff);
 private:
 	void getPlaybackInterface(void** playbackInterface);
+	bool getPlayInterface(QWidget* pwnd, void** playInterface);
 	int getStreamInfo(int chl);
 	bool removeRepeatWnd(QWidget *wndID);
 	void initCallBackFun();
@@ -115,7 +116,9 @@ private:
 	IDeviceRemotePlayback *m_playback;
 	QVariantMap m_fileMap;
 	QList<RSubView*> m_wndList;
+	QList<QWidget*> m_zoomWndList;
 	QMap<int, WndPlay> m_playMap;
+	QWidget* m_susWnd;
 	QDateTime m_playStart;
 	QDateTime m_playEnd;
 	int m_fileTotal;
