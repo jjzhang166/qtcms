@@ -99,6 +99,7 @@ public:
 	QSubviewRun(void);
 	~QSubviewRun(void);
 public:
+	void setParentWnd(QWidget*wnd);
 	//预览视频
 	void openPreview(int chlId,QWidget *pWnd,QWidget *pMainWnd);
 	void stopPreview();
@@ -128,7 +129,7 @@ public:
 	
 	QVariantMap screenShot();
 	tagDeviceInfo deviceInfo();
-
+	//电子放大
 	bool getDigtalViewIsClose();
 	void deInitDigitalView();
 	bool isSuitForDigitalZoom();

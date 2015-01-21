@@ -609,22 +609,23 @@ void CDDrawRenderObject::DrawARectangle( HDC hdc,int nRectStartX,int nRectStartY
 	hpenOld =(HPEN) SelectObject(hdc, hpen);
 
 	POINT tOldPoint;
-	if (m_nRectSurfaceWidth==0||m_nRectSurfaceHeight==0)
+	RECT tExtendWndRect;
+	::GetClientRect(WND,&tExtendWndRect);
+	if (m_nRectSurfaceWidth==0||m_nRectSurfaceHeight==0||tExtendWndRect.right==0||tExtendWndRect.bottom==0)
 	{
 		//do nothing
 	}else{
-		RECT tExtendWndRect;
-		::GetClientRect(WND,&tExtendWndRect);
 		nStartX=nStartX*m_nRectSurfaceWidth/tExtendWndRect.right;
 		nEndX=nEndX*m_nRectSurfaceWidth/tExtendWndRect.right;
 		nStartY=nStartY*m_nRectSurfaceHeight/tExtendWndRect.bottom;
 		nEndY=nEndY*m_nRectSurfaceHeight/tExtendWndRect.bottom;
+
+		MoveToEx(hdc,nStartX,nStartY,&tOldPoint);
+		LineTo(hdc,nEndX,nStartY);
+		LineTo(hdc,nEndX,nEndY);
+		LineTo(hdc,nStartX,nEndY);
+		LineTo(hdc,nStartX,nStartY);
 	}
-	MoveToEx(hdc,nStartX,nStartY,&tOldPoint);
-	LineTo(hdc,nEndX,nStartY);
-	LineTo(hdc,nEndX,nEndY);
-	LineTo(hdc,nStartX,nEndY);
-	LineTo(hdc,nStartX,nStartY);
 	// Do not forget to clean up.
 	SelectObject(hdc, hpenOld);
 	DeleteObject(hpen);

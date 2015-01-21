@@ -51,6 +51,7 @@ QWidget(parent),
 	connect(&m_sSubviewRun,SIGNAL(sgShutDownDigtalZoom()),this,SIGNAL(sgShutDownDigtalZoom()));
 
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
+	
 }
 
 
@@ -948,6 +949,14 @@ void qsubviewEx::disableOriginalWndDrawRect()
 {
 	m_bIsEnableDigitalZoom=true;
 }
+
+void qsubviewEx::setParentWnd( QWidget *wnd )
+{
+	setParent(wnd);
+	m_sSubviewRun.setParentWnd(wnd);
+}
+
+
 
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {

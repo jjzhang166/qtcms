@@ -74,6 +74,7 @@ public:
 	void showDigitalView();
 	void closeDigitalView();
 	void disableOriginalWndDrawRect();
+	void setParentWnd(QWidget *wnd);
 public:
 	//»Øµ÷º¯Êý
 	int cbCStateChange(QVariantMap evMap);

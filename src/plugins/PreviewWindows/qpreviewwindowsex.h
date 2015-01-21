@@ -93,6 +93,8 @@ private:
 	QString getLanguageLable();
 	int OpenCameraInWnd(unsigned int uiWndIndex,int chlId);
 	int getPollInterval();
+	void hideDigitalView();
+	void restoreDigitalView();
 private:
 	IWindowDivMode * m_divMode;
 	qsubviewEx m_sPreviewWnd[MAX_WINDOWS_NUM];
@@ -102,5 +104,7 @@ private:
 	QString m_sLastLanguageLabel;
 	QTimer *m_pAutoPollingTimer;
 	bool m_bIsEnableDigitalZoom;
+	int m_nRestoreViewNum;
+	bool m_bIsRestroreView;
 };
 

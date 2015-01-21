@@ -2268,6 +2268,7 @@ bool QSubviewRun::slAddExtendWnd()
 	return true;
 }
 
+
 void QSubviewRun::slRemoveExtendWnd()
 {
 	m_tDigitalZoomView.close();
@@ -2419,7 +2420,7 @@ void QSubviewRun::setDigitalZoomStreamRestore()
 		m_tStepCodeLock.unlock();
 	}else{
 		//do nothing
-		qDebug()<<__FUNCTION__<<__LINE__<<"DIGITALZOOMSTREAMRESTORE fail";
+		//qDebug()<<__FUNCTION__<<__LINE__<<"DIGITALZOOMSTREAMRESTORE fail";
 	}
 }
 
@@ -2520,6 +2521,10 @@ void QSubviewRun::initDigitalRect( QPoint tStartPoint,QPoint tEndPoint,int nWidt
 	m_tDigitalZoomView.initRectPoint(tToViewStartPoint,tToViewEndPoint);
 }
 
+void QSubviewRun::setParentWnd( QWidget*wnd )
+{
+	m_tDigitalZoomView.setParentWnd(wnd);
+}
 
 
 int cbConnectRState( QString evName,QVariantMap evMap,void *pUser )

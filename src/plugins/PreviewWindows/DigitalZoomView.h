@@ -33,6 +33,7 @@ public:
 	void initRectPoint(QPoint tStart,QPoint tEnd);
 	void getDigitalViewSize(int &nWidth,int &nHeight);
 	void translateLanguage();
+	void setParentWnd(QWidget *wnd);
 signals:
 	void sgDrawRect(QPoint tStartPoint,QPoint tEndPoint);
 	void sgHideEvnet();

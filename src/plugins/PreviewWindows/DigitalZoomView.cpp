@@ -9,6 +9,7 @@ DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	,m_bViewIsClose(true)
 {
 	setWindowFlags(Qt::WindowStaysOnTopHint);
+	
 	setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
 	QDesktopWidget* desktopWidget = QApplication::desktop();
 	m_tDoubleClickMinPosition = desktopWidget->availableGeometry();
@@ -119,7 +120,7 @@ void DigitalZoomView::mouseMoveEvent( QMouseEvent * event )
 
 void DigitalZoomView::hideEvent( QHideEvent *event )
 {
-	emit sgHideEvnet();
+	//emit sgHideEvnet();
 }
 
 void DigitalZoomView::showEvent( QShowEvent *event )
@@ -240,3 +241,13 @@ void DigitalZoomView::paintEvent( QPaintEvent *ev )
 	//±³¾°
 	p.drawPixmap(rcClient,pix);
 }
+
+void DigitalZoomView::setParentWnd( QWidget *wnd )
+{
+	setParent(wnd);
+	setWindowFlags(Qt::Window);
+	setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
+}
+
+
+

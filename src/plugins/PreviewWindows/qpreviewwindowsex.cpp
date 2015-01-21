@@ -9,12 +9,14 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 	m_pAutoPollingTimer(NULL),
 	m_nCurrentWnd(0),
 	m_bAudioEnabled(false),
-	m_bIsEnableDigitalZoom(false)
+	m_bIsEnableDigitalZoom(false),
+	m_bIsRestroreView(false),
+	m_nRestoreViewNum(-1)
 {
 	//°ó¶¨ÐÅºÅ
 	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
 	{
-		m_sPreviewWnd[i].setParent(this);
+		m_sPreviewWnd[i].setParentWnd(this);
 		m_sPreviewWnd[i].setCurWindId(i);
 		m_sPreviewWnd[i].initAfterConstructor();
 
@@ -464,6 +466,7 @@ void qpreviewwindowsex::showEvent( QShowEvent *ev )
 	{
 		m_sPreviewWnd[i].setDataBaseFlush();
 	}
+	restoreDigitalView();
 }
 
 bool qpreviewwindowsex::chlIsExist( int chlId )
@@ -494,6 +497,7 @@ bool qpreviewwindowsex::chlIsExist( int chlId )
 void qpreviewwindowsex::hideEvent( QHideEvent * )
 {
 	m_sPreviewWnd[m_nCurrentWnd].audioEnabled(false);
+	hideDigitalView();
 }
 
 QString qpreviewwindowsex::getLanguageLable()
@@ -712,7 +716,7 @@ void qpreviewwindowsex::shutDownDigtalZoom()
 			break;
 		}
 	}
-	if (bIsDeInitDigtalView)
+	if (bIsDeInitDigtalView&&m_bIsRestroreView==false)
 	{
 		for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
 		{
@@ -728,6 +732,35 @@ void qpreviewwindowsex::enableDigtalZoom()
 	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
 	{
 		m_sPreviewWnd[i].disableOriginalWndDrawRect();
+	}
+}
+
+void qpreviewwindowsex::hideDigitalView()
+{
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		if (m_sPreviewWnd[i].getDigtalViewIsClose()==false)
+		{
+			m_nRestoreViewNum=i;
+			m_bIsRestroreView=true;
+			break;
+		}
+	}
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].closeDigitalView();
+	}
+}
+
+void qpreviewwindowsex::restoreDigitalView()
+{
+	if (m_nRestoreViewNum!=-1)
+	{
+		m_sPreviewWnd[m_nRestoreViewNum].showDigitalView();
+		m_nRestoreViewNum=-1;
+		m_bIsRestroreView=false;
+	}else{
+		//do nothing
 	}
 }
 
