@@ -191,7 +191,7 @@ void LocalBackThread::run()
 			break;
 		case EM_CHECK_SIZE:
 			{
-				if (2*1024*1024 < AVI_bytes_written(iter->fd) + pFrameHead->tFrameHead.uiLength){
+				if (256*1024*1024 < AVI_bytes_written(iter->fd) + pFrameHead->tFrameHead.uiLength){
 					iter->fileStatus = EM_WAIT_FOR_PACK;
 				}
 				m_steps = EM_WRITE_FRAME;
@@ -227,7 +227,6 @@ void LocalBackThread::run()
 						item.clear();
 						item.insert("nChannel", iter.key());
 						item.insert("Progress", curProgress);
-						qDebug()<<"wnd:"<<iter.key()<<" progress: "<<curProgress;
 						emit sendMsg(QString("localFileBackUpProgress"), item);
 					}
 				}
@@ -408,14 +407,6 @@ void LocalBackThread::appendTimePath( QList<TimePath> &tpList, const uint &start
 		insertPos = pos + 1;
 	}
 }
-
-// bool LocalBackThread::checkWndExist( int wndId )
-// {
-// 	if (wndId >= m_sChls.size()){
-// 		return false;
-// 	}
-// 	return m_sChls[wndId] == QChar('1');
-// }
 
 int LocalBackThread::countPts( QMap<int,int> ptsMap )
 {

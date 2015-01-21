@@ -26,7 +26,6 @@ protected:
 private:
 	bool getFileList(QStringList &list);
 	void createSQLCmd(QString &sql);
-// 	bool checkWndExist(int wndId);
 	int execCommand(sqlite3 *pdb, const char* cmd, char*** pppRet, int* row, int* col, char** pMsg);
 	void appendTimePath(QList<TimePath> &tpList, const uint &start, const QString &path, qint32 &insertPos);
 	int countPts(QMap<int,int> ptsMap);
