@@ -1,0 +1,3 @@
+LIBRARY "LocalBackupPlugin.dll"
+EXPORTS
+	CreateInstance @1

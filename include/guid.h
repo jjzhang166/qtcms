@@ -121,4 +121,5 @@ extern const IID IID_IGetIpAddress;
 extern const CLSID CLSID_AutoSearchDevicePlugin;
 extern const IID IID_IDeviceRemotePlayback;
 extern const IID IID_ICommunicate;
+extern const CLSID CLSID_LocalBackupPlugin;
 #endif
