@@ -24,13 +24,10 @@ int LocalBackupWindows::startLocalFileBackUp( int nTypes,const QString sChannel,
 	QDateTime start = QDateTime::fromString(startTime, "yyyy-MM-dd hh:mm:ss");
 	QDateTime end = QDateTime::fromString(endTime, "yyyy-MM-dd hh:mm:ss");
 
-// 	QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-// 		".",
-// 		QFileDialog::ShowDirsOnly
-// 		| QFileDialog::DontResolveSymlinks);
-
-	QString dir = "F:\\Project\\Qtcms\\output\\Debug\\playback";
-
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+		".",
+		QFileDialog::ShowDirsOnly
+		| QFileDialog::DontResolveSymlinks);
 	dir = dir.replace("\\", "/");
 	m_backupThread.setBackupPath(dir);
 	return m_backupThread.startLocalFileBackUp(nTypes, sChannel, start, end);
