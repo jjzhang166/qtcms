@@ -1,6 +1,6 @@
 #include "DigitalZoomView.h"
 #include <QDebug>
-
+#include <QIcon>
 QRect DigitalZoomView::m_tDigitalViewPosition(400,400,500,300);
 QRect DigitalZoomView::m_tDoubleClickOldPosition(400,400,500,300);
 DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
@@ -16,6 +16,16 @@ DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	m_nMinHeight=m_tDoubleClickMinPosition.height()/40;
 	m_tDoubleClickMinPosition.setX(m_tDoubleClickMinPosition.width()-m_tDoubleClickMinPosition.width()/10);
 	m_tDoubleClickMinPosition.setY(m_tDoubleClickMinPosition.height()-m_tDoubleClickMinPosition.height()/40);
+	this->setWindowTitle(tr("Zoom"));
+
+	QString image;
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+	image = IniFile.value("background/zoom-icon-image", QVariant("")).toString();
+	QString PixPath = sAppPath + image;
+	QIcon tWindowIcon(PixPath);
+	this->setWindowIcon(tWindowIcon);
 }
 
 
@@ -172,4 +182,61 @@ bool DigitalZoomView::event( QEvent * eventt)
 		//do nothing
 	}	
 	return QWidget::event(eventt);
+}
+
+void DigitalZoomView::clearRectPoint()
+{
+	QPoint tPoint;
+	m_tRectCurrentPoint=tPoint;
+	m_tRectStartPoint=tPoint;
+	m_tRectDropStartPoint=tPoint;
+	m_tRectDropEndPoint=tPoint;
+}
+
+void DigitalZoomView::getDigitalViewSize( int &nWidth,int &nHeight )
+{
+	nWidth=m_tDigitalViewPosition.right()-m_tDigitalViewPosition.left();
+	nHeight=m_tDigitalViewPosition.bottom()-m_tDigitalViewPosition.top();
+}
+
+void DigitalZoomView::initRectPoint( QPoint tStart,QPoint tEnd )
+{
+	m_tRectStartPoint=tStart;
+	m_tRectCurrentPoint=tEnd;
+}
+
+void DigitalZoomView::changeEvent( QEvent *event )
+{
+	if (event->type()==QEvent::LanguageChange)
+	{
+		//do something
+		translateLanguage();
+	}
+}
+
+void DigitalZoomView::translateLanguage()
+{
+	this->setWindowTitle(tr("Zoom"));
+}
+
+void DigitalZoomView::paintEvent( QPaintEvent *ev )
+{
+	Q_UNUSED(ev);
+	QPainter p(this);
+	QString image;
+
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+
+	image = IniFile.value("background/zoom-background-image", QVariant("")).toString();
+
+	QRect rcClient = contentsRect();
+	this->geometry().center();
+	QPixmap pix;
+	QString PixPaht = sAppPath + image;
+	pix.load(PixPaht);
+	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+	//±³¾°
+	p.drawPixmap(rcClient,pix);
 }

@@ -137,6 +137,7 @@ public:
 	void setDigitalZoomToMainStream();
 	void setDigitalZoomStreamRestore();
 	void drawRectToOriginalWnd(QPoint tStartPoint,QPoint tEndPoint);
+	void initDigitalRect(QPoint tStartPoint,QPoint tEndPoint,int nWidth,int nHeight);
 public:
 	//call back
 	int cbCConnectState(QString evName,QVariantMap evMap,void *pUser);

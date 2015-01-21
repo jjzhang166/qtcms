@@ -43,4 +43,11 @@
       <translation>Костюм для Window</translation>
     </message>
   </context>
+  <context>
+    <name>DigitalZoomView</name>
+    <message>
+      <source>Zoom</source>
+      <translation>Электронное увеличение</translation>
+    </message>
+  </context>
 </TS>

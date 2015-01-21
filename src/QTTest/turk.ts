@@ -70,4 +70,11 @@
       <translation>Pencereye Sığdır</translation>
     </message>
   </context>
+  <context>
+    <name>DigitalZoomView</name>
+    <message>
+      <source>Zoom</source>
+      <translation>Elektronik zoom</translation>
+    </message>
+  </context>
 </TS>

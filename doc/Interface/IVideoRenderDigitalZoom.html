@@ -11,8 +11,8 @@
 <p>函数定义：</p>
 <p>//添加额外渲染的窗口 </p>
 <p>virtual bool addExtendWnd(void *pWnd,const QString sName)=0;</p>
-<p>//设置画矩形的坐标，nX,nY 为屏幕的绝对坐标<br />
-  virtual void setRenderRect(int nX,int nY,int nWidth,int nHeight)=0;</p>
+<p>//设置画矩形的坐标，nX,nY 开始坐标，ntEndX,inEndY为结束坐标（相对当前的屏幕）<br />
+  virtual void setRenderRect(int nX,int nY,int nEndX,int nEndY)=0;</p>
 <p>//移出指定名字的额外渲染窗口<br />
   virtual void removeExtendWnd(const QString sName)=0;</p>
 <p>//设置画矩形的线宽和颜色<br />

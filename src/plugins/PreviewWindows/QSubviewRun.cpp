@@ -2345,6 +2345,7 @@ void QSubviewRun::deInitDigitalView()
 			QString sName;
 			pVideoRender->removeExtendWnd(sName);
 			pVideoRender->setRenderRect(0,0,0,0);
+			m_tDigitalZoomView.clearRectPoint();
 			pVideoRender->Release();
 			pVideoRender=NULL;
 		}
@@ -2502,6 +2503,21 @@ void QSubviewRun::digitalZoomStreamRestore()
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
 	}
+}
+
+void QSubviewRun::initDigitalRect( QPoint tStartPoint,QPoint tEndPoint,int nWidth,int nHeight )
+{
+	int nViewWidth;
+	int nViewHeight;
+	m_tDigitalZoomView.getDigitalViewSize(nViewWidth,nViewHeight);
+	QPoint tToViewStartPoint;
+	QPoint tToViewEndPoint;
+	tToViewStartPoint.setX(tStartPoint.x()*nViewWidth/nWidth);
+	tToViewStartPoint.setY(tStartPoint.y()*nViewHeight/nHeight);
+	tToViewEndPoint.setX(tEndPoint.x()*nViewWidth/nWidth);
+	tToViewEndPoint.setY(tEndPoint.y()*nViewHeight/nHeight);
+	SLSetRenderRect(tToViewStartPoint,tToViewEndPoint);
+	m_tDigitalZoomView.initRectPoint(tToViewStartPoint,tToViewEndPoint);
 }
 
 

@@ -67,7 +67,7 @@ public:
 	//设置当前焦点窗口
 	void setCurrentFocus(bool flags);
 	void setDataBaseFlush();
-
+	//电子放大
 	bool getDigtalViewIsClose();
 	void deInitDigtalView();
 	bool isSuitForDigitalZoom();

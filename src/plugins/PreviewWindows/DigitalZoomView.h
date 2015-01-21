@@ -6,6 +6,8 @@
 #include <QEvent>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QPainter>
+#include <QSettings>
 class DigitalZoomView:public QFrame
 {
 	Q_OBJECT
@@ -23,8 +25,14 @@ public:
 	virtual void	resizeEvent(QResizeEvent *event);
 	virtual void	moveEvent(QMoveEvent *);
 	virtual bool	event ( QEvent * event ) ;
+	virtual void	changeEvent(QEvent *event);
+	virtual void	 paintEvent(QPaintEvent *event);
 	bool getCurrentViewIsClose();
 	QRect getPosition();
+	void clearRectPoint();
+	void initRectPoint(QPoint tStart,QPoint tEnd);
+	void getDigitalViewSize(int &nWidth,int &nHeight);
+	void translateLanguage();
 signals:
 	void sgDrawRect(QPoint tStartPoint,QPoint tEndPoint);
 	void sgHideEvnet();
