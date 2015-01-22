@@ -127,7 +127,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
 		 $('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
-		    addMouseStyle($(this),action,bool?1<<2:1<<3);
+		    addMouseStyleByLimit($(this),action,bool?1<<2:1<<3);
 	       })
 		 
 	})///
@@ -183,7 +183,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
 		if(data.ErrorCode=="1"){
-			autoSearchDev.showUserLoginUi(336,300);
+			//autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
 			showLimitTips();
 			var timer =setTimeout(function(){
@@ -1077,10 +1077,9 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			return itema;
 	 }
 	  function checkUserRightBtn(fn,num){
-		  var uicode = bool? 1<<2:1<<3;
-		  var uisubcode = 0;
+		 
 		  // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
-		  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+		  var itema= checkUserRight();
 		  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 			if(itema==0){
 				window[fn](num);
@@ -1093,16 +1092,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	 
 	  function checkUserRightdiv(fn,num){
 	 
-		 var itema =  checkUserRight();
+		 var itema = checkUserRight();
 				if(itema==0){
 					window[fn](num);
 				}else if(itema==1){
 				  var show = autoSearchDev.showUserLoginUi(336,300);
 				  if(show==0){
-					 var timer = setTimeout(function(){
-					   checkUserRightdiv(fn,num);
-					   clearTimeout(timer);
-					  },30);
+				     checkUserRightBtn(fn,num);
 				  } 
 				}else{
 					 showLimitTips();	

@@ -22,7 +22,7 @@ var oPreView,oDiv,autoSearchDev,
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
-		   addMouseStyle($(this),action,1<<0);
+		   addMouseStyleByLimit($(this),action,1<<0);
 	       })
 		 //下拉菜单模拟
 		/*// $('.select1').toSelect();  	
@@ -222,7 +222,7 @@ var oPreView,oDiv,autoSearchDev,
      function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
 		if(data.ErrorCode=="1"){
-			autoSearchDev.showUserLoginUi(336,300);
+			//autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
 			writeActionLog(_T('no_limit'),errorcolor);
 			var timer =setTimeout(function(){
@@ -884,7 +884,7 @@ var oPreView,oDiv,autoSearchDev,
 			}else if(itema==1){
 			  var show = autoSearchDev.showUserLoginUi(336,300);
 			  if(show==0){
-				   checkUserRightdiv(uicode,uisubcode,fn,num);
+				   checkUserRightBtn(uicode,uisubcode,fn,num);
 			  } 
 		    }else{
 		        writeActionLog(_T("no_limit"),errorcolor);

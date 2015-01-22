@@ -7,7 +7,61 @@
 	4.如UI上有相同的逻辑操作, 请慎重在文件添加.
 
 */
-function addMouseStyle(obj,action,maincode){  //按钮UI响应
+function addMouseStyle(obj,action){  //按钮UI响应
+	var width = obj.width();
+	var left,top;
+	obj.hover(function(){
+		left = document.all ? parseInt(obj.css('backgroundPositionX'),10) : parseInt(obj.css('background-position').split('px')[0],10);
+		top = document.all ? parseInt(obj.css('backgroundPositionY'),10) : parseInt(obj.css('background-position').split('px')[1],10);
+		if(left != -width){
+			obj.css('background-position',left-width+'px'+' '+top+'px');
+		}
+	},function(){
+		obj.css('background-position',left+'px'+' '+top+'px');
+	}).mousedown(function(){
+		//$(window).off();
+		if(left == -width){
+			obj.css('background-position',left-width+'px'+' '+top+'px');
+		}else{
+			obj.css('background-position',left-(2*width)+'px'+' '+top+'px');
+		}
+	}).mouseup(function(ev){
+		if(action == 'toggle'){
+			var H = obj.height();
+			var a = obj.attr('toggle');
+			if(a){
+				obj.css('background-position',left-width+'px'+' '+(top+H)+'px');
+				obj.removeAttr('toggle');
+			}else{
+				obj.attr('toggle',1);
+				obj.css('background-position',left-width+'px'+' '+(top-H)+'px');
+			}	
+			top = parseInt(obj.css('backgroundPositionY'),10) || parseInt(obj.css('background-position').split('px')[1],10);	
+		}else if(action == 'hover0'){
+			obj.css('background-position',left-width+'px'+' '+top+'px');	
+		}else{
+			if(action == "switch"){
+				var oSwitch = $('a.switch');
+			}else{
+				var ev = ev || window.event;
+				var oSwitch = $('div .setViewNum');	
+				oSwitch.each(function(index){
+				var T = document.all ? parseInt($(this).css('backgroundPositionY'),10) : parseInt($(this).css('background-position').split('px')[1],10);
+				$(this).css('background-position','0px'+' '+T+'px').css('color','#B5B5B6');
+				/*var oView = $('#playback_view');
+				if(oView.length != 0){
+					autoImages(oSwitch.index(ev.target)+1,oView);
+				}*/
+			})
+				//alert(oSwitch.index(ev.target);
+			}		
+			obj.css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+			obj.parent('ul.option').prev('div.select').css('background-position',-width+'px'+' '+top+'px').css('color','#000');
+			left=-width;
+		}		
+	})
+}
+function addMouseStyleByLimit(obj,action,maincode){  //按钮UI响应
 	var width = obj.width();
 	var left,top,initLeft,initTop;
 	obj.hover(function(){
@@ -116,7 +170,6 @@ function addMouseStyle(obj,action,maincode){  //按钮UI响应
 		}		
 	})
 }
-
 function set_drag(X1,X2,oDrag){  // 回放页面的拖拽条
 	var oNow=$('#now_time');	
 	var b=oDrag.hasClass('now_sound'),
@@ -417,11 +470,11 @@ $(function(){
 		}
 	}
 
-	/*$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+	$('.hover0').each(function(){  // 按钮元素添加鼠标事件对应样式
 		var action = $(this).attr('class').split(' ')[0];
 		addMouseStyle($(this),action);
 		
-	})*/
+	})
 })///
 function triggerOnclick(id,sEv){ 
 	try{

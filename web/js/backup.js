@@ -126,7 +126,7 @@ var oPlayBack={},  // 远程回访控件对象
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
-		    addMouseStyle($(this),action,1<<4);
+		    addMouseStyleByLimit($(this),action,1<<4);
 	    })
 	})///
 
@@ -156,7 +156,7 @@ var oPlayBack={},  // 远程回访控件对象
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
 		if(data.ErrorCode=="1"){
-			autoSearchDev.showUserLoginUi(336,300);
+		//	autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
 			showLimitTips();
 			var timer =setTimeout(function(){
@@ -722,7 +722,7 @@ var oPlayBack={},  // 远程回访控件对象
 			$(this).parent('li').on({
 				dblclick:function(){
 					if(bool)return;
-					checkUserRightdiv(1<<4,0,"backupSearchFile");
+					checkUserRightdiv("backupSearchFile");
 			     },
 				click:function(){
 					if(bool)return;
@@ -890,8 +890,10 @@ var oPlayBack={},  // 远程回访控件对象
 	// console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		return itema;
  }
-  function checkUserRightBtn(uicode,uisubcode,fn,num){
+  function checkUserRightBtn(fn,num){
 	 // console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	var uicode = bool?1<<10:1<<4,
+	uisubcode=0;
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
 	  // console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
 		if(itema==0){
@@ -902,8 +904,9 @@ var oPlayBack={},  // 远程回访控件对象
 		   showLimitTips();
 		}
  }
- function checkUserRightdiv(uicode,uisubcode,fn,num){
-	 
+ function checkUserRightdiv(fn,num){
+	 var uicode = bool?1<<10:1<<4,
+	     uisubcode=0;
 	 var itema = checkUserRight(uicode,uisubcode);
 			if(itema==0){
 				window[fn](num);

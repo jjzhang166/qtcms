@@ -140,11 +140,11 @@
 	<div id="set_content">
 		<div class="left">
 			<ul>
-				<li class="setViewNum hover" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
-				<li class="setViewNum hover" style="background-position:0 -100px;"><script>T("Local_Settings")</script></li>
-				 <li class="setViewNum hover" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> 
-				<li class="setViewNum hover" style="background-position:0 -200px;"><script>T("Version")</script></li>
+				<li class="setViewNum hover0" style="background-position:-250px 0;"><script>T("Device_Manager")</script></li>
+				<li class="setViewNum hover0" style="background-position:0 -50px;"><script>T("Device_Settings")</script></li>
+				<li class="setViewNum hover0" style="background-position:0 -100px;"><script>T("Local_Settings")</script></li>
+				 <li class="setViewNum hover0" style="background-position:0 -150px;"><script>T("User_Manage")</script></li> 
+				<li class="setViewNum hover0" style="background-position:0 -200px;"><script>T("Version")</script></li>
 			</ul>
 		</div>
 		<div class="right">
@@ -194,8 +194,8 @@
                     <td colspan="4" style=" text-align:left">
                     <input type="checkbox" onclick="addAlldevIntoArea();" id="SerachedDevList_SelectAll" status="0" />
                     <label for="SerachedDevList_SelectAll"><script>T("Select")</script></label>
-					<div  id="quit_btn"  onclick="quitbtn();" class="hover inpt2"  style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("quit_btn")</script></div>
-					<div  id="search_btn"  onclick="searchbtn();" class="hover inpt2" style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("search_btn")</script></div>
+					<div  id="quit_btn"  onclick="quitbtn();" class="hover0 inpt2"  style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("quit_btn")</script></div>
+					<div  id="search_btn"  onclick="searchbtn();" class="hover0 inpt2" style="background-position: 0px 0px;float:right;margin-left:10px;"><script>T("search_btn")</script></div>
 					<div style="float:right;padding-top:3px;">IP/ID:</label><input id="searchtxt" type="text"/></div>
 					</td>
                     </tr>
@@ -270,7 +270,7 @@
 								<div class="select" style="width:133px;">
                                     <!--<span id="dvr_common_date_format"></span>-->
 									<input type="select" data-UI="datefmt" value="" data="" />
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option" >
 									<li><input value="YYYY/MM/DD" type="text" data="0" /></li>
@@ -289,7 +289,7 @@
 								<div class="select" style="width:133px;">
 									<input type="select" data-UI="standard" value="" data="" />
                                     <!--<span id="dvr_common_standard"></span>-->
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<li><input value="PAL" type="text" data="0" /></li>
@@ -309,7 +309,7 @@
 								<div class="select" style="width:133px;">
                                 <!--<span id="dvr_common_OSD_alpha"></span>-->
 									<input type="select" data-UI="alpha" data="" /></span>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
 			                        <li><input value="0" type="text" data="0" /></li>                          
@@ -338,7 +338,7 @@
 								<div class="select" style="width:133px;">
                                    <!-- <span id="dvr_common_autoswiinterval"></span>-->
 									<input type="select" data-UI="autoswiinterval" data="" />
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<li><input value="2s" type="text"  data="0"/></li>
@@ -356,7 +356,7 @@
 								<div class="select" style="width:133px;">
                                 <!--<span id="dvr_common_autoswimode"></span>-->
 									<input type="select" data-UI="autoswimode" data=""/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
                                 	<!--<input type="hidden" id="dvr_common_autoswimode_ID" >-->
@@ -388,7 +388,7 @@
 						 			<tr><td><script>T("Provider")</script></td>
                                     <td><div class="select" style="width:133px;">
 									<input type="select"  data-UI="ddnsprovider" data=""/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<li><input type="text" value="dyndns.org" data="0"/></li>
@@ -442,7 +442,7 @@
 								<div class="select" style="width:133px;">
 									<!--<span id="dvr_enc_chn_sel0"></span>-->
                                     <input type="select" data-UI="chn" data=""/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul id="dvr_enc_chn_sel" data-WARP="envload"  class="option">
 								
@@ -464,7 +464,7 @@
 										<div class="select" style="width:133px;">
                                         <!--<span id="dvr_enc_main_mode"></span>-->
                                              <input type="select" data-UI="mode" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_enc_main_mode_ID" value="">-->
@@ -479,7 +479,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_main_format"><li></li></span>-->
                                             <input type="select" data-UI="fmt" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
 											<li value="0"><input type="text" value="QCIF" data="0"/></li>
@@ -495,7 +495,7 @@
 										<div class="select" style="width:133px;">
 										<!--<span id="dvr_enc_main_image"></span>-->
                                         <input type="select" data-UI="piclv" data=""/>
-										<a class="hover"></a></div>
+										<a class="hover0"></a></div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_enc_main_image_ID" value="">-->
 											<li value="0"><input type="text" value="Highest"  data="0"/></li>
@@ -512,7 +512,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_main_bitmode"></span>-->
                                             <input type="select" data-UI="bitmode" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
 											<!--<input type="hidden" id="dvr_enc_main_bitmode_ID" value="">-->
@@ -528,7 +528,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_main_bitvalue"></span>-->
                                              <input type="select" data-UI="bitvalue" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
 											<li><input type="text" value="64kbps"  data="0"/></li>
@@ -549,7 +549,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_main_framerate"></span>-->
                                             <input type="select" data-UI="framerate" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
 											<li><input type="text" value="1FPS"  data="0"/></li>
@@ -575,7 +575,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_sub_mode"></span>-->
                                              <input type="select" data-UI="mode" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_enc_sub_mode_ID" value="0">-->
@@ -589,7 +589,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_sub_format"><li></li></span>-->
                                              <input type="select" data-UI="fmt" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul id="dvr_enc_main_format_sel" class="option">
 											<li value="0"><input type="text" value="QCIF" data="0"/></li>
@@ -603,7 +603,7 @@
 										<div class="select" style="width:133px;">
 										<!--<span id="dvr_enc_sub_image"></span>-->
                                          <input type="select" data-UI="piclv" data=""/>
-										<a class="hover"></a></div>
+										<a class="hover0"></a></div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_enc_sub_image_ID" value="">-->
 											<!--<li value="0"><a><script>T("Highest")</script></a></li>-->
@@ -621,7 +621,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_sub_bitmode"></span>-->
                                              <input type="select" data-UI="bitmode" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_enc_sub_bitmode_ID" value="">-->
@@ -637,7 +637,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_sub_bitvalue"></span>-->
                                              <input type="select" data-UI="bitvalue" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
                                             <li><input type="text" value="64kbps" data="0"/></li>
@@ -653,7 +653,7 @@
 										<div class="select" style="width:133px;">
 											<!--<span id="dvr_enc_sub_framerate"></span>-->
                                              <input type="select" data-UI="framerate" data=""/>
-											<a class="hover"></a>
+											<a class="hover0"></a>
 										</div>
 										<ul class="option">
 											<li><input type="text" value="1FPS" data="0"/></li>
@@ -745,7 +745,7 @@
 								<!--<span id="dvr_record_chn_sel0"></span>-->
                                 <input  data-UI="chn" hidden />
                                  <input data=""  data-UI="chn1" id="dvr_record_chn_sel0" type="select"/>
-								<a class="hover"></a></div>
+								<a class="hover0"></a></div>
 								<ul id="dvr_record_chn_sel" data-WARP="envload" class="option">
 			                       
 								</ul>
@@ -756,7 +756,7 @@
 									<!--<span id="dvr_record_week"></span>-->
                                      <!--<input type="select" data="" data-UI="weekday" />-->
                                       <input id="recweek" value="" data="" type="select" data-UI="weekday"/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<!--<ul id="dvr_record_week_sel" class="option" >-->
                                 	<!--<input type="hidden" id="dvr_record_week_ID" value="">-->
@@ -909,7 +909,7 @@
 								<div class="select" style="width:133px;">
 								<!--<span id="dvr_screen_chn_sel0"></span>-->
                                 <input type="select" data-UI="chn" data="" /><!---->
-								<a class="hover"></a></div>
+								<a class="hover0"></a></div>
 								<ul id="dvr_screen_chn_sel" data-WARP="envload" class="option">
 							
 								</ul>
@@ -928,7 +928,7 @@
 								<div class="select" style="width:133px;">
 									<!--<span id="dvr_ptz_chn_sel0"></span>-->
                                      <input type="select" data-UI="chn" data="" />
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul id="dvr_ptz_chn_sel" class="option" data-WARP="envload">
 			
@@ -943,7 +943,7 @@
 								<div class="select" style="width:133px;">
 							           <input type="select" data-UI="protocal" data=""/>
 									<!--	<span id="dvr_ptz_agreement"></span>-->
-										<a class="hover"></a>
+										<a class="hover0"></a>
 								</div>
 								<ul class="option">
                                 	<!--<input type="hidden" id="dvr_ptz_agreement_ID" value="">-->
@@ -959,7 +959,7 @@
 								<div class="select" style="width:133px;">
 									<!--	<span id="dvr_ptz_baud_rate"></span>-->
 									<input type="select" data-UI="baudrate" data=""/>
-										<a class="hover"></a>
+										<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<li><input  type="text" value="2400" data="0"/></li>
@@ -1090,7 +1090,7 @@
 								<div class="select" style="width:133px;">
                                 <!--<span id="dvr_detect_chn_sel0"></span>-->
 								<input type="select" data-UI="chn" data=""/>
-								<a class="hover"></a></div>
+								<a class="hover0"></a></div>
 								<ul id="dvr_detect_chn_sel" data-WARP="envload" class="option">
 									
 								</ul>
@@ -1103,7 +1103,7 @@
 			                                    <div class="select" style="width:133px;">
                                                  <!--<span id="dvr_detect_sens"></span>-->
 			                                    <input type="select" data-UI="sens" data=""/>
-			                                    <a class="hover"></a></div>
+			                                    <a class="hover0"></a></div>
 			                                    <ul class="option">
                                                 	<!--<input type="hidden" id="dvr_detect_sens_ID" value="" />-->
 			                                             <li value="0"><input type="text" value="Highest" data="0"/></li>
@@ -1124,7 +1124,7 @@
 										<div class="select" style="width:133px;">
 										<!--<span id="dvr_detect_mduration"></span>-->
                                          <input type="select" data-UI="mdalarmduration" data=""/>
-										<a class="hover"></a></div>
+										<a class="hover0"></a></div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_detect_mduration_ID" value="" />-->
 											<li value="0"><input type="text" value="1s" data="0"/></li>
@@ -1153,7 +1153,7 @@
 										<div class="select" style="width:133px;">
 										<!--<span id="dvr_detect_vduration"></span>-->
                                         <input type="select" data-UI="vlalarmduration" data=""/>
-										<a class="hover"></a></div>
+										<a class="hover0"></a></div>
 										<ul class="option">
                                         	<!--<input type="hidden" id="dvr_detect_vduration_ID" value="" />-->
 											<li value="0"><input type="text" value="1s" data="0"/></li>
@@ -1245,7 +1245,7 @@
 								<div class="select" style="width:133px;">
 									<!--<span id="dvr_alarm_chn_sel0"></span>-->
                                     <input type="select" data-UI="chn" data=""/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul id="dvr_alarm_chn_sel" class="option" data-WARP="envload">	
 								</ul>
@@ -1258,7 +1258,7 @@
 								<div class="select" style="width:133px;">
 			                                    <!--<span id="dvr_alarm_opermode"></span>-->
                                                 <input type="select" data-UI="mode" data=""/>
-			                                    <a class="hover"></a>
+			                                    <a class="hover0"></a>
                                 </div>
 			                                    <ul class="option">
                                                 	 <!--<input type="hidden" id="dvr_alarm_opermode_ID" value="" />-->
@@ -1274,7 +1274,7 @@
 								<div class="select" style="width:133px;">
 										<!--<span id="dvr_alarm_duration"></span>-->
                                          <input type="select" data-UI="alarmduration" data=""/>
-			                                    <a class="hover"></a></div>
+			                                    <a class="hover0"></a></div>
 			                                    <ul class="option">
                                                 	<!--<input type="hidden" id="dvr_alarm_duration_ID" value="" />-->
 			                                       <li value="0"><input type="text" value="1s" data="0"/></li>
@@ -1406,7 +1406,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<input value="" type="text" data="" />
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
                                 	<!-- <input id="ipc_enc_stream_ID" value="101" type="hidden" /> -->
@@ -1425,7 +1425,7 @@
 								<input data-UI="resolutionHeight" value="" type="hidden">
 								<div class="select" style="width:133px;">
 									<input data-UI="resolution" value="" type="text">
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option" data-WARP="resolutionProperty">
 									
@@ -1443,7 +1443,7 @@
 								<div class="select" style="width:133px;">
 									<input data-UI="bitRateControlType" type="text" value="" data="" />
 									<!-- <span id="ipc_enc_BitRateControlType"></span> -->
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
                                 	<!-- <input id="ipc_enc_BitRateControlType_ID" type="hidden" /> -->
@@ -1530,7 +1530,7 @@
 							 				<td><script>T("Server")</script></td><td>
 				                                <div class="select" style="width:153px;">
 			                                        <input data-UI="ddnsProvider" value="" />
-			                                        <a class="hover"></a>
+			                                        <a class="hover0"></a>
 			                                    </div>
 			                                    <ul class="option aa" >
 			                                        <li><input value="dyndns" /></li>
@@ -1624,7 +1624,7 @@
                    		<tr><td><script>T("Time_Zone")</script></td><td>
                     	<div class="select" style="width:153px;">
                                 <input id="time_zone" data-UI type="select"/>
-                                <a class="hover"></a>
+                                <a class="hover0"></a>
 						</div>
 						<ul class="option aa">
 							<li><input value="GMT-12:00"/></li>
@@ -1665,7 +1665,7 @@
 	                    <tr>
                         <td><script>T("Computer_time")</script></td>
                         <td><input id="PC_time" value="" disabled="disabled" data-UI type="text"></td>
-                        <td class="tdBtn"><div class="hover" onclick="PCTime2dev();"><script>T("synchronize")</script></div></td></tr>
+                        <td class="tdBtn"><div class="hover" onclick="checkUserRightBtn(1<<6,0,'PCTime2dev');"><script>T("synchronize")</script></div></td></tr>
 	                   <!--  <tr style="display:none;"><td><script>T("Internet_time_synchronization")</script></td><td></td><td></td></tr> --> 
 	                    
 	                    <tr>
@@ -1714,7 +1714,7 @@
 								<div class="select" style="width:133px;">
 									<!-- <span class="Language"></span> -->
 									<input id="Language" value="tr_TR" data="tr_TR"/>
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<input id="Language_ID" value="" type="hidden" />
@@ -1736,7 +1736,7 @@
 								<div class="select" style="width:133px;">
 									<span value="" class="SplitScreenMode"></span> 
 									<input id="SplitScreenMode" value="" data="" type="select"/>	
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option" id="viewMod">
 									
@@ -1778,7 +1778,7 @@
 							<td>
 								<div class="select" style="width:133px;">
 									<input id="week" value="" data="" style="width:100px;" type="select" />
-									<a class="hover"></a>
+									<a class="hover0"></a>
 								</div>
 								<ul class="option week">
 									<li><input data="0" value="Monday"/></li>
@@ -1864,7 +1864,7 @@
 							<td class="copyTo" colspan="2">
 								<div class="select" style="width:200px;">
 										<input value="" data=""  type="select" style="width:166px"/>
-										<a class="hover"></a>
+										<a class="hover0"></a>
 								</div>
 								<ul class="option">
 									<!--<li><input class="all" value="Select"/></li>-->
@@ -2034,7 +2034,7 @@
 		</ul>
 	</div>
 	<div id="device" class="menu">
-			<p><span><script>T("Modified_device")</script></span><a class="hover close"></a></p>
+			<p><span><script>T("Modified_device")</script></span><a class="hover0 close"></a></p>
 			<table>
 				<tr><td colspan="2"><script>T("Device_Connection")</script></td></tr>
 				<tr style="background:#969696;">
@@ -2058,7 +2058,7 @@
 					<td>
 						<div class="select" style="width:155px; border:1px solid #646465; border-right:0;">
 							<input style="width:100px;line-height:18px;" value="DVR" data="DVR" id="vendor_ID" default/>
-							<a class="hover"></a>
+							<a class="hover0"></a>
 						</div>
 						<ul class="option" id="vendor_chl_num" >
 							<li style="width:154px;"><input value="DVR" data="DVR" default/></li>
@@ -2068,88 +2068,41 @@
 						</ul>
 					</td>
 				</tr>
-				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm" onclick=""><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div id="AddDevice_ok" class="hover confirm"><script>T("Confirm")</script></div><div id="ModifyDevice_ok" class="hover confirm" onclick=""><script>T("Confirm")</script></div></td><td><div class="hover0 close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 			</table>
 	</div>
 	<div id="area" class="menu">
-		<p><span><script>T("add_area")</script></span><a class="hover close"></a></p>
+		<p><span><script>T("add_area")</script></span><a class="hover0 close"></a></p>
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Zone_name")</script></td><td><input type="text" id="area_name_ID"/></td></tr>
 			<tr><td><script>T("Main_area")</script></td><td><input type="text" readonly="readonly" class="parentArea" id="pareaname_ID" /></td></tr>
-			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="AddArea_ok"><script>T("Confirm")</script></div></td><td><div class="hover0 close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="group" class="menu">
-		<p><span><script>T("add_group")</script></span><a class="hover close"></a></p>
+		<p><span><script>T("add_group")</script></span><a class="hover0 close"></a></p>
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Group_name")</script></td><td><input type="text" id="group_name_ID"/></td></tr>
 			<!-- <tr><td><script>T("Primary_group")</script></td><td><input type="text" readonly="readonly" class="parentGroup"/></td></tr> -->
-			<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="AddGroup_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroup_ok"><script>T("Confirm")</script></div></td><td><div class="hover0 close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<div id="channel" class="menu">
-		<p><span><script>T("Change_Channel")</script></span><a class="hover close"></a></p>
+		<p><span><script>T("Change_Channel")</script></span><a class="hover0 close"></a></p>
 		<table style="margin-top:10px;">
 			<tr><td><script>T("Channel_name")</script></td><td><input type="text" id="channel_name_ID" /><!-- <input type="text" id="r_chl_group_name_ID" style="display:none;" /> --></td></tr>
 			<tr><td colspan="2" style="height:10px;"></td></tr>
-			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
+			<tr class="tdBtn"><td><div class="hover confirm" id="ModifyChannel_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="ModifyGroupChannelName_ok"><script>T("Confirm")</script></div></td><td><div class="hover0 close" style="float:right;"><script>T("Cancel")</script></div></td></tr>
 		</table>
 	</div>
 	<input type="hidden" value="0xFFFFFFFF" id="mask1_ID" />
 	<input type="hidden" value="0xFFFFFFFF" id="mask2_ID" />
-	<div id="menu2" class="menu">
-		<p><script>T("Add_User")</script><a class="hover close"></a></p>
-		<table>
-			<tr><td><script>T("Username")</script></td><td><input type="text" id="username_add_ID" enable="1" onblur="pwdTest($(this));" value="" /></td></tr>
-			<tr><td><script>T("Password")</script></td><td><input onkeydown="this.setAttribute('enable','0')" type="password" id="password_add_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
-			<tr><td><script>T("Confirm_Password")</script></td><td><input type="password" onkeydown="this.setAttribute('enable','0')" id="password_add_again_ID" onblur="pwdTest($(this));" enable="0" value="" /></td></tr>
-			<tr>
-				<td><script>T("User_privilege_level")</script></td>
-				<td>
-					<div class="select" style="width:60px;">
-						<input value="Tourists" data="3" />
-						<a class="hover"></a>
-					</div>
-					<ul class="option">
-						<li><input style="width:59px;" data="3" value="Tourists" /></li>
-						<li><input style="width:59px;" data="2" value="User"></li>
-						<li><input style="width:59px;" data="1" value="Administrator"></li>
-					</ul>
-				</td>
-			</tr>
-			<tr class="tdBtn"><td><div class="hover" id="AddUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close"><script>T("Confirm")</script></div></td></tr>
-		</table>
-	</div>
-	<div id="menu3" class="menu">
-		<p><script>T("Modify_user")</script><a class="hover close"></a></p>
-		<table>
-			<tr><td><script>T("Username")</script></td><td><input enable="1" type="text" disabled="disabled" style="color:blue;" id="username_modify_ID" /></td></tr>
-			<tr><td><script>T("Old_Password")</script></td><td><input enable="1" type="password" id="password_modify_old_user_ID"/></td></tr>
-			<tr><td><script>T("New_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_user_ID"/></td></tr>
-			<tr><td><script>T("Confirm_Password")</script></td><td><input enable="1" onblur="pwdTest($(this));" type="password" id="password_modify_new_again_user_ID"/></td></tr>
-			<tr>
-				<td><script>T("User_privilege_level")</script></td>
-				<td>
-					<div class="select" style="width:60px;">
-					<input value="Tourists" data="3" />
-					<a class="hover"></a>
-					</div>
-					<ul class="option">
-						<li><input style="width:59px;" data="3" value="Tourists" /></li>
-						<li><input style="width:59px;" data="2" value="User"></li>
-						<li><input style="width:59px;" data="1" value="Administrator"></li>
-					</ul>
-				</td>
-			</tr>
-			<tr class="tdBtn"><td><div class="hover" id="ModifyUser_ok"><script>T("Confirm")</script></div></td><td><div class="hover close"><script>T("Confirm")</script></div></td></tr>
-		</table>
-	</div>
 	<div id="confirm" class="menu">
-		<p><span></span><a class="hover close"></a></p>
+		<p><span></span><a class="hover0 close"></a></p>
 		<div style="padding:10px;">
 			<h4 style="color:#000; margin-bottom:10px; text-align:center; padding:0 60px;"></h4>
 			<table style="margin:0 auto;">
-				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover close"><script>T("Cancel")</script></div></td></tr>
+				<tr class="tdBtn"><td><div class="hover confirm" id="RemoveDevice_ok" ><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveArea_ok"><script>T("Confirm")</script></div><div class="hover confirm" id="RemoveGroup_ok" ><script>T("Confirm")</script></div><div class="hover0 close"><script>T("Cancel")</script></div></td></tr>
 			</table>
 		</div>
 	</div>

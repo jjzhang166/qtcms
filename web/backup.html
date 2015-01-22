@@ -123,7 +123,7 @@
 				<tr>
 					<td style="text-align:right; cursor:default; font-size:14px;"><script>T("File_Type")</script></td>
 					<td>
-						<div id="type" class="select" style="width:133px;"><input data="15" value="All" /><a class="hover"></a></div>
+						<div id="type" class="select" style="width:133px;"><input data="15" value="All" /><a class="hover0"></a></div>
 						<ul class="option">    
                             <li><input data="15" value="All" /></li>
 							<li><input data="1" value="Timing" /><span class="typeColor" style="background:#F00"></span></li>
@@ -140,11 +140,11 @@
 		</div>
 		<div class="calendar">
 			<div class="calendar_top">
-				<a class="hover" style="background-position: -240px -31px;" title="Prev_year"></a>
-				<a class="hover" style="background-position: -160px -31px;" title="Prev_Month"></a>
+				<a class="hover0" style="background-position: -240px -31px;" title="Prev_year"></a>
+				<a class="hover0" style="background-position: -160px -31px;" title="Prev_Month"></a>
 				<span class="nowDate" title="Current_search_date"></span>
-				<a class="hover" style="background-position: -0px -31px;" title="Next_year"></a>
-				<a class="hover" style="background-position: -80px -31px;" title="Next_Month"></a>
+				<a class="hover0" style="background-position: -0px -31px;" title="Next_year"></a>
+				<a class="hover0" style="background-position: -80px -31px;" title="Next_Month"></a>
             </div>
 			<div class="calendar_days">
 				<table>
@@ -177,7 +177,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="hover seek" onclick="checkUserRightBtn(1<<4,0,'backupSearchFile');" title="Start_Search"><script>T("Start_Search")</script></div>
+			<div class="hover seek" onclick="checkUserRightBtn('backupSearchFile');" title="Start_Search"><script>T("Start_Search")</script></div>
 		</div>
 	</div>
 	<div id="search_local_result" class="search_result" style="display:block;">
@@ -327,9 +327,9 @@
 			</table>
 	</div>
 	<div id="file_bottom">
-		<a style="margin-left:30px;" class="hover" onclick="selectAll();"><script>T("Select")</script></a>
-		<a class="hover" onclick="checkUserRightBtn(1<<4,0,'backupstop');" id="tableAntiElection"><script>T("Stop_backup")</script></a>
-		<a class="hover" onclick="checkUserRightBtn(1<<4,0,'getDir');"><script>T("Start_Backup")</script></a>
+		<a style="margin-left:30px;" class="hover0" onclick="selectAll();"><script>T("Select")</script></a>
+		<a class="hover" onclick="checkUserRightBtn('backupstop');" id="tableAntiElection"><script>T("Stop_backup")</script></a>
+		<a class="hover" onclick="checkUserRightBtn('getDir');"><script>T("Start_Backup")</script></a>
 		<span id="page"></span>
 		<div id="fileRec"><h4><script>T("Retrieving")</script></h4><h5></h5><p><span></span></p></div>
         <div id="limitTips"><p></p></div>
