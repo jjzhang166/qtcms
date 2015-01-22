@@ -9,12 +9,17 @@ var oPlayBack={},  // 远程回访控件对象
 	LocalFlag = true,//本地文件搜索是否有文件的标记，1表示没有 ，0表示有
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
-	perPageNum=100;
-    
+	perPageNum=100,
+    initial_x , //本地备份的进度条初始位置x坐标
+	initial_y=0,//本地备份的进度条初始位置y坐标
+	total_width=200,//本地备份的进度条长度
+	total_height=22,//本地备份的进度条高度
+	radius=total_height/2;
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oPlaybackLocl = $('#playbackLocl')[0];
 		oBackup = $('#backup')[0];
+		oBackupLocal=$('#backupLocal')[0];
 		autoSearchDev = $('#atuoSearchDevice')[0];
          
 		 var username = autoSearchDev.getCurrentUser();
@@ -58,7 +63,6 @@ var oPlayBack={},  // 远程回访控件对象
 		})
          $('#nowSearchType input:radio').each(function(index){  //全局变量控制远程或本地搜索
 			$(this).click(function(){
-
 				
 				$('#fileRec').stop(true,true).hide();
 				 
@@ -80,7 +84,9 @@ var oPlayBack={},  // 远程回访控件对象
 
 				}else{
 				   var localobj =$('#windowFile tr');
+				       localobj.removeAttr('title');
 					   localobj.find('div.canvas').remove();
+					   localobj.find('div.progress').remove();
 					   localobj.find(':checkbox').prop('checked',false);
 					   localobj.find(':checkbox').prop('disabled',false);  
 				}
@@ -93,7 +99,8 @@ var oPlayBack={},  // 远程回访控件对象
 		})
 		
 		$('#timebar1,#timebar2').on({ //时间棒滑动事件
-			mousedown:function(){
+			mousedown:function(event){
+				event.stopPropagation(); 
 				var windowfile = $('#windowFile');
 				var min = $('table.table_backup .no_border').width();
 				var max = windowfile.width()-17;
@@ -110,6 +117,9 @@ var oPlayBack={},  // 远程回访控件对象
 		oBackup.AddEventProc('BackupStatusChange','BackupStatusChangeCallback(data)'); //远程备份下载状态
 		oBackup.AddEventProc('progress','progressCallback(data)'); //远程备份下载进度
 	    
+		oBackupLocal.AddEventProc('localFileBackUpState','BackupLocalStatusChange(data)'); //本地备份下载状态
+		oBackupLocal.AddEventProc('localFileBackUpProgress','BackupLocalprogressCallback(data)'); //本地备份下载进度
+		
 		autoSearchDev.AddEventProc('useStateChange','useStateChange(ev)');
 		autoSearchDev.startGetUserLoginStateChangeTime();
 		AddActivityEvent('Validation','Validationcallback(data)');
@@ -132,8 +142,9 @@ var oPlayBack={},  // 远程回访控件对象
 			  left = left > X2 ? X2 : left;
 		  
 			  showNowPlayBackTime(oNow,left-X1,X2-X1);
-			  
-			  oDrag.attr('title',returnTime(((left-X1)/(X2-X1))*24*3600));
+			  var curtime = returnTime(((left-X1)/(X2-X1))*24*3600);
+			      curtime = curtime=='24:00:00'?'23:59:59':curtime;
+			  oDrag.attr('title',curtime);
 				  
 			  oDrag.css('left',left-1.5);
 			  
@@ -272,6 +283,7 @@ var oPlayBack={},  // 远程回访控件对象
 		      //context.rect(left-min,0,width,tdH);
 			    context.fillRect(left-min,0,width,tdH);
 		}
+	 // console.log('minFileStartTime :'+minFileStartTime+' maxFileEndTime:'+maxFileEndTime);
 	 }
 	 
 	 function showLocalRecProgress(now){
@@ -453,10 +465,42 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 
 	function getDir(){
-		if($('#search_resultFile input:checked').length == 0){
+		
+		if(bool){
+			if($('#windowFile input:checked').length == 0 ){
+			   return;
+		   }
+		    var timebar1 = $('#timebar1').attr('title'); 
+			var timebar2 = $('#timebar2').attr('title');
+			var begintime = time2Sec(timebar1)> time2Sec(timebar2) ? timebar2 :  timebar1 ;
+			var endtime = time2Sec( timebar2)> time2Sec(timebar1) ?  timebar2 :  timebar1;
+		 if(time2Sec(begintime)<= time2Sec(maxFileEndTime) && time2Sec(endtime) >= time2Sec(minFileStartTime)){
+		    var type = $('#type input[data]').attr('data'),
+                date = $("div.calendar span.nowDate").html();
+				
+			console.log("type:"+type+" date:"+date);
+				
+			    begintime = date+' '+begintime;
+			    endtime = date+' '+endtime;
+			
+			console.log("begintime:"+begintime+' endtime:'+endtime);
+			var chl = 0;
+			 $('#windowFile tr[id]').each(function(){ 
+					 if($(this).find('input:checkbox').prop('checked')){
+						 chl += Math.pow(2, $(this).attr('id').split('_')[1]);
+					 }
+					 
+				})
+			console.log("chl:"+chl);
+			
+			oBackupLocal.startLocalFileBackUp(type,chl.toString(2),begintime,endtime);
+		 }
+		}else{
+		   if($('#search_resultFile input:checked').length == 0){
 			return;
+		   }
+		  oBackup.ChooseDir();
 		}
-		oBackup.ChooseDir();
 	};
 
 	var path = '',
@@ -582,13 +626,49 @@ var oPlayBack={},  // 远程回访控件对象
 			}
 		/*}*/
 	}
-
+	//本地备份状态改变回调函数
+    function BackupLocalStatusChange(data){
+		 console.log('-----BackupLocalStatusChange-----');
+		console.log(data);//1：备份任务开始，2：备份任务停止
+		
+	  if(data.types=='1'){	 
+	     $('#windowFile tr[id]').each(function(){
+			var num = $(this).attr('id').split('_')[1];
+			var id = 'progress'+num;
+			var canvas = document.getElementById(id);
+			var ctx = canvas.getContext('2d');
+			 ctx.clearRect(initial_x,initial_y,total_width+10,total_height);
+			 if($(this).find('input').prop('checked')){
+			   draw(ctx,initial_x,initial_y,total_width,total_height,radius,0);
+			 }
+				 
+		});
+	  }else{
+		 $('#windowFile input:checked').prop('checked',false); 
+	  }
+	}
+	//本地备份进度条回调函数
+	function BackupLocalprogressCallback(data){
+		console.log('-----BackupLocalprogressCallback-----');
+		console.log(data);//"nChannel"、"Progress"
+		var num  = data.nChannel;
+		var id = 'progress'+num;
+		var canvas = document.getElementById(id);
+		var ctx = canvas.getContext('2d');
+	    draw(ctx,initial_x,initial_y,total_width,total_height,radius,data.Progress);
+	}
 	function backupstop(){
-		console.log('所有选择的文件下载完成!!!');
-		oBackup.stopBackup();
-		now=0;
-		$('#search_result input:checked').prop('checked',false);
-		//clearInterval(timer);
+		
+		if(bool){
+			console.log('所有选择的本地文件停止备份下载!!!');
+			oBackupLocal.stopLocalFileBackUp();
+			$('#windowFile input:checked').prop('checked',false);
+		}else{
+		    console.log('所有选择的远程文件停止备份下载!!!');
+		  oBackup.stopBackup();
+		  now=0;
+		  $('#search_result input:checked').prop('checked',false);
+		}
 	}
 
 	function backupSearchFile(){
@@ -609,9 +689,15 @@ var oPlayBack={},  // 远程回访控件对象
 		localSearchWindNum=0;
 		console.log('++++++++开始搜索+++++++++++');
 		if(bool){
-			var localobj =$('#windowFile tr');
-			  localobj.find('div.canvas').remove();//远程备份中正在下载的文件不被删除.
-			  addcanvas();
+			maxFileEndTime='00:00:00'; //搜索到的文件最大时间
+	        minFileStartTime='23:59:59'; //搜索到的文件最小时间
+			
+		var localobj =$('#windowFile tr');
+			localobj.find('div.canvas').remove();
+			localobj.find('div.progress').remove();
+			localobj.removeAttr('title');
+			
+			addcanvas();
 		}else{
 			var obj =$('#search_resultFile tr');
 			if(obj.length != 0){
@@ -700,7 +786,7 @@ var oPlayBack={},  // 远程回访控件对象
 	  for(var j=0;j<49;j++){
 		var target = $('#windowFile tr').eq(j),
 			minL =target.find('td.no_border').width();
-	   $('<div class="canvas" style="position:absolute;top:0px;left:'+(minL)+'px;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
+	   $('<div class="canvas" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:0;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
 	  }
 		
 	}
@@ -716,10 +802,19 @@ var oPlayBack={},  // 远程回访控件对象
 		 $("#windowFile")[0].appendChild(fragment);
 		
     }
+	var timebar=null;
 	function file2UIFinish(){
 	 
 	  $('#windowFile tr[id]').find('input').prop('disabled',false);
+	  $('#windowFile tr').each(function(index){
+		  if($(this).attr('id')){
+			  var target = $(this),
+			   minL =target.find('td.no_border').width();
+			   $('<div class="progress" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:1;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="progress'+index+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);  
+		 }
+	  });
 	  $('#windowFile tr').not('[id]').find('input').prop('disabled',true);
+	  initial_x = $('#windowFile tr').width()-$('#windowFile td.no_border').width()-total_width-10;
 	}
 	function selectAll(){
 		var oCheckbox = bool ? $('#windowFile :checkbox').not(':disabled') : $('#search_resultFile :checkbox');
@@ -823,15 +918,113 @@ var oPlayBack={},  // 远程回访控件对象
 	 
  }
  //用户登录状态回调函数
-    function useStateChange(ev){
+function useStateChange(ev){
 	//	console.log(ev);
 		if(ev.status==0){
 		 $('.top_nav p span:eq(1)').html(ev.userName);	
 		}else{
 		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
-	}
+}
 	
-	 function lock(){
+function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 
  }
+//本地备份进度条
+function roundRect(ctx,x,y,width,height,radius){
+	  ctx.beginPath();
+	  ctx.moveTo(x + radius, y);
+	  ctx.lineTo(x + width - radius, y);
+	  ctx.arc(x+width-radius, y+radius, radius, -Math.PI/2, Math.PI/2, false);
+	  ctx.lineTo(x + radius, y + height);
+	  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
+	  ctx.closePath();
+	  ctx.fill();  	
+}
+function progressLayerRect(ctx, x, y, width, height, radius) {
+	  ctx.save();
+	   
+	  ctx.fillStyle = 'rgba(170,170,170,0.5)';
+	  roundRect(ctx, x, y, width, height, radius);
+
+	  var lingrad = ctx.createLinearGradient(0,y+height,0,0);
+	  lingrad.addColorStop(0, 'rgba(255,255,255, 0.1)');
+	  lingrad.addColorStop(0.4, 'rgba(255,255,255, 0.3)');
+	  lingrad.addColorStop(1, 'rgba(255,255,255,0.2)');
+	  ctx.fillStyle = lingrad;
+	  roundRect(ctx, x, y, width, height, radius);
+
+	  ctx.restore();
+}
+function progressBarRect(ctx, x, y, iprogress, height, radius, max1) {
+            
+	  var offset = 0;
+	  var width = iprogress/100*max1;
+	  ctx.beginPath();
+	  if (width<radius) {
+		  offset = radius - Math.sqrt(Math.pow(radius,2)-Math.pow((radius-width),2));
+		  ctx.moveTo(x + width, y+offset);
+		  ctx.lineTo(x + width, y+height-offset);
+		  ctx.arc(x + radius, y + radius, radius, Math.PI - Math.acos((radius - width) / radius), Math.PI + Math.acos((radius - width) / radius), false);
+	  }
+	  else if (width+radius>max1) {
+		  offset = radius - Math.sqrt(Math.pow(radius,2)-Math.pow((radius - (max1-width)),2));
+		  ctx.moveTo(x + radius, y);
+		  ctx.lineTo(x + width, y);
+		  ctx.arc(x+max1-radius, y + radius, radius, -Math.PI/2, -Math.acos((radius - (max1-width)) / radius), false);
+		  ctx.lineTo(x + width, y+height-offset);
+		  ctx.arc(x+max1-radius, y + radius, radius, Math.acos((radius - (max1-width)) / radius), Math.PI/2, false);
+		  ctx.lineTo(x + radius, y + height);
+		  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
+	  }
+	  else {
+		  ctx.moveTo(x + radius, y);
+		  ctx.lineTo(x + width, y);
+		  ctx.lineTo(x + width, y + height);
+		  ctx.lineTo(x + radius, y + height);
+		  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
+	  }
+	  ctx.closePath();
+	  ctx.fill();
+	  
+	  if (width<max1-1) {
+		  ctx.save();
+		  ctx.shadowOffsetX = 1;
+		  ctx.shadowBlur = 1;
+		  ctx.shadowColor = '#666';
+		  if(width+radius>max1) offset = offset+1;
+		  ctx.fillRect(x+width,y+offset,1,total_height-offset*2);
+		  ctx.restore();
+	  }
+}
+
+function progressText(ctx, x, y, iprogress, height, radius, max1) {
+	  ctx.save();
+	  ctx.fillStyle = '#f00';
+	  var text = iprogress+"%";
+	  var text_width = ctx.measureText(text).width;
+	  var text_x = x+(max1-text_width)/2;
+	  ctx.fillText(text, text_x, y+16);
+	  ctx.restore();
+}
+ 
+function draw(context,initial_x,initial_y,total_width,total_height,radius,iprogress){
+
+	var progress_lingrad = context.createLinearGradient(0,total_height,0,0);
+		progress_lingrad.addColorStop(0, '#b4b5bb');
+		progress_lingrad.addColorStop(0.6 ,'#f5f4f3');
+		progress_lingrad.addColorStop(0.3, '#f5f4f3');
+		progress_lingrad.addColorStop(1, '#b4b5bb');
+		context.fillStyle = progress_lingrad;
+		
+        context.font = "14px Verdana";
+		
+		context.clearRect(initial_x,initial_y,total_width+15,total_height);
+		
+		progressLayerRect(context, initial_x, initial_y, total_width, total_height, radius);
+		progressBarRect(context, initial_x, initial_y, iprogress, total_height, radius, total_width);
+		progressText(context, initial_x, initial_y, iprogress, total_height, radius, total_width );
+		
+}
+  
+  
