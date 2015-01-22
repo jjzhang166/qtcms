@@ -1029,7 +1029,7 @@ var oSearchOcx,autoSearchDev,
 		var newpwd = $('#cnewpwd').val();
 		var logout = $('#cinterval').prop('checked')? $('#exitTime').val() : 0;
 		var str="<modifyCurrentUserInfo sNewUserName='"+name+"' sOldPassword='"+oldpwd+"' sNewPassword='"+newpwd+"' sLogOutInterval='"+logout+"'></modifyCurrentUserInfo>";
-		console.log(str);
+		//console.log(str);
 		$('#modifyCurrentUserEx_ID').val(str);
 	}
 	//用户设置方法 User Manage
@@ -1260,7 +1260,7 @@ function showObjActBox(action,objclass){  //右键弹出菜单UI调整
 function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 	
 	if(action=='Add' && objclass =='device'){
-		var str1 ='{"address":"","port":"80","http":"80","eseeid":"","username":"admin","password":"","device_name":"","channel_count":"4","parea_name":"'+ pObj.data('data').area_name+'","pid":"'+ pObj.data('data').area_id+'","vendor":"DVR"}';
+		var str1 ='{"address":"","port":"80","http":"80","eseeid":"","username":"admin","password":"","device_name":"","channel_count":"4","parea_name":"'+ pObj.data('data').area_name+'","area_id":"'+ pObj.data('data').area_id+'","vendor":"DVR"}';
 	     var file =eval('('+str1+')');
 		 //console.log(file);
 	}else{
@@ -1289,6 +1289,7 @@ function initActionBox(action,pObj,obox,objclass){  //右键菜单数据填充.
 		$('#channel input:text').attr('id','channel_name_ID');
 	}*/
 	for(i in data){
+		console.log();
 		if(i.match(objclass+'_name') && action == 'Remove'){
 			$('#confirm h4').attr('id',i+'_ID').html(_T('delete')+data[i]);
 		}
