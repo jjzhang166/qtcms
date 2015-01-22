@@ -485,4 +485,6 @@
 	'Automatic logout interval':'Автоматическая интервал выход',
 	'error_logoutinterval':'Пожалуйста, введите правильный интервала автоматического выхода из системы',
 	'error_userpwd':'Пожалуйста, введите правильный формат пароль',
+	'Local_Backup':'Local backup',//Not yet translated
+	'Remote_Backup':'Remote backup',//Not yet translated
 }

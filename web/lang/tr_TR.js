@@ -485,4 +485,6 @@ var tr_TR={
 	'Automatic logout interval':'Otomatik çıkış aralığı',
 	'error_logoutinterval':'Doğru otomatik çıkış aralığını giriniz',
 	'error_userpwd':'Doğru şifre biçimini giriniz',
+	'Local_Backup':'Yerel Yedekleme',
+	'Remote_Backup':'Uzaktan Yedekleme',
 }

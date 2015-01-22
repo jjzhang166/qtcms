@@ -953,7 +953,7 @@ var oSearchOcx,autoSearchDev,
 			$('#userR').val(data.username);
 			var types = parseInt(data.userlv,2);
           
-			for(var j = 0; j < 10; j++){
+			for(var j = 0; j < 11; j++){
 				if(types == 0){
 				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
 				  break;
@@ -1003,7 +1003,7 @@ var oSearchOcx,autoSearchDev,
 			$('#cuser').val(cusername);
 			$('#exitTime').val(exittime);
 			var types = parseInt(cuserlimit.mainLimit,2);
-			for(var j = 0; j < 10; j++){
+			for(var j = 0; j < 11; j++){
 				if(types == 0){
 				 obj.find('input:checkbox').eq(j).prop("checked",false);
 				  break;
@@ -1043,14 +1043,14 @@ var oSearchOcx,autoSearchDev,
 		//$('#mainRight input').each(function(){$(this).prop('checked',false)});
 		var userList = autoSearchDev.getUserList();
 		var cuser = autoSearchDev.getCurrentUser();
-		if(userList.length){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
+		if(userList.length>0){  //避免数组为空的时候. 自己写的JS数组扩展方法引起 BUG;
 		  //var fragment = document.createDocumentFragment();
 			for(var i in userList){
 				var userlv = autoSearchDev.getUserLimit(userList[i]);
 				var userid = autoSearchDev.getUserInDatabaseId(userList[i]);
 	            var logoutinterval = autoSearchDev.getLoginOutInterval(userList[i]);
 				var data= {'username':userList[i],'userid':userid,'userlv':userlv.mainLimit,'exittime':logoutinterval};
-			
+			   // console.log(data);
 				 userList[i]!=cuser && $('<tr><td><input type="checkbox" />'+userList[i]+'</td><td></td></tr>').appendTo('#userList').data('data',data);
 				/*if(userid!=-1){
 					var newItem = $('<tr><td><input type="checkbox" />'+userid+'</td><td>'+userList[i]+'</td></tr>');
@@ -1080,7 +1080,7 @@ var oSearchOcx,autoSearchDev,
 		var limit=0;
 		var c=0;
 		var str1='';
-		for(var i=0;i<10;i++){
+		for(var i=0;i<11;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
 				 c++;
 			    str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
@@ -1101,7 +1101,7 @@ var oSearchOcx,autoSearchDev,
 		var pwd=$('#pwdR').val();
 		var logoutinterval = $('#otherinterval').prop('checked')? $('#exitinterval').val() : 0;
 		var limit=0,c=0,str1='';
-		for(var i=0;i<10;i++){
+		for(var i=0;i<11;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
 				 c++;
 			     str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='0'/>";
@@ -1114,7 +1114,7 @@ var oSearchOcx,autoSearchDev,
 	        str+="</mainInfo>";
 	        str+="</modify>";
            $('#modifyUserEx_ID').val(str);
-		  console.log("getModUserXml:"+str);
+		//  console.log("getModUserXml:"+str);
 	
 	}
 	//删除用户前获取xml

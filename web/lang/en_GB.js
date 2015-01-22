@@ -484,4 +484,6 @@
 	'Automatic logout interval':'Automatic logout interval',
 	'error_logoutinterval':'Please enter the correct automatic logout interval',
 	'error_userpwd':'Please enter the correct password format',
+	'Local_Backup':'Local backup',
+	'Remote_Backup':'Remote backup',
 }

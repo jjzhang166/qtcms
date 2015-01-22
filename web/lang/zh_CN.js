@@ -482,5 +482,7 @@
 	'Automatic logout interval':'自动注销时间间隔',
 	'error_logoutinterval':'请输入正确的自动注销时间间隔',
 	'error_userpwd':'请输入正确格式的密码',
+	'Local_Backup':'本地备份',
+	'Remote_Backup':'远程备份',
 	
 }
