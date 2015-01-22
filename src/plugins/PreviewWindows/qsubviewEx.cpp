@@ -900,6 +900,15 @@ int qsubviewEx::verify( qint64 mainCode, qint64 subCode )
 			vmap.insert("SubPermissionCode", qint64(subCode));
 			vmap.insert("ErrorCode", ret);
 			emit sgVerify(vmap);
+			ret = pUserMgrEx->checkUserLimit(mainCode, subCode);
+			if (ret==2)
+			{
+				QVariantMap vmap;
+				vmap.insert("MainPermissionCode", qint64(mainCode));
+				vmap.insert("SubPermissionCode", qint64(subCode));
+				vmap.insert("ErrorCode", ret);
+				emit sgVerify(vmap);
+			}
 		}
 		pUserMgrEx->Release();
 	}
@@ -936,6 +945,9 @@ bool qsubviewEx::isSuitForDigitalZoom()
 
 void qsubviewEx::showDigitalView()
 {
+	if (verify(1, m_chlId)){
+		return ;
+	}
 	m_sSubviewRun.setDigitalZoomToMainStream();
 	return m_sSubviewRun.showDigitalView();
 }

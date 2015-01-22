@@ -17,5 +17,7 @@
   virtual void removeExtendWnd(const QString sName)=0;</p>
 <p>//设置画矩形的线宽和颜色<br />
   virtual void setRenderRectPen(int nLineWidth,int nR,int nG,int nB)=0;</p>
+<p>//在原始窗口中画矩形，nX,nY 开始坐标，ntEndX,inEndY为结束坐标（相对当前的屏幕）</p>
+<p>virtual void drawRectToOriginalWnd(int nX,int nY,int nEndX,int nEndY)=0;</p>
 </body>
 </html>
