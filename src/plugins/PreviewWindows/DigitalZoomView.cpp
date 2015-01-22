@@ -63,14 +63,35 @@ void DigitalZoomView::mousePressEvent( QMouseEvent * event )
 			bYInRect=true;
 		}
 	}
+	int nSetX;
+	int nSetY;
+	QRect tRect=geometry();
+	if (event->pos().x()<0)
+	{
+		nSetX=0;
+	}else if (event->pos().x()>tRect.width())
+	{
+		nSetX=tRect.width();
+	}else{
+		nSetX=event->pos().x();
+	}
+	if (event->pos().y()<0)
+	{
+		nSetY=0;
+	}else if (event->y()>tRect.height())
+	{
+		nSetY=tRect.height();
+	}else{
+		nSetY=event->pos().y();
+	}
 	if (bYInRect&&bXInRect)
 	{
-		m_tRectDropStartPoint.setX(event->pos().x());
-		m_tRectDropStartPoint.setY(event->pos().y());
+		m_tRectDropStartPoint.setX(nSetX);
+		m_tRectDropStartPoint.setY(nSetY);
 		m_bIsDropRect=true;
 	}else{
-		m_tRectStartPoint.setX(event->pos().x());
-		m_tRectStartPoint.setY(event->pos().y());
+		m_tRectStartPoint.setX(nSetX);
+		m_tRectStartPoint.setY(nSetY);
 	}
 }
 
@@ -104,13 +125,76 @@ void DigitalZoomView::mouseMoveEvent( QMouseEvent * event )
 		{
 			int nX=event->pos().x()-m_tRectDropStartPoint.x();
 			int nY=event->pos().y()-m_tRectDropStartPoint.y();
-			tStartPoint.setX(m_tRectStartPoint.x()+nX);
-			tStartPoint.setY(m_tRectStartPoint.y()+nY);
-			tEndPoint.setX(m_tRectCurrentPoint.x()+nX);
-			tEndPoint.setY(m_tRectCurrentPoint.y()+nY);
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tRectDropStartPoint<<event->pos();
+			QRect tRect=geometry();
+			int nSetStartX;
+			int nSetStartY;
+			int nSetEndX;
+			int nSetEndY;
+			if (m_tRectStartPoint.x()+nX<0)
+			{
+				nSetStartX=0;
+			}else if (m_tRectStartPoint.x()+nX>tRect.width())
+			{
+				nSetStartX=tRect.width();
+			}else{
+				nSetStartX=m_tRectStartPoint.x()+nX;
+			}
+			if (m_tRectStartPoint.y()+nY<0)
+			{
+				nSetStartY=0;
+			}else if (m_tRectStartPoint.y()+nY>tRect.height())
+			{
+				nSetStartY=tRect.height();
+			}else{
+				nSetStartY=m_tRectStartPoint.y()+nY;
+			}
+			if (m_tRectCurrentPoint.x()+nX<0)
+			{
+				nSetEndX=0;
+			}else if (m_tRectCurrentPoint.x()+nX>tRect.width())
+			{
+				nSetEndX=tRect.width();
+			}else{
+				nSetEndX=m_tRectCurrentPoint.x()+nX;
+			}
+			if (m_tRectCurrentPoint.y()+nY<0)
+			{
+				nSetEndY=0;
+			}else if (m_tRectCurrentPoint.y()+nY>tRect.height())
+			{
+				nSetEndY=tRect.height();
+			}else{
+				nSetEndY=m_tRectCurrentPoint.y()+nY;
+			}
+			tStartPoint.setX(nSetStartX);
+			tStartPoint.setY(nSetStartY);
+			tEndPoint.setX(nSetEndX);
+			tEndPoint.setY(nSetEndY);
 		}else{
-			m_tRectCurrentPoint.setX(event->pos().x());
-			m_tRectCurrentPoint.setY(event->pos().y());
+			QRect tRect=geometry();
+			int nSetX;
+			int nSetY;
+			if (event->pos().x()<0)
+			{
+				nSetX=0;
+			}else if (event->pos().x()>tRect.width())
+			{
+				nSetX=tRect.width();
+			}else{
+				nSetX=event->pos().x();
+			}
+			if (event->pos().y()<0)
+			{
+				nSetY=0;
+			}else if (event->pos().y()>tRect.height())
+			{
+				nSetY=tRect.height();
+			}else{
+				nSetY=event->pos().y();
+			}
+			m_tRectCurrentPoint.setX(nSetX);
+			m_tRectCurrentPoint.setY(nSetY);
 			tStartPoint=m_tRectStartPoint;
 			tEndPoint=m_tRectCurrentPoint;
 		}

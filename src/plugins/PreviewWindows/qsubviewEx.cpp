@@ -514,8 +514,29 @@ void qsubviewEx::mouseReleaseEvent( QMouseEvent * event)
 		QPoint tStartPoint;
 		QPoint tEndPoint;
 		tStartPoint=m_tRectStartPoint;
-		m_tRectCurrentPoint.setX(event->pos().x());
-		m_tRectCurrentPoint.setY(event->pos().y());
+		int nSetX;
+		int nSetY;
+		QRect tRect=geometry();
+		if (event->pos().x()<0)
+		{
+			nSetX=0;
+		}else if (event->pos().x()>tRect.width())
+		{
+			nSetX=tRect.width();
+		}else{
+			nSetX=event->pos().x();
+		}
+		if (event->pos().y()<0)
+		{
+			nSetY=0;
+		}else if (event->pos().y()>tRect.height())
+		{
+			nSetY=tRect.height();
+		}else{
+			nSetY=event->pos().y();
+		}
+		m_tRectCurrentPoint.setX(nSetX);
+		m_tRectCurrentPoint.setY(nSetY);
 		tEndPoint=m_tRectCurrentPoint;
 		int nWidth=abs(tEndPoint.x()-tStartPoint.x());
 		int nHeight=abs(tEndPoint.y()-tStartPoint.y());

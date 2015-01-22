@@ -619,7 +619,14 @@ void CDDrawRenderObject::DrawARectangle( HDC hdc,int nRectStartX,int nRectStartY
 		nEndX=nEndX*m_nRectSurfaceWidth/tExtendWndRect.right;
 		nStartY=nStartY*m_nRectSurfaceHeight/tExtendWndRect.bottom;
 		nEndY=nEndY*m_nRectSurfaceHeight/tExtendWndRect.bottom;
-
+		if (nEndX-nStartX>=2)
+		{
+			nEndX=nEndX-2;
+		}
+		if (nEndY-nStartY>2)
+		{
+			nEndY=nEndY-2;
+		}
 		MoveToEx(hdc,nStartX,nStartY,&tOldPoint);
 		LineTo(hdc,nEndX,nStartY);
 		LineTo(hdc,nEndX,nEndY);
@@ -664,6 +671,34 @@ void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
 		}else{
 			nStartY=m_nRectEndY;
 			nEndY=m_nRectStartY;
+		}
+		if (nStartX<0)
+		{
+			nStartX=0;
+		}else if (nStartX>tExtendWndRect.right)
+		{
+			nStartX=tExtendWndRect.right;
+		}
+		if (nStartY<0)
+		{
+			nStartY=0;
+		}else if (nStartY>tExtendWndRect.bottom)
+		{
+			nStartY=tExtendWndRect.bottom;
+		}
+		if (nEndX<0)
+		{
+			nEndX=0;
+		}else if (nEndX>tExtendWndRect.right)
+		{
+			nEndX=tExtendWndRect.right;
+		}
+		if (nEndY<0)
+		{
+			nEndY=0;
+		}else if (nEndY>tExtendWndRect.bottom)
+		{
+			nEndY=tExtendWndRect.bottom;
 		}
 		if (tExtendWndRect.right==0||tExtendWndRect.bottom==0)
 		{
