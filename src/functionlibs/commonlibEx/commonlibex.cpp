@@ -3079,7 +3079,7 @@ int commonlibEx::getUserLimit(QString sUserName, quint64 &uiLimit,QVariantMap &t
 	{
 		if (_query.next())
 		{
-			uiLimit=_query.value(0).toUInt();
+			uiLimit=_query.value(0).toULongLong();
 			sCmd=QString("select mainSingleCode,subCode from user_sub_limit where userName='%1'").arg(sUser);
 			if (_query.exec(sCmd))
 			{

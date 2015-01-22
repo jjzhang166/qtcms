@@ -2048,7 +2048,7 @@ void settingsActivity::OnAddUserExOk()
 			QString sSubCode=tItem.toElement().attribute("subCode");
 			tVariantMap.insertMulti(sMainSubCode,sSubCode);
 		}
-		nRet =pUserMangerEx->addUser(sUserName,sPassword,sMainLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
+		nRet =pUserMangerEx->addUser(sUserName,sPassword,sMainLimit.toLongLong(),sLogOutInterval.toUInt(),tVariantMap);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as pUserMangerEx is null";
 		abort();
@@ -2114,7 +2114,7 @@ void settingsActivity::OnModifyUserExOk()
 					}
 					return;
 				}
-				nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toUInt(),sLogOutInterval.toUInt(),tVariantMap);
+				nRet=pUserMangerEx->modifyUserInfo(sOldUserName,sNewUserName,sNewPassword,sNewLimit.toULongLong(),sLogOutInterval.toUInt(),tVariantMap);
 				if (nRet==0)
 				{
 					sRet.clear();

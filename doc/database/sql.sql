@@ -176,7 +176,7 @@ insert into general_setting (name,value) values('misc_keepCurrentUserPassWord','
 insert into general_setting (name,value) values('misc_CurrentUserName','admin');
 insert into general_setting (name,value) values('misc_CurrentUserPassWord','');
 
-insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','d41d8cd98f00b204e9800998ecf8427e','1111111111','0','0','0');
+insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','d41d8cd98f00b204e9800998ecf8427e','11111111111','0','0','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100','0');
@@ -187,6 +187,7 @@ insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10000000','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100000000','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1000000000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10000000000','0');
 
 insert into window_settings (wnd_id,stretch,chl_id) values(0,1,-1);
 insert into window_settings (wnd_id,stretch,chl_id) values(1,1,-1);
