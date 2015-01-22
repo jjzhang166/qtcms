@@ -9,6 +9,12 @@
 
 #define qDebug() qDebug()<<__FUNCTION__<<__LINE__
 
+#define SEND_PROGRESS(item, wnd, progress)\
+	item.clear();\
+	item.insert("nChannel", wnd);\
+	item.insert("Progress", progress);\
+	emit sendMsg(QString("localFileBackUpProgress"), item);
+
 LocalBackThread::LocalBackThread(QObject *parent)
 	: QThread(parent)
 {
@@ -39,7 +45,7 @@ int LocalBackThread::startLocalFileBackUp( int nTypes, QString sChannel, QDateTi
 		m_sChls = sChannel;
 		m_nStartSec = startTime.toTime_t();
 		m_nEndSec = endTime.toTime_t();
-		m_steps = EM_INIT;
+		m_bStop = false;
 		this->start();
 		return 0;
 	}
@@ -49,7 +55,7 @@ int LocalBackThread::startLocalFileBackUp( int nTypes, QString sChannel, QDateTi
 void LocalBackThread::stopLocalFileBackUp()
 {
 	if (isRunning()){
-		m_steps = EM_STOP;
+		m_bStop = true;
 	}
 }
 
@@ -66,18 +72,26 @@ void LocalBackThread::run()
 	FileHead *pFileHead = NULL;
 	FileFrameHead *pFrameHead = NULL;
 	FdIterator iter = m_chlFdMap.end();
-	int m_steps = EM_INIT;
+	int steps = EM_INIT;
 	QVariantMap item;
 	item.insert("types", 1);
 	emit sendMsg(QString("localFileBackUpState"), item);
 	while (!bStop){
-		switch (m_steps)
+		if (m_bStop){
+			steps = EM_STOP;
+		}
+		switch (steps)
 		{
 		case EM_INIT:
 			{
 				//read file over
 				if (fileIndex == fileList.size()){
-					m_steps = EM_STOP;
+					FdIterator it = m_chlFdMap.begin();
+					while (it != m_chlFdMap.end()){
+						SEND_PROGRESS(item, it.key(), 100);
+						++it;
+					}
+					steps = EM_STOP;
 					break;
 				}
 				memset(buffer, 0, MAX_BUFF_SIZE);
@@ -86,7 +100,7 @@ void LocalBackThread::run()
 				if (!QFile::exists(fileName)){
 					qDebug()<<fileName<<" don't exist!";
 					fileIndex++;
-					m_steps = EM_INIT;
+					steps = EM_INIT;
 					break;
 				}
 				//read file
@@ -94,7 +108,7 @@ void LocalBackThread::run()
 				if (!file.open(QIODevice::ReadOnly)){
 					qDebug()<<"open file "<<fileName<<" error!";
 					fileIndex++;
-					m_steps = EM_INIT;
+					steps = EM_INIT;
 					break;
 				}
 				//read file to buffer
@@ -108,14 +122,14 @@ void LocalBackThread::run()
 				pFileHead = (FileHead *)buffer;
 				pFrameHead = (FileFrameHead *)(buffer + sizeof(FileHead));
 
-				m_steps = EM_READ_BUFF;
+				steps = EM_READ_BUFF;
 			}
 			break;
 		case EM_READ_BUFF:
 			{
 				//check whether reach the file tail
 				if ((char*)pFrameHead >= buffer + pFileHead->uiIndex){
-					m_steps = EM_INIT;
+					steps = EM_INIT;
 					break;
 				}
 				//check whether the frame is usable
@@ -123,19 +137,20 @@ void LocalBackThread::run()
 					|| !(pFrameHead->tFrameHead.uiRecType & m_nTypes)
 					|| !m_chlFdMap.contains(pFrameHead->tFrameHead.uiChannel)){
 					pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
-					m_steps = EM_READ_BUFF;
+					steps = EM_READ_BUFF;
 					break;
 				}
 				iter = m_chlFdMap.find(pFrameHead->tFrameHead.uiChannel);
 				//check whether reach the end time
 				if (pFrameHead->tFrameHead.uiGentime > m_nEndSec){
-					m_steps = EM_PACK;
+					SEND_PROGRESS(item, iter.key(), 100);
+					steps = EM_PACK;
 					break;
 				}
 				//filter non-I-Frame when file doesn't create
 				if (EM_NO_CREATED == iter->fileStatus && FT_IFrame != pFrameHead->tFrameHead.uiType){
 					pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
-					m_steps = EM_READ_BUFF;
+					steps = EM_READ_BUFF;
 					break;
 				}
 				//record video width and height
@@ -144,7 +159,7 @@ void LocalBackThread::run()
 					iter->width = pVideoCfg->uiWidth;
 					iter->height = pVideoCfg->uiHeight;
 					pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
-					m_steps = EM_READ_BUFF;
+					steps = EM_READ_BUFF;
 					break;
 				}
 				//record audio samplewidth, samplerate and channel
@@ -154,16 +169,16 @@ void LocalBackThread::run()
 					iter->samplerate = pAudioCfg->uiSamplerate;
 					iter->channel = pAudioCfg->uiChannels;
 					pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
-					m_steps = EM_READ_BUFF;
+					steps = EM_READ_BUFF;
 					break;
 				}
 
 				//find first I-Frame
 				if (EM_NO_CREATED == iter->fileStatus && FT_IFrame == pFrameHead->tFrameHead.uiType){
-					m_steps = EM_CREATE_FILE;
+					steps = EM_CREATE_FILE;
 					break;
 				}
-				m_steps = EM_CHECK_SIZE;
+				steps = EM_CHECK_SIZE;
 			}
 			break;
 		case EM_CREATE_FILE:
@@ -176,7 +191,7 @@ void LocalBackThread::run()
 				iter->fd = AVI_open_output_file(fileName.toLatin1().data());
 				if (!iter->fd){
 					qDebug()<<"open file "<<fileName<<" error!";
-					m_steps = EM_STOP;
+					steps = EM_STOP;
 					break;
 				}
 				iter->fileStatus++;
@@ -186,7 +201,7 @@ void LocalBackThread::run()
 					iter->startGMT = pFrameHead->tFrameHead.uiGentime;
 				}
 				AVI_set_video(iter->fd, iter->width, iter->height, 25, "X264");
-				m_steps = EM_CHECK_SIZE;
+				steps = EM_CHECK_SIZE;
 			}
 			break;
 		case EM_CHECK_SIZE:
@@ -194,14 +209,14 @@ void LocalBackThread::run()
 				if (256*1024*1024 < AVI_bytes_written(iter->fd) + pFrameHead->tFrameHead.uiLength){
 					iter->fileStatus = EM_WAIT_FOR_PACK;
 				}
-				m_steps = EM_WRITE_FRAME;
+				steps = EM_WRITE_FRAME;
 			}
 			break;
 		case EM_WRITE_FRAME:
 			{
 				//trun to pack
 				if (EM_WAIT_FOR_PACK == iter->fileStatus && FT_IFrame == pFrameHead->tFrameHead.uiType){
-					m_steps = EM_PACK;
+					steps = EM_PACK;
 					break;
 				}
 				//write frame
@@ -224,15 +239,12 @@ void LocalBackThread::run()
 					int curProgress = (pFrameHead->tFrameHead.uiGentime - iter->startGMT)*100/(m_nEndSec - iter->startGMT);
 					if (iter->progress < curProgress){
 						iter->progress = curProgress;
-						item.clear();
-						item.insert("nChannel", iter.key());
-						item.insert("Progress", curProgress);
-						emit sendMsg(QString("localFileBackUpProgress"), item);
+						SEND_PROGRESS(item, iter.key(), curProgress);
 					}
 				}
 				//get next frame
 				pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
-				m_steps = EM_READ_BUFF;
+				steps = EM_READ_BUFF;
 			}
 			break;
 		case EM_PACK:
@@ -244,7 +256,7 @@ void LocalBackThread::run()
 				iter->fd = NULL;
 				iter->fileNum++;
 				iter->fileStatus = EM_NO_CREATED;
-				m_steps = EM_CREATE_FILE;
+				steps = EM_CREATE_FILE;
 			}
 			break;
 		case EM_STOP:

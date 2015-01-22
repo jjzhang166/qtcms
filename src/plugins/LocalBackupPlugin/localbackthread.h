@@ -38,7 +38,7 @@ private:
 	QString m_sChls;
 	uint m_nStartSec;
 	uint m_nEndSec;
-	int m_steps;
+	bool m_bStop;
 };
 
 #endif // LOCALBACKTHREAD_H
