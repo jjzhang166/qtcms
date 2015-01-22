@@ -41,7 +41,8 @@
   7.设备远程设置（1000000）<br />
   8.本地设置（10000000）<br />
   9.用户设置（100000000）<br />
-10.退出系统（1000000000）</p>
+10.退出系统（1000000000）<br />
+11.本地下载（10000000000）</p>
 <p>用户权限 用64位数据表示，每种权限按位算<br />
   括号内的值 为对应权限的 权限码<br />
 例如 用户 admin 的用户权限为：111111111 表示拥有 上述的九种 权限</p>
@@ -208,5 +209,10 @@ const QString &amp;sUsername,const QString &amp;sPassword);</p>
 <p>后台 进行验证 </p>
 <p>void OnMinClick();<br />
   void OnCloseClick();</p>
+<p>=============本地文件下载（10000000000）==================</p>
+<p>请求用户权限认证 主权限码(uiCode)：10000000000,子权限码（uiSubCode）：0</p>
+<p>全台 进行验证 </p>
+<p>void stopLocalFileBackUp();<br />
+void startLocalFileBackUp(int nTypes,const QString sChannel,const QString &amp;startTime,const QString &amp;endTime);</p>
 </body>
 </html>
