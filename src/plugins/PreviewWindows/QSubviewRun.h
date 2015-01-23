@@ -238,5 +238,6 @@ private:
 	bool m_bStretch; // 视频拉伸状态的暂存，创建渲染组件的时候，同时设置拉伸状态
 	DigitalZoomView m_tDigitalZoomView;
 	QMutex m_tVideoRenderLock;
+	int m_tDigitalHisStreamNum;
 };
   

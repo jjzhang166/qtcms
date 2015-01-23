@@ -95,7 +95,7 @@ void QSubviewRun::run()
 	m_nInitHeight=0;
 	m_nInitWidth=0;
 
-
+	m_tDigitalHisStreamNum=0;
 	int nstep=DEFAULT;
 	bool nstop=false;
 	while(!nstop){
@@ -716,6 +716,7 @@ void QSubviewRun::run()
 					m_bIsBlock=false;
 					m_pIVideoRender=NULL;
 				}
+				m_tDigitalZoomView.clearRectPoint();
 				m_tVideoRenderLock.unlock();
 				if (NULL!=m_pRecordDat)
 				{
@@ -2460,6 +2461,21 @@ void QSubviewRun::digitalZoomToMainStream()
 				qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail as device client do not support IDeviceClient interface";
 			}
 		}
+		if (m_tDeviceInfo.m_uiStreamId!=0)
+		{
+			m_tDigitalHisStreamNum=m_tDeviceInfo.m_uiStreamId;
+			IChannelManager *pChannelManger=NULL;
+			pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
+			if (NULL!=pChannelManger)
+			{
+				pChannelManger->ModifyChannelStream(m_tDeviceInfo.m_uiChannelIdInDataBase,0);
+				m_tDeviceInfo.m_uiStreamId=0;
+				pChannelManger->Release();
+				pChannelManger=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"saveToDataBase fail as pChannelManger is null ";
+			}
+		}
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
 	}
@@ -2499,6 +2515,20 @@ void QSubviewRun::digitalZoomStreamRestore()
 				}
 			}else{
 				qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail as device client do not support IDeviceClient interface";
+			}
+		}
+		if (m_tDigitalHisStreamNum!=0)
+		{
+			IChannelManager *pChannelManger=NULL;
+			pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
+			if (NULL!=pChannelManger)
+			{
+				pChannelManger->ModifyChannelStream(m_tDeviceInfo.m_uiChannelIdInDataBase,m_tDigitalHisStreamNum);
+				m_tDeviceInfo.m_uiStreamId=m_tDigitalHisStreamNum;
+				pChannelManger->Release();
+				pChannelManger=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"saveToDataBase fail as pChannelManger is null ";
 			}
 		}
 	}else{
