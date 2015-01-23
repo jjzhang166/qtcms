@@ -39,6 +39,7 @@ public:
 private:
 	void DrawARectangle(HDC hdc,int nRectStartX,int nRectStartY,int nRectEndX,int nRectEndY,HWND WND) ;
 	void setZoomRect(RECT &tRect,int nWidth,int nHeight);
+	void checkHr(HRESULT hr);
 private:
 	bool                 m_bEnable;
 	bool                 m_bStretch;

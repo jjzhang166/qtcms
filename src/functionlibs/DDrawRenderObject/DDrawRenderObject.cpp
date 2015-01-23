@@ -280,7 +280,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 		switch(hr)
 		{
 		case DDERR_SURFACELOST:
-			g_pDirectDraw7->RestoreAllSurfaces();
+				g_pDirectDraw7->RestoreAllSurfaces();
 			break;
 		case DDERR_SURFACEBUSY:
 			m_pOffscreenSurface->Unlock(NULL);
@@ -351,7 +351,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 			g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 			if (::IsWindowVisible(m_hPlayWnd))
 			{
-				g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+				hr =g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+				checkHr(hr);
 			}else{
 				//do nothing
 			}
@@ -382,7 +383,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
 					{
-						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						checkHr(hr);
 					}else{
 						HDC tHdc=NULL;
 						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
@@ -390,7 +392,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 						{
 							DrawARectangle(tHdc,m_nRectStartX,m_nRectStartY,m_nRectEndX,m_nRectEndY,m_hExtendWnd);
 							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
-							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							checkHr(hr);
 						}else{
 							//do nothing
 						}
@@ -446,13 +449,14 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
-					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
-					//////////////////////////////////////////////////////////////////////////
+					hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
+					checkHr(hr);
 					m_csOffOsdScreenSurface.Lock();
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
 					{
-						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						checkHr(hr);
 					}else{
 						HDC tHdc=NULL;
 						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
@@ -489,13 +493,14 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
-					g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
-					//////////////////////////////////////////////////////////////////////////
+					hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+					checkHr(hr);
 					m_csOffOsdScreenSurface.Lock();
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
 					{
-						g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
+						checkHr(hr);
 					}else{
 						HDC tHdc=NULL;
 						hr=m_pOffOsdScreenSurface->GetDC(&tHdc);
@@ -708,6 +713,22 @@ void CDDrawRenderObject::setZoomRect( RECT &tRect,int nWidth,int nHeight )
 			tRect.right=nWidth*nEndX/tExtendWndRect.right;
 			tRect.top=nHeight*nStartY/tExtendWndRect.bottom;
 			tRect.bottom=nHeight*nEndY/tExtendWndRect.bottom;
+		}
+	}
+}
+
+
+void CDDrawRenderObject::checkHr( HRESULT hr )
+{
+	if (FAILED(hr))
+	{
+		switch(hr)
+		{
+		case DDERR_SURFACELOST:
+			g_pDirectDraw7->RestoreAllSurfaces();
+			break;
+		default:
+			break;
 		}
 	}
 }
