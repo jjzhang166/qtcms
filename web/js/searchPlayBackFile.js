@@ -2,6 +2,7 @@
 		recTotal = 0,  //文件检索总数。
 		nowDevID=null, //当前选中设备ID
 		searchDate,//进行搜索的日期
+		searchType,//显示在表格上的文件的类型
 		searchSTOP=1;  //搜索停止. 包括搜索结束,搜索过程中失败
 	//搜索远程录像
 	function setDevData2ocx(){
@@ -103,6 +104,8 @@
 
 			searchDate =  date ;
 			
+			searchType = type;
+			
 		//var devData = $('div.dev_list li.sel span.device').data('data') || $('div.dev_list span.channel.sel').parent('li').parent('ul').prev('span.device').data('data');
 			//console.log($('div.dev_list li.sel span.device'));
 		if(!devData){
@@ -170,6 +173,8 @@
 
 		
         searchDate =  date ;
+		
+		searchType = type
 		//var oDevList = $('div.dev_list span.device');
 		/*if(key >  (oDevList.length-1))
 			return;

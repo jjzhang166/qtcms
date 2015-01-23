@@ -7,6 +7,8 @@ var oPlayBack={},  // 远程回访控件对象
 	usedUid = [],
 	nowPage=-1,
 	LocalFlag = true,//本地文件搜索是否有文件的标记，1表示没有 ，0表示有
+	searchAgain = 0,//正在搜索时是否再次点击搜索按钮
+	backupFlag=1,//没有在备份。是否在备份的标志
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	perPageNum=100,
@@ -188,6 +190,16 @@ var oPlayBack={},  // 远程回访控件对象
 
 		//if(recTotal==recFile.length)
         localSearchWindNum++;
+		
+		if(searchAgain){
+			$('#windowFile').find('div.canvas').remove()
+					  .end().find('tr').removeAttr('id title')
+					  .end().find('div.progress').remove()
+							.find('input').removeProp('disabled').removeProp('checked');
+			localSearchWindNum=0;
+			PBrecFileInit();
+			searchAgain = 0;	
+		}
 		
 		if(bool){
         
@@ -466,6 +478,9 @@ var oPlayBack={},  // 远程回访控件对象
 
 	function getDir(){
 		
+		if(!backupFlag){
+		    return;	
+		 }
 		if(bool){
 			if($('#windowFile input:checked').length == 0 ){
 			   return;
@@ -475,15 +490,16 @@ var oPlayBack={},  // 远程回访控件对象
 			var begintime = time2Sec(timebar1)> time2Sec(timebar2) ? timebar2 :  timebar1 ;
 			var endtime = time2Sec( timebar2)> time2Sec(timebar1) ?  timebar2 :  timebar1;
 		 if(time2Sec(begintime)<= time2Sec(maxFileEndTime) && time2Sec(endtime) >= time2Sec(minFileStartTime)){
-		    var type = $('#type input[data]').attr('data'),
-                date = $("div.calendar span.nowDate").html();
-				
-			console.log("type:"+type+" date:"+date);
+	
+			var type = searchType,
+			    date = searchDate;
+			   	
+			//console.log("type:"+type+" date:"+date);
 				
 			    begintime = date+' '+begintime;
 			    endtime = date+' '+endtime;
 			
-			console.log("begintime:"+begintime+' endtime:'+endtime);
+			//console.log("begintime:"+begintime+' endtime:'+endtime);
 			var chl = 0;
 			 $('#windowFile tr[id]').each(function(){ 
 					 if($(this).find('input:checkbox').prop('checked')){
@@ -491,7 +507,7 @@ var oPlayBack={},  // 远程回访控件对象
 					 }
 					 
 				})
-			console.log("chl:"+chl);
+			//console.log("chl:"+chl);
 			
 			oBackupLocal.startLocalFileBackUp(type,chl.toString(2),begintime,endtime);
 		 }
@@ -527,29 +543,31 @@ var oPlayBack={},  // 远程回访控件对象
 			now=0;
 			return false;
 		}*/
-		var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
-		var oDevData = $('div.dev_list li.sel span.device').data('data');
-		var fileData = oList.eq(now).attr('uid').split('_');
-		/*console.log(fileData);
-		console.log('--------选中设备--------')*/
-		/*console.log($('div.dev_list li.sel span.device'));
-		console.log(oDevData);
-		console.log('--------选中通道--------')
-		console.log(oList.eq(now));
-		console.log(fileData);*/
-		console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
-		if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
-			alert(T('File_download_failed',(parseInt(now,10)+1)));
-			now++;
-			startDownload();
-		}
-		/*oList = oList.filter(function(index){
-			if(index == 0){ 
-				var fileData = $(this).data('data');
-				
-			}
-			return index != 0;
-		})*/
+		  var oList = $('#search_result tr')/*.find('td.progess span').stop(true,true).css('width',0).end()*/.has(':checked');
+		  if(oList == null) return;
+		  var oDevData = $('div.dev_list li.sel span.device').data('data');
+		  var fileData = oList.eq(now).attr('uid').split('_');
+		 // console.log(fileData);
+		 /*console.log('--------选中设备--------')*/
+		  /*console.log($('div.dev_list li.sel span.device'));
+		  console.log(oDevData);
+		  console.log('--------选中通道--------')
+		  console.log(oList.eq(now));
+		  console.log(fileData);*/
+		  console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
+		  if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
+			  alert(T('File_download_failed',(parseInt(now,10)+1)));
+			  now++;
+			  startDownload();
+		  }
+		  /*oList = oList.filter(function(index){
+			  if(index == 0){ 
+				  var fileData = $(this).data('data');
+				  
+			  }
+			  return index != 0;
+		  })*/
+		
 	}
 	function progressCallback(data){
 		//console.log('当前第'+(now+1)+'个文件的下载进度为--------'+data.parm+'---------自动抛出进度---------');
@@ -594,36 +612,52 @@ var oPlayBack={},  // 远程回访控件对象
 		/*if(types == 'startBackup'){
 			syndownload();
 		}else{*/
-
-			if(types == 'backupFinished'){ 
-				console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
-				oWarp.find('.progess span').css('width','100%');
-				     //.end().find('input').prop('checked',false);
-			}
-
-			if(types=='insufficient-disk'){
-				backupstop();
-				oList.prop('checked',false);
-				alert(lang.Insufficient_Disk_Space);
-				return;
-			}
-
-			if( types == 'fail'){
-				console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
-				oWarp.find('.progess').find('span').css('background-color','#ccc')
-									  .end().find('div').css('border-style','dashed');	
-			}
-			if( types == 'stopBackup'){
-				console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
-				//clearInterval(timer);
-				now++;
-				if(now == oList.length){
+		     if(types=='startBackup'){
+				 backupFlag=0; 
+				$('#search_result input').prop('disabled',true);
+				 $('#nowSearchType input:radio').prop('disabled',true);
+			 }else{
+			  	 
+				$('#search_result input').prop('disabled',false);
+				 $('#nowSearchType input:radio').prop('disabled',false);
+				 backupFlag=1;  
+				 
+				 
+				if(types == 'backupFinished'){ 
+					console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
+					oWarp.find('.progess span').css('width','100%');
+						 //.end().find('input').prop('checked',false);
+					
+				}
+	
+				if(types=='insufficient-disk'){
 					backupstop();
+					oList.prop('checked',false);
+					alert(lang.Insufficient_Disk_Space);
+					 
 					return;
 				}
-				oWarp.find('a').off();
-				startDownload();
-			}
+	
+				if( types == 'fail'){
+					console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
+					oWarp.find('.progess').find('span').css('background-color','#ccc')
+										  .end().find('div').css('border-style','dashed');	
+				}
+				if( types == 'stopBackup'){
+					console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
+					//clearInterval(timer);
+					now++;
+					if(now == oList.length){
+						backupstop();
+						return;
+					}
+					oWarp.find('a').off();
+					startDownload();
+				}
+				 
+			 }
+             
+			
 		/*}*/
 	}
 	//本地备份状态改变回调函数
@@ -633,6 +667,7 @@ var oPlayBack={},  // 远程回访控件对象
 		
 	  if(data.types=='1'){	 
 	     $('#windowFile tr[id]').each(function(){
+			 $(this).find(':checkbox').prop('disabled',true);
 			var num = $(this).attr('id').split('_')[1];
 			var id = 'progress'+num;
 			var canvas = document.getElementById(id);
@@ -640,11 +675,17 @@ var oPlayBack={},  // 远程回访控件对象
 			 ctx.clearRect(initial_x,initial_y,total_width+10,total_height);
 			 if($(this).find('input').prop('checked')){
 			   draw(ctx,initial_x,initial_y,total_width,total_height,radius,0);
-			 }
-				 
+			 }	 
 		});
+		$('.timebar').css('z-index','0');
+		 $('#nowSearchType input:radio').prop('disabled',true);
+		backupFlag=0;
 	  }else{
 		 $('#windowFile input:checked').prop('checked',false); 
+		 $('#windowFile tr[id] input').prop('disabled',false);
+		  $('#nowSearchType input:radio').prop('disabled',false);
+		 $('.timebar').css('z-index','3'); 
+		 backupFlag=1;
 	  }
 	}
 	//本地备份进度条回调函数
@@ -674,10 +715,15 @@ var oPlayBack={},  // 远程回访控件对象
 	function backupSearchFile(){
 		//console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 		//bool = 0;
+		if(!backupFlag){
+			return;
+		}
 		if(searchSTOP){
 			searchSTOP = 0;
+			searchAgain = 0;//正在搜索时是否再次点击搜索按钮
 		}else{
 			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			searchAgain = 1;//正在搜索时是否再次点击搜索按钮
 			return;
 		}
 		$('.search_result :checkbox').prop('checked',false);
@@ -786,7 +832,7 @@ var oPlayBack={},  // 远程回访控件对象
 	  for(var j=0;j<49;j++){
 		var target = $('#windowFile tr').eq(j),
 			minL =target.find('td.no_border').width();
-	   $('<div class="canvas" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:0;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
+	   $('<div class="canvas" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:1;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="mycanvas'+j+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);
 	  }
 		
 	}
@@ -810,13 +856,16 @@ var oPlayBack={},  // 远程回访控件对象
 		  if($(this).attr('id')){
 			  var target = $(this),
 			   minL =target.find('td.no_border').width();
-			   $('<div class="progress" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:1;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="progress'+index+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);  
+			   $('<div class="progress" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:2;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="progress'+index+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);  
 		 }
 	  });
 	  $('#windowFile tr').not('[id]').find('input').prop('disabled',true);
 	  initial_x = $('#windowFile tr').width()-$('#windowFile td.no_border').width()-total_width-10;
 	}
 	function selectAll(){
+		if(!backupFlag){
+		   return;	
+		}
 		var oCheckbox = bool ? $('#windowFile :checkbox').not(':disabled') : $('#search_resultFile :checkbox');
 		var b = true;
 		oCheckbox.each(function(){
