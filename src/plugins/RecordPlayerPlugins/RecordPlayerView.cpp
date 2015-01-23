@@ -240,7 +240,9 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 	m_bPressed = false;
 
 	//if release point in current window
-	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) && (QWidget*)this != ms_susWnd->getTopWnd() && m_pLocalPlayer){
+	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
+		&& (QWidget*)this != ms_susWnd->getTopWnd() 
+		&& ms_playStatus < 4 && m_bPlaying){
 		ms_susWnd->addWnd(this);
 		ms_susWnd->setDrawRect(drawRect);
 		ms_susWnd->show();

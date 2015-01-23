@@ -365,3 +365,13 @@ void PlayManager::setZoomRect( QRect rect )
 		pZoomInterface->Release();
 	}
 }
+
+void PlayManager::setOriginRect( QRect rect )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, (void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->drawRectToOriginalWnd(rect.left(), rect.top(), rect.right(), rect.bottom());
+		pZoomInterface->Release();
+	}
+}

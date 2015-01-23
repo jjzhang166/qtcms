@@ -33,6 +33,7 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
 	virtual void mouseReleaseEvent(QMouseEvent *);
+	virtual void mouseMoveEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
 	QVariantMap ScreenShot();
 
@@ -51,6 +52,9 @@ public:
 	void SetFoucs(bool flags);
 	void setCbpfn(pfnCb cbPro, void* pUser);
 	void recMsg(QVariantMap msg);
+
+	static void showSusWnd(bool enabled);
+	static void destroySusWnd();
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -71,10 +75,11 @@ public slots:
 	void connecttingUpdate();
 	void CacheStateSlot(QVariantMap evMap);
 	void setProgress(int progress);
-	
+	void slCloseSusWnd();
 private:
 	static bool m_bGlobalAudioStatus;
 	static SuspensionWnd *ms_susWnd;
+	static QMap<quintptr, QRect> ms_rectMap;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
 
@@ -88,6 +93,7 @@ private:
 	QPoint m_pressPoint;
 	pfnCb m_pcbfn;
 	void* m_pUser;
+	bool m_bPressed;
 private:
 	void paintEventNoVideo( QPaintEvent * );
 	void paintEventConnecting( QPaintEvent * );

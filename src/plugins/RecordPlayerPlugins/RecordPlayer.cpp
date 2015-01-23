@@ -68,6 +68,7 @@ m_CurStatus(STATUS_STOP)
 
 RecordPlayer::~RecordPlayer()
 {
+	RecordPlayerView::destroySusWnd();
 	if (NULL != m_pLocalRecordSearch)
 	{
 		m_pLocalRecordSearch->Release();

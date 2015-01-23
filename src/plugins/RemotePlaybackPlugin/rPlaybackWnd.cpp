@@ -67,6 +67,7 @@ bIsHide(false)
 
 RPlaybackWnd::~RPlaybackWnd()
 {
+	RSubView::destroySusWnd();
  	if (m_DivMode != NULL)
  	{
  		m_DivMode->Release();
@@ -497,6 +498,7 @@ void RPlaybackWnd::hideEvent( QHideEvent * )
 	m_PlaybackWnd[0].AudioEnabled(false);
 	if (m_CurStatus<STATUS_PAUSE)
 	{
+		RSubView::showSusWnd(false);
 		GroupPause();
 		bIsHide=true;
 	}else{
@@ -515,6 +517,7 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 	{
 		if (bIsHide==true)
 		{
+			RSubView::showSusWnd(true);
 			GroupContinue();
 			bIsHide=false;
 		}else{

@@ -30,6 +30,7 @@ public:
 	void addWnd(QWidget* pWnd, QString sName);
 	void removeWnd(QString sName);
 	void setZoomRect(QRect rect);
+	void setOriginRect(QRect rect);
 
 	enum SpeedType{
 		SpeedNomal,

@@ -1146,17 +1146,7 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 	}else if ("RectToOrigion" == msgName){
 		playMgr->setOriginRect(info["ZoRect"].toRect());
 	}
-// 	else if ("CloseWnd" == msgName){
-//  		playMgr->setZoomRect(pWnd->rect());
-// 		playMgr->setOriginRect(QRect(0, 0, 0, 0));
-// 		playMgr->removeWnd(wnd.toString());
-// 		m_wndList.removeLast();
-// 		if (!m_wndList.isEmpty()){
-// 			lastWnd = m_wndList.last();
-// 			m_wndMap[lastWnd]->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
-// 		}
 
-// 	}
 	return 0;
 }
 

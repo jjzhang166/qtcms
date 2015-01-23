@@ -574,6 +574,19 @@ bool PlayBackThread::getPlayInterface( QWidget* pwnd, void** playInterface )
 
 int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 {
+	if ("CloseWnd" == evName){
+		for (int index = 0; index < m_zoomWndList.size(); ++index){
+			QWidget *pWnd = (QWidget *)m_zoomWndList[index];
+			PlayManager *playMgr = NULL;
+			if (!getPlayInterface(pWnd, (void**)&playMgr)){
+				continue;
+			}
+			playMgr->setZoomRect(pWnd->rect());
+			playMgr->setOriginRect(QRect(0, 0, 0, 0));
+			playMgr->removeWnd(QString::number((quintptr)pWnd));
+		}
+	}
+
 	QVariant wnd = info.value("CurWnd");
 	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
 	PlayManager  *playMgr = NULL, *lastPlayMgr = NULL;
@@ -584,11 +597,12 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 	if ("VedioZoom" == evName){
 		m_susWnd = (QWidget *)info.value("SusWnd").toUInt();
 		if (m_zoomWndList.contains(pWnd)){
-			if (pWnd == m_wndList.last()){
+			if (pWnd == m_zoomWndList.last()){
 				return 0;
 			}
 			lastWnd = m_zoomWndList.last();
 			getPlayInterface(lastWnd, (void**)&lastPlayMgr);
+			lastPlayMgr->setOriginRect(QRect(0, 0, 0, 0));
 			lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
 			playMgr->addWnd(m_susWnd, wnd.toString());
 
@@ -598,22 +612,19 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 			if (!m_zoomWndList.isEmpty()){
 				lastWnd = m_zoomWndList.last();
 				getPlayInterface(lastWnd, (void**)&lastPlayMgr);
+				lastPlayMgr->setOriginRect(QRect(0, 0, 0, 0));
 				lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
 			}
 			m_zoomWndList.append(pWnd);
 			playMgr->addWnd(m_susWnd, wnd.toString());
 		}
+		playMgr->setZoomRect(info["ZoRect"].toRect());
 	}else if ("ZoomRect" == evName){
 		playMgr->setZoomRect(info["ZoRect"].toRect());
-	}else if ("CloseWnd" == evName){
-		playMgr->removeWnd(wnd.toString());
-		m_zoomWndList.removeLast();
-		if (!m_zoomWndList.isEmpty()){
-			lastWnd = m_zoomWndList.last();
-			getPlayInterface(lastWnd, (void**)&lastPlayMgr);
-			lastPlayMgr->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
-		}
+	}else if ("RectToOrigion" == evName){
+		playMgr->setOriginRect(info["ZoRect"].toRect());
 	}
+
 	return 0;
 }
 

@@ -106,17 +106,17 @@ bool SuspensionWnd::event( QEvent *ev )
 {
 	if (ev->type() == QEvent::NonClientAreaMouseButtonDblClick){
 		QRect curRect = this->geometry();
-		if (curRect == m_originRect){
-			QRect geom = QApplication::desktop()->availableGeometry();
-			int width = geom.width();
-			int height = geom.height();
+		QRect geom = QApplication::desktop()->availableGeometry();
+		int width = geom.width();
+		int height = geom.height();
+		if (curRect.width() > width/10 && curRect.height() > height/40){
 			geom.setX(width - width/10);
 			geom.setY(height - height/40);
 			this->setGeometry(geom);
+			m_originRect = curRect;
 		}else{
 			this->setGeometry(m_originRect);
 		}
-
 	}
 	return QWidget::event(ev);
 }
