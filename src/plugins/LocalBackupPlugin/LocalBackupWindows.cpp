@@ -28,6 +28,9 @@ int LocalBackupWindows::startLocalFileBackUp( int nTypes,const QString sChannel,
 		".",
 		QFileDialog::ShowDirsOnly
 		| QFileDialog::DontResolveSymlinks);
+	if (dir.isEmpty()){
+		return 1;
+	}
 	dir = dir.replace("\\", "/");
 	m_backupThread.setBackupPath(dir);
 	return m_backupThread.startLocalFileBackUp(nTypes, sChannel, start, end);

@@ -7,6 +7,7 @@
 #include <QtGui/QMenu>
 #include <QtCore/QTranslator>
 #include <QPoint>
+#include <QMap>
 #include <ILocalSetting.h>
 #include "suspensionwnd.h"
 
@@ -25,6 +26,7 @@ public:
 	virtual void mouseDoubleClickEvent( QMouseEvent * );
 	virtual void mousePressEvent(QMouseEvent *);
 	virtual void mouseReleaseEvent(QMouseEvent *);
+	virtual void mouseMoveEvent(QMouseEvent *);
 
 	void setLocalPlayer(ILocalPlayerEx* pPlayer);
 	int AudioEnabled(bool bEnabled);
@@ -34,13 +36,15 @@ public:
 	void setPlayingFlag(bool bPlaying);
 
 	static void setPlayStatus(int status);
+	static void showSusWnd(bool enabled);
+	static void destroySusWnd();
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
 
 public slots:
 	void slSuitForWindow(bool checked);
-
+	void slCloseSusWnd();
 protected:
 	virtual void changeEvent( QEvent * );
 
@@ -49,6 +53,7 @@ private:
 	static bool m_bGlobalAudioStatus;
 	static SuspensionWnd *ms_susWnd;
 	static int ms_playStatus;
+	static QMap<quintptr, QRect> ms_rectMap;
 
 	ILocalPlayerEx* m_pLocalPlayer;
 	QPixmap _ScreenShotImage;
@@ -57,7 +62,10 @@ private:
 	QMenu m_WindowMenu;
 	
 	QPoint m_pressPoint;
+// 	QRect m_drawRect;
 	bool m_bPlaying;
+	bool m_bPressed;
+// 	bool m_bHasZoom;
 };
 
 

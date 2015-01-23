@@ -37,6 +37,7 @@ public:
 	void addWnd(QWidget* pWnd, QString sName);
 	void removeWnd(QString sName);
 	void setZoomRect(QRect rect);
+	void setOriginRect(QRect rect);
 
 	static void pause(bool bIsPause);
 	static qint32 setVolume(uint uiPersent);

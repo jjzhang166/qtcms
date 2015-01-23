@@ -1094,6 +1094,21 @@ int LocalPlayerEx::execCommand( sqlite3 *pdb, const char* cmd, char*** pppRet, i
 
 int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &info )
 {
+	if ("CloseWnd" == msgName){
+		for (int index = 0; index < m_wndList.size(); ++index){
+			QWidget *pWnd = (QWidget*)m_wndList[index];
+			QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
+			if (iter == m_wndMap.end()){
+				continue;
+			}
+			(*iter)->setZoomRect(pWnd->rect());
+			(*iter)->setOriginRect(QRect(0, 0, 0, 0));
+			(*iter)->removeWnd(QString::number((quintptr)pWnd));
+		}
+		m_wndList.clear();
+		return 0;
+	}
+
 	QVariant wnd = info.value("CurWnd");
  	QWidget *pWnd = (QWidget*)wnd.toUInt(), *lastWnd = NULL;
 	PlayMgr *playMgr = NULL;
@@ -1110,6 +1125,7 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 				return 0;
 			}
 			lastWnd = m_wndList.last();
+			m_wndMap[lastWnd]->setOriginRect(QRect(0, 0, 0, 0));
 			m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
 			playMgr->addWnd(m_susWnd, wnd.toString());
 
@@ -1118,21 +1134,29 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 		}else{
 			if (!m_wndList.isEmpty()){
 				lastWnd = m_wndList.last();
+				m_wndMap[lastWnd]->setOriginRect(QRect(0, 0, 0, 0));
 				m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
 			}
 			m_wndList.append(pWnd);
 			playMgr->addWnd(m_susWnd, wnd.toString());
 		}
+		playMgr->setZoomRect(info["ZoRect"].toRect());
 	}else if ("ZoomRect" == msgName){
 		playMgr->setZoomRect(info["ZoRect"].toRect());
-	}else if ("CloseWnd" == msgName){
-		playMgr->removeWnd(wnd.toString());
-		m_wndList.removeLast();
-		if (!m_wndList.isEmpty()){
-			lastWnd = m_wndList.last();
-			m_wndMap[lastWnd]->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
-		}
+	}else if ("RectToOrigion" == msgName){
+		playMgr->setOriginRect(info["ZoRect"].toRect());
 	}
+// 	else if ("CloseWnd" == msgName){
+//  		playMgr->setZoomRect(pWnd->rect());
+// 		playMgr->setOriginRect(QRect(0, 0, 0, 0));
+// 		playMgr->removeWnd(wnd.toString());
+// 		m_wndList.removeLast();
+// 		if (!m_wndList.isEmpty()){
+// 			lastWnd = m_wndList.last();
+// 			m_wndMap[lastWnd]->addWnd(m_susWnd, QString::number((quintptr)lastWnd));
+// 		}
+
+// 	}
 	return 0;
 }
 

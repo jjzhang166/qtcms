@@ -126,7 +126,7 @@ int RPlaybackWnd::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 // 	{
 // 		return -1;
 // 	}
-
+	m_chlID = uiChannelId;
 	return m_rplaybackrun.AddChannelIntoPlayGroup(uiWndId, uiChannelId);
 
 // 	GetDeviceInfo(uiChannelId);
@@ -241,6 +241,7 @@ int   RPlaybackWnd::GroupPlay(int nTypes,const QString & startTime,const QString
 		qDebug()<<__FUNCTION__<<__LINE__<<"input param startTime or endTime are error!";
 		return 1;
 	}
+	m_CurStatus = STATUS_NORMAL_PLAY;
 
 	return m_rplaybackrun.GroupPlay(nTypes, start, end);
 

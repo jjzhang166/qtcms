@@ -549,11 +549,13 @@ void RecordPlayer::showEvent( QShowEvent * )
 			if (m_bIsHide)
 			{
 				m_bIsHide=false;
+				RecordPlayerView::showSusWnd(true);
 				GroupContinue();
 			}else{
 				//do nothing
 			}
 		}else{
+			RecordPlayerView::showSusWnd(true);
 			GroupContinue();
 // 			GroupStop();
 		}
@@ -568,6 +570,7 @@ void RecordPlayer::hideEvent( QHideEvent * )
 // 	m_subRecPlayerView[0].AudioEnabled(false);
 	if (m_CurStatus<STATUS_PAUSE)
 	{
+		RecordPlayerView::showSusWnd(false);
 		GroupPause();
 		m_bIsHide=true;
 	}

@@ -18,17 +18,27 @@ public:
 	~SuspensionWnd();
 	void addWnd(QWidget* pWnd);
 	void setCbFunc(callbackFc pfunc, void* puser);
-
+	void setDrawRect(QRect rect);
+	void setOriginGeog(QRect rect);
+	QWidget* getTopWnd();
+signals:
+	void sigClose();
 private:
 	virtual void mousePressEvent(QMouseEvent *);
-// 	virtual mouseMoveEvent(QMouseEvent *);
+ 	virtual void mouseMoveEvent(QMouseEvent *);
 	virtual void mouseReleaseEvent(QMouseEvent *);
+	virtual void mouseDoubleClickEvent(QMouseEvent *);
 	virtual void closeEvent(QCloseEvent *ev);
+	virtual bool event(QEvent *ev);
 private:
 	QPoint m_pressPoint;
 	QList<QWidget*> m_wndList;
 	callbackFc m_cbFunc;
 	void *m_puser;
+	bool m_posInRect;
+	QRect m_drawRect;
+	QPoint m_lastMovePos;
+	QRect m_originRect;
 };
 
 #endif // SUSPENSIONWND_H

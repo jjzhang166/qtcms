@@ -682,6 +682,16 @@ void PlayMgr::setZoomRect( QRect rect )
 	}
 }
 
+void PlayMgr::setOriginRect( QRect rect )
+{
+	IVideoRenderDigitalZoom *pZoomInterface = NULL;
+	getZoomInterface((void**)&pZoomInterface);
+	if (pZoomInterface){
+		pZoomInterface->drawRectToOriginalWnd(rect.left(), rect.top(), rect.right(), rect.bottom());
+		pZoomInterface->Release();
+	}
+}
+
 int _cdecl cbDecodedFrame(QString evName,QVariantMap evMap,void*pUser)
 {
 	if ("DecodedFrame" == evName)

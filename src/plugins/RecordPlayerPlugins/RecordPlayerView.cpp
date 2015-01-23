@@ -12,12 +12,14 @@
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
 SuspensionWnd* RecordPlayerView::ms_susWnd = NULL;
 int RecordPlayerView::ms_playStatus = 4;//stop local play
+QMap<quintptr, QRect> RecordPlayerView::ms_rectMap;
 
 RecordPlayerView::RecordPlayerView(QWidget *parent)
 	: QWidget(parent),
 	m_pLocalPlayer(NULL),
 	_bIsFocus(false),
-	m_bPlaying(false)
+	m_bPlaying(false),
+	m_bPressed(false)
 {
 	this->lower();
 	this->setAttribute(Qt::WA_PaintOutsidePaintEvent);
@@ -26,11 +28,21 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 	m_pWindowsStretchAction->setChecked(false);
 
 	connect(m_pWindowsStretchAction,SIGNAL(triggered(bool)),this,SLOT(slSuitForWindow(bool)));
+
+	if (!ms_susWnd){
+		ms_susWnd = new SuspensionWnd(this);
+		connect(ms_susWnd, SIGNAL(sigClose()), this, SLOT(slCloseSusWnd()));
+		ms_susWnd->setWindowFlags(Qt::Window);
+		ms_susWnd->setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
+		ms_susWnd->setWindowTitle(QString("Digital Zoom"));
+		ms_susWnd->setCbFunc(cbReciveMsg, this);
+	}
 }
 
 
 RecordPlayerView::~RecordPlayerView(void)
 {
+	destroySusWnd();
 }
 
 
@@ -107,7 +119,24 @@ void RecordPlayerView::mouseDoubleClickEvent( QMouseEvent * ev)
 
 void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 {
+	m_bPressed = true;
 	m_pressPoint = ev->pos();
+
+	if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() && ms_susWnd->isVisible()){
+		//notify play module current window need to zoom
+		ICommunicate *pCom = NULL;
+		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+		if (pCom){
+			QVariantMap msg;
+			msg.insert("SusWnd", (quintptr)ms_susWnd);
+			msg.insert("CurWnd", (quintptr)this);
+			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+			ms_susWnd->addWnd(this);
+			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+			pCom->setInfromation(QString("VedioZoom"), msg);
+			pCom->Release();
+		}
+	}
 
 	setFocus(Qt::MouseFocusReason);
 	emit SetCurrentWindSignl(this);
@@ -206,30 +235,27 @@ void RecordPlayerView::changeEvent( QEvent * )
 
 void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 {
-	QRect rect = this->rect();
-	QPoint releasePoint = ev->pos();
+	QRect mainRect = this->rect();
+	QRect drawRect(m_pressPoint, ev->pos());
+	m_bPressed = false;
+
 	//if release point in current window
-	if (m_pressPoint != releasePoint && rect.contains(m_pressPoint) && rect.contains(releasePoint) && ms_playStatus < 4 && m_bPlaying){
-		//if no suspension window, create it
-		if (!ms_susWnd){
-			ms_susWnd = new SuspensionWnd(this);
-			ms_susWnd->setWindowFlags(Qt::Tool | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint);
-			ms_susWnd->setWindowTitle(QString("Digital Zoom"));
-			ms_susWnd->setCbFunc(cbReciveMsg, this);
-			ms_susWnd->show();
-		}
+	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) && (QWidget*)this != ms_susWnd->getTopWnd() && m_pLocalPlayer){
+		ms_susWnd->addWnd(this);
+		ms_susWnd->setDrawRect(drawRect);
+		ms_susWnd->show();
+		ms_susWnd->setOriginGeog(ms_susWnd->geometry());
 		//notify play module current window need to zoom
-		if (m_pLocalPlayer){
-			ICommunicate *pCom = NULL;
-			m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
-			if (pCom){
-				QVariantMap msg;
-				msg.insert("SusWnd", (quintptr)ms_susWnd);
-				msg.insert("CurWnd", (quintptr)this);
-				ms_susWnd->addWnd(this);
-				pCom->setInfromation(QString("VedioZoom"), msg);
-				pCom->Release();
-			}
+		ICommunicate *pCom = NULL;
+		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+		if (pCom){
+			QVariantMap msg;
+			msg.insert("SusWnd", (quintptr)ms_susWnd);
+			msg.insert("CurWnd", (quintptr)this);
+			msg.insert("ZoRect", drawRect);
+			pCom->setInfromation(QString("VedioZoom"), msg);
+			pCom->Release();
+			ms_rectMap[(quintptr)this] = drawRect;
 		}
 	}
 }
@@ -243,12 +269,8 @@ void RecordPlayerView::recMsg( QVariantMap msg )
 		msg.remove("EvName");
 		pCom->setInfromation(evName, msg);
 	}
-	if ("CloseWnd" == evName){
-		if (!msg["ListSize"].toInt()){
-			ms_susWnd->close();
-			delete ms_susWnd;
-			ms_susWnd = NULL;
-		}
+	if ("ZoomRect" == evName){
+		ms_rectMap[msg["CurWnd"].toUInt()] = msg["ZoRect"].toRect();
 	}
 }
 
@@ -259,8 +281,57 @@ void RecordPlayerView::setPlayStatus( int status )
 
 void RecordPlayerView::setPlayingFlag( bool bPlaying )
 {
-	qDebug()<<(int)this<<"origin flag:"<<m_bPlaying<<" set flag:"<<bPlaying;
+// 	qDebug()<<(int)this<<"origin flag:"<<m_bPlaying<<" set flag:"<<bPlaying;
 	m_bPlaying = bPlaying;
+}
+
+void RecordPlayerView::mouseMoveEvent( QMouseEvent *ev )
+{
+	QRect mainRect = this->rect();
+	QRect drawRect(m_pressPoint, ev->pos());
+	if (m_bPressed && mainRect.contains(drawRect) && drawRect.width()*drawRect.height()/1000 && ms_playStatus < 4 && m_bPlaying){
+		//notify play module current window need to zoom
+		if (m_pLocalPlayer){
+			ICommunicate *pCom = NULL;
+			m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+			if (pCom){
+				QVariantMap msg;
+				msg.insert("CurWnd", (quintptr)this);
+				msg.insert("ZoRect", drawRect);
+				pCom->setInfromation(QString("RectToOrigion"), msg);
+				pCom->Release();
+			}
+		}
+	}
+}
+
+void RecordPlayerView::slCloseSusWnd()
+{
+	ICommunicate *pCom = NULL;
+	m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+	if (pCom){
+		pCom->setInfromation(QString("CloseWnd"), QVariantMap());
+		pCom->Release();
+	}
+	ms_rectMap.clear();
+}
+
+void RecordPlayerView::showSusWnd( bool enabled )
+{
+	if (enabled){
+		ms_susWnd->show();
+	}else{
+		ms_susWnd->hide();
+	}
+}
+
+void RecordPlayerView::destroySusWnd()
+{
+	if (ms_susWnd){
+		ms_susWnd->close();
+		delete ms_susWnd;
+		ms_susWnd = NULL;
+	}
 }
 
 void cbReciveMsg( QVariantMap evMap, void* pUser )
