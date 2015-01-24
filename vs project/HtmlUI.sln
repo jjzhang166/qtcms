@@ -199,6 +199,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autoSearchDevice", "..\src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getIpAddress", "..\src\functionlibs\getIpAddress\getIpAddress.vcxproj", "{2C8A1ED5-21F2-418F-8EF0-B67C41A8EF19}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalBackupPlugin", "..\src\plugins\LocalBackupPlugin\LocalBackupPlugin.vcxproj", "{F94EDDCE-AB41-46E4-B45A-BB70401221C2}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -710,6 +712,15 @@ Global
 		{2C8A1ED5-21F2-418F-8EF0-B67C41A8EF19}.Release|Win32.ActiveCfg = Release|Win32
 		{2C8A1ED5-21F2-418F-8EF0-B67C41A8EF19}.Release|Win32.Build.0 = Release|Win32
 		{2C8A1ED5-21F2-418F-8EF0-B67C41A8EF19}.Release|x64.ActiveCfg = Release|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug|Win32.Build.0 = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug|x64.ActiveCfg = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug64|Win32.ActiveCfg = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug64|Win32.Build.0 = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Debug64|x64.ActiveCfg = Debug|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Release|Win32.ActiveCfg = Release|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Release|Win32.Build.0 = Release|Win32
+		{F94EDDCE-AB41-46E4-B45A-BB70401221C2}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
