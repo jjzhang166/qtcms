@@ -99,7 +99,11 @@ var oSearchOcx,autoSearchDev,
 			
 			});
 		$('div.menu .close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
-        $('#RemoveDevice_ok').click(function(){setTimeout(searchFlushReal(),100);});
+        $('#RemoveDevice_ok').click(function(){
+			var timer = setTimeout(function(){
+		    searchFlushReal();
+		    clearTimeout(timer) 
+		},100);});
 		$('#device input:radio').each(function(index){ //添加设备弹出框下添加设备方式切换
 			$(this).click(function(){
 				$('#device input:radio').removeAttr('id');
@@ -192,34 +196,40 @@ var oSearchOcx,autoSearchDev,
 					oSearchOcx.Stop();
 					emptyDevSetMenu();
 					
+				    AJAX && AJAX.abort();
+				  if(nowDev && nowDev._ID){
+					  nowDev =null;
+				   }
+					
 				}
+				  
 				
-			   AJAX && AJAX.abort();
-			  if(nowDev && nowDev._ID){
-				  nowDev =null;
-			  }
+			  
 			  
 			})
 		})
 		
 		//左侧二级菜单
 		$('#set_content div.left li').each(function(index){
+			
 			$(this).click(function(){
+				
 				key = index;
 				var warp = $('#set_content div.right div.right_content').hide().eq(index).show();
-				oTreeWarp.show();
-				set_contentMax();
-
-				areaList2Ui('','closed');
-                
-				$('#ajaxHint').html('').stop(true,true).hide();
-               
 				
+				oTreeWarp.show();
+				
+				set_contentMax();
+				areaList2Ui('','closed');
+				$('#ajaxHint').html('').stop(true,true).hide();
+				 
 				if(key == 0){
 					searchFlush();
 				}else{
-					oSearchOcx.Stop();
+				
+					//oSearchOcx.Stop();
 				}
+				
 				
 				if(key == 1){
 					AJAX && AJAX.abort();
@@ -260,10 +270,11 @@ var oSearchOcx,autoSearchDev,
 
 						if(oDevData.vendor == 'IPC'){//如果选中设备为ipc
 							$('ul.ipc_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
-							$('.ipc_list').eq(0/*$('.ipc_list0 li.ope_listAct').index()*/).show();
+							//$('.ipc_list').eq($('.ipc_list0 li.ope_listAct').index()).show();
+							$('.ipc_list').eq(0).show();
 							//emptyDevSetMenu();
 							//ipc(_url,oDevData.username,oDevData.password);
-/*							devinfo_load_content(true);	*/
+							//devinfo_load_content(true);	
 
 							nowDev = new IPC(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor);
 							
@@ -274,20 +285,20 @@ var oSearchOcx,autoSearchDev,
 								AJAX && AJAX.abort();//并停止正在进行的ajax请求
 								if($(this).attr('action')){
 									AJAX && AJAX.abort();
-									nowDev[$(this).attr('action')+'2UI']();
+									nowDev && nowDev[$(this).attr('action')+'2UI']();
 								}
 							})
 
 							nowDev.ipcBasicInfo2UI();
 
 							//oDev[$('ul.ipc_list0 li.ope_listAct').attr('action')]();
-						}else{   /*    if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR*/
+						}else{       //if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
 							//emptyDevSetMenu();
                          
-							/*dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
-							dvr_devinfo_load_content();*/
+							//dvr(_url,oDevData.username,oDevData.password,oDevData.channel_count);
+							//dvr_devinfo_load_content();
 							console.log('------------new DVR()--------------');
 							nowDev = new DVR(oDevData.username,oDevData.password,oDevData.address,oDevData.port,oDevData.dev_id,oDevData.vendor,oDevData.channel_count);
 							
@@ -297,7 +308,7 @@ var oSearchOcx,autoSearchDev,
 								
 								if($(this).attr('action')){
 									AJAX && AJAX.abort();
-									nowDev[$(this).attr('action')+'2UI']();
+								nowDev && nowDev[$(this).attr('action')+'2UI']();
 			
 								}
 							})
@@ -308,9 +319,7 @@ var oSearchOcx,autoSearchDev,
 			 	   });
 
 				}else if(key == 2){  //单击“本地设置”
-				    if(nowDev && nowDev._ID){
-						nowDev =null;
-						}
+				   window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
 					var itema = checkUserRight(1<<7,0);
 					if(itema==1){
 						autoSearchDev.showUserLoginUi(336,300);
@@ -323,81 +332,17 @@ var oSearchOcx,autoSearchDev,
 						  clearTimeout(timer);
 					  },2000);
 					}
-					window['Fill'+warp.find('div.switch:visible').attr('id')+'Data']();
+					
 				}else if(key == 3){ 
-				   if(nowDev && nowDev._ID){
-						nowDev =null;
-						}
+				 
 						$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
 						$('.right_content:visible div.switch').hide();
 						$('.right_content:visible div.switch').eq(0).show();
 						cUserinfo2Ui();
-					
-				
-					/*userList2Ui();*/
-			
-				
+		
 				}
+			
 			})
-
-			// 设置相关
-			/*$('ul.dvr_list0').each(function(){//dvr
-				var warp = $(this);
-				warp.click(function(){ 
-					warp.show();
-					$('ul.ipc_list0').hide();
-				})
-				warp.find('li').each(function(index){
-					$(this).click(function(){
-						switch(index){
-							case 0: dvr_devinfo_load_content();break;
-							case 1: dvr_common_load_content();break;
-							case 2: dvr_network_load_content();break;
-							case 3: dvr_load('dvr_enc_chn_sel');break;
-							case 4: dvr_load('dvr_record_chn_sel');break;
-							case 5: dvr_load('dvr_screen_chn_sel');break;
-							case 6: dvr_load('dvr_detect_chn_sel');break;
-							case 7: dvr_load('dvr_ptz_chn_sel');break;
-							case 8: dvr_load('dvr_alarm_chn_sel');break;
-							default:break;
-						}		
-					})
-				})
-			});*/
-			/*$('ul.dvr_list0').click(function(){
-				emptyDevSetMenu();
-				$(this).show();
-				$('ul.ipc_list0').hide();
-			})
-
-			$('ul.ipc_list0').click(function(){
-				emptyDevSetMenu();
-				$(this).show();
-				$('ul.dvr_list0').hide();
-			})*/
-
-			/*$('ul.ipc_list0').each(function(){//ipc
-				var warp = $(this);
-				warp.click(function(){ 
-					warp.show();
-					$('ul.dvr_list0').hide();
-				})
-				$('ul.ipc_list0 li').each(function(index){
-					$(this).click(function(){
-						alert(index);
-						switch(index)
-						{
-							case 0: devinfo_load_content(true);break;
-							case 1: encode_load_content();break;
-							case 2: network_load_content();break;
-							case 3: user_management_load_content();break;
-							case 4: time_load_content();break;
-							//case 5: alert(5);break;
-							default:break;
-						}			
-					})
-				})
-			});*/
 		})
 
 		//搜索结果 设备列表tr委托部分事件;
@@ -558,9 +503,8 @@ var oSearchOcx,autoSearchDev,
 			SplitScreenMode[i]=SplitScreenMode[i]+_T('Screen');
 		}
 	function FillCommonParmData(){ 
-
 		var item = ['Language','AutoPollingTime','SplitScreenMode','AutoLogin','AutoSyncTime','AutoConnect','AutoFullscreen','BootFromStart'];
-		for(i in item){
+		for(var i in item){
 			var str = oCommonLibrary['get'+item[i]]();
 			//console.log(item[i]+'----------------'+str);
 			var obj = $('#'+item[i]+'_ID')
@@ -579,7 +523,6 @@ var oSearchOcx,autoSearchDev,
 		})
 
 		_t($('#CommonParm input:text'));
-
 		/*$('#Language_ID').nextAll('li').click(function(){
 		 	$('#Language_ID').val($(this).attr('value'));
 		})*/
@@ -650,8 +593,12 @@ var oSearchOcx,autoSearchDev,
 				}
 			}
 		}
-		
-		initChannlrecTime($('#RecordTime ul.week.option li:eq(0)')); //填充具体时间到页面
+		var week_date = new Date().getDay();
+		    week_date = week_date==0 ? 6 : parseInt(week_date,10)-1;
+		var dateobj = $('#RecordTime ul.week.option li').eq(week_date);
+		$('#week').val(dateobj.find('input').val());
+		$('#week').attr('data',dateobj.find('input').attr('data'));
+		initChannlrecTime(dateobj); //填充具体时间到页面
 		$('#RecordTime ul.week.option li').each(function(index){
 			$(this).on('click',function(){
 				initChannlrecTime($(this));
@@ -664,7 +611,7 @@ var oSearchOcx,autoSearchDev,
 		var oTimes=$('#recordtime tbody tr:gt(0):lt(5)');
 		var str = '<recordtime num="4">';
 
-		for(i in obj.data()){
+		for(var i in obj.data()){
 			var data = obj.data()[i];
 			var timeid = i.split('_')[1];
 			var start = data.starttime.split(' ')[1];

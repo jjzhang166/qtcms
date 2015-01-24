@@ -554,7 +554,7 @@ var oPlayBack={},  // 远程回访控件对象
 		  console.log('--------选中通道--------')
 		  console.log(oList.eq(now));
 		  console.log(fileData);*/
-		  console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
+		 // console.log('开始下载当前第'+(now+1)+'/'+oList.length+'个文件!-----------设备地址:'+oDevData.address+'--端口--'+oDevData.port+'--易视ID--'+oDevData.eseeid+'--通道号--'+(fileData[1]-1)+'--文件类型--'+fileData[2]+'--设备名--'+oDevData.device_name+'--文件开始时间--'+fileData[3]+'--文件结束时间--'+fileData[4]+'--保存路径--'+path);
 		  if(oBackup.startBackup(oDevData.address,oDevData.port,oDevData.eseeid,(fileData[1]-1),fileData[2],oDevData.device_name,fileData[3],fileData[4],path) != 0){
 			  alert(T('File_download_failed',(parseInt(now,10)+1)));
 			  now++;
@@ -608,7 +608,7 @@ var oPlayBack={},  // 远程回访控件对象
 		var oList = $('#search_result input:checked'),
 			oWarp = oList.eq(now).parent('td').parent('tr'),
 			types = data.types;
-		console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'----------------------');
+		//console.log('当前第'+(now+1)+'/'+oList.length+'下载文件状态:'+data.types+'----------------------');
 		/*if(types == 'startBackup'){
 			syndownload();
 		}else{*/
@@ -624,7 +624,7 @@ var oPlayBack={},  // 远程回访控件对象
 				 
 				 
 				if(types == 'backupFinished'){ 
-					console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
+					//console.log('=================当前下载的第'+(now+1)+'个文件下载成功==========================');
 					oWarp.find('.progess span').css('width','100%');
 						 //.end().find('input').prop('checked',false);
 					
@@ -639,12 +639,12 @@ var oPlayBack={},  // 远程回访控件对象
 				}
 	
 				if( types == 'fail'){
-					console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
+					//console.log('=================当前下载的第'+(now+1)+'个文件下载失败==========================');
 					oWarp.find('.progess').find('span').css('background-color','#ccc')
 										  .end().find('div').css('border-style','dashed');	
 				}
 				if( types == 'stopBackup'){
-					console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
+					//console.log('=================当前下载的第'+(now+1)+'个文件下载停止==========================');
 					//clearInterval(timer);
 					now++;
 					if(now == oList.length){
@@ -662,8 +662,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份状态改变回调函数
     function BackupLocalStatusChange(data){
-		 console.log('-----BackupLocalStatusChange-----');
-		console.log(data);//1：备份任务开始，2：备份任务停止
+		 //console.log('-----BackupLocalStatusChange-----');
+		//console.log(data);//1：备份任务开始，2：备份任务停止
 		
 	  if(data.types=='1'){	 
 	     $('#windowFile tr[id]').each(function(){
@@ -690,8 +690,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份进度条回调函数
 	function BackupLocalprogressCallback(data){
-		console.log('-----BackupLocalprogressCallback-----');
-		console.log(data);//"nChannel"、"Progress"
+		//console.log('-----BackupLocalprogressCallback-----');
+		//console.log(data);//"nChannel"、"Progress"
 		var num  = data.nChannel;
 		var id = 'progress'+num;
 		var canvas = document.getElementById(id);
@@ -701,11 +701,11 @@ var oPlayBack={},  // 远程回访控件对象
 	function backupstop(){
 		
 		if(bool){
-			console.log('所有选择的本地文件停止备份下载!!!');
+			//console.log('所有选择的本地文件停止备份下载!!!');
 			oBackupLocal.stopLocalFileBackUp();
 			$('#windowFile input:checked').prop('checked',false);
 		}else{
-		    console.log('所有选择的远程文件停止备份下载!!!');
+		  //  console.log('所有选择的远程文件停止备份下载!!!');
 		  oBackup.stopBackup();
 		  now=0;
 		  $('#search_result input:checked').prop('checked',false);
@@ -928,7 +928,7 @@ var oPlayBack={},  // 远程回访控件对象
 		LocalFlag=true;
     }
 	function ThrowExceptionCallback(data){
-	    console.log(data);	
+	  //  console.log(data);	
 	 	
 	}
 	
