@@ -1,12 +1,23 @@
 #include "suspensionwnd.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QSettings>
+#include <QIcon>
+#include <QPainter>
 
 SuspensionWnd::SuspensionWnd(QWidget *parent)
 	: QWidget(parent),
 	m_posInRect(false)
 {
-
+	QString image;
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+	image = IniFile.value("background/zoom-icon-image", QVariant("")).toString();
+	QString PixPath = sAppPath + image;
+	QIcon tWindowIcon(PixPath);
+	this->setWindowIcon(tWindowIcon);
+	this->setWindowTitle(tr("Zoom"));
 }
 
 SuspensionWnd::~SuspensionWnd()
@@ -54,6 +65,7 @@ void SuspensionWnd::closeEvent(QCloseEvent *ev)
 	if (QEvent::Close == ev->type()){
 		m_wndList.clear();
 		emit sigClose();
+		ev->ignore();
 	}
 }
 
@@ -65,11 +77,15 @@ void SuspensionWnd::setCbFunc( callbackFc pfunc, void* puser )
 
 void SuspensionWnd::mouseMoveEvent( QMouseEvent *ev )
 {
-	if (m_posInRect && m_cbFunc && m_puser){
+	if (m_cbFunc && m_puser){
 		m_drawRect.translate(ev->pos() - m_lastMovePos);
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
-		msg.insert("ZoRect", m_drawRect);
+		if (m_posInRect){
+			msg.insert("ZoRect", m_drawRect);
+		}else{
+			msg.insert("ZoRect", QRect(m_pressPoint, ev->pos()));
+		}
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
 		m_cbFunc(msg, m_puser);
 		m_lastMovePos = ev->pos();
@@ -124,4 +140,26 @@ bool SuspensionWnd::event( QEvent *ev )
 void SuspensionWnd::setOriginGeog( QRect rect )
 {
 	m_originRect = rect;
+}
+
+void SuspensionWnd::paintEvent( QPaintEvent *ev )
+{
+	Q_UNUSED(ev);
+	QPainter p(this);
+	QString image;
+
+	QString sAppPath = QCoreApplication::applicationDirPath();
+	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";
+	QSettings IniFile(path, QSettings::IniFormat, 0);
+
+	image = IniFile.value("background/zoom-background-image", QVariant("")).toString();
+
+	QRect rcClient = contentsRect();
+	this->geometry().center();
+	QPixmap pix;
+	QString PixPaht = sAppPath + image;
+	pix.load(PixPaht);
+	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
+	//б└3?бу
+	p.drawPixmap(rcClient,pix);
 }

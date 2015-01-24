@@ -34,7 +34,6 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 		connect(ms_susWnd, SIGNAL(sigClose()), this, SLOT(slCloseSusWnd()));
 		ms_susWnd->setWindowFlags(Qt::Window);
 		ms_susWnd->setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
-		ms_susWnd->setWindowTitle(QString("Digital Zoom"));
 		ms_susWnd->setCbFunc(cbReciveMsg, this);
 	}
 }
@@ -122,7 +121,7 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	m_bPressed = true;
 	m_pressPoint = ev->pos();
 
-	if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() && ms_susWnd->isVisible()){
+	if (/*ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() &&*/ ms_susWnd->isVisible()){
 		//notify play module current window need to zoom
 		ICommunicate *pCom = NULL;
 		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
@@ -130,9 +129,11 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 			QVariantMap msg;
 			msg.insert("SusWnd", (quintptr)ms_susWnd);
 			msg.insert("CurWnd", (quintptr)this);
-			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+			if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() && ms_susWnd->isVisible()){
+				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+			}
 			ms_susWnd->addWnd(this);
-			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
 			pCom->setInfromation(QString("VedioZoom"), msg);
 			pCom->Release();
 		}
@@ -242,7 +243,8 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 	//if release point in current window
 	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
 		&& (QWidget*)this != ms_susWnd->getTopWnd() 
-		&& ms_playStatus < 4 && m_bPlaying){
+		&& ms_playStatus < 4 && m_bPlaying
+		&& !ms_susWnd->isVisible()){
 		ms_susWnd->addWnd(this);
 		ms_susWnd->setDrawRect(drawRect);
 		ms_susWnd->show();
@@ -315,6 +317,7 @@ void RecordPlayerView::slCloseSusWnd()
 		pCom->setInfromation(QString("CloseWnd"), QVariantMap());
 		pCom->Release();
 	}
+	ms_susWnd->hide();
 	ms_rectMap.clear();
 }
 

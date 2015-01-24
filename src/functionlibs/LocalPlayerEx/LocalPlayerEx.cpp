@@ -1101,8 +1101,8 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 			if (iter == m_wndMap.end()){
 				continue;
 			}
-			(*iter)->setZoomRect(pWnd->rect());
-			(*iter)->setOriginRect(QRect(0, 0, 0, 0));
+			(*iter)->setZoomRect(QRect(1, 1, 1, 1));
+			(*iter)->setOriginRect(QRect(1, 1, 1, 1));
 			(*iter)->removeWnd(QString::number((quintptr)pWnd));
 		}
 		m_wndList.clear();
@@ -1125,7 +1125,7 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 				return 0;
 			}
 			lastWnd = m_wndList.last();
-			m_wndMap[lastWnd]->setOriginRect(QRect(0, 0, 0, 0));
+			m_wndMap[lastWnd]->setOriginRect(QRect(1, 1, 1, 1));
 			m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
 			playMgr->addWnd(m_susWnd, wnd.toString());
 
@@ -1134,13 +1134,15 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 		}else{
 			if (!m_wndList.isEmpty()){
 				lastWnd = m_wndList.last();
-				m_wndMap[lastWnd]->setOriginRect(QRect(0, 0, 0, 0));
+				m_wndMap[lastWnd]->setOriginRect(QRect(1, 1, 1, 1));
 				m_wndMap[lastWnd]->removeWnd(QString::number((quintptr)lastWnd));
 			}
 			m_wndList.append(pWnd);
 			playMgr->addWnd(m_susWnd, wnd.toString());
 		}
-		playMgr->setZoomRect(info["ZoRect"].toRect());
+		if (info.contains("ZoRect")){
+			playMgr->setZoomRect(info["ZoRect"].toRect());
+		}
 	}else if ("ZoomRect" == msgName){
 		playMgr->setZoomRect(info["ZoRect"].toRect());
 	}else if ("RectToOrigion" == msgName){
