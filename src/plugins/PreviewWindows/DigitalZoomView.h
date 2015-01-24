@@ -34,10 +34,12 @@ public:
 	void getDigitalViewSize(int &nWidth,int &nHeight);
 	void translateLanguage();
 	void setParentWnd(QWidget *wnd);
+	void ViewNewPosition( QRect tRect ,int nWidth,int nHeight);
 signals:
 	void sgDrawRect(QPoint tStartPoint,QPoint tEndPoint);
 	void sgHideEvnet();
 	void sgShowEvent();
+	void sgViewNewPosition(QRect tRect,int nWidth,int nHeight);
 private:
 	bool m_bIsDrawRect;
 	bool m_bIsDropRect;
@@ -51,5 +53,7 @@ private:
 	static QRect m_tDoubleClickOldPosition;
 	int m_nMinWidth;
 	int m_nMinHeight;
+	int m_nViewSizeHisWidth;
+	int m_nViewSizeHisHeight;
 };
 

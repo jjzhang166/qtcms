@@ -139,6 +139,7 @@ public:
 	void setDigitalZoomStreamRestore();
 	void drawRectToOriginalWnd(QPoint tStartPoint,QPoint tEndPoint);
 	void initDigitalRect(QPoint tStartPoint,QPoint tEndPoint,int nWidth,int nHeight);
+	void ViewNewPosition( QRect tRect ,int nWidth,int nHeight);
 public:
 	//call back
 	int cbCConnectState(QString evName,QVariantMap evMap,void *pUser);
@@ -180,6 +181,7 @@ signals:
 	void sgbackToMainThread(QVariantMap evMap);
 	void sgsetRenderWnd();
 	void sgShutDownDigtalZoom();
+	void sgViewNewPosition(QRect tRect,int nWidth,int nHeight);
 protected:
 	void run();
 private:

@@ -88,6 +88,7 @@ public slots:
 	//电子放大
 	void shutDownDigtalZoom();
 	void enableDigtalZoom();
+	void ViewNewPosition(QRect tRect,int nWidth,int nHeight);
 private:
 	bool chlIsExist(int chlId);
 	QString getLanguageLable();

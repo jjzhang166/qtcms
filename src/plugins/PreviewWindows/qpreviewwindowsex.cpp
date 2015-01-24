@@ -30,6 +30,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i], SIGNAL(sgShutDownDigtalZoom()), this, SLOT(shutDownDigtalZoom()));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgEnableDigtalZoom()),this,SLOT(enableDigtalZoom()));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgViewNewPosition(QRect,int,int)),this,SLOT(ViewNewPosition(QRect,int ,int)));
 		m_pPreviewWndList.insert(m_pPreviewWndList.size(),&m_sPreviewWnd[i]);
 	}
 	// 读取配置文件，将第一个读到的divmode作为默认分割方式
@@ -761,6 +762,14 @@ void qpreviewwindowsex::restoreDigitalView()
 		m_bIsRestroreView=false;
 	}else{
 		//do nothing
+	}
+}
+
+void qpreviewwindowsex::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
+{
+	for (int i=0;i<ARRAY_SIZE(m_sPreviewWnd);i++)
+	{
+		m_sPreviewWnd[i].ViewNewPosition(tRect,nWidth,nHeight);
 	}
 }
 

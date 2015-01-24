@@ -7,6 +7,8 @@ DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	,m_bIsDrawRect(false)
 	,m_bIsDropRect(false)
 	,m_bViewIsClose(true)
+	,m_nViewSizeHisWidth(0)
+	,m_nViewSizeHisHeight(0)
 {
 	setWindowFlags(Qt::WindowStaysOnTopHint);
 	
@@ -115,6 +117,8 @@ void DigitalZoomView::mouseReleaseEvent( QMouseEvent * event )
 	}else{
 		//do nothing
 	}
+	m_nViewSizeHisWidth=this->width();
+	m_nViewSizeHisHeight=this->height();
 	m_bIsDropRect=false;
 }
 
@@ -128,7 +132,6 @@ void DigitalZoomView::mouseMoveEvent( QMouseEvent * event )
 		{
 			int nX=event->pos().x()-m_tRectDropStartPoint.x();
 			int nY=event->pos().y()-m_tRectDropStartPoint.y();
-			qDebug()<<__FUNCTION__<<__LINE__<<m_tRectDropStartPoint<<event->pos();
 			QRect tRect=geometry();
 			int nSetStartX;
 			int nSetStartY;
@@ -246,6 +249,7 @@ void DigitalZoomView::resizeEvent( QResizeEvent *event )
 	if (m_bViewIsClose==false)
 	{
 		m_tDigitalViewPosition=this->geometry();
+		emit sgViewNewPosition(m_tDigitalViewPosition,m_nViewSizeHisWidth,m_nViewSizeHisHeight);
 	}
 }
 
@@ -265,9 +269,12 @@ bool DigitalZoomView::event( QEvent * eventt)
 		if (nCurX<m_nMinWidth+10&&nCurY<m_nMinHeight+10)
 		{
 			setGeometry(m_tDoubleClickOldPosition);
+			//还原 矩形原始坐标
 		}else{
 			m_tDoubleClickOldPosition=geometry();
 			setGeometry(m_tDoubleClickMinPosition);
+			qDebug()<<__FUNCTION__<<__LINE__<<m_tRectStartPoint<<m_tRectCurrentPoint;
+			//映射矩形 到窗口的 新坐标
 		}
 	}else{
 		//do nothing
@@ -294,6 +301,8 @@ void DigitalZoomView::initRectPoint( QPoint tStart,QPoint tEnd )
 {
 	m_tRectStartPoint=tStart;
 	m_tRectCurrentPoint=tEnd;
+	m_nViewSizeHisHeight=this->height();
+	m_nViewSizeHisWidth=this->width();
 }
 
 void DigitalZoomView::changeEvent( QEvent *event )
@@ -337,6 +346,30 @@ void DigitalZoomView::setParentWnd( QWidget *wnd )
 	setParent(wnd);
 	setWindowFlags(Qt::Window);
 	setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
+}
+
+void DigitalZoomView::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
+{
+	if (m_tRectStartPoint!=m_tRectCurrentPoint)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<this<<m_tRectStartPoint<<m_tRectCurrentPoint<<nWidth<<nHeight;
+		int nViewNewWidth=tRect.width();
+		int nViewNewHeight=tRect.height();
+		QPoint tNewStartPoint;
+		QPoint tNewEndPoint;
+		if (nWidth!=0||nHeight!=0)
+		{
+			tNewEndPoint.setX(nViewNewWidth*m_tRectCurrentPoint.x()/nWidth);
+			tNewEndPoint.setY(nViewNewHeight*m_tRectCurrentPoint.y()/nHeight);
+			tNewStartPoint.setX(nViewNewWidth*m_tRectStartPoint.x()/nWidth);
+			tNewStartPoint.setY(nViewNewHeight*m_tRectStartPoint.y()/nHeight);
+			//emit sgDrawRect(tNewStartPoint,tNewEndPoint);
+		}else{
+
+		}
+	}else{
+
+	}
 }
 
 

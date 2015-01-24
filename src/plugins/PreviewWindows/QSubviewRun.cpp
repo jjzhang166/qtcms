@@ -54,6 +54,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(&m_tDigitalZoomView,SIGNAL(sgDrawRect(QPoint ,QPoint )),this,SLOT(SLSetRenderRect(QPoint ,QPoint )));
 	connect(&m_tDigitalZoomView,SIGNAL(sgHideEvnet()),this,SLOT(slRemoveExtendWnd()));
 	connect(&m_tDigitalZoomView,SIGNAL(sgShowEvent()),this,SLOT(slAddExtendWnd()));
+	connect(&m_tDigitalZoomView,SIGNAL(sgViewNewPosition(QRect,int ,int )),this,SIGNAL(sgViewNewPosition(QRect,int ,int)));
 	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(4000);
@@ -2554,6 +2555,11 @@ void QSubviewRun::initDigitalRect( QPoint tStartPoint,QPoint tEndPoint,int nWidt
 void QSubviewRun::setParentWnd( QWidget*wnd )
 {
 	m_tDigitalZoomView.setParentWnd(wnd);
+}
+
+void QSubviewRun::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
+{
+	m_tDigitalZoomView.ViewNewPosition(tRect,nWidth,nHeight);
 }
 
 

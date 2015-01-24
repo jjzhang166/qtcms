@@ -49,7 +49,7 @@ QWidget(parent),
 	connect(m_pBackMainViewAction,SIGNAL(triggered(bool)),this,SLOT(slbackToManiWnd()));
 	connect(m_pStreachVideo,SIGNAL(triggered(bool)),this,SLOT(enableStretchEx(bool)));
 	connect(&m_sSubviewRun,SIGNAL(sgShutDownDigtalZoom()),this,SIGNAL(sgShutDownDigtalZoom()));
-
+	connect(&m_sSubviewRun,SIGNAL(sgViewNewPosition(QRect,int,int )),this,SIGNAL(sgViewNewPosition(QRect,int,int)));
 	m_tDeviceInfo.m_uiChannelIdInDataBase=-1;
 	
 }
@@ -987,6 +987,11 @@ void qsubviewEx::setParentWnd( QWidget *wnd )
 {
 	setParent(wnd);
 	m_sSubviewRun.setParentWnd(wnd);
+}
+
+void qsubviewEx::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
+{
+	m_sSubviewRun.ViewNewPosition(tRect,nWidth,nHeight);
 }
 
 

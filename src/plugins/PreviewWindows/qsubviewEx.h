@@ -75,6 +75,7 @@ public:
 	void closeDigitalView();
 	void disableOriginalWndDrawRect();
 	void setParentWnd(QWidget *wnd);
+	void ViewNewPosition( QRect tRect,int nWidth,int nHeight );
 public:
 	//»Øµ÷º¯Êý
 	int cbCStateChange(QVariantMap evMap);
@@ -106,6 +107,7 @@ signals:
 	void sgVerify(QVariantMap vmap);
 	void sgShutDownDigtalZoom();
 	void sgEnableDigtalZoom();
+	void sgViewNewPosition(QRect tRect,int nWidth,int nHeight);
 private:
 	void paintEventConnected(QPaintEvent *ev);
 	void paintEventDisconnected(QPaintEvent *ev);
