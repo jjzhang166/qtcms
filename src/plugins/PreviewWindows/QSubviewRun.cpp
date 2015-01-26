@@ -2489,6 +2489,20 @@ void QSubviewRun::digitalZoomStreamRestore()
 {
 	if (m_currentStatus==STATUS_CONNECTED&&NULL!=m_pdeviceClient)
 	{
+		if (m_tDigitalHisStreamNum!=0)
+		{
+			IChannelManager *pChannelManger=NULL;
+			pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
+			if (NULL!=pChannelManger)
+			{
+				pChannelManger->ModifyChannelStream(m_tDeviceInfo.m_uiChannelIdInDataBase,m_tDigitalHisStreamNum);
+				m_tDeviceInfo.m_uiStreamId=m_tDigitalHisStreamNum;
+				pChannelManger->Release();
+				pChannelManger=NULL;
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"saveToDataBase fail as pChannelManger is null ";
+			}
+		}
 		if ("IPC"==m_tDeviceInfo.m_sVendor||m_tDeviceInfo.m_sVendor=="ONVIF")
 		{
 			//IPC 和ONVIF协议的码流切换
@@ -2521,20 +2535,7 @@ void QSubviewRun::digitalZoomStreamRestore()
 				qDebug()<<__FUNCTION__<<__LINE__<<"liveSteamRequire fail as device client do not support IDeviceClient interface";
 			}
 		}
-		if (m_tDigitalHisStreamNum!=0)
-		{
-			IChannelManager *pChannelManger=NULL;
-			pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IChannelManager,(void**)&pChannelManger);
-			if (NULL!=pChannelManger)
-			{
-				pChannelManger->ModifyChannelStream(m_tDeviceInfo.m_uiChannelIdInDataBase,m_tDigitalHisStreamNum);
-				m_tDeviceInfo.m_uiStreamId=m_tDigitalHisStreamNum;
-				pChannelManger->Release();
-				pChannelManger=NULL;
-			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"saveToDataBase fail as pChannelManger is null ";
-			}
-		}
+
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"SWITCHSTREAMEX fail";
 	}

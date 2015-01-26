@@ -938,7 +938,7 @@ int BubbleProtocolEx::authority()
 			msleep(10);
 			nCount++;
 		}
-		if (m_bAuthorityFlag==true)
+		if (m_bAuthorityFlag==true||nCount==50)
 		{
 			QVariantMap tItem;
 			tItem.insert("Authority",true);
