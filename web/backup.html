@@ -51,15 +51,17 @@
 	.table_backup tr td{border: 1px solid #373737;height: 22px;font-size: 14px;line-height: 14px;}
 	.table_backup .no_border{border: 0;text-align: left;text-indent: 4px;cursor:default;}
 	.table_backup thead td{ cursor:default}
-	#windowFile tr{ position:relative;}
+	 #windowFile{ z-index:3;}
+	 #windowFile tr{ position:relative;}
 	
 	.timebar{
 	  height: 100%;
 	  width: 3px;
 	  position:absolute;
-	  background: #B21E36;
+	 /* background: #B21E36;*/
+	 background:#699;
 	  top: 0px;
-	  z-index: 3;
+	  z-index: 5;
 	  border-radius: 3px;
 	}
 	 
@@ -183,14 +185,15 @@
 	<div id="search_local_result" class="search_result" style="display:block;">
        <div class="timebar"  id="timebar1" title="00:00:00"></div>
        <div class="timebar"  id="timebar2" title="23:59:59"></div>
-		<table class="table_backup" style="height:24px; width:100%;" cellpadding="0" cellspacing="0">
+		<table class="table_backup" style="height:24px; width:100%; position:relative;z-index:0;" cellpadding="0" cellspacing="0" id="windowFileThead">
            <thead>
             <tr>
-              <td class="no_border" id="now_time" style="text-algin:center">00:00:00</td>
+              <td class="no_border" id="now_time" style="text-algin:center"></td>
               <td>00</td><td>01</td><td>02</td><td>03</td><td>04</td><td>05</td><td>06</td>
               <td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
               <td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td>
               <td>21</td><td>22</td><td>23</td>
+              <div id="checkarea" style="position:absolute; background:rgba(102,153,153,0.5); width:0; height:23px;top:0; display:none; z-index:1"></div> 
             </tr>
             </thead>
 		</table>

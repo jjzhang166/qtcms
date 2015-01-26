@@ -12,11 +12,11 @@ var oPlayBack={},  // 远程回访控件对象
 	maxFileEndTime='00:00:00', //搜索到的文件最大时间
 	minFileStartTime='23:59:59', //搜索到的文件最小时间
 	perPageNum=100,
-    initial_x , //本地备份的进度条初始位置x坐标
-	initial_y=0,//本地备份的进度条初始位置y坐标
-	total_width=200,//本地备份的进度条长度
-	total_height=22,//本地备份的进度条高度
-	radius=total_height/2;
+    initial_x , //本地备份的进度条起始位置x坐标
+	finish_x,//本地备份的进度条结束位置x坐标
+	total_width,//本地备份的进度条长度
+	total_height=22;//本地备份的进度条高度
+
 	$(function(){
 		oPlayBack = $('#playback')[0];
 		oPlaybackLocl = $('#playbackLocl')[0];
@@ -99,16 +99,87 @@ var oPlayBack={},  // 远程回访控件对象
 				
 			})
 		})
+		var timerr1 = null;
+		$('#windowFile').mousedown(function(e){
+			if(e.pageX<$('#windowFile td.no_border').width()||e.pageX>$('#windowFile tr').width()) return;
+			
+			var x = e.pageX,
+				y = e.pageY;
+			var minW = $('#windowFile td.no_border').width();
+			var maxW =  $('#windowFile tr').width();	
+				$('#checkarea').css( 'display','block');
+
+			$(document).mousemove(function(en){
+		     
+			   var left;
+			   var X1 = $('#windowFile td.no_border').width();
+			   var X2 =  $('#windowFile tr').width();	
+			   if(en.pageX < minW){ 
+				   left=minW;
+			  }else if(en.pageX > maxW){
+				   left = maxW; 
+			  }else{
+				   left = en.pageX;
+			   }
+
+			   var leftReal = left<x ? left : x; 
 		
-		$('#timebar1,#timebar2').on({ //时间棒滑动事件
-			mousedown:function(event){
-				event.stopPropagation(); 
-				var windowfile = $('#windowFile');
-				var min = $('table.table_backup .no_border').width();
-				var max = windowfile.width()-17;
-				 timebar_drag(min,max,$(this));	
-			}
-		});
+			  $('#checkarea').css({
+				  'width':Math.abs(left-x),
+				  'left':leftReal,	
+				});
+				
+				timebar_title(x,X1,X2,$('#timebar1'));
+				timebar_title(left,X1,X2,$('#timebar2'));
+
+			}).mouseup(function(en){
+			
+				clearTimeout(timerr1);
+				timerr1 = setTimeout(function(){
+					var left;
+					if(en.pageX > $('#windowFile tr').width()){
+						left = 	$('#windowFile tr').width();
+					}else if(en.pageX<$('#windowFile td.no_border').width()){
+						left = $('#windowFile td.no_border').width();
+					}else{
+						left = en.pageX;	
+					}
+					var timebar1 = $('#timebar1').attr('title');
+					var timebar2 =  $('#timebar2').attr('title');
+					var begin =time2Sec(timebar1)<time2Sec(timebar2)? timebar1 : timebar2 ;
+					var end =time2Sec(timebar1)>time2Sec(timebar2)? timebar1 : timebar2 ;
+					$('#checkarea').attr('title',begin+'~~'+end);
+					
+					if(time2Sec(timebar1)<time2Sec(timebar2)){
+						
+						initial_x = parseInt( $('#timebar1').css('left').split('px')[0]) -  parseInt($('#windowFile td.no_border').width());
+						finish_x =  parseInt($('#timebar2').css('left').split('px')[0]) -  parseInt($('#windowFile td.no_border').width());
+					}else{
+						initial_x = parseInt($('#timebar2').css('left').split('px')[0]) -  parseInt($('#windowFile td.no_border').width());
+						finish_x =  parseInt($('#timebar1').css('left').split('px')[0]) -  parseInt($('#windowFile td.no_border').width());
+					}
+					total_width = finish_x - initial_x;
+				},300);
+					$(this).off();
+			})
+		}).dblclick(function(){
+			clearTimeout(timerr1);
+			$('#checkarea').css({
+					 'display':'none',
+					 'left':0,
+					 'top':0,
+					 'width':0,
+				});
+			$('#timebar1').css({
+			   'title':'00:00:00',
+			   'left':$('#windowFile td.no_border').width()
+			})
+			$('#timebar2').css({
+			   'title':'23:59:59',
+			   'left':$('#windowFile tr').width()
+			})
+		})
+
 		
 		
 		contentMax();
@@ -134,27 +205,15 @@ var oPlayBack={},  // 远程回访控件对象
 
 	$(window).resize(contentMax);
 	
-	function timebar_drag(X1,X2,oDrag){  // 备份页面的拖拽条
-		  var oNow=$('#now_time');	
-		  var left;
-		  
-		  $(document).mousemove(function(event){
-			  left = event.pageX;
-			  left = left < X1 ? X1 : left;
-			  left = left > X2 ? X2 : left;
-		  
-			  showNowPlayBackTime(oNow,left-X1,X2-X1);
-			  var curtime = returnTime(((left-X1)/(X2-X1))*24*3600);
-			      curtime = curtime=='24:00:00'?'23:59:59':curtime;
+	function timebar_title(left,X1,X2,oDrag){
+				
+	   var curtime = returnTime(((left-X1)/(X2-X1))*24*3600);
+		   curtime = curtime=='24:00:00'?'23:59:59':curtime;
 			  oDrag.attr('title',curtime);
 				  
 			  oDrag.css('left',left-1.5);
-			  
-		  }).mouseup(function(){
-			  $(this).off();
-		  })
-    }
-	
+
+	}
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
 		if(data.ErrorCode=="1"){
@@ -662,7 +721,7 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份状态改变回调函数
     function BackupLocalStatusChange(data){
-		 //console.log('-----BackupLocalStatusChange-----');
+		//console.log('-----BackupLocalStatusChange-----');
 		//console.log(data);//1：备份任务开始，2：备份任务停止
 		
 	  if(data.types=='1'){	 
@@ -672,9 +731,9 @@ var oPlayBack={},  // 远程回访控件对象
 			var id = 'progress'+num;
 			var canvas = document.getElementById(id);
 			var ctx = canvas.getContext('2d');
-			 ctx.clearRect(initial_x,initial_y,total_width+10,total_height);
+			 ctx.clearRect(initial_x,0,total_width+10,total_height);
 			 if($(this).find('input').prop('checked')){
-			   draw(ctx,initial_x,initial_y,total_width,total_height,radius,0);
+			   draw(ctx,initial_x,finish_x,total_width,total_height,0);
 			 }	 
 		});
 		$('.timebar').css('z-index','0');
@@ -684,7 +743,7 @@ var oPlayBack={},  // 远程回访控件对象
 		 $('#windowFile input:checked').prop('checked',false); 
 		 $('#windowFile tr[id] input').prop('disabled',false);
 		  $('#nowSearchType input:radio').prop('disabled',false);
-		 $('.timebar').css('z-index','3'); 
+		 $('.timebar').css('z-index','5'); 
 		 backupFlag=1;
 	  }
 	}
@@ -696,7 +755,7 @@ var oPlayBack={},  // 远程回访控件对象
 		var id = 'progress'+num;
 		var canvas = document.getElementById(id);
 		var ctx = canvas.getContext('2d');
-	    draw(ctx,initial_x,initial_y,total_width,total_height,radius,data.Progress);
+	    draw(ctx,initial_x,finish_x,total_width,total_height,data.Progress);
 	}
 	function backupstop(){
 		
@@ -983,85 +1042,46 @@ function lock(){
 	autoSearchDev.showUserLoginUi(336,300); 
  }
 //本地备份进度条
-function roundRect(ctx,x,y,width,height,radius){
-	  ctx.beginPath();
-	  ctx.moveTo(x + radius, y);
-	  ctx.lineTo(x + width - radius, y);
-	  ctx.arc(x+width-radius, y+radius, radius, -Math.PI/2, Math.PI/2, false);
-	  ctx.lineTo(x + radius, y + height);
-	  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
-	  ctx.closePath();
-	  ctx.fill();  	
-}
-function progressLayerRect(ctx, x, y, width, height, radius) {
+
+function progressLayerRect(ctx, x, y, width, height) {
 	  ctx.save();
 	   
-	  ctx.fillStyle = 'rgba(170,170,170,0.5)';
-	  roundRect(ctx, x, y, width, height, radius);
+	  ctx.fillStyle = 'rgba(170,170,170,0.2)';
+	  ctx.fillRect(x,0, width, height);
 
-	  var lingrad = ctx.createLinearGradient(0,y+height,0,0);
+	  var lingrad = ctx.createLinearGradient(0,height,0,0);
 	  lingrad.addColorStop(0, 'rgba(255,255,255, 0.1)');
 	  lingrad.addColorStop(0.4, 'rgba(255,255,255, 0.3)');
 	  lingrad.addColorStop(1, 'rgba(255,255,255,0.2)');
 	  ctx.fillStyle = lingrad;
-	  roundRect(ctx, x, y, width, height, radius);
+	  ctx.fillRect( x,0, width, height);
 
 	  ctx.restore();
 }
-function progressBarRect(ctx, x, y, iprogress, height, radius, max1) {
-            
-	  var offset = 0;
-	  var width = iprogress/100*max1;
-	  ctx.beginPath();
-	  if (width<radius) {
-		  offset = radius - Math.sqrt(Math.pow(radius,2)-Math.pow((radius-width),2));
-		  ctx.moveTo(x + width, y+offset);
-		  ctx.lineTo(x + width, y+height-offset);
-		  ctx.arc(x + radius, y + radius, radius, Math.PI - Math.acos((radius - width) / radius), Math.PI + Math.acos((radius - width) / radius), false);
-	  }
-	  else if (width+radius>max1) {
-		  offset = radius - Math.sqrt(Math.pow(radius,2)-Math.pow((radius - (max1-width)),2));
-		  ctx.moveTo(x + radius, y);
-		  ctx.lineTo(x + width, y);
-		  ctx.arc(x+max1-radius, y + radius, radius, -Math.PI/2, -Math.acos((radius - (max1-width)) / radius), false);
-		  ctx.lineTo(x + width, y+height-offset);
-		  ctx.arc(x+max1-radius, y + radius, radius, Math.acos((radius - (max1-width)) / radius), Math.PI/2, false);
-		  ctx.lineTo(x + radius, y + height);
-		  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
-	  }
-	  else {
-		  ctx.moveTo(x + radius, y);
-		  ctx.lineTo(x + width, y);
-		  ctx.lineTo(x + width, y + height);
-		  ctx.lineTo(x + radius, y + height);
-		  ctx.arc(x+radius, y+radius, radius, Math.PI/2, 3*Math.PI/2, false);
-	  }
-	  ctx.closePath();
-	  ctx.fill();
-	  
-	  if (width<max1-1) {
-		  ctx.save();
-		  ctx.shadowOffsetX = 1;
-		  ctx.shadowBlur = 1;
-		  ctx.shadowColor = '#666';
-		  if(width+radius>max1) offset = offset+1;
-		  ctx.fillRect(x+width,y+offset,1,total_height-offset*2);
-		  ctx.restore();
-	  }
+function progressBarRect(ctx,x, finish_x,iprogress, height, width) {
+	  ctx.save();
+	   
+	  ctx.fillStyle = 'rgba(170,170,170,0.5)';
+	
+	  ctx.fillRect(x,0,iprogress/100*width, height);
+
+	  ctx.restore();
 }
 
-function progressText(ctx, x, y, iprogress, height, radius, max1) {
+function progressText(ctx, x, y, iprogress, height, max1) {
 	  ctx.save();
-	  ctx.fillStyle = '#f00';
+	  ctx.fillStyle = '#FF0';
 	  var text = iprogress+"%";
 	  var text_width = ctx.measureText(text).width;
 	  var text_x = x+(max1-text_width)/2;
-	  ctx.fillText(text, text_x, y+16);
+	  ctx.fillText(text, text_x, 16);
 	  ctx.restore();
 }
  
-function draw(context,initial_x,initial_y,total_width,total_height,radius,iprogress){
-
+function draw(context,initial_x,finish_x,total_width,total_height,iprogress){
+     // console.log('draw()');
+	 // console.log('initial_x:'+initial_x+'// finish_x: '+finish_x+'//total_width:'+total_width+'//total_height:'+total_height+'//iprogress:'+iprogress);
+	
 	var progress_lingrad = context.createLinearGradient(0,total_height,0,0);
 		progress_lingrad.addColorStop(0, '#b4b5bb');
 		progress_lingrad.addColorStop(0.6 ,'#f5f4f3');
@@ -1071,11 +1091,11 @@ function draw(context,initial_x,initial_y,total_width,total_height,radius,iprogr
 		
         context.font = "14px Verdana";
 		
-		context.clearRect(initial_x,initial_y,total_width+15,total_height);
+		context.clearRect(initial_x,0,total_width+15,total_height);
 		
-		progressLayerRect(context, initial_x, initial_y, total_width, total_height, radius);
-		progressBarRect(context, initial_x, initial_y, iprogress, total_height, radius, total_width);
-		progressText(context, initial_x, initial_y, iprogress, total_height, radius, total_width );
+		progressLayerRect(context, initial_x, finish_x, total_width, total_height);
+		progressBarRect(context, initial_x, finish_x, iprogress, total_height, total_width);
+		progressText(context, initial_x, finish_x, iprogress, total_height, total_width );
 		
 }
   
