@@ -2321,7 +2321,10 @@ void QSubviewRun::SLSetRenderRect(QPoint tStartPoint,QPoint tEndPoint)
 		m_pIVideoRender->QueryInterface(IID_IVideoRenderDigitalZoom,(void**)&pVideoRender);
 		if (NULL!=pVideoRender)
 		{
-			pVideoRender->setRenderRect(tStartPoint.x(),tStartPoint.y(),tEndPoint.x(),tEndPoint.y());
+			int nViewWidth;
+			int nViewHeight;
+			m_tDigitalZoomView.getDigitalViewSize(nViewWidth,nViewHeight);
+			pVideoRender->setRenderRect(tStartPoint.x(),tStartPoint.y(),tEndPoint.x(),tEndPoint.y(),nViewWidth,nViewHeight);
 			pVideoRender->Release();
 			pVideoRender=NULL;
 		}
@@ -2347,7 +2350,7 @@ void QSubviewRun::deInitDigitalView()
 		{
 			QString sName;
 			pVideoRender->removeExtendWnd(sName);
-			pVideoRender->setRenderRect(0,0,0,0);
+			pVideoRender->setRenderRect(0,0,0,0,0,0);
 			m_tDigitalZoomView.clearRectPoint();
 			pVideoRender->Release();
 			pVideoRender=NULL;

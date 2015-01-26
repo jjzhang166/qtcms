@@ -129,9 +129,9 @@ bool DdrawRender::addExtendWnd( QWidget * wnd,const QString sName )
 	return m_renderObj->addExtendWnd(wnd->winId(),cName);
 }
 
-void DdrawRender::setRenderRect( int nX,int nY,int nWidth,int nHeight )
+void DdrawRender::setRenderRect( int nX,int nY,int nWidth,int nHeight,int nWndWidth,int nWndHeight )
 {
-	return m_renderObj->setRenderRect(nX,nY,nWidth,nHeight);
+	return m_renderObj->setRenderRect(nX,nY,nWidth,nHeight,nWndWidth,nWndHeight);
 }
 void DdrawRender::drawRectToOriginalWnd( int nX,int nY,int nWidth,int nHeight )
 {

@@ -38,6 +38,19 @@ DigitalZoomView::~DigitalZoomView(void)
 
 void DigitalZoomView::mousePressEvent( QMouseEvent * event )
 {
+	if (m_nViewSizeHisHeight!=this->height()||m_nViewSizeHisWidth!=this->width())
+	{
+		if (m_nViewSizeHisWidth!=0&&m_nViewSizeHisHeight!=0)
+		{
+			m_tRectStartPoint.setX(this->width()*m_tRectStartPoint.x()/m_nViewSizeHisWidth);
+			m_tRectStartPoint.setY(this->height()*m_tRectStartPoint.y()/m_nViewSizeHisHeight);
+			m_tRectCurrentPoint.setX(this->width()*m_tRectCurrentPoint.x()/m_nViewSizeHisWidth);
+			m_tRectCurrentPoint.setY(this->height()*m_tRectCurrentPoint.y()/m_nViewSizeHisHeight);
+		}
+	}
+	m_nViewSizeHisWidth=this->width();
+	m_nViewSizeHisHeight=this->height();
+
 	if (event->button() == Qt::LeftButton)
 	{
 		m_bIsDrawRect=true;
@@ -117,8 +130,6 @@ void DigitalZoomView::mouseReleaseEvent( QMouseEvent * event )
 	}else{
 		//do nothing
 	}
-	m_nViewSizeHisWidth=this->width();
-	m_nViewSizeHisHeight=this->height();
 	m_bIsDropRect=false;
 }
 
