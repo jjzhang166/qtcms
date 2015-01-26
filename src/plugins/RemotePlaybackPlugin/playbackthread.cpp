@@ -585,6 +585,9 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 // 			playMgr->setOriginRect(QRect(0, 0, 0, 0));
 // 			playMgr->removeWnd(QString::number((quintptr)pWnd));
 // 		}
+		if (m_zoomWndList.isEmpty()){
+			return 1;
+		}
 		QWidget* pWnd = m_zoomWndList.last();
 		PlayManager *playMgr = NULL;
 		if (getPlayInterface(pWnd, (void**)&playMgr)){

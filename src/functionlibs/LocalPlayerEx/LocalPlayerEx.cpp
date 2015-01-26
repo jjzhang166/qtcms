@@ -1105,6 +1105,9 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 // 			(*iter)->setOriginRect(QRect(1, 1, 1, 1));
 // 			(*iter)->removeWnd(QString::number((quintptr)pWnd));
 // 		}
+		if (m_wndList.isEmpty()){
+			return 1;
+		}
 		QWidget *pWnd = m_wndList.last();
 		QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
 		if (iter != m_wndMap.end()){

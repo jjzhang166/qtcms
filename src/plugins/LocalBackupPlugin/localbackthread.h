@@ -29,7 +29,7 @@ private:
 	int execCommand(sqlite3 *pdb, const char* cmd, char*** pppRet, int* row, int* col, char** pMsg);
 	void appendTimePath(QList<TimePath> &tpList, const uint &start, const QString &path, qint32 &insertPos);
 	int countPts(QMap<int,int> ptsMap);
-
+	void lockFile(QString fileName, bool locked);
 private:
 	QMap<int, FdStatusInfo> m_chlFdMap;
 	QString m_sDiskList;

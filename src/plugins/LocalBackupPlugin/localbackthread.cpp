@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QEventLoop>
 #include <QTimer>
+#include <QTextCodec>
 
 #include <QDebug>
 
@@ -103,18 +104,23 @@ void LocalBackThread::run()
 					steps = EM_INIT;
 					break;
 				}
+				//lock file in database
+				lockFile(fileName, true);
 				//read file
 				QFile file(fileName);
 				if (!file.open(QIODevice::ReadOnly)){
 					qDebug()<<"open file "<<fileName<<" error!";
 					fileIndex++;
 					steps = EM_INIT;
+					lockFile(fileName, false);
 					break;
 				}
 				//read file to buffer
 				file.read(buffer, MAX_BUFF_SIZE);
 				file.close();
 				fileIndex++;
+				//unlock file in database
+				lockFile(fileName, false);
 
 				qDebug()<<"read file "<<fileName<<" success!";
 
@@ -144,6 +150,7 @@ void LocalBackThread::run()
 				//check whether reach the end time
 				if (pFrameHead->tFrameHead.uiGentime > m_nEndSec){
 					SEND_PROGRESS(item, iter.key(), 100);
+					iter->finished = true;
 					steps = EM_PACK;
 					break;
 				}
@@ -187,8 +194,9 @@ void LocalBackThread::run()
 				QString endTimeStr = QDateTime::fromTime_t(m_nEndSec).toString("yyyyMMddhhmmss");
 				QString temp;
 				temp = temp.sprintf("/WND%02d_%s_%s_PART%d.avi", pFrameHead->tFrameHead.uiChannel, startTimeStr.toLatin1().data(), endTimeStr.toLatin1().data(), iter->fileNum);
-				QString fileName = m_sBackupPath + temp;
-				iter->fd = AVI_open_output_file(fileName.toLatin1().data());
+				QTextCodec * codec = QTextCodec::codecForLocale();
+				QByteArray fileName = codec->fromUnicode(m_sBackupPath + temp);
+				iter->fd = AVI_open_output_file(fileName.data());
 				if (!iter->fd){
 					qDebug()<<"open file "<<fileName<<" error!";
 					steps = EM_STOP;
@@ -256,7 +264,12 @@ void LocalBackThread::run()
 				iter->fd = NULL;
 				iter->fileNum++;
 				iter->fileStatus = EM_NO_CREATED;
-				steps = EM_CREATE_FILE;
+				if (iter->finished){
+					m_chlFdMap.remove(iter.key());
+					steps = EM_READ_BUFF;
+				}else{
+					steps = EM_CREATE_FILE;
+				}
 			}
 			break;
 		case EM_STOP:
@@ -264,6 +277,9 @@ void LocalBackThread::run()
 				//pack all file
 				FdIterator it = m_chlFdMap.begin();
 				while (it != m_chlFdMap.end()){
+					if (!it->fd){
+						continue;
+					}
 					AVI_set_video(it->fd, it->width, it->height, countPts(it->ptsCountMap), "X264");
 					AVI_close(it->fd);
 					++it;
@@ -432,4 +448,22 @@ int LocalBackThread::countPts( QMap<int,int> ptsMap )
 		++it;
 	}
 	return ptsMap.key(count);
+}
+
+void LocalBackThread::lockFile( QString fileName, bool locked )
+{
+	QString dbPath = fileName.left(2) + "/recEx/record.db";
+	sqlite3 *pdb = NULL;
+	int ret = sqlite3_open(dbPath.toLatin1().data(), &pdb);
+	if (SQLITE_OK != ret){
+		qDebug()<<"open database "<<dbPath<<" fail";
+		return;
+	}
+	QString cmd = QString("update RecordFileStatus set nLock=%1 where sFilePath='%2';").arg(locked).arg(fileName);
+	char *pErr = NULL;
+	ret = sqlite3_exec(pdb, cmd.toLatin1().data(), NULL, NULL, &pErr);
+	if (SQLITE_OK != ret){
+		qDebug()<<"update RecordFileStatus error: "<<pErr;
+	}
+	sqlite3_close(pdb);
 }

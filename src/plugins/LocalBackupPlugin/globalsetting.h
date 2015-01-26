@@ -98,6 +98,7 @@ typedef struct _tagFdStatusInfo{
 		channel = 1;
 		audioBeSet = false;
 		firstFile = true;
+		finished = false;
 	}
 	//avi file handle
 	avi_t *fd;
@@ -123,6 +124,8 @@ typedef struct _tagFdStatusInfo{
 	bool audioBeSet;
 	//first file flag
 	bool firstFile;
+	//backup over flag
+	bool finished;
 
 }FdStatusInfo;
 
