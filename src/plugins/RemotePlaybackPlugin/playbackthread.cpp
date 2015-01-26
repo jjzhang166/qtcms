@@ -575,16 +575,24 @@ bool PlayBackThread::getPlayInterface( QWidget* pwnd, void** playInterface )
 int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 {
 	if ("CloseWnd" == evName){
-		for (int index = 0; index < m_zoomWndList.size(); ++index){
-			QWidget *pWnd = (QWidget *)m_zoomWndList[index];
-			PlayManager *playMgr = NULL;
-			if (!getPlayInterface(pWnd, (void**)&playMgr)){
-				continue;
-			}
-			playMgr->setZoomRect(pWnd->rect());
-			playMgr->setOriginRect(QRect(0, 0, 0, 0));
+// 		for (int index = 0; index < m_zoomWndList.size(); ++index){
+// 			QWidget *pWnd = (QWidget *)m_zoomWndList[index];
+// 			PlayManager *playMgr = NULL;
+// 			if (!getPlayInterface(pWnd, (void**)&playMgr)){
+// 				continue;
+// 			}
+// 			playMgr->setZoomRect(pWnd->rect());
+// 			playMgr->setOriginRect(QRect(0, 0, 0, 0));
+// 			playMgr->removeWnd(QString::number((quintptr)pWnd));
+// 		}
+		QWidget* pWnd = m_zoomWndList.last();
+		PlayManager *playMgr = NULL;
+		if (getPlayInterface(pWnd, (void**)&playMgr)){
+			playMgr->setZoomRect(QRect(1, 1, 1, 1), 0, 0);
+			playMgr->setOriginRect(QRect(1, 1, 1, 1));
 			playMgr->removeWnd(QString::number((quintptr)pWnd));
 		}
+		return 0;
 	}
 
 	QVariant wnd = info.value("CurWnd");
@@ -618,9 +626,9 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 			m_zoomWndList.append(pWnd);
 			playMgr->addWnd(m_susWnd, wnd.toString());
 		}
-		playMgr->setZoomRect(info["ZoRect"].toRect());
+		playMgr->setZoomRect(info["ZoRect"].toRect(), info["Width"].toInt(), info["Height"].toInt());
 	}else if ("ZoomRect" == evName){
-		playMgr->setZoomRect(info["ZoRect"].toRect());
+		playMgr->setZoomRect(info["ZoRect"].toRect(), info["Width"].toInt(), info["Height"].toInt());
 	}else if ("RectToOrigion" == evName){
 		playMgr->setOriginRect(info["ZoRect"].toRect());
 	}

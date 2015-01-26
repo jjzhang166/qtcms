@@ -29,7 +29,7 @@ public:
 
 	void addWnd(QWidget* pWnd, QString sName);
 	void removeWnd(QString sName);
-	void setZoomRect(QRect rect);
+	void setZoomRect(QRect rect, int nWidth, int nHeight);
 	void setOriginRect(QRect rect);
 
 	enum SpeedType{

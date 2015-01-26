@@ -356,12 +356,12 @@ void PlayManager::removeWnd( QString sName )
 	}
 }
 
-void PlayManager::setZoomRect( QRect rect )
+void PlayManager::setZoomRect( QRect rect, int nWidth, int nHeight )
 {
 	IVideoRenderDigitalZoom *pZoomInterface = NULL;
 	m_pVedioRender->QueryInterface(IID_IVideoRenderDigitalZoom, (void**)&pZoomInterface);
 	if (pZoomInterface){
-		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom());
+		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom(), nWidth, nHeight);
 		pZoomInterface->Release();
 	}
 }

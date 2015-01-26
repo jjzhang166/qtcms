@@ -43,6 +43,8 @@ void SuspensionWnd::mouseReleaseEvent( QMouseEvent *ev )
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
 		msg.insert("ZoRect", QRect(m_pressPoint, releasePoint));
+		msg.insert("Width", this->width());
+		msg.insert("Height", this->height());
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
 		m_cbFunc(msg, m_puser);
 
@@ -86,6 +88,8 @@ void SuspensionWnd::mouseMoveEvent( QMouseEvent *ev )
 		}else{
 			msg.insert("ZoRect", QRect(m_pressPoint, ev->pos()));
 		}
+		msg.insert("Width", this->width());
+		msg.insert("Height", this->height());
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
 		m_cbFunc(msg, m_puser);
 		m_lastMovePos = ev->pos();
@@ -98,6 +102,8 @@ void SuspensionWnd::mouseDoubleClickEvent( QMouseEvent * )
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
 		msg.insert("ZoRect", QRect(m_drawRect.topLeft(), m_drawRect.topLeft()));
+		msg.insert("Width", 0);
+		msg.insert("Height", 0);
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
 		m_cbFunc(msg, m_puser);
 		m_drawRect.setCoords(0, 0, 0, 0);

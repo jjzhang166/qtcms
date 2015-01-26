@@ -672,12 +672,12 @@ void PlayMgr::removeWnd( QString sName )
 	}
 }
 
-void PlayMgr::setZoomRect( QRect rect )
+void PlayMgr::setZoomRect( QRect rect, int nWidth, int nHeight )
 {
 	IVideoRenderDigitalZoom *pZoomInterface = NULL;
 	getZoomInterface((void**)&pZoomInterface);
 	if (pZoomInterface){
-		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom());
+		pZoomInterface->setRenderRect(rect.left(), rect.top(), rect.right(), rect.bottom(), nWidth, nHeight);
 		pZoomInterface->Release();
 	}
 }
