@@ -126,7 +126,7 @@
 		  localSearchWindNum=0;
          
 		  searchLocalFile(localSearchWindNum,date,type);
-		  console.log(localSearchWindNum+' '+date+' '+type);
+		 // console.log(localSearchWindNum+' '+date+' '+type);
 
 			/*var chl ='';
 			for (var i=1;i<=devData.channel_count;i++){
