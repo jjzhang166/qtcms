@@ -206,7 +206,7 @@ var oPlayBack={},  // 远程回访控件对象
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
 		   var uicode = bool?1<<10:1<<4;
-		   console.log(uicode+ ' '+ bool);
+		 //  console.log(uicode+ ' '+ bool);
 		    addMouseStyleByLimit($(this),action,uicode);
 	    })
 	})///
@@ -738,8 +738,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份状态改变回调函数
     function BackupLocalStatusChange(data){
-		console.log('-----BackupLocalStatusChange-----');
-		console.log(data);//1：备份任务开始，2：备份任务停止
+		//console.log('-----BackupLocalStatusChange-----');
+		//console.log(data);//1：备份任务开始，2：备份任务停止
 		
 	  if(data.types=='1'){	 
 	     $('#windowFile tr[id]').each(function(){
@@ -767,8 +767,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份进度条回调函数
 	function BackupLocalprogressCallback(data){
-		console.log('-----BackupLocalprogressCallback-----');
-		console.log(data);//"nChannel"、"Progress"
+		//console.log('-----BackupLocalprogressCallback-----');
+		//console.log(data);//"nChannel"、"Progress"
 		var num  = data.nChannel;
 		var id = 'progress'+num;
 		var canvas = document.getElementById(id);
