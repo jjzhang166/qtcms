@@ -31,7 +31,10 @@ LocalBackThread::LocalBackThread(QObject *parent)
 
 LocalBackThread::~LocalBackThread()
 {
-
+	if (isRunning()){
+		m_bStop = true;
+		wait();
+	}
 }
 
 void LocalBackThread::setBackupPath( QString sPath )
@@ -62,6 +65,8 @@ void LocalBackThread::stopLocalFileBackUp()
 
 void LocalBackThread::run()
 {
+	qDebug()<<"backup start ===================";
+
 	//get file list for backup
 	QStringList fileList;
 	if (!getFileList(fileList)){
@@ -95,6 +100,8 @@ void LocalBackThread::run()
 					steps = EM_STOP;
 					break;
 				}
+				qDebug()<<"start read file "<<fileList[fileIndex];
+
 				memset(buffer, 0, MAX_BUFF_SIZE);
 				QString fileName = fileList[fileIndex];
 				//check file exist
@@ -150,6 +157,9 @@ void LocalBackThread::run()
 				//check whether reach the end time
 				if (pFrameHead->tFrameHead.uiGentime > m_nEndSec){
 					SEND_PROGRESS(item, iter.key(), 100);
+
+					qDebug()<<"wnd:"<<iter.key()<<" has finished, persent 100%";
+
 					iter->finished = true;
 					steps = EM_PACK;
 					break;
@@ -248,6 +258,8 @@ void LocalBackThread::run()
 					if (iter->progress < curProgress){
 						iter->progress = curProgress;
 						SEND_PROGRESS(item, iter.key(), curProgress);
+
+						qDebug()<<"wnd:"<<iter.key()<<" progress: "<<curProgress;
 					}
 				}
 				//get next frame
@@ -292,6 +304,8 @@ void LocalBackThread::run()
 	item.clear();
 	item.insert("types", 2);
 	emit sendMsg(QString("localFileBackUpState"), item);
+
+	qDebug()<<"backup end ==================";
 
 	delete[] buffer;
 	buffer = NULL;
@@ -441,7 +455,7 @@ int LocalBackThread::countPts( QMap<int,int> ptsMap )
 	int count = 0;
 	QMap<int, int>::iterator it = ptsMap.begin();
 	while (it != ptsMap.end()){
-		qDebug()<<"rate:"<<it.key()<<" times:"<<*it;
+// 		qDebug()<<"rate:"<<it.key()<<" times:"<<*it;
 		if (count < *it){
 			count = *it;
 		}

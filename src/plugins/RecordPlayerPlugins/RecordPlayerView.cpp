@@ -10,6 +10,7 @@
 #include <QDomDocument>
 
 bool RecordPlayerView::m_bGlobalAudioStatus = false;
+bool RecordPlayerView::m_bSuspensionVisable = false;
 SuspensionWnd* RecordPlayerView::ms_susWnd = NULL;
 int RecordPlayerView::ms_playStatus = 4;//stop local play
 QMap<quintptr, QRect> RecordPlayerView::ms_rectMap;
@@ -35,13 +36,14 @@ RecordPlayerView::RecordPlayerView(QWidget *parent)
 		ms_susWnd->setWindowFlags(Qt::Window);
 		ms_susWnd->setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
 		ms_susWnd->setCbFunc(cbReciveMsg, this);
+		ms_susWnd->setWindowTitle(tr("Zoom"));
 	}
 }
 
 
 RecordPlayerView::~RecordPlayerView(void)
 {
-	destroySusWnd();
+// 	destroySusWnd();
 }
 
 
@@ -129,10 +131,19 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 			QVariantMap msg;
 			msg.insert("SusWnd", (quintptr)ms_susWnd);
 			msg.insert("CurWnd", (quintptr)this);
-			if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() && ms_susWnd->isVisible()){
+// 			if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd()/* && ms_susWnd->isVisible()*/){
+// 				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+// 				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+// 			}
+			if (ms_rectMap.contains((quintptr)this)){
 				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
 				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+			}else{
+				msg.insert("ZoRect", QRect(1, 1, 1, 1));
+				ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
 			}
+			msg.insert("Width", ms_susWnd->width());
+			msg.insert("Height", ms_susWnd->height());
 			ms_susWnd->addWnd(this);
 			pCom->setInfromation(QString("VedioZoom"), msg);
 			pCom->Release();
@@ -231,6 +242,9 @@ void RecordPlayerView::changeEvent( QEvent * )
 	if (NULL != m_pWindowsStretchAction)
 	{
 		m_pWindowsStretchAction->setText(tr("Suit For Window"));
+		if (ms_susWnd){
+			ms_susWnd->setWindowTitle(tr("Zoom"));
+		}
 	}
 }
 
@@ -257,9 +271,12 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 			msg.insert("SusWnd", (quintptr)ms_susWnd);
 			msg.insert("CurWnd", (quintptr)this);
 			msg.insert("ZoRect", drawRect);
+			msg.insert("Width", ms_susWnd->width());
+			msg.insert("Height", ms_susWnd->height());
 			pCom->setInfromation(QString("VedioZoom"), msg);
 			pCom->Release();
 			ms_rectMap[(quintptr)this] = drawRect;
+			m_bSuspensionVisable = true;
 		}
 	}
 }
@@ -272,6 +289,7 @@ void RecordPlayerView::recMsg( QVariantMap msg )
 	if (pCom){
 		msg.remove("EvName");
 		pCom->setInfromation(evName, msg);
+		pCom->Release();
 	}
 	if ("ZoomRect" == evName){
 		ms_rectMap[msg["CurWnd"].toUInt()] = msg["ZoRect"].toRect();
@@ -319,11 +337,12 @@ void RecordPlayerView::slCloseSusWnd()
 	}
 	ms_susWnd->hide();
 	ms_rectMap.clear();
+	m_bSuspensionVisable = false;
 }
 
 void RecordPlayerView::showSusWnd( bool enabled )
 {
-	if (enabled){
+	if (enabled && m_bSuspensionVisable){
 		ms_susWnd->show();
 	}else{
 		ms_susWnd->hide();
@@ -333,7 +352,8 @@ void RecordPlayerView::showSusWnd( bool enabled )
 void RecordPlayerView::destroySusWnd()
 {
 	if (ms_susWnd){
-		ms_susWnd->close();
+// 		ms_susWnd->close();
+		slCloseSusWnd();
 		delete ms_susWnd;
 		ms_susWnd = NULL;
 	}

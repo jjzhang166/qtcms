@@ -17,7 +17,6 @@ SuspensionWnd::SuspensionWnd(QWidget *parent)
 	QString PixPath = sAppPath + image;
 	QIcon tWindowIcon(PixPath);
 	this->setWindowIcon(tWindowIcon);
-	this->setWindowTitle(tr("Zoom"));
 }
 
 SuspensionWnd::~SuspensionWnd()
@@ -79,6 +78,14 @@ void SuspensionWnd::setCbFunc( callbackFc pfunc, void* puser )
 
 void SuspensionWnd::mouseMoveEvent( QMouseEvent *ev )
 {
+	//if rect is too small, return
+	if (!m_posInRect){
+		QRect rect(m_pressPoint, ev->pos());
+		if (rect.width()*rect.height() < 1000){
+			return;
+		}
+	}
+
 	if (m_cbFunc && m_puser){
 		m_drawRect.translate(ev->pos() - m_lastMovePos);
 		QVariantMap msg;
@@ -166,6 +173,6 @@ void SuspensionWnd::paintEvent( QPaintEvent *ev )
 	QString PixPaht = sAppPath + image;
 	pix.load(PixPaht);
 	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-	//¡À3?¡ã
+	//±³¾°
 	p.drawPixmap(rcClient,pix);
 }

@@ -29,6 +29,7 @@ private:
 	virtual void mouseReleaseEvent(QMouseEvent *);
 	virtual void mouseDoubleClickEvent(QMouseEvent *);
 	virtual void closeEvent(QCloseEvent *ev);
+	virtual void paintEvent(QPaintEvent *);
 	virtual bool event(QEvent *ev);
 private:
 	QPoint m_pressPoint;

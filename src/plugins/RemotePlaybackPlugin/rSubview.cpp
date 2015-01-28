@@ -7,6 +7,7 @@
 #include <QTime>
 
 bool RSubView::m_bGlobalAudioStatus = false;
+bool RSubView::m_bSuspensionVisable = false;
 SuspensionWnd* RSubView::ms_susWnd = NULL;
 QMap<quintptr, QRect> RSubView::ms_rectMap;
 
@@ -35,8 +36,8 @@ RSubView::RSubView(QWidget *parent)
 		connect(ms_susWnd, SIGNAL(sigClose()), this, SLOT(slCloseSusWnd()));
 		ms_susWnd->setWindowFlags(Qt::Window);
 		ms_susWnd->setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
-		ms_susWnd->setWindowTitle(QString("Digital Zoom"));
 		ms_susWnd->setCbFunc(cbReciveMsg, this);
+		ms_susWnd->setWindowTitle(tr("Zoom"));
 	}
 }
 
@@ -54,11 +55,11 @@ RSubView::~RSubView()
 		delete _cacheLable;
 	}
 
-	if (ms_susWnd){
-		ms_susWnd->close();
-		delete ms_susWnd;
-		ms_susWnd = NULL;
-	}
+// 	if (ms_susWnd){
+// 		ms_susWnd->close();
+// 		delete ms_susWnd;
+// 		ms_susWnd = NULL;
+// 	}
 }
 
 void RSubView::paintEvent( QPaintEvent * e)
@@ -80,14 +81,21 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 	m_bPressed = true;
 	m_pressPoint = ev->pos();
 
-	if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() && ms_susWnd->isVisible()){
+	if (ms_susWnd->isVisible()){
 		//notify play module current window need to zoom
 		QVariantMap msg;
 		msg.insert("SusWnd", (quintptr)ms_susWnd);
 		msg.insert("CurWnd", (quintptr)this);
-		msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+		if (ms_rectMap.contains((quintptr)this)){
+			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+		}else{
+			msg.insert("ZoRect", QRect(1, 1, 1, 1));
+			ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
+		}
+		msg.insert("Width", ms_susWnd->width());
+		msg.insert("Height", ms_susWnd->height());
 		ms_susWnd->addWnd(this);
-		ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
 		m_pcbfn(QString("VedioZoom"), msg, m_pUser);
 	}
 
@@ -477,7 +485,8 @@ void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 	//if release point in current window
 	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
 		&& (QWidget*)this != ms_susWnd->getTopWnd() 
-		&& CONNECT_STATUS_CONNECTED == _curState){
+		&& CONNECT_STATUS_CONNECTED == _curState
+		&& !ms_susWnd->isVisible()){
 		ms_susWnd->addWnd(this);
 		ms_susWnd->setDrawRect(drawRect);
 		ms_susWnd->show();
@@ -487,8 +496,11 @@ void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 		msg.insert("SusWnd", (quintptr)ms_susWnd);
 		msg.insert("CurWnd", (quintptr)this);
 		msg.insert("ZoRect", drawRect);
+		msg.insert("Width", ms_susWnd->width());
+		msg.insert("Height", ms_susWnd->height());
 		m_pcbfn(QString("VedioZoom"), msg, m_pUser);
 		ms_rectMap[(quintptr)this] = drawRect;
+		m_bSuspensionVisable = true;
 	}
 }
 
@@ -527,11 +539,13 @@ void RSubView::slCloseSusWnd()
 {
 	m_pcbfn(QString("CloseWnd"), QVariantMap(), m_pUser);
 	ms_rectMap.clear();
+	ms_susWnd->hide();
+	m_bSuspensionVisable = false;
 }
 
 void RSubView::showSusWnd( bool enabled )
 {
-	if (enabled){
+	if (enabled && m_bSuspensionVisable){
 		ms_susWnd->show();
 	}else{
 		ms_susWnd->hide();
@@ -541,7 +555,8 @@ void RSubView::showSusWnd( bool enabled )
 void RSubView::destroySusWnd()
 {
 	if (ms_susWnd){
-		ms_susWnd->close();
+// 		ms_susWnd->close();
+		slCloseSusWnd();
 		delete ms_susWnd;
 		ms_susWnd = NULL;
 	}

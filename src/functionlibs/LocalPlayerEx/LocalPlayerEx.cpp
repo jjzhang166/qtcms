@@ -1095,24 +1095,17 @@ int LocalPlayerEx::execCommand( sqlite3 *pdb, const char* cmd, char*** pppRet, i
 int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &info )
 {
 	if ("CloseWnd" == msgName){
-// 		for (int index = 0; index < m_wndList.size(); ++index){
-// 			QWidget *pWnd = (QWidget*)m_wndList[index];
-// 			QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
-// 			if (iter == m_wndMap.end()){
-// 				continue;
-// 			}
-// 			(*iter)->setZoomRect(QRect(1, 1, 1, 1));
-// 			(*iter)->setOriginRect(QRect(1, 1, 1, 1));
-// 			(*iter)->removeWnd(QString::number((quintptr)pWnd));
-// 		}
 		if (m_wndList.isEmpty()){
 			return 1;
 		}
-		QWidget *pWnd = m_wndList.last();
-		QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
-		if (iter != m_wndMap.end()){
-			(*iter)->setOriginRect(QRect(1, 1, 1, 1));
+		for (int index = 0; index < m_wndList.size(); ++index){
+			QWidget *pWnd = (QWidget*)m_wndList[index];
+			QMap<QWidget*, PlayMgr*>::iterator iter = m_wndMap.find(pWnd);
+			if (iter == m_wndMap.end()){
+				continue;
+			}
 			(*iter)->setZoomRect(QRect(1, 1, 1, 1), 0, 0);
+			(*iter)->setOriginRect(QRect(1, 1, 1, 1));
 			(*iter)->removeWnd(QString::number((quintptr)pWnd));
 		}
 		m_wndList.clear();
@@ -1150,9 +1143,7 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 			m_wndList.append(pWnd);
 			playMgr->addWnd(m_susWnd, wnd.toString());
 		}
-		if (info.contains("ZoRect")){
-			playMgr->setZoomRect(info["ZoRect"].toRect(), info["Width"].toInt(), info["Height"].toInt());
-		}
+		playMgr->setZoomRect(info["ZoRect"].toRect(), info["Width"].toInt(), info["Height"].toInt());
 	}else if ("ZoomRect" == msgName){
 		playMgr->setZoomRect(info["ZoRect"].toRect(), info["Width"].toInt(), info["Height"].toInt());
 	}else if ("RectToOrigion" == msgName){

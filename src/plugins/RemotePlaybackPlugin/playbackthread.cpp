@@ -575,22 +575,15 @@ bool PlayBackThread::getPlayInterface( QWidget* pwnd, void** playInterface )
 int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 {
 	if ("CloseWnd" == evName){
-// 		for (int index = 0; index < m_zoomWndList.size(); ++index){
-// 			QWidget *pWnd = (QWidget *)m_zoomWndList[index];
-// 			PlayManager *playMgr = NULL;
-// 			if (!getPlayInterface(pWnd, (void**)&playMgr)){
-// 				continue;
-// 			}
-// 			playMgr->setZoomRect(pWnd->rect());
-// 			playMgr->setOriginRect(QRect(0, 0, 0, 0));
-// 			playMgr->removeWnd(QString::number((quintptr)pWnd));
-// 		}
 		if (m_zoomWndList.isEmpty()){
 			return 1;
 		}
-		QWidget* pWnd = m_zoomWndList.last();
-		PlayManager *playMgr = NULL;
-		if (getPlayInterface(pWnd, (void**)&playMgr)){
+		for (int index = 0; index < m_zoomWndList.size(); ++index){
+			QWidget *pWnd = (QWidget *)m_zoomWndList[index];
+			PlayManager *playMgr = NULL;
+			if (!getPlayInterface(pWnd, (void**)&playMgr)){
+				continue;
+			}
 			playMgr->setZoomRect(QRect(1, 1, 1, 1), 0, 0);
 			playMgr->setOriginRect(QRect(1, 1, 1, 1));
 			playMgr->removeWnd(QString::number((quintptr)pWnd));
@@ -613,7 +606,7 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 			}
 			lastWnd = m_zoomWndList.last();
 			getPlayInterface(lastWnd, (void**)&lastPlayMgr);
-			lastPlayMgr->setOriginRect(QRect(0, 0, 0, 0));
+			lastPlayMgr->setOriginRect(QRect(1, 1, 1, 1));
 			lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
 			playMgr->addWnd(m_susWnd, wnd.toString());
 
@@ -623,7 +616,7 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 			if (!m_zoomWndList.isEmpty()){
 				lastWnd = m_zoomWndList.last();
 				getPlayInterface(lastWnd, (void**)&lastPlayMgr);
-				lastPlayMgr->setOriginRect(QRect(0, 0, 0, 0));
+				lastPlayMgr->setOriginRect(QRect(1, 1, 1, 1));
 				lastPlayMgr->removeWnd(QString::number((quintptr)lastWnd));
 			}
 			m_zoomWndList.append(pWnd);

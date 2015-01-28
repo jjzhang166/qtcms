@@ -67,7 +67,7 @@ bIsHide(false)
 
 RPlaybackWnd::~RPlaybackWnd()
 {
-	RSubView::destroySusWnd();
+	m_PlaybackWnd[0].destroySusWnd();
  	if (m_DivMode != NULL)
  	{
  		m_DivMode->Release();

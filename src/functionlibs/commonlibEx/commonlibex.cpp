@@ -2817,7 +2817,7 @@ int commonlibEx::addUser( const QString &sUserName,const QString &sPassword,quin
 				while(it!=tSubCode.constEnd()){
 					QString sMainSingleCode=it.key();
 					QString sSubCode=it.value().toString();
-					sCmd=QString("insert into user_sub_limit(userName,mainSingleCode,subCode) values ('%1','%2','%3')").arg(sUserName).arg(sMainSingleCode.toUInt()).arg(sSubCode.toUInt());
+					sCmd=QString("insert into user_sub_limit(userName,mainSingleCode,subCode) values ('%1','%2','%3')").arg(sUserName).arg(sMainSingleCode.toULongLong()).arg(sSubCode.toUInt());
 					if (_query.exec(sCmd))
 					{
 						//keep going

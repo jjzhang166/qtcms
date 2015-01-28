@@ -54,7 +54,7 @@ public:
 	void recMsg(QVariantMap msg);
 
 	static void showSusWnd(bool enabled);
-	static void destroySusWnd();
+	void destroySusWnd();
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
@@ -80,6 +80,7 @@ private:
 	static bool m_bGlobalAudioStatus;
 	static SuspensionWnd *ms_susWnd;
 	static QMap<quintptr, QRect> ms_rectMap;
+	static bool m_bSuspensionVisable;
 
 	IDeviceGroupRemotePlayback* m_pRemotePlayBack;
 
