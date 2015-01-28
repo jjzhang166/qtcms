@@ -806,6 +806,25 @@ var oPlayBack={},  // 远程回访控件对象
 			searchAgain = 1;//正在搜索时是否再次点击搜索按钮
 			return;
 		}
+		
+		$('#checkarea').css({
+					 'display':'none',
+					 'left':0,
+					 'top':0,
+					 'width':0,
+				});
+			$('#timebar1').css({
+			   'title':'00:00:00',
+			   'left':$('#windowFile td.no_border').width()
+			})
+			$('#timebar2').css({
+			   'title':'23:59:59',
+			   'left':$('#windowFile tr').width()
+			})
+			initial_x=0;
+			finish_x=progresswidth;
+			total_width = finish_x-initial_x;
+			
 		$('.search_result :checkbox').prop('checked',false);
 		$('#file_warp').removeAttr('b');
 		usedUid = [];
@@ -824,6 +843,7 @@ var oPlayBack={},  // 远程回访控件对象
 			localobj.removeAttr('title');
 			
 			addcanvas();
+			
 		}else{
 			var obj =$('#search_resultFile tr');
 			if(obj.length != 0){
