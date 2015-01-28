@@ -232,6 +232,7 @@ int CDDrawRenderObject::setRenderWnd( HWND wnd )
 	return 0;
 }
 
+
 int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidth,int nHeight,int nYStride,int nUVStride,int lineStride )
 {
 	unsigned int i;
@@ -258,7 +259,6 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 	{
 		if (0 != init(nWidth,nHeight))
 		{
-			m_csOffScreenSurface.Unlock();
 			return -1;
 		}
 	}
@@ -464,8 +464,6 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
-					hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);	
-					checkHr(hr);
 					m_csOffOsdScreenSurface.Lock();
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
@@ -510,8 +508,6 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 				g_pClipper->SetHWnd(NULL,m_hPlayWnd);
 				if (::IsWindowVisible(m_hPlayWnd))
 				{
-					hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
-					checkHr(hr);
 					m_csOffOsdScreenSurface.Lock();
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
@@ -766,6 +762,7 @@ void CDDrawRenderObject::checkHr( HRESULT hr )
 		}
 	}
 }
+
 
 
 
