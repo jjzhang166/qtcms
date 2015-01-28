@@ -205,7 +205,9 @@ var oPlayBack={},  // 远程回访控件对象
 		
 		$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
 		   var action = $(this).attr('class').split(' ')[0];
-		    addMouseStyleByLimit($(this),action,1<<4);
+		   var uicode = bool?1<<10:1<<4;
+		   console.log(uicode+ ' '+ bool);
+		    addMouseStyleByLimit($(this),action,uicode);
 	    })
 	})///
 
@@ -731,8 +733,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份状态改变回调函数
     function BackupLocalStatusChange(data){
-		//console.log('-----BackupLocalStatusChange-----');
-		//console.log(data);//1：备份任务开始，2：备份任务停止
+		console.log('-----BackupLocalStatusChange-----');
+		console.log(data);//1：备份任务开始，2：备份任务停止
 		
 	  if(data.types=='1'){	 
 	     $('#windowFile tr[id]').each(function(){
@@ -760,8 +762,8 @@ var oPlayBack={},  // 远程回访控件对象
 	}
 	//本地备份进度条回调函数
 	function BackupLocalprogressCallback(data){
-		//console.log('-----BackupLocalprogressCallback-----');
-		//console.log(data);//"nChannel"、"Progress"
+		console.log('-----BackupLocalprogressCallback-----');
+		console.log(data);//"nChannel"、"Progress"
 		var num  = data.nChannel;
 		var id = 'progress'+num;
 		var canvas = document.getElementById(id);
@@ -1064,22 +1066,28 @@ function lock(){
 function progressLayerRect(ctx, x, y, width, height) {
 	  ctx.save();
 	   
-	  ctx.fillStyle = 'rgba(170,170,170,0.2)';
+	  ctx.fillStyle = 'rgba(216,213,213,0.40)';
 	  ctx.fillRect(x,0, width, height);
 
-	  var lingrad = ctx.createLinearGradient(0,height,0,0);
+	  /*var lingrad = ctx.createLinearGradient(0,height,0,0);
 	  lingrad.addColorStop(0, 'rgba(255,255,255, 0.1)');
 	  lingrad.addColorStop(0.4, 'rgba(255,255,255, 0.3)');
 	  lingrad.addColorStop(1, 'rgba(255,255,255,0.2)');
 	  ctx.fillStyle = lingrad;
 	  ctx.fillRect( x,0, width, height);
-
+*/
 	  ctx.restore();
 }
 function progressBarRect(ctx,x, finish_x,iprogress, height, width) {
 	  ctx.save();
 	   
-	  ctx.fillStyle = 'rgba(170,170,170,0.5)';
+	 // ctx.fillStyle = 'rgba(170,170,170,0.5)';
+	 
+	  var lingrad = ctx.createLinearGradient(0,height,0,0);
+	  lingrad.addColorStop(0, 'rgba(187,188,193, 0.6)');
+	  lingrad.addColorStop(0.4, 'rgba(246,244,245, 0.6)');
+	  lingrad.addColorStop(1, 'rgba(187,188,193,0.6)');
+	  ctx.fillStyle = lingrad;
 	
 	  ctx.fillRect(x,0,iprogress/100*width, height);
 
@@ -1088,7 +1096,7 @@ function progressBarRect(ctx,x, finish_x,iprogress, height, width) {
 
 function progressText(ctx, x, y, iprogress, height, max1) {
 	  ctx.save();
-	  ctx.fillStyle = '#FF0';
+	  ctx.fillStyle = '#fff';
 	  var text = iprogress+"%";
 	  var text_width = ctx.measureText(text).width;
 	  var text_x = x+(max1-text_width)/2;
@@ -1116,7 +1124,16 @@ function draw(context,initial_x,finish_x,total_width,total_height,iprogress){
 		
 		progressLayerRect(context, initial_x, finish_x, total_width, total_height);
 		progressBarRect(context, initial_x, finish_x, iprogress, total_height, total_width);
-		progressText(context, initial_x, finish_x, iprogress, total_height, total_width );
+		var tdwidth = $('#windowFile td').not('.no_border').width();
+		if(total_width< tdwidth){
+			if(width-finish_x >=tdwidth){
+				progressText(context, initial_x+tdwidth, finish_x, iprogress, total_height, total_width );
+			}else if(width - finish_x  <tdwidth && initial_x>tdwidth){
+				progressText(context, initial_x-tdwidth, finish_x, iprogress, total_height, total_width );
+			}
+		}else{
+		   progressText(context, initial_x, finish_x, iprogress, total_height, total_width );
+		}
 		
 }
 function clearAllprogress(){
