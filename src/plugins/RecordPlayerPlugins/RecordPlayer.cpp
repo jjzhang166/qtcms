@@ -47,6 +47,7 @@ m_CurStatus(STATUS_STOP)
 		m_subRecPlayerView[i].setParent(this);
 		connect(&m_subRecPlayerView[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_subRecPlayerView[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_subRecPlayerView[i],SIGNAL(sigValidateFail(QVariantMap)), this, SLOT(slValidateFail(QVariantMap)));
 		m_lstRecordPlayerWndList.insert(i,&m_subRecPlayerView[i]);
 
 		m_subRecPlayerView[i].setLocalPlayer(m_pLocalPlayer);
@@ -358,6 +359,7 @@ int RecordPlayer::GroupStop()
 	}
 	m_CurStatus=STATUS_STOP;
 	RecordPlayerView::setPlayStatus(m_CurStatus);
+	m_subRecPlayerView[0].closeSuspensionWnd();
 
 	//clear up residual picture when stop
 	for (int i = 0; i < ARRAY_SIZE(m_subRecPlayerView); i++)
@@ -851,4 +853,9 @@ void RecordPlayer::loadlanguage()
 
 	// load language file
 	m_translator.load(sFileName,sLanguageConfigPath);
+}
+
+void RecordPlayer::slValidateFail( QVariantMap vmap )
+{
+	EventProcCall(QString("Validation"), vmap);
 }

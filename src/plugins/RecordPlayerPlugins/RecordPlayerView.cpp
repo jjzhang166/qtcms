@@ -6,6 +6,7 @@
 #include "guid.h"
 #include "IVideoDisplayOption.h"
 #include "ICommunicate.h"
+#include "IUserManagerEx.h"
 #include <QApplication>
 #include <QDomDocument>
 
@@ -123,7 +124,7 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	m_bPressed = true;
 	m_pressPoint = ev->pos();
 
-	if (/*ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd() &&*/ ms_susWnd->isVisible()){
+	if (ms_susWnd && ms_susWnd->isVisible()){
 		//notify play module current window need to zoom
 		ICommunicate *pCom = NULL;
 		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
@@ -242,9 +243,9 @@ void RecordPlayerView::changeEvent( QEvent * )
 	if (NULL != m_pWindowsStretchAction)
 	{
 		m_pWindowsStretchAction->setText(tr("Suit For Window"));
-		if (ms_susWnd){
-			ms_susWnd->setWindowTitle(tr("Zoom"));
-		}
+	}
+	if (ms_susWnd){
+		ms_susWnd->setWindowTitle(tr("Zoom"));
 	}
 }
 
@@ -254,11 +255,25 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 	QRect drawRect(m_pressPoint, ev->pos());
 	m_bPressed = false;
 
+	if (drawRect.width()*drawRect.height() < 1000){
+		clearOriginRect();
+		return;
+	}
 	//if release point in current window
 	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
 		&& (QWidget*)this != ms_susWnd->getTopWnd() 
 		&& ms_playStatus < 4 && m_bPlaying
 		&& !ms_susWnd->isVisible()){
+		//validation
+		if (verify(100, 0)){
+			clearOriginRect();
+			return;
+		}
+		//Coordinate Conversion
+		float widthRate = (float)ms_susWnd->width()/this->width();
+		float heightRate = (float)ms_susWnd->height()/this->height();
+		drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+
 		ms_susWnd->addWnd(this);
 		ms_susWnd->setDrawRect(drawRect);
 		ms_susWnd->show();
@@ -311,7 +326,7 @@ void RecordPlayerView::mouseMoveEvent( QMouseEvent *ev )
 {
 	QRect mainRect = this->rect();
 	QRect drawRect(m_pressPoint, ev->pos());
-	if (m_bPressed && mainRect.contains(drawRect) && drawRect.width()*drawRect.height()/1000 && ms_playStatus < 4 && m_bPlaying){
+	if (m_bPressed && mainRect.contains(drawRect) /*&& drawRect.width()*drawRect.height()/1000*/ && ms_playStatus < 4 && m_bPlaying){
 		//notify play module current window need to zoom
 		if (m_pLocalPlayer){
 			ICommunicate *pCom = NULL;
@@ -356,6 +371,47 @@ void RecordPlayerView::destroySusWnd()
 		slCloseSusWnd();
 		delete ms_susWnd;
 		ms_susWnd = NULL;
+	}
+}
+
+void RecordPlayerView::closeSuspensionWnd()
+{
+	if (ms_susWnd){
+		ms_susWnd->close();
+	}
+}
+
+bool RecordPlayerView::verify( quint64 mainCode, quint64 subCode )
+{
+	int ret = -1;
+	IUserManagerEx *pUserMgr = NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void **)&pUserMgr);
+	if (pUserMgr){
+		ret = pUserMgr->checkUserLimit(mainCode, subCode);
+		if (ret){
+			QVariantMap vmap;
+			vmap.insert("MainPermissionCode", qint64(mainCode));
+			vmap.insert("SubPermissionCode", qint64(subCode));
+			vmap.insert("ErrorCode", ret);
+			emit sigValidateFail(vmap);
+		}
+		pUserMgr->Release();
+	}
+	return ret;
+}
+
+void RecordPlayerView::clearOriginRect()
+{
+	if (m_pLocalPlayer){
+		ICommunicate *pCom = NULL;
+		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+		if (pCom){
+			QVariantMap msg;
+			msg.insert("CurWnd", (quintptr)this);
+			msg.insert("ZoRect", QRect(1, 1, 1, 1));
+			pCom->setInfromation(QString("RectToOrigion"), msg);
+			pCom->Release();
+		}
 	}
 }
 

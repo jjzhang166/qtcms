@@ -87,7 +87,7 @@ public slots:
 	QVariantMap ScreenShot();
 	int GetCurrentState();
 	void sndToUI(int wnd, QVariantMap evMap);
-
+	void slValidateFail(QVariantMap vmap);
 private slots:
 	void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
 	void  SetCurrentWind(QWidget *);

@@ -69,9 +69,20 @@
       <source>Suit For Window</source>
       <translation>视频适应窗口比例</translation>
     </message>
+	<message>
+      <source>Zoom</source>
+      <translation>电子放大</translation>
+    </message>
   </context>
   <context>
     <name>DigitalZoomView</name>
+    <message>
+      <source>Zoom</source>
+      <translation>电子放大</translation>
+    </message>
+  </context>
+  <context>
+    <name>rSubview</name>
     <message>
       <source>Zoom</source>
       <translation>电子放大</translation>

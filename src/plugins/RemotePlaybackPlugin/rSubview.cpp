@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <guid.h>
 #include "rSubview.h"
+#include "IUserManagerEx.h"
 #include <QTime>
 
 bool RSubView::m_bGlobalAudioStatus = false;
@@ -482,11 +483,25 @@ void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 	QRect drawRect(m_pressPoint, ev->pos());
 	m_bPressed = false;
 
+	if (drawRect.width()*drawRect.height() < 1000){
+		clearOriginRect();
+		return;
+	}
 	//if release point in current window
 	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
 		&& (QWidget*)this != ms_susWnd->getTopWnd() 
 		&& CONNECT_STATUS_CONNECTED == _curState
 		&& !ms_susWnd->isVisible()){
+		//validation
+		if (verify(100, 0)){
+			clearOriginRect();
+			return;
+		}
+		//Coordinate Conversion
+		float widthRate = (float)ms_susWnd->width()/this->width();
+		float heightRate = (float)ms_susWnd->height()/this->height();
+		drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+
 		ms_susWnd->addWnd(this);
 		ms_susWnd->setDrawRect(drawRect);
 		ms_susWnd->show();
@@ -502,6 +517,7 @@ void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 		ms_rectMap[(quintptr)this] = drawRect;
 		m_bSuspensionVisable = true;
 	}
+
 }
 
 void RSubView::setCbpfn( pfnCb cbPro, void* pUser )
@@ -559,6 +575,42 @@ void RSubView::destroySusWnd()
 		slCloseSusWnd();
 		delete ms_susWnd;
 		ms_susWnd = NULL;
+	}
+}
+
+void RSubView::changeEvent( QEvent *ev )
+{
+	if (ms_susWnd && QEvent::LanguageChange == ev->type()){
+		ms_susWnd->setWindowTitle(tr("Zoom"));
+	}
+}
+
+bool RSubView::verify( quint64 mainCode, quint64 subCode )
+{
+	int ret = -1;
+	IUserManagerEx *pUserMgr = NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IUserMangerEx,(void **)&pUserMgr);
+	if (pUserMgr){
+		ret = pUserMgr->checkUserLimit(mainCode, subCode);
+		if (ret){
+			QVariantMap vmap;
+			vmap.insert("MainPermissionCode", qint64(mainCode));
+			vmap.insert("SubPermissionCode", qint64(subCode));
+			vmap.insert("ErrorCode", ret);
+			emit sigValidateFail(vmap);
+		}
+		pUserMgr->Release();
+	}
+	return ret;
+}
+
+void RSubView::clearOriginRect()
+{
+	if (m_pcbfn && m_pUser){
+		QVariantMap msg;
+		msg.insert("CurWnd", (quintptr)this);
+		msg.insert("ZoRect", QRect(1, 1, 1, 1));
+		m_pcbfn(QString("RectToOrigion"), msg, m_pUser);
 	}
 }
 

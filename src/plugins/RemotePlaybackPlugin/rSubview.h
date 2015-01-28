@@ -35,6 +35,7 @@ public:
 	virtual void mouseReleaseEvent(QMouseEvent *);
 	virtual void mouseMoveEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
+	virtual void changeEvent(QEvent *);
 	QVariantMap ScreenShot();
 
 	enum __enConnectStatus{
@@ -62,6 +63,8 @@ signals:
 	void connecttingUpdateSig();
 	void CacheStateSig(QVariantMap evMap);
 	
+	void sigValidateFail(QVariantMap vmap);
+
 public:    
 	Ui::titleview * ui;
 	IDeviceClient *m_LpClient;
@@ -100,6 +103,8 @@ private:
 	void paintEventConnecting( QPaintEvent * );
 	void paintEventCache(QPaintEvent *);
 	void _cacheLableShow();
+	bool verify(quint64 mainCode, quint64 subCode);
+	void clearOriginRect();
 };
 
 

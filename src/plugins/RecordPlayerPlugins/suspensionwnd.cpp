@@ -17,6 +17,7 @@ SuspensionWnd::SuspensionWnd(QWidget *parent)
 	QString PixPath = sAppPath + image;
 	QIcon tWindowIcon(PixPath);
 	this->setWindowIcon(tWindowIcon);
+	this->resize(704, 322);
 }
 
 SuspensionWnd::~SuspensionWnd()
@@ -41,7 +42,12 @@ void SuspensionWnd::mouseReleaseEvent( QMouseEvent *ev )
 	if (m_pressPoint != releasePoint && !m_posInRect && m_cbFunc && m_puser){
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
-		msg.insert("ZoRect", QRect(m_pressPoint, releasePoint));
+		QRect rect(m_pressPoint, releasePoint);
+		if (rect.width()*rect.height()/1000){
+			msg.insert("ZoRect", rect);
+		}else{
+			msg.insert("ZoRect", QRect(1, 1, 1, 1));
+		}
 		msg.insert("Width", this->width());
 		msg.insert("Height", this->height());
 		msg.insert("CurWnd", (quintptr)m_wndList.last());
@@ -78,14 +84,6 @@ void SuspensionWnd::setCbFunc( callbackFc pfunc, void* puser )
 
 void SuspensionWnd::mouseMoveEvent( QMouseEvent *ev )
 {
-	//if rect is too small, return
-	if (!m_posInRect){
-		QRect rect(m_pressPoint, ev->pos());
-		if (rect.width()*rect.height() < 1000){
-			return;
-		}
-	}
-
 	if (m_cbFunc && m_puser){
 		m_drawRect.translate(ev->pos() - m_lastMovePos);
 		QVariantMap msg;

@@ -11,6 +11,7 @@
 #include <IDeviceConnection.h>
 #include "rPlaybackWnd.h"
 #include "RemotePlaybackPlugin_global.h"
+#include "ILocalSetting.h"
 #include <QRegExp>
 
 RPlaybackWnd::RPlaybackWnd(QWidget *parent)
@@ -63,6 +64,8 @@ bIsHide(false)
 	connect(&m_rplaybackrun,SIGNAL(StateChangeToUiS(QVariantMap)), this, SLOT(StateChangeToUislot(QVariantMap)));
 //  	connect(this,SIGNAL(SocketErrorToUiS(QVariantMap)),this,SLOT(SocketErrorToUislot(QVariantMap)));
 //  	connect(&m_rplaybackrun,SIGNAL(CacheStateToUiS(QVariantMap)),this,SLOT(CacheStateToUislot(QVariantMap)));
+
+	QApplication::installTranslator(&m_translator);
 }
 
 RPlaybackWnd::~RPlaybackWnd()
@@ -528,6 +531,7 @@ void RPlaybackWnd::showEvent( QShowEvent * )
 		GroupStop();
 	}
 	
+	loadLauguage();
 }
 
 QVariantMap RPlaybackWnd::ScreenShot()
@@ -657,6 +661,45 @@ void RPlaybackWnd::RecFileSearchFail( QVariantMap evMap )
 {
 	emit FileSearchFailToUiS(evMap);
 }
+
+void RPlaybackWnd::loadLauguage()
+{
+	// Get language description from system
+	QString sLang;
+	ILocalSetting * pi = NULL;
+	pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ILocalSetting,(void **)&pi);
+	if (NULL != pi){
+		sLang = pi->getLanguage();
+		pi->Release();
+	}else{
+		sLang = QString("en_GB");
+	}
+
+	// Get language file pathname
+	QString sLanguageConfigPath(QCoreApplication::applicationDirPath() + QString("/LocalSetting"));
+	QString sLanguageConfigFile(sLanguageConfigPath + QString("/language.xml"));
+	QDomDocument confFile;
+	QFile *file = new QFile(sLanguageConfigFile);
+	file->open(QIODevice::ReadOnly);
+	confFile.setContent(file);
+	QDomNode clsidNode = confFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList itemList = clsidNode.childNodes();
+	QString sFileName="en_GB";
+	for (int i = 0; i < itemList.count(); i++){
+		QDomNode item = itemList.at(i);
+		QString slanguage = item.toElement().attribute("name");
+		if(slanguage == sLang){
+			sFileName =item.toElement().attribute("file");
+			break;
+		}
+	}
+	file->close();
+	delete file;
+
+	// load language file
+	m_translator.load(sFileName,sLanguageConfigPath);
+}
+
 /*
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
  {

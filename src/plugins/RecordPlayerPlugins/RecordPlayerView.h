@@ -34,6 +34,7 @@ public:
 	void SetFocus(bool flags);
 	void recMsg(QVariantMap msg);
 	void setPlayingFlag(bool bPlaying);
+	void closeSuspensionWnd();
 
 	static void setPlayStatus(int status);
 	static void showSusWnd(bool enabled);
@@ -41,14 +42,15 @@ public:
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);
-
+	void sigValidateFail(QVariantMap vmap);
 public slots:
 	void slSuitForWindow(bool checked);
 	void slCloseSusWnd();
 protected:
 	virtual void changeEvent( QEvent * );
-
-	
+private:
+	bool verify(quint64 mainCode, quint64 subCode);
+	void clearOriginRect();
 private:
 	static bool m_bGlobalAudioStatus;
 	static SuspensionWnd *ms_susWnd;

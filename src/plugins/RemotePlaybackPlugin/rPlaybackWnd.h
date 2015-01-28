@@ -15,6 +15,7 @@
 #include "playbackthread.h"
 #include <QTimer>
 #include <QTime>
+#include <QTranslator>
 
 void cbDigitalZoom(QString evName, QVariantMap item, void* pUser);
 
@@ -123,7 +124,11 @@ public:
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
-
+private:
+	int  cbInit();
+// 	int GetDeviceInfo(int chlId);
+	bool ChlIsExit(int chlId);
+	void loadLauguage();
 private:
 	RSubView         m_PlaybackWnd[4];
 	IWindowDivMode * m_DivMode;
@@ -155,13 +160,11 @@ private:
 	RemotePlayBackStatus m_CurStatus;
 	RemotePlayBackStatus m_lastStatus;
 	PlayBackThread m_rplaybackrun;
-	private:
-	int  cbInit();
-// 	int GetDeviceInfo(int chlId);
-	bool ChlIsExit(int chlId);
 	int fileTotal;
 	QString fileKey;
 	QVariantMap fileMap;
+
+	QTranslator m_translator;
 };
 
 
