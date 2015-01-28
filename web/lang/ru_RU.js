@@ -487,4 +487,10 @@
 	'error_userpwd':'Пожалуйста, введите правильный формат пароль',
 	'Local_Backup':'Local backup',//Not yet translated
 	'Remote_Backup':'Remote backup',//Not yet translated
+	
+	 //备份
+	 'Being_backed_up':'Будучи резервное копирование',
+	 'Please_select_window':'Нет окно выбора',
+	 'Please_select_backup_file':'Не выбирайте файл',
+	 'Wrong_time_period':'Неудачное время',
 }

@@ -484,5 +484,10 @@
 	'error_userpwd':'请输入正确格式的密码',
 	'Local_Backup':'本地备份',
 	'Remote_Backup':'远程备份',
+     //备份
+	 'Being_backed_up':'正在备份',
+	 'Please_select_window':'没有选择窗口',
+	 'Please_select_backup_file':'没有选择文件',
+	 'Wrong_time_period':'错误的时间段！',
 	
 }

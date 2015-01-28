@@ -550,12 +550,14 @@ var oPlayBack={},  // 远程回访控件对象
 	function getDir(){
 		
 		if(!backupFlag){
+			showTips(_T('Being_backed_up'));
 		    return;	
 		 }
 		if(bool){
 			if($('#windowFile input:checked').length == 0 ){
+				showTips(_T('Please_select_window'));
 			   return;
-		   }
+		     }
 		    var timebar1 = $('#timebar1').attr('title'); 
 			var timebar2 = $('#timebar2').attr('title');
 			var begintime = time2Sec(timebar1)> time2Sec(timebar2) ? timebar2 :  timebar1 ;
@@ -581,9 +583,12 @@ var oPlayBack={},  // 远程回访控件对象
 			//console.log("chl:"+chl);
 			
 			oBackupLocal.startLocalFileBackUp(type,chl.toString(2),begintime,endtime);
-		 }
+		  }else{
+			  showTips(_T('Wrong_time_period'));
+			}
 		}else{
 		   if($('#search_resultFile input:checked').length == 0){
+			   showTips(_T('Please_select_backup_file'));
 			return;
 		   }
 		  oBackup.ChooseDir();
@@ -783,12 +788,14 @@ var oPlayBack={},  // 远程回访控件对象
 		  now=0;
 		  $('#search_result input:checked').prop('checked',false);
 		}
+		showTips(_T('Stop_backup'));
 	}
 
 	function backupSearchFile(){
 		//console.log('~~~~~~~~~~~~~~~~~~~~当前搜索状态:'+searchSTOP+'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 		//bool = 0;
 		if(!backupFlag){
+			showTips(_T('Being_backed_up'));
 			return;
 		}
 		if(searchSTOP){
@@ -936,6 +943,7 @@ var oPlayBack={},  // 远程回访控件对象
 			  var target = $(this),
 			   minL =target.find('td.no_border').width();
 			   $('<div class="progress" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:2;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="progress'+index+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);  
+		      target.find('input').prop('checked',true);
 		 }
 	  });
 	  $('#windowFile tr').not('[id]').find('input').prop('disabled',true);
@@ -957,7 +965,15 @@ var oPlayBack={},  // 远程回访控件对象
 		})
 		oCheckbox.prop('checked',b);
 	}
-
+  function showTips(str){
+	  $('#fileRec').hide();
+	  $('#showTips p').html(str).css('color','red');
+		 $('#showTips').show();
+		 var timer = setTimeout(function(){
+			  $('#showTips').fadeOut(1500);
+			  clearTimeout(timer);
+			 },1500);
+   }
 	function selectPage(num,oSel){
 		$(oSel).addClass('sel').siblings('span').removeClass('sel');
 		var obj =$('#search_resultFile tr');

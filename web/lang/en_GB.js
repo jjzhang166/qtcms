@@ -486,4 +486,10 @@
 	'error_userpwd':'Please enter the correct password format',
 	'Local_Backup':'Local backup',
 	'Remote_Backup':'Remote backup',
+	
+	 //备份
+	 'Being_backed_up':'Being backed up',
+	 'Please_select_window':'No selection window',
+	 'Please_select_backup_file':'Do not select a file',
+	 'Wrong_time_period':'Wrong time period',
 }
