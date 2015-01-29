@@ -5,6 +5,7 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QTextCodec>
+#include <QtCore/qmath.h>
 
 #include <QDebug>
 
@@ -34,6 +35,45 @@ LocalBackThread::~LocalBackThread()
 	if (isRunning()){
 		m_bStop = true;
 		wait();
+	}
+	QMap<QString, sqlite3*>::iterator it = m_sqlMap.begin();
+	while (it != m_sqlMap.end())
+	{
+		sqlite3_close(*it++);
+	}
+	m_sqlMap.clear();
+}
+
+sqlite3* LocalBackThread::initDataBase(char *dbPath)
+{
+	if (!m_sqlMap.contains(QString(dbPath))){
+		sqlite3 *pdb = NULL;
+		int ret = sqlite3_open(dbPath, &pdb);
+		if (ret != SQLITE_OK){
+			return NULL;
+		}else{
+			//check if database has a table
+			char **ppDbRet = NULL;
+			int nRow = 0, nColumn = 0;
+			sqlite3_get_table(pdb, "select count(*) from sqlite_master where type='table';", &ppDbRet, &nRow, &nColumn, NULL);
+			if (!ppDbRet){
+				qDebug()<<__FUNCTION__<<__LINE__<<"check table error in "<<dbPath;
+				sqlite3_close(pdb);
+				return NULL;
+			}
+			if (!strcmp(ppDbRet[nColumn], "0")){
+				qDebug()<<__FUNCTION__<<__LINE__<<"no table: search_record in"<<dbPath;
+				sqlite3_free_table(ppDbRet);
+				sqlite3_close(pdb);
+				return NULL;
+			}
+
+			sqlite3_free_table(ppDbRet);
+			m_sqlMap.insert(QString(dbPath), pdb);
+			return pdb;
+		}
+	}else{
+		return m_sqlMap.value(QString(dbPath));
 	}
 }
 
@@ -258,8 +298,9 @@ void LocalBackThread::run()
 					if (iter->progress < curProgress){
 						iter->progress = curProgress;
 						SEND_PROGRESS(item, iter.key(), curProgress);
+						sleepEx(10);
 
-						qDebug()<<"wnd:"<<iter.key()<<" progress: "<<curProgress;
+// 						qDebug()<<"wnd:"<<iter.key()<<" progress: "<<curProgress;
 					}
 				}
 				//get next frame
@@ -290,6 +331,7 @@ void LocalBackThread::run()
 				FdIterator it = m_chlFdMap.begin();
 				while (it != m_chlFdMap.end()){
 					if (!it->fd){
+						++it;
 						continue;
 					}
 					AVI_set_video(it->fd, it->width, it->height, countPts(it->ptsCountMap), "X264");
@@ -467,17 +509,29 @@ int LocalBackThread::countPts( QMap<int,int> ptsMap )
 void LocalBackThread::lockFile( QString fileName, bool locked )
 {
 	QString dbPath = fileName.left(2) + "/recEx/record.db";
-	sqlite3 *pdb = NULL;
-	int ret = sqlite3_open(dbPath.toLatin1().data(), &pdb);
-	if (SQLITE_OK != ret){
+	sqlite3 *pdb = initDataBase(dbPath.toLatin1().data());
+	if (!pdb){
 		qDebug()<<"open database "<<dbPath<<" fail";
 		return;
 	}
-	QString cmd = QString("update RecordFileStatus set nLock=%1 where sFilePath='%2';").arg(locked).arg(fileName);
-	char *pErr = NULL;
-	ret = sqlite3_exec(pdb, cmd.toLatin1().data(), NULL, NULL, &pErr);
-	if (SQLITE_OK != ret){
-		qDebug()<<"update RecordFileStatus error: "<<pErr;
+
+	QRegExp rx("(\\d+)");
+	int mi = 3, fileNum = 0, pos = 0;
+	while ((pos = rx.indexIn(fileName, pos)) != -1){
+		fileNum += rx.cap(1).toInt()*qPow(256, mi--);
+		pos += rx.matchedLength();
 	}
-	sqlite3_close(pdb);
+	QString cmd = QString("update RecordFileStatus set nLock=%1 where nFileNum=%2;").arg(locked).arg(fileNum);
+	sqlite3_stmt * stmt = NULL;
+	int ret = sqlite3_prepare_v2(pdb, cmd.toLatin1().data(), -1, &stmt, NULL);
+	if (SQLITE_OK != ret){
+		qDebug()<<"update RecordFileStatus error: ";
+	}
+}
+
+void LocalBackThread::sleepEx( int msec )
+{
+	QEventLoop evloop;
+	QTimer::singleShot(msec,&evloop,SLOT(quit()));
+	evloop.exec();
 }

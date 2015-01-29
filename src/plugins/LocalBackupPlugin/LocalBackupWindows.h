@@ -25,6 +25,7 @@ public slots:
 	void sendToUi(QString evName, QVariantMap item);
 private:
 	LocalBackThread m_backupThread;
+	QString m_lastPath;
 };
 
 #endif //LOCALBACKUPWINDOWS_H

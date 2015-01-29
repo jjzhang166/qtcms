@@ -30,8 +30,11 @@ private:
 	void appendTimePath(QList<TimePath> &tpList, const uint &start, const QString &path, qint32 &insertPos);
 	int countPts(QMap<int,int> ptsMap);
 	void lockFile(QString fileName, bool locked);
+	sqlite3* initDataBase(char *dbPath);
+	void sleepEx(int msec);
 private:
 	QMap<int, FdStatusInfo> m_chlFdMap;
+	QMap<QString, sqlite3*> m_sqlMap;
 	QString m_sDiskList;
 	QString m_sBackupPath;
 	int m_nTypes;
