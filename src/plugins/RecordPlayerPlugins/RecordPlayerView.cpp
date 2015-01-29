@@ -137,8 +137,15 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 // 				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
 // 			}
 			if (ms_rectMap.contains((quintptr)this)){
-				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
-				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+				QRect drawRect = ms_rectMap[(quintptr)this];
+				//Coordinate Conversion
+				float widthRate = (float)ms_susWnd->width()/this->width();
+				float heightRate = (float)ms_susWnd->height()/this->height();
+				drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+				ms_rectMap[(quintptr)this] = drawRect;
+
+				msg.insert("ZoRect", drawRect);
+				ms_susWnd->setDrawRect(drawRect);
 			}else{
 				msg.insert("ZoRect", QRect(1, 1, 1, 1));
 				ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));

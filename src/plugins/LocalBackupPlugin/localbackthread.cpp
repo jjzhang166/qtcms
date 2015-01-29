@@ -317,6 +317,7 @@ void LocalBackThread::run()
 				iter->fd = NULL;
 				iter->fileNum++;
 				iter->fileStatus = EM_NO_CREATED;
+				iter->audioBeSet = false;
 				if (iter->finished){
 					m_chlFdMap.remove(iter.key());
 					steps = EM_READ_BUFF;

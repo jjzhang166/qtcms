@@ -88,6 +88,13 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 		msg.insert("SusWnd", (quintptr)ms_susWnd);
 		msg.insert("CurWnd", (quintptr)this);
 		if (ms_rectMap.contains((quintptr)this)){
+			QRect drawRect = ms_rectMap[(quintptr)this];
+			//Coordinate Conversion
+			float widthRate = (float)ms_susWnd->width()/this->width();
+			float heightRate = (float)ms_susWnd->height()/this->height();
+			drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+			ms_rectMap[(quintptr)this] = drawRect;
+
 			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
 			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
 		}else{
