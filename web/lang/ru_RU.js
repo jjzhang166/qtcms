@@ -492,5 +492,5 @@
 	 'Being_backed_up':'Будучи резервное копирование',
 	 'Please_select_window':'Нет окно выбора',
 	 'Please_select_backup_file':'Не выбирайте файл',
-	 'Wrong_time_period':'Неудачное время',
+	 'Wrong_time_period':'Ошибка Время',
 }

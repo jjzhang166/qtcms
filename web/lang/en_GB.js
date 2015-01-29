@@ -491,5 +491,5 @@
 	 'Being_backed_up':'Being backed up',
 	 'Please_select_window':'No selection window',
 	 'Please_select_backup_file':'Do not select a file',
-	 'Wrong_time_period':'Wrong time period',
+	 'Wrong_time_period':'Time error',
 }

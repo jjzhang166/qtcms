@@ -488,6 +488,6 @@
 	 'Being_backed_up':'正在备份',
 	 'Please_select_window':'没有选择窗口',
 	 'Please_select_backup_file':'没有选择文件',
-	 'Wrong_time_period':'错误的时间段！',
+	 'Wrong_time_period':'时间段错误！',
 	
 }

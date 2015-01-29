@@ -180,7 +180,8 @@ var oPreView,oDiv,autoSearchDev,
 		oPreView.AddEventProc('Authority','Authority(ev)');
 		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
-		oPreView.AddEventProc('Validation','Validationcallback(data)');
+		
+		oPreView.AddEventProc('Validation','PluginLimitcallback(data)');
 		
          autoSearchDev.AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
 		 autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
@@ -220,7 +221,7 @@ var oPreView,oDiv,autoSearchDev,
 		//window.status = '<pageaction SrcUrl="/skins/default/index.html" SrcAct="index" DstUrl="/skins/default/log.html" DstAct="reload"></pageaction>';
 	})///
      function Validationcallback(data){ //id按钮权限验证
-	  //console.log(data);
+	 // console.log(data);
 		if(data.ErrorCode=="1"){
 			//autoSearchDev.showUserLoginUi(336,300);
 		}else if(data.ErrorCode=="2"){
@@ -231,7 +232,18 @@ var oPreView,oDiv,autoSearchDev,
 			},1000);
 		}
 	}
-	
+	function PluginLimitcallback(data){
+	   //console.log(data);
+		if(data.ErrorCode=="1"){
+			autoSearchDev.showUserLoginUi(336,300);
+		}else if(data.ErrorCode=="2"){
+			writeActionLog(_T('no_limit'),errorcolor);
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
+		}	
+	}
 	 
 	function CurrentStateChange(ev){
 		
