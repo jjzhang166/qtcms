@@ -18,6 +18,7 @@ SuspensionWnd::SuspensionWnd(QWidget *parent)
 	QIcon tWindowIcon(PixPath);
 	this->setWindowIcon(tWindowIcon);
 	this->resize(704, 322);
+	this->setWindowTitle(tr("Zoom"));
 }
 
 SuspensionWnd::~SuspensionWnd()
@@ -173,4 +174,18 @@ void SuspensionWnd::paintEvent( QPaintEvent *ev )
 	pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 	//?ид3???
 	p.drawPixmap(rcClient,pix);
+}
+
+void SuspensionWnd::changeEvent( QEvent *ev )
+{
+	if (ev->type()==QEvent::LanguageChange)
+	{
+		//do something
+		translateLanguage();
+	}
+}
+
+void SuspensionWnd::translateLanguage()
+{
+	this->setWindowTitle(tr("Zoom"));
 }

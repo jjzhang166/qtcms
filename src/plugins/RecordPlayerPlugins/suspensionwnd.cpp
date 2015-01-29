@@ -174,3 +174,11 @@ void SuspensionWnd::paintEvent( QPaintEvent *ev )
 	//±³¾°
 	p.drawPixmap(rcClient,pix);
 }
+void SuspensionWnd::changeEvent( QEvent *ev )
+{
+	if (ev->type()==QEvent::LanguageChange)
+	{
+		//do something
+		this->setWindowTitle(tr("Zoom"));
+	}
+}

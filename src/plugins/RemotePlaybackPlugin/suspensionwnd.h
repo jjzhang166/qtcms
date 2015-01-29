@@ -21,6 +21,7 @@ public:
 	void setDrawRect(QRect rect);
 	void setOriginGeog(QRect rect);
 	QWidget* getTopWnd();
+	virtual void changeEvent(QEvent *);
 signals:
 	void sigClose();
 private:
@@ -31,6 +32,7 @@ private:
 	virtual void closeEvent(QCloseEvent *ev);
 	virtual void paintEvent(QPaintEvent *);
 	virtual bool event(QEvent *ev);
+	void translateLanguage();
 private:
 	QPoint m_pressPoint;
 	QList<QWidget*> m_wndList;

@@ -69,9 +69,20 @@
       <source>Suit For Window</source>
       <translation>Pencereye Sığdır</translation>
     </message>
+    <message>
+      <source>Zoom</source>
+      <translation>Elektronik zoom</translation>
+    </message>
   </context>
   <context>
     <name>DigitalZoomView</name>
+    <message>
+      <source>Zoom</source>
+      <translation>Elektronik zoom</translation>
+    </message>
+  </context>
+  <context>
+    <name>SuspensionWnd</name>
     <message>
       <source>Zoom</source>
       <translation>Elektronik zoom</translation>

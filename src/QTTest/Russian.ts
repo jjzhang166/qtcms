@@ -42,9 +42,20 @@
       <source>Suit For Window</source>
       <translation>Костюм для Window</translation>
     </message>
+    <message>
+      <source>Zoom</source>
+      <translation>Электронное увеличение</translation>
+    </message>
   </context>
   <context>
     <name>DigitalZoomView</name>
+    <message>
+      <source>Zoom</source>
+      <translation>Электронное увеличение</translation>
+    </message>
+  </context>
+  <context>
+    <name>SuspensionWnd</name>
     <message>
       <source>Zoom</source>
       <translation>Электронное увеличение</translation>

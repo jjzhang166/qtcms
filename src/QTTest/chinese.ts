@@ -88,4 +88,11 @@
       <translation>电子放大</translation>
     </message>
   </context>
+  <context>
+    <name>SuspensionWnd</name>
+    <message>
+      <source>Zoom</source>
+      <translation>电子放大</translation>
+    </message>
+  </context>
 </TS>
