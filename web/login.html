@@ -84,6 +84,12 @@ $(document).ready(function(){
 	     login.setIsKeepCurrentUserPassWord($('#remember').prop('checked'));	 
 	 	 
 	 });
+	 
+	 $(document).keydown(function(event){
+	  if(event.which==13){
+	     Login();
+	  }
+	 }); 
 	 var login=document.getElementById('atuoSearchDevice');
 	 var data = login.getIsKeepCurrentUserPassWord();
 	if(data){
