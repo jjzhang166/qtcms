@@ -468,6 +468,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
 					{
+						checkHr(hr);
 						hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
 						checkHr(hr);
 					}else{
@@ -512,6 +513,7 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 					hr=m_pOffOsdScreenSurface->Blt(&rcSrc,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,NULL);
 					if (DD_OK!=hr)
 					{
+						checkHr(hr);
 						hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffscreenSurface,&rcSrc,DDBLT_WAIT,0);
 						checkHr(hr);
 					}else{
