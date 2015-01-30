@@ -84,7 +84,7 @@
 		
 		berorSerchShowHint();
 
-		getAudioObj().GroupStop();
+		//getAudioObj().GroupStop();
          
 		 var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
 		  
