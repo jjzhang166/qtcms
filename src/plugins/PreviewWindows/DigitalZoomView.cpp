@@ -15,6 +15,10 @@ DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	setWindowFlags(this->windowFlags() &~ (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint));
 	QDesktopWidget* desktopWidget = QApplication::desktop();
 	m_tDoubleClickMinPosition = desktopWidget->availableGeometry();
+	m_tDigitalViewPosition.setX(m_tDoubleClickMinPosition.width()/2-m_tDoubleClickMinPosition.width()/6);
+	m_tDigitalViewPosition.setY(m_tDoubleClickMinPosition.height()/2-m_tDoubleClickMinPosition.height()/6);
+	m_tDigitalViewPosition.setWidth(m_tDoubleClickMinPosition.width()/3);
+	m_tDigitalViewPosition.setHeight(m_tDoubleClickMinPosition.height()/3);
 	m_nMinWidth=m_tDoubleClickMinPosition.width()/10;
 	m_nMinHeight=m_tDoubleClickMinPosition.height()/40;
 	m_tDoubleClickMinPosition.setX(m_tDoubleClickMinPosition.width()-m_tDoubleClickMinPosition.width()/10);

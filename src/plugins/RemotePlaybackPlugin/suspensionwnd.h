@@ -22,6 +22,7 @@ public:
 	void setOriginGeog(QRect rect);
 	QWidget* getTopWnd();
 	virtual void changeEvent(QEvent *);
+	virtual void showEvent(QShowEvent *);
 signals:
 	void sigClose();
 private:

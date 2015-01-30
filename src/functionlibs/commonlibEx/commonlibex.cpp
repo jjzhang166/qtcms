@@ -3400,7 +3400,7 @@ QString commonlibEx::getCurrentUser()
 			}
 		}
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd<<_query.lastError();
 		abort();
 	}
 	_query.finish();

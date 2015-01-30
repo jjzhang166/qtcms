@@ -198,3 +198,8 @@ void SuspensionWnd::translateLanguage()
 {
 	this->setWindowTitle(tr("Zoom"));
 }
+
+void SuspensionWnd::showEvent( QShowEvent * )
+{
+	this->setWindowTitle(tr("Zoom"));
+}
