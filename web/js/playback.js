@@ -117,7 +117,8 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		
         autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		 AddActivityEvent('Validation','Validationcallback(data)');
-		
+		 oPlayBack.AddEventProc('Validation','PluginLimitcallback(data)');
+		oPlaybackLocl.AddEventProc('Validation','PluginLimitcallback(data)');
 		bFullScreen = 0;
 
 		ViewMax();
@@ -192,6 +193,22 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			},1000);
 		}
 	}
+	
+	function PluginLimitcallback(data){
+		
+		//console.log(data);
+		if(data.ErrorCode=="1"){
+		  autoSearchDev.showUserLoginUi(336,300);
+		}else if(data.ErrorCode=="2"){
+			showLimitTips();
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},1000);
+		}
+	  
+	}
+	
    //用户登录状态回调函数
     function useStateChange(ev){
 	//	console.log(ev);
