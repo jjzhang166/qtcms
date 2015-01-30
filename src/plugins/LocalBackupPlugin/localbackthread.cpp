@@ -328,7 +328,8 @@ void LocalBackThread::run()
 					}
 					//count progress
 					int curProgress = (pFrameHead->tFrameHead.uiGentime - iter->startGMT)*100/(m_nEndSec - iter->startGMT);
-					if (iter->progress < curProgress){
+// 					if (iter->progress < curProgress){
+					if (curProgress - iter->progress > 4){
 						iter->progress = curProgress;
 						SEND_PROGRESS(item, iter.key(), curProgress);
 						sleepEx(10);
