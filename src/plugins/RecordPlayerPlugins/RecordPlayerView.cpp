@@ -125,6 +125,14 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 	m_pressPoint = ev->pos();
 
 	if (ms_susWnd && ms_susWnd->isVisible()){
+		//validation
+		if (verify(100, 0)){
+			if ((QWidget*)this != ms_susWnd->getTopWnd() ){
+				closeSuspensionWnd();
+			}
+			clearOriginRect();
+			return;
+		}
 		//notify play module current window need to zoom
 		ICommunicate *pCom = NULL;
 		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
@@ -142,7 +150,7 @@ void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 				float widthRate = (float)ms_susWnd->width()/this->width();
 				float heightRate = (float)ms_susWnd->height()/this->height();
 				drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
-				ms_rectMap[(quintptr)this] = drawRect;
+// 				ms_rectMap[(quintptr)this] = drawRect;
 
 				msg.insert("ZoRect", drawRect);
 				ms_susWnd->setDrawRect(drawRect);
@@ -261,13 +269,14 @@ void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 	QRect mainRect = this->rect();
 	QRect drawRect(m_pressPoint, ev->pos());
 	m_bPressed = false;
+	drawRect = drawRect.intersected(mainRect);
 
 	if (drawRect.width()*drawRect.height() < 1000){
 		clearOriginRect();
 		return;
 	}
 	//if release point in current window
-	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
+	if (drawRect.width()*drawRect.height()/1000 /*&& mainRect.contains(drawRect) */
 		&& (QWidget*)this != ms_susWnd->getTopWnd() 
 		&& ms_playStatus < 4 && m_bPlaying
 		&& !ms_susWnd->isVisible()){

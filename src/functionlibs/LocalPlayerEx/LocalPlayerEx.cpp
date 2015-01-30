@@ -488,12 +488,14 @@ int LocalPlayerEx::GroupPlay()
 
 int LocalPlayerEx::GroupPause()
 {
+	m_pFileData->paused(true);	
 	PlayMgr::pause(true);
 	return 0;
 }
 
 int LocalPlayerEx::GroupContinue()
 {
+	m_pFileData->paused(false);
 	PlayMgr::pause(false);
 	return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QDateTime>
+#include <QMutex>
 #include "RemotePlaybackPlugin_global.h"
 #include "rSubview.h"
 #include "PlayManager.h"
@@ -53,7 +54,8 @@ typedef enum _emOperation{
 	EM_PLAY,
 	EM_PAUSE,
 	EM_CONTINUE,
-	EM_STOP
+	EM_STOP,
+	EM_FALT
 }Operation;
 
 class PlayBackThread : public QThread
@@ -112,11 +114,12 @@ private:
 private:
 	DevCliSetInfo m_devInfo;
 	SearchDevInfo m_schInfo;
-	Operation m_curOperate;
+// 	Operation m_curOperate;
 	IDeviceRemotePlayback *m_playback;
 	QVariantMap m_fileMap;
 	QList<RSubView*> m_wndList;
 	QList<QWidget*> m_zoomWndList;
+	QList<int> m_stepQueue;
 	QMap<int, WndPlay> m_playMap;
 	QWidget* m_susWnd;
 	QDateTime m_playStart;
@@ -130,6 +133,8 @@ private:
 
 	bool m_bStop;
 	bool m_bInitFlag;
+
+	QMutex m_mx;
 };
 
 #endif // PLAYBACKTHREAD_H

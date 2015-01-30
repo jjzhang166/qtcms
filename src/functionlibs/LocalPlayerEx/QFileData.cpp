@@ -32,6 +32,7 @@ QFileData::QFileData()
 	m_i32Types(0x0f),
 	m_bStop(false),
 	m_bPlayDirection(true),
+	m_bPause(false),
 // 	m_pcbTimeChg(NULL),
 	m_pFileBuff1(NULL),
 	m_pFileBuff2(NULL),
@@ -217,6 +218,11 @@ void QFileData::run()
 
 		while (!m_bStop && (char*)pFrameHead < m_pFileBuff1 + pFileHead->uiIndex)
 		{
+			if (m_bPause){
+				msleep(10);
+				continue;
+			}
+
 			iter = m_wndBuffMap.find(pFrameHead->tFrameHead.uiChannel);
 			//current channel isn't in group or types are not needed
 			if (iter == m_wndBuffMap.end() || pFrameHead->tFrameHead.uiGentime < m_uiStartSec || !(pFrameHead->tFrameHead.uiRecType & m_i32Types) )
@@ -236,7 +242,7 @@ void QFileData::run()
 				do 
 				{
 					msleep(100);
-				} while (!m_bStop && getMinBufferSize() > 200);
+				} while (!m_bStop && iter->pBuffList->size() > 200);
 				getMaxBufferSize();
 // 				msleep(100);
 // 				continue;
@@ -479,4 +485,9 @@ qint32 QFileData::getMaxBufferSize()
 void QFileData::setSpeed( qint32 speed )
 {
 	m_i32Speed = speed;
+}
+
+void QFileData::paused( bool pause )
+{
+	m_bPause = pause;
 }

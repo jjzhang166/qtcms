@@ -7,7 +7,7 @@
 #include <QVariantMap>
 #include "globalsetting.h"
 #include "sqlite3.h"
-
+#include "IStorage.h"
 
 class LocalBackThread : public QThread
 {
@@ -32,6 +32,9 @@ private:
 	void lockFile(QString fileName, bool locked);
 	sqlite3* initDataBase(char *dbPath);
 	void sleepEx(int msec);
+	void initFileSystem();
+	bool checkDisk(QString sPath);
+
 private:
 	QMap<int, FdStatusInfo> m_chlFdMap;
 	QMap<QString, sqlite3*> m_sqlMap;
@@ -42,6 +45,7 @@ private:
 	uint m_nStartSec;
 	uint m_nEndSec;
 	bool m_bStop;
+	IStorage *m_pStorage;
 };
 
 #endif // LOCALBACKTHREAD_H

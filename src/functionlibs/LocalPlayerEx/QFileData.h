@@ -23,6 +23,7 @@ public:
 // 	void setCbTimeChange(pcbTimeChange pro, void* pUser);
 	void startReadFile();
 	void stopThread();
+	void paused(bool pause);
 // 	void clearBuffer();
 
 	typedef struct _tagCurBuffInof{
@@ -61,6 +62,7 @@ private:
 	qint32 m_i32Types;				//playing types
 	bool m_bStop;
 	bool m_bPlayDirection;			//true:play false:playback
+	bool m_bPause;
 	qint32 m_i32Speed;
 
 	char* m_pFileBuff1;

@@ -8,7 +8,9 @@
 
 #define VLOG(info, status)\
 	qDebug()<<(info);\
-	m_curOperate = status;\
+	m_mx.lock();\
+	m_stepQueue.append(status);\
+	m_mx.unlock();\
 	break;
 
 PlayBackThread::PlayBackThread()
@@ -75,7 +77,11 @@ int PlayBackThread::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 	m_schInfo.nSearchTypes = nTypes;
 	m_schInfo.startTime = startTime;
 	m_schInfo.endTime  = endTime;
-	m_curOperate = EM_SEARCH;
+// 	m_curOperate = EM_SEARCH;
+	m_mx.lock();
+	m_stepQueue.append(EM_SEARCH);
+	m_mx.unlock();
+	m_bStop = false;
 	if (!isRunning()){
 		start();
 	}
@@ -127,55 +133,83 @@ int PlayBackThread::GroupPlay( int nTypes,const QDateTime & start,const QDateTim
 	m_playTypes = nTypes;
 	m_playStart = start;
 	m_playEnd = end;
+
 	for (int index = 0; index < m_wndList.size(); ++index){
 		m_wndList[index]->setProgress(0);
 	}
-	m_curOperate = EM_PLAY;
+	m_bStop = false;
+	if (!isRunning()){
+		this->start();
+	}
+// 	m_curOperate = EM_PLAY;
+	m_mx.lock();
+	m_stepQueue.append(EM_PLAY);
+	m_mx.unlock();
+	
 	return 0;
 }
 
 int PlayBackThread::GroupPause()
 {
-	m_curOperate = EM_PAUSE;
-	PlayIter iter = m_playMap.begin();
-	while (iter != m_playMap.end())
-	{
-		iter->playManager->pause(true);
-		++iter;
+// 	m_curOperate = EM_PAUSE;
+	if (isRunning()){
+		m_mx.lock();
+		m_stepQueue.append(EM_PAUSE);
+		m_mx.unlock();
+		PlayIter iter = m_playMap.begin();
+		while (iter != m_playMap.end()){
+			iter->playManager->pause(true);
+			++iter;
+		}
+	}else{
+		qDebug()<<"play thread don't running, pause fault";
 	}
 	return 0;
 }
 
 int PlayBackThread::GroupContinue()
 {
-	m_curOperate = EM_CONTINUE;
-	PlayIter iter = m_playMap.begin();
-	while (iter != m_playMap.end())
-	{
-		iter->playManager->pause(false);
-		++iter;
+// 	m_curOperate = EM_CONTINUE;
+	if (isRunning()){
+		m_mx.lock();
+		m_stepQueue.append(EM_CONTINUE);
+		m_mx.unlock();
+		PlayIter iter = m_playMap.begin();
+		while (iter != m_playMap.end()){
+			iter->playManager->pause(false);
+			++iter;
+		}
+	}else{
+		qDebug()<<"play thread don't running, continue fault";
 	}
 	return 0;
 }
 
 int PlayBackThread::GroupStop()
 {
- 	m_curOperate = EM_STOP;
-
-	PlayIter iter = m_playMap.begin();
-	while (iter != m_playMap.end()){
-		iter->playManager->stop();
-		iter->bufferManager->emptyBuff();
-		delete iter->playManager;
-		iter->playManager = NULL;
-		delete iter->bufferManager;
-		iter->bufferManager = NULL;
-		++iter;
+//  m_curOperate = EM_STOP;
+	if (isRunning()){
+		m_mx.lock();
+		m_stepQueue.append(EM_STOP);
+		m_mx.unlock();
+		PlayIter iter = m_playMap.begin();
+		while (iter != m_playMap.end()){
+			iter->playManager->stop();
+			iter->bufferManager->emptyBuff();
+			delete iter->playManager;
+			iter->playManager = NULL;
+			delete iter->bufferManager;
+			iter->bufferManager = NULL;
+			++iter;
+		}
+		//clear outdate data
+		m_nChannels = 0;
+		m_playTypes = 0;
+		m_playMap.clear();
+		m_stepQueue.clear();
+	}else{
+		qDebug()<<"play thread don't running, stop fault";
 	}
-	//clear outdate data
-	m_nChannels = 0;
-	m_playTypes = 0;
-	m_playMap.clear();
 
 	return 0;
 }
@@ -267,7 +301,13 @@ void PlayBackThread::run()
 	QVariantMap item;
 	while (!m_bStop)
 	{
-		switch (m_curOperate)
+		int curOperate = EM_DEFAULT;
+		if (!m_stepQueue.isEmpty()){
+			m_mx.lock();
+			curOperate = m_stepQueue.takeFirst();
+			m_mx.unlock();
+		}
+		switch (curOperate)
 		{
 		case EM_SEARCH:
 			{
@@ -279,7 +319,7 @@ void PlayBackThread::run()
 					QVariantMap item;
 					item.insert("parm", 1);
 					emit FileSearchFailToUiS(item);
-					VLOG("get play back interface error!", EM_DEFAULT);
+					VLOG("get play back interface error!", EM_FALT);
 				}
 
 				//if don't register event, register it
@@ -291,7 +331,8 @@ void PlayBackThread::run()
 				IDeviceClient *pDevClient = NULL;
 				m_playback->QueryInterface(IID_IDeviceClient, (void**)&pDevClient);
 				if (!pDevClient){
-					VLOG("get device client interface error!", EM_DEFAULT);
+					qDebug()<<"========";
+					VLOG("get device client interface error!", EM_FALT);
 				}
 				pDevClient->checkUser(m_devInfo.m_sUsername, m_devInfo.m_sPassword);
 				pDevClient->setDeviceHost(m_devInfo.m_sAddress);
@@ -305,12 +346,14 @@ void PlayBackThread::run()
 					QVariantMap item;
 					item.insert("parm", ret == 1 ? 2 : 1);
 					emit FileSearchFailToUiS(item);
-					VLOG("search fault!", EM_DEFAULT);
+// 					VLOG("search fault!", EM_DEFAULT);
 				}
 				m_bInitFlag = false;
 				m_playback->Release();
 				m_playback = NULL;
-				m_curOperate = EM_DEFAULT;
+				//stop search
+				m_bStop = true;
+// 				m_curOperate = EM_DEFAULT;
 			}
 			break;
 		case EM_PLAY:
@@ -319,7 +362,7 @@ void PlayBackThread::run()
 				if (!m_playback){
 					getPlaybackInterface((void**)&m_playback);
 					if (!m_playback){
-						VLOG("get play back interface error!", EM_DEFAULT);
+						VLOG("get play back interface error!", EM_FALT);
 					}
 				}
 				//if don't register event, register it
@@ -331,7 +374,7 @@ void PlayBackThread::run()
 				IDeviceClient *pDevClient = NULL;
 				m_playback->QueryInterface(IID_IDeviceClient, (void**)&pDevClient);
 				if (!pDevClient){
-					VLOG("get device client interface error!", EM_DEFAULT);
+					VLOG("get device client interface error!", EM_FALT);
 				}
 				pDevClient->checkUser(m_devInfo.m_sUsername, m_devInfo.m_sPassword);
 				pDevClient->setDeviceHost(m_devInfo.m_sAddress);
@@ -339,40 +382,41 @@ void PlayBackThread::run()
 				pDevClient->setDevicePorts(m_devInfo.m_uiPort);
 				int ret = pDevClient->connectToDevice();
 				if (ret){
-					VLOG("connect device fault!", EM_DEFAULT);
+					pDevClient->Release();
+					VLOG("connect device fault!", EM_FALT);
 				}
 				pDevClient->Release();
 				//start play
 				ret = m_playback->getPlaybackStreamByTime(m_nChannels, m_playTypes, m_playStart, m_playEnd);
 				if (ret){
-					VLOG("get play back stream falut!", EM_DEFAULT);
+					VLOG("get play back stream falut!", EM_FALT);
 				}
-				m_curOperate = EM_DEFAULT;
+// 				m_curOperate = EM_DEFAULT;
 			}
 			break;
 		case EM_PAUSE:
 			{
 				int ret = m_playback->pausePlaybackStream(true);
 				if (ret){
-					VLOG("play back pause fault!", EM_DEFAULT);
+					VLOG("play back pause fault!", EM_FALT);
 				}
-				m_curOperate = EM_DEFAULT;
+// 				m_curOperate = EM_DEFAULT;
 			}
 			break;
 		case EM_CONTINUE:
 			{
 				int ret = m_playback->pausePlaybackStream(false);
 				if (ret){
-					VLOG("play back continue fault!", EM_DEFAULT);
+					VLOG("play back continue fault!", EM_FALT);
 				}
-				m_curOperate = EM_DEFAULT;
+// 				m_curOperate = EM_DEFAULT;
 			}
 			break;
 		case EM_STOP:
 			{
 				//check interface 
 				if (!m_playback){
-					VLOG("play back interface is NULL", EM_DEFAULT);
+					VLOG("play back interface is NULL", EM_FALT);
 				}
 				//stop stream
 				int ret = m_playback->stopPlaybackStream();
@@ -385,7 +429,20 @@ void PlayBackThread::run()
 				pDevClient->closeAll();
 				pDevClient->Release();
 
-				m_curOperate = EM_DEFAULT;
+				m_playback->Release();
+				m_playback = NULL;
+				m_bInitFlag = false;
+				m_bStop = true;
+// 				m_curOperate = EM_DEFAULT;
+			}
+			break;
+		case EM_FALT:
+			{
+				if (m_playback){
+					m_playback->Release();
+					m_playback = NULL;
+				}
+				m_bStop = true;
 			}
 			break;
 		default:
@@ -512,6 +569,9 @@ bool PlayBackThread::removeRepeatWnd( QWidget *wndID )
 void PlayBackThread::initCallBackFun()
 {
 	IEventRegister *pReg = NULL;
+	if (!m_playback){
+		return;
+	}
 	m_playback->QueryInterface(IID_IEventRegister, (void**)&pReg);
 	if (!pReg){
 		qDebug()<<"register play back event error!";
@@ -551,9 +611,15 @@ void PlayBackThread::action( QString act, BufferManager* pbuff )
 			++it;
 		}
 	}else if ("Pause" == act){
-		m_curOperate = EM_PAUSE;
+// 		m_curOperate = EM_PAUSE;
+		m_mx.lock();
+		m_stepQueue.append(EM_PAUSE);
+		m_mx.unlock();
 	}else if ("Continue" == act){
-		m_curOperate = EM_CONTINUE;
+// 		m_curOperate = EM_CONTINUE;
+		m_mx.lock();
+		m_stepQueue.append(EM_CONTINUE);
+		m_mx.unlock();
 	}else{
 		//nothing
 	}

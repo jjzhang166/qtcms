@@ -83,6 +83,14 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 	m_pressPoint = ev->pos();
 
 	if (ms_susWnd->isVisible()){
+		//validation
+		if (verify(100, 0)){
+			if ((QWidget*)this != ms_susWnd->getTopWnd() ){
+				closeSuspensionWnd();
+			}
+			clearOriginRect();
+			return;
+		}
 		//notify play module current window need to zoom
 		QVariantMap msg;
 		msg.insert("SusWnd", (quintptr)ms_susWnd);
@@ -93,7 +101,7 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 			float widthRate = (float)ms_susWnd->width()/this->width();
 			float heightRate = (float)ms_susWnd->height()/this->height();
 			drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
-			ms_rectMap[(quintptr)this] = drawRect;
+// 			ms_rectMap[(quintptr)this] = drawRect;
 
 			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
 			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
@@ -489,6 +497,7 @@ void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 	QRect mainRect = this->rect();
 	QRect drawRect(m_pressPoint, ev->pos());
 	m_bPressed = false;
+	drawRect = drawRect.intersected(mainRect);
 
 	if (drawRect.width()*drawRect.height() < 1000){
 		clearOriginRect();
@@ -618,6 +627,13 @@ void RSubView::clearOriginRect()
 		msg.insert("CurWnd", (quintptr)this);
 		msg.insert("ZoRect", QRect(1, 1, 1, 1));
 		m_pcbfn(QString("RectToOrigion"), msg, m_pUser);
+	}
+}
+
+void RSubView::closeSuspensionWnd()
+{
+	if (ms_susWnd){
+		ms_susWnd->close();
 	}
 }
 

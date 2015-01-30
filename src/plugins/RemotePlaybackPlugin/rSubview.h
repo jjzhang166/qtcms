@@ -56,6 +56,7 @@ public:
 
 	static void showSusWnd(bool enabled);
 	void destroySusWnd();
+	void closeSuspensionWnd();
 signals:
 	void mouseDoubleClick(QWidget *,QMouseEvent *);
 	void SetCurrentWindSignl(QWidget *);

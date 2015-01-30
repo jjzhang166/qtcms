@@ -314,6 +314,7 @@ int   RPlaybackWnd::GroupStop()
 // 		_widList.clear();
 //     } 
 	nRet = m_rplaybackrun.GroupStop();
+	m_PlaybackWnd[0].closeSuspensionWnd();
 	m_CurStatus=STATUS_STOP;
     return nRet;
 }

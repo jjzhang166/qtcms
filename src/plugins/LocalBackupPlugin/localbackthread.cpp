@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QtCore/qmath.h>
+#include <QCoreApplication>
+#include <QtXml/QtXml>
 
 #include <QDebug>
 
@@ -18,7 +20,8 @@
 	emit sendMsg(QString("localFileBackUpProgress"), item);
 
 LocalBackThread::LocalBackThread(QObject *parent)
-	: QThread(parent)
+	: QThread(parent),
+	m_pStorage(NULL)
 {
 	//get usable disk list
 	IDisksSetting *pDiskSet = NULL;
@@ -28,6 +31,8 @@ LocalBackThread::LocalBackThread(QObject *parent)
 		pDiskSet->getEnableDisks(m_sDiskList);//get usable disks
 		pDiskSet->Release();
 	}
+
+	initFileSystem();
 }
 
 LocalBackThread::~LocalBackThread()
@@ -42,6 +47,10 @@ LocalBackThread::~LocalBackThread()
 		sqlite3_close(*it++);
 	}
 	m_sqlMap.clear();
+	if (m_pStorage){
+		m_pStorage->Release();
+		m_pStorage = NULL;
+	}
 }
 
 sqlite3* LocalBackThread::initDataBase(char *dbPath)
@@ -99,6 +108,7 @@ int LocalBackThread::startLocalFileBackUp( int nTypes, QString sChannel, QDateTi
 void LocalBackThread::stopLocalFileBackUp()
 {
 	if (isRunning()){
+		qDebug()<<"stop backup";
 		m_bStop = true;
 	}
 }
@@ -124,6 +134,7 @@ void LocalBackThread::run()
 	emit sendMsg(QString("localFileBackUpState"), item);
 	while (!bStop){
 		if (m_bStop){
+			qDebug()<<"set step = STOP";
 			steps = EM_STOP;
 		}
 		switch (steps)
@@ -142,6 +153,9 @@ void LocalBackThread::run()
 				}
 				qDebug()<<"start read file "<<fileList[fileIndex];
 
+				QElapsedTimer timer;
+				qint64 pos1 = timer.elapsed();
+
 				memset(buffer, 0, MAX_BUFF_SIZE);
 				QString fileName = fileList[fileIndex];
 				//check file exist
@@ -153,6 +167,9 @@ void LocalBackThread::run()
 				}
 				//lock file in database
 				lockFile(fileName, true);
+
+				qint64 pos2 = timer.elapsed();
+
 				//read file
 				QFile file(fileName);
 				if (!file.open(QIODevice::ReadOnly)){
@@ -162,12 +179,21 @@ void LocalBackThread::run()
 					lockFile(fileName, false);
 					break;
 				}
+
+				qint64 pos3 = timer.elapsed();
+
 				//read file to buffer
 				file.read(buffer, MAX_BUFF_SIZE);
 				file.close();
 				fileIndex++;
+
+				qint64 pos4 = timer.elapsed();
+
 				//unlock file in database
 				lockFile(fileName, false);
+
+				qint64 pos5 = timer.elapsed();
+				qDebug()<<"lock:"<<pos2 - pos1<<"open:"<<pos3 - pos2<<"read:"<<pos4 - pos3<<"unlock:"<<pos5 - pos4<<"total:"<<pos5 - pos1;
 
 				qDebug()<<"read file "<<fileName<<" success!";
 
@@ -266,6 +292,11 @@ void LocalBackThread::run()
 			{
 				if (256*1024*1024 < AVI_bytes_written(iter->fd) + pFrameHead->tFrameHead.uiLength){
 					iter->fileStatus = EM_WAIT_FOR_PACK;
+				}
+				if (!checkDisk(m_sBackupPath)){
+					qDebug()<<"you disk space < 2GB, there is no enough space to backup!";
+					steps = EM_STOP;
+					break;
 				}
 				steps = EM_WRITE_FRAME;
 			}
@@ -535,4 +566,52 @@ void LocalBackThread::sleepEx( int msec )
 	QEventLoop evloop;
 	QTimer::singleShot(msec,&evloop,SLOT(quit()));
 	evloop.exec();
+}
+
+
+void LocalBackThread::initFileSystem()
+{
+	// ¡ä¨°?a???????t
+	QString sConfFilePath = QCoreApplication::applicationDirPath() + QString("/pcom_config.xml");
+	QDomDocument confFile;
+	QFile * file = new QFile(sConfFilePath);
+	file->open(QIODevice::ReadOnly);
+	confFile.setContent(file);
+
+	// ??¨¨?filesystem¨¤¨¤¦Ì?¡Á¨¦?t
+	QDomNode clsidNode = confFile.elementsByTagName("CLSID").at(0);
+	QDomNodeList items = clsidNode.childNodes();
+	for (int i = 0; i < items.count(); i++){
+		QDomNode node = items.at(i);
+		QString name = node.toElement().attribute("name");
+		// filesystem ¨¤¨¤D¨ª¦Ì?¡Á¨¦?t
+		if (name.contains(QRegExp("^filesystem\\."))){
+			QString sCLSID = node.toElement().attribute("clsid");
+			GUID clsid_node = pcomString2GUID(sCLSID);
+			// ¨º?¡¤??¡ì3?IStorage?¨®?¨²
+			pcomCreateInstance(clsid_node,NULL,IID_IStorage,(void **)&m_pStorage);
+			if (NULL == m_pStorage)
+				continue;
+			break;
+		}
+	}
+	// ¨º¨ª¡¤?¡Á¨º?¡ä¡ä| file
+	file->close();
+	delete file;
+}
+
+bool LocalBackThread::checkDisk( QString sPath )
+{
+	int freesizem = 1024;
+	quint64 FreeByteAvailable=0;
+	quint64 TotalNumberOfBytes=0;
+	quint64 TotalNumberOfFreeBytes=0;
+	if (NULL == m_pStorage)
+		return false;
+
+	if (m_pStorage->GetFreeSpace(sPath,FreeByteAvailable,TotalNumberOfBytes,TotalNumberOfFreeBytes)){
+		if (FreeByteAvailable>(quint64)freesizem*1024*1024*2)
+			return true;
+	}
+	return false;
 }
