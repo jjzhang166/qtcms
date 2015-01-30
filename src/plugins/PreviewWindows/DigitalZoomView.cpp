@@ -24,7 +24,7 @@ DigitalZoomView::DigitalZoomView(QFrame *parent):QFrame(parent)
 	m_tDoubleClickMinPosition.setX(m_tDoubleClickMinPosition.width()-m_tDoubleClickMinPosition.width()/10);
 	m_tDoubleClickMinPosition.setY(m_tDoubleClickMinPosition.height()-m_tDoubleClickMinPosition.height()/40);
 	this->setWindowTitle(tr("Zoom"));
-
+	this->setGeometry(m_tDigitalViewPosition);
 	QString image;
 	QString sAppPath = QCoreApplication::applicationDirPath();
 	QString path = sAppPath + "/skins/default/css/SubWindowStyle.ini";

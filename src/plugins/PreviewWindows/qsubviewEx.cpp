@@ -545,8 +545,10 @@ void qsubviewEx::mouseReleaseEvent( QMouseEvent * event)
 		m_sSubviewRun.drawRectToOriginalWnd(tStartPoint,tEndPoint);
 		if (nHeight*nHeight/1000)
 		{
-			emit sgEnableDigtalZoom();
-			m_sSubviewRun.initDigitalRect(m_tRectStartPoint,m_tRectCurrentPoint,this->width(),this->height());
+			if (!verify(1, m_chlId)){
+				emit sgEnableDigtalZoom();
+				m_sSubviewRun.initDigitalRect(m_tRectStartPoint,m_tRectCurrentPoint,this->width(),this->height());
+			}
 		}
 	}
 	m_bIsDrawRect=false;
