@@ -964,7 +964,7 @@ var oPlayBack={},  // 远程回访控件对象
 			  var target = $(this),
 			   minL =target.find('td.no_border').width();
 			   $('<div class="progress" style="position:absolute;top:0px;left:'+(minL)+'px;z-index:2;width:'+(target.width()-minL)+'px;height:'+target.height()+';"><canvas id="progress'+index+'" width="'+(target.width()-minL)+'" height="'+target.height()+'"></canvas></div>').appendTo(target);  
-		      target.find('input').prop('checked',true);
+		      //target.find('input').prop('checked',true);
 		 }
 	  });
 	  $('#windowFile tr').not('[id]').find('input').prop('disabled',true);
