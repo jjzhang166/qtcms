@@ -215,6 +215,7 @@ void LocalBackThread::run()
 				}
 				//check whether the frame is usable
 				if (pFrameHead->tFrameHead.uiGentime < m_nStartSec 
+					|| pFrameHead->tFrameHead.uiGentime > m_nEndSec + 1
 					|| !(pFrameHead->tFrameHead.uiRecType & m_nTypes)
 					|| !m_chlFdMap.contains(pFrameHead->tFrameHead.uiChannel)){
 					pFrameHead = (FileFrameHead *)((char*)pFrameHead + sizeof(FileFrameHead) - sizeof(pFrameHead->tFrameHead.pBuffer) + pFrameHead->tFrameHead.uiLength);
@@ -345,6 +346,12 @@ void LocalBackThread::run()
 		case EM_PACK:
 			{
 				//close file
+				if (!iter->fd){
+					qDebug()<<"there is an error happend, pack fail";
+					m_chlFdMap.remove(iter.key());
+					steps = EM_READ_BUFF;
+					break;
+				}
 				AVI_set_video(iter->fd, iter->width, iter->height, countPts(iter->ptsCountMap), "X264");
 				AVI_close(iter->fd);
 				//clear old data
