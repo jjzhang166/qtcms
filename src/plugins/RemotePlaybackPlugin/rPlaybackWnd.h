@@ -125,6 +125,7 @@ public:
 private slots:
     void  OnSubWindowDblClick(QWidget *,QMouseEvent *);
     void  SetCurrentWind(QWidget *);
+	void  slValidateFail(QVariantMap vmap);
 private:
 	int  cbInit();
 // 	int GetDeviceInfo(int chlId);

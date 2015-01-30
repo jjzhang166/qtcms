@@ -79,40 +79,42 @@ void RSubView::resizeEvent(QResizeEvent *e)
 }
 void RSubView::mousePressEvent(QMouseEvent *ev)
 {
-	m_bPressed = true;
-	m_pressPoint = ev->pos();
+	if (Qt::LeftButton == ev->button()){
+		m_bPressed = true;
+		m_pressPoint = ev->pos();
 
-	if (ms_susWnd->isVisible()){
-		//validation
-		if (verify(100, 0)){
-			if ((QWidget*)this != ms_susWnd->getTopWnd() ){
-				closeSuspensionWnd();
+		if (ms_susWnd && ms_susWnd->isVisible()){
+			//validation
+			if (verify(100, 0)){
+// 				if ((QWidget*)this != ms_susWnd->getTopWnd() ){
+// 					closeSuspensionWnd();
+// 				}
+// 				clearOriginRect();
+				return;
 			}
-			clearOriginRect();
-			return;
-		}
-		//notify play module current window need to zoom
-		QVariantMap msg;
-		msg.insert("SusWnd", (quintptr)ms_susWnd);
-		msg.insert("CurWnd", (quintptr)this);
-		if (ms_rectMap.contains((quintptr)this)){
-			QRect drawRect = ms_rectMap[(quintptr)this];
-			//Coordinate Conversion
-			float widthRate = (float)ms_susWnd->width()/this->width();
-			float heightRate = (float)ms_susWnd->height()/this->height();
-			drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
-// 			ms_rectMap[(quintptr)this] = drawRect;
+			//notify play module current window need to zoom
+			QVariantMap msg;
+			msg.insert("SusWnd", (quintptr)ms_susWnd);
+			msg.insert("CurWnd", (quintptr)this);
+			if (ms_rectMap.contains((quintptr)this)){
+				QRect drawRect = ms_rectMap[(quintptr)this];
+				//Coordinate Conversion
+				float widthRate = (float)ms_susWnd->width()/this->width();
+				float heightRate = (float)ms_susWnd->height()/this->height();
+				drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+	// 			ms_rectMap[(quintptr)this] = drawRect;
 
-			msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
-			ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
-		}else{
-			msg.insert("ZoRect", QRect(1, 1, 1, 1));
-			ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
+				msg.insert("ZoRect", drawRect);
+				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+			}else{
+				msg.insert("ZoRect", QRect(1, 1, 1, 1));
+				ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
+			}
+			msg.insert("Width", ms_susWnd->width());
+			msg.insert("Height", ms_susWnd->height());
+			ms_susWnd->addWnd(this);
+			m_pcbfn(QString("VedioZoom"), msg, m_pUser);
 		}
-		msg.insert("Width", ms_susWnd->width());
-		msg.insert("Height", ms_susWnd->height());
-		ms_susWnd->addWnd(this);
-		m_pcbfn(QString("VedioZoom"), msg, m_pUser);
 	}
 
 	setFocus(Qt::MouseFocusReason);
@@ -128,7 +130,6 @@ void RSubView::mousePressEvent(QMouseEvent *ev)
 			_cacheLable->hide();
 		}
 	}
-	m_pressPoint = ev->pos();
 }
 
 void RSubView::SetLpClient( IDeviceGroupRemotePlayback *m_GroupPlayback )
@@ -496,46 +497,47 @@ void RSubView::setProgress( int progress )
 
 void RSubView::mouseReleaseEvent( QMouseEvent *ev )
 {
-	QRect mainRect = this->rect();
-	QRect drawRect(m_pressPoint, ev->pos());
-	m_bPressed = false;
-	drawRect = drawRect.intersected(mainRect);
+	if (Qt::LeftButton == ev->button()){
+		QRect mainRect = this->rect();
+		QRect drawRect(m_pressPoint, ev->pos());
+		m_bPressed = false;
+		drawRect = drawRect.intersected(mainRect);
 
-	if (drawRect.width()*drawRect.height() < 1000){
-		clearOriginRect();
-		return;
-	}
-	//if release point in current window
-	if (drawRect.width()*drawRect.height()/1000 && mainRect.contains(drawRect) 
-		&& (QWidget*)this != ms_susWnd->getTopWnd() 
-		&& CONNECT_STATUS_CONNECTED == _curState
-		&& !ms_susWnd->isVisible()){
-		//validation
-		if (verify(100, 0)){
+		if (drawRect.width()*drawRect.height() < 1000){
 			clearOriginRect();
 			return;
 		}
-		//Coordinate Conversion
-		float widthRate = (float)ms_susWnd->width()/this->width();
-		float heightRate = (float)ms_susWnd->height()/this->height();
-		drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+		//if release point in current window
+		if (drawRect.width()*drawRect.height()/1000 /*&& mainRect.contains(drawRect)*/ 
+			&& (QWidget*)this != ms_susWnd->getTopWnd() 
+			&& CONNECT_STATUS_CONNECTED == _curState
+			&& !ms_susWnd->isVisible()){
+			//validation
+			if (verify(100, 0)){
+				clearOriginRect();
+				return;
+			}
+			//Coordinate Conversion
+			float widthRate = (float)ms_susWnd->width()/this->width();
+			float heightRate = (float)ms_susWnd->height()/this->height();
+			drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
 
-		ms_susWnd->addWnd(this);
-		ms_susWnd->setDrawRect(drawRect);
-		ms_susWnd->show();
-		ms_susWnd->setOriginGeog(ms_susWnd->geometry());
-		//notify play module current window need to zoom
-		QVariantMap msg;
-		msg.insert("SusWnd", (quintptr)ms_susWnd);
-		msg.insert("CurWnd", (quintptr)this);
-		msg.insert("ZoRect", drawRect);
-		msg.insert("Width", ms_susWnd->width());
-		msg.insert("Height", ms_susWnd->height());
-		m_pcbfn(QString("VedioZoom"), msg, m_pUser);
-		ms_rectMap[(quintptr)this] = drawRect;
-		m_bSuspensionVisable = true;
+			ms_susWnd->addWnd(this);
+			ms_susWnd->setDrawRect(drawRect);
+			ms_susWnd->show();
+			ms_susWnd->setOriginGeog(ms_susWnd->geometry());
+			//notify play module current window need to zoom
+			QVariantMap msg;
+			msg.insert("SusWnd", (quintptr)ms_susWnd);
+			msg.insert("CurWnd", (quintptr)this);
+			msg.insert("ZoRect", drawRect);
+			msg.insert("Width", ms_susWnd->width());
+			msg.insert("Height", ms_susWnd->height());
+			m_pcbfn(QString("VedioZoom"), msg, m_pUser);
+			ms_rectMap[(quintptr)this] = drawRect;
+			m_bSuspensionVisable = true;
+		}
 	}
-
 }
 
 void RSubView::setCbpfn( pfnCb cbPro, void* pUser )
@@ -616,6 +618,14 @@ bool RSubView::verify( quint64 mainCode, quint64 subCode )
 			vmap.insert("SubPermissionCode", qint64(subCode));
 			vmap.insert("ErrorCode", ret);
 			emit sigValidateFail(vmap);
+			ret = pUserMgr->checkUserLimit(mainCode, subCode);
+			if (ret==2){
+				QVariantMap vmap;
+				vmap.insert("MainPermissionCode", qint64(mainCode));
+				vmap.insert("SubPermissionCode", qint64(subCode));
+				vmap.insert("ErrorCode", ret);
+				emit sigValidateFail(vmap);
+			}
 		}
 		pUserMgr->Release();
 	}

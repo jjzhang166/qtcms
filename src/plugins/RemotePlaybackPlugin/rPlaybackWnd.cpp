@@ -39,6 +39,7 @@ bIsHide(false)
 		m_PlaybackWnd[i].setCbpfn(cbDigitalZoom, &m_rplaybackrun);
 		connect(&m_PlaybackWnd[i],SIGNAL(mouseDoubleClick(QWidget *,QMouseEvent *)),this,SLOT(OnSubWindowDblClick(QWidget *,QMouseEvent *)));
 		connect(&m_PlaybackWnd[i],SIGNAL(SetCurrentWindSignl(QWidget *)),this,SLOT(SetCurrentWind(QWidget *)));
+		connect(&m_PlaybackWnd[i],SIGNAL(sigValidateFail(QVariantMap)), this, SLOT(slValidateFail(QVariantMap)));
 
 		m_PlaybackWndList.insert(m_PlaybackWndList.size(),&m_PlaybackWnd[i]);
 		m_rplaybackrun.setPlaybackWnd(&m_PlaybackWnd[i]);
@@ -696,7 +697,10 @@ void RPlaybackWnd::loadLauguage()
 	m_translator.load(sFileName,sLanguageConfigPath);
 }
 
-
+void RPlaybackWnd::slValidateFail( QVariantMap vmap )
+{
+	EventProcCall(QString("Validation"), vmap);
+}
 
 /*
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)

@@ -121,48 +121,52 @@ void RecordPlayerView::mouseDoubleClickEvent( QMouseEvent * ev)
 
 void RecordPlayerView::mousePressEvent(QMouseEvent *ev)
 {
-	m_bPressed = true;
-	m_pressPoint = ev->pos();
+	if (Qt::LeftButton == ev->button()){
+		m_bPressed = true;
+		m_pressPoint = ev->pos();
 
-	if (ms_susWnd && ms_susWnd->isVisible()){
-		//validation
-		if (verify(100, 0)){
-			if ((QWidget*)this != ms_susWnd->getTopWnd() ){
-				closeSuspensionWnd();
-			}
-			clearOriginRect();
-			return;
-		}
-		//notify play module current window need to zoom
-		ICommunicate *pCom = NULL;
-		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
-		if (pCom){
-			QVariantMap msg;
-			msg.insert("SusWnd", (quintptr)ms_susWnd);
-			msg.insert("CurWnd", (quintptr)this);
-// 			if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd()/* && ms_susWnd->isVisible()*/){
-// 				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
-// 				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
-// 			}
-			if (ms_rectMap.contains((quintptr)this)){
-				QRect drawRect = ms_rectMap[(quintptr)this];
-				//Coordinate Conversion
-				float widthRate = (float)ms_susWnd->width()/this->width();
-				float heightRate = (float)ms_susWnd->height()/this->height();
-				drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
-// 				ms_rectMap[(quintptr)this] = drawRect;
+//		qDebug()<<__FUNCTION__<<m_pressPoint;
 
-				msg.insert("ZoRect", drawRect);
-				ms_susWnd->setDrawRect(drawRect);
-			}else{
-				msg.insert("ZoRect", QRect(1, 1, 1, 1));
-				ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
+		if (ms_susWnd && ms_susWnd->isVisible()){
+			//validation
+			if (verify(100, 0)){
+// 				if ((QWidget*)this != ms_susWnd->getTopWnd() ){
+// 					closeSuspensionWnd();
+// 				}
+// 				clearOriginRect();
+				return;
 			}
-			msg.insert("Width", ms_susWnd->width());
-			msg.insert("Height", ms_susWnd->height());
-			ms_susWnd->addWnd(this);
-			pCom->setInfromation(QString("VedioZoom"), msg);
-			pCom->Release();
+			//notify play module current window need to zoom
+			ICommunicate *pCom = NULL;
+			m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+			if (pCom){
+				QVariantMap msg;
+				msg.insert("SusWnd", (quintptr)ms_susWnd);
+				msg.insert("CurWnd", (quintptr)this);
+	// 			if (ms_rectMap.contains((quintptr)this) && (QWidget*)this != ms_susWnd->getTopWnd()/* && ms_susWnd->isVisible()*/){
+	// 				msg.insert("ZoRect", ms_rectMap[(quintptr)this]);
+	// 				ms_susWnd->setDrawRect(ms_rectMap[(quintptr)this]);
+	// 			}
+				if (ms_rectMap.contains((quintptr)this)){
+					QRect drawRect = ms_rectMap[(quintptr)this];
+					//Coordinate Conversion
+					float widthRate = (float)ms_susWnd->width()/this->width();
+					float heightRate = (float)ms_susWnd->height()/this->height();
+					drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+	// 				ms_rectMap[(quintptr)this] = drawRect;
+
+					msg.insert("ZoRect", drawRect);
+					ms_susWnd->setDrawRect(drawRect);
+				}else{
+					msg.insert("ZoRect", QRect(1, 1, 1, 1));
+					ms_susWnd->setDrawRect(QRect(0, 0, 0, 0));
+				}
+				msg.insert("Width", ms_susWnd->width());
+				msg.insert("Height", ms_susWnd->height());
+				ms_susWnd->addWnd(this);
+				pCom->setInfromation(QString("VedioZoom"), msg);
+				pCom->Release();
+			}
 		}
 	}
 
@@ -266,48 +270,52 @@ void RecordPlayerView::changeEvent( QEvent * )
 
 void RecordPlayerView::mouseReleaseEvent( QMouseEvent *ev )
 {
-	QRect mainRect = this->rect();
-	QRect drawRect(m_pressPoint, ev->pos());
-	m_bPressed = false;
-	drawRect = drawRect.intersected(mainRect);
+	if (Qt::LeftButton == ev->button()){
+		QRect mainRect = this->rect();
+		QRect drawRect(m_pressPoint, ev->pos());
+		m_bPressed = false;
+		drawRect = drawRect.intersected(mainRect);
 
-	if (drawRect.width()*drawRect.height() < 1000){
-		clearOriginRect();
-		return;
-	}
-	//if release point in current window
-	if (drawRect.width()*drawRect.height()/1000 /*&& mainRect.contains(drawRect) */
-		&& (QWidget*)this != ms_susWnd->getTopWnd() 
-		&& ms_playStatus < 4 && m_bPlaying
-		&& !ms_susWnd->isVisible()){
-		//validation
-		if (verify(100, 0)){
+	// 	qDebug()<<__FUNCTION__<<ev->pos();
+
+		if (drawRect.width()*drawRect.height() < 1000){
 			clearOriginRect();
 			return;
 		}
-		//Coordinate Conversion
-		float widthRate = (float)ms_susWnd->width()/this->width();
-		float heightRate = (float)ms_susWnd->height()/this->height();
-		drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
+		//if release point in current window
+		if (drawRect.width()*drawRect.height()/1000 /*&& mainRect.contains(drawRect) */
+			&& (QWidget*)this != ms_susWnd->getTopWnd() 
+			&& ms_playStatus < 4 && m_bPlaying
+			&& !ms_susWnd->isVisible()){
+			//validation
+			if (verify(100, 0)){
+				clearOriginRect();
+				return;
+			}
+			//Coordinate Conversion
+			float widthRate = (float)ms_susWnd->width()/this->width();
+			float heightRate = (float)ms_susWnd->height()/this->height();
+			drawRect.setCoords(drawRect.left()*widthRate, drawRect.top()*heightRate, drawRect.right()*widthRate, drawRect.bottom()*heightRate);
 
-		ms_susWnd->addWnd(this);
-		ms_susWnd->setDrawRect(drawRect);
-		ms_susWnd->show();
-		ms_susWnd->setOriginGeog(ms_susWnd->geometry());
-		//notify play module current window need to zoom
-		ICommunicate *pCom = NULL;
-		m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
-		if (pCom){
-			QVariantMap msg;
-			msg.insert("SusWnd", (quintptr)ms_susWnd);
-			msg.insert("CurWnd", (quintptr)this);
-			msg.insert("ZoRect", drawRect);
-			msg.insert("Width", ms_susWnd->width());
-			msg.insert("Height", ms_susWnd->height());
-			pCom->setInfromation(QString("VedioZoom"), msg);
-			pCom->Release();
-			ms_rectMap[(quintptr)this] = drawRect;
-			m_bSuspensionVisable = true;
+			ms_susWnd->addWnd(this);
+			ms_susWnd->setDrawRect(drawRect);
+			ms_susWnd->show();
+			ms_susWnd->setOriginGeog(ms_susWnd->geometry());
+			//notify play module current window need to zoom
+			ICommunicate *pCom = NULL;
+			m_pLocalPlayer->QueryInterface(IID_ICommunicate, (void**)&pCom);
+			if (pCom){
+				QVariantMap msg;
+				msg.insert("SusWnd", (quintptr)ms_susWnd);
+				msg.insert("CurWnd", (quintptr)this);
+				msg.insert("ZoRect", drawRect);
+				msg.insert("Width", ms_susWnd->width());
+				msg.insert("Height", ms_susWnd->height());
+				pCom->setInfromation(QString("VedioZoom"), msg);
+				pCom->Release();
+				ms_rectMap[(quintptr)this] = drawRect;
+				m_bSuspensionVisable = true;
+			}
 		}
 	}
 }
@@ -410,6 +418,14 @@ bool RecordPlayerView::verify( quint64 mainCode, quint64 subCode )
 			vmap.insert("SubPermissionCode", qint64(subCode));
 			vmap.insert("ErrorCode", ret);
 			emit sigValidateFail(vmap);
+			ret = pUserMgr->checkUserLimit(mainCode, subCode);
+			if (ret==2){
+				QVariantMap vmap;
+				vmap.insert("MainPermissionCode", qint64(mainCode));
+				vmap.insert("SubPermissionCode", qint64(subCode));
+				vmap.insert("ErrorCode", ret);
+				emit sigValidateFail(vmap);
+			}
 		}
 		pUserMgr->Release();
 	}

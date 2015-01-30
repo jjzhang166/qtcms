@@ -7,7 +7,8 @@
 
 SuspensionWnd::SuspensionWnd(QWidget *parent)
 	: QWidget(parent),
-	m_posInRect(false)
+	m_posInRect(false),
+	m_bMinimized(false)
 {
 	QString image;
 	QString sAppPath = QCoreApplication::applicationDirPath();
@@ -17,7 +18,8 @@ SuspensionWnd::SuspensionWnd(QWidget *parent)
 	QString PixPath = sAppPath + image;
 	QIcon tWindowIcon(PixPath);
 	this->setWindowIcon(tWindowIcon);
-	this->resize(704, 322);
+	QRect deskRect = QApplication::desktop()->geometry();
+	this->resize(deskRect.width()/3, deskRect.height()/3);
 	this->setWindowTitle(tr("Zoom"));
 }
 
@@ -28,33 +30,37 @@ SuspensionWnd::~SuspensionWnd()
 
 void SuspensionWnd::mousePressEvent( QMouseEvent *ev )
 {
-	m_pressPoint = ev->pos();
-	if (m_drawRect.contains(m_pressPoint)){
-		m_posInRect = true;
-		m_lastMovePos = m_pressPoint;
-	}else{
-		m_posInRect = false;
+	if (Qt::LeftButton == ev->button()){
+		m_pressPoint = ev->pos();
+		if (m_drawRect.contains(m_pressPoint)){
+			m_posInRect = true;
+			m_lastMovePos = m_pressPoint;
+		}else{
+			m_posInRect = false;
+		}
 	}
 }
 
 void SuspensionWnd::mouseReleaseEvent( QMouseEvent *ev )
 {
-	QPoint releasePoint = ev->pos();
-	if (m_pressPoint != releasePoint && !m_posInRect && m_cbFunc && m_puser){
-		QVariantMap msg;
-		msg.insert("EvName", QString("ZoomRect"));
-		QRect rect(m_pressPoint, releasePoint);
-		if (rect.width()*rect.height()/1000){
-			msg.insert("ZoRect", rect);
-		}else{
-			msg.insert("ZoRect", QRect(1, 1, 1, 1));
-		}
-		msg.insert("Width", this->width());
-		msg.insert("Height", this->height());
-		msg.insert("CurWnd", (quintptr)m_wndList.last());
-		m_cbFunc(msg, m_puser);
+	if (Qt::LeftButton == ev->button()){
+		QPoint releasePoint = ev->pos();
+		if (m_pressPoint != releasePoint && !m_posInRect && m_cbFunc && m_puser){
+			QVariantMap msg;
+			msg.insert("EvName", QString("ZoomRect"));
+			QRect rect(m_pressPoint, releasePoint);
+			if (rect.width()*rect.height()/1000){
+				msg.insert("ZoRect", rect);
+			}else{
+				msg.insert("ZoRect", QRect(1, 1, 1, 1));
+			}
+			msg.insert("Width", this->width());
+			msg.insert("Height", this->height());
+			msg.insert("CurWnd", (quintptr)m_wndList.last());
+			m_cbFunc(msg, m_puser);
 
-		m_drawRect = QRect(m_pressPoint, releasePoint);
+			m_drawRect = QRect(m_pressPoint, releasePoint);
+		}
 	}
 }
 
@@ -72,6 +78,7 @@ void SuspensionWnd::closeEvent(QCloseEvent *ev)
 {
 	if (QEvent::Close == ev->type()){
 		m_wndList.clear();
+		m_bMinimized = false;
 		emit sigClose();
 		ev->ignore();
 	}
@@ -133,19 +140,21 @@ QWidget* SuspensionWnd::getTopWnd()
 bool SuspensionWnd::event( QEvent *ev )
 {
 	if (ev->type() == QEvent::NonClientAreaMouseButtonDblClick){
-		QRect curRect = this->geometry();
-		QRect geom = QApplication::desktop()->availableGeometry();
-		int width = geom.width();
-		int height = geom.height();
-		if (curRect.width() > width/10 && curRect.height() > height/40){
+		if (!m_bMinimized){
+			QRect geom = QApplication::desktop()->availableGeometry();
+			int width = geom.width();
+			int height = geom.height();
 			geom.setX(width - width/10);
 			geom.setY(height - height/40);
-			this->setGeometry(geom);
-			m_originRect = curRect;
+			m_originRect = this->geometry();
+			setGeometry(geom);
+			m_bMinimized = true;
 		}else{
-			this->setGeometry(m_originRect);
+			setGeometry(m_originRect);
+			m_bMinimized = false;
 		}
 	}
+
 	return QWidget::event(ev);
 }
 

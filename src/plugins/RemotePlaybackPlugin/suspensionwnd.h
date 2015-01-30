@@ -39,6 +39,7 @@ private:
 	callbackFc m_cbFunc;
 	void *m_puser;
 	bool m_posInRect;
+	bool m_bMinimized;
 	QRect m_drawRect;
 	QPoint m_lastMovePos;
 	QRect m_originRect;
