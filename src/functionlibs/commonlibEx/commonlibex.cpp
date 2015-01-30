@@ -3318,12 +3318,12 @@ QString commonlibEx::checkCurrentLoginUser()
 			if (_query.exec(sCmd))
 			{
 			}else{
-				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+				qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd<<_query.lastError();
 				abort();
 			}
 		}
 	}else{
-		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd;
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail:"<<sCmd<<_query.lastError();
 		abort();
 	}
 	_query.finish();

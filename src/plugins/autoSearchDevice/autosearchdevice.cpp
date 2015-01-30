@@ -155,7 +155,9 @@ int autoSearchDevice::checkUserLimit( quint64 uiCode,quint64 uiSubCode )
 	//0：用户具有权限；1：用户未登录；2：用户登录但是没有权限
 	if (NULL!=m_pUserMangerEx)
 	{
-		return m_pUserMangerEx->checkUserLimit(uiCode,uiSubCode);
+		int nRet;
+		nRet=m_pUserMangerEx->checkUserLimit(uiCode,uiSubCode);
+		return nRet;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"call abort as m_pUserMangerEx is null";
 		abort();
