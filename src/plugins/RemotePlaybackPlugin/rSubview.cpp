@@ -356,7 +356,6 @@ void RSubView::paintEventCache( QPaintEvent * )
 		QPainter p(this);
 
 		QString image;
-		/*QColor LineColor;*/
 		QColor LineColor(45,49,54);
 		QColor LineCurColor;
 		QColor FontColor(32,151,219);
@@ -385,7 +384,7 @@ void RSubView::paintEventCache( QPaintEvent * )
 		pix = pix.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
 		//±³¾°
 		QPixmap m_cacheImage=_cacheBackImage.scaled(rcClient.width(),rcClient.height(),Qt::KeepAspectRatio);
-		p.drawPixmap(rcClient,m_cacheImage);
+		p.drawPixmap(rcClient,pix);
 		//±ß¿ò
 		QPen pen = QPen(LineColor);
 		pen.setWidth(2);
@@ -416,7 +415,6 @@ void RSubView::paintEventCache( QPaintEvent * )
 void RSubView::saveCacheImage()
 {
 	_cacheBackImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
-
 }
 
 void RSubView::_cacheLableShow()
@@ -488,6 +486,10 @@ void RSubView::SetFoucs( bool flags )
 void RSubView::setProgress( int progress )
 {
 	_curCache = progress;
+	if (_curCache==0)
+	{
+		saveCacheImage();
+	}
 	update();
 	_cacheLableShow();
 }

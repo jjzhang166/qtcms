@@ -73,17 +73,18 @@ QString PlayBackThread::GetNowPlayedTime()
 
 int PlayBackThread::startSearchRecFile( int nChannel,int nTypes,const QDateTime & startTime,const QDateTime & endTime )
 {
-	m_schInfo.nSearchChls = nChannel;
-	m_schInfo.nSearchTypes = nTypes;
-	m_schInfo.startTime = startTime;
-	m_schInfo.endTime  = endTime;
-// 	m_curOperate = EM_SEARCH;
-	m_mx.lock();
-	m_stepQueue.append(EM_SEARCH);
-	m_mx.unlock();
-	qDebug()<<__FUNCTION__<<__LINE__<<"EM_SEARCH ask";
-	m_bStop = false;
-	if (!isRunning()){
+	if (this->isRunning())
+	{
+		//do nothing
+	}else{
+		m_schInfo.nSearchChls = nChannel;
+		m_schInfo.nSearchTypes = nTypes;
+		m_schInfo.startTime = startTime;
+		m_schInfo.endTime  = endTime;
+		m_mx.lock();
+		m_stepQueue.append(EM_SEARCH);
+		m_mx.unlock();
+		m_bStop = false;
 		start();
 	}
 	return 0;
@@ -144,6 +145,7 @@ int PlayBackThread::GroupPlay( int nTypes,const QDateTime & start,const QDateTim
 	}
 // 	m_curOperate = EM_PLAY;
 	m_mx.lock();
+	m_stepQueue.clear();
 	m_stepQueue.append(EM_PLAY);
 	m_mx.unlock();
 	
