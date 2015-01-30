@@ -9,6 +9,8 @@
 #include <QCoreApplication>
 #include <QtXml/QtXml>
 
+
+#include <QElapsedTimer>
 #include <QDebug>
 
 #define qDebug() qDebug()<<__FUNCTION__<<__LINE__
