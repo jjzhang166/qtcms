@@ -94,10 +94,14 @@ void SuspensionWnd::mouseMoveEvent( QMouseEvent *ev )
 {
 	if (m_cbFunc && m_puser){
 		m_drawRect.translate(ev->pos() - m_lastMovePos);
+		QRect rect = m_drawRect.intersected(this->rect());
+		if (rect.isEmpty()){
+			rect = QRect(QPoint(10, 10), QPoint(10, 10));
+		}
 		QVariantMap msg;
 		msg.insert("EvName", QString("ZoomRect"));
 		if (m_posInRect){
-			msg.insert("ZoRect", m_drawRect);
+			msg.insert("ZoRect", rect);
 		}else{
 			msg.insert("ZoRect", QRect(m_pressPoint, ev->pos()));
 		}
