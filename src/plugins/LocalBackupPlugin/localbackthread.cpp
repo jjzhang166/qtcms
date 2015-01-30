@@ -110,7 +110,7 @@ int LocalBackThread::startLocalFileBackUp( int nTypes, QString sChannel, QDateTi
 void LocalBackThread::stopLocalFileBackUp()
 {
 	if (isRunning()){
-		qDebug()<<"stop backup";
+//		qDebug()<<"stop backup";
 		m_bStop = true;
 	}
 }
@@ -155,8 +155,8 @@ void LocalBackThread::run()
 				}
 				qDebug()<<"start read file "<<fileList[fileIndex];
 
-				QElapsedTimer timer;
-				qint64 pos1 = timer.elapsed();
+//				QElapsedTimer timer;
+//				qint64 pos1 = timer.elapsed();
 
 				memset(buffer, 0, MAX_BUFF_SIZE);
 				QString fileName = fileList[fileIndex];
@@ -170,7 +170,7 @@ void LocalBackThread::run()
 				//lock file in database
 				lockFile(fileName, true);
 
-				qint64 pos2 = timer.elapsed();
+//				qint64 pos2 = timer.elapsed();
 
 				//read file
 				QFile file(fileName);
@@ -182,20 +182,20 @@ void LocalBackThread::run()
 					break;
 				}
 
-				qint64 pos3 = timer.elapsed();
+//				qint64 pos3 = timer.elapsed();
 
 				//read file to buffer
 				file.read(buffer, MAX_BUFF_SIZE);
 				file.close();
 				fileIndex++;
 
-				qint64 pos4 = timer.elapsed();
+//				qint64 pos4 = timer.elapsed();
 
 				//unlock file in database
 				lockFile(fileName, false);
 
-				qint64 pos5 = timer.elapsed();
-				qDebug()<<"lock:"<<pos2 - pos1<<"open:"<<pos3 - pos2<<"read:"<<pos4 - pos3<<"unlock:"<<pos5 - pos4<<"total:"<<pos5 - pos1;
+//				qint64 pos5 = timer.elapsed();
+//				qDebug()<<"lock:"<<pos2 - pos1<<"open:"<<pos3 - pos2<<"read:"<<pos4 - pos3<<"unlock:"<<pos5 - pos4<<"total:"<<pos5 - pos1;
 
 				qDebug()<<"read file "<<fileName<<" success!";
 
