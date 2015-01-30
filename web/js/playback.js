@@ -758,7 +758,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 			oDev = $(oDev);
 
-       //console.log(filedata);
+       // console.log(filedata);
 		//console.log(oDev);
 		
 				//console.time('---------接受到的文件------------------------');
@@ -789,7 +789,7 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 			
 			var chl = parseInt(i),
 				ChannelData = oDev.next('ul').find('span.channel').eq(chl).data('data');
-					
+				//console.log(ChannelData);	
            var target = oFileUIwarp.eq(ChannelData.channel_number).attr({
 							id:'Rel_channel_'+ChannelData.channel_id,
 							title:_T('Device')+':'+oDev.data('data').name+' '+ _T('Channel')+':'+ChannelData.channel_name
@@ -918,16 +918,15 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	}*/
 	function playBackSerchFile(){
 		//console.log('当前搜索状态:'+searchSTOP);
+		if(bool){
+			if(searchSTOP){
+				searchSTOP = 0;
+				searchAgain = 0;
+			}else{
+				searchAgain = 1;
 		
-		if(searchSTOP){
-			searchSTOP = 0;
-			searchAgain = 0;
-		}else{
-			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
-	
-			searchAgain = 1;
-	
-			return;
+				 return;
+			}
 		}
 
 		groupStop();

@@ -242,7 +242,7 @@
 			$('#fileRec').stop(true,true).fadeOut(1500);
 		},1000);
 		//console.log(recFile)
-		recFile.length !=0 && RecRemoteFile2UI(recFile);
+		//recFile.length !=0 && RecRemoteFile2UI(recFile);
 	}
 
 	function RecfinishCallback(data){ //检索完成回调
@@ -297,6 +297,7 @@
 	}				
 	/*排序方法	*/	
      function searchStartcallback(){
+		 searchSTOP = 0;
 	   berorSerchShowHint();	 
 	}
 	$(function(){

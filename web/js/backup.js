@@ -798,15 +798,16 @@ var oPlayBack={},  // 远程回访控件对象
 			showTips(_T('Being_backed_up'));
 			return;
 		}
-		if(searchSTOP){
-			searchSTOP = 0;
-			searchAgain = 0;//正在搜索时是否再次点击搜索按钮
-		}else{
-			//console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
-			searchAgain = 1;//正在搜索时是否再次点击搜索按钮
-			return;
+		if(bool){
+		  if(searchSTOP){
+			  searchSTOP = 0;
+			  searchAgain = 0;//正在搜索时是否再次点击搜索按钮
+		  }else{
+			  //console.log('当前搜索状态:'+searchSTOP+'------------------------正在搜索');
+			  searchAgain = 1;//正在搜索时是否再次点击搜索按钮
+			  return;
+		  }
 		}
-		
 		$('#checkarea').css({
 					 'display':'none',
 					 'left':0,
