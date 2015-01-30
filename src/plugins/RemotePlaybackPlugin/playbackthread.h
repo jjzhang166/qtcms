@@ -101,6 +101,7 @@ signals:
 	void FileSearchFailToUiS(QVariantMap);
 	void SocketErrorToUiS(QVariantMap );
 	void StateChangeToUiS(QVariantMap );
+	void FileSearchStartToUiS(QVariantMap);
 protected:
 	void run();
 private slots:

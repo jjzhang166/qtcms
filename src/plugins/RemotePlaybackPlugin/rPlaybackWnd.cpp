@@ -51,20 +51,12 @@ bIsHide(false)
   		m_DivMode->setSubWindows(m_PlaybackWndList,ARRAY_SIZE(m_PlaybackWnd));
   		m_DivMode->flush();
  	}
-// 	m_RemotePlaybackObject.SetrPlaybackWnd(this);
-// 	m_rplaybackrun.cbRegisterEvent("foundFile",cbFoundFile,this);
-// 	m_rplaybackrun.cbRegisterEvent("recFileSearchFail",cbRecFileSearchFail,this);
-// 	m_rplaybackrun.cbRegisterEvent("CurrentStatus",cbStateChange,this);
-// 	m_rplaybackrun.cbRegisterEvent("recFileSearchFinished",cbRecFileSearchFinished,this);
-// 	m_rplaybackrun.cbRegisterEvent("bufferStatus",cbCacheState,this);
 	bool flag=false;
 	connect(&m_rplaybackrun,SIGNAL(FoundFileToUiS(QVariantMap)),this,SLOT(FoundFileToUislot(QVariantMap)));
  	connect(&m_rplaybackrun,SIGNAL(RecFileSearchFinishedToUiS(QVariantMap)),this,SLOT(RecFileSearchFinishedToUislot(QVariantMap)));
 	connect(&m_rplaybackrun,SIGNAL(FileSearchFailToUiS(QVariantMap)),this,SLOT(FileSearchFailUislot(QVariantMap)));
 	connect(&m_rplaybackrun,SIGNAL(StateChangeToUiS(QVariantMap)), this, SLOT(StateChangeToUislot(QVariantMap)));
-//  	connect(this,SIGNAL(SocketErrorToUiS(QVariantMap)),this,SLOT(SocketErrorToUislot(QVariantMap)));
-//  	connect(&m_rplaybackrun,SIGNAL(CacheStateToUiS(QVariantMap)),this,SLOT(CacheStateToUislot(QVariantMap)));
-
+	connect(&m_rplaybackrun,SIGNAL(FileSearchStartToUiS(QVariantMap)),this,SLOT(FileSearchStartUislot(QVariantMap)));
 	QApplication::installTranslator(&m_translator);
 }
 
@@ -652,7 +644,10 @@ int RPlaybackWnd::GetCurrentState()
 {
 	return m_CurStatus;
 }
-
+void RPlaybackWnd::FileSearchStartUislot( QVariantMap evMap)
+{
+	EventProcCall("recFileSearchStart",evMap);
+}
 void RPlaybackWnd::FileSearchFailUislot( QVariantMap evMap)
 {
 	EventProcCall("recFileSearchFail",evMap);
@@ -700,6 +695,8 @@ void RPlaybackWnd::loadLauguage()
 	// load language file
 	m_translator.load(sFileName,sLanguageConfigPath);
 }
+
+
 
 /*
  int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)

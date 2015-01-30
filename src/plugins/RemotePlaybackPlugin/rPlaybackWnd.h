@@ -77,6 +77,7 @@ public slots:
 	void FoundFileToUislot(QVariantMap );
 	void RecFileSearchFinishedToUislot(QVariantMap );
 	void FileSearchFailUislot(QVariantMap);
+	void FileSearchStartUislot(QVariantMap);
 	void SocketErrorToUislot(QVariantMap );
 	void StateChangeToUislot(QVariantMap );
 	void CacheStateToUislot(QVariantMap );

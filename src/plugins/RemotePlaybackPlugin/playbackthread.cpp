@@ -81,6 +81,7 @@ int PlayBackThread::startSearchRecFile( int nChannel,int nTypes,const QDateTime 
 	m_mx.lock();
 	m_stepQueue.append(EM_SEARCH);
 	m_mx.unlock();
+	qDebug()<<__FUNCTION__<<__LINE__<<"EM_SEARCH ask";
 	m_bStop = false;
 	if (!isRunning()){
 		start();
@@ -206,8 +207,10 @@ int PlayBackThread::GroupStop()
 		m_nChannels = 0;
 		m_playTypes = 0;
 		m_playMap.clear();
-		m_stepQueue.clear();
 	}else{
+		m_mx.lock();
+		m_stepQueue.clear();
+		m_mx.unlock();
 		qDebug()<<"play thread don't running, stop fault";
 	}
 
@@ -311,6 +314,8 @@ void PlayBackThread::run()
 		{
 		case EM_SEARCH:
 			{
+				QVariantMap item;
+				emit FileSearchStartToUiS(item);
 				//get playback interface;
 				if (!m_playback){
 					getPlaybackInterface((void**)&m_playback);
@@ -331,7 +336,6 @@ void PlayBackThread::run()
 				IDeviceClient *pDevClient = NULL;
 				m_playback->QueryInterface(IID_IDeviceClient, (void**)&pDevClient);
 				if (!pDevClient){
-					qDebug()<<"========";
 					VLOG("get device client interface error!", EM_FALT);
 				}
 				pDevClient->checkUser(m_devInfo.m_sUsername, m_devInfo.m_sPassword);
@@ -433,6 +437,9 @@ void PlayBackThread::run()
 				m_playback = NULL;
 				m_bInitFlag = false;
 				m_bStop = true;
+				m_mx.lock();
+				m_stepQueue.clear();
+				m_mx.unlock();
 // 				m_curOperate = EM_DEFAULT;
 			}
 			break;
