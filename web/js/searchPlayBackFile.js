@@ -81,9 +81,7 @@
 	function ocxsearchVideo(){
 
 		recTotal = 0;
-		
-		berorSerchShowHint();
-
+        bool &&  berorSerchShowHint();
 		//getAudioObj().GroupStop();
          
 		 var bo = document.getElementById('commonLibrary').getLanguage() =='en_PR',
@@ -298,11 +296,14 @@
 		return b.types - a.types;
 	}				
 	/*排序方法	*/	
-
+     function searchStartcallback(){
+	   berorSerchShowHint();	 
+	}
 	$(function(){
 		oPlayBack.AddEventProc('RecFileInfo','RecFileInfoCallback(data)');  //搜索远程回放回调
 		oPlayBack.AddEventProc('recFileSearchFail','recFileSearchFailCallback(data)'); //搜索远程回放失败回调
 		oPlayBack.AddEventProc('recFileSearchFinished','RecfinishCallback(data)');  //搜索远程回放完成回调
+		oPlayBack.AddEventProc('recFileSearchStart','searchStartcallback()');
 		
 		oPlaybackLocl.AddEventProc('GetRecordFileEx','RecFileInfoCallback(data)'); //本地回访回调
 		oPlaybackLocl.AddEventProc('SearchRecordOver','SearchRecordOverCallback(data)');
