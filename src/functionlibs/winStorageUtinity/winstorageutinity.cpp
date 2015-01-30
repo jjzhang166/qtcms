@@ -1,6 +1,7 @@
 #include "winstorageutinity.h"
 #include <guid.h>
 #include "winfunctions.h"
+#include <QTextCodec>
 
 winStorageUtinity::winStorageUtinity() :
 m_nRef(0)
@@ -15,7 +16,11 @@ winStorageUtinity::~winStorageUtinity()
 
 bool winStorageUtinity::GetFreeSpace( QString path, quint64 &freeByteAvailable, quint64 & totalNumberOfBytes, quint64 TotalNumberOfFreeBytes )
 {
-	return wfGetDiskFreeSpaceEx(path.toAscii().data(),freeByteAvailable,TotalNumberOfFreeBytes,TotalNumberOfFreeBytes);
+	//add chinese support
+	QTextCodec * codec = QTextCodec::codecForLocale();
+	QByteArray filePath = codec->fromUnicode(path);
+
+	return wfGetDiskFreeSpaceEx(filePath.data(),freeByteAvailable,TotalNumberOfFreeBytes,TotalNumberOfFreeBytes);
 }
 
 long __stdcall winStorageUtinity::QueryInterface( const IID & iid,void **ppv )
