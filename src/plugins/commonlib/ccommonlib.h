@@ -13,6 +13,7 @@
 #include <IDisksSetting.h>
 #include <ISetRecordTime.h>
 #include <ILocalSetting.h>
+
 #include "qcommonplugin.h"
 #include "qcommonpluginEx.h"
 
@@ -175,6 +176,7 @@ public:
 	virtual bool getBootFromStart();
 	virtual bool setIsPersian(bool bFlags);
 	virtual bool getIsPersian();
+
 private:
 	int m_nRef;
 	QMutex m_csRef;

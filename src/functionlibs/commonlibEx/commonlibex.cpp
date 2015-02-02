@@ -3554,4 +3554,19 @@ int commonlibEx::loginEx()
 	return 0;
 }
 
+bool commonlibEx::addScreenShotItem( QString sFileName,QString sFileDir ,int nChl,int nType,quint64 uiSceenTime )
+{
+	return false;
+}
+
+bool commonlibEx::deleteScreenShotItem( QList<int> tIdList )
+{
+	return false;
+}
+
+QString commonlibEx::getScreenItem( QList<int> tChlList,QList<int> tTypeList,quint64 uiStartSceenTime,quint64 uiEndSceenTime )
+{
+	return "";
+}
+
 

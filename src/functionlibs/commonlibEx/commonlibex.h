@@ -12,6 +12,7 @@
 #include <ISetRecordTime.h>
 #include <ILocalSetting.h>
 #include <IWindowSettings.h>
+#include <IScreenShot.h>
 #include <QMutex>
 #include "DisksInfo.h"
 #include <IUserManagerEx.h>
@@ -25,6 +26,7 @@ class  commonlibEx:public IUserManager
 	,public ISetRecordTime
 	,public ILocalSetting
 	,public IWindowSettings
+	,public IScreenShot
 {
 public:
 	commonlibEx();
@@ -187,6 +189,17 @@ public:
 	bool getBootFromStart();
 	bool setIsPersian(bool bFlags);
 	bool getIsPersian();
+
+		/*IScreenShot*/
+	virtual bool addScreenShotItem(QString sFileName,QString sFileDir ,int nChl,int nType,quint64 uiSceenTime);
+	virtual bool deleteScreenShotItem(QList<int> tIdList);
+	virtual QString getScreenItem(QList<int> tChlList,QList<int> tTypeList,quint64 uiStartSceenTime,quint64 uiEndSceenTime);
+		// 返回值格式:
+	/*
+	<screenShot itemNum='n'>
+		<item id='' fileName='' fileDir='' chl='' type='' time=''>
+	</screenShot>
+	*/
 private:
 	bool CheckTimeFormat(QString sTime);
 	bool checkDeviceNameIsExist(QString sDevcie);

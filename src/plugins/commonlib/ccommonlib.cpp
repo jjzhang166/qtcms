@@ -664,4 +664,6 @@ bool Ccommonlib::getIsPersian()
 	return m_pluginObj.getIsPersian();
 }
 
+
+
 Q_EXPORT_PLUGIN2("commonlib.dll",Ccommonlib)

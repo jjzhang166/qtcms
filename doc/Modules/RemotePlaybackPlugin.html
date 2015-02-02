@@ -138,8 +138,7 @@ STATUS_PAUSE, 3<br />
 STATUS_STOP, 4</p>
 <p align="left">int GetCurrentState();</p>
 <p align="left">=========截屏=========</p>
-<p align="left">返回值参数：imageName,path</p>
-<p align="left">QVariantMap ScreenShot();</p>
+<p align="left">void screenShot();</p>
 <p align="left">&nbsp;</p>
 <p><strong>插件抛出的事件</strong>：<br />
   @1<br />
@@ -184,6 +183,15 @@ STATUS_STOP, 4</p>
   事件参数：<br /> 
   无
 </p>
+<p>@6<br />
+  抛出条件：调用screenShot()截图成功;<br />
+  事件名称：screenShotInfo;<br />
+  事件参数：<br />
+  fileName：文件名 :user-chl-type-time(yy-mm-dd-hh-mm-ss-mil)<br />
+  fileDir:文件路径（盘符+screenShotEx）<br />
+  chl：窗口号（1-49）<br />
+  user：操作的用户<br />
+type:类型（0：预览，1：本地回放，2：远程回放）</p>
 <p><strong>页面调用接口时序</strong>：<br />
   //@1搜索流程 ：</p>
 <p><img width="554" height="597" src="RemotePlaybackPlugin1.png" alt="RemotePlaybackPlugin1.png" /></p>

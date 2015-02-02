@@ -42,7 +42,8 @@
   8.本地设置（10000000）<br />
   9.用户设置（100000000）<br />
 10.退出系统（1000000000）<br />
-11.本地下载（10000000000）</p>
+11.本地下载（10000000000）<br />
+12.截屏管理（100000000000）</p>
 <p>用户权限 用64位数据表示，每种权限按位算<br />
   括号内的值 为对应权限的 权限码<br />
 例如 用户 admin 的用户权限为：111111111 表示拥有 上述的九种 权限</p>
@@ -87,9 +88,6 @@ int CloseAll();</p>
 <p><br />
   int SetVolume(unsigned int uiPersent);<br />
   int AudioEnabled(bool bEnabled);<br />
-  截屏：</p>
-<p><br />
-  QVariantMap ScreenShot();<br />
   全屏：</p>
 <p><br />
   void SetFullScreenFlag();<br />
@@ -97,6 +95,8 @@ int CloseAll();</p>
 <p> 图像拉伸：<br />
 void AllWindowStretch(bool bEnable);</p>
 <p>电子放大：</p>
+<p>截屏：</p>
+<p>void screenShot();</p>
 <p>=============云台（10）==============================</p>
 <p>请求用户权限认证 主权限码(uiCode)：10,子权限码（uiSubCode）：通道id </p>
 <p>UI层 进行验证</p>
@@ -124,8 +124,8 @@ QString GetNowPlayedTime();</p>
 <p>本地声音控制：</p>
 <p> int SetVolume(const unsigned int &amp;uiPersent);<br />
 int AudioEnabled(bool bEnabled);</p>
-<p>本地图像截屏：</p>
-<p>QVariantMap ScreenShot();</p>
+<p>截屏：</p>
+<p>void screenShot();</p>
 <p>电子放大：</p>
 <p>=============远程回放（1000）========================</p>
 <p>&nbsp;</p>
@@ -144,6 +144,8 @@ int   GroupSpeedNormal();</p>
 <p>远程声音控制：</p>
 <p>int  AudioEnabled(bool bEnable);<br />
 int   SetVolume(const unsigned int &amp;uiPersent);</p>
+<p>截屏：</p>
+<p>void screenShot();</p>
 <p>电子放大：</p>
 <p>=============远程备份（10000）======================</p>
 <p>请求用户权限认证 主权限码(uiCode)：10000,子权限码（uiSubCode）：设备通道id</p>
@@ -217,5 +219,12 @@ const QString &amp;sUsername,const QString &amp;sPassword);</p>
 <p>全台 进行验证 </p>
 <p>void stopLocalFileBackUp();<br />
 void startLocalFileBackUp(int nTypes,const QString sChannel,const QString &amp;startTime,const QString &amp;endTime);</p>
+<p>=============截屏管理（100000000000）==================</p>
+<p>特别说明：</p>
+<p>预览截屏的权限 范畴 属于 预览<br />
+  本地回放截屏的权限 范畴 属于 本地回放<br />
+远程回放截屏的权限 范畴 属于 远程回放</p>
+<p>截屏管理器 内的所有功能属于 截屏管理权限的 范畴</p>
+<p>&nbsp;</p>
 </body>
 </html>

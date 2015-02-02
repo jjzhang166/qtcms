@@ -86,7 +86,14 @@ id integer primary key autoincrement,
 name char(64),
 value text
 );
-
+create table screenShot(
+id integer primary key autoincrement,
+fileName text,
+fileDir text,
+chl integer,
+type integer,
+time integer
+);
 create table window_settings
 (
 id integer primary key autoincrement,

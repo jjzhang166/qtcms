@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>===使用领域===<br />
+  预览、本地回放、远程回放<br />
+  ===截屏接口===</p>
+<p>void screenShot();</p>
+<p>抛出事件：<br />
+  @7<br />
+  抛出条件：调用screenShot()截图成功;<br />
+  事件名称：screenShotInfo;<br />
+  事件参数：<br />
+  fileName：文件名 :user-chl-type-time(yy-mm-dd-hh-mm-ss-mil)<br />
+  fileDir:文件路径（盘符+screenShotEx）<br />
+  chl：窗口号（1-49）<br />
+  user：操作的用户<br />
+  type:类型（0：预览，1：本地回放，2：远程回放）</p>
+<p>===数据库设计===<br />
+  create table screenShot(<br />
+  id integer primary key autoincrement,<br />
+  fileName text,<br />
+  fileDir text,<br />
+  chl integer,<br />
+  type integer,<br />
+  time integer<br />
+  );<br />
+  // type 表示截屏类型 0：预览，1：本地回放，2：远程回放<br />
+  // time 表示截屏时间 64位整形数据<br />
+  // chl 表示窗口号<br />
+  //fileName 表示文件名<br />
+  //fileDir 文件目录</p>
+<p>===数据库操作接口===</p>
+<p>virtual bool addScreenShotItem(Qstring sFileName,Qstring sFileDir ,int nChl,int nType,quint64 uiSceenTime)=0;<br />
+  virtual bool deleteScreenShotItem(QList&lt;int&gt; tIdList);<br />
+  virtual Qstring getScreenItem(QList&lt;int&gt; tChlList,QList&lt;int&gt; tTypeList,quint64 uiStartSceenTime,quint64 uiEndSceenTime);<br />
+  // 返回值格式:<br />
+  &lt;screenShot itemNum='n'&gt;<br />
+  &lt;item id='' fileName='' fileDir='' chl='' type='' time=''&gt;<br />
+  &lt;/screenShot&gt;<br />
+  ===操作权限===<br />
+  1.截屏<br />
+  预览截屏的权限 范畴 属于 预览<br />
+  本地回放截屏的权限 范畴 属于 本地回放<br />
+  远程回放截屏的权限 范畴 属于 远程回放</p>
+<p>2.截屏管理器<br />
+独立一个权限:12.截图管理（100000000000）</p>
+</body>
+</html>

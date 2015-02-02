@@ -267,8 +267,7 @@ int   AudioEnabled  (bool bEnabled);</p>
 <p align="left">int GetCurrentState();</p>
 <p>&nbsp;</p>
 <p align="left">=========截屏=========</p>
-<p align="left">返回值参数：imageName,path</p>
-<p align="left">QVariantMap ScreenShot();</p>
+<p align="left">void screenShot();</p>
 <p>&nbsp;</p>
 <p>插件抛出的事件：<br />
   @1<br />
@@ -305,7 +304,17 @@ searchResult: 检索结果(QString)，  格式为&ldquo;SUCCESS&rdquo;，“INCO
 事件参数:<br />
   filepath：  文件路径(QString)<br />
   expCode：  异常号(int)，0表示正常，1表示文件异常或损坏<br />
-  wndId：  窗口号(int)，取值从0～3，表示该窗口出现异常<br />
+wndId：  窗口号(int)，取值从0～3，表示该窗口出现异常</p>
+<p>抛出事件：<br />
+  @7<br />
+  抛出条件：调用screenShot()截图成功;<br />
+  事件名称：screenShotInfo;<br />
+  事件参数：<br />
+  fileName：文件名 :user-chl-type-time(yy-mm-dd-hh-mm-ss-mil)<br />
+  fileDir:文件路径（盘符+screenShotEx）<br />
+  chl：窗口号（1-49）<br />
+  user：操作的用户<br />
+  type:类型（0：预览，1：本地回放，2：远程回放）<br />
 </p>
 <p>//@1 同步回放<br />
 <img src="LocalPlayer.png" alt="同步回放调用时序" width="421" height="830" /></p>
