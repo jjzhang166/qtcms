@@ -1546,10 +1546,10 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 				m_bScreenShot=false;
 				if (getScreenShotInfo(sFileName,sFileDir,uiTime,nChl,nType))
 				{
-					unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
-					memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
-					YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
-					QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+					unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+					memset(rgbBuff, 0, iWidth*iHeight*3);
+					YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
+					QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
 					QString sFilePath=sFileDir+"/"+sFileName;
 					img.save(sFilePath, "JPG");
 					delete [] rgbBuff;
@@ -2627,7 +2627,7 @@ bool QSubviewRun::saveScreenShotInfoToDatabase( QString sFileName,QString sFileD
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IScreenShot,(void**)&pScreenShot);
 	if (NULL!=pScreenShot)
 	{
-		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,nChl,nType,uiTime))
+		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,m_sScreenUser,nChl,nType,uiTime))
 		{
 			pScreenShot->Release();
 			pScreenShot=NULL;

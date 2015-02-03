@@ -191,7 +191,7 @@ public:
 	bool getIsPersian();
 
 		/*IScreenShot*/
-	virtual bool addScreenShotItem(QString sFileName,QString sFileDir ,int nChl,int nType,quint64 uiSceenTime);
+	virtual bool addScreenShotItem(QString sFileName,QString sFileDir ,QString sUserName,int nChl,int nType,quint64 uiSceenTime);
 	virtual bool deleteScreenShotItem(QList<int> tIdList);
 	virtual QString getScreenItem(QList<int> tChlList,QList<int> tTypeList,quint64 uiStartSceenTime,quint64 uiEndSceenTime);
 		// 返回值格式:

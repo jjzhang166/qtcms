@@ -535,7 +535,7 @@ bool PlayManager::saveScreenShotInfoToDatabase( QString sFileName,QString sFileD
 	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IScreenShot,(void**)&pScreenShot);
 	if (NULL!=pScreenShot)
 	{
-		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,nChl,nType,uiTime))
+		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,m_sScreenUser,nChl,nType,uiTime))
 		{
 			pScreenShot->Release();
 			pScreenShot=NULL;

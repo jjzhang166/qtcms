@@ -90,6 +90,7 @@ create table screenShot(
 id integer primary key autoincrement,
 fileName text,
 fileDir text,
+userName text,
 chl integer,
 type integer,
 time integer

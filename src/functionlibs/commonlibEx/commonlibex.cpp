@@ -3563,11 +3563,11 @@ int commonlibEx::loginEx()
 	return 0;
 }
 
-bool commonlibEx::addScreenShotItem( QString sFileName,QString sFileDir ,int nChl,int nType,quint64 uiSceenTime )
+bool commonlibEx::addScreenShotItem( QString sFileName,QString sFileDir ,QString sUserName,int nChl,int nType,quint64 uiSceenTime )
 {
 	QSqlQuery _query(*m_db);
 	m_tScreenShotLock.lock();
-	QString sCmd=QString("insert into screenShot (fileName,fileDir,chl,type,time)values('%1','%2',%3,%4,%5)").arg(sFileName).arg(sFileDir).arg(QString::number(nChl)).arg(QString::number(nType)).arg(QString::number(uiSceenTime));
+	QString sCmd=QString("insert into screenShot (fileName,fileDir,chl,type,time,userName)values('%1','%2',%3,%4,%5,'%6')").arg(sFileName).arg(sFileDir).arg(QString::number(nChl)).arg(QString::number(nType)).arg(QString::number(uiSceenTime)).arg(sUserName);
 	if (_query.exec(sCmd))
 	{
 		m_tScreenShotLock.unlock();

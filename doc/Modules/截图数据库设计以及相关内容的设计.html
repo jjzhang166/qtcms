@@ -25,6 +25,7 @@
   id integer primary key autoincrement,<br />
   fileName text,<br />
   fileDir text,<br />
+  userName text,<br />
   chl integer,<br />
   type integer,<br />
   time integer<br />
@@ -33,6 +34,7 @@
   // time 表示截屏时间 64位整形数据<br />
   // chl 表示窗口号<br />
   //fileName 表示文件名<br />
+  //userName 当前用户名<br />
   //fileDir 文件目录</p>
 <p>===数据库操作接口===</p>
 <p>virtual bool addScreenShotItem(Qstring sFileName,Qstring sFileDir ,int nChl,int nType,quint64 uiSceenTime)=0;<br />
