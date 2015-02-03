@@ -18,6 +18,7 @@
 #include <IRecordDat.h>
 #include <ISwitchStream.h>
 #include <IPTZControl.h>
+#include <IDisksSetting.h>
 #include <QTimer>
 #include <ISetRecordTime.h>
 #include <QList>
@@ -25,9 +26,11 @@
 #include <ILocalSetting.h>
 #include <IAutoSycTime.h>
 #include <IAudioPlayer.h>
+#include <QDateTime>
 #include <qtconcurrentrun.h>
 #include <QMutex>
 #include <DigitalZoomView.h>
+#include <IScreenShot.h>
 #include <QPoint>
 #include <IVideoRenderDigitalZoom.h>
 typedef int (__cdecl *previewRunEventCb)(QString eventName,QVariantMap info,void *pUser);
@@ -126,8 +129,8 @@ public:
 	//音频
 	void setVolume(unsigned int uiPersent);
 	void audioEnabled(bool bEnable);
-	
-	QVariantMap screenShot();
+	//截屏
+	void screenShot(QString sUser,int nType,int nChl);
 	tagDeviceInfo deviceInfo();
 	//电子放大
 	bool getDigtalViewIsClose();
@@ -167,6 +170,8 @@ private:
 	void enableStretch();
 	void digitalZoomToMainStream();
 	void digitalZoomStreamRestore();
+	bool getScreenShotInfo(QString &sFileName,QString &sFileDir,quint64 &uiTime,int &nChl,int &nType);
+	bool saveScreenShotInfoToDatabase(QString sFileName,QString sFileDir ,quint64 uiTime,int nChl,int nType);
 public slots:
 	void slstopPreviewrun();
 	bool slAddExtendWnd();
@@ -220,7 +225,7 @@ private:
 	int m_sampleWidth;
 	int m_nInitWidth;
 	int m_nInitHeight;
-	bool m_bScreenShot;
+	
 	QString m_sScreenShotPath;
 	volatile bool m_bClosePreview;
 	QTimer m_checkIsBlockTimer;
@@ -241,5 +246,11 @@ private:
 	DigitalZoomView m_tDigitalZoomView;
 	QMutex m_tVideoRenderLock;
 	int m_tDigitalHisStreamNum;
+
+	//截屏的传入参数
+	int m_nScreenShotType;
+	int m_nScreenShotChl;
+	QString m_sScreenUser;
+	bool m_bScreenShot;
 };
   

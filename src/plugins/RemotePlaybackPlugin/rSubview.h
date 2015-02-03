@@ -36,7 +36,6 @@ public:
 	virtual void mouseMoveEvent(QMouseEvent *);
 	virtual void resizeEvent(QResizeEvent *);
 	virtual void changeEvent(QEvent *);
-	QVariantMap ScreenShot();
 
 	enum __enConnectStatus{
 		CONNECT_STATUS_CONNECTED,

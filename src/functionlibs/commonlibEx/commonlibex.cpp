@@ -5,6 +5,8 @@ QMutex commonlibEx::Area_lock;
 QMutex commonlibEx::Device_lock;
 QMutex commonlibEx::m_csRandSeed;
 QMutex commonlibEx::m_tUserLock;
+QMutex commonlibEx::m_tDiskLock;
+QMutex commonlibEx::m_tScreenShotLock;
 int commonlibEx::m_randSeed = 0;
 commonlibEx::commonlibEx():m_nRef(0)
 {
@@ -69,6 +71,10 @@ long __stdcall commonlibEx::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_IUserMangerEx==iid)
 	{
 		*ppv = static_cast<IUserManagerEx *>(this);
+	}
+	else if (IID_IScreenShot==iid)
+	{
+		*ppv=static_cast<IScreenShot *>(this);
 	}
 	else{
 		*ppv = NULL;
@@ -1828,14 +1834,17 @@ int commonlibEx::getUseDisks( QString & sDisks )
 {
 	QSqlQuery _query(*m_db);
 	QString command = QString("select value from general_setting where name='storage_usedisks'");
+	m_tDiskLock.lock();
 	_query.exec(command);
 	if (_query.next())
 	{
 		sDisks = _query.value(0).toString();
+		m_tDiskLock.unlock();
 		return IDisksSetting::OK;
 	}
 	else
 	{
+		m_tDiskLock.unlock();
 		return IDisksSetting::E_SYSTEM_FAILED;
 	}
 }
@@ -3556,16 +3565,55 @@ int commonlibEx::loginEx()
 
 bool commonlibEx::addScreenShotItem( QString sFileName,QString sFileDir ,int nChl,int nType,quint64 uiSceenTime )
 {
+	QSqlQuery _query(*m_db);
+	m_tScreenShotLock.lock();
+	QString sCmd=QString("insert into screenShot (fileName,fileDir,chl,type,time)values('%1','%2',%3,%4,%5)").arg(sFileName).arg(sFileDir).arg(QString::number(nChl)).arg(QString::number(nType)).arg(QString::number(uiSceenTime));
+	if (_query.exec(sCmd))
+	{
+		m_tScreenShotLock.unlock();
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+		abort();
+	}
+	m_tScreenShotLock.unlock();
 	return false;
 }
 
 bool commonlibEx::deleteScreenShotItem( QList<int> tIdList )
 {
+	QSqlQuery _query(*m_db);
+	QString sId;
+	for (int i=0;i<tIdList.size();i++)
+	{
+		if (i==0)
+		{
+			sId=QString::number(tIdList.value(i));
+		}else{
+			sId=sId+","+QString::number(tIdList.value(i));
+		}
+	}
+	QString sCmd=QString("delete from screenShot where id in (%1)").arg(sId);
+	m_tScreenShotLock.lock();
+	if (_query.exec(sCmd))
+	{
+		m_tScreenShotLock.unlock();
+		return true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+		abort();
+	}
+	m_tScreenShotLock.unlock();
 	return false;
 }
 
 QString commonlibEx::getScreenItem( QList<int> tChlList,QList<int> tTypeList,quint64 uiStartSceenTime,quint64 uiEndSceenTime )
 {
+	/*
+	<screenShot itemNum='n'>
+		<item id='' fileName='' fileDir='' chl='' type='' time=''>
+	</screenShot>
+	*/
 	return "";
 }
 

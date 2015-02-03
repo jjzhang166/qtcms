@@ -18,6 +18,7 @@ int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser);
 int cbRecordStateEx(QString evName,QVariantMap evMap,void*pUser);
 int cbConnectRefuseEx(QString evName,QVariantMap evMap,void*pUser);
 int cbAuthorityEx(QString evName,QVariantMap evMap,void*pUser);
+int cbScreenShotEx(QString evName,QVariantMap evMap,void*pUser);
 class qsubviewEx:public QWidget
 {
 	Q_OBJECT
@@ -56,7 +57,7 @@ public:
 	int setVolume(unsigned int uiPersent);
 	int audioEnabled(bool bEnable);
 	//½ØÆÁ
-	QVariantMap screenShot();
+	void screenShot(QString sUser,int nType,int nChl);
 	//È«ÆÁ
 	int SetFullScreen(bool bFullScreen);
 	//ÔÆÌ¨¿ØÖÆ
@@ -82,6 +83,7 @@ public:
 	int cbCRecordState(QVariantMap evMap);
 	int cbCConnectRefuse(QVariantMap evMap);
 	int cbCAuthority(QVariantMap evMap);
+	int cbCScreenShot(QVariantMap evMap);
 public slots:
 	void slbackToMainThread(QVariantMap evMap);
 	void slmouseMenu();
@@ -103,6 +105,7 @@ signals:
 	void sgconnectStatus(QVariantMap,QWidget *);
 	void sgconnectRefuse(QVariantMap,QWidget *);
 	void sgAuthority(QVariantMap,QWidget *);
+	void sgScreenShot(QVariantMap,QWidget *);
 	void sgbackToMainWnd();
 	void sgVerify(QVariantMap vmap);
 	void sgShutDownDigtalZoom();

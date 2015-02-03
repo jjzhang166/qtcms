@@ -9,10 +9,10 @@
 <p>===使用领域===<br />
   预览、本地回放、远程回放<br />
   ===截屏接口===</p>
-<p>void screenShot();</p>
+<p>void screenShot(QString sUser,int nType);</p>
 <p>抛出事件：<br />
   @7<br />
-  抛出条件：调用screenShot()截图成功;<br />
+  抛出条件：调用void screenShot(QString sUser,int nType);截图成功<br />
   事件名称：screenShotInfo;<br />
   事件参数：<br />
   fileName：文件名 :user-chl-type-time(yy-mm-dd-hh-mm-ss-mil)<br />

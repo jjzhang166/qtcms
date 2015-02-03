@@ -64,7 +64,7 @@ public slots:
 	int SetVolume(unsigned int uiPersent);
 	int AudioEnabled(bool bEnabled);
 	//½ØÆÁ
-	QVariantMap ScreenShot();
+	void screenShot(QString sUser,int nType);
 	//È«ÆÁ
 	void SetFullScreenFlag();
 	void OnBackToMainWnd();
@@ -78,6 +78,7 @@ public slots:
 	void subWindowConnectStatus(QVariantMap,QWidget *);
 	void subWindowConnectRefuse(QVariantMap,QWidget *);
 	void subWindowAuthority(QVariantMap,QWidget *);
+	void subWindowScreenShot(QVariantMap,QWidget *);
 	void subWindowVerify(QVariantMap vmap);
 	// Í¼ÏñÀ­Éì
 	void AllWindowStretch(bool bEnable);

@@ -213,6 +213,8 @@ private:
 	static QMutex Area_lock;
 	static QMutex Device_lock;
 	static QMutex m_tUserLock;
+	static QMutex m_tDiskLock;
+	static QMutex m_tScreenShotLock;
 	QMutex m_csRef;
 	int m_nRef;
 	QString m_sDbConnectionName;

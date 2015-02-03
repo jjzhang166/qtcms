@@ -18,12 +18,15 @@ PlayManager::PlayManager(void):
     m_bStop(false),
     m_bFirstFrame(true),
     m_bRendFinished(false),
+	m_bScreenShot(false),
     m_nInitHeight(0),
     m_nInitWidth(0),
     m_nSpeedRate(0),
     m_speed(SpeedNomal),
     m_ui64TSP(0),
     m_uiCurrentFrameTime(0),
+	m_nScreenShotType(2),
+	m_nScreenShotChl(0),
     m_pRenderWnd(NULL)
 {
 	//ÉêÇë½âÂëÆ÷½Ó¿Ú
@@ -31,7 +34,7 @@ PlayManager::PlayManager(void):
 //	pcomCreateInstance(CLSID_h264Decoder,NULL,IID_IVideoDecoder,(void**)&m_pVedioDecoder);
 	//ÉêÇëäÖÈ¾Æ÷½Ó¿Ú
 	pcomCreateInstance(CLSID_DDrawRender,NULL,IID_IVideoRender,(void**)&m_pVedioRender);
-
+	m_eventNameList<<"screenShot";
 }
 
 
@@ -141,7 +144,7 @@ void PlayManager::run()
 	unsigned int nLength = 0;
 	char * lpdata = NULL;
 	qint64 spend = 0;
-
+	m_bScreenShot=false;
 	while(!m_bStop)
 	{
 		if (m_bPause)
@@ -244,7 +247,62 @@ void PlayManager::run()
 
 	m_bStop = false;
 }
+static void YUV420ToRGB888(unsigned char *py, unsigned char *pu, unsigned char *pv, int width, int height, unsigned char *dst)
+{
+	int line, col, linewidth;
+	int y, u, v, yy, vr, ug, vg, ub;
+	int r, g, b;
+	unsigned char *pRGB = NULL;
 
+	linewidth = width >> 1;
+
+	y = *py++;
+	yy = y << 8;
+	u = *pu - 128;
+	ug = 88 * u;
+	ub = 454 * u;
+	v = *pv - 128;
+	vg = 183 * v;
+	vr = 359 * v;
+
+	for (line = 0; line < height; line++) {
+		for (col = 0; col < width; col++) {
+			r = (yy + vr) >> 8;
+			g = (yy - ug - vg) >> 8;
+			b = (yy + ub ) >> 8;
+
+			if (r < 0) r = 0;
+			if (r > 255) r = 255;
+			if (g < 0) g = 0;
+			if (g > 255) g = 255;
+			if (b < 0) b = 0;
+			if (b > 255) b = 255;
+
+			pRGB = dst + line*width*3 + col*3;
+			*pRGB = r;
+			*(pRGB + 1) = g;
+			*(pRGB + 2) = b;
+
+			y = *py++;
+			yy = y << 8;
+			if (col & 1) {
+				pu++;
+				pv++;
+
+				u = *pu - 128;
+				ug = 88 * u;
+				ub = 454 * u;
+				v = *pv - 128;
+				vg = 183 * v;
+				vr = 359 * v;
+			}
+		} 
+		if ((line & 1) == 0) { 
+			pu -= linewidth;
+			pv -= linewidth;
+		}
+	} 
+}
 int PlayManager::prePlay(QVariantMap item)
 {
 	if (NULL == m_pVedioRender || m_bStop)
@@ -272,6 +330,41 @@ int PlayManager::prePlay(QVariantMap item)
 		m_nInitWidth = iWidth;
 	}
 
+	if (m_bScreenShot)
+	{
+		QString sFileName;
+		QString sFileDir;
+		quint64 uiTime;
+		int nType;
+		int nChl;
+		m_bScreenShot=false;
+		if (getScreenShotInfo(sFileName,sFileDir,uiTime,nChl,nType))
+		{
+			unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
+			memset(rgbBuff, 0, iWidth*iHeight*3);
+			YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
+			QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
+			QString sFilePath=sFileDir+"/"+sFileName;
+			img.save(sFilePath, "JPG");
+			delete [] rgbBuff;
+			if (saveScreenShotInfoToDatabase(sFileName,sFileDir,uiTime,nChl,nType))
+			{
+				QVariantMap tScreenShotInfo;
+				tScreenShotInfo.insert("fileName",sFileName);
+				tScreenShotInfo.insert("fileDir",sFileDir);
+				tScreenShotInfo.insert("chl",nChl);
+				tScreenShotInfo.insert("type",nType);
+				tScreenShotInfo.insert("user",m_sScreenUser);
+				eventCallBack("screenShot",tScreenShotInfo);
+				//do nothing
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"save screenShot info to database fail as saveScreenShotInfoToDatabase";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as get getScreenShotInfo fail";
+			//do nothing
+		}
+	}
 	m_pVedioRender->render(pData,pYdata,pUdata,pVdata,iWidth,iHeight,iYStride,iUVStride,iLineStride,iPixeFormat,iFlags);
 	
 	m_bRendFinished = true;
@@ -373,5 +466,134 @@ void PlayManager::setOriginRect( QRect rect )
 	if (pZoomInterface){
 		pZoomInterface->drawRectToOriginalWnd(rect.left(), rect.top(), rect.right(), rect.bottom());
 		pZoomInterface->Release();
+	}
+}
+
+bool PlayManager::getScreenShotInfo( QString &sFileName,QString &sFileDir,quint64 &uiTime,int &nChl,int &nType )
+{
+	IDisksSetting *pDisksSetting=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IDiskSetting,(void**)&pDisksSetting);
+	if (NULL!=pDisksSetting)
+	{
+		QString sDisk;
+		if (0==pDisksSetting->getUseDisks(sDisk))
+		{
+			QStringList tDiskList=sDisk.split(":");
+			if (tDiskList.size()!=0)
+			{
+				foreach(QString sDiskItem,tDiskList){
+					QString sDiskEx=sDiskItem+":/screenShotEx";
+					QDir tDir;
+					if (tDir.exists(sDiskEx))
+					{
+						sFileDir=sDiskEx;
+						break;
+					}else{
+						//create dir
+						if (tDir.mkdir(sDiskEx))
+						{
+							sFileDir=sDiskEx;
+							break;
+						}else{
+							//keep going
+						}
+					}
+				}
+				if (!sFileDir.isEmpty())
+				{
+					nType=m_nScreenShotType;
+					nChl=m_nScreenShotChl;
+					uiTime=QDateTime::currentDateTime().toMSecsSinceEpoch();
+					QString sDatetime=QDateTime::currentDateTime().toString("yyyy-MM-dd")+"-"+QDateTime::currentDateTime().toString("hh-mm-ss-zzz");
+					sFileName=m_sScreenUser+"-"+QString::number(nChl)+"-"+QString::number(nType)+'-'+sDatetime+".jpg";
+					pDisksSetting->Release();
+					pDisksSetting=NULL;
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as sFileDir is not been created";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as there is not disk for store screen";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as getUseDisks fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as pDisksSetting is null";
+	}
+	if (NULL!=pDisksSetting)
+	{
+		pDisksSetting->Release();
+		pDisksSetting=NULL;
+	}
+	return false;
+}
+
+bool PlayManager::saveScreenShotInfoToDatabase( QString sFileName,QString sFileDir ,quint64 uiTime,int nChl,int nType )
+{
+	IScreenShot *pScreenShot=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IScreenShot,(void**)&pScreenShot);
+	if (NULL!=pScreenShot)
+	{
+		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,nChl,nType,uiTime))
+		{
+			pScreenShot->Release();
+			pScreenShot=NULL;
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"saveScreenShotInfoToDatabase fail as addScreenShotItem fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"saveScreenShotInfoToDatabase fail as pScreenShot is null";
+	}
+	if (NULL!=pScreenShot)
+	{
+		pScreenShot->Release();
+		pScreenShot=NULL;
+	}
+	return false;
+}
+
+void PlayManager::eventCallBack( QString eventName,QVariantMap evMap )
+{
+	if (m_eventNameList.contains(eventName))
+	{
+		tagProcInfo proInfo=m_eventMap.value(eventName);
+		if (NULL!=proInfo.proc)
+		{
+			proInfo.proc(eventName,evMap,proInfo.puser);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<eventName<<" event is not regist";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"not support :"<<eventName;
+	}
+}
+
+void PlayManager::registerEvent( QString eventName,int (__cdecl *proc)(QString,QVariantMap,void*),void *pUser )
+{
+	if (!m_eventNameList.contains(eventName))
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"register event :"<<eventName<<"fail";
+		return;
+	}else{
+		tagProcInfo proInfo;
+		proInfo.proc=proc;
+		proInfo.puser=pUser;
+		m_eventMap.insert(eventName,proInfo);
+		return;
+	}
+}
+
+void PlayManager::screenShot( QString sUser,int nType,int nChl )
+{
+	if (QThread::isRunning())
+	{
+		m_nScreenShotChl=nChl;
+		m_nScreenShotType=nType;
+		m_sScreenUser=sUser;
+		m_bScreenShot=true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as the thread is not running";
 	}
 }

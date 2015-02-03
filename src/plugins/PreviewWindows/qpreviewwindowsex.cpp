@@ -26,6 +26,7 @@ qpreviewwindowsex::qpreviewwindowsex(QWidget *parent)
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectStatus(QVariantMap,QWidget *)),this,SLOT(subWindowConnectStatus(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgconnectRefuse(QVariantMap,QWidget *)),this,SLOT(subWindowConnectRefuse(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i],SIGNAL(sgAuthority(QVariantMap,QWidget *)),this,SLOT(subWindowAuthority(QVariantMap,QWidget *)));
+		connect(&m_sPreviewWnd[i],SIGNAL(sgScreenShot(QVariantMap,QWidget *)),this,SLOT(subWindowScreenShot(QVariantMap,QWidget *)));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgbackToMainWnd()), this, SLOT(OnBackToMainWnd()));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgShutDownDigtalZoom()), this, SLOT(shutDownDigtalZoom()));
 		connect(&m_sPreviewWnd[i], SIGNAL(sgVerify(QVariantMap)), this, SLOT(subWindowVerify(QVariantMap)));
@@ -435,9 +436,9 @@ int qpreviewwindowsex::AudioEnabled( bool bEnabled )
 	return 0;
 }
 
-QVariantMap qpreviewwindowsex::ScreenShot()
+void qpreviewwindowsex::screenShot(QString sUser,int nType)
 {
-	return m_sPreviewWnd[m_nCurrentWnd].screenShot();
+	return m_sPreviewWnd[m_nCurrentWnd].screenShot( sUser, nType,m_nCurrentWnd);
 }
 
 void qpreviewwindowsex::showEvent( QShowEvent *ev )
@@ -569,7 +570,10 @@ void qpreviewwindowsex::OnBackToMainWnd()
 	EP_ADD_PARAM(item,"wndStatus","NormalScreen");
 	EventProcCall("wndStatus",item);
 }
-
+void qpreviewwindowsex::subWindowScreenShot( QVariantMap evMap,QWidget * wnd)
+{
+	EventProcCall("screenShotInfo",evMap);
+}
 void qpreviewwindowsex::subWindowAuthority( QVariantMap evMap,QWidget *wnd )
 {
 	int i;
@@ -772,6 +776,8 @@ void qpreviewwindowsex::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
 		m_sPreviewWnd[i].ViewNewPosition(tRect,nWidth,nHeight);
 	}
 }
+
+
 
 
 

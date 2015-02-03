@@ -11,6 +11,7 @@
 #include "IWindowDivMode.h"
 #include "RecordPlayerView.h"
 #include <IAreaManager.h>
+#include <IScreenShotDevice.h>
 #include <IDeviceManager.h>
 #include <QtCore/QTranslator>
 #include "searchprocess.h"
@@ -21,6 +22,7 @@ int cbGetRecordDate(QString evName,QVariantMap evMap,void*pUser);
 int cbGetRecordFile(QString evName,QVariantMap evMap,void*pUser);
 int cbSearchStop(QString evName,QVariantMap evMap,void*pUser);
 int cbThrowException(QString evName, QVariantMap evMap, void* pUser);
+int cbScreenShot(QString evName, QVariantMap evMap, void* pUser);
 typedef enum __enRecordPlayStatus{
 	STATUS_NORMAL_PLAY,
 	STATUS_FAST_PLAY,
@@ -45,6 +47,7 @@ public:
 	void transRecordFilesEx(QVariantMap &evMap);
 	void transSearchStop(QVariantMap &evMap);
 	void throwException(QVariantMap &evMap);
+	void transScreenShot(QVariantMap &evMap);
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
 	SearchProcess *getCurProc(int wndId);
@@ -84,7 +87,9 @@ public slots:
 
 	int SetVolume(const unsigned int &uiPersent);
 	int AudioEnabled(bool bEnabled);
-	QVariantMap ScreenShot();
+	//½ØÆÁ
+	void screenShot(QString sUser,int nType);
+
 	int GetCurrentState();
 	void sndToUI(int wnd, QVariantMap evMap);
 	void slValidateFail(QVariantMap vmap);
@@ -100,6 +105,7 @@ private:
 private:
 	ILocalRecordSearchEx *m_pLocalRecordSearch;
 	ILocalPlayerEx *m_pLocalPlayer;
+	IScreenShotDevice *m_pScreenShotDevice;
 	IWindowDivMode *m_pWindowDivMode;
 	QList<QWidget *> m_lstRecordPlayerWndList;
 

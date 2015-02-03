@@ -55,7 +55,7 @@ QSubviewRun::QSubviewRun(void):m_pdeviceClient(NULL),
 	connect(&m_tDigitalZoomView,SIGNAL(sgHideEvnet()),this,SLOT(slRemoveExtendWnd()));
 	connect(&m_tDigitalZoomView,SIGNAL(sgShowEvent()),this,SLOT(slAddExtendWnd()));
 	connect(&m_tDigitalZoomView,SIGNAL(sgViewNewPosition(QRect,int ,int )),this,SIGNAL(sgViewNewPosition(QRect,int ,int)));
-	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority";
+	m_eventNameList<<"LiveStream"<<"SocketError"<<"CurrentStatus"<<"ForRecord"<<"RecordState"<<"DecodedFrame"<<"ConnectRefuse"<<"Authority"<<"screenShot";
 	connect(&m_checkIsBlockTimer,SIGNAL(timeout()),this,SLOT(slcheckoutBlock()));
 	m_checkIsBlockTimer.start(4000);
 	m_hMainThread=QThread::currentThreadId();
@@ -93,6 +93,7 @@ void QSubviewRun::run()
 {
 	//此函数内生成的资源，必须仅在此函数内销毁
 	m_stop=false;
+	m_bScreenShot=false;
 	m_nInitHeight=0;
 	m_nInitWidth=0;
 
@@ -1474,13 +1475,38 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			//截屏
 			if (m_bScreenShot)
 			{
+				QString sFileName;
+				QString sFileDir;
+				quint64 uiTime;
+				int nType;
+				int nChl;
 				m_bScreenShot=false;
-				unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
-				memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
-				YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
-				QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
-				img.save(m_sScreenShotPath, "JPG");
-				delete [] rgbBuff;
+				if (getScreenShotInfo(sFileName,sFileDir,uiTime,nChl,nType))
+				{
+					unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
+					memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
+					YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
+					QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+					QString sFilePath=sFileDir+"/"+sFileName;
+					img.save(sFilePath, "JPG");
+					delete [] rgbBuff;
+					if (saveScreenShotInfoToDatabase(sFileName,sFileDir,uiTime,nChl,nType))
+					{
+						QVariantMap tScreenShotInfo;
+						tScreenShotInfo.insert("fileName",sFileName);
+						tScreenShotInfo.insert("fileDir",sFileDir);
+						tScreenShotInfo.insert("chl",nChl);
+						tScreenShotInfo.insert("type",nType);
+						tScreenShotInfo.insert("user",m_sScreenUser);
+						eventCallBack("screenShot",tScreenShotInfo);
+						//do nothing
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"save screenShot info to database fail as saveScreenShotInfoToDatabase";
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as get getScreenShotInfo fail";
+					//do nothing
+				}
 			}
 			   }
 			   break;
@@ -1512,13 +1538,37 @@ int QSubviewRun::cbCDecodeFrame(QString evName,QVariantMap evMap,void*pUser){
 			//截屏
 			if (m_bScreenShot)
 			{
+				QString sFileName;
+				QString sFileDir;
+				quint64 uiTime;
+				int nType;
+				int nChl;
 				m_bScreenShot=false;
-				unsigned char *rgbBuff = new unsigned char[iWidth*iHeight*3];
-				memset(rgbBuff, 0, iWidth*iHeight*3);
-				YUV420ToRGB888((unsigned char*)pYdata, (unsigned char*)pUdata, (unsigned char*)pVdata,iWidth, iHeight, rgbBuff);
-				QImage img(rgbBuff, iWidth, iHeight, QImage::Format_RGB888);
-				img.save(m_sScreenShotPath, "JPG");
-				delete [] rgbBuff;
+				if (getScreenShotInfo(sFileName,sFileDir,uiTime,nChl,nType))
+				{
+					unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
+					memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
+					YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
+					QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+					QString sFilePath=sFileDir+"/"+sFileName;
+					img.save(sFilePath, "JPG");
+					delete [] rgbBuff;
+					if (saveScreenShotInfoToDatabase(sFileName,sFileDir,uiTime,nChl,nType))
+					{
+						QVariantMap tScreenShotInfo;
+						tScreenShotInfo.insert("fileName",sFileName);
+						tScreenShotInfo.insert("fileDir",sFileDir);
+						tScreenShotInfo.insert("chl",nChl);
+						tScreenShotInfo.insert("type",nType);
+						tScreenShotInfo.insert("user",m_sScreenUser);
+						eventCallBack("screenShot",tScreenShotInfo);
+					}else{
+						qDebug()<<__FUNCTION__<<__LINE__<<"save screenShot info to database fail as saveScreenShotInfoToDatabase";
+					}
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as get getScreenShotInfo fail";
+					//do nothing
+				}
 			}
 			   }
 			   break;
@@ -1805,105 +1855,6 @@ void QSubviewRun::slbackToMainThread( QVariantMap evMap )
 	}
 }
 
-// void QSubviewRun::slplanRecord()
-// {
-// 	if (NULL!=m_pRecorder)
-// 	{
-// 		if (m_bIsdataBaseFlush)
-// 		{
-// 			m_bIsdataBaseFlush=false;
-// 			ISetRecordTime *pSetRecordTime=NULL;
-// 			pcomCreateInstance(CLSID_CommonLibPlugin,NULL,IID_ISetRecordTime,(void **)&pSetRecordTime);
-// 			if (NULL!=pSetRecordTime)
-// 			{
-// 				QStringList recordIdList=pSetRecordTime->GetRecordTimeBydevId(m_tDeviceInfo.m_uiChannelIdInDataBase);
-// 				tagRecorderTimeInfo recTimeInfo;
-// 				m_lstReocrdTimeInfoList.clear();
-// 				for (int i=0;i<recordIdList.size();i++)
-// 				{
-// 					QString recordId=recordIdList[i];
-// 					QVariantMap timeInfo=pSetRecordTime->GetRecordTimeInfo(recordId.toInt());
-// 					recTimeInfo.nEnable = timeInfo.value("enable").toInt();
-// 					recTimeInfo.nWeekDay = timeInfo.value("weekday").toInt();
-// 					int weekDay = QDate::currentDate().dayOfWeek() - 1;
-// 					m_nHisWeekDay=QDate::currentDate().dayOfWeek();
-// 					if (0 == recTimeInfo.nEnable || weekDay != recTimeInfo.nWeekDay)
-// 					{
-// 						continue;
-// 					}
-// 					recTimeInfo.startTime = QTime::fromString(timeInfo.value("starttime").toString().mid(11), "hh:mm:ss");
-// 					recTimeInfo.endTime = QTime::fromString(timeInfo.value("endtime").toString().mid(11), "hh:mm:ss");
-// 					m_lstReocrdTimeInfoList.append(recTimeInfo);
-// 				}
-// 				pSetRecordTime->Release();
-// 				pSetRecordTime=NULL;
-// 			}else{
-// 				m_planRecordTimer.stop();
-// 				qDebug()<<__FUNCTION__<<__LINE__<<"plan record fail as apply for ISetRecordTime interface fail";
-// 			}
-// 		}else{
-// 			//do nothing 
-// 			if (m_nHisWeekDay!=QDate::currentDate().dayOfWeek())
-// 			{
-// 				m_bIsdataBaseFlush=true;
-// 				m_lstReocrdTimeInfoList.clear();
-// 			}else{
-// 				//do nothing
-// 			}
-// 		}
-// 		//keep going
-// 		for (int j=0;j<m_lstReocrdTimeInfoList.size();++j)
-// 		{
-// 			if (0==m_lstReocrdTimeInfoList[j].nEnable||QDate::currentDate().dayOfWeek()-1!=m_lstReocrdTimeInfoList[j].nWeekDay)
-// 			{
-// 				continue;
-// 			}
-// 			QTime currentTime; 
-// 			currentTime=QTime::currentTime();
-// 			if (m_currentStatus==STATUS_CONNECTED&&currentTime>=m_lstReocrdTimeInfoList[j].startTime&&currentTime<m_lstReocrdTimeInfoList[j].endTime&&m_bIsAutoRecording==false)
-// 			{
-// 				m_stepCode.enqueue(STARTRECORD);
-// 				m_nRecordType = 0;//Scheduled recording
-// 				m_bIsAutoRecording=true;
-// 			}
-// 			if (m_bIsAutoRecording==true&&currentTime>=m_lstReocrdTimeInfoList[j].endTime)
-// 			{
-// 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-// 
-// 				m_stepCode.enqueue(STOPRECORD);
-// 				m_bIsAutoRecording=false;
-// 			}
-// 			if (!m_lstReocrdTimeInfoList.size())
-// 			{
-// 				if (m_bIsAutoRecording==true)
-// 				{
-// 					qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-// 
-// 					m_stepCode.enqueue(STOPRECORD);
-// 					m_bIsAutoRecording=false;
-// 				}
-// 			}
-// 		}
-// 		if (m_lstReocrdTimeInfoList.size()==0)
-// 		{
-// 			if (m_bIsAutoRecording==true)
-// 			{
-// 				qDebug()<<__FUNCTION__<<__LINE__<<"add STOPRECORD into queue";
-// 
-// 				m_stepCode.enqueue(STOPRECORD);
-// 				m_bIsAutoRecording=false;
-// 			}else{
-// 
-// 			}
-// 		}else{
-// 
-// 		}
-// 	}else{
-// 		//do nothing
-// 		m_planRecordTimer.stop();
-// 	}
-// }
-
 void QSubviewRun::setDatabaseFlush( bool flag )
 {
 	if (QThread::isRunning())
@@ -1946,8 +1897,27 @@ void QSubviewRun::setFoucs( bool bEnable )
 {
 	m_bIsFocus=bEnable;
 }
-QVariantMap QSubviewRun::screenShot()
+void QSubviewRun::screenShot(QString sUser,int nType,int nChl)
 {
+	if (nChl<0||nType!=0)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"the system call abort as the input parm is error";
+		abort();
+	}else{
+		//keep going
+	}
+	if (QThread::isRunning())
+	{
+		//设置 截屏开启条件
+		m_nScreenShotChl=nChl;
+		m_nScreenShotType=nType;
+		m_sScreenUser=sUser;
+		m_bScreenShot=true;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as the thread is not running";
+		//do nothing
+	}
+	return ;
 	QVariantMap item;
 	m_bScreenShot=true;
 	QString sdir=QCoreApplication::applicationDirPath();
@@ -1967,7 +1937,7 @@ QVariantMap QSubviewRun::screenShot()
 	m_sScreenShotPath=simageName;
 	item.insert("imageName",QString::number(uitime).append(".jpg"));
 	item.insert("path",sdir);
-	return item;
+	return ;
 }
 
 void QSubviewRun::ipcSwitchStream()
@@ -2122,13 +2092,38 @@ void QSubviewRun::renderSaveFrame()
 		//截屏
 		if (m_bScreenShot)
 		{
+			QString sFileName;
+			QString sFileDir;
+			quint64 uiTime;
+			int nType;
+			int nChl;
 			m_bScreenShot=false;
-			unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
-			memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
-			YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
-			QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
-			img.save(m_sScreenShotPath, "JPG");
-			delete [] rgbBuff;
+			if (getScreenShotInfo(sFileName,sFileDir,uiTime,nChl,nType))
+			{
+				unsigned char *rgbBuff = new unsigned char[m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3];
+				memset(rgbBuff, 0, m_tRenderInfo.nWidth*m_tRenderInfo.nHeight*3);
+				YUV420ToRGB888((unsigned char*)m_tRenderInfo.pYdata, (unsigned char*)m_tRenderInfo.pUdata, (unsigned char*)m_tRenderInfo.pVdata,m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, rgbBuff);
+				QImage img(rgbBuff, m_tRenderInfo.nWidth, m_tRenderInfo.nHeight, QImage::Format_RGB888);
+				QString sFilePath=sFileDir+"/"+sFileName;
+				img.save(sFilePath, "JPG");
+				delete [] rgbBuff;
+				if (saveScreenShotInfoToDatabase(sFileName,sFileDir,uiTime,nChl,nType))
+				{
+					QVariantMap tScreenShotInfo;
+					tScreenShotInfo.insert("fileName",sFileName);
+					tScreenShotInfo.insert("fileDir",sFileDir);
+					tScreenShotInfo.insert("chl",nChl);
+					tScreenShotInfo.insert("type",nType);
+					tScreenShotInfo.insert("user",m_sScreenUser);
+					eventCallBack("screenShot",tScreenShotInfo);
+					//do nothing
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"save screenShot info to database fail as saveScreenShotInfoToDatabase";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as get getScreenShotInfo fail";
+				//do nothing
+			}
 		}
 	}else{
 		//do nothing
@@ -2564,6 +2559,91 @@ void QSubviewRun::setParentWnd( QWidget*wnd )
 void QSubviewRun::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
 {
 	m_tDigitalZoomView.ViewNewPosition(tRect,nWidth,nHeight);
+}
+
+bool QSubviewRun::getScreenShotInfo( QString &sFileName,QString &sFileDir,quint64 &uiTime,int &nChl,int &nType )
+{
+	IDisksSetting *pDisksSetting=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IDiskSetting,(void**)&pDisksSetting);
+	if (NULL!=pDisksSetting)
+	{
+		QString sDisk;
+		if (0==pDisksSetting->getUseDisks(sDisk))
+		{
+			QStringList tDiskList=sDisk.split(":");
+			if (tDiskList.size()!=0)
+			{
+				foreach(QString sDiskItem,tDiskList){
+					QString sDiskEx=sDiskItem+":/screenShotEx";
+					QDir tDir;
+					if (tDir.exists(sDiskEx))
+					{
+						sFileDir=sDiskEx;
+						break;
+					}else{
+						//create dir
+						if (tDir.mkdir(sDiskEx))
+						{
+							sFileDir=sDiskEx;
+							break;
+						}else{
+							//keep going
+						}
+					}
+				}
+				if (!sFileDir.isEmpty())
+				{
+					nType=m_nScreenShotType;
+					nChl=m_nScreenShotChl;
+					uiTime=QDateTime::currentDateTime().toMSecsSinceEpoch();
+					QString sDatetime=QDateTime::currentDateTime().toString("yyyy-MM-dd")+"-"+QDateTime::currentDateTime().toString("hh-mm-ss-zzz");
+					sFileName=m_sScreenUser+"-"+QString::number(nChl)+"-"+QString::number(nType)+'-'+sDatetime+".jpg";
+					pDisksSetting->Release();
+					pDisksSetting=NULL;
+					return true;
+				}else{
+					qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as sFileDir is not been created";
+				}
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as there is not disk for store screen";
+			}
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as getUseDisks fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"getScreenShotInfo fail as pDisksSetting is null";
+	}
+	if (NULL!=pDisksSetting)
+	{
+		pDisksSetting->Release();
+		pDisksSetting=NULL;
+	}
+	return false;
+}
+
+bool QSubviewRun::saveScreenShotInfoToDatabase( QString sFileName,QString sFileDir ,quint64 uiTime,int nChl,int nType )
+{
+	IScreenShot *pScreenShot=NULL;
+	pcomCreateInstance(CLSID_CommonlibEx,NULL,IID_IScreenShot,(void**)&pScreenShot);
+	if (NULL!=pScreenShot)
+	{
+		if (pScreenShot->addScreenShotItem(sFileName,sFileDir,nChl,nType,uiTime))
+		{
+			pScreenShot->Release();
+			pScreenShot=NULL;
+			return true;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"saveScreenShotInfoToDatabase fail as addScreenShotItem fail";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"saveScreenShotInfoToDatabase fail as pScreenShot is null";
+	}
+	if (NULL!=pScreenShot)
+	{
+		pScreenShot->Release();
+		pScreenShot=NULL;
+	}
+	return false;
 }
 
 

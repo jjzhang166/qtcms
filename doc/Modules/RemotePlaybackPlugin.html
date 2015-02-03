@@ -138,7 +138,7 @@ STATUS_PAUSE, 3<br />
 STATUS_STOP, 4</p>
 <p align="left">int GetCurrentState();</p>
 <p align="left">=========截屏=========</p>
-<p align="left">void screenShot();</p>
+<p align="left">void screenShot(QString sUser,int nType);//sUser:当前操作用户，nType:类型（预览为：0，本地为：1，远程为：2）</p>
 <p align="left">&nbsp;</p>
 <p><strong>插件抛出的事件</strong>：<br />
   @1<br />

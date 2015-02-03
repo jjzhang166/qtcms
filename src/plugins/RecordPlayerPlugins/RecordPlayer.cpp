@@ -39,6 +39,7 @@ m_CurStatus(STATUS_STOP)
 	if (NULL != m_pLocalRecordSearch)
 	{
 		m_pLocalRecordSearch->QueryInterface(IID_ILocalPlayerEx, (void**)&m_pLocalPlayer);
+		m_pLocalRecordSearch->QueryInterface(IID_IScreenShotDevice,(void**)&m_pScreenShotDevice);
 	}
 
 
@@ -85,6 +86,11 @@ RecordPlayer::~RecordPlayer()
 		m_pWindowDivMode->Release();
 		m_pWindowDivMode = NULL;
 	}
+	if (NULL!=m_pScreenShotDevice)
+	{
+		m_pScreenShotDevice->Release();
+		m_pScreenShotDevice=NULL;
+	}
 }
 
 int RecordPlayer::cbInit()
@@ -106,7 +112,7 @@ int RecordPlayer::cbInit()
 	pEvRegister->registerEvent(QString("SearchStop"), cbSearchStop, this);
 	pEvRegister->registerEvent(QString("GetRecordFileEx"), cbGetRecordFile, this);
 	pEvRegister->registerEvent(QString("ThrowException"), cbThrowException, this);
-
+	pEvRegister->registerEvent(QString("screenShot"),cbScreenShot,this);
 	pEvRegister->Release();
 	return 0;
 }
@@ -493,6 +499,17 @@ int cbThrowException(QString evName, QVariantMap evMap, void* pUser)
 	}
 	return 0;
 }
+
+int cbScreenShot( QString evName, QVariantMap evMap, void* pUser )
+{
+	RecordPlayer *pRecordPlayer = (RecordPlayer*)pUser;
+	if ("screenShot" == evName)
+	{
+		pRecordPlayer->transScreenShot(evMap);
+	}
+	return 0;
+}
+
 void RecordPlayer::transRecordDate(QVariantMap &evMap)
 {
 	QDateTime date = evMap["date"].toDateTime();
@@ -580,10 +597,6 @@ void RecordPlayer::hideEvent( QHideEvent * )
 
 }
 
-QVariantMap RecordPlayer::ScreenShot()
-{
-	return m_subRecPlayerView[m_currentWindID].ScreenShot();
-}
 
 bool RecordPlayer::DevIsExit( QString devicename)
 {
@@ -858,4 +871,19 @@ void RecordPlayer::loadlanguage()
 void RecordPlayer::slValidateFail( QVariantMap vmap )
 {
 	EventProcCall(QString("Validation"), vmap);
+}
+
+void RecordPlayer::screenShot( QString sUser,int nType )
+{
+	if (NULL!=m_pScreenShotDevice)
+	{
+		m_pScreenShotDevice->screenShot(sUser,nType,m_currentWindID);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as m_pScreenShotDevice is null";
+	}
+}
+
+void RecordPlayer::transScreenShot( QVariantMap &evMap )
+{
+	EventProcCall("screenShot",evMap);
 }

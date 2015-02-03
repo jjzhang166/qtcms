@@ -81,6 +81,7 @@ public slots:
 	void SocketErrorToUislot(QVariantMap );
 	void StateChangeToUislot(QVariantMap );
 	void CacheStateToUislot(QVariantMap );
+	void slScreenShot(QVariantMap);
 signals:
 	void FoundFileToUiS(QVariantMap );
 	void RecFileSearchFinishedToUiS(QVariantMap );
@@ -94,7 +95,8 @@ public:
     void  SocketErrorPlugin(int stateValue);
     int   GetRecFileNum(uint uiNum);
 	
-	QVariantMap ScreenShot();
+	void screenShot(QString sUser,int nType);
+
 
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);

@@ -8,6 +8,7 @@
 #include "IEventRegister.h"
 #include "ILocalPlayerEx.h"
 #include "ILocalRecordSearchEx.h"
+#include <IScreenShotDevice.h>
 #include "IVideoDisplayOption.h"
 #include "ICommunicate.h"
 #include "QFileData.h"
@@ -25,7 +26,8 @@ class LocalPlayerEx : public QObject,
 	public ILocalRecordSearchEx,
 	public ILocalPlayerEx,
 	public IVideoDisplayOption,
-	public ICommunicate
+	public ICommunicate,
+	public IScreenShotDevice
 {
 	Q_OBJECT
 public:
@@ -75,6 +77,9 @@ public:
 	//ICommunicate
 	virtual int setInfromation(const QString &msgName, const QVariantMap &info);
 
+	//IScreenShotDevice
+	void screenShot(QString sUser,int nType,int nChl);
+
 	typedef int (__cdecl *PreviewEventCB)(QString name, QVariantMap info, void* pUser);
 	typedef struct _tagProcInfoItem
 	{
@@ -83,9 +88,15 @@ public:
 	}ProcInfoItem;
 
 	void setPlayTime(uint &playtime);
+public:
+	//»Øµ÷º¯Êý
+	int cbCScreenShot(QVariantMap evMap);
 public slots:
 	void onStartPlayMgr(uint wndId);
 	void onStopPlayMgr();
+	void onScreenShotInfo(QVariantMap evMap);
+signals:
+	void sgScreenShotInfo(QVariantMap evMap);
 private:
 	QSqlDatabase * initDataBase(QString sDatabaseName);
 	sqlite3* initDataBase(char *dbPath);

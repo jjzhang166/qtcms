@@ -30,7 +30,6 @@ public:
 
 	void setLocalPlayer(ILocalPlayerEx* pPlayer);
 	int AudioEnabled(bool bEnabled);
-	QVariantMap ScreenShot();
 	void SetFocus(bool flags);
 	void recMsg(QVariantMap msg);
 	void setPlayingFlag(bool bPlaying);

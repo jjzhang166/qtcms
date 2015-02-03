@@ -207,30 +207,7 @@ int RecordPlayerView::AudioEnabled(bool bEnabled)
 	return 0;
 }
 
-QVariantMap RecordPlayerView::ScreenShot()
-{
-	_ScreenShotImage=QPixmap::grabWindow(this->winId(),0,0,this->width(),this->height());
-	QString dir=QCoreApplication::applicationDirPath();
-	dir.append("/temp");
-	QDir temp;
-	bool exist=temp.exists(dir);
-	if (exist==false)
-	{
-		temp.mkdir(dir);
-	}
-	QDateTime mtime=QDateTime::currentDateTime();
-	uint mutime=mtime.toTime_t();
-	QString imageName;
-	imageName.append(dir);
-	imageName+="/";
-	imageName+=QString::number(mutime);
-	imageName+=".jpg";
-	_ScreenShotImage.save(imageName);
-	QVariantMap item;
-	item.insert("imageName",QString::number(mutime).append(".jpg"));
-	item.insert("path",dir);
-	return item;
-}
+
 
 void RecordPlayerView::SetFocus( bool flags )
 {

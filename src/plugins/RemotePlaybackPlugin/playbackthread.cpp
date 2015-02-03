@@ -12,7 +12,7 @@
 	m_stepQueue.append(status);\
 	m_mx.unlock();\
 	break;
-
+int cbPlayBackThreadScreenShot(QString evName,QVariantMap evMap,void *pUser);
 PlayBackThread::PlayBackThread()
 	: QThread(),
 	m_bStop(false),
@@ -115,6 +115,7 @@ int PlayBackThread::AddChannelIntoPlayGroup( uint uiWndId,int uiChannelId )
 		wndPlay.bufferManager = new BufferManager();
 		wndPlay.playManager = new PlayManager();
 
+		wndPlay.playManager->registerEvent("screenShot",cbPlayBackThreadScreenShot,this);
 		removeRepeatWnd(wnd);
 		wndPlay.wnd = wnd;
 
@@ -708,6 +709,47 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 	return 0;
 }
 
+void PlayBackThread::screenShot( QString sUser,int nType,int nChl )
+{
+	m_playMap;
+	if (nChl>=m_wndList.size())
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail and call abort as nChl is out of size"<<nChl;
+		abort();
+	}else{
+		//keep going
+	}
+	QWidget *wnd = (QWidget*)m_wndList[nChl];
+	QMap<int,WndPlay>::const_iterator it=m_playMap.begin();
+	bool bStop=false;
+	while(it!=m_playMap.end()&&bStop==false){
+		if (wnd==it->wnd)
+		{
+			if (NULL!=it->playManager)
+			{
+				it->playManager->screenShot(sUser,nType,nChl);
+			}else{
+				qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as playManager is null";
+			}
+			bStop=true;
+		}else{
+			//keep going
+		}
+		++it;
+	}
+	if (bStop==false)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot as there is not wnd for shot";
+	}
+}
+
+void PlayBackThread::cbScreenShot( QVariantMap evMap )
+{
+	emit sgScreenShot(evMap);
+}
+
+
+
 int cbFoundFile(QString evName,QVariantMap evMap,void *pUser)
 {
 	if ("foundFile" == evName)
@@ -740,5 +782,16 @@ int cbRecordStream(QString evName, QVariantMap evMap, void* pUser)
 {
 	if ("RecordStream" == evName)
 		((PlayBackThread*)pUser)->recordFrame(evMap);
+	return 0;
+}
+
+int cbPlayBackThreadScreenShot( QString evName,QVariantMap evMap,void *pUser )
+{
+	if ("screenShot"==evName)
+	{
+		((PlayBackThread*)pUser)->cbScreenShot(evMap);
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cbPlayBackThreadScreenShot as evName error";
+	}
 	return 0;
 }

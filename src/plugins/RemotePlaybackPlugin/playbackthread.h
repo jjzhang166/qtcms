@@ -90,11 +90,13 @@ public:
 	int recordFrame(QVariantMap &evMap);
 
 	int setInfromation(QString evName, QVariantMap info);
+	void screenShot(QString sUser,int nType,int nChl);
 public:
 	void  FoundFile(QVariantMap evMap);
 	void  RecFileSearchFinished(QVariantMap evMap);
 	void  RecFileSearchFail(QVariantMap evMap);
 	void  StateChange(QVariantMap evMap);
+	void cbScreenShot(QVariantMap evMap);
 signals:
 	void FoundFileToUiS(QVariantMap );
 	void RecFileSearchFinishedToUiS(QVariantMap );
@@ -102,6 +104,7 @@ signals:
 	void SocketErrorToUiS(QVariantMap );
 	void StateChangeToUiS(QVariantMap );
 	void FileSearchStartToUiS(QVariantMap);
+	void sgScreenShot(QVariantMap evMap);
 protected:
 	void run();
 private slots:

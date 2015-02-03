@@ -26,6 +26,7 @@ QWidget(parent),
 	m_sSubviewRun.registerEvent(QString("RecordState"),cbRecordStateEx,this);
 	m_sSubviewRun.registerEvent(QString("ConnectRefuse"),cbConnectRefuseEx,this);
 	m_sSubviewRun.registerEvent(QString("Authority"),cbAuthorityEx,this);
+	m_sSubviewRun.registerEvent(QString("screenShot"),cbScreenShotEx,this);
 	//生成渲染的窗口
 	m_pManageWidget=new ManageWidget(this);
 	//右键菜单
@@ -213,6 +214,13 @@ void qsubviewEx::slbackToMainThread( QVariantMap evMap )
 		evMapToUi.insert("ChannelId",m_tDeviceInfo.m_uiChannelIdInDataBase);
 		qDebug()<<__FUNCTION__<<__LINE__<<getDeviceInfo().m_sDeviceName<<getDeviceInfo().m_uiChannelId<<"stop preview because as the device resource had been full";
 		emit sgAuthority(evMapToUi,this);
+	}else{
+		//do nothing
+	}
+	if (evMap.contains("eventName")&&evMap.value("eventName")=="screenShot")
+	{
+		evMap.remove("eventName");
+		emit sgScreenShot(evMap,this);
 	}else{
 		//do nothing
 	}
@@ -552,7 +560,6 @@ void qsubviewEx::mouseReleaseEvent( QMouseEvent * event)
 		}
 	}
 	m_bIsDrawRect=false;
-
 	emit sgmouseReleaseEvent(this,event);
 }
 void qsubviewEx::mouseMoveEvent( QMouseEvent * event)
@@ -712,9 +719,9 @@ int qsubviewEx::audioEnabled( bool bEnable )
 	return 0;
 }
 
-QVariantMap qsubviewEx::screenShot()
+void qsubviewEx::screenShot(QString sUser,int nType,int nChl)
 {
-	return m_sSubviewRun.screenShot();
+	return m_sSubviewRun.screenShot( sUser, nType,nChl);
 }
 
 int qsubviewEx::openPTZ( int ncmd,int nspeed )
@@ -884,10 +891,14 @@ int qsubviewEx::cbCAuthority( QVariantMap evMap )
 	}else{
 
 	}
-
 	return 0;
 }
-
+int qsubviewEx::cbCScreenShot( QVariantMap evMap )
+{
+	evMap.insert("eventName","screenShot");
+	emit sgbackToMainThread(evMap);
+	return 0;
+}
 void qsubviewEx::enableStretch( bool bEnable )
 {
 	m_bStretch = bEnable;
@@ -998,6 +1009,8 @@ void qsubviewEx::ViewNewPosition( QRect tRect,int nWidth,int nHeight )
 
 
 
+
+
 int cbStateChangeEx(QString evName,QVariantMap evMap,void*pUser)
 {
 	if (evName=="CurrentStatus")
@@ -1038,6 +1051,18 @@ int cbAuthorityEx( QString evName,QVariantMap evMap,void*pUser )
 		return 0;
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"cbConnectRefuseEx fail as the eventName is not collect";
+		return 1;
+	}
+}
+
+int cbScreenShotEx( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="screenShot")
+	{
+		((qsubviewEx*)pUser)->cbCScreenShot(evMap);
+		return 0;
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"cbScreenShotEx fail as eventName is not correct";
 		return 1;
 	}
 }

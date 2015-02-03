@@ -5,7 +5,7 @@
 #include "IDisksSetting.h"
 //#include "vld.h"
 
-
+int cbLocalScreenShot(QString evName,QVariantMap evMap,void*pUser);
 LocalPlayerEx::LocalPlayerEx()
 	:m_nRef(0),
 	m_i32GroupNum(0),
@@ -17,7 +17,7 @@ LocalPlayerEx::LocalPlayerEx()
 	m_pFileData(NULL)
 {
 	//set event list
-	m_eventList<<"GetRecordFileEx"<<"ThrowException";
+	m_eventList<<"GetRecordFileEx"<<"ThrowException"<<"screenShot";
 
 	//get usable disk list
 	IDisksSetting *pDiskSet = NULL;
@@ -37,10 +37,12 @@ LocalPlayerEx::LocalPlayerEx()
 	{
 		PlayMgr *pplayMgr = new PlayMgr();
 		m_arrPlayInfo[i32Loop].pPlayMgr = pplayMgr;
+		pplayMgr->registerEvent("screenShot",cbLocalScreenShot,this);
 		m_arrPlayInfo[i32Loop].i32WndId = NO_WINDOW_ID;
 // 		connect(m_pFileData, SIGNAL(sigSkipTime(uint)), pplayMgr, SLOT(onSkipTime(uint)));
 		connect(m_pFileData, SIGNAL(sigStartPlay(uint)), this, SLOT(onStartPlayMgr(uint)));
 	}
+	connect(this,SIGNAL(sgScreenShotInfo(QVariantMap)),this,SLOT(onScreenShotInfo(QVariantMap)));
 }
 
 LocalPlayerEx::~LocalPlayerEx()
@@ -176,6 +178,10 @@ long __stdcall LocalPlayerEx::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_ICommunicate == iid)
 	{
 		*ppv = static_cast<ICommunicate *>(this);
+	}
+	else if (IID_IScreenShotDevice==iid)
+	{
+		*ppv = static_cast< IScreenShotDevice*>(this);
 	}
 	else
 	{
@@ -1155,10 +1161,48 @@ int LocalPlayerEx::setInfromation( const QString &msgName, const QVariantMap &in
 	return 0;
 }
 
+void LocalPlayerEx::screenShot( QString sUser,int nType,int nChl )
+{
+	for (int i=0;i<MAX_PLAY_THREAD;i++)
+	{
+		if (m_arrPlayInfo[i].i32WndId==nChl)
+		{
+			if (NULL!=m_arrPlayInfo[i].pPlayMgr)
+			{
+				m_arrPlayInfo[i].pPlayMgr->screenShot(nChl,nType,sUser);
+			}
+			break;
+		}else{
+			//continue
+		}
+	}
+}
+
+int LocalPlayerEx::cbCScreenShot( QVariantMap evMap )
+{
+	emit sgScreenShotInfo(evMap);
+	return 0;
+}
+
+void LocalPlayerEx::onScreenShotInfo( QVariantMap evMap )
+{
+	eventProcCall("screenShot",evMap);
+}
+
 void cbTimeChange(QString evName, uint playTime, void* pUser)
 {
 	if (pUser && "playingTime" == evName)
 	{
 		((LocalPlayerEx*)pUser)->setPlayTime(playTime);
 	}
+}
+
+int cbLocalScreenShot( QString evName,QVariantMap evMap,void*pUser )
+{
+	if (evName=="screenShot")
+	{
+		((LocalPlayerEx*)pUser)->cbCScreenShot(evMap);
+		return 0;
+	}
+	return 1;
 }
