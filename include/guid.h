@@ -122,4 +122,6 @@ extern const CLSID CLSID_AutoSearchDevicePlugin;
 extern const IID IID_IDeviceRemotePlayback;
 extern const IID IID_ICommunicate;
 extern const CLSID CLSID_LocalBackupPlugin;
+extern const IID IID_IConfigManager;
+extern const GUID CLSID_ConfigMgr;
 #endif

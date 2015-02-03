@@ -51,6 +51,7 @@
 		<item clsid="3641CDC2-EDDB-4287-B723-3A770199ECAD" name="AudioPlayer" file="AudioPlayer.dll" type="AudioPlayer"/>
 		<item clsid="6243A3F3-EFC4-4A8F-88A0-0F2A59A24D29" name="CommonlibEx" file="commonlibEx.dll" type="commonlib"/>
 		<item clsid="3A609D94-92C5-4A91-96E0-B9484BEECFE4" name="filesystem.winStorage" file="winStorageUtinity.dll" />
+		<item clsid="4A3250F1-A51F-4E17-B206-283B63C3EADD" name="ConfigManager" file="ConfigManager.dll" type="ConfigManager"/>
 	
 	</CLSID>
 </root>
