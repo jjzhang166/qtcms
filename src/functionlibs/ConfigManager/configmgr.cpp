@@ -2,7 +2,6 @@
 #include "guid.h"
 #include <QFile>
 
-#include <QElapsedTimer>
 #include <QDebug>
 
 #define qDebug() qDebug()<<__FUNCTION__<<__LINE__
@@ -119,6 +118,7 @@ int ConfigMgr::Export( const QString &sFilePath )
 	int ret = sqlite3_prepare_v2(pdb, sql.toLatin1().data(), -1, &pstmt, (const char**)&pErr);
 	if (SQLITE_OK != ret){
 		qDebug()<<pErr;
+		releaseSqlInterface(pdb);
 		return 1;
 	}
 	QStringList tabList;
@@ -133,6 +133,7 @@ int ConfigMgr::Export( const QString &sFilePath )
 	ret = sqlite3_finalize(pstmt);
 	if (SQLITE_OK != ret){
 		qDebug()<<"finalize error!";
+		releaseSqlInterface(pdb);
 		return 1;
 	}
 	//search each table

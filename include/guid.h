@@ -126,4 +126,5 @@ extern const IID IID_ICommunicate;
 extern const CLSID CLSID_LocalBackupPlugin;
 extern const IID IID_IConfigManager;
 extern const GUID CLSID_ConfigMgr;
+extern const CLSID CLSID_ScreenShotSearchPlugin;
 #endif

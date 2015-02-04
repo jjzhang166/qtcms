@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+p.MsoNormal3 {mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:宋体;}
+</style>
+</head>
+
+<body>
+<p>编辑人：杨美化<br />
+编辑日期：2015.02.03</p>
+<p>插件简介：<br />
+  //插件名称：ScreenShotSearchPlugin插件<br />
+  //插件功能：检索截图信息</p>
+<p>接口说明：</p>
+<p>//简述：根据输入参数检索截图信息。 <br />
+  //输入参数:<br />
+  //sWndId: 窗口号(如111表示仅检索0，1，2窗口)<br />
+  //	sTime: 截图时间(格式为&quot;YYYY-MM-DD&quot;)，为空时表示检索当前时间以前的所有截图<br />
+  //	nType:类型(按位表示，00：预览，01：本地回放，10：远程回放)<br />
+  //	sUser:用户名，当前用户名<br />
+  //返回值: <br />
+  //	0: 调用成功 <br />
+  //	1: 参数错误<br />
+  //	2: 系统错误 <br />
+  int searchScreenShot(const QString &amp;sWndId,const QString &amp;sTime,const int &amp;nType,const QString &amp;sUser);</p>
+<p>&nbsp;</p>
+<p>插件抛出的事件：<br />
+  @1<br />
+  事件名称：ScreenShotInfo<br />
+  事件参数：<br />
+  &quot;fileName&quot;：文件名称<br />
+  &quot;fileDir&quot;：文件路径<br />
+  &quot;wndId&quot;:窗口号(1-49)<br />
+  &quot;type&quot;：类型(0：预览，1：本地回放，2：远程回放)<br />
+  &quot;time&quot;:截图时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
+  &quot;userName&quot;：用户名<br />
+</p>
+<p><br />
+</p>
+</body>
+</html>
