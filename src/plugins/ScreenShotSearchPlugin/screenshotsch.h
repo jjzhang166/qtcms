@@ -19,7 +19,7 @@ public:
 public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 
-	int searchScreenShot(const QString &sWndId,const QString &sTime,const int &nType,const QString &sUser);
+	int searchScreenShot(const QString &sWndId, const QString &sStartTime, const QString &sEndTime, const int &nType, const QString &sUser);
 private:
 	sqlite3* getSqlInterface();
 	QString createSql(qint64 num, QString keyWord);

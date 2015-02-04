@@ -20,11 +20,11 @@ ScreenShotSch::~ScreenShotSch()
 
 }
 
-int ScreenShotSch::searchScreenShot( const QString &sWndId,const QString &sTime,const int &nType,const QString &sUser )
+int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStartTime, const QString &sEndTime, const int &nType, const QString &sUser )
 {
 	qint64 nWnd = sWndId.toLongLong(NULL, 2);
 	//check input parameter
-	if (nWnd < 0 || nWnd > ((qint64)1<<MAX_WINDOWS_NUM) - 1 || nType < 0 || nType > 3 || sUser.isEmpty()){
+	if (nWnd < 0 || nWnd > ((qint64)1<<MAX_WINDOWS_NUM) - 1 || nType < 0 || nType > 3 || sStartTime.isEmpty() || sEndTime.isEmpty() || sUser.isEmpty()){
 		qDebug()<<"input parameters error!";
 		return 1;
 	}
@@ -41,10 +41,10 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId,const QString &sTime,
 	if (((qint64)1<<MAX_WINDOWS_NUM) - 1 != nWnd){
 		sql += createSql(nWnd, QString("chl"));
 	}
-	if (!sTime.isEmpty()){
-		QDateTime date = QDateTime::fromString(sTime, "yyyy-MM-dd");
-		sql += QString(" and (time-%1)<86399 ").arg(date.toTime_t());
-	}
+	QDateTime start = QDateTime::fromString(sStartTime, "yyyy-MM-dd hh:mm:ss");
+	QDateTime end = QDateTime::fromString(sEndTime, "yyyy-MM-dd hh:mm:ss");
+	sql += QString(" and (time>=%1 and time=<%2) ").arg(start.toTime_t()).arg(end.toTime_t());
+
 	if (3 != nType){
 		sql += " and " + createSql(nType, QString("type"));
 	}

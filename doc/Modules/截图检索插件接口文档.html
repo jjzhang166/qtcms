@@ -26,14 +26,15 @@ p.MsoNormal3 {mso-style-unhide:no;
 <p>//简述：根据输入参数检索截图信息。 <br />
   //输入参数:<br />
   //sWndId: 窗口号(如111表示仅检索0，1，2窗口)<br />
-  //	sTime: 截图时间(格式为&quot;YYYY-MM-DD&quot;)，为空时表示检索当前时间以前的所有截图<br />
+  //	sStartTime: 开始时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
+  //	sEndTime: 结束时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
   //	nType:类型(按位表示，00：预览，01：本地回放，10：远程回放)<br />
   //	sUser:用户名，当前用户名<br />
   //返回值: <br />
   //	0: 调用成功 <br />
   //	1: 参数错误<br />
   //	2: 系统错误 <br />
-  int searchScreenShot(const QString &amp;sWndId,const QString &amp;sTime,const int &amp;nType,const QString &amp;sUser);</p>
+  int searchScreenShot(const QString &amp;sWndId,const QString &amp;sStartTime,const QString &amp;sEndTime,const int &amp;nType,const QString &amp;sUser);</p>
 <p>&nbsp;</p>
 <p>插件抛出的事件：<br />
   @1<br />
