@@ -3614,7 +3614,61 @@ QString commonlibEx::getScreenItem( QList<int> tChlList,QList<int> tTypeList,qui
 		<item id='' fileName='' fileDir='' chl='' type='' time=''>
 	</screenShot>
 	*/
-	return "";
+	QString sChlList;
+	QString sTypeList;
+	for (int i=0;i<tChlList.size();i++)
+	{
+		if (i==0)
+		{
+			sChlList=QString::number(tChlList.value(i));
+		}else{
+			sChlList=sChlList+","+QString::number(tChlList.value(i));
+		}
+	}
+	for (int i=0;i<tTypeList.size();i++)
+	{
+		if (i==0)
+		{
+			sTypeList=QString::number(tTypeList.value(i));
+		}else{
+			sTypeList=sTypeList+","+QString::number(tTypeList.value(i));
+		}
+	}
+	QSqlQuery _query(*m_db);
+
+	QString sCmd=QString("select *from screenShot where chl in (%1) and type in (%2) and time > %3 and time <%4").arg(sChlList).arg(sTypeList).arg(uiStartSceenTime).arg(uiEndSceenTime);
+	m_tScreenShotLock.lock();
+	QString tXml;
+	if (_query.exec(sCmd))
+	{
+		QDomDocument tDoc;
+		QDomElement tRoot=tDoc.createElement("screenShot");
+		tDoc.appendChild(tRoot);
+		int nSize=0;
+		while(_query.next()){
+			nSize++;
+			int nCount=_query.record().count();
+			QDomElement tItem=tDoc.createElement("Item");
+			tRoot.appendChild(tItem);
+			for (int n=0;n<nCount;n++)
+			{
+				QString sItemName=_query.record().fieldName(n);
+				QString sItemValue=_query.record().value(n).toString();
+				QDomAttr tItemAttr=tDoc.createAttribute(sItemName);
+				tItemAttr.setValue(sItemValue);
+				tItem.setAttributeNode(tItemAttr);
+			}
+		}
+		QDomAttr tItemNum=tDoc.createAttribute("ItemNum");
+		tItemNum.setValue(QString::number(nSize));
+		tRoot.setAttributeNode(tItemNum);
+		tXml=tDoc.toString();
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"exec cmd fail"<<sCmd;
+		abort();
+	}
+	m_tScreenShotLock.unlock();
+	return tXml;
 }
 
 

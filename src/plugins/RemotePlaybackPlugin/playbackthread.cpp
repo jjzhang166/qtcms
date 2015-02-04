@@ -711,7 +711,6 @@ int PlayBackThread::setInfromation( QString evName, QVariantMap info )
 
 void PlayBackThread::screenShot( QString sUser,int nType,int nChl )
 {
-	m_playMap;
 	if (nChl>=m_wndList.size())
 	{
 		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail and call abort as nChl is out of size"<<nChl;

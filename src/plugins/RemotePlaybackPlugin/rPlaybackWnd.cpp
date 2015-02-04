@@ -632,58 +632,11 @@ void RPlaybackWnd::slValidateFail( QVariantMap vmap )
 
 void RPlaybackWnd::slScreenShot( QVariantMap evMap)
 {
-	EventProcCall("screenShot",evMap);
+	EventProcCall("screenShotInfo",evMap);
 }
 
 
 
-/*
- int cbFoundFile(QString evName,QVariantMap evMap,void*pUser)
- {
-     int nRet = 1;
-     if (evName == "foundFile")
-     {
-		 ((RPlaybackWnd*)pUser)->FoundFile(evMap);
-     }
-     return nRet;
- }
- int cbRecFileSearchFail(QString evName,QVariantMap evMap,void*pUser)
- {
-	 int nRet = 1;
-	 if (evName == "recFileSearchFail")
-	 {
-		 ((RPlaybackWnd*)pUser)->RecFileSearchFail(evMap);
-	 }
-	 return nRet;
- }
- int cbRecFileSearchFinished(QString evName,QVariantMap evMap,void*pUser)
- {
-     int nRet = 1;
-     if (evName == "recFileSearchFinished")
-     {
-		 ((RPlaybackWnd*)pUser)->RecFileSearchFinished(evMap);
-     }
-     return nRet;
- }
-
- int cbStateChange(QString evName,QVariantMap evMap,void*pUser)
- {
-	 if (evName=="CurrentStatus")
-	 {
-		 ((RPlaybackWnd*)pUser)->StateChange(evMap);
-	 }
-	 return 1;
- }
- 
- int cbCacheState(QString evName,QVariantMap evMap,void*pUser)
- {
-		 if (evName=="bufferStatus")
-		 {
-			 ((RPlaybackWnd*)pUser)->CacheState(evMap);
-		 }
-		 return 1;
- }
- */
 
 void cbDigitalZoom( QString evName, QVariantMap item, void* pUser )
 {

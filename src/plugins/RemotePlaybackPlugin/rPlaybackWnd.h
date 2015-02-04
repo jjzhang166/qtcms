@@ -73,6 +73,8 @@ public slots:
     int   GroupSpeedSlow();
     int   GroupSpeedNormal();
 	int	GetCurrentState();
+
+	void screenShot(QString sUser,int nType);
 public slots:
 	void FoundFileToUislot(QVariantMap );
 	void RecFileSearchFinishedToUislot(QVariantMap );
@@ -95,7 +97,7 @@ public:
     void  SocketErrorPlugin(int stateValue);
     int   GetRecFileNum(uint uiNum);
 	
-	void screenShot(QString sUser,int nType);
+	
 
 
 	void  FoundFile(QVariantMap evMap);

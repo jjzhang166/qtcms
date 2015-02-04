@@ -885,5 +885,5 @@ void RecordPlayer::screenShot( QString sUser,int nType )
 
 void RecordPlayer::transScreenShot( QVariantMap &evMap )
 {
-	EventProcCall("screenShot",evMap);
+	EventProcCall("screenShotInfo",evMap);
 }

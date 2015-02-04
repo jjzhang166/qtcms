@@ -16,6 +16,7 @@
 #include <QMutex>
 #include "DisksInfo.h"
 #include <IUserManagerEx.h>
+#include <QDomDocument>
 class  commonlibEx:public IUserManager
 	,public IUserManagerEx
 	,public IGroupManager
