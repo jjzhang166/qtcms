@@ -1,6 +1,7 @@
 #include "screenshotsch.h"
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QFile>
 
 #include <QDebug>
 
@@ -22,9 +23,11 @@ ScreenShotSch::~ScreenShotSch()
 
 int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStartTime, const QString &sEndTime, const int &nType, const QString &sUser )
 {
+	qDebug()<<sWndId<<sStartTime<<sEndTime<<nType<<sUser;
+
 	qint64 nWnd = sWndId.toLongLong(NULL, 2);
 	//check input parameter
-	if (nWnd < 0 || nWnd > ((qint64)1<<MAX_WINDOWS_NUM) - 1 || nType < 0 || nType > 3 || sStartTime.isEmpty() || sEndTime.isEmpty() || sUser.isEmpty()){
+	if (nWnd <= 0 || nWnd > ((qint64)1<<MAX_WINDOWS_NUM) - 1 || nType <= 0 || nType > 7 || sStartTime.isEmpty() || sEndTime.isEmpty() || sUser.isEmpty()){
 		qDebug()<<"input parameters error!";
 		return 1;
 	}
@@ -38,12 +41,15 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 	}
 	//create sql
 	QString sql = "select * from screenShot where ";
-	if (((qint64)1<<MAX_WINDOWS_NUM) - 1 != nWnd){
+	if (((qint64)1<<MAX_WINDOWS_NUM) - 1 != nWnd && 0 != nWnd){
 		sql += createSql(nWnd, QString("chl"));
 	}
-	QDateTime start = QDateTime::fromString(sStartTime, "yyyy-MM-dd hh:mm:ss");
-	QDateTime end = QDateTime::fromString(sEndTime, "yyyy-MM-dd hh:mm:ss");
-	sql += QString(" and (time>=%1 and time=<%2) ").arg(start.toTime_t()).arg(end.toTime_t());
+	QDateTime start = QDateTime::fromString(sStartTime, "yyyy-MM-dd");
+	QDateTime end = QDateTime::fromString(sEndTime, "yyyy-MM-dd");
+	if (start == end){
+		end = end.addSecs(86399);
+	}
+	sql += QString(" and (time>=%1 and time<=%2) ").arg(start.toMSecsSinceEpoch()).arg(end.toMSecsSinceEpoch());
 
 	if (3 != nType){
 		sql += " and " + createSql(nType, QString("type"));
@@ -64,10 +70,13 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 		for (int index = 0; index < col - 1; index++){
 			info.insert(gs_keyArr[index], QString((const char*)sqlite3_column_text(pstmt, index + 1)));
 		}
-		QDateTime datetime = QDateTime::fromTime_t(info["time"].toUInt()); 
+		QDateTime datetime = QDateTime::fromMSecsSinceEpoch(info["time"].toULongLong()); 
 		info["time"] = datetime.toString("yyyy-MM-dd hh:mm:ss");
+		QString path = info["fileDir"].toString() + "/" + info["fileName"].toString();
+		if (QFile::exists(path)){
+			EventProcCall(QString("ScreenShotInfo"), info);
+		}
 
-		EventProcCall(QString("ScreenShotInfo"), info);
 		ret = sqlite3_step(pstmt);
 	}
 	//release resource
