@@ -18,7 +18,7 @@ interface IOnvifRemoteInfo : public IPComBase
 	index:码流索引（0：主码流），width：码流宽，height：码流高，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔
 
 	*/
-	virtual QString setOnvifDeviceEncoderInfo(QString sIp,QString sPort,QString sUserName,QString sPassword,int nIndex,int nWidth,int nHeight,QString sEnc_fps,QString sEnc_bps,QString sCodeFormat,QString sEncInterval,QString sEncProfile)=0;
+	virtual bool setOnvifDeviceEncoderInfo(QString sIp,QString sPort,QString sUserName,QString sPassword,int nIndex,int nWidth,int nHeight,QString sEnc_fps,QString sEnc_bps,QString sCodeFormat,QString sEncInterval,QString sEncProfile)=0;
 };
 
 #endif
