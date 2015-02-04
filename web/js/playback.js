@@ -116,9 +116,11 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 
 		
         autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
-		 AddActivityEvent('Validation','Validationcallback(data)');
-		 oPlayBack.AddEventProc('Validation','PluginLimitcallback(data)');
+		AddActivityEvent('Validation','Validationcallback(data)');
+		oPlayBack.AddEventProc('Validation','PluginLimitcallback(data)');
 		oPlaybackLocl.AddEventProc('Validation','PluginLimitcallback(data)');
+		oPlayBack.AddEventProc('screenShotInfo','screenShotInfocallback(data)');
+		oPlaybackLocl.AddEventProc('screenShotInfo','screenShotInfocallback(data)');
 		bFullScreen = 0;
 
 		ViewMax();
@@ -208,7 +210,18 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 		}
 	  
 	}
-	
+	//截屏回调
+	function screenShotInfocallback(data){
+		//console.log(data);
+		$('#fileRec').hide();
+		$('#limitTips p').html(T('screenShot_success',data.fileDir)).css('color','red');
+		$('#limitTips').show();
+		 var timer = setTimeout(function(){
+			  $('#limitTips').fadeOut(1500);
+			  clearTimeout(timer);
+			 },2000);
+		
+	}
    //用户登录状态回调函数
     function useStateChange(ev){
 	//	console.log(ev);
@@ -451,7 +464,13 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 	function palybackspeed(str){	
 		$('#palybackspeed').html(str);
 	}
+    //截屏
+	function ScreenShot(){
+	  
+	   var user = autoSearchDev.getCurrentUser();
+	  bool? oPlaybackLocl.screenShot(user,1):oPlayBack.screenShot(user,2);
 
+	}
 	/*function VideoData2Ui(obj){  // CGI 数据填充.
 		obj.each(function(){ 
 			var chlData = $(this).html().split('|'); //disk(int)|session(int)|chn(int)|type(int)|begin(time_t)|end(time_t)	

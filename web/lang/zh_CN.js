@@ -489,5 +489,7 @@
 	 'Please_select_window':'没有选择窗口',
 	 'Please_select_backup_file':'没有选择文件',
 	 'Wrong_time_period':'时间段错误！',
+	 //截屏
+	 'screenShot_success':'截屏成功，截图保存于_V_目录下.',
 	
 }

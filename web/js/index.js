@@ -181,9 +181,12 @@ var oPreView,oDiv,autoSearchDev,
 		
 		oPreView.AddEventProc('wndStatus','ViewMax()');
 		
+		oPreView.AddEventProc('screenShotInfo','screenShotcallback(data)');
+		
 		oPreView.AddEventProc('Validation','PluginLimitcallback(data)');
 		
          autoSearchDev.AddEventProc("reFreshDeviceList",'CurrentStateChange(ev)');
+		 
 		 autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		 
 		  AddActivityEvent('Validation','Validationcallback(data)');
@@ -254,6 +257,12 @@ var oPreView,oDiv,autoSearchDev,
 			  
 			openCloseAll(1);
 		
+	}
+	
+	function screenShotcallback(data){
+		
+	  //console.log(data);	
+	  writeActionLog(T('screenShot_success',data.fileDir));
 	}
 	function maxDiv(num){
 		
@@ -866,10 +875,12 @@ var oPreView,oDiv,autoSearchDev,
 	 }
 	 
   }
-  function selectfn(obj){
-	obj.toSelect(); 
-	obj.click(); 
+  //截屏
+  function ScreenShot(){
+	  var user = autoSearchDev.getCurrentUser();
+	  oPreView.screenShot(user,0);
   }
+
   //验证用户是否有权限
   function checkUserRight(uicode,uisubcode){
 	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);

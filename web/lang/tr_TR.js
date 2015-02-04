@@ -493,4 +493,6 @@ var tr_TR={
 	 'Please_select_window':'Hiçbir seçim penceresi',
 	 'Please_select_backup_file':'Bir dosyayı seçin etmeyin',
 	 'Wrong_time_period':'Zaman hatası',
+	  //截屏
+	 'screenShot_success':'_V_ Dizininde Ekran başarı, mağaza.',
 }

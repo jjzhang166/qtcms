@@ -492,4 +492,6 @@
 	 'Please_select_window':'No selection window',
 	 'Please_select_backup_file':'Do not select a file',
 	 'Wrong_time_period':'Time error',
+	  //截屏
+	 'screenShot_success':'Screenshot is successful, save in _V_ directory.',
 }

@@ -493,4 +493,6 @@
 	 'Please_select_window':'Нет окно выбора',
 	 'Please_select_backup_file':'Не выбирайте файл',
 	 'Wrong_time_period':'Ошибка Время',
+	  //截屏
+	 'screenShot_success':'Скриншоты успех, магазин в каталоге _V_.',
 }
