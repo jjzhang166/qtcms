@@ -47,6 +47,9 @@ const CLSID CLSID_PreviewWindowsPlugin =
 // {AF0AA67A-599F-450B-9784-C275802F642E}
 const IID IID_IGroupManager = 
 { 0xaf0aa67a, 0x599f, 0x450b, { 0x97, 0x84, 0xc2, 0x75, 0x80, 0x2f, 0x64, 0x2e } };
+// {B0A3BCEF-A47D-42E4-BEE3-45FAF497A28D}
+const IID IID_IOnvifRemoteInfo = 
+{ 0xb0a3bcef, 0xa47d, 0x42e4, { 0xbe, 0xe3, 0x45, 0xfa, 0xf4, 0x97, 0xa2, 0x8d } };
 
 // {14B60E68-CC5D-475E-962D-52A590F9E8AA}
 const IID IID_IAreaManager = 

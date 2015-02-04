@@ -130,7 +130,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGui4.lib;$(SolutionDir)..\libs\libpcom.lib;QtWebKit4.lib;QtXml4.lib;sqlite3.lib;$(QTDIR)\lib\QtGui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>LocalBackupPlugin.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>ScreenShotSearchPlugin.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy  "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\output\$(Configuration)\pdb"

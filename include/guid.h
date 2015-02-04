@@ -14,6 +14,7 @@ extern const CLSID CLSID_CommonLibPlugin;
 extern const CLSID CLSID_SettingsActivity;
 extern const CLSID CLSID_PreviewWindowsPlugin;
 extern const IID IID_IGroupManager;
+extern const IID IID_IOnvifRemoteInfo;
 extern const IID IID_IAreaManager;
 extern const IID IID_IDeviceManager;
 extern const IID IID_IChannelManager;
