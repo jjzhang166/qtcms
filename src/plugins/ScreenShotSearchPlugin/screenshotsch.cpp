@@ -46,9 +46,8 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 	}
 	QDateTime start = QDateTime::fromString(sStartTime, "yyyy-MM-dd");
 	QDateTime end = QDateTime::fromString(sEndTime, "yyyy-MM-dd");
-	if (start == end){
-		end = end.addSecs(86399);
-	}
+	end = end.addSecs(24*3600 - 1);
+
 	sql += QString(" and (time>=%1 and time<=%2) ").arg(start.toMSecsSinceEpoch()).arg(end.toMSecsSinceEpoch());
 
 	if (3 != nType){
