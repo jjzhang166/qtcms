@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+
+<body>
+<p>编辑人：冯明创<br />
+  编辑日期：2015.02.05</p>
+<p>插件简介：<br />
+  //插件名称：onvif设置插件<br />
+  //插件功能：设置onvif设备的网络设置和编码设置</p>
+<p>接口说明：</p>
+<p>@1<br />
+  简介：设置目标设备的参数<br />
+  输入参数：sIp：设备ip，sPort：设备端口，sUserName：设备用户名，sPassword：设备密码<br />
+  返回值：<br />
+  bool setOnvifDeviceParam(QString sIp,QString sPort,QString sUserName,QString sPassword);<br />
+  @2<br />
+  简介：获取设备的网络参数<br />
+  返回值：QVariantMap 包含：ip，mac，gateway，mask，dns<br />
+  QVariantMap getOnvifDeviceNetwordInfo();<br />
+  @3<br />
+  简介：设置目标设备的网络信息<br />
+  输入参数：sSetIp：设备ip，sSetMac：设备mac地址，sSetGateway：设备网关，sSetMask：设备掩码，sSetDns：设备Dns<br />
+  返回值：<br />
+  bool setOnvifDeviceNetWordInfo(QString sSetIp,QString sSetMac,QString sSetGateway,QString sSetMask,QString sSetDns);<br />
+  @4<br />
+  简介：获取设备的编码信息<br />
+  返回值：<br />
+  //返回值格式为 xml 格式的 字符串<br />
+  /*<br />
+  &lt;OnvifStreamEncoderInfo itemNum=''&gt;<br />
+  &lt;streamItem index='' width='' height='' enc_fps='' enc_bps='' codeFormat='' enc_interval='' enc_profile=''/&gt;<br />
+  &lt;OnvifStreamEncoderInfo&gt;</p>
+<p> index:码流索引（0：主码流），width：码流宽，height：码流高，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔</p>
+<p> */<br />
+  QString getOnvifDeviceEncoderInfo();<br />
+  @5<br />
+  简介：设置设备的编码信息<br />
+  返回值：<br />
+  bool setOnvifDeviceEncoderInfo(int nIndex,int nWidth,int nHeight,QString sEnc_fps,QString sEnc_bps,QString sCodeFormat,QString sEncInterval,QString sEncProfile);</p>
+</body>
+</html>

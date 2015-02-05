@@ -39,6 +39,9 @@ const CLSID CLSID_CommonLibPlugin =
 // {138D54FD-0E51-4B32-848B-9D32220BC01E}
 const GUID CLSID_SettingsActivity = 
 { 0x138d54fd, 0xe51, 0x4b32, { 0x84, 0x8b, 0x9d, 0x32, 0x22, 0xb, 0xc0, 0x1e } };
+// {C7995B92-CE97-45E2-8A6C-4BA55C7425D7}
+const CLSID CLSID_OnvifSetingPlugin = 
+{ 0xc7995b92, 0xce97, 0x45e2, { 0x8a, 0x6c, 0x4b, 0xa5, 0x5c, 0x74, 0x25, 0xd7 } };
 
 // {074814B4-91A2-4B91-8FD9-1C1316578F81}
 const CLSID CLSID_PreviewWindowsPlugin = 

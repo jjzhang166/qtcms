@@ -5,6 +5,7 @@
 		<item clsid="138D54FD-0E51-4B32-848B-9D32220BC01E" name="activity.settings" file="Settingsactivity.dll" title="settings"/>
 		<item clsid="EFF1FF04-910D-43D3-8340-CD050EDA70CF" name="activity.Playback" file="PlaybackActivity.dll" title="Playback"/>
 		<item clsid="1590BA27-BB21-4B98-BEE0-DF89F9CE6703" name="activity.BackUp" file="BackUpActivity.dll" title="BackUp"/>
+		<item clsid="C7995B92-CE97-45E2-8A6C-4BA55C7425D7" name="plugin.onvifSetting" file="plugins/onvifSetting.dll" mimetype="application/cms-onvif-setting"/>
 		<item clsid="B15ABB14-5545-4B14-9109-0EB573B33D64" name="plugin.commonlib" file="plugins/commonlib.dll" mimetype="application/cms-common-library"/>
 		<item clsid="074814B4-91A2-4B91-8FD9-1C1316578F81" name="plugin.previewwindowsplugin" file="plugins/previewwindows.dll" mimetype="application/cms-preview-windows" />
 		<item clsid="CB2CC692-E924-4003-A5A0-C686D090E0B0" name="plugin.remoteplaybackplugin" file="plugins/remoteplaybackplugin.dll" mimetype="application/cms-remote-playback" />

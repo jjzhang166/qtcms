@@ -13,6 +13,7 @@ extern const IID IID_IScreenShot;
 extern const CLSID CLSID_CommonLibPlugin;
 extern const CLSID CLSID_SettingsActivity;
 extern const CLSID CLSID_PreviewWindowsPlugin;
+extern const CLSID CLSID_OnvifSetingPlugin;
 extern const IID IID_IGroupManager;
 extern const IID IID_IOnvifRemoteInfo;
 extern const IID IID_IAreaManager;
