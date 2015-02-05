@@ -13,6 +13,7 @@ extern "C"{
 void authorityEventHook(int nEvent, unsigned int lparam, unsigned int rparam, void *custom /* top-level-param */);
 void eventHook(int eventType, int lParam, void *rParam, void *customCtx);
 void dataHook(void *pdata, unsigned int dataSize, unsigned int timestamp, int dataType, void *customCtx);
+void nvpMDEventHook(int nEvent, unsigned int lparam, unsigned int rparam, void *custom);
 class WorkerThread : public QObject
 {
 	Q_OBJECT
@@ -24,6 +25,7 @@ public:
 	void setDeviceInfo(const DeviceInfo& devInfo);
 	void recEventHook(int eventType,void *rParam);
 	void recAuthorityEventHook(int eventType,void *rParam);
+	void recNvpMDEventHook(int eventType, void *rParam);
 	void recFrameData(void* pdata, unsigned int size, unsigned int timestamp, int datatype);
 	void registerEvent(QString eventName,int (__cdecl *proc)(QString,QVariantMap,void *),void *pUser);
 public slots:
@@ -37,6 +39,7 @@ public slots:
 	int GetStreamInfo(int nStreamId, QVariantMap& info, int *ret);
 	void setEventMap(const QMultiMap<QString,tagOnvifProInfo> &tEventMap);
 	int PtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *ret);
+	void MotionDetection(bool bEnable, int *result);
 private:
 	QMultiMap<QString,tagOnvifProInfo> m_tEventMap;
 	ConnectStatus m_enStatus;
@@ -47,8 +50,11 @@ private:
 	stNVP_ARGS m_nvpArguments;
 	stNVP_RTSP_STREAM m_nvpStreamUrl;
 	stNVP_VENC_CONFIGS m_nvpStreamInfo;
+	stNVP_SUBSCRIBE m_nvpSubscribe;
 	volatile bool m_bIgnoreEvent;
 	QStringList m_sEventList;
+
+	volatile bool m_bMotionDetect;
 };
 
 #endif // WORKERTHREAD_H

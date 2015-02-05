@@ -52,7 +52,8 @@ WorkerThread::WorkerThread()
 	m_rtspContext(NULL),
 	m_nvpContext(NULL),
 	m_nvpVerify(NULL),
-	m_bIgnoreEvent(false)
+	m_bIgnoreEvent(false),
+	m_bMotionDetect(false)
 {
 	m_sEventList<<"LiveStream"<<"Authority"<<"CurrentStatus";
 }
@@ -459,6 +460,55 @@ void WorkerThread::recAuthorityEventHook( int eventType,void *rParam )
 	}
 }
 
+void WorkerThread::MotionDetection( bool bEnable, int *result )
+{
+	if (bEnable){
+		if (!m_nvpContext){
+			return;
+		}
+		m_nvpSubscribe.event = NVP_EVENT_MD;
+		m_nvpSubscribe.hook = nvpMDEventHook;
+		m_nvpSubscribe.hook_custom = (void *)this;
+		m_nvpSubscribe.keeplive_time = 60;
+		int ret = m_nvpContext->SubscribeEvent(&m_nvpArguments, &m_nvpSubscribe);
+		if (ret){
+			*result = 1;
+			return;
+		}
+		*result = 0;
+		m_bMotionDetect = bEnable;
+	}else{
+		if (!m_nvpContext){
+			return;
+		}
+		int ret = m_nvpContext->CancelEvent(&m_nvpArguments, &m_nvpSubscribe);
+		if (ret){
+			*result = 1;
+			return;
+		}
+		*result = 0;
+		m_bMotionDetect = bEnable;
+	}
+}
+
+void WorkerThread::recNvpMDEventHook( int eventType, void *rParam )
+{
+	if (m_bMotionDetect){
+		QVariantMap info;
+		if (NVP_EVENT_MD == eventType){
+			info.insert("signal", QVariant(true));
+		}else{
+			info.insert("signal", QVariant(false));
+		}
+		tagOnvifProInfo tProinfo = m_tEventMap.value("MDSignal");
+		if (tProinfo.proc){
+			tProinfo.proc(QString("MDSignal"), info, tProinfo.pUser);
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"MDSignal callback is not register";
+		}
+	}
+}
+
 void eventHook( int eventType, int lParam, void *rParam, void *customCtx )
 {
 	((WorkerThread*)customCtx)->recEventHook(eventType,rParam);
@@ -472,4 +522,9 @@ void dataHook( void *pdata, unsigned int dataSize, unsigned int timestamp, int d
 void authorityEventHook( int nEvent, unsigned int lparam, unsigned int rparam, void *custom /* top-level-param */ )
 {
 	((WorkerThread*)custom)->recAuthorityEventHook(nEvent,custom);
+}
+
+void nvpMDEventHook( int nEvent, unsigned int lparam, unsigned int rparam, void *custom )
+{
+	((WorkerThread*)custom)->recNvpMDEventHook(nEvent,custom);
 }

@@ -8,6 +8,7 @@
 int cbOnvifLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
 int cbOnvifConnectStatus(QString sEvName,QVariantMap tInfo,void *pUser);
 int cbOnvifCAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbOnvifMotionDetection(QString sEvName, QVariantMap tInfo, void *pUser);
 OnvifProtocol::OnvifProtocol():
     m_nRef(0),
 	m_pDeviceSeach(NULL),
@@ -15,7 +16,7 @@ OnvifProtocol::OnvifProtocol():
 	m_bSearchStoping(false),
 	m_emStatus(CONNECT_STATUS_DISCONNECTED)
 {
-	m_sEventList << "LiveStream"<<"SocketError"<<"StateChangeed"<<"ConnectRefuse"<<"SearchDeviceSuccess"<<"Authority"<<"CurrentStatus";
+	m_sEventList << "LiveStream"<<"SocketError"<<"StateChangeed"<<"ConnectRefuse"<<"SearchDeviceSuccess"<<"Authority"<<"CurrentStatus"<<"MDSignal";
 // 	typedef QMultiMap<QString,tagOnvifProInfo> EventInfo;
 	qRegisterMetaType<QMultiMap<QString,tagOnvifProInfo> >("QMultiMap<QString,tagOnvifProInfo>");
 	qRegisterMetaType<ConnectStatus>("ConnectStatus");
@@ -32,9 +33,12 @@ OnvifProtocol::OnvifProtocol():
 	connect(this, SIGNAL(sigGetStreamInfo(int, QVariantMap&, int*)), m_pWorkThread, SLOT(GetStreamInfo(int, QVariantMap&, int*)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigAddEvent(const QMultiMap<QString,tagOnvifProInfo>&)), m_pWorkThread, SLOT(setEventMap(const QMultiMap<QString,tagOnvifProInfo>&)), Qt::BlockingQueuedConnection);
 	connect(this, SIGNAL(sigPtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), m_pWorkThread, SLOT(PtzCtrl(NVP_PTZ_CMD, int, int, bool, int*)), Qt::BlockingQueuedConnection);
+	connect(this, SIGNAL(sigMotionDetect(bool, int*)), m_pWorkThread, SLOT(MotionDetection(bool, int*)), Qt::BlockingQueuedConnection);
+
 	m_pWorkThread->registerEvent("LiveStream",cbOnvifLiveStream,this);
 	m_pWorkThread->registerEvent("Authority",cbOnvifCAuthority,this);
 	m_pWorkThread->registerEvent("CurrentStatus",cbOnvifConnectStatus,this);
+	m_pWorkThread->registerEvent("MDSignal", cbOnvifMotionDetection, this);
 	m_workThread.start();
 }
 
@@ -475,6 +479,26 @@ int OnvifProtocol::cbCAuthority( QVariantMap evMap )
 	return 0;
 }
 
+int OnvifProtocol::startMotionDetection()
+{
+	int ret = -1;
+	emit sigMotionDetect(true, &ret);
+	return ret ? 1 : 0;
+}
+
+int OnvifProtocol::stopMotionDetection()
+{
+	int ret = -1;
+	emit sigMotionDetect(false, &ret);
+	return ret ? 1 : 0;
+}
+
+int OnvifProtocol::cbMotionDetection( QVariantMap evMap )
+{
+	eventProcCall(QString("MDSignal"), evMap);
+	return 0;
+}
+
 // void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )
 // {
 // 	((OnvifProtocol*)customCtx)->analyzeDeviceInfo(ip, port, name, location, firmware);
@@ -493,4 +517,9 @@ int cbOnvifConnectStatus( QString sEvName,QVariantMap tInfo,void *pUser )
 int cbOnvifCAuthority( QString sEvName,QVariantMap tInfo,void *pUser )
 {
 	return ((OnvifProtocol*)pUser)->cbCAuthority(tInfo);
+}
+
+int cbOnvifMotionDetection( QString sEvName, QVariantMap tInfo, void *pUser )
+{
+	return ((OnvifProtocol*)pUser)->cbMotionDetection(tInfo);
 }

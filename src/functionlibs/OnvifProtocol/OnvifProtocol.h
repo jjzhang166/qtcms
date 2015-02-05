@@ -10,6 +10,7 @@
 #include <IRemotePreview.h>
 #include <IDeviceConnection.h>
 #include <IProtocolPTZ.h>
+#include <IRemoteMotionDetection.h>
 #include "onvif.h"
 #include "DeviceSearch.h"
 #include "WorkerThread.h"
@@ -23,7 +24,8 @@ class  OnvifProtocol:public QObject,
 	public IDeviceSearch,
 	public IRemotePreview,
 	public IDeviceConnection,
-	public IProtocolPTZ
+	public IProtocolPTZ,
+	public IRemoteMotionDetection
 {
 	Q_OBJECT
 public:
@@ -81,12 +83,15 @@ public:
 	virtual int PTZAuto(const int &nChl, bool bOpend);
 	virtual int PTZStop(const int &nChl, const int &nCmd);
 
-// 	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware );
+	//interface for remote motion detection
+	virtual int startMotionDetection();
+	virtual int stopMotionDetection();
 public:
 	//»Øµ÷º¯Êý
 	int cbCConnectStatus(QVariantMap evMap);
 	int cbCLiveStream(QVariantMap evMap);
 	int cbCAuthority(QVariantMap evMap);
+	int cbMotionDetection(QVariantMap evMap);
 signals:
 	void sigConnectToDevice(int *result);
 	void sigAuthority(int *result);
@@ -98,6 +103,7 @@ signals:
 	void sigGetStreamInfo(int nStreamId, QVariantMap &info, int *result);
 	void sigPtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *result);
 	void sigAddEvent(const QMultiMap<QString,tagOnvifProInfo> &eventMap);
+	void sigMotionDetect(bool bEnable, int* result);
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
 	void sleepEx(uint millisecond);
