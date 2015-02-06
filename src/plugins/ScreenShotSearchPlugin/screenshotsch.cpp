@@ -42,18 +42,18 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 	//create sql
 	QString sql = "select * from screenShot where ";
 	if (((qint64)1<<MAX_WINDOWS_NUM) - 1 != nWnd && 0 != nWnd){
-		sql += createSql(nWnd, QString("chl"));
+		sql += createSql(nWnd, QString("chl")) + " and ";
 	}
 	QDateTime start = QDateTime::fromString(sStartTime, "yyyy-MM-dd");
 	QDateTime end = QDateTime::fromString(sEndTime, "yyyy-MM-dd");
 	end = end.addSecs(24*3600 - 1);
 
-	sql += QString(" and (time>=%1 and time<=%2) ").arg(start.toMSecsSinceEpoch()).arg(end.toMSecsSinceEpoch());
+	sql += QString("(time>=%1 and time<=%2) and ").arg(QString::number(start.toMSecsSinceEpoch())).arg(QString::number(end.toMSecsSinceEpoch()));
 
 	if (3 != nType){
-		sql += " and " + createSql(nType, QString("type"));
+		sql += createSql(nType, QString("type")) + " and ";
 	}
-	sql += QString(" and userName='%1'").arg(sUser);
+	sql += QString("userName='%1'").arg(sUser);
 
 	//start search
 	int ret = sqlite3_prepare_v2(pdb, sql.toLatin1().data(), -1, &pstmt, (const char**)&pErr);
