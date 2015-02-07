@@ -10,7 +10,8 @@ int cbXSubMotionDetion(QString sEvName,QVariantMap tInfo,void *pUser);
 onvifDevice::onvifDevice():m_nRef(0),
 	m_nSwithStream(0),
 	m_nCurrentStream(0),
-	m_tConnectStatus(IDeviceClient::STATUS_DISCONNECTED)
+	m_tConnectStatus(IDeviceClient::STATUS_DISCONNECTED),
+	m_pIAutoSycTime(NULL)
 {
 	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream"<<"ForRecord"<<"MDSignal";
 	m_hMainThread=QThread::currentThreadId();
@@ -22,11 +23,16 @@ onvifDevice::onvifDevice():m_nRef(0),
 		tProtocolInfo.tConnectStatus=IDeviceClient::STATUS_DISCONNECTED;
 		m_tOnvifProtocolInfo.insert(i,tProtocolInfo);
 	}
+	pcomCreateInstance(CLSID_OnvifNetwork,NULL,IID_IAutoSycTime,(void**)&m_pIAutoSycTime);
 }
 
 onvifDevice::~onvifDevice()
 {
-
+	if (m_pIAutoSycTime!=NULL)
+	{
+		m_pIAutoSycTime->Release();
+		m_pIAutoSycTime=NULL;
+	}
 }
 
 long __stdcall onvifDevice::QueryInterface( const IID & iid,void **ppv )
@@ -48,6 +54,10 @@ long __stdcall onvifDevice::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_IPTZControl == iid)
 	{
 		*ppv = static_cast<IPTZControl*>(this);
+	}
+	else if (IID_IAutoSycTime==iid)
+	{
+		*ppv=static_cast<IAutoSycTime*>(this);
 	}
 	else
 	{
@@ -730,6 +740,26 @@ int onvifDevice::cbMotionDetion( QVariantMap &tInfo )
 {
 	eventProcCall("MDSignal",tInfo);
 	return 0;
+}
+
+int onvifDevice::setAutoSycTime( bool bEnabled )
+{
+	if (NULL!=m_pIAutoSycTime)
+	{
+		IOnvifRemoteInfo *pOnvifRemoteInfo=NULL;
+		m_pIAutoSycTime->QueryInterface(IID_IOnvifRemoteInfo,(void**)&pOnvifRemoteInfo);
+		if (NULL!=pOnvifRemoteInfo)
+		{
+			pOnvifRemoteInfo->setOnvifDeviceInfo(m_tDeviceParamInfo.sAddress,QString::number(m_tDeviceParamInfo.nPorts),m_tDeviceParamInfo.sUserName,m_tDeviceParamInfo.sPassword);
+			m_pIAutoSycTime->setAutoSycTime(bEnabled);
+			return 0;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"setAutoSycTime fail as pOnvifRemoteInfo is null";
+		}
+	}else{
+		qDebug()<<__FUNCTION__<<__LINE__<<"setAutoSycTime fail as m_pIAutoSycTime is null";
+	}
+	return 1;
 }
 
 int cbXMainConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )

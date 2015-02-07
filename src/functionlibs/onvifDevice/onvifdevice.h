@@ -9,6 +9,8 @@
 #include <IDeviceConnection.h>
 #include <IPTZControl.h>
 #include <IProtocolPTZ.h>
+#include "IAutoSycTime.h"
+#include <IOnvifRemoteInfo.h>
 #include <IRemoteMotionDetection.h>
 #include <QDebug>
 #include <QMutex>
@@ -37,7 +39,8 @@ class  onvifDevice:public QObject,
 	public IEventRegister,
 	public ISwitchStream,
 	public IPTZControl,
-	public IDeviceClient
+	public IDeviceClient,
+	public IAutoSycTime
 {
 	Q_OBJECT
 public:
@@ -82,6 +85,8 @@ public:
 	virtual int ControlPTZAuto(const int &nChl, bool bOpend);
 	virtual int ControlPTZStop(const int &nChl, const int &nCmd);
 
+	//IAutoSycTime
+	virtual int setAutoSycTime(bool bEnabled);
 public:
 	//callback
 	int cbConnectStatusChange(QVariantMap &tInfo);
@@ -111,6 +116,7 @@ private:
 	QMap<int,tagOnvifProtocolInfo> m_tOnvifProtocolInfo;
 	volatile int m_nSwithStream;
 	volatile int m_nCurrentStream;
+	IAutoSycTime *m_pIAutoSycTime;
 };
 
 #endif // ONVIFDEVICE_H

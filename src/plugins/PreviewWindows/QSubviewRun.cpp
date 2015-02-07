@@ -583,7 +583,7 @@ void QSubviewRun::run()
 					   break;
 				case 1:{
 					//自动同步
-					if ("IPC"==m_tDeviceInfo.m_sVendor&&m_bIsSysTime==true&&m_pdeviceClient!=NULL)
+					if (("IPC"==m_tDeviceInfo.m_sVendor||"ONVIF"==m_tDeviceInfo.m_sVendor)&&m_bIsSysTime==true&&m_pdeviceClient!=NULL)
 					{
 						IAutoSycTime *pAutoSysTime=NULL;
 						m_pdeviceClient->QueryInterface(IID_IAutoSycTime,(void**)&pAutoSysTime);
