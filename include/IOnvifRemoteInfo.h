@@ -13,8 +13,24 @@ interface IOnvifRemoteInfo : public IPComBase
 	
 	//返回值格式为 xml 格式的 字符串
 	/*
-	<OnvifStreamEncoderInfo itemNum=''>
-		<streamItem index='' width='' height='' enc_fps='' enc_bps='' codeFormat='' enc_interval='' enc_profile=''/>
+	<OnvifStreamEncoderInfo itemNum="">
+		<StreamItem index="" width="" height="" enc_fps="" enc_bps="" codeFormat="" enc_interval="" enc_profile="">
+			<EncodeOption>
+				<enc_quality min="" max=""/>
+				<enc_fps min="" max=""/>
+				<enc_bps min="" max=""/>
+				<enc_gov min="" max=""/>
+				<enc_interval min="" max=""/>
+				<resolution itemNum="">
+					<item width="" height=""/>
+					<item width="" height=""/>
+				</resolution>
+				<enc_profile itemNum="">
+					<item profile=""/>
+					<item profile=""/>
+				</enc_profile>
+			</EncodeOption>
+		</StreamItem>
 	<OnvifStreamEncoderInfo>
 	index:码流索引（0：主码流），width：码流宽，height：码流高，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔
 	*/
