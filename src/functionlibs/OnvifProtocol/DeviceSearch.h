@@ -3,9 +3,10 @@
 
 #include <QThread>
 #include "onvif.h"
+#include <onvifLibInterface.h>
 #include "OnvifProtocol_global.h"
 #pragma comment(lib, "libonvifc.lib")
-
+#pragma comment(lib, "onvifLibEx.lib")
 void cbSearchHook(const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void* customCtx);
 
 class DeviceSearch : public QThread
@@ -23,6 +24,7 @@ public:
 	void analyzeDeviceInfo(unsigned char *ip,unsigned short port, char *name, char *location, char *firmware);
 protected:
 	void run();
+	bool getLocalIp(QString &sIp);
 private:
 	bool m_bStop;
 	bool m_bFlush;

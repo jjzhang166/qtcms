@@ -79,6 +79,9 @@ long __stdcall OnvifProtocol::QueryInterface( const IID & iid,void **ppv )
 	else if (IID_IProtocolPTZ == iid)
 	{
 		*ppv = static_cast<IProtocolPTZ *>(this);
+	}else if (IID_IRemoteMotionDetection==iid)
+	{
+		*ppv=static_cast<IRemoteMotionDetection *>(this);
 	}
 	else{
 		*ppv=NULL;

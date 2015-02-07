@@ -778,6 +778,38 @@ int ONVIF_SERVER_daemon(int sock)
 
 static int parse_msg_content(char *msg, char *sznode, char *name, char *value)
 {
+	char msg_bak[5000];
+	ezxml_t msg_xml = NULL, node = NULL, item = NULL;
+	int ret = -1;
+
+	strncpy(msg_bak, msg, sizeof(msg_bak) - 1);
+	if((msg_xml= ezxml_parse_str(msg_bak, strlen(msg_bak))) != NULL){
+		node = ezxml_child(msg_xml, sznode);
+		if (node ) {
+			item = ezxml_child(node, "tt:SimpleItem");
+			//item = ezxml_idx(node, 0);
+			while(item) {
+				char *p_n = NULL;
+				char *p_v = NULL;
+
+				p_n = (char *)ezxml_attr(item, "Name");
+				p_v = (char *)ezxml_attr(item, "Value");
+				if (p_n && p_v && strcmp(p_n, name) == 0){
+					strcpy(value, p_v);
+					ret = 0;
+					break;
+				}
+
+				item = ezxml_next(item);
+			}
+		}
+	}
+
+	if (msg_xml) 
+		ezxml_free(msg_xml);
+
+	return ret;
+	/*
 #ifdef WIN32
 	return 0;
 #else
@@ -813,6 +845,7 @@ static int parse_msg_content(char *msg, char *sznode, char *name, char *value)
 	
 	return ret;
 #endif
+	*/
 }
 
 static int get_msg_str_value(char *msg, char *sznode, char *name, char *value)

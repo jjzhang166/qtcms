@@ -9,6 +9,7 @@
 #include <IDeviceConnection.h>
 #include <IPTZControl.h>
 #include <IProtocolPTZ.h>
+#include <IRemoteMotionDetection.h>
 #include <QDebug>
 #include <QMutex>
 #include <QThread>
@@ -86,6 +87,7 @@ public:
 	int cbConnectStatusChange(QVariantMap &tInfo);
 	int cbLiveStream(QVariantMap &tInfo);
 	int cbAuthority(QVariantMap &tInfo);
+	int cbMotionDetion(QVariantMap &tInfo);
 private:
 	void eventProcCall(QString sEvent,QVariantMap tInfo);
 	void backToMainThread(QString sEvName,QVariantMap tInfo);

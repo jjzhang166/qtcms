@@ -41,6 +41,9 @@ public slots:
 	int PtzCtrl(NVP_PTZ_CMD cmd, int chl, int speed, bool bopen, int *ret);
 	void MotionDetection(bool bEnable, int *result);
 private:
+	bool getLocalIp(QString &sIp);
+	void onvifDeleteContext();
+private:
 	QMultiMap<QString,tagOnvifProInfo> m_tEventMap;
 	ConnectStatus m_enStatus;
 	DeviceInfo m_tDeviceInfo;

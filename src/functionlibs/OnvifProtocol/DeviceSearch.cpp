@@ -85,7 +85,16 @@ void DeviceSearch::run()
 	}
 	g_bSearchRuning=true;
 	//send search msg by bind each ip
-	ONVIF_CLIENT_init(1, 1, 1, false, 2);
+
+	QString sIp;
+	getLocalIp(sIp);
+	char*  cIp;
+
+	QByteArray tByte = sIp.toLatin1();    
+
+	cIp=tByte.data();
+	ONVIF_CLIENT_initEx(1, 1, 1, false, 2,cIp,0);
+
 	for (int index = 0; index < ipList.size(); ++index)
 	{
 		ONVIF_search(ONVIF_DEV_NVT, false, 2, cbSearchHook, ipList[index].toLatin1().data(), this);
@@ -107,7 +116,7 @@ void DeviceSearch::run()
 		msleep(1);
 	}
 
-	ONVIF_CLIENT_deinit();
+	ONVIF_CLIENT_deinitEx();
 	g_bSearchRuning=false;
 }
 
@@ -145,6 +154,30 @@ void DeviceSearch::analyzeDeviceInfo( unsigned char *ip,unsigned short port, cha
 	{
 		m_proInfo.proc(m_sEvent, deviceInfo, m_proInfo.pUser);
 	}
+}
+
+bool DeviceSearch::getLocalIp(QString& sIp)
+{
+	QList<QNetworkInterface> tHostInterface;
+	tHostInterface=QNetworkInterface::allInterfaces();
+	QList<QNetworkInterface>::const_iterator it;
+	for (it=tHostInterface.constBegin();it!=tHostInterface.constEnd();it++)
+	{
+		if (it->hardwareAddress()!=NULL&&it->hardwareAddress().count()==17&&it->flags().testFlag(QNetworkInterface::IsLoopBack)!=true)
+		{
+			QList<QNetworkAddressEntry>tHostEntry=it->addressEntries();
+			QList<QNetworkAddressEntry>::const_iterator tItem;
+			for (tItem=tHostEntry.constBegin();tItem!=tHostEntry.constEnd();tItem++)
+			{
+				if (tItem->ip().protocol()==QAbstractSocket::IPv4Protocol)
+				{
+					sIp=tItem->ip().toString();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void cbSearchHook( const char *bind_host, unsigned char *ip,unsigned short port, char *name, char *location, char *firmware, void *customCtx )

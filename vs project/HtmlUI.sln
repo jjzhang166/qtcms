@@ -209,6 +209,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OnvifNetwork", "..\src\func
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onvifSetting", "..\src\plugins\onvifSetting\onvifSetting.vcxproj", "{60FFE93A-7D2E-4FCB-9E8A-D18505CD48D8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onvifLibEx", "..\src\functionlibs\onvifLibEx\onvifLibEx.vcxproj", "{D39D022E-A95A-4F46-9C16-F10D85948332}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -765,6 +767,15 @@ Global
 		{60FFE93A-7D2E-4FCB-9E8A-D18505CD48D8}.Release|Win32.ActiveCfg = Release|Win32
 		{60FFE93A-7D2E-4FCB-9E8A-D18505CD48D8}.Release|Win32.Build.0 = Release|Win32
 		{60FFE93A-7D2E-4FCB-9E8A-D18505CD48D8}.Release|x64.ActiveCfg = Release|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug|Win32.Build.0 = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug|x64.ActiveCfg = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug64|Win32.ActiveCfg = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug64|Win32.Build.0 = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Debug64|x64.ActiveCfg = Debug|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|Win32.ActiveCfg = Release|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|Win32.Build.0 = Release|Win32
+		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

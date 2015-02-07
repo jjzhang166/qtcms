@@ -12,6 +12,7 @@
 #include <IProtocolPTZ.h>
 #include <IRemoteMotionDetection.h>
 #include "onvif.h"
+
 #include "DeviceSearch.h"
 #include "WorkerThread.h"
 

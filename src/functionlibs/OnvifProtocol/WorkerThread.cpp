@@ -1,8 +1,10 @@
 #include "WorkerThread.h"
 #include "h264wh.h"
-
+#include <onvifLibInterface.h>
+#include <QHostAddress>
+#include <QNetworkInterface>
 #include <QDebug>
-
+#pragma comment(lib, "onvifLibEx.lib")
 #define  CHECK_NVP_CONTEXT(context, ret)								  \
 	if (!context)                    							  		  \
 	{															  		  \
@@ -55,20 +57,34 @@ WorkerThread::WorkerThread()
 	m_bIgnoreEvent(false),
 	m_bMotionDetect(false)
 {
-	m_sEventList<<"LiveStream"<<"Authority"<<"CurrentStatus";
+	m_sEventList<<"LiveStream"<<"Authority"<<"CurrentStatus"<<"MDSignal";
+
+	QString sIp;
+	getLocalIp(sIp);
+	char*  cIp;
+	QByteArray tByte = sIp.toLatin1();    
+	cIp=tByte.data();
+	ONVIF_CLIENT_initEx(1, 1, 1, false, 2,cIp,0);
 }
 
 WorkerThread::~WorkerThread()
 {
-	if (m_nvpContext)
-	{
-		NVP_ONVIF_delete(m_nvpContext);
-		m_nvpContext = NULL;
-	}
+	//if (m_nvpContext)
+	//{
+	//	NVP_ONVIF_delete(m_nvpContext);
+	//	m_nvpContext = NULL;
+	//}
+	onvifDeleteContext();
 	if (m_rtspContext)
 	{
 		MINIRTSP_delete(m_rtspContext);
 		m_rtspContext = NULL;
+	}
+	ONVIF_CLIENT_deinitEx();
+	if (m_bMotionDetect==true)
+	{
+		qDebug()<<__FUNCTION__<<__LINE__<<"the system may be crash as it do not call CancelEvent() function";
+		abort();
 	}
 }
 
@@ -82,11 +98,12 @@ int WorkerThread::ConnectToDevice(int *result)
 		*result = 0;
 		return 0;
 	}
-	if (m_nvpContext)
-	{
-		NVP_ONVIF_delete(m_nvpContext);
-		m_nvpContext = NULL;
-	}
+	//if (m_nvpContext)
+	//{
+	//	NVP_ONVIF_delete(m_nvpContext);
+	//	m_nvpContext = NULL;
+	//}
+	onvifDeleteContext();
 	m_nvpContext = NVP_ONVIF_new();
 	
 	if (!m_nvpContext)
@@ -120,8 +137,9 @@ int WorkerThread::ConnectToDevice(int *result)
 	{
 		*result = 1;
 		m_enStatus = CONNECT_STATUS_DISCONNECTED;
-		NVP_ONVIF_delete(m_nvpContext);
-		m_nvpContext = NULL;
+		//NVP_ONVIF_delete(m_nvpContext);
+		//m_nvpContext = NULL;
+		onvifDeleteContext();
 		qDebug()<<__FUNCTION__<<__LINE__<<(int)this<<m_tDeviceInfo.sIpAddr<<"create rtsp context fault";
 
 		return 1;
@@ -189,9 +207,9 @@ int WorkerThread::Disconnect(int *result)
 	}
 	MINIRTSP_delete(m_rtspContext);
 	m_rtspContext = NULL;
-	NVP_ONVIF_delete(m_nvpContext);
-	m_nvpContext = NULL;
-
+	//NVP_ONVIF_delete(m_nvpContext);
+	//m_nvpContext = NULL;
+	onvifDeleteContext();
 	*result = 0;
 	m_enStatus = CONNECT_STATUS_DISCONNECTED;
 
@@ -481,7 +499,14 @@ void WorkerThread::MotionDetection( bool bEnable, int *result )
 		if (!m_nvpContext){
 			return;
 		}
-		int ret = m_nvpContext->CancelEvent(&m_nvpArguments, &m_nvpSubscribe);
+		int ret;
+		if (m_bMotionDetect==true)
+		{
+			ret = m_nvpContext->CancelEvent(&m_nvpArguments, &m_nvpSubscribe);
+		}else{
+			//do nothing
+		}
+
 		if (ret){
 			*result = 1;
 			return;
@@ -506,6 +531,46 @@ void WorkerThread::recNvpMDEventHook( int eventType, void *rParam )
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"MDSignal callback is not register";
 		}
+	}
+}
+
+bool WorkerThread::getLocalIp( QString &sIp )
+{
+	QList<QNetworkInterface> tHostInterface;
+	tHostInterface=QNetworkInterface::allInterfaces();
+	QList<QNetworkInterface>::const_iterator it;
+	for (it=tHostInterface.constBegin();it!=tHostInterface.constEnd();it++)
+	{
+		if (it->hardwareAddress()!=NULL&&it->hardwareAddress().count()==17&&it->flags().testFlag(QNetworkInterface::IsLoopBack)!=true)
+		{
+			QList<QNetworkAddressEntry>tHostEntry=it->addressEntries();
+			QList<QNetworkAddressEntry>::const_iterator tItem;
+			for (tItem=tHostEntry.constBegin();tItem!=tHostEntry.constEnd();tItem++)
+			{
+				if (tItem->ip().protocol()==QAbstractSocket::IPv4Protocol)
+				{
+					sIp=tItem->ip().toString();
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void WorkerThread::onvifDeleteContext()
+{
+	if (m_nvpContext)
+	{
+		if (m_bMotionDetect==true)
+		{
+			m_bMotionDetect=false;
+			 m_nvpContext->CancelEvent(&m_nvpArguments, &m_nvpSubscribe);
+		}else{
+			//do nothing
+		}
+		NVP_ONVIF_delete(m_nvpContext);
+		m_nvpContext = NULL;
 	}
 }
 

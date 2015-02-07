@@ -1,0 +1,12 @@
+#ifndef ONVIFLIBEX_GLOBAL_H
+#define ONVIFLIBEX_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#ifdef ONVIFLIBEX_LIB
+# define ONVIFLIBEX_EXPORT Q_DECL_EXPORT
+#else
+# define ONVIFLIBEX_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // ONVIFLIBEX_GLOBAL_H

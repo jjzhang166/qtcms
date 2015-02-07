@@ -6,12 +6,13 @@ int cbXMainAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
 int cbXSubConnectStatusChange(QString sEvName,QVariantMap tInfo,void *pUser);
 int cbXSubLiveStream(QString sEvName,QVariantMap tInfo,void *pUser);
 int cbXSubAuthority(QString sEvName,QVariantMap tInfo,void *pUser);
+int cbXSubMotionDetion(QString sEvName,QVariantMap tInfo,void *pUser);
 onvifDevice::onvifDevice():m_nRef(0),
 	m_nSwithStream(0),
 	m_nCurrentStream(0),
 	m_tConnectStatus(IDeviceClient::STATUS_DISCONNECTED)
 {
-	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream"<<"ForRecord";
+	m_sEventList<<"Authority"<<"CurrentStatus"<<"LiveStream"<<"ForRecord"<<"MDSignal";
 	m_hMainThread=QThread::currentThreadId();
 	connect(this,SIGNAL(sgbackToMainThread(QString,QVariantMap)),this,SLOT(slbackToMainThread(QString,QVariantMap)));
 	for (int i=0;i<2;i++)
@@ -209,6 +210,32 @@ int onvifDevice::connectToDevice()
 			pDeviceConnection->Release();
 			pDeviceConnection=NULL;
 			nStreamNum++;
+		}
+		//Æô¶¯ÒÆ¶¯Õì²â
+		IRemoteMotionDetection *pRemoteMotionDetection=NULL;
+		m_tpOnvifProtocolLock.lock();
+		m_tOnvifProtocolInfo.value(0).pOnvifProctol->QueryInterface(IID_IRemoteMotionDetection,(void**)&pRemoteMotionDetection);
+		m_tpOnvifProtocolLock.unlock();
+		if (NULL!=pRemoteMotionDetection)
+		{
+			//×¢²áÒÆ¶¯Õì²âÊÂ¼þ
+			//×¢²áÊÂ¼þ
+			IEventRegister *pEventRegister=NULL;
+			pRemoteMotionDetection->QueryInterface(IID_IEventRegister,(void**)&pEventRegister);
+			if (NULL!=pEventRegister)
+			{
+				pEventRegister->registerEvent("MDSignal",cbXSubMotionDetion,this);
+				pEventRegister->Release();
+				pEventRegister=NULL;
+			}else{
+				//do nothing
+			}
+			//Æô¶¯ÒÆ¶¯Õì²â
+			pRemoteMotionDetection->startMotionDetection();
+			pRemoteMotionDetection->Release();
+			pRemoteMotionDetection=NULL;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start remoteMotion detect fail as onvifProctol do not support IRemoteMotionDetection interface";
 		}
 		return 0;
 	}else{
@@ -462,6 +489,27 @@ void onvifDevice::slbackToMainThread( QString sEvName,QVariantMap evMap )
 
 void onvifDevice::clearProtocol()
 {
+	//Í£Ö¹ÒÆ¶¯Õì²â
+	IRemoteMotionDetection *pRemoteMotionDetection=NULL;
+	m_tpOnvifProtocolLock.lock();
+	if (NULL!=m_tOnvifProtocolInfo.value(0).pOnvifProctol)
+	{
+		m_tOnvifProtocolInfo.value(0).pOnvifProctol->QueryInterface(IID_IRemoteMotionDetection,(void**)&pRemoteMotionDetection);
+		m_tpOnvifProtocolLock.unlock();
+		if (NULL!=pRemoteMotionDetection)
+		{
+			//Í£Ö¹ÒÆ¶¯Õì²â
+			pRemoteMotionDetection->stopMotionDetection();
+			pRemoteMotionDetection->Release();
+			pRemoteMotionDetection=NULL;
+		}else{
+			qDebug()<<__FUNCTION__<<__LINE__<<"start remoteMotion detect fail as onvifProctol do not support IRemoteMotionDetection interface";
+		}
+	}else{
+		m_tpOnvifProtocolLock.unlock();
+		//do nothing
+	}
+
 	m_tpOnvifProtocolLock.lock();
 	QMap<int ,tagOnvifProtocolInfo>::Iterator it=m_tOnvifProtocolInfo.constBegin();
 	while(it!=m_tOnvifProtocolInfo.constEnd()){
@@ -678,6 +726,12 @@ int onvifDevice::ControlPTZStop( const int &nChl, const int &nCmd )
 	return 1;
 }
 
+int onvifDevice::cbMotionDetion( QVariantMap &tInfo )
+{
+	eventProcCall("MDSignal",tInfo);
+	return 0;
+}
+
 int cbXMainConnectStatusChange( QString sEvName,QVariantMap tInfo,void *pUser )
 {
 	tInfo.insert("streamNum","Main");
@@ -711,4 +765,9 @@ int cbXSubAuthority( QString sEvName,QVariantMap tInfo,void *pUser )
 {
 	tInfo.insert("streamNum","Sub");
 	return ((onvifDevice*)pUser)->cbAuthority(tInfo);
+}
+
+int cbXSubMotionDetion( QString sEvName,QVariantMap tInfo,void *pUser )
+{
+	return ((onvifDevice*)pUser)->cbMotionDetion(tInfo);;
 }
