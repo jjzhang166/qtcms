@@ -101,6 +101,7 @@ bool OnvifNetwork::getOnvifDeviceNetworkInfo( QString &sMac,QString &sGateway,QS
 		return false;
 	}
 	stETHER_CONFIG ethCfg;
+	qMemSet(&ethCfg, 0, sizeof(stETHER_CONFIG));
 	int ret = m_pNvpContext->GetNetworkInterface(&m_nvpArguments, (lpNVP_ETHER_CONFIG)&ethCfg);
 	if (ret){
 		qDebug()<<"get network config fail";
@@ -146,6 +147,7 @@ bool OnvifNetwork::setOnvifDeviceNetWorkInfo( QString sSetIp,QString sSetMac,QSt
 		return false;
 	}
 	stETHER_CONFIG ethCfg;
+	qMemSet(&ethCfg, 0, sizeof(stETHER_CONFIG));
 	int ret = m_pNvpContext->GetNetworkInterface(&m_nvpArguments, (lpNVP_ETHER_CONFIG)&ethCfg);
 	if (ret){
 		qDebug()<<"get network info fail";
@@ -173,6 +175,7 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 		qDebug()<<"nvp interface is NULL";
 		return reslut;
 	}
+	qMemSet(&m_stVencConfigs, 0, sizeof(stNVP_VENC_CONFIGS));
 	int ret = m_pNvpContext->GetVideoEncoderConfigs(&m_nvpArguments, &m_stVencConfigs);
 	if (ret){
 		qDebug()<<"get video encoder configs fail";
