@@ -11,6 +11,10 @@
 <p>插件简介：<br />
   //插件名称：onvif设置插件<br />
   //插件功能：设置onvif设备的网络设置和编码设置</p>
+<p>=======网络设置=====</p>
+<p>目前支持 的 项：（1）mac地址(可以获取，但不能设置)（2）子网掩码（3）ip；ps（网关和Dns 目前还不支持）</p>
+<p>======编码设置=====</p>
+<p>目前支持的项：（1）分辨率（2）帧率（3）码率（4）编码格式（5）编码间隔（6）PROFILE</p>
 <p>接口说明：</p>
 <p>@1<br />
   简介：设置目标设备的参数<br />
@@ -20,22 +24,17 @@
   @2<br />
   简介：获取设备的网络参数<br />
   返回值：QVariantMap 包含：ip，mac，gateway，mask，dns<br />
-  QVariantMap getOnvifDeviceNetwordInfo();<br />
+  QVariantMap getOnvifDeviceNetworkInfo();<br />
   @3<br />
   简介：设置目标设备的网络信息<br />
   输入参数：sSetIp：设备ip，sSetMac：设备mac地址，sSetGateway：设备网关，sSetMask：设备掩码，sSetDns：设备Dns<br />
   返回值：<br />
-  bool setOnvifDeviceNetWordInfo(QString sSetIp,QString sSetMac,QString sSetGateway,QString sSetMask,QString sSetDns);<br />
+  bool setOnvifDeviceNetWorkInfo(QString sSetIp,QString sSetMac,QString sSetGateway,QString sSetMask,QString sSetDns);<br />
   @4<br />
   简介：获取设备的编码信息<br />
   返回值：<br />
   //返回值格式为 xml 格式的 字符串<br />
-  /*<br />
-  &lt;OnvifStreamEncoderInfo itemNum=''&gt;<br />
-  &lt;streamItem index='' width='' height='' enc_fps='' enc_bps='' codeFormat='' enc_interval='' enc_profile=''/&gt;<br />
-  &lt;OnvifStreamEncoderInfo&gt;</p>
-<p> index:码流索引（0：主码流），width：码流宽，height：码流高，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔</p>
-<p> */<br />
+  //格式详细说明链接：<a href="编码信息格式解析.html">编码信息格式解析</a><br />
   QString getOnvifDeviceEncoderInfo();<br />
   @5<br />
   简介：设置设备的编码信息<br />
