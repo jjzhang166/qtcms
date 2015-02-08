@@ -380,7 +380,8 @@ bool OnvifNetwork::checkProfile( int index, int profile )
 bool OnvifNetwork::checkFourParam( QString para )
 {
 	//check ip formate like *.*.*.*
-	QRegExp rx("^(?!^0{1,3}(\\.0{1,3}){3}$)(?!^255(\\.255){3}$)((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)($|(?!\\.$)\\.)){4}$");
+// 	QRegExp rx("^(?!^0{1,3}(\\.0{1,3}){3}$)(?!^255(\\.255){3}$)((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)($|(?!\\.$)\\.)){4}$");
+	QRegExp rx("^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)($|(?!\\.$)\\.)){4}$");//permit 0.0.0.0 & 255.255.255.255
 	return para.contains(rx);
 }
 
