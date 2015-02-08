@@ -103,13 +103,13 @@ int ConfigMgr::Export( const QString &sFilePath )
 		qDebug()<<"get sqlite3 interface error!";
 		return 1;
 	}
-	//write xml head
-	QDomDocument doc;
-	QDomProcessingInstruction instruction = doc.createProcessingInstruction("xml", "version = \'1.0\'");
-	doc.appendChild(instruction);
-	QDomElement root = doc.createElement("system");
-	doc.appendChild(root);
-	
+	//write xml head	
+	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+	QXmlStreamWriter out(&outfile);
+	out.writeStartDocument();
+	out.setAutoFormatting(true);
+	out.writeStartElement("system");
+
 	//search database
 	//get table name
 	char *pErr = NULL;
@@ -119,6 +119,9 @@ int ConfigMgr::Export( const QString &sFilePath )
 	if (SQLITE_OK != ret){
 		qDebug()<<pErr;
 		releaseSqlInterface(pdb);
+		out.writeEndElement();
+		out.writeEndDocument();
+		outfile.close();
 		return 1;
 	}
 	QStringList tabList;
@@ -134,6 +137,9 @@ int ConfigMgr::Export( const QString &sFilePath )
 	if (SQLITE_OK != ret){
 		qDebug()<<"finalize error!";
 		releaseSqlInterface(pdb);
+		out.writeEndElement();
+		out.writeEndDocument();
+		outfile.close();
 		return 1;
 	}
 	//search each table
@@ -151,21 +157,21 @@ int ConfigMgr::Export( const QString &sFilePath )
 			continue;
 		}
 		//add table node
-		table = doc.createElement("table");
-		table.setAttribute("name", tabName);
-		root.appendChild(table);
+		out.writeStartElement("table");
+		out.writeAttribute("name", tabName);
+
 		//read table info
 		ret = sqlite3_step(pstmt);
 		while (SQLITE_ROW == ret){
 			//read each item
-			item = doc.createElement("item");
+			out.writeStartElement("item");
 			for (int index = 0; index < columnList.size(); index++){
 				QString attribute = columnList[index];
 				const char* attrValue = (const char*)sqlite3_column_text(pstmt, index);
-				item.setAttribute(attribute, QString(attrValue));
+				out.writeAttribute(attribute, codec->toUnicode(attrValue));
 			}
 			//add item node to table node
-			table.appendChild(item);
+			out.writeEndElement();
 			ret = sqlite3_step(pstmt);
 		}
 		ret = sqlite3_finalize(pstmt);
@@ -174,11 +180,13 @@ int ConfigMgr::Export( const QString &sFilePath )
 			continue;
 		}
 		//add table node to root node
-		root.appendChild(table);
+		out.writeEndElement();
 	}
 	//write to file
-	QTextStream out(&outfile);
-	doc.save(out, 4);
+
+	out.writeEndElement();
+	out.writeEndDocument();
+
 	outfile.close();
 	releaseSqlInterface(pdb);
 
@@ -239,11 +247,12 @@ int ConfigMgr::importData( sqlite3* pdb, QString tabName, QDomNode node )
 		sql = QString("insert into %1(%2) values(").arg(tabName).arg(columnList.join(","));
 		for (int col = 0; col < columnList.size(); col++){
 			QString column = columnList.at(col);
-			sql += QString("'%1',").arg(item.toElement().attribute(column));
+			QString attr = item.toElement().attribute(column);
+			sql += QString("'%1',").arg(attr);
 		}
 		sql = sql.replace(sql.lastIndexOf(","), 1, ")");
 		//insert into database
-		ret = sqlite3_prepare_v2(pdb, sql.toLatin1().data(), -1, &pstmt, (const char**)&pErr);
+		ret = sqlite3_prepare_v2(pdb, sql.toUtf8().data(), -1, &pstmt, (const char**)&pErr);
 		if (SQLITE_OK != ret){
 			qDebug()<<"insert item error in table "<<tabName<<" error:"<<pErr;
 			continue;
