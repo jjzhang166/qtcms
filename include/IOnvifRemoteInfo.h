@@ -7,6 +7,13 @@ interface IOnvifRemoteInfo : public IPComBase
 {
 	virtual void setOnvifDeviceInfo(const QString &sIp, const QString &sPort, const QString &sUserName, const QString &sPassword) = 0;
 	
+	//返回值格式为 xml 的字符串
+	/* 
+	<OnvifDeviceInfo manufacturer="" devname="" model="" firmware="" sn="" hwid="" sw_builddate="" sw_version="" hw_version="" />
+	manufacturer：生产厂家，devname：设备名称，model：型号，firmware：固件，hwid：硬件ID，sw_builddate：软件生成时间，sw_version：软件版本，hw_version：硬件版本
+	*/
+	virtual QString getOnvifDeviceInfo() = 0;
+
 	virtual bool getOnvifDeviceNetworkInfo(QString &sMac,QString &sGateway,QString &sMask,QString &sDns)=0;
 	
 	virtual bool setOnvifDeviceNetWorkInfo(QString sSetIp,QString sSetMac,QString sSetGateway,QString sSetMask,QString sSetDns)=0;

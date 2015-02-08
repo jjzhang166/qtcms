@@ -40,5 +40,14 @@
   简介：设置设备的编码信息<br />
   返回值：<br />
   bool setOnvifDeviceEncoderInfo(int nIndex,int nWidth,int nHeight,QString sEnc_fps,QString sEnc_bps,QString sCodeFormat,QString sEncInterval,QString sEncProfile);</p>
+<p>@6<br />
+简介：获取设备相关信息<br />
+返回值：<br />
+//返回值格式为 xml 的字符串<br />
+/* <br />
+&lt;OnvifDeviceInfo manufacturer=&quot;&quot; devname=&quot;&quot; model=&quot;&quot; firmware=&quot;&quot; sn=&quot;&quot; hwid=&quot;&quot; sw_builddate=&quot;&quot; sw_version=&quot;&quot; hw_version=&quot;&quot; /&gt;<br />
+manufacturer：生产厂家，devname：设备名称，model：型号，firmware：固件，hwid：硬件ID，sw_builddate：软件生成时间，sw_version：软件版本，hw_version：硬件版本<br />
+*/<br />
+  QString getOnvifDeviceInfo();</p>
 </body>
 </html>

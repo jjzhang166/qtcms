@@ -94,6 +94,36 @@ void OnvifNetwork::setOnvifDeviceInfo( const QString &sIp, const QString &sPort,
 	NVP_INIT_ARGS2(m_nvpArguments, (void*)&m_nvpArguments, sIp.toLatin1().data(), sPort.toInt(), sUserName.toLatin1().data(), sPassword.toLatin1().data(), 0);
 }
 
+QString OnvifNetwork::getOnvifDeviceInfo()
+{
+	QString result;
+	if (!m_pNvpContext){
+		qDebug()<<"nvp interface is NULL";
+		return result;
+	}
+	stNVP_DEV_INFO devInfo;
+	qMemSet(&devInfo, 0, sizeof(stNVP_DEV_INFO));
+	int ret = m_pNvpContext->GetDeviceInfo(&m_nvpArguments, &devInfo);
+	if (ret){
+		qDebug()<<"get device info fail";
+		return result;
+	}
+	QDomDocument doc;
+	QDomElement devNode = doc.createElement("OnvifDeviceInfo");
+	devNode.setAttribute("manufacturer", QString(devInfo.manufacturer));
+	devNode.setAttribute("devname", QString(devInfo.devname));
+	devNode.setAttribute("model", QString(devInfo.model));
+	devNode.setAttribute("firmware", QString(devInfo.firmware));
+	devNode.setAttribute("sn", QString(devInfo.sn));
+	devNode.setAttribute("hwid", QString(devInfo.hwid));
+	devNode.setAttribute("sw_builddate", QString(devInfo.sw_builddate));
+	devNode.setAttribute("sw_version", QString(devInfo.sw_version));
+	devNode.setAttribute("hw_version", QString(devInfo.hw_version));
+	doc.appendChild(devNode);
+	doc.save(QTextStream(&result), 4);
+	return result;
+}
+
 bool OnvifNetwork::getOnvifDeviceNetworkInfo( QString &sMac,QString &sGateway,QString &sMask,QString &sDns )
 {
 	if (!m_pNvpContext){
