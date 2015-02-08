@@ -1,0 +1,3 @@
+LIBRARY "userInfoPlugin.dll"
+EXPORTS
+	CreateInstance @1
