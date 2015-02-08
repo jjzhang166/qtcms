@@ -23,9 +23,10 @@ function AddActivityEvent(e,proc){
 function ttst(){alert(1);}
 
 function subViewMsg(msg,param){
-	try{
+	window[msg.Proc](param);
+	/*try{
 		window[msg.Proc](param)
 	}catch(e){
 		alert(e);
-	};
+	};*/
 }

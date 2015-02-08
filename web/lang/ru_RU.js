@@ -495,4 +495,12 @@
 	 'Wrong_time_period':'Ошибка Время',
 	  //截屏
 	 'screenShot_success':'Скриншоты успех, магазин в каталоге _V_.',
+	 'ImageType':'Тип изображения',
+	 'ImageName':'Название изображения',
+	 'ScreenshotsUsers':'пользователь',
+	 'ownedwindow':'окно',
+	 'Timescreenshots':'время',
+	 'StoragePath':'путь',
+	 'AdvancedOptions':'продвинутый',
+	 'picturemanagement':'Фотографии',
 }

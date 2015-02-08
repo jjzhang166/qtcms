@@ -191,7 +191,7 @@ var oPreView,oDiv,autoSearchDev,
 		 
 		  AddActivityEvent('Validation','Validationcallback(data)');
 		 
-		var url =['index.html','play_back.html','backup.html','device.html','','log.html']
+		var url =['index.html','play_back.html','super.html','backup.html','device.html','','log.html']
 		/*for(i in url){
 			if(i != 0){ 
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[i]);
@@ -199,7 +199,7 @@ var oPreView,oDiv,autoSearchDev,
 		}*/
 		$('div.top_nav li').each(function(index){
 			$(this).click(function(){ 
-				if(index == 0||index==4){
+				if(index == 0||index==5){
 					return;
 				}
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[index]);
@@ -914,10 +914,8 @@ var oPreView,oDiv,autoSearchDev,
 		    }
 	 
  }
- function lock(){
-	autoSearchDev.showUserLoginUi(336,300); 
- }
- function getUsername(){
+ 
+function getUsername(){
 	 
 	 var username = autoSearchDev.getCurrentUser();
 	username && $('.top_nav div p span:eq(1)').html(username);

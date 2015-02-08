@@ -469,8 +469,8 @@ var tr_TR={
 	//用户设置
 	'Current users':'Mevcut kullanıcılar',
 	'User_rights':'kullanıcı hakları',
-	'Local_Playback':'yerel Oynatma',
-	'Remote_Playback':'Uzaktan Oynatma',
+	'Local_Playback':'&nbsp;&nbsp;&nbsp;Yerel Oynatma',
+	'Remote_Playback':'&nbsp;&nbsp;&nbsp;Uzaktan Oynatma',
 	'Device_Remote_Setup':'Cihaz Uzaktan Kurulum',
 	'Local_Settings':'Local Settings',//Not yet translated
 	'User_Settings':'kullanıcı Ayarları',
@@ -495,4 +495,12 @@ var tr_TR={
 	 'Wrong_time_period':'Zaman hatası',
 	  //截屏
 	 'screenShot_success':'_V_ Dizininde Ekran başarı, mağaza.',
+	 'ImageType':'Görüntü türü',
+	 'ImageName':'Görüntü adı',
+	 'ScreenshotsUsers':'Kullanıcı',
+	 'ownedwindow':'Pencere',
+	 'Timescreenshots':'Zaman ekran',
+	 'StoragePath':'Yolu',
+	 'AdvancedOptions':'Gelişmiş',
+	 'picturemanagement':'Resimler',
 }

@@ -416,10 +416,10 @@ $(function(){
 		return;
 	}*/
 	// 导航页面跳转
-	var url =['index.html','play_back.html','backup.html','device.html','','log.html'];
+	var url =['index.html','play_back.html','super.html','backup.html','device.html','','log.html'];
 	$('div.top_nav li').each(function(index){
 		$(this).on('click',function(){
-			if(index==4){
+			if(index==5){
 				lock(); 
 				return;
 			}
@@ -698,3 +698,8 @@ function renewtime(){
 
 	return yy + "-" + mm + "-" + dd + "  " + hh + ":" + mi + ":" + ss;
 }
+
+function lock(){
+	  autoSearchDev.showUserLoginUi(336,300); 
+}
+

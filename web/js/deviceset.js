@@ -262,7 +262,7 @@ var oSearchOcx,autoSearchDev,
                    
 						var _url = 'http://'+oDevData.address+':'+oDevData.port;
 
-						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list').hide();
+						$('ul.ipc_list0,ul.dvr_list0,div.dvr_list,div.ipc_list,ul.onvif_list0,div.onvif_list').hide();
 
 						$('#dev_id_ID_Ex').val(oDevData.dev_id);
 
@@ -292,7 +292,7 @@ var oSearchOcx,autoSearchDev,
 							nowDev.ipcBasicInfo2UI();
 
 							//oDev[$('ul.ipc_list0 li.ope_listAct').attr('action')]();
-						}else{       //if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR')//如果选中设备为DVR或NVR
+						}else if(oDevData.vendor == 'DVR' || oDevData.vendor == 'NVR'){//如果选中设备为DVR或NVR
 							$('ul.dvr_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
 							$('.dvr_list').eq(0).show();
 							//emptyDevSetMenu();
@@ -314,6 +314,10 @@ var oSearchOcx,autoSearchDev,
 							})
 
 							nowDev.dvrBasicInfo2UI();
+						}else if(oDevData.vendor=='ONVIF'){
+							$('ul.onvif_list0 li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct').parent('ul').show();
+							$('.onvif_list').eq(0).show();
+							
 						}
 
 			 	   });
@@ -1928,10 +1932,7 @@ function IPDes(a,b){
 	return transformIp(b.SearchIP_ID) - transformIp(a.SearchIP_ID);
 	
 }
-//锁定按钮
- function lock(){
-	autoSearchDev.showUserLoginUi(336,300); 
- }
+
  function checkUserRight(uicode,uisubcode){
 	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
 	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);

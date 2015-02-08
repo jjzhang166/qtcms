@@ -494,4 +494,12 @@
 	 'Wrong_time_period':'Time error',
 	  //截屏
 	 'screenShot_success':'Screenshot is successful, save in _V_ directory.',
+	 'ImageType':'Image type',
+	 'ImageName':'Image name',
+	 'ScreenshotsUsers':'User',
+	 'ownedwindow':'Window',
+	 'Timescreenshots':'Time',
+	 'StoragePath':'Storage path',
+	 'AdvancedOptions':'Advanced',
+	 'picturemanagement':'Picture management',
 }

@@ -1140,7 +1140,4 @@ var oBottom,oPlayBack,oPlaybacKLocl,
 				}
 		 
      }
-	 
-	  function lock(){
-	     autoSearchDev.showUserLoginUi(336,300); 
-       }
+	

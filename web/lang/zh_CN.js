@@ -491,5 +491,12 @@
 	 'Wrong_time_period':'时间段错误！',
 	 //截屏
 	 'screenShot_success':'截屏成功，截图保存于_V_目录下.',
-	
+	 'ImageType':'图片类型',
+	 'ImageName':'截图名称',
+	 'ScreenshotsUsers':'截屏用户',
+	 'ownedwindow':'所属窗口',
+	 'Timescreenshots':'截屏时间',
+	 'StoragePath':'存储路径',
+	 'AdvancedOptions':'高级',
+	 'picturemanagement':'图片管理',
 }

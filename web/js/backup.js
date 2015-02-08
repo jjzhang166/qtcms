@@ -1094,10 +1094,7 @@ function useStateChange(ev){
 		  $('.top_nav p span:eq(1)').html(_T("not_Login"));
 		}
 }
-	
-function lock(){
-	autoSearchDev.showUserLoginUi(336,300); 
- }
+
 //本地备份进度条
 
 function progressLayerRect(ctx, x, y, width, height) {
