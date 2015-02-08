@@ -211,6 +211,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onvifSetting", "..\src\plug
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onvifLibEx", "..\src\functionlibs\onvifLibEx\onvifLibEx.vcxproj", "{D39D022E-A95A-4F46-9C16-F10D85948332}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "userInfoAutoInputAndOutput", "..\src\functionlibs\userInfoAutoInputAndOutput\userInfoAutoInputAndOutput.vcxproj", "{1430D1C8-82E8-4F4B-AACC-73F411CE883C}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HtmlUI.vsmdi
@@ -776,6 +778,15 @@ Global
 		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|Win32.ActiveCfg = Release|Win32
 		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|Win32.Build.0 = Release|Win32
 		{D39D022E-A95A-4F46-9C16-F10D85948332}.Release|x64.ActiveCfg = Release|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug|Win32.Build.0 = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug|x64.ActiveCfg = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug64|Win32.ActiveCfg = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug64|Win32.Build.0 = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Debug64|x64.ActiveCfg = Debug|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Release|Win32.ActiveCfg = Release|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Release|Win32.Build.0 = Release|Win32
+		{1430D1C8-82E8-4F4B-AACC-73F411CE883C}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
