@@ -222,25 +222,37 @@ int ConfigMgr::importData( sqlite3* pdb, QString tabName, QDomNode node )
 	char *pErr = NULL;
 	sqlite3_stmt *pstmt = NULL;
 
-	//clear old data
-	QString sql = QString("delete from %1;").arg(tabName);
-	int ret = sqlite3_exec(pdb, sql.toLatin1().data(), NULL, NULL, &pErr);
+	//start transaction
+	int ret = sqlite3_exec(pdb, "BEGIN TRANSACTION;", NULL, NULL, &pErr);
 	if (SQLITE_OK != ret){
-		qDebug()<<"clear old data error:"<<pErr;
+		qDebug()<<"start transaction fail";
 		return 1;
 	}
+
+	//clear old data
+	QString sql = QString("delete from %1;").arg(tabName);
+	ret = sqlite3_exec(pdb, sql.toLatin1().data(), NULL, NULL, &pErr);
+	if (SQLITE_OK != ret){
+		qDebug()<<"clear old data error:"<<pErr;
+		sqlite3_exec(pdb, "COMMIT;", NULL, NULL, &pErr);
+		return 1;
+	}
+	//set seq=0
 	sql = QString("update sqlite_sequence set seq=0 where name='%1';").arg(tabName);
 	ret = sqlite3_exec(pdb, sql.toLatin1().data(), NULL, NULL, &pErr);
 	if (SQLITE_OK != ret){
 		qDebug()<<"set seq=0 error:"<<pErr;
+		sqlite3_exec(pdb, "COMMIT;", NULL, NULL, &pErr);
 		return 1;
 	}
 	//get table column name
 	QStringList columnList = getTableColumn(pdb, tabName);
 	if (columnList.isEmpty()){
 		qDebug()<<"get table "<<tabName<<" column fail";
+		sqlite3_exec(pdb, "COMMIT;", NULL, NULL, &pErr);
 		return 1;
 	}
+
 	//get each item and insert into database
 	QDomNodeList itemList = node.childNodes();
 	for (int index = 0; index < itemList.size(); index++){
@@ -262,6 +274,13 @@ int ConfigMgr::importData( sqlite3* pdb, QString tabName, QDomNode node )
 		sqlite3_step(pstmt);
 		sqlite3_finalize(pstmt);
 	}
+
+	ret = sqlite3_exec(pdb, "COMMIT;", NULL, NULL, &pErr);
+	if (SQLITE_OK != ret){
+		qDebug()<<"commit transaction fail";
+		return 1;
+	}
+
 	return 0;
 }
 
