@@ -1,6 +1,8 @@
 #include "onvifSettingObject.h"
 #include <guid.h>
 #include <QDebug>
+#include <QEventLoop>
+#include <QCoreApplication>
 onvifSettingObject::onvifSettingObject():QWebPluginFWBase(this)
 {
 	for (int i=0;i<THREADNUM;i++)
@@ -16,6 +18,14 @@ onvifSettingObject::onvifSettingObject():QWebPluginFWBase(this)
 
 onvifSettingObject::~onvifSettingObject()
 {
+	for (int i=0;i<m_tOnvifSettingRunList.size();i++)
+	{
+		while(m_tOnvifSettingRunList[i]->isRunning()){
+			QCoreApplication::processEvents(QEventLoop::AllEvents,10);
+		}
+		delete m_tOnvifSettingRunList[i];
+		m_tOnvifSettingRunList[i]=NULL;
+	}
 }
 void onvifSettingObject::getOnvifDeviceBaseInfo()
 {
