@@ -219,8 +219,9 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 	for (int index = 0; index < m_stVencConfigs.nr; index++){
 		QDomElement streamitem = doc.createElement("StreamItem");
 		streamitem.setAttribute("index", index);
-		streamitem.setAttribute("width", m_stVencConfigs.entry[index].width);
-		streamitem.setAttribute("height", m_stVencConfigs.entry[index].height);
+// 		streamitem.setAttribute("width", m_stVencConfigs.entry[index].width);
+// 		streamitem.setAttribute("height", m_stVencConfigs.entry[index].height);
+		streamitem.setAttribute("resolution", QString("%1x%2").arg(m_stVencConfigs.entry[index].width).arg(m_stVencConfigs.entry[index].height));
 		streamitem.setAttribute("enc_fps", m_stVencConfigs.entry[index].enc_fps);
 		streamitem.setAttribute("enc_bps", m_stVencConfigs.entry[index].enc_bps);
 		streamitem.setAttribute("codeFormat", m_stVencConfigs.entry[index].enc_type);
@@ -268,8 +269,10 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 		option.setAttribute("itemNum", m_stVencOptions[index].resolution_nr);
 		for (int souNum = 0; souNum < m_stVencOptions[index].resolution_nr; souNum++){
 			QDomElement resolution = doc.createElement("item");
-			resolution.setAttribute("width", m_stVencOptions[index].resolution[souNum].width);
-			resolution.setAttribute("height", m_stVencOptions[index].resolution[souNum].height);
+// 			resolution.setAttribute("width", m_stVencOptions[index].resolution[souNum].width);
+// 			resolution.setAttribute("height", m_stVencOptions[index].resolution[souNum].height);
+			QDomText txt = doc.createTextNode(QString("%1x%2").arg(m_stVencOptions[index].resolution[souNum].width).arg(m_stVencOptions[index].resolution[souNum].height));
+			resolution.appendChild(txt);
 			option.appendChild(resolution);
 		}
 		item.appendChild(option);

@@ -21,16 +21,16 @@ interface IOnvifRemoteInfo : public IPComBase
 	//返回值格式为 xml 格式的 字符串
 	/*
 	<OnvifStreamEncoderInfo itemNum="">
-		<StreamItem index="" width="" height="" enc_fps="" enc_bps="" codeFormat="" enc_interval="" enc_profile="">
+		<StreamItem index="" resolution="1280x960" enc_fps="" enc_bps="" codeFormat="" enc_interval="" enc_profile="">
 			<EncodeOption>
 				<enc_quality min="" max=""/>
 				<enc_fps min="" max=""/>
 				<enc_bps min="" max=""/>
 				<enc_gov min="" max=""/>
 				<enc_interval min="" max=""/>
-				<resolution itemNum="">
-					<item width="" height=""/>
-					<item width="" height=""/>
+				<resolution itemNum="2">
+					<item>1280x960</item>
+					<item>1024x768</item>
 				</resolution>
 				<enc_profile itemNum="">
 					<item profile=""/>
@@ -39,7 +39,7 @@ interface IOnvifRemoteInfo : public IPComBase
 			</EncodeOption>
 		</StreamItem>
 	<OnvifStreamEncoderInfo>
-	index:码流索引（0：主码流），width：码流宽，height：码流高，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔
+	index:码流索引（0：主码流），resolution:分辨率(宽x高)，enc_fps：帧率，enc_bps：码率，codeFormat：编码格式，enc_interval：I帧间隔
 	*/
 	virtual QString getOnvifDeviceEncoderInfo() = 0;
 
