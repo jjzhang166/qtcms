@@ -75,8 +75,8 @@ create table recordtime
  chl_id integer,
  schedule_id integer,
  weekday integer,
- starttime char£¨64£©,
-endtime char£¨64£©,
+ starttime char(64),
+endtime char(64),
 enable integer
  );
  

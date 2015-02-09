@@ -68,6 +68,13 @@ int ConfigMgr::Import( const QString &sFilePath )
 		qDebug()<<"get sqlite3 interface error!";
 		return 1;
 	}
+	//set journal_mode off
+	char *pErr = NULL;
+	int ret = sqlite3_exec(pdb, "pragma journal_mode =off", NULL, NULL, &pErr);
+	if (SQLITE_OK != ret){
+		qDebug()<<"set journal_mode=off error:"<<pErr;
+		return 1;
+	}
 	QDomDocument xml;
 	xml.setContent(&infile);
 	QDomNode sysNode = xml.elementsByTagName("system").at(0);
@@ -214,23 +221,18 @@ int ConfigMgr::importData( sqlite3* pdb, QString tabName, QDomNode node )
 {
 	char *pErr = NULL;
 	sqlite3_stmt *pstmt = NULL;
-	//set journal_mode off
-	int ret = sqlite3_exec(pdb, "pragma journal_mode =off", NULL, NULL, &pErr);
-	if (SQLITE_OK != ret){
-		qDebug()<<pErr;
-		return 1;
-	}
+
 	//clear old data
 	QString sql = QString("delete from %1;").arg(tabName);
-	ret = sqlite3_prepare_v2(pdb, sql.toLatin1().data(), -1, &pstmt, (const char**)&pErr);
+	int ret = sqlite3_exec(pdb, sql.toLatin1().data(), NULL, NULL, &pErr);
 	if (SQLITE_OK != ret){
-		qDebug()<<pErr;
+		qDebug()<<"clear old data error:"<<pErr;
 		return 1;
 	}
-	sqlite3_step(pstmt);
-	ret = sqlite3_finalize(pstmt);
+	sql = QString("update sqlite_sequence set seq=0 where name='%1';").arg(tabName);
+	ret = sqlite3_exec(pdb, sql.toLatin1().data(), NULL, NULL, &pErr);
 	if (SQLITE_OK != ret){
-		qDebug()<<"finalize stmt error in table "<<tabName;
+		qDebug()<<"set seq=0 error:"<<pErr;
 		return 1;
 	}
 	//get table column name
@@ -278,9 +280,7 @@ QStringList ConfigMgr::getTableColumn( sqlite3 *pdb, QString tabName )
 	while (SQLITE_ROW == ret){
 		const char* txt = (const char*)sqlite3_column_text(pstmt, 1);
 		QString column(txt);
-		if (QString("id") != column){
-			columnList.append(column);
-		}
+		columnList.append(column);
 		ret = sqlite3_step(pstmt);
 	}
 	sqlite3_finalize(pstmt);
