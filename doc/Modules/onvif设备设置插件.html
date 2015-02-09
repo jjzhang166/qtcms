@@ -23,31 +23,64 @@
   bool setOnvifDeviceParam(QString sIp,QString sPort,QString sUserName,QString sPassword);<br />
   @2<br />
   简介：获取设备的网络参数<br />
-  返回值：QVariantMap 包含：ip，mac，gateway，mask，dns<br />
-  QVariantMap getOnvifDeviceNetworkInfo();<br />
+  返回值：从事件中抛出<br />
+  void getOnvifDeviceNetworkInfo();<br />
   @3<br />
   简介：设置目标设备的网络信息<br />
   输入参数：sSetIp：设备ip，sSetMac：设备mac地址，sSetGateway：设备网关，sSetMask：设备掩码，sSetDns：设备Dns<br />
-  返回值：<br />
+  返回值：从事件中抛出<br />
   bool setOnvifDeviceNetWorkInfo(QString sSetIp,QString sSetMac,QString sSetGateway,QString sSetMask,QString sSetDns);<br />
   @4<br />
   简介：获取设备的编码信息<br />
   返回值：<br />
-  //返回值格式为 xml 格式的 字符串<br />
+  //返回值格式为 xml 格式的 字符串(从事件中抛出)<br />
   //格式详细说明链接：<a href="编码信息格式解析.html">编码信息格式解析</a><br />
-  QString getOnvifDeviceEncoderInfo();<br />
+  void getOnvifDeviceEncoderInfo();<br />
   @5<br />
   简介：设置设备的编码信息<br />
-  返回值：<br />
+  返回值：从事件中抛出<br />
   bool setOnvifDeviceEncoderInfo(int nIndex,int nWidth,int nHeight,QString sEnc_fps,QString sEnc_bps,QString sCodeFormat,QString sEncInterval,QString sEncProfile);</p>
 <p>@6<br />
 简介：获取设备相关信息<br />
-返回值：<br />
+返回值：从事件中抛出<br />
 //返回值格式为 xml 的字符串<br />
 /* <br />
 &lt;OnvifDeviceInfo manufacturer=&quot;&quot; devname=&quot;&quot; model=&quot;&quot; firmware=&quot;&quot; sn=&quot;&quot; hwid=&quot;&quot; sw_builddate=&quot;&quot; sw_version=&quot;&quot; hw_version=&quot;&quot; /&gt;<br />
 manufacturer：生产厂家，devname：设备名称，model：型号，firmware：固件，hwid：硬件ID，sw_builddate：软件生成时间，sw_version：软件版本，hw_version：硬件版本<br />
 */<br />
-  QString getOnvifDeviceInfo();</p>
+void getOnvifDeviceInfo();</p>
+<p>&nbsp;</p>
+<p>事件：<br />
+本插件有三个事件，三个事件时顺序 抛出：@1-》@2-》@3</p>
+<p>@1<br />
+  事件名称：操作开始，标识此次操作开始<br />
+  事件名：operationStart<br />
+  事件参数：<br />
+  （1）nThreadId：线程号（唯一的，操作的标识符）<br />
+  （2）ip：ip地址，操作设备的ip<br />
+  （3）operationType：操作类型<br />
+  @2<br />
+  事件名称：操作结果，返回此处操作的结果<br />
+  事件名：operationReturnInfo<br />
+  事件参数：<br />
+  （1）nThreadId：线程号（唯一的，操作的标识符）<br />
+  （2）ip：ip地址，操作设备的ip<br />
+  （3）operationType：操作类型<br />
+  （4）status：执行的结果（0：执行成功，1：执行失败）<br />
+  （5）info：执行成功返回的参数，字符串xml格式<br />
+  @3<br />
+  事件名称：操作结束，标识此次操作结束<br />
+  事件名：operationEnd<br />
+  事件参数：<br />
+  （1）nThreadId：线程号（唯一的，操作的标识符）<br />
+  （2）ip：ip地址，操作设备的ip<br />
+  （3）operationType：操作类型</p>
+<p>===operationType===<br />
+  operationType 值与具体操作的映射</p>
+<p>0,//获取网络信息<br />
+  1,//设置网络信息<br />
+  2,//获取编码信息<br />
+  3,//设置编码信息<br />
+  4,//获取设备信息</p>
 </body>
 </html>
