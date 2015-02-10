@@ -13,6 +13,9 @@ public slots:
 	void importUserInfo();
 	void outportUserInfo();
 private:
+	void saveToDefaultPath();
+	bool getOutputUserInfoFilePath(QString &sFilePath);
+private:
 	IConfigManager *m_pConfigManager;
 };
 

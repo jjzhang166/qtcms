@@ -3,6 +3,7 @@
 #include "guid.h"
 #include <QDebug>
 #include <QFile>
+#include <QDesktopServices>
 #include <QDir>
 manipulateUserInfo::manipulateUserInfo(void):m_pIConfigManager(NULL)
 {
@@ -48,7 +49,7 @@ void manipulateUserInfo::outputUserInfo()
 
 bool manipulateUserInfo::getOutputUserInfoFilePath(QString &sFilePath)
 {
-	QString sCurrentDir=QCoreApplication::applicationDirPath();
+	QString sCurrentDir=QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 	sCurrentDir=sCurrentDir+"/userInfo";
 	QString sUserInfoFilePath=sCurrentDir+"/userInfo.xml";
 	QFile tFile;
@@ -87,7 +88,8 @@ bool manipulateUserInfo::getOutputUserInfoFilePath(QString &sFilePath)
 
 bool manipulateUserInfo::getInputUserInfoFilePath(QString &sFilePath)
 {
-	QString sCurrentDir=QCoreApplication::applicationDirPath();
+	QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+	QString sCurrentDir=QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 	sCurrentDir=sCurrentDir+"/userInfo";
 	QString sUserInfoFilePath=sCurrentDir+"/userInfo.xml";
 	QFile tFile;
