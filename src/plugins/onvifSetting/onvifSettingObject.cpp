@@ -85,7 +85,7 @@ bool onvifSettingObject::setOnvifDeviceNetWorkInfo(QString sSetIp,QString sSetMa
 		if (m_tOnvifSettingRunList[nThreadId]->setOnvifDeviceParam(m_tOnvifDeviceInfo.sIp,m_tOnvifDeviceInfo.sPort,m_tOnvifDeviceInfo.sUserName,m_tOnvifDeviceInfo.sPassword))
 		{
 			saveOperationItem(m_tOnvifDeviceInfo.sIp,SETNETWORKINFO,nThreadId);
-			if (m_tOnvifSettingRunList[nThreadId]->setOnvifDeviceNetWorkInfo(m_tOnvifDeviceInfo.sSetIp,m_tOnvifDeviceInfo.sSetMac,m_tOnvifDeviceInfo.sSetGateway,m_tOnvifDeviceInfo.sSetMask,m_tOnvifDeviceInfo.sSetDns))
+			if (m_tOnvifSettingRunList[nThreadId]->setOnvifDeviceNetWorkInfo(sSetIp,sSetMac,sSetGateway,sSetMask,sSetDns))
 			{
 				return true;
 			}else{
