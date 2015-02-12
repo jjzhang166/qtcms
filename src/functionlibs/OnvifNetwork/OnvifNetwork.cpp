@@ -91,7 +91,7 @@ int OnvifNetwork::setAutoSycTime( bool bEnabled )
 
 void OnvifNetwork::setOnvifDeviceInfo( const QString &sIp, const QString &sPort, const QString &sUserName, const QString &sPassword )
 {
-	NVP_INIT_ARGS2(m_nvpArguments, (void*)&m_nvpArguments, sIp.toLatin1().data(), sPort.toInt(), sUserName.toLatin1().data(), sPassword.toLatin1().data(), 0);
+	NVP_INIT_ARGS2(m_nvpArguments, (void*)m_pNvpContext, sIp.toLatin1().data(), sPort.toInt(), sUserName.toLatin1().data(), sPassword.toLatin1().data(), 0);
 }
 
 QString OnvifNetwork::getOnvifDeviceInfo()
