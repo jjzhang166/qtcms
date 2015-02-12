@@ -196,6 +196,7 @@ insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100000000','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1000000000','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10000000000','0');
+insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100000000000','0');
 
 insert into window_settings (wnd_id,stretch,chl_id) values(0,1,-1);
 insert into window_settings (wnd_id,stretch,chl_id) values(1,1,-1);
