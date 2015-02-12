@@ -48,7 +48,7 @@ void onvifSettingRun::run()
 				tItem.setAttribute("sMac",sMac);
 				tItem.setAttribute("sGateway",sGateway);
 				tItem.setAttribute("sMask",sMask);
-				tItem.setAttribute("sDns",sMask);
+				tItem.setAttribute("sDns",sDns);
 				tDoc.appendChild(tItem);
 				sXmlInfo=tDoc.toString();
 			}else{
@@ -155,6 +155,7 @@ bool onvifSettingRun::setOnvifDeviceNetWorkInfo( QString sSetIp,QString sSetMac,
 		m_tOnvifDeviceInfo.sSetMac=sSetMac;
 		m_tOnvifDeviceInfo.sSetGateway=sSetGateway;
 		m_tOnvifDeviceInfo.sSetDns=sSetDns;
+		m_tOnvifDeviceInfo.sSetMask=sSetMask;
 		m_tStepCode=SETNETWORKINFO;
 		QThread::start();
 	}

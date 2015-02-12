@@ -11,7 +11,7 @@
 	str = str.sprintf("%d.%d.%d.%d", arr[0], arr[1], arr[2], arr[3]);
 
 #define FORMATE_SIX_PARAM(str, arr)\
-	str = str.sprintf("%x:%x:%x:%x:%x:%x", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
+	str = str.sprintf("%.2x:%.2x:%.2x:%.2x:%.2x:%.2x", arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
 
 
 
