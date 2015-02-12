@@ -101,6 +101,8 @@
 <body style="background:#282828;">
 <object type="application/cms-common-library" id="commonLibrary" style="width:0; height:0; position: absolute;"></object>
 <object type="application/cms-autoSearchDevice" id="atuoSearchDevice" style="width:100%; height:0;" ></object>
+<object type="application/cms-onvif-setting" id="onvifSetting" style="width:100%; height:0;" ></object>
+<object type="application/cms-local-userInfo" id="onvifuserInfo" style="width:100%; height:0;" ></object>
 <script type="text/javascript">
 	lang = window[document.getElementById('commonLibrary').getLanguage()] || zh_CN;
 </script>
@@ -1700,60 +1702,62 @@
 			    </div>
                 
                  <ul class="ope_list nav1 onvif_list0" style="display:none;">
-					<li class="ope_listAct" ><script>T("Device_info")</script></li>
-					<li><script>T("Encoding_settings")</script></li>
-                    <li><script>T("Network_Settings")</script></li>
-	                <li><script>T("Time_Set")</script></li>
+					<li class="ope_listAct" action="OnvifDeviceInfo"><script>T("Device_info")</script></li>
+					<li action="onvifDeviceEncoderInfo"><script>T("Encoding_settings")</script></li>
+                    <li action="onvifnetworkInfo"><script>T("Network_Settings")</script></li>
 				</ul>
 				<div class="switch onvif_list"  style="display:none;">
 					<table>
-						<tr><td><script>T("Device_name")</script></td><td><input type="text"  readonly="readonly"/></td></tr>
-						<tr><td><script>T("Model")</script></td><td><input type="text" readonly="readonly" /></td></tr>
-						<tr><td><script>T("Hardware_version")</script></td><td><input type="text"  readonly="readonly"/></td></tr>
-						<tr><td><script>T("Software_Version")</script></td><td><input type="text" readonly="readonly"/></td></tr>
-						<tr><td><script>T("Generation_time")</script></td><td><input stype="text" readonly="readonly" /> </td></tr>
-						<tr><td><script>T("Alarm_number")</script></td><td><input type="text" readonly="readonly"/></td></tr>
-						<tr><td><script>T("SD_number")</script></td><td><input type="text"  readonly="readonly"/></td></tr>
+						<tr><td><script>T("Device_name")</script></td><td><input type="text"  readonly="readonly" id="onvifdevname"/></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" readonly="readonly" id="onvifmodel"/></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text"  readonly="readonly" id="onvifhw_version"/></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" readonly="readonly" id="onvifsw_version"/></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input stype="text" readonly="readonly" id="onvifsw_builddate"/> </td></tr>
+                        <tr><td><script>T("SD_number")</script></td><td><input type="text" readonly="readonly" id="onvifsn"/></td></tr>
+						<tr><td><script>T("Firmware")</script></td><td><input type="text" readonly="readonly" id="onviffirmware"/></td></tr>
+						<tr><td><script>T("HardwareID")</script></td><td><input type="text"  readonly="readonly" id="onvifhwid"/></td></tr>
+                        <tr><td><script>T("Manufacturer")</script></td><td><input type="text"  readonly="readonly" id="onvifmanufacturer"/></td></tr>
 					</table>
 				</div>
                  <div class="switch onvif_list"  style="display:none;">
 					<table>
+                       <input type="hidden" id="onvifprofile" />
 						<tr>
 							<td><script>T("Stream")</script></td>
-							<td>
-								<div class="select" style="width:133px;">
-									<input value="" type="text" data="" />
+							<td data-UI='Streamitem'>
+								<div class="select" style="width:153px;">
+									<input value="" type="text" data="" id="onvifStream" style="width:130px;"/>
 									<a class="hover0"></a>
 								</div>
 								<ul class="option">
-								<!--	<li><input  value="Main_stream" type="text" /></li>
-									<li><input  value="Sub_stream1" type="text" /></li>
-									<li><input value="Sub_stream2" type="text" /></li>-->
 								</ul>
 							</td><td></td>
 						</tr>
 						<!--<tr><td><script>T("Channel_name")</script></td><td><input style="width:133px;" type="text" /></td><td class="td3 tdBtn"></td></tr>-->
                         <tr>
-                          <td><script>T("Coding_mode")</script></td>
+                          <td><script>T("Encoding_format")</script></td>
                           <td>
-                              <div class="select" style="width:133px;">
-                                   <input type="select"/>
+                              <div class="select" style="width:153px;">
+                                   <input type="text" data="" id="onvifcodeFormat" style="width:130px;"/>
                                   <a class="hover0"></a>
                               </div>
                               <ul class="option">
-                                  <li><input type="text" value="Video_streaming" data="0" /></li>
-                                  <li><input type="text" value="Audio_and_video_streaming" data="1" /></li>
+                                  <!--<li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_JPEG" data="0" style="width:153px;" class="bb"/></li>
+                                  <li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_MPEG4" data="1" style="width:153px;" class="bb"/></li>-->
+                                  <li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_H264" data="2" style="width:153px;" class="bb"/></li>
                               </ul>
                           </td><td></td>
 						</tr>
+                        <input type="hidden" id="onvifinterval" />
+                        <!--<tr><td><script>T('CodeInterval')</script></td><td><input type="text"  readonly="readonly" id="onvifinterval"/></td><td></td></tr>-->
                         <tr>
 							<td><script>T("Resolution")</script></td>
 							<td colspan="2">
-								<div class="select" style="width:133px;">
-									<input value="" type="text">
+								<div class="select" style="width:153px;">
+									<input value="" data="" type="text" style="width:130px;" id="onvifresolution">
 									<a class="hover0"></a>
 								</div>
-								<ul class="option">
+								<ul class="option" data-UI="resolutionArray">
 									
 								</ul>
 							</td>
@@ -1773,85 +1777,32 @@
 						</tr>-->
                         <tr>
                             <td><script>T("BPS")</script></td>
-                            <td><input style="width:133px;" type="text" /></td>
+                            <td><input style="width:153px;" type="text" id="onvifbps" onblur="chkInput(0,this,'rate_range')"/></td>
                             <td><script>T("Unit_bps")</script></td>
                         </tr>
                         <tr>
                             <td><script>T("FPS")</script></td>
-                            <td><input style="width:133px;" type="text"/></td>
+                            <td><input style="width:153px;" type="text" id="onviffps" onblur="chkInput(0,this,'frame_rate_range')"/></td>
                             <td><script>T("Unit_fps")</script></td>
                         </tr>
-                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover"><script>T("Save")</script></div></td></tr>
+                        <tr><td colspan="3" class="td3 tdBtn"><div class="hover" onclick="submitThisMenu('onvifDeviceEncoderInfo')"><script>T("Save")</script></div></td></tr>
                     </table>
 				</div>
                  <div class="switch onvif_list"  style="display:none;">
 					<table>
-                        <tr><td><script>T("IP_address")</script></td><td><input  type="text" /></td></tr>
-                        <tr><td><script>T("Gateway")</script></td><td><input  type="text" /></td></tr>
-                        <tr><td><script>T("Network_Mask")</script></td><td><input  type="text" /></td></tr>
-                        <tr> <td><script>T("Priority")</script> DNS</td><td><input  type="text" /></td></tr>
+                        <tr><td><script>T("MAC_address")</script></td><td><input  type="text" readonly id="onvifsMac"/></td></tr>
+                        <tr><td><script>T("IP_address")</script></td><td><input  type="text" id="onvifip" onblur="judgeIpId(0,$(this))"/></td></tr>
+                       <!-- <tr><td><script>T("Gateway")</script></td><td><input  type="text" /></td></tr>-->
+                        <tr><td><script>T("Network_Mask")</script></td><td><input  type="text" id="onvifsMask"/></td></tr>
+                        <!--<tr> <td><script>T("Priority")</script> DNS</td><td><input  type="text" /></td></tr>
                         <tr><td><script>T("Spare")</script> DNS</td><td><input type="text" /></td></tr>
-                        <tr><td><script>T("Port")</script></td><td><input type="text" /></td></tr>
-                        <tr><td colspan="2" class="tdBtn"><div class="hover"><script>T("Save")</script></div></td></tr>
+                        <tr><td><script>T("Port")</script></td><td><input type="text" /></td></tr>-->
+                        <input type="hidden" id="onvifsDns" />
+                        <input type="hidden" id="onvifsGateway" />
+                        <tr><td colspan="2" class="tdBtn"><div class="hover" onclick="submitThisMenu('onvifnetworkInfo')"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
-                <div class="switch onvif_list"  style="display:none;">
-					<table>
-						<tr><td><script>T("Device_Time")</script></td><td><input value="" disabled="disabled" /></td><td></td></tr>
-                   		<tr><td><script>T("Time_Zone")</script></td><td>
-                    	<div class="select" style="width:153px;">
-                                <input type="select"/>
-                                <a class="hover0"></a>
-						</div>
-						<ul class="option aa">
-							<li><input value="GMT-12:00"/></li>
-                            <li><input value="GMT-11:00"/></li>
-                            <li><input value="GMT-10:00"/></li>
-                            <li><input value="GMT-09:00"/></li>
-                            <li><input value="GMT-08:00"/></li>
-                            <li><input value="GMT-07:00"/></li>
-                            <li><input value="GMT-06:00"/></li>
-                            <li><input value="GMT-05:00"/></li>
-                            <li><input value="GMT-04:30"/></li>
-                            <li><input value="GMT-04:00"/></li>
-                            <li><input value="GMT-03:30"/></li>
-                            <li><input value="GMT-03:00"/></li>
-                            <li><input value="GMT-02:00"/></li>
-                            <li><input value="GMT-01:00"/></li>
-                            <li><input value="GMT"/></li>
-							<li><input value="GMT+01:00"/></li>
-							<li><input value="GMT+02:00"/></li>
-                            <li><input value="GMT+03:00"/></li>
-                            <li><input value="GMT+03:30"/></li>
-                            <li><input value="GMT+04:00"/></li>
-                            <li><input value="GMT+04:30"/></li>
-                            <li><input value="GMT+05:00"/></li>
-                            <li><input value="GMT+05:30"/></li>
-                            <li><input value="GMT+05:45"/></li>
-                            <li><input value="GMT+06:00"/></li>
-                            <li><input value="GMT+06:30"/></li>
-                            <li><input value="GMT+07:00"/></li>
-                            <li><input value="GMT+08:00"/></li>
-						</ul>
-	                    </td><td></td></tr>
-	                    <tr>
-                        <td><script>T("Computer_time")</script></td>
-                        <td><input id="PC_time" value="" disabled="disabled" data-UI type="text"></td>
-                        <td class="tdBtn"><div class="hover"><script>T("synchronize")</script></div></td></tr>
-	                    <tr>
-                          <td><script>T("Internet_server_ynchronization_status")</script></td>
-                          <td><input  type="radio"  value="true" /><script>T("Open")</script>
-                          <input type="radio"  value="false" /><script>T("Close")</script></td>
-                          <td></td>
-                        </tr>
-	                    
-	                    <tr><td><script>T("nternet_server")</script></td><td>
-	                    	<input value="" />
-	                    </td><td></td></tr>
-	                    
-	                    <tr><td colspan="4" class="tdBtn"><div class="hover"><script>T("Save")</script></div></td></tr>
-					</table>
-			    </div>
+                
 			    <div id="ajaxHint">
 			    </div>
 			</div>
@@ -1863,6 +1814,11 @@
 				</ul>
 				<div id="CommonParm" class="switch" style="display:block;">
 					<table>
+                     <tr>
+                         <td><script>T("UserInfo")</script></td>
+                         <td class="tdBtn"><div class="hover" onclick="userSetInfoImport()"><script>T("Import")</script></div></td>
+                         <td class="tdBtn"><div class="hover" onclick="userSetInfoExport()"><script>T("Export")</script></div></td>
+                        </tr>
 						<tr>
 							<td><script>T("Language")</script></td>
 							<td colspan="2">
@@ -1882,8 +1838,10 @@
 								</ul>
 							</td>
 						</tr>
+                        
 						<tr><td><script>T("Automatic_polling_time")</script></td><td colspan="2"><input type="text" style="width:133px;" id="AutoPollingTime_ID" onblur="VerifidevMenu(4,this)" />1-60(s)</td></tr>      
-						<!--<input type="hidden" value="30" id="AutoPollingTime_ID"  />-->
+						
+                        <!--<input type="hidden" value="30" id="AutoPollingTime_ID"  />-->
                         <!-- <tr><td><script>T("Screenshot_save_location")</script></td><td colspan="2"><input type="cam" style="height:23px; background:0;" /> </td></tr> -->
 					<!--	<tr>
 							<td><script>T("Default_screen_split_mode")</script></td>
@@ -1917,6 +1875,7 @@
 						<!--<tr><td colspan="3"><input type="checkbox" id="BootFromStart_ID"><script>T("Boot")</script></td></tr>-->
                         <tr id="Persian"><td colspan="3"><input type="checkbox" id="BootPersian_ID">تقویم فارسی</td></tr>
 						<tr><td colspan="3" class="tdBtn"><div class="hover" id="SettingCommonParm_ok"><script>T("Save")</script></div></td></tr>
+                        
 					</table>
 				</div>
 				<div id="RecordTime" class="switch">
@@ -2291,5 +2250,6 @@
 <script src="js/timepick/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 
 <script type="text/javascript" src="js/deviceset.js"></script>
+<script type="text/javascript" src="js/devicesetting/onvif_class.js"></script>
 </body>
 </html>

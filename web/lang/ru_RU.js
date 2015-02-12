@@ -168,6 +168,13 @@
 	'Hardware_version':'Версия аппарат. обеспеч.',
 	'Software_Version':'Версия ПО',
 	'Generation_time':'Время выпуска',
+	'Firmware':'Оборудование',
+	'HardwareID':'Оборудование ID',
+	'Manufacturer':'производитель',
+	'CodeInterval':'Кодирование интервал',
+	'UserInfo':'Установка данных',
+	'Import':'импорт',
+	'Export':'экспорт',
 	'Total_number_of_channels':'Номер канала',
 	'Channel_sound':'Audio',//Not yet translated
 	'Alarm_input':'Alarm input',//Not yet translated
@@ -308,7 +315,7 @@
 	'Screen':'Мультиэкран',
 	'Screen':'Раздел. экрана',
 	'Auto_Login':'Авто вход',
-	'Automatically_synchronize_time':'Авто синхрон времени',
+	'Automatically_synchronize_time':'Авто синхрон времени(Только ONVIF и IPC)',
 	'Automatically_connected_devices':'Авто доступ к уст-ву',
 	'Automatic_full_screen':'Авто во весь экран',
 	'Boot':'Вкл. авто',
@@ -503,4 +510,5 @@
 	 'StoragePath':'путь',
 	 'AdvancedOptions':'продвинутый',
 	 'picturemanagement':'Фотографии',
+	  'correct_range':'Пожалуйста, введите правильное значение, начиная _V_ ~ _V_',
 }
