@@ -1,6 +1,8 @@
 // JavaScript Document
 $.fn.focusPic = function(defualt){
 	defualt = $.extend({
+		  piclist:null,
+		  frame:null,//遮罩层
 		  box:null,//总框架
 		  maxbox:null,//大图框架
 		  minbox:null,//小图框架
@@ -17,20 +19,25 @@ $.fn.focusPic = function(defualt){
 		  minPicshowNum:null,//小图显示数量
     },defualt||{});
 
-  var picNum = $(defualt.maxbox).find('ul li').length //图片的数量 
- /* var picMaxW = $(defualt.maxbox).find('ul li').outerWidth(true); //每一大图的宽度（包括padding margin border）
-  var picMaxH = $(defualt.maxbox).find('ul li').outerHeight(true); //每一大图的高度（包括padding margin border）
+  var picNum = $(defualt.minbox).find('ul li').length //图片的数量 
+  /*var picMaxW = $(defualt.maxbox).find('ul li').outerWidth(true); //每一大图的宽度（包括padding margin border）
+  var picMaxH = $(defualt.maxbox).find('ul li').outerHeight(true); //每一大图的高度（包括padding margin border）*/
   var picMinW = $(defualt.minbox).find('ul li').outerWidth(true); //每一小图的宽度（包括padding margin border）
-  var picMinH = $(defualt.minbox).find('ul li').outerHeight(true); //每一小图的高度（包括padding margin border）*/
-  var picMaxW = $(defualt.maxbox).find('ul li').width(); //每一大图的宽度（包括padding margin border）
-  var picMaxH = $(defualt.maxbox).find('ul li').height(); //每一大图的高度（包括padding margin border）
-  var picMinW = $(defualt.minbox).find('ul li').width(); //每一小图的宽度（包括padding margin border）
-  var picMinH = $(defualt.minbox).find('ul li').height(); //每一小图的高度（包括padding margin border）*
+  var picMinH = $(defualt.minbox).find('ul li').outerHeight(true); //每一小图的高度（包括padding margin border）
   var pictime;  //自动播放的setInterval()的对象
   var maxPicindex=0;
   var minPicindex=0;
-  $(defualt.maxbox).find('ul').width(picNum*picMaxW).height(picMaxH);
   $(defualt.minbox).find('ul').width(picNum*picMinW).height(picMinH);
+  
+  $(defualt.piclist).find('img').each(function(index){
+	  $(this).click(function(){
+		  maxPicindex = minPicindex = index;
+			maxShow(maxPicindex);
+			minShow(minPicindex);
+		  $(defualt.frame).show();
+		  $(defualt.box).show();
+	   });
+   });
   
 	 //自动播放
 	  if(defualt.autoplay==true){
@@ -108,15 +115,8 @@ $.fn.focusPic = function(defualt){
 	
     //大图切换过程
 	function maxShow(maxPicindex){
-		var gdjl_w=-maxPicindex*picMaxW;
-		var gdjl_h=-maxPicindex*picMaxH;
-		if(defualt.Maxpicdire==true){
-			$(defualt.maxbox).find('ul li').css('float','left');
-			$(defualt.maxbox).find('ul').stop().animate({'left':gdjl_w},defualt.delayTime);
-		}else{
-		  $(defualt.maxbox).find('ul').stop().animate({'top':gdjl_h},defualt.delayTime);
-		}//滚动
-		//$(defualt.maxbox).find('ul li').eq(maxPicindex).fadeIn(defualt.delayTime).siblings('li').fadeOut(defualt.delayTime);//淡入淡出
+		var src = $(defualt.minbox).find('.minpic li:eq('+maxPicindex+') img').attr('src');
+		$(defualt.maxbox).find('.maxpic').css('background-image','url("'+src+'")');
 		$(defualt.minbox).find('li').eq(minPicindex).addClass("on").siblings(this).removeClass("on");
 		var data = $(defualt.minbox).find('li').eq(minPicindex).data('data');
 		
@@ -145,21 +145,21 @@ $.fn.focusPic = function(defualt){
 	};
   //小图切换过程
 	function minShow(minPicindex){
-		var mingdjl_num =minPicindex-defualt.minPicshowNum+2
+		var mingdjl_num =minPicindex-defualt.minPicshowNum+2;
 		var mingdjl_w=-mingdjl_num*picMinW;
 		var mingdjl_h=-mingdjl_num*picMinH;
 		
 		if(defualt.Minpicdire==true){
 			$(defualt.minbox).find('ul li').css('float','left');
 			if(picNum>defualt.minPicshowNum){
-				if(minPicindex<3){mingdjl_w=0;}
+				if(minPicindex<6){mingdjl_w=0;}
 				if(minPicindex==picNum-1){mingdjl_w=-(mingdjl_num-1)*picMinW;}
 				$(defualt.minbox).find('ul').stop().animate({'left':mingdjl_w},defualt.delayTime);
 				}
 		}else{
-			$(defualt.picNum).find('ul li').css('float','none');
+			$(defualt.minbox).find('ul li').css('float','none');
 			if(picNum>defualt.minPicshowNum){
-				if(minPicindex<3){mingdjl_h=0;}
+				if(minPicindex<6){mingdjl_h=0;}
 				if(minPicindex==picNum-1){mingdjl_h=-(mingdjl_num-1)*picMinH;}
 				$(defualt.minbox).find('ul').stop().animate({'top':mingdjl_h},defualt.delayTime);
 				}

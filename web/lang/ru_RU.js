@@ -510,5 +510,6 @@
 	 'StoragePath':'путь',
 	 'AdvancedOptions':'продвинутый',
 	 'picturemanagement':'Фотографии',
-	  'correct_range':'Пожалуйста, введите правильное значение, начиная _V_ ~ _V_',
+	 'correct_range':'Пожалуйста, введите правильное значение, начиная _V_ ~ _V_',
+	 'ScreenshotManagement':'Управление Скриншоты',
 }

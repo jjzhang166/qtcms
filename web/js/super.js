@@ -11,6 +11,12 @@ $(document).ready(function() {
 			$(this).attr('title',lang[$(this).attr('title')])
 		})
 
+      
+			$('.hover').each(function(){  // 按钮元素添加鼠标事件对应样式
+		   var action = $(this).attr('class').split(' ')[0];
+		    addMouseStyleByLimit($(this),action,1<<11);
+	       })
+
 		 var username = autoSearchDev.getCurrentUser();
 		  username && $('.top_nav div p span:eq(1)').html(username);
 		  
@@ -21,6 +27,7 @@ $(document).ready(function() {
 			  })
 			    
 		  });*/
+		  $('a.close').click(closeMenu);  //弹出操作框下部分元素添加关闭窗口事件
 		   
 		 $('#windowAllSelect').click(function(){
 		    
@@ -185,13 +192,6 @@ $(document).ready(function() {
 			   top:($('#maxbox').height()-$('#maxprev').height())/2	
 				
 			});
-			 
-		    $('.maxpic').css({
-			   
-			   left:($('#maxbox').width()-$('.maxpic').width())/2,
-			   top:($('#maxbox').height()-$('.maxpic').height())/2
-			});
-			
 
 			$('#foot').css('top',$('#set_content div.right').height()+78);
 		}
@@ -212,19 +212,16 @@ $(document).ready(function() {
 	function ScreenShotInfocallback(data){
 	   //console.log('=============================================');
 	  // console.log(data);
-	  $('#minbox').show();
-	  $('#picinfo').show();
 	   var dataArr = {'name':data.fileName,'dir':data.fileDir,'time':data.time,'type':data.type,'user':data.userName,'window':data.wndId}
-	    $('<li><img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'" width="400" height="400"/></li>').appendTo($('#maxbox ul')).data('data',dataArr);
 	    $('<li><img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'" width="100" height="100"/></li>').appendTo($('#minbox ul')).data('data',dataArr);
 		//console.log(dataArr);
+	  $('<img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'"/>').appendTo($('#imgs'));
 	}
 	
 	function picSearch(){
 		
-			 $('#minbox li,#maxbox li').remove();
-			 $('#minbox').hide();
-			  $('#picinfo').hide();
+			 $('#minbox li,#imgs img').remove();
+			 
 			 var date1 = '';
 			 var date2 = '';
 			 var type =0;
@@ -260,7 +257,9 @@ $(document).ready(function() {
 				clearTimeout(timer);
 			   },2000);
 			 }else if(num==0){
-				 $('#box').focusPic({ 
+				$('#box1').focusPic({ 
+				      piclist:'#imgs',//图片列表
+					  frame:'#iframe',//遮罩层
 					  box:"#box",//总框架
 					  maxbox:"#maxbox",//大图框架
 					  minbox:"#minbox",//小图框架
@@ -276,7 +275,85 @@ $(document).ready(function() {
 					  Minpicdire:true,//小图滚动方向（true水平方向滚动）
 					  minPicshowNum:6,//小图显示数量
 				}); 
+				
 				 
+			  $('.maxpic').css({
+				 
+				 left:($('.box').width()*0.8-$('.maxpic').width())/2,
+				 top:($('#maxbox').height()-$('.maxpic').height())/2
+			  });
+              
+			 for(var i in document.images){
+				 document.images[i].ondragstart=function(){
+					 return false;
+				 };
+			 }
+
+				
 			 }
 
    }
+   
+   function checkUserRight(uicode,uisubcode){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	   //console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		return itema;
+ }
+   function checkUserRightBtn(uicode,uisubcode,fn,num){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	//console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		if(itema==0){
+			window[fn](num);
+		}else if(itema==1){
+		}else{
+		   closeMenu();
+		   confirm_tip(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				clearTimeout(timer);
+			},2000);
+			
+		}
+ }
+   function checkUserRightdiv(uicode,uisubcode,fn,num){
+	  //console.log('uicode:'+uicode+' uisubcode:'+uisubcode);
+	  var itema= autoSearchDev.checkUserLimit(uicode.toString(2),uisubcode);
+	//console.log("当前用户"+autoSearchDev.getCurrentUser()+" 登录状态："+itema);
+		if(itema==0){
+			window[fn](num);
+		}else if(itema==1){
+			
+             var show = autoSearchDev.showUserLoginUi(336,300);
+			  if(show==0){
+				  var timer = setTimeout(function(){
+					   checkUserRightBtn(uicode,uisubcode,fn,num);
+					   clearTimeout(timer);
+					  },300);
+			  }else{
+				  var timer1 = setTimeout(function(){
+				    if(fn=='userList2Ui'){
+					        $('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+							  $('.right_content:visible div.switch').hide();
+							  $('.right_content:visible div.switch').eq(0).show();
+					  }  
+					   clearTimeout(timer1);
+					  },300);
+			  }
+		}else{
+		   closeMenu();
+		   confirm_tip(_T('no_limit'));
+			var timer =setTimeout(function(){
+				closeMenu();
+				if(fn=='userList2Ui'){
+				$('.right_content:visible ul.ope_list li').eq(0).addClass('ope_listAct').siblings('li').removeClass('ope_listAct');
+						$('.right_content:visible div.switch').hide();
+						$('.right_content:visible div.switch').eq(0).show();
+			     cUserinfo2Ui();
+				}
+				clearTimeout(timer);
+			},300);
+			
+		}
+ }

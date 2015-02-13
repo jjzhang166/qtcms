@@ -193,7 +193,7 @@ function operationStart(data){
 }
 function operationReturnInfo(data){
   console.log('----operationReturnInfo----');
- // console.log(data);
+ console.log(data);
   if(data.nThreadId != nThreadId || data.operationType != operationType)return;
   
   var wrap = $('#set_content div.onvif_list:visible');

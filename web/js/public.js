@@ -521,7 +521,7 @@ function addZero(num){   //数字小于0的时候用0补一位.
 
 //弹出框部分操作
 function closeMenu(){ 
-	$('#iframe,div.confirm,div.menu').hide();
+	$('#iframe,div.confirm,div.menu,div.photolayer').hide();
 	$('#confirm').find('h4,span').html('');
 	$('#menusList div.menu').find('input.data').remove().end().find(':text,:password').not('[default]').val('');
 		/*.end().end().each(function(){

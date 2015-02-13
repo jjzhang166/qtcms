@@ -511,4 +511,5 @@ var tr_TR={
 	 'AdvancedOptions':'Gelişmiş',
 	 'picturemanagement':'Resimler',
 	 'correct_range':'Değişen, doğru değeri girin _V_ ~ _V_',
+	 'ScreenshotManagement':'Ekran yönetimi',
 }

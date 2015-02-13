@@ -510,4 +510,5 @@
 	 'AdvancedOptions':'Advanced',
 	 'picturemanagement':'Picture management',
 	 'correct_range':'Please enter the correct value, ranging _V_ ~ _V_',
+	 'ScreenshotManagement':'Screenshots management',
 }
