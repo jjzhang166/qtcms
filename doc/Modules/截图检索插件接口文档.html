@@ -39,13 +39,22 @@ p.MsoNormal3 {mso-style-unhide:no;
 <p>插件抛出的事件：<br />
   @1<br />
   事件名称：ScreenShotInfo<br />
-  事件参数：<br />
+  事件格式：index_num:&quot;{JSON对象}&quot;, num=0,1,2......<br />
+  JSON参数：<br />
   &quot;fileName&quot;：文件名称<br />
   &quot;fileDir&quot;：文件路径<br />
   &quot;wndId&quot;:窗口号(1-49)<br />
   &quot;type&quot;：类型(0：预览，1：本地回放，2：远程回放)<br />
   &quot;time&quot;:截图时间(格式为&quot;YYYY-MM-DD hh:mm:ss&quot;)<br />
-  &quot;userName&quot;：用户名<br />
+&quot;userName&quot;：用户名</p>
+<p>例如：<br />
+  index_0: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-3-0-2015-02-13-14-41-50-475.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:41:50&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;3&quot;}&quot;<br />
+  index_1: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-4-0-2015-02-13-14-41-55-369.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:41:55&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;4&quot;}&quot;<br />
+  index_2: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-1-0-2015-02-13-14-41-57-844.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:41:57&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;1&quot;}&quot;<br />
+  index_3: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-2-0-2015-02-13-14-42-00-200.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:42:00&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;2&quot;}&quot;<br />
+  index_4: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-0-0-2015-02-13-14-42-12-357.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:42:12&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;0&quot;}&quot;<br />
+  index_5: &quot;{&quot;fileDir&quot;:&quot;D:/screenShotEx&quot;,&quot;fileName&quot;:&quot;admin-8-0-2015-02-13-14-42-15-172.jpg&quot;,&quot;time&quot;:&quot;2015-02-13 14:42:15&quot;,&quot;type&quot;:&quot;0&quot;,&quot;userName&quot;:&quot;admin&quot;,&quot;wndId&quot;:&quot;8&quot;}&quot;</p>
+<p><br />
 </p>
 <p><br />
 </p>
