@@ -33,7 +33,7 @@ var ONVIF = function(ip,port,usr,pwd){
 			bps = $('#onvifbps').val(),
 			codeformat = $('#onvifcodeFormat').attr('data');
 			interval = $('#onvifinterval').val(),
-		    profile = $('#onvifprofile').attr('data'),
+		    profile = $('#onvifprofile').val(),
 			resolution = $('#onvifresolution').val();
 		var resArry = resolution.split('x');			
 	    onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
@@ -61,7 +61,7 @@ var ONVIF = function(ip,port,usr,pwd){
 			sgateway = $('#onvifsGateway').val(),
 			smask = $('#onvifsMask').val(),
 			sdns = $('#onvifsDns').val();
-       console.log(sip+' '+smac+' '+sgateway+' '+smask+' '+sdns);
+      // console.log(sip+' '+smac+' '+sgateway+' '+smask+' '+sdns);
 		onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
 	    onvifSetting.setOnvifDeviceNetWorkInfo(sip,smac,sgateway,smask,sdns);
 		  
@@ -138,7 +138,7 @@ function datatoui(num){
 					break; 	
 			    }
 				$('#'+i).val(str2).attr('data',objData[i]);
-			}else if(i=='onvifprofile'){
+			}/*else if(i=='onvifprofile'){
 				  var str4;
 				switch(objData[i]){
 				   case '0':
@@ -158,7 +158,7 @@ function datatoui(num){
 					break; 	
 			    }
 				$('#'+i).val(str4).attr('data',objData[i]);
-			}else{
+			}*/else{
 			  $('#'+i).val(objData[i]);
 			}
 		}
@@ -180,7 +180,7 @@ function emptyOnvifinfo(){
 //onvif 设置回调函数
 function operationStart(data){
   console.log('----operationStart----');
-  console.log(data);
+ // console.log(data);
   AJAXHint='';
   var wrap = $('#set_content div.onvif_list:visible');
   if(data.operationType=='0'||data.operationType=='2'||data.operationType=='4'){
@@ -193,7 +193,7 @@ function operationStart(data){
 }
 function operationReturnInfo(data){
   console.log('----operationReturnInfo----');
-  console.log(data);
+ // console.log(data);
   if(data.nThreadId != nThreadId || data.operationType != operationType)return;
   
   var wrap = $('#set_content div.onvif_list:visible');
@@ -230,7 +230,7 @@ function operationReturnInfo(data){
 }
 function operationEnd(data){
   console.log('----operationEnd----');
-  console.log(data);	
+ // console.log(data);	
   
   if(data.nThreadId != nThreadId || data.operationType != operationType)return;
     var wrap = $('#set_content div.onvif_list:visible');
@@ -310,9 +310,9 @@ function encodeinfo(data){
 			 profileArray[g] =  xmlDoc.getElementsByTagName("enc_profile")[i].getElementsByTagName("item")[g].getAttribute("profile");
 		  }
          // console.log('fps:'+fps+' bps:'+bps+' codeFormat:'+codeFormat+' resolution:'+resolution+' fpsmin:'+fpsmin+' fpsmax:'+fpsmax+' bpsmin:'+bpsmin+' bpsmax:'+bpsmax+' intervalmin:'+intervalmin+' intervalmax:'+intervalmax); 
-		    var str1 = "{'onviffps':{'value':fps,'min':fpsmin,'max':fpsmax},'onvifbps':{'value':bps,'min':bpsmin,'max':bpsmax},'onvifcodeFormat':codeFormat,'onvifprofile':profile,'onvifinterval':{'value':interval,'min':intervalmin,'max':intervalmax},'onvifresolution':resolution,'resolutionArray':resolutionArray,'profileArray':profileArray}";
+		    var str1 = "{'onviffps':{'value':fps,'min':fpsmin,'max':fpsmax},'onvifbps':{'value':bps,'min':bpsmin,'max':bpsmax},'onvifcodeFormat':codeFormat,'onvifprofile':profile,'onvifinterval':{'value':interval,'min':intervalmin,'max':intervalmax},'onvifresolution':resolution,'resolutionArray':resolutionArray}";
 			var data1 = eval('('+str1+')');
-			console.log(data1);
+			//console.log(data1);
 		   $('<li style="width:220px;" onclick="datatoui('+i+')"><input type="text" value="'+str+'" style="width:220px;" data='+i+' disabled/></li>').appendTo(target).data('data',data1);
 	   } 
 		 datatoui(0); 
