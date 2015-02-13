@@ -184,7 +184,7 @@ insert into general_setting (name,value) values('misc_keepCurrentUserPassWord','
 insert into general_setting (name,value) values('misc_CurrentUserName','admin');
 insert into general_setting (name,value) values('misc_CurrentUserPassWord','');
 
-insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','d41d8cd98f00b204e9800998ecf8427e','11111111111','0','0','0');
+insert into user (userName,password,nLimit,userState,logTime,logOutInterval) values('admin','d41d8cd98f00b204e9800998ecf8427e','111111111111','0','0','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','1','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','10','0');
 insert into user_sub_limit (userName,mainSingleCode,subCode) values('admin','100','0');
