@@ -16,7 +16,10 @@ $(document).ready(function() {
 		   var action = $(this).attr('class').split(' ')[0];
 		    addMouseStyleByLimit($(this),action,1<<11);
 	       })
-
+         
+		 $('#searchStart,#searchEnd').val(getCurrentDate());
+		
+		
 		 var username = autoSearchDev.getCurrentUser();
 		  username && $('.top_nav div p span:eq(1)').html(username);
 		  
@@ -292,6 +295,17 @@ $(document).ready(function() {
 				
 			 }
 
+   }
+   
+   function getCurrentDate(){
+	 var myDate = new Date,
+
+		yy=myDate.getFullYear(),
+	
+		mm=addZero(parseInt(myDate.getMonth(),10)+1),
+	
+		dd=addZero(myDate.getDate());
+	  return yy+'-'+mm+'-'+dd;   
    }
    
    function checkUserRight(uicode,uisubcode){

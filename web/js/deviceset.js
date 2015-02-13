@@ -941,7 +941,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 			$('#userR').val(data.username);
 			var types = parseInt(data.userlv,2);
           
-			for(var j = 0; j < 11; j++){
+			for(var j = 0; j < 12; j++){
 				if(types == 0){
 				  $('#mainRight ul input:checkbox').eq(j).prop("checked",false);
 				  break;
@@ -991,7 +991,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 			$('#cuser').val(cusername);
 			$('#exitTime').val(exittime);
 			var types = parseInt(cuserlimit.mainLimit,2);
-			for(var j = 0; j < 11; j++){
+			for(var j = 0; j < 12; j++){
 				if(types == 0){
 				 obj.find('input:checkbox').eq(j).prop("checked",false);
 				  break;
@@ -1068,7 +1068,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 		var limit=0;
 		var c=0;
 		var str1='';
-		for(var i=0;i<11;i++){
+		for(var i=0;i<12;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
 				 c++;
 			    str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
@@ -1089,7 +1089,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 		var pwd=$('#pwdR').val();
 		var logoutinterval = $('#otherinterval').prop('checked')? $('#exitinterval').val() : 0;
 		var limit=0,c=0,str1='';
-		for(var i=0;i<11;i++){
+		for(var i=0;i<12;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
 				 c++;
 			     str1+="<sub mainCode='"+(1<<i).toString(2)+"' subLimit='0'/>";
