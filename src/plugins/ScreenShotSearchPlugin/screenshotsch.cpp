@@ -73,7 +73,8 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 		info["time"] = datetime.toString("yyyy-MM-dd hh:mm:ss");
 		QString path = info["fileDir"].toString() + "/" + info["fileName"].toString();
 		if (QFile::exists(path)){
-			EventProcCall(QString("ScreenShotInfo"), info);
+// 			EventProcCall(QString("ScreenShotInfo"), info);
+			combineData(info);
 		}
 
 		ret = sqlite3_step(pstmt);
@@ -109,4 +110,22 @@ QString ScreenShotSch::createSql( qint64 num, QString keyWord )
 		num = num>>1;
 	}
 	return "(" + list.join(" or ") + ")";
+}
+
+void ScreenShotSch::combineData( QVariantMap item )
+{
+	QString info;
+	QStringList attrList;
+	QVariantMap::iterator iter = item.begin();
+	while (iter != item.end()){
+		attrList<<"\\\"" + iter.key() + "\\\":\\\"" + iter.value().toString() + "\\\"";
+		iter++;
+	}
+	info = "{" + attrList.join(",") + "}";
+	int len = m_infoMap.size();
+	m_infoMap.insert(QString("index_%1").arg(len), info);
+	if (99 == len){
+		EventProcCall(QString("ScreenShotInfo"), m_infoMap);
+		m_infoMap.clear();
+	}
 }

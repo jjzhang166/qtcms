@@ -23,6 +23,9 @@ public slots:
 private:
 	sqlite3* getSqlInterface();
 	QString createSql(qint64 num, QString keyWord);
+	void combineData(QVariantMap item);
+private:
+	QVariantMap m_infoMap;
 };
 
 #endif // SCREENSHOTSCH_H
