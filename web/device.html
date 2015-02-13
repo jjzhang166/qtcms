@@ -67,7 +67,8 @@
 	#set_content .action li,.span{ display:block; height:22px; width:100px; margin: 10px 0; background: url(images/backup/botton.png) no-repeat;background-position: 0 0; font-size:14px; line-height:22px; text-align:center; cursor: default; }
 	.menu0{ background:#282828; position:absolute; display:none; min-width:70px;}
 	.menu0 li:hover{ background:#C25451; cursor: default; }
-
+    
+	.style1 input{ background:url(images/playback/select_bg.png) repeat-x 0 0;width:220px; }
 	 
 	 #UserList thead td{height:0;}
 	 #userList .sel{background: #4A911C}
@@ -1707,26 +1708,25 @@
                     <li action="onvifnetworkInfo"><script>T("Network_Settings")</script></li>
 				</ul>
 				<div class="switch onvif_list"  style="display:none;">
-					<table>
-						<tr><td><script>T("Device_name")</script></td><td><input type="text"  readonly="readonly" id="onvifdevname"/></td></tr>
-						<tr><td><script>T("Model")</script></td><td><input type="text" readonly="readonly" id="onvifmodel"/></td></tr>
-						<tr><td><script>T("Hardware_version")</script></td><td><input type="text"  readonly="readonly" id="onvifhw_version"/></td></tr>
-						<tr><td><script>T("Software_Version")</script></td><td><input type="text" readonly="readonly" id="onvifsw_version"/></td></tr>
-						<tr><td><script>T("Generation_time")</script></td><td><input stype="text" readonly="readonly" id="onvifsw_builddate"/> </td></tr>
-                        <tr><td><script>T("SD_number")</script></td><td><input type="text" readonly="readonly" id="onvifsn"/></td></tr>
-						<tr><td><script>T("Firmware")</script></td><td><input type="text" readonly="readonly" id="onviffirmware"/></td></tr>
-						<tr><td><script>T("HardwareID")</script></td><td><input type="text"  readonly="readonly" id="onvifhwid"/></td></tr>
+					<table class="style1">
+						<tr><td><script>T("Device_name")</script></td><td><input type="text"  readonly="readonly" id="onvifdevname" /></td></tr>
+						<tr><td><script>T("Model")</script></td><td><input type="text" readonly="readonly" id="onvifmodel" /></td></tr>
+						<tr><td><script>T("Hardware_version")</script></td><td><input type="text"  readonly="readonly" id="onvifhw_version" /></td></tr>
+						<tr><td><script>T("Software_Version")</script></td><td><input type="text" readonly="readonly" id="onvifsw_version" /></td></tr>
+						<tr><td><script>T("Generation_time")</script></td><td><input stype="text" readonly="readonly" id="onvifsw_builddate" /> </td></tr>
+                        <tr><td><script>T("SD_number")</script></td><td><input type="text" readonly="readonly" id="onvifsn" /></td></tr>
+						<tr><td><script>T("Firmware")</script></td><td><input type="text" readonly="readonly" id="onviffirmware" /></td></tr>
+						<tr><td><script>T("HardwareID")</script></td><td><input type="text"  readonly="readonly" id="onvifhwid" /></td></tr>
                         <tr><td><script>T("Manufacturer")</script></td><td><input type="text"  readonly="readonly" id="onvifmanufacturer"/></td></tr>
 					</table>
 				</div>
                  <div class="switch onvif_list"  style="display:none;">
-					<table>
-                       <input type="hidden" id="onvifprofile" />
+					<table class="style1">
 						<tr>
 							<td><script>T("Stream")</script></td>
 							<td data-UI='Streamitem'>
-								<div class="select" style="width:153px;">
-									<input value="" type="text" data="" id="onvifStream" style="width:130px;"/>
+								<div class="select" style="width:220px;">
+									<input value="" type="text" data="" id="onvifStream" style="width:197px;"/>
 									<a class="hover0"></a>
 								</div>
 								<ul class="option">
@@ -1737,24 +1737,36 @@
                         <tr>
                           <td><script>T("Encoding_format")</script></td>
                           <td>
-                              <div class="select" style="width:153px;">
-                                   <input type="text" data="" id="onvifcodeFormat" style="width:130px;"/>
+                              <div class="select" style="width:220px;">
+                                   <input type="text" data="" id="onvifcodeFormat" style="width:197px;"/>
                                   <a class="hover0"></a>
                               </div>
                               <ul class="option">
                                   <!--<li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_JPEG" data="0" style="width:153px;" class="bb"/></li>
                                   <li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_MPEG4" data="1" style="width:153px;" class="bb"/></li>-->
-                                  <li style="width:153px;" class="bb"><input type="text" value="NVP_VENC_H264" data="2" style="width:153px;" class="bb"/></li>
+                                  <li style="width:220px;" class="bb"><input type="text" value="NVP_VENC_H264" data="2" style="width:220px;" class="bb"/></li>
                               </ul>
                           </td><td></td>
+						</tr>
+                         <tr>
+							<td>Profile</td>
+							<td colspan="2">
+								<div class="select" style="width:220px;">
+									<input value="" data="" type="text" style="width:197px;" id="onvifprofile">
+									<a class="hover0"></a>
+								</div>
+								<ul class="option" data-UI="profileArray">
+									
+								</ul>
+							</td>
 						</tr>
                         <input type="hidden" id="onvifinterval" />
                         <!--<tr><td><script>T('CodeInterval')</script></td><td><input type="text"  readonly="readonly" id="onvifinterval"/></td><td></td></tr>-->
                         <tr>
 							<td><script>T("Resolution")</script></td>
 							<td colspan="2">
-								<div class="select" style="width:153px;">
-									<input value="" data="" type="text" style="width:130px;" id="onvifresolution">
+								<div class="select" style="width:220px;">
+									<input value="" data="" type="text" style="width:197px;" id="onvifresolution">
 									<a class="hover0"></a>
 								</div>
 								<ul class="option" data-UI="resolutionArray">
@@ -1777,12 +1789,12 @@
 						</tr>-->
                         <tr>
                             <td><script>T("BPS")</script></td>
-                            <td><input style="width:153px;" type="text" id="onvifbps" onblur="chkInput(0,this,'rate_range')"/></td>
+                            <td><input style="width:220px;" type="text" id="onvifbps" onblur="chkInput(0,this,'rate_range')"/></td>
                             <td><script>T("Unit_bps")</script></td>
                         </tr>
                         <tr>
                             <td><script>T("FPS")</script></td>
-                            <td><input style="width:153px;" type="text" id="onviffps" onblur="chkInput(0,this,'frame_rate_range')"/></td>
+                            <td><input style="width:220px;" type="text" id="onviffps" onblur="chkInput(0,this,'frame_rate_range')"/></td>
                             <td><script>T("Unit_fps")</script></td>
                         </tr>
                         <tr><td colspan="3" class="td3 tdBtn"><div class="hover" onclick="submitThisMenu('onvifDeviceEncoderInfo')"><script>T("Save")</script></div></td></tr>

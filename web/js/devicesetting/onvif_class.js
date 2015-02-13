@@ -33,7 +33,7 @@ var ONVIF = function(ip,port,usr,pwd){
 			bps = $('#onvifbps').val(),
 			codeformat = $('#onvifcodeFormat').attr('data');
 			interval = $('#onvifinterval').val(),
-		    profile = $('#onvifprofile').val(),
+		    profile = $('#onvifprofile').attr('data'),
 			resolution = $('#onvifresolution').val();
 		var resArry = resolution.split('x');			
 	    onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
@@ -83,17 +83,45 @@ function datatoui(num){
 		if(typeof objData[i] == 'object'){
 			if(objData[i] instanceof Array){
 				
-				var targ = wrap.find('ul[data-UI~="'+i+'"]');
-				var len=objData[i].length;
-				for(var j = 0;j<len;j++){
-				  $('<li style="width:153px;"><input type="text" value="'+objData[i][j]+'" style="width:153px;" disabled/></li>').appendTo(targ);	
+				  var targ = wrap.find('ul[data-UI~="'+i+'"]');
+				  var len=objData[i].length;
+				  
+				  if(i=='profileArray'){
+				   
+					for(var j = 0;j<len;j++){
+					     var str3;
+						  switch(objData[i][j]){
+						   case '0':
+							str3="NVP_H264_PROFILE_BASELINE";
+							break;  
+						   case '1':
+							str3="NVP_H264_PROFILE_MAIN";
+							break; 
+						   case '2':
+							str3="NVP_H264_PROFILE_EXTENDED";
+							break; 	
+						   case '3':
+							str3="NVP_H264_PROFILE_HIGH";
+							break; 	
+						    case '4':
+							str3="NVP_H264_PROFILE_NR";
+							break; 	
+						}
+					  $('<li style="width:220px;"><input type="text" value="'+str3+'" style="width:220px;" data='+objData[i][j]+' disabled/></li>').appendTo(targ);	
+				  }
+						
+				}else{
+				  for(var j = 0;j<len;j++){
+					  
+					$('<li style="width:220px;"><input type="text" value="'+objData[i][j]+'" style="width:220px;" disabled/></li>').appendTo(targ);	
+				  }
 				}
-				
 		   }else{
-			  $('#'+i).val(objData[i].value).attr({
-				  'min':objData[i].min,
-				  'max':objData[i].max
-			  });	
+			   
+				  $('#'+i).val(objData[i].value).attr({
+					  'min':objData[i].min,
+					  'max':objData[i].max
+				  });
 		  }
 		}else{
 			if(i=='onvifcodeFormat'){
@@ -110,6 +138,26 @@ function datatoui(num){
 					break; 	
 			    }
 				$('#'+i).val(str2).attr('data',objData[i]);
+			}else if(i=='onvifprofile'){
+				  var str4;
+				switch(objData[i]){
+				   case '0':
+					str4="NVP_H264_PROFILE_BASELINE";
+					break;  
+				   case '1':
+					str4="NVP_H264_PROFILE_MAIN";
+					break; 
+				   case '2':
+					str4="NVP_H264_PROFILE_EXTENDED";
+					break; 	
+				   case '3':
+					str4="NVP_H264_PROFILE_HIGH";
+					break; 	
+					case '4':
+					str4="NVP_H264_PROFILE_NR";
+					break; 	
+			    }
+				$('#'+i).val(str4).attr('data',objData[i]);
 			}else{
 			  $('#'+i).val(objData[i]);
 			}
@@ -185,15 +233,15 @@ function operationEnd(data){
   console.log(data);	
   
   if(data.nThreadId != nThreadId || data.operationType != operationType)return;
-    
+    var wrap = $('#set_content div.onvif_list:visible');
    if(AJAXHint){
-	  showAJAXHint(AJAXHint);
+	  showAJAXHint(AJAXHint).css('top',wrap.height()+46);
 	  return;   
 	}
   if(data.operationType=='0'||data.operationType=='2'||data.operationType=='4'){
-	 showAJAXHint("loading_success").fadeOut(2000); 
+	 showAJAXHint("loading_success").css('top',wrap.height()+46).fadeOut(2000); 
   }else{
-	 showAJAXHint("save_success").fadeOut(2000);  
+	 showAJAXHint("save_success").css('top',wrap.height()+46).fadeOut(2000);  
   }	
 }
 function onvifDevinfo(data){
@@ -249,19 +297,23 @@ function encodeinfo(data){
 			  intervalmin =  xmlDoc.getElementsByTagName("enc_interval")[i].getAttribute("min"),
 			  intervalmax =  xmlDoc.getElementsByTagName("enc_interval")[i].getAttribute("max"),
 			  resolutionNum =  xmlDoc.getElementsByTagName("resolution")[i].getAttribute("itemNum"),
-			  profile = xmlDoc.getElementsByTagName("StreamItem")[i].getAttribute("enc_profile");
+			  profile = xmlDoc.getElementsByTagName("StreamItem")[i].getAttribute("enc_profile"),
+			  profileNum = xmlDoc.getElementsByTagName("enc_profile")[i].getAttribute("itemNum");
 			  
 			  resolutionNum = parseInt(resolutionNum,10);
-			  
-		  var resolutionArray =[resolutionNum];
+			  profileNum = parseInt(profileNum,10);
+		  var resolutionArray =[resolutionNum],profileArray =[profileNum];
 		  for(var k=0;k<resolutionNum;k++){
 			  resolutionArray[k] = xmlDoc.getElementsByTagName("resolution")[i].getElementsByTagName("item")[k].firstChild.nodeValue;
 		  }
+		  for(var g=0;g<profileNum;g++){
+			 profileArray[g] =  xmlDoc.getElementsByTagName("enc_profile")[i].getElementsByTagName("item")[g].getAttribute("profile");
+		  }
          // console.log('fps:'+fps+' bps:'+bps+' codeFormat:'+codeFormat+' resolution:'+resolution+' fpsmin:'+fpsmin+' fpsmax:'+fpsmax+' bpsmin:'+bpsmin+' bpsmax:'+bpsmax+' intervalmin:'+intervalmin+' intervalmax:'+intervalmax); 
-		    var str1 = "{'onviffps':{'value':fps,'min':fpsmin,'max':fpsmax},'onvifbps':{'value':bps,'min':bpsmin,'max':bpsmax},'onvifcodeFormat':codeFormat,'onvifprofile':profile,'onvifinterval':{'value':interval,'min':intervalmin,'max':intervalmax},'onvifresolution':resolution,'resolutionArray':resolutionArray}";
+		    var str1 = "{'onviffps':{'value':fps,'min':fpsmin,'max':fpsmax},'onvifbps':{'value':bps,'min':bpsmin,'max':bpsmax},'onvifcodeFormat':codeFormat,'onvifprofile':profile,'onvifinterval':{'value':interval,'min':intervalmin,'max':intervalmax},'onvifresolution':resolution,'resolutionArray':resolutionArray,'profileArray':profileArray}";
 			var data1 = eval('('+str1+')');
 			console.log(data1);
-		   $('<li style="width:153px;" onclick="datatoui('+i+')"><input type="text" value="'+str+'" style="width:153px;" data='+i+' disabled/></li>').appendTo(target).data('data',data1);
+		   $('<li style="width:220px;" onclick="datatoui('+i+')"><input type="text" value="'+str+'" style="width:220px;" data='+i+' disabled/></li>').appendTo(target).data('data',data1);
 	   } 
 		 datatoui(0); 
 		 $('#onvifStream').val(_T("Main_stream")).attr('data',0);
