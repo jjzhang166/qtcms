@@ -480,7 +480,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 							::GetClientRect(m_hPlayWnd,&tRect);
 							DrawARectangle(tHdc,m_nOriginalRectStartX,m_nOriginalRectStartY,m_nOriginalRectEndX,m_nOriginalRectEndY,tRect);
 							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
-							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							checkHr(hr);
 						}else{
 							//do nothing
 						}
@@ -525,7 +526,8 @@ int CDDrawRenderObject::render( char *pYData,char *pUData,char *pVData,int nWidt
 							::GetClientRect(m_hPlayWnd,&tRect);
 							DrawARectangle(tHdc,m_nOriginalRectStartX,m_nOriginalRectStartY,m_nOriginalRectEndX,m_nOriginalRectEndY,tRect);
 							m_pOffOsdScreenSurface->ReleaseDC(tHdc);
-							g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							hr=g_pPrimarySurface->Blt(&rcDsp,m_pOffOsdScreenSurface,&rcSrc,DDBLT_WAIT,0);
+							checkHr(hr);
 						}else{
 							//do nothing
 						}

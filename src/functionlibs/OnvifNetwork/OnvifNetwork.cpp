@@ -331,10 +331,10 @@ bool OnvifNetwork::setOnvifDeviceEncoderInfo( int nIndex,int nWidth,int nHeight,
 	}
 	//check profile
 	int profile = sEncProfile.toInt();
-	if (!checkProfile(nIndex, profile)){
-		qDebug()<<"profile input error!";
-		return false;
-	}
+	//if (!checkProfile(nIndex, profile)){
+	//	qDebug()<<"profile input error!";
+	//	return false;
+	//}
 	//fill config data
 	stNVP_VENC_CONFIG vencConfig;
 	qMemCopy(&vencConfig, &m_stVencConfigs.entry[nIndex], sizeof(stNVP_VENC_CONFIG));
