@@ -10,6 +10,7 @@ public:
 	userInfoObject(QWidget *parent = 0);
 	~userInfoObject();
 public slots:
+	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);};
 	void importUserInfo();
 	void outportUserInfo();
 private:

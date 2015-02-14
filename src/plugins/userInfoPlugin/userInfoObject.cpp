@@ -23,14 +23,26 @@ userInfoObject::~userInfoObject()
 void userInfoObject::importUserInfo()
 {
 	QString sFilePath;
-	sFilePath=QFileDialog::getOpenFileName( this,"test xxx",
+	sFilePath=QFileDialog::getOpenFileName( this,"",
 		"",
 		"file (*.XML)"); 
 	if (!sFilePath.isEmpty())
 	{
 		if (NULL!=m_pConfigManager)
 		{
-			m_pConfigManager->Import(sFilePath);
+			QVariantMap tMap;
+			if (0==m_pConfigManager->Import(sFilePath))
+			{
+				//执行成功
+				tMap.insert("flags",true);
+				tMap.insert("file",sFilePath);
+				EventProcCall("importUserInfoCallback",tMap);
+			}else{
+				//执行失败
+				tMap.insert("flags",false);
+				tMap.insert("file",sFilePath);
+				EventProcCall("importUserInfoCallback",tMap);
+			}
 		}else{
 			qDebug()<<__FUNCTION__<<__LINE__<<"importUserInfo fail as m_pConfigManager is null";
 		}
@@ -48,7 +60,20 @@ void userInfoObject::outportUserInfo()
 		QString sFilePath=dir+"/userInfo.xml";
 		if (NULL!=m_pConfigManager)
 		{
-			m_pConfigManager->Export(sFilePath);
+			QVariantMap tMap;
+			if (0==m_pConfigManager->Export(sFilePath))
+			{
+				//执行成功
+				tMap.insert("flags",true);
+				tMap.insert("file",sFilePath);
+				EventProcCall("outportUserInfoCallback",tMap);
+			}else{
+				//执行失败
+				tMap.insert("flags",false);
+				tMap.insert("file",sFilePath);
+				EventProcCall("outportUserInfoCallback",tMap);
+			}
+
 			//同时保存到默认的路径
 			saveToDefaultPath();
 		}else{
