@@ -120,7 +120,7 @@ void ScreenShotSch::combineData( QVariantMap item )
 	QStringList attrList;
 	QVariantMap::iterator iter = item.begin();
 	while (iter != item.end()){
-		attrList<<"\\\"" + iter.key() + "\\\":\\\"" + iter.value().toString() + "\\\"";
+		attrList<<"\"" + iter.key() + "\":\"" + iter.value().toString() + "\"";
 		iter++;
 	}
 	info = "{" + attrList.join(",") + "}";
@@ -150,9 +150,10 @@ QString ScreenShotSch::getImageInfo( const int &nStartIndex, const int &nEndInde
 	{
 		QString val = m_infoMap.value(index);
 		if (val.isEmpty()){
+			index++;
 			continue;
 		}
-		res += QString("index_%1").arg(index) + ":'" + val + "'";
+		res += val;
 		if (index != nEndIndex - 1){
 			res += ",";
 		}
