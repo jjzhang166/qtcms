@@ -88,7 +88,7 @@
 
 	.synCheckboxClick tr.sel{background: #4A911C}
 
-	#ajaxHint{ display: none; text-align: center; position: absolute; left: 14px; border-radius: 4px; background: #B64442; color: #ccc; padding:2px; }
+	.ajaxHint{ display: none; text-align: center; position: absolute; left: 14px; border-radius: 4px; background: #B64442; color: #ccc; padding:2px; }
 
 	#SerachDevList thead td{height:0;}
 	
@@ -1816,7 +1816,7 @@
 					</table>
 				</div>
                 
-			    <div id="ajaxHint">
+			    <div id="ajaxHint" class="ajaxHint">
 			    </div>
 			</div>
 			<div class="right_content">
@@ -2056,6 +2056,7 @@
 						<tr><td colspan="2" class="td3 tdBtn"><div class="hover" onclick="SettingStorageParmData();" id="SettingStorageParm_ok"><script>T("Save")</script></div></td></tr>
 					</table>
 				</div>
+               <div class="ajaxHint" id="ImOutportHint"></div>
 			</div>
 	 <div style="position: relative;" class="right_content">
       <ul class="ope_list nav1">

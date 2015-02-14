@@ -508,4 +508,8 @@
 	 'picturemanagement':'图片管理',
 	 'correct_range':'请输入正确的数值,取值范围为_V_ ~ _V_',
 	 'ScreenshotManagement':'截屏管理',
+	 'importsuccess':'导入信息成功',
+	 'importfail':'导入信息失败',
+	 'exportsuccess':'导出信息成功',
+	 'exportfail':'导出信息失败',
 }

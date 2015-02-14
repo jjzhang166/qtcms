@@ -511,4 +511,8 @@
 	 'picturemanagement':'Picture management',
 	 'correct_range':'Please enter the correct value, ranging _V_ ~ _V_',
 	 'ScreenshotManagement':'Screenshots management',
+	 'importsuccess':'Successfully import information',
+	 'importfail':'Importing information failed',
+	 'exportsuccess':'Export Information success',
+	 'exportfail':'Export information failed',
 }

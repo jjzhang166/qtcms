@@ -529,6 +529,8 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 		autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		autoSearchDev.startGetUserLoginStateChangeTime();
 		
+		onvifuserInfo.AddEventProc("importUserInfoCallback",'importUserInfoCallback(data)');
+		onvifuserInfo.AddEventProc("outportUserInfoCallback",'outportUserInfoCallback(data)');
 		//onvif 设置
 		onvifSetting.AddEventProc('operationStart','operationStart(data)');
 		onvifSetting.AddEventProc('operationReturnInfo','operationReturnInfo(data)');
@@ -1071,6 +1073,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 		for(var i=0;i<12;i++){
 		   if($('#mainRight li input:checkbox').eq(i).prop('checked')){
 				 c++;
+
 			    str1+="<sub mainCode='"+(1<<i).toString(2)+"' subCode='0'/>";
 				limit+=1<<i;
 		   }	
@@ -1335,6 +1338,29 @@ function autoSetIPcallBack(data){
 }
 
 //// oCommonLibrary, 操作做数据库回调方法.
+    
+	function importUserInfoCallback(data){
+		console.log(data);
+		 var wrap = $('#set_content div.switch:visible'),t;
+	   if(data.flags=='true'){
+		 t=_T('importsuccess');
+	    }else{
+		  t=_T('importfail');	
+		}
+	  $('#ImOutportHint').html(t).stop(true,true).show();
+	  $('#ImOutportHint').css('top',wrap.height()+46).fadeOut(2000);
+    }
+
+   function outportUserInfoCallback(data){
+	   var wrap = $('#set_content div.switch:visible'),t;
+	   if(data.flags=='true'){
+		 t=_T('exportsuccess');
+	    }else{
+		  t=_T('exportfail');	
+		}
+	  $('#ImOutportHint').html(t).stop(true,true).show();
+	  $('#ImOutportHint').css('top',wrap.height()+46).fadeOut(200);
+   }
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);
 		if(data.ErrorCode=="1"){
@@ -1675,6 +1701,7 @@ function autoSetIPcallBack(data){
 			break;
 			case 3:  //通道数。
 				if(!(str == 1 || str == 4 || str == 8 || str == 16 ||  str == 24 ||  str == 32)){
+
 					hint=_T('correct')+_T('Channels')+'(1,4,8,16,24,32)';
 				}
 			break;
@@ -2082,5 +2109,5 @@ function userSetInfoImport(){
 
 function userSetInfoExport(){
  	
-   onvifuserInfo.outportUserInfo()();	
+   onvifuserInfo.outportUserInfo();	
 }
