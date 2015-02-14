@@ -54,21 +54,37 @@ $(document).ready(function() {
           
 		  $('#maxprev,#maxnext,#minprev,#minnext').hover(function(){
 			  
-			  $(this).css('background','#999');
+			  $(this).css('background','#ccc');
+			  var pos = $(this).find('a').css('background-position').split('px');
+			  //alert(pos[0]+' '+pos[1]);
+			  $(this).find('a').css('background-position',(parseInt(pos[0],10)-45)+'px '+pos[1]+'px');
+			// console.log($(this).find('a').css('background-position'));
 			    
 		   },function(){
 			  
 			  $(this).css('background','none');  
-			   
-		    }).mousedown(function(){
-			  	
-				$(this).css('background','#666');
-				
-			}).mouseup(function(){
+			   var pos = $(this).find('a').css('background-position').split('px');
+			  // alert(pos[0]+' '+pos[1]);
+			  $(this).find('a').css('background-position',(parseInt(pos[0],10)+45)+'px '+pos[1]+'px'); 
 			  
-			   $(this).css('background','#999');
-			  	
-			});
+		    })
+			/*
+			 $('#minprev,#minnext').hover(function(){
+			  
+			  $(this).css('background','#ccc');
+			  var pos = $(this).find('a').css('background-position').split('px');
+			  //alert(pos[0]+' '+pos[1]);
+			  $(this).find('a').css('background-position',pos[0]+'px '+(parseInt(pos[1],10)-20)+'px');
+			// console.log($(this).find('a').css('background-position'));
+			    
+		   },function(){
+			  
+			  $(this).css('background','none');  
+			   var pos = $(this).find('a').css('background-position').split('px');
+			  // alert(pos[0]+' '+pos[1]);
+			   $(this).find('a').css('background-position',pos[0]+'px '+(parseInt(pos[1],10)+20)+'px');
+			  
+		    })*/
 			
 			var startDateTextBox =$('#searchStart');
 			var endDateTextBox = $('#searchEnd');
@@ -190,13 +206,10 @@ $(document).ready(function() {
 			   height:$('.box').height()*3/5	
 			});
 			
-			$('#maxprev,#maxnext').css({
-			   
-			   top:($('#maxbox').height()-$('#maxprev').height())/2	
-				
-			});
+			$('#maxprev a,#maxnext a').css('margin-top',($('#maxbox').height()-80)/2);
 
 			$('#foot').css('top',$('#set_content div.right').height()+78);
+			
 		}
 	
 	function Validationcallback(data){ //id按钮权限验证
@@ -213,12 +226,12 @@ $(document).ready(function() {
 			}
 		}
 	function ScreenShotInfocallback(data){
-	   //console.log('=============================================');
-	  // console.log(data);
-	   var dataArr = {'name':data.fileName,'dir':data.fileDir,'time':data.time,'type':data.type,'user':data.userName,'window':data.wndId}
-	    $('<li><img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'" width="100" height="100"/></li>').appendTo($('#minbox ul')).data('data',dataArr);
+	  console.log('=============================================');
+	  console.log(data);
+	  // var dataArr = {'name':data.fileName,'dir':data.fileDir,'time':data.time,'type':data.type,'user':data.userName,'window':data.wndId}
+	  //  $('<li><img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'" width="100" height="100"/></li>').appendTo($('#minbox ul')).data('data',dataArr);
 		//console.log(dataArr);
-	  $('<img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'"/>').appendTo($('#imgs'));
+	  //$('<img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'"/>').appendTo($('#imgs'));
 	}
 	
 	function picSearch(){
@@ -282,7 +295,7 @@ $(document).ready(function() {
 				 
 			  $('.maxpic').css({
 				 
-				 left:($('.box').width()*0.8-$('.maxpic').width())/2,
+				 left:($('.box').width()*0.9-$('.maxpic').width())/2,
 				 top:($('#maxbox').height()-$('.maxpic').height())/2
 			  });
               

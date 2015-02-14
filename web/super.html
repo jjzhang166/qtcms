@@ -39,10 +39,11 @@
 	.window_ckbox li{ float:left;width:34px;height:18px;margin:4px;}
 	.input1{ height: 16px; margin-right:6px; border: 0; background: url(images/top_icon.png) no-repeat -440px 0; text-indent: 4px; width:138px;}
 	#box,#maxbox,#minbox{cursor:pointer;}
-	#maxbox{position:relative;width:80%; margin:0 auto;}
-	#box a{ width: 24px; height: 24px; display: block; background: url(images/box_nav_button.png) no-repeat; background-position: 0 0; float: right;}
+	#maxbox{position:relative;width:90%; margin:0 auto;}
+	#box a{ width: 32px; height: 32px; display: block; background: url(images/super/close.png) no-repeat; background-position: 0 0; float: right;}
 	#maxbox .maxpic{ height:400px; width:600px;left:150px;position:relative;overflow:hidden;}
-	#maxprev,#maxnext{position:absolute; top:150px; width:38px; height:71px;z-index:9;cursor:pointer; border-radius:5px;}
+	#maxprev,#maxnext{position:absolute;  width:55px; height:100%;z-index:9;cursor:pointer;}
+	#maxprev a,#maxnext a{background:url(images/super/slider_btn.png); background-repeat:no-repeat;}
 	#minbox{width:680px; overflow:hidden; margin:10px auto;}
 	#minbox .minpic{ height:104px; width:624px;position:relative;overflow:hidden;float:left;}
 	.minpic ul{ position:absolute;top:0;left:0;}
@@ -105,11 +106,11 @@
         <div id="imgs" class="imgs" >
         </div>
       </div>
-        <div id="box" style="overflow:hidden; position:absolute;top:30px; display:none;z-index:1000;" class="box photolayer">
+        <div id="box" style="overflow:hidden; position:absolute;top:30px; display:none;z-index:1000; background:#000; opacity:0.9;" class="box photolayer">
           <a class="hover0 close"></a>
           <div id="maxbox">
-            <div id="maxprev" style="left:20px;"><img src="images/super/index_tab_l1.png" width="28" height="51"  alt="" style="margin:10px 5px;"/></div>
-            <div id="maxnext" style="right:20px;"><img src="images/super/index_tab_r1.png" width="28" height="51"  alt="" style="margin:10px 5px;"/></div>
+            <div id="maxprev" style="left:20px;"><a style="width:45px; height:80px; background-position:0 -80px;margin-right:3px;"></a></div>
+            <div id="maxnext" style="right:20px;"><a  style="width:45px; height:80px; background-position:0 0; margin-left:3px;"></a></div>
             <div class="maxpic" style="background-position:center; background-repeat:no-repeat;"></div>
           </div>
          <div style="margin:0 auto;width:400px;" id="picinfo">
@@ -123,8 +124,8 @@
          </table>
          </div>
           <div id="minbox">
-            <div id="minprev"><img src="images/super/index_tab_l1.png" width="28" height="51" alt="" style="margin-top:24px;"/></div>
-            <div id="minnext"><img src="images/super/index_tab_r1.png" width="28" height="51" alt="" style="margin-top:24px;"/></div>
+            <div id="minprev"><a style=" background: url(images/super/slider_btn.png) scroll no-repeat -20px -160px transparent; width:20px; height:40px; margin:32px 6px 0 0;"></a></div>
+            <div id="minnext"><a style=" background: url(images/super/slider_btn.png) scroll no-repeat 0 -160px transparent; width:20px; height:40px; margin:32px 0 0 6px ;"></a></div>
             <div class="minpic"><ul></ul></div>
          </div>
        </div>
