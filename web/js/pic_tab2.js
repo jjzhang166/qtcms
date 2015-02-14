@@ -118,8 +118,8 @@ $.fn.focusPic = function(defualt){
 		var src = $(defualt.minbox).find('.minpic li:eq('+maxPicindex+') img').attr('src');
 		$(defualt.maxbox).find('.maxpic').css('background-image','url("'+src+'")');
 		$(defualt.minbox).find('li').eq(minPicindex).addClass("on").siblings(this).removeClass("on");
-		var data = $(defualt.minbox).find('li').eq(minPicindex).data('data');
-		
+		var data1= $(defualt.minbox).find('li').eq(minPicindex).attr('data');
+		var data = eval('('+data1+')');
 		for(var i in data){
 			var str1 = 'pic'+i;
 			if(i=='type'){
@@ -136,6 +136,8 @@ $.fn.focusPic = function(defualt){
 				   break;
 			  }
 			  $('#'+str1).html(str);
+			}else if(i=='time'){
+				$('#'+str1).html(data[i].replace('_',' ')); 
 			}else{
 				$('#'+str1).html(data[i]);
 			}

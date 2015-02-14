@@ -1359,7 +1359,7 @@ function autoSetIPcallBack(data){
 		  t=_T('exportfail');	
 		}
 	  $('#ImOutportHint').html(t).stop(true,true).show();
-	  $('#ImOutportHint').css('top',wrap.height()+46).fadeOut(200);
+	  $('#ImOutportHint').css('top',wrap.height()+46).fadeOut(2000);
    }
 	function Validationcallback(data){ //id按钮权限验证
 	  //console.log(data);

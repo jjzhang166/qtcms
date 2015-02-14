@@ -358,21 +358,23 @@ $(document).ready(function() {
 	   $('#minbox li,#imgs img').remove();
 	   
 	   var data = data1.split('},');
-	  // console.log(data);
+	 // console.log(data);
 	   
 	
 	    var frag = document.createDocumentFragment(); // 创建文档碎片 
 		var frag1 = document.createDocumentFragment(); 
 		var len = data.length;
 		for(var i=0;i<len-1;i++){
-			data[i] = data[i]+'}';
-			var arr = eval('('+data[i]+')'); 
-			//console.log(arr);
+			var str= data[i]+'}';
+			var arr = eval('('+str+')'); 
+			//console.log(str);
 			var newListItem = $('<img src="/' + $.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+ '"/>')[0];  
-			//newListItem.data('data',arr);
 			frag.appendChild(newListItem); // 这里不会刷新DOM  
-			var newItem = $('<li><img src="/'+$.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+'" width="100" height="100"/></li>')[0];
-			 // newItem.data('data',arr);
+			//,'time':'"+arr.time+"'
+			var time = arr.time.replace(' ','_');
+			var str1 = "{'dir':'"+arr.fileDir+"','name':'"+arr.fileName+"','type':'"+arr.type+"','user':'"+arr.userName+"','window':'"+arr.wndId+"','time':'"+time+"'}";
+			var newItem = $('<li data='+str1+'><img src="/'+$.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+'" width="100" height="100"/></li>')[0];
+			  
 			  frag1.appendChild(newItem);
 		}
 		$('#imgs')[0].appendChild(frag);
