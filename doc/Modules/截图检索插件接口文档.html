@@ -35,7 +35,15 @@ p.MsoNormal3 {mso-style-unhide:no;
   //	1: 参数错误<br />
   //	2: 系统错误 <br />
   int searchScreenShot(const QString &amp;sWndId,const QString &amp;sStartTime,const QString &amp;sEndTime,const int &amp;nType,const QString &amp;sUser);</p>
-<p>&nbsp;</p>
+<p>//简述：获取截图文件总数<br />
+  //返回值为截图文件数量<br />
+int getImageNum();</p>
+<p>//简述：获取指定文件信息<br />
+  //输入参数：<br />
+  //nStartIndex:开始序号<br />
+  //nEndIndex：结束序号<br />
+  //返回值为截图文件信息(结构与抛出事件相同)<br />
+  QString getImageInfo(const int &amp;nStartIndex, const int &amp;nEndIndex);</p>
 <p>插件抛出的事件：<br />
   @1<br />
   事件名称：ScreenShotInfo<br />
