@@ -516,4 +516,8 @@ var tr_TR={
 	 'importfail':'İthalat bilgiler başarısız',
 	 'exportsuccess':'İhracat Bilgi başarısı',
 	 'exportfail':'İhracat bilgileri başarısız',
+	 'firstpage':'ilk sayfa',
+	 'prevpage':'önceki',
+	 'nextpage':'sonraki',
+	 'lastpage':'sonuncusu',
 }

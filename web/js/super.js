@@ -1,5 +1,6 @@
 // JavaScript Document
 var screenShotSearch,oSearchOcx,autoSearchDev;
+var currentPagenum =0,total=0;
 $(document).ready(function() {
       document.getElementById('commonLibrary').getLanguage()== 'en_PR' ?  $('#Persian').show(): $('#Persian').hide();
 		 oSearchOcx = document.getElementById('devSearch');
@@ -166,7 +167,7 @@ $(document).ready(function() {
 		 
 		autoSearchDev.AddEventProc("useStateChange",'useStateChange(ev)');
 		autoSearchDev.startGetUserLoginStateChangeTime();
-		screenShotSearch.AddEventProc("ScreenShotInfo","ScreenShotInfocallback(data)");
+		//screenShotSearch.AddEventProc("ScreenShotInfo","ScreenShotInfocallback(data)");
 });
 
  //用户登录状态回调函数
@@ -205,7 +206,7 @@ $(document).ready(function() {
 			$('#maxbox').css({
 			   height:$('.box').height()*3/5	
 			});
-			
+			$('#pageone').css('left',($('.box').width()-$('#pageone').width())/2);
 			$('#maxprev a,#maxnext a').css('margin-top',($('#maxbox').height()-80)/2);
 
 			$('#foot').css('top',$('#set_content div.right').height()+78);
@@ -228,16 +229,34 @@ $(document).ready(function() {
 	function ScreenShotInfocallback(data){
 	  console.log('=============================================');
 	  console.log(data);
-	  // var dataArr = {'name':data.fileName,'dir':data.fileDir,'time':data.time,'type':data.type,'user':data.userName,'window':data.wndId}
-	  //  $('<li><img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'" width="100" height="100"/></li>').appendTo($('#minbox ul')).data('data',dataArr);
-		//console.log(dataArr);
-	  //$('<img src="/'+$.trim(data.fileDir)+'/'+$.trim(data.fileName)+'"/>').appendTo($('#imgs'));
+	  console.log(typeof(data));
+	 /*  $('#minbox li,#imgs img').remove();
+	    var arr1=[];
+		for(var i in data){
+		  arr1.push(data[i]);	
+		}
+		//console.log(arr);
+	    var frag = document.createDocumentFragment(); // 创建文档碎片 
+		var frag1 = document.createDocumentFragment(); 
+		$.each(arr1, function(i) {  
+			var arr = eval('('+arr1[i]+')'); 
+			var newListItem = $('<img src="/' + $.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+ '"/>')[0];  
+			//newListItem.data('data',arr);
+			frag.appendChild(newListItem); // 这里不会刷新DOM  
+			
+			var newItem = $('<li><img src="/'+$.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+'" width="100" height="100"/></li>')[0];
+			 // newItem.data('data',arr);
+			  frag1.appendChild(newItem);
+		});  
+		$('#imgs')[0].appendChild(frag);
+	    $('#minbox ul')[0].appendChild(frag1);*/
 	}
 	
 	function picSearch(){
-		
+		console.log('=========aaa=========');
 			 $('#minbox li,#imgs img').remove();
-			 
+			 currentPagenum=0;
+			 total=0;
 			 var date1 = '';
 			 var date2 = '';
 			 var type =0;
@@ -273,7 +292,93 @@ $(document).ready(function() {
 				clearTimeout(timer);
 			   },2000);
 			 }else if(num==0){
-				$('#box1').focusPic({ 
+                	 
+			  $('.maxpic').css({
+				 
+				 left:($('.box').width()*0.9-$('.maxpic').width())/2,
+				 top:($('#maxbox').height()-$('.maxpic').height())/2
+			  });
+				getimageinfo();
+			 }
+
+   }
+   function getimage(type){
+	  var b=true;
+	   total= screenShotSearch.getImageNum();
+	   switch(type){
+		case 0:
+		  if(currentPagenum==0){
+			  b=false;
+		  }else{
+		   currentPagenum=0;
+		  }
+		   break;   
+		case 1:
+		  if(currentPagenum==0){
+			  b=false;
+		  }else{
+		   currentPagenum--;
+		  }
+		   break; 
+		case 2:
+		
+
+		if(currentPagenum==Math.ceil(total/40)-1){
+			  b=false;
+		  }else{
+		    currentPagenum++;
+		  }
+		   break; 
+		case 3:
+		   currentPagenum=Math.ceil(total/40)-1;
+		    break; 
+	   }
+	  if(b){
+		 getimageinfo();
+	  }
+   }
+   function getimageinfo(){
+	  //console.log('=====getimageinfo()=======');
+	   var firstIndex = currentPagenum*40;
+	   var endIndex = firstIndex+39;
+	   var data = screenShotSearch.getImageInfo(firstIndex,endIndex);
+	   // console.log(currentPagenum+' '+firstIndex+' '+endIndex);
+	  //  console.log(data);
+	  if(data){
+	
+	    pic2ui(data);
+	   displayCurrentPage();
+	   
+	  }else{
+		$('#picnum').html('0/0');  
+	  }
+   }
+   function pic2ui(data1){
+	   
+	   $('#minbox li,#imgs img').remove();
+	   
+	   var data = data1.split('},');
+	  // console.log(data);
+	   
+	
+	    var frag = document.createDocumentFragment(); // 创建文档碎片 
+		var frag1 = document.createDocumentFragment(); 
+		var len = data.length;
+		for(var i=0;i<len-1;i++){
+			data[i] = data[i]+'}';
+			var arr = eval('('+data[i]+')'); 
+			//console.log(arr);
+			var newListItem = $('<img src="/' + $.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+ '"/>')[0];  
+			//newListItem.data('data',arr);
+			frag.appendChild(newListItem); // 这里不会刷新DOM  
+			var newItem = $('<li><img src="/'+$.trim(arr.fileDir)+'/'+$.trim(arr.fileName)+'" width="100" height="100"/></li>')[0];
+			 // newItem.data('data',arr);
+			  frag1.appendChild(newItem);
+		}
+		$('#imgs')[0].appendChild(frag);
+	    $('#minbox ul')[0].appendChild(frag1);
+		
+			  $('#box1').focusPic({ 
 				      piclist:'#imgs',//图片列表
 					  frame:'#iframe',//遮罩层
 					  box:"#box",//总框架
@@ -292,24 +397,20 @@ $(document).ready(function() {
 					  minPicshowNum:6,//小图显示数量
 				}); 
 				
-				 
-			  $('.maxpic').css({
-				 
-				 left:($('.box').width()*0.9-$('.maxpic').width())/2,
-				 top:($('#maxbox').height()-$('.maxpic').height())/2
-			  });
+			
               
 			 for(var i in document.images){
 				 document.images[i].ondragstart=function(){
 					 return false;
 				 };
 			 }
-
-				
-			 }
-
+  }
+   function displayCurrentPage(){
+	   
+	  var total = screenShotSearch.getImageNum();
+	    var num =  Math.ceil(total/40) ;
+	  $('#picnum').html((currentPagenum+1)+'/'+num);
    }
-   
    function getCurrentDate(){
 	 var myDate = new Date,
 

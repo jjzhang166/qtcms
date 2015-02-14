@@ -515,4 +515,8 @@
 	 'importfail':'Importing information failed',
 	 'exportsuccess':'Export Information success',
 	 'exportfail':'Export information failed',
+	 'firstpage':'First',
+	 'prevpage':'Prev',
+	 'nextpage':'Next',
+	 'lastpage':'Last',
 }

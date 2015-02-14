@@ -8,7 +8,7 @@ var ONVIF = function(ip,port,usr,pwd){
 	this._PWD = pwd;  //密码
 	
 	this.OnvifDeviceInfo2UI = function(){
-		 console.log("-------------------OnvifDeviceInfo2UI------------------------------");
+		// console.log("-------------------OnvifDeviceInfo2UI------------------------------");
 		emptyOnvifinfo();
 		onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
 		onvifSetting.getOnvifDeviceBaseInfo();
@@ -16,7 +16,7 @@ var ONVIF = function(ip,port,usr,pwd){
 	
 	this.onvifDeviceEncoderInfo2UI = function(){
 	   emptyOnvifinfo();
-	    console.log("-------------------onvifDeviceEncoderInfo2UI------------------------------");
+	   // console.log("-------------------onvifDeviceEncoderInfo2UI------------------------------");
 
 	    onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
 	    
@@ -26,7 +26,7 @@ var ONVIF = function(ip,port,usr,pwd){
 	}
 	
 	this.onvifDeviceEncoderInfoPut = function(){
-	    console.log("-------------------onvifDeviceEncoderInfoPut------------------------------");
+	   // console.log("-------------------onvifDeviceEncoderInfoPut------------------------------");
         
 		var index = $('#onvifStream').attr('data'),
 		    fps = $('#onviffps').val(),
@@ -38,13 +38,13 @@ var ONVIF = function(ip,port,usr,pwd){
 		var resArry = resolution.split('x');			
 	    onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
 		onvifSetting.setOnvifDeviceEncoderInfo(parseInt(index,10),parseInt(resArry[0],10),parseInt(resArry[1],10),fps,bps,codeformat,interval,profile);
-		console.log(index+' '+resArry[0]+' '+resArry[1]+' '+fps+' '+bps+' '+codeformat+' '+interval+' '+profile);
+		//console.log(index+' '+resArry[0]+' '+resArry[1]+' '+fps+' '+bps+' '+codeformat+' '+interval+' '+profile);
 
 	}
 	
 	this.onvifnetworkInfo2UI = function(){
 		 emptyOnvifinfo(); 
-		 console.log("-------------------onvifnetworkInfo2UI------------------------------");
+		// console.log("-------------------onvifnetworkInfo2UI------------------------------");
 		
 		 onvifSetting.setOnvifDeviceParam(this._IP,this._PORT,this._USR,this._PWD);
 	   
@@ -53,7 +53,7 @@ var ONVIF = function(ip,port,usr,pwd){
 	}
 	
 	this.onvifnetworkInfoPut = function(){
-		console.log("-------------------onvifnetworkInfoPut------------------------------");
+		//console.log("-------------------onvifnetworkInfoPut------------------------------");
 		var wrap = $('#set_content div.onvif_list:visible');
 		
 		var sip = $('#onvifip').val(),
@@ -179,7 +179,7 @@ function emptyOnvifinfo(){
 }
 //onvif 设置回调函数
 function operationStart(data){
-  console.log('----operationStart----');
+ // console.log('----operationStart----');
  // console.log(data);
   AJAXHint='';
   var wrap = $('#set_content div.onvif_list:visible');
@@ -192,8 +192,8 @@ function operationStart(data){
   operationType=data.operationType;
 }
 function operationReturnInfo(data){
-  console.log('----operationReturnInfo----');
- console.log(data);
+  //console.log('----operationReturnInfo----');
+ //console.log(data);
   if(data.nThreadId != nThreadId || data.operationType != operationType)return;
   
   var wrap = $('#set_content div.onvif_list:visible');

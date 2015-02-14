@@ -512,4 +512,8 @@
 	 'importfail':'导入信息失败',
 	 'exportsuccess':'导出信息成功',
 	 'exportfail':'导出信息失败',
+	 'firstpage':'首页',
+	 'prevpage':'上一页',
+	 'nextpage':'下一页',
+	 'lastpage':'尾页',
 }

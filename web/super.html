@@ -102,11 +102,15 @@
 	 </div>
      <div class="right">
       <div class="right_content" style="display:block;">
-      <div style="overflow-y:auto; overflow-x:hidden; position:absolute;top:30px;" class="box" id="box1">
+      <div style="overflow-y:auto; overflow-x:hidden; position:absolute;top:0px;" class="box" id="box1">
         <div id="imgs" class="imgs" >
         </div>
       </div>
-        <div id="box" style="overflow:hidden; position:absolute;top:30px; display:none;z-index:1000; background:#000; opacity:0.9;" class="box photolayer">
+      <div style="height:22px;position:absolute;bottom:0px;" class="tdBtn" id="pageone">
+        <div class="hover" onclick="getimage(0)"><script>T("firstpage")</script></div><div class="hover" onclick="getimage(1)"><script>T("prevpage")</script></div><p id="picnum" style="width:200px;float:left; text-align:center;">0/0</p>
+        <div class="hover" onclick="getimage(2)"><script>T("nextpage")</script></div><div class="hover" onclick="getimage(3)"><script>T("lastpage")</script></div>
+      </div>
+        <div id="box" style="overflow:hidden; position:absolute;top:0px; display:none;z-index:1000; background:#000; opacity:0.9;" class="box photolayer">
           <a class="hover0 close"></a>
           <div id="maxbox">
             <div id="maxprev" style="left:20px;"><a style="width:45px; height:80px; background-position:0 -80px;margin-right:3px;"></a></div>
