@@ -54,6 +54,8 @@ int ScreenShotSch::searchScreenShot( const QString &sWndId, const QString &sStar
 		sql += createSql(nType, QString("type")) + " and ";
 	}
 	sql += QString("userName='%1'").arg(sUser);
+	//clear old data
+	m_infoMap.clear();
 
 	//start search
 	int ret = sqlite3_prepare_v2(pdb, sql.toLatin1().data(), -1, &pstmt, (const char**)&pErr);
@@ -123,9 +125,40 @@ void ScreenShotSch::combineData( QVariantMap item )
 	}
 	info = "{" + attrList.join(",") + "}";
 	int len = m_infoMap.size();
-	m_infoMap.insert(QString("index_%1").arg(len), info);
-	if (99 == len){
-		EventProcCall(QString("ScreenShotInfo"), m_infoMap);
-		m_infoMap.clear();
+	m_infoMap.insert(len, info);
+// 	if (99 == len){
+// 		EventProcCall(QString("ScreenShotInfo"), m_infoMap);
+// 		m_infoMap.clear();
+// 	}
+}
+
+int ScreenShotSch::getImageNum()
+{
+	return m_infoMap.size();
+}
+
+QString ScreenShotSch::getImageInfo( const int &nStartIndex, const int &nEndIndex )
+{
+	QString res;
+	if (nStartIndex > nEndIndex || nStartIndex > m_infoMap.size() || nEndIndex > m_infoMap.size()){
+		qDebug()<<"input index error";
+		return res;
 	}
+	res += "{";
+	int index = nStartIndex;
+	do 
+	{
+		QString val = m_infoMap.value(index);
+		if (val.isEmpty()){
+			continue;
+		}
+		res += QString("index_%1").arg(index) + ":'" + val + "'";
+		if (index != nEndIndex - 1){
+			res += ",";
+		}
+		index++;
+	} while (index < nEndIndex);
+	res += "}";
+
+	return res;
 }

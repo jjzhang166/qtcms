@@ -20,12 +20,14 @@ public slots:
 	void AddEventProc( const QString sEvent,QString sProc ){m_mapEventProc.insertMulti(sEvent,sProc);}
 
 	int searchScreenShot(const QString &sWndId, const QString &sStartTime, const QString &sEndTime, const int &nType, const QString &sUser);
+	int getImageNum();
+	QString getImageInfo(const int &nStartIndex, const int &nEndIndex);
 private:
 	sqlite3* getSqlInterface();
 	QString createSql(qint64 num, QString keyWord);
 	void combineData(QVariantMap item);
 private:
-	QVariantMap m_infoMap;
+	QMap<int, QString> m_infoMap;
 };
 
 #endif // SCREENSHOTSCH_H
