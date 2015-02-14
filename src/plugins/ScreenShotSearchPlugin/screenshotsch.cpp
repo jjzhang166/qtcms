@@ -140,11 +140,10 @@ int ScreenShotSch::getImageNum()
 QString ScreenShotSch::getImageInfo( const int &nStartIndex, const int &nEndIndex )
 {
 	QString res;
-	if (nStartIndex > nEndIndex || nStartIndex > m_infoMap.size() || nEndIndex > m_infoMap.size()){
+	if (nStartIndex > nEndIndex || nStartIndex >= m_infoMap.size()){
 		qDebug()<<"input index error";
 		return res;
 	}
-	res += "{";
 	int index = nStartIndex;
 	do 
 	{
@@ -159,7 +158,6 @@ QString ScreenShotSch::getImageInfo( const int &nStartIndex, const int &nEndInde
 		}
 		index++;
 	} while (index < nEndIndex);
-	res += "}";
 
 	return res;
 }
