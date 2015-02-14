@@ -215,7 +215,8 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 	m_nConfigNum = m_stVencConfigs.nr;
 	QDomDocument doc;
 	QDomElement root = doc.createElement("OnvifStreamEncoderInfo");
-	root.setAttribute("itemNum", m_stVencConfigs.nr);
+// 	root.setAttribute("itemNum", m_stVencConfigs.nr);
+	int validNum = 0;
 	doc.appendChild(root);
 	for (int index = 0; index < m_stVencConfigs.nr; index++){
 		QDomElement streamitem = doc.createElement("StreamItem");
@@ -235,7 +236,7 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 		ret = m_pNvpContext->GetVideoEncoderConfigOption(&m_nvpArguments, &m_stVencOptions[index]);
 		if (ret){
 			qDebug()<<"get "<<m_stVencConfigs.entry[index].token<<" options fail";
-			root.appendChild(streamitem);
+// 			root.appendChild(streamitem);
 			continue;
 		}
 		//add options node
@@ -288,8 +289,9 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 		item.appendChild(option);
 		streamitem.appendChild(item);
 		root.appendChild(streamitem);
+		validNum++;
 	}
-	
+	root.setAttribute("itemNum", validNum);
 	doc.save(QTextStream(&reslut), 4);
 	return reslut;
 }
