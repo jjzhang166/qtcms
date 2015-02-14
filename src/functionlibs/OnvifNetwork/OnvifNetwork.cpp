@@ -206,6 +206,7 @@ QString OnvifNetwork::getOnvifDeviceEncoderInfo()
 		return reslut;
 	}
 	qMemSet(&m_stVencConfigs, 0, sizeof(stNVP_VENC_CONFIGS));
+	qMemSet(m_stVencOptions, 0 , sizeof(m_stVencOptions));
 	int ret = m_pNvpContext->GetVideoEncoderConfigs(&m_nvpArguments, &m_stVencConfigs);
 	if (ret){
 		qDebug()<<"get video encoder configs fail";
