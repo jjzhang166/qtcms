@@ -11,7 +11,7 @@ $.fn.focusPic = function(defualt){
 		  maxPrev:null,//大图左箭头
 		  maxNext:null,//大图右箭头
 		  autoplay:false,//是否自动播放
-		  interTime:500,//图片自动切换间隔
+		  interTime:5000,//图片自动切换间隔
 		  delayTime:800,//切换一张图片时间
 		  order:0,//当前显示的图片（从0开始）
 		  Maxpicdire:true,//大图滚动方向（true水平方向滚动）
@@ -19,7 +19,7 @@ $.fn.focusPic = function(defualt){
 		  minPicshowNum:null,//小图显示数量
     },defualt||{});
 
-  var picNum = $(defualt.minbox).find('ul li').length //图片的数量 
+  var picNum = $(defualt.minbox).find('ul li').length; //图片的数量 
   /*var picMaxW = $(defualt.maxbox).find('ul li').outerWidth(true); //每一大图的宽度（包括padding margin border）
   var picMaxH = $(defualt.maxbox).find('ul li').outerHeight(true); //每一大图的高度（包括padding margin border）*/
   var picMinW = $(defualt.minbox).find('ul li').outerWidth(true); //每一小图的宽度（包括padding margin border）
@@ -27,7 +27,7 @@ $.fn.focusPic = function(defualt){
   var pictime;  //自动播放的setInterval()的对象
   var maxPicindex=0;
   var minPicindex=0;
-  $(defualt.minbox).find('ul').width(picNum*picMinW).height(picMinH);
+  $(defualt.minbox).find('ul').width(picNum*picMinW+8).height(picMinH);
   
   $(defualt.piclist).find('img').each(function(index){
 	  $(this).click(function(){
@@ -99,8 +99,8 @@ $.fn.focusPic = function(defualt){
 	$(defualt.minPrev).click(function(){
 		if(minPicindex==0){minPicindex=picNum};
 		if(maxPicindex==0){maxPicindex=picNum};
-		minPicindex-=5;
-		maxPicindex-=5;
+		minPicindex-=6;
+		maxPicindex-=6;
 		if(minPicindex<-1)minPicindex=picNum-1;
 		
 		 maxPicindex = minPicindex ;
@@ -111,8 +111,8 @@ $.fn.focusPic = function(defualt){
 	$(defualt.minNext).click(function(){
 		if(maxPicindex==picNum-1){maxPicindex=-1};
 		if(minPicindex==picNum-1){minPicindex=-1};
-		minPicindex+=5;
-		maxPicindex+=5;
+		minPicindex+=6;
+		maxPicindex+=6;
 		if(minPicindex>picNum-1)minPicindex=0;
 		 maxPicindex = minPicindex ;
 		minShow(minPicindex)
