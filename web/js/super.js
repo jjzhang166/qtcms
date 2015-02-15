@@ -295,7 +295,7 @@ $(document).ready(function() {
                 	 
 			  $('.maxpic').css({
 				 
-				 left:($('.box').width()*0.9-$('.maxpic').width())/2,
+				// left:($('.box').width()*0.9-$('.maxpic').width())/2,
 				 top:($('#maxbox').height()-$('.maxpic').height())/2
 			  });
 				getimageinfo();
