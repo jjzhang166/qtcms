@@ -321,8 +321,6 @@ $(document).ready(function() {
 		  }
 		   break; 
 		case 2:
-		
-
 		if(currentPagenum==Math.ceil(total/40)-1){
 			  b=false;
 		  }else{
@@ -345,12 +343,29 @@ $(document).ready(function() {
 	   // console.log(currentPagenum+' '+firstIndex+' '+endIndex);
 	  //  console.log(data);
 	  if(data){
-	
+	    $('#curNum').prop('disabled',false);
 	    pic2ui(data);
-	   displayCurrentPage();
-	   
+	    displayCurrentPage();
+		
+	 $('#curNum').on('keypress',function(event){
+            if(event.keyCode == 13){ 
+              var num = parseInt($(this).val(),10);
+		     total = screenShotSearch.getImageNum();
+		    if(!num ||num<0||num>Math.ceil(total/40)){
+			   $(this).val('');
+			}else{
+			 currentPagenum = num-1;
+			  getimageinfo(); 
+		   }
+              $('#searchtxt').blur();
+            }
+            
+            });
+	  
 	  }else{
-		$('#picnum').html('0/0');  
+		 $('#curNum').val('0');
+	  $('totalNum').html('0'); 
+	  $('#curNum').prop('disabled',true);
 	  }
    }
    function pic2ui(data1){
@@ -409,9 +424,11 @@ $(document).ready(function() {
   }
    function displayCurrentPage(){
 	   
-	  var total = screenShotSearch.getImageNum();
+        total = screenShotSearch.getImageNum();
 	    var num =  Math.ceil(total/40) ;
-	  $('#picnum').html((currentPagenum+1)+'/'+num);
+	  $('#curNum').val((currentPagenum+1));
+	  $('#totalNum').html(num);
+	  //$('#picnum').html((currentPagenum+1)+'/'+num);
    }
    function getCurrentDate(){
 	 var myDate = new Date,
