@@ -101,6 +101,9 @@ $.fn.focusPic = function(defualt){
 		if(maxPicindex==0){maxPicindex=picNum};
 		minPicindex-=5;
 		maxPicindex-=5;
+		if(minPicindex<-1)minPicindex=picNum-1;
+		
+		 maxPicindex = minPicindex ;
 		maxShow(maxPicindex);
 		minShow(minPicindex);	
 		})
@@ -109,8 +112,10 @@ $.fn.focusPic = function(defualt){
 		if(maxPicindex==picNum-1){maxPicindex=-1};
 		if(minPicindex==picNum-1){minPicindex=-1};
 		minPicindex+=5;
-		minShow(minPicindex)
 		maxPicindex+=5;
+		if(minPicindex>picNum-1)minPicindex=0;
+		 maxPicindex = minPicindex ;
+		minShow(minPicindex)
 		maxShow(maxPicindex);
 		})
 		
@@ -157,6 +162,7 @@ $.fn.focusPic = function(defualt){
 		if(defualt.Minpicdire==true){
 			$(defualt.minbox).find('ul li').css('float','left');
 			if(picNum>defualt.minPicshowNum){
+				
 				if(minPicindex<6){mingdjl_w=0;}
 				if(minPicindex==picNum-1){mingdjl_w=-(mingdjl_num-1)*picMinW;}
 				$(defualt.minbox).find('ul').stop().animate({'left':mingdjl_w},defualt.delayTime);

@@ -416,7 +416,7 @@ $(function(){
 		return;
 	}*/
 	// 导航页面跳转
-	var url =['index.html','play_back.html','super.html','backup.html','device.html','','log.html'];
+	var url =['index.html','play_back.html','backup.html','device.html','super.html','','log.html'];
 	$('div.top_nav li').each(function(index){
 		$(this).on('click',function(){
 			if(index==5){

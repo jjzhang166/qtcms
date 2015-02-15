@@ -191,7 +191,7 @@ var oPreView,oDiv,autoSearchDev,
 		 
 		  AddActivityEvent('Validation','Validationcallback(data)');
 		 
-		var url =['index.html','play_back.html','super.html','backup.html','device.html','','log.html']
+		var url =['index.html','play_back.html','backup.html','device.html','super.html','','log.html']
 		/*for(i in url){
 			if(i != 0){ 
 				$('#winCon')[0].LoadNewPage('/skins/default/'+url[i]);

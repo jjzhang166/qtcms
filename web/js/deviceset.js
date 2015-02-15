@@ -194,7 +194,7 @@ var oSearchOcx,autoSearchDev,onvifSetting,onvifuserInfo,
 		//跳转其他页面之前 先关闭搜索。
 		$('div.top_nav li').each(function(index){
 			$(this).click(function(){
-				if(index != 3){
+				if(index != 4){
 					oSearchOcx.Stop();
 					emptyDevSetMenu();
 					
