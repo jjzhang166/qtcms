@@ -11,7 +11,7 @@ $.fn.focusPic = function(defualt){
 		  maxPrev:null,//大图左箭头
 		  maxNext:null,//大图右箭头
 		  autoplay:false,//是否自动播放
-		  interTime:5000,//图片自动切换间隔
+		  interTime:500,//图片自动切换间隔
 		  delayTime:800,//切换一张图片时间
 		  order:0,//当前显示的图片（从0开始）
 		  Maxpicdire:true,//大图滚动方向（true水平方向滚动）
@@ -38,7 +38,8 @@ $.fn.focusPic = function(defualt){
 		  $(defualt.box).show();
 	   });
    });
-  
+    
+	 
 	 //自动播放
 	  if(defualt.autoplay==true){
 		pictime = setInterval(function(){
@@ -50,6 +51,7 @@ $.fn.focusPic = function(defualt){
 			if(minPicindex==picNum){minPicindex=0};
 				  
 	  },defualt.interTime);	
+	 
 	  
 	  //鼠标经过停止播放
 	  $(defualt.box).hover(function(){
@@ -97,17 +99,18 @@ $.fn.focusPic = function(defualt){
 	$(defualt.minPrev).click(function(){
 		if(minPicindex==0){minPicindex=picNum};
 		if(maxPicindex==0){maxPicindex=picNum};
-		minPicindex--;
-		maxPicindex--;
+		minPicindex-=5;
+		maxPicindex-=5;
 		maxShow(maxPicindex);
 		minShow(minPicindex);	
 		})
+
 	$(defualt.minNext).click(function(){
 		if(maxPicindex==picNum-1){maxPicindex=-1};
 		if(minPicindex==picNum-1){minPicindex=-1};
-		minPicindex++;
+		minPicindex+=5;
 		minShow(minPicindex)
-		maxPicindex++;
+		maxPicindex+=5;
 		maxShow(maxPicindex);
 		})
 		
