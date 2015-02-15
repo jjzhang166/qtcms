@@ -124,6 +124,7 @@ private:
 	QMap<int, SearchProcess*> m_schEvMap;
 	int m_wndCount;
 	QTranslator m_translator;
+	QList<int> m_wndList;
 };
 
 

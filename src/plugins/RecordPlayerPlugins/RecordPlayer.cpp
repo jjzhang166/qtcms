@@ -374,6 +374,7 @@ int RecordPlayer::GroupStop()
 		m_subRecPlayerView[i].setPlayingFlag(false);
 	}
 	m_wndNum = 0;
+	m_wndList.clear();
 
 	return 0;
 }
@@ -787,6 +788,10 @@ int RecordPlayer::AddFileIntoPlayGroupEx( const int & nWndId,const QString& sDat
 	pLocalPlayerEx->Release();
 	m_wndNum++;
 
+	if (0 == nRet){
+		m_wndList.append(nWndId);
+	}
+
 	return nRet;
 }
 
@@ -875,9 +880,9 @@ void RecordPlayer::slValidateFail( QVariantMap vmap )
 
 void RecordPlayer::screenShot( QString sUser,int nType )
 {
-	if (NULL!=m_pScreenShotDevice)
+	if (NULL!=m_pScreenShotDevice && m_currentWindID < m_wndList.size())
 	{
-		m_pScreenShotDevice->screenShot(sUser,nType,m_currentWindID);
+		m_pScreenShotDevice->screenShot(sUser,nType,m_wndList[m_currentWindID]);
 	}else{
 		qDebug()<<__FUNCTION__<<__LINE__<<"screenShot fail as m_pScreenShotDevice is null";
 	}
