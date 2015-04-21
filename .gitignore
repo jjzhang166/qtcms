@@ -566,3 +566,8 @@ libs/commonlib.pdb
 /libs/DisksInfo.lib
 /src/functionlibs/Qarp/*.user
 /src/functionlibs/commonlibEx/*.user
+/output/Release/system.db
+/output/Release/log
+/output/Release/skins
+/output/Release/MainSet.ini
+/output/Release/pcom_config.xml
